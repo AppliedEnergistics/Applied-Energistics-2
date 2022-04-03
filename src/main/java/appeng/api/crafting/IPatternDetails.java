@@ -25,7 +25,7 @@ package appeng.api.crafting;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
@@ -84,10 +84,10 @@ public interface IPatternDetails {
         boolean isValid(AEKey input, Level level);
 
         /**
-         * Optionally return a container item. This will generally be null for processing patterns, and return
-         * {@link ItemStack#getContainerItem()} for crafting patterns.
+         * Optionally return a remaining key. This will generally be null for processing patterns, and return the
+         * corresponding slot of {@link Recipe#getRemainingItems} for crafting patterns.
          */
         @Nullable
-        AEKey getContainerItem(AEKey template);
+        AEKey getRemainingKey(AEKey template);
     }
 }

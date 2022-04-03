@@ -130,7 +130,7 @@ public class AEProcessingPattern implements IAEPatternDetails {
 
         @Nullable
         @Override
-        public AEKey getContainerItem(AEKey template) {
+        public AEKey getRemainingKey(AEKey template) {
             return null;
         }
     }

@@ -266,7 +266,7 @@ public class CraftingTreeNode {
     private void addContainerItems(AEKey template, long multiplier,
             @Nullable KeyCounter outputList) {
         if (outputList != null) {
-            var containerItem = parentInput.getContainerItem(template);
+            var containerItem = parentInput.getRemainingKey(template);
             if (containerItem != null) {
                 outputList.add(containerItem, multiplier);
             }

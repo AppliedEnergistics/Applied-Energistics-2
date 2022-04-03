@@ -92,7 +92,7 @@ public class CraftingTreeProcess {
                 this.limitQty = true;
             }
 
-            if (input.getContainerItem(primaryInput.what()) != null) {
+            if (input.getRemainingKey(primaryInput.what()) != null) {
                 this.limitQty = this.containerItems = true;
             }
         }

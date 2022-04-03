@@ -29,6 +29,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -41,7 +42,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.FluidContainerHelper;
 import appeng.menu.NullMenu;
-import appeng.util.CraftingRemainders;
 
 public class AECraftingPattern implements IAEPatternDetails {
     public static final int CRAFTING_GRID_DIMENSION = 3;
@@ -261,6 +261,21 @@ public class AECraftingPattern implements IAEPatternDetails {
         return newResult;
     }
 
+    private ItemStack getRecipeRemainder(int slot, AEItemKey key) {
+        // Note: no need to call assemble again since we can assume that the item is valid!
+        // Consider making this more efficient in the future? (e.g. cache the produced remainders)
+
+        // Fill frame
+        var previousStack = testFrame.removeItemNoUpdate(slot);
+        testFrame.setItem(slot, key.toStack());
+        // Get remainder
+        var remainder = recipe.getRemainingItems(testFrame).get(slot);
+        // Restore old stack in the frame
+        testFrame.setItem(slot, previousStack);
+
+        return remainder;
+    }
+
     /**
      * Retrieve a previous result of testing whether <code>what</code> is a valid ingredient for <code>slot</code>.
      * 
@@ -370,7 +385,7 @@ public class AECraftingPattern implements IAEPatternDetails {
             // code path to buckets.
             var remainingItems = recipe.getRemainingItems(testFrameCopy);
             var slotRemainder = remainingItems.get(slot);
-            if (ItemStack.matches(slotRemainder, CraftingRemainders.getRemainder(itemKey.toStack()))) {
+            if (slotRemainder.getCount() == 1 && slotRemainder.is(Items.BUCKET)) {
                 return new GenericStack(containedFluid.what(), containedFluid.amount());
             }
         }
@@ -425,8 +440,11 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         @Nullable
         @Override
-        public AEKey getContainerItem(AEKey template) {
-            return CraftingRemainders.getRemainder(template);
+        public AEKey getRemainingKey(AEKey template) {
+            if (template instanceof AEItemKey itemKey) {
+                return AEItemKey.of(getRecipeRemainder(slot, itemKey));
+            }
+            return null;
         }
     }
 }

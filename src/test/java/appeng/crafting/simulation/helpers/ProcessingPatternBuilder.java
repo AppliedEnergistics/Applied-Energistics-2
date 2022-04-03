@@ -13,7 +13,6 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.util.CraftingRemainders;
 
 public class ProcessingPatternBuilder {
     private final GenericStack[] outputs;
@@ -52,9 +51,10 @@ public class ProcessingPatternBuilder {
 
             @Nullable
             @Override
-            public AEKey getContainerItem(AEKey template) {
-                if (containerItems && template instanceof AEItemKey itemKey) {
-                    return CraftingRemainders.getRemainder(itemKey);
+            public AEKey getRemainingKey(AEKey template) {
+                if (containerItems && template instanceof AEItemKey itemKey
+                        && itemKey.getItem().hasCraftingRemainingItem()) {
+                    return AEItemKey.of(itemKey.getItem().getCraftingRemainingItem());
                 }
                 return null;
             }
@@ -85,7 +85,7 @@ public class ProcessingPatternBuilder {
 
             @Nullable
             @Override
-            public AEKey getContainerItem(AEKey template) {
+            public AEKey getRemainingKey(AEKey template) {
                 if (template instanceof AEItemKey itemKey) {
                     ItemStack stack = itemKey.toStack();
                     stack.setDamageValue(stack.getDamageValue() - 1);
