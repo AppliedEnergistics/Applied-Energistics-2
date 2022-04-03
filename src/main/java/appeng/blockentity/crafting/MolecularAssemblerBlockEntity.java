@@ -431,9 +431,10 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             if (!output.isEmpty()) {
                 CraftingEvent.fireAutoCraftingEvent(getLevel(), this.myPlan, output, this.craftingInv);
 
-                this.pushOut(output.copy());
-
+                // pushOut might reset the plan back to null, so get the remaining items before
                 var craftingRemainders = this.myPlan.getRemainingItems(this.craftingInv);
+
+                this.pushOut(output.copy());
 
                 for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
                     this.gridInv.setItemDirect(x, craftingRemainders.get(x));

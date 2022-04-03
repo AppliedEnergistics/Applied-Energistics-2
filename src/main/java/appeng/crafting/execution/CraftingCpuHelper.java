@@ -111,7 +111,7 @@ public class CraftingCpuHelper {
                 list.add(template.key(), extracted * template.amount());
 
                 // Container items!
-                var containerItem = inputs[x].getContainerItem(template.key());
+                var containerItem = inputs[x].getRemainingKey(template.key());
                 if (containerItem != null) {
                     expectedOutputs.add(containerItem, extracted);
                 }
