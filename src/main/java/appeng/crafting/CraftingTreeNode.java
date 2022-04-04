@@ -36,9 +36,19 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketInformPlayer;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
+import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Optional.Interface( iface = "gregtech.api.items.IToolItem", modid = "gregtech" )
 public class CraftingTreeNode
@@ -360,7 +370,21 @@ public class CraftingTreeNode
 			{
 				if( src.player().isPresent() )
 				{
-					src.player().get().sendStatusMessage( new TextComponentString( "System reported " + i.getStackSize() + " " + i.getDefinition().getItem().getItemStackDisplayName( i.getDefinition() ) + " available but could not extract anything" ), false );
+					try
+					{
+						if( ex == null )
+						{
+							NetworkHandler.instance().sendTo( new PacketInformPlayer( i ), (EntityPlayerMP) src.player().get() );
+						}
+						else
+						{
+							NetworkHandler.instance().sendTo( new PacketInformPlayer( ex, i ), (EntityPlayerMP) src.player().get() );
+						}
+					}
+					catch( IOException e )
+					{
+						e.printStackTrace();
+					}
 				}
 				throw new CraftBranchFailure( i, i.getStackSize() );
 			}

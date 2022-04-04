@@ -28,8 +28,13 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketInformPlayer;
 import appeng.util.inv.ItemListIgnoreCrafting;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentString;
+
+import java.io.IOException;
 
 
 public class MECraftingInventory implements IMEInventory<IAEItemStack>
@@ -309,13 +314,20 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 				{
 					if( src.player().isPresent() )
 					{
-						if( result == null )
+						try
 						{
-							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getDisplayName() + " available but could not extract anything" ), false );
+							if( result == null )
+							{
+								NetworkHandler.instance().sendTo( new PacketInformPlayer( extra ), (EntityPlayerMP) src.player().get() );
+							}
+							else
+							{
+								NetworkHandler.instance().sendTo( new PacketInformPlayer( extra, result ), (EntityPlayerMP) src.player().get() );
+							}
 						}
-						else
+						catch( IOException e )
 						{
-							src.player().get().sendStatusMessage( new TextComponentString( "System reported " + extra.getStackSize() + " " + extra.getDefinition().getDisplayName() + " available but could only extract " + result.getStackSize() ), false );
+							e.printStackTrace();
 						}
 					}
 					failed = true;
