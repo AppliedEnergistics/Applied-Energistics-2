@@ -108,6 +108,10 @@ public class CraftingTreeProcess
 								{
 									remaining = found.getStackSize();
 								}
+								else
+								{
+									remaining = 0;
+								}
 
 								if( remaining > 0 )
 								{
@@ -124,6 +128,7 @@ public class CraftingTreeProcess
 									}
 									subs = subs.copy().setStackSize( requestAmount );
 									this.nodes.put( new CraftingTreeNode( cc, job, subs, this, x, depth + 1 ), requestAmount );
+									job.checkUse( subs );
 									if( wantedSize == 0 )
 									{
 										break;
@@ -155,6 +160,7 @@ public class CraftingTreeProcess
 								}
 								part = part.copy().setStackSize( requestAmount );
 								this.nodes.put( new CraftingTreeNode( cc, job, part, this, x, depth + 1 ), requestAmount );
+								job.checkUse( part );
 							}
 						}
 					}
