@@ -43,6 +43,7 @@ public final class AELog {
 
     private static boolean craftingLogEnabled;
     private static boolean debugLogEnabled;
+    private static boolean gridLogEnabled;
 
     private AELog() {
     }
@@ -322,11 +323,39 @@ public final class AELog {
         }
     }
 
+    /**
+     * Use to check for an enabled grid log.
+     * <p>
+     * Can be used to prevent the execution of unneeded logic.
+     *
+     * @return true when the crafting log is enabled.
+     */
+    public static boolean isGridLogEnabled() {
+        return gridLogEnabled;
+    }
+
+    /**
+     * Logging for grid and grid node structure changes.
+     * <p>
+     * Off by default, can be enabled inside the configuration file.
+     *
+     * @see AELog#log(Level, String, Object...)
+     */
+    public static void grid(String message, Object... params) {
+        if (AELog.isGridLogEnabled()) {
+            log(Level.INFO, "[AE2 Grid Log] " + message, params);
+        }
+    }
+
     public static void setCraftingLogEnabled(boolean newValue) {
         craftingLogEnabled = newValue;
     }
 
     public static void setDebugLogEnabled(boolean newValue) {
         debugLogEnabled = newValue;
+    }
+
+    public static void setGridLogEnabled(boolean newValue) {
+        gridLogEnabled = newValue;
     }
 }

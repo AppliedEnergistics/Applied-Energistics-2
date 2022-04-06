@@ -47,6 +47,7 @@ import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
+import appeng.core.AELog;
 
 /**
  * Manages the lifecycle of a {@link IGridNode}.
@@ -93,6 +94,7 @@ public class ManagedGridNode implements IManagedGridNode {
                     addService(node, serviceClass);
                 }
             }
+            AELog.grid("Created node %s", node);
             return node;
         }
 
