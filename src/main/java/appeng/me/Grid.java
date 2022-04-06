@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
@@ -301,6 +302,11 @@ public class Grid implements IGrid {
 
     public void fillCrashReportCategory(CrashReportCategory category) {
         category.setDetail("Nodes", this.machines.size());
+        category.setDetail("Serial number", this.serialNumber);
+        if (AELog.isGridLogEnabled()) {
+            category.setDetail("All GridNodes",
+                    this.machines.values().stream().map(Object::toString).collect(Collectors.joining(";")));
+        }
         if (this.pivot != null) {
             this.pivot.fillCrashReportCategory(category);
         }
