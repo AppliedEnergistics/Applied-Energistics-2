@@ -115,6 +115,8 @@ public class Grid implements IGrid {
                 this.pivot = null;
                 TickHandler.instance().removeNetwork(this);
                 this.myStorage.remove(gridNode.getLevel());
+
+                AELog.grid("Removed grid %s", this);
             }
         }
     }
