@@ -98,9 +98,6 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static gregtech.api.block.machines.BlockMachine.getMetaTileEntity;
-
-
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
@@ -1477,8 +1474,11 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( Loader.isModLoaded( "gregtech" ) && directedBlock instanceof BlockMachine )
 				{
-					MetaTileEntity metaTileEntity = getMetaTileEntity( hostWorld, targ );
-					return metaTileEntity.getMetaFullName();
+					MetaTileEntity metaTileEntity = Platform.getMetaTileEntity( directedTile.getWorld(), directedTile.getPos() );
+					if( metaTileEntity != null )
+					{
+						return metaTileEntity.getMetaFullName();
+					}
 				}
 
 				try
@@ -1506,7 +1506,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( what.getItem() != Items.AIR )
 				{
-					return what.getUnlocalizedName();
+					return what.getItem().getItemStackDisplayName( what );
 				}
 
 				final Item item = Item.getItemFromBlock( directedBlock );

@@ -19,6 +19,8 @@
 package appeng.util;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -36,8 +38,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
+import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.items.IToolItem;
-import ic2.api.item.IC2Items;
+import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.api.util.GTUtility;
 import ic2.api.item.ICustomDamageItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -67,6 +71,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -77,6 +82,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -158,6 +164,7 @@ public class Platform
 
 	private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
 	private static final P2PHelper P2P_HELPER = new P2PHelper();
+	private static Method reflectGTgetMTE;
 
 	public static ItemComparisonHelper itemComparisons()
 	{
@@ -1681,9 +1688,37 @@ public class Platform
 		return isPurified;
 	}
 
+	//consider methods below moving to a compability class
 	public static boolean isGTDamageableItem( Item item )
 	{
 		return ( isModLoaded( "gregtech" ) && item instanceof IToolItem );
+	}
+
+	public static MetaTileEntity getMetaTileEntity( IBlockAccess world, BlockPos pos )
+	{
+		if( reflectGTgetMTE == null )
+		{
+			try
+			{
+				reflectGTgetMTE = ReflectionHelper.findMethod( BlockMachine.class, "getMetaTileEntity", null, IBlockAccess.class, BlockPos.class );
+			}
+			catch( ReflectionHelper.UnableToFindMethodException e )
+			{
+				reflectGTgetMTE = ReflectionHelper.findMethod( GTUtility.class, "getMetaTileEntity", null, IBlockAccess.class, BlockPos.class );
+			}
+		}
+		else
+		{
+			try
+			{
+				return (MetaTileEntity) reflectGTgetMTE.invoke( reflectGTgetMTE, world, pos );
+			}
+			catch( IllegalAccessException | InvocationTargetException e )
+			{
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	public static boolean isIC2DamageableItem( Item item )
