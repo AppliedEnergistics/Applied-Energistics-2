@@ -168,7 +168,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     public void removeNode(IGridNode node) {
         var watcher = this.watchers.remove(node);
         if (watcher != null) {
-            watcher.reset();
+            watcher.destroy();
         }
 
         var providerState = this.nodeProviders.remove(node);

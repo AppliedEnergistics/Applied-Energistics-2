@@ -162,7 +162,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         var craftingWatcher = this.craftingWatchers.remove(gridNode);
         if (craftingWatcher != null) {
-            craftingWatcher.reset();
+            craftingWatcher.destroy();
         }
 
         var requester = gridNode.getService(ICraftingRequester.class);

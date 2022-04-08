@@ -23,17 +23,13 @@ public interface IStackWatcher {
      * Add a specific {@link AEKey} to watch.
      *
      * Supports multiple values, duplicate ones will not be added.
-     *
-     * @return true, if successfully added.
      */
-    boolean add(AEKey stack);
+    void add(AEKey stack);
 
     /**
      * Remove a specific {@link AEKey} from the watcher.
-     *
-     * @return true, if successfully removed.
      */
-    boolean remove(AEKey stack);
+    void remove(AEKey stack);
 
     /**
      * Removes all watched stacks and resets the watcher to a clean state.
