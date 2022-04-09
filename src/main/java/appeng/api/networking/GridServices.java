@@ -27,7 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +96,7 @@ public final class GridServices {
      * This is used by AE2 internally to initialize the services for a grid.
      */
     static Map<Class<?>, IGridServiceProvider> createServices(IGrid g) {
-        var result = new HashMap<Class<?>, IGridServiceProvider>(registry.size());
+        var result = new LinkedHashMap<Class<?>, IGridServiceProvider>(registry.size());
 
         for (var registration : registry) {
             result.put(registration.publicInterface, registration.construct(g, result));
