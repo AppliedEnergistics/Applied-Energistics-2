@@ -48,7 +48,7 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
 
         this.showInInterfaceTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
                 Icon.PATTERN_ACCESS_HIDE,
-                GuiText.InterfaceTerminal.text(), GuiText.InterfaceTerminalHint.text(),
+                GuiText.PatternAccessTerminal.text(), GuiText.PatternAccessTerminalHint.text(),
                 btn -> selectNextInterfaceMode());
         this.addToLeftToolbar(this.showInInterfaceTerminalButton);
     }
