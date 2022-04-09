@@ -59,6 +59,7 @@ import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.IPart;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
+import appeng.core.AELog;
 import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.pathfinding.IPathItem;
 
@@ -361,6 +362,7 @@ public class GridNode implements IGridNode, IPathItem {
         connections.clear();
 
         this.setGridStorage(null);
+        AELog.grid("Destroyed node %s in grid %s", this, this.myGrid);
         if (this.myGrid != null) {
             this.myGrid.remove(this);
         }
@@ -677,9 +679,9 @@ public class GridNode implements IGridNode, IPathItem {
     public String toString() {
         if (getOwner() instanceof BlockEntity blockEntity) {
             var beType = Registry.BLOCK_ENTITY_TYPE.getKey(blockEntity.getType());
-            return "node hosted by " + beType;
+            return "node@" + Integer.toHexString(hashCode()) + " hosted by " + beType;
         } else {
-            return "node hosted by " + getOwner().getClass().getName();
+            return "node@" + Integer.toHexString(hashCode()) + " hosted by " + getOwner().getClass().getName();
         }
     }
 

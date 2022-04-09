@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
@@ -40,6 +41,7 @@ import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridEvent;
+import appeng.core.AELog;
 import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.hooks.ticking.TickHandler;
 
@@ -48,11 +50,14 @@ public class Grid implements IGrid {
      * We use this to copy the list of grid nodes we'll notify. Avoids a potential ConcurrentModificationException.
      */
     private static final List<IGridNode> ITERATION_BUFFER = new ArrayList<>();
+    private static int nextSerial = 0;
+
     private final SetMultimap<Class<?>, IGridNode> machines = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Map<Class<?>, IGridServiceProvider> services;
     private GridNode pivot;
     private int priority; // how import is this network?
     private GridStorage myStorage;
+    private final int serialNumber = nextSerial++; // useful to keep track of grids in toString() for debugging purposes
 
     /**
      * Creates a new grid, sends the necessary events, and registers it to the tickhandler or other objects.
@@ -64,6 +69,8 @@ public class Grid implements IGrid {
 
         TickHandler.instance().addNetwork(grid);
         center.setGrid(grid);
+
+        AELog.grid("Created grid %s with center %s", grid, center);
 
         return grid;
     }
@@ -108,6 +115,8 @@ public class Grid implements IGrid {
                 this.pivot = null;
                 TickHandler.instance().removeNetwork(this);
                 this.myStorage.remove(gridNode.getLevel());
+
+                AELog.grid("Removed grid %s", this);
             }
         }
     }
@@ -295,8 +304,18 @@ public class Grid implements IGrid {
 
     public void fillCrashReportCategory(CrashReportCategory category) {
         category.setDetail("Nodes", this.machines.size());
+        category.setDetail("Serial number", this.serialNumber);
+        if (AELog.isGridLogEnabled()) {
+            category.setDetail("All GridNodes",
+                    this.machines.values().stream().map(Object::toString).collect(Collectors.joining(";")));
+        }
         if (this.pivot != null) {
             this.pivot.fillCrashReportCategory(category);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Grid #" + serialNumber;
     }
 }

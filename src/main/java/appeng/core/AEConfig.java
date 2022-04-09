@@ -211,6 +211,7 @@ public final class AEConfig {
 
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
         AELog.setDebugLogEnabled(COMMON.debugLog.get());
+        AELog.setGridLogEnabled(COMMON.gridLog.get());
     }
 
     public static AEConfig instance() {
@@ -502,6 +503,7 @@ public final class AEConfig {
         public final BooleanOption packetLog;
         public final BooleanOption craftingLog;
         public final BooleanOption debugLog;
+        public final BooleanOption gridLog;
         public final BooleanOption chunkLoggerTrace;
 
         // Batteries
@@ -595,6 +597,7 @@ public final class AEConfig {
             packetLog = logging.addBoolean("packetLog", false);
             craftingLog = logging.addBoolean("craftingLog", false);
             debugLog = logging.addBoolean("debugLog", false);
+            gridLog = logging.addBoolean("gridLog", false);
             chunkLoggerTrace = logging.addBoolean("chunkLoggerTrace", false,
                     "Enable stack trace logging for the chunk loading debug command");
 
