@@ -25,6 +25,7 @@ import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.crafting.pattern.IAEPatternDetails;
@@ -32,6 +33,7 @@ import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
+import appeng.util.inv.filter.AEItemDefinitionFilter;
 
 public class PatternEncodingLogic implements InternalInventoryHost {
 
@@ -55,6 +57,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     public PatternEncodingLogic(IPatternTerminalLogicHost host) {
         this.host = host;
+        this.blankPatternInv.setFilter(new AEItemDefinitionFilter(AEItems.BLANK_PATTERN));
     }
 
     @Override
