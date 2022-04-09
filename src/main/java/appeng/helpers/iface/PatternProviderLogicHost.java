@@ -21,15 +21,21 @@ package appeng.helpers.iface;
 import java.util.EnumSet;
 
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.helpers.IPriorityHost;
+import appeng.menu.ISubMenu;
+import appeng.menu.MenuOpener;
+import appeng.menu.implementations.PatternProviderMenu;
+import appeng.menu.locator.MenuLocator;
 
 /**
  * Interface to be implemented by blocks or parts wanting to host a pattern provider.
  */
-public interface PatternProviderLogicHost extends IConfigurableObject {
+public interface PatternProviderLogicHost extends IConfigurableObject, IPriorityHost {
     PatternProviderLogic getLogic();
 
     /**
@@ -44,5 +50,24 @@ public interface PatternProviderLogicHost extends IConfigurableObject {
     @Override
     default IConfigManager getConfigManager() {
         return getLogic().getConfigManager();
+    }
+
+    @Override
+    default int getPriority() {
+        return getLogic().getPriority();
+    }
+
+    @Override
+    default void setPriority(int newValue) {
+        getLogic().setPriority(newValue);
+    }
+
+    default void openMenu(Player player, MenuLocator locator) {
+        MenuOpener.open(PatternProviderMenu.TYPE, player, locator);
+    }
+
+    @Override
+    default void returnToMainMenu(Player player, ISubMenu subMenu) {
+        openMenu(player, subMenu.getLocator());
     }
 }

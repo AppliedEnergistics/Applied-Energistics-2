@@ -37,6 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
+import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlockEntity> {
@@ -70,7 +71,7 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
         var be = this.getBlockEntity(level, pos);
         if (be != null) {
             if (!level.isClientSide()) {
-                be.openMenu(p);
+                be.openMenu(p, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
