@@ -18,6 +18,8 @@
 
 package appeng.block.qnb;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -41,9 +43,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 
-import javax.annotation.Nullable;
-
-public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBlockEntity> implements SimpleWaterloggedBlock {
+public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBlockEntity>
+        implements SimpleWaterloggedBlock {
 
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -121,7 +122,7 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
 
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }

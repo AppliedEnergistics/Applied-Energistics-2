@@ -18,6 +18,8 @@
 
 package appeng.block.misc;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -41,8 +43,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.SkyCompassBlockEntity;
-
-import javax.annotation.Nullable;
 
 public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> implements SimpleWaterloggedBlock {
 
@@ -189,7 +189,7 @@ public class SkyCompassBlock extends AEBaseEntityBlock<SkyCompassBlockEntity> im
 
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }

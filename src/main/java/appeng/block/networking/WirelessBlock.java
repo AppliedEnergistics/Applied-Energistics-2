@@ -20,6 +20,8 @@ package appeng.block.networking;
 
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -52,8 +54,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.WirelessMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
-
-import javax.annotation.Nullable;
 
 public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implements SimpleWaterloggedBlock {
 
@@ -258,7 +258,7 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implem
 
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }

@@ -108,7 +108,7 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> impl
 
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
-                                  BlockPos currentPos, BlockPos facingPos) {
+            BlockPos currentPos, BlockPos facingPos) {
         if (blockState.getValue(WATERLOGGED).booleanValue()) {
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
