@@ -170,11 +170,22 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     @Override
     public void readFromNBT(CompoundTag data) {
         this.mainNode.loadFromNBT(data);
+
+        if (data.contains("customName")) {
+            try {
+                this.customName = Component.Serializer.fromJson(data.getString("customName"));
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     @Override
     public void writeToNBT(CompoundTag data) {
         this.mainNode.saveToNBT(data);
+
+        if (this.customName != null) {
+            data.putString("customName", Component.Serializer.toJson(this.customName));
+        }
     }
 
     @Override
