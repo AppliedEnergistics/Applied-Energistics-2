@@ -328,7 +328,7 @@ public final class AELog {
      * <p>
      * Can be used to prevent the execution of unneeded logic.
      *
-     * @return true when the crafting log is enabled.
+     * @return true when the grid log is enabled.
      */
     public static boolean isGridLogEnabled() {
         return gridLogEnabled;

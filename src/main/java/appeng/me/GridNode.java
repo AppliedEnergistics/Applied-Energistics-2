@@ -315,7 +315,6 @@ public class GridNode implements IGridNode, IPathItem {
     }
 
     public void destroy() {
-        AELog.grid("Destroying node %s in grid %s", this, this.myGrid);
         // Allows connection destroy logic to know that this node is
         // no longer available.
         this.ready = false;
@@ -363,7 +362,7 @@ public class GridNode implements IGridNode, IPathItem {
         connections.clear();
 
         this.setGridStorage(null);
-        AELog.grid("Destroy end: removing node %s from grid %s", this, this.myGrid);
+        AELog.grid("Destroyed node %s in grid %s", this, this.myGrid);
         if (this.myGrid != null) {
             this.myGrid.remove(this);
         }
@@ -680,9 +679,9 @@ public class GridNode implements IGridNode, IPathItem {
     public String toString() {
         if (getOwner() instanceof BlockEntity blockEntity) {
             var beType = Registry.BLOCK_ENTITY_TYPE.getKey(blockEntity.getType());
-            return super.toString() + " hosted by " + beType;
+            return "node@" + Integer.toHexString(hashCode()) + " hosted by " + beType;
         } else {
-            return super.toString() + " hosted by " + getOwner().getClass().getName();
+            return "node@" + Integer.toHexString(hashCode()) + " hosted by " + getOwner().getClass().getName();
         }
     }
 
