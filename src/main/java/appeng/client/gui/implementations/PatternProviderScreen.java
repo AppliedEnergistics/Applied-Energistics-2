@@ -46,6 +46,8 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
         this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
         this.addToLeftToolbar(this.blockingModeButton);
 
+        widgets.addOpenPriorityButton();
+
         this.showInInterfaceTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
                 Icon.PATTERN_ACCESS_HIDE,
                 GuiText.InterfaceTerminal.text(), GuiText.InterfaceTerminalHint.text(),

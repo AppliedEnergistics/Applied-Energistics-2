@@ -42,6 +42,14 @@ public interface ICraftingProvider extends IGridNodeService {
     List<IPatternDetails> getAvailablePatterns();
 
     /**
+     * Return the priority for the patterns offered by this provider. The crafting calculation will prioritize patterns
+     * with the highest priority.
+     */
+    default int getPatternPriority() {
+        return 0;
+    }
+
+    /**
      * Instruct a provider to craft one of the patterns.
      *
      * @param patternDetails details

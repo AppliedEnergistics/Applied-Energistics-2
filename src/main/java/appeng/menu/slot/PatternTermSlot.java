@@ -39,7 +39,7 @@ public class PatternTermSlot extends CraftingTermSlot {
 
     @Override
     public ItemStack getItem() {
-        if (!this.isActive() && !this.getDisplayStack().isEmpty()) {
+        if (!this.isActive()) {
             this.clearStack();
         }
 

@@ -34,11 +34,10 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
+import appeng.core.definitions.AEParts;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.items.parts.PartModels;
-import appeng.menu.MenuOpener;
-import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
@@ -110,13 +109,9 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     @Override
     public boolean onPartActivate(Player p, InteractionHand hand, Vec3 pos) {
         if (!p.getCommandSenderWorld().isClientSide()) {
-            openMenu(p);
+            openMenu(p, MenuLocators.forPart(this));
         }
         return true;
-    }
-
-    private void openMenu(Player p) {
-        MenuOpener.open(PatternProviderMenu.TYPE, p, MenuLocators.forPart(this));
     }
 
     @Override
@@ -138,5 +133,10 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
         } else {
             return MODELS_OFF;
         }
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return AEParts.PATTERN_PROVIDER.stack();
     }
 }

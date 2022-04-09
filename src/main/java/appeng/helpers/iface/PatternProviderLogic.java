@@ -82,6 +82,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
     private final ConfigManager configManager = new ConfigManager();
+    private int priority;
 
     // Pattern storing logic
     private final AppEngInternalInventory patternInventory = new AppEngInternalInventory(this, NUMBER_OF_PATTERN_SLOTS);
@@ -113,9 +114,21 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         });
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+        this.host.saveChanges();
+
+        ICraftingProvider.requestUpdate(mainNode);
+    }
+
     public void writeToNBT(CompoundTag tag) {
         this.configManager.writeToNBT(tag);
         this.patternInventory.writeToNBT(tag, "patterns");
+        tag.putInt("priority", this.priority);
 
         ListTag sendListTag = new ListTag();
         for (var toSend : sendList) {
@@ -132,6 +145,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public void readFromNBT(CompoundTag tag) {
         this.configManager.readFromNBT(tag);
         this.patternInventory.readFromNBT(tag, "patterns");
+        this.priority = tag.getInt("priority");
 
         ListTag sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
         for (int i = 0; i < sendListTag.size(); ++i) {
@@ -192,6 +206,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
         return this.patterns;
+    }
+
+    @Override
+    public int getPatternPriority() {
+        return this.priority;
     }
 
     @Override

@@ -3,6 +3,7 @@ package appeng.me.service.helpers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,7 +30,7 @@ import appeng.api.storage.AEKeyFilter;
 public class NetworkCraftingProviders {
     private final Map<IGridNode, ProviderState> craftingProviders = new HashMap<>();
     private final Map<IPatternDetails, CraftingProviderList> craftingMethods = new HashMap<>();
-    private final Map<AEKey, Map<IPatternDetails, Integer>> craftableItems = new HashMap<>();
+    private final Map<AEKey, PatternsForKey> craftableItems = new HashMap<>();
     /**
      * Used for looking up craftable alternatives using fuzzy search (i.e. ignore NBT).
      */
@@ -80,7 +81,7 @@ public class NetworkCraftingProviders {
     public Collection<IPatternDetails> getCraftingFor(AEKey whatToCraft) {
         var patterns = this.craftableItems.get(whatToCraft);
         if (patterns != null) {
-            return Collections.unmodifiableCollection(patterns.keySet());
+            return patterns.getSortedPatterns(); // The result of Stream.toList() is already unmodifiable
         }
         return Collections.emptyList();
     }
@@ -132,11 +133,13 @@ public class NetworkCraftingProviders {
         private final ICraftingProvider provider;
         private final Set<AEKey> emitableItems;
         private final List<IPatternDetails> patterns;
+        private final int priority;
 
         private ProviderState(ICraftingProvider provider) {
             this.provider = provider;
             this.emitableItems = new HashSet<>(provider.getEmitableItems());
             this.patterns = new ArrayList<>(provider.getAvailablePatterns());
+            this.priority = provider.getPatternPriority();
         }
 
         private void mount(NetworkCraftingProviders methods) {
@@ -149,8 +152,10 @@ public class NetworkCraftingProviders {
 
                 methods.craftableItemsList.add(primaryOutput.what(), 1);
 
-                var patternMap = methods.craftableItems.computeIfAbsent(primaryOutput.what(), k -> new HashMap<>());
-                patternMap.merge(pattern, 1, Integer::sum);
+                var patternsForKey = methods.craftableItems.computeIfAbsent(primaryOutput.what(),
+                        k -> new PatternsForKey());
+                patternsForKey.patterns.add(new PatternInfo(pattern, this));
+                patternsForKey.needsSorting = true;
 
                 // pattern -> method (for execution)
                 methods.craftingMethods.computeIfAbsent(pattern, d -> new CraftingProviderList()).add(provider);
@@ -166,11 +171,10 @@ public class NetworkCraftingProviders {
 
                 methods.craftableItemsList.remove(primaryOutput.what(), 1);
 
-                methods.craftableItems.computeIfPresent(primaryOutput.what(), (key, map) -> {
-                    map.computeIfPresent(pattern, (pat, cnt) -> {
-                        return cnt == 1 ? null : cnt - 1;
-                    });
-                    return map.isEmpty() ? null : map;
+                methods.craftableItems.computeIfPresent(primaryOutput.what(), (key, patternsForKey) -> {
+                    patternsForKey.patterns.remove(new PatternInfo(pattern, this));
+                    patternsForKey.needsSorting = true;
+                    return patternsForKey.patterns.isEmpty() ? null : patternsForKey;
                 });
 
                 methods.craftingMethods.computeIfPresent(pattern, (pat, list) -> {
@@ -179,5 +183,29 @@ public class NetworkCraftingProviders {
                 });
             }
         }
+    }
+
+    private static class PatternsForKey {
+        private final Set<PatternInfo> patterns = new HashSet<>();
+        private List<IPatternDetails> sortedPatterns = Collections.emptyList();
+        private boolean needsSorting = false;
+
+        private void sortPatterns() {
+            sortedPatterns = patterns.stream()
+                    .sorted(Comparator.comparingInt((PatternInfo pi) -> pi.state.priority).reversed())
+                    .map(PatternInfo::pattern)
+                    .distinct()
+                    .toList();
+        }
+
+        private List<IPatternDetails> getSortedPatterns() {
+            if (needsSorting) {
+                sortPatterns();
+            }
+            return sortedPatterns;
+        }
+    }
+
+    private record PatternInfo(IPatternDetails pattern, ProviderState state) {
     }
 }
