@@ -26,12 +26,19 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -46,7 +53,9 @@ import appeng.menu.implementations.WirelessMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
-public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
+import javax.annotation.Nullable;
+
+public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implements SimpleWaterloggedBlock {
 
     enum State implements StringRepresentable {
         OFF, ON, HAS_CHANNEL;
@@ -59,9 +68,12 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
 
     public static final EnumProperty<State> STATE = EnumProperty.create("state", State.class);
 
+    private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
     public WirelessBlock() {
         super(defaultProps(AEMaterials.GLASS).noOcclusion());
-        this.registerDefaultState(this.defaultBlockState().setValue(STATE, State.OFF));
+        this.registerDefaultState(this.defaultBlockState().setValue(STATE, State.OFF)
+                .setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -81,6 +93,7 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(STATE);
+        builder.add(WATERLOGGED);
     }
 
     @Override
@@ -223,6 +236,34 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> {
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
         return true;
+    }
+
+    @Override
+    @Nullable
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockPos pos = context.getClickedPos();
+        FluidState fluidState = context.getLevel().getFluidState(pos);
+        BlockState blockState = this.defaultBlockState()
+                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+
+        return blockState;
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState blockState) {
+        return blockState.getValue(WATERLOGGED).booleanValue()
+                ? Fluids.WATER.getSource(false)
+                : super.getFluidState(blockState);
+    }
+
+    @Override
+    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
+                                  BlockPos currentPos, BlockPos facingPos) {
+        if (blockState.getValue(WATERLOGGED).booleanValue()) {
+            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+
+        return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
     }
 
 }
