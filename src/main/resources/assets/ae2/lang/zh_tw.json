@@ -190,8 +190,6 @@
   "gui.ae2.Inscriber": "壓印機",
   "gui.ae2.Installed": "已安裝: %s",
   "gui.ae2.Interface": "ME介面",
-  "gui.ae2.InterfaceTerminal": "介面終端",
-  "gui.ae2.InterfaceTerminalHint": "在介面終端中顯示或隱藏。",
   "gui.ae2.InvalidPattern": "無效的樣板",
   "gui.ae2.LevelEmitter": "ME發信器",
   "gui.ae2.LightBlue": "淺藍色",

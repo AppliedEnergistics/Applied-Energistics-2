@@ -160,8 +160,6 @@
   "gui.ae2.Inscriber": "Zapisovač",
   "gui.ae2.Installed": "Nainstalováno: %s",
   "gui.ae2.Interface": "ME rozhraní",
-  "gui.ae2.InterfaceTerminal": "Terminál rozhraní",
-  "gui.ae2.InterfaceTerminalHint": "Zobrazí nebo skryje Terminál rozhraní.",
   "gui.ae2.InvalidPattern": "Nesprávné schéma",
   "gui.ae2.LevelEmitter": "ME úrovňový vysílač",
   "gui.ae2.LightBlue": "Světle modrá",

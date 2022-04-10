@@ -148,8 +148,6 @@
   "gui.ae2.Inscriber": "Véső",
   "gui.ae2.Installed": "Telepítve: %s",
   "gui.ae2.Interface": "ME Interfész",
-  "gui.ae2.InterfaceTerminal": "Interfész Terminál",
-  "gui.ae2.InterfaceTerminalHint": "Az interfész terminál megjelenítése, elrejtése.",
   "gui.ae2.InvalidPattern": "Érvénytelen Minta",
   "gui.ae2.LevelEmitter": "ME Szint Kibocsátó",
   "gui.ae2.LightBlue": "Világoskék",

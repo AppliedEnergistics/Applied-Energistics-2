@@ -172,8 +172,6 @@
   "gui.ae2.Inscriber": "Presse",
   "gui.ae2.Installed": "Installé: %s",
   "gui.ae2.Interface": "Interface ME",
-  "gui.ae2.InterfaceTerminal": "Terminal d'interface",
-  "gui.ae2.InterfaceTerminalHint": "Montrer ou cacher sur le terminal d'interface.",
   "gui.ae2.InvalidPattern": "Modèle non valide",
   "gui.ae2.LevelEmitter": "Emetteur de niveau ME",
   "gui.ae2.LightBlue": "Bleu clair",

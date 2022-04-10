@@ -178,8 +178,6 @@
   "gui.ae2.Inscriber": "刻印機",
   "gui.ae2.Installed": "インストール済み: %s",
   "gui.ae2.Interface": "MEインターフェース",
-  "gui.ae2.InterfaceTerminal": "インターフェースターミナル",
-  "gui.ae2.InterfaceTerminalHint": "インターフェースターミナルで表示または隠す。",
   "gui.ae2.InvalidPattern": "無効なパターン",
   "gui.ae2.LevelEmitter": "MEレベルエミッター",
   "gui.ae2.LightBlue": "水色",

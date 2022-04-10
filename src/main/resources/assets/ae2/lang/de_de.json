@@ -166,8 +166,6 @@
   "gui.ae2.Inscriber": "Gravurdrucker",
   "gui.ae2.Installed": "Installiert: %s",
   "gui.ae2.Interface": "ME-Schnittstelle",
-  "gui.ae2.InterfaceTerminal": "Schnittstellenkonsole",
-  "gui.ae2.InterfaceTerminalHint": "Zeige oder verstecke die Schnittstelle in der Konsole.",
   "gui.ae2.InvalidPattern": "Ungültige Schablone",
   "gui.ae2.LevelEmitter": "ME-Füllstandsemitter",
   "gui.ae2.LightBlue": "Hellblau",
