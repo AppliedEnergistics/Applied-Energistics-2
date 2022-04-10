@@ -50,7 +50,7 @@ public class QuartzFiberPart extends AEBasePart {
     @PartModels
     private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
 
-    private final IManagedGridNode outerNode;
+    protected final IManagedGridNode outerNode;
 
     public QuartzFiberPart(IPartItem<?> partItem) {
         super(partItem);
