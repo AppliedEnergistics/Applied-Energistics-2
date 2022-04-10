@@ -162,8 +162,6 @@
   "gui.ae2.Inscriber": "Incisore",
   "gui.ae2.Installed": "Installato: %s",
   "gui.ae2.Interface": "Interfaccia ME",
-  "gui.ae2.InterfaceTerminal": "Terminale con interfaccia",
-  "gui.ae2.InterfaceTerminalHint": "Mostra o nascondi Terminale con interfaccia.",
   "gui.ae2.InvalidPattern": "Modello invalido",
   "gui.ae2.LevelEmitter": "Emettitore di pietrarossa ME",
   "gui.ae2.LightBlue": "Azzurro",

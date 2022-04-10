@@ -102,8 +102,6 @@
   "gui.ae2.Inscriber": "Prensa",
   "gui.ae2.Installed": "Instalado: %s",
   "gui.ae2.Interface": "ME Interfaz",
-  "gui.ae2.InterfaceTerminal": "Terminal de Interfaces",
-  "gui.ae2.InterfaceTerminalHint": "Mostrar o Ocultar en la Terminal de Interfaces.",
   "gui.ae2.InvalidPattern": "Patrón Invalido",
   "gui.ae2.LevelEmitter": "ME Emisor",
   "gui.ae2.LightBlue": "Azúl Claro",

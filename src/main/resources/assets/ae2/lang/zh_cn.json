@@ -231,8 +231,6 @@
   "gui.ae2.Inscriber": "压印器",
   "gui.ae2.Installed": "已安装：%s",
   "gui.ae2.Interface": "ME接口",
-  "gui.ae2.InterfaceTerminal": "样板管理终端",
-  "gui.ae2.InterfaceTerminalHint": "在样板管理终端显示或隐藏.",
   "gui.ae2.Interfaces": "ME接口",
   "gui.ae2.InvalidPattern": "无效样板",
   "gui.ae2.Items": "物品",

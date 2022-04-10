@@ -184,8 +184,6 @@
   "gui.ae2.Inscriber": "Pressmaskin",
   "gui.ae2.Installed": "Installerad: %s",
   "gui.ae2.Interface": "ME-gränssnitt",
-  "gui.ae2.InterfaceTerminal": "Gränssnittsterminal",
-  "gui.ae2.InterfaceTerminalHint": "Visa eller dölj i gränssnittsterminal.",
   "gui.ae2.InvalidPattern": "Ogiltigt mönster",
   "gui.ae2.LevelEmitter": "ME-nivåavgivare",
   "gui.ae2.LightBlue": "Ljusblå",

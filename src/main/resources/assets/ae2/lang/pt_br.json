@@ -176,8 +176,6 @@
   "gui.ae2.Inscriber": "Inscritor",
   "gui.ae2.Installed": "Instalado: %s",
   "gui.ae2.Interface": "Interface",
-  "gui.ae2.InterfaceTerminal": "Terminal de Acesso aos Padrões",
-  "gui.ae2.InterfaceTerminalHint": "Mostrar ou Esconder no Terminal de Acesso aos Padrões.",
   "gui.ae2.InvalidPattern": "Padrão Inválido",
   "gui.ae2.LevelEmitter": "Emissor de Nível",
   "gui.ae2.LightBlue": "Azul Claro",
