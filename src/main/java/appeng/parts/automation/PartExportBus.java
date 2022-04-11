@@ -319,16 +319,16 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 		return this.getInstalledUpgrades( Upgrades.CRAFTING ) > 0;
 	}
 
-	private void pushItemIntoTarget( final InventoryAdaptor d, final IEnergyGrid energy, final IMEInventory<IAEItemStack> inv, IAEItemStack ais )
+	private void pushItemIntoTarget( final InventoryAdaptor d, final IEnergyGrid energy, final IMEInventory<IAEItemStack> inv, IAEItemStack org )
 	{
-		ItemStack inputStack = ais.getCachedItemStack( ais.getStackSize() );
+		ItemStack inputStack = org.getCachedItemStack( org.getStackSize() );
 
 		ItemStack remaining = d.simulateAdd( inputStack );
 
 		// Store the stack in the cache for next time.
 		if( !remaining.isEmpty() )
 		{
-			ais.setCachedItemStack( remaining );
+			org.setCachedItemStack( remaining );
 			if( remaining == inputStack )
 			{
 				return;
@@ -339,7 +339,7 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 
 		if( canFit > 0 )
 		{
-			ais = ais.copy();
+			IAEItemStack ais = org.copy();
 			ais.setStackSize( canFit );
 			final IAEItemStack itemsToAdd = Platform.poweredExtraction( energy, inv, ais, this.mySrc );
 
@@ -359,6 +359,10 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
 				{
 					this.didSomething = true;
 				}
+			}
+			else
+			{
+				org.setCachedItemStack( inputStack );
 			}
 		}
 	}
