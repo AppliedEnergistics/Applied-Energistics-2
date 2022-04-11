@@ -70,7 +70,6 @@ public class GridStorageCache implements IStorageGrid
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
 	private MECraftingInventory localCache = null;
-	private final Int2ObjectMap<MECraftingInventory> extractableItemPriorityMap = new Int2ObjectOpenHashMap<>();
 	private int localDepth;
 
 	public GridStorageCache( final IGrid g )
@@ -86,7 +85,6 @@ public class GridStorageCache implements IStorageGrid
 	public void onUpdateTick()
 	{
 		this.localCache = null;
-		this.extractableItemPriorityMap.clear();
 		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.onTick() );
 	}
 
@@ -176,19 +174,6 @@ public class GridStorageCache implements IStorageGrid
 
 	public MECraftingInventory getExtractableList( IActionSource src )
 	{
-		if( src instanceof MachineSource )
-		{
-			if( src.machine().isPresent() )
-			{
-				IActionHost machine = src.machine().get();
-				if( machine instanceof IInterfaceHost )
-				{
-					extractableItemPriorityMap.putIfAbsent( ( (IPriorityHost) machine ).getPriority(), new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), src, false, false, false ) );
-					return extractableItemPriorityMap.get( ( (IPriorityHost) machine ).getPriority() );
-				}
-			}
-		}
-
 		if( localCache == null )
 		{
 			localCache = new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), src, false, false, false );
@@ -205,12 +190,13 @@ public class GridStorageCache implements IStorageGrid
 
 			final IActionSource actionSrc = cc instanceof IActionHost ? new MachineSource( (IActionHost) cc ) : new BaseActionSource();
 
-			this.storageMonitors.forEach( ( channel, monitor ) -> {
-				for( final IMEInventoryHandler<?> h : cc.getCellArray( channel ) )
-				{
-					tracker.postChanges( channel, 1, h, actionSrc );
-				}
-			} );
+			this.storageMonitors.forEach( ( channel, monitor ) ->
+			                              {
+				                              for( final IMEInventoryHandler<?> h : cc.getCellArray( channel ) )
+				                              {
+					                              tracker.postChanges( channel, 1, h, actionSrc );
+				                              }
+			                              } );
 		}
 
 		return tracker;
@@ -225,12 +211,13 @@ public class GridStorageCache implements IStorageGrid
 
 			final IActionSource actionSrc = cc instanceof IActionHost ? new MachineSource( (IActionHost) cc ) : new BaseActionSource();
 
-			this.storageMonitors.forEach( ( channel, monitor ) -> {
-				for( final IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( channel ) )
-				{
-					tracker.postChanges( channel, -1, h, actionSrc );
-				}
-			} );
+			this.storageMonitors.forEach( ( channel, monitor ) ->
+			                              {
+				                              for( final IMEInventoryHandler<IAEItemStack> h : cc.getCellArray( channel ) )
+				                              {
+					                              tracker.postChanges( channel, -1, h, actionSrc );
+				                              }
+			                              } );
 		}
 
 		return tracker;

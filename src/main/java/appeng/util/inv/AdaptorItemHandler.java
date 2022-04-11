@@ -19,14 +19,13 @@
 package appeng.util.inv;
 
 
-import java.util.Iterator;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+
+import java.util.Iterator;
 
 
 public class AdaptorItemHandler extends InventoryAdaptor
@@ -60,13 +59,13 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 			if( destination != null )
 			{
-				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
-				if( extracted.isEmpty() )
+				if( !destination.canInsert( is ) )
 				{
-					continue;
+					break;
 				}
 
-				if( !destination.canInsert( extracted ) )
+				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
+				if( extracted.isEmpty() )
 				{
 					continue;
 				}
@@ -109,19 +108,18 @@ public class AdaptorItemHandler extends InventoryAdaptor
 			final ItemStack is = this.itemHandler.getStackInSlot( slot );
 			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isSameItem( is, filter ) ) )
 			{
-				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
+				if( destination != null )
+				{
+					if( !destination.canInsert( is ) )
+					{
+						break;
+					}
+				}
 
+				ItemStack extracted = this.itemHandler.extractItem( slot, amount, true );
 				if( extracted.isEmpty() )
 				{
 					continue;
-				}
-
-				if( destination != null )
-				{
-					if( !destination.canInsert( extracted ) )
-					{
-						continue;
-					}
 				}
 
 				if( rv.isEmpty() )
@@ -163,13 +161,13 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 			if( destination != null )
 			{
-				ItemStack simulated = this.itemHandler.extractItem( slot, amount, true );
-				if( simulated.isEmpty() )
+				if( !destination.canInsert( is ) )
 				{
 					continue;
 				}
 
-				if( !destination.canInsert( simulated ) )
+				ItemStack simulated = this.itemHandler.extractItem( slot, amount, true );
+				if( simulated.isEmpty() )
 				{
 					continue;
 				}
@@ -177,6 +175,10 @@ public class AdaptorItemHandler extends InventoryAdaptor
 
 			// Attempt extracting it
 			extracted = this.itemHandler.extractItem( slot, amount, false );
+			if( !extracted.isEmpty() )
+			{
+				return extracted;
+			}
 		}
 
 		return extracted;
@@ -196,15 +198,16 @@ public class AdaptorItemHandler extends InventoryAdaptor
 				continue;
 			}
 
+			if( destination != null && !destination.canInsert( is ) )
+			{
+				continue;
+			}
+
 			// Attempt extracting it
 			extracted = this.itemHandler.extractItem( slot, amount, true );
-
-			if( !extracted.isEmpty() && destination != null )
+			if( !extracted.isEmpty() )
 			{
-				if( !destination.canInsert( extracted ) )
-				{
-					extracted = ItemStack.EMPTY; // Keep on looking...
-				}
+				return extracted;
 			}
 		}
 
