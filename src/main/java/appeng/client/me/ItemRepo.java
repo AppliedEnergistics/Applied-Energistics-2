@@ -99,6 +99,12 @@ public class ItemRepo
 		}
 	}
 
+	public long getItemCount( final IAEItemStack is )
+	{
+		IAEItemStack st = this.list.findPrecise( is );
+		return st == null ? 0 : st.getStackSize();
+	}
+
 	public void setViewCell( final ItemStack[] list )
 	{
 		this.myPartitionList = ItemViewCell.createFilter( list );

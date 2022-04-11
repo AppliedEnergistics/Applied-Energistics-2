@@ -20,8 +20,12 @@ package appeng.client.gui.implementations;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import appeng.client.me.SlotME;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.core.features.ColoredItemDefinition;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -100,6 +104,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	private boolean isAutoFocus = false;
 	private int currentMouseX = 0;
 	private int currentMouseY = 0;
+	private boolean delayedUpdate;
 
 	public GuiMEMonitorable( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -159,8 +164,26 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 			this.repo.postUpdate( is );
 		}
 
-		this.repo.updateView();
-		this.setScrollBar();
+		if( isShiftKeyDown() )
+		{
+			for( Slot slot : this.inventorySlots.inventorySlots )
+			{
+				if( slot instanceof SlotRestrictedInput )
+				{
+					if( this.isPointInRegion( slot.xPos, slot.yPos, 18, 18, Mouse.getX(), this.mc.displayHeight - Mouse.getY() ) )
+					{
+						this.delayedUpdate = true;
+						break;
+					}
+				}
+			}
+		}
+		
+		if( !this.delayedUpdate )
+		{
+			this.repo.updateView();
+			this.setScrollBar();
+		}
 	}
 
 	private void setScrollBar()
@@ -429,7 +452,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		this.drawTexturedModalRect( offsetX, offsetY + 16 + this.rows * 18 + this.lowerTextureOffset, 0, 106 - 18 - 18, x_width,
-				99 + this.reservedSpace - this.lowerTextureOffset );
+		                            99 + this.reservedSpace - this.lowerTextureOffset );
 
 		if( this.viewCell )
 		{
@@ -526,6 +549,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public void updateScreen()
 	{
 		this.repo.setPower( this.monitorableContainer.isPowered() );
+		if( !isShiftKeyDown() && this.delayedUpdate )
+		{
+			this.repo.updateView();
+			this.setScrollBar();
+		}
 		super.updateScreen();
 	}
 
