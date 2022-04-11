@@ -19,26 +19,7 @@
 package appeng.core;
 
 
-import java.io.File;
-import java.util.*;
-import java.util.stream.Stream;
-
-import com.google.common.collect.Sets;
-
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import appeng.api.config.CondenserOutput;
-import appeng.api.config.PowerMultiplier;
-import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
-import appeng.api.config.Settings;
-import appeng.api.config.TerminalStyle;
-import appeng.api.config.YesNo;
+import appeng.api.config.*;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.features.AEFeature;
@@ -47,6 +28,17 @@ import appeng.items.materials.MaterialType;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import com.google.common.collect.Sets;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.io.File;
+import java.util.*;
+import java.util.stream.Stream;
 
 
 public final class AEConfig extends Configuration implements IConfigurableObject, IConfigManagerHost
@@ -55,80 +47,33 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	public static final String VERSION = "@version@";
 	public static final String CHANNEL = "@aechannel@";
 	public static final String PACKET_CHANNEL = "AE";
-
-	// Config instance
-	private static AEConfig instance;
-
+	// Tunnels
+	public static final double TUNNEL_POWER_LOSS = 0.05;
 	// Default Grindstone ores
-	private static final String[] ORES_VANILLA = {
-			"Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold",
-			"Charcoal", "NetherQuartz"
-	};
+	private static final String[] ORES_VANILLA = {"Obsidian", "Ender", "EnderPearl", "Coal", "Iron", "Gold", "Charcoal", "NetherQuartz"};
 	private static final String[] ORES_AE = {"CertusQuartz", "Wheat", "Fluix"};
-	private static final String[] ORES_COMMON = {
-			"Copper", "Tin", "Silver", "Lead", "Bronze"
-	};
-	private static final String[] ORES_MISC = {
-			"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum",
-			"Osmium", "Zinc"
-	};
-
-	private String[] nonBlockingItems = {
-			"[gregtech|actuallyadditions]", "gregtech:circuit.integrated",
-			"gregtech:shape.mold.plate", "gregtech:shape.mold.gear",
-			"gregtech:shape.mold.credit", "gregtech:shape.mold.bottle",
-			"gregtech:shape.mold.ingot", "gregtech:shape.mold.ball",
-			"gregtech:shape.mold.block", "gregtech:shape.mold.nugget",
-			"gregtech:shape.mold.cylinder", "gregtech:shape.mold.anvil",
-			"gregtech:shape.mold.name", "gregtech:shape.mold.gear.small",
-			"gregtech:shape.mold.rotor", "gregtech:shape.extruder.plate",
-			"gregtech:shape.extruder.rod", "gregtech:shape.extruder.bolt",
-			"gregtech:shape.extruder.ring", "gregtech:shape.extruder.cell",
-			"gregtech:shape.extruder.ingot", "gregtech:shape.extruder.wire",
-			"gregtech:shape.extruder.pipe.tiny",
-			"gregtech:shape.extruder.pipe.small",
-			"gregtech:shape.extruder.pipe.medium",
-			"gregtech:shape.extruder.pipe.normal",
-			"gregtech:shape.extruder.pipe.large",
-			"gregtech:shape.extruder.pipe.huge",
-			"gregtech:shape.extruder.block", "gregtech:shape.extruder.sword",
-			"gregtech:shape.extruder.pickaxe", "gregtech:shape.extruder.shovel",
-			"gregtech:shape.extruder.axe", "gregtech:shape.extruder.hoe",
-			"gregtech:shape.extruder.hammer", "gregtech:shape.extruder.file",
-			"gregtech:shape.extruder.saw", "gregtech:shape.extruder.gear",
-			"gregtech:shape.extruder.bottle", "gregtech:shape.extruder.foil",
-			"gregtech:shape.extruder.gear_small",
-			"gregtech:shape.extruder.rod_long", "gregtech:shape.extruder.rotor",
-			"gregtech:glass_lens.white", "gregtech:glass_lens.orange",
-			"gregtech:glass_lens.magenta", "gregtech:glass_lens.light_blue",
-			"gregtech:glass_lens.yellow", "gregtech:glass_lens.lime",
-			"gregtech:glass_lens.pink", "gregtech:glass_lens.gray",
-			"gregtech:glass_lens.light_gray", "gregtech:glass_lens.cyan",
-			"gregtech:glass_lens.purple", "gregtech:glass_lens.blue",
-			"gregtech:glass_lens.brown", "gregtech:glass_lens.green",
-			"gregtech:glass_lens.red", "gregtech:glass_lens.black",
-			"contenttweaker:smallgearextrudershape",
-			"contenttweaker:creativeportabletankmold", "ore:lensAlmandine",
-			"ore:lensBlueTopaz", "ore:lensDiamond", "ore:lensEmerald",
-			"ore:lensGreenSapphire", "ore:lensRutile", "ore:lensRuby",
-			"ore:lensSapphire", "ore:lensTopaz", "ore:lensJasper",
-			"ore:lensGlass", "ore:lensOlivine", "ore:lensOpal",
-			"ore:lensAmethyst", "ore:lensLapis", "ore:lensEnderPearl",
-			"ore:lensEnderEye", "ore:lensGarnetRed", "ore:lensGarnetYellow",
-			"ore:lensVinteum", "ore:lensNetherStar",
-	};
-
+	private static final String[] ORES_COMMON = {"Copper", "Tin", "Silver", "Lead", "Bronze"};
+	private static final String[] ORES_MISC = {"Brass", "Platinum", "Nickel", "Invar", "Aluminium", "Electrum", "Osmium", "Zinc"};
 	// Default Energy Conversion Rates
 	private static final double DEFAULT_IC2_EXCHANGE = 2.0;
 	private static final double DEFAULT_GTEU_EXCHANGE = 2.0;
 	private static final double DEFAULT_RF_EXCHANGE = 0.5;
-
+	// Config instance
+	private static AEConfig instance;
 	private final IConfigManager settings = new ConfigManager( this );
 
 	private final EnumSet<AEFeature> featureFlags = EnumSet.noneOf( AEFeature.class );
 	private final File configFile;
+	// GUI Buttons
+	private final int[] craftByStacks = {1, 10, 100, 1000};
+	private final int[] priorityByStacks = {1, 10, 100, 1000};
+	private final int[] levelByStacks = {1, 10, 100, 1000};
+	private final int[] levelByMillibuckets = {10, 100, 1000, 10000};
+	private final Set<String> grinderBlackList;
+	private final int chargedChange = 4;
+	private final double wirelessHighWirelessCount = 64;
+	private String[] nonBlockingItems = {"[gregtech|actuallyadditions]", "gregtech:circuit.integrated", "gregtech:shape.mold.plate", "gregtech:shape.mold.gear", "gregtech:shape.mold.credit", "gregtech:shape.mold.bottle", "gregtech:shape.mold.ingot", "gregtech:shape.mold.ball", "gregtech:shape.mold.block", "gregtech:shape.mold.nugget", "gregtech:shape.mold.cylinder", "gregtech:shape.mold.anvil", "gregtech:shape.mold.name", "gregtech:shape.mold.gear.small", "gregtech:shape.mold.rotor", "gregtech:shape.extruder.plate", "gregtech:shape.extruder.rod", "gregtech:shape.extruder.bolt", "gregtech:shape.extruder.ring", "gregtech:shape.extruder.cell", "gregtech:shape.extruder.ingot", "gregtech:shape.extruder.wire", "gregtech:shape.extruder.pipe.tiny", "gregtech:shape.extruder.pipe.small", "gregtech:shape.extruder.pipe.medium", "gregtech:shape.extruder.pipe.normal", "gregtech:shape.extruder.pipe.large", "gregtech:shape.extruder.pipe.huge", "gregtech:shape.extruder.block", "gregtech:shape.extruder.sword", "gregtech:shape.extruder.pickaxe", "gregtech:shape.extruder.shovel", "gregtech:shape.extruder.axe", "gregtech:shape.extruder.hoe", "gregtech:shape.extruder.hammer", "gregtech:shape.extruder.file", "gregtech:shape.extruder.saw", "gregtech:shape.extruder.gear", "gregtech:shape.extruder.bottle", "gregtech:shape.extruder.foil", "gregtech:shape.extruder.gear_small", "gregtech:shape.extruder.rod_long", "gregtech:shape.extruder.rotor", "gregtech:glass_lens.white", "gregtech:glass_lens.orange", "gregtech:glass_lens.magenta", "gregtech:glass_lens.light_blue", "gregtech:glass_lens.yellow", "gregtech:glass_lens.lime", "gregtech:glass_lens.pink", "gregtech:glass_lens.gray", "gregtech:glass_lens.light_gray", "gregtech:glass_lens.cyan", "gregtech:glass_lens.purple", "gregtech:glass_lens.blue", "gregtech:glass_lens.brown", "gregtech:glass_lens.green", "gregtech:glass_lens.red", "gregtech:glass_lens.black", "contenttweaker:smallgearextrudershape", "contenttweaker:creativeportabletankmold", "ore:lensAlmandine", "ore:lensBlueTopaz", "ore:lensDiamond", "ore:lensEmerald", "ore:lensGreenSapphire", "ore:lensRutile", "ore:lensRuby", "ore:lensSapphire", "ore:lensTopaz", "ore:lensJasper", "ore:lensGlass", "ore:lensOlivine", "ore:lensOpal", "ore:lensAmethyst", "ore:lensLapis", "ore:lensEnderPearl", "ore:lensEnderEye", "ore:lensGarnetRed", "ore:lensGarnetYellow", "ore:lensVinteum", "ore:lensNetherStar",};
 	private boolean updatable = false;
-
 	// Misc
 	private boolean removeCrashingItemsOnLoad = false;
 	private int formationPlaneEntityLimit = 128;
@@ -138,24 +83,14 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private boolean disableColoredCableRecipesInJEI = true;
 	private int craftingCalculationTimePerTick = 5;
 	private PowerUnits selectedPowerUnit = PowerUnits.AE;
-
-	// GUI Buttons
-	private final int[] craftByStacks = {1, 10, 100, 1000};
-	private final int[] priorityByStacks = {1, 10, 100, 1000};
-	private final int[] levelByStacks = {1, 10, 100, 1000};
-	private final int[] levelByMillibuckets = {10, 100, 1000, 10000};
-
 	// Spatial IO/Dimension
 	private int storageProviderID = -1;
 	private int storageDimensionID = -1;
 	private double spatialPowerExponent = 1.35;
 	private double spatialPowerMultiplier = 1250.0;
-
 	// Grindstone
 	private String[] grinderOres = Stream.of( ORES_VANILLA, ORES_AE, ORES_COMMON, ORES_MISC ).flatMap( Stream::of ).toArray( String[]::new );
-	private Set<String> grinderBlackList;
 	private double oreDoublePercentage = 90.0;
-
 	// Batteries
 	private int wirelessTerminalBattery = 1600000;
 	private int entropyManipulatorBattery = 200000;
@@ -163,20 +98,16 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private int portableCellBattery = 20000;
 	private int colorApplicatorBattery = 20000;
 	private int chargedStaffBattery = 8000;
-
 	// Certus quartz
 	private float spawnChargedChance = 0.92f;
 	private int quartzOresPerCluster = 4;
 	private int quartzOresClusterAmount = 15;
-	private int chargedChange = 4;
-
 	// Meteors
 	private int minMeteoriteDistance = 707;
 	private int minMeteoriteDistanceSq = this.minMeteoriteDistance * this.minMeteoriteDistance;
 	private double meteoriteClusterChance = 0.1;
 	private int meteoriteMaximumSpawnHeight = 180;
 	private int[] meteoriteDimensionWhitelist = {0};
-
 	// Wireless
 	private double wirelessBaseCost = 8;
 	private double wirelessCostMultiplier = 1;
@@ -184,10 +115,8 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 	private double wirelessBaseRange = 16;
 	private double wirelessBoosterRangeMultiplier = 1;
 	private double wirelessBoosterExp = 1.5;
-	private double wirelessHighWirelessCount = 64;
-
-	// Tunnels
-	public static final double TUNNEL_POWER_LOSS = 0.05;
+	// Autocrafting
+	private boolean enableCraftingSubstitutes = false;
 
 	private AEConfig( final File configFile )
 	{
@@ -248,6 +177,9 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		this.portableCellBattery = this.get( "battery", "portableCell", this.portableCellBattery ).getInt( this.portableCellBattery );
 		this.colorApplicatorBattery = this.get( "battery", "colorApplicator", this.colorApplicatorBattery ).getInt( this.colorApplicatorBattery );
 		this.matterCannonBattery = this.get( "battery", "matterCannon", this.matterCannonBattery ).getInt( this.matterCannonBattery );
+
+		this.addCustomCategoryComment( "autocrafting", "Enable patterns with substitutions on to have their substitutes to be auto craftable.\nThis changes the crafting tree, and can show missing ingredients for the substitute, instead of the patterned item" );
+		this.enableCraftingSubstitutes = this.get( "autocrafting", "EnableAutocraftinSubstitutes", this.enableCraftingSubstitutes ).getBoolean( this.enableCraftingSubstitutes );
 
 		this.clientSync();
 
@@ -670,9 +602,19 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.storageProviderID;
 	}
 
+	void setStorageProviderID( int id )
+	{
+		this.storageProviderID = id;
+	}
+
 	public int getStorageDimensionID()
 	{
 		return this.storageDimensionID;
+	}
+
+	void setStorageDimensionID( int id )
+	{
+		this.storageDimensionID = id;
 	}
 
 	public double getSpatialPowerExponent()
@@ -810,20 +752,15 @@ public final class AEConfig extends Configuration implements IConfigurableObject
 		return this.wirelessBoosterExp;
 	}
 
+	// Setters keep visibility as low as possible.
+
 	public double getWirelessHighWirelessCount()
 	{
 		return this.wirelessHighWirelessCount;
 	}
 
-	// Setters keep visibility as low as possible.
-
-	void setStorageProviderID( int id )
+	public boolean getEnableCraftingSubstitutes()
 	{
-		this.storageProviderID = id;
-	}
-
-	void setStorageDimensionID( int id )
-	{
-		this.storageDimensionID = id;
+		return this.enableCraftingSubstitutes;
 	}
 }

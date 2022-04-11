@@ -19,16 +19,6 @@
 package appeng.crafting;
 
 
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
-import appeng.me.cache.GridStorageCache;
-import com.google.common.base.Stopwatch;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGrid;
@@ -47,6 +37,13 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.core.AELog;
 import appeng.hooks.TickHandler;
+import appeng.me.cache.GridStorageCache;
+import com.google.common.base.Stopwatch;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 
 public class CraftingJob implements Runnable, ICraftingJob

@@ -19,17 +19,9 @@
 package appeng.crafting;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import appeng.api.config.FuzzyMode;
-import appeng.util.Platform;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
-
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.networking.security.IActionSource;
@@ -41,7 +33,6 @@ import appeng.core.sync.packets.PacketInformPlayer;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
 
@@ -132,31 +123,36 @@ public class CraftingTreeNode
 		{
 			Collection<IAEItemStack> itemList = new ArrayList<>();
 
-			if( this.what.getItem().isDamageable() || Platform.isGTDamageableItem( this.what.getItem() ) )
-			{
-				itemList.addAll( inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL ) );
+			boolean damageableItem = this.what.getItem().isDamageable() || Platform.isGTDamageableItem( this.what.getItem() );
 
-				if( this.parent.details.canSubstitute() )
+			if( this.parent.details.canSubstitute() )
+			{
+				for( IAEItemStack subs : this.parent.details.getSubstituteInputs( this.slot ) )
 				{
-					for( IAEItemStack is : inventoryList )
+					if( damageableItem )
 					{
-						if( is.fuzzyComparison( this.what, FuzzyMode.IGNORE_ALL ) )
-						{
-							itemList.add( is );
-						}
+						itemList.addAll( inventoryList.findFuzzy( subs, FuzzyMode.IGNORE_ALL ) );
+					}
+					subs = inventoryList.findPrecise( subs );
+					if( subs != null )
+					{
+						itemList.add( subs );
 					}
 				}
 			}
 			else
 			{
-				final IAEItemStack item = inventoryList.findPrecise( this.what );
-				if( item != null )
-				{
-					itemList.add( item );
-				}
-				if( this.parent.details.canSubstitute() )
+				if( damageableItem )
 				{
 					itemList.addAll( inventoryList.findFuzzy( this.what, FuzzyMode.IGNORE_ALL ) );
+				}
+				else
+				{
+					final IAEItemStack item = inventoryList.findPrecise( this.what );
+					if( item != null )
+					{
+						itemList.add( item );
+					}
 				}
 			}
 
@@ -374,11 +370,11 @@ public class CraftingTreeNode
 					{
 						if( ex == null )
 						{
-							NetworkHandler.instance().sendTo( new PacketInformPlayer( i ), (EntityPlayerMP) src.player().get() );
+							NetworkHandler.instance().sendTo( new PacketInformPlayer( i, null, PacketInformPlayer.InfoType.NO_ITEMS_EXTRACTED ), (EntityPlayerMP) src.player().get() );
 						}
 						else
 						{
-							NetworkHandler.instance().sendTo( new PacketInformPlayer( ex, i ), (EntityPlayerMP) src.player().get() );
+							NetworkHandler.instance().sendTo( new PacketInformPlayer( ex, i, PacketInformPlayer.InfoType.PARTIAL_ITEM_EXTRACTION ), (EntityPlayerMP) src.player().get() );
 						}
 					}
 					catch( IOException e )

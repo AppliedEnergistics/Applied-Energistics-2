@@ -21,34 +21,23 @@ public class PacketInformPlayer extends AppEngPacket
 	public PacketInformPlayer( ByteBuf stream ) throws IOException
 	{
 		this.type = InfoType.values()[stream.readInt()];
-		if( type == InfoType.PARTIAL_ITEM_EXTRACTION )
+		switch ( type )
 		{
-			this.reportedItem = AEItemStack.fromPacket( stream );
-			this.actualItem = AEItemStack.fromPacket( stream );
-		}
-		else if( type == InfoType.NO_ITEMS_EXTRACTED )
-		{
-			this.reportedItem = AEItemStack.fromPacket( stream );
+			case PARTIAL_ITEM_EXTRACTION:
+				this.reportedItem = AEItemStack.fromPacket( stream );
+				this.actualItem = AEItemStack.fromPacket( stream );
+				break;
+			case NO_ITEMS_EXTRACTED:
+				this.reportedItem = AEItemStack.fromPacket( stream );
+				break;
 		}
 	}
 
-	public PacketInformPlayer( final IAEItemStack iaeItemStack ) throws IOException
-	{
-		this( iaeItemStack, null );
-	}
-
-	public PacketInformPlayer( IAEItemStack extra, IAEItemStack result ) throws IOException
+	public PacketInformPlayer( IAEItemStack extra, IAEItemStack result, InfoType type ) throws IOException
 	{
 		this.reportedItem = extra;
 		this.actualItem = result;
-		if( actualItem == null )
-		{
-			this.type = InfoType.NO_ITEMS_EXTRACTED;
-		}
-		else
-		{
-			this.type = InfoType.PARTIAL_ITEM_EXTRACTION;
-		}
+		this.type = type;
 
 		final ByteBuf data = Unpooled.buffer();
 
@@ -78,12 +67,10 @@ public class PacketInformPlayer extends AppEngPacket
 		{
 			AppEng.proxy.getPlayers().get( 0 ).sendStatusMessage( new TextComponentString( "System reported " + reportedItem.getStackSize() + " " + reportedItem.getItem().getItemStackDisplayName( reportedItem.getDefinition() ) + " available but could not extract anything" ), false );
 		}
-
 	}
 
 	public enum InfoType
 	{
-		PARTIAL_ITEM_EXTRACTION,
-		NO_ITEMS_EXTRACTED
+		PARTIAL_ITEM_EXTRACTION, NO_ITEMS_EXTRACTED
 	}
 }
