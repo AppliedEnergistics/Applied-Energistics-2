@@ -20,6 +20,8 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IContainerListener;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import appeng.api.config.CondenserOutput;
@@ -43,6 +45,7 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	public long storedPower = 0;
 	@GuiSync( 2 )
 	public CondenserOutput output = CondenserOutput.TRASH;
+	private ItemStack prevStack = ItemStack.EMPTY;
 
 	public ContainerCondenser( final InventoryPlayer ip, final TileCondenser condenser )
 	{
@@ -62,6 +65,7 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 	@Override
 	public void detectAndSendChanges()
 	{
+		final ItemStack is = this.condenser.getInternalInventory().getStackInSlot( 1 );
 		if( Platform.isServer() )
 		{
 			final double maxStorage = this.condenser.getStorage();
@@ -70,6 +74,14 @@ public class ContainerCondenser extends AEBaseContainer implements IProgressProv
 			this.requiredEnergy = requiredEnergy == 0 ? (int) maxStorage : (int) Math.min( requiredEnergy, maxStorage );
 			this.storedPower = (int) this.condenser.getStoredPower();
 			this.setOutput( (CondenserOutput) this.condenser.getConfigManager().getSetting( Settings.CONDENSER_OUTPUT ) );
+
+			for( final IContainerListener listener : this.listeners )
+			{
+				if( !ItemStack.areItemsEqual( is, prevStack ) )
+				{
+					listener.sendSlotContents( this, 1, is );
+				}
+			}
 		}
 
 		super.detectAndSendChanges();

@@ -72,9 +72,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 	private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
 	private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
-	private final HashMap<ClientDCInternalInv,BlockPos> blockPosHashMap = new HashMap<>();
-	private final HashMap<GuiButton,ClientDCInternalInv> guiButtonHashMap = new HashMap<>();
-	private final Map<ClientDCInternalInv,Integer> numUpgradesMap = new HashMap<>();
+	private final HashMap<ClientDCInternalInv, BlockPos> blockPosHashMap = new HashMap<>();
+	private final HashMap<GuiButton, ClientDCInternalInv> guiButtonHashMap = new HashMap<>();
+	private final Map<ClientDCInternalInv, Integer> numUpgradesMap = new HashMap<>();
 	private final ArrayList<String> names = new ArrayList<>();
 	private final ArrayList<Object> lines = new ArrayList<>();
 	private final Set<Object> matchedStacks = new HashSet<>();
@@ -87,7 +87,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 	private PartInterfaceTerminal partInterfaceTerminal;
 	private GuiButton guiButtonHide;
 	private GuiButton guiButtonNextAssembler;
-	private HashMap<ClientDCInternalInv,Integer> dimHashMap = new HashMap<>();
+	private HashMap<ClientDCInternalInv, Integer> dimHashMap = new HashMap<>();
 
 	public GuiInterfaceTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te )
 	{
@@ -166,9 +166,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				this.buttonList.add( guiButton );
 				int extraLines = numUpgradesMap.get( inv );
 
-				for( int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE ; ++row )
+				for( int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row )
 				{
-					for( int z = 0; z < 9 ; z++ )
+					for( int z = 0; z < 9; z++ )
 					{
 						this.inventorySlots.inventorySlots.add( new SlotDisconnected( inv, z + ( row * 9 ), ( z * 18 + 22 ), offset ) );
 						if( this.matchedStacks.contains( inv.getInventory().getStackInSlot( z + ( row * 9 ) ) ) )
@@ -199,8 +199,14 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			}
 		}
 
-		if( searchFieldInputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Inputs OR names" );
-		else if( searchFieldOutputs.isMouseIn( mouseX, mouseY ) ) drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Outputs OR names" );
+		if( searchFieldInputs.isMouseIn( mouseX, mouseY ) )
+		{
+			drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Inputs OR names" );
+		}
+		else if( searchFieldOutputs.isMouseIn( mouseX, mouseY ) )
+		{
+			drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Outputs OR names" );
+		}
 
 	}
 
@@ -237,9 +243,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			int interfaceDim = dimHashMap.get( guiButtonHashMap.get( this.selectedButton ) );
 			if( playerDim != interfaceDim )
 			{
-				try {
+				try
+				{
 					mc.player.sendStatusMessage( new TextComponentString( "Interface located at dimension: " + interfaceDim + " [" + DimensionManager.getWorld( interfaceDim ).provider.getDimensionType().getName() + "] and cant be highlighted" ), false );
-				} catch(Exception e){
+				}
+				catch( Exception e )
+				{
 					mc.player.sendStatusMessage( new TextComponentString( "Interface is located in another dimension and cannot be highlighted" ), false );
 				}
 			}
@@ -251,25 +260,25 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			mc.player.closeScreen();
 		}
 
-		if (btn == guiButtonHide)
+		if( btn == guiButtonHide )
 		{
 			partInterfaceTerminal.onlyInterfacesWithFreeSlots = !partInterfaceTerminal.onlyInterfacesWithFreeSlots;
 			this.refreshList();
 		}
 
-		if (btn == guiButtonNextAssembler)
+		if( btn == guiButtonNextAssembler )
 		{
 			// Set Search to "Molecular Assembler" and set "Only Free Interface"
 			boolean currentOnlyInterfacesWithFreeSlots = this.partInterfaceTerminal.onlyInterfacesWithFreeSlots;
 			String currentSearchText = this.searchFieldOutputs.getText();
 
 			this.partInterfaceTerminal.onlyInterfacesWithFreeSlots = true;
-			this.searchFieldOutputs.setText("Molecular Assembler");
+			this.searchFieldOutputs.setText( "Molecular Assembler" );
 
 			this.refreshList();
 
 			this.partInterfaceTerminal.onlyInterfacesWithFreeSlots = currentOnlyInterfacesWithFreeSlots;
-			this.searchFieldOutputs.setText(currentSearchText);
+			this.searchFieldOutputs.setText( currentSearchText );
 		}
 	}
 
@@ -294,12 +303,13 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 				for( int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row )
 				{
-					this.drawTexturedModalRect( offsetX + 20, offsetY + offset , 20, 173, width, 18 );
+					this.drawTexturedModalRect( offsetX + 20, offsetY + offset, 20, 173, width, 18 );
 					offset += 18;
 					linesDraw++;
 				}
 			}
-			else {
+			else
+			{
 				offset += 18;
 				linesDraw++;
 			}
@@ -326,12 +336,12 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				return;
 			}
 
-			if( character == ' ' && this.searchFieldOutputs.getText().isEmpty() && this.searchFieldOutputs.isFocused())
+			if( character == ' ' && this.searchFieldOutputs.getText().isEmpty() && this.searchFieldOutputs.isFocused() )
 			{
 				return;
 			}
 
-			if( this.searchFieldInputs.textboxKeyTyped( character, key ) || this.searchFieldOutputs.textboxKeyTyped( character, key ))
+			if( this.searchFieldInputs.textboxKeyTyped( character, key ) || this.searchFieldOutputs.textboxKeyTyped( character, key ) )
 			{
 				this.refreshList();
 			}
@@ -361,9 +371,9 @@ public class GuiInterfaceTerminal extends AEBaseGui
 					final long id = Long.parseLong( key.substring( 1 ), Character.MAX_RADIX );
 					final NBTTagCompound invData = in.getCompoundTag( key );
 					final ClientDCInternalInv current = this.getById( id, invData.getLong( "sortBy" ), invData.getString( "un" ) );
-					blockPosHashMap.put( current, NBTUtil.getPosFromTag( invData.getCompoundTag( "pos" )) );
-					dimHashMap.put( current, invData.getInteger( "dim" ));
-					numUpgradesMap.put( current, invData.getInteger("numUpgrades"));
+					blockPosHashMap.put( current, NBTUtil.getPosFromTag( invData.getCompoundTag( "pos" ) ) );
+					dimHashMap.put( current, invData.getInteger( "dim" ) );
+					numUpgradesMap.put( current, invData.getInteger( "numUpgrades" ) );
 
 					for( int x = 0; x < current.getInventory().getSlots(); x++ )
 					{
@@ -391,7 +401,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 	/**
 	 * Rebuilds the list of interfaces.
-	 *
+	 * <p>
 	 * Respects a search term if present (ignores case) and adding only matching patterns.
 	 */
 	private void refreshList()
@@ -403,7 +413,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
 		final String searchFieldOutputs = this.searchFieldOutputs.getText().toLowerCase();
 
-		final Set<Object> cachedSearch = this.getCacheForSearchTerm( "IN:" + searchFieldInputs + " OUT:" + searchFieldOutputs + partInterfaceTerminal.onlyInterfacesWithFreeSlots);
+		final Set<Object> cachedSearch = this.getCacheForSearchTerm( "IN:" + searchFieldInputs + " OUT:" + searchFieldOutputs + partInterfaceTerminal.onlyInterfacesWithFreeSlots );
 		final boolean rebuild = cachedSearch.isEmpty();
 
 		for( final ClientDCInternalInv entry : this.byId.values() )
@@ -416,7 +426,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 			// Shortcut to skip any filter if search term is ""/empty
 
-			boolean found = (searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty() && !partInterfaceTerminal.onlyInterfacesWithFreeSlots);
+			boolean found = ( searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty() && !partInterfaceTerminal.onlyInterfacesWithFreeSlots );
 			boolean interfaceHasFreeSlots = false;
 
 			// Search if the current inventory holds a pattern containing the search term.
@@ -425,42 +435,52 @@ public class GuiInterfaceTerminal extends AEBaseGui
 				int slot = 0;
 				for( final ItemStack itemStack : entry.getInventory() )
 				{
-					if (slot > 8 + numUpgradesMap.get(entry) * 9) {
+					if( slot > 8 + numUpgradesMap.get( entry ) * 9 )
+					{
 						break;
 					}
-					if( !searchFieldInputs.isEmpty() && !searchFieldOutputs.isEmpty() ) {
-						if (this.itemStackMatchesSearchTerm(itemStack, searchFieldInputs, 0) || this.itemStackMatchesSearchTerm(itemStack, searchFieldOutputs, 1)) {
+					if( !searchFieldInputs.isEmpty() && !searchFieldOutputs.isEmpty() )
+					{
+						if( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) || this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) )
+						{
 							found = true;
-							matchedStacks.add(itemStack);
+							matchedStacks.add( itemStack );
 						}
 					}
-					else if( !searchFieldInputs.isEmpty() ) {
-						if (this.itemStackMatchesSearchTerm(itemStack, searchFieldInputs, 0)) {
+					else if( !searchFieldInputs.isEmpty() )
+					{
+						if( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) )
+						{
 							found = true;
-							matchedStacks.add(itemStack);
+							matchedStacks.add( itemStack );
 						}
 					}
-					else if( !searchFieldOutputs.isEmpty() ) {
-						if (this.itemStackMatchesSearchTerm(itemStack, searchFieldOutputs, 1)) {
+					else if( !searchFieldOutputs.isEmpty() )
+					{
+						if( this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) )
+						{
 							found = true;
-							matchedStacks.add(itemStack);
+							matchedStacks.add( itemStack );
 						}
 					}
 					// If only Interfaces with empty slots should be shown, check that here
-					if(itemStack.isEmpty())
+					if( itemStack.isEmpty() )
+					{
 						interfaceHasFreeSlots = true;
+					}
 					slot++;
 				}
 			}
 			// if found, filter skipped or machine name matching the search term, add it
-			if( found || (entry.getName().toLowerCase().contains( searchFieldInputs ) && entry.getName().toLowerCase().contains( searchFieldOutputs )))
+			if( found || ( entry.getName().toLowerCase().contains( searchFieldInputs ) && entry.getName().toLowerCase().contains( searchFieldOutputs ) ) )
 			{
-				if (!partInterfaceTerminal.onlyInterfacesWithFreeSlots)
+				if( !partInterfaceTerminal.onlyInterfacesWithFreeSlots )
 				{
 					this.byName.put( entry.getName(), entry );
 					cachedSearch.add( entry );
 				}
-				else if ( interfaceHasFreeSlots ){
+				else if( interfaceHasFreeSlots )
+				{
 					this.byName.put( entry.getName(), entry );
 					cachedSearch.add( entry );
 				}
@@ -493,7 +513,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 		this.getScrollBar().setRange( 0, this.lines.size() - 1, 1 );
 	}
 
-	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm,int pass )
+	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm, int pass )
 	{
 		if( itemStack.isEmpty() )
 		{
@@ -509,7 +529,7 @@ public class GuiInterfaceTerminal extends AEBaseGui
 
 		NBTTagList tag = new NBTTagList();
 
-		if (pass == 0)
+		if( pass == 0 )
 		{
 			tag = encodedValue.getTagList( "in", 10 );
 		}
@@ -518,32 +538,44 @@ public class GuiInterfaceTerminal extends AEBaseGui
 			tag = encodedValue.getTagList( "out", 10 );
 		}
 
+		boolean foundMatchingItemStack = false;
+
 		for( int i = 0; i < tag.tagCount(); i++ )
 		{
-
 			final ItemStack parsedItemStack = new ItemStack( tag.getCompoundTagAt( i ) );
 			if( !parsedItemStack.isEmpty() )
 			{
 				final String displayName = Platform
 						.getItemDisplayName( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
 						.toLowerCase();
-				if( displayName.contains( searchTerm ) )
+
+				for( String term : searchTerm.split( " " ) )
 				{
-					return true;
+					if( term.length() > 1 && ( term.startsWith( "-" ) || term.startsWith( "!" ) ) )
+					{
+						term = term.substring( 1 );
+						if( displayName.contains( term ) )
+						{
+							return false;
+						}
+					}
+					else if( displayName.contains( term ) )
+					{
+						foundMatchingItemStack = true;
+					}
 				}
 			}
 		}
-		return false;
+		return foundMatchingItemStack;
 	}
 
 	/**
 	 * Tries to retrieve a cache for a with search term as keyword.
-	 *
+	 * <p>
 	 * If this cache should be empty, it will populate it with an earlier cache if available or at least the cache for
 	 * the empty string.
 	 *
 	 * @param searchTerm the corresponding search
-	 *
 	 * @return a Set matching a superset of the search term
 	 */
 	private Set<Object> getCacheForSearchTerm( final String searchTerm )

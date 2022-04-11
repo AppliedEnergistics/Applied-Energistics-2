@@ -125,7 +125,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 
 		final double requiredPower = this.getRequiredPower();
 		final ItemStack output = this.getOutput();
-		while( requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0 )
+		while ( requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0 )
 		{
 			if( this.canAddOutput( output ) )
 			{
@@ -163,7 +163,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	{
 		final IMaterials materials = AEApi.instance().definitions().materials();
 
-		switch( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
+		switch ( (CondenserOutput) this.cm.getSetting( Settings.CONDENSER_OUTPUT ) )
 		{
 			case MATTER_BALLS:
 				return materials.matterBall().maybeStack( 1 ).orElse( ItemStack.EMPTY );
@@ -193,6 +193,24 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 	{
 		if( inv == this.outputSlot )
 		{
+			if( !removed.isEmpty() )
+			{
+				final double requiredPower = this.getRequiredPower();
+				final ItemStack output = this.getOutput();
+				while ( requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0 )
+				{
+					if( this.canAddOutput( output ) )
+					{
+						this.setStoredPower( this.getStoredPower() - requiredPower );
+						this.addOutput( output );
+					}
+					else
+					{
+						break;
+					}
+					removed.shrink( output.getCount() );
+				}
+			}
 			this.meHandler.outputChanged( added, removed );
 		}
 	}
@@ -296,7 +314,7 @@ public class TileCondenser extends AEBaseInvTile implements IConfigManagerHost, 
 		}
 	}
 
-	private static final IFluidTankProperties[] EMPTY = { new FluidTankProperties( null, Fluid.BUCKET_VOLUME, true, false ) };
+	private static final IFluidTankProperties[] EMPTY = {new FluidTankProperties( null, Fluid.BUCKET_VOLUME, true, false )};
 
 	/**
 	 * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power

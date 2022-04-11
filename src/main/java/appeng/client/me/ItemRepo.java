@@ -120,10 +120,11 @@ public class ItemRepo
 			this.updateJEI( this.searchString );
 		}
 
-		this.innerSearch = this.searchString;
 		final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
 
 		boolean searchMod = false;
+
+		this.innerSearch = searchString.toLowerCase();
 		if( this.innerSearch.startsWith( "@" ) )
 		{
 			searchMod = true;
@@ -133,13 +134,13 @@ public class ItemRepo
 		Pattern m = null;
 		try
 		{
-			m = Pattern.compile( this.innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
+			m = Pattern.compile( this.innerSearch, Pattern.CASE_INSENSITIVE );
 		}
 		catch( final Throwable ignore )
 		{
 			try
 			{
-				m = Pattern.compile( Pattern.quote( this.innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
+				m = Pattern.compile( Pattern.quote( this.innerSearch ), Pattern.CASE_INSENSITIVE );
 			}
 			catch( final Throwable __ )
 			{
@@ -168,26 +169,35 @@ public class ItemRepo
 				continue;
 			}
 
-			final String dspName = searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is );
-			boolean foundMatchingItemStack = false;
-			notDone = true;
+			final String dspName = ( searchMod ? Platform.getModId( is ) : Platform.getItemDisplayName( is ) ).toLowerCase();
+			boolean foundMatchingItemStack = true;
 
-			if( m.matcher( dspName.toLowerCase() ).find() )
+			for( String term : innerSearch.split( " " ) )
 			{
-				notDone = false;
-				foundMatchingItemStack = true;
+				if( term.length() > 1 && ( term.startsWith( "-" ) || term.startsWith( "!" ) ) )
+				{
+					term = term.substring( 1 );
+					if( dspName.contains( term ) )
+					{
+						foundMatchingItemStack = false;
+						break;
+					}
+				}
+				else if( !dspName.contains( term ) )
+				{
+					foundMatchingItemStack = false;
+					break;
+				}
 			}
 
-			if( terminalSearchToolTips && notDone && !searchMod )
+			if( terminalSearchToolTips && !foundMatchingItemStack )
 			{
 				final List<String> tooltip = Platform.getTooltip( is );
-
 				for( final String line : tooltip )
 				{
 					if( m.matcher( line ).find() )
 					{
 						foundMatchingItemStack = true;
-						notDone = false;
 						break;
 					}
 				}
