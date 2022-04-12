@@ -359,16 +359,16 @@ public final class ApiBlocks implements IBlocks
 		this.tinyTNT = registry.block( "tiny_tnt", BlockTinyTNT::new )
 				.features( AEFeature.TINY_TNT )
 				.bootstrap( ( block, item ) -> (IPreInitComponent) side -> BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject( item,
-						new DispenserBehaviorTinyTNT() ) )
+				                                                                                                                new DispenserBehaviorTinyTNT() ) )
 				.bootstrap( ( block, item ) -> (IEntityRegistrationComponent) r ->
 				{
 					r.register( EntityEntryBuilder.create()
-							.entity( EntityTinyTNTPrimed.class )
-							.id( new ResourceLocation( "appliedenergistics2", EntityTinyTNTPrimed.class.getName() ),
-									EntityIds.get( EntityTinyTNTPrimed.class ) )
-							.name( "EntityTinyTNTPrimed" )
-							.tracker( 16, 4, true )
-							.build() );
+							            .entity( EntityTinyTNTPrimed.class )
+							            .id( new ResourceLocation( "appliedenergistics2", EntityTinyTNTPrimed.class.getName() ),
+							                 EntityIds.get( EntityTinyTNTPrimed.class ) )
+							            .name( "EntityTinyTNTPrimed" )
+							            .tracker( 16, 4, true )
+							            .build() );
 				} )
 				.build();
 		this.securityStation = registry.block( "security_station", BlockSecurityStation::new )
@@ -397,7 +397,6 @@ public final class ApiBlocks implements IBlocks
 				.tileEntity( new TileEntityDefinition( TileSpatialIOPort.class ) )
 				.build();
 		this.controller = registry.block( "controller", BlockController::new )
-				.features( AEFeature.CHANNELS )
 				.tileEntity( new TileEntityDefinition( TileController.class ) )
 				.useCustomItemModel()
 				.rendering( new ControllerRendering() )
@@ -635,7 +634,7 @@ public final class ApiBlocks implements IBlocks
 				} )
 				.build();
 
-		Verify.verify(stairs.maybeBlock().isPresent());
+		Verify.verify( stairs.maybeBlock().isPresent() );
 
 		return stairs;
 	}

@@ -105,7 +105,7 @@ public enum PartType
 				}
 			},
 
-	CABLE_SMART( 40, "cable_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.SMART_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartCableSmart.class )
+	CABLE_SMART( 40, "cable_smart", EnumSet.of( AEFeature.SMART_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartCableSmart.class )
 			{
 				@Override
 				public boolean isCable()
@@ -121,7 +121,7 @@ public enum PartType
 				}
 			},
 
-	CABLE_DENSE_SMART( 60, "cable_dense_smart", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartDenseCableSmart.class )
+	CABLE_DENSE_SMART( 60, "cable_dense_smart", EnumSet.of( AEFeature.DENSE_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartDenseCableSmart.class )
 			{
 				@Override
 				public boolean isCable()
@@ -137,7 +137,7 @@ public enum PartType
 				}
 			},
 
-	CABLE_DENSE_COVERED( 500, "cable_dense_covered", EnumSet.of( AEFeature.CHANNELS, AEFeature.DENSE_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartDenseCableCovered.class )
+	CABLE_DENSE_COVERED( 500, "cable_dense_covered", EnumSet.of( AEFeature.DENSE_CABLES ), EnumSet.noneOf( IntegrationType.class ), PartDenseCableCovered.class )
 			{
 				@Override
 				public boolean isCable()
