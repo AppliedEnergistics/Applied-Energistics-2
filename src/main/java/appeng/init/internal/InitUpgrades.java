@@ -66,17 +66,13 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.CRAFTING_CARD, AEParts.EXPORT_BUS, 1, itemIoBusGroup);
 
         // Storage Cells
-        Upgrades.add(AEItems.FUZZY_CARD, AEItems.ITEM_CELL_1K, 1, storageCellGroup);
-        Upgrades.add(AEItems.INVERTER_CARD, AEItems.ITEM_CELL_1K, 1, storageCellGroup);
-
-        Upgrades.add(AEItems.FUZZY_CARD, AEItems.ITEM_CELL_4K, 1, storageCellGroup);
-        Upgrades.add(AEItems.INVERTER_CARD, AEItems.ITEM_CELL_4K, 1, storageCellGroup);
-
-        Upgrades.add(AEItems.FUZZY_CARD, AEItems.ITEM_CELL_16K, 1, storageCellGroup);
-        Upgrades.add(AEItems.INVERTER_CARD, AEItems.ITEM_CELL_16K, 1, storageCellGroup);
-
-        Upgrades.add(AEItems.FUZZY_CARD, AEItems.ITEM_CELL_64K, 1, storageCellGroup);
-        Upgrades.add(AEItems.INVERTER_CARD, AEItems.ITEM_CELL_64K, 1, storageCellGroup);
+        var itemCells = List.of(
+                AEItems.ITEM_CELL_1K, AEItems.ITEM_CELL_4K, AEItems.ITEM_CELL_16K, AEItems.ITEM_CELL_64K);
+        for (var itemCell : itemCells) {
+            Upgrades.add(AEItems.FUZZY_CARD, itemCell, 1, storageCellGroup);
+            Upgrades.add(AEItems.INVERTER_CARD, itemCell, 1, storageCellGroup);
+            Upgrades.add(AEItems.EQUAL_DISTRIBUTION_CARD, itemCell, 1, storageCellGroup);
+        }
 
         var portableCells = List.of(
                 AEItems.PORTABLE_ITEM_CELL1K, AEItems.PORTABLE_ITEM_CELL4K, AEItems.PORTABLE_ITEM_CELL16K,
