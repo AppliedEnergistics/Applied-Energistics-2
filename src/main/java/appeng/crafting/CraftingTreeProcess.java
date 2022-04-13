@@ -110,7 +110,7 @@ public class CraftingTreeProcess
 								}
 								else
 								{
-									continue;
+									remaining = 0;
 								}
 
 								if( remaining > 0 )
@@ -146,7 +146,7 @@ public class CraftingTreeProcess
 							}
 							else
 							{
-								continue;
+								remaining = 0;
 							}
 
 							if( remaining > 0 )
