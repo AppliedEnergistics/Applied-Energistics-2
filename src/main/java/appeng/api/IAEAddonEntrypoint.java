@@ -6,7 +6,7 @@ package appeng.api;
  * <p/>
  * Entrypoint IDs supported by AE2:
  * <ul>
- * <li><code>appliedenergistics2</code> will be called on both server and client.</li>
+ * <li><code>ae2</code> will be called on both server and client.</li>
  * <li><code>ae2:client</code> will be called on the client.</li>
  * <li><code>ae2:server</code> will be called on a dedicated server.</li>
  * </ul>
