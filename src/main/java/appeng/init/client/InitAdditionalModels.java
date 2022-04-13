@@ -36,8 +36,8 @@ public class InitAdditionalModels {
             consumer.accept(MolecularAssemblerRenderer.LIGHTS_MODEL);
         });
 
-        PartModelsInternal.freeze();
         ModelLoadingRegistry.INSTANCE.registerModelProvider((resourceManager, consumer) -> {
+            PartModelsInternal.freeze();
             PartModelsInternal.getModels().forEach(consumer);
         });
     }
