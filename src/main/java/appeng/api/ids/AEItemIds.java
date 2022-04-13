@@ -211,6 +211,7 @@ public final class AEItemIds {
     public static final ResourceLocation INVERTER_CARD = id("inverter_card");
     public static final ResourceLocation CRAFTING_CARD = id("crafting_card");
     public static final ResourceLocation ENERGY_CARD = id("energy_card");
+    public static final ResourceLocation EQUAL_DISTRIBUTION_CARD = id("equal_distribution_card");
     public static final ResourceLocation SPATIAL_2_CELL_COMPONENT = id("spatial_cell_component_2");
     public static final ResourceLocation SPATIAL_16_CELL_COMPONENT = id("spatial_cell_component_16");
     public static final ResourceLocation SPATIAL_128_CELL_COMPONENT = id("spatial_cell_component_128");

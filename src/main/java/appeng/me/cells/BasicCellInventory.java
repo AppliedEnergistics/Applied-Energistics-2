@@ -65,6 +65,7 @@ public class BasicCellInventory implements StorageCell {
     private Object2LongMap<AEKey> storedAmounts;
     private final ItemStack i;
     private final IBasicCellItem cellType;
+    private final long maxItemsPerType; // max items per type, basically infinite unless there is a distribution card.
     private boolean isPersisted = true;
 
     private BasicCellInventory(IBasicCellItem cellType, ItemStack o, ISaveProvider container) {
@@ -85,20 +86,15 @@ public class BasicCellInventory implements StorageCell {
         this.storedAmounts = null;
         this.keyType = cellType.getKeyType();
 
-        updateFilter();
-    }
-
-    /**
-     * Updates the partition list and mode based on installed upgrades and the configured filter.
-     */
-    private void updateFilter() {
+        // Updates the partition list and mode based on installed upgrades and the configured filter.
         var builder = IPartitionList.builder();
 
         var upgrades = getUpgradesInventory();
         var config = getConfigInventory();
 
         boolean hasInverter = upgrades.isInstalled(AEItems.INVERTER_CARD);
-        if (upgrades.isInstalled(AEItems.FUZZY_CARD)) {
+        boolean isFuzzy = upgrades.isInstalled(AEItems.FUZZY_CARD);
+        if (isFuzzy) {
             builder.fuzzyMode(getFuzzyMode());
         }
 
@@ -106,6 +102,22 @@ public class BasicCellInventory implements StorageCell {
 
         partitionListMode = (hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
         partitionList = builder.build();
+
+        // Check for equal distribution card.
+        if (upgrades.isInstalled(AEItems.EQUAL_DISTRIBUTION_CARD)) {
+            // Compute max possible amount of types based on whitelist size, and bound by type limit.
+            long maxTypes = Integer.MAX_VALUE;
+            if (!isFuzzy && partitionListMode == IncludeExclude.WHITELIST && !config.keySet().isEmpty()) {
+                maxTypes = config.keySet().size();
+            }
+            maxTypes = Math.min(maxTypes, this.maxItemTypes);
+
+            long totalStorage = (getTotalBytes() - getBytesPerType() * maxTypes) * keyType.getAmountPerByte();
+            // Technically not exactly evenly distributed, but close enough!
+            this.maxItemsPerType = Math.max(0, (totalStorage + maxTypes - 1) / maxTypes);
+        } else {
+            this.maxItemsPerType = Long.MAX_VALUE;
+        }
     }
 
     public IncludeExclude getPartitionListMode() {
@@ -405,6 +417,9 @@ public class BasicCellInventory implements StorageCell {
                 return 0;
             }
         }
+
+        // Apply max items per type
+        remainingItemCount = Math.max(0, Math.min(this.maxItemsPerType - currentAmount, remainingItemCount));
 
         if (amount > remainingItemCount) {
             amount = remainingItemCount;
