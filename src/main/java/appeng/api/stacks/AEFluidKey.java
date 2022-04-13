@@ -130,6 +130,11 @@ public final class AEFluidKey extends AEKey {
     }
 
     @Override
+    public String getId() {
+        return Platform.getDescriptionId(fluid);
+    }
+
+    @Override
     public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         // Fluids are voided
     }

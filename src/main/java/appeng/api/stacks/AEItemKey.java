@@ -171,6 +171,11 @@ public final class AEItemKey extends AEKey {
         return Registry.ITEM.getKey(item).getNamespace();
     }
 
+    @Override
+    public String getId() {
+        return toStack().getDescriptionId();
+    }
+
     public ItemVariant toVariant() {
         return ItemVariant.of(item, tag);
     }

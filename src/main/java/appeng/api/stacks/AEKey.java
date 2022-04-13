@@ -235,6 +235,8 @@ public abstract class AEKey {
 
     public abstract String getModId();
 
+    public abstract String getId();
+
     public abstract void writeToPacket(FriendlyByteBuf data);
 
     /**

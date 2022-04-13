@@ -138,6 +138,9 @@ public class Repo implements IClientRepo {
         if (innerSearch.startsWith("@")) {
             searchMode = SearchMode.MOD;
             innerSearch = innerSearch.substring(1);
+        } else if (innerSearch.startsWith("*")) {
+            searchMode = SearchMode.ID;
+            innerSearch = innerSearch.substring(1);
         }
 
         Pattern m;
@@ -238,6 +241,8 @@ public class Repo implements IClientRepo {
     protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, AEKey what) {
         if (searchMode == SearchMode.MOD) {
             return searchPattern.matcher(what.getModId()).find();
+        } else if (searchMode == SearchMode.ID) {
+            return searchPattern.matcher(what.getId()).find();
         }
 
         String displayName = what.getDisplayName().getString();
@@ -272,6 +277,7 @@ public class Repo implements IClientRepo {
     }
 
     protected enum SearchMode {
+        ID,
         MOD,
         NAME,
         NAME_OR_TOOLTIP
