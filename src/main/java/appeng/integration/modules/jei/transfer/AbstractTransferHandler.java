@@ -57,7 +57,7 @@ public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements T
         // Displays can be based on completely custom objects, or on actual Vanilla recipes
         var origin = DisplayRegistry.getInstance().getDisplayOrigin(display);
 
-        return origin instanceof Recipe<?> recipe ? recipe : null;
+        return origin instanceof Recipe<?>recipe ? recipe : null;
     }
 
     protected final boolean isCraftingRecipe(Recipe<?> recipe, Display display) {

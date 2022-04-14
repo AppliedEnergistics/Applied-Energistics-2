@@ -5,14 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.InputIngredient;
-import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay;
-import net.minecraft.network.chat.TranslatableComponent;
-
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -21,8 +16,10 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
@@ -83,7 +80,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
                 Ingredient.EMPTY);
 
-        for (var input : ((DefaultCraftingDisplay<?>) display).getInputIngredients(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT)) {
+        for (var input : ((DefaultCraftingDisplay<?>) display).getInputIngredients(CRAFTING_GRID_WIDTH,
+                CRAFTING_GRID_HEIGHT)) {
             var ingredient = Ingredient.of(input.get().stream()
                     .filter(es -> es.getType() == VanillaEntryTypes.ITEM)
                     .map(es -> (ItemStack) es.castValue()));
