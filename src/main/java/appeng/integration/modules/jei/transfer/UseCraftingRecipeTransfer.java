@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.entry.InputIngredient;
+import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.NonNullList;
@@ -17,7 +21,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
-import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerErrorRenderer;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
@@ -47,8 +50,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
 
     @Override
     protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
-
         boolean craftingRecipe = isCraftingRecipe(recipe, display);
+
         if (!craftingRecipe) {
             return Result.createNotApplicable();
         }
@@ -65,9 +68,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         if (!doTransfer) {
             var missingSlots = menu.findMissingIngredients(getGuiSlotToIngredientMap(recipe));
             if (!missingSlots.isEmpty()) {
-                return Result.createSuccessful()
-                        .color(0x80FFA500)
-                        .errorRenderer(new MissingSlots(missingSlots));
+                return Result.createFailed(new TranslatableComponent("error.rei.not.enough.materials"))
+                        .renderer(getMissingRenderer(missingSlots));
             }
         } else {
             performTransfer(menu, recipe);
@@ -81,11 +83,11 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         var ingredients = NonNullList.withSize(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT,
                 Ingredient.EMPTY);
 
-        for (int i = 0; i < Math.min(display.getInputEntries().size(), ingredients.size()); i++) {
-            var ingredient = Ingredient.of(display.getInputEntries().get(i).stream()
+        for (var input : ((DefaultCraftingDisplay<?>) display).getInputIngredients(CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT)) {
+            var ingredient = Ingredient.of(input.get().stream()
                     .filter(es -> es.getType() == VanillaEntryTypes.ITEM)
                     .map(es -> (ItemStack) es.castValue()));
-            ingredients.set(i, ingredient);
+            ingredients.set(input.getIndex(), ingredient);
         }
 
         return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT,
@@ -157,17 +159,13 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
     /**
      * Draw missing slots.
      */
-    @Override
-    public @Nullable TransferHandlerErrorRenderer provideErrorRenderer(Context context, Object data) {
-        if (!(data instanceof MissingSlots missingSlots)) {
-            return null;
-        }
-
+    @SuppressWarnings("UnstableApiUsage")
+    public TransferHandlerRenderer getMissingRenderer(Set<Integer> indices) {
         return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
             int i = 0;
             for (Widget widget : widgets) {
                 if (widget instanceof Slot && ((Slot) widget).getNoticeMark() == Slot.INPUT) {
-                    if (missingSlots.indices().contains(i++)) {
+                    if (indices.contains(i++)) {
                         matrices.pushPose();
                         matrices.translate(0, 0, 400);
                         Rectangle innerBounds = ((Slot) widget).getInnerBounds();
@@ -178,8 +176,5 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                 }
             }
         };
-    }
-
-    private record MissingSlots(Set<Integer> indices) {
     }
 }
