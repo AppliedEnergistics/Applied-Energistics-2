@@ -66,6 +66,7 @@ public class BasicCellInventory implements StorageCell {
     private final ItemStack i;
     private final IBasicCellItem cellType;
     private final long maxItemsPerType; // max items per type, basically infinite unless there is a distribution card.
+    private final boolean hasVoidUpgrade;
     private boolean isPersisted = true;
 
     private BasicCellInventory(IBasicCellItem cellType, ItemStack o, ISaveProvider container) {
@@ -118,6 +119,8 @@ public class BasicCellInventory implements StorageCell {
         } else {
             this.maxItemsPerType = Long.MAX_VALUE;
         }
+
+        this.hasVoidUpgrade = upgrades.isInstalled(AEItems.VOID_CARD);
     }
 
     public IncludeExclude getPartitionListMode() {
@@ -390,6 +393,13 @@ public class BasicCellInventory implements StorageCell {
             return 0;
         }
 
+        // Run regular insert logic and then apply void upgrade to the returned value.
+        long inserted = innerInsert(what, amount, mode, source);
+        return this.hasVoidUpgrade ? amount : inserted;
+    }
+
+    // Inner insert for items that pass the filter.
+    private long innerInsert(AEKey what, long amount, Actionable mode, IActionSource source) {
         // This is slightly hacky as it expects a read-only access, but fine for now.
         // TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and
         // ensure CellInventory does not write
