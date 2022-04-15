@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
+import appeng.util.item.OreHelper;
+import appeng.util.item.OreReference;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -184,11 +188,17 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		if( myItem.isEmpty() )
 		{
 			ItemStack held = player.inventory.getCurrentItem();
-
-			if( AEApi.instance().definitions().materials().certusQuartzCrystal().isSameAs( held ) || Platform.isChargeable( held ) )
+			if( !held.isEmpty() )
 			{
-				held = player.inventory.decrStackSize( player.inventory.currentItem, 1 );
-				this.inv.setStackInSlot( 0, held );
+				if( AEConfig.instance().isFeatureEnabled( AEFeature.CERTUS ) )
+				{
+					final IMaterials materials = AEApi.instance().definitions().materials();
+					if( AEItemStack.fromItemStack( held ).sameOre( AEItemStack.fromItemStack( materials.certusQuartzCrystal().maybeStack( 1 ).orElse( ItemStack.EMPTY ) ) ) || Platform.isChargeable( held ) )
+					{
+						held = player.inventory.decrStackSize( player.inventory.currentItem, 1 );
+						this.inv.setStackInSlot( 0, held );
+					}
+				}
 			}
 		}
 		else
@@ -254,7 +264,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 					}
 				}
 			}
-			else if( this.getInternalCurrentPower() > POWER_THRESHOLD && materials.certusQuartzCrystal().isSameAs( myItem ) )
+			else if( this.getInternalCurrentPower() > POWER_THRESHOLD && ( materials.certusQuartzCrystal().isSameAs( myItem ) || AEItemStack.fromItemStack( myItem ).sameOre( AEItemStack.fromItemStack( materials.certusQuartzCrystal().maybeStack( 1 ).orElse( ItemStack.EMPTY ) ) ) ) )
 			{
 				if( Platform.getRandomFloat() > 0.8f ) // simulate wait
 				{
