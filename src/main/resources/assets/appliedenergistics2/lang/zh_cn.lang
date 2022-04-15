@@ -102,6 +102,7 @@ gui.appliedenergistics2.FluidTunnel=流体
 gui.appliedenergistics2.RedstoneTunnel=红石
 gui.appliedenergistics2.EUTunnel=EU
 gui.appliedenergistics2.FETunnel=FE
+gui.appliedenergistics2.GTEUTunnel=GTEU
 gui.appliedenergistics2.LightTunnel=光
 gui.appliedenergistics2.OCTunnel=开放式电脑
 gui.appliedenergistics2.PressureTunnel=气压
@@ -133,6 +134,7 @@ gui.appliedenergistics2.SecurityCardEditor=身份卡编辑
 gui.appliedenergistics2.Encoded=已编码
 gui.appliedenergistics2.Priority=优先级
 gui.appliedenergistics2.StorageBus=存储总线
+gui.appliedenergistics2.OreDictStorageBus=矿典存储总线
 gui.appliedenergistics2.StorageBusFluids=流体储存总线
 gui.appliedenergistics2.EnergyDrain=被动流失
 gui.appliedenergistics2.Installed=已安装
@@ -349,11 +351,32 @@ gui.tooltips.appliedenergistics2.FilterModeClear=在每次打开时清空.
 gui.tooltips.appliedenergistics2.ItemsStored=存储物品: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=可请求: %s
 gui.tooltips.appliedenergistics2.P2PFrequency=频率: %s
+gui.tooltips.appliedenergistics2.MultiplyByTwo=物品数量×2
+gui.tooltips.appliedenergistics2.MultiplyByTwoDesc=将尝试将格内物品数量×2
+gui.tooltips.appliedenergistics2.MultiplyByThree=物品数量×3
+gui.tooltips.appliedenergistics2.MultiplyByThreeDesc=将尝试将格内物品数量×3
+gui.tooltips.appliedenergistics2.IncreaseByOne=物品数量+1
+gui.tooltips.appliedenergistics2.IncreaseByOneDesc=将尝试将格内物品数量+1 注：将不会维持比例
+gui.tooltips.appliedenergistics2.DivideByTwo=物品数量÷2
+gui.tooltips.appliedenergistics2.DivideByTwoDesc=将尝试将格内物品数量÷2
+gui.tooltips.appliedenergistics2.DivideByThree=物品数量÷3
+gui.tooltips.appliedenergistics2.DivideByThreeDesc=将尝试将格内物品数量÷3
+gui.tooltips.appliedenergistics2.DecreaseByOne=物品数量-1
+gui.tooltips.appliedenergistics2.DecreaseByOneDesc=将尝试将格内物品数量-1 注：将不会维持比例
+gui.tooltips.appliedenergistics2.MaxCount=物品数量最大
+gui.tooltips.appliedenergistics2.MaxCountDesc=将把格内物品数量最大化并维持比例
+gui.tooltips.appliedenergistics2.FreeMolecularSlotShortcut=显示有样板位的合成接口
+gui.tooltips.appliedenergistics2.FreeMolecularSlotShortcutDesc=快捷切换有样板位的分子装配室接口
+gui.tooltips.appliedenergistics2.ToggleShowFullInterfaces=显示满样板的接口
+gui.tooltips.appliedenergistics2.ToggleShowFullInterfacesOnDesc=显示所有接口
+gui.tooltips.appliedenergistics2.ToggleShowFullInterfacesOffDesc=仅显示有样板位的接口
+gui.tooltips.appliedenergistics2.HighlightInterface=高亮接口
 
 // Units (单位)
 gui.appliedenergistics2.units.appliedenergstics=AE
 gui.appliedenergistics2.units.ic2=EU
 gui.appliedenergistics2.units.rf=RF
+gui.appliedenergistics2.units.gteu=GTEU
 
 // Colors (颜色)
 gui.appliedenergistics2.White=白色
@@ -387,6 +410,8 @@ waila.appliedenergistics2.Channels=%1$d / %2$d 频道
 waila.appliedenergistics2.P2PUnlinked=未连接
 waila.appliedenergistics2.P2PInputOneOutput=已连接(输入端)
 waila.appliedenergistics2.P2PInputManyOutputs=已连接(输入端)- %d 输出
+waila.appliedenergistics2.p2p_output_one_input=已连接(输出端)
+waila.appliedenergistics2.p2p_output_many_inputs=已连接(输出端)- %d 输入
 waila.appliedenergistics2.P2POutput=已连接(输出端)
 
 // TheOneProbe
@@ -402,6 +427,8 @@ theoneprobe.appliedenergistics2.channels=%1$d / %2$d 频道
 theoneprobe.appliedenergistics2.p2p_unlinked=未连接
 theoneprobe.appliedenergistics2.p2p_input_one_output=已连接(输入端)
 theoneprobe.appliedenergistics2.p2p_input_many_outputs=已连接(输入端)- %d 输出
+theoneprobe.appliedenergistics2.p2p_output_one_input=已连接(输出端)
+theoneprobe.appliedenergistics2.p2p_output_many_inputs=已连接(输出端)- %d 输入
 theoneprobe.appliedenergistics2.p2p_output=已连接(输出端)
 theoneprobe.appliedenergistics2.p2p_frequency=频率: %1$s
 theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d
@@ -430,6 +457,7 @@ item.appliedenergistics2.material.basic_card.name=基础卡
 item.appliedenergistics2.material.blank_pattern.name=空白样板
 item.appliedenergistics2.material.calculation_processor.name=运算处理器
 item.appliedenergistics2.material.card_capacity.name=容量卡
+item.appliedenergistics2.material.card_pattern_expansion.name=样板扩展卡
 item.appliedenergistics2.material.card_fuzzy.name=模糊卡
 item.appliedenergistics2.material.card_inverter.name=反相卡
 item.appliedenergistics2.material.card_redstone.name=红石卡
@@ -510,8 +538,10 @@ item.appliedenergistics2.multi_part.level_emitter.name=ME标准发信器
 item.appliedenergistics2.multi_part.fluid_level_emitter.name=ME流体标准发信器
 item.appliedenergistics2.multi_part.p2p_tunnel.name=P2P通道
 item.appliedenergistics2.multi_part.pattern_terminal.name=ME样板终端
+item.appliedenergistics2.multi_part.expanded_processing_pattern_terminal.name=ME增广处理样板终端
 item.appliedenergistics2.multi_part.quartz_fiber.name=石英纤维
 item.appliedenergistics2.multi_part.storage_bus.name=ME存储总线
+item.appliedenergistics2.multi_part.oredict_storage_bus.name=ME矿典存储总线
 item.appliedenergistics2.multi_part.fluid_storage_bus.name=ME流体储存总线
 item.appliedenergistics2.multi_part.terminal.name=ME终端
 item.appliedenergistics2.multi_part.inverted_toggle_bus.name=ME反相触发总线
@@ -618,7 +648,7 @@ achievement.ae2.QNB=量子隧道
 achievement.ae2.QNB.desc=制作一个链接室
 
 // Stats (统计)
-stat.ae2.ItemsInserted=物品已加入ME存储
+stat.ae2.ItemsInserted=物品已存入ME存储
 stat.ae2.ItemsExtracted=物品已取出ME存储
 stat.ae2.TurnedCranks=转动曲柄
 
