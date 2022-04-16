@@ -38,6 +38,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
@@ -160,6 +161,12 @@ public class JEIPlugin implements IModPlugin {
 
         ItemStack inscriber = AEBlocks.INSCRIBER.stack();
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
+
+        ItemStack craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
+        registration.addRecipeCatalyst(craftingTerminal, RecipeTypes.CRAFTING);
+
+        ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
+        registration.addRecipeCatalyst(wirelessCraftingTerminal, RecipeTypes.CRAFTING);
     }
 
     private void registerDescriptions(IRecipeRegistration registry) {
