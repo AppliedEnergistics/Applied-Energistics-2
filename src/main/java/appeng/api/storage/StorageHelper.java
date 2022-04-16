@@ -122,7 +122,7 @@ public final class StorageHelper {
      * @param inv    Inventory to insert into.
      * @param input  Items to insert.
      * @param src    Action source.
-     * @return items not inserted or {@code null} if everything was inserted.
+     * @return the number of items inserted.
      */
     public static long poweredInsert(IEnergySource energy, MEStorage inv,
             AEKey input, long amount, IActionSource src) {
@@ -137,7 +137,7 @@ public final class StorageHelper {
      * @param input  Items to insert.
      * @param src    Action source.
      * @param mode   Simulate or modulate
-     * @return items not inserted or {@code null} if everything was inserted.
+     * @return the number of items inserted.
      */
     public static long poweredInsert(IEnergySource energy, MEStorage inv, AEKey input, long amount,
             IActionSource src, Actionable mode) {
