@@ -58,6 +58,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
+import appeng.client.Hotkeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -126,6 +127,9 @@ public class AppEngClient extends AppEngBase {
 
         INSTANCE = this;
         notifyAddons("client");
+        Hotkeys.checkHotkeys();
+        ClientTickEvents.END_CLIENT_TICK.register(c -> Hotkeys.checkHotkeys());
+
         registerTests();
 
         // Only activate the site exporter when we're not running a release version, since it'll
