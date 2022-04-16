@@ -101,6 +101,31 @@ public class BasicInventoryTest {
         assertThat(cell.getStatus()).isEqualTo(CellState.FULL);
     }
 
+    @Test
+    void testVoidUpgrade() {
+        var item = AEItems.ITEM_CELL_1K.asItem();
+        var stack = new ItemStack(item);
+        item.getUpgrades(stack).addItems(new ItemStack(AEItems.VOID_CARD));
+
+        // Setup whitelist
+        var allowed = AEItemKey.of(Items.DIAMOND);
+        var allowed2 = AEItemKey.of(Items.DIAMOND_BLOCK);
+        var rejected = AEItemKey.of(Items.GOLD_INGOT);
+        item.getConfigInventory(stack).addFilter(allowed).addFilter(allowed2);
+
+        var cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+
+        // Ensure that the first insert voids.
+        assertThat(cell.insert(allowed, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
+        // Ensure that subsequent inserts void too even if the cell is full.
+        assertThat(cell.insert(allowed, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
+        assertThat(cell.insert(allowed2, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isEqualTo(Long.MAX_VALUE);
+
+        // Ensure that items that don't match the filter don't get voided.
+        assertThat(cell.insert(rejected, Long.MAX_VALUE, Actionable.MODULATE, SRC)).isZero();
+    }
+
     private static AEItemKey[] generateDifferentKeys(int count) {
         var out = new AEItemKey[count];
         for (int i = 0; i < count; ++i) {

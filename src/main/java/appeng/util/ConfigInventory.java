@@ -136,16 +136,19 @@ public class ConfigInventory extends GenericStackInv {
         return new ConfigMenuInventory(this);
     }
 
-    public void addFilter(ItemLike item) {
+    public ConfigInventory addFilter(ItemLike item) {
         addFilter(AEItemKey.of(item));
+        return this;
     }
 
-    public void addFilter(Fluid fluid) {
+    public ConfigInventory addFilter(Fluid fluid) {
         addFilter(AEFluidKey.of(fluid));
+        return this;
     }
 
-    public void addFilter(AEKey what) {
+    public ConfigInventory addFilter(AEKey what) {
         Preconditions.checkState(getMode() == Mode.CONFIG_TYPES);
         insert(what, 1, Actionable.MODULATE, new BaseActionSource());
+        return this;
     }
 }

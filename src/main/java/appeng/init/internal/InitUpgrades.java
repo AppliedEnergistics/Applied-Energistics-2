@@ -72,6 +72,7 @@ public final class InitUpgrades {
             Upgrades.add(AEItems.FUZZY_CARD, itemCell, 1, storageCellGroup);
             Upgrades.add(AEItems.INVERTER_CARD, itemCell, 1, storageCellGroup);
             Upgrades.add(AEItems.EQUAL_DISTRIBUTION_CARD, itemCell, 1, storageCellGroup);
+            Upgrades.add(AEItems.VOID_CARD, itemCell, 1, storageCellGroup);
         }
 
         var portableCells = List.of(

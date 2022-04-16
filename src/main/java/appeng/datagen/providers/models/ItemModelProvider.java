@@ -45,6 +45,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
                 "item/crystal_seed_fluix3");
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
+        flatSingleLayer(AEItems.VOID_CARD, "item/card_void");
         flatSingleLayer(AEItems.ANNIHILATION_CORE, "item/annihilation_core");
         flatSingleLayer(AEItems.BASIC_CARD, "item/basic_card");
         flatSingleLayer(AEItems.BLANK_PATTERN, "item/blank_pattern");

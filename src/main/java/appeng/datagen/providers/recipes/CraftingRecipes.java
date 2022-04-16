@@ -57,6 +57,11 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .requires(AEItems.BASIC_CARD)
                 .unlockedBy("has_basic_card", has(AEItems.BASIC_CARD))
                 .save(consumer, AppEng.makeId("materials/cardredstone"));
+        ShapelessRecipeBuilder.shapeless(AEItems.VOID_CARD)
+                .requires(AEItems.CALCULATION_PROCESSOR)
+                .requires(AEItems.BASIC_CARD)
+                .unlockedBy("has_basic_card", has(AEItems.BASIC_CARD))
+                .save(consumer, AppEng.makeId("materials/cardvoid"));
 
         // ====================================================
         // Advanced Cards
