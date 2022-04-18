@@ -268,14 +268,14 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-
-        var currentActive = getMainNode().isActive();
-        if (this.wasActive != currentActive) {
-            this.wasActive = currentActive;
-            IStorageProvider.requestUpdate(getMainNode());
-            updateVisualStateIfNeeded();
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            var currentActive = getMainNode().isActive();
+            if (this.wasActive != currentActive) {
+                this.wasActive = currentActive;
+                IStorageProvider.requestUpdate(getMainNode());
+                updateVisualStateIfNeeded();
+            }
         }
-
     }
 
     @Override

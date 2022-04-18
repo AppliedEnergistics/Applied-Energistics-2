@@ -136,7 +136,9 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        stateChanged();
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            stateChanged();
+        }
     }
 
     @Override

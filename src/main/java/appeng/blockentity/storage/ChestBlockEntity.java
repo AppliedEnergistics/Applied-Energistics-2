@@ -367,11 +367,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        var currentActive = this.getMainNode().isActive();
-        if (this.wasActive != currentActive) {
-            this.wasActive = currentActive;
-            IStorageProvider.requestUpdate(getMainNode());
-            recalculateDisplay();
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            var currentActive = this.getMainNode().isActive();
+            if (this.wasActive != currentActive) {
+                this.wasActive = currentActive;
+                IStorageProvider.requestUpdate(getMainNode());
+                recalculateDisplay();
+            }
         }
     }
 

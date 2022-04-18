@@ -225,7 +225,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         // Initialize once the network is ready and there are no entries marked as loaded.
-        if (!this.initialized && this.getMainNode().isActive() && this.getMainNode().isPowered()) {
+        if (!this.initialized && this.getMainNode().isActive()) {
             this.forceAll();
             this.initialized = true;
         } else {

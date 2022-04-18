@@ -211,7 +211,9 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        this.updateSubType(false);
+        if (getMainNode().hasGridBooted()) {
+            this.updateSubType(false);
+        }
     }
 
     public boolean isStatus() {

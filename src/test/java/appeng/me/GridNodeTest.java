@@ -14,15 +14,11 @@ import appeng.me.service.PathingService;
 
 class GridNodeTest extends AbstractGridNodeTest {
     /**
-     * Tests that:
-     * <ul>
-     * <li>{@link appeng.integration.modules.waila.GridNodeState#NETWORK_BOOTING} is only sent after booting is
-     * complete, and that the node is active after that event.</li>
-     * <li>No event is sent when booting starts.</li>
-     * </ul>
+     * Regression test for the {@link appeng.integration.modules.waila.GridNodeState#NETWORK_BOOTING} notification. It
+     * was previously sent before the state actually changed, causing various problems.
      */
     @Test
-    public void testRebootNotifications() {
+    public void rebootNotificationIsPostedAfterGridBeginsBooting() {
         var node = makePoweredNode();
         assertTrue(node.hasGridBooted());
         reset(listener);
@@ -33,14 +29,8 @@ class GridNodeTest extends AbstractGridNodeTest {
         }).when(listener).onStateChanged(owner, node, IGridNodeListener.State.GRID_BOOT);
         var pathingService = (PathingService) node.getGrid().getPathingService();
         pathingService.repath();
-        // First tick: should start rebooting, but not send any notification.
         runTick(node.getGrid());
-        assertThat(calls).isEmpty();
-        // After a few ticks: reboot should be complete, and node should be active in the event listener
-        for (int i = 0; i < 10; ++i) {
-            runTick(node.getGrid());
-        }
-        assertThat(calls).containsOnly(true);
+        assertThat(calls).containsOnly(false);
     }
 
 }

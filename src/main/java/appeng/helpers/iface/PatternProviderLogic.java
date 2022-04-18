@@ -360,9 +360,12 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public void onMainNodeStateChanged() {
         ICraftingProvider.requestUpdate(this.mainNode);
-        this.mainNode.ifPresent((grid, node) -> {
-            grid.getTickManager().alertDevice(node);
-        });
+
+        if (this.mainNode.hasGridBooted()) {
+            this.mainNode.ifPresent((grid, node) -> {
+                grid.getTickManager().alertDevice(node);
+            });
+        }
     }
 
     public void addDrops(List<ItemStack> drops) {

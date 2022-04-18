@@ -92,7 +92,9 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
-        this.logic.notifyNeighbors();
+        if (getMainNode().hasGridBooted()) {
+            this.logic.notifyNeighbors();
+        }
     }
 
     @Override

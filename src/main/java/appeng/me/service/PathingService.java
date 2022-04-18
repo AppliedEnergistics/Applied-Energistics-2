@@ -99,9 +99,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
             if (!this.booting) {
                 this.booting = true;
-                // GridNode#isActive() will now return false, but we don't want all nodes to turn off visually now.
-                // That's why we do NOT notify nodes. We still send the grid event in case something needs it.
-                this.postBootingStatusChange(false);
+                this.postBootingStatusChange();
             }
 
             this.channelsInUse = 0;
@@ -156,7 +154,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
                 this.booting = false;
                 this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
-                this.postBootingStatusChange(true);
+                this.postBootingStatusChange();
                 // Notify of channel changes after we finish booting, this ensures that any activeness check will
                 // properly return true.
                 this.grid.getPivot().beginVisit(new ChannelFinalizer());
@@ -166,11 +164,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
         }
     }
 
-    private void postBootingStatusChange(boolean notifyNodes) {
+    private void postBootingStatusChange() {
         this.grid.postEvent(new GridBootingStatusChange(this.booting));
-        if (notifyNodes) {
-            this.grid.notifyAllNodes(IGridNodeListener.State.GRID_BOOT);
-        }
+        this.grid.notifyAllNodes(IGridNodeListener.State.GRID_BOOT);
     }
 
     @Override

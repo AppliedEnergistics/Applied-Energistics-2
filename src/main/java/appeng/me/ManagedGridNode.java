@@ -219,6 +219,14 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
+    public boolean hasGridBooted() {
+        if (this.node == null) {
+            return false;
+        }
+        return this.node.hasGridBooted();
+    }
+
+    @Override
     public void setOwningPlayerId(int ownerPlayerId) {
         if (this.initData != null) {
             getInitData().owner = ownerPlayerId;

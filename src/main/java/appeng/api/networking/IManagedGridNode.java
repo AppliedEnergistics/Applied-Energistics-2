@@ -38,6 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
+import appeng.api.networking.pathing.IPathingService;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 
@@ -167,6 +168,12 @@ public interface IManagedGridNode {
     boolean isActive();
 
     boolean isPowered();
+
+    /**
+     * @return True if the grid is connected to a network, and that network has fully booted.
+     * @see IPathingService#isNetworkBooting()
+     */
+    boolean hasGridBooted();
 
     /**
      * tell the node who was responsible for placing it, failure to do this may result in in-compatibility with the

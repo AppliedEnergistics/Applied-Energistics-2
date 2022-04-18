@@ -95,7 +95,9 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
-        this.setNetworkReady();
+        if (getMainNode().hasGridBooted()) {
+            this.setNetworkReady();
+        }
     }
 
     @Override
