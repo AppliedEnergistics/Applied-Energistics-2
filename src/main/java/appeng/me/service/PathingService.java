@@ -154,10 +154,10 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
                 this.booting = false;
                 this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
-                this.postBootingStatusChange();
-                // Notify of channel changes after we finish booting, this ensures that any activeness check will
+                // Notify of channel changes AFTER we set booting to false, this ensures that any activeness check will
                 // properly return true.
                 this.grid.getPivot().beginVisit(new ChannelFinalizer());
+                this.postBootingStatusChange();
             } else if (ticksUntilReady == -2000) {
                 AELog.warn("Booting has still not completed after 2000 ticks for %s", grid);
             }
