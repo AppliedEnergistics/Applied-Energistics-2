@@ -534,7 +534,7 @@ public class Platform {
             final int playerID = n.getOwningPlayerId();
             return grid.getSecurityService().hasPermission(playerID, SecurityPermissions.BUILD);
         } else {
-            return false;
+            return grid.getSecurityService().hasPermission(-1, SecurityPermissions.BUILD);
         }
     }
 

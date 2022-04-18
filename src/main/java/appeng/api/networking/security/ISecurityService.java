@@ -23,8 +23,6 @@
 
 package appeng.api.networking.security;
 
-import javax.annotation.Nonnegative;
-
 import net.minecraft.world.entity.player.Player;
 
 import appeng.api.config.SecurityPermissions;
@@ -59,7 +57,7 @@ public interface ISecurityService extends IGridService {
      * @param perm     The permission to check.
      * @return True if the player has permission.
      */
-    boolean hasPermission(@Nonnegative int playerId, SecurityPermissions perm);
+    boolean hasPermission(int playerId, SecurityPermissions perm);
 
     /**
      * @return PlayerID of the admin, or owner, this is the person who placed the security block.
