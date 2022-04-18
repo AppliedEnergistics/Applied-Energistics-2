@@ -538,7 +538,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        if (getMainNode().hasGridBooted()) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
             boolean newState = false;
 
             var grid = getMainNode().getGrid();
