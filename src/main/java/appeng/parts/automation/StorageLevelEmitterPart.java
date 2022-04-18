@@ -99,6 +99,8 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
                 lastReportedValue = amount;
                 updateState();
             } else { // either fuzzy upgrade or null filter
+                // When using a fuzzy upgrade or no filter at all, the level emitter will actively scan the grid
+                // We need to ensure we only do this once per tick in case any stack has changed.
                 long currentTick = TickHandler.instance().getCurrentTick();
                 if (currentTick != lastUpdateTick) {
                     lastUpdateTick = currentTick;
