@@ -282,6 +282,10 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     }
 
     private void updatePowerConsumption() {
+        if (isRemoved()) {
+            // Don't try to update the power usage if the node was already removed, or it will crash.
+            return;
+        }
         int energy = 80 + this.chunks.size() * (this.chunks.size() + 1) / 2;
         this.getMainNode().setIdlePowerUsage(energy);
     }
