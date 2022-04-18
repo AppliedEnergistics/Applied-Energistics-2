@@ -18,6 +18,7 @@
 
 package appeng.me.helpers;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +31,7 @@ public class MachineSource implements IActionSource {
     private final IActionHost via;
 
     public MachineSource(IActionHost v) {
-        this.via = v;
+        this.via = Objects.requireNonNull(v);
     }
 
     @Override

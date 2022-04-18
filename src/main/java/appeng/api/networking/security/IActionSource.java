@@ -25,7 +25,13 @@ package appeng.api.networking.security;
 
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.entity.player.Player;
+
+import appeng.me.helpers.BaseActionSource;
+import appeng.me.helpers.MachineSource;
+import appeng.me.helpers.PlayerSource;
 
 /**
  * The source of any action.
@@ -36,6 +42,33 @@ import net.minecraft.world.entity.player.Player;
  *
  */
 public interface IActionSource {
+    /**
+     * Create a new empty source.
+     */
+    static IActionSource empty() {
+        return new BaseActionSource();
+    }
+
+    /**
+     * Create a source for a player.
+     */
+    static IActionSource ofPlayer(Player player) {
+        return ofPlayer(player, null);
+    }
+
+    /**
+     * Create a source for a player and optionally a machine too (the machine the request is happening through).
+     */
+    static IActionSource ofPlayer(Player player, @Nullable IActionHost maybeHost) {
+        return new PlayerSource(player, maybeHost);
+    }
+
+    /**
+     * Create a source for a machine.
+     */
+    static IActionSource ofMachine(IActionHost machine) {
+        return new MachineSource(machine);
+    }
 
     /**
      * If present, AE will consider the player being the source for the action.
