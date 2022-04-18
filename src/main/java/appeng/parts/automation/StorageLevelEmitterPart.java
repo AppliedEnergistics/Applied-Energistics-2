@@ -46,6 +46,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.IConfigInvHost;
+import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
@@ -83,6 +84,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     private final ConfigInventory config = ConfigInventory.configTypes(1, this::configureWatchers);
     private IStackWatcher storageWatcher;
     private IStackWatcher craftingWatcher;
+    private long lastUpdateTick = -1;
 
     private final IStorageWatcherNode stackWatcherNode = new IStorageWatcherNode() {
         @Override
@@ -97,7 +99,13 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
                 lastReportedValue = amount;
                 updateState();
             } else { // either fuzzy upgrade or null filter
-                updateReportingValue(getGridNode().getGrid());
+                // When using a fuzzy upgrade or no filter at all, the level emitter will actively scan the grid
+                // We need to ensure we only do this once per tick in case any stack has changed.
+                long currentTick = TickHandler.instance().getCurrentTick();
+                if (currentTick != lastUpdateTick) {
+                    lastUpdateTick = currentTick;
+                    updateReportingValue(getGridNode().getGrid());
+                }
             }
         }
     };
