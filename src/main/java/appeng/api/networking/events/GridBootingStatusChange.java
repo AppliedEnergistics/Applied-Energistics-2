@@ -32,5 +32,16 @@ import appeng.api.networking.IGridNode;
  * Note: Most machines just need to check {@link IGridNode}.isActive()
  */
 public class GridBootingStatusChange extends GridEvent {
+    private final boolean booting;
 
+    public GridBootingStatusChange(boolean booting) {
+        this.booting = booting;
+    }
+
+    /**
+     * True if the grid is now booting, false if it just finished booting.
+     */
+    public boolean isBooting() {
+        return this.booting;
+    }
 }

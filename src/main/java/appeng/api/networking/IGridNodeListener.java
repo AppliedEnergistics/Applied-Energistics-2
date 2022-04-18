@@ -63,6 +63,10 @@ public interface IGridNodeListener<T> {
     /**
      * Called when one of the node's state properties has changed. Any of those changes might have potentially changed
      * the {@link IGridNode#isActive() active-state} as well.
+     * <p>
+     * Note that no update will be sent when the grid starts booting in spite of the active state changing. This is to
+     * prevent parts turning off and back on for a split second. So make sure to always check the GridNode directly for
+     * activeness before perform an action that requires it! An update will always be sent once booting is complete.
      *
      * @param state Indicates the node property that might have changed.
      */
@@ -82,7 +86,7 @@ public interface IGridNodeListener<T> {
          */
         CHANNEL,
         /**
-         * The grid that the node's attached to has either started or finished booting up.
+         * The grid that the node's attached to has just finished booting up.
          */
         GRID_BOOT
     }

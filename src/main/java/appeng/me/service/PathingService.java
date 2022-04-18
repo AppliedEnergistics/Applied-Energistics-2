@@ -45,7 +45,7 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.Grid;
 import appeng.me.pathfinding.AdHocChannelUpdater;
-import appeng.me.pathfinding.ControllerChannelUpdater;
+import appeng.me.pathfinding.ChannelFinalizer;
 import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.PathingCalculation;
 
@@ -99,7 +99,9 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
             if (!this.booting) {
                 this.booting = true;
-                this.postBootingStatusChange();
+                // GridNode#isActive() will now return false, but we don't want all nodes to turn off visually now.
+                // That's why we do NOT notify nodes. We still send the grid event in case something needs it.
+                this.postBootingStatusChange(false);
             }
 
             this.channelsInUse = 0;
@@ -149,37 +151,26 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
             // Booting completes when both pathfinding completes, and the minimum boot time has elapsed
             if (ongoingCalculation == null && ticksUntilReady <= 0) {
-                if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
-                    var controllerIterator = this.controllers.iterator();
-                    if (controllerIterator.hasNext()) {
-                        var controller = controllerIterator.next();
-                        // Make absolutely sure the grid still matches
-                        var gridNode = controller.getGridNode();
-                        if (gridNode != null && gridNode.getGrid() == grid) {
-                            gridNode.beginVisit(new ControllerChannelUpdater());
-                        } else {
-                            AELog.warn(
-                                    "Cannot update controller channels since controller @ %s no longer belongs to this grid.",
-                                    controller.getBlockPos());
-                        }
-                    }
-                }
-
                 // check for achievements
                 this.achievementPost();
 
                 this.booting = false;
                 this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
-                this.postBootingStatusChange();
+                this.postBootingStatusChange(true);
+                // Notify of channel changes after we finish booting, this ensures that any activeness check will
+                // properly return true.
+                this.grid.getPivot().beginVisit(new ChannelFinalizer());
             } else if (ticksUntilReady == -2000) {
                 AELog.warn("Booting has still not completed after 2000 ticks for %s", grid);
             }
         }
     }
 
-    private void postBootingStatusChange() {
-        this.grid.postEvent(new GridBootingStatusChange());
-        this.grid.notifyAllNodes(IGridNodeListener.State.GRID_BOOT);
+    private void postBootingStatusChange(boolean notifyNodes) {
+        this.grid.postEvent(new GridBootingStatusChange(this.booting));
+        if (notifyNodes) {
+            this.grid.notifyAllNodes(IGridNodeListener.State.GRID_BOOT);
+        }
     }
 
     @Override
