@@ -241,7 +241,9 @@ public class ItemPickupStrategy implements PickupStrategy {
             harvestToolItem = ItemStack.EMPTY;
         }
 
-        return Block.getDrops(state, level, pos, blockEntity, fakePlayer, harvestToolItem);
+        var drops = Block.getDrops(state, level, pos, blockEntity, fakePlayer, harvestToolItem);
+        // Some modded blocks can have empty stacks, filter them out!
+        return drops.stream().filter(stack -> !stack.isEmpty()).toList();
     }
 
     /**
