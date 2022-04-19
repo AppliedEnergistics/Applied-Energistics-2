@@ -41,13 +41,12 @@ public interface ICraftingRequester extends IActionHost, IGridNodeService {
     ImmutableSet<ICraftingLink> getRequestedJobs();
 
     /**
-     * items are injected into the requester as they are completed, any items that cannot be taken, or are unwanted can
-     * be returned.
+     * items are injected into the requester as they are completed.
      *
      * @param items item
      * @param mode  action mode
      *
-     * @return unwanted item
+     * @return the number of items inserted.
      */
     long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode);
 
