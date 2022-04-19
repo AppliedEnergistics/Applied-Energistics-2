@@ -24,7 +24,7 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
 
     private Map<AEKeyType, MEStorage> storages;
 
-    private boolean forceCacheRebuild;
+    private boolean forceCacheRebuild = true;
 
     public CompositeStorage(Map<AEKeyType, MEStorage> storages) {
         this.storages = storages;

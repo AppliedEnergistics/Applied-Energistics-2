@@ -59,10 +59,12 @@ public interface PatternProviderTarget {
         // otherwise fall back to the platform capability
         // TODO: possibly optimize this
         var strategies = StackWorldBehaviors.createExternalStorageStrategies((ServerLevel) l, pos, side);
-        var externalStorages = new IdentityHashMap<AEKeyType, MEStorage>(strategies.size());
+        var externalStorages = new IdentityHashMap<AEKeyType, MEStorage>(2);
         for (var entry : strategies.entrySet()) {
             var wrapper = entry.getValue().createWrapper(false, Runnables.doNothing());
-            externalStorages.put(entry.getKey(), wrapper);
+            if (wrapper != null) {
+                externalStorages.put(entry.getKey(), wrapper);
+            }
         }
 
         if (externalStorages.size() > 0) {
