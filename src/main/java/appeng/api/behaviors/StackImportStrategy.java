@@ -18,7 +18,7 @@ public interface StackImportStrategy {
 
     @FunctionalInterface
     interface Factory {
-        StackImportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, boolean inverted);
+        StackImportStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
     }
 
     static void register(AEKeyType keyType, Factory factory) {
