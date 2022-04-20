@@ -18,31 +18,53 @@
 
 package appeng.parts.automation;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.menu.implementations.IOBusMenu;
 
 public class ImportBusPart extends IOBusPart {
     private StackImportStrategy importStrategy;
 
+    private BlockPos fromPos;
+    private Direction fromSide;
+
+    private boolean inverted = false;
+
     public ImportBusPart(IPartItem<?> partItem) {
         super(TickRates.ImportBus, partItem);
     }
 
     @Override
+    public void upgradesChanged() {
+        super.upgradesChanged();
+
+        boolean wasInverted = inverted;
+        inverted = isUpgradedWith(AEItems.INVERTER_CARD);
+        if (wasInverted != inverted) {
+            importStrategy = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide,
+                    this.inverted);
+        }
+    }
+
+    @Override
     protected boolean doBusWork(IGrid grid) {
         if (importStrategy == null) {
-            var self = this.getHost().getBlockEntity();
-            var fromPos = self.getBlockPos().relative(this.getSide());
-            var fromSide = getSide().getOpposite();
-            importStrategy = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide);
+            BlockEntity self = this.getHost().getBlockEntity();
+            fromPos = self.getBlockPos().relative(this.getSide());
+            fromSide = getSide().getOpposite();
+            importStrategy = StackWorldBehaviors.createImportFacade((ServerLevel) getLevel(), fromPos, fromSide,
+                    this.inverted);
         }
 
         var context = new StackTransferContextImpl(

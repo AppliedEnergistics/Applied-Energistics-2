@@ -84,10 +84,11 @@ public final class StackWorldBehaviors {
         return what -> placementStrategies.getMap().containsKey(what.getType());
     }
 
-    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide) {
+    public static StackImportStrategy createImportFacade(ServerLevel level, BlockPos fromPos, Direction fromSide,
+            boolean inverted) {
         var strategies = new ArrayList<StackImportStrategy>(importStrategies.getMap().size());
         for (var supplier : importStrategies.getMap().values()) {
-            strategies.add(supplier.create(level, fromPos, fromSide));
+            strategies.add(supplier.create(level, fromPos, fromSide, inverted));
         }
         return new StackImportFacade(strategies);
     }

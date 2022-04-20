@@ -26,15 +26,18 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
     private final BlockApiCache<Storage<V>, Direction> apiCache;
     private final Direction fromSide;
     private final IVariantConversion<V> conversion;
+    private final boolean inverted;
 
     public StorageImportStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
             IVariantConversion<V> conversion,
             ServerLevel level,
             BlockPos fromPos,
-            Direction fromSide) {
+            Direction fromSide,
+            boolean inverted) {
         this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
         this.fromSide = fromSide;
         this.conversion = conversion;
+        this.inverted = inverted;
     }
 
     @Override
@@ -66,7 +69,8 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
                         // transfer quota.
                         || extractable != null && !extractable.equals(resourceKey)
                         // Regard a filter that is set on the bus
-                        || !context.isInFilter(resourceKey)) {
+                        || !(context.isInFilter(resourceKey) || inverted)
+                        || context.isInFilter(resourceKey) && inverted) {
                     continue;
                 }
 
@@ -119,21 +123,25 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
         }
     }
 
-    public static StackImportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
+    public static StackImportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide,
+            boolean inverted) {
         return new StorageImportStrategy<>(
                 ItemStorage.SIDED,
                 IVariantConversion.ITEM,
                 level,
                 fromPos,
-                fromSide);
+                fromSide,
+                inverted);
     }
 
-    public static StackImportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
+    public static StackImportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide,
+            boolean inverted) {
         return new StorageImportStrategy<>(
                 FluidStorage.SIDED,
                 IVariantConversion.FLUID,
                 level,
                 fromPos,
-                fromSide);
+                fromSide,
+                inverted);
     }
 }
