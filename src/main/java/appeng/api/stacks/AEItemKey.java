@@ -25,9 +25,11 @@ public final class AEItemKey extends AEKey {
     @Nullable
     private final CompoundTag tag;
     private final int hashCode;
+    private final Component displayName;
 
     private AEItemKey(Item item, @Nullable CompoundTag tag) {
         this.item = item;
+        this.displayName = toStack().getHoverName();
         this.tag = tag;
         this.hashCode = Objects.hash(item, tag);
     }
@@ -203,7 +205,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public Component getDisplayName() {
-        return toStack().getHoverName();
+        return this.displayName;
     }
 
     @Override
