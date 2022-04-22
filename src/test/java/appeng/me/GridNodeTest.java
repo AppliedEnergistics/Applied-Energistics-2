@@ -30,7 +30,7 @@ class GridNodeTest extends AbstractGridNodeTest {
         var pathingService = (PathingService) node.getGrid().getPathingService();
         pathingService.repath();
         runTick(node.getGrid());
-        assertThat(calls).containsOnly(false);
+        assertThat(calls).containsExactly(false, true);
     }
 
 }
