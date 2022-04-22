@@ -34,6 +34,27 @@ import appeng.items.misc.WrappedGenericStack;
  */
 public abstract class AEKey {
 
+    /**
+     * The display name, which is used to sort by name in client terminal
+     */
+    private final Component displayName;
+
+    /**
+     * @deprecated It has been deprecated because we should cache the display name in the initialization to speed
+     * up the sorting process.
+     */
+    @Deprecated
+    public AEKey() {
+        this.displayName = null;
+    }
+
+    /**
+     * @param displayName the display name, which is used to sort by name in client terminal
+     */
+    public AEKey(Component displayName) {
+        this.displayName = displayName;
+    }
+
     @Nullable
     public static AEKey fromTagGeneric(CompoundTag tag) {
         // Handle malformed tags where the channel is missing
@@ -242,7 +263,10 @@ public abstract class AEKey {
         return getType().supportsFuzzyRangeSearch();
     }
 
-    public abstract Component getDisplayName();
+    public Component getDisplayName() {
+        assert this.displayName != null;
+        return this.displayName;
+    }
 
     /**
      * Adds the drops if the container holding this key is broken, such as an interface holding stacks. Item stacks

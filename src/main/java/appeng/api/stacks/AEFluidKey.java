@@ -3,6 +3,7 @@ package appeng.api.stacks;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -30,10 +31,11 @@ public final class AEFluidKey extends AEKey {
     private final CompoundTag tag;
     private final int hashCode;
 
-    private AEFluidKey(Fluid Fluid, @Nullable CompoundTag tag) {
-        this.fluid = Fluid;
+    private AEFluidKey(Fluid fluid, @Nullable CompoundTag tag) {
+        super(Platform.getFluidDisplayName(fluid));
+        this.fluid = fluid;
         this.tag = tag;
-        this.hashCode = Objects.hash(Fluid, tag);
+        this.hashCode = Objects.hash(fluid, tag);
     }
 
     public static AEFluidKey of(Fluid fluid, @Nullable CompoundTag tag) {
@@ -127,11 +129,6 @@ public final class AEFluidKey extends AEKey {
     @Override
     public String getModId() {
         return Registry.FLUID.getKey(fluid).getNamespace();
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return Platform.getFluidDisplayName(this);
     }
 
     @Override

@@ -1,35 +1,31 @@
 package appeng.api.stacks;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.storage.AEKeyFilter;
+import appeng.core.AELog;
+import appeng.util.Platform;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
+import java.util.List;
+import java.util.Objects;
 
 public final class AEItemKey extends AEKey {
     private final Item item;
     @Nullable
     private final CompoundTag tag;
     private final int hashCode;
-    private final Component displayName;
-
     private AEItemKey(Item item, @Nullable CompoundTag tag) {
+        super(Platform.getItemDisplayName(item, tag));
         this.item = item;
-        this.displayName = toStack().getHoverName();
         this.tag = tag;
         this.hashCode = Objects.hash(item, tag);
     }
@@ -201,11 +197,6 @@ public final class AEItemKey extends AEKey {
     @Override
     public ItemStack wrap(int amount) {
         return toStack(amount);
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return this.displayName;
     }
 
     @Override
