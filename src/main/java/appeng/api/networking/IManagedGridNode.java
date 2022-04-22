@@ -170,7 +170,7 @@ public interface IManagedGridNode {
     boolean isPowered();
 
     /**
-     * @return True if the grid is connected to a network, and that network has fully booted.
+     * @return True if the node is connected to a grid, and that grid has fully booted.
      * @see IPathingService#isNetworkBooting()
      */
     boolean hasGridBooted();
