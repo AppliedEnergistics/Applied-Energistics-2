@@ -1,6 +1,7 @@
 package appeng.api.stacks;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -264,8 +265,7 @@ public abstract class AEKey {
     }
 
     public Component getDisplayName() {
-        assert this.displayName != null;
-        return this.displayName;
+        return Objects.requireNonNull(this.displayName);
     }
 
     /**
