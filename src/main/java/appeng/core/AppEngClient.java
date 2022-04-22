@@ -18,41 +18,33 @@
 
 package appeng.core;
 
-import java.util.Collection;
 import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.mojang.blaze3d.platform.InputConstants.Key;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
@@ -64,13 +56,10 @@ import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.overlay.OverlayManager;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
-import appeng.hooks.ICustomPickBlock;
-import appeng.hooks.MouseWheelScrolled;
 import appeng.hooks.RenderBlockOutlineHook;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
@@ -85,15 +74,15 @@ import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
-import appeng.siteexport.SiteExporter;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 /**
  * Client-specific functionality.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class AppEngClient extends AppEngBase {
+
     private final static String KEY_CATEGORY = "key.ae2.category";
 
     private static AppEngClient INSTANCE;
@@ -107,32 +96,31 @@ public class AppEngClient extends AppEngBase {
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
     public AppEngClient() {
-        this.registerParticleFactories();
-        this.registerTextures();
-        this.modelRegistryEvent();
-        this.registerBlockColors();
-        this.registerItemColors();
-        this.registerEntityRenderers();
-        this.registerEntityLayerDefinitions();
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ClientPickBlockGatherCallback.EVENT.register(this::onPickBlock);
-        ClientTickEvents.START_CLIENT_TICK.register(this::updateCableRenderMode);
+        modEventBus.addListener(this::registerParticleFactories);
+        modEventBus.addListener(this::registerTextures);
+        modEventBus.addListener(this::modelRegistryEvent);
+        modEventBus.addListener(this::registerBlockColors);
+        modEventBus.addListener(this::registerItemColors);
+        modEventBus.addListener(this::registerEntityRenderers);
+        modEventBus.addListener(this::registerEntityLayerDefinitions);
 
-        InitAutoRotatingModel.init();
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
 
-        ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (TickEvent.ClientTickEvent e) -> {
+            if (e.phase == TickEvent.Phase.START) {
+                updateCableRenderMode();
+            }
+        });
+
+        InitAutoRotatingModel.init(modEventBus);
+
+        modEventBus.addListener(this::clientSetup);
 
         INSTANCE = this;
-        notifyAddons("client");
         registerTests();
-
-        // Only activate the site exporter when we're not running a release version, since it'll
-        // replace blocks around spawn.
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            SiteExporter.initialize();
-        }
     }
 
     @Override
@@ -144,55 +132,46 @@ public class AppEngClient extends AppEngBase {
         return Objects.requireNonNull(INSTANCE, "AppEngClient is not initialized");
     }
 
-    public void registerParticleFactories() {
+    public void registerParticleFactories(ParticleFactoryRegisterEvent event) {
         InitParticleFactories.init();
     }
 
-    public void registerTextures() {
-        Stream<Collection<Material>> sprites = Stream.of(SkyChestTESR.SPRITES, InscriberTESR.SPRITES);
-
-        // Group every needed sprite by atlas, since every atlas has their own event
-        Map<ResourceLocation, List<Material>> groupedByAtlas = sprites.flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(Material::atlasLocation));
-
-        // Register to the stitch event for each atlas
-        for (Map.Entry<ResourceLocation, List<Material>> entry : groupedByAtlas.entrySet()) {
-            ClientSpriteRegistryCallback.event(entry.getKey()).register((spriteAtlasTexture, registry) -> {
-                for (Material spriteIdentifier : entry.getValue()) {
-                    registry.register(spriteIdentifier.texture());
-                }
-            });
-        }
+    public void registerTextures(TextureStitchEvent.Pre event) {
+        SkyChestTESR.registerTextures(event);
+        InscriberTESR.registerTexture(event);
     }
 
-    public void registerBlockColors() {
-        InitBlockColors.init(ColorProviderRegistry.BLOCK::register);
+    public void registerBlockColors(ColorHandlerEvent.Block event) {
+        InitBlockColors.init(event.getBlockColors());
     }
 
-    public void registerItemColors() {
-        InitItemColors.init(ColorProviderRegistry.ITEM::register);
+    public void registerItemColors(ColorHandlerEvent.Item event) {
+        InitItemColors.init(event.getItemColors());
     }
 
-    private void clientSetup(Minecraft client) {
-        postClientSetup(client);
+    private void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            postClientSetup(minecraft);
+        });
 
-        MouseWheelScrolled.EVENT.register(this::wheelEvent);
-        WorldRenderEvents.LAST.register(OverlayManager.getInstance()::renderWorldLastEvent);
+        MinecraftForge.EVENT_BUS.addListener(this::wheelEvent);
+        MinecraftForge.EVENT_BUS.register(OverlayManager.getInstance());
 
         for (var key : ActionKey.values()) {
             var binding = new KeyMapping(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
-            KeyBindingHelper.registerKeyBinding(binding);
+            ClientRegistry.registerKeyBinding(binding);
             this.bindings.put(key, binding);
         }
     }
 
-    private void registerEntityRenderers() {
-        InitEntityRendering.init(EntityRendererRegistry.INSTANCE::register);
+    private void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        InitEntityRendering.init(event::registerEntityRenderer);
     }
 
-    private void registerEntityLayerDefinitions() {
+    private void registerEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         InitEntityLayerDefinitions.init((modelLayerLocation, layerDefinition) -> {
-            EntityModelLayerRegistry.registerModelLayer(modelLayerLocation, () -> layerDefinition);
+            event.registerLayerDefinition(modelLayerLocation, () -> layerDefinition);
         });
     }
 
@@ -205,8 +184,8 @@ public class AppEngClient extends AppEngBase {
         InitStackRenderHandlers.init();
     }
 
-    @Environment(EnvType.CLIENT)
-    public void modelRegistryEvent() {
+    @OnlyIn(Dist.CLIENT)
+    public void modelRegistryEvent(ModelRegistryEvent event) {
         InitAdditionalModels.init();
         InitBlockEntityRenderers.init();
         InitItemModelsProperties.init();
@@ -214,9 +193,9 @@ public class AppEngClient extends AppEngBase {
         InitBuiltInModels.init();
     }
 
-    private boolean wheelEvent(double verticalAmount) {
-        if (verticalAmount == 0) {
-            return false;
+    private void wheelEvent(final InputEvent.MouseScrollEvent me) {
+        if (me.getScrollDelta() == 0) {
+            return;
         }
 
         final Minecraft mc = Minecraft.getInstance();
@@ -227,17 +206,14 @@ public class AppEngClient extends AppEngBase {
             final boolean offHand = player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof IMouseWheelItem;
 
             if (mainHand || offHand) {
-                NetworkHandler.instance().sendToServer(new MouseWheelPacket(verticalAmount > 0));
-                return true;
+                NetworkHandler.instance().sendToServer(new MouseWheelPacket(me.getScrollDelta() > 0));
+                me.setCanceled(true);
             }
         }
-
-        return false;
     }
 
     public boolean isActionKey(ActionKey key, Key pressedKey) {
-        // TODO FABRIC 117 Check if this is accurate (i think scanline is ignored for identified keys)
-        return this.bindings.get(key).matches(pressedKey.getValue(), -1);
+        return this.bindings.get(key).isActiveAndMatches(pressedKey);
     }
 
     public boolean shouldAddParticles(Random r) {
@@ -302,7 +278,7 @@ public class AppEngClient extends AppEngBase {
                 0.0f);
     }
 
-    private void updateCableRenderMode(Minecraft mc) {
+    private void updateCableRenderMode() {
         var currentMode = PartHelper.getCableRenderMode();
 
         // Handle changes to the cable-rendering mode
@@ -312,6 +288,7 @@ public class AppEngClient extends AppEngBase {
 
         this.prevCableRenderMode = currentMode;
 
+        final Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) {
             return;
         }
@@ -340,22 +317,4 @@ public class AppEngClient extends AppEngBase {
         return this.getCableRenderModeForPlayer(player);
     }
 
-    protected void initNetworkHandler() {
-        new ClientNetworkHandler();
-    }
-
-    /**
-     * Replaces a Forge-Hook that was done via a method in IForgeBlock.
-     */
-    private ItemStack onPickBlock(Player player, HitResult hitResult) {
-        if (hitResult instanceof BlockHitResult blockHitResult) {
-            BlockPos blockPos = blockHitResult.getBlockPos();
-            BlockState blockState = player.level.getBlockState(blockPos);
-
-            if (blockState.getBlock() instanceof ICustomPickBlock customPickBlock) {
-                return customPickBlock.getPickBlock(blockState, hitResult, player.level, blockPos, player);
-            }
-        }
-        return ItemStack.EMPTY;
-    }
 }

@@ -21,14 +21,7 @@ package appeng.client.render.tesr;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -36,23 +29,24 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
+import appeng.client.render.cablebus.CubeBuilder;
 
-@Environment(EnvType.CLIENT)
 public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRenderer<SkyStoneTankBlockEntity> {
 
     public SkyStoneTankBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-
     }
 
     @Override
     public void render(SkyStoneTankBlockEntity tank, float tickDelta, PoseStack ms, MultiBufferSource vertexConsumers,
             int light, int overlay) {
-        if (!tank.getStorage().variant.isBlank() && tank.getStorage().amount > 0) {
+        if (!tank.getStorage().getFluid().isEmpty()) {
 
             /*
              * 
@@ -60,8 +54,8 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
              * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
              */
 
-            drawFluidInTank(tank, ms, vertexConsumers, tank.getStorage().variant,
-                    (float) tank.getStorage().amount / tank.getStorage().getCapacity());
+            drawFluidInTank(tank, ms, vertexConsumers, tank.getStorage().getFluid(),
+                    (float) tank.getStorage().getFluid().getAmount() / tank.getStorage().getCapacity());
 
             // ms.popPose();
         }
@@ -70,51 +64,53 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
     private static final float TANK_W = 1 / 16f + 0.001f; // avoiding Z-fighting
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid,
+    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidStack fluid,
             float fill) {
         drawFluidInTank(be.getLevel(), be.getBlockPos(), ms, vcp, fluid, fill);
     }
 
     public static void drawFluidInTank(Level level, BlockPos pos, PoseStack ps, MultiBufferSource mbs,
-            FluidVariant fluid, float fill) {
+            FluidStack fluid, float fill) {
         // From Modern Industrialization
-        VertexConsumer vc = mbs.getBuffer(RenderType.translucent());
-        TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
+        VertexConsumer vc = mbs.getBuffer(RenderType.translucentMovingBlock());
+        var attributes = fluid.getFluid().getAttributes();
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(attributes.getStillTexture(fluid));
 
-        int color = FluidVariantRendering.getColor(fluid, level, pos);
+        int color = attributes.getColor(level, pos);
 
         float r = ((color >> 16) & 255) / 256f;
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;
 
-        fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));
+        var fillY = Mth.lerp(Mth.clamp(fill, 0, 1), TANK_W, 1 - TANK_W);
 
         // Top and bottom positions of the fluid inside the tank
-        float topHeight = fill;
+        float topHeight = fillY;
         float bottomHeight = TANK_W;
 
         // Render gas from top to bottom
-        if (FluidVariantRendering.fillsFromTop(fluid)) {
+        if (attributes.isGaseous(fluid)) {
             topHeight = 1 - TANK_W;
-            bottomHeight = 1 - fill;
+            bottomHeight = 1 - fillY;
         }
 
-        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-        for (Direction direction : Direction.values()) {
-            QuadEmitter emitter = renderer.meshBuilder().getEmitter();
+        var builder = new CubeBuilder();
+        builder.setTexture(sprite);
 
-            if (direction.getAxis().isVertical()) {
-                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W,
-                        direction == Direction.UP ? 1 - topHeight : bottomHeight);
-            } else {
-                emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
-            }
+        var x1 = TANK_W * 16;
+        var z1 = TANK_W * 16;
+        var x2 = (1 - TANK_W) * 16;
+        var z2 = (1 - TANK_W) * 16;
+        var y1 = bottomHeight * 16;
+        var y2 = topHeight * 16;
+        builder.addCube(x1, y1, z1, x2, y2, z2);
 
-            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
-            vc.putBulkData(ps.last(), emitter.toBakedQuad(0, sprite, false), r, g, b, FULL_LIGHT,
+        for (var bakedQuad : builder.getOutput()) {
+            vc.putBulkData(ps.last(), bakedQuad, r, g, b, FULL_LIGHT,
                     OverlayTexture.NO_OVERLAY);
         }
+
     }
 
 }
