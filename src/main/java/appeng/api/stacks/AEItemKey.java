@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
+import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
     private final Item item;
@@ -27,6 +27,7 @@ public final class AEItemKey extends AEKey {
     private final int hashCode;
 
     private AEItemKey(Item item, @Nullable CompoundTag tag) {
+        super(Platform.getItemDisplayName(item, tag));
         this.item = item;
         this.tag = tag;
         this.hashCode = Objects.hash(item, tag);
@@ -199,11 +200,6 @@ public final class AEItemKey extends AEKey {
     @Override
     public ItemStack wrap(int amount) {
         return toStack(amount);
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return toStack().getHoverName();
     }
 
     @Override

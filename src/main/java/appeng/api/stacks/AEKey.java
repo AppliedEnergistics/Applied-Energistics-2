@@ -1,6 +1,7 @@
 package appeng.api.stacks;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +34,27 @@ import appeng.items.misc.WrappedGenericStack;
  * </ul>
  */
 public abstract class AEKey {
+
+    /**
+     * The display name, which is used to sort by name in client terminal
+     */
+    private final Component displayName;
+
+    /**
+     * @deprecated It has been deprecated because we should cache the display name in the initialization to speed up the
+     *             sorting process.
+     */
+    @Deprecated
+    public AEKey() {
+        this.displayName = null;
+    }
+
+    /**
+     * @param displayName the display name, which is used to sort by name in client terminal
+     */
+    public AEKey(Component displayName) {
+        this.displayName = displayName;
+    }
 
     @Nullable
     public static AEKey fromTagGeneric(CompoundTag tag) {
@@ -242,7 +264,9 @@ public abstract class AEKey {
         return getType().supportsFuzzyRangeSearch();
     }
 
-    public abstract Component getDisplayName();
+    public Component getDisplayName() {
+        return Objects.requireNonNull(this.displayName);
+    }
 
     /**
      * Adds the drops if the container holding this key is broken, such as an interface holding stacks. Item stacks

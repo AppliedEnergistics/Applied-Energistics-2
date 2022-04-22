@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -30,10 +29,11 @@ public final class AEFluidKey extends AEKey {
     private final CompoundTag tag;
     private final int hashCode;
 
-    private AEFluidKey(Fluid Fluid, @Nullable CompoundTag tag) {
-        this.fluid = Fluid;
+    private AEFluidKey(Fluid fluid, @Nullable CompoundTag tag) {
+        super(Platform.getFluidDisplayName(fluid));
+        this.fluid = fluid;
         this.tag = tag;
-        this.hashCode = Objects.hash(Fluid, tag);
+        this.hashCode = Objects.hash(fluid, tag);
     }
 
     public static AEFluidKey of(Fluid fluid, @Nullable CompoundTag tag) {
@@ -127,11 +127,6 @@ public final class AEFluidKey extends AEKey {
     @Override
     public String getModId() {
         return Registry.FLUID.getKey(fluid).getNamespace();
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return Platform.getFluidDisplayName(this);
     }
 
     @Override

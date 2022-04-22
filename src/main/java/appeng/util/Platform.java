@@ -26,10 +26,10 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,6 +41,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
@@ -50,6 +51,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.item.crafting.Recipe;
@@ -75,7 +77,6 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -324,8 +325,16 @@ public class Platform {
         return getDescriptionId(fluid.getFluid());
     }
 
-    public static Component getFluidDisplayName(AEFluidKey o) {
-        return new TranslatableComponent(getDescriptionId(o.toVariant()));
+    public static Component getFluidDisplayName(Fluid fluid) {
+        return new TranslatableComponent(getDescriptionId(fluid));
+    }
+
+    // tag copy is not necessary, as the tag is not modified.
+    // and this itemStack is not reachable
+    public static Component getItemDisplayName(Item item, @Nullable CompoundTag tag) {
+        var itemStack = new ItemStack(item);
+        itemStack.setTag(tag);
+        return itemStack.getHoverName();
     }
 
     public static boolean isChargeable(ItemStack i) {
@@ -482,7 +491,7 @@ public class Platform {
         }
 
         if (a_isSecure && !b_isSecure) {
-            // NOTE: a cannot be powered/secure if a has no grid, so b.getGrid() should succeed
+            // NOTE: a cannot be powered/secure if a has no grid, so a.getGrid() should succeed
             return checkPlayerPermissions(a.getGrid(), b.getOwningPlayerId());
         }
 
