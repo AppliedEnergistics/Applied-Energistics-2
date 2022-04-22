@@ -34,11 +34,11 @@ import appeng.api.networking.IGridService;
 public interface IPathingService extends IGridService {
 
     /**
-     * When the structure of a grid is changed in any way, the grid will reboot. While it is booting, the path
-     * from every grid node to the controller, and the number of channels will be re-calculated.
+     * When the structure of a grid is changed in any way, the grid will reboot. While it is booting, the path from
+     * every grid node to the controller, and the number of channels will be re-calculated.
      * <p/>
-     * The start and end of the boot process is signaled by the {@link appeng.api.networking.events.GridBootingStatusChange}
-     * event.
+     * The start and end of the boot process is signaled by the
+     * {@link appeng.api.networking.events.GridBootingStatusChange} event.
      *
      * @return true if the network is in its booting stage
      */
