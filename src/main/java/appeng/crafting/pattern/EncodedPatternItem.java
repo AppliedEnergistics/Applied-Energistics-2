@@ -24,8 +24,6 @@ import java.util.WeakHashMap;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -41,6 +39,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -49,12 +49,11 @@ import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
-public abstract class EncodedPatternItem extends AEBaseItem implements AEToolItem {
+public abstract class EncodedPatternItem extends AEBaseItem {
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
@@ -105,7 +104,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
         if (!stack.hasTag()) {
