@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me.interfaceterminal;
+package appeng.client.gui.me.patternaccess;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,13 +25,14 @@ import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.menu.slot.AppEngSlot;
 
 /**
- * This slot is used in the {@link InterfaceTerminalScreen} to interact with the internal inventory of interfaces.
+ * This slot is used in the {@link PatternAccessTerminalScreen} to interact with the internal inventory of pattern
+ * providers.
  */
-public class InterfaceSlot extends AppEngSlot {
+public class PatternAccessSlot extends AppEngSlot {
 
-    private final InterfaceRecord machineInv;
+    private final PatternAccessRecord machineInv;
 
-    public InterfaceSlot(InterfaceRecord machineInv, int machineInvSlot, int x, int y) {
+    public PatternAccessSlot(PatternAccessRecord machineInv, int machineInvSlot, int x, int y) {
         super(machineInv.getInventory(), machineInvSlot);
         this.machineInv = machineInv;
         this.x = x;
@@ -57,7 +58,7 @@ public class InterfaceSlot extends AppEngSlot {
         return !this.getItem().isEmpty();
     }
 
-    public InterfaceRecord getMachineInv() {
+    public PatternAccessRecord getMachineInv() {
         return this.machineInv;
     }
 

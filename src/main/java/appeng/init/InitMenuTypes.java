@@ -31,8 +31,8 @@ import appeng.menu.implementations.IOBusMenu;
 import appeng.menu.implementations.IOPortMenu;
 import appeng.menu.implementations.InscriberMenu;
 import appeng.menu.implementations.InterfaceMenu;
-import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.menu.implementations.MolecularAssemblerMenu;
+import appeng.menu.implementations.PatternAccessTerminalMenu;
 import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
@@ -78,7 +78,6 @@ public final class InitMenuTypes {
                 IOPortMenu.TYPE,
                 InscriberMenu.TYPE,
                 InterfaceMenu.TYPE,
-                InterfaceTerminalMenu.TYPE,
                 MEStorageMenu.TYPE,
                 MEStorageMenu.PORTABLE_FLUID_CELL_TYPE,
                 MEStorageMenu.PORTABLE_ITEM_CELL_TYPE,
@@ -86,6 +85,7 @@ public final class InitMenuTypes {
                 MolecularAssemblerMenu.TYPE,
                 NetworkStatusMenu.TYPE,
                 NetworkToolMenu.TYPE,
+                PatternAccessTerminalMenu.TYPE,
                 PatternProviderMenu.TYPE,
                 PatternEncodingTermMenu.TYPE,
                 PriorityMenu.TYPE,

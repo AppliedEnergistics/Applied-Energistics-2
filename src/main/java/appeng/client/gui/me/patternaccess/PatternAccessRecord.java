@@ -16,25 +16,25 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me.interfaceterminal;
+package appeng.client.gui.me.patternaccess;
 
 import net.minecraft.network.chat.Component;
 
 import appeng.helpers.iface.PatternProviderLogic;
-import appeng.menu.implementations.InterfaceTerminalMenu;
+import appeng.menu.implementations.PatternAccessTerminalMenu;
 import appeng.util.inv.AppEngInternalInventory;
 
 /**
- * This class is used on the client-side to represent an interface and it's inventory as it is shown in the
- * {@link InterfaceTerminalScreen}'s table.
+ * This class is used on the client-side to represent a pattern provider and it's inventory as it is shown in the
+ * {@link PatternAccessTerminalScreen}'s table.
  */
-public class InterfaceRecord implements Comparable<InterfaceRecord> {
+public class PatternAccessRecord implements Comparable<PatternAccessRecord> {
 
     private final String displayName;
     private final String searchName;
 
     /**
-     * Identifier for this interface on the server-side. See {@link InterfaceTerminalMenu}
+     * Identifier for this pattern provider on the server-side. See {@link PatternAccessTerminalMenu}
      */
     private final long serverId;
 
@@ -42,12 +42,12 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     private final AppEngInternalInventory inventory;
 
     /**
-     * Used to sort this record in the interface terminal's table, comes from
+     * Used to sort this record in the pattern access terminal's table, comes from
      * {@link PatternProviderLogic#getSortValue()}
      */
     private final long order;
 
-    public InterfaceRecord(long serverId, int slots, long order, Component name) {
+    public PatternAccessRecord(long serverId, int slots, long order, Component name) {
         this.inventory = new AppEngInternalInventory(slots);
         this.displayName = name.getString();
         this.searchName = this.displayName.toLowerCase();
@@ -64,7 +64,7 @@ public class InterfaceRecord implements Comparable<InterfaceRecord> {
     }
 
     @Override
-    public int compareTo(InterfaceRecord o) {
+    public int compareTo(PatternAccessRecord o) {
         return Long.compare(this.order, o.order);
     }
 

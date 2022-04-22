@@ -27,28 +27,28 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
+import appeng.client.gui.me.patternaccess.PatternAccessTerminalScreen;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.INetworkInfo;
 
 /**
- * Sends the content for the interface terminal GUI to the client.
+ * Sends the content for the pattern access terminal GUI to the client.
  */
-public class InterfaceTerminalPacket extends BasePacket {
+public class PatternAccessTerminalPacket extends BasePacket {
 
     // input.
     private boolean clearExistingData;
     private long inventoryId;
     private CompoundTag in;
 
-    public InterfaceTerminalPacket(FriendlyByteBuf stream) {
+    public PatternAccessTerminalPacket(FriendlyByteBuf stream) {
         this.clearExistingData = stream.readBoolean();
         this.inventoryId = stream.readLong();
         this.in = stream.readNbt();
     }
 
     // api
-    private InterfaceTerminalPacket(boolean clearExistingData, long inventoryId, CompoundTag din) {
+    private PatternAccessTerminalPacket(boolean clearExistingData, long inventoryId, CompoundTag din) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer(2048));
         data.writeInt(this.getPacketID());
         data.writeBoolean(clearExistingData);
@@ -57,19 +57,19 @@ public class InterfaceTerminalPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public static InterfaceTerminalPacket clearExistingData() {
-        return new InterfaceTerminalPacket(true, -1, new CompoundTag());
+    public static PatternAccessTerminalPacket clearExistingData() {
+        return new PatternAccessTerminalPacket(true, -1, new CompoundTag());
     }
 
-    public static InterfaceTerminalPacket inventory(long id, CompoundTag data) {
-        return new InterfaceTerminalPacket(false, id, data);
+    public static PatternAccessTerminalPacket inventory(long id, CompoundTag data) {
+        return new PatternAccessTerminalPacket(false, id, data);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(INetworkInfo network, Player player) {
-        if (Minecraft.getInstance().screen instanceof InterfaceTerminalScreen interfaceTerminal) {
-            interfaceTerminal.postInventoryUpdate(this.clearExistingData, this.inventoryId, this.in);
+        if (Minecraft.getInstance().screen instanceof PatternAccessTerminalScreen patternAccessTerminal) {
+            patternAccessTerminal.postInventoryUpdate(this.clearExistingData, this.inventoryId, this.in);
         }
     }
 }

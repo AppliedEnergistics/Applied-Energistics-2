@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.me.interfaceterminal;
+package appeng.client.gui.me.patternaccess;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,9 +56,9 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.iface.PatternProviderLogic;
-import appeng.menu.implementations.InterfaceTerminalMenu;
+import appeng.menu.implementations.PatternAccessTerminalMenu;
 
-public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AEBaseScreen<C> {
+public class PatternAccessTerminalScreen<C extends PatternAccessTerminalMenu> extends AEBaseScreen<C> {
 
     private static final int GUI_WIDTH = 195;
 
@@ -71,7 +71,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     /**
      * Additional margin in pixel for a text row inside the scrolling box.
      */
-    private static final int INTERFACE_NAME_MARGIN_X = 2;
+    private static final int PATTERN_PROVIDER_NAME_MARGIN_X = 2;
 
     /**
      * The maximum length for the string of a text row in pixel.
@@ -115,9 +115,9 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     // This is the lower part of the UI, anything below the scrollable area (incl. its bottom border)
     private static final Rect2i FOOTER_BBOX = new Rect2i(0, 125, GUI_WIDTH, GUI_FOOTER_HEIGHT);
 
-    private final HashMap<Long, InterfaceRecord> byId = new HashMap<>();
-    // Used to show multiple interfaces with the same name under a single header
-    private final HashMultimap<String, InterfaceRecord> byName = HashMultimap.create();
+    private final HashMap<Long, PatternAccessRecord> byId = new HashMap<>();
+    // Used to show multiple providers with the same name under a single header
+    private final HashMultimap<String, PatternAccessRecord> byName = HashMultimap.create();
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<Object> lines = new ArrayList<>();
 
@@ -128,7 +128,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     private boolean refreshList = false;
     private int numLines = 0;
 
-    public InterfaceTerminalScreen(C menu, Inventory playerInventory,
+    public PatternAccessTerminalScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.scrollbar = widgets.addScrollBar("scrollbar");
@@ -166,7 +166,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
             int mouseY) {
 
-        this.menu.slots.removeIf(slot -> slot instanceof InterfaceSlot);
+        this.menu.slots.removeIf(slot -> slot instanceof PatternAccessSlot);
 
         int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
 
@@ -175,11 +175,11 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         for (; i < this.numLines; ++i) {
             if (scrollLevel + i < this.lines.size()) {
                 final Object lineObj = this.lines.get(scrollLevel + i);
-                if (lineObj instanceof InterfaceRecord inv) {
+                if (lineObj instanceof PatternAccessRecord inv) {
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
                     for (int z = 0; z < inv.getInventory().size(); z++) {
                         this.menu.slots
-                                .add(new InterfaceSlot(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
+                                .add(new PatternAccessSlot(inv, z, z * SLOT_SIZE + GUI_PADDING_X, (i + 1) * SLOT_SIZE));
                     }
                 } else if (lineObj instanceof String name) {
                     final int rows = this.byName.get(name).size();
@@ -189,7 +189,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
                     name = this.font.plainSubstrByWidth(name, TEXT_MAX_WIDTH, true);
 
-                    this.font.draw(poseStack, name, GUI_PADDING_X + INTERFACE_NAME_MARGIN_X,
+                    this.font.draw(poseStack, name, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor);
                 }
             }
@@ -208,7 +208,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
     @Override
     protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
-        if (slot instanceof InterfaceSlot) {
+        if (slot instanceof PatternAccessSlot) {
             InventoryAction action = null;
 
             switch (clickType) {
@@ -232,7 +232,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
             }
 
             if (action != null) {
-                InterfaceSlot machineSlot = (InterfaceSlot) slot;
+                PatternAccessSlot machineSlot = (PatternAccessSlot) slot;
                 final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.slot,
                         machineSlot.getMachineInv().getServerId());
                 NetworkHandler.instance().sendToServer(p);
@@ -247,7 +247,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     @Override
     public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
-        this.bindTexture("guis/interfaceterminal.png");
+        this.bindTexture("guis/patternaccessterminal.png");
 
         // Draw the top of the dialog
         blit(poseStack, offsetX, offsetY, HEADER_BBOX);
@@ -271,7 +271,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
             isInvLine = false;
             if (scrollLevel + i < this.lines.size()) {
                 final Object lineObj = this.lines.get(scrollLevel + i);
-                isInvLine = lineObj instanceof InterfaceRecord;
+                isInvLine = lineObj instanceof PatternAccessRecord;
             }
 
             Rect2i bbox = selectRowBackgroundBox(isInvLine, firstLine, lastLine);
@@ -337,7 +337,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     }
 
     /**
-     * Rebuilds the list of interfaces.
+     * Rebuilds the list of pattern providers.
      * <p>
      * Respects a search term if present (ignores case) and adding only matching patterns.
      */
@@ -349,7 +349,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         final Set<Object> cachedSearch = this.getCacheForSearchTerm(searchFilterLowerCase);
         final boolean rebuild = cachedSearch.isEmpty();
 
-        for (InterfaceRecord entry : this.byId.values()) {
+        for (PatternAccessRecord entry : this.byId.values()) {
             // ignore inventory if not doing a full rebuild or cache already marks it as miss.
             if (!rebuild && !cachedSearch.contains(entry)) {
                 continue;
@@ -388,7 +388,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         for (String n : this.names) {
             this.lines.add(n);
 
-            List<InterfaceRecord> clientInventories = new ArrayList<>(this.byName.get(n));
+            List<PatternAccessRecord> clientInventories = new ArrayList<>(this.byName.get(n));
 
             Collections.sort(clientInventories);
             this.lines.addAll(clientInventories);
@@ -481,12 +481,12 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         return this.names.size() + this.byId.size();
     }
 
-    private InterfaceRecord getById(long id, long sortBy, Component name) {
-        InterfaceRecord o = this.byId.get(id);
+    private PatternAccessRecord getById(long id, long sortBy, Component name) {
+        PatternAccessRecord o = this.byId.get(id);
 
         if (o == null) {
             this.byId.put(id,
-                    o = new InterfaceRecord(id, PatternProviderLogic.NUMBER_OF_PATTERN_SLOTS, sortBy, name));
+                    o = new PatternAccessRecord(id, PatternProviderLogic.NUMBER_OF_PATTERN_SLOTS, sortBy, name));
             this.refreshList = true;
         }
 
