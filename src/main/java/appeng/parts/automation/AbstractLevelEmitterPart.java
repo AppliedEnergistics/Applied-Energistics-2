@@ -65,7 +65,9 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
 
     @Override
     protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        updateState();
+        if (getMainNode().hasGridBooted()) {
+            updateState();
+        }
     }
 
     protected void updateState() {

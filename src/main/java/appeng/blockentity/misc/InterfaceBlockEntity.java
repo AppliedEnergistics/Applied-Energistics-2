@@ -71,7 +71,9 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        this.logic.notifyNeighbors();
+        if (getMainNode().hasGridBooted()) {
+            this.logic.notifyNeighbors();
+        }
     }
 
     @Override

@@ -141,11 +141,13 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        var currentActive = this.getMainNode().isActive();
-        if (this.wasActive != currentActive) {
-            this.wasActive = currentActive;
-            this.getHost().markForUpdate();
-            remountStorage();
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            var currentActive = this.getMainNode().isActive();
+            if (this.wasActive != currentActive) {
+                this.wasActive = currentActive;
+                this.getHost().markForUpdate();
+                remountStorage();
+            }
         }
     }
 

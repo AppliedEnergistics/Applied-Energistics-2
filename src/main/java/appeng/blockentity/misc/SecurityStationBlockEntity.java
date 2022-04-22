@@ -173,7 +173,9 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        this.markForUpdate();
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            this.markForUpdate();
+        }
     }
 
     @Override

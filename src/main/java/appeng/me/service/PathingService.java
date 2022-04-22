@@ -45,7 +45,7 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.core.stats.IAdvancementTrigger;
 import appeng.me.Grid;
 import appeng.me.pathfinding.AdHocChannelUpdater;
-import appeng.me.pathfinding.ControllerChannelUpdater;
+import appeng.me.pathfinding.ChannelFinalizer;
 import appeng.me.pathfinding.ControllerValidator;
 import appeng.me.pathfinding.PathingCalculation;
 
@@ -72,10 +72,10 @@ public class PathingService implements IPathingService, IGridServiceProvider {
     // Flag to indicate a reboot should occur next tick
     private boolean reboot = true;
     private boolean booting = false;
+    private int bootingTicks = 0;
     @Nullable
     private AdHocNetworkError adHocNetworkError;
     private ControllerState controllerState = ControllerState.NO_CONTROLLER;
-    private int ticksUntilReady = 0;
     private int lastChannels = 0;
     /**
      * This can be used for testing to set a specific channel mode on this grid that will not be overwritten by
@@ -99,6 +99,7 @@ public class PathingService implements IPathingService, IGridServiceProvider {
 
             if (!this.booting) {
                 this.booting = true;
+                this.bootingTicks = 0;
                 this.postBootingStatusChange();
             }
 
@@ -116,17 +117,13 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 this.channelsInUse = this.calculateAdHocChannels();
 
                 var nodes = this.grid.size();
-                this.ticksUntilReady = Math.max(5, nodes / 100);
                 this.channelsByBlocks = nodes * this.channelsInUse;
                 this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
 
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(this.channelsInUse));
             } else if (this.controllerState == ControllerState.CONTROLLER_CONFLICT) {
-                this.ticksUntilReady = 5;
                 this.grid.getPivot().beginVisit(new AdHocChannelUpdater(0));
             } else {
-                var nodes = this.grid.size();
-                this.ticksUntilReady = Math.max(5, nodes / 100);
                 this.ongoingCalculation = new PathingCalculation(grid);
             }
         }
@@ -145,40 +142,27 @@ public class PathingService implements IPathingService, IGridServiceProvider {
                 }
             }
 
-            this.ticksUntilReady--;
+            bootingTicks++;
 
             // Booting completes when both pathfinding completes, and the minimum boot time has elapsed
-            if (ongoingCalculation == null && ticksUntilReady <= 0) {
-                if (this.controllerState == ControllerState.CONTROLLER_ONLINE) {
-                    var controllerIterator = this.controllers.iterator();
-                    if (controllerIterator.hasNext()) {
-                        var controller = controllerIterator.next();
-                        // Make absolutely sure the grid still matches
-                        var gridNode = controller.getGridNode();
-                        if (gridNode != null && gridNode.getGrid() == grid) {
-                            gridNode.beginVisit(new ControllerChannelUpdater());
-                        } else {
-                            AELog.warn(
-                                    "Cannot update controller channels since controller @ %s no longer belongs to this grid.",
-                                    controller.getBlockPos());
-                        }
-                    }
-                }
-
+            if (ongoingCalculation == null) {
                 // check for achievements
                 this.achievementPost();
 
                 this.booting = false;
                 this.setChannelPowerUsage(this.channelsByBlocks / 128.0);
+                // Notify of channel changes AFTER we set booting to false, this ensures that any activeness check will
+                // properly return true.
+                this.grid.getPivot().beginVisit(new ChannelFinalizer());
                 this.postBootingStatusChange();
-            } else if (ticksUntilReady == -2000) {
-                AELog.warn("Booting has still not completed after 2000 ticks for %s", grid);
+            } else if (bootingTicks == 2000) {
+                AELog.warn("Booting has still not completed after %d ticks for %s", bootingTicks, grid);
             }
         }
     }
 
     private void postBootingStatusChange() {
-        this.grid.postEvent(new GridBootingStatusChange());
+        this.grid.postEvent(new GridBootingStatusChange(this.booting));
         this.grid.notifyAllNodes(IGridNodeListener.State.GRID_BOOT);
     }
 

@@ -181,7 +181,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
-        this.refresh();
+
+        if (getMainNode().hasGridBooted()) {
+            this.refresh();
+        }
     }
 
     @Override

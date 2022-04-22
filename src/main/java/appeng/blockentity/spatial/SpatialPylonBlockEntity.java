@@ -181,7 +181,9 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        this.recalculateDisplay();
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            this.recalculateDisplay();
+        }
     }
 
     public int getDisplayBits() {

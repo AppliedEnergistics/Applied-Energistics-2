@@ -538,18 +538,19 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        boolean newState = false;
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            boolean newState = false;
 
-        var grid = getMainNode().getGrid();
-        if (grid != null) {
-            newState = this.getMainNode().isActive()
-                    && grid.getEnergyService().extractAEPower(1, Actionable.SIMULATE,
-                            PowerMultiplier.CONFIG) > 0.0001;
-        }
+            var grid = getMainNode().getGrid();
+            if (grid != null) {
+                newState = this.getMainNode().isActive() && grid.getEnergyService().extractAEPower(1,
+                        Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.0001;
+            }
 
-        if (newState != this.isPowered) {
-            this.isPowered = newState;
-            this.markForUpdate();
+            if (newState != this.isPowered) {
+                this.isPowered = newState;
+                this.markForUpdate();
+            }
         }
     }
 

@@ -41,7 +41,9 @@ public class P2PService implements IGridService, IGridServiceProvider {
     static {
         GridHelper.addGridServiceEventHandler(GridBootingStatusChange.class, P2PService.class,
                 (service, evt) -> {
-                    service.wakeInputTunnels();
+                    if (!evt.isBooting()) {
+                        service.wakeInputTunnels();
+                    }
                 });
         GridHelper.addGridServiceEventHandler(GridPowerStatusChange.class, P2PService.class,
                 (service, evt) -> {
