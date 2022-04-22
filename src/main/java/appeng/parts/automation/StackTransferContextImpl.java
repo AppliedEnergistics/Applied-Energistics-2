@@ -99,7 +99,7 @@ class StackTransferContextImpl implements StackTransferContext {
 
     @Override
     public boolean isInverted() {
-        return isInverted;
+        return !filter.isEmpty() && isInverted;
     }
 
     @Override
