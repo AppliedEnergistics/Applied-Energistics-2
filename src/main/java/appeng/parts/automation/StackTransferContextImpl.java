@@ -24,6 +24,7 @@ class StackTransferContextImpl implements StackTransferContext {
     private final Set<AEKeyType> keyTypes;
     private final int initialOperations;
     private int operationsRemaining;
+    private boolean isInverted;
 
     public StackTransferContextImpl(IStorageService internalStorage, IEnergySource energySource,
             IActionSource actionSource,
@@ -89,6 +90,16 @@ class StackTransferContextImpl implements StackTransferContext {
     @Override
     public IPartitionList getFilter() {
         return filter;
+    }
+
+    @Override
+    public void setInverted(boolean inverted) {
+        isInverted = inverted;
+    }
+
+    @Override
+    public boolean isInverted() {
+        return !filter.isEmpty() && isInverted;
     }
 
     @Override

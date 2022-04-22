@@ -26,6 +26,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.menu.implementations.IOBusMenu;
 
@@ -52,6 +53,7 @@ public class ImportBusPart extends IOBusPart {
                 getOperationsPerTick(),
                 getFilter());
 
+        context.setInverted(this.isUpgradedWith(AEItems.INVERTER_CARD));
         importStrategy.transfer(context);
 
         return context.hasDoneWork();
