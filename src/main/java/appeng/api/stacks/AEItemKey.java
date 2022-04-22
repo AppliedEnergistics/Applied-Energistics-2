@@ -1,8 +1,10 @@
 package appeng.api.stacks;
 
-import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
-import appeng.util.Platform;
+import java.util.List;
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -13,16 +15,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
+import appeng.api.storage.AEKeyFilter;
+import appeng.core.AELog;
+import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
     private final Item item;
     @Nullable
     private final CompoundTag tag;
     private final int hashCode;
+
     private AEItemKey(Item item, @Nullable CompoundTag tag) {
         super(Platform.getItemDisplayName(item, tag));
         this.item = item;
