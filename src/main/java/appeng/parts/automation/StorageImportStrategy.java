@@ -66,7 +66,8 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
                         // transfer quota.
                         || extractable != null && !extractable.equals(resourceKey)
                         // Regard a filter that is set on the bus
-                        || !context.isInFilter(resourceKey)) {
+                        || !(context.isInFilter(resourceKey) || context.isInverted())
+                        || context.isInFilter(resourceKey) && context.isInverted()) {
                     continue;
                 }
 

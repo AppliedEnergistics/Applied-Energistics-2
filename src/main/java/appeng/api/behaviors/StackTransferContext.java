@@ -37,6 +37,10 @@ public interface StackTransferContext {
 
     IPartitionList getFilter();
 
+    void invert(boolean inverted);
+
+    boolean isInverted();
+
     boolean canInsert(AEItemKey what, long amount);
 
     void reduceOperationsRemaining(long inserted);
