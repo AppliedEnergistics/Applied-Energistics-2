@@ -37,7 +37,7 @@ public interface StackTransferContext {
 
     IPartitionList getFilter();
 
-    void invert(boolean inverted);
+    void setInverted(boolean inverted);
 
     boolean isInverted();
 

@@ -93,7 +93,7 @@ class StackTransferContextImpl implements StackTransferContext {
     }
 
     @Override
-    public void invert(boolean inverted) {
+    public void setInverted(boolean inverted) {
         isInverted = inverted;
     }
 

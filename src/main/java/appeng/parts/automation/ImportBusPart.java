@@ -53,7 +53,7 @@ public class ImportBusPart extends IOBusPart {
                 getOperationsPerTick(),
                 getFilter());
 
-        context.invert(this.isUpgradedWith(AEItems.INVERTER_CARD));
+        context.setInverted(this.isUpgradedWith(AEItems.INVERTER_CARD));
         importStrategy.transfer(context);
 
         return context.hasDoneWork();
