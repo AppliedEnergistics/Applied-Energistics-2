@@ -29,7 +29,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -37,9 +36,6 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -49,6 +45,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.capabilities.Capability;
 
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.PartItem;
@@ -64,7 +61,7 @@ public final class P2PTunnelAttunement {
     static final Map<Item, Item> tunnels = new HashMap<>(INITIAL_CAPACITY);
     static final Map<TagKey<Item>, Item> tagTunnels = new IdentityHashMap<>(INITIAL_CAPACITY);
     static final Map<String, Item> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
-    static final List<ApiAttunement<?>> apiAttunements = new ArrayList<>();
+    static final List<ApiAttunement> apiAttunements = new ArrayList<>();
 
     /**
      * The default tunnel part for ME tunnels. Use this to register additional attunement options.
@@ -119,39 +116,15 @@ public final class P2PTunnelAttunement {
     }
 
     /**
-     * Attunement based on the ability of getting an API via Fabric API Lookup from the item.
+     * Attunement based on the ability of getting a capability from the item.
      * 
      * @param tunnelPart  The P2P-tunnel part item.
      * @param description Description for display in REI/JEI.
      */
-    public synchronized static <T> void registerAttunementApi(ItemLike tunnelPart, ItemApiLookup<?, T> api,
-            Function<ItemStack, T> contextProvider, Component description) {
-        Objects.requireNonNull(api, "api");
-        Objects.requireNonNull(contextProvider, "contextProvider");
-        apiAttunements.add(new ApiAttunement<>(api, contextProvider, validateTunnelPartItem(tunnelPart)));
-    }
-
-    /**
-     * Attunement based on the ability of getting a storage container API via Fabric API Lookup from the item.
-     * 
-     * @param tunnelPart  The P2P-tunnel part item.
-     * @param description Description for display in REI/JEI.
-     */
-    public synchronized static void registerAttunementApi(ItemLike tunnelPart,
-            ItemApiLookup<?, ContainerItemContext> api, Component description) {
-        addItemByApi(api, stack -> ContainerItemContext.ofSingleSlot(new SingleStackStorage() {
-            ItemStack buffer = stack;
-
-            @Override
-            protected ItemStack getStack() {
-                return buffer;
-            }
-
-            @Override
-            protected void setStack(ItemStack stack) {
-                buffer = stack;
-            }
-        }), tunnelPart);
+    public synchronized static <T> void registerAttunementApi(ItemLike tunnelPart, Capability<?> cap,
+            Component description) {
+        Objects.requireNonNull(cap, "cap");
+        apiAttunements.add(new ApiAttunement(cap, validateTunnelPartItem(tunnelPart)));
     }
 
     /**
@@ -204,20 +177,8 @@ public final class P2PTunnelAttunement {
      */
     @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
     @Deprecated(forRemoval = true)
-    public synchronized static <T> void addItemByApi(ItemApiLookup<?, T> api,
-            Function<ItemStack, T> contextProvider,
-            ItemLike tunnelPart) {
-        registerAttunementApi(tunnelPart, api, contextProvider, new TextComponent("<missing description>"));
-    }
-
-    /**
-     * @deprecated Use the overload with a description Component instead.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
-    @Deprecated(forRemoval = true)
-    public synchronized static void addItemByApi(ItemApiLookup<?, ContainerItemContext> api,
-            ItemLike tunnelPart) {
-        registerAttunementApi(tunnelPart, api, new TextComponent("<missing description>"));
+    public synchronized static <T> void addItemByCap(Capability<?> cap, ItemLike tunnelPart) {
+        registerAttunementApi(tunnelPart, cap, new TextComponent("<missing description>"));
     }
 
     /**
@@ -252,8 +213,8 @@ public final class P2PTunnelAttunement {
 
         // Use the mod id as last option.
         for (var entry : modIdTunnels.entrySet()) {
-            var id = Registry.ITEM.getKey(trigger.getItem());
-            if (id.getNamespace().equals(entry.getKey())) {
+            if (trigger.getItem().getRegistryName() != null
+                    && trigger.getItem().getRegistryName().getNamespace().equals(entry.getKey())) {
                 return new ItemStack(entry.getValue());
             }
         }
@@ -277,12 +238,11 @@ public final class P2PTunnelAttunement {
         return item;
     }
 
-    record ApiAttunement<T> (
-            ItemApiLookup<?, T> api,
-            Function<ItemStack, T> contextProvider,
+    record ApiAttunement(
+            Capability<?> capability,
             Item tunnelType) {
         public boolean hasApi(ItemStack stack) {
-            return api.find(stack, contextProvider.apply(stack)) != null;
+            return stack.getCapability(capability).isPresent();
         }
     }
 

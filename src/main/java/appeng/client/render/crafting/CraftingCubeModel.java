@@ -21,6 +21,7 @@ package appeng.client.render.crafting;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -28,6 +29,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.client.render.BasicUnbakedModel;
@@ -36,7 +38,7 @@ import appeng.core.AppEng;
 /**
  * The built-in model for the connected texture crafting cube.
  */
-public class CraftingCubeModel implements BasicUnbakedModel {
+public class CraftingCubeModel implements BasicUnbakedModel<CraftingCubeModel> {
 
     private final static Material RING_CORNER = texture("ring_corner");
     private final static Material RING_SIDE_HOR = texture("ring_side_hor");
@@ -67,10 +69,10 @@ public class CraftingCubeModel implements BasicUnbakedModel {
                 MONITOR_BASE, MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
     }
 
-    @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ResourceLocation modelId) {
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
         // Retrieve our textures and pass them on to the baked model
         TextureAtlasSprite ringCorner = spriteGetter.apply(RING_CORNER);
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
