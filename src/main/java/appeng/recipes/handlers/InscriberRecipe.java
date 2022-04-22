@@ -18,7 +18,10 @@
 
 package appeng.recipes.handlers;
 
+import java.util.Map;
+
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +29,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
@@ -60,7 +65,31 @@ public class InscriberRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack assemble(Container inv) {
-        return this.output.copy();
+        ItemStack result = this.output.copy();
+        ItemStack input = inv.getItem(2);
+
+        CompoundTag inputTag = input.getTag();
+        CompoundTag resultTag = result.getTag();
+
+        var resultEnchants = EnchantmentHelper.deserializeEnchantments(result.getEnchantmentTags());
+        resultTag.remove("Enchantments");
+
+        if (resultTag != null) {
+            result.setTag(inputTag);
+            for (String key : resultTag.getAllKeys()) {
+                if (!result.getTag().contains(key)) {
+                    result.addTagElement(key, resultTag.get(key));
+                }
+            }
+        }
+        if (resultEnchants != null) {
+            for (Map.Entry<Enchantment, Integer> enchantment : resultEnchants.entrySet()) {
+                if (EnchantmentHelper.getEnchantments(result).get(enchantment.getKey()) == null) {
+                    result.enchant(enchantment.getKey(), enchantment.getValue());
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -70,12 +99,12 @@ public class InscriberRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return output;
+        return this.output;
     }
 
     @Override
     public ResourceLocation getId() {
-        return id;
+        return this.id;
     }
 
     @Override
@@ -98,19 +127,19 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     public Ingredient getMiddleInput() {
-        return middleInput;
+        return this.middleInput;
     }
 
     public Ingredient getTopOptional() {
-        return topOptional;
+        return this.topOptional;
     }
 
     public Ingredient getBottomOptional() {
-        return bottomOptional;
+        return this.bottomOptional;
     }
 
     public InscriberProcessType getProcessType() {
-        return processType;
+        return this.processType;
     }
 
     @Override

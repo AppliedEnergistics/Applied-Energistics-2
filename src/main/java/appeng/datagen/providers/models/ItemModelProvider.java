@@ -196,6 +196,11 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         handheld(AEItems.NETHER_QUARTZ_SWORD);
         handheld(AEItems.NETHER_QUARTZ_WRENCH);
         handheld(AEItems.NETHER_QUARTZ_KNIFE);
+        handheld(AEItems.FLUIX_AXE);
+        handheld(AEItems.FLUIX_HOE);
+        handheld(AEItems.FLUIX_SHOVEL);
+        handheld(AEItems.FLUIX_PICK);
+        handheld(AEItems.FLUIX_SWORD);
         handheld(AEItems.ENTROPY_MANIPULATOR);
         handheld(AEItems.CHARGED_STAFF);
 

@@ -60,6 +60,11 @@ import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
+import appeng.items.tools.fluix.FluixAxeItem;
+import appeng.items.tools.fluix.FluixHoeItem;
+import appeng.items.tools.fluix.FluixPickaxeItem;
+import appeng.items.tools.fluix.FluixSpadeItem;
+import appeng.items.tools.fluix.FluixSwordItem;
 import appeng.items.tools.powered.ChargedStaffItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.items.tools.powered.EntropyManipulatorItem;
@@ -110,6 +115,16 @@ public final class AEItems {
     public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item("Nether Quartz Sword", AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_COMBAT);
     public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item("Nether Quartz Wrench", AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTab.TAB_TOOLS);
     public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item("Nether Quartz Cutting Knife", AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50), QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
+
+    ///
+    /// FLUIX TOOLS
+    ///
+
+    public static final ItemDefinition<FluixAxeItem> FLUIX_AXE = item("Fluix Axe", AEItemIds.FLUIX_AXE, p -> new FluixAxeItem(p), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<FluixHoeItem> FLUIX_HOE = item("Fluix Hoe", AEItemIds.FLUIX_HOE, p -> new FluixHoeItem(p), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<FluixSpadeItem> FLUIX_SHOVEL = item("Fluix Shovel", AEItemIds.FLUIX_SHOVEL, p -> new FluixSpadeItem(p), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<FluixPickaxeItem> FLUIX_PICK = item("Fluix Pickaxe", AEItemIds.FLUIX_PICK, p -> new FluixPickaxeItem(p), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<FluixSwordItem> FLUIX_SWORD = item("Fluix Sword", AEItemIds.FLUIX_SWORD, p -> new FluixSwordItem(p), CreativeModeTab.TAB_TOOLS);
 
     ///
     /// VARIOUS POWERED TOOLS

@@ -105,6 +105,12 @@ public final class ConventionTags {
     public static TagKey<Item> QUARTZ_KNIFE = tag("ae2:knife");
     public static TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
 
+    public static TagKey<Item> QUARTZ_AXE = tag("ae2:quartz_axe");
+    public static TagKey<Item> QUARTZ_HOE = tag("ae2:quartz_hoe");
+    public static TagKey<Item> QUARTZ_PICK = tag("ae2:quartz_pickaxe");
+    public static TagKey<Item> QUARTZ_SHOVEL = tag("ae2:quartz_spade");
+    public static TagKey<Item> QUARTZ_SWORD = tag("ae2:quartz_sword");
+
     /**
      * Used to identify items that act as wrenches.
      */

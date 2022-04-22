@@ -176,6 +176,12 @@ public final class AEItemIds {
     public static final ResourceLocation NETHER_QUARTZ_WRENCH = id("nether_quartz_wrench");
     public static final ResourceLocation NETHER_QUARTZ_KNIFE = id("nether_quartz_cutting_knife");
 
+    public static final ResourceLocation FLUIX_AXE = id("fluix_axe");
+    public static final ResourceLocation FLUIX_HOE = id("fluix_hoe");
+    public static final ResourceLocation FLUIX_SHOVEL = id("fluix_shovel");
+    public static final ResourceLocation FLUIX_PICK = id("fluix_pickaxe");
+    public static final ResourceLocation FLUIX_SWORD = id("fluix_sword");
+
     ///
     /// The following items were previously part of ApiItems
     ///

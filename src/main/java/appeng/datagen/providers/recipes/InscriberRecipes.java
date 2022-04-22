@@ -28,10 +28,13 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.core.AppEng;
@@ -83,6 +86,13 @@ public class InscriberRecipes extends AE2RecipeProvider {
         inscribe(Ingredient.of(ConventionTags.CERTUS_QUARTZ), AEItems.CERTUS_QUARTZ_DUST.stack())
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, "certus_quartz_dust");
+
+        // Fluix Vanilla-like tool Recipes
+        fluixUpgrade(consumer, "fluix_axe", ConventionTags.QUARTZ_AXE, AEItems.FLUIX_AXE);
+        fluixUpgrade(consumer, "fluix_hoe", ConventionTags.QUARTZ_HOE, AEItems.FLUIX_HOE);
+        fluixUpgrade(consumer, "fluix_pickaxe", ConventionTags.QUARTZ_PICK, AEItems.FLUIX_PICK);
+        fluixUpgrade(consumer, "fluix_spade", ConventionTags.QUARTZ_SHOVEL, AEItems.FLUIX_SHOVEL);
+        fluixUpgrade(consumer, "fluix_sword", ConventionTags.QUARTZ_SWORD, AEItems.FLUIX_SWORD);
     }
 
     private void processor(Consumer<FinishedRecipe> consumer,
@@ -109,6 +119,19 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 .setTop(Ingredient.of(press))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, name + "_press");
+    }
+
+    private void fluixUpgrade(Consumer<FinishedRecipe> consumer, String name, TagKey<Item> quartzTool,
+            ItemLike fluixTool) {
+        final ItemStack upgradedTool = new ItemStack(fluixTool);
+        upgradedTool.enchant(
+                (upgradedTool.is(AEItems.FLUIX_SWORD.asItem()) ? Enchantments.SHARPNESS : Enchantments.BLOCK_FORTUNE),
+                1);
+
+        inscribe(Ingredient.of(quartzTool), upgradedTool)
+                .setTop(Ingredient.of(ConventionTags.FLUIX_CRYSTAL))
+                .setMode(InscriberProcessType.PRESS)
+                .save(consumer, name);
     }
 
     private InscriberRecipeBuilder inscribe(ItemLike middle, ItemStack output) {
