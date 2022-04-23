@@ -131,7 +131,7 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public String getId() {
-        return Platform.getDescriptionId(fluid);
+        return Registry.FLUID.getResourceKey(fluid).get().location().toString();
     }
 
     @Override

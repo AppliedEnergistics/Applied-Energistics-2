@@ -173,7 +173,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public String getId() {
-        return toStack().getDescriptionId();
+        return Registry.ITEM.getResourceKey(item).get().location().toString();
     }
 
     public ItemVariant toVariant() {
