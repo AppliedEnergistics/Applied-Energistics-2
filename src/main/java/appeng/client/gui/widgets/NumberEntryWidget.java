@@ -43,15 +43,12 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.NumberEntryType;
-import appeng.client.gui.Rects;
+import appeng.client.gui.*;
 import appeng.client.gui.style.WidgetStyle;
+import appeng.core.localization.GuiText;
 
 /**
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
@@ -60,10 +57,6 @@ import appeng.client.gui.style.WidgetStyle;
 public class NumberEntryWidget extends GuiComponent implements ICompositeWidget {
 
     private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
-
-    private static final Component INVALID_NUMBER = new TranslatableComponent("gui.ae2.validation.InvalidNumber");
-    private static final String NUMBER_LESS_THAN_MIN_VALUE = "gui.ae2.validation.NumberLessThanMinValue";
-    private static final String NUMBER_GREATER_THAN_MAX_VALUE = "gui.ae2.validation.NumberGreaterThanMaxValue";
     private static final Component PLUS = new TextComponent("+");
     private static final Component MINUS = new TextComponent("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
@@ -91,7 +84,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     public NumberEntryWidget(NumberEntryType type) {
         this.type = Objects.requireNonNull(type, "type");
-        this.decimalFormat = new DecimalFormat("#.####", new DecimalFormatSymbols());
+        this.decimalFormat = new DecimalFormat("#.######", new DecimalFormatSymbols());
         this.decimalFormat.setParseBigDecimal(true);
         this.decimalFormat.setNegativePrefix("-");
 
@@ -281,13 +274,17 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
      * Retrieves the numeric representation of the value entered by the user, if it is convertible.
      */
     private Optional<BigDecimal> getValueInternal() {
+        return MathExpressionParser.parse(textField.getValue(), decimalFormat);
+    }
+
+    /*
+     * Return true if the value entered by the user is a single numeric number and not a mathematical expression
+     */
+    private boolean isNumber() {
         var position = new ParsePosition(0);
         var textValue = textField.getValue().trim();
-        BigDecimal decimal = (BigDecimal) decimalFormat.parse(textValue, position);
-        if (position.getErrorIndex() != -1 || position.getIndex() != textValue.length()) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(decimal);
+        decimalFormat.parse(textValue, position);
+        return position.getErrorIndex() == -1 && position.getIndex() == textValue.length();
     }
 
     /**
@@ -299,6 +296,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     private void validate() {
         List<Component> validationErrors = new ArrayList<>();
+        List<Component> infoMessages = new ArrayList<>();
 
         var possibleValue = getValueInternal();
         if (possibleValue.isPresent()) {
@@ -309,23 +307,27 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
                 var value = convertToExternalValue(possibleValue.get());
                 if (value < minValue) {
                     var formatted = decimalFormat.format(convertToInternalValue(minValue));
-                    validationErrors.add(new TranslatableComponent(NUMBER_LESS_THAN_MIN_VALUE, formatted));
+                    validationErrors.add(GuiText.NumberLessThanMinValue.text(formatted));
                 } else if (value > maxValue) {
                     var formatted = decimalFormat.format(convertToInternalValue(maxValue));
-                    validationErrors.add(new TranslatableComponent(NUMBER_GREATER_THAN_MAX_VALUE, formatted));
+                    validationErrors.add(GuiText.NumberGreaterThanMaxValue.text(formatted));
+                } else if (!isNumber()) { // is a mathematical expression
+                    // displaying the evaluation of the expression
+                    infoMessages.add(new TextComponent("= " + decimalFormat.format(possibleValue.get())));
                 }
             }
         } else {
-            validationErrors.add(INVALID_NUMBER);
+            validationErrors.add(GuiText.InvalidNumber.text());
         }
 
         boolean valid = validationErrors.isEmpty();
+        var tooltip = valid ? infoMessages : validationErrors;
         this.textField.setTextColor(valid ? TEXT_COLOR_NORMAL : TEXT_COLOR_ERROR);
-        this.textField.setTooltipMessage(validationErrors);
+        this.textField.setTooltipMessage(tooltip);
 
         if (this.validationIcon != null) {
             this.validationIcon.setValid(valid);
-            this.validationIcon.setTooltip(validationErrors);
+            this.validationIcon.setTooltip(tooltip);
         }
     }
 
@@ -382,25 +384,15 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     @Override
     public boolean onMouseWheel(Point mousePos, double delta) {
         if (textFieldBounds.contains(mousePos.getX(), mousePos.getY())) {
-            if (delta < 0) {
-                // Decrement by 1 or clamp to the min value if it's been reached
-                var minValueInternal = convertToInternalValue(minValue);
-                if (getValueInternal().orElse(minValueInternal).subtract(BigDecimal.ONE)
-                        .compareTo(minValueInternal) >= 0) {
+            if (getValueInternal().isPresent()) {
+                if (delta < 0) {
                     addQty(-1);
-                } else {
-                    setValueInternal(minValueInternal);
-                }
-            } else if (delta > 0) {
-                // Increment by 1 or clamp to the max value if it's been reached
-                var maxValueInternal = convertToInternalValue(maxValue);
-                if (getValueInternal().orElse(maxValueInternal).add(BigDecimal.ONE).compareTo(maxValueInternal) <= 0) {
+                } else if (delta > 0) {
                     addQty(1);
-                } else {
-                    setValueInternal(maxValueInternal);
                 }
+
+                return true;
             }
-            return true;
         }
         return false;
     }
