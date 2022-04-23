@@ -256,7 +256,7 @@ public class ItemPickupStrategy implements PickupStrategy {
         }
 
         if (enchantments != null) {
-            requiredEnergy *= enchantments.values().stream().reduce(0, Integer::sum);
+            requiredEnergy *= 8 * enchantments.values().stream().reduce(0, Integer::sum);
         }
 
         return requiredEnergy;
