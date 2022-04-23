@@ -42,7 +42,7 @@ public interface PickupStrategy {
     @FunctionalInterface
     interface Factory {
         PickupStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host,
-                boolean allowSilkTouch);
+                boolean allowSilkTouch, int fortuneLevel);
     }
 
     static void register(AEKeyType type, Factory factory) {

@@ -39,6 +39,7 @@ import appeng.util.Platform;
 public class ItemPickupStrategy implements PickupStrategy {
 
     private static final float SILK_TOUCH_FACTOR = 16;
+    private static final float FORTUNE_FACTOR = 48;
 
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
@@ -52,16 +53,18 @@ public class ItemPickupStrategy implements PickupStrategy {
     private final Direction side;
     private final BlockEntity host;
     private final boolean allowSilkTouch;
+    private final int fortuneLevel;
 
     private boolean isAccepting = true;
 
     public ItemPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            boolean allowSilkTouch) {
+            boolean allowSilkTouch, int fortuneLevel) {
         this.level = level;
         this.pos = pos;
         this.side = side;
         this.host = host;
         this.allowSilkTouch = allowSilkTouch;
+        this.fortuneLevel = fortuneLevel;
     }
 
     @Override
@@ -260,6 +263,8 @@ public class ItemPickupStrategy implements PickupStrategy {
 
         if (allowSilkTouch) {
             requiredEnergy *= SILK_TOUCH_FACTOR;
+        } else if (fortuneLevel > 0) {
+            requiredEnergy *= FORTUNE_FACTOR * Math.pow(1.25, fortuneLevel);
         }
 
         return requiredEnergy;
@@ -329,10 +334,11 @@ public class ItemPickupStrategy implements PickupStrategy {
             tool = new HarvestTool(new ItemStack(Items.DIAMOND_PICKAXE, 1), true);
         }
 
-        if (allowSilkTouch) {
-            // For silk touch purposes, enchant the fake tool
+        if (allowSilkTouch || fortuneLevel > 0) {
+            // For silk touch / fortune purposes, enchant the fake tool
             var item = tool.item().copy();
-            EnchantmentHelper.setEnchantments(ImmutableMap.of(Enchantments.SILK_TOUCH, 1), item);
+            EnchantmentHelper.setEnchantments(allowSilkTouch ? ImmutableMap.of(Enchantments.SILK_TOUCH, 1)
+                    : ImmutableMap.of(Enchantments.BLOCK_FORTUNE, fortuneLevel), item);
 
             // Set fallback to false, to ensure it'll be used even if not strictly required
             tool = new HarvestTool(item, false);

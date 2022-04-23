@@ -31,7 +31,7 @@ public class FluidPickupStrategy implements PickupStrategy {
     private long lastEffect;
 
     public FluidPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            boolean allowSilkTouch) {
+            boolean allowSilkTouch, int fortuneLevel) {
         this.level = level;
         this.pos = pos;
         this.side = side;

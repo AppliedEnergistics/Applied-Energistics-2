@@ -120,10 +120,10 @@ public final class StackWorldBehaviors {
     }
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, boolean allowSilkTouch) {
+            BlockEntity host, boolean allowSilkTouch, int fortuneLevel) {
         return pickupStrategies.getMap().values()
                 .stream()
-                .map(f -> f.create(level, fromPos, fromSide, host, allowSilkTouch))
+                .map(f -> f.create(level, fromPos, fromSide, host, allowSilkTouch, fortuneLevel))
                 .toList();
     }
 

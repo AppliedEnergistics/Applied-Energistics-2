@@ -19,12 +19,20 @@
 package appeng.parts.automation;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.behaviors.PickupStrategy;
@@ -45,6 +53,8 @@ import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
+import appeng.util.EnchantmentUtil;
+import appeng.util.SettingsFrom;
 
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
@@ -65,9 +75,50 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private PickupStrategy pendingPickupStrategy;
 
+    @Nullable
+    private Enchantment enchantment;
+    private int enchantmentLevel = 0;
+
     public AnnihilationPlanePart(IPartItem<?> partItem) {
         super(partItem);
         getMainNode().addService(IGridTickable.class, this);
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        if (data.contains("enchantment") && data.contains("enchantmentLevel")) {
+            this.enchantment = Registry.ENCHANTMENT.get(new ResourceLocation(data.getString("enchantment")));
+            this.enchantmentLevel = data.getInt("enchantmentLevel");
+        }
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        if (this.enchantment != null && this.enchantmentLevel > 0) {
+            data.putString("enchantment", EnchantmentHelper.getEnchantmentId(enchantment).toString());
+            data.putInt("enchantmentLevel", enchantmentLevel);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag data, @Nullable Player player) {
+        super.importSettings(mode, data, player);
+        if (data.contains("Enchantments", 9)) {
+            var map = EnchantmentHelper.deserializeEnchantments(data.getList("Enchantments", 10));
+            this.enchantment = (Enchantment) map.keySet().toArray()[0];
+            this.enchantmentLevel = (int) map.values().toArray()[0];
+            pickupStrategies = null;
+        }
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag data) {
+        super.exportSettings(mode, data);
+        if (this.enchantment != null && this.enchantmentLevel > 0) {
+            EnchantmentUtil.setEnchantments(data, Map.of(enchantment, enchantmentLevel));
+        }
     }
 
     private List<PickupStrategy> getPickupStrategies() {
@@ -76,13 +127,17 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
             pickupStrategies = StackWorldBehaviors.createPickupStrategies((ServerLevel) self.getLevel(),
-                    pos, side, self, allowsSilkTouch());
+                    pos, side, self, allowsSilkTouch(), fortuneLevel());
         }
         return pickupStrategies;
     }
 
     protected boolean allowsSilkTouch() {
-        return false;
+        return this.enchantment == Enchantments.SILK_TOUCH;
+    }
+
+    protected int fortuneLevel() {
+        return this.enchantment == Enchantments.BLOCK_FORTUNE ? this.enchantmentLevel : 0;
     }
 
     @Override
@@ -181,10 +236,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
         super.onMainNodeStateChanged(reason);
-
-        if (getMainNode().hasGridBooted()) {
-            this.refresh();
-        }
+        this.refresh();
     }
 
     @Override
