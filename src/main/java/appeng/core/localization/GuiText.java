@@ -88,6 +88,7 @@ public enum GuiText implements LocalizationEnum {
     Installed("Installed: %s"),
     Interface("ME Interface"),
     Interfaces("ME Interfaces"),
+    InvalidNumber("Please enter a number or a mathematical expression e.g. : 3*4"),
     InvalidPattern("Invalid Pattern"),
     Items("Items"),
     // Used in a terminal to indicate that an item is craftable
@@ -113,6 +114,8 @@ public enum GuiText implements LocalizationEnum {
     NoPermissions("No Permissions Selected"),
     NoSecondOutput("No Secondary Output"),
     Nothing("Nothing"),
+    NumberGreaterThanMaxValue("Please enter a number less than or equal to %s"),
+    NumberLessThanMinValue("Please enter a number greater than or equal to %s"),
     OCTunnel("OpenComputers"),
     Of("of"),
     OfSecondOutput("%1$d%% Chance for second output."),

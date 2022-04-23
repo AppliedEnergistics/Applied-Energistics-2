@@ -109,9 +109,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("gui.ae2.security.security.tip", "User can access and modify the security terminal of the network.");
         add("gui.ae2.units.appliedenergstics", "AE");
         add("gui.ae2.units.tr", "E");
-        add("gui.ae2.validation.InvalidNumber", "Please enter a number");
-        add("gui.ae2.validation.NumberGreaterThanMaxValue", "Please enter a number less than or equal to %d");
-        add("gui.ae2.validation.NumberLessThanMinValue", "Please enter a number greater than or equal to %d");
         add("itemGroup.ae2.facades", "Applied Energistics 2 - Facades");
         add("itemGroup.ae2.main", "Applied Energistics 2");
         add("key.ae2.category", "Applied Energistics 2");
