@@ -1,5 +1,7 @@
 package appeng.parts.automation;
 
+import java.util.Map;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -31,7 +33,7 @@ public class FluidPickupStrategy implements PickupStrategy {
     private long lastEffect;
 
     public FluidPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            boolean allowSilkTouch, int fortuneLevel) {
+            Map<?, ?> enchantments) {
         this.level = level;
         this.pos = pos;
         this.side = side;
