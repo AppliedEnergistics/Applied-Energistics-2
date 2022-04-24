@@ -25,9 +25,11 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
@@ -110,8 +112,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     private void readEnchantments(CompoundTag data) {
-        if (data.contains("Enchantments", 9)) {
-            enchantments = EnchantmentHelper.deserializeEnchantments(data.getList("Enchantments", 10));
+        if (data.contains(ItemStack.TAG_ENCH, Tag.TAG_LIST)) {
+            enchantments = EnchantmentHelper.deserializeEnchantments(data.getList(ItemStack.TAG_ENCH, Tag.TAG_COMPOUND));
         }
     }
 
