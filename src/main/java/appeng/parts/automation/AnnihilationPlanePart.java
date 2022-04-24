@@ -25,13 +25,10 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.behaviors.PickupStrategy;
@@ -101,20 +98,24 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     @Override
     public void importSettings(SettingsFrom mode, CompoundTag data, @Nullable Player player) {
         super.importSettings(mode, data, player);
-        readEnchantments(data);
+        // Import enchants only when the plan is placed, not from memory cards
+        if (mode == SettingsFrom.DISMANTLE_ITEM) {
+            readEnchantments(data);
+        }
         pickupStrategies = null;
     }
 
     @Override
     public void exportSettings(SettingsFrom mode, CompoundTag data) {
         super.exportSettings(mode, data);
-        writeEnchantments(data);
+        // Save enchants only when the actual plane is dismantled
+        if (mode == SettingsFrom.DISMANTLE_ITEM) {
+            writeEnchantments(data);
+        }
     }
 
     private void readEnchantments(CompoundTag data) {
-        if (data.contains(ItemStack.TAG_ENCH, Tag.TAG_LIST)) {
-            enchantments = EnchantmentHelper.deserializeEnchantments(data.getList(ItemStack.TAG_ENCH, Tag.TAG_COMPOUND));
-        }
+        enchantments = EnchantmentUtil.getEnchantments(data);
     }
 
     private void writeEnchantments(CompoundTag data) {

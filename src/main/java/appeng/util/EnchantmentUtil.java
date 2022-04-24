@@ -2,8 +2,11 @@ package appeng.util;
 
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -13,6 +16,23 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
  */
 public final class EnchantmentUtil {
     private EnchantmentUtil() {
+    }
+
+    /**
+     * Read enchants written using {@link #setEnchantments} or added to an itemstack's tag using normal enchanting.
+     * 
+     * @return null if no enchants are present
+     */
+    @Nullable
+    public static Map<Enchantment, Integer> getEnchantments(CompoundTag data) {
+        if (data.contains(ItemStack.TAG_ENCH, Tag.TAG_LIST)) {
+            var list = data.getList(ItemStack.TAG_ENCH, Tag.TAG_COMPOUND);
+            var enchants = EnchantmentHelper.deserializeEnchantments(list);
+            if (!enchants.isEmpty()) {
+                return enchants;
+            }
+        }
+        return null;
     }
 
     /**
