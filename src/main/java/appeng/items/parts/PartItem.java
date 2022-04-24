@@ -20,8 +20,10 @@ package appeng.items.parts;
 
 import java.util.function.Function;
 
+import appeng.core.definitions.AEParts;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
 import appeng.api.parts.IPart;
@@ -55,4 +57,13 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
         return factory.apply(this);
     }
 
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return this == AEParts.ANNIHILATION_PLANE.asItem();
+    }
+
+    @Override
+    public int getEnchantmentValue() {
+        return this == AEParts.ANNIHILATION_PLANE.asItem() ? 10 : 0;
+    }
 }
