@@ -9,6 +9,10 @@ import net.minecraft.world.item.Item;
 
 import appeng.core.definitions.AEParts;
 
+/**
+ * Adds the ME Annihilation Plane to the items to check for when applying
+ * {@link net.minecraft.world.item.enchantment.EnchantmentCategory#DIGGER} enchantments.
+ */
 @Mixin(targets = "net/minecraft/world/item/enchantment/EnchantmentCategory$7")
 public class AnnihilationPlaneEnchantmentMixin {
     @Inject(method = "canEnchant", at = @At("RETURN"), cancellable = true)
