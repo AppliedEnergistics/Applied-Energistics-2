@@ -20,7 +20,6 @@ package appeng.items.parts;
 
 import java.util.function.Function;
 
-import appeng.core.definitions.AEParts;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,6 +28,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
+import appeng.core.definitions.AEParts;
 import appeng.items.AEBaseItem;
 
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
