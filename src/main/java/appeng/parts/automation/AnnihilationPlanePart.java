@@ -72,6 +72,10 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
 
     private PickupStrategy pendingPickupStrategy;
 
+    /**
+     * Enchantments found on the plane when it was placed will be used to enchant the fake tool used for picking up
+     * blocks.
+     */
     @Nullable
     private Map<Enchantment, Integer> enchantments;
 

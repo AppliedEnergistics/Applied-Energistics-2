@@ -412,5 +412,4 @@ public interface IPart extends ICustomCableConnection {
     default AECableType getDesiredConnectionType() {
         return AECableType.GLASS;
     }
-
 }

@@ -47,7 +47,6 @@ public class ItemPickupStrategy implements PickupStrategy {
     private final ServerLevel level;
     private final BlockPos pos;
     private final Direction side;
-    private final BlockEntity host;
     private final Map<Enchantment, Integer> enchantments;
 
     private boolean isAccepting = true;
@@ -57,7 +56,6 @@ public class ItemPickupStrategy implements PickupStrategy {
         this.level = level;
         this.pos = pos;
         this.side = side;
-        this.host = host;
         this.enchantments = enchantments;
     }
 
@@ -221,7 +219,7 @@ public class ItemPickupStrategy implements PickupStrategy {
         var hardness = state.getDestroySpeed(level, pos);
         var ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
 
-        return !ignoreAirAndFluids && hardness >= 0f && level.hasChunkAt(pos)
+        return !ignoreAirAndFluids && hardness >= 0f && level.isLoaded(pos)
                 && level.mayInteract(Platform.getPlayer(level), pos);
     }
 
@@ -311,31 +309,32 @@ public class ItemPickupStrategy implements PickupStrategy {
      * @param state The block state of the block about to be broken.
      */
     private HarvestTool createHarvestTool(BlockState state) {
-        HarvestTool tool;
+        ItemStack tool;
+        boolean fallback = false;
 
         if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_PICKAXE, 1), false);
+            tool = new ItemStack(Items.DIAMOND_PICKAXE, 1);
         } else if (state.is(BlockTags.MINEABLE_WITH_AXE)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_AXE, 1), false);
+            tool = new ItemStack(Items.DIAMOND_AXE, 1);
         } else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_SHOVEL, 1), false);
+            tool = new ItemStack(Items.DIAMOND_SHOVEL, 1);
         } else if (state.is(BlockTags.MINEABLE_WITH_HOE)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_HOE, 1), false);
+            tool = new ItemStack(Items.DIAMOND_HOE, 1);
         } else {
-            // Use a pickaxe for everything else. Mostly to allow silk touch enchants
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_PICKAXE, 1), true);
+            // Use a pickaxe for everything else, to allow enchanting it
+            tool = new ItemStack(Items.DIAMOND_PICKAXE, 1);
+            fallback = true;
         }
 
         if (enchantments != null) {
             // For silk touch / fortune purposes, enchant the fake tool
-            var item = tool.item().copy();
-            EnchantmentHelper.setEnchantments(enchantments, item);
+            EnchantmentHelper.setEnchantments(enchantments, tool);
 
-            // Set fallback to false, to ensure it'll be used even if not strictly required
-            tool = new HarvestTool(item, false);
+            // Setting fallback to false ensures it'll be used even if not strictly required
+            fallback = false;
         }
 
-        return tool;
+        return new HarvestTool(tool, fallback);
     }
 
     public static boolean isBlockBlacklisted(Block b) {

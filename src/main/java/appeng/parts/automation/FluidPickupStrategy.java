@@ -25,7 +25,6 @@ public class FluidPickupStrategy implements PickupStrategy {
     private final ServerLevel level;
     private final BlockPos pos;
     private final Direction side;
-    private final BlockEntity host;
 
     /**
      * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
@@ -37,7 +36,6 @@ public class FluidPickupStrategy implements PickupStrategy {
         this.level = level;
         this.pos = pos;
         this.side = side;
-        this.host = host;
     }
 
     @Override

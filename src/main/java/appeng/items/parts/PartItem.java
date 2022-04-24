@@ -22,13 +22,11 @@ import java.util.function.Function;
 
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
-import appeng.core.definitions.AEParts;
 import appeng.items.AEBaseItem;
 
 public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T> {
@@ -57,13 +55,4 @@ public class PartItem<T extends IPart> extends AEBaseItem implements IPartItem<T
         return factory.apply(this);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return this == AEParts.ANNIHILATION_PLANE.asItem();
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return this == AEParts.ANNIHILATION_PLANE.asItem() ? 10 : 0;
-    }
 }
