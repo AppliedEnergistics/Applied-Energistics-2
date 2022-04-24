@@ -29,9 +29,11 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 
@@ -96,6 +98,7 @@ public final class TestPlots {
             .put(AppEng.makeId("p2p_light"), P2PTestPlots::light)
             .put(AppEng.makeId("import_from_cauldron"), TestPlots::importLavaFromCauldron)
             .put(AppEng.makeId("tool_repair_recipe"), TestPlots::toolRepairRecipe)
+            .put(AppEng.makeId("double_chest_storage_bus"), TestPlots::doubleChestStorageBus)
             .build();
 
     private TestPlots() {
@@ -902,4 +905,28 @@ public final class TestPlots {
             });
         });
     }
+
+    /**
+     * Placing a storage bus on a double chest should report the content of both chests.
+     */
+    private static void doubleChestStorageBus(PlotBuilder plot) {
+        var o = BlockPos.ZERO;
+        plot.chest(o.north(), new ItemStack(Items.STICK));
+        plot.chest(o.north().west(), new ItemStack(Items.STICK));
+        plot.blockState(o.north(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.TYPE, ChestType.RIGHT));
+        plot.blockState(o.north().west(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.TYPE, ChestType.LEFT));
+        plot.cable(o).part(Direction.NORTH, AEParts.STORAGE_BUS);
+        plot.creativeEnergyCell(o.below());
+
+        plot.test(helper -> {
+            helper.succeedWhen(() -> {
+                var grid = helper.getGrid(o);
+                var stacks = grid.getStorageService().getInventory().getAvailableStacks();
+                var stickCount = stacks.get(AEItemKey.of(Items.STICK));
+                // The contents of both chest halves should be reported
+                helper.check(2 == stickCount, "Stick count wasn't 2: " + stickCount);
+            });
+        });
+    }
+
 }
