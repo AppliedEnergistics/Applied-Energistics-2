@@ -103,11 +103,8 @@ public final class GridHelper {
      */
     @Nullable
     public static IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos) {
-        if (level.hasChunkAt(pos)) {
-            var te = level.getBlockEntity(pos);
-            if (te instanceof IInWorldGridNodeHost host) {
-                return host;
-            }
+        if (level.getBlockEntity(pos) instanceof IInWorldGridNodeHost host) {
+            return host;
         }
         return null;
     }
