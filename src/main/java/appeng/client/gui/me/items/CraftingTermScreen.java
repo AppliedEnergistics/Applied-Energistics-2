@@ -40,6 +40,11 @@ public class CraftingTermScreen<C extends CraftingTermMenu> extends MEStorageScr
         ActionButton clearBtn = new ActionButton(ActionItems.STASH, btn -> menu.clearCraftingGrid());
         clearBtn.setHalfSize(true);
         widgets.add("clearCraftingGrid", clearBtn);
+
+        ActionButton clearToPlayerInvBtn = new ActionButton(ActionItems.STASH_TO_PLAYER_INV,
+                btn -> menu.clearToPlayerInventory());
+        clearToPlayerInvBtn.setHalfSize(true);
+        widgets.add("clearToPlayerInv", clearToPlayerInvBtn);
     }
 
 }

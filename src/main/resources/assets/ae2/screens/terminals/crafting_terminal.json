@@ -58,6 +58,10 @@
     "clearCraftingGrid": {
       "left": 92,
       "bottom": 156
+    },
+    "clearToPlayerInv": {
+      "left": 102,
+      "bottom": 156
     }
   }
 }

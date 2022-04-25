@@ -49,9 +49,14 @@ public class ActionButton extends IconButton {
                 displayValue = ButtonToolTips.ClearSettings;
             }
             case STASH -> {
-                icon = Icon.CLEAR;
+                icon = Icon.ARROW_UP;
                 displayName = ButtonToolTips.Stash;
                 displayValue = ButtonToolTips.StashDesc;
+            }
+            case STASH_TO_PLAYER_INV -> {
+                icon = Icon.ARROW_DOWN;
+                displayName = ButtonToolTips.StashToPlayer;
+                displayValue = ButtonToolTips.StashToPlayerDesc;
             }
             case ENCODE -> {
                 icon = Icon.WHITE_ARROW_DOWN;

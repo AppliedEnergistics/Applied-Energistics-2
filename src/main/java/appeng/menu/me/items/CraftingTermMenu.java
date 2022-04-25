@@ -53,6 +53,7 @@ import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.parts.reporting.CraftingTerminalPart;
+import appeng.util.inv.PlayerInternalInventory;
 
 /**
  * Can only be used with a host that implements {@link ISegmentedInventory} and exposes an inventory named "crafting" to
@@ -66,6 +67,8 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             .create(CraftingTermMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingterm");
+
+    private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
@@ -94,6 +97,8 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
                 SlotSemantics.CRAFTING_RESULT);
 
         this.slotsChanged(craftingGridInv.toContainer());
+
+        registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
     }
 
     /**
@@ -218,4 +223,35 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         return missingSlots;
     }
 
+    public void clearToPlayerInventory() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_CLEAR_TO_PLAYER);
+            return;
+        }
+
+        var craftingGridInv = this.craftingInventoryHost.getSubInventory(CraftingTerminalPart.INV_CRAFTING);
+        var playerInv = new PlayerInternalInventory(getPlayerInventory());
+
+        for (int i = 0; i < craftingGridInv.size(); ++i) {
+            for (int emptyLoop = 0; emptyLoop < 2; ++emptyLoop) {
+                boolean allowEmpty = emptyLoop == 1;
+
+                // Hotbar first
+                final int HOTBAR_SIZE = 9;
+                for (int j = HOTBAR_SIZE; j-- > 0;) {
+                    if (playerInv.getStackInSlot(j).isEmpty() == allowEmpty) {
+                        craftingGridInv.setItemDirect(i,
+                                playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
+                    }
+                }
+                // Rest of inventory
+                for (int j = HOTBAR_SIZE; j < Inventory.INVENTORY_SIZE; ++j) {
+                    if (playerInv.getStackInSlot(j).isEmpty() == allowEmpty) {
+                        craftingGridInv.setItemDirect(i,
+                                playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
+                    }
+                }
+            }
+        }
+    }
 }
