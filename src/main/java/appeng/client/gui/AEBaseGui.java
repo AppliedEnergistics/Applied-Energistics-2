@@ -438,6 +438,14 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	}
 
 	@Override
+	protected void mouseReleased( int mouseX, int mouseY, int state )
+	{
+		this.drag_click.clear();
+
+		super.mouseReleased( mouseX, mouseY, state );
+	}
+
+	@Override
 	protected void mouseClickMove( final int x, final int y, final int c, final long d )
 	{
 		final Slot slot = this.getSlot( x, y );
@@ -450,48 +458,40 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 
 		if( slot instanceof SlotFake && !itemstack.isEmpty() )
 		{
-			this.drag_click.add( slot );
-			if( this.drag_click.size() > 1 )
+			if( this.drag_click.add( slot ) )
 			{
-				for( final Slot dr : this.drag_click )
-				{
-					final PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE, dr.slotNumber, 0 );
-					NetworkHandler.instance().sendToServer( p );
-				}
+				final PacketInventoryAction p = new PacketInventoryAction( c == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE, slot.slotNumber, 0 );
+				NetworkHandler.instance().sendToServer( p );
 			}
 		}
 		else if( slot instanceof SlotDisconnected )
 		{
-			this.drag_click.add( slot );
-			if( this.drag_click.size() > 1 )
+			if( this.drag_click.add( slot ) )
 			{
 				if( !itemstack.isEmpty() )
 				{
-					for( final Slot dr : this.drag_click )
+					if( slot.getStack().isEmpty() )
 					{
-						if( slot.getStack().isEmpty() )
-						{
-							InventoryAction action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
-							final PacketInventoryAction p = new PacketInventoryAction( action, dr.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
-							NetworkHandler.instance().sendToServer( p );
-						}
+						InventoryAction action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
+						final PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
+						NetworkHandler.instance().sendToServer( p );
 					}
 				}
+			}
 
-				else if( isShiftKeyDown() )
+			else if( isShiftKeyDown() )
+			{
+				for( final Slot dr : this.drag_click )
 				{
-					for( final Slot dr : this.drag_click )
+					InventoryAction action = null;
+					if( !slot.getStack().isEmpty() )
 					{
-						InventoryAction action = null;
-						if( !slot.getStack().isEmpty() )
-						{
-							action = InventoryAction.SHIFT_CLICK;
-						}
-						if( action != null )
-						{
-							final PacketInventoryAction p = new PacketInventoryAction( action, dr.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
-							NetworkHandler.instance().sendToServer( p );
-						}
+						action = InventoryAction.SHIFT_CLICK;
+					}
+					if( action != null )
+					{
+						final PacketInventoryAction p = new PacketInventoryAction( action, dr.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
+						NetworkHandler.instance().sendToServer( p );
 					}
 				}
 			}
