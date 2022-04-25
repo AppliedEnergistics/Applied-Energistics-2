@@ -168,9 +168,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		{
 			for( Slot slot : this.inventorySlots.inventorySlots )
 			{
-				if( slot instanceof SlotRestrictedInput )
+				if( slot instanceof SlotME )
 				{
-					if( this.isPointInRegion( slot.xPos, slot.yPos, 18, 18, Mouse.getX(), this.mc.displayHeight - Mouse.getY() ) )
+					if( this.isPointInRegion( slot.xPos, slot.yPos, 18, 18, currentMouseX, currentMouseY ) )
 					{
 						this.delayedUpdate = true;
 						break;
@@ -549,7 +549,29 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	public void updateScreen()
 	{
 		this.repo.setPower( this.monitorableContainer.isPowered() );
-		if( !isShiftKeyDown() && this.delayedUpdate )
+		if( this.delayedUpdate )
+		{
+			if( isShiftKeyDown() )
+			{
+				this.delayedUpdate = false;
+				for( Slot slot : this.inventorySlots.inventorySlots )
+				{
+					if( slot instanceof SlotME )
+					{
+						if( this.isPointInRegion( slot.xPos, slot.yPos, 18, 18, currentMouseX, currentMouseY ) )
+						{
+							this.delayedUpdate = true;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				this.delayedUpdate = false;
+			}
+		}
+		if( !this.delayedUpdate )
 		{
 			this.repo.updateView();
 			this.setScrollBar();
