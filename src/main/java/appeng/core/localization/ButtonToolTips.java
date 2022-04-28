@@ -129,6 +129,8 @@ public enum ButtonToolTips implements LocalizationEnum {
     SortOrder("Sort Order"),
     Stash("Store Items"),
     StashDesc("Return items on the crafting grid to network storage."),
+    StashToPlayer("Take Items"),
+    StashToPlayerDesc("Return items on the crafting grid to player inventory."),
     StoredAmount("Stored: %s"),
     StoredCraftable("Stored / Craftable"),
     StoredItems("Stored Items"),
