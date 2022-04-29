@@ -46,6 +46,7 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
+import org.lwjgl.input.Keyboard;
 
 
 public class GuiCraftAmount extends AEBaseGui
@@ -142,6 +143,7 @@ public class GuiCraftAmount extends AEBaseGui
 		this.amountToCraft.setVisible( true );
 		this.amountToCraft.setFocused( true );
 		this.amountToCraft.setText( "1" );
+		this.amountToCraft.setSelectionPos( 0 );
 	}
 
 	@Override
@@ -160,8 +162,8 @@ public class GuiCraftAmount extends AEBaseGui
 
 		try
 		{
-			Long.parseLong( this.amountToCraft.getText() );
-			this.next.enabled = !this.amountToCraft.getText().isEmpty();
+			long amt = Long.parseLong( this.amountToCraft.getText() );
+			this.next.enabled = ( !this.amountToCraft.getText().isEmpty() && amt > 0 );
 		}
 		catch( final NumberFormatException e )
 		{
@@ -176,7 +178,7 @@ public class GuiCraftAmount extends AEBaseGui
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
-			if( key == 28 )
+			if( key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER )
 			{
 				this.actionPerformed( this.next );
 			}
@@ -188,7 +190,7 @@ public class GuiCraftAmount extends AEBaseGui
 					String out = this.amountToCraft.getText();
 
 					boolean fixed = false;
-					while( out.startsWith( "0" ) && out.length() > 1 )
+					while ( out.startsWith( "0" ) && out.length() > 1 )
 					{
 						out = out.substring( 1 );
 						fixed = true;
@@ -262,7 +264,7 @@ public class GuiCraftAmount extends AEBaseGui
 			String out = this.amountToCraft.getText();
 
 			boolean fixed = false;
-			while( out.startsWith( "0" ) && out.length() > 1 )
+			while ( out.startsWith( "0" ) && out.length() > 1 )
 			{
 				out = out.substring( 1 );
 				fixed = true;
