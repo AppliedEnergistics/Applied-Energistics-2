@@ -167,13 +167,8 @@ public final class AEItemKey extends AEKey {
     }
 
     @Override
-    public String getModId() {
-        return Registry.ITEM.getKey(item).getNamespace();
-    }
-
-    @Override
-    public String getId() {
-        return Registry.ITEM.getResourceKey(item).get().location().toString();
+    public ResourceLocation getId() {
+        return Registry.ITEM.getKey(item);
     }
 
     public ItemVariant toVariant() {

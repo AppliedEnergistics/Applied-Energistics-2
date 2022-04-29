@@ -242,7 +242,7 @@ public class Repo implements IClientRepo {
         if (searchMode == SearchMode.MOD) {
             return searchPattern.matcher(what.getModId()).find();
         } else if (searchMode == SearchMode.ID) {
-            return searchPattern.matcher(what.getId()).find();
+            return searchPattern.matcher(what.getId().toString()).find();
         }
 
         String displayName = what.getDisplayName().getString();
@@ -277,7 +277,13 @@ public class Repo implements IClientRepo {
     }
 
     protected enum SearchMode {
+        /**
+         * Searches the full ID (including mod-id)
+         */
         ID,
+        /**
+         * Searches the mod ID
+         */
         MOD,
         NAME,
         NAME_OR_TOOLTIP

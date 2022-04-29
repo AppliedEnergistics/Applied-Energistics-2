@@ -125,13 +125,8 @@ public final class AEFluidKey extends AEKey {
     }
 
     @Override
-    public String getModId() {
-        return Registry.FLUID.getKey(fluid).getNamespace();
-    }
-
-    @Override
-    public String getId() {
-        return Registry.FLUID.getResourceKey(fluid).get().location().toString();
+    public ResourceLocation getId() {
+        return Registry.FLUID.getKey(fluid);
     }
 
     @Override
