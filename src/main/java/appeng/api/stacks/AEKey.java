@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Contract;
 
 import net.minecraft.ResourceLocationException;
