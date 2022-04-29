@@ -233,7 +233,20 @@ public abstract class AEKey {
         return stack != null && stack.what().equals(this);
     }
 
-    public abstract String getModId();
+    /**
+     * @return The ID of the mod this resource belongs to.
+     */
+    public String getModId() {
+        return getId().getNamespace();
+    }
+
+    /**
+     * @return The ID of the resource identified by this key.
+     */
+    // TODO: 1.19 make this abstract
+    public ResourceLocation getId() {
+        return new ResourceLocation("unknown");
+    }
 
     public abstract void writeToPacket(FriendlyByteBuf data);
 
