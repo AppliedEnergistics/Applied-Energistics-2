@@ -1,7 +1,7 @@
 # Japanese translate by tier940 & Quarri6343
 # 日本語ローカライズ担当： tier940 & Quarri6343
-# Corresponding Version: v51e
-# 対応バージョン: v51e
+# Corresponding Version: v0.52.3
+# 対応バージョン: v0.52.3
 
 // Blocks
 tile.appliedenergistics2.cable_bus.name=AE2ケーブル または バス
@@ -48,31 +48,31 @@ tile.appliedenergistics2.sky_stone_small_brick.name=スカイストーン小レ�
 tile.appliedenergistics2.sky_stone_chest.name=スカイストーンチェスト
 tile.appliedenergistics2.smooth_sky_stone_chest.name=スカイストーンブロックチェスト
 tile.appliedenergistics2.sky_compass.name=隕石探知コンパス
-tile.appliedenergistics2.crafting_accelerator.name=クラフティング並列処理ユニット
 tile.appliedenergistics2.crafting_monitor.name=クラフティングモニター
 tile.appliedenergistics2.crafting_storage_1k.name=1k クラフティングストレージ
 tile.appliedenergistics2.crafting_storage_4k.name=4k クラフティングストレージ
 tile.appliedenergistics2.crafting_storage_16k.name=16k クラフティングストレージ
 tile.appliedenergistics2.crafting_storage_64k.name=64k クラフティングストレージ
+tile.appliedenergistics2.crafting_accelerator.name=クラフティング並列処理ユニット
 tile.appliedenergistics2.crafting_unit.name=クラフティングユニット
 tile.appliedenergistics2.molecular_assembler.name=分子組立室
 
 // Stairs
-tile.appliedenergistics2.fluix_stairs.name=模様入りケルタスクォーツの階段
-tile.appliedenergistics2.quartz_stairs.name=フルーシュの階段
+tile.appliedenergistics2.fluix_stairs.name=フルーシュの階段
+tile.appliedenergistics2.quartz_stairs.name=ケルタスクォーツの階段
 tile.appliedenergistics2.chiseled_quartz_stairs.name=柱状ケルタスクォーツの階段
-tile.appliedenergistics2.quartz_pillar_stairs.name=ケルタスクォーツの階段
+tile.appliedenergistics2.quartz_pillar_stairs.name=模様入りケルタスクォーツの階段
 tile.appliedenergistics2.smooth_sky_stone_stairs.name=スカイストーンブロックの階段
 tile.appliedenergistics2.sky_stone_brick_stairs.name=スカイストーンレンガの階段
 tile.appliedenergistics2.sky_stone_small_brick_stairs.name=小さなスカイストーンレンガの階段
 tile.appliedenergistics2.sky_stone_stairs.name=スカイストーンの階段
 
 // Slabs
-tile.appliedenergistics2.chiseled_quartz_slab.name=様入りケルタスクォーツのハーフブロック
+tile.appliedenergistics2.chiseled_quartz_slab.name=柱状ケルタスクォーツのハーフブロック
 tile.appliedenergistics2.fluix_slab.name=フルーシュのハーフブロック
-tile.appliedenergistics2.quartz_pillar_slab.name=柱状ケルタスクォーツのハーフブロック
 tile.appliedenergistics2.quartz_slab.name=ケルタスクォーツのハーフブロック
 tile.appliedenergistics2.smooth_sky_stone_slab.name=スカイストーンブロックのハーフブロック
+tile.appliedenergistics2.quartz_pillar_slab.name=様入りケルタスクォーツのハーフブロック
 tile.appliedenergistics2.sky_stone_brick_slab.name=スカイストーンレンガのハーフブロック
 tile.appliedenergistics2.sky_stone_small_brick_slab.name=小さなスカイストーンレンガのハーフブロック
 tile.appliedenergistics2.sky_stone_slab.name=スカイストーンのハーフブロック
@@ -304,12 +304,12 @@ gui.tooltips.appliedenergistics2.EmitLevelsBelow=設定値以下で出力
 gui.tooltips.appliedenergistics2.EmitLevelAbove=設定値以上で出力
 gui.tooltips.appliedenergistics2.SearchMode_Auto=自動検索
 gui.tooltips.appliedenergistics2.SearchMode_Standard=通常検索
-gui.tooltips.appliedenergistics2.SearchMode_JEIAuto=NEI連携自動検索
-gui.tooltips.appliedenergistics2.SearchMode_JEIStandard=NEI連携通常検索
+gui.tooltips.appliedenergistics2.SearchMode_JEIAuto=JEI連携自動検索
+gui.tooltips.appliedenergistics2.SearchMode_JEIStandard=JEI連携通常検索
 gui.tooltips.appliedenergistics2.SearchMode_AutoKeep=自動検索を保持
 gui.tooltips.appliedenergistics2.SearchMode_StandardKeep=通常検索を保持
-gui.tooltips.appliedenergistics2.SearchMode_JEIAutoKeep=NEI連携自動検索を保持
-gui.tooltips.appliedenergistics2.SearchMode_JEIStandardKeep=NEI連携通常検索を保持
+gui.tooltips.appliedenergistics2.SearchMode_JEIAutoKeep=JEI連携自動検索を保持
+gui.tooltips.appliedenergistics2.SearchMode_JEIStandardKeep=JEI連携通常検索を保持
 gui.tooltips.appliedenergistics2.SearchMode=ボックス検索モード
 gui.tooltips.appliedenergistics2.PartitionStorageHint=現在の構成パーテーション
 gui.tooltips.appliedenergistics2.ClearSettings=コンフィグ/設定をクリア
@@ -420,7 +420,7 @@ waila.appliedenergistics2.p2p_output_many_inputs=%d個接続中 (接続先)
 waila.appliedenergistics2.P2POutput=接続中 (接続先)
 
 // TheOneProbe
-theoneprobe.appliedenergistics2.crafting=作成中: %1$s
+theoneprobe.appliedenergistics2.crafting=クラフト中: %1$s
 theoneprobe.appliedenergistics2.device_online=装置はオンラインです
 theoneprobe.appliedenergistics2.device_offline=装置はオフラインです
 theoneprobe.appliedenergistics2.device_missing_channel=装置のチャンネルが見つかりません
@@ -507,10 +507,10 @@ item.appliedenergistics2.material.wooden_gear.name=木の歯車
 item.appliedenergistics2.material.engineering_processor_press.name=上級回路の金型
 item.appliedenergistics2.material.calculation_processor_press.name=発展回路の金型
 item.appliedenergistics2.material.logic_processor_press.name=基本回路の金型
-item.appliedenergistics2.material.engineering_processor_print.name=シリコンの金型
-item.appliedenergistics2.material.calculation_processor_print.name=上級回路
-item.appliedenergistics2.material.logic_processor_print.name=発展回路
-item.appliedenergistics2.material.silicon_press.name=基本回路
+item.appliedenergistics2.material.engineering_processor_print.name=上級回路
+item.appliedenergistics2.material.calculation_processor_print.name=発展回路
+item.appliedenergistics2.material.logic_processor_print.name=基本回路
+item.appliedenergistics2.material.silicon_press.name=シリコン基板の金型
 item.appliedenergistics2.material.silicon_print.name=シリコン基板
 item.appliedenergistics2.material.name_press.name=名称銘記プレス
 item.appliedenergistics2.material.sky_dust.name=スカイストーンの粉
