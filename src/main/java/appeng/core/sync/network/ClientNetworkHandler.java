@@ -18,6 +18,7 @@
 
 package appeng.core.sync.network;
 
+import appeng.client.command.ClientPacketReceived;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.network.FriendlyByteBuf;
@@ -41,14 +42,22 @@ public class ClientNetworkHandler extends ServerNetworkHandler {
     }
 
     private void handlePacketFromServer(PacketContext packetContext, FriendlyByteBuf payload) {
+        var size = payload.readableBytes();
         final int packetType = payload.readInt();
         final BasePacket packet = BasePacketHandler.PacketTypes.getPacket(packetType).parsePacket(payload);
 
+        var evt = new ClientPacketReceived();
+        evt.size = size;
+        evt.type = packet.getClass();
+
         packetContext.getTaskQueue().execute(() -> {
+            evt.begin();
             try {
                 packet.clientPacketData(null, packetContext.getPlayer());
             } catch (IllegalArgumentException e) {
                 AELog.debug(e);
+            } finally {
+                evt.commit();
             }
         });
     }

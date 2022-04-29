@@ -31,6 +31,7 @@ import com.mojang.blaze3d.platform.InputConstants.Key;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -58,6 +59,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
+import appeng.client.command.ClientProfilingCommand;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -133,6 +135,8 @@ public class AppEngClient extends AppEngBase {
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             SiteExporter.initialize();
         }
+
+        ClientProfilingCommand.register(ClientCommandManager.DISPATCHER);
     }
 
     @Override
