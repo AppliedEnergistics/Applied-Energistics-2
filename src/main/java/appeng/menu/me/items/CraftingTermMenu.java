@@ -72,6 +72,8 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
+    private final CraftingContainer recipeTestContainer = new CraftingContainer(new NullMenu(), 3, 3);
+
     private final CraftingTermSlot outputSlot;
     private Recipe<CraftingContainer> currentRecipe;
 
@@ -96,7 +98,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
                 this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this),
                 SlotSemantics.CRAFTING_RESULT);
 
-        this.slotsChanged(craftingGridInv.toContainer());
+        updateCurrentRecipeAndOutput(true);
 
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
     }
@@ -107,22 +109,33 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     @Override
     public void slotsChanged(Container inventory) {
-        final NullMenu cn = new NullMenu();
-        final CraftingContainer ic = new CraftingContainer(cn, 3, 3);
+        updateCurrentRecipeAndOutput(false);
+    }
 
+    private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
+        boolean hasChanged = forceUpdate;
         for (int x = 0; x < 9; x++) {
-            ic.setItem(x, this.craftingSlots[x].getItem());
+            var stack = this.craftingSlots[x].getItem();
+            if (!ItemStack.isSameItemSameTags(stack, recipeTestContainer.getItem(x))) {
+                hasChanged = true;
+                recipeTestContainer.setItem(x, stack.copy());
+            }
+        }
+
+        if (!hasChanged) {
+            return;
         }
 
         Level level = this.getPlayerInventory().player.level;
-        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, level)) {
-            this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
+        if (this.currentRecipe == null || !this.currentRecipe.matches(recipeTestContainer, level)) {
+            this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeTestContainer, level)
+                    .orElse(null);
         }
 
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.assemble(ic));
+            this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer));
         }
     }
 
