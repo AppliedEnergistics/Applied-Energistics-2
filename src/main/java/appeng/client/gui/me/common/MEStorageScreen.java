@@ -511,6 +511,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
                                 : AmountFormat.PREVIEW_REGULAR;
                         var text = entry.getWhat().formatAmount(storedAmount, format);
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
+                        if (craftable) {
+                            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", false);
+                        }
                     }
                 }
             }
