@@ -19,16 +19,27 @@
 package appeng.api.features;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+
+import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+
+import appeng.integration.modules.jei.AttunementDisplay;
 
 /**
  * Internal methods that complement {@link P2PTunnelAttunement} and which are not part of the public API.
  */
 public final class P2PTunnelAttunementInternal {
+
     private P2PTunnelAttunementInternal() {
     }
 
@@ -64,5 +75,32 @@ public final class P2PTunnelAttunementInternal {
     }
 
     public record AttunementInfo(Set<Item> items, Set<String> mods, Set<ItemApiLookup<?, ?>> apis) {
+    }
+
+    public static class REI {
+        public static void add(DisplayRegistry registry) {
+            var tunnels = new LinkedHashSet<Item>();
+
+            tunnels.addAll(P2PTunnelAttunement.tunnels.values());
+            tunnels.addAll(P2PTunnelAttunement.tagTunnels.values());
+
+            for (var entry : P2PTunnelAttunement.apiAttunements) {
+                tunnels.add(entry.tunnelType());
+            }
+
+            tunnels.addAll(P2PTunnelAttunement.modIdTunnels.values());
+
+            var all = EntryRegistry.getInstance().getEntryStacks().collect(EntryIngredient.collector());
+
+            for (var item : tunnels) {
+                registry.add(new AttunementDisplay(List.of(all.filter(stack -> {
+                    if (stack.getValue() instanceof ItemStack s) {
+                        return P2PTunnelAttunement.getTunnelPartByTriggerItem(s).getItem() == item;
+                    }
+
+                    return false;
+                })), List.of(EntryIngredient.of(EntryStacks.of(item)))));
+            }
+        }
     }
 }

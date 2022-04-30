@@ -50,6 +50,7 @@ import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.rei.IngredientConverters;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
@@ -94,6 +95,7 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new FacadeRecipeCategory());
+        registry.add(new AttunementCategory());
 
         registry.removePlusButton(ThrowingInWaterCategory.ID);
         registry.removePlusButton(InscriberRecipeCategory.ID);
@@ -108,6 +110,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         registry.add(new CondenserOutputDisplay(CondenserOutput.MATTER_BALLS));
         registry.add(new CondenserOutputDisplay(CondenserOutput.SINGULARITY));
+        P2PTunnelAttunementInternal.REI.add(registry);
 
         registerDescriptions(registry);
 
