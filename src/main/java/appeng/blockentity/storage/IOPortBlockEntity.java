@@ -95,7 +95,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         this.getMainNode()
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, this);
-        this.manager = new ConfigManager((manager, setting) -> this.updateTask());
+        this.manager = new ConfigManager(this::updateTask);
         this.manager.registerSetting(Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE);
         this.manager.registerSetting(Settings.FULLNESS_MODE, FullnessMode.EMPTY);
         this.manager.registerSetting(Settings.OPERATION_MODE, OperationMode.EMPTY);

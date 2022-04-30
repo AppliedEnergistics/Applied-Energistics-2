@@ -41,8 +41,8 @@ public final class ConfigManager implements IConfigManager {
         this.listener = listener;
     }
 
-    public ConfigManager() {
-        this.listener = null;
+    public ConfigManager(Runnable changeListener) {
+        this.listener = (manager, setting) -> changeListener.run();
     }
 
     @Override

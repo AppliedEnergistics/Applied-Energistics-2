@@ -60,7 +60,7 @@ import appeng.util.inv.InternalInventoryHost;
 public abstract class AbstractTerminalPart extends AbstractDisplayPart
         implements ITerminalHost, IViewCellStorage, InternalInventoryHost {
 
-    private final IConfigManager cm = new ConfigManager();
+    private final IConfigManager cm = new ConfigManager(this::saveChanges);
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
 
     public AbstractTerminalPart(IPartItem<?> partItem) {

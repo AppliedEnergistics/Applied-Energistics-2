@@ -63,7 +63,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private final List<CraftingBlockEntity> blockEntities = new ArrayList<>();
     private final List<CraftingBlockEntity> storage = new ArrayList<>();
     private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
-    private final ConfigManager configManager = new ConfigManager();
+    private final ConfigManager configManager = new ConfigManager(this::markDirty);
     private Component myName = null;
     private boolean isDestroyed = false;
     private long availableStorage = 0;

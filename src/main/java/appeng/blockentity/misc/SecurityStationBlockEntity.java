@@ -69,7 +69,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
 
     private static int difference = 0;
     private final AppEngInternalInventory configSlot = new AppEngInternalInventory(this, 1);
-    private final IConfigManager cm = new ConfigManager();
+    private final IConfigManager cm = new ConfigManager(this::saveChanges);
     private final SecurityStationInventory inventory = new SecurityStationInventory(this);
     private long securityKey;
     private AEColor paintedColor = AEColor.TRANSPARENT;

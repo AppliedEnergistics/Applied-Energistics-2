@@ -52,7 +52,7 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     private final AppEngInternalInventory cell = new AppEngInternalInventory(this, 1);
     private final GenericStackInv config = new GenericStackInv(this::configChanged, GenericStackInv.Mode.CONFIG_TYPES,
             63);
-    private final ConfigManager manager = new ConfigManager();
+    private final ConfigManager manager = new ConfigManager(this::saveChanges);
 
     private IUpgradeInventory cacheUpgrades = null;
     private ConfigInventory cacheConfig = null;

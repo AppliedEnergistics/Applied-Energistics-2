@@ -48,7 +48,10 @@ public abstract class UpgradeablePart extends BasicStatePart
         super(partItem);
         this.upgrades = UpgradeInventories.forMachine(partItem.asItem(), this.getUpgradeSlots(),
                 this::onUpgradesChanged);
-        this.config = new ConfigManager(this::onSettingChanged);
+        this.config = new ConfigManager((manager, setting) -> {
+            onSettingChanged(manager, setting);
+            getHost().markForSave();
+        });
     }
 
     private void onUpgradesChanged() {

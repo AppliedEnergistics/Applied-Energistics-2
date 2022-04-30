@@ -193,6 +193,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
             this.displayOverlay = manager.getSetting(setting) == YesNo.YES;
             this.markForUpdate();
         }
+        this.saveChanges();
     }
 
     @Override

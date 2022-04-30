@@ -86,9 +86,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private final MultiCraftingTracker craftingTracker;
     private final IUpgradeInventory upgrades;
     private final IStorageMonitorableAccessor accessor = this::getMonitorable;
-    private final ConfigManager cm = new ConfigManager((manager, setting) -> {
-        onConfigChanged();
-    });
+    private final ConfigManager cm = new ConfigManager(this::onConfigChanged);
     /**
      * Work planned by {@link #updatePlan()} to be performed by {@link #usePlan}. Positive amounts mean restocking from
      * the network is required while negative amounts mean moving to the network is required.

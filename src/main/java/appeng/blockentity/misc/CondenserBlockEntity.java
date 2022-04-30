@@ -36,7 +36,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.CondenserOutput;
-import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
@@ -51,17 +50,19 @@ import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.core.definitions.AEItems;
 import appeng.util.ConfigManager;
-import appeng.util.IConfigManagerListener;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.AEItemFilters;
 
-public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfigManagerListener, IConfigurableObject {
+public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfigurableObject {
 
     public static final int BYTE_MULTIPLIER = 8;
 
-    private final ConfigManager cm = new ConfigManager(this);
+    private final ConfigManager cm = new ConfigManager(() -> {
+        saveChanges();
+        addPower(0);
+    });
 
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
@@ -158,11 +159,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
-    }
-
-    @Override
-    public void onSettingChanged(IConfigManager manager, Setting<?> setting) {
-        this.addPower(0);
     }
 
     @Override
