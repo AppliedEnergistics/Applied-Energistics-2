@@ -48,6 +48,7 @@ import appeng.helpers.InventoryAction;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.menu.AEBaseMenu;
+import appeng.menu.guisync.GuiSync;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.reporting.PatternAccessTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
@@ -58,6 +59,14 @@ import appeng.util.inv.filter.IAEItemFilter;
  * @see appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen
  */
 public class InterfaceTerminalMenu extends AEBaseMenu {
+
+    private PatternAccessTerminalPart host;
+    @GuiSync(1)
+    public YesNo showHiddenPattern = YesNo.NO;
+
+    public YesNo isShowingHiddenPattern() {
+        return showHiddenPattern;
+    }
 
     public static final MenuType<InterfaceTerminalMenu> TYPE = MenuTypeBuilder
             .create(InterfaceTerminalMenu::new, PatternAccessTerminalPart.class)
@@ -76,6 +85,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
     public InterfaceTerminalMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
+        this.host = anchor;
     }
 
     public InterfaceTerminalMenu(MenuType<?> menuType, int id, Inventory ip, Object host,
@@ -91,6 +101,8 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         if (isClientSide()) {
             return;
         }
+
+        showHiddenPattern = this.host.getConfigManager().getSetting(Settings.TERMINAL_SHOW_HIDDEN_PATTERN);
 
         super.broadcastChanges();
 
@@ -132,7 +144,8 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             var dual = ih.getLogic();
-            if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.NO) {
+            if (showHiddenPattern == YesNo.NO
+                    && dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.NO) {
                 continue;
             }
 
@@ -247,14 +260,16 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
             var dual = ih.getLogic();
-            if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
+            if (showHiddenPattern == YesNo.YES
+                    || dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderPart.class)) {
             var dual = ih.getLogic();
-            if (dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
+            if (showHiddenPattern == YesNo.YES
+                    || dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }

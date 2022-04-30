@@ -74,6 +74,9 @@ public final class Settings {
     public static final Setting<FuzzyMode> FUZZY_MODE = register("fuzzy_mode", FuzzyMode.class);
     public static final Setting<TerminalStyle> TERMINAL_STYLE = register("terminal_style", TerminalStyle.TALL,
             TerminalStyle.SMALL);
+    public static final Setting<YesNo> TERMINAL_SHOW_HIDDEN_PATTERN = register("show_hidden_pattern", YesNo.YES,
+            YesNo.NO);
+
     public static final Setting<CopyMode> COPY_MODE = register("copy_mode", CopyMode.class);
     public static final Setting<YesNo> PATTERN_ACCESS_TERMINAL = register("pattern_access_terminal", YesNo.YES,
             YesNo.NO);

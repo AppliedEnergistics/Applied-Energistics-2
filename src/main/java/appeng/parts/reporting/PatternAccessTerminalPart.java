@@ -18,21 +18,27 @@
 
 package appeng.parts.reporting;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.InterfaceTerminalMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
+import appeng.util.ConfigManager;
 
-public class PatternAccessTerminalPart extends AbstractDisplayPart {
+public class PatternAccessTerminalPart extends AbstractDisplayPart implements IConfigurableObject {
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -45,8 +51,11 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart {
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
+    private final ConfigManager configManager = new ConfigManager();
+
     public PatternAccessTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
+        this.configManager.registerSetting(Settings.TERMINAL_SHOW_HIDDEN_PATTERN, YesNo.NO);
     }
 
     @Override
@@ -62,4 +71,18 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart {
         return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
     }
 
+    @Override
+    public IConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    public void writeToNBT(CompoundTag tag) {
+        super.writeToNBT(tag);
+        configManager.writeToNBT(tag);
+    }
+
+    public void readFromNBT(CompoundTag tag) {
+        super.readFromNBT(tag);
+        configManager.readFromNBT(tag);
+    }
 }
