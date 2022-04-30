@@ -44,6 +44,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.Platform;
 
 /**
@@ -99,7 +100,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         data.writeBoolean(this.isLocked);
         data.writeBoolean(this.configuredItem != null);
         if (this.configuredItem != null) {
-            this.configuredItem.writeToPacket(data);
+            AEKey.writeKey(data, this.configuredItem);
             data.writeVarLong(this.amount);
         }
     }
@@ -115,7 +116,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         // This item is rendered dynamically and doesn't need to trigger a chunk update
         if (data.readBoolean()) {
-            this.configuredItem = AEItemKey.fromPacket(data);
+            this.configuredItem = AEKey.readKey(data);
             this.amount = data.readVarLong();
         } else {
             this.configuredItem = null;
@@ -141,7 +142,15 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         if (!this.isLocked) {
             var eq = player.getItemInHand(hand);
-            this.configuredItem = AEItemKey.of(eq);
+            if (AEItemKey.matches(this.configuredItem, eq)) {
+                // Already matches: try to swap to key contained in the item.
+                var containedStack = StackInteractions.getContainedStack(eq);
+                if (containedStack != null) {
+                    this.configuredItem = containedStack.what();
+                }
+            } else {
+                this.configuredItem = AEItemKey.of(eq);
+            }
             this.configureWatchers();
             this.getHost().markForSave();
             this.getHost().markForUpdate();
