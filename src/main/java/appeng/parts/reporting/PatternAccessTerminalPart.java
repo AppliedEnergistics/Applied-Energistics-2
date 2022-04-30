@@ -51,7 +51,9 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IC
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
-    private final ConfigManager configManager = new ConfigManager();
+    private final ConfigManager configManager = new ConfigManager(() -> {
+        this.getHost().markForSave();
+    });
 
     public PatternAccessTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);

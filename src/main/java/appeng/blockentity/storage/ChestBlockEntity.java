@@ -109,7 +109,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             this.cellInventory);
 
     private final IActionSource mySrc = new MachineSource(this);
-    private final IConfigManager config = new ConfigManager();
+    private final IConfigManager config = new ConfigManager(this::saveChanges);
     private int priority = 0;
     private int state = 0;
     private boolean wasActive = false;

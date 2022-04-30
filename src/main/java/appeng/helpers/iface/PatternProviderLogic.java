@@ -81,7 +81,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
-    private final ConfigManager configManager = new ConfigManager();
+    private final ConfigManager configManager = new ConfigManager(this::saveChanges);
     private int priority;
 
     // Pattern storing logic
