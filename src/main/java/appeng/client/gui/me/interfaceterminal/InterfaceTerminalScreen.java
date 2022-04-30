@@ -486,10 +486,6 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         this.reinitialize();
     }
 
-    private void toggleIsShowingHiddenPattern(SettingToggleButton<YesNo> btn, boolean backwards) {
-
-    }
-
     /**
      * The max amount of unique names and each inv row. Not affected by the filtering.
      *
