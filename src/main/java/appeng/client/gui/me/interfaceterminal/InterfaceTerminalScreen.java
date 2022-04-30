@@ -44,12 +44,14 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
+import appeng.api.config.YesNo;
 import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.AEConfig;
 import appeng.core.sync.network.NetworkHandler;
@@ -128,6 +130,8 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     private boolean refreshList = false;
     private int numLines = 0;
 
+    private final ServerSettingToggleButton showHiddenPattern;
+
     public InterfaceTerminalScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
@@ -138,6 +142,11 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
         this.addToLeftToolbar(
                 new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
+
+        showHiddenPattern = new ServerSettingToggleButton(Settings.TERMINAL_SHOW_HIDDEN_PATTERN, YesNo.NO);
+
+        this.addToLeftToolbar(
+                showHiddenPattern);
 
         this.searchField = widgets.addTextField("search");
         this.searchField.setResponder(str -> this.refreshList());
@@ -336,6 +345,11 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         }
     }
 
+    @Override
+    public void updateBeforeRender() {
+        this.showHiddenPattern.set(this.menu.isShowingHiddenPattern());
+    }
+
     /**
      * Rebuilds the list of interfaces.
      * <p>
@@ -470,6 +484,10 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         AEConfig.instance().setTerminalStyle(next);
         btn.set(next);
         this.reinitialize();
+    }
+
+    private void toggleIsShowingHiddenPattern(SettingToggleButton<YesNo> btn, boolean backwards) {
+
     }
 
     /**
