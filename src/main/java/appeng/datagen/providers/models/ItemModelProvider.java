@@ -30,8 +30,14 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
 
         flatSingleLayer(BiometricCardModel.MODEL_BASE, "item/biometric_card");
         builtInItemModel("biometric_card");
-        flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card");
-        builtInItemModel("memory_card");
+
+        for (AEColor color : AEColor.values()) {
+            String builtInItemModelName = "memory_card"
+                    + (color != AEColor.TRANSPARENT ? ("_" + color.registryPrefix) : "");
+            flatSingleLayer(MemoryCardModel.MODELS_BASE.get(color), "item/" + builtInItemModelName);
+            builtInItemModel(builtInItemModelName);
+        }
+
         builtInItemModel("facade");
         builtInItemModel("sky_compass");
 
