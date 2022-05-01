@@ -118,7 +118,6 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
         this.captureMin = minPoint != null ? minPoint.immutable() : null;
         this.captureMax = maxPoint != null ? maxPoint.immutable() : null;
 
-        double maxPower = 0;
         double minPower = 0;
         if (this.hasRegion()) {
             this.isValid = this.captureMax.getX() - this.captureMin.getX() > 1
@@ -173,11 +172,10 @@ public class SpatialPylonService implements ISpatialService, IGridServiceProvide
             }
 
             minPower = (double) reqX * (double) reqY * reqZ * AEConfig.instance().getSpatialPowerMultiplier();
-            maxPower = Math.pow(minPower, AEConfig.instance().getSpatialPowerExponent());
         }
 
-        final double affective_efficiency = Math.pow(this.efficiency, 0.25);
-        this.powerRequired = (long) (affective_efficiency * minPower + (1.0 - affective_efficiency) * maxPower);
+        this.powerRequired = (long) Math.pow(minPower,
+                1 + (AEConfig.instance().getSpatialPowerExponent() - 1) * (1 - this.efficiency));
 
         for (SpatialPylonCluster cl : this.clusters.values()) {
             final boolean myWasValid = cl.isValid();
