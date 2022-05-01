@@ -19,10 +19,13 @@
 package appeng.api.stacks;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
@@ -51,5 +54,10 @@ final class AEItemKeys extends AEKeyType {
     @Override
     public boolean supportsFuzzyRangeSearch() {
         return true;
+    }
+
+    @Override
+    public Stream<TagKey<?>> getTagNames() {
+        return Registry.ITEM.getTagNames().map(t -> t);
     }
 }

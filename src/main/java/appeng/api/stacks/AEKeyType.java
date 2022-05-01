@@ -24,15 +24,18 @@
 package appeng.api.stacks;
 
 import java.text.NumberFormat;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.util.ReadableNumberConverter;
@@ -223,5 +226,15 @@ public abstract class AEKeyType {
         } else {
             return ReadableNumberConverter.format(amount, maxWidth);
         }
+    }
+
+    /**
+     * Returns all tags that apply to keys of this type. Is an optional operation is keys of this type cannot have tags,
+     * and {@link AEKey#isTagged(TagKey)} is not implemented for this key type.
+     * 
+     * @see Registry#getTagNames()
+     */
+    public Stream<TagKey<?>> getTagNames() {
+        return Stream.empty();
     }
 }

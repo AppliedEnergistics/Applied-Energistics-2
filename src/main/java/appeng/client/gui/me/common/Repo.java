@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import javax.annotation.Nullable;
 
@@ -33,15 +31,13 @@ import com.google.common.collect.HashBiMap;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
 import appeng.api.stacks.AEKey;
+import appeng.client.gui.me.search.RepoSearch;
 import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
-import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IClientRepo;
-import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 /**
@@ -58,11 +54,11 @@ public class Repo implements IClientRepo {
 
     private int rowSize = 9;
 
-    private String searchString = "";
     private boolean hasPower;
 
     private final BiMap<Long, GridInventoryEntry> entries = HashBiMap.create();
     private final ArrayList<GridInventoryEntry> view = new ArrayList<>();
+    private final RepoSearch search = new RepoSearch();
     private IPartitionList partitionList;
     private Runnable updateViewListener;
 
@@ -129,33 +125,10 @@ public class Repo implements IClientRepo {
 
         this.view.ensureCapacity(this.entries.size());
 
-        SearchMode searchMode = SearchMode.NAME;
-        if (AEConfig.instance().getSearchTooltips() != YesNo.NO) {
-            searchMode = SearchMode.NAME_OR_TOOLTIP;
-        }
-
-        String innerSearch = this.searchString;
-        if (innerSearch.startsWith("@")) {
-            searchMode = SearchMode.MOD;
-            innerSearch = innerSearch.substring(1);
-        } else if (innerSearch.startsWith("*")) {
-            searchMode = SearchMode.ID;
-            innerSearch = innerSearch.substring(1);
-        }
-
-        Pattern m;
-        try {
-            m = Pattern.compile(innerSearch.toLowerCase(),
-                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-        } catch (PatternSyntaxException ignored) {
-            m = Pattern.compile(Pattern.quote(innerSearch.toLowerCase()),
-                    Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-        }
-
         var viewMode = this.sortSrc.getSortDisplay();
         var typeFilter = this.sortSrc.getTypeFilter().getFilter();
 
-        for (GridInventoryEntry entry : this.entries.values()) {
+        for (var entry : this.entries.values()) {
             if (this.partitionList != null && !this.partitionList.isListed(entry.getWhat())) {
                 continue;
             }
@@ -172,7 +145,7 @@ public class Repo implements IClientRepo {
                 continue;
             }
 
-            if (matchesSearch(searchMode, m, entry.getWhat())) {
+            if (search.matches(entry)) {
                 this.view.add(entry);
             }
         }
@@ -231,36 +204,11 @@ public class Repo implements IClientRepo {
     }
 
     public final String getSearchString() {
-        return this.searchString;
+        return this.search.getSearchString();
     }
 
     public final void setSearchString(String searchString) {
-        this.searchString = searchString;
-    }
-
-    protected boolean matchesSearch(SearchMode searchMode, Pattern searchPattern, AEKey what) {
-        if (searchMode == SearchMode.MOD) {
-            return searchPattern.matcher(what.getModId()).find();
-        } else if (searchMode == SearchMode.ID) {
-            return searchPattern.matcher(what.getId().toString()).find();
-        }
-
-        String displayName = what.getDisplayName().getString();
-        if (searchPattern.matcher(displayName).find()) {
-            return true;
-        }
-
-        if (searchMode == SearchMode.NAME_OR_TOOLTIP) {
-            var tooltip = Platform.getTooltip(what);
-
-            for (var line : tooltip) {
-                if (searchPattern.matcher(line.getString()).find()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        this.search.setSearchString(searchString);
     }
 
     private Comparator<AEKey> getKeyComparator(SortOrder sortBy, SortDir sortDir) {
@@ -275,18 +223,4 @@ public class Repo implements IClientRepo {
     public final void setUpdateViewListener(Runnable updateViewListener) {
         this.updateViewListener = updateViewListener;
     }
-
-    protected enum SearchMode {
-        /**
-         * Searches the full ID (including mod-id)
-         */
-        ID,
-        /**
-         * Searches the mod ID
-         */
-        MOD,
-        NAME,
-        NAME_OR_TOOLTIP
-    }
-
 }
