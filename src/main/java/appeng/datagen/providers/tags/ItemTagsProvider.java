@@ -29,6 +29,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 
+import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AETags;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
@@ -131,6 +132,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 AEItems.NETWORK_TOOL.asItem());
 
         addConventionTags();
+
+        addP2pAttunementTags();
     }
 
     private void addConventionTags() {
@@ -251,6 +254,34 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
     private void mirrorBlockTag(ResourceLocation tagName) {
         copy(TagKey.create(Registry.BLOCK_REGISTRY, tagName), TagKey.create(Registry.ITEM_REGISTRY, tagName));
+    }
+
+    private void addP2pAttunementTags() {
+        tag(P2PTunnelAttunement.getAttunementTag(P2PTunnelAttunement.LIGHT_TUNNEL))
+                .add(Items.TORCH, Items.GLOWSTONE);
+
+        tag(P2PTunnelAttunement.getAttunementTag(P2PTunnelAttunement.ENERGY_TUNNEL))
+                .add(AEBlocks.DENSE_ENERGY_CELL.asItem(), AEBlocks.ENERGY_ACCEPTOR.asItem(),
+                        AEBlocks.ENERGY_CELL.asItem(), AEBlocks.CREATIVE_ENERGY_CELL.asItem());
+
+        tag(P2PTunnelAttunement.getAttunementTag(P2PTunnelAttunement.REDSTONE_TUNNEL))
+                .add(Items.REDSTONE, Items.REPEATER, Items.REDSTONE_LAMP, Items.COMPARATOR, Items.DAYLIGHT_DETECTOR,
+                        Items.REDSTONE_TORCH, Items.REDSTONE_BLOCK, Items.LEVER);
+
+        tag(P2PTunnelAttunement.getAttunementTag(P2PTunnelAttunement.ITEM_TUNNEL))
+                .add(AEParts.STORAGE_BUS.asItem(), AEParts.EXPORT_BUS.asItem(), AEParts.IMPORT_BUS.asItem(),
+                        Items.HOPPER, Items.CHEST, Items.TRAPPED_CHEST)
+                .addTag(ConventionTags.INTERFACE);
+
+        tag(P2PTunnelAttunement.getAttunementTag(P2PTunnelAttunement.FLUID_TUNNEL))
+                .add(Items.BUCKET, Items.MILK_BUCKET, Items.WATER_BUCKET, Items.LAVA_BUCKET);
+
+        tag(P2PTunnelAttunement.getAttunementTag(P2PTunnelAttunement.ME_TUNNEL))
+                .addTag(ConventionTags.COVERED_CABLE)
+                .addTag(ConventionTags.COVERED_DENSE_CABLE)
+                .addTag(ConventionTags.GLASS_CABLE)
+                .addTag(ConventionTags.SMART_CABLE)
+                .addTag(ConventionTags.SMART_DENSE_CABLE);
     }
 
     @Override
