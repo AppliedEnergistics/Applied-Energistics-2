@@ -43,8 +43,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Settings;
+import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
-import appeng.api.config.YesNo;
 import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
@@ -130,7 +130,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
     private boolean refreshList = false;
     private int numLines = 0;
 
-    private final ServerSettingToggleButton showHiddenPattern;
+    private final ServerSettingToggleButton showPatternProviders;
 
     public InterfaceTerminalScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -143,10 +143,11 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         this.addToLeftToolbar(
                 new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
 
-        showHiddenPattern = new ServerSettingToggleButton(Settings.TERMINAL_SHOW_HIDDEN_PATTERN, YesNo.NO);
+        showPatternProviders = new ServerSettingToggleButton(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
+                ShowPatternProviders.UNHIDDEN);
 
         this.addToLeftToolbar(
-                showHiddenPattern);
+                showPatternProviders);
 
         this.searchField = widgets.addTextField("search");
         this.searchField.setResponder(str -> this.refreshList());
@@ -347,7 +348,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
     @Override
     public void updateBeforeRender() {
-        this.showHiddenPattern.set(this.menu.isShowingHiddenPattern());
+        this.showPatternProviders.set(this.menu.getShownProviders());
     }
 
     /**

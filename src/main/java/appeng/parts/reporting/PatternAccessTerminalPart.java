@@ -25,7 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
+import appeng.api.config.ShowPatternProviders;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.IConfigManager;
@@ -55,7 +55,7 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IC
 
     public PatternAccessTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
-        this.configManager.registerSetting(Settings.TERMINAL_SHOW_HIDDEN_PATTERN, YesNo.NO);
+        this.configManager.registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.UNHIDDEN);
     }
 
     @Override

@@ -124,6 +124,7 @@ public enum Icon {
     PATTERN_ACCESS_HIDE(80, 80),
     EYE_WHITE(96, 80),
     EYE_BLUE_CENTER(112, 80),
+    EYE_EMPTY(128, 80),
     UNUSED_05_08(128, 80),
     UNUSED_05_09(144, 80),
     UNUSED_05_10(160, 80),

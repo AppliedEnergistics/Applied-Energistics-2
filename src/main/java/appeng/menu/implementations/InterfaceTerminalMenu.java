@@ -35,6 +35,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.YesNo;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
@@ -62,10 +63,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
     private PatternAccessTerminalPart host;
     @GuiSync(1)
-    public YesNo showHiddenPattern = YesNo.NO;
+    public ShowPatternProviders showPatternProviders = ShowPatternProviders.UNHIDDEN;
 
-    public YesNo isShowingHiddenPattern() {
-        return showHiddenPattern;
+    public ShowPatternProviders getShownProviders() {
+        return showPatternProviders;
     }
 
     public static final MenuType<InterfaceTerminalMenu> TYPE = MenuTypeBuilder
@@ -102,7 +103,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             return;
         }
 
-        showHiddenPattern = this.host.getConfigManager().getSetting(Settings.TERMINAL_SHOW_HIDDEN_PATTERN);
+        showPatternProviders = this.host.getConfigManager().getSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS);
 
         super.broadcastChanges();
 
@@ -144,8 +145,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             var dual = ih.getLogic();
-            if (showHiddenPattern == YesNo.NO
-                    && dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.NO) {
+            boolean isVisible = dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
+            if (!isVisible && (showPatternProviders == ShowPatternProviders.UNHIDDEN
+                    || showPatternProviders == ShowPatternProviders.UNFILLED
+                            && dual.getAvailablePatterns().size() == 9)) {
                 continue;
             }
 
@@ -260,16 +263,22 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
             var dual = ih.getLogic();
-            if (showHiddenPattern == YesNo.YES
-                    || dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
+            boolean isVisible = dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
+            if (showPatternProviders == ShowPatternProviders.ALL
+                    || showPatternProviders == ShowPatternProviders.UNHIDDEN && isVisible
+                    || showPatternProviders == ShowPatternProviders.UNFILLED && isVisible
+                            && dual.getAvailablePatterns().size() != 9) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderPart.class)) {
             var dual = ih.getLogic();
-            if (showHiddenPattern == YesNo.YES
-                    || dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
+            boolean isVisible = dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
+            if (showPatternProviders == ShowPatternProviders.ALL
+                    || showPatternProviders == ShowPatternProviders.UNHIDDEN && isVisible
+                    || showPatternProviders == ShowPatternProviders.UNFILLED && isVisible
+                            && dual.getAvailablePatterns().size() != 9) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }

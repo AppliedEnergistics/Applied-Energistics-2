@@ -264,12 +264,16 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(AEParts.EXPORT_BUS, Settings.CPU_SELECTION_MODE, CpuSelectionMode.MACHINE_ONLY,
                     ButtonToolTips.CpuSelectionMode, ButtonToolTips.CpuSelectionModeAutomationOnly.text());
 
-            registerApp(Icon.EYE_BLUE_CENTER, Settings.TERMINAL_SHOW_HIDDEN_PATTERN, YesNo.YES,
+            registerApp(Icon.EYE_BLUE_CENTER, Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.ALL,
                     ButtonToolTips.InterfaceTerminalDisplayMode,
-                    ButtonToolTips.ShowHiddenPatterns);
-            registerApp(Icon.EYE_WHITE, Settings.TERMINAL_SHOW_HIDDEN_PATTERN, YesNo.NO,
+                    ButtonToolTips.ShowAllPatterns);
+            registerApp(Icon.EYE_WHITE, Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.UNHIDDEN,
                     ButtonToolTips.InterfaceTerminalDisplayMode,
-                    ButtonToolTips.ShowVisiblePatterns);
+                    ButtonToolTips.ShowUnhiddenPatterns);
+            registerApp(Icon.EYE_EMPTY, Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
+                    ShowPatternProviders.UNFILLED,
+                    ButtonToolTips.InterfaceTerminalDisplayMode,
+                    ButtonToolTips.ShowUnfilledPatterns);
         }
     }
 
