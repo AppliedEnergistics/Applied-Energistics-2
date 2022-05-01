@@ -49,9 +49,6 @@ public abstract class AE2RecipeProvider extends net.minecraft.data.recipes.Recip
         if (stack.getCount() > 1) {
             stackObj.addProperty("count", stack.getCount());
         }
-        if (stack.hasTag()) {
-            stackObj.addProperty("data", stack.getTag().toString());
-        }
         return stackObj;
     }
 

@@ -9,6 +9,7 @@
     "spatial.FixupDimensionsMixin",
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",
+    "EnchantmentHelperMixin",
     "DynamicLadderMixin",
     "OnNeighborUpdateMixin",
     "ServerLevelCustomItemEntityMixin",

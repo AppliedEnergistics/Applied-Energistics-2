@@ -21,10 +21,7 @@ package appeng.recipes.handlers;
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -55,15 +52,7 @@ public class InscriberRecipeSerializer implements RecipeSerializer<InscriberReci
 
         InscriberProcessType mode = getMode(json);
 
-        JsonObject resultObj = GsonHelper.getAsJsonObject(json, "result");
-        ItemStack result = new ItemStack(ShapedRecipe.itemFromJson(resultObj));
-        if (resultObj.has("data")) {
-            try {
-                result.setTag(TagParser.parseTag(GsonHelper.getAsString(resultObj, "data")));
-            } catch (CommandSyntaxException e) {
-                throw new JsonSyntaxException("Invalid data tag:" + e);
-            }
-        }
+        ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
         // Deserialize the three parts of the input
         JsonObject ingredients = GsonHelper.getAsJsonObject(json, "ingredients");

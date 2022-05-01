@@ -21,9 +21,9 @@ package appeng.datagen.providers.recipes;
 import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ItemDefinition;
 
-final class RecipeCriteria {
+final class RecipeCriterions {
 
-    private RecipeCriteria() {
+    private RecipeCriterions() {
     }
 
     public static String criterionName(BlockDefinition<?> block) {

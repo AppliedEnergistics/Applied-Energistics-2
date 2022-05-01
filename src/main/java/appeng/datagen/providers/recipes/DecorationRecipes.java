@@ -18,7 +18,7 @@
 
 package appeng.datagen.providers.recipes;
 
-import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
+import static appeng.datagen.providers.recipes.RecipeCriterions.criterionName;
 
 import java.util.function.Consumer;
 

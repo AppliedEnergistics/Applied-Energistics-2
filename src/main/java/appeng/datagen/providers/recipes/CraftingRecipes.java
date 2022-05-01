@@ -1263,6 +1263,48 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_nether_quartz", has(ConventionTags.NETHER_QUARTZ))
                 .save(consumer, AppEng.makeId("tools/nether_quartz_sword"));
 
+        // Fluix Tools
+        ShapedRecipeBuilder.shaped(AEItems.FLUIX_AXE)
+                .pattern("aa")
+                .pattern("ab")
+                .pattern(" b")
+                .define('a', ConventionTags.FLUIX_CRYSTAL)
+                .define('b', ConventionTags.WOOD_STICK)
+                .unlockedBy("has_fluix", has(ConventionTags.FLUIX_CRYSTAL))
+                .save(consumer, AppEng.makeId("tools/fluix_axe"));
+        ShapedRecipeBuilder.shaped(AEItems.FLUIX_HOE)
+                .pattern("aa")
+                .pattern(" b")
+                .pattern(" b")
+                .define('a', ConventionTags.FLUIX_CRYSTAL)
+                .define('b', ConventionTags.WOOD_STICK)
+                .unlockedBy("has_fluix", has(ConventionTags.FLUIX_CRYSTAL))
+                .save(consumer, AppEng.makeId("tools/fluix_hoe"));
+        ShapedRecipeBuilder.shaped(AEItems.FLUIX_PICK)
+                .pattern("aaa")
+                .pattern(" b ")
+                .pattern(" b ")
+                .define('a', ConventionTags.FLUIX_CRYSTAL)
+                .define('b', ConventionTags.WOOD_STICK)
+                .unlockedBy("has_fluix", has(ConventionTags.FLUIX_CRYSTAL))
+                .save(consumer, AppEng.makeId("tools/fluix_pickaxe"));
+        ShapedRecipeBuilder.shaped(AEItems.FLUIX_SHOVEL)
+                .pattern("a")
+                .pattern("b")
+                .pattern("b")
+                .define('a', ConventionTags.FLUIX_CRYSTAL)
+                .define('b', ConventionTags.WOOD_STICK)
+                .unlockedBy("has_fluix", has(ConventionTags.FLUIX_CRYSTAL))
+                .save(consumer, AppEng.makeId("tools/fluix_spade"));
+        ShapedRecipeBuilder.shaped(AEItems.FLUIX_SWORD)
+                .pattern("a")
+                .pattern("a")
+                .pattern("b")
+                .define('a', ConventionTags.FLUIX_CRYSTAL)
+                .define('b', ConventionTags.WOOD_STICK)
+                .unlockedBy("has_fluix", has(ConventionTags.FLUIX_CRYSTAL))
+                .save(consumer, AppEng.makeId("tools/fluix_sword"));
+
         // Knives
         ShapedRecipeBuilder.shaped(AEItems.CERTUS_QUARTZ_KNIFE)
                 .pattern("  a")
