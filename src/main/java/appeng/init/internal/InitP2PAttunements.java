@@ -24,7 +24,7 @@ import team.reborn.energy.api.EnergyStorage;
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.core.definitions.AEParts;
-import appeng.core.localization.InGameTooltip;
+import appeng.core.localization.GuiText;
 
 public final class InitP2PAttunements {
 
@@ -40,8 +40,8 @@ public final class InitP2PAttunements {
         P2PTunnelAttunement.registerAttunementTag(AEParts.LIGHT_P2P_TUNNEL);
 
         P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.ENERGY_TUNNEL, EnergyStorage.ITEM,
-                InGameTooltip.P2PAttunementEnergy.text());
+                GuiText.P2PAttunementEnergy.text());
         P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.FLUID_TUNNEL, FluidStorage.ITEM,
-                InGameTooltip.P2PAttunementFluid.text());
+                GuiText.P2PAttunementFluid.text());
     }
 }

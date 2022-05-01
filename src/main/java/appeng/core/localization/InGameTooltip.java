@@ -35,8 +35,6 @@ public enum InGameTooltip implements LocalizationEnum {
     ErrorTooManyChannels("Error: Too Many Channels"),
     Locked("Locked"),
     NetworkBooting("Network Booting"),
-    P2PAttunementEnergy("Portable TechReborn Energy Storage (i.e. Batteries)"),
-    P2PAttunementFluid("Portable Fabric Fluid Storage (i.e. Tanks, Buckets)"),
     P2PInputManyOutputs("Linked (Input Side) - %d Outputs"),
     P2PInputOneOutput("Linked (Input Side)"),
     P2POutput("Linked (Output Side)"),

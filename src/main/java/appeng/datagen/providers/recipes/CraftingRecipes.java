@@ -900,7 +900,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 ShapelessRecipeBuilder.shapeless(AEItems.MEMORY_CARDS.item(entry.getKey()))
                         .requires(ConventionTags.MEMORY_CARDS)
                         .requires(ConventionTags.dye(entry.getKey().dye))
-                        .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
+                        .unlockedBy("has_memory_card", has(ConventionTags.MEMORY_CARDS))
                         .save(consumer, AppEng.makeId("tools/network_memory_card_" + entry.getKey().registryPrefix));
             }
         }
@@ -908,7 +908,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         ShapelessRecipeBuilder.shapeless(AEItems.MEMORY_CARDS.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.MEMORY_CARDS)
                 .requires(Items.WATER_BUCKET)
-                .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
+                .unlockedBy("has_memory_card", has(ConventionTags.MEMORY_CARDS))
                 .save(consumer, AppEng.makeId("network/cables/network_memory_card_clean"));
 
         ShapelessRecipeBuilder.shapeless(AEItems.NETWORK_TOOL)
