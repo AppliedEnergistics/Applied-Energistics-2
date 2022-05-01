@@ -1,20 +1,19 @@
 package appeng.items.tools.fluix;
 
-import appeng.core.localization.GuiText;
-import appeng.core.localization.InGameTooltip;
-import appeng.hooks.IntrinsicEnchantItem;
-import net.minecraft.core.NonNullList;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import appeng.core.localization.GuiText;
+import appeng.hooks.IntrinsicEnchantItem;
 
 public class FluixAxeItem extends AxeItem implements IntrinsicEnchantItem {
     public FluixAxeItem(Properties props) {
@@ -27,7 +26,8 @@ public class FluixAxeItem extends AxeItem implements IntrinsicEnchantItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+            TooltipFlag isAdvanced) {
         tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.BLOCK_FORTUNE.getFullname(1)));
     }
 }
