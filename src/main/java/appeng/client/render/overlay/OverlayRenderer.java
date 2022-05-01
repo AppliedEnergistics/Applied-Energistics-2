@@ -64,7 +64,7 @@ public class OverlayRenderer {
         // Render around a whole chunk
         float x1 = 0f;
         float x2 = 16f;
-        float y1 = 0f;
+        float y1 = -64f;
         float y2 = 256f;
         float z1 = 0f;
         float z2 = 16f;
