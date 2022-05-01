@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -129,6 +130,7 @@ public final class AEItems {
         var name = tier.namePrefix() + " Portable Item Cell";
         return item(name, id, p -> new PortableCellItem(AEKeyType.items(), MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1)));
     }
+
     private static ItemDefinition<PortableCellItem> makePortableFluidCell(ResourceLocation id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Fluid Cell";
         return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1)));
@@ -149,16 +151,17 @@ public final class AEItems {
     ///
 
     public static final ItemDefinition<BiometricCardItem> BIOMETRIC_CARD = item("Biometric Card", AEItemIds.BIOMETRIC_CARD, p -> new BiometricCardItem(p.stacksTo(1)));
-    public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item("Memory Card", AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.stacksTo(1)));
     public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item("Network Tool", AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1)));
+    public static final ColoredItemDefinition<MemoryCardItem> MEMORY_CARDS = createColoredItems("Memory Card", AEItemIds.MEMORY_CARDS, (p, color) -> new MemoryCardItem(p.stacksTo(1)));
+
 
     public static final ItemDefinition<FacadeItem> FACADE = item("Cable Facade", AEItemIds.FACADE, FacadeItem::new);
     public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item("Blank Pattern", AEItemIds.BLANK_PATTERN, MaterialItem::new);
     public static final ItemDefinition<CraftingPatternItem> CRAFTING_PATTERN = item("Crafting Pattern", AEItemIds.CRAFTING_PATTERN, p -> new CraftingPatternItem(p.stacksTo(1)));
     public static final ItemDefinition<ProcessingPatternItem> PROCESSING_PATTERN = item("Processing Pattern", AEItemIds.PROCESSING_PATTERN, p -> new ProcessingPatternItem(p.stacksTo(1)));
 
-    public static final ColoredItemDefinition<PaintBallItem> COLORED_PAINT_BALL = createPaintBalls("Paint Ball", AEItemIds.COLORED_PAINT_BALL, false);
-    public static final ColoredItemDefinition<PaintBallItem> COLORED_LUMEN_PAINT_BALL = createPaintBalls("Lumen Paint Ball", AEItemIds.COLORED_LUMEN_PAINT_BALL, true);
+    public static final ColoredItemDefinition<PaintBallItem> COLORED_PAINT_BALL = createColoredItems("Paint Ball", AEItemIds.COLORED_PAINT_BALL, (p, color) -> new PaintBallItem(p, color, false));
+    public static final ColoredItemDefinition<PaintBallItem> COLORED_LUMEN_PAINT_BALL = createColoredItems("Lumen Paint Ball", AEItemIds.COLORED_LUMEN_PAINT_BALL, (p, color) -> new PaintBallItem(p, color, true));
 
     ///
     /// MATERIALS
@@ -218,11 +221,9 @@ public final class AEItems {
     ///
 
     public static final ItemDefinition<CrystalSeedItem> CERTUS_CRYSTAL_SEED = item("Certus Quartz Seed", AEItemIds.CERTUS_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, CERTUS_QUARTZ_CRYSTAL.asItem()))
-            ;
+            p -> new CrystalSeedItem(p, CERTUS_QUARTZ_CRYSTAL.asItem()));
     public static final ItemDefinition<CrystalSeedItem> FLUIX_CRYSTAL_SEED = item("Fluix Seed", AEItemIds.FLUIX_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, FLUIX_CRYSTAL.asItem()))
-            ;
+            p -> new CrystalSeedItem(p, FLUIX_CRYSTAL.asItem()));
 
     ///
     /// CELLS
@@ -232,10 +233,10 @@ public final class AEItems {
     public static final ItemDefinition<CreativeCellItem> FLUID_CELL_CREATIVE = item("Creative ME Fluid Cell", AEItemIds.FLUID_CELL_CREATIVE, p -> new CreativeCellItem(p.stacksTo(1).rarity(Rarity.EPIC)));
     public static final ItemDefinition<ViewCellItem> VIEW_CELL = item("View Cell", AEItemIds.VIEW_CELL, p -> new ViewCellItem(p.stacksTo(1)));
 
-    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_1K = item("1k ME Item Storage Cell", AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_1K, ITEM_CELL_HOUSING, 0.5f,1, 8, 63, AEKeyType.items()));
-    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_4K = item("4k ME Item Storage Cell", AEItemIds.ITEM_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_4K, ITEM_CELL_HOUSING, 1.0f,4, 32, 63, AEKeyType.items()));
-    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_16K = item("16k ME Item Storage Cell", AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_16K, ITEM_CELL_HOUSING, 1.5f,16, 128, 63, AEKeyType.items()));
-    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_64K = item("64k ME Item Storage Cell", AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_64K, ITEM_CELL_HOUSING, 2.0f,64, 512, 63, AEKeyType.items()));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_1K = item("1k ME Item Storage Cell", AEItemIds.ITEM_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_1K, ITEM_CELL_HOUSING, 0.5f, 1, 8, 63, AEKeyType.items()));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_4K = item("4k ME Item Storage Cell", AEItemIds.ITEM_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_4K, ITEM_CELL_HOUSING, 1.0f, 4, 32, 63, AEKeyType.items()));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_16K = item("16k ME Item Storage Cell", AEItemIds.ITEM_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_16K, ITEM_CELL_HOUSING, 1.5f, 16, 128, 63, AEKeyType.items()));
+    public static final ItemDefinition<BasicStorageCell> ITEM_CELL_64K = item("64k ME Item Storage Cell", AEItemIds.ITEM_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_64K, ITEM_CELL_HOUSING, 2.0f, 64, 512, 63, AEKeyType.items()));
 
     public static final ItemDefinition<BasicStorageCell> FLUID_CELL_1K = item("1k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_1K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_1K, FLUID_CELL_HOUSING, 0.5f, 1, 8, 5, AEKeyType.fluids()));
     public static final ItemDefinition<BasicStorageCell> FLUID_CELL_4K = item("4k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_4K, FLUID_CELL_HOUSING, 1.0f, 4, 32, 5, AEKeyType.fluids()));
@@ -262,18 +263,19 @@ public final class AEItems {
         return Collections.unmodifiableList(ITEMS);
     }
 
-    private static ColoredItemDefinition<PaintBallItem> createPaintBalls(String name,
-            Map<AEColor, ResourceLocation> ids, boolean lumen) {
-        var colors = new ColoredItemDefinition<PaintBallItem>();
-        for (AEColor color : AEColor.values()) {
-            ResourceLocation id = ids.get(color);
-            if (id == null) {
-                continue;
+    private static <T extends Item> ColoredItemDefinition<T> createColoredItems(String name,
+            Map<AEColor, ResourceLocation> ids,
+            BiFunction<FabricItemSettings, AEColor, T> factory) {
+        var colors = new ColoredItemDefinition<T>();
+        for (var entry : ids.entrySet()) {
+            String fullName;
+            if (entry.getKey() == AEColor.TRANSPARENT) {
+                fullName = name;
+            } else {
+                fullName = entry.getKey().getEnglishName() + " " + name;
             }
-
-            var fullName = color.getEnglishName() + " " + name;
-
-            colors.add(color, id, item(fullName, id, p -> new PaintBallItem(p, color, lumen)));
+            colors.add(entry.getKey(), entry.getValue(),
+                    item(fullName, entry.getValue(), p -> factory.apply(p, entry.getKey())));
         }
         return colors;
     }

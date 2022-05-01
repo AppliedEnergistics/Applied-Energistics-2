@@ -20,6 +20,8 @@ package appeng.client.render.model;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -33,6 +35,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.util.AEColor;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
@@ -41,13 +44,30 @@ import appeng.core.AppEng;
  */
 public class MemoryCardModel implements BasicUnbakedModel {
 
-    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base");
+    public static final Map<AEColor, ResourceLocation> MODELS_BASE = new HashMap<>();
+    private final AEColor memoryCardColor;
+
+    static {
+        for (AEColor color : AEColor.values()) {
+            if (color != AEColor.TRANSPARENT) {
+                MODELS_BASE.put(color,
+                        new ResourceLocation(AppEng.MOD_ID, "item/memory_card_" + color.registryPrefix + "_base"));
+            } else {
+                MODELS_BASE.put(color, new ResourceLocation(AppEng.MOD_ID, "item/memory_card_base"));
+            }
+        }
+    }
+
     private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "item/memory_card_hash"));
 
+    public MemoryCardModel(AEColor memoryCardColor) {
+        this.memoryCardColor = memoryCardColor;
+    }
+
     @Override
     public Collection<ResourceLocation> getDependencies() {
-        return Collections.singleton(MODEL_BASE);
+        return Collections.singleton(MODELS_BASE.get(memoryCardColor));
     }
 
     @Nullable
@@ -56,7 +76,7 @@ public class MemoryCardModel implements BasicUnbakedModel {
             ModelState rotationContainer, ResourceLocation modelId) {
         TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
 
-        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
+        BakedModel baseModel = loader.bake(MODELS_BASE.get(memoryCardColor), rotationContainer);
 
         return new MemoryCardBakedModel(baseModel, texture);
     }

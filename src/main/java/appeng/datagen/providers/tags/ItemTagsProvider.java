@@ -77,6 +77,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
             tag(ConventionTags.GLASS_CABLE).add(AEParts.GLASS_CABLE.item(color));
             tag(ConventionTags.COVERED_CABLE).add(AEParts.COVERED_CABLE.item(color));
             tag(ConventionTags.COVERED_DENSE_CABLE).add(AEParts.COVERED_DENSE_CABLE.item(color));
+            tag(ConventionTags.MEMORY_CARDS).add(AEItems.MEMORY_CARDS.item(color));
         }
 
         for (AEColor color : AEColor.VALID_COLORS) {
