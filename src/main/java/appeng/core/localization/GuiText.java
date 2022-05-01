@@ -88,6 +88,7 @@ public enum GuiText implements LocalizationEnum {
     Installed("Installed: %s"),
     Interface("ME Interface"),
     Interfaces("ME Interfaces"),
+    IntrinsicEnchant("Always has at least %s"),
     InvalidNumber("Please enter a number or a mathematical expression e.g. : 3*4"),
     InvalidPattern("Invalid Pattern"),
     Items("Items"),
