@@ -40,6 +40,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.core.AELog;
 import appeng.core.sync.packets.InterfaceTerminalPacket;
@@ -60,7 +61,7 @@ import appeng.util.inv.filter.IAEItemFilter;
  */
 public class InterfaceTerminalMenu extends AEBaseMenu {
 
-    private PatternAccessTerminalPart host;
+    private final IConfigurableObject host;
     @GuiSync(1)
     public YesNo showHiddenPattern = YesNo.NO;
 
@@ -85,12 +86,12 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
     public InterfaceTerminalMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
-        this.host = anchor;
     }
 
-    public InterfaceTerminalMenu(MenuType<?> menuType, int id, Inventory ip, Object host,
+    public InterfaceTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IConfigurableObject host,
             boolean bindInventory) {
         super(menuType, id, ip, host);
+        this.host = host;
         if (bindInventory) {
             this.createPlayerInventorySlots(ip);
         }
