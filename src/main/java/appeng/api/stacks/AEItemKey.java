@@ -11,6 +11,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -214,6 +215,13 @@ public final class AEItemKey extends AEKey {
             amount -= taken;
             drops.add(toStack((int) taken));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean isTagged(TagKey<?> tag) {
+        // This will just return false for incorrectly cast tags
+        return item.builtInRegistryHolder().is((TagKey<Item>) tag);
     }
 
     /**

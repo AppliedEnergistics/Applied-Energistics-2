@@ -49,6 +49,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
@@ -123,6 +124,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         this.searchField = widgets.addTextField("search");
+        this.searchField.setTooltipMessage(List.of(
+                (AEConfig.instance().getSearchTooltips() != YesNo.NO) ? GuiText.SearchTooltipIncludingTooltips.text()
+                        : GuiText.SearchTooltip.text(),
+                GuiText.SearchTooltipModId.text(),
+                GuiText.SearchTooltipItemId.text(),
+                GuiText.SearchTooltipTag.text()));
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = new Repo(scrollbar, this);

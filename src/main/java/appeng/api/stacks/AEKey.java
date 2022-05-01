@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -291,4 +292,12 @@ public abstract class AEKey {
      * @param pos    Position where the stacks were being held
      */
     public abstract void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos);
+
+    /**
+     * If the underlying resource supports tagging, this method checks if the resource represented by this key is tagged
+     * by the given tag.
+     */
+    public boolean isTagged(TagKey<?> tag) {
+        return false;
+    }
 }

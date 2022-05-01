@@ -12,6 +12,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
@@ -132,6 +133,13 @@ public final class AEFluidKey extends AEKey {
     @Override
     public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         // Fluids are voided
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean isTagged(TagKey<?> tag) {
+        // This will just return false for incorrectly cast tags
+        return fluid.builtInRegistryHolder().is((TagKey<Fluid>) tag);
     }
 
     public FluidVariant toVariant() {
