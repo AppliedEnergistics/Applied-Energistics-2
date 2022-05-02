@@ -37,6 +37,7 @@ public enum GuiText implements LocalizationEnum {
     CPUs("CPU"),
     CalculatingWait("Calculating Please Wait..."),
     Cancel("Cancel"),
+    CantStoreItems("Can't Store Contents!"),
     CellWorkbench("Cell Workbench"),
     ChannelEnergyDrain("Channel Passive Drain: %s"),
     ChargedQuartz(

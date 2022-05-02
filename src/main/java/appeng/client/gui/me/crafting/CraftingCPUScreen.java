@@ -29,6 +29,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -98,6 +99,10 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
                         GuiText.ETAFormat.getLocal());
                 title = title.copy().append(" - " + etaTimeText);
             }
+        }
+        // Mention that items can't be stored if applicable
+        if (menu.isCantStoreItems()) {
+            title = title.copy().append(" - ").append(GuiText.CantStoreItems.text().withStyle(ChatFormatting.RED));
         }
         setTextContent(TEXT_ID_DIALOG_TITLE, title);
 

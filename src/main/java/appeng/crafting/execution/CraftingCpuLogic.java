@@ -64,6 +64,10 @@ public class CraftingCpuLogic {
      */
     private final int[] usedOps = new int[3];
     private final Set<Consumer<AEKey>> listeners = new HashSet<>();
+    /**
+     * True if the CPU is currently trying to clear its inventory but is not able to.
+     */
+    private boolean cantStoreItems = false;
 
     public CraftingCpuLogic(CraftingCPUCluster cluster) {
         this.cluster = cluster;
@@ -116,9 +120,13 @@ public class CraftingCpuLogic {
         // Don't tick if we're not active.
         if (!cluster.isActive())
             return;
+        cantStoreItems = false;
         // If we don't have a job, just try to dump our items.
         if (this.job == null) {
             this.storeItems();
+            if (!this.inventory.list.isEmpty()) {
+                cantStoreItems = true;
+            }
             return;
         }
         // Check if the job was cancelled.
@@ -477,5 +485,9 @@ public class CraftingCpuLogic {
                 }
             }
         }
+    }
+
+    public boolean isCantStoreItems() {
+        return cantStoreItems;
     }
 }
