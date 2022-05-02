@@ -86,6 +86,22 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
 
         tag(ConventionTags.SILICON)
                 .add(AEItems.SILICON.asItem());
+
+        tag(ConventionTags.QUARTZ_AXE)
+                .add(AEItems.CERTUS_QUARTZ_AXE.asItem())
+                .add(AEItems.NETHER_QUARTZ_AXE.asItem());
+        tag(ConventionTags.QUARTZ_HOE)
+                .add(AEItems.CERTUS_QUARTZ_HOE.asItem())
+                .add(AEItems.NETHER_QUARTZ_HOE.asItem());
+        tag(ConventionTags.QUARTZ_PICK)
+                .add(AEItems.CERTUS_QUARTZ_PICK.asItem())
+                .add(AEItems.NETHER_QUARTZ_PICK.asItem());
+        tag(ConventionTags.QUARTZ_SHOVEL)
+                .add(AEItems.CERTUS_QUARTZ_SHOVEL.asItem())
+                .add(AEItems.NETHER_QUARTZ_SHOVEL.asItem());
+        tag(ConventionTags.QUARTZ_SWORD)
+                .add(AEItems.CERTUS_QUARTZ_SWORD.asItem())
+                .add(AEItems.NETHER_QUARTZ_SWORD.asItem());
         tag(ConventionTags.QUARTZ_WRENCH)
                 .add(AEItems.CERTUS_QUARTZ_WRENCH.asItem())
                 .add(AEItems.NETHER_QUARTZ_WRENCH.asItem());

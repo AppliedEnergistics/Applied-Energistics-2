@@ -101,6 +101,11 @@ public final class ConventionTags {
     public static TagKey<Item> ILLUMINATED_PANEL = tag("ae2:illuminated_panel");
     public static TagKey<Item> INTERFACE = tag("ae2:interface");
     public static TagKey<Item> PATTERN_PROVIDER = tag("ae2:pattern_provider");
+    public static TagKey<Item> QUARTZ_AXE = tag("ae2:quartz_axe");
+    public static TagKey<Item> QUARTZ_HOE = tag("ae2:quartz_hoe");
+    public static TagKey<Item> QUARTZ_PICK = tag("ae2:quartz_pickaxe");
+    public static TagKey<Item> QUARTZ_SHOVEL = tag("ae2:quartz_shovel");
+    public static TagKey<Item> QUARTZ_SWORD = tag("ae2:quartz_sword");
     public static TagKey<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
     public static TagKey<Item> QUARTZ_KNIFE = tag("ae2:knife");
     public static TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
