@@ -2,9 +2,6 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import appeng.api.ids.AEItemIds;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.UpgradeRecipeBuilder;
@@ -12,6 +9,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
