@@ -67,6 +67,8 @@ public class CraftingCPUMenu extends AEBaseMenu {
 
     @GuiSync(0)
     public CpuSelectionMode schedulingMode = CpuSelectionMode.ANY;
+    @GuiSync(1)
+    public boolean cantStoreItems = false;
 
     public CraftingCPUMenu(MenuType<?> menuType, int id, Inventory ip, Object te) {
         super(menuType, id, ip, te);
@@ -140,6 +142,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
     public void broadcastChanges() {
         if (isServerSide() && this.cpu != null) {
             this.schedulingMode = this.cpu.getSelectionMode();
+            this.cantStoreItems = this.cpu.craftingLogic.isCantStoreItems();
 
             if (this.incrementalUpdateHelper.hasChanges()) {
                 CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
@@ -154,6 +157,10 @@ public class CraftingCPUMenu extends AEBaseMenu {
 
     public CpuSelectionMode getSchedulingMode() {
         return schedulingMode;
+    }
+
+    public boolean isCantStoreItems() {
+        return cantStoreItems;
     }
 
     public boolean allowConfiguration() {
