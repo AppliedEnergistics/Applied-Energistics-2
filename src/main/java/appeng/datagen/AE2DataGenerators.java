@@ -30,13 +30,7 @@ import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.models.ItemModelProvider;
 import appeng.datagen.providers.models.PartModelProvider;
-import appeng.datagen.providers.recipes.CraftingRecipes;
-import appeng.datagen.providers.recipes.DecorationBlockRecipes;
-import appeng.datagen.providers.recipes.DecorationRecipes;
-import appeng.datagen.providers.recipes.EntropyRecipes;
-import appeng.datagen.providers.recipes.InscriberRecipes;
-import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
-import appeng.datagen.providers.recipes.SmeltingRecipes;
+import appeng.datagen.providers.recipes.*;
 import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
@@ -76,6 +70,7 @@ public class AE2DataGenerators {
         generator.addProvider(new InscriberRecipes(generator));
         generator.addProvider(new SmeltingRecipes(generator));
         generator.addProvider(new CraftingRecipes(generator));
+        generator.addProvider(new SmithingRecipes(generator));
 
         // Must run last
         generator.addProvider(localization);
