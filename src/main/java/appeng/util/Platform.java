@@ -19,11 +19,7 @@
 package appeng.util;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Strings;
@@ -102,6 +98,8 @@ public class Platform {
     private static final Random RANDOM_GENERATOR = new Random();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
+
+    private static final Map<AEKey, List<Component>> TOOLTIP_CACHE = new HashMap<>();
 
     public static final Direction[] DIRECTIONS_WITH_NULL = new Direction[] { Direction.DOWN, Direction.UP,
             Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null };
@@ -293,11 +291,17 @@ public class Platform {
 
     @Environment(EnvType.CLIENT)
     public static List<Component> getTooltip(AEKey what) {
-        if (what instanceof AEItemKey itemKey) {
-            return getTooltip(itemKey);
-        } else {
-            return Collections.emptyList();
+        if (TOOLTIP_CACHE.containsKey(what)) {
+            return TOOLTIP_CACHE.get(what);
         }
+        List<Component> tooltip;
+        if (what instanceof AEItemKey itemKey) {
+            tooltip = getTooltip(itemKey);
+        } else {
+            tooltip = Collections.emptyList();
+        }
+        TOOLTIP_CACHE.put(what, tooltip);
+        return tooltip;
     }
 
     @Environment(EnvType.CLIENT)
@@ -325,7 +329,8 @@ public class Platform {
         return getDescriptionId(fluid.getFluid());
     }
 
-    public static Component getFluidDisplayName(Fluid fluid) {
+    public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
+        // no usage of the tag, but we keep it for compatibility
         return new TranslatableComponent(getDescriptionId(fluid));
     }
 

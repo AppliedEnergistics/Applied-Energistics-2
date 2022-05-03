@@ -31,7 +31,7 @@ public final class AEFluidKey extends AEKey {
     private final int hashCode;
 
     private AEFluidKey(Fluid fluid, @Nullable CompoundTag tag) {
-        super(Platform.getFluidDisplayName(fluid));
+        super(Platform.getFluidDisplayName(fluid, tag));
         this.fluid = fluid;
         this.tag = tag;
         this.hashCode = Objects.hash(fluid, tag);
