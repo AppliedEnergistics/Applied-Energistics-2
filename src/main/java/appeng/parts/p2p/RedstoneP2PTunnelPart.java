@@ -32,12 +32,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.util.Platform;
 
 public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> {
 
-    private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_redstone");
+    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_redstone"));
 
     @PartModels
     public static List<IPartModel> getModels() {

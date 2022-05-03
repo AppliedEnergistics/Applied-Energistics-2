@@ -86,7 +86,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         /**
          * Get the capability, or a null handler if not available. Use within the scope of the enclosing AdjCapability.
          */
-        protected A get() {
+        public A get() {
             if (accessDepth == 0) {
                 throw new IllegalStateException("get was called after closing the wrapper");
             } else if (accessDepth == 1) {
@@ -129,7 +129,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
         }
 
         @Override
-        protected A get() {
+        public A get() {
             return emptyHandler;
         }
     }

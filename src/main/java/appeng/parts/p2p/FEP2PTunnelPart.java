@@ -28,10 +28,11 @@ import team.reborn.energy.api.EnergyStorage;
 import appeng.api.config.PowerUnits;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 
 public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, EnergyStorage> {
-    private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_fe");
+    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_fe"));
 
     @PartModels
     public static List<IPartModel> getModels() {
