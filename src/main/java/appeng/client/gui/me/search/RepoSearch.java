@@ -1,16 +1,17 @@
 package appeng.client.gui.me.search;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.WeakHashMap;
 import java.util.function.Predicate;
 
 import net.minecraft.network.chat.Component;
 
 import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
 import it.unimi.dsi.fastutil.longs.Long2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
+import appeng.api.stacks.AEKey;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.util.Platform;
 
@@ -22,7 +23,7 @@ public class RepoSearch {
     private final Long2BooleanMap cache = new Long2BooleanOpenHashMap();
     private Predicate<GridInventoryEntry> search = (e) -> true;
 
-    private final Long2ObjectMap<List<Component>> tooltipCache = new Long2ObjectOpenHashMap<>();
+    private final Map<AEKey, List<Component>> tooltipCache = new WeakHashMap<>();
 
     public RepoSearch() {
     }
@@ -41,11 +42,11 @@ public class RepoSearch {
 
     public boolean matches(GridInventoryEntry entry) {
         // first cache the result, when got, it cannot be null
-        tooltipCache.computeIfAbsent(entry.getSerial(), s -> Platform.getTooltip(entry.getWhat()));
+        tooltipCache.computeIfAbsent(entry.getWhat(), s -> Platform.getTooltip(entry.getWhat()));
         return cache.computeIfAbsent(entry.getSerial(), s -> search.test(entry));
     }
 
     public List<Component> getTooltip(GridInventoryEntry entry) {
-        return Objects.requireNonNull(tooltipCache.get(entry.getSerial()));
+        return Objects.requireNonNull(tooltipCache.get(entry.getWhat()));
     }
 }
