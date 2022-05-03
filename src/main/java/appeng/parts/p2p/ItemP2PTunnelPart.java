@@ -26,11 +26,12 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
+import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 
 public class ItemP2PTunnelPart extends StorageP2PTunnelPart<ItemP2PTunnelPart, ItemVariant> {
 
-    private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_items");
+    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_items"));
 
     @PartModels
     public static List<IPartModel> getModels() {

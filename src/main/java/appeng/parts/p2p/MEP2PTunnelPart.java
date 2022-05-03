@@ -39,6 +39,7 @@ import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
@@ -47,7 +48,7 @@ import appeng.me.service.helpers.TunnelConnection;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
-    private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_me");
+    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_me"));
 
     @PartModels
     public static List<IPartModel> getModels() {
