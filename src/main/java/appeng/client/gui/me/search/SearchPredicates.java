@@ -8,11 +8,10 @@ import java.util.regex.PatternSyntaxException;
 import appeng.api.config.YesNo;
 import appeng.core.AEConfig;
 import appeng.menu.me.common.GridInventoryEntry;
-import appeng.util.Platform;
 
 final class SearchPredicates {
 
-    static Predicate<GridInventoryEntry> fromString(String searchString) {
+    static Predicate<GridInventoryEntry> fromString(String searchString, RepoSearch repoSearch) {
         if (searchString.startsWith("@")) {
             return createModIdPredicate(searchString.substring(1));
         } else if (searchString.startsWith("*")) {
@@ -25,7 +24,7 @@ final class SearchPredicates {
 
             var result = createNamePredicate(pattern);
             if (AEConfig.instance().getSearchTooltips() != YesNo.NO) {
-                result = result.or(createTooltipPredicate(pattern));
+                result = result.or(createTooltipPredicate(pattern, repoSearch));
             }
 
             return result;
@@ -56,10 +55,9 @@ final class SearchPredicates {
         };
     }
 
-    private static Predicate<GridInventoryEntry> createTooltipPredicate(Pattern searchPattern) {
+    private static Predicate<GridInventoryEntry> createTooltipPredicate(Pattern searchPattern, RepoSearch repoSearch) {
         return entry -> {
-            var what = Objects.requireNonNull(entry.getWhat());
-            var tooltip = Platform.getTooltip(what);
+            var tooltip = repoSearch.getTooltip(entry);
 
             for (var line : tooltip) {
                 if (searchPattern.matcher(line.getString()).find()) {

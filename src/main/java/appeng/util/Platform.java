@@ -99,8 +99,6 @@ public class Platform {
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
-    private static final Map<AEKey, List<Component>> TOOLTIP_CACHE = new HashMap<>();
-
     public static final Direction[] DIRECTIONS_WITH_NULL = new Direction[] { Direction.DOWN, Direction.UP,
             Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null };
 
@@ -291,17 +289,11 @@ public class Platform {
 
     @Environment(EnvType.CLIENT)
     public static List<Component> getTooltip(AEKey what) {
-        if (TOOLTIP_CACHE.containsKey(what)) {
-            return TOOLTIP_CACHE.get(what);
-        }
-        List<Component> tooltip;
         if (what instanceof AEItemKey itemKey) {
-            tooltip = getTooltip(itemKey);
+            return getTooltip(itemKey);
         } else {
-            tooltip = Collections.emptyList();
+            return Collections.emptyList();
         }
-        TOOLTIP_CACHE.put(what, tooltip);
-        return tooltip;
     }
 
     @Environment(EnvType.CLIENT)
