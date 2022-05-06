@@ -43,6 +43,7 @@ final class SiteExportScenes {
                 singleBlock(AEBlocks.CRAFTING_STORAGE_4K, craftingStorageState),
                 singleBlock(AEBlocks.CRAFTING_STORAGE_16K, craftingStorageState),
                 singleBlock(AEBlocks.CRAFTING_STORAGE_64K, craftingStorageState),
+                singleBlock(AEBlocks.CRAFTING_STORAGE_256K, craftingStorageState),
                 singleBlock(AEBlocks.CELL_WORKBENCH),
                 singleBlock(AEBlocks.QUARTZ_ORE),
                 singleBlock(AEBlocks.QUARTZ_BLOCK),

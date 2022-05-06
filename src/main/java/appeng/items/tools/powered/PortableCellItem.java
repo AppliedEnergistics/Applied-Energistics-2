@@ -87,8 +87,10 @@ public class PortableCellItem extends AEBasePoweredItem
             () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_4K));
     public static final StorageTier SIZE_16K = new StorageTier("16k", 8192, 36, 128,
             () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_16K));
-    public static final StorageTier SIZE_64K = new StorageTier("64k", 16834, 27, 512,
+    public static final StorageTier SIZE_64K = new StorageTier("64k", 32768, 27, 512,
             () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_64K));
+    public static final StorageTier SIZE_256K = new StorageTier("256k", 131072, 18, 2048,
+            () -> Registry.ITEM.get(AEItemIds.CELL_COMPONENT_256K));
 
     /**
      * Gets the recipe ID for crafting this particular cell.

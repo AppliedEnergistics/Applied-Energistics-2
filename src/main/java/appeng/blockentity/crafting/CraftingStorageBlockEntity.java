@@ -42,6 +42,7 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
             case 4 -> AEBlocks.CRAFTING_STORAGE_4K.asItem();
             case 16 -> AEBlocks.CRAFTING_STORAGE_16K.asItem();
             case 64 -> AEBlocks.CRAFTING_STORAGE_64K.asItem();
+            case 256 -> AEBlocks.CRAFTING_STORAGE_256K.asItem();
             default -> super.getItemFromBlockEntity();
         };
     }
@@ -70,6 +71,7 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
             case STORAGE_4K -> 4 * 1024;
             case STORAGE_16K -> 16 * 1024;
             case STORAGE_64K -> 64 * 1024;
+            case STORAGE_256K -> 256 * 1024;
             default -> 0;
         };
     }

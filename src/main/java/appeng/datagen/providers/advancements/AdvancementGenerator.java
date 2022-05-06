@@ -233,6 +233,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_4K))
                 .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_16K))
                 .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_64K))
+                .addCriterion("c256k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_256K))
                 .requirements(RequirementsStrategy.OR)
                 .save(consumer, "ae2:main/storage_cell");
 
@@ -298,6 +299,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_4K))
                 .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_16K))
                 .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_64K))
+                .addCriterion("c256k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_256K))
                 .requirements(RequirementsStrategy.OR)
                 .save(consumer, "ae2:main/crafting_cpu");
 
@@ -459,6 +461,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("pc_4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL4K))
                 .addCriterion("pc_16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL16K))
                 .addCriterion("pc_64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL64K))
+                .addCriterion("pc_256k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL256K))
                 .requirements(RequirementsStrategy.OR)
                 .save(consumer, "ae2:main/portable_cell");
 

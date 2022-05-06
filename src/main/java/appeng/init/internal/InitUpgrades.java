@@ -68,7 +68,8 @@ public final class InitUpgrades {
 
         // Storage Cells
         var itemCells = List.of(
-                AEItems.ITEM_CELL_1K, AEItems.ITEM_CELL_4K, AEItems.ITEM_CELL_16K, AEItems.ITEM_CELL_64K);
+                AEItems.ITEM_CELL_1K, AEItems.ITEM_CELL_4K, AEItems.ITEM_CELL_16K, AEItems.ITEM_CELL_64K,
+                AEItems.ITEM_CELL_256K);
         for (var itemCell : itemCells) {
             Upgrades.add(AEItems.FUZZY_CARD, itemCell, 1, storageCellGroup);
             Upgrades.add(AEItems.INVERTER_CARD, itemCell, 1, storageCellGroup);
@@ -78,9 +79,9 @@ public final class InitUpgrades {
 
         var portableCells = List.of(
                 AEItems.PORTABLE_ITEM_CELL1K, AEItems.PORTABLE_ITEM_CELL4K, AEItems.PORTABLE_ITEM_CELL16K,
-                AEItems.PORTABLE_ITEM_CELL64K,
+                AEItems.PORTABLE_ITEM_CELL64K, AEItems.PORTABLE_ITEM_CELL256K,
                 AEItems.PORTABLE_FLUID_CELL1K, AEItems.PORTABLE_FLUID_CELL4K, AEItems.PORTABLE_FLUID_CELL16K,
-                AEItems.PORTABLE_FLUID_CELL64K);
+                AEItems.PORTABLE_FLUID_CELL64K, AEItems.PORTABLE_FLUID_CELL256K);
         for (var portableCell : portableCells) {
             Upgrades.add(AEItems.FUZZY_CARD, portableCell, 1, GuiText.PortableCells.getTranslationKey());
             Upgrades.add(AEItems.INVERTER_CARD, portableCell, 1, GuiText.PortableCells.getTranslationKey());
@@ -97,6 +98,7 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.INVERTER_CARD, AEItems.FLUID_CELL_4K, 1, storageCellGroup);
         Upgrades.add(AEItems.INVERTER_CARD, AEItems.FLUID_CELL_16K, 1, storageCellGroup);
         Upgrades.add(AEItems.INVERTER_CARD, AEItems.FLUID_CELL_64K, 1, storageCellGroup);
+        Upgrades.add(AEItems.INVERTER_CARD, AEItems.FLUID_CELL_256K, 1, storageCellGroup);
 
         Upgrades.add(AEItems.FUZZY_CARD, AEItems.VIEW_CELL, 1);
         Upgrades.add(AEItems.INVERTER_CARD, AEItems.VIEW_CELL, 1);
