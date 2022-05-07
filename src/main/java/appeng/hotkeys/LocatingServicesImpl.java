@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import appeng.api.hotkeys.LocatingService;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.tools.powered.PortableCellItem;
@@ -11,7 +12,7 @@ import appeng.items.tools.powered.PortableCellItem;
 /**
  * registers {@link LocatingService}
  */
-public class LocatingServices {
+public class LocatingServicesImpl {
     public static final HashMap<String, List<LocatingService>> REGISTRY = new HashMap<>();
 
     static {
@@ -35,7 +36,10 @@ public class LocatingServices {
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL1K, "portable_fluid_cell");
     }
 
-    private static void registerPortableCell(ItemDefinition<PortableCellItem> cell, String id) {
+    /**
+     * a convenience helper for registering hotkeys for portable cells
+     */
+    public static void registerPortableCell(ItemDefinition<PortableCellItem> cell, String id) {
         register(new InventoryLocatingService(cell.asItem(), cell.asItem()::openFromInventory), id);
     }
 

@@ -1,4 +1,4 @@
-package appeng.hotkeys;
+package appeng.api.hotkeys;
 
 import net.minecraft.world.entity.player.Player;
 
