@@ -35,6 +35,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.handlers.InscriberProcessType;
@@ -83,6 +84,9 @@ public class InscriberRecipes extends AE2RecipeProvider {
         inscribe(Ingredient.of(ConventionTags.CERTUS_QUARTZ), AEItems.CERTUS_QUARTZ_DUST.stack())
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, "certus_quartz_dust");
+        inscribe(Ingredient.of(AEBlocks.SKY_STONE_BLOCK), AEItems.SKY_DUST.stack())
+                .setMode(InscriberProcessType.INSCRIBE)
+                .save(consumer, "sky_stone_dust");
     }
 
     private void processor(Consumer<FinishedRecipe> consumer,

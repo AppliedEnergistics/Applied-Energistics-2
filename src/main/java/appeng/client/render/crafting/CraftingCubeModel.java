@@ -48,6 +48,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     private final static Material STORAGE_4K_LIGHT = texture("4k_storage_light");
     private final static Material STORAGE_16K_LIGHT = texture("16k_storage_light");
     private final static Material STORAGE_64K_LIGHT = texture("64k_storage_light");
+    private final static Material STORAGE_256K_LIGHT = texture("256k_storage_light");
     private final static Material MONITOR_BASE = texture("monitor_base");
     private final static Material MONITOR_LIGHT_DARK = texture("monitor_light_dark");
     private final static Material MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
@@ -62,8 +63,8 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     @Override
     public Stream<Material> getAdditionalTextures() {
         return Stream.of(RING_CORNER, RING_SIDE_HOR, RING_SIDE_VER, UNIT_BASE, LIGHT_BASE, ACCELERATOR_LIGHT,
-                STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, MONITOR_BASE,
-                MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
+                STORAGE_1K_LIGHT, STORAGE_4K_LIGHT, STORAGE_16K_LIGHT, STORAGE_64K_LIGHT, STORAGE_256K_LIGHT,
+                MONITOR_BASE, MONITOR_LIGHT_DARK, MONITOR_LIGHT_MEDIUM, MONITOR_LIGHT_BRIGHT);
     }
 
     @org.jetbrains.annotations.Nullable
@@ -77,7 +78,8 @@ public class CraftingCubeModel implements BasicUnbakedModel {
 
         return switch (this.type) {
             case UNIT -> new UnitBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE));
-            case ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K -> new LightBakedModel(ringCorner,
+            case ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K, STORAGE_256K -> new LightBakedModel(
+                    ringCorner,
                     ringSideHor, ringSideVer, spriteGetter.apply(LIGHT_BASE),
                     getLightTexture(spriteGetter, this.type));
             case MONITOR -> new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE),
@@ -95,6 +97,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
             case STORAGE_4K -> textureGetter.apply(STORAGE_4K_LIGHT);
             case STORAGE_16K -> textureGetter.apply(STORAGE_16K_LIGHT);
             case STORAGE_64K -> textureGetter.apply(STORAGE_64K_LIGHT);
+            case STORAGE_256K -> textureGetter.apply(STORAGE_256K_LIGHT);
             default -> throw new IllegalArgumentException(
                     "Crafting unit type " + type + " does not use a light texture.");
         };

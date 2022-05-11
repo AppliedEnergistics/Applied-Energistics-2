@@ -55,7 +55,8 @@ public final class InitAutoRotatingModel {
             AEBlocks.CRAFTING_STORAGE_1K,
             AEBlocks.CRAFTING_STORAGE_4K,
             AEBlocks.CRAFTING_STORAGE_16K,
-            AEBlocks.CRAFTING_STORAGE_64K);
+            AEBlocks.CRAFTING_STORAGE_64K,
+            AEBlocks.CRAFTING_STORAGE_256K);
 
     // Maps from resource path to customizer
     private static final Map<String, Function<BakedModel, BakedModel>> CUSTOMIZERS = new HashMap<>();

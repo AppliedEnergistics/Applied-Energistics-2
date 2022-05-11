@@ -44,6 +44,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         builtInBlockModel("crafting/4k_storage_formed");
         builtInBlockModel("crafting/16k_storage_formed");
         builtInBlockModel("crafting/64k_storage_formed");
+        builtInBlockModel("crafting/256k_storage_formed");
 
         // Spatial pylon uses a normal model for the item, special model for block
         simpleBlock(AEBlocks.SPATIAL_PYLON.block(), models().getBuilder(modelPath(AEBlocks.SPATIAL_PYLON)));
@@ -68,6 +69,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         craftingModel(AEBlocks.CRAFTING_STORAGE_4K, "4k_storage");
         craftingModel(AEBlocks.CRAFTING_STORAGE_16K, "16k_storage");
         craftingModel(AEBlocks.CRAFTING_STORAGE_64K, "64k_storage");
+        craftingModel(AEBlocks.CRAFTING_STORAGE_256K, "256k_storage");
 
         simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, models().cubeBottomTop(
                 modelPath(AEBlocks.CELL_WORKBENCH),
