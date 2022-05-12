@@ -62,8 +62,10 @@ import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
+import appeng.parts.misc.PartInterface;
 import appeng.tile.inventory.AppEngInternalAEInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.networking.TileCableBus;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
@@ -90,6 +92,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -98,8 +101,12 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nullable;
 import java.util.*;
 
+
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
+	@CapabilityInject( Capabilities.class )
+	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR = null;
+
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
 	public static final int NUMBER_OF_PATTERN_SLOTS = 36;
@@ -645,10 +652,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			return true;
 		}
 		return out.getStackSize() != stack.getCount();
-		// ItemStack after = adaptor.simulateAdd( stack );
-		// if ( after == null )
-		// return true;
-		// return after.stackSize != stack.stackSize;
 	}
 
 	public IItemHandler getConfig()
@@ -794,6 +797,65 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
 		if( te == null )
 		{
+			return;
+		}
+
+		if( te instanceof IInterfaceHost || ( te instanceof TileCableBus && ( (TileCableBus) te ).getPart( s.getOpposite() ) instanceof PartInterface ) )
+		{
+			try
+			{
+				IInterfaceHost targetTE;
+				if( te instanceof IInterfaceHost )
+				{
+					targetTE = (IInterfaceHost) te;
+				}
+				else
+				{
+					targetTE = (IInterfaceHost) ( (TileCableBus) te ).getPart( s.getOpposite() );
+				}
+
+				if( !targetTE.getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
+				{
+					IStorageMonitorableAccessor mon = te.getCapability( STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
+					if( mon != null )
+					{
+						IStorageMonitorable sm = mon.getInventory( this.mySource );
+						if( sm != null && Platform.canAccess( targetTE.getInterfaceDuality().gridProxy, this.mySource ) )
+						{
+							IMEMonitor<IAEItemStack> inv = sm.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+							if( inv != null )
+							{
+								final Iterator<ItemStack> i = this.waitingToSendFacing.get( s ).iterator();
+								while ( i.hasNext() )
+								{
+									ItemStack whatToSend = i.next();
+									final IAEItemStack result = inv.injectItems( AEItemStack.fromItemStack( whatToSend ), Actionable.MODULATE, this.mySource );
+									if( result != null )
+									{
+										whatToSend.setCount( (int) result.getStackSize() );
+									}
+									else
+									{
+										i.remove();
+									}
+								}
+								if( this.waitingToSendFacing.get( s ).isEmpty() )
+								{
+									this.waitingToSendFacing.remove( s );
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					return;
+				}
+			}
+			catch( GridAccessException e )
+			{
+				throw new RuntimeException( e );
+			}
 			return;
 		}
 
@@ -1121,20 +1183,73 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		for( final EnumFacing s : visitedFaces )
 		{
 			final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
-			if( te instanceof IInterfaceHost )
+			if( te instanceof IInterfaceHost || ( te instanceof TileCableBus && ( (TileCableBus) te ).getPart( s.getOpposite() ) instanceof PartInterface ) )
 			{
+				visitedFaces.remove( s );
 				try
 				{
-					if( ( (IInterfaceHost) te ).getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
+					IInterfaceHost targetTE;
+					if( te instanceof IInterfaceHost )
 					{
-						visitedFaces.remove( s );
+						targetTE = (IInterfaceHost) te;
+					}
+					else
+					{
+						targetTE = (IInterfaceHost) ( (TileCableBus) te ).getPart( s.getOpposite() );
+					}
+
+					if( targetTE.getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
+					{
 						continue;
+					}
+					else
+					{
+						IStorageMonitorableAccessor mon = te.getCapability( STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
+						if( mon != null )
+						{
+							IStorageMonitorable sm = mon.getInventory( this.mySource );
+							if( sm != null && Platform.canAccess( targetTE.getInterfaceDuality().gridProxy, this.mySource ) )
+							{
+								if( this.isBlocking() && sm.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().size() > 0 )
+								{
+									continue;
+								}
+								else
+								{
+									IMEMonitor<IAEItemStack> inv = sm.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) );
+									for( int x = 0; x < table.getSizeInventory(); x++ )
+									{
+										final ItemStack is = table.getStackInSlot( x );
+										if( is.isEmpty() )
+										{
+											continue;
+										}
+										IAEItemStack result = inv.injectItems( AEItemStack.fromItemStack( is ), Actionable.SIMULATE, this.mySource );
+										if( result != null )
+										{
+											return false;
+										}
+									}
+									for( int x = 0; x < table.getSizeInventory(); x++ )
+									{
+										final ItemStack is = table.getStackInSlot( x );
+										if( !is.isEmpty() )
+										{
+											addToSendListFacing( is, s );
+										}
+									}
+									pushItemsOut( s );
+									return true;
+								}
+							}
+						}
 					}
 				}
 				catch( final GridAccessException e )
 				{
 					continue;
 				}
+				continue;
 			}
 
 			if( te instanceof ICraftingMachine )
@@ -1229,14 +1344,56 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 			for( final EnumFacing s : possibleDirections )
 			{
 				final TileEntity te = w.getTileEntity( tile.getPos().offset( s ) );
-				IPhantomTile phantomTE;
+
+				if( te instanceof IInterfaceHost || ( te instanceof TileCableBus && ( (TileCableBus) te ).getPart( s.getOpposite() ) instanceof PartInterface ) )
+				{
+					visitedFaces.remove( s );
+					try
+					{
+						IInterfaceHost targetTE;
+						if( te instanceof IInterfaceHost )
+						{
+							targetTE = (IInterfaceHost) te;
+						}
+						else
+						{
+							targetTE = (IInterfaceHost) ( (TileCableBus) te ).getPart( s.getOpposite() );
+						}
+
+						if( targetTE.getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
+						{
+							continue;
+						}
+						else
+						{
+							IStorageMonitorableAccessor mon = te.getCapability( STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
+							if( mon != null )
+							{
+								IStorageMonitorable sm = mon.getInventory( this.mySource );
+								if( sm != null && Platform.canAccess( targetTE.getInterfaceDuality().gridProxy, this.mySource ) )
+								{
+									if( sm.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList().isEmpty() )
+									{
+										allAreBusy = false;
+										break;
+									}
+								}
+							}
+						}
+					}
+					catch( final GridAccessException e )
+					{
+						continue;
+					}
+					continue;
+				}
 
 				final InventoryAdaptor ad = InventoryAdaptor.getAdaptor( te, s.getOpposite() );
 				if( ad != null )
 				{
 					if( Loader.isModLoaded( "actuallyadditions" ) && Loader.isModLoaded( "gregtech" ) && te instanceof IPhantomTile )
 					{
-						phantomTE = ( (IPhantomTile) te );
+						IPhantomTile phantomTE = ( (IPhantomTile) te );
 						if( phantomTE.hasBoundPosition() )
 						{
 							TileEntity phantom = w.getTileEntity( phantomTE.getBoundPosition() );
@@ -1553,7 +1710,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public boolean hasCapability( Capability<?> capabilityClass, EnumFacing facing )
 	{
-		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
+		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capabilityClass == STORAGE_MONITORABLE_ACCESSOR;
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -1563,7 +1720,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			return (T) this.storage;
 		}
-		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
+		else if( capabilityClass == STORAGE_MONITORABLE_ACCESSOR )
 		{
 			return (T) this.accessor;
 		}

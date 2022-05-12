@@ -26,7 +26,7 @@ public class BlockingItemHandler extends BlockingInventoryAdaptor
 		Object2ObjectOpenHashMap<Item, IntSet> map = NonBlockingItems.INSTANCE.getMap().get( domain );
 		if( map.get( stack.getItem() ) != null )
 		{
-			return !map.get( stack.getItem() ).contains( stack.getItemDamage() );
+			return !map.get( stack.getItem() ).contains( stack.getMetadata() );
 		}
 		return true;
 	}
