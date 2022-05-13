@@ -1347,7 +1347,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( te instanceof IInterfaceHost || ( te instanceof TileCableBus && ( (TileCableBus) te ).getPart( s.getOpposite() ) instanceof PartInterface ) )
 				{
-					visitedFaces.remove( s );
 					try
 					{
 						IInterfaceHost targetTE;
