@@ -24,7 +24,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.crafting.CraftingPlanSummary;
 
@@ -48,7 +47,7 @@ public class CraftConfirmPlanPacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         if (player.containerMenu instanceof CraftConfirmMenu menu) {
             menu.setPlan(plan);
         }

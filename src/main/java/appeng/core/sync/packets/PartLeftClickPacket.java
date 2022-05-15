@@ -26,7 +26,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.parts.IPartHost;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 /**
  * Packet sent when a player left-clicks on a part attached to a cable bus. This packet contains the hit position to
@@ -50,7 +49,7 @@ public class PartLeftClickPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         var localPos = hitResult.getLocation().subtract(
                 hitResult.getBlockPos().getX(),
                 hitResult.getBlockPos().getY(),

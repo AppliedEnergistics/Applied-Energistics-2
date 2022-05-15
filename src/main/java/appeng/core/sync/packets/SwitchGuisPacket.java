@@ -28,7 +28,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
@@ -78,7 +77,7 @@ public class SwitchGuisPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         if (this.newGui != null) {
             doOpenSubMenu(player);
         } else {

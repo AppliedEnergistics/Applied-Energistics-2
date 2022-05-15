@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.crafting.CraftingStatus;
 
 public class CraftingStatusPacket extends BasePacket {
@@ -47,7 +46,7 @@ public class CraftingStatusPacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         Screen screen = Minecraft.getInstance().screen;
 
         if (screen instanceof CraftingCPUScreen<?>cpuScreen) {

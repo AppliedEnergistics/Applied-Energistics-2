@@ -24,7 +24,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.InventoryAction;
 import appeng.menu.me.common.IMEInteractionHandler;
 
@@ -57,7 +56,7 @@ public class MEInteractionPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         if (player.containerMenu instanceof IMEInteractionHandler handler) {
             // The open screen has changed since the client sent the packet
             if (player.containerMenu.containerId != containerId) {

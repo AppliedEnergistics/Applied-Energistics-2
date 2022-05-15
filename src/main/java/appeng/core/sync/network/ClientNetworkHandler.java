@@ -18,10 +18,11 @@
 
 package appeng.core.sync.network;
 
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.PacketFlow;
 
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
@@ -29,24 +30,24 @@ import appeng.core.sync.BasePacketHandler;
 
 public class ClientNetworkHandler extends ServerNetworkHandler {
 
-    private final ClientSidePacketRegistry registry = ClientSidePacketRegistry.INSTANCE;
-
     public ClientNetworkHandler() {
-        registry.register(BasePacket.CHANNEL, this::handlePacketFromServer);
+        ClientPlayNetworking.registerGlobalReceiver(BasePacket.CHANNEL, this::handlePacketFromServer);
     }
 
     @Override
     public void sendToServer(BasePacket message) {
-        registry.sendToServer(message.toPacket(PacketFlow.SERVERBOUND));
+        var payload = message.getPayload();
+        ClientPlayNetworking.send(BasePacket.CHANNEL, payload);
     }
 
-    private void handlePacketFromServer(PacketContext packetContext, FriendlyByteBuf payload) {
+    private void handlePacketFromServer(Minecraft client, ClientPacketListener handler, FriendlyByteBuf payload,
+            PacketSender responseSender) {
         final int packetType = payload.readInt();
         final BasePacket packet = BasePacketHandler.PacketTypes.getPacket(packetType).parsePacket(payload);
 
-        packetContext.getTaskQueue().execute(() -> {
+        client.submit(() -> {
             try {
-                packet.clientPacketData(null, packetContext.getPlayer());
+                packet.clientPacketData(client.player);
             } catch (IllegalArgumentException e) {
                 AELog.debug(e);
             }

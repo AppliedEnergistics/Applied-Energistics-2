@@ -31,7 +31,6 @@ import appeng.api.stacks.AEKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 public class AssemblerAnimationPacket extends BasePacket {
 
@@ -61,7 +60,7 @@ public class AssemblerAnimationPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         BlockEntity te = player.getCommandSenderWorld().getBlockEntity(pos);
         if (te instanceof MolecularAssemblerBlockEntity ma) {
             ma.setAnimationStatus(new AssemblerAnimationStatus(rate, what.wrapForDisplayOrFilter()));

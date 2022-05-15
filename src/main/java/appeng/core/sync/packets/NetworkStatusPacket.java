@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.networktool.NetworkStatus;
 
 public class NetworkStatusPacket extends BasePacket {
@@ -48,7 +47,7 @@ public class NetworkStatusPacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         final Screen gs = Minecraft.getInstance().screen;
 
         if (gs instanceof NetworkStatusScreen) {

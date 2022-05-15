@@ -29,7 +29,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.AEBaseMenu;
 import appeng.util.EnumCycler;
 
@@ -57,7 +56,7 @@ public final class ConfigButtonPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         if (player.containerMenu instanceof AEBaseMenu baseMenu) {
             if (baseMenu.getTarget() instanceof IConfigurableObject configurableObject) {
                 var cm = configurableObject.getConfigManager();

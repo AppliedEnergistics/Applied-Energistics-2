@@ -29,7 +29,6 @@ import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 public class ConfigValuePacket extends BasePacket {
 
@@ -68,7 +67,7 @@ public class ConfigValuePacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         final AbstractContainerMenu c = player.containerMenu;
         if (c instanceof IConfigurableObject configurableObject) {
             loadSetting(configurableObject);
@@ -76,7 +75,7 @@ public class ConfigValuePacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         final AbstractContainerMenu c = player.containerMenu;
 
         if (c instanceof IConfigurableObject configurableObject) {

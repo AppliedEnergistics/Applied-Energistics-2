@@ -29,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 /**
  * Sends the content for the interface terminal GUI to the client.
@@ -67,7 +66,7 @@ public class InterfaceTerminalPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         if (Minecraft.getInstance().screen instanceof InterfaceTerminalScreen interfaceTerminal) {
             interfaceTerminal.postInventoryUpdate(this.clearExistingData, this.inventoryId, this.in);
         }

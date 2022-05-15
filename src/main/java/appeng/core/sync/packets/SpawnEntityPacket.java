@@ -7,11 +7,11 @@ import io.netty.buffer.Unpooled;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 // This is essentially a copy of ClientboundAddEntityPacket, supporting custom entities
 public class SpawnEntityPacket extends BasePacket {
@@ -93,7 +92,7 @@ public class SpawnEntityPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         ClientLevel world = (ClientLevel) player.level;
 
         Entity entity = type.create(world);
@@ -125,7 +124,7 @@ public class SpawnEntityPacket extends BasePacket {
         @SuppressWarnings("UnnecessaryLocalVariable")
         ICustomEntity customEntity = entity;
         SpawnEntityPacket packet = new SpawnEntityPacket(entity, customEntity::writeAdditionalSpawnData);
-        return packet.toPacket(PacketFlow.CLIENTBOUND);
+        return ServerPlayNetworking.createS2CPacket(BasePacket.CHANNEL, packet.getPayload());
     }
 
 }

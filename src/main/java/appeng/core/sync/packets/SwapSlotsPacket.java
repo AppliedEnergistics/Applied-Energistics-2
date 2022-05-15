@@ -24,7 +24,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.AEBaseMenu;
 
 public class SwapSlotsPacket extends BasePacket {
@@ -49,7 +48,7 @@ public class SwapSlotsPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         if (player != null && player.containerMenu instanceof AEBaseMenu) {
             ((AEBaseMenu) player.containerMenu).swapSlotContents(this.slotA, this.slotB);
         }
