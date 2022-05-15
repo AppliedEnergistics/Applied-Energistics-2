@@ -161,11 +161,7 @@ Files must be encoded as UTF-8.
 
 ### New or updated Translations
 
-The language files are located in `/src/main/resources/assets/ae2/lang/` and use the [appropriate locale code](http://minecraft.gamepedia.com/Language) as name and `.lang` as extension.
-
-To update an translation edit the corresponding file and improve/correct the existing entry. Or copy any entries from `en_US.lang` for missing translation.
-
-To create a new translation, copy the contents of `en_US.lang`, create a new file with appropriate filename, and translate it to your language.
+We use Crowdin crowd-sourced translations for our localization. You can participate in localizing Applied Energistics 2 on our [Crowdin Page](https://appliedenergistics2.crowdin.com/applied-energistics-2).
 
 Please keep in mind that we use [String format](https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html) to pass additional data to the text for displaying.
 Therefore you should preserve parts like `%s` or `%1$d%%`, which allows us to replace them with the correct values while you still have the option to change their order for match the rules of grammar.
