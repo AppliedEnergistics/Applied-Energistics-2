@@ -98,7 +98,7 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
             Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
             if (rect.contains(mouseX, mouseY)) {
                 Tooltip.create(
-                        getTooltip(recipeDisplay.getType()).stream().map(TextComponent::new)
+                        getTooltip(recipeDisplay.getType()).stream().map(Component::literal)
                                 .collect(Collectors.toList()))
                         .queue();
             }

@@ -137,7 +137,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         var req = itemList.getFirstEntry(AEItemKey.class);
         if (req == null || !(req.getKey() instanceof AEItemKey itemKey)) {
             if (!level.isClientSide()) {
-                player.sendMessage(PlayerMessages.AmmoDepleted.text(), Util.NIL_UUID);
+                player.sendSystemMessage(PlayerMessages.AmmoDepleted.text());
             }
             return true;
         }
@@ -452,11 +452,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         var recipes = server.getRecipeManager().byType(MatterCannonAmmo.TYPE);
-        for (Recipe<Container> recipe : recipes.values()) {
-            if (recipe instanceof MatterCannonAmmo ammoRecipe) {
-                if (ammoRecipe.getAmmo().test(itemStack)) {
-                    return ammoRecipe.getWeight();
-                }
+        for (var ammoRecipe : recipes.values()) {
+            if (ammoRecipe.getAmmo().test(itemStack)) {
+                return ammoRecipe.getWeight();
             }
         }
 

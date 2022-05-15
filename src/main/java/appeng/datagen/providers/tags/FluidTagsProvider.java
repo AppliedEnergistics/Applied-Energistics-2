@@ -35,9 +35,4 @@ public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider
         // Provide an empty fluid blacklist
         tag(AETags.ANNIHILATION_PLANE_FLUID_BLACKLIST);
     }
-
-    @Override
-    public String getName() {
-        return AppEng.MOD_NAME + " Fluid Tags";
-    }
 }

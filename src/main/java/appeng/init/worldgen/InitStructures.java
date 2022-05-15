@@ -19,15 +19,15 @@
 package appeng.init.worldgen;
 
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.data.worldgen.StructureSets;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.worldgen.Structures;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
@@ -41,37 +41,31 @@ public final class InitStructures {
     private InitStructures() {
     }
 
-    public static void init(Registry<StructureFeature<?>> registry) {
+    public static void init(Registry<StructureType<?>> registry) {
         MeteoriteStructurePiece.register();
 
-        registerStructure(registry, MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
-                Decoration.TOP_LAYER_MODIFICATION);
-
-        MeteoriteStructure.CONFIGURED_INSTANCE = StructureFeatures.register(
+        MeteoriteStructure.TYPE = StructureType.register("ae2mtrt", MeteoriteStructure.CODEC);
+        MeteoriteStructure.INSTANCE = Structures.register(
                 MeteoriteStructure.KEY,
-                MeteoriteStructure.INSTANCE.configured(NoneFeatureConfiguration.INSTANCE,
-                        MeteoriteStructure.BIOME_TAG_KEY));
+                new MeteoriteStructure(
+                        Structures.structure(
+                                MeteoriteStructure.BIOME_TAG_KEY,
+                                Map.of(),
+                                Decoration.TOP_LAYER_MODIFICATION,
+                                TerrainAdjustment.NONE
+                        )
+                )
+        );
 
         if (AEConfig.instance().isGenerateMeteorites()) {
-            StructureSets.register(
-                    MeteoriteStructure.STRUCTURE_SET_KEY,
-                    new StructureSet(
-                            List.of(StructureSet.entry(MeteoriteStructure.CONFIGURED_INSTANCE)),
-                            new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
+            MeteoriteStructure.STRUCTURE_SET = StructureSets.register(
+                MeteoriteStructure.STRUCTURE_SET_KEY,
+                new StructureSet(
+                        List.of(StructureSet.entry(MeteoriteStructure.INSTANCE)),
+                        new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
         } else {
             AELog.info("AE2 meteorites are disabled in the config file.");
         }
-    }
-
-    // This mirrors the Vanilla registration method for structures, but uses the
-    // Forge registry instead
-    private static <F extends StructureFeature<?>> void registerStructure(
-            Registry<StructureFeature<?>> registry,
-            ResourceLocation id,
-            F structure,
-            Decoration stage) {
-        StructureFeature.STEP.put(structure, stage);
-        Registry.register(registry, id, structure);
     }
 
 }

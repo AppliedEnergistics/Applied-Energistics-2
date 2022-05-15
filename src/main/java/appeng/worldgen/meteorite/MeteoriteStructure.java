@@ -18,8 +18,10 @@
 
 package appeng.worldgen.meteorite;
 
-import java.util.Random;
+import java.util.Optional;
 
+import appeng.datagen.providers.tags.ConventionTags;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 import com.google.common.math.StatsAccumulator;
 import com.mojang.serialization.Codec;
 
@@ -33,53 +35,56 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
-import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
 import appeng.core.AppEng;
 import appeng.worldgen.meteorite.fallout.Fallout;
 
-public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguration> {
+public class MeteoriteStructure extends Structure {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
-
     public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey
             .create(Registry.STRUCTURE_SET_REGISTRY, ID);
 
-    public static final ResourceKey<ConfiguredStructureFeature<?, ?>> KEY = ResourceKey
-            .create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, ID);
+    public static final Codec<MeteoriteStructure> CODEC = simpleCodec(MeteoriteStructure::new);
 
-    public static final StructureFeature<NoneFeatureConfiguration> INSTANCE = new MeteoriteStructure(
-            NoneFeatureConfiguration.CODEC);
+    public static final ResourceKey<Structure> KEY = ResourceKey
+            .create(Registry.STRUCTURE_REGISTRY, ID);
 
     public static final TagKey<Biome> BIOME_TAG_KEY = TagKey.create(Registry.BIOME_REGISTRY,
             AppEng.makeId("has_meteorites"));
 
-    public static Holder<ConfiguredStructureFeature<?, ?>> CONFIGURED_INSTANCE;
+    public static StructureType<MeteoriteStructure> TYPE;
+    public static Holder<Structure> INSTANCE;
+    public static Holder<StructureSet> STRUCTURE_SET;
 
-    public MeteoriteStructure(Codec<NoneFeatureConfiguration> configCodec) {
-        super(configCodec,
-                PieceGeneratorSupplier.simple(MeteoriteStructure::checkLocation, MeteoriteStructure::generatePieces));
+    public MeteoriteStructure(StructureSettings settings) {
+        super(settings);
     }
 
-    private static boolean checkLocation(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
-        if (!context.validBiomeOnTop(Heightmap.Types.WORLD_SURFACE_WG)) {
-            return false;
+    @Override
+    public StructureType<?> type() {
+        return TYPE;
+    }
+
+    @Override
+    public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
+        var worldgenRandom = new WorldgenRandom(new LegacyRandomSource(0L));
+        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x, context.chunkPos().z);
+        if (!worldgenRandom.nextBoolean()) {
+            return Optional.empty();
         }
 
-        WorldgenRandom worldgenRandom = new WorldgenRandom(new LegacyRandomSource(0L));
-        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x, context.chunkPos().z);
-        return worldgenRandom.nextBoolean();
+        return onTopOfChunkCenter(context, Heightmap.Types.OCEAN_FLOOR_WG, (structurePiecesBuilder) -> {
+            generatePieces(structurePiecesBuilder, context);
+        });
     }
 
-    private static void generatePieces(StructurePiecesBuilder piecesBuilder,
-            PieceGenerator.Context<NoneFeatureConfiguration> context) {
-
+    private static void generatePieces(StructurePiecesBuilder piecesBuilder, GenerationContext context) {
         var chunkPos = context.chunkPos();
         var random = context.random();
         var heightAccessor = context.heightAccessor();
@@ -91,10 +96,10 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
         var t2 = generator.getBiomeSource().getBiomesWithin(centerX, generator.getSeaLevel(), centerZ, 0,
-                generator.climateSampler());
+                context.randomState().sampler());
         var spawnBiome = t2.stream().findFirst().orElseThrow();
 
-        final boolean isOcean = Biome.getBiomeCategory(spawnBiome) == Biome.BiomeCategory.OCEAN;
+        final boolean isOcean = spawnBiome.is(ConventionTags.METEORITE_OCEAN);
         final Heightmap.Types heightmapType = isOcean ? Heightmap.Types.OCEAN_FLOOR_WG
                 : Heightmap.Types.WORLD_SURFACE_WG;
 
@@ -103,7 +108,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         int scanRadius = (int) Math.max(1, meteoriteRadius * 2);
         for (int x = -scanRadius; x <= scanRadius; x++) {
             for (int z = -scanRadius; z <= scanRadius; z++) {
-                int h = generator.getBaseHeight(centerX + x, centerZ + z, heightmapType, heightAccessor);
+                int h = generator.getBaseHeight(centerX + x, centerZ + z, heightmapType, heightAccessor, context.randomState());
                 stats.add(h);
             }
         }
@@ -126,7 +131,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         CraterType craterType = determineCraterType(spawnBiome, random);
         boolean pureCrater = random.nextFloat() > .9f;
 
-        var fallout = Fallout.fromBiome(spawnBiome);
+        var fallout = FalloutMode.fromBiome(spawnBiome);
 
         piecesBuilder.addPiece(
                 new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
@@ -137,7 +142,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
      *
      * @return true, if it found a single block of water
      */
-    private static boolean locateWaterAroundTheCrater(BlockPos pos, float radius, PieceGenerator.Context<?> context) {
+    private static boolean locateWaterAroundTheCrater(BlockPos pos, float radius, GenerationContext context) {
         var generator = context.chunkGenerator();
         var heightAccessor = context.heightAccessor();
 
@@ -159,7 +164,7 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
 
                 if (maxY > h + distanceFrom * 0.0175 && maxY < h + distanceFrom * 0.02) {
                     int heigth = generator.getBaseHeight(blockPos.getX(), blockPos.getZ(), Heightmap.Types.OCEAN_FLOOR,
-                            heightAccessor);
+                            heightAccessor, context.randomState());
                     if (heigth < seaLevel) {
                         return true;
                     }
@@ -170,15 +175,14 @@ public class MeteoriteStructure extends StructureFeature<NoneFeatureConfiguratio
         return false;
     }
 
-    private static CraterType determineCraterType(Holder<Biome> biomeHolder, Random random) {
+    private static CraterType determineCraterType(Holder<Biome> biomeHolder, WorldgenRandom random) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
         var biome = biomeHolder.value();
         final float temp = biome.getBaseTemperature();
-        final Biome.BiomeCategory category = Biome.getBiomeCategory(biomeHolder);
 
         // No craters in oceans
-        if (category == Biome.BiomeCategory.OCEAN) {
+        if (biomeHolder.is(ConventionTags.METEORITE_OCEAN)) {
             return CraterType.NONE;
         }
 

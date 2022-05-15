@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import net.minecraft.network.chat.contents.TranslatableContents;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -116,8 +117,8 @@ class InitScreensTest {
 
     private void collectMissingTranslations(String path, net.minecraft.network.chat.Component text,
             Map<String, String> errors) {
-        if (text instanceof TranslatableComponent) {
-            String key = ((TranslatableComponent) text).getKey();
+        if (text.getContents() instanceof TranslatableContents translatableContents) {
+            String key = translatableContents.getKey();
             if (!Language.getInstance().has(key)) {
                 errors.merge(path, key, (a, b) -> a + ", " + b);
             }

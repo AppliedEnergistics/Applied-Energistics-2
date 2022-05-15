@@ -30,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -85,7 +86,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void animateTick(BlockState state, Level level, BlockPos pos, Random r) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }

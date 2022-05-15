@@ -311,15 +311,4 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .addTag(ConventionTags.SMART_CABLE)
                 .addTag(ConventionTags.SMART_DENSE_CABLE);
     }
-
-    @Override
-    protected Path getPath(ResourceLocation id) {
-        return this.generator.getOutputFolder()
-                .resolve("data/" + id.getNamespace() + "/tags/items/" + id.getPath() + ".json");
-    }
-
-    @Override
-    public String getName() {
-        return AppEng.MOD_NAME + " Item Tags";
-    }
 }

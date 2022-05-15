@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +44,7 @@ import appeng.items.misc.CrystalSeedItem;
 
 public final class GrowingCrystalEntity extends AEBaseItemEntity {
 
-    private static final Random CLIENT_EFFECTS_RNG = new Random();
+    private static final RandomSource CLIENT_EFFECTS_RNG = RandomSource.create();
 
     // Growth tick progress per tick by number of adjacent accelerators
     private static final int[] GROWTH_TICK_PROGRESS = {

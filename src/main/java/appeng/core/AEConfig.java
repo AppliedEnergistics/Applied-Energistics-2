@@ -44,7 +44,6 @@ import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
 import appeng.api.config.YesNo;
-import appeng.api.features.AEWorldGenInternal;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.config.BooleanOption;
 import appeng.core.config.ConfigFileManager;
@@ -208,10 +207,6 @@ public final class AEConfig {
 
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
         this.craftingSimulatedExtraction = COMMON.craftingSimulatedExtraction.get();
-
-        AEWorldGenInternal.setConfigBlacklists(
-                COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
-                        .collect(Collectors.toList()));
 
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
         AELog.setDebugLogEnabled(COMMON.debugLog.get());
@@ -539,7 +534,6 @@ public final class AEConfig {
         public final IntegerOption quartzOresClusterAmount;
         public final BooleanOption generateQuartzOre;
         public final BooleanOption generateMeteorites;
-        public final StringListOption quartzOresBiomeBlacklist;
 
         // Meteors
         public final BooleanOption spawnPressesInMeteorites;
@@ -642,8 +636,6 @@ public final class AEConfig {
             this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
             this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 7);
             this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
-            this.quartzOresBiomeBlacklist = worldGen.addStringList("quartzOresBiomeBlacklist", new ArrayList<>(),
-                    "Biome IDs in which quartz ores should NOT be generated (i.e. minecraft:plains).");
 
             ConfigSection wireless = root.subsection("wireless");
             this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);

@@ -146,7 +146,7 @@ public class CrystalSeedItem extends AEBaseItem implements IGrowableCrystal, AEC
 
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             // lvl 0
             items.add(new ItemStack(this, 1));
             // one tick before maturity

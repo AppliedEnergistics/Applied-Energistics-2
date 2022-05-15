@@ -14,7 +14,6 @@ relevant during mod initialization:
 | ------------- |------------------------------------------------------------------------------------------------------------------|
 | `appeng.api.stacks.AEKeyTypes`  | Addons can use this class to register custom storage types similar to `AEItemKey` and `AEFluidKey`.               |
 | `appeng.api.networking.GridServices`  | Addons can register their own grid-wide services here.                                                           |
-| `appeng.api.features.AEWorldGen`  | Offers limited control over AE2's world generation.                                                              |
 | `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage.              |
 | `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station.                          |
 | `appeng.api.storage.StorageCells` | For working with and adding items that serve as storage cells for grids.                                         |

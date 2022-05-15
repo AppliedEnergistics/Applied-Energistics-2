@@ -20,7 +20,7 @@ package appeng.init.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -54,7 +54,7 @@ public final class InitBlockEntityRenderers {
 
     private static <T extends BlockEntity> void register(BlockEntityType<T> type,
             BlockEntityRendererProvider<T> factory) {
-        BlockEntityRendererRegistry.INSTANCE.register(type, factory);
+        BlockEntityRendererRegistry.register(type, factory);
     }
 
 }

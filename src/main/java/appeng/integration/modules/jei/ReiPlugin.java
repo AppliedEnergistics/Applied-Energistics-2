@@ -286,7 +286,7 @@ public class ReiPlugin implements REIClientPlugin {
     private static void addDescription(DisplayRegistry registry, ItemDefinition<?> itemDefinition, String... message) {
         DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(EntryStacks.of(itemDefinition),
                 itemDefinition.asItem().getDescription());
-        info.lines(Arrays.stream(message).map(TranslatableComponent::new).collect(Collectors.toList()));
+        info.lines(Arrays.stream(message).map(Component::translatable).collect(Collectors.toList()));
         registry.add(info);
     }
 

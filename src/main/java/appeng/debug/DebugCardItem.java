@@ -90,7 +90,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             this.outputSecondaryMessage(player, "Current Tick: ",
                     Long.toString(TickHandler.instance().getCurrentTick()));
             for (var line : TickHandler.instance().getBlockEntityReport()) {
-                player.sendMessage(line, Util.NIL_UUID);
+                player.sendSystemMessage(line);
             }
         }
 
@@ -229,9 +229,9 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                     msg.append(Component.literal(v.name().substring(0, 1))
                             .withStyle(cablePart.isConnected(v) ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY));
                 }
-                player.sendMessage(Component.literal("Connected Sides: ")
+                player.sendSystemMessage(Component.literal("Connected Sides: ")
                         .withStyle(ChatFormatting.GRAY)
-                        .append(msg), Util.NIL_UUID);
+                        .append(msg));
             }
         }
 
@@ -264,11 +264,11 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
     }
 
     private void outputMessage(Entity player, String string, ChatFormatting... chatFormattings) {
-        player.sendMessage(Component.literal(string).withStyle(chatFormattings), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal(string).withStyle(chatFormattings));
     }
 
     private void outputMessage(Entity player, String string) {
-        player.sendMessage(Component.literal(string), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal(string));
     }
 
     private void outputPrimaryMessage(Entity player, String label, String value) {
@@ -281,9 +281,9 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
 
     private void outputLabeledMessage(Entity player, String label, String value,
             ChatFormatting... chatFormattings) {
-        player.sendMessage(Component.literal("")
+        player.sendSystemMessage(Component.literal("")
                 .append(Component.literal(label + ": ").withStyle(chatFormattings))
-                .append(value), Util.NIL_UUID);
+                .append(value));
     }
 
 }

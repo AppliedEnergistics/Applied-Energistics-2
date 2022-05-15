@@ -18,17 +18,11 @@
 
 package appeng.init.worldgen;
 
-import java.util.function.Predicate;
-
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
-
-import appeng.api.features.AEWorldGen;
-import appeng.api.features.AEWorldGenType;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
+import appeng.datagen.providers.tags.ConventionTags;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 
 public final class InitBiomeModifications {
 
@@ -38,34 +32,10 @@ public final class InitBiomeModifications {
     public static void init() {
         if (AEConfig.instance().isGenerateQuartzOre()) {
             BiomeModifications.addFeature(
-                    shouldGenerateIn(AEWorldGenType.CERTUS_QUARTZ),
+                    BiomeSelectors.tag(ConventionTags.HAS_QUARTZ_ORE),
                     Decoration.UNDERGROUND_ORES,
                     WorldgenIds.PLACED_QUARTZ_ORE_KEY);
         }
-    }
-
-    /**
-     * @return A predicate that returns true if the modifier should apply to the given biome.
-     */
-    private static Predicate<BiomeSelectionContext> shouldGenerateIn(AEWorldGenType type) {
-        return context -> {
-            var id = context.getBiomeKey().location();
-
-            var category = Biome.getBiomeCategory(context.getBiomeRegistryEntry());
-            if (category == Biome.BiomeCategory.THEEND || category == Biome.BiomeCategory.NETHER
-                    || category == Biome.BiomeCategory.NONE) {
-                AELog.debug("Not generating %s in %s because it's of category %s", type, id, category);
-                return false;
-            }
-
-            if (AEWorldGen.isWorldGenDisabledForBiome(type, id)) {
-                AELog.debug("Not generating %s in %s because the biome is blacklisted by another mod or the config",
-                        type, id);
-                return false;
-            }
-
-            return true;
-        };
     }
 
 }

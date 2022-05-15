@@ -201,8 +201,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (Throwable e) {
-                this.getPlayerInventory().player.sendMessage(Component.literal("Error: " + e),
-                        Util.NIL_UUID);
+                this.getPlayerInventory().player.sendSystemMessage(Component.literal("Error: " + e));
                 AELog.debug(e);
                 this.setValidMenu(false);
                 this.result = null;

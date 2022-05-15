@@ -48,7 +48,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 
 import appeng.api.IAEAddonEntrypoint;
 import appeng.api.parts.CableRenderMode;
@@ -139,7 +139,7 @@ public abstract class AppEngBase implements AppEng {
         registerBlockEntities(Registry.BLOCK_ENTITY_TYPE);
         registerMenuTypes(Registry.MENU);
         registerRecipeSerializers(Registry.RECIPE_SERIALIZER);
-        registerStructures(Registry.STRUCTURE_FEATURE);
+        registerStructures(Registry.STRUCTURE_TYPES);
         registerFeatures(Registry.FEATURE);
 
         postRegistrationInitialization();
@@ -209,7 +209,7 @@ public abstract class AppEngBase implements AppEng {
         InitParticleTypes.init(registry);
     }
 
-    public void registerStructures(Registry<StructureFeature<?>> registry) {
+    public void registerStructures(Registry<StructureType<?>> registry) {
         InitStructures.init(registry);
     }
 

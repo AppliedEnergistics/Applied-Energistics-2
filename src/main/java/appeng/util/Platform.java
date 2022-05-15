@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -90,7 +91,7 @@ public class Platform {
     /*
      * random source, use it for item drop locations...
      */
-    private static final Random RANDOM_GENERATOR = new Random();
+    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -101,7 +102,7 @@ public class Platform {
         return P2P_HELPER;
     }
 
-    public static Random getRandom() {
+    public static RandomSource getRandom() {
         return RANDOM_GENERATOR;
     }
 
@@ -206,8 +207,8 @@ public class Platform {
             var sg = g.getSecurityService();
             if (!sg.hasPermission(player, requiredPermission)) {
                 if (notifyPlayer) {
-                    player.sendMessage(Component.translatable("ae2.permission_denied")
-                            .withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("ae2.permission_denied")
+                            .withStyle(ChatFormatting.RED));
                 }
                 return false;
             }

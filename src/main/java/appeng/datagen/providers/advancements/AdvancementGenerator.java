@@ -50,6 +50,7 @@ import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -71,8 +72,6 @@ import appeng.loot.NeedsPressCondition;
 
 public class AdvancementGenerator implements IAE2DataProvider {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private final DataGenerator generator;
 
     private final LocalizationProvider localization;
@@ -93,7 +92,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 Path path1 = createPath(path, advancement);
 
                 try {
-                    DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path1);
+                    DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path1);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

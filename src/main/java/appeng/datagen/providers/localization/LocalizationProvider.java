@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -28,8 +29,6 @@ import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class LocalizationProvider implements IAE2DataProvider {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private final Map<String, String> localizations = new HashMap<>();
 
     private final DataGenerator generator;
@@ -150,7 +149,7 @@ public class LocalizationProvider implements IAE2DataProvider {
                 jsonLocalization.addProperty(entry.getKey(), entry.getValue());
             }
 
-            DataProvider.save(GSON, cache, jsonLocalization, path);
+            DataProvider.saveStable(cache, jsonLocalization, path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

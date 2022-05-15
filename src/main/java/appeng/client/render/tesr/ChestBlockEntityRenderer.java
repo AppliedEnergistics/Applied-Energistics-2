@@ -38,6 +38,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -102,7 +103,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
         FaceRotatingModel rotatedModel = new FaceRotatingModel(cellModel, rotation);
         blockRenderer.tesselateBlock(level, rotatedModel, chest.getBlockState(), chest.getBlockPos(), poseStack, buffer,
                 false,
-                new Random(), 0L, combinedOverlay);
+                RandomSource.create(), 0L, combinedOverlay);
 
         VertexConsumer ledBuffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
         CellLedRenderer.renderLed(chest, 0, ledBuffer, poseStack, partialTicks);
@@ -129,7 +130,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
         }
 
         @Override
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
             if (side != null) {
                 side = r.resultingRotate(side); // This fixes the incorrect lightmap position
             }

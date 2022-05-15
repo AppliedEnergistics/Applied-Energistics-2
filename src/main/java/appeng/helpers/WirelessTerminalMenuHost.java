@@ -165,7 +165,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     private boolean checkWirelessRange(AbstractContainerMenu menu) {
         if (!rangeCheck()) {
             if (!isClientSide()) {
-                getPlayer().sendMessage(PlayerMessages.OutOfRange.text(), Util.NIL_UUID);
+                getPlayer().sendSystemMessage(PlayerMessages.OutOfRange.text());
             }
             return false;
         }

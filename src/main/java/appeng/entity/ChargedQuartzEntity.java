@@ -23,6 +23,7 @@ import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -41,7 +42,7 @@ import appeng.core.definitions.AEItems;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
-    private static final Random RANDOM = new Random();
+    private static final RandomSource RANDOM = RandomSource.create();
 
     private int delay = 0;
     private int transformTime = 0;

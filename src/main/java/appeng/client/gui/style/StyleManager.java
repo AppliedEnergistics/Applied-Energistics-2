@@ -34,6 +34,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -97,9 +98,12 @@ public final class StyleManager {
         String basePath = getBasePath(path);
 
         JsonObject document;
-        try (Resource resource = resourceManager.getResource(AppEng.makeId(path.substring(1)))) {
-            resourcePacks.add(resource.getSourceName());
-            document = ScreenStyle.GSON.fromJson(new InputStreamReader(resource.getInputStream()), JsonObject.class);
+        var resourceId = AppEng.makeId(path.substring(1));
+        var resource = resourceManager.getResource(resourceId)
+                .orElseThrow(() -> new FileNotFoundException(resourceId.toString()));
+        resourcePacks.add(resource.sourcePackId());
+        try (var reader = resourceManager.openAsReader(resourceId)) {
+            document = ScreenStyle.GSON.fromJson(reader, JsonObject.class);
         }
 
         // Resolve the includes present in the document

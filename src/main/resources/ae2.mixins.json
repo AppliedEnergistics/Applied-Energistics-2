@@ -4,7 +4,7 @@
   "package": "appeng.mixins",
   "compatibilityLevel": "JAVA_11",
   "mixins": [
-    "spatial.DimensionTypeMixin",
+    "spatial.DimensionTypesMixin",
     "spatial.WorldGenSettingsMixin",
     "spatial.FixupDimensionsMixin",
     "feature.LevelLightEngineMixin",

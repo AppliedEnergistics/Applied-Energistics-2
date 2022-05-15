@@ -54,9 +54,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<InscriberRecipe> getRecipes(Level level) {
-        Collection<Recipe<Container>> unfilteredRecipes = level.getRecipeManager().byType(InscriberRecipe.TYPE)
-                .values();
-        return Iterables.filter(unfilteredRecipes, InscriberRecipe.class);
+        return level.getRecipeManager().byType(InscriberRecipe.TYPE).values();
     }
 
     @Nullable

@@ -2,7 +2,6 @@ package appeng.api.inventories;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -12,6 +11,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,14 +32,14 @@ public interface IDynamicPartBakedModel extends BakedModel {
      * @param partSide  The side of the cable bus that the part is attached to.
      * @param modelData The model data returned by {@link IPart#getRenderAttachmentData()}
      */
-    void emitQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier,
+    void emitQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier,
             RenderContext context, Direction partSide, @Nullable Object modelData);
 
     /**
      * Unless you use your dynamic model for other purposes, this method will not be called.
      */
     @Override
-    default List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+    default List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, RandomSource random) {
         return Collections.emptyList();
     }
 

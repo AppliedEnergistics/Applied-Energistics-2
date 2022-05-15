@@ -53,7 +53,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
 
             if (this.countdown % 20 == 0) {
                 AppEng.instance().getPlayers().forEach(p -> {
-                    p.sendMessage(Component.literal("Spawning in... " + this.countdown / 20), Util.NIL_UUID);
+                    p.sendSystemMessage(Component.literal("Spawning in... " + this.countdown / 20));
                 });
             }
 
@@ -104,7 +104,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
                     this.size = 64;
                 }
 
-                player.sendMessage(Component.literal("Size: " + this.size), Util.NIL_UUID);
+                player.sendSystemMessage(Component.literal("Size: " + this.size));
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

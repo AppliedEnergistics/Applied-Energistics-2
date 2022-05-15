@@ -24,7 +24,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -48,6 +47,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -102,7 +102,7 @@ public class FacadeBuilder {
         this.transparentFacadeQuads = new EnumMap<>(Direction.class);
         // This can be null for item models.
         if (transparentFacadeModel != null) {
-            List<BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, new Random());
+            List<BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, RandomSource.create());
 
             for (Direction facing : Direction.values()) {
                 MeshBuilder meshBuilder = renderer.meshBuilder();
@@ -155,7 +155,7 @@ public class FacadeBuilder {
             for (BakedModel model : cableAnchorParts) {
                 for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
                     Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-                    List<BakedQuad> quads = model.getQuads(null, cullFace, new Random());
+                    List<BakedQuad> quads = model.getQuads(null, cullFace, RandomSource.create());
                     for (BakedQuad quad : quads) {
                         emitter.fromVanilla(quad.getVertices(), 0, false);
                         emitter.cullFace(cullFace);
@@ -174,7 +174,7 @@ public class FacadeBuilder {
         return stems;
     }
 
-    public Mesh getFacadeMesh(CableBusRenderState renderState, Supplier<Random> rand,
+    public Mesh getFacadeMesh(CableBusRenderState renderState, Supplier<RandomSource> rand,
             Function<ResourceLocation, BakedModel> modelLookup) {
         boolean transparent = PartHelper.getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
@@ -353,7 +353,7 @@ public class FacadeBuilder {
 
         for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
             Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-            List<BakedQuad> quads = model.getQuads(null, cullFace, new Random());
+            List<BakedQuad> quads = model.getQuads(null, cullFace, RandomSource.create());
 
             for (BakedQuad quad : quads) {
                 QuadTinter quadTinter = null;

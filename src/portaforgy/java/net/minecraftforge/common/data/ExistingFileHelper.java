@@ -198,7 +198,7 @@ public class ExistingFileHelper {
      * <p>
      * This should be called by data providers immediately when a new data object is
      * created, i.e. not during
-     * {@link DataProvider#run(HashCache) run} but instead
+     * {@link DataProvider#run(net.minecraft.data.CachedOutput) run} but instead
      * when the "builder" (or whatever intermediate object) is created, such as a
      * {@link ModelBuilder}.
      * <p>
@@ -219,7 +219,7 @@ public class ExistingFileHelper {
      * <p>
      * This should be called by data providers immediately when a new data object is
      * created, i.e. not during
-     * {@link DataProvider#run(HashCache) run} but instead
+     * {@link DataProvider#run(net.minecraft.data.CachedOutput) run} but instead
      * when the "builder" (or whatever intermediate object) is created, such as a
      * {@link ModelBuilder}.
      * <p>

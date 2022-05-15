@@ -37,6 +37,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
@@ -218,7 +219,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             // for direction=null, while a block-model will have their faces for
             // cull-faces, but not direction=null
             var model = itemRenderer.getItemModelShaper().getItemModel(stack);
-            var quads = model.getQuads(null, null, new Random());
+            var quads = model.getQuads(null, null, RandomSource.create());
             // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
             if (quads != null && !quads.isEmpty()) {
                 ms.scale(0.5f, 0.5f, 0.5f);

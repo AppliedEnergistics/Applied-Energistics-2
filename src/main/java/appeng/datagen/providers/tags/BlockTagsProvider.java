@@ -166,9 +166,4 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
     private TagsProvider.TagAppender<Block> tag(String name) {
         return tag(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name)));
     }
-
-    @Override
-    public String getName() {
-        return AppEng.MOD_NAME + " Block Tags";
-    }
 }

@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
+import net.minecraft.util.RandomSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -97,7 +98,7 @@ public class SceneExportJob {
 
     private void renderScene(Path outputPath, Scene scene) throws Exception {
         var blockRenderer = client.getBlockRenderer();
-        var rand = new Random(0);
+        var rand = RandomSource.create(0);
 
         // Set up the world
         scene.clearLighting(clientLevel);
@@ -116,7 +117,7 @@ public class SceneExportJob {
                         new Vector3f(0.5f, 0.5f, 0.5f));
             }
 
-            var random = new Random(12345);
+            var random = RandomSource.create(12345);
 
             var min = scene.getMin();
 

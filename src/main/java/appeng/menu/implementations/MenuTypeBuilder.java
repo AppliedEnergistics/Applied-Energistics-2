@@ -105,7 +105,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     /**
      * Specifies a custom strategy for obtaining a custom menu name.
      * <p>
-     * The strategy should return {@link TextComponent#EMPTY} if there's no custom name.
+     * The strategy should return {@link Component#empty()} if there's no custom name.
      */
     public MenuTypeBuilder<M, I> withMenuTitle(Function<I, Component> menuTitleStrategy) {
         this.menuTitleStrategy = menuTitleStrategy;

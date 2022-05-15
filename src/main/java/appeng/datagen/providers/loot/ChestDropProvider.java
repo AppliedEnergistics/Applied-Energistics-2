@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
@@ -58,8 +59,6 @@ public class ChestDropProvider implements IAE2DataProvider {
             NeededPressType.LOGIC_PROCESSOR_PRESS);
     private static final LootItemCondition.Builder NEEDS_SILICON_PRESS = () -> new NeedsPressCondition(
             NeededPressType.SILICON_PRESS);
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private final Path outputFolder;
 
@@ -107,7 +106,7 @@ public class ChestDropProvider implements IAE2DataProvider {
                         .add(LootItem.lootTableItem(AEItems.ENGINEERING_PROCESSOR_PRESS))
                         .add(LootItem.lootTableItem(AEItems.LOGIC_PROCESSOR_PRESS))
                         .add(LootItem.lootTableItem(AEItems.SILICON_PRESS)));
-        DataProvider.save(GSON, cache, toJson(meteoriteChestTable), getPath(outputFolder, AppEng.makeId("meteorite")));
+        DataProvider.saveStable(cache, toJson(meteoriteChestTable), getPath(outputFolder, AppEng.makeId("meteorite")));
     }
 
     private Path getPath(Path root, ResourceLocation id) {

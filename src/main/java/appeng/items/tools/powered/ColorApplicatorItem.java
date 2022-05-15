@@ -520,7 +520,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             items.add(createFullColorApplicator());
         }
     }

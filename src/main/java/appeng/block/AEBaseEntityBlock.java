@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -173,8 +174,8 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         }
 
         var hoverName = is.getHoverName();
-        if (hoverName instanceof TextComponent text) {
-            blockEntity.setName(text.getText());
+        if (hoverName.getContents() instanceof LiteralContents text) {
+            blockEntity.setName(text.text());
         }
 
         if (is.hasTag()) {

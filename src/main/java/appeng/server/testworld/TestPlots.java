@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
 
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.Util;
@@ -200,7 +201,7 @@ public final class TestPlots {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
-            var r = new Random();
+            var r = RandomSource.create();
             for (var i = 0; i < 100; i++) {
                 var item = Registry.ITEM.getRandom(r).map(Holder::value).get();
                 if (cellInv.insert(AEItemKey.of(item), 64, Actionable.MODULATE, new BaseActionSource()) == 0) {
@@ -216,7 +217,7 @@ public final class TestPlots {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
-            var r = new Random();
+            var r = RandomSource.create();
             for (var i = 0; i < 100; i++) {
                 var fluid = Registry.FLUID.getRandom(r).map(Holder::value).get();
                 if (fluid.isSame(Fluids.EMPTY) || !fluid.isSource(fluid.defaultFluidState())) {

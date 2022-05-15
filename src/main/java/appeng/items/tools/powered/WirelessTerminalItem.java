@@ -176,18 +176,18 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
         var key = getGridKey(item);
         if (key.isEmpty()) {
-            player.sendMessage(PlayerMessages.DeviceNotLinked.text(), Util.NIL_UUID);
+            player.sendSystemMessage(PlayerMessages.DeviceNotLinked.text());
             return false;
         }
 
         var securityStation = Locatables.securityStations().get(level, key.getAsLong());
         if (securityStation == null) {
-            player.sendMessage(PlayerMessages.StationCanNotBeLocated.text(), Util.NIL_UUID);
+            player.sendSystemMessage(PlayerMessages.StationCanNotBeLocated.text());
             return false;
         }
 
         if (!hasPower(player, 0.5, item)) {
-            player.sendMessage(PlayerMessages.DeviceNotPowered.text(), Util.NIL_UUID);
+            player.sendSystemMessage(PlayerMessages.DeviceNotPowered.text());
             return false;
         }
         return true;

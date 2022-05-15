@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
@@ -52,7 +53,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
 
     public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
 
-    private final Random particleRandom = new Random();
+    private final RandomSource particleRandom = RandomSource.create();
 
     public MolecularAssemblerRenderer(BlockEntityRendererProvider.Context context) {
     }

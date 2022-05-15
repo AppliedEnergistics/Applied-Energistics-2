@@ -113,7 +113,7 @@ public class FluidPlacementStrategy implements PlacementStrategy {
 
         SoundEvent soundEvent = fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         level.playSound(null, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
-        level.gameEvent(GameEvent.FLUID_PLACE, pos);
+        level.gameEvent(GameEvent.FLUID_PLACE, pos, GameEvent.Context.of(null, null));
     }
 
     private void playEvaporationEffect(Level level, BlockPos pos) {

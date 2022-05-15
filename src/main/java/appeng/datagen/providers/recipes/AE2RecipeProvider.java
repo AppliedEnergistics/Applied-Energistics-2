@@ -26,6 +26,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
 import net.minecraft.core.Registry;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -52,7 +53,7 @@ public abstract class AE2RecipeProvider extends net.minecraft.data.recipes.Recip
         return stackObj;
     }
 
-    public void run(HashCache hashCache) {
+    public void run(CachedOutput cache) {
         Path path = outputFolder;
         Set<ResourceLocation> set = Sets.newHashSet();
         buildAE2CraftingRecipes((finishedRecipe) -> {
@@ -61,12 +62,12 @@ public abstract class AE2RecipeProvider extends net.minecraft.data.recipes.Recip
             } else {
                 JsonObject json = finishedRecipe.serializeRecipe();
                 String modId = finishedRecipe.getId().getNamespace();
-                saveRecipe(hashCache, json,
+                saveRecipe(cache, json,
                         path.resolve("data/" + modId + "/recipes/" + finishedRecipe.getId().getPath() + ".json"));
                 JsonObject jsonObject = finishedRecipe.serializeAdvancement();
                 if (jsonObject != null) {
                     modId = finishedRecipe.getId().getNamespace();
-                    saveAdvancement(hashCache, jsonObject, path.resolve("data/" + modId + "/advancements/"
+                    saveAdvancement(cache, jsonObject, path.resolve("data/" + modId + "/advancements/"
                             + finishedRecipe.getAdvancementId().getPath() + ".json"));
                 }
 

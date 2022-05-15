@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -27,7 +28,7 @@ import appeng.hooks.AECustomEntityItem;
 import appeng.util.Platform;
 
 public class ItemPlacementStrategy implements PlacementStrategy {
-    private static final Random RANDOM_OFFSET = new Random();
+    private static final RandomSource RANDOM_OFFSET = RandomSource.create();
     private final ServerLevel level;
     private final BlockPos pos;
     private final Direction side;

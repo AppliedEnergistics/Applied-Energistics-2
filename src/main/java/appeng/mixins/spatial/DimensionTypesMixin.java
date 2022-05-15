@@ -22,6 +22,7 @@ import java.util.OptionalLong;
 
 import com.mojang.serialization.Lifecycle;
 
+import net.minecraft.data.worldgen.DimensionTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,19 +42,18 @@ import appeng.spatial.SpatialStorageDimensionIds;
  * Adds the storage cell level dimension type as a built-in dimension type. This can be registered as a JSON file as
  * well, but doing so will trigger an experimental feature warning when the level is being loaded.
  */
-@Mixin(value = DimensionType.class)
-public class DimensionTypeMixin {
+@Mixin(value = DimensionTypes.class)
+public class DimensionTypesMixin {
 
     @Inject(method = "registerBuiltin", at = @At("TAIL"))
-    private static void addRegistryDefaults(RegistryAccess.Writable registryAccess, CallbackInfoReturnable<?> cir) {
-        var dimensionType = DimensionType.create(
+    private static void bootstrap(Registry<DimensionType> registry, CallbackInfoReturnable<?> cir) {
+        var dimensionType = new DimensionType(
                 OptionalLong.of(12000), // fixedTime
                 false, // hasSkylight
                 false, // hasCeiling
                 false, // ultraWarm
                 false, // natural
                 1.0, // coordinateScale
-                false, // createDragonFight
                 false, // piglinSafe
                 false, // bedWorks
                 false, // respawnAnchorWorks
@@ -65,8 +65,7 @@ public class DimensionTypeMixin {
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
                 1.0f // ambientLight
         );
-        var dimensionTypes = registryAccess.ownedWritableRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
-        Registry.register(dimensionTypes, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
+        Registry.register(registry, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
     }
 
     /**
@@ -88,5 +87,4 @@ public class DimensionTypeMixin {
                 Lifecycle.stable());
 
     }
-
 }

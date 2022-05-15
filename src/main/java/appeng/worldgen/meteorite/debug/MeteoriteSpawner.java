@@ -19,6 +19,7 @@ package appeng.worldgen.meteorite.debug;
 
 import javax.annotation.Nullable;
 
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -64,7 +65,7 @@ public class MeteoriteSpawner {
             return null;
         }
 
-        var fallout = Fallout.fromBiome(level.getBiome(pos));
+        var fallout = FalloutMode.fromBiome(level.getBiome(pos));
 
         boolean craterLake = false;
 

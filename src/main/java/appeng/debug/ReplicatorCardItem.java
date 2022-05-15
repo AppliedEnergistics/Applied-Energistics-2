@@ -67,7 +67,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(Component.literal(replications + 1 + "³ Replications"), Util.NIL_UUID);
+            playerIn.sendSystemMessage(Component.literal(replications + 1 + "³ Replications"));
         }
 
         return super.use(level, playerIn, handIn);
@@ -212,6 +212,6 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
     }
 
     private void outputMsg(Entity player, String string) {
-        player.sendMessage(Component.literal(string), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal(string));
     }
 }

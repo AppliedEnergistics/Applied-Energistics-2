@@ -32,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -672,7 +673,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public void animateTick(Level level, BlockPos pos, Random r) {
+    public void animateTick(Level level, BlockPos pos, RandomSource r) {
         for (Direction side : Platform.DIRECTIONS_WITH_NULL) {
             final IPart p = this.getPart(side);
             if (p != null) {

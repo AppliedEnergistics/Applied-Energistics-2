@@ -43,17 +43,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 
 import appeng.server.ISubCommand;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 /**
  * This is a testing command to validate quartz ore generation.
@@ -96,8 +97,8 @@ public class TestMeteoritesCommand implements ISubCommand {
 
         var generator = level.getChunkSource().getGenerator();
 
-        var feature = level.registryAccess().ownedRegistryOrThrow(
-                Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).get(MeteoriteStructure.KEY);
+        var structure = level.registryAccess().ownedRegistryOrThrow(
+                Registry.STRUCTURE_REGISTRY).get(MeteoriteStructure.KEY);
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
@@ -105,15 +106,14 @@ public class TestMeteoritesCommand implements ISubCommand {
         for (int cx = center.x - radius; cx <= center.x + radius; cx++) {
             for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
                 chunksChecked++;
-
-                if (!generator.hasFeatureChunkInRange(MeteoriteStructure.STRUCTURE_SET_KEY, level.getSeed(), cx, cz,
+                if (!generator.hasStructureChunkInRange(MeteoriteStructure.STRUCTURE_SET, level.getChunkSource().randomState(), level.getSeed(), cx, cz,
                         0)) {
                     continue;
                 }
 
                 var chunk = level.getChunk(cx, cz, ChunkStatus.STRUCTURE_STARTS);
                 // The actual relevant information is in the structure piece
-                MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk, feature);
+                MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk, structure);
                 if (piece != null) {
                     found.add(piece.getSettings());
                 }
@@ -156,7 +156,7 @@ public class TestMeteoritesCommand implements ISubCommand {
 
             if (force && settings.getFallout() == null) {
                 ChunkAccess chunk = level.getChunk(pos);
-                MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk, feature);
+                MeteoriteStructurePiece piece = getMeteoritePieceFromChunk(chunk, structure);
                 if (piece == null) {
                     state = "removed";
                 } else {
@@ -205,8 +205,8 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk,
-            ConfiguredStructureFeature<?, ?> feature) {
-        var start = chunk.getStartForFeature(feature);
+            Structure structure) {
+        var start = chunk.getStartForStructure(structure);
 
         if (start != null && start.getPieces().size() > 0
                 && start.getPieces().get(0) instanceof MeteoriteStructurePiece) {

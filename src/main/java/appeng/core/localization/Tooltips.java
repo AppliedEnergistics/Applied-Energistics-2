@@ -284,7 +284,7 @@ public final class Tooltips {
         }
     }
 
-    public static MutableComponent of(TranslatableComponent component) {
+    public static MutableComponent of(Component component) {
         return component.copy().withStyle(NORMAL_TOOLTIP_TEXT);
     }
 

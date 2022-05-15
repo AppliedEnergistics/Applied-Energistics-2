@@ -73,7 +73,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(Component.literal(craterType.name()), Util.NIL_UUID);
+            player.sendSystemMessage(Component.literal(craterType.name()));
 
             return InteractionResultHolder.success(itemStack);
         }
@@ -110,7 +110,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
                 pureCrater);
 
         if (spawned == null) {
-            player.sendMessage(Component.literal("Un-suitable Location."), Util.NIL_UUID);
+            player.sendSystemMessage(Component.literal("Un-suitable Location."));
             return InteractionResult.FAIL;
         }
 
@@ -124,8 +124,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         final MeteoritePlacer placer = new MeteoritePlacer(level, spawned, boundingBox, level.random);
         placer.place();
 
-        player.sendMessage(Component.literal("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + Biome.getBiomeCategory(level.getBiome(pos))), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal("Spawned at y=" + spawned.getPos().getY() + " range=" + range));
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this

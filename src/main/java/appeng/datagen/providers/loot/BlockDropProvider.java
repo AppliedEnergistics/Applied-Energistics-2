@@ -29,6 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import net.minecraft.core.Registry;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.loot.BlockLoot;
@@ -62,8 +63,6 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
             .put(AEBlocks.DEEPSLATE_QUARTZ_ORE.block(), BlockDropProvider::createQuartzOreLootTable)
             .build();
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private final Path outputFolder;
 
     public BlockDropProvider(Path outputFolder) {
@@ -77,11 +76,11 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                DataProvider.save(GSON, cache, toJson(builder), getPath(outputFolder, entry.getKey().location()));
+                DataProvider.saveStable(cache, toJson(builder), getPath(outputFolder, entry.getKey().location()));
             }
         }
 
-        DataProvider.save(GSON, cache, toJson(LootTable.lootTable()
+        DataProvider.saveStable(cache, toJson(LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(1, 3))
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)))),

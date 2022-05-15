@@ -23,11 +23,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -116,6 +118,16 @@ public final class ConventionTags {
     public static TagKey<Item> MEMORY_CARDS = tag("ae2:memory_cards");
 
     /**
+     * For Worldgen Biomes
+     */
+    public static TagKey<Biome> METEORITE_OCEAN = ConventionalBiomeTags.OCEAN;
+
+    /**
+     * Indicates biomes that quartz ore generates in.
+     */
+    public static TagKey<Biome> HAS_QUARTZ_ORE = biomeTag("ae2:has_quartz_ore");
+
+    /**
      * Used to identify items that act as wrenches.
      */
     public static final TagKey<Item> WRENCH = tag("c:wrenches");
@@ -135,6 +147,10 @@ public final class ConventionTags {
 
     private static TagKey<Item> tag(String name) {
         return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(name));
+    }
+
+    private static TagKey<Biome> biomeTag(String name) {
+        return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(name));
     }
 
     private static TagKey<Block> blockTag(String name) {

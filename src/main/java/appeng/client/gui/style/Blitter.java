@@ -286,7 +286,6 @@ public final class Blitter {
                 .uv(minU, minV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.end();
 
         if (blending) {
             RenderSystem.enableBlend();
@@ -295,7 +294,7 @@ public final class Blitter {
             RenderSystem.disableBlend();
         }
         RenderSystem.enableTexture();
-        BufferUploader.end(bufferbuilder);
+        BufferUploader.draw(bufferbuilder.end());
     }
 
 }

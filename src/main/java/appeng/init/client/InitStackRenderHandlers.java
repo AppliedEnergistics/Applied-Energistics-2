@@ -26,6 +26,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -176,7 +177,7 @@ public class InitStackRenderHandlers {
 
         @Override
         public Component getDisplayName(AEFluidKey stack) {
-            return FluidVariantRendering.getName(stack.toVariant());
+            return FluidVariantAttributes.getName(stack.toVariant());
         }
 
         @Override
