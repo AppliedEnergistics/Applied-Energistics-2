@@ -8,6 +8,7 @@ import appeng.hotkeys.LocatingServicesImpl;
 public class LocatingServices {
     /**
      * register a new {@link LocatingService} under an id
+     * LocatingService which are added later will be called first
      * <p/>
      * a Keybinding will be created automatically for every id
      */
