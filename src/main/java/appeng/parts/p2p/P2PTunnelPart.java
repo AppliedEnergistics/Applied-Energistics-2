@@ -318,6 +318,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends BasicSta
         final short oldf = this.freq;
         this.freq = freq;
         if (oldf != this.freq) {
+            this.getHost().markForSave();
             this.getHost().markForUpdate();
         }
     }
@@ -328,6 +329,7 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends BasicSta
 
     void setOutput(boolean output) {
         this.output = output;
+        this.getHost().markForSave();
     }
 
     @Override

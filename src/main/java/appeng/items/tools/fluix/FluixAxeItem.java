@@ -30,4 +30,9 @@ public class FluixAxeItem extends AxeItem implements IntrinsicEnchantItem {
             TooltipFlag isAdvanced) {
         tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.BLOCK_FORTUNE.getFullname(1)));
     }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return true;
+    }
 }

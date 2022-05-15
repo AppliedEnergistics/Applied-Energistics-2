@@ -30,4 +30,9 @@ public class FluixSwordItem extends SwordItem implements IntrinsicEnchantItem {
             TooltipFlag isAdvanced) {
         tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantments.MOB_LOOTING.getFullname(1)));
     }
+
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return true;
+    }
 }
