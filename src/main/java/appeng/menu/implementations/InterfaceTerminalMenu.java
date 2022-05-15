@@ -86,9 +86,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     private final Map<PatternProviderLogicHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
     /**
-     * Tracks hosts that were previously not full, even if they are now, for {@link ShowPatternProviders#NOT_FULL}.
+     * Tracks hosts that were visible before, even if they no longer match the filter. For
+     * {@link ShowPatternProviders#NOT_FULL}.
      */
-    private final Set<PatternProviderLogicHost> keptHosts = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<PatternProviderLogicHost> pinnedHosts = Collections.newSetFromMap(new IdentityHashMap<>());
 
     public InterfaceTerminalMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
@@ -114,7 +115,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         super.broadcastChanges();
 
         if (showPatternProviders != ShowPatternProviders.NOT_FULL) {
-            this.keptHosts.clear();
+            this.pinnedHosts.clear();
         }
 
         IGrid grid = getGrid();
@@ -125,9 +126,9 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             visitInterfaceHosts(grid, PatternProviderPart.class, state);
 
             // Ensure we don't keep references to removed hosts
-            keptHosts.removeIf(host -> host.getLogic().getGrid() != grid);
+            pinnedHosts.removeIf(host -> host.getLogic().getGrid() != grid);
         } else {
-            keptHosts.clear();
+            pinnedHosts.clear();
         }
 
         if (state.total != this.diList.size() || state.forceFullUpdate) {
@@ -171,7 +172,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         return switch (getShownProviders()) {
             case VISIBLE -> isVisible;
-            case NOT_FULL -> isVisible && (keptHosts.contains(host) || !isFull(logic));
+            case NOT_FULL -> isVisible && (pinnedHosts.contains(host) || !isFull(logic));
             case ALL -> true;
         };
     }
@@ -185,7 +186,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             }
 
             if (getShownProviders() == ShowPatternProviders.NOT_FULL) {
-                keptHosts.add(ih);
+                pinnedHosts.add(ih);
             }
 
             final InvTracker t = this.diList.get(ih);
