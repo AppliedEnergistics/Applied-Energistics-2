@@ -176,9 +176,7 @@ public class InitStackRenderHandlers {
 
             @Override
             public List<Component> getTooltip(AEFluidKey stack) {
-                var context = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
-                        : TooltipFlag.Default.NORMAL;
-                var tooltip = FluidVariantRendering.getTooltip(stack.toVariant(), context);
+                var tooltip = FluidVariantRendering.getTooltip(stack.toVariant());
 
                 // Heuristic: If the last line doesn't include the modname, add it ourselves
                 var modName = Platform.formatModName(stack.getModId());
