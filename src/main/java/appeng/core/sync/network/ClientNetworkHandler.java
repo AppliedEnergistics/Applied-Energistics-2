@@ -23,7 +23,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.PacketFlow;
 
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
@@ -37,7 +36,8 @@ public class ClientNetworkHandler extends ServerNetworkHandler {
 
     @Override
     public void sendToServer(BasePacket message) {
-        ClientPlayNetworking.getSender().sendPacket(message.toPacket(PacketFlow.SERVERBOUND));
+        var payload = message.getPayload();
+        ClientPlayNetworking.send(BasePacket.CHANNEL, payload);
     }
 
     private void handlePacketFromServer(Minecraft client, ClientPacketListener handler, FriendlyByteBuf payload,
