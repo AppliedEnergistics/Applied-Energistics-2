@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -234,7 +234,7 @@ public class SimulationEnv {
 
             @Override
             public Component getDescription() {
-                return TextComponent.EMPTY;
+                return Component.empty();
             }
 
             @Override

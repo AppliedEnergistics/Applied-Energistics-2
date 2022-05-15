@@ -33,7 +33,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -186,7 +186,7 @@ public class InitStackRenderHandlers {
             // Heuristic: If the last line doesn't include the modname, add it ourselves
             var modName = Platform.formatModName(stack.getModId());
             if (tooltip.isEmpty() || !tooltip.get(tooltip.size() - 1).getString().equals(modName)) {
-                tooltip.add(new TextComponent(modName));
+                tooltip.add(Component.literal(modName));
             }
 
             return tooltip;

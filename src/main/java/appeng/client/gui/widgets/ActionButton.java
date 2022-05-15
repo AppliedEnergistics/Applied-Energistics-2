@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.Icon;
@@ -94,7 +94,7 @@ public class ActionButton extends IconButton {
             sb.replace(i, i + 1, "\n");
         }
 
-        return new TextComponent(name + '\n' + sb);
+        return Component.literal(name + '\n' + sb);
     }
 
 }

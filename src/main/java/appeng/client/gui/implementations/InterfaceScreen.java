@@ -23,7 +23,7 @@ import java.util.List;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.FuzzyMode;
@@ -59,7 +59,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
                 menu.openSetAmountMenu(configSlot.slot);
             });
             button.setDisableBackground(true);
-            button.setMessage(new TextComponent("Set amount to stock"));
+            button.setMessage(Component.literal("Set amount to stock"));
             widgets.add("amtButton" + (1 + i), button);
             amountButtons.add(button);
         }

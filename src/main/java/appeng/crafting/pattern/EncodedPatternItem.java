@@ -29,7 +29,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -122,7 +122,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
 
             var label = (invalid.isCraftable() ? GuiText.Crafts.text() : GuiText.Produces.text())
                     .copy().append(": ");
-            var and = new TextComponent(" ").copy().append(GuiText.And.text())
+            var and = Component.literal(" ").copy().append(GuiText.And.text())
                     .copy()
                     .append(" ");
             var with = GuiText.With.text().copy().append(": ");
@@ -161,7 +161,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
 
         var label = (isCrafting ? GuiText.Crafts.text() : GuiText.Produces.text()).copy()
                 .append(": ");
-        var and = new TextComponent(" ").copy().append(GuiText.And.text())
+        var and = Component.literal(" ").copy().append(GuiText.And.text())
                 .append(" ");
         var with = GuiText.With.text().copy().append(": ");
 
@@ -199,7 +199,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
     protected static Component getStackComponent(GenericStack stack) {
         var amountInfo = stack.what().formatAmount(stack.amount(), AmountFormat.FULL);
         var displayName = stack.what().getDisplayName();
-        return new TextComponent(amountInfo + " x ").append(displayName);
+        return Component.literal(amountInfo + " x ").append(displayName);
     }
 
     /**

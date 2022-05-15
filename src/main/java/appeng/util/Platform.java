@@ -36,7 +36,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -206,7 +206,7 @@ public class Platform {
             var sg = g.getSecurityService();
             if (!sg.hasPermission(player, requiredPermission)) {
                 if (notifyPlayer) {
-                    player.sendMessage(new TranslatableComponent("ae2.permission_denied")
+                    player.sendMessage(Component.translatable("ae2.permission_denied")
                             .withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
                 return false;
@@ -292,7 +292,7 @@ public class Platform {
 
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
         // no usage of the tag, but we keep it for compatibility
-        return new TranslatableComponent(getDescriptionId(fluid));
+        return Component.translatable(getDescriptionId(fluid));
     }
 
     // tag copy is not necessary, as the tag is not modified.

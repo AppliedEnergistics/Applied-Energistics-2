@@ -36,7 +36,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.locale.Language;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.client.gui.style.ScreenStyle;

@@ -26,7 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 class InvalidPatternHelper {
@@ -104,7 +104,7 @@ class InvalidPatternHelper {
 
         public Component getName() {
             return this.isValid() ? this.stack.getHoverName()
-                    : new TextComponent(this.id + '@' + this.getDamage());
+                    : Component.literal(this.id + '@' + this.getDamage());
         }
 
         public int getDamage() {
@@ -124,7 +124,7 @@ class InvalidPatternHelper {
         }
 
         public Component getFormattedToolTip() {
-            MutableComponent result = new TextComponent(this.getCount() + " ")
+            MutableComponent result = Component.literal(this.getCount() + " ")
                     .append(this.getName());
 
             if (!this.isValid()) {

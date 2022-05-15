@@ -28,7 +28,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -68,20 +68,20 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
 
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
-        lines.add(Tooltips.of(new TranslatableComponent(firstLineKey)));
+        lines.add(Tooltips.of(Component.translatable(firstLineKey)));
 
         final CompoundTag data = this.getData(stack);
         if (data.contains("tooltip")) {
             String tooltipKey = getFirstValidTranslationKey(data.getString("tooltip") + ".name",
                     data.getString("tooltip"));
-            lines.add(Tooltips.of(new TranslatableComponent(tooltipKey)));
+            lines.add(Tooltips.of(Component.translatable(tooltipKey)));
         }
 
         if (data.contains("freq")) {
             final short freq = data.getShort("freq");
             final String freqTooltip = ChatFormatting.BOLD + Platform.p2p().toHexString(freq);
 
-            lines.add(Tooltips.of(new TranslatableComponent("gui.tooltips.ae2.P2PFrequency", freqTooltip)));
+            lines.add(Tooltips.of(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip)));
         }
     }
 

@@ -19,7 +19,7 @@
 package appeng.me.service.helpers;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -52,7 +52,7 @@ public class CraftingServiceStorage implements IStorageProvider {
 
         @Override
         public Component getDescription() {
-            return new TextComponent("Auto-Crafting");
+            return Component.literal("Auto-Crafting");
         }
     };
 

@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -82,7 +82,7 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
      */
     @Override
     public Component getDescription() {
-        var types = new TextComponent("");
+        var types = Component.literal("");
         boolean first = true;
         for (var keyType : storages.keySet()) {
             if (!first) {

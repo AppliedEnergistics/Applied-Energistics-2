@@ -2,7 +2,7 @@ package appeng.core.localization;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public interface LocalizationEnum {
 
@@ -11,11 +11,11 @@ public interface LocalizationEnum {
     String getTranslationKey();
 
     default MutableComponent text() {
-        return new TranslatableComponent(getTranslationKey());
+        return Component.translatable(getTranslationKey());
     }
 
     default MutableComponent text(Object... args) {
-        return new TranslatableComponent(getTranslationKey(), args);
+        return Component.translatable(getTranslationKey(), args);
     }
 
     default MutableComponent withSuffix(String text) {

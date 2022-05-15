@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
@@ -59,7 +59,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
 
         var powerPerTick = VibrationChamberBlockEntity.POWER_PER_TICK
                 * this.menu.getCurrentProgress() / VibrationChamberBlockEntity.DILATION_SCALING;
-        this.generationRateBar.setFullMsg(new TextComponent(Platform.formatPower(powerPerTick, true)));
+        this.generationRateBar.setFullMsg(Component.literal(Platform.formatPower(powerPerTick, true)));
     }
 
     @Override

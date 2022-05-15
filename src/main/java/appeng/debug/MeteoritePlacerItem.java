@@ -21,7 +21,7 @@ package appeng.debug;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -73,7 +73,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new TextComponent(craterType.name()), Util.NIL_UUID);
+            player.sendMessage(Component.literal(craterType.name()), Util.NIL_UUID);
 
             return InteractionResultHolder.success(itemStack);
         }
@@ -110,7 +110,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
                 pureCrater);
 
         if (spawned == null) {
-            player.sendMessage(new TextComponent("Un-suitable Location."), Util.NIL_UUID);
+            player.sendMessage(Component.literal("Un-suitable Location."), Util.NIL_UUID);
             return InteractionResult.FAIL;
         }
 
@@ -124,7 +124,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         final MeteoritePlacer placer = new MeteoritePlacer(level, spawned, boundingBox, level.random);
         placer.place();
 
-        player.sendMessage(new TextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
+        player.sendMessage(Component.literal("Spawned at y=" + spawned.getPos().getY() + " range=" + range
                 + " biomeCategory=" + Biome.getBiomeCategory(level.getBiome(pos))), Util.NIL_UUID);
 
         // The placer will not send chunks to the player since it's used as part

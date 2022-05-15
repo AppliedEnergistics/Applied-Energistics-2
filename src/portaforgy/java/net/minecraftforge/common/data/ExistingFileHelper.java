@@ -20,6 +20,7 @@
 package net.minecraftforge.common.data;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -154,7 +155,7 @@ public class ExistingFileHelper {
         if (!enable) {
             return true;
         }
-        return generated.get(packType).contains(loc) || getManager(packType).hasResource(loc);
+        return generated.get(packType).contains(loc) || getManager(packType).getResource(loc).isPresent();
     }
 
     /**
@@ -234,16 +235,6 @@ public class ExistingFileHelper {
      */
     public void trackGenerated(ResourceLocation loc, PackType packType, String pathSuffix, String pathPrefix) {
         this.generated.put(packType, getLocation(loc, pathSuffix, pathPrefix));
-    }
-
-    @VisibleForTesting
-    public Resource getResource(ResourceLocation loc, PackType packType, String pathSuffix, String pathPrefix) throws IOException {
-        return getResource(getLocation(loc, pathSuffix, pathPrefix), packType);
-    }
-
-    @VisibleForTesting
-    public Resource getResource(ResourceLocation loc, PackType packType) throws IOException {
-        return getManager(packType).getResource(loc);
     }
 
     /**

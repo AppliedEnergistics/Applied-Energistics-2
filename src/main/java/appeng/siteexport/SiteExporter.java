@@ -26,7 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -67,13 +67,13 @@ public final class SiteExporter {
 
         ClientCommandManager.DISPATCHER.register(
                 ClientCommandManager.literal("ae2export").executes(context -> {
-                    context.getSource().sendFeedback(new TextComponent("AE2 Site-Export started"));
+                    context.getSource().sendFeedback(Component.literal("AE2 Site-Export started"));
                     job = null;
                     try {
                         startExport(Minecraft.getInstance(), context.getSource());
                     } catch (Exception e) {
                         LOGGER.error("AE2 site export failed.", e);
-                        context.getSource().sendError(new TextComponent(e.toString()));
+                        context.getSource().sendError(Component.literal(e.toString()));
                         return 0;
                     }
                     return 0;
@@ -90,18 +90,18 @@ public final class SiteExporter {
             try {
                 event.accept(job);
                 if (job.isAtEnd()) {
-                    job.sendFeedback(new TextComponent("AE2 game data exported to ")
-                            .append(new TextComponent("[site-export]")
+                    job.sendFeedback(Component.literal("AE2 game data exported to ")
+                            .append(Component.literal("[site-export]")
                                     .withStyle(style -> style
                                             .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, "site-export"))
                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    new TextComponent("Click to open export folder")))
+                                                    Component.literal("Click to open export folder")))
                                             .applyFormats(ChatFormatting.UNDERLINE, ChatFormatting.GREEN))));
                     job = null;
                 }
             } catch (Exception e) {
                 LOGGER.error("AE2 site export failed.", e);
-                job.sendError(new TextComponent(e.toString()));
+                job.sendError(Component.literal(e.toString()));
                 job = null;
             }
         }

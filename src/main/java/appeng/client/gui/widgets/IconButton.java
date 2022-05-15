@@ -31,7 +31,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -47,7 +47,7 @@ public abstract class IconButton extends Button implements ITooltip {
     private boolean disableBackground = false;
 
     public IconButton(OnPress onPress) {
-        super(0, 0, 16, 16, TextComponent.EMPTY, onPress);
+        super(0, 0, 16, 16, Component.empty(), onPress);
     }
 
     public void setVisibility(boolean vis) {

@@ -23,8 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component;
 
 import appeng.util.LoadTranslations;
 
@@ -34,11 +34,11 @@ class TooltipTest {
     @Test
     void testLineSplitting() {
         Tooltip tooltip = new Tooltip(
-                new TextComponent("BOLD").withStyle(ChatFormatting.BOLD)
+                Component.literal("BOLD").withStyle(ChatFormatting.BOLD)
                         .append("More Text\nSecond Line")
                         .append("Continued Second Line"),
-                new TranslatableComponent("Third Line"),
-                new TextComponent("Fourth Line"));
+                Component.translatable("Third Line"),
+                Component.literal("Fourth Line"));
 
         assertThat(tooltip.getContent())
                 .extracting(net.minecraft.network.chat.Component::getString)
@@ -52,7 +52,7 @@ class TooltipTest {
     @Test
     void testSplitAtNewlineInTranslationText() {
         Tooltip tooltip = new Tooltip(
-                new TranslatableComponent("gui.tooltips.ae2.MatterBalls", 256));
+                Component.translatable("gui.tooltips.ae2.MatterBalls", 256));
 
         assertThat(tooltip.getContent())
                 .extracting(net.minecraft.network.chat.Component::getString)
@@ -64,8 +64,8 @@ class TooltipTest {
     @Test
     void testNoLineSplitting() {
         Tooltip tooltip = new Tooltip(
-                new TranslatableComponent("a"),
-                new TranslatableComponent("b"));
+                Component.translatable("a"),
+                Component.translatable("b"));
 
         assertThat(tooltip.getContent())
                 .extracting(net.minecraft.network.chat.Component::getString)

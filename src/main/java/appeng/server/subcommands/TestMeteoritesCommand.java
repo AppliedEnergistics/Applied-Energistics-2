@@ -39,7 +39,7 @@ import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -167,20 +167,20 @@ public class TestMeteoritesCommand implements ISubCommand {
 
             Component restOfLine;
             if (settings.getFallout() == null) {
-                restOfLine = new TextComponent(
+                restOfLine = Component.literal(
                         String.format(Locale.ROOT, ", radius=%.2f [%s]", settings.getMeteoriteRadius(), state));
             } else {
-                restOfLine = new TextComponent(String.format(Locale.ROOT, ", radius=%.2f, crater=%s, fallout=%s",
+                restOfLine = Component.literal(String.format(Locale.ROOT, ", radius=%.2f, crater=%s, fallout=%s",
                         settings.getMeteoriteRadius(), settings.getCraterType().name().toLowerCase(),
                         settings.getFallout().name().toLowerCase()));
             }
 
-            MutableComponent msg = new TextComponent(" #" + (i + 1) + " ");
+            MutableComponent msg = Component.literal(" #" + (i + 1) + " ");
             msg.append(getClickablePosition(level, settings, pos)).append(restOfLine);
 
             // Add a tooltip
             String biomeId = level.getBiome(pos).unwrapKey().map(bk -> bk.location().toString()).orElse("unknown");
-            Component tooltip = new TextComponent(settings + "\nBiome: ").copy()
+            Component tooltip = Component.literal(settings + "\nBiome: ").copy()
                     .append(biomeId);
             msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
 
@@ -200,7 +200,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         String displayText = String.format(Locale.ROOT, "pos=%d,%d,%d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
-        return new TextComponent(displayText).withStyle(ChatFormatting.UNDERLINE)
+        return Component.literal(displayText).withStyle(ChatFormatting.UNDERLINE)
                 .withStyle(style -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, tpCommand)));
     }
 
@@ -216,7 +216,7 @@ public class TestMeteoritesCommand implements ISubCommand {
     }
 
     private static void sendLine(CommandSourceStack sender, String text, Object... args) {
-        sender.sendSuccess(new TextComponent(String.format(Locale.ROOT, text, args)), true);
+        sender.sendSuccess(Component.literal(String.format(Locale.ROOT, text, args)), true);
     }
 
 }

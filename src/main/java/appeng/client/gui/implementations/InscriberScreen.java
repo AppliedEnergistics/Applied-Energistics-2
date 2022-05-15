@@ -19,7 +19,7 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.style.ScreenStyle;
@@ -44,7 +44,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
         super.updateBeforeRender();
 
         int progress = this.menu.getCurrentProgress() * 100 / this.menu.getMaxProgress();
-        this.pb.setFullMsg(new TextComponent(progress + "%"));
+        this.pb.setFullMsg(Component.literal(progress + "%"));
     }
 
 }

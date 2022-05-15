@@ -8,7 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 
 import appeng.api.networking.pathing.ChannelMode;
@@ -36,7 +36,7 @@ public class ChannelModeCommand implements ISubCommand {
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
         var mode = AEConfig.instance().getChannelMode();
         sender.sendSuccess(
-                new TextComponent("Current channel mode: " + mode.name().toLowerCase(Locale.ROOT)),
+                Component.literal("Current channel mode: " + mode.name().toLowerCase(Locale.ROOT)),
                 true);
     }
 
@@ -53,7 +53,7 @@ public class ChannelModeCommand implements ISubCommand {
         }
 
         var modeName = mode.name().toLowerCase(Locale.ROOT);
-        ctx.getSource().sendSuccess(new TextComponent("Channel mode set to " + modeName
+        ctx.getSource().sendSuccess(Component.literal("Channel mode set to " + modeName
                 + ". Updated " + gridCount + " grids."), true);
     }
 }

@@ -23,7 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -67,7 +67,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
 
             tag.putInt("r", replications);
 
-            playerIn.sendMessage(new TextComponent(replications + 1 + "³ Replications"), Util.NIL_UUID);
+            playerIn.sendMessage(Component.literal(replications + 1 + "³ Replications"), Util.NIL_UUID);
         }
 
         return super.use(level, playerIn, handIn);
@@ -212,6 +212,6 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
     }
 
     private void outputMsg(Entity player, String string) {
-        player.sendMessage(new TextComponent(string), Util.NIL_UUID);
+        player.sendMessage(Component.literal(string), Util.NIL_UUID);
     }
 }

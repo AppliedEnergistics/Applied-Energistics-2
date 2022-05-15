@@ -23,7 +23,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.ChunkPos;
 
@@ -41,7 +41,7 @@ public class TestCompassCommand implements ISubCommand {
             var yMin = i * SectionPos.SECTION_SIZE;
             var yMax = (i + 1) * SectionPos.SECTION_SIZE - 1;
             sender.sendSuccess(
-                    new TextComponent("Section [y=" + yMin + "-" + yMax + "] " + i + ": " + hasSkyStone),
+                    Component.literal("Section [y=" + yMin + "-" + yMax + "] " + i + ": " + hasSkyStone),
                     false);
         }
     }

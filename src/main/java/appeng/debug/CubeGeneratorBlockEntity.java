@@ -21,7 +21,7 @@ package appeng.debug;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +53,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
 
             if (this.countdown % 20 == 0) {
                 AppEng.instance().getPlayers().forEach(p -> {
-                    p.sendMessage(new TextComponent("Spawning in... " + this.countdown / 20), Util.NIL_UUID);
+                    p.sendMessage(Component.literal("Spawning in... " + this.countdown / 20), Util.NIL_UUID);
                 });
             }
 
@@ -104,7 +104,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
                     this.size = 64;
                 }
 
-                player.sendMessage(new TextComponent("Size: " + this.size), Util.NIL_UUID);
+                player.sendMessage(Component.literal("Size: " + this.size), Util.NIL_UUID);
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

@@ -42,7 +42,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
@@ -57,8 +57,8 @@ import appeng.core.localization.GuiText;
 public class NumberEntryWidget extends GuiComponent implements ICompositeWidget {
 
     private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
-    private static final Component PLUS = new TextComponent("+");
-    private static final Component MINUS = new TextComponent("-");
+    private static final Component PLUS = Component.literal("+");
+    private static final Component MINUS = Component.literal("-");
     private static final int TEXT_COLOR_ERROR = 0xFF1900;
     private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
 
@@ -302,7 +302,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         if (possibleValue.isPresent()) {
             // Reject decimal values if the unit is integral
             if (type.amountPerUnit() == 1 && possibleValue.get().scale() > 0) {
-                validationErrors.add(new TextComponent("Must be whole number"));
+                validationErrors.add(Component.literal("Must be whole number"));
             } else {
                 var value = convertToExternalValue(possibleValue.get());
                 if (value < minValue) {
@@ -313,7 +313,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
                     validationErrors.add(GuiText.NumberGreaterThanMaxValue.text(formatted));
                 } else if (!isNumber()) { // is a mathematical expression
                     // displaying the evaluation of the expression
-                    infoMessages.add(new TextComponent("= " + decimalFormat.format(possibleValue.get())));
+                    infoMessages.add(Component.literal("= " + decimalFormat.format(possibleValue.get())));
                 }
             }
         } else {

@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -272,7 +272,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             }
         }
 
-        return TextComponent.EMPTY;
+        return Component.empty();
     }
 
 }

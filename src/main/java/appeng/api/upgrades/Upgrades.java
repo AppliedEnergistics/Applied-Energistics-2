@@ -14,7 +14,7 @@ import javax.annotation.concurrent.ThreadSafe;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +63,7 @@ public final class Upgrades {
             block = null;
         }
 
-        var translatedTooltipGroup = tooltipGroup != null ? new TranslatableComponent(tooltipGroup) : null;
+        var translatedTooltipGroup = tooltipGroup != null ? Component.translatable(tooltipGroup) : null;
 
         var association = new Association(upgradeCard.asItem(), item, block, maxSupported, translatedTooltipGroup);
         ASSOCIATIONS.computeIfAbsent(association.upgradeCard(), ignored -> new ArrayList<>())
@@ -148,7 +148,7 @@ public final class Upgrades {
             Item upgradableItem,
             @Nullable Block upgradableBlock,
             int maxCount,
-            @Nullable TranslatableComponent tooltipGroup) {
+            @Nullable Component tooltipGroup) {
     }
 
     private static List<Component> createTooltipLinesForCard(Item card) {

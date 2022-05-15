@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -116,7 +116,7 @@ public class WrappedGenericStack extends AEBaseItem {
                 // REI adds a blue formatting code at the start
                 if (line.getString().equals("§9§o" + AppEng.MOD_NAME)) {
                     var modId = Platform.formatModName(key.getModId());
-                    lines.set(i, new TextComponent(modId));
+                    lines.set(i, Component.literal(modId));
                     break;
                 }
             }

@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 import com.google.common.base.Splitter;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import me.shedaniel.math.Point;
@@ -59,7 +59,7 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("gui.ae2.Condenser");
+        return Component.translatable("gui.ae2.Condenser");
     }
 
     @Override
@@ -139,7 +139,7 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
                 return Collections.emptyList();
         }
 
-        return Splitter.on("\n").splitToList(new TranslatableComponent(key, type.requiredPower).getString());
+        return Splitter.on("\n").splitToList(Component.translatable(key, type.requiredPower).getString());
     }
 
 }

@@ -14,7 +14,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
@@ -41,7 +41,7 @@ public class LocalizationProvider implements IAE2DataProvider {
     }
 
     @Override
-    public final void run(HashCache cache) {
+    public final void run(CachedOutput cache) {
         for (var block : AEBlocks.getBlocks()) {
             add("block.ae2." + block.id().getPath(), block.getEnglishName());
         }
@@ -71,7 +71,7 @@ public class LocalizationProvider implements IAE2DataProvider {
 
     public Component component(String key, String text) {
         add(key, text);
-        return new TranslatableComponent(key);
+        return Component.translatable(key);
     }
 
     public void add(String key, String text) {
@@ -137,7 +137,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("theoneprobe.ae2.unlocked", "Unlocked");
     }
 
-    private void save(HashCache cache, Map<String, String> localizations) {
+    private void save(CachedOutput cache, Map<String, String> localizations) {
         wasSaved = true;
 
         try {

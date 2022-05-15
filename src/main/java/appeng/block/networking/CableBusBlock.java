@@ -97,7 +97,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public CableBusBlock() {
-        super(defaultProps(AEMaterials.GLASS).noOcclusion().noDrops().dynamicShape()
+        super(defaultProps(AEMaterials.GLASS).noOcclusion().noLootTable().dynamicShape()
                 .lightLevel(state -> state.getValue(LIGHT_LEVEL)));
         registerDefaultState(defaultBlockState().setValue(LIGHT_LEVEL, 0).setValue(WATERLOGGED, false));
     }

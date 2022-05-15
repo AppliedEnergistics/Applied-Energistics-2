@@ -10,7 +10,7 @@ import com.google.common.collect.Iterables;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -131,7 +131,7 @@ public class TestWorldGenerator {
                 var lineText = text.substring(0, lineLength);
                 text.delete(0, lineLength);
 
-                sign.setMessage(line++, new TextComponent(lineText));
+                sign.setMessage(line++, Component.literal(lineText));
             }
         });
     }

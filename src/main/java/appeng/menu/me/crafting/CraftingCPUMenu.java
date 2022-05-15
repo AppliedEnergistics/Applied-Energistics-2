@@ -20,7 +20,7 @@ package appeng.menu.me.crafting;
 
 import java.util.function.Consumer;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -56,7 +56,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
                 if (cluster != null && cluster.getName() != null) {
                     return cluster.getName();
                 }
-                return TextComponent.EMPTY;
+                return Component.empty();
             })
             .build("craftingcpu");
 

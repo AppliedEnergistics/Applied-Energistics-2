@@ -21,7 +21,7 @@ package appeng.core.localization;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public enum GuiText implements LocalizationEnum {
     inventory(null, "container"), // mc's default Inventory localization.
@@ -227,13 +227,13 @@ public enum GuiText implements LocalizationEnum {
     GuiText(@Nullable String englishText) {
         this.root = "gui.ae2";
         this.englishText = englishText;
-        this.text = new TranslatableComponent(getTranslationKey());
+        this.text = Component.translatable(getTranslationKey());
     }
 
     GuiText(@Nullable String englishText, String r) {
         this.root = r;
         this.englishText = englishText;
-        this.text = new TranslatableComponent(getTranslationKey());
+        this.text = Component.translatable(getTranslationKey());
     }
 
     @Nullable

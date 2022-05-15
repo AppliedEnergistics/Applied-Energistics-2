@@ -32,8 +32,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -468,17 +468,17 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 }
 
                 if (what.getItem() != Items.AIR) {
-                    return new TranslatableComponent(what.getDescriptionId());
+                    return Component.translatable(what.getDescriptionId());
                 }
 
                 final Item item = Item.byBlock(directedBlock);
                 if (item == Items.AIR) {
-                    return new TranslatableComponent(directedBlock.getDescriptionId());
+                    return Component.translatable(directedBlock.getDescriptionId());
                 }
             }
         }
 
-        return new TextComponent("Nothing");
+        return Component.literal("Nothing");
     }
 
     public long getSortValue() {

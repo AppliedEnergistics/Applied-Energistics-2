@@ -23,7 +23,7 @@ import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import appeng.api.parts.IPart;
@@ -57,7 +57,7 @@ public final class P2PStateDataProvider implements IPartDataProvider {
 
             var freq = partTag.getShort(TAG_P2P_FREQUENCY);
             var freqTooltip = Platform.p2p().toHexString(freq);
-            tooltip.add(new TranslatableComponent("gui.tooltips.ae2.P2PFrequency", freqTooltip));
+            tooltip.add(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip));
         }
     }
 

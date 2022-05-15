@@ -42,7 +42,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -207,7 +207,7 @@ public final class P2PTunnelAttunement {
     public synchronized static <T> void addItemByApi(ItemApiLookup<?, T> api,
             Function<ItemStack, T> contextProvider,
             ItemLike tunnelPart) {
-        registerAttunementApi(tunnelPart, api, contextProvider, new TextComponent("<missing description>"));
+        registerAttunementApi(tunnelPart, api, contextProvider, Component.literal("<missing description>"));
     }
 
     /**
@@ -217,7 +217,7 @@ public final class P2PTunnelAttunement {
     @Deprecated(forRemoval = true)
     public synchronized static void addItemByApi(ItemApiLookup<?, ContainerItemContext> api,
             ItemLike tunnelPart) {
-        registerAttunementApi(tunnelPart, api, new TextComponent("<missing description>"));
+        registerAttunementApi(tunnelPart, api, Component.literal("<missing description>"));
     }
 
     /**
