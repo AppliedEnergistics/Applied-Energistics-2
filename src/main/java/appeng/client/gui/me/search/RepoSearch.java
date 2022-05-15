@@ -10,9 +10,9 @@ import net.minecraft.network.chat.Component;
 import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
 import it.unimi.dsi.fastutil.longs.Long2BooleanOpenHashMap;
 
+import appeng.api.client.AEStackRendering;
 import appeng.api.stacks.AEKey;
 import appeng.menu.me.common.GridInventoryEntry;
-import appeng.util.Platform;
 
 public class RepoSearch {
 
@@ -48,7 +48,7 @@ public class RepoSearch {
      */
     public String getTooltipText(AEKey what) {
         return tooltipCache.computeIfAbsent(what, key -> {
-            return Platform.getTooltip(key).stream()
+            return AEStackRendering.getTooltip(key).stream()
                     .map(Component::getString)
                     .collect(Collectors.joining("\n"));
         });

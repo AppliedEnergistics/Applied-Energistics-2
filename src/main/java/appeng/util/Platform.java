@@ -27,14 +27,11 @@ import com.google.common.collect.Iterables;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +46,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag.Default;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -74,7 +70,6 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
@@ -280,32 +275,6 @@ public class Platform {
 
     public static int getRandomInt() {
         return Math.abs(RANDOM_GENERATOR.nextInt());
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static List<Component> getTooltip(AEItemKey item) {
-        return getTooltip(item.toStack());
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static List<Component> getTooltip(AEKey what) {
-        if (what instanceof AEItemKey itemKey) {
-            return getTooltip(itemKey);
-        } else {
-            return Collections.emptyList();
-        }
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static List<Component> getTooltip(ItemStack itemStack) {
-        try {
-            Default tooltipFlag = Minecraft.getInstance().options.advancedItemTooltips
-                    ? Default.ADVANCED
-                    : Default.NORMAL;
-            return itemStack.getTooltipLines(Minecraft.getInstance().player, tooltipFlag);
-        } catch (Exception errB) {
-            return Collections.emptyList();
-        }
     }
 
     public static String formatModName(String modId) {
