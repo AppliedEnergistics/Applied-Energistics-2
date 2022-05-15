@@ -19,7 +19,6 @@
 package appeng.client.render.model;
 
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -82,7 +81,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-                               Supplier<RandomSource> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
         // Pre-compute the quad count to avoid list resizes
         context.fallbackConsumer().accept(this.base);
     }

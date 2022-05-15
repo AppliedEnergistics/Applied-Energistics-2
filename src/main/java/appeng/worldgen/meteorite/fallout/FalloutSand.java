@@ -18,8 +18,6 @@
 
 package appeng.worldgen.meteorite.fallout;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;

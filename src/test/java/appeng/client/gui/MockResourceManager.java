@@ -29,17 +29,13 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
 
 import appeng.core.AppEng;
-import net.minecraft.server.packs.resources.ResourceMetadata;
 
 /**
  * Fake resource manager that more or less loads AE2 resource pack resources.
@@ -75,7 +71,6 @@ public final class MockResourceManager {
 
         return new Resource(
                 "ae2",
-                () -> in
-        );
+                () -> in);
     }
 }

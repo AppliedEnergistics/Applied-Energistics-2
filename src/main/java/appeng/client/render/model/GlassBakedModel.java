@@ -109,7 +109,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-                               Supplier<RandomSource> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
         final GlassState glassState = getGlassState(blockView, pos);
 
         // TODO: This could just use the Random instance we're given...

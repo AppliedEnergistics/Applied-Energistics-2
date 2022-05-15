@@ -70,7 +70,7 @@ abstract class CraftingCubeBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-                               Supplier<RandomSource> RandomSourceSupplier, RenderContext context) {
+            Supplier<RandomSource> RandomSourceSupplier, RenderContext context) {
         var modelData = getModelData(blockView, pos);
         var connections = modelData != null ? modelData.getConnections()
                 : EnumSet.noneOf(Direction.class);

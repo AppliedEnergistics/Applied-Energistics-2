@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;

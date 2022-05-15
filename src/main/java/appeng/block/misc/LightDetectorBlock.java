@@ -18,8 +18,6 @@
 
 package appeng.block.misc;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;

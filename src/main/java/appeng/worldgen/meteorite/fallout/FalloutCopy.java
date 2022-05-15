@@ -18,14 +18,10 @@
 
 package appeng.worldgen.meteorite.fallout;
 
-import java.util.Random;
-
-import appeng.datagen.providers.tags.BiomeTagsProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 

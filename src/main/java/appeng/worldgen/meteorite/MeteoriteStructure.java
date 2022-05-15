@@ -20,8 +20,6 @@ package appeng.worldgen.meteorite;
 
 import java.util.Optional;
 
-import appeng.datagen.providers.tags.ConventionTags;
-import appeng.worldgen.meteorite.fallout.FalloutMode;
 import com.google.common.math.StatsAccumulator;
 import com.mojang.serialization.Codec;
 
@@ -36,13 +34,13 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
 import appeng.core.AppEng;
-import appeng.worldgen.meteorite.fallout.Fallout;
+import appeng.datagen.providers.tags.ConventionTags;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructure extends Structure {
 
@@ -108,7 +106,8 @@ public class MeteoriteStructure extends Structure {
         int scanRadius = (int) Math.max(1, meteoriteRadius * 2);
         for (int x = -scanRadius; x <= scanRadius; x++) {
             for (int z = -scanRadius; z <= scanRadius; z++) {
-                int h = generator.getBaseHeight(centerX + x, centerZ + z, heightmapType, heightAccessor, context.randomState());
+                int h = generator.getBaseHeight(centerX + x, centerZ + z, heightmapType, heightAccessor,
+                        context.randomState());
                 stats.add(h);
             }
         }

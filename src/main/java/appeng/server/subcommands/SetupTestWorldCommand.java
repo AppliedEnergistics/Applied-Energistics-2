@@ -3,7 +3,6 @@ package appeng.server.subcommands;
 import static net.minecraft.commands.Commands.literal;
 
 import java.util.Collections;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 

@@ -18,8 +18,6 @@
 
 package appeng.datagen.providers.tags;
 
-import java.nio.file.Path;
-
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -32,7 +30,6 @@ import net.minecraft.world.item.Items;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AETags;
 import appeng.api.util.AEColor;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;

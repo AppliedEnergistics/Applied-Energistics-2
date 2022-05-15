@@ -38,7 +38,6 @@ import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -111,7 +110,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void buildSurface(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState, ChunkAccess chunk) {
+    public void buildSurface(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState,
+            ChunkAccess chunk) {
         this.fillChunk(chunk);
         chunk.setUnsaved(false);
     }
@@ -138,12 +138,14 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState randomState,
+            StructureManager structureManager, ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
     @Override
-    public int getBaseHeight(int i, int j, Types types, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
+    public int getBaseHeight(int i, int j, Types types, LevelHeightAccessor levelHeightAccessor,
+            RandomState randomState) {
         return MIN_Y;
     }
 
@@ -157,7 +159,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion worldGenRegion, long l, RandomState randomState, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunkAccess, Carving carving) {
+    public void applyCarvers(WorldGenRegion worldGenRegion, long l, RandomState randomState, BiomeManager biomeManager,
+            StructureManager structureManager, ChunkAccess chunkAccess, Carving carving) {
     }
 
     @Override

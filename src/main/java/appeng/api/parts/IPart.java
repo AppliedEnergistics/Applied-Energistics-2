@@ -24,7 +24,6 @@
 package appeng.api.parts;
 
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nullable;

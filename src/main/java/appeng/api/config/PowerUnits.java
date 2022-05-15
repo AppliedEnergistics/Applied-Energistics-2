@@ -24,7 +24,6 @@
 package appeng.api.config;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 public enum PowerUnits {
     AE("gui.ae2.units.appliedenergistics", "AE"), // Native Units - AE Energy

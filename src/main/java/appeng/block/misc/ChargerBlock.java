@@ -18,8 +18,6 @@
 
 package appeng.block.misc;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import com.mojang.math.Vector3f;

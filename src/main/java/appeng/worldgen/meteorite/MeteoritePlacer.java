@@ -18,8 +18,6 @@
 
 package appeng.worldgen.meteorite;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -66,7 +64,7 @@ public final class MeteoritePlacer {
     private final BoundingBox boundingBox;
 
     public MeteoritePlacer(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox,
-                           RandomSource random) {
+            RandomSource random) {
         this.boundingBox = boundingBox;
         this.level = level;
         this.random = random;

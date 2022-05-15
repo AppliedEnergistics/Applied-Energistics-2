@@ -18,8 +18,6 @@
 
 package appeng.block.qnb;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;

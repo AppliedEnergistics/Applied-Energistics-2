@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -52,7 +50,6 @@ import appeng.core.config.ConfigValidationException;
 import appeng.core.config.DoubleOption;
 import appeng.core.config.EnumOption;
 import appeng.core.config.IntegerOption;
-import appeng.core.config.StringListOption;
 import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;

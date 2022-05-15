@@ -21,7 +21,6 @@ package appeng.client.gui.implementations;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.blockentity.misc.VibrationChamberBlockEntity;

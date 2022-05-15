@@ -20,7 +20,6 @@ package appeng.block.misc;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 

@@ -18,13 +18,14 @@
 
 package appeng.worldgen.meteorite.fallout;
 
+import java.util.List;
+
 import com.google.common.collect.ImmutableList;
+
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-
-import java.util.List;
 
 public enum FalloutMode {
 

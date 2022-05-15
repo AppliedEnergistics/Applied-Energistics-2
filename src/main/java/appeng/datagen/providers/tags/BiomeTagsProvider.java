@@ -21,7 +21,6 @@ package appeng.datagen.providers.tags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.data.DataGenerator;
 
-import appeng.core.AppEng;
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 

@@ -19,7 +19,6 @@ package appeng.worldgen.meteorite.debug;
 
 import javax.annotation.Nullable;
 
-import appeng.worldgen.meteorite.fallout.FalloutMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +27,7 @@ import net.minecraft.world.level.block.Block;
 
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
-import appeng.worldgen.meteorite.fallout.Fallout;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 /**
  * Makes decisions about spawning meteorites in the level.

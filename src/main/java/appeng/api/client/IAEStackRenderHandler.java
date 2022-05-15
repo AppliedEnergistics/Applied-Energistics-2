@@ -32,7 +32,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 import appeng.api.stacks.AEKey;
 import appeng.util.Platform;

@@ -19,7 +19,6 @@
 package appeng.entity;
 
 import java.time.Duration;
-import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;

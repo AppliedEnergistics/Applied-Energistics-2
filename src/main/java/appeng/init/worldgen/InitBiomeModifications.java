@@ -18,11 +18,12 @@
 
 package appeng.init.worldgen;
 
-import appeng.core.AEConfig;
-import appeng.datagen.providers.tags.ConventionTags;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
+
+import appeng.core.AEConfig;
+import appeng.datagen.providers.tags.ConventionTags;
 
 public final class InitBiomeModifications {
 

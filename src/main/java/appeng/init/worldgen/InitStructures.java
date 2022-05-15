@@ -25,8 +25,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.StructureSets;
 import net.minecraft.data.worldgen.Structures;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
-import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
@@ -52,10 +52,7 @@ public final class InitStructures {
                                 MeteoriteStructure.BIOME_TAG_KEY,
                                 Map.of(),
                                 Decoration.TOP_LAYER_MODIFICATION,
-                                TerrainAdjustment.NONE
-                        )
-                )
-        );
+                                TerrainAdjustment.NONE)));
 
         if (AEConfig.instance().isGenerateMeteorites()) {
             MeteoriteStructure.STRUCTURE_SET = StructureSets.register(

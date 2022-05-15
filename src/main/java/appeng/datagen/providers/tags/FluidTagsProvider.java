@@ -21,7 +21,6 @@ package appeng.datagen.providers.tags;
 import net.minecraft.data.DataGenerator;
 
 import appeng.api.ids.AETags;
-import appeng.core.AppEng;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider implements IAE2DataProvider {

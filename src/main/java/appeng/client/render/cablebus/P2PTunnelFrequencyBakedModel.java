@@ -18,7 +18,6 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 

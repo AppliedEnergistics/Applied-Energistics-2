@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 import appeng.util.LoadTranslations;
 

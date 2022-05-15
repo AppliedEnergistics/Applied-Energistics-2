@@ -28,7 +28,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.style.Blitter;
 import appeng.core.localization.GuiText;

@@ -18,8 +18,6 @@
 
 package appeng.client.render.tesr;
 
-import java.util.Random;
-
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

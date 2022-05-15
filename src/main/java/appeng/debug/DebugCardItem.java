@@ -25,7 +25,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.math.StatsAccumulator;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

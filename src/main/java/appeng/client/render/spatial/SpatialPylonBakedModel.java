@@ -21,7 +21,6 @@ package appeng.client.render.spatial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -64,7 +63,7 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-                               Supplier<RandomSource> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
         int flags = getFlags(blockView, pos);
 
         CubeBuilder builder = new CubeBuilder(context.getEmitter());

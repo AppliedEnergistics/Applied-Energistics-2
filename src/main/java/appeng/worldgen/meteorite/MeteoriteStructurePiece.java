@@ -17,8 +17,6 @@
  */
 package appeng.worldgen.meteorite;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
@@ -97,7 +95,8 @@ public class MeteoriteStructurePiece extends StructurePiece {
     }
 
     @Override
-    public void postProcess(WorldGenLevel level, StructureManager structureManager, ChunkGenerator chunkGenerator, RandomSource rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
+    public void postProcess(WorldGenLevel level, StructureManager structureManager, ChunkGenerator chunkGenerator,
+            RandomSource rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
         MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds, rand);
         placer.place();
 

@@ -21,7 +21,6 @@ package appeng.client.render.model;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import com.mojang.math.Vector3f;
@@ -79,7 +78,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-                               Supplier<RandomSource> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
 
         super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
 

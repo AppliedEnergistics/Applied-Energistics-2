@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;

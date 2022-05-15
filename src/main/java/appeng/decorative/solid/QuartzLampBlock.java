@@ -18,8 +18,6 @@
 
 package appeng.decorative.solid;
 
-import java.util.Random;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;

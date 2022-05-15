@@ -18,7 +18,6 @@
 
 package appeng.client.render.model;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
@@ -54,7 +53,7 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-                               Supplier<RandomSource> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
         RenderContext.QuadTransform transform = getTransform(blockView, pos);
 
         if (transform != null) {

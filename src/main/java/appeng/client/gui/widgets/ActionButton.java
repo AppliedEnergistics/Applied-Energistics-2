@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 import appeng.api.config.ActionItems;
 import appeng.client.gui.Icon;

@@ -18,8 +18,6 @@
 
 package appeng.client.render.effects;
 
-import java.util.Random;
-
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;

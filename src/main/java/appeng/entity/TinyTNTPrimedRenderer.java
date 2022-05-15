@@ -71,7 +71,8 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
         mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-        TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, Blocks.TNT.defaultBlockState(), mStack, buffers, packedLight,
+        TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, Blocks.TNT.defaultBlockState(), mStack, buffers,
+                packedLight,
                 tnt.getFuse() / 5 % 2 == 0);
         mStack.popPose();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);

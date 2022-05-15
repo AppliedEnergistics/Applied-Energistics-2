@@ -26,8 +26,6 @@ package appeng.api.config;
 import java.util.Locale;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.Component;
 
 /**
  * Represent the security systems basic permissions, these are not for anti-griefing, they are part of the mod as a

@@ -39,22 +39,20 @@ import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.structure.Structure;
 
 import appeng.server.ISubCommand;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
-import net.minecraft.world.level.levelgen.structure.Structure;
 
 /**
  * This is a testing command to validate quartz ore generation.
@@ -106,7 +104,8 @@ public class TestMeteoritesCommand implements ISubCommand {
         for (int cx = center.x - radius; cx <= center.x + radius; cx++) {
             for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
                 chunksChecked++;
-                if (!generator.hasStructureChunkInRange(MeteoriteStructure.STRUCTURE_SET, level.getChunkSource().randomState(), level.getSeed(), cx, cz,
+                if (!generator.hasStructureChunkInRange(MeteoriteStructure.STRUCTURE_SET,
+                        level.getChunkSource().randomState(), level.getSeed(), cx, cz,
                         0)) {
                     continue;
                 }

@@ -18,7 +18,6 @@
 
 package appeng.spatial;
 
-import appeng.mixins.spatial.DimensionTypesMixin;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 
 import appeng.core.AppEng;
+import appeng.mixins.spatial.DimensionTypesMixin;
 
 /**
  * IDs for the spatial storage level related dimension objects.

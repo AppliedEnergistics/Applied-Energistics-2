@@ -294,7 +294,7 @@ public final class Blitter {
             RenderSystem.disableBlend();
         }
         RenderSystem.enableTexture();
-        BufferUploader.draw(bufferbuilder.end());
+        BufferUploader.drawWithShader(bufferbuilder.end());
     }
 
 }

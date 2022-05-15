@@ -21,7 +21,6 @@ package appeng.core.localization;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 
 public enum GuiText implements LocalizationEnum {
     inventory(null, "container"), // mc's default Inventory localization.

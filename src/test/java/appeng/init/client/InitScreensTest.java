@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import net.minecraft.network.chat.contents.TranslatableContents;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -37,7 +36,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.locale.Language;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.client.gui.style.ScreenStyle;

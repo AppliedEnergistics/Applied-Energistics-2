@@ -1,7 +1,6 @@
 package appeng.menu;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.items.contents.NetworkToolMenuHost;

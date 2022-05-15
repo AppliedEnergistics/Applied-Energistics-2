@@ -2,7 +2,6 @@ package appeng.core.localization;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
 
 public interface LocalizationEnum {
 

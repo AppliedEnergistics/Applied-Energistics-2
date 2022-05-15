@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Splitter;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import me.shedaniel.math.Point;

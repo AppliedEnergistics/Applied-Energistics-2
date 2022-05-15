@@ -6,15 +6,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Component;
 
 import appeng.core.definitions.AEBlocks;
