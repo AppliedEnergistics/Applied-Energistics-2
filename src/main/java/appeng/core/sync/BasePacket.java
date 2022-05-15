@@ -18,7 +18,11 @@
 
 package appeng.core.sync;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -52,7 +56,7 @@ public abstract class BasePacket {
         this.p = data;
     }
 
-    public FriendlyByteBuf getPayload() {
+    public Packet<?> toPacket(PacketFlow direction) {
         var buffer = this.p;
         var packetSize = buffer.readableBytes();
         if (packetSize > 2 * 1024 * 1024) // 2k walking room :)
@@ -66,7 +70,11 @@ public abstract class BasePacket {
             AELog.info(getClass().getName() + " : " + packetSize);
         }
 
-        return buffer;
+        if (direction == PacketFlow.SERVERBOUND) {
+            return ClientPlayNetworking.createC2SPacket(CHANNEL, this.p);
+        } else {
+            return ServerPlayNetworking.createS2CPacket(CHANNEL, this.p);
+        }
     }
 
 }
