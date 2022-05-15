@@ -94,6 +94,7 @@ public class AEStackRendering {
         getUnchecked(what).drawInGui(minecraft, poseStack, x, y, z, what);
     }
 
+    @SuppressWarnings("unchecked")
     public static void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEKey what, float scale,
             int combinedLightIn) {
         getUnchecked(what).drawOnBlockFace(poseStack, buffers, what, scale, combinedLightIn);
