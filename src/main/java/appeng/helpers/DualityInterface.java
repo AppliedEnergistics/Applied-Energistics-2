@@ -104,9 +104,6 @@ import java.util.*;
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost
 {
-	@CapabilityInject( Capabilities.class )
-	public static Capability<IStorageMonitorableAccessor> STORAGE_MONITORABLE_ACCESSOR = null;
-
 	public static final int NUMBER_OF_STORAGE_SLOTS = 9;
 	public static final int NUMBER_OF_CONFIG_SLOTS = 9;
 	public static final int NUMBER_OF_PATTERN_SLOTS = 36;
@@ -816,7 +813,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 				if( !targetTE.getInterfaceDuality().sameGrid( this.gridProxy.getGrid() ) )
 				{
-					IStorageMonitorableAccessor mon = te.getCapability( STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
+					IStorageMonitorableAccessor mon = te.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
 					if( mon != null )
 					{
 						IStorageMonitorable sm = mon.getInventory( this.mySource );
@@ -1204,7 +1201,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 					}
 					else
 					{
-						IStorageMonitorableAccessor mon = te.getCapability( STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
+						IStorageMonitorableAccessor mon = te.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
 						if( mon != null )
 						{
 							IStorageMonitorable sm = mon.getInventory( this.mySource );
@@ -1365,7 +1362,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 						}
 						else
 						{
-							IStorageMonitorableAccessor mon = te.getCapability( STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
+							IStorageMonitorableAccessor mon = te.getCapability( Capabilities.STORAGE_MONITORABLE_ACCESSOR, s.getOpposite() );
 							if( mon != null )
 							{
 								IStorageMonitorable sm = mon.getInventory( this.mySource );
@@ -1709,7 +1706,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
 	public boolean hasCapability( Capability<?> capabilityClass, EnumFacing facing )
 	{
-		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capabilityClass == STORAGE_MONITORABLE_ACCESSOR;
+		return capabilityClass == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR;
 	}
 
 	@SuppressWarnings( "unchecked" )
@@ -1719,7 +1716,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 		{
 			return (T) this.storage;
 		}
-		else if( capabilityClass == STORAGE_MONITORABLE_ACCESSOR )
+		else if( capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR )
 		{
 			return (T) this.accessor;
 		}
