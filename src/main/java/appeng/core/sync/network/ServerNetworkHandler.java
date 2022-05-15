@@ -43,31 +43,29 @@ public class ServerNetworkHandler implements NetworkHandler {
     public void sendToAll(BasePacket message) {
         MinecraftServer server = AppEng.instance().getCurrentServer();
         if (server != null) {
-            var packet = message.toPacket(PacketFlow.CLIENTBOUND);
-
-            PlayerLookup.all(server).forEach(player -> ServerPlayNetworking.getSender(player).sendPacket(packet));
+            var payload = message.getPayload();
+            PlayerLookup.all(server).forEach(player -> ServerPlayNetworking.send(player, BasePacket.CHANNEL, payload));
         }
     }
 
     public void sendTo(BasePacket message, ServerPlayer player) {
-        var packet = message.toPacket(PacketFlow.CLIENTBOUND);
-        ServerPlayNetworking.getSender(player).sendPacket(packet);
+        ServerPlayNetworking.send(player, BasePacket.CHANNEL, message.getPayload());
     }
 
     public void sendToAllAround(BasePacket message, TargetPoint point) {
-        var packet = message.toPacket(PacketFlow.CLIENTBOUND);
+        var payload = message.getPayload();
         PlayerLookup.around((ServerLevel) point.level, new Vec3(point.x, point.y, point.z), point.radius)
                 .forEach(player -> {
                     if (player != point.excluded) {
-                        ServerPlayNetworking.getSender(player).sendPacket(packet);
+                        ServerPlayNetworking.send(player, BasePacket.CHANNEL, payload);
                     }
                 });
     }
 
     public void sendToDimension(BasePacket message, Level world) {
-        var packet = message.toPacket(PacketFlow.CLIENTBOUND);
+        var payload = message.getPayload();
         PlayerLookup.world((ServerLevel) world)
-                .forEach(player -> ServerPlayNetworking.getSender(player).sendPacket(packet));
+                .forEach(player -> ServerPlayNetworking.send(player, BasePacket.CHANNEL, payload));
     }
 
     @Override

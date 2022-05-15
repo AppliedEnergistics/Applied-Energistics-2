@@ -36,7 +36,8 @@ public class ClientNetworkHandler extends ServerNetworkHandler {
 
     @Override
     public void sendToServer(BasePacket message) {
-        ClientPlayNetworking.getSender().sendPacket(message.toPacket(PacketFlow.SERVERBOUND));
+        var payload = message.getPayload();
+        ClientPlayNetworking.send(BasePacket.CHANNEL, payload);
     }
 
     private void handlePacketFromServer(Minecraft client, ClientPacketListener handler, FriendlyByteBuf payload,
