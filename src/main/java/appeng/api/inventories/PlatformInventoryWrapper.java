@@ -75,7 +75,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
         ItemVariant rv = ItemVariant.blank();
         long extractedAmount = 0;
 
-        var it = this.storage.iterator(tx);
+        var it = this.storage.iterator();
         while (it.hasNext() && extractedAmount < amount) {
             var view = it.next();
 
@@ -148,7 +148,7 @@ class PlatformInventoryWrapper implements ItemTransfer {
     private ItemStack innerRemoveSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode,
             Predicate<ItemStack> destination, Transaction tx) {
 
-        for (var view : this.storage.iterable(tx)) {
+        for (var view : this.storage) {
             var is = view.getResource();
             if (is.isBlank()) {
                 continue;

@@ -98,7 +98,7 @@ class CraftingPatternItemTest {
         var level = mock(Level.class);
         var recipeManager = mock(RecipeManager.class);
         when(level.getRecipeManager()).thenReturn(recipeManager);
-        var recipeMap = new HashMap<ResourceLocation, Recipe<CraftingContainer>>();
+        var recipeMap = new HashMap<ResourceLocation, CraftingRecipe>();
         recipeMap.put(TEST_RECIPE_ID, TEST_RECIPE);
         when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(recipeMap);
 

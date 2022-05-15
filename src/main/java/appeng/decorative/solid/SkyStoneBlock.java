@@ -42,13 +42,10 @@ public class SkyStoneBlock extends AEBaseBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor level,
-            BlockPos currentPos, BlockPos facingPos) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         if (level instanceof ServerLevel serverLevel) {
-            CompassService.notifyBlockChange(serverLevel, currentPos);
+            CompassService.notifyBlockChange(serverLevel, pos);
         }
-
-        return super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos);
     }
 
     @Override

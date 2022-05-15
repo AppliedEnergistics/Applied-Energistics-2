@@ -6,6 +6,7 @@
   "mixins": [
     "spatial.DimensionTypesMixin",
     "spatial.WorldGenSettingsMixin",
+    "spatial.WorldPresetMixin",
     "spatial.FixupDimensionsMixin",
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",

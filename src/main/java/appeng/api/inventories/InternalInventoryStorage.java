@@ -57,7 +57,7 @@ class InternalInventoryStorage extends SnapshotParticipant<InternalInventoryStor
     }
 
     @Override
-    public Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
+    public Iterator<StorageView<ItemVariant>> iterator() {
         return new InventoryIterator();
     }
 

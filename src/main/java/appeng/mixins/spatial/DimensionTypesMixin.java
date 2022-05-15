@@ -45,7 +45,7 @@ import appeng.spatial.SpatialStorageDimensionIds;
 @Mixin(value = DimensionTypes.class)
 public class DimensionTypesMixin {
 
-    @Inject(method = "registerBuiltin", at = @At("TAIL"))
+    @Inject(method = "bootstrap", at = @At("TAIL"))
     private static void bootstrap(Registry<DimensionType> registry, CallbackInfoReturnable<?> cir) {
         var dimensionType = new DimensionType(
                 OptionalLong.of(12000), // fixedTime
@@ -66,25 +66,5 @@ public class DimensionTypesMixin {
                 1.0f // ambientLight
         );
         Registry.register(registry, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
-    }
-
-    /**
-     * Insert our custom dimension into the initial registry. <em>This is what will ultimately lead to the creation of a
-     * new World.</em>
-     */
-    @Inject(method = "defaultDimensions(Lnet/minecraft/core/RegistryAccess;JZ)Lnet/minecraft/core/Registry;", at = @At("RETURN"))
-    private static void buildDimensionRegistry(RegistryAccess registryAccess, long seed, boolean b,
-            CallbackInfoReturnable<MappedRegistry<LevelStem>> cir) {
-        MappedRegistry<LevelStem> simpleregistry = cir.getReturnValue();
-
-        var dimensionTypes = registryAccess.ownedRegistryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
-        var structureSets = registryAccess.ownedRegistryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
-        var biomes = registryAccess.ownedRegistryOrThrow(Registry.BIOME_REGISTRY);
-
-        simpleregistry.register(SpatialStorageDimensionIds.DIMENSION_ID,
-                new LevelStem(dimensionTypes.getHolderOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
-                        new SpatialStorageChunkGenerator(structureSets, biomes)),
-                Lifecycle.stable());
-
     }
 }

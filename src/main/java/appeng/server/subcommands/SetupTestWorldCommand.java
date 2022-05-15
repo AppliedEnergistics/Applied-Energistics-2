@@ -122,6 +122,6 @@ public class SetupTestWorldCommand implements ISubCommand {
         }
 
         // Only allow actual void worlds
-        return flatLevelSource.settings().getLayers().stream().allMatch(Objects::isNull);
+        return flatLevelSource.settings().getLayers().stream().allMatch(l -> l == null || l.isAir());
     }
 }

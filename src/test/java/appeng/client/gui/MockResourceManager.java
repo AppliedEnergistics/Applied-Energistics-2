@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -38,6 +39,7 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
 
 import appeng.core.AppEng;
+import net.minecraft.server.packs.resources.ResourceMetadata;
 
 /**
  * Fake resource manager that more or less loads AE2 resource pack resources.
@@ -51,9 +53,9 @@ public final class MockResourceManager {
 
         when(resourceManager.getResource(any())).thenAnswer(invoc -> {
             net.minecraft.resources.ResourceLocation loc = invoc.getArgument(0);
-            return getResource(loc);
+            return Optional.of(getResource(loc));
         });
-        when(resourceManager.getResources(any())).thenAnswer(invoc -> {
+        when(resourceManager.getResourceStack(any())).thenAnswer(invoc -> {
             ResourceLocation loc = invoc.getArgument(0);
             return Collections.singletonList(getResource(loc));
         });
@@ -71,37 +73,9 @@ public final class MockResourceManager {
             throw new FileNotFoundException("Missing resource: " + loc.getPath());
         }
 
-        return new Resource() {
-            @Override
-            public net.minecraft.resources.ResourceLocation getLocation() {
-                return loc;
-            }
-
-            @Override
-            public InputStream getInputStream() {
-                return in;
-            }
-
-            @Override
-            public boolean hasMetadata() {
-                return false;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getMetadata(MetadataSectionSerializer<T> serializer) {
-                return null;
-            }
-
-            @Override
-            public String getSourceName() {
-                return "ae2";
-            }
-
-            @Override
-            public void close() throws IOException {
-                in.close();
-            }
-        };
+        return new Resource(
+                "ae2",
+                () -> in
+        );
     }
 }

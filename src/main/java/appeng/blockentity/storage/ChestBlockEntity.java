@@ -625,7 +625,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
 
         @Override
-        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
+        public Iterator<StorageView<FluidVariant>> iterator() {
             if (canAcceptLiquids()) {
                 return fakeInputTanks.iterator();
             } else {

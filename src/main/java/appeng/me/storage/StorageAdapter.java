@@ -116,14 +116,12 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
             return false;
         }
 
-        try (var tx = Transaction.openOuter()) {
-            for (var view : storage.iterable(tx)) {
-                var storedKey = conversion.getKey(view.getResource());
-                if (storedKey != null && view.getAmount() > 0) {
-                    var key = storedKey.dropSecondary();
-                    if (keys.contains(key)) {
-                        return true;
-                    }
+        for (var view : storage) {
+            var storedKey = conversion.getKey(view.getResource());
+            if (storedKey != null && view.getAmount() > 0) {
+                var key = storedKey.dropSecondary();
+                if (keys.contains(key)) {
+                    return true;
                 }
             }
         }
@@ -134,7 +132,7 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
     public void getAvailableStacks(KeyCounter out) {
         if (storage != null) {
             try (var tx = Transaction.openOuter()) {
-                for (var view : storage.iterable(tx)) {
+                for (var view : storage) {
                     var resource = view.getResource();
 
                     if (resource.isBlank()) {

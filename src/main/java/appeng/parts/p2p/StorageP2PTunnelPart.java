@@ -71,7 +71,7 @@ public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>,
         }
 
         @Override
-        public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
+        public Iterator<StorageView<T>> iterator() {
             return Collections.emptyIterator();
         }
     }
@@ -90,10 +90,10 @@ public abstract class StorageP2PTunnelPart<P extends StorageP2PTunnelPart<P, T>,
         }
 
         @Override
-        public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
+        public Iterator<StorageView<T>> iterator() {
             try (CapabilityGuard input = getInputCapability()) {
                 return Iterators.transform(
-                        input.get().iterator(transaction),
+                        input.get().iterator(),
                         PowerDrainingStorageView::new);
             }
         }

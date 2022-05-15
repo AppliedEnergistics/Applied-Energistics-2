@@ -14,6 +14,7 @@ import java.lang.instrument.Instrumentation;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -130,5 +131,9 @@ class TestLauncher extends FabricLauncherBase {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void setValidParentClassPath(Collection<Path> paths) {
     }
 }
