@@ -18,6 +18,8 @@
 
 package appeng.facade;
 
+import java.util.function.Consumer;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -35,9 +37,9 @@ import appeng.parts.CableBusStorage;
 public class FacadeContainer implements IFacadeContainer {
 
     private final CableBusStorage storage;
-    private final Runnable changeCallback;
+    private final Consumer<Direction> changeCallback;
 
-    public FacadeContainer(CableBusStorage cbs, Runnable changeCallback) {
+    public FacadeContainer(CableBusStorage cbs, Consumer<Direction> changeCallback) {
         this.storage = cbs;
         this.changeCallback = changeCallback;
     }
@@ -51,7 +53,7 @@ public class FacadeContainer implements IFacadeContainer {
     public boolean addFacade(IFacadePart a) {
         if (canAddFacade(a)) {
             this.storage.setFacade(a.getSide(), a);
-            this.notifyChange();
+            this.notifyChange(a.getSide());
             return true;
         }
         return false;
@@ -61,7 +63,7 @@ public class FacadeContainer implements IFacadeContainer {
     public void removeFacade(IPartHost host, Direction side) {
         if (side != null && this.storage.getFacade(side) != null) {
             this.storage.removeFacade(side);
-            this.notifyChange();
+            this.notifyChange(side);
             if (host != null) {
                 host.markForUpdate();
             }
@@ -160,8 +162,8 @@ public class FacadeContainer implements IFacadeContainer {
         return true;
     }
 
-    private void notifyChange() {
-        this.changeCallback.run();
+    private void notifyChange(Direction side) {
+        this.changeCallback.accept(side);
     }
 
 }

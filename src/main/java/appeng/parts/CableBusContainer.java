@@ -72,6 +72,7 @@ import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiBlockEntity;
+import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.FacadeItem;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
@@ -109,7 +110,12 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public IFacadeContainer getFacadeContainer() {
-        return new FacadeContainer(this.storage, this::invalidateShapes);
+        return new FacadeContainer(this.storage, this::facadeChanged);
+    }
+
+    private void facadeChanged(Direction side) {
+        invalidateShapes();
+        updateNeighborShapeOnSide(side);
     }
 
     private ICablePart getCable() {
@@ -239,7 +245,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
         }
 
-        updateAfterPartChange();
+        updateAfterPartChange(side);
 
         return part;
     }
@@ -270,7 +276,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     public void removePart(@Nullable Direction side) {
         this.removePartWithoutUpdates(side);
 
-        updateAfterPartChange();
+        updateAfterPartChange(side);
 
         // Cleanup the cable bus once it is no longer containing any parts.
         // Also only when the cable bus actually exists, otherwise it might perform a cleanup during initialization.
@@ -279,13 +285,15 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
     }
 
-    private void updateAfterPartChange() {
+    private void updateAfterPartChange(Direction side) {
         this.invalidateShapes();
         this.updateDynamicRender();
         this.updateConnections();
         this.markForUpdate();
         this.markForSave();
         this.partChanged();
+
+        updateNeighborShapeOnSide(side);
     }
 
     private void removePartWithoutUpdates(@Nullable Direction side) {
@@ -1059,6 +1067,25 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         cachedShape = null;
         cachedCollisionShape = null;
         cachedCollisionShapeLiving = null;
+    }
+
+    private void updateNeighborShapeOnSide(Direction side) {
+        // Update the shape of the neighbor asynchronously (i.e. for walls)
+        var be = getBlockEntity();
+        if (be != null && be.getLevel() != null && !be.getLevel().isClientSide()) {
+            TickHandler.instance().addCallable(be.getLevel(), level -> {
+                if (!be.isRemoved()) {
+                    var ourPos = be.getBlockPos();
+                    var neighborPos = ourPos.relative(side);
+                    var neighborState = level.getBlockState(neighborPos);
+                    var ourState = be.getBlockState();
+                    BlockState newNeighborState = neighborState.updateShape(side.getOpposite(), ourState, level,
+                            neighborPos, ourPos);
+                    Block.updateOrDestroy(neighborState, newNeighborState, level, neighborPos, Block.UPDATE_ALL,
+                            Block.UPDATE_LIMIT);
+                }
+            });
+        }
     }
 
 }
