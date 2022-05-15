@@ -72,6 +72,7 @@ import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiBlockEntity;
+import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.FacadeItem;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
@@ -109,7 +110,26 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     public IFacadeContainer getFacadeContainer() {
-        return new FacadeContainer(this.storage, this::invalidateShapes);
+        return new FacadeContainer(this.storage, this::facadeChanged);
+    }
+
+    private void facadeChanged(Direction side) {
+        invalidateShapes();
+
+        // Update the shape of the neighbor asynchronously (i.e. walls)
+        var be = getBlockEntity();
+        if (be != null && be.getLevel() != null && !be.getLevel().isClientSide()) {
+            TickHandler.instance().addCallable(be.getLevel(), level -> {
+                var ourPos = be.getBlockPos();
+                var neighborPos = ourPos.relative(side);
+                var neighborState = level.getBlockState(neighborPos);
+                var ourState = level.getBlockState(ourPos);
+                BlockState newNeighborState = neighborState.updateShape(side.getOpposite(), ourState, level,
+                        neighborPos, ourPos);
+                Block.updateOrDestroy(neighborState, newNeighborState, level, neighborPos, Block.UPDATE_ALL,
+                        Block.UPDATE_LIMIT);
+            });
+        }
     }
 
     private ICablePart getCable() {
