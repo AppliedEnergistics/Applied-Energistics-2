@@ -55,7 +55,7 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IC
 
     public PatternAccessTerminalPart(IPartItem<?> partItem) {
         super(partItem, true);
-        this.configManager.registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.UNHIDDEN);
+        this.configManager.registerSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS, ShowPatternProviders.VISIBLE);
     }
 
     @Override

@@ -18,8 +18,10 @@
 
 package appeng.menu.implementations;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -63,7 +65,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
     private PatternAccessTerminalPart host;
     @GuiSync(1)
-    public ShowPatternProviders showPatternProviders = ShowPatternProviders.UNHIDDEN;
+    public ShowPatternProviders showPatternProviders = ShowPatternProviders.VISIBLE;
 
     public ShowPatternProviders getShownProviders() {
         return showPatternProviders;
@@ -83,6 +85,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     private static long inventorySerial = Long.MIN_VALUE;
     private final Map<PatternProviderLogicHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
+    /**
+     * Tracks hosts that were previously not full, even if they are now, for {@link ShowPatternProviders#NOT_FULL}.
+     */
+    private final Set<PatternProviderLogicHost> keptHosts = Collections.newSetFromMap(new IdentityHashMap<>());
 
     public InterfaceTerminalMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
@@ -107,6 +113,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         super.broadcastChanges();
 
+        if (showPatternProviders != ShowPatternProviders.NOT_FULL) {
+            this.keptHosts.clear();
+        }
+
         IGrid grid = getGrid();
 
         VisitorState state = new VisitorState();
@@ -120,6 +130,9 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         } else {
             sendIncrementalUpdate();
         }
+
+        // Ensure we don't keep references to removed hosts
+        keptHosts.removeIf(host -> host.getLogic().getGrid() != grid);
     }
 
     @Nullable
@@ -141,15 +154,36 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         boolean forceFullUpdate;
     }
 
+    private boolean isFull(PatternProviderLogic logic) {
+        for (int i = 0; i < logic.getPatternInv().size(); i++) {
+            if (logic.getPatternInv().getStackInSlot(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isHostVisible(PatternProviderLogicHost host) {
+        var logic = host.getLogic();
+        boolean isVisible = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
+
+        return switch (getShownProviders()) {
+            case VISIBLE -> isVisible;
+            case NOT_FULL -> isVisible && (keptHosts.contains(host) || !isFull(logic));
+            case ALL -> true;
+        };
+    }
+
     private <T extends PatternProviderLogicHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             var dual = ih.getLogic();
-            boolean isVisible = dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
-            if (!isVisible && (showPatternProviders == ShowPatternProviders.UNHIDDEN
-                    || showPatternProviders == ShowPatternProviders.UNFILLED
-                            && dual.getAvailablePatterns().size() == 9)) {
+            if (!isHostVisible(ih)) {
                 continue;
+            }
+
+            if (getShownProviders() == ShowPatternProviders.NOT_FULL) {
+                keptHosts.add(ih);
             }
 
             final InvTracker t = this.diList.get(ih);
@@ -263,22 +297,14 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
             var dual = ih.getLogic();
-            boolean isVisible = dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
-            if (showPatternProviders == ShowPatternProviders.ALL
-                    || showPatternProviders == ShowPatternProviders.UNHIDDEN && isVisible
-                    || showPatternProviders == ShowPatternProviders.UNFILLED && isVisible
-                            && dual.getAvailablePatterns().size() != 9) {
+            if (isHostVisible(ih)) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderPart.class)) {
             var dual = ih.getLogic();
-            boolean isVisible = dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
-            if (showPatternProviders == ShowPatternProviders.ALL
-                    || showPatternProviders == ShowPatternProviders.UNHIDDEN && isVisible
-                    || showPatternProviders == ShowPatternProviders.UNFILLED && isVisible
-                            && dual.getAvailablePatterns().size() != 9) {
+            if (isHostVisible(ih)) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }

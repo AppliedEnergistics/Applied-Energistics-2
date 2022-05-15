@@ -485,4 +485,9 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         final BlockEntity te = this.host.getBlockEntity();
         return te.getBlockPos().getZ() << 24 ^ te.getBlockPos().getX() << 8 ^ te.getBlockPos().getY();
     }
+
+    @Nullable
+    public IGrid getGrid() {
+        return mainNode.getGrid();
+    }
 }

@@ -144,7 +144,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
                 new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
 
         showPatternProviders = new ServerSettingToggleButton(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
-                ShowPatternProviders.UNHIDDEN);
+                ShowPatternProviders.VISIBLE);
 
         this.addToLeftToolbar(
                 showPatternProviders);
