@@ -47,6 +47,7 @@ public class Crowdin {
         LANG_MAPPING.put("ro_ro", "ro");
         LANG_MAPPING.put("ru_ru", "ru");
         LANG_MAPPING.put("de_de", "de");
+        LANG_MAPPING.put("uk_ua", "uk");
         LANG_MAPPING.put("zh_cn", "zh-CN");
         LANG_MAPPING.put("zh_tw", "zh-TW");
     }
