@@ -22,12 +22,12 @@ final class SearchPredicates {
         } else {
             var pattern = createPattern(searchString);
 
-            var result = createNamePredicate(pattern);
-            if (AEConfig.instance().getSearchTooltips() != YesNo.NO) {
-                result = result.or(createTooltipPredicate(pattern, repoSearch));
+            if (AEConfig.instance().getSearchTooltips() == YesNo.YES) {
+                // The tooltip obviously includes the display name too
+                return createTooltipPredicate(pattern, repoSearch);
+            } else {
+                return createNamePredicate(pattern);
             }
-
-            return result;
         }
     }
 
@@ -57,15 +57,8 @@ final class SearchPredicates {
 
     private static Predicate<GridInventoryEntry> createTooltipPredicate(Pattern searchPattern, RepoSearch repoSearch) {
         return entry -> {
-            var tooltip = repoSearch.getTooltip(entry);
-
-            for (var line : tooltip) {
-                if (searchPattern.matcher(line.getString()).find()) {
-                    return true;
-                }
-            }
-
-            return false;
+            var tooltipText = repoSearch.getTooltipText(entry.getWhat());
+            return searchPattern.matcher(tooltipText).find();
         };
     }
 
