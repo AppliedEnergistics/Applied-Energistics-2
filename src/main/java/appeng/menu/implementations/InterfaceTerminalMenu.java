@@ -123,6 +123,11 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         if (grid != null) {
             visitInterfaceHosts(grid, PatternProviderBlockEntity.class, state);
             visitInterfaceHosts(grid, PatternProviderPart.class, state);
+
+            // Ensure we don't keep references to removed hosts
+            keptHosts.removeIf(host -> host.getLogic().getGrid() != grid);
+        } else {
+            keptHosts.clear();
         }
 
         if (state.total != this.diList.size() || state.forceFullUpdate) {
@@ -130,9 +135,6 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         } else {
             sendIncrementalUpdate();
         }
-
-        // Ensure we don't keep references to removed hosts
-        keptHosts.removeIf(host -> host.getLogic().getGrid() != grid);
     }
 
     @Nullable
