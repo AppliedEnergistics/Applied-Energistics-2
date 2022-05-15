@@ -366,6 +366,7 @@
   "item.ae2.facade": "外装ケーブル",
   "item.ae2.fluid_storage_cell_16k": "16k ME液体ストレージセル",
   "item.ae2.fluid_storage_cell_1k": "1k ME液体ストレージセル",
+  "item.ae2.fluid_storage_cell_256k": "16k ME液体ストレージセル",
   "item.ae2.fluid_storage_cell_4k": "4k ME液体ストレージセル",
   "item.ae2.fluid_storage_cell_64k": "64k ME液体ストレージセル",
   "item.ae2.import_bus": "MEインポートバス",
