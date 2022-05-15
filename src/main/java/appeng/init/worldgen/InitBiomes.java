@@ -18,12 +18,7 @@
 
 package appeng.init.worldgen;
 
-import java.util.OptionalInt;
-
-import com.mojang.serialization.Lifecycle;
-
 import net.minecraft.core.Registry;
-import net.minecraft.core.WritableRegistry;
 import net.minecraft.world.level.biome.Biome;
 
 import appeng.spatial.SpatialStorageBiome;
@@ -35,13 +30,8 @@ public final class InitBiomes {
     }
 
     public static void init(Registry<Biome> registry) {
-        // We registered a holder earlier because to modify level-stems, we need to
-        // have a holder for the biome early
-        ((WritableRegistry<Biome>) registry).registerOrOverride(
-                OptionalInt.empty(),
-                SpatialStorageDimensionIds.BIOME_KEY,
-                SpatialStorageBiome.INSTANCE,
-                Lifecycle.stable());
+        Biome biome = SpatialStorageBiome.INSTANCE;
+        Registry.register(registry, SpatialStorageDimensionIds.BIOME_KEY.location(), biome);
     }
 
 }
