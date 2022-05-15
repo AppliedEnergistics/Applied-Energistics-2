@@ -47,6 +47,9 @@ public final class MockResourceManager {
     public static ReloadableResourceManager create() throws IOException {
         ReloadableResourceManager resourceManager = mock(ReloadableResourceManager.class, withSettings().lenient());
 
+        when(resourceManager.open(any())).thenCallRealMethod();
+        when(resourceManager.openAsReader(any())).thenCallRealMethod();
+        when(resourceManager.getResourceOrThrow(any())).thenCallRealMethod();
         when(resourceManager.getResource(any())).thenAnswer(invoc -> {
             net.minecraft.resources.ResourceLocation loc = invoc.getArgument(0);
             return Optional.of(getResource(loc));
@@ -63,14 +66,15 @@ public final class MockResourceManager {
     }
 
     private static Resource getResource(net.minecraft.resources.ResourceLocation loc) throws FileNotFoundException {
-        InputStream in = MockResourceManager.class
-                .getResourceAsStream("/assets/" + loc.getNamespace() + "/" + loc.getPath());
-        if (in == null) {
-            throw new FileNotFoundException("Missing resource: " + loc.getPath());
-        }
-
         return new Resource(
                 "ae2",
-                () -> in);
+                () -> {
+                    InputStream in = MockResourceManager.class
+                            .getResourceAsStream("/assets/" + loc.getNamespace() + "/" + loc.getPath());
+                    if (in == null) {
+                        throw new FileNotFoundException("Missing resource: " + loc.getPath());
+                    }
+                    return in;
+                });
     }
 }
