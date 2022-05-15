@@ -138,7 +138,7 @@ public class WrappedGenericStack extends AEBaseItem {
         // Allow picking up fluids items with a fluid container, this is a special case for fluids
         var what = unwrapWhat(itemInSlot);
         if (clickAction == ClickAction.PRIMARY) {
-            var heldContainer = StackInteractions.findCarriedContext(player, player.containerMenu);
+            var heldContainer = StackInteractions.findCarriedContextForKey(what, player, player.containerMenu);
             if (heldContainer != null) {
                 long amount = unwrapAmount(itemInSlot);
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);

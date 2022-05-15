@@ -1,5 +1,7 @@
 package appeng.menu.me.interaction;
 
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -64,12 +66,25 @@ public class StackInteractions {
         return new EmptyingAction(description, contents.what(), contents.amount());
     }
 
+    public static ContainerItemContext findCarriedContextForKey(@Nullable AEKey key, Player player,
+            AbstractContainerMenu menu) {
+        return findCarriedContext(key == null ? null : key.getType(), player, menu);
+    }
+
+    /**
+     * @param keyType Desired key type, or null if any is ok.
+     */
     @Nullable
-    public static ContainerItemContext findCarriedContext(Player player, AbstractContainerMenu menu) {
-        for (var entry : strategies.getMap().entrySet()) {
-            var context = entry.getValue().findCarriedContext(player, menu);
-            if (context != null) {
-                return new ContainerItemContext((ContainerItemStrategy<AEKey, Object>) entry.getValue(), context);
+    public static ContainerItemContext findCarriedContext(@Nullable AEKeyType keyType, Player player,
+            AbstractContainerMenu menu) {
+        var candidates = keyType == null ? strategies.getMap().keySet() : List.of(keyType);
+        for (var type : candidates) {
+            var strategy = strategies.getMap().get(type);
+            if (strategy != null) {
+                var context = strategy.findCarriedContext(player, menu);
+                if (context != null) {
+                    return new ContainerItemContext((ContainerItemStrategy<AEKey, Object>) strategy, context, type);
+                }
             }
         }
         return null;

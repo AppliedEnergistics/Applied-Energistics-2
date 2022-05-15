@@ -577,7 +577,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final void handleFillingHeldItem(FillingSource source, AEKey what) {
-        var ctx = StackInteractions.findCarriedContext(getPlayer(), this);
+        var ctx = StackInteractions.findCarriedContextForKey(what, getPlayer(), this);
         if (ctx == null) {
             return;
         }
@@ -616,7 +616,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final void handleEmptyHeldItem(EmptyingSink sink) {
-        var ctx = StackInteractions.findCarriedContext(getPlayer(), this);
+        var ctx = StackInteractions.findCarriedContext(null, getPlayer(), this);
         if (ctx == null) {
             return;
         }
