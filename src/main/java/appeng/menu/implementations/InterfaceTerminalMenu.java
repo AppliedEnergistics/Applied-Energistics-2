@@ -18,8 +18,10 @@
 
 package appeng.menu.implementations;
 
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -35,6 +37,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
+import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.YesNo;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
@@ -63,10 +66,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
     private final IConfigurableObject host;
     @GuiSync(1)
-    public YesNo showHiddenPattern = YesNo.NO;
+    public ShowPatternProviders showPatternProviders = ShowPatternProviders.VISIBLE;
 
-    public YesNo isShowingHiddenPattern() {
-        return showHiddenPattern;
+    public ShowPatternProviders getShownProviders() {
+        return showPatternProviders;
     }
 
     public static final MenuType<InterfaceTerminalMenu> TYPE = MenuTypeBuilder
@@ -83,6 +86,11 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     private static long inventorySerial = Long.MIN_VALUE;
     private final Map<PatternProviderLogicHost, InvTracker> diList = new IdentityHashMap<>();
     private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
+    /**
+     * Tracks hosts that were visible before, even if they no longer match the filter. For
+     * {@link ShowPatternProviders#NOT_FULL}.
+     */
+    private final Set<PatternProviderLogicHost> pinnedHosts = Collections.newSetFromMap(new IdentityHashMap<>());
 
     public InterfaceTerminalMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
@@ -103,9 +111,13 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             return;
         }
 
-        showHiddenPattern = this.host.getConfigManager().getSetting(Settings.TERMINAL_SHOW_HIDDEN_PATTERN);
+        showPatternProviders = this.host.getConfigManager().getSetting(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS);
 
         super.broadcastChanges();
+
+        if (showPatternProviders != ShowPatternProviders.NOT_FULL) {
+            this.pinnedHosts.clear();
+        }
 
         IGrid grid = getGrid();
 
@@ -113,6 +125,11 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         if (grid != null) {
             visitInterfaceHosts(grid, PatternProviderBlockEntity.class, state);
             visitInterfaceHosts(grid, PatternProviderPart.class, state);
+
+            // Ensure we don't keep references to removed hosts
+            pinnedHosts.removeIf(host -> host.getLogic().getGrid() != grid);
+        } else {
+            pinnedHosts.clear();
         }
 
         if (state.total != this.diList.size() || state.forceFullUpdate) {
@@ -141,13 +158,36 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         boolean forceFullUpdate;
     }
 
+    private boolean isFull(PatternProviderLogic logic) {
+        for (int i = 0; i < logic.getPatternInv().size(); i++) {
+            if (logic.getPatternInv().getStackInSlot(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isHostVisible(PatternProviderLogicHost host) {
+        var logic = host.getLogic();
+        boolean isVisible = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
+
+        return switch (getShownProviders()) {
+            case VISIBLE -> isVisible;
+            case NOT_FULL -> isVisible && (pinnedHosts.contains(host) || !isFull(logic));
+            case ALL -> true;
+        };
+    }
+
     private <T extends PatternProviderLogicHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             var dual = ih.getLogic();
-            if (showHiddenPattern == YesNo.NO
-                    && dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.NO) {
+            if (!isHostVisible(ih)) {
                 continue;
+            }
+
+            if (getShownProviders() == ShowPatternProviders.NOT_FULL) {
+                pinnedHosts.add(ih);
             }
 
             final InvTracker t = this.diList.get(ih);
@@ -261,16 +301,14 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
             var dual = ih.getLogic();
-            if (showHiddenPattern == YesNo.YES
-                    || dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
+            if (isHostVisible(ih)) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
 
         for (var ih : grid.getActiveMachines(PatternProviderPart.class)) {
             var dual = ih.getLogic();
-            if (showHiddenPattern == YesNo.YES
-                    || dual.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES) {
+            if (isHostVisible(ih)) {
                 this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
             }
         }
