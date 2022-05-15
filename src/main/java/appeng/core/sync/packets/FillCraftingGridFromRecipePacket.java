@@ -43,7 +43,6 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.CraftingRecipeUtil;
@@ -106,7 +105,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
      * Serverside handler for this packet.
      */
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         // Setup and verification
         var menu = player.containerMenu;
         if (!(menu instanceof IMenuCraftingPacket cct)) {

@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 public class MockExplosionPacket extends BasePacket {
 
@@ -60,7 +59,7 @@ public class MockExplosionPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         final Level level = player.getCommandSenderWorld();
         level.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
     }

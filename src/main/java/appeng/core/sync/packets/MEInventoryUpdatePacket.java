@@ -39,7 +39,6 @@ import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 import appeng.menu.me.common.MEStorageMenu;
@@ -276,7 +275,7 @@ public class MEInventoryUpdatePacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         if (player.containerMenu.containerId == containerId
                 && player.containerMenu instanceof MEStorageMenu meMenu) {
             var clientRepo = meMenu.getClientRepo();

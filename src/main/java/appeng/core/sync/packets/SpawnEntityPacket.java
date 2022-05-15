@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 // This is essentially a copy of ClientboundAddEntityPacket, supporting custom entities
 public class SpawnEntityPacket extends BasePacket {
@@ -93,7 +92,7 @@ public class SpawnEntityPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         ClientLevel world = (ClientLevel) player.level;
 
         Entity entity = type.create(world);

@@ -18,8 +18,8 @@
 
 package appeng.core.sync;
 
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
@@ -29,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.sync.network.INetworkInfo;
 
 public abstract class BasePacket {
 
@@ -38,7 +37,7 @@ public abstract class BasePacket {
 
     private FriendlyByteBuf p;
 
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         throw new UnsupportedOperationException(
                 "This packet ( " + this.getPacketID() + " does not implement a server side handler.");
     }
@@ -47,7 +46,7 @@ public abstract class BasePacket {
         return BasePacketHandler.PacketTypes.getID(this.getClass()).ordinal();
     }
 
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         throw new UnsupportedOperationException(
                 "This packet ( " + this.getPacketID() + " does not implement a client side handler.");
     }
@@ -69,9 +68,9 @@ public abstract class BasePacket {
         }
 
         if (direction == PacketFlow.SERVERBOUND) {
-            return ClientSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);
+            return ClientPlayNetworking.createC2SPacket(CHANNEL, this.p);
         } else {
-            return ServerSidePacketRegistry.INSTANCE.toPacket(CHANNEL, this.p);
+            return ServerPlayNetworking.createS2CPacket(CHANNEL, this.p);
         }
     }
 }

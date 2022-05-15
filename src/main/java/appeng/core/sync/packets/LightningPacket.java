@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 public class LightningPacket extends BasePacket {
 
@@ -60,7 +59,7 @@ public class LightningPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         try {
             if (AEConfig.instance().isEnableEffects()) {
                 player.getCommandSenderWorld().addParticle(ParticleTypes.LIGHTNING, this.x, this.y, this.z, 0.0f, 0.0f,

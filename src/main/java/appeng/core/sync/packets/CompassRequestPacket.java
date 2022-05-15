@@ -25,7 +25,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.server.services.compass.CompassService;
 
@@ -58,7 +57,7 @@ public class CompassRequestPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         var pos = new ChunkPos(this.cx, this.cz);
         var result = CompassService.getDirection(player.getLevel(), pos, 174);
 

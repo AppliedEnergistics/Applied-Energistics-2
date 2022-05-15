@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 
 public class MatterCannonPacket extends BasePacket {
 
@@ -80,7 +79,7 @@ public class MatterCannonPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         try {
             for (int a = 1; a < this.len; a++) {
                 Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,

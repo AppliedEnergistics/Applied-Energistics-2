@@ -24,7 +24,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
 
@@ -66,7 +65,7 @@ public class CompassResponsePacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         CompassManager.INSTANCE.postResult(this.attunement, this.cx << 4, this.cdy << 5, this.cz << 4, this.cr);
     }
 }

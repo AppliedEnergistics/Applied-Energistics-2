@@ -28,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.util.AEColor;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.powered.ColorApplicatorItem;
 
 /**
@@ -60,7 +59,7 @@ public class ColorApplicatorSelectColorPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         switchColor(player.getMainHandItem(), color);
         switchColor(player.getOffhandItem(), color);
     }

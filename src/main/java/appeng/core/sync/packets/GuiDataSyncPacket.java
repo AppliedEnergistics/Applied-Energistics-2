@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.menu.AEBaseMenu;
 
 /**
@@ -61,7 +60,7 @@ public class GuiDataSyncPacket extends BasePacket {
     }
 
     @Override
-    public void clientPacketData(INetworkInfo manager, Player player) {
+    public void clientPacketData(Player player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu && c.containerId == this.containerId) {
             ((AEBaseMenu) c).receiveServerSyncData(this);
@@ -69,7 +68,7 @@ public class GuiDataSyncPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         AbstractContainerMenu c = player.containerMenu;
         if (c instanceof AEBaseMenu && c.containerId == this.containerId) {
             ((AEBaseMenu) c).receiveClientAction(this);

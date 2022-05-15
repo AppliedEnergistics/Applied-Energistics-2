@@ -25,7 +25,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.helpers.IMouseWheelItem;
 
 public class MouseWheelPacket extends BasePacket {
@@ -43,7 +42,7 @@ public class MouseWheelPacket extends BasePacket {
     }
 
     @Override
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         var mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
         var offHand = player.getItemInHand(InteractionHand.OFF_HAND);
 

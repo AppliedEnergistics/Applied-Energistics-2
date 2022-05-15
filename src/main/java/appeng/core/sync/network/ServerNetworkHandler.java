@@ -18,29 +18,27 @@
 
 package appeng.core.sync.network;
 
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerStream;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.BasePacketHandler;
 
 public class ServerNetworkHandler implements NetworkHandler {
 
-    private final ServerSidePacketRegistry registry = ServerSidePacketRegistry.INSTANCE;
-
     public ServerNetworkHandler() {
         NetworkHandlerHolder.INSTANCE = this;
-        registry.register(BasePacket.CHANNEL, this::handlePacketFromClient);
+        ServerPlayNetworking.registerGlobalReceiver(BasePacket.CHANNEL, this::handlePacketFromClient);
     }
 
     public void sendToAll(BasePacket message) {
@@ -48,27 +46,29 @@ public class ServerNetworkHandler implements NetworkHandler {
         if (server != null) {
             var packet = message.toPacket(PacketFlow.CLIENTBOUND);
 
-            PlayerStream.all(server).forEach(player -> registry.sendToPlayer(player, packet));
+            PlayerLookup.all(server).forEach(player -> ServerPlayNetworking.getSender(player).sendPacket(packet));
         }
     }
 
     public void sendTo(BasePacket message, ServerPlayer player) {
         var packet = message.toPacket(PacketFlow.CLIENTBOUND);
-        registry.sendToPlayer(player, packet);
+        ServerPlayNetworking.getSender(player).sendPacket(packet);
     }
 
     public void sendToAllAround(BasePacket message, TargetPoint point) {
         var packet = message.toPacket(PacketFlow.CLIENTBOUND);
-        PlayerStream.around(point.level, new Vec3(point.x, point.y, point.z), point.radius).forEach(player -> {
-            if (player != point.excluded) {
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet);
-            }
-        });
+        PlayerLookup.around((ServerLevel) point.level, new Vec3(point.x, point.y, point.z), point.radius)
+                .forEach(player -> {
+                    if (player != point.excluded) {
+                        ServerPlayNetworking.getSender(player).sendPacket(packet);
+                    }
+                });
     }
 
     public void sendToDimension(BasePacket message, Level world) {
         var packet = message.toPacket(PacketFlow.CLIENTBOUND);
-        PlayerStream.world(world).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet));
+        PlayerLookup.world((ServerLevel) world)
+                .forEach(player -> ServerPlayNetworking.getSender(player).sendPacket(packet));
     }
 
     @Override
@@ -76,20 +76,13 @@ public class ServerNetworkHandler implements NetworkHandler {
         throw new IllegalStateException("Cannot send packets to the server when we're the server!");
     }
 
-    private void handlePacketFromClient(PacketContext packetContext, FriendlyByteBuf payload) {
-
-        // Deserialize the packet on the netwhrok th
-        Player player = packetContext.getPlayer();
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            AELog.warn("Received a packet for a non-server player entity!", player);
-            return;
-        }
-
+    private void handlePacketFromClient(MinecraftServer server, ServerPlayer player,
+            ServerGamePacketListenerImpl handler, FriendlyByteBuf payload, PacketSender responseSender) {
         final int packetType = payload.readInt();
         final BasePacket pack = BasePacketHandler.PacketTypes.getPacket(packetType).parsePacket(payload);
 
-        packetContext.getTaskQueue().execute(() -> {
-            pack.serverPacketData(null, serverPlayer);
+        server.execute(() -> {
+            pack.serverPacketData(player);
         });
     }
 

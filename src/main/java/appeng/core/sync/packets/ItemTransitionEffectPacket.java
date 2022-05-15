@@ -30,7 +30,6 @@ import net.minecraft.world.entity.player.Player;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.util.Platform;
 
 /**
@@ -69,7 +68,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void clientPacketData(INetworkInfo network, Player player) {
+    public void clientPacketData(Player player) {
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {
             if (AppEngClient.instance().shouldAddParticles(Platform.getRandom())) {
