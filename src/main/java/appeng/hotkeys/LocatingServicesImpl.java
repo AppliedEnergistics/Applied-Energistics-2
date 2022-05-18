@@ -30,11 +30,13 @@ public class LocatingServicesImpl {
         registerPortableCell(AEItems.PORTABLE_ITEM_CELL4K, "portable_item_cell");
         registerPortableCell(AEItems.PORTABLE_ITEM_CELL16K, "portable_item_cell");
         registerPortableCell(AEItems.PORTABLE_ITEM_CELL64K, "portable_item_cell");
+        registerPortableCell(AEItems.PORTABLE_ITEM_CELL256K, "portable_item_cell");
 
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL1K, "portable_fluid_cell");
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL4K, "portable_fluid_cell");
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL16K, "portable_fluid_cell");
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL64K, "portable_fluid_cell");
+        registerPortableCell(AEItems.PORTABLE_FLUID_CELL256K, "portable_fluid_cell");
     }
 
     /**
