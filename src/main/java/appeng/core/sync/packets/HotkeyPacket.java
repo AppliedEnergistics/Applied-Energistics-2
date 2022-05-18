@@ -12,7 +12,6 @@ import appeng.client.Hotkey;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.network.INetworkInfo;
 import appeng.hotkeys.LocatingServicesImpl;
 
 public class HotkeyPacket extends BasePacket {
@@ -34,7 +33,7 @@ public class HotkeyPacket extends BasePacket {
         this.configureWrite(data);
     }
 
-    public void serverPacketData(INetworkInfo manager, ServerPlayer player) {
+    public void serverPacketData(ServerPlayer player) {
         var locatingServices = LocatingServicesImpl.REGISTRY.get(hotkey);
         if (locatingServices == null) {
             player.sendMessage(
