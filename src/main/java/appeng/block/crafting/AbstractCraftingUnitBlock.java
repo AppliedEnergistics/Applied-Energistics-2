@@ -41,9 +41,9 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public final CraftingUnitType type;
+    public final ICraftingUnitType type;
 
-    public AbstractCraftingUnitBlock(BlockBehaviour.Properties props, CraftingUnitType type) {
+    public AbstractCraftingUnitBlock(BlockBehaviour.Properties props, ICraftingUnitType type) {
         super(props);
         this.type = type;
         this.registerDefaultState(defaultBlockState().setValue(FORMED, false).setValue(POWERED, false));
@@ -95,9 +95,5 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
         }
 
         return super.use(state, level, pos, p, hand, hit);
-    }
-
-    public enum CraftingUnitType {
-        UNIT, ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K, STORAGE_256K, MONITOR
     }
 }

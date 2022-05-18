@@ -29,7 +29,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.crafting.CraftingUnitType;
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
@@ -54,9 +54,9 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     private final static Material MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
     private final static Material MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
 
-    private final AbstractCraftingUnitBlock.CraftingUnitType type;
+    private final CraftingUnitType type;
 
-    public CraftingCubeModel(AbstractCraftingUnitBlock.CraftingUnitType type) {
+    public CraftingCubeModel(CraftingUnitType type) {
         this.type = type;
     }
 
@@ -90,7 +90,7 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     }
 
     private static TextureAtlasSprite getLightTexture(Function<Material, TextureAtlasSprite> textureGetter,
-            AbstractCraftingUnitBlock.CraftingUnitType type) {
+            CraftingUnitType type) {
         return switch (type) {
             case ACCELERATOR -> textureGetter.apply(ACCELERATOR_LIGHT);
             case STORAGE_1K -> textureGetter.apply(STORAGE_1K_LIGHT);

@@ -24,7 +24,7 @@ import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 
 public class CraftingStorageBlock extends AbstractCraftingUnitBlock<CraftingStorageBlockEntity> {
 
-    public CraftingStorageBlock(BlockBehaviour.Properties props, CraftingUnitType type) {
+    public CraftingStorageBlock(BlockBehaviour.Properties props, ICraftingUnitType type) {
         super(props, type);
     }
 

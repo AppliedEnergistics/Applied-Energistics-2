@@ -78,16 +78,6 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
     }
 
-    @Override
-    public boolean isAccelerator() {
-        return false;
-    }
-
-    @Override
-    public boolean isStatus() {
-        return true;
-    }
-
     public void setJob(@Nullable GenericStack stack) {
         if (!Objects.equals(this.display, stack)) {
             this.display = stack;

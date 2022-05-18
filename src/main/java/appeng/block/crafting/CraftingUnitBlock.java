@@ -24,7 +24,7 @@ import appeng.blockentity.crafting.CraftingBlockEntity;
 
 public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingBlockEntity> {
 
-    public CraftingUnitBlock(BlockBehaviour.Properties props, CraftingUnitType type) {
+    public CraftingUnitBlock(BlockBehaviour.Properties props, ICraftingUnitType type) {
         super(props, type);
     }
 

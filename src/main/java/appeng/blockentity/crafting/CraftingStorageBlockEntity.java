@@ -23,7 +23,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.core.definitions.AEBlocks;
 
 public class CraftingStorageBlockEntity extends CraftingBlockEntity {
@@ -44,35 +43,6 @@ public class CraftingStorageBlockEntity extends CraftingBlockEntity {
             case 64 -> AEBlocks.CRAFTING_STORAGE_64K.asItem();
             case 256 -> AEBlocks.CRAFTING_STORAGE_256K.asItem();
             default -> super.getItemFromBlockEntity();
-        };
-    }
-
-    @Override
-    public boolean isAccelerator() {
-        return false;
-    }
-
-    @Override
-    public boolean isStorage() {
-        return true;
-    }
-
-    @Override
-    public int getStorageBytes() {
-        if (this.level == null || this.notLoaded() || this.isRemoved()) {
-            return 0;
-        }
-
-        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level
-                .getBlockState(this.worldPosition)
-                .getBlock();
-        return switch (unit.type) {
-            case STORAGE_1K -> 1024;
-            case STORAGE_4K -> 4 * 1024;
-            case STORAGE_16K -> 16 * 1024;
-            case STORAGE_64K -> 64 * 1024;
-            case STORAGE_256K -> 256 * 1024;
-            default -> 0;
         };
     }
 }

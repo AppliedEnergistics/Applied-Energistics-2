@@ -42,7 +42,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
@@ -89,15 +88,29 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
     }
 
+    public AbstractCraftingUnitBlock<?> getUnitBlock() {
+        return (AbstractCraftingUnitBlock<?>) this.level.getBlockState(this.worldPosition).getBlock();
+    }
+
     public boolean isAccelerator() {
         if (this.level == null) {
             return false;
         }
+        return getUnitBlock().type.isAccelerator();
+    }
 
-        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level
-                .getBlockState(this.worldPosition)
-                .getBlock();
-        return unit.type == CraftingUnitType.ACCELERATOR;
+    public boolean isStatus() {
+        if (this.level == null) {
+            return false;
+        }
+        return getUnitBlock().type.isStatus();
+    }
+
+    public boolean isStorage() {
+        if (this.level == null) {
+            return false;
+        }
+        return getUnitBlock().type.isStorage();
     }
 
     @Override
@@ -216,16 +229,11 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
     }
 
-    public boolean isStatus() {
-        return false;
-    }
-
-    public boolean isStorage() {
-        return false;
-    }
-
     public int getStorageBytes() {
-        return 0;
+        if (this.level == null || this.notLoaded() || this.isRemoved()) {
+            return 0;
+        }
+        return getUnitBlock().type.getStorageKb();
     }
 
     public void breakCluster() {
