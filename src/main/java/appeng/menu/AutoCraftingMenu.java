@@ -21,12 +21,13 @@ package appeng.menu;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
-/*
- * Totally useless menu that does nothing.
- */
-public class NullMenu extends AbstractContainerMenu {
+import appeng.api.implementations.menus.IAutoCraftingMenu;
 
-    public NullMenu() {
+/*
+ * Dummy menu used to instantiate {@link CraftingContainer}s for autocrafting.
+ */
+public class AutoCraftingMenu extends AbstractContainerMenu implements IAutoCraftingMenu {
+    public AutoCraftingMenu() {
         super(null, 0);
     }
 

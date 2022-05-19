@@ -41,7 +41,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.FluidContainerHelper;
-import appeng.menu.NullMenu;
+import appeng.menu.AutoCraftingMenu;
 
 public class AECraftingPattern implements IAEPatternDetails {
     public static final int CRAFTING_GRID_DIMENSION = 3;
@@ -81,8 +81,8 @@ public class AECraftingPattern implements IAEPatternDetails {
         this.recipe = craftingRecipe;
 
         // Build frame and find output
-        this.testFrame = new CraftingContainer(new NullMenu(), 3, 3);
-        this.specialRecipeTestFrame = new CraftingContainer(new NullMenu(), 3, 3);
+        this.testFrame = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        this.specialRecipeTestFrame = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < 9; ++i) {
             if (sparseInputs[i] != null) {
                 var itemKey = (AEItemKey) sparseInputs[i].what();
@@ -376,7 +376,7 @@ public class AECraftingPattern implements IAEPatternDetails {
             // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)
 
             // Check that the remaining item is indeed the emptied container.
-            var testFrameCopy = new CraftingContainer(new NullMenu(), 3, 3);
+            var testFrameCopy = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
             for (int i = 0; i < 9; ++i) {
                 testFrameCopy.setItem(i, testFrame.getItem(i).copy());
             }

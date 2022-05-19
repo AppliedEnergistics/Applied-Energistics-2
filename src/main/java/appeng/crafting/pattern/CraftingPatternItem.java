@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
-import appeng.menu.NullMenu;
+import appeng.menu.AutoCraftingMenu;
 
 /**
  * An item that contains an encoded {@link AECraftingPattern}.
@@ -78,7 +78,7 @@ public class CraftingPatternItem extends EncodedPatternItem {
         ResourceLocation currentRecipeId = CraftingPatternEncoding.getRecipeId(tag);
 
         // Fill a crafting inventory with the ingredients to find a suitable recipe
-        CraftingContainer testInventory = new CraftingContainer(new NullMenu(), 3, 3);
+        CraftingContainer testInventory = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int x = 0; x < 9; x++) {
             var ais = x < ingredients.length ? ingredients[x] : null;
             if (ais.what() instanceof AEItemKey itemKey) {

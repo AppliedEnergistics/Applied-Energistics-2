@@ -65,7 +65,7 @@ import appeng.items.tools.powered.MatterCannonItem;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.service.PathingService;
-import appeng.menu.NullMenu;
+import appeng.menu.AutoCraftingMenu;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.util.CraftingRecipeUtil;
 
@@ -871,7 +871,7 @@ public final class TestPlots {
         var molecularAssemblerPos = new BlockPos(0, 1, 0);
         plot.blockEntity(molecularAssemblerPos, AEBlocks.MOLECULAR_ASSEMBLER, molecularAssembler -> {
             // Get repair recipe
-            var craftingContainer = new CraftingContainer(new NullMenu(), 3, 3);
+            var craftingContainer = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
             craftingContainer.setItem(0, undamaged.toStack());
             craftingContainer.setItem(1, undamaged.toStack());
             var level = molecularAssembler.getLevel();

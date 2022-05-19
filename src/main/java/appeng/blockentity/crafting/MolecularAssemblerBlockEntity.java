@@ -70,7 +70,7 @@ import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.CraftingPatternItem;
-import appeng.menu.NullMenu;
+import appeng.menu.AutoCraftingMenu;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -110,7 +110,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 .addService(IGridTickable.class, this);
         this.upgrades = UpgradeInventories.forMachine(AEBlocks.MOLECULAR_ASSEMBLER, getUpgradeSlots(),
                 this::saveChanges);
-        this.craftingInv = new CraftingContainer(new NullMenu(), 3, 3);
+        this.craftingInv = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
 
     }
 
