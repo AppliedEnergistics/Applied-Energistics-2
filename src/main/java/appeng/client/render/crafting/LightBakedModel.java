@@ -30,13 +30,13 @@ import appeng.client.render.cablebus.CubeBuilder;
  * Crafting cube baked model that adds a full-bright light texture on top of a normal base texture onto the inner cube.
  * The light texture is only drawn fullbright if the multiblock is currently powered.
  */
-public class LightBakedModel extends CraftingCubeBakedModel {
+class LightBakedModel extends CraftingCubeBakedModel {
 
     private final TextureAtlasSprite baseTexture;
 
     private final TextureAtlasSprite lightTexture;
 
-    public LightBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
+    LightBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
             TextureAtlasSprite baseTexture, TextureAtlasSprite lightTexture) {
         super(ringCorner, ringHor, ringVer);
         this.baseTexture = baseTexture;

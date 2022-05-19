@@ -38,21 +38,21 @@ import appeng.core.AppEng;
  */
 public class CraftingCubeModel implements BasicUnbakedModel {
 
-    public final static Material RING_CORNER = texture("ring_corner");
-    public final static Material RING_SIDE_HOR = texture("ring_side_hor");
-    public final static Material RING_SIDE_VER = texture("ring_side_ver");
-    public final static Material UNIT_BASE = texture("unit_base");
-    public final static Material LIGHT_BASE = texture("light_base");
-    public final static Material ACCELERATOR_LIGHT = texture("accelerator_light");
-    public final static Material STORAGE_1K_LIGHT = texture("1k_storage_light");
-    public final static Material STORAGE_4K_LIGHT = texture("4k_storage_light");
-    public final static Material STORAGE_16K_LIGHT = texture("16k_storage_light");
-    public final static Material STORAGE_64K_LIGHT = texture("64k_storage_light");
-    public final static Material STORAGE_256K_LIGHT = texture("256k_storage_light");
-    public final static Material MONITOR_BASE = texture("monitor_base");
-    public final static Material MONITOR_LIGHT_DARK = texture("monitor_light_dark");
-    public final static Material MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
-    public final static Material MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
+    private final static Material RING_CORNER = texture("ring_corner");
+    private final static Material RING_SIDE_HOR = texture("ring_side_hor");
+    private final static Material RING_SIDE_VER = texture("ring_side_ver");
+    private final static Material UNIT_BASE = texture("unit_base");
+    private final static Material LIGHT_BASE = texture("light_base");
+    private final static Material ACCELERATOR_LIGHT = texture("accelerator_light");
+    private final static Material STORAGE_1K_LIGHT = texture("1k_storage_light");
+    private final static Material STORAGE_4K_LIGHT = texture("4k_storage_light");
+    private final static Material STORAGE_16K_LIGHT = texture("16k_storage_light");
+    private final static Material STORAGE_64K_LIGHT = texture("64k_storage_light");
+    private final static Material STORAGE_256K_LIGHT = texture("256k_storage_light");
+    private final static Material MONITOR_BASE = texture("monitor_base");
+    private final static Material MONITOR_LIGHT_DARK = texture("monitor_light_dark");
+    private final static Material MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
+    private final static Material MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
 
     private final CraftingUnitType type;
 
@@ -76,7 +76,31 @@ public class CraftingCubeModel implements BasicUnbakedModel {
         TextureAtlasSprite ringSideHor = spriteGetter.apply(RING_SIDE_HOR);
         TextureAtlasSprite ringSideVer = spriteGetter.apply(RING_SIDE_VER);
 
-        return this.type.getBakedModel(spriteGetter, ringCorner, ringSideHor, ringSideVer);
+        return switch (this.type) {
+            case UNIT -> new UnitBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE));
+            case ACCELERATOR, STORAGE_1K, STORAGE_4K, STORAGE_16K, STORAGE_64K, STORAGE_256K -> new LightBakedModel(
+                    ringCorner,
+                    ringSideHor, ringSideVer, spriteGetter.apply(LIGHT_BASE),
+                    getLightTexture(spriteGetter, this.type));
+            case MONITOR -> new MonitorBakedModel(ringCorner, ringSideHor, ringSideVer, spriteGetter.apply(UNIT_BASE),
+                    spriteGetter.apply(MONITOR_BASE), spriteGetter.apply(MONITOR_LIGHT_DARK),
+                    spriteGetter.apply(MONITOR_LIGHT_MEDIUM), spriteGetter.apply(MONITOR_LIGHT_BRIGHT));
+            default -> throw new IllegalArgumentException("Unsupported crafting unit type: " + this.type);
+        };
+    }
+
+    private static TextureAtlasSprite getLightTexture(Function<Material, TextureAtlasSprite> textureGetter,
+            CraftingUnitType type) {
+        return switch (type) {
+            case ACCELERATOR -> textureGetter.apply(ACCELERATOR_LIGHT);
+            case STORAGE_1K -> textureGetter.apply(STORAGE_1K_LIGHT);
+            case STORAGE_4K -> textureGetter.apply(STORAGE_4K_LIGHT);
+            case STORAGE_16K -> textureGetter.apply(STORAGE_16K_LIGHT);
+            case STORAGE_64K -> textureGetter.apply(STORAGE_64K_LIGHT);
+            case STORAGE_256K -> textureGetter.apply(STORAGE_256K_LIGHT);
+            default -> throw new IllegalArgumentException(
+                    "Crafting unit type " + type + " does not use a light texture.");
+        };
     }
 
     private static Material texture(String name) {

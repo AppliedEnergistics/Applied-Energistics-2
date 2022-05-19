@@ -45,7 +45,7 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
 
     private final TextureAtlasSprite lightBrightTexture;
 
-    public MonitorBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
+    MonitorBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
             TextureAtlasSprite chassisTexture, TextureAtlasSprite baseTexture, TextureAtlasSprite lightDarkTexture,
             TextureAtlasSprite lightMediumTexture, TextureAtlasSprite lightBrightTexture) {
         super(ringCorner, ringHor, ringVer);
