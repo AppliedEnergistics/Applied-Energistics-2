@@ -8,9 +8,9 @@ import net.minecraft.client.resources.model.Material;
 
 import appeng.block.crafting.CraftingUnitType;
 
-public class CraftingUnitRenderer extends AbstractCraftingUnitRenderer<CraftingUnitType> {
+public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType> {
 
-    public CraftingUnitRenderer(CraftingUnitType type) {
+    public CraftingUnitModelProvider(CraftingUnitType type) {
         super(type);
     }
 

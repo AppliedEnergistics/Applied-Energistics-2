@@ -8,11 +8,11 @@ import net.minecraft.client.resources.model.Material;
 
 import appeng.block.crafting.ICraftingUnitType;
 
-public abstract class AbstractCraftingUnitRenderer<T extends ICraftingUnitType> {
+public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitType> {
 
     protected final T type;
 
-    public AbstractCraftingUnitRenderer(T type) {
+    public AbstractCraftingUnitModelProvider(T type) {
         this.type = type;
     }
 

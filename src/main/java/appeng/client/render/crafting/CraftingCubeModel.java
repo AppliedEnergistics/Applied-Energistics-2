@@ -52,9 +52,9 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     protected final static Material MONITOR_LIGHT_DARK = texture("monitor_light_dark");
     protected final static Material MONITOR_LIGHT_MEDIUM = texture("monitor_light_medium");
     protected final static Material MONITOR_LIGHT_BRIGHT = texture("monitor_light_bright");
-    private final AbstractCraftingUnitRenderer<?> renderer;
+    private final AbstractCraftingUnitModelProvider<?> renderer;
 
-    public CraftingCubeModel(AbstractCraftingUnitRenderer<?> renderer) {
+    public CraftingCubeModel(AbstractCraftingUnitModelProvider<?> renderer) {
         this.renderer = renderer;
     }
 
