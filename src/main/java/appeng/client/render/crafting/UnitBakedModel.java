@@ -28,11 +28,11 @@ import appeng.client.render.cablebus.CubeBuilder;
 /**
  * A simple crafting unit model that uses an un-lit texture for the inner block.
  */
-class UnitBakedModel extends CraftingCubeBakedModel {
+public class UnitBakedModel extends CraftingCubeBakedModel {
 
     private final TextureAtlasSprite unitTexture;
 
-    UnitBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
+    public UnitBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
             TextureAtlasSprite unitTexture) {
         super(ringCorner, ringHor, ringVer);
         this.unitTexture = unitTexture;
