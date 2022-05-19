@@ -120,6 +120,11 @@ public class AppEngSlot extends Slot {
         }
     }
 
+    @Override
+    public void initialize(ItemStack stack) {
+        set(stack);
+    }
+
     private void notifyContainerSlotChanged() {
         if (this.getMenu() != null) {
             this.getMenu().onSlotChange(this);
