@@ -21,8 +21,8 @@ public interface ICraftingUnitType {
     boolean isStatus();
 
     /**
-     * @return whether a given crafting unit type corresponds with a crafting <i>storage</i> block.
-     * By default, anything with a (positive) non-zero storage capacity in bytes is assumed to be a storage block.
+     * @return whether a given crafting unit type corresponds with a crafting <i>storage</i> block. By default, anything
+     *         with a (positive) non-zero storage capacity in bytes is assumed to be a storage block.
      */
     default boolean isStorage() {
         return this.getStorageBytes() > 0;

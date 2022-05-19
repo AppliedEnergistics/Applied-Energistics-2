@@ -35,6 +35,7 @@ import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModel;
+import appeng.client.render.crafting.CraftingUnitRenderer;
 import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.ColorApplicatorModel;
 import appeng.client.render.model.DriveModel;
@@ -78,21 +79,21 @@ public final class InitBuiltInModels {
         addPlaneModel("part/formation_plane_on", "part/formation_plane_on");
 
         addBuiltInModel("block/crafting/1k_storage_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.STORAGE_1K));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.STORAGE_1K)));
         addBuiltInModel("block/crafting/4k_storage_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.STORAGE_4K));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.STORAGE_4K)));
         addBuiltInModel("block/crafting/16k_storage_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.STORAGE_16K));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.STORAGE_16K)));
         addBuiltInModel("block/crafting/64k_storage_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.STORAGE_64K));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.STORAGE_64K)));
         addBuiltInModel("block/crafting/256k_storage_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.STORAGE_256K));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.STORAGE_256K)));
         addBuiltInModel("block/crafting/accelerator_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.ACCELERATOR));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.ACCELERATOR)));
         addBuiltInModel("block/crafting/monitor_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.MONITOR));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.MONITOR)));
         addBuiltInModel("block/crafting/unit_formed",
-                () -> new CraftingCubeModel(CraftingUnitType.UNIT));
+                () -> new CraftingCubeModel(new CraftingUnitRenderer(CraftingUnitType.UNIT)));
     }
 
     private static void addPlaneModel(String planeName, String frontTexture) {
