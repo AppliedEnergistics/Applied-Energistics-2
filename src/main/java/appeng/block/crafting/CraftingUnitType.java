@@ -17,7 +17,7 @@ public enum CraftingUnitType implements ICraftingUnitType {
     }
 
     @Override
-    public int getStorageKb() {
+    public int getStorageBytes() {
         return 1024 * this.storageKb;
     }
 
@@ -29,10 +29,5 @@ public enum CraftingUnitType implements ICraftingUnitType {
     @Override
     public boolean isStatus() {
         return this == MONITOR;
-    }
-
-    @Override
-    public boolean isStorage() {
-        return this.storageKb > 0;
     }
 }

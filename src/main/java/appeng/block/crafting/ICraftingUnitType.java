@@ -1,11 +1,13 @@
 package appeng.block.crafting;
 
 public interface ICraftingUnitType {
-    int getStorageKb();
+    int getStorageBytes();
 
     boolean isAccelerator();
 
     boolean isStatus();
 
-    boolean isStorage();
+    default boolean isStorage() {
+        return this.getStorageBytes() > 0;
+    }
 }

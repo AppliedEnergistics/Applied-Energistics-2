@@ -233,7 +233,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         if (this.level == null || this.notLoaded() || this.isRemoved()) {
             return 0;
         }
-        return getUnitBlock().type.getStorageKb();
+        return getUnitBlock().type.getStorageBytes();
     }
 
     public void breakCluster() {
