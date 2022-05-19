@@ -46,7 +46,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
-import appeng.menu.NullMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
@@ -72,7 +71,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
-    private final CraftingContainer recipeTestContainer = new CraftingContainer(new NullMenu(), 3, 3);
+    private final CraftingContainer recipeTestContainer = new CraftingContainer(this, 3, 3);
 
     private final CraftingTermSlot outputSlot;
     private Recipe<CraftingContainer> currentRecipe;

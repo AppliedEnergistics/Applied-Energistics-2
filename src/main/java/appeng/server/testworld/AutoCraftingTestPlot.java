@@ -24,7 +24,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
-import appeng.menu.NullMenu;
+import appeng.menu.AutoCraftingMenu;
 
 public final class AutoCraftingTestPlot {
     private AutoCraftingTestPlot() {
@@ -220,7 +220,7 @@ public final class AutoCraftingTestPlot {
                 })
                 .toArray(ItemStack[]::new);
 
-        var c = new CraftingContainer(new NullMenu(), 3, 3);
+        var c = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < stacks.length; i++) {
             c.setItem(i, stacks[i]);
         }

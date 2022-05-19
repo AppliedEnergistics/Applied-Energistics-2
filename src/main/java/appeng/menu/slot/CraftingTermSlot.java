@@ -41,7 +41,6 @@ import appeng.api.storage.MEStorage;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.items.storage.ViewCellItem;
-import appeng.menu.NullMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.Platform;
 import appeng.util.inv.CarriedItemInventory;
@@ -181,7 +180,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             // add one of each item to the items on the board...
             var level = p.level;
             if (!level.isClientSide()) {
-                final var ic = new CraftingContainer(new NullMenu(), 3, 3);
+                final var ic = new CraftingContainer(p.containerMenu, 3, 3);
                 for (var x = 0; x < 9; x++) {
                     ic.setItem(x, this.getPattern().getStackInSlot(x));
                 }
