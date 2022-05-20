@@ -80,7 +80,7 @@ public final class InitUpgrades {
 
         var fluidCells = List.of(
                 AEItems.FLUID_CELL_1K, AEItems.FLUID_CELL_4K, AEItems.FLUID_CELL_16K, AEItems.FLUID_CELL_64K,
-                AEItems.ITEM_CELL_256K);
+                AEItems.FLUID_CELL_256K);
         for (var fluidCell : fluidCells) {
             Upgrades.add(AEItems.INVERTER_CARD, fluidCell, 1, storageCellGroup);
             Upgrades.add(AEItems.EQUAL_DISTRIBUTION_CARD, fluidCell, 1, storageCellGroup);
