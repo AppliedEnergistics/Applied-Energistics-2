@@ -112,6 +112,11 @@ public final class ConventionTags {
     public static TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
     public static TagKey<Item> MEMORY_CARDS = tag("ae2:memory_cards");
 
+    /**
+     * Used to identify items that act as wrenches.
+     */
+    public static final TagKey<Item> WRENCH = tag("forge:tools/wrench");
+
     public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
                     Function.identity(),

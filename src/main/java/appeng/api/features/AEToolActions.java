@@ -23,11 +23,17 @@
 
 package appeng.api.features;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraftforge.common.ToolAction;
 
 /**
  * Tool actions defined by AE.
+ *
+ * @deprecated Check for the standard {@code #forge:tools/wrench} tag instead.
  */
+@ApiStatus.ScheduledForRemoval(inVersion = "1.19")
+@Deprecated(forRemoval = true)
 public final class AEToolActions {
     private AEToolActions() {
     }

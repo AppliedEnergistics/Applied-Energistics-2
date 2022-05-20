@@ -146,6 +146,15 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
                 .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
 
+        // Fabric replacement for ToolActions for now
+        tag(ConventionTags.WRENCH).add(
+                AEItems.CERTUS_QUARTZ_WRENCH.asItem(),
+                AEItems.NETHER_QUARTZ_WRENCH.asItem(),
+                AEItems.NETWORK_TOOL.asItem());
+
+        // Manually add tags for mods that are unlikely to do it themselves since we don't want to force users to craft
+        tag(ConventionTags.WRENCH).addOptional(new ResourceLocation("immersiveengineering:hammer"));
+
         addP2pAttunementTags();
     }
 
