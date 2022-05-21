@@ -20,8 +20,6 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
-import appeng.api.storage.cells.CellState;
-import appeng.blockentity.storage.ChestBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
