@@ -20,6 +20,8 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
+import appeng.api.storage.cells.CellState;
+import appeng.blockentity.storage.ChestBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,6 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -39,6 +43,8 @@ import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
+
+    private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
     public IOPortBlock() {
         super(defaultProps(Material.METAL));
@@ -52,6 +58,17 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
         if (te != null) {
             te.updateRedstoneState();
         }
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(LIGHTS_ON);
+    }
+
+    @Override
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, IOPortBlockEntity be) {
+        return currentState.setValue(LIGHTS_ON, be.getMainNode().isPowered());
     }
 
     @Override
