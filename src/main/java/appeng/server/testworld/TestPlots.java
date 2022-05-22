@@ -99,7 +99,8 @@ public final class TestPlots {
             .put(AppEng.makeId("import_from_cauldron"), TestPlots::importLavaFromCauldron)
             .put(AppEng.makeId("tool_repair_recipe"), TestPlots::toolRepairRecipe)
             .put(AppEng.makeId("double_chest_storage_bus"), TestPlots::doubleChestStorageBus)
-            .put(AppEng.makeId("double_chest_storage_bus_dupe"), TestPlots::doubleChestStorageBusDoubleExportDupe)
+            .put(AppEng.makeId("export_bus_dupe_regression"), TestPlots::exportBusDupeRegression)
+            .put(AppEng.makeId("interface_restock_dupe_test"), TestPlots::interfaceRestockDupeTest)
             .build();
 
     private TestPlots() {
@@ -933,7 +934,7 @@ public final class TestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6294
      */
-    private static void doubleChestStorageBusDoubleExportDupe(PlotBuilder plot) {
+    private static void exportBusDupeRegression(PlotBuilder plot) {
         var o = BlockPos.ZERO;
         plot.chest(o.north(), new ItemStack(Items.STICK, 64));
         plot.blockState(o.north(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.TYPE, ChestType.RIGHT));
@@ -961,6 +962,44 @@ public final class TestPlots {
 
                 // The output chest should have 64
                 var counter = helper.countContainerContentAt(o.south());
+                var stickCount = counter.get(AEItemKey.of(Items.STICK));
+                helper.check(stickCount == 64,
+                        "Expected 64 sticks total, but found: " + stickCount);
+            });
+        });
+    }
+
+    /**
+     * Similar to {@link #exportBusDupeRegression(PlotBuilder)}, but tests that interface restocking will not make the
+     * same mistake.
+     */
+    private static void interfaceRestockDupeTest(PlotBuilder plot) {
+        var o = BlockPos.ZERO;
+        // Set up a double chest with 64 sticks which will report as 128 sticks
+        // and allow simulated extractions of 128 sticks to succeed.
+        plot.chest(o.north(), new ItemStack(Items.STICK, 64));
+        plot.blockState(o.north(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.TYPE, ChestType.RIGHT));
+        plot.cable(o).part(Direction.NORTH, AEParts.STORAGE_BUS);
+        plot.blockState(o.north().west(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.TYPE, ChestType.LEFT));
+        plot.cable(o.west()).part(Direction.NORTH, AEParts.STORAGE_BUS);
+
+        // Set up an interface that tries to stock 128 sticks
+        plot.blockEntity(o.above(), AEBlocks.INTERFACE, iface -> {
+            iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.STICK, 64)));
+            iface.getConfig().setStack(1, GenericStack.fromItemStack(new ItemStack(Items.STICK, 64)));
+        });
+        plot.creativeEnergyCell(o.below());
+
+        plot.test(helper -> {
+            helper.succeedWhen(() -> {
+                // Both double chests should be empty
+                helper.assertContainerEmpty(o.north());
+                helper.assertContainerEmpty(o.north().west());
+
+                // The output interface should have 64 sticks
+                var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.above());
+                var counter = new KeyCounter();
+                iface.getInterfaceLogic().getStorage().getAvailableStacks(counter);
                 var stickCount = counter.get(AEItemKey.of(Items.STICK));
                 helper.check(stickCount == 64,
                         "Expected 64 sticks total, but found: " + stickCount);
