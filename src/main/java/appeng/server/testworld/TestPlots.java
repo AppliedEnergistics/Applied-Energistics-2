@@ -99,6 +99,7 @@ public final class TestPlots {
             .put(AppEng.makeId("import_from_cauldron"), TestPlots::importLavaFromCauldron)
             .put(AppEng.makeId("tool_repair_recipe"), TestPlots::toolRepairRecipe)
             .put(AppEng.makeId("double_chest_storage_bus"), TestPlots::doubleChestStorageBus)
+            .put(AppEng.makeId("double_chest_storage_bus_dupe"), TestPlots::doubleChestStorageBusDoubleExportDupe)
             .build();
 
     private TestPlots() {
@@ -925,6 +926,44 @@ public final class TestPlots {
                 var stickCount = stacks.get(AEItemKey.of(Items.STICK));
                 // The contents of both chest halves should be reported
                 helper.check(2 == stickCount, "Stick count wasn't 2: " + stickCount);
+            });
+        });
+    }
+
+    /**
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6294
+     */
+    private static void doubleChestStorageBusDoubleExportDupe(PlotBuilder plot) {
+        var o = BlockPos.ZERO;
+        plot.chest(o.north(), new ItemStack(Items.STICK, 64));
+        plot.blockState(o.north(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.TYPE, ChestType.RIGHT));
+        plot.blockState(o.north().west(), Blocks.CHEST.defaultBlockState().setValue(ChestBlock.TYPE, ChestType.LEFT));
+
+        // Storage bus on double chest, as well as export bus on output
+        plot.cable(o).part(Direction.NORTH, AEParts.STORAGE_BUS)
+                .part(Direction.SOUTH, AEParts.EXPORT_BUS, part -> {
+                    part.getConfig().addFilter(Items.STICK);
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
+                    part.getUpgrades().addItems(AEItems.SPEED_CARD.stack(1));
+                });
+        plot.chest(o.south());
+        // Second storage bus on double chest
+        plot.cable(o.west()).part(Direction.NORTH, AEParts.STORAGE_BUS);
+        plot.creativeEnergyCell(o.below());
+
+        plot.test(helper -> {
+            helper.succeedWhen(() -> {
+                // Both double chests should be empty
+                helper.assertContainerEmpty(o.north());
+                helper.assertContainerEmpty(o.north().west());
+
+                // The output chest should have 64
+                var counter = helper.countContainerContentAt(o.south());
+                var stickCount = counter.get(AEItemKey.of(Items.STICK));
+                helper.check(stickCount == 64,
+                        "Expected 64 sticks total, but found: " + stickCount);
             });
         });
     }

@@ -6,6 +6,7 @@ import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
@@ -14,6 +15,7 @@ import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.me.helpers.BaseActionSource;
 import appeng.me.helpers.IGridConnectedBlockEntity;
@@ -119,6 +121,22 @@ public class PlotTestHelper extends GameTestHelper {
     public void check(boolean test, String errorMessage) throws GameTestAssertException {
         if (!test) {
             throw new GameTestAssertException(errorMessage);
+        }
+    }
+
+    public KeyCounter countContainerContentAt(BlockPos pos) {
+        var counter = new KeyCounter();
+        countContainerContentAt(pos, counter);
+        return counter;
+    }
+
+    public void countContainerContentAt(BlockPos pos, KeyCounter counter) {
+        var container = ((BaseContainerBlockEntity) getBlockEntity(pos));
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            var item = container.getItem(i);
+            if (!item.isEmpty()) {
+                counter.add(AEItemKey.of(item), item.getCount());
+            }
         }
     }
 }
