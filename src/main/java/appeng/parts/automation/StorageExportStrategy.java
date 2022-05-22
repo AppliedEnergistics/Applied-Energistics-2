@@ -1,5 +1,8 @@
 package appeng.parts.automation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -19,6 +22,7 @@ import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
 class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StorageExportStrategy.class);
     private final BlockApiCache<Storage<V>, Direction> apiCache;
     private final Direction fromSide;
     private final IVariantConversion<V> conversion;
@@ -55,26 +59,38 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
                 context.getActionSource(),
                 Actionable.SIMULATE);
 
+        if (extracted <= 0) {
+            return 0;
+        }
+
+        // Determine how much we're allowed to insert
+        long wasInserted;
         try (var tx = Platform.openOrJoinTx()) {
-            long wasInserted = adjacentStorage.insert(variant, extracted, tx);
+            wasInserted = adjacentStorage.insert(variant, extracted, tx);
+        }
 
-            if (wasInserted > 0) {
-                if (mode == Actionable.MODULATE) {
-                    StorageHelper.poweredExtraction(
-                            context.getEnergySource(),
-                            inv.getInventory(),
-                            what,
-                            wasInserted,
-                            context.getActionSource(),
-                            Actionable.MODULATE);
-                    tx.commit();
+        if (wasInserted > 0 && mode == Actionable.MODULATE) {
+            // Now *really* extract if we're modulating because the simulate may have
+            // returned more items than we can actually get (i.e. two storage buses
+            // on the same chest).
+            extracted = StorageHelper.poweredExtraction(
+                    context.getEnergySource(),
+                    inv.getInventory(),
+                    what,
+                    wasInserted,
+                    context.getActionSource(),
+                    Actionable.MODULATE);
+
+            try (var tx = Platform.openOrJoinTx()) {
+                wasInserted = adjacentStorage.insert(variant, extracted, tx);
+                if (wasInserted < extracted) {
+                    LOGGER.error("Storage export issue, voided {}x{}", extracted - wasInserted, what);
                 }
-
-                return wasInserted;
+                tx.commit();
             }
         }
 
-        return 0;
+        return wasInserted;
     }
 
     @Override
