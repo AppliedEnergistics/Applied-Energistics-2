@@ -154,11 +154,11 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
                 }
             } else {
                 // The max amount exported is scaled by the key-space's transfer factor (think millibuckets vs. items)
-                var transferFactory = what.getAmountPerOperation();
-                long amount = (long) context.getOperationsRemaining() * transferFactory;
+                var transferFactor = what.getAmountPerOperation();
+                long amount = (long) context.getOperationsRemaining() * transferFactor;
                 amount = getExportStrategy().transfer(context, what, amount, Actionable.MODULATE);
                 if (amount > 0) {
-                    context.reduceOperationsRemaining(Math.max(1, amount / transferFactory));
+                    context.reduceOperationsRemaining(Math.max(1, amount / transferFactor));
                 }
             }
 
