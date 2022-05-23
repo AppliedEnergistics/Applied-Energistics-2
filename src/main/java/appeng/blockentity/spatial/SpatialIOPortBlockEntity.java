@@ -107,13 +107,9 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         }
     }
 
-    public boolean isPowered() {
-        return this.getMainNode().isActive() && this.getMainNode().isPowered();
-    }
-
     public boolean isActive() {
         if (level != null && !level.isClientSide) {
-            return isPowered();
+            return this.getMainNode().isActive();
         } else {
             return this.isActive;
         }
