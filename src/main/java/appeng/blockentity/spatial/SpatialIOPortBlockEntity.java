@@ -18,9 +18,11 @@
 
 package appeng.blockentity.spatial;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -70,6 +72,23 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         }
     }
 
+    @Override
+    protected void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeBoolean(this.isActive());
+    }
+
+    @Override
+    protected boolean readFromStream(FriendlyByteBuf data) {
+        boolean ret = super.readFromStream(data);
+
+        final boolean isActive = data.readBoolean();
+        ret = isActive != this.isActive || ret;
+        this.isActive = isActive;
+
+        return ret;
+    }
+
     public boolean getRedstoneState() {
         if (this.lastRedstoneState == YesNo.UNDECIDED) {
             this.updateRedstoneState();
@@ -88,7 +107,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         }
     }
 
-    private boolean isPowered() {
+    public boolean isPowered() {
         return this.getMainNode().isActive() && this.getMainNode().isPowered();
     }
 
@@ -97,6 +116,13 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
             return isPowered();
         } else {
             return this.isActive;
+        }
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            this.markForUpdate();
         }
     }
 

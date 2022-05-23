@@ -22,9 +22,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import appeng.api.networking.IGridNodeListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -126,6 +128,23 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
+    protected void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeBoolean(this.isActive());
+    }
+
+    @Override
+    protected boolean readFromStream(FriendlyByteBuf data) {
+        boolean ret = super.readFromStream(data);
+
+        final boolean isActive = data.readBoolean();
+        ret = isActive != this.isActive || ret;
+        this.isActive = isActive;
+
+        return ret;
+    }
+
+    @Override
     public AECableType getCableConnectionType(Direction dir) {
         return AECableType.SMART;
     }
@@ -168,7 +187,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         return !this.getRedstoneState();
     }
 
-    private boolean isPowered() {
+    public boolean isPowered() {
         return this.getMainNode().isActive() && this.getMainNode().isPowered();
     }
 
@@ -177,6 +196,13 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             return isPowered();
         } else {
             return this.isActive;
+        }
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            this.markForUpdate();
         }
     }
 
