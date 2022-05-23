@@ -42,7 +42,7 @@ import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
 
-    private final static BooleanProperty POWERED = BooleanProperty.create("powered");
+    public final static BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public IOPortBlock() {
         super(defaultProps(Material.METAL));
@@ -67,7 +67,7 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
 
     @Override
     protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, IOPortBlockEntity be) {
-        return currentState.setValue(POWERED, be.getMainNode().isPowered());
+        return currentState.setValue(POWERED, be.isActive());
     }
 
     @Override

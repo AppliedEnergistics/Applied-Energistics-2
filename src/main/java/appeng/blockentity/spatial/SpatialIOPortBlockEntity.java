@@ -49,6 +49,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
 
     private final ILevelRunnable transitionCallback = level -> transition();
 
+    private boolean isActive = false;
+
     public SpatialIOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
@@ -83,6 +85,18 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
             if (this.lastRedstoneState == YesNo.YES) {
                 this.triggerTransition();
             }
+        }
+    }
+
+    private boolean isPowered() {
+        return this.getMainNode().isActive() && this.getMainNode().isPowered();
+    }
+
+    public boolean isActive() {
+        if (level != null && !level.isClientSide) {
+            return isPowered();
+        } else {
+            return this.isActive;
         }
     }
 

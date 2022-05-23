@@ -15,6 +15,8 @@ import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
+import appeng.block.spatial.SpatialIOPortBlock;
+import appeng.block.storage.IOPortBlock;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -76,16 +78,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/cell_workbench_side"),
                 makeId("block/cell_workbench_bottom"),
                 makeId("block/cell_workbench")));
-        simpleBlockAndItem(AEBlocks.IO_PORT, models().cubeBottomTop(
-                modelPath(AEBlocks.IO_PORT),
-                makeId("block/io_port_side"),
-                makeId("block/io_port_bottom"),
-                makeId("block/io_port")));
-        simpleBlockAndItem(AEBlocks.SPATIAL_IO_PORT, models().cubeBottomTop(
-                modelPath(AEBlocks.SPATIAL_IO_PORT),
-                makeId("block/spatial_io_port_side"),
-                makeId("block/spatial_io_port_bottom"),
-                makeId("block/spatial_io_port")));
 
         energyCell(AEBlocks.ENERGY_CELL, "block/energy_cell");
         energyCell(AEBlocks.DENSE_ENERGY_CELL, "block/dense_energy_cell");
@@ -94,6 +86,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         vibrationChamber();
         spatialAnchor();
         patternProvider();
+        ioPorts();
     }
 
     private void vibrationChamber() {
@@ -137,6 +130,38 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var normalModel = cubeAll(def.block());
         simpleBlockItem(def.block(), normalModel);
         // the block state and the oriented model are in manually written json files
+    }
+
+    private void ioPorts() {
+        var ioOff = models().cubeBottomTop(
+                modelPath(AEBlocks.IO_PORT),
+                makeId("block/io_port_side_off"),
+                makeId("block/io_port_bottom"),
+                makeId("block/io_port_top_off"));
+        var ioOn = models().cubeBottomTop(
+                modelPath(AEBlocks.IO_PORT) + "_on",
+                makeId("block/io_port_side"),
+                makeId("block/io_port_bottom"),
+                makeId("block/io_port_top"));
+        var spatialOff = models().cubeBottomTop(
+                modelPath(AEBlocks.SPATIAL_IO_PORT),
+                makeId("block/spatial_io_port_side_off"),
+                makeId("block/spatial_io_port_bottom"),
+                makeId("block/spatial_io_port_top_off"));
+        var spatialOn = models().cubeBottomTop(
+                modelPath(AEBlocks.SPATIAL_IO_PORT) + "_on",
+                makeId("block/spatial_io_port_side"),
+                makeId("block/spatial_io_port_bottom"),
+                makeId("block/spatial_io_port_top"));
+
+        getVariantBuilder(AEBlocks.IO_PORT.block())
+                .partialState().with(IOPortBlock.POWERED, true).setModels(new ConfiguredModel(ioOn))
+                .partialState().with(IOPortBlock.POWERED, false).setModels(new ConfiguredModel(ioOff));
+        getVariantBuilder(AEBlocks.SPATIAL_IO_PORT.block())
+                .partialState().with(SpatialIOPortBlock.POWERED, true).setModels(new ConfiguredModel(spatialOn))
+                .partialState().with(SpatialIOPortBlock.POWERED, false).setModels(new ConfiguredModel(spatialOff));
+        itemModels().withExistingParent(modelPath(AEBlocks.IO_PORT), ioOff.getLocation());
+        itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_IO_PORT), spatialOff.getLocation());
     }
 
     private String modelPath(BlockDefinition<?> block) {

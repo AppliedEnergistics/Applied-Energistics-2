@@ -90,6 +90,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private final IActionSource mySrc;
     private YesNo lastRedstoneState;
 
+    private boolean isActive = false;
+
     public IOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode()
@@ -164,6 +166,18 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             return this.getRedstoneState();
         }
         return !this.getRedstoneState();
+    }
+
+    private boolean isPowered() {
+        return this.getMainNode().isActive() && this.getMainNode().isPowered();
+    }
+
+    public boolean isActive() {
+        if (level != null && !level.isClientSide) {
+            return isPowered();
+        } else {
+            return this.isActive;
+        }
     }
 
     @Override
