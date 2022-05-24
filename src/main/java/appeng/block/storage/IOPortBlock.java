@@ -28,6 +28,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -40,8 +42,11 @@ import appeng.util.InteractionUtil;
 
 public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
 
+    public final static BooleanProperty POWERED = BooleanProperty.create("powered");
+
     public IOPortBlock() {
         super(defaultProps(Material.METAL));
+        this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
     @SuppressWarnings("deprecation")
@@ -52,6 +57,17 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
         if (te != null) {
             te.updateRedstoneState();
         }
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(POWERED);
+    }
+
+    @Override
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, IOPortBlockEntity be) {
+        return currentState.setValue(POWERED, be.isActive());
     }
 
     @Override

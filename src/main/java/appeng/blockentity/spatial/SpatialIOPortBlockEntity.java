@@ -21,6 +21,7 @@ package appeng.blockentity.spatial;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -32,6 +33,7 @@ import appeng.api.config.YesNo;
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.events.GridSpatialEvent;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -48,6 +50,8 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
     private YesNo lastRedstoneState = YesNo.UNDECIDED;
 
     private final ILevelRunnable transitionCallback = level -> transition();
+
+    private boolean isActive = false;
 
     public SpatialIOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -68,6 +72,23 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         }
     }
 
+    @Override
+    protected void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeBoolean(this.isActive());
+    }
+
+    @Override
+    protected boolean readFromStream(FriendlyByteBuf data) {
+        boolean ret = super.readFromStream(data);
+
+        final boolean isActive = data.readBoolean();
+        ret = isActive != this.isActive || ret;
+        this.isActive = isActive;
+
+        return ret;
+    }
+
     public boolean getRedstoneState() {
         if (this.lastRedstoneState == YesNo.UNDECIDED) {
             this.updateRedstoneState();
@@ -83,6 +104,21 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
             if (this.lastRedstoneState == YesNo.YES) {
                 this.triggerTransition();
             }
+        }
+    }
+
+    public boolean isActive() {
+        if (level != null && !level.isClientSide) {
+            return this.getMainNode().isActive();
+        } else {
+            return this.isActive;
+        }
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            this.markForUpdate();
         }
     }
 

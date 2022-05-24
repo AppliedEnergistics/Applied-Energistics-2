@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -42,6 +43,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
@@ -90,6 +92,8 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     private final IActionSource mySrc;
     private YesNo lastRedstoneState;
 
+    private boolean isActive = false;
+
     public IOPortBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode()
@@ -121,6 +125,23 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
         if (data.contains("lastRedstoneState")) {
             this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
         }
+    }
+
+    @Override
+    protected void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeBoolean(this.isActive());
+    }
+
+    @Override
+    protected boolean readFromStream(FriendlyByteBuf data) {
+        boolean ret = super.readFromStream(data);
+
+        final boolean isActive = data.readBoolean();
+        ret = isActive != this.isActive || ret;
+        this.isActive = isActive;
+
+        return ret;
     }
 
     @Override
@@ -164,6 +185,21 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
             return this.getRedstoneState();
         }
         return !this.getRedstoneState();
+    }
+
+    public boolean isActive() {
+        if (level != null && !level.isClientSide) {
+            return this.getMainNode().isActive();
+        } else {
+            return this.isActive;
+        }
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            this.markForUpdate();
+        }
     }
 
     @Override
