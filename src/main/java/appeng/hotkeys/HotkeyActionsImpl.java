@@ -6,9 +6,11 @@ import java.util.List;
 
 import appeng.api.hotkeys.HotkeyAction;
 import appeng.api.hotkeys.HotkeyActions;
+import appeng.client.Hotkeys;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.tools.powered.PortableCellItem;
+import appeng.util.Platform;
 
 /**
  * registers {@link HotkeyAction}
@@ -39,6 +41,10 @@ public class HotkeyActionsImpl extends HotkeyActions {
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL256K, PORTABLE_FLUID_CELL);
     }
 
+    public static void init() {
+
+    }
+
     /**
      * a convenience helper for registering hotkeys for portable cells
      */
@@ -54,6 +60,9 @@ public class HotkeyActionsImpl extends HotkeyActions {
             REGISTRY.get(id).add(0, hotkeyAction);
         } else {
             REGISTRY.put(id, new ArrayList<>(List.of(hotkeyAction)));
+            if (Platform.isClient()) {
+                Hotkeys.registerHotkey(id);
+            }
         }
     }
 }
