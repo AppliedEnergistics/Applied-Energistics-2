@@ -7,14 +7,14 @@ import org.lwjgl.glfw.GLFW;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 
-import appeng.hotkeys.LocatingServicesImpl;
+import appeng.hotkeys.HotkeyActionsImpl;
 
 public class Hotkeys {
 
     private static final HashMap<String, Hotkey> HOTKEYS = new HashMap<>();
 
     static {
-        LocatingServicesImpl.REGISTRY.forEach((id, locatingServices) -> registerHotkey(createHotkey(id)));
+        HotkeyActionsImpl.REGISTRY.forEach((id, locatingServices) -> registerHotkey(createHotkey(id)));
     }
 
     private static Hotkey createHotkey(String id) {

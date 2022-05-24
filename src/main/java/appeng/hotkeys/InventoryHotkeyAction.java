@@ -4,24 +4,24 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.hotkeys.LocatingService;
+import appeng.api.hotkeys.HotkeyAction;
 
-public class InventoryLocatingService implements LocatingService {
+public class InventoryHotkeyAction implements HotkeyAction {
 
     private final Locatable locatable;
     private final Opener opener;
 
-    public InventoryLocatingService(Locatable locatable, Opener opener) {
+    public InventoryHotkeyAction(Locatable locatable, Opener opener) {
         this.locatable = locatable;
         this.opener = opener;
     }
 
-    public InventoryLocatingService(Item item, Opener opener) {
+    public InventoryHotkeyAction(Item item, Opener opener) {
         this((stack) -> stack.getItem() == item, opener);
     }
 
     @Override
-    public boolean findAndOpen(Player player) {
+    public boolean run(Player player) {
         var items = player.getInventory().items;
         for (int i = 0; i < items.size(); i++) {
             if (locatable.matchItem(items.get(i))) {
