@@ -68,6 +68,10 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     protected Item getItemFromBlockEntity() {
+        // TODO: figure out a way to use ICraftingUnitType#getItemFromType without running into NPEs
+        //
+        // Would mean subclasses don't have to override this again and add-ons can just instantiate AE2's own
+        // BE classes instead of extending them such that they don't work with CraftingService#updateCPUClusters
         if (isAccelerator()) {
             return AEBlocks.CRAFTING_ACCELERATOR.asItem();
         } else {

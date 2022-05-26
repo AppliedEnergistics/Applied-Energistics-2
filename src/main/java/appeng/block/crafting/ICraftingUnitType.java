@@ -1,5 +1,7 @@
 package appeng.block.crafting;
 
+import net.minecraft.world.item.Item;
+
 /**
  * Implemented by classes/enums meant to provide their own types of crafting CPU blocks.
  */
@@ -27,4 +29,9 @@ public interface ICraftingUnitType {
     default boolean isStorage() {
         return this.getStorageBytes() > 0;
     }
+
+    /**
+     * @return the BlockItem for the crafting storage block corresponding with its type for block-entity purposes.
+     */
+    Item getItemFromType();
 }
