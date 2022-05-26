@@ -1,6 +1,7 @@
 package appeng.block.crafting;
 
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -40,6 +41,8 @@ public enum CraftingUnitType implements ICraftingUnitType {
 
     @Override
     public Item getItemFromType() {
-        return this.craftingBlock.asItem();
+        return this.craftingBlock != null
+                ? this.craftingBlock.asItem()
+                : Items.AIR;
     }
 }

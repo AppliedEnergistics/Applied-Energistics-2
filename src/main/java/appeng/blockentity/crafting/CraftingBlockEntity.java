@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,7 +44,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
-import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -68,15 +68,10 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     protected Item getItemFromBlockEntity() {
-        // TODO: figure out a way to use ICraftingUnitType#getItemFromType without running into NPEs
-        //
-        // Would mean subclasses don't have to override this again and add-ons can just instantiate AE2's own
-        // BE classes instead of extending them such that they don't work with CraftingService#updateCPUClusters
-        if (isAccelerator()) {
-            return AEBlocks.CRAFTING_ACCELERATOR.asItem();
-        } else {
-            return AEBlocks.CRAFTING_UNIT.asItem();
+        if (this.level == null) {
+            return Items.AIR;
         }
+        return getUnitBlock().type.getItemFromType();
     }
 
     @Override
