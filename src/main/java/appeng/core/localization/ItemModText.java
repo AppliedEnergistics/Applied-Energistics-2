@@ -13,7 +13,9 @@ public enum ItemModText implements LocalizationEnum {
     RECIPE_TOO_LARGE("Recipe larger than 3x3"),
     REQUIRES_PROCESSING_MODE("Requires processing mode"),
     THROWING_IN_WATER_CATEGORY("Throwing In Water"),
-    WITH_CRYSTAL_GROWTH_ACCELERATORS("With Crystal Growth Accelerators:");
+    WITH_CRYSTAL_GROWTH_ACCELERATORS("With Crystal Growth Accelerators:"),
+    P2P_TUNNEL_ATTUNEMENT("P2P Tunnel Attunement"),
+    P2P_TAG_ATTUNEMENT("Attune any P2P tunnel with the shown items");
 
     private final String englishText;
 

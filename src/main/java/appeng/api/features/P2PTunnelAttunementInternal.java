@@ -18,17 +18,24 @@
 
 package appeng.api.features;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 /**
  * Internal methods that complement {@link P2PTunnelAttunement} and which are not part of the public API.
  */
 public final class P2PTunnelAttunementInternal {
+
     private P2PTunnelAttunementInternal() {
     }
 
@@ -54,7 +61,7 @@ public final class P2PTunnelAttunementInternal {
             }
         }
 
-        for (var entry : P2PTunnelAttunement.apiAttunements) {
+        for (var entry : P2PTunnelAttunement.apiAttunements.keySet()) {
             if (entry.tunnelType() == tunnelItem) {
                 apis.add(entry.api());
             }
@@ -63,6 +70,24 @@ public final class P2PTunnelAttunementInternal {
         return new AttunementInfo(items, mods, apis);
     }
 
+    public static Map<Predicate<ItemStack>, Resultant> getApiTunnels() {
+        var map = new HashMap<Predicate<ItemStack>, Resultant>();
+
+        for (var entry : P2PTunnelAttunement.apiAttunements.entrySet()) {
+            var key = entry.getKey();
+            map.put(key::hasApi, new Resultant(entry.getValue(), key.tunnelType()));
+        }
+
+        return map;
+    }
+
+    public static Map<TagKey<Item>, Item> getTagTunnels() {
+        return P2PTunnelAttunement.tagTunnels;
+    }
+
     public record AttunementInfo(Set<Item> items, Set<String> mods, Set<ItemApiLookup<?, ?>> apis) {
+    }
+
+    public record Resultant(Component description, Item tunnelType) {
     }
 }

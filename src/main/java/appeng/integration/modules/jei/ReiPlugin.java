@@ -43,13 +43,16 @@ import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.rei.IngredientConverters;
 import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
@@ -60,6 +63,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
@@ -94,6 +98,7 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new FacadeRecipeCategory());
+        registry.add(new AttunementCategory());
 
         registry.removePlusButton(ThrowingInWaterCategory.ID);
         registry.removePlusButton(InscriberRecipeCategory.ID);
@@ -235,6 +240,20 @@ public class ReiPlugin implements REIClientPlugin {
     }
 
     private void registerDescriptions(DisplayRegistry registry) {
+        var all = EntryRegistry.getInstance().getEntryStacks().collect(EntryIngredient.collector());
+
+        for (var entry : P2PTunnelAttunementInternal.getApiTunnels().entrySet()) {
+            registry.add(new AttunementDisplay(
+                    List.of(all.filter(stack -> stack.getValue() instanceof ItemStack s && entry.getKey().test(s))),
+                    List.of(EntryIngredient.of(EntryStacks.of(entry.getValue().tunnelType()))),
+                    entry.getValue().description()));
+        }
+
+        for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {
+            registry.add(new AttunementDisplay(List.of(EntryIngredients.ofIngredient(Ingredient.of(entry.getKey()))),
+                    List.of(EntryIngredient.of(EntryStacks.of(entry.getValue()))),
+                    ItemModText.P2P_TAG_ATTUNEMENT.text()));
+        }
 
         if (AEConfig.instance().isGenerateQuartzOre()) {
             addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
