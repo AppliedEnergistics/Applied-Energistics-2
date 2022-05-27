@@ -9,6 +9,11 @@ import net.minecraft.client.resources.model.Material;
 
 import appeng.block.crafting.ICraftingUnitType;
 
+/**
+ * Provides material and model information for custom crafting CPU blocks for use with {@link CraftingCubeModel}.
+ * 
+ * @param <T> The "type" associated with the crafting block being rendered.
+ */
 public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitType> {
 
     protected final T type;
@@ -17,6 +22,10 @@ public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitT
         this.type = type;
     }
 
+    /**
+     * @return a list of any materials used for the model to be passed into
+     *         {@link CraftingCubeModel#getAdditionalTextures()}.
+     */
     public abstract List<Material> getMaterials();
 
     public abstract TextureAtlasSprite getLightMaterial(Function<Material, TextureAtlasSprite> textureGetter);
