@@ -1,5 +1,6 @@
 package appeng.client.render.crafting;
 
+import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -16,10 +17,9 @@ public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitT
         this.type = type;
     }
 
+    public abstract List<Material> getMaterials();
+
     public abstract TextureAtlasSprite getLightMaterial(Function<Material, TextureAtlasSprite> textureGetter);
 
-    public abstract BakedModel getBakedModel(Function<Material, TextureAtlasSprite> spriteGetter,
-            TextureAtlasSprite ringCorner,
-            TextureAtlasSprite ringSideHor,
-            TextureAtlasSprite ringSideVer);
+    public abstract BakedModel getBakedModel(Function<Material, TextureAtlasSprite> spriteGetter);
 }
