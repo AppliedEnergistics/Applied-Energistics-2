@@ -1,27 +1,23 @@
 package appeng.block.crafting;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
 
 public enum CraftingUnitType implements ICraftingUnitType {
-    UNIT(0, AEBlocks.CRAFTING_UNIT),
-    ACCELERATOR(0, AEBlocks.CRAFTING_ACCELERATOR),
-    STORAGE_1K(1, AEBlocks.CRAFTING_STORAGE_1K),
-    STORAGE_4K(4, AEBlocks.CRAFTING_STORAGE_4K),
-    STORAGE_16K(16, AEBlocks.CRAFTING_STORAGE_16K),
-    STORAGE_64K(64, AEBlocks.CRAFTING_STORAGE_64K),
-    STORAGE_256K(256, AEBlocks.CRAFTING_STORAGE_256K),
-    MONITOR(0, AEBlocks.CRAFTING_MONITOR);
+    UNIT(0),
+    ACCELERATOR(0),
+    STORAGE_1K(1),
+    STORAGE_4K(4),
+    STORAGE_16K(16),
+    STORAGE_64K(64),
+    STORAGE_256K(256),
+    MONITOR(0);
 
     private final int storageKb;
-    private final BlockDefinition<?> craftingBlock;
 
-    CraftingUnitType(int storageKb, BlockDefinition<?> craftingBlock) {
+    CraftingUnitType(int storageKb) {
         this.storageKb = storageKb;
-        this.craftingBlock = craftingBlock;
     }
 
     @Override
@@ -41,8 +37,16 @@ public enum CraftingUnitType implements ICraftingUnitType {
 
     @Override
     public Item getItemFromType() {
-        return this.craftingBlock != null
-                ? this.craftingBlock.asItem()
-                : Items.AIR;
+        var definition = switch (this) {
+            case UNIT -> AEBlocks.CRAFTING_UNIT;
+            case ACCELERATOR -> AEBlocks.CRAFTING_ACCELERATOR;
+            case STORAGE_1K -> AEBlocks.CRAFTING_STORAGE_1K;
+            case STORAGE_4K -> AEBlocks.CRAFTING_STORAGE_4K;
+            case STORAGE_16K -> AEBlocks.CRAFTING_STORAGE_16K;
+            case STORAGE_64K -> AEBlocks.CRAFTING_STORAGE_64K;
+            case STORAGE_256K -> AEBlocks.CRAFTING_STORAGE_256K;
+            case MONITOR -> AEBlocks.CRAFTING_MONITOR;
+        };
+        return definition.asItem();
     }
 }
