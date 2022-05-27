@@ -98,6 +98,13 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return getUnitBlock().type.isAccelerator();
     }
 
+    public int getAcceleratorThreads() {
+        if (this.level == null) {
+            return 0;
+        }
+        return getUnitBlock().type.getAcceleratorThreads();
+    }
+
     public boolean isStatus() {
         if (this.level == null) {
             return false;
