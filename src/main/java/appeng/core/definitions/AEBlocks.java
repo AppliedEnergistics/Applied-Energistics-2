@@ -176,7 +176,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_16K = craftingBlock("16k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_16K), () -> AEItems.CELL_COMPONENT_16K);
     public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_64K = craftingBlock("64k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), () -> AEItems.CELL_COMPONENT_64K);
     public static final BlockDefinition<CraftingStorageBlock> CRAFTING_STORAGE_256K = craftingBlock("256k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_256K, () -> new CraftingStorageBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_256K), () -> AEItems.CELL_COMPONENT_256K);
-    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock("Crafting Monitor",AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL)), () -> AEParts.STORAGE_MONITOR);
+    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock("Crafting Monitor",AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL), CraftingUnitType.MONITOR), () -> AEParts.STORAGE_MONITOR);
 
     private static <T extends Block> BlockDefinition<T> craftingBlock(String englishName, ResourceLocation id, Supplier<T> blockSupplier, Supplier<ItemLike> disassemblyExtra) {
         return block(englishName, id, blockSupplier, (block, props) -> new CraftingBlockItem(block, props, disassemblyExtra));
