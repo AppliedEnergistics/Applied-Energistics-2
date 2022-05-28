@@ -42,7 +42,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
@@ -227,8 +226,8 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
             // Can only be an item or fluid stack.
             if (output.what() instanceof AEItemKey itemKey) {
                 out = itemKey.toStack();
-            } else if (output.what() instanceof AEFluidKey fluidKey) {
-                out = WrappedGenericStack.wrap(fluidKey, 0);
+            } else {
+                out = WrappedGenericStack.wrap(output.what(), 0);
             }
         }
 
