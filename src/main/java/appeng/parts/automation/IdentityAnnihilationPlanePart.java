@@ -21,12 +21,13 @@ package appeng.parts.automation;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.enchantment.Enchantments;
+
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.enchantment.Enchantments;
 
 @Deprecated
 public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {

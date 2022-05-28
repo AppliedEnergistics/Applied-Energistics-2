@@ -124,6 +124,11 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
     }
 
+    @Nullable
+    public Map<Enchantment, Integer> getEnchantments() {
+        return enchantments;
+    }
+
     protected List<PickupStrategy> getPickupStrategies() {
         if (pickupStrategies == null) {
             var self = this.getHost().getBlockEntity();
