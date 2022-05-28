@@ -69,13 +69,11 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     /**
-     * Given a fill factor, return the storage level (0-7) used for the state of the block. This is also used for
-     * determining the item model.
+     * Given a fill factor, return the storage level used for the state of the block. This is also used for determining
+     * the item model.
      */
     public static int getStorageLevelFromFillFactor(double fillFactor) {
-        byte factor = (byte) (8.0 * fillFactor);
-
-        return Mth.clamp(factor, 0, EnergyCellBlock.MAX_FULLNESS);
+        return (int) Math.floor(EnergyCellBlock.MAX_FULLNESS * Mth.clamp(fillFactor + 0.01, 0, 1));
     }
 
     /**
