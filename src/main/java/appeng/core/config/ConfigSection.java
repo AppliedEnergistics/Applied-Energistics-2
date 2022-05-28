@@ -135,12 +135,12 @@ public class ConfigSection {
         JsonObject obj = new JsonObject();
 
         if (comment != null) {
-            obj.addProperty("__comment", comment);
+            obj.addProperty("_comment", comment);
         }
 
         for (BaseOption option : options) {
             if (option.comment != null) {
-                obj.addProperty("__comment", option.comment);
+                obj.addProperty(option.id + "_comment", option.comment);
             }
             obj.add(option.id, option.write());
         }
