@@ -260,6 +260,7 @@ public final class AEPartIds {
     ///
     public static final ResourceLocation FORMATION_PLANE = id("formation_plane");
     public static final ResourceLocation ANNIHILATION_PLANE = id("annihilation_plane");
+    public static final ResourceLocation IDENTITY_ANNIHILATION_PLANE = id("identity_annihilation_plane");
 
     ///
     /// P2P

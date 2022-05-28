@@ -60,6 +60,7 @@ public enum GuiText implements LocalizationEnum {
     CraftingTerminal("Crafting Terminal"),
     Crafts("Crafts"),
     Cyan("Cyan"),
+    Deprecated("Deprecated"),
     Drive("ME Drive"),
     ETAFormat("HH:mm:ss"),
     Efficiency("Efficiency: %s%%"),
