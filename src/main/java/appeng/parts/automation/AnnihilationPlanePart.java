@@ -67,7 +67,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
 
     @Nullable
-    private List<PickupStrategy> pickupStrategies;
+    protected List<PickupStrategy> pickupStrategies;
 
     private PickupStrategy pendingPickupStrategy;
 
@@ -124,7 +124,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         }
     }
 
-    private List<PickupStrategy> getPickupStrategies() {
+    protected List<PickupStrategy> getPickupStrategies() {
         if (pickupStrategies == null) {
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
