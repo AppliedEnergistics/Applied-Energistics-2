@@ -31,11 +31,6 @@ public enum CraftingUnitType implements ICraftingUnitType {
     }
 
     @Override
-    public boolean isStatus() {
-        return this == MONITOR;
-    }
-
-    @Override
     public Item getItemFromType() {
         var definition = switch (this) {
             case UNIT -> AEBlocks.CRAFTING_UNIT;

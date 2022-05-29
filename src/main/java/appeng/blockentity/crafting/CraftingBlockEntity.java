@@ -44,6 +44,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCalculator;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -88,35 +89,18 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     public AbstractCraftingUnitBlock<?> getUnitBlock() {
+        if (this.level == null || this.notLoaded() || this.isRemoved()) {
+            return AEBlocks.CRAFTING_UNIT.block();
+        }
         return (AbstractCraftingUnitBlock<?>) this.level.getBlockState(this.worldPosition).getBlock();
     }
 
-    public boolean isAccelerator() {
-        if (this.level == null) {
-            return false;
-        }
-        return getUnitBlock().type.isAccelerator();
+    public int getStorageBytes() {
+        return getUnitBlock().type.getStorageBytes();
     }
 
     public int getAcceleratorThreads() {
-        if (this.level == null) {
-            return 0;
-        }
         return getUnitBlock().type.getAcceleratorThreads();
-    }
-
-    public boolean isStatus() {
-        if (this.level == null) {
-            return false;
-        }
-        return getUnitBlock().type.isStatus();
-    }
-
-    public boolean isStorage() {
-        if (this.level == null) {
-            return false;
-        }
-        return getUnitBlock().type.isStorage();
     }
 
     @Override
@@ -233,13 +217,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         if (reason != IGridNodeListener.State.GRID_BOOT) {
             this.updateSubType(false);
         }
-    }
-
-    public int getStorageBytes() {
-        if (this.level == null || this.notLoaded() || this.isRemoved()) {
-            return 0;
-        }
-        return getUnitBlock().type.getStorageBytes();
     }
 
     public void breakCluster() {
