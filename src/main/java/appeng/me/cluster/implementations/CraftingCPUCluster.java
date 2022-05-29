@@ -148,16 +148,15 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
         if (te instanceof CraftingMonitorBlockEntity) {
             this.status.add((CraftingMonitorBlockEntity) te);
-        } else {
-            if (te.getStorageBytes() > 0) {
-                this.storage += te.getStorageBytes();
-            }
-            if (te.getAcceleratorThreads() > 0) {
-                if (te.getAcceleratorThreads() <= 16) {
-                    this.accelerator += te.getAcceleratorThreads();
-                } else {
-                    throw new IllegalArgumentException("Co-processor threads may not exceed 16 per single unit block.");
-                }
+        }
+        if (te.getStorageBytes() > 0) {
+            this.storage += te.getStorageBytes();
+        }
+        if (te.getAcceleratorThreads() > 0) {
+            if (te.getAcceleratorThreads() <= 16) {
+                this.accelerator += te.getAcceleratorThreads();
+            } else {
+                throw new IllegalArgumentException("Co-processor threads may not exceed 16 per single unit block.");
             }
         }
     }
