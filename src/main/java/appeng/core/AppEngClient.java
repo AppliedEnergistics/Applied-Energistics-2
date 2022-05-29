@@ -58,6 +58,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.ActionKey;
 import appeng.client.EffectType;
+import appeng.client.Hotkeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -72,6 +73,7 @@ import appeng.hooks.BlockAttackHook;
 import appeng.hooks.ICustomPickBlock;
 import appeng.hooks.MouseWheelScrolled;
 import appeng.hooks.RenderBlockOutlineHook;
+import appeng.hotkeys.HotkeyActions;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
@@ -126,6 +128,9 @@ public class AppEngClient extends AppEngBase {
 
         INSTANCE = this;
         notifyAddons("client");
+        HotkeyActions.init();
+        ClientTickEvents.END_CLIENT_TICK.register(c -> Hotkeys.checkHotkeys());
+
         registerTests();
 
         // Only activate the site exporter when we're not running a release version, since it'll

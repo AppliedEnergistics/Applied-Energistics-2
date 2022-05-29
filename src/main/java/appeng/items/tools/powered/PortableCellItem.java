@@ -116,7 +116,7 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     /**
-     * Open a wireless terminal from a slot in the player inventory, i.e. activated via hotkey.
+     * Open a Portable Cell from a slot in the player inventory, i.e. activated via hotkey.
      *
      * @return True if the menu was opened.
      */

@@ -80,7 +80,9 @@ public class BasePacketHandler {
 
         MOUSE_WHEEL(MouseWheelPacket.class, MouseWheelPacket::new),
 
-        COLOR_APPLICATOR_SELECT_COLOR(ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::new);
+        COLOR_APPLICATOR_SELECT_COLOR(ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::new),
+
+        HOTKEY(HotkeyPacket.class, HotkeyPacket::new);
 
         private final Function<FriendlyByteBuf, BasePacket> factory;
 

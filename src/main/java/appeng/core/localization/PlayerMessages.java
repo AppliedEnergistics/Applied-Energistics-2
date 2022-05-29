@@ -37,7 +37,8 @@ public enum PlayerMessages implements LocalizationEnum {
     OnlyEmptyCellsCanBeDisassembled("Only empty storage cells can be disassembled."),
     UnsupportedUpgrade("This upgrade is not supported by this machine."),
     MaxUpgradesOfTypeInstalled("No further upgrade cards of this type can be installed."),
-    MaxUpgradesInstalled("The upgrade capacity of this machine has been reached.");
+    MaxUpgradesInstalled("The upgrade capacity of this machine has been reached."),
+    UnknownHotkey("Unknown Hotkey: ");
 
     private final String englishText;
 
