@@ -585,7 +585,7 @@ public final class AEConfig {
             ConfigSection craftingCPU = root.subsection("craftingCPU");
             this.craftingCalculationTimePerTick = craftingCPU.addInt("craftingCalculationTimePerTick", 5);
             this.craftingSimulatedExtraction = craftingCPU.addBoolean("craftingSimulatedExtraction", false,
-                    "When true: simulate extraction of all the network's contents when starting a crafting job calculation. When false: use the cached available content list. Enabling might work a bit better, but it will significantly reduce performance.");
+                    "When true: simulate extraction of all the network's contents when starting a crafting job calculation. When false: use the cached available content list (same as terminals). Enabling might work a bit better, but it will significantly reduce performance.");
 
             var crafting = root.subsection("crafting");
             inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
