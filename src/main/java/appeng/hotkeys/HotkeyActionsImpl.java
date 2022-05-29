@@ -42,7 +42,7 @@ public class HotkeyActionsImpl extends HotkeyActions {
     }
 
     public static void init() {
-
+        // init static
     }
 
     /**
@@ -55,7 +55,7 @@ public class HotkeyActionsImpl extends HotkeyActions {
     /**
      * see {@link HotkeyActions#register(HotkeyAction, String)}
      */
-    public static void register(HotkeyAction hotkeyAction, String id) {
+    public static synchronized void register(HotkeyAction hotkeyAction, String id) {
         if (REGISTRY.containsKey(id)) {
             REGISTRY.get(id).add(0, hotkeyAction);
         } else {
