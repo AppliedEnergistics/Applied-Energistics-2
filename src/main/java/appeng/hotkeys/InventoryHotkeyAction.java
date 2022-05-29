@@ -27,8 +27,9 @@ public class InventoryHotkeyAction implements HotkeyAction {
         var items = player.getInventory().items;
         for (int i = 0; i < items.size(); i++) {
             if (locatable.test(items.get(i))) {
-                opener.open(player, i);
-                return true;
+                if (opener.open(player, i)) {
+                    return true;
+                }
             }
         }
         return false;
