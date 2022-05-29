@@ -136,6 +136,7 @@ public final class AEConfig {
     private boolean useColoredCraftingStatus;
     private boolean disableColoredCableRecipesInJEI;
     private int craftingCalculationTimePerTick;
+    private boolean craftingSimulatedExtraction;
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -204,6 +205,7 @@ public final class AEConfig {
         this.spatialPowerExponent = COMMON.spatialPowerExponent.get();
 
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
+        this.craftingSimulatedExtraction = COMMON.craftingSimulatedExtraction.get();
 
         AEWorldGenInternal.setConfigBlacklists(
                 COMMON.quartzOresBiomeBlacklist.get().stream().map(ResourceLocation::new)
@@ -296,6 +298,10 @@ public final class AEConfig {
 
     public int getCraftingCalculationTimePerTick() {
         return this.craftingCalculationTimePerTick;
+    }
+
+    public boolean isCraftingSimulatedExtraction() {
+        return this.craftingSimulatedExtraction;
     }
 
     public double getSpatialPowerExponent() {
@@ -479,6 +485,7 @@ public final class AEConfig {
         // Misc
         public final IntegerOption formationPlaneEntityLimit;
         public final IntegerOption craftingCalculationTimePerTick;
+        public final BooleanOption craftingSimulatedExtraction;
         public final BooleanOption allowBlockEntityFacades;
         public final BooleanOption debugTools;
         public final BooleanOption matterCannonBlockDamage;
@@ -577,6 +584,8 @@ public final class AEConfig {
 
             ConfigSection craftingCPU = root.subsection("craftingCPU");
             this.craftingCalculationTimePerTick = craftingCPU.addInt("craftingCalculationTimePerTick", 5);
+            this.craftingSimulatedExtraction = craftingCPU.addBoolean("craftingSimulatedExtraction", false,
+                    "When true: simulate extraction of all the network's contents when starting a crafting job calculation. When false: use the cached available content list (same as terminals). Enabling might work a bit better, but it will significantly reduce performance.");
 
             var crafting = root.subsection("crafting");
             inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
