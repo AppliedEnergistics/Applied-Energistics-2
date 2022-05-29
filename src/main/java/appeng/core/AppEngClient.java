@@ -73,7 +73,7 @@ import appeng.hooks.BlockAttackHook;
 import appeng.hooks.ICustomPickBlock;
 import appeng.hooks.MouseWheelScrolled;
 import appeng.hooks.RenderBlockOutlineHook;
-import appeng.hotkeys.HotkeyActionsImpl;
+import appeng.hotkeys.HotkeyActions;
 import appeng.init.client.InitAdditionalModels;
 import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
@@ -128,7 +128,7 @@ public class AppEngClient extends AppEngBase {
 
         INSTANCE = this;
         notifyAddons("client");
-        HotkeyActionsImpl.init();
+        HotkeyActions.init();
         ClientTickEvents.END_CLIENT_TICK.register(c -> Hotkeys.checkHotkeys());
 
         registerTests();

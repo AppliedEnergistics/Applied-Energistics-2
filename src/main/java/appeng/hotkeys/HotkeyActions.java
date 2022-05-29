@@ -1,11 +1,14 @@
 package appeng.hotkeys;
 
+import static appeng.api.features.HotkeyAction.PORTABLE_FLUID_CELL;
+import static appeng.api.features.HotkeyAction.PORTABLE_ITEM_CELL;
+import static appeng.api.features.HotkeyAction.WIRELESS_TERMINAL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import appeng.api.hotkeys.HotkeyAction;
-import appeng.api.hotkeys.HotkeyActions;
+import appeng.api.features.HotkeyAction;
 import appeng.client.Hotkeys;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
@@ -15,7 +18,7 @@ import appeng.util.Platform;
 /**
  * registers {@link HotkeyAction}
  */
-public class HotkeyActionsImpl extends HotkeyActions {
+public class HotkeyActions {
     public static final HashMap<String, List<HotkeyAction>> REGISTRY = new HashMap<>();
 
     static {
@@ -53,7 +56,7 @@ public class HotkeyActionsImpl extends HotkeyActions {
     }
 
     /**
-     * see {@link HotkeyActions#register(HotkeyAction, String)}
+     * see {@link HotkeyAction#register(HotkeyAction, String)}
      */
     public static synchronized void register(HotkeyAction hotkeyAction, String id) {
         if (REGISTRY.containsKey(id)) {

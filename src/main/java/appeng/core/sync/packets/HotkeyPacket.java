@@ -7,12 +7,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 
-import appeng.api.hotkeys.HotkeyAction;
+import appeng.api.features.HotkeyAction;
 import appeng.client.Hotkey;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.BasePacket;
-import appeng.hotkeys.HotkeyActionsImpl;
+import appeng.hotkeys.HotkeyActions;
 
 public class HotkeyPacket extends BasePacket {
 
@@ -34,7 +34,7 @@ public class HotkeyPacket extends BasePacket {
     }
 
     public void serverPacketData(ServerPlayer player) {
-        var locatingServices = HotkeyActionsImpl.REGISTRY.get(hotkey);
+        var locatingServices = HotkeyActions.REGISTRY.get(hotkey);
         if (locatingServices == null) {
             player.sendMessage(
                     PlayerMessages.UnknownHotkey.text().copy().append(new TranslatableComponent("key.ae2." + hotkey)),
