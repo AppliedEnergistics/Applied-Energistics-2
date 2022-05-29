@@ -38,11 +38,11 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
         super(type);
     }
 
+    @Override
     public List<Material> getMaterials() {
         return Collections.unmodifiableList(MATERIALS);
     }
 
-    @Override
     public TextureAtlasSprite getLightMaterial(Function<Material, TextureAtlasSprite> textureGetter) {
         return switch (this.type) {
             case ACCELERATOR -> textureGetter.apply(ACCELERATOR_LIGHT);

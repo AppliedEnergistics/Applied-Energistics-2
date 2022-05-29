@@ -28,7 +28,5 @@ public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitT
      */
     public abstract List<Material> getMaterials();
 
-    public abstract TextureAtlasSprite getLightMaterial(Function<Material, TextureAtlasSprite> textureGetter);
-
     public abstract BakedModel getBakedModel(Function<Material, TextureAtlasSprite> spriteGetter);
 }
