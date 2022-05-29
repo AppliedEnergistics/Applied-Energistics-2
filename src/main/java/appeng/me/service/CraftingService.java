@@ -62,7 +62,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.AEKeyFilter;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
@@ -218,7 +217,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     private void updateCPUClusters() {
         this.craftingCPUClusters.clear();
 
-        for (var blockEntity : this.grid.getMachines(CraftingStorageBlockEntity.class)) {
+        for (var blockEntity : this.grid.getMachines(CraftingBlockEntity.class)) {
             final CraftingCPUCluster cluster = blockEntity.getCluster();
             if (cluster != null) {
                 this.craftingCPUClusters.add(cluster);
@@ -229,7 +228,6 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
                 }
             }
         }
-
     }
 
     public void addLink(CraftingLink link) {

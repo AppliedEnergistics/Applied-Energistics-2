@@ -61,12 +61,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private final BlockPos boundsMax;
     // INSTANCE sate
     private final List<CraftingBlockEntity> blockEntities = new ArrayList<>();
-    private final List<CraftingBlockEntity> storage = new ArrayList<>();
     private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
     private final ConfigManager configManager = new ConfigManager(this::markDirty);
     private Component myName = null;
     private boolean isDestroyed = false;
-    private long availableStorage = 0;
+    private long storage = 0;
     private MachineSource machineSrc = null;
     private int accelerator = 0;
     /**
@@ -151,8 +150,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             this.status.add((CraftingMonitorBlockEntity) te);
         } else {
             if (te.getStorageBytes() > 0) {
-                this.availableStorage += te.getStorageBytes();
-                this.storage.add(te);
+                this.storage += te.getStorageBytes();
             }
             if (te.getAcceleratorThreads() > 0) {
                 if (te.getAcceleratorThreads() <= 16) {
@@ -235,7 +233,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     @Override
     public long getAvailableStorage() {
-        return this.availableStorage;
+        return this.storage;
     }
 
     @Override

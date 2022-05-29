@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.util.AEColor;
-import appeng.block.crafting.CraftingStorageBlock;
+import appeng.block.crafting.CraftingUnitBlock;
 import appeng.block.misc.QuartzFixtureBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.core.AppEng;
@@ -35,7 +35,7 @@ final class SiteExportScenes {
         List<Scene> scenes = new ArrayList<>();
 
         Function<BlockState, BlockState> craftingStorageState = (BlockState s) -> s
-                .setValue(CraftingStorageBlock.FORMED, true);
+                .setValue(CraftingUnitBlock.FORMED, true);
         Collections.addAll(
                 scenes,
                 singleBlock(AEBlocks.CONTROLLER),
