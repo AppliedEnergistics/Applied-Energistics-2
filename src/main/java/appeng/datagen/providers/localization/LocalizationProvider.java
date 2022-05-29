@@ -112,6 +112,9 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("itemGroup.ae2.facades", "Applied Energistics 2 - Facades");
         add("itemGroup.ae2.main", "Applied Energistics 2");
         add("key.ae2.category", "Applied Energistics 2");
+        add("key.ae2.portable_fluid_cell", "Open Portable Fluid Cell");
+        add("key.ae2.portable_item_cell", "Open Portable Item Cell");
+        add("key.ae2.wireless_terminal", "Open Wireless Terminal");
         add("key.toggle_focus.desc", "Toggle search box focus");
         add("stat.ae2.items_extracted", "Items extracted from ME Storage");
         add("stat.ae2.items_inserted", "Items added to ME Storage");
