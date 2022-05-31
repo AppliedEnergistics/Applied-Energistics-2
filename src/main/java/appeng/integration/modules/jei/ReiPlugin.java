@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import appeng.core.FacadeCreativeTab;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.Rect2i;
@@ -203,6 +204,12 @@ public class ReiPlugin implements REIClientPlugin {
         coloredCables = ImmutableList.copyOf(predicates);
 
         registry.removeEntryIf(this::shouldEntryBeHidden);
+
+        if(AEConfig.instance().isEnableFacadesInJEI()) {
+            for (ItemStack stack : FacadeCreativeTab.getSubTypes()) {
+                registry.addEntry(EntryStacks.of(stack));
+            }
+        }
     }
 
     @Override
