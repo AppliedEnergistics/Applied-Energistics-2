@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import appeng.core.FacadeCreativeTab;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.Rect2i;
@@ -56,6 +55,7 @@ import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
+import appeng.core.FacadeCreativeTab;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -205,7 +205,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         registry.removeEntryIf(this::shouldEntryBeHidden);
 
-        if(AEConfig.instance().isEnableFacadesInJEI()) {
+        if (AEConfig.instance().isEnableFacadesInJEI()) {
             for (ItemStack stack : FacadeCreativeTab.getSubTypes()) {
                 registry.addEntry(EntryStacks.of(stack));
             }
