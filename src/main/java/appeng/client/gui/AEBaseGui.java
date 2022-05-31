@@ -108,6 +108,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	private List<IGhostIngredientHandler.Target<Object>> hoveredIngredientTargets = new ArrayList<>();
 	private Object bookmarkedIngredient;
 	private boolean isDraggingJeiGhostItem;
+	private boolean haltDragging = false;
 
 	public void setJeiGhostItem( boolean jeiGhostItem )
 	{
@@ -441,6 +442,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 	protected void mouseReleased( int mouseX, int mouseY, int state )
 	{
 		this.drag_click.clear();
+		this.haltDragging = false;
 
 		super.mouseReleased( mouseX, mouseY, state );
 	}
@@ -466,7 +468,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 		}
 		else if( slot instanceof SlotDisconnected )
 		{
-			if( this.drag_click.add( slot ) )
+			if( !haltDragging && this.drag_click.add( slot ) )
 			{
 				if( !itemstack.isEmpty() )
 				{
@@ -628,7 +630,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 
 		if( slot instanceof SlotDisconnected )
 		{
-			if( this.drag_click.size() > 1 )
+			if( this.drag_click.size() >= 1 )
 			{
 				return;
 			}
@@ -645,6 +647,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 					if( !slot.getStack().isEmpty() && player.inventory.getItemStack().getCount() <= 1 )
 					{
 						action = InventoryAction.PICKUP_OR_SET_DOWN;
+						this.haltDragging = true;
 					}
 					break;
 				case QUICK_MOVE:
