@@ -24,7 +24,6 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import appeng.server.services.compass.CompassService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -58,6 +57,7 @@ import appeng.core.definitions.AEBlockEntities;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.menu.locator.MenuLocators;
+import appeng.server.services.compass.CompassService;
 
 public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implements SimpleWaterloggedBlock {
 
