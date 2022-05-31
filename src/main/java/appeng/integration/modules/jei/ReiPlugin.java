@@ -55,6 +55,7 @@ import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
+import appeng.core.FacadeCreativeTab;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -203,6 +204,12 @@ public class ReiPlugin implements REIClientPlugin {
         coloredCables = ImmutableList.copyOf(predicates);
 
         registry.removeEntryIf(this::shouldEntryBeHidden);
+
+        if (AEConfig.instance().isEnableFacadesInJEI()) {
+            for (ItemStack stack : FacadeCreativeTab.getSubTypes()) {
+                registry.addEntry(EntryStacks.of(stack));
+            }
+        }
     }
 
     @Override

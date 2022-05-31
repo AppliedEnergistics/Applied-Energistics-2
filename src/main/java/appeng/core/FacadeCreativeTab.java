@@ -94,4 +94,8 @@ public final class FacadeCreativeTab {
         }
     }
 
+    public static List<ItemStack> getSubTypes() {
+        calculateSubTypes();
+        return subTypes;
+    }
 }
