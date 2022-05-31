@@ -92,8 +92,6 @@ import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.decorative.solid.QuartzLampBlock;
 import appeng.decorative.solid.QuartzOreBlock;
 import appeng.decorative.solid.QuartzPillarBlock;
-import appeng.decorative.solid.SkyStoneBlock;
-import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 
 /**
  * Internal implementation for the API blocks
@@ -126,12 +124,11 @@ public final class AEBlocks {
 
     public static final BlockDefinition<QuartzFixtureBlock> QUARTZ_FIXTURE = block("Charged Quartz Fixture", AEBlockIds.QUARTZ_FIXTURE, QuartzFixtureBlock::new);
     public static final BlockDefinition<AEDecorativeBlock> FLUIX_BLOCK = block("Fluix Block", AEBlockIds.FLUIX_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
-    public static final BlockDefinition<SkyStoneBlock> SKY_STONE_BLOCK = block("Sky Stone", AEBlockIds.SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.STONE,
-            defaultProps(Material.STONE).strength(50, 150).requiresCorrectToolForDrops()));
+    public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_BLOCK = block("Sky Stone", AEBlockIds.SKY_STONE_BLOCK, () -> new AEDecorativeBlock(SKYSTONE_PROPERTIES));
 
-    public static final BlockDefinition<SkyStoneBlock> SMOOTH_SKY_STONE_BLOCK = block("Sky Stone Block", AEBlockIds.SMOOTH_SKY_STONE_BLOCK, () -> new SkyStoneBlock(SkystoneType.BLOCK, SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<SkyStoneBlock> SKY_STONE_BRICK = block("Sky Stone Brick", AEBlockIds.SKY_STONE_BRICK, () -> new SkyStoneBlock(SkystoneType.BRICK, SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<SkyStoneBlock> SKY_STONE_SMALL_BRICK = block("Sky Stone Small Brick", AEBlockIds.SKY_STONE_SMALL_BRICK, () -> new SkyStoneBlock(SkystoneType.SMALL_BRICK, SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> SMOOTH_SKY_STONE_BLOCK = block("Sky Stone Block", AEBlockIds.SMOOTH_SKY_STONE_BLOCK, () -> new AEDecorativeBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_BRICK = block("Sky Stone Brick", AEBlockIds.SKY_STONE_BRICK, () -> new AEDecorativeBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_SMALL_BRICK = block("Sky Stone Small Brick", AEBlockIds.SKY_STONE_SMALL_BRICK, () -> new AEDecorativeBlock(SKYSTONE_PROPERTIES));
 
     public static final BlockDefinition<SkyChestBlock> SKY_STONE_CHEST = block("Sky Stone Chest", AEBlockIds.SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.STONE, SKY_STONE_CHEST_PROPS));
     public static final BlockDefinition<SkyChestBlock> SMOOTH_SKY_STONE_CHEST = block("Sky Stone Block Chest", AEBlockIds.SMOOTH_SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, SKY_STONE_CHEST_PROPS));

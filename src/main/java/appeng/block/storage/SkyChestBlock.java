@@ -24,6 +24,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
+import appeng.server.services.compass.CompassService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -179,11 +180,27 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     @Override
     public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
+        if (level instanceof ServerLevel serverLevel) {
+            CompassService.notifyBlockChange(serverLevel, currentPos);
+        }
         if (blockState.getValue(WATERLOGGED)) {
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         return super.updateShape(blockState, facing, facingState, level, currentPos, facingPos);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (newState.getBlock() == state.getBlock()) {
+            return; // Just a block state change
+        }
+
+        super.onRemove(state, level, pos, newState, isMoving);
+
+        if (level instanceof ServerLevel serverLevel) {
+            CompassService.notifyBlockChange(serverLevel, pos);
+        }
     }
 
     @Override

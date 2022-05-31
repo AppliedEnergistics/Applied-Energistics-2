@@ -73,7 +73,7 @@ public final class CompassService {
         var cz = query.cz();
 
         // Am I standing on it?
-        if (cr.hasSkyStone(cx, cz)) {
+        if (cr.hasSkyStoneChest(cx, cz)) {
             return Result.ON_THE_SPOT;
         }
 
@@ -89,7 +89,7 @@ public final class CompassService {
             int chosen_z = cz;
 
             for (int z = minZ; z <= maxZ; z++) {
-                if (cr.hasSkyStone(minX, z)) {
+                if (cr.hasSkyStoneChest(minX, z)) {
                     final int closeness = dist(cx, cz, minX, z);
                     if (closeness < closest) {
                         closest = closeness;
@@ -98,7 +98,7 @@ public final class CompassService {
                     }
                 }
 
-                if (cr.hasSkyStone(maxX, z)) {
+                if (cr.hasSkyStoneChest(maxX, z)) {
                     final int closeness = dist(cx, cz, maxX, z);
                     if (closeness < closest) {
                         closest = closeness;
@@ -109,7 +109,7 @@ public final class CompassService {
             }
 
             for (int x = minX + 1; x < maxX; x++) {
-                if (cr.hasSkyStone(x, minZ)) {
+                if (cr.hasSkyStoneChest(x, minZ)) {
                     final int closeness = dist(cx, cz, x, minZ);
                     if (closeness < closest) {
                         closest = closeness;
@@ -118,7 +118,7 @@ public final class CompassService {
                     }
                 }
 
-                if (cr.hasSkyStone(x, maxZ)) {
+                if (cr.hasSkyStoneChest(x, maxZ)) {
                     final int closeness = dist(cx, cz, x, maxZ);
                     if (closeness < closest) {
                         closest = closeness;
@@ -147,7 +147,7 @@ public final class CompassService {
     }
 
     /**
-     * Notifies the compass service that a skystone block has either been placed or replaced at the give position.
+     * Notifies the compass service that a sky stone chest has either been placed or replaced at the give position.
      */
     public static void notifyBlockChange(ServerLevel level, BlockPos pos) {
         ChunkAccess chunk = level.getChunk(pos);
@@ -161,19 +161,19 @@ public final class CompassService {
 
         var section = chunk.getSections()[sectionIndex];
         if (section.hasOnlyAir()) {
-            compassRegion.setHasSkyStone(cx, cz, sectionIndex, false);
+            compassRegion.setHasSkyStoneChest(cx, cz, sectionIndex, false);
             return;
         }
 
-        // Count how many skystone blocks there are
-        var desiredState = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
-        var blockCount = new AtomicInteger(0);
+        // Count how many sky stone chests there are
+        var desiredState = AEBlocks.SKY_STONE_CHEST.block().defaultBlockState();
+        var chestCount = new AtomicInteger(0);
         section.getStates().count((state, count) -> {
             if (state == desiredState) {
-                blockCount.getAndIncrement();
+                chestCount.getAndIncrement();
             }
         });
-        compassRegion.setHasSkyStone(cx, cz, sectionIndex, blockCount.get() > 0);
+        compassRegion.setHasSkyStoneChest(cx, cz, sectionIndex, chestCount.get() > 0);
     }
 
     private static int dist(int ax, int az, int bx, int bz) {

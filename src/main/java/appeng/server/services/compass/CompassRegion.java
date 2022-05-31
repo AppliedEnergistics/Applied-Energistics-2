@@ -31,7 +31,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import appeng.core.AELog;
 
 /**
- * A compass region stores information about the occurrence of skystone blocks in a region of 1024x1024 chunks.
+ * A compass region stores information about the occurrence of sky stone chests in a region of 1024x1024 chunks.
  */
 final class CompassRegion extends SavedData {
 
@@ -97,7 +97,7 @@ final class CompassRegion extends SavedData {
         return compound;
     }
 
-    boolean hasSkyStone(int cx, int cz) {
+    boolean hasSkyStoneChest(int cx, int cz) {
         var bitmapIndex = getBitmapIndex(cx, cz);
         for (BitSet bitmap : sections.values()) {
             if (bitmap.get(bitmapIndex)) {
@@ -107,7 +107,7 @@ final class CompassRegion extends SavedData {
         return false;
     }
 
-    boolean hasSkyStone(int cx, int cz, int sectionIndex) {
+    boolean hasSkyStoneChest(int cx, int cz, int sectionIndex) {
         var bitmapIndex = getBitmapIndex(cx, cz);
         var section = sections.get(sectionIndex);
         if (section != null) {
@@ -116,22 +116,22 @@ final class CompassRegion extends SavedData {
         return false;
     }
 
-    void setHasSkyStone(int cx, int cz, int sectionIndex, boolean hasSkyStone) {
+    void setHasSkyStoneChest(int cx, int cz, int sectionIndex, boolean hasChest) {
         var bitmapIndex = getBitmapIndex(cx, cz);
         var section = sections.get(sectionIndex);
         if (section == null) {
-            if (hasSkyStone) {
+            if (hasChest) {
                 section = new BitSet(BITMAP_LENGTH);
                 section.set(bitmapIndex);
                 sections.put(sectionIndex, section);
                 setDirty();
             }
         } else {
-            if (section.get(bitmapIndex) != hasSkyStone) {
+            if (section.get(bitmapIndex) != hasChest) {
                 setDirty();
             }
             // There already was data on this y-section in this region
-            if (!hasSkyStone) {
+            if (!hasChest) {
                 section.clear(bitmapIndex);
                 if (section.isEmpty()) {
                     sections.remove(sectionIndex);
