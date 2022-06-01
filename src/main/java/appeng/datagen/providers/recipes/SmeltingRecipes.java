@@ -61,7 +61,7 @@ public class SmeltingRecipes extends AE2RecipeProvider {
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(AEBlocks.SKY_STONE_CHEST), AEBlocks.SMOOTH_SKY_STONE_CHEST, 0.35f,
                         DEFAULT_SMELTING_TIME)
-                .unlockedBy("has_sky_stone_block", has(AEBlocks.SKY_STONE_CHEST))
+                .unlockedBy("has_sky_stone_chest", has(AEBlocks.SKY_STONE_CHEST))
                 .save(consumer, AppEng.makeId("smelting/smooth_sky_stone_chest"));
 
         SimpleCookingRecipeBuilder
