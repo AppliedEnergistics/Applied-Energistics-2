@@ -20,11 +20,10 @@ package appeng.items.tools;
 
 import java.util.List;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -38,7 +37,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.LevelReader;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
@@ -46,12 +47,11 @@ import appeng.api.util.AEColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
-public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolItem {
+public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
@@ -62,7 +62,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
 
@@ -171,25 +171,21 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
     }
 
     @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        var player = context.getPlayer();
-        if (player != null && InteractionUtil.isInAlternateUseMode(player)) {
-            var level = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        if (InteractionUtil.isInAlternateUseMode(context.getPlayer())) {
+            Level level = context.getLevel();
             if (!level.isClientSide()) {
-                var state = context.getLevel().getBlockState(context.getClickedPos());
-                var useResult = state.use(context.getLevel(), context.getPlayer(),
-                        context.getHand(),
-                        new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
-                                context.getClickedPos(),
-                                context.isInside()));
-                if (!useResult.consumesAction()) {
-                    clearCard(context.getPlayer(), context.getLevel(), context.getHand());
-                }
+                this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
             }
             return InteractionResult.sidedSuccess(level.isClientSide());
+        } else {
+            return super.useOn(context);
         }
+    }
 
-        return InteractionResult.PASS;
+    @Override
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+        return true;
     }
 
     @Override

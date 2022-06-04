@@ -18,80 +18,99 @@
 
 package appeng.integration.modules.jei;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-import me.shedaniel.math.Point;
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.Renderer;
-import me.shedaniel.rei.api.client.gui.widgets.Widget;
-import me.shedaniel.rei.api.client.gui.widgets.Widgets;
-import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.entry.EntryIngredient;
-import me.shedaniel.rei.api.common.util.EntryStacks;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.recipes.handlers.InscriberRecipe;
 
-class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper> {
+class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
 
+    private static final String TITLE_TRANSLATION_KEY = "block.ae2.inscriber";
     private static final int SLOT_INPUT_TOP = 0;
     private static final int SLOT_INPUT_MIDDLE = 1;
     private static final int SLOT_INPUT_BOTTOM = 2;
     private static final int SLOT_OUTPUT = 3;
 
-    static final CategoryIdentifier<InscriberRecipeWrapper> ID = CategoryIdentifier
-            .of(AppEng.makeId("ae2.inscriber"));
+    static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "ae2.inscriber");
+
+    private final IDrawable background;
+
+    private final IDrawableAnimated progress;
+
+    private final IDrawable icon;
+
+    public InscriberRecipeCategory(IGuiHelper guiHelper) {
+        ResourceLocation location = new ResourceLocation(AppEng.MOD_ID, "textures/guis/inscriber.png");
+        this.background = guiHelper.createDrawable(location, 44, 15, 97, 64);
+
+        IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location, 135, 177, 6, 18).addPadding(24, 0, 91, 0)
+                .build();
+        this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40, IDrawableAnimated.StartDirection.BOTTOM,
+                false);
+
+        this.icon = guiHelper.createDrawableIngredient(AEBlocks.INSCRIBER.stack());
+    }
 
     @Override
-    public Renderer getIcon() {
-        return EntryStacks.of(AEBlocks.INSCRIBER.stack());
+    public ResourceLocation getUid() {
+        return UID;
     }
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("block.ae2.inscriber");
+        return new TranslatableComponent(TITLE_TRANSLATION_KEY);
     }
 
     @Override
-    public CategoryIdentifier<InscriberRecipeWrapper> getCategoryIdentifier() {
-        return ID;
+    public IDrawable getBackground() {
+        return this.background;
     }
 
     @Override
-    public List<Widget> setupDisplay(InscriberRecipeWrapper recipeDisplay, Rectangle bounds) {
-        ResourceLocation location = AppEng.makeId("textures/guis/inscriber.png");
+    public void setRecipe(IRecipeLayout recipeLayout, InscriberRecipe recipeWrapper, IIngredients ingredients) {
+        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
 
-        List<Widget> widgets = new ArrayList<>();
-        widgets.add(Widgets.createTexturedWidget(location, bounds.x, bounds.y, 44, 15, 97, 64));
+        itemStacks.init(SLOT_INPUT_TOP, true, 0, 0);
+        itemStacks.init(SLOT_INPUT_MIDDLE, true, 18, 23);
+        itemStacks.init(SLOT_INPUT_BOTTOM, true, 0, 46);
+        itemStacks.init(SLOT_OUTPUT, false, 68, 24);
 
-        List<EntryIngredient> ingredients = recipeDisplay.getInputEntries();
-        EntryIngredient output = recipeDisplay.getOutputEntries().get(0);
-
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 1)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_TOP)));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 19, bounds.y + 24)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_MIDDLE)));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 1, bounds.y + 47)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_BOTTOM)));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 69, bounds.y + 25)).disableBackground().markOutput()
-                .entries(output));
-
-        return widgets;
+        itemStacks.set(ingredients);
     }
 
     @Override
-    public int getDisplayHeight() {
-        return 64;
+    public Class<? extends InscriberRecipe> getRecipeClass() {
+        return InscriberRecipe.class;
     }
 
     @Override
-    public int getDisplayWidth(InscriberRecipeWrapper display) {
-        return 97;
+    public IDrawable getIcon() {
+        return this.icon;
+    }
+
+    @Override
+    public void setIngredients(InscriberRecipe recipe, IIngredients ingredients) {
+        ingredients.setInputIngredients(recipe.getIngredients());
+        ingredients.setOutput(VanillaTypes.ITEM, recipe.getResultItem());
+    }
+
+    @Override
+    public void draw(InscriberRecipe recipe, PoseStack poseStack, double mouseX, double mouseY) {
+        this.progress.draw(poseStack);
     }
 }

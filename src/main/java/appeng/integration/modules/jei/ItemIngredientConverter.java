@@ -6,26 +6,24 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.EntryType;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.ingredients.IIngredientType;
 
-import appeng.api.integrations.rei.IngredientConverter;
+import appeng.api.integrations.jei.IngredientConverter;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 
 public class ItemIngredientConverter implements IngredientConverter<ItemStack> {
     @Override
-    public EntryType<ItemStack> getIngredientType() {
-        return VanillaEntryTypes.ITEM;
+    public IIngredientType<ItemStack> getIngredientType() {
+        return VanillaTypes.ITEM;
     }
 
     @Nullable
     @Override
-    public EntryStack<ItemStack> getIngredientFromStack(GenericStack stack) {
+    public ItemStack getIngredientFromStack(GenericStack stack) {
         if (stack.what() instanceof AEItemKey itemKey) {
-            return EntryStack.of(getIngredientType(), itemKey.toStack(
-                    Math.max(1, Ints.saturatedCast(stack.amount()))));
+            return itemKey.toStack(Math.max(1, Ints.saturatedCast(stack.amount())));
         } else {
             return null;
         }
@@ -33,14 +31,7 @@ public class ItemIngredientConverter implements IngredientConverter<ItemStack> {
 
     @Nullable
     @Override
-    public GenericStack getStackFromIngredient(EntryStack<ItemStack> ingredient) {
-        if (ingredient.getType() == getIngredientType()) {
-            ItemStack itemStack = ingredient.castValue();
-            var itemKey = AEItemKey.of(itemStack);
-            if (itemKey != null) {
-                return new GenericStack(itemKey, itemStack.getCount());
-            }
-        }
-        return null;
+    public GenericStack getStackFromIngredient(ItemStack ingredient) {
+        return GenericStack.fromItemStack(ingredient);
     }
 }
