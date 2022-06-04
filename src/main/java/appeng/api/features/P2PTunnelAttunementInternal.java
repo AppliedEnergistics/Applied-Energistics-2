@@ -19,16 +19,23 @@
 package appeng.api.features;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 /**
  * Internal methods that complement {@link P2PTunnelAttunement} and which are not part of the public API.
  */
 public final class P2PTunnelAttunementInternal {
+
     private P2PTunnelAttunementInternal() {
     }
 
@@ -63,6 +70,18 @@ public final class P2PTunnelAttunementInternal {
         return new AttunementInfo(items, mods, apis);
     }
 
+    public static List<Resultant> getApiTunnels() {
+        return P2PTunnelAttunement.apiAttunements.stream()
+                .map(info -> new Resultant(info.component(), info.tunnelType(), info::hasApi)).toList();
+    }
+
+    public static Map<TagKey<Item>, Item> getTagTunnels() {
+        return P2PTunnelAttunement.tagTunnels;
+    }
+
     public record AttunementInfo(Set<Item> items, Set<String> mods, Set<ItemApiLookup<?, ?>> apis) {
+    }
+
+    public record Resultant(Component description, Item tunnelType, Predicate<ItemStack> stackPredicate) {
     }
 }
