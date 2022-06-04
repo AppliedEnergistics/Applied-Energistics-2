@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -53,6 +54,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.jei.IngredientConverters;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
@@ -63,6 +65,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
@@ -103,6 +106,7 @@ public class JEIPlugin implements IModPlugin {
                 new ThrowingInWaterCategory(jeiHelpers.getGuiHelper()),
                 new CondenserCategory(jeiHelpers.getGuiHelper()),
                 new InscriberRecipeCategory(jeiHelpers.getGuiHelper()),
+                new AttunementCategory(jeiHelpers),
                 new EntropyManipulatorCategory(jeiHelpers));
     }
 
@@ -130,6 +134,7 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipes(recipeManager.byType(EntropyRecipe.TYPE).values(),
                 EntropyManipulatorCategory.TYPE.getUid());
 
+        registerP2PAttunement(registration);
         registerDescriptions(registration);
 
         // Add displays for crystal growth
@@ -161,18 +166,44 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipes(inWater, ThrowingInWaterCategory.ID);
     }
 
+    private void registerP2PAttunement(IRecipeRegistration registration) {
+
+        List<AttunementDisplay> attunementRecipes = new ArrayList<>();
+        for (var entry : P2PTunnelAttunementInternal.getApiTunnels()) {
+            attunementRecipes.add(
+                    new AttunementDisplay(
+                            Ingredient.of(Registry.ITEM.stream()
+                                    .map(ItemStack::new)
+                                    .filter(entry.stackPredicate())
+                                    .toArray(ItemStack[]::new)),
+                            entry.tunnelType(),
+                            ItemModText.P2P_API_ATTUNEMENT.text(),
+                            entry.description()));
+        }
+
+        for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {
+            attunementRecipes.add(new AttunementDisplay(
+                    Ingredient.of(entry.getKey()),
+                    entry.getValue(),
+                    ItemModText.P2P_TAG_ATTUNEMENT.text()));
+        }
+
+        registration.addRecipes(AttunementCategory.TYPE, attunementRecipes);
+
+    }
+
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ItemStack condenser = AEBlocks.CONDENSER.stack();
+        var condenser = AEBlocks.CONDENSER.stack();
         registration.addRecipeCatalyst(condenser, CondenserCategory.UID);
 
-        ItemStack inscriber = AEBlocks.INSCRIBER.stack();
+        var inscriber = AEBlocks.INSCRIBER.stack();
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.UID);
 
-        ItemStack craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
+        var craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
         registration.addRecipeCatalyst(craftingTerminal, RecipeTypes.CRAFTING);
 
-        ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
+        var wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
         registration.addRecipeCatalyst(wirelessCraftingTerminal, RecipeTypes.CRAFTING);
 
         registration.addRecipeCatalyst(AEItems.ENTROPY_MANIPULATOR.stack(), EntropyManipulatorCategory.TYPE);
@@ -195,7 +226,7 @@ public class JEIPlugin implements IModPlugin {
 
     private void addDescription(IRecipeRegistration registry, ItemDefinition<?> itemDefinition,
             Component... message) {
-        registry.addIngredientInfo(itemDefinition.stack(), VanillaTypes.ITEM, message);
+        registry.addIngredientInfo(itemDefinition.stack(), VanillaTypes.ITEM_STACK, message);
     }
 
     @Override
