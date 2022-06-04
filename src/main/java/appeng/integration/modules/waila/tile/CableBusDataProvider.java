@@ -44,6 +44,7 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.block.networking.CableBusBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
+import appeng.integration.modules.waila.part.AnnihilationPlaneDataProvider;
 import appeng.integration.modules.waila.part.ChannelDataProvider;
 import appeng.integration.modules.waila.part.GridNodeStateProvider;
 import appeng.integration.modules.waila.part.IPartDataProvider;
@@ -56,6 +57,7 @@ public final class CableBusDataProvider {
     private static final List<IPartDataProvider> PROVIDERS = List.of(
             new ChannelDataProvider(),
             new StorageMonitorDataProvider(),
+            new AnnihilationPlaneDataProvider(),
             new GridNodeStateProvider(),
             new P2PStateDataProvider(),
             new DebugDataProvider());

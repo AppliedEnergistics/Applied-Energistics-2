@@ -19,12 +19,16 @@
 package appeng.parts.automation;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.behaviors.PickupStrategy;
@@ -45,6 +49,8 @@ import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.BasicStatePart;
+import appeng.util.EnchantmentUtil;
+import appeng.util.SettingsFrom;
 
 public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable {
 
@@ -61,28 +67,77 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
 
     @Nullable
-    private List<PickupStrategy> pickupStrategies;
+    protected List<PickupStrategy> pickupStrategies;
 
     private PickupStrategy pendingPickupStrategy;
+
+    /**
+     * Enchantments found on the plane when it was placed will be used to enchant the fake tool used for picking up
+     * blocks.
+     */
+    @Nullable
+    private Map<Enchantment, Integer> enchantments;
 
     public AnnihilationPlanePart(IPartItem<?> partItem) {
         super(partItem);
         getMainNode().addService(IGridTickable.class, this);
     }
 
-    private List<PickupStrategy> getPickupStrategies() {
+    @Override
+    public void readFromNBT(CompoundTag data) {
+        super.readFromNBT(data);
+        readEnchantments(data);
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        writeEnchantments(data);
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag data, @Nullable Player player) {
+        super.importSettings(mode, data, player);
+        // Import enchants only when the plan is placed, not from memory cards
+        if (mode == SettingsFrom.DISMANTLE_ITEM) {
+            readEnchantments(data);
+        }
+        pickupStrategies = null;
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag data) {
+        super.exportSettings(mode, data);
+        // Save enchants only when the actual plane is dismantled
+        if (mode == SettingsFrom.DISMANTLE_ITEM) {
+            writeEnchantments(data);
+        }
+    }
+
+    private void readEnchantments(CompoundTag data) {
+        enchantments = EnchantmentUtil.getEnchantments(data);
+    }
+
+    private void writeEnchantments(CompoundTag data) {
+        if (enchantments != null) {
+            EnchantmentUtil.setEnchantments(data, enchantments);
+        }
+    }
+
+    @Nullable
+    public Map<Enchantment, Integer> getEnchantments() {
+        return enchantments;
+    }
+
+    protected List<PickupStrategy> getPickupStrategies() {
         if (pickupStrategies == null) {
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
             pickupStrategies = StackWorldBehaviors.createPickupStrategies((ServerLevel) self.getLevel(),
-                    pos, side, self, allowsSilkTouch());
+                    pos, side, self, enchantments);
         }
         return pickupStrategies;
-    }
-
-    protected boolean allowsSilkTouch() {
-        return false;
     }
 
     @Override

@@ -15,6 +15,7 @@
     "ServerLevelCustomItemEntityMixin",
     "ConditionalRecipeMixin",
     "BreakSpeedMixin",
+    "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin"
   ],
   "client": [

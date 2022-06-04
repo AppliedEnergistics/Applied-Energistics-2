@@ -8,6 +8,7 @@ import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
@@ -120,10 +121,10 @@ public final class StackWorldBehaviors {
     }
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, boolean allowSilkTouch) {
+            BlockEntity host, Map<Enchantment, Integer> enchantments) {
         return pickupStrategies.getMap().values()
                 .stream()
-                .map(f -> f.create(level, fromPos, fromSide, host, allowSilkTouch))
+                .map(f -> f.create(level, fromPos, fromSide, host, enchantments))
                 .toList();
     }
 

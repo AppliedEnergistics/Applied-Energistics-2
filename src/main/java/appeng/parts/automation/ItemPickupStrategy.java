@@ -2,8 +2,8 @@ package appeng.parts.automation;
 
 import java.util.Collections;
 import java.util.List;
-
-import com.google.common.collect.ImmutableMap;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,6 +17,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -38,8 +39,6 @@ import appeng.util.Platform;
 
 public class ItemPickupStrategy implements PickupStrategy {
 
-    private static final float SILK_TOUCH_FACTOR = 16;
-
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
@@ -50,18 +49,16 @@ public class ItemPickupStrategy implements PickupStrategy {
     private final ServerLevel level;
     private final BlockPos pos;
     private final Direction side;
-    private final BlockEntity host;
-    private final boolean allowSilkTouch;
+    private final Map<Enchantment, Integer> enchantments;
 
     private boolean isAccepting = true;
 
     public ItemPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            boolean allowSilkTouch) {
+            Map<Enchantment, Integer> enchantments) {
         this.level = level;
         this.pos = pos;
         this.side = side;
-        this.host = host;
-        this.allowSilkTouch = allowSilkTouch;
+        this.enchantments = enchantments;
     }
 
     @Override
@@ -224,7 +221,7 @@ public class ItemPickupStrategy implements PickupStrategy {
         var hardness = state.getDestroySpeed(level, pos);
         var ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
 
-        return !ignoreAirAndFluids && hardness >= 0f && level.hasChunkAt(pos)
+        return !ignoreAirAndFluids && hardness >= 0f && level.isLoaded(pos)
                 && level.mayInteract(Platform.getPlayer(level), pos);
     }
 
@@ -250,6 +247,8 @@ public class ItemPickupStrategy implements PickupStrategy {
      * Checks if this plane can handle the block at the specific coordinates.
      */
     protected float calculateEnergyUsage(ServerLevel level, BlockPos pos, List<ItemStack> items) {
+        boolean useEnergy = true;
+
         var state = level.getBlockState(pos);
         var hardness = state.getDestroySpeed(level, pos);
 
@@ -258,11 +257,25 @@ public class ItemPickupStrategy implements PickupStrategy {
             requiredEnergy += is.getCount();
         }
 
-        if (allowSilkTouch) {
-            requiredEnergy *= SILK_TOUCH_FACTOR;
+        if (enchantments != null) {
+            var efficiencyFactor = 1f;
+            var efficiencyLevel = 0;
+            if (enchantments.containsKey(Enchantments.BLOCK_EFFICIENCY)) {
+                // Reduce total energy usage incurred by other enchantments by 15% per Efficiency level.
+                efficiencyLevel = enchantments.get(Enchantments.BLOCK_EFFICIENCY);
+                efficiencyFactor *= Math.pow(0.85, efficiencyLevel);
+            }
+            if (enchantments.containsKey(Enchantments.UNBREAKING)) {
+                // Give plane only a (100 / (level + 1))% chance to use energy.
+                // This is similar to vanilla Unbreaking behaviour for tools.
+                int randomNumber = ThreadLocalRandom.current().nextInt(enchantments.get(Enchantments.UNBREAKING) + 1);
+                useEnergy = randomNumber == 0;
+            }
+            var levelSum = enchantments.values().stream().reduce(0, Integer::sum) - efficiencyLevel;
+            requiredEnergy *= 8 * levelSum * efficiencyFactor;
         }
 
-        return requiredEnergy;
+        return useEnergy ? requiredEnergy : 0;
     }
 
     /**
@@ -314,31 +327,32 @@ public class ItemPickupStrategy implements PickupStrategy {
      * @param state The block state of the block about to be broken.
      */
     private HarvestTool createHarvestTool(BlockState state) {
-        HarvestTool tool;
+        ItemStack tool;
+        boolean fallback = false;
 
         if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_PICKAXE, 1), false);
+            tool = new ItemStack(Items.DIAMOND_PICKAXE, 1);
         } else if (state.is(BlockTags.MINEABLE_WITH_AXE)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_AXE, 1), false);
+            tool = new ItemStack(Items.DIAMOND_AXE, 1);
         } else if (state.is(BlockTags.MINEABLE_WITH_SHOVEL)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_SHOVEL, 1), false);
+            tool = new ItemStack(Items.DIAMOND_SHOVEL, 1);
         } else if (state.is(BlockTags.MINEABLE_WITH_HOE)) {
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_HOE, 1), false);
+            tool = new ItemStack(Items.DIAMOND_HOE, 1);
         } else {
-            // Use a pickaxe for everything else. Mostly to allow silk touch enchants
-            tool = new HarvestTool(new ItemStack(Items.DIAMOND_PICKAXE, 1), true);
+            // Use a pickaxe for everything else, to allow enchanting it
+            tool = new ItemStack(Items.DIAMOND_PICKAXE, 1);
+            fallback = true;
         }
 
-        if (allowSilkTouch) {
-            // For silk touch purposes, enchant the fake tool
-            var item = tool.item().copy();
-            EnchantmentHelper.setEnchantments(ImmutableMap.of(Enchantments.SILK_TOUCH, 1), item);
+        if (enchantments != null) {
+            // For silk touch / fortune purposes, enchant the fake tool
+            EnchantmentHelper.setEnchantments(enchantments, tool);
 
-            // Set fallback to false, to ensure it'll be used even if not strictly required
-            tool = new HarvestTool(item, false);
+            // Setting fallback to false ensures it'll be used even if not strictly required
+            fallback = false;
         }
 
-        return tool;
+        return new HarvestTool(tool, fallback);
     }
 
     public static boolean isBlockBlacklisted(Block b) {

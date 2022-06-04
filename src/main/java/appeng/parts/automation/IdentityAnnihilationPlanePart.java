@@ -19,11 +19,17 @@
 package appeng.parts.automation;
 
 import java.util.List;
+import java.util.Map;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.enchantment.Enchantments;
+
+import appeng.api.behaviors.PickupStrategy;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 
+@Deprecated
 public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
 
     private static final PlaneModels MODELS = new PlaneModels("part/identity_annihilation_plane",
@@ -39,13 +45,19 @@ public class IdentityAnnihilationPlanePart extends AnnihilationPlanePart {
     }
 
     @Override
-    protected boolean allowsSilkTouch() {
-        return true;
-    }
-
-    @Override
     public IPartModel getStaticModels() {
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
+    @Override
+    protected List<PickupStrategy> getPickupStrategies() {
+        if (pickupStrategies == null) {
+            var self = this.getHost().getBlockEntity();
+            var pos = self.getBlockPos().relative(this.getSide());
+            var side = getSide().getOpposite();
+            pickupStrategies = StackWorldBehaviors.createPickupStrategies((ServerLevel) self.getLevel(),
+                    pos, side, self, Map.of(Enchantments.SILK_TOUCH, 1));
+        }
+        return pickupStrategies;
+    }
 }

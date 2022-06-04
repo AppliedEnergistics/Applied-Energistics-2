@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.ids.AEPartIds;
@@ -35,13 +36,7 @@ import appeng.core.AppEng;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
-import appeng.parts.automation.AnnihilationPlanePart;
-import appeng.parts.automation.EnergyLevelEmitterPart;
-import appeng.parts.automation.ExportBusPart;
-import appeng.parts.automation.FormationPlanePart;
-import appeng.parts.automation.IdentityAnnihilationPlanePart;
-import appeng.parts.automation.ImportBusPart;
-import appeng.parts.automation.StorageLevelEmitterPart;
+import appeng.parts.automation.*;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.encoding.PatternEncodingTerminalPart;
 import appeng.parts.misc.CableAnchorPart;
@@ -96,8 +91,8 @@ public final class AEParts {
     public static final ItemDefinition<PartItem<ExportBusPart>> EXPORT_BUS = createPart("ME Export Bus", AEPartIds.EXPORT_BUS, ExportBusPart.class, ExportBusPart::new);
     public static final ItemDefinition<PartItem<StorageLevelEmitterPart>> LEVEL_EMITTER = createPart("ME Level Emitter", AEPartIds.LEVEL_EMITTER, StorageLevelEmitterPart.class, StorageLevelEmitterPart::new);
     public static final ItemDefinition<PartItem<EnergyLevelEmitterPart>> ENERGY_LEVEL_EMITTER = createPart("ME Energy Level Emitter", AEPartIds.ENERGY_LEVEL_EMITTER, EnergyLevelEmitterPart.class, EnergyLevelEmitterPart::new);
-    public static final ItemDefinition<PartItem<AnnihilationPlanePart>> ANNIHILATION_PLANE = createPart("ME Annihilation Plane", AEPartIds.ANNIHILATION_PLANE, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
-    public static final ItemDefinition<PartItem<IdentityAnnihilationPlanePart>> IDENTITY_ANNIHILATION_PLANE = createPart("ME Identity Annihilation Plane", AEPartIds.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart.class, IdentityAnnihilationPlanePart::new);
+    public static final ItemDefinition<PartItem<AnnihilationPlanePart>> ANNIHILATION_PLANE = createCustomPartItem("ME Annihilation Plane", AEPartIds.ANNIHILATION_PLANE, AnnihilationPlanePart.class, AnnihilationPlanePartItem::new);
+    public static final ItemDefinition<PartItem<IdentityAnnihilationPlanePart>> IDENTITY_ANNIHILATION_PLANE = createCustomPartItem("ME Identity Annihilation Plane", AEPartIds.IDENTITY_ANNIHILATION_PLANE, IdentityAnnihilationPlanePart.class, IdentityAnnihilationPlanePartItem::new);
     public static final ItemDefinition<PartItem<FormationPlanePart>> FORMATION_PLANE = createPart("ME Formation Plane", AEPartIds.FORMATION_PLANE, FormationPlanePart.class, FormationPlanePart::new);
     public static final ItemDefinition<PartItem<PatternEncodingTerminalPart>> PATTERN_ENCODING_TERMINAL = createPart("ME Pattern Encoding Terminal", AEPartIds.PATTERN_ENCODING_TERMINAL, PatternEncodingTerminalPart.class, PatternEncodingTerminalPart::new);
     public static final ItemDefinition<PartItem<CraftingTerminalPart>> CRAFTING_TERMINAL = createPart("ME Crafting Terminal", AEPartIds.CRAFTING_TERMINAL, CraftingTerminalPart.class, CraftingTerminalPart::new);
@@ -124,6 +119,16 @@ public final class AEParts {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(englishName, id, props -> new PartItem<>(props, partClass, factory));
+    }
+
+    private static <T extends IPart> ItemDefinition<PartItem<T>> createCustomPartItem(
+            String englishName,
+            ResourceLocation id,
+            Class<T> partClass,
+            Function<FabricItemSettings, PartItem<T>> factory) {
+
+        PartModels.registerModels(PartModelsHelper.createModels(partClass));
+        return item(englishName, id, factory);
     }
 
     private static <T extends IPart> ColoredItemDefinition<ColoredPartItem<T>> constructColoredDefinition(

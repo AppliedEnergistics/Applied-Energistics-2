@@ -1,5 +1,7 @@
 package appeng.parts.automation;
 
+import java.util.Map;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -23,7 +25,6 @@ public class FluidPickupStrategy implements PickupStrategy {
     private final ServerLevel level;
     private final BlockPos pos;
     private final Direction side;
-    private final BlockEntity host;
 
     /**
      * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
@@ -31,11 +32,10 @@ public class FluidPickupStrategy implements PickupStrategy {
     private long lastEffect;
 
     public FluidPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            boolean allowSilkTouch) {
+            Map<?, ?> enchantments) {
         this.level = level;
         this.pos = pos;
         this.side = side;
-        this.host = host;
     }
 
     @Override

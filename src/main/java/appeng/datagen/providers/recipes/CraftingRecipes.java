@@ -698,11 +698,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', AEItems.FORMATION_CORE)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
                 .save(consumer, AppEng.makeId("network/parts/formation_plane_alt"));
-        ShapelessRecipeBuilder.shapeless(AEParts.IDENTITY_ANNIHILATION_PLANE)
-                .requires(AEParts.ANNIHILATION_PLANE)
-                .requires(AEItems.FLUIX_PEARL)
-                .unlockedBy("has_annihilation_plane", has(AEParts.ANNIHILATION_PLANE))
-                .save(consumer, AppEng.makeId("network/parts/item_identity_annihilatition_plane"));
         ShapedRecipeBuilder.shaped(AEParts.IMPORT_BUS)
                 .pattern(" a ")
                 .pattern("bcb")
