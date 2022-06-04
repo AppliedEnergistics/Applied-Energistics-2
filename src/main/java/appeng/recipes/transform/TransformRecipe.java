@@ -16,7 +16,7 @@ import appeng.core.AppEng;
 
 public final class TransformRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
-    public static final RecipeType<TransformRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static RecipeType<TransformRecipe> TYPE;
 
     private final ResourceLocation id;
     public final List<Ingredient> ingredients;

@@ -18,48 +18,38 @@
 
 package appeng.client.render.model;
 
-import java.util.IdentityHashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
+
+import javax.annotation.Nullable;
 
 import com.mojang.math.Vector3f;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
 
-public class DriveBakedModel extends ForwardingBakedModel implements FabricBakedModel {
+import appeng.client.render.DelegateBakedModel;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
+
+public class DriveBakedModel extends DelegateBakedModel {
     private final Map<Item, BakedModel> cellModels;
-    private final Map<Item, Mesh> bakedCells;
     private final BakedModel defaultCellModel;
-    private final Mesh defaultCell;
 
     private final RenderContext.QuadTransform[] slotTransforms;
 
     public DriveBakedModel(BakedModel bakedBase, Map<Item, BakedModel> cellModels, BakedModel defaultCell) {
-        this.wrapped = bakedBase;
+        super(bakedBase);
         this.defaultCellModel = defaultCell;
-        this.defaultCell = convertCellModel(defaultCell);
         this.slotTransforms = buildSlotTransforms();
-        this.bakedCells = convertCellModels(cellModels);
         this.cellModels = cellModels;
     }
 
@@ -77,13 +67,13 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
     }
 
     @Override
-    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-            Supplier<RandomSource> randomSupplier, RenderContext context) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
+            ModelData extraData, RenderType renderType) {
+        List<BakedQuad> result = new ArrayList<>(super.getQuads(state, side, rand, extraData, renderType));
 
-        super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
+        var cells = extraData.get(DriveModelData.STATE);
 
         // Add cell models on top of the base model, if possible
-        Item[] cells = getCells(blockView, pos);
         if (cells != null) {
             for (int row = 0; row < 5; row++) {
                 for (int col = 0; col < 2; col++) {
@@ -93,26 +83,17 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
                     Item cell = slot < cells.length ? cells[slot] : null;
                     BakedModel cellChassisModel = getCellChassisModel(cell);
 
-                    context.pushTransform(slotTransforms[slot]);
-                    context.fallbackConsumer().accept(cellChassisModel);
-                    context.meshConsumer().accept(getCellChassisMesh(cell));
-                    context.popTransform();
+                    var quadView = MutableQuadView.getInstance();
+                    for (BakedQuad quad : cellChassisModel.getQuads(state, side, rand, ModelData.EMPTY, renderType)) {
+                        quadView.fromVanilla(quad, side);
+                        slotTransforms[slot].transform(quadView);
+                        result.add(quadView.toBlockBakedQuad());
+                    }
                 }
             }
         }
 
-    }
-
-    private static Item[] getCells(BlockAndTintGetter blockView, BlockPos pos) {
-        if (!(blockView instanceof RenderAttachedBlockView)) {
-            return null;
-        }
-        Object attachedData = ((RenderAttachedBlockView) blockView).getBlockEntityRenderAttachment(pos);
-        if (!(attachedData instanceof DriveModelData)) {
-            return null;
-        }
-
-        return ((DriveModelData) attachedData).getCells();
+        return result;
     }
 
     @Override
@@ -124,15 +105,6 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
     }
 
     // Determine which drive chassis to show based on the used cell
-    public Mesh getCellChassisMesh(Item cell) {
-        if (cell == null) {
-            return bakedCells.get(Items.AIR);
-        }
-        final Mesh model = bakedCells.get(cell);
-
-        return model != null ? model : defaultCell;
-    }
-
     public BakedModel getCellChassisModel(Item cell) {
         if (cell == null) {
             return cellModels.get(Items.AIR);
@@ -185,35 +157,4 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
             return true;
         }
     }
-
-    private Map<Item, Mesh> convertCellModels(Map<Item, BakedModel> cellModels) {
-        Map<Item, Mesh> result = new IdentityHashMap<>();
-
-        for (Map.Entry<Item, BakedModel> entry : cellModels.entrySet()) {
-            result.put(entry.getKey(), convertCellModel(entry.getValue()));
-        }
-
-        return result;
-    }
-
-    private Mesh convertCellModel(BakedModel bakedModel) {
-        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-        RandomSource random = RandomSource.create();
-        MeshBuilder meshBuilder = renderer.meshBuilder();
-        QuadEmitter emitter = meshBuilder.getEmitter();
-        emitter.material(renderer.materialFinder().disableDiffuse(0, false).disableAo(0, true).find());
-
-        for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
-            Direction face = ModelHelper.faceFromIndex(i);
-            List<BakedQuad> quads = bakedModel.getQuads(null, face, random);
-            for (BakedQuad quad : quads) {
-                emitter.fromVanilla(quad.getVertices(), 0, false);
-                emitter.cullFace(face);
-                emitter.nominalFace(face);
-                emitter.emit();
-            }
-        }
-        return meshBuilder.build();
-    }
-
 }

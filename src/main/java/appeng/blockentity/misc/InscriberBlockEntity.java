@@ -32,6 +32,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -50,6 +52,7 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -315,7 +318,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(Direction facing) {
         if (facing == this.getUp()) {
             return this.topItemHandlerExtern;
         } else if (facing == this.getUp().getOpposite()) {
@@ -367,6 +370,21 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
             return new Crankable();
         }
         return null;
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        if (Capabilities.CRANKABLE.equals(capability)) {
+            var crankable = getCrankable(facing);
+            if (crankable == null) {
+                return LazyOptional.empty();
+            }
+            return Capabilities.CRANKABLE.orEmpty(
+                    capability,
+                    LazyOptional.of(() -> crankable));
+        }
+
+        return super.getCapability(capability, facing);
     }
 
     /**
