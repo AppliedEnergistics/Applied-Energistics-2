@@ -23,7 +23,6 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
-import appeng.hooks.AECustomEntityItem;
 import appeng.util.Platform;
 
 public class ItemPlacementStrategy implements PlacementStrategy {
@@ -122,8 +121,8 @@ public class ItemPlacementStrategy implements PlacementStrategy {
         Entity entity = new ItemEntity(level, centerX, centerY, centerZ, is.copy());
 
         // Replace it if there is a custom entity
-        if (is.getItem() instanceof AECustomEntityItem customEntityItem) {
-            var result = customEntityItem.replaceItemEntity((ServerLevel) level, (ItemEntity) entity, is);
+        if (is.getItem().hasCustomEntity(is)) {
+            var result = is.getItem().createEntity(level, entity, is);
             // Destroy the old one, in case it's spawned somehow and replace with the new
             // one.
             if (result != null) {

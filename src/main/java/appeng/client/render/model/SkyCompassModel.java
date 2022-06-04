@@ -21,23 +21,23 @@ package appeng.client.render.model;
 import java.util.Collection;
 import java.util.function.Function;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
 
 /**
  * The parent model for the compass baked model. Declares the dependencies for the base and pointer submodels mostly.
  */
-public class SkyCompassModel implements BasicUnbakedModel {
+public class SkyCompassModel implements BasicUnbakedModel<SkyCompassModel> {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
             "ae2:block/sky_compass_base");
@@ -45,17 +45,17 @@ public class SkyCompassModel implements BasicUnbakedModel {
     private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
             "ae2:block/sky_compass_pointer");
 
-    @Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState rotationContainer, ResourceLocation modelId) {
-        BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
-        BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
+        BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform, spriteGetter);
+        BakedModel pointerModel = bakery.bake(MODEL_POINTER, modelTransform, spriteGetter);
         return new SkyCompassBakedModel(baseModel, pointerModel);
     }
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
+    public Collection<ResourceLocation> getModelDependencies() {
         return ImmutableSet.of(MODEL_BASE, MODEL_POINTER);
     }
 

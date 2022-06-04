@@ -22,14 +22,12 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -54,6 +52,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -75,7 +79,6 @@ import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.hooks.ticking.TickHandler;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.abstraction.REIFacade;
@@ -85,12 +88,14 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
 
-    private static final FabricLoader FABRIC = FabricLoader.getInstance();
+    @VisibleForTesting
+    public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
 
     /*
      * random source, use it for item drop locations...
      */
     private static final Random RANDOM_GENERATOR = new Random();
+    private static final WeakHashMap<Level, FakePlayer> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -173,12 +178,18 @@ public class Platform {
 
     }
 
+    /**
+     * @return True if client-side classes (such as Renderers) are available.
+     */
+    public static boolean hasClientClasses() {
+        return FMLEnvironment.dist.isClient();
+    }
+
     /*
      * returns true if the code is on the client.
      */
     public static boolean isClient() {
-        var currentServer = AppEng.instance().getCurrentServer();
-        return currentServer == null || Thread.currentThread() != currentServer.getRunningThread();
+        return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
     }
 
     public static boolean hasPermissions(DimensionalBlockPos dc, Player player) {
@@ -253,21 +264,14 @@ public class Platform {
      * returns true if the code is on the server.
      */
     public static boolean isServer() {
-        try {
-            var currentServer = AppEng.instance().getCurrentServer();
-            return currentServer != null && Thread.currentThread() == currentServer.getRunningThread();
-        } catch (NullPointerException npe) {
-            // FIXME TEST HACKS
-            // Running from tests: AppEng.instance() is null... :(
-            return false;
-        }
+        return Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER;
     }
 
     /**
      * Throws an exception if the current thread is not one of the server threads.
      */
     public static void assertServerThread() {
-        if (!isServer()) {
+        if (Thread.currentThread().getThreadGroup() != serverThreadGroup) {
             throw new UnsupportedOperationException(
                     "This code can only be called server-side and this is most likely a bug.");
         }
@@ -279,20 +283,21 @@ public class Platform {
 
     public static String formatModName(String modId) {
         return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
-                + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
+                + ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName()).orElse(null);
     }
 
     public static String getDescriptionId(Fluid fluid) {
         return fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
     }
 
-    public static String getDescriptionId(FluidVariant fluid) {
-        return getDescriptionId(fluid.getFluid());
+    public static String getDescriptionId(FluidStack fluid) {
+        return fluid.getDisplayName().getString();
     }
 
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
-        // no usage of the tag, but we keep it for compatibility
-        return new TranslatableComponent(getDescriptionId(fluid));
+        var fluidStack = new FluidStack(fluid, 1);
+        fluidStack.setTag(tag);
+        return fluidStack.getDisplayName();
     }
 
     // tag copy is not necessary, as the tag is not modified.
@@ -317,7 +322,14 @@ public class Platform {
     public static Player getPlayer(ServerLevel level) {
         Objects.requireNonNull(level);
 
-        return FakePlayer.getOrCreate(level);
+        var wrp = FAKE_PLAYERS.get(level);
+        if (wrp != null) {
+            return wrp;
+        }
+
+        var p = FakePlayerFactory.getMinecraft(level);
+        FAKE_PLAYERS.put(level, p);
+        return p;
     }
 
     /**
@@ -619,10 +631,6 @@ public class Platform {
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
         return level instanceof ServerLevel serverLevel && serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos));
-    }
-
-    public static Transaction openOrJoinTx() {
-        return Transaction.openNested(Transaction.getCurrentUnsafe());
     }
 
     public static boolean canItemStacksStack(ItemStack a, ItemStack b) {

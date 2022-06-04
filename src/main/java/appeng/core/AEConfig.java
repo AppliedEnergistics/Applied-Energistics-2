@@ -70,11 +70,21 @@ public final class AEConfig {
     AEConfig(Path configDir) {
         ConfigSection clientRoot = ConfigSection.createRoot();
         CLIENT = new ClientConfig(clientRoot);
-        clientConfigManager = createConfigFileManager(clientRoot, configDir, CLIENT_CONFIG_PATH);
+
+        if (configDir != null) { // Might be null when running from a test...
+            clientConfigManager = createConfigFileManager(clientRoot, configDir, CLIENT_CONFIG_PATH);
+        } else {
+            clientConfigManager = null;
+        }
 
         ConfigSection commonRoot = ConfigSection.createRoot();
         COMMON = new CommonConfig(commonRoot);
-        commonConfigManager = createConfigFileManager(commonRoot, configDir, COMMON_CONFIG_PATH);
+
+        if (configDir != null) {
+            commonConfigManager = createConfigFileManager(commonRoot, configDir, COMMON_CONFIG_PATH);
+        } else {
+            commonConfigManager = null;
+        }
 
         syncClientConfig();
         syncCommonConfig();
@@ -175,7 +185,7 @@ public final class AEConfig {
     }
 
     private void syncCommonConfig() {
-        PowerUnits.TR.conversionRatio = COMMON.powerRatioTechReborn.get();
+        PowerUnits.RF.conversionRatio = COMMON.powerRatioTechReborn.get();
         PowerMultiplier.CONFIG.multiplier = COMMON.powerUsageMultiplier.get();
 
         CondenserOutput.MATTER_BALLS.requiredPower = COMMON.condenserMatterBallsPower.get();
