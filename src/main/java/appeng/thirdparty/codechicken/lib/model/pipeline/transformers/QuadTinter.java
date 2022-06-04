@@ -18,9 +18,8 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This transformer tints quads.. Feed it the output of BlockColors.colorMultiplier.
@@ -29,19 +28,10 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
  */
 public class QuadTinter implements RenderContext.QuadTransform {
 
-    private int tint;
-
-    QuadTinter() {
-        super();
-    }
+    private final int tint;
 
     public QuadTinter(int tint) {
         this.tint = tint | 0xFF000000;
-    }
-
-    public QuadTinter setTint(int tint) {
-        this.tint = tint;
-        return this;
     }
 
     @Override
@@ -50,9 +40,26 @@ public class QuadTinter implements RenderContext.QuadTransform {
         quad.colorIndex(-1);
         for (int i = 0; i < 4; i++) {
             int color = quad.spriteColor(i, 0);
-            color = ColorHelper.multiplyColor(color, tint);
+            color = multiplyColor(color, tint);
             quad.spriteColor(i, 0, color);
         }
         return true;
+    }
+
+    // Taken from Fabric Indigo's net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper
+    /** Component-wise multiply. Components need to be in same order in both inputs! */
+    private static int multiplyColor(int color1, int color2) {
+        if (color1 == -1) {
+            return color2;
+        } else if (color2 == -1) {
+            return color1;
+        }
+
+        final int alpha = ((color1 >> 24) & 0xFF) * ((color2 >> 24) & 0xFF) / 0xFF;
+        final int red = ((color1 >> 16) & 0xFF) * ((color2 >> 16) & 0xFF) / 0xFF;
+        final int green = ((color1 >> 8) & 0xFF) * ((color2 >> 8) & 0xFF) / 0xFF;
+        final int blue = (color1 & 0xFF) * (color2 & 0xFF) / 0xFF;
+
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 }

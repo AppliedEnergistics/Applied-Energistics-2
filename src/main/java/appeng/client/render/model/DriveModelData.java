@@ -18,48 +18,24 @@
 
 package appeng.client.render.model;
 
-import java.util.Arrays;
-import java.util.Objects;
-
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
-public class DriveModelData extends AEModelData {
+public final class DriveModelData {
+    public final static ModelProperty<Item[]> STATE = new ModelProperty<>();
 
-    private final Item[] cells;
-
-    public DriveModelData(Direction up, Direction forward, Item[] cells) {
-        super(up, forward);
-        this.cells = cells;
+    private DriveModelData() {
     }
 
-    @Override
-    public boolean isCacheable() {
-        return false; // Too many combinations
+    public static ModelData.Builder builder(Direction up, Direction forward, Item[] cells) {
+        return AEModelData.builder(up, forward)
+                .with(STATE, cells)
+                .with(AEModelData.SKIP_CACHE, true);
     }
 
-    public Item[] getCells() {
-        return cells;
+    public static ModelData create(Direction up, Direction forward, Item[] cells) {
+        return builder(up, forward, cells).build();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        DriveModelData that = (DriveModelData) o;
-        return Arrays.equals(cells, that.cells);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), Arrays.hashCode(cells));
-    }
-
 }

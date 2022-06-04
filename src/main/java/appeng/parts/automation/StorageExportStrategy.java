@@ -3,44 +3,39 @@ package appeng.parts.automation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.behaviors.StackExportStrategy;
 import appeng.api.behaviors.StackTransferContext;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
-import appeng.util.IVariantConversion;
-import appeng.util.Platform;
+import appeng.util.BlockApiCache;
 
-class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
+class StorageExportStrategy<C, S> implements StackExportStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageExportStrategy.class);
-    private final BlockApiCache<Storage<V>, Direction> apiCache;
+    private final BlockApiCache<C> apiCache;
     private final Direction fromSide;
-    private final IVariantConversion<V> conversion;
+    private final HandlerStrategy<C, S> handlerStrategy;
 
-    public StorageExportStrategy(BlockApiLookup<Storage<V>, Direction> apiLookup,
-            IVariantConversion<V> conversion,
+    protected StorageExportStrategy(Capability<C> apiLookup,
+            HandlerStrategy<C, S> handlerStrategy,
             ServerLevel level,
             BlockPos fromPos,
             Direction fromSide) {
+        this.handlerStrategy = handlerStrategy;
         this.apiCache = BlockApiCache.create(apiLookup, level, fromPos);
         this.fromSide = fromSide;
-        this.conversion = conversion;
     }
 
     @Override
     public long transfer(StackTransferContext context, AEKey what, long amount) {
-        var variant = conversion.getVariant(what);
-        if (variant.isBlank()) {
+        if (!handlerStrategy.isSupported(what)) {
             return 0;
         }
 
@@ -59,19 +54,9 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
                 context.getActionSource(),
                 Actionable.SIMULATE);
 
-        if (extracted <= 0) {
-            return 0;
-        }
-
-        // Determine how much we're allowed to insert
-        long wasInserted;
-        try (var tx = Platform.openOrJoinTx()) {
-            wasInserted = adjacentStorage.insert(variant, extracted, tx);
-        }
+        long wasInserted = handlerStrategy.insert(adjacentStorage, what, extracted, Actionable.SIMULATE);
 
         if (wasInserted > 0) {
-            // Now *really* extract because the simulate may have returned more items than we can actually get
-            // (i.e. two storage buses on the same chest).
             extracted = StorageHelper.poweredExtraction(
                     context.getEnergySource(),
                     inv.getInventory(),
@@ -80,22 +65,21 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
                     context.getActionSource(),
                     Actionable.MODULATE);
 
-            try (var tx = Platform.openOrJoinTx()) {
-                wasInserted = adjacentStorage.insert(variant, extracted, tx);
-                if (wasInserted < extracted) {
-                    LOGGER.error("Storage export issue, voided {}x{}", extracted - wasInserted, what);
-                }
-                tx.commit();
+            wasInserted = handlerStrategy.insert(adjacentStorage, what, extracted, Actionable.MODULATE);
+
+            if (wasInserted < extracted) {
+                LOGGER.error("Storage export issue, voided {}x{}", extracted - wasInserted, what);
             }
+
+            return wasInserted;
         }
 
-        return wasInserted;
+        return 0;
     }
 
     @Override
     public long push(AEKey what, long amount, Actionable mode) {
-        var variant = conversion.getVariant(what);
-        if (variant.isBlank()) {
+        if (!handlerStrategy.isSupported(what)) {
             return 0;
         }
 
@@ -104,25 +88,13 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
             return 0;
         }
 
-        try (var tx = Platform.openOrJoinTx()) {
-            long wasInserted = adjacentStorage.insert(variant, amount, tx);
-
-            if (wasInserted > 0) {
-                if (mode == Actionable.MODULATE) {
-                    tx.commit();
-                }
-
-                return wasInserted;
-            }
-        }
-
-        return 0;
+        return handlerStrategy.insert(adjacentStorage, what, amount, mode);
     }
 
     public static StackExportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                ItemStorage.SIDED,
-                IVariantConversion.ITEM,
+                CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                HandlerStrategy.ITEMS,
                 level,
                 fromPos,
                 fromSide);
@@ -130,8 +102,8 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
 
     public static StackExportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                FluidStorage.SIDED,
-                IVariantConversion.FLUID,
+                CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY,
+                HandlerStrategy.FLUIDS,
                 level,
                 fromPos,
                 fromSide);

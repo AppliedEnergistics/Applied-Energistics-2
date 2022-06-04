@@ -20,7 +20,11 @@ package appeng.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import appeng.core.AppEng;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.BlockDropProvider;
@@ -45,7 +49,13 @@ import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
 
+@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
+
+    @SubscribeEvent
+    public static void onGatherData(GatherDataEvent dataEvent) {
+        onGatherData(dataEvent.getGenerator(), dataEvent.getExistingFileHelper());
+    }
 
     public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         var localization = new LocalizationProvider(generator);
@@ -55,11 +65,11 @@ public class AE2DataGenerators {
         generator.addProvider(true, new ChestDropProvider(generator.getOutputFolder()));
 
         // Tags
-        BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator);
+        BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator, existingFileHelper);
         generator.addProvider(true, blockTagsProvider);
-        generator.addProvider(true, new ItemTagsProvider(generator, blockTagsProvider));
-        generator.addProvider(true, new FluidTagsProvider(generator));
-        generator.addProvider(true, new BiomeTagsProvider(generator));
+        generator.addProvider(true, new ItemTagsProvider(generator, existingFileHelper, blockTagsProvider));
+        generator.addProvider(true, new FluidTagsProvider(generator, existingFileHelper));
+        generator.addProvider(true, new BiomeTagsProvider(generator, existingFileHelper));
 
         // Models
         generator.addProvider(true, new BlockModelProvider(generator, existingFileHelper));

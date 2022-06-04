@@ -18,8 +18,13 @@
 
 package appeng.client.gui.style;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
 
@@ -32,17 +37,23 @@ public final class FluidBlitter {
     }
 
     public static Blitter create(AEFluidKey fluidKey) {
-        return create(fluidKey.toVariant());
+        return create(fluidKey.toStack(1));
     }
 
-    public static Blitter create(FluidVariant fluidVariant) {
-        var stillSprite = FluidVariantRendering.getSprite(fluidVariant);
-        var color = FluidVariantRendering.getColor(fluidVariant);
+    public static Blitter create(FluidStack stack) {
+        if (stack.isEmpty() && stack.getRawFluid() != Fluids.EMPTY) {
+            stack = new FluidStack(stack.getRawFluid(), 1, stack.getTag());
+        }
 
-        // FIXME FABRIC 117: We currently cannot handle _not_ blitting anything
+        Fluid fluid = stack.getFluid();
 
-        return Blitter.sprite(stillSprite)
-                .colorRgb(color)
+        var attributes = IClientFluidTypeExtensions.of(fluid);
+        TextureAtlasSprite sprite = Minecraft.getInstance()
+                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(attributes.getStillTexture(stack));
+
+        return Blitter.sprite(sprite)
+                .colorRgb(attributes.getTintColor(stack))
                 // Most fluid texture have transparency, but we want an opaque slot
                 .blending(false);
     }
