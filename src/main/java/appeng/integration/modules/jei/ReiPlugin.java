@@ -242,11 +242,13 @@ public class ReiPlugin implements REIClientPlugin {
     private void registerDescriptions(DisplayRegistry registry) {
         var all = EntryRegistry.getInstance().getEntryStacks().collect(EntryIngredient.collector());
 
-        for (var entry : P2PTunnelAttunementInternal.getApiTunnels().entrySet()) {
+        for (var entry : P2PTunnelAttunementInternal.getApiTunnels()) {
             registry.add(new AttunementDisplay(
-                    List.of(all.filter(stack -> stack.getValue() instanceof ItemStack s && entry.getKey().test(s))),
-                    List.of(EntryIngredient.of(EntryStacks.of(entry.getValue().tunnelType()))),
-                    entry.getValue().description()));
+                    List.of(all.filter(
+                            stack -> stack.getValue() instanceof ItemStack s && entry.stackPredicate().test(s))),
+                    List.of(EntryIngredient.of(EntryStacks.of(entry.tunnelType()))),
+                    ItemModText.P2P_API_ATTUNEMENT.text(),
+                    entry.description()));
         }
 
         for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {

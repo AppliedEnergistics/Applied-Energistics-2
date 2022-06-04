@@ -10,15 +10,14 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 
 public class AttunementDisplay extends BasicDisplay {
 
-    private final Component description;
-
-    public AttunementDisplay(List<EntryIngredient> inputs, List<EntryIngredient> outputs, Component description) {
+    public AttunementDisplay(List<EntryIngredient> inputs, List<EntryIngredient> outputs, Component... description) {
         super(inputs, outputs);
-        this.description = description;
-    }
 
-    public Component getDescription() {
-        return description;
+        for (var input : inputs) {
+            for (var entry : input) {
+                entry.tooltip(description);
+            }
+        }
     }
 
     @Override

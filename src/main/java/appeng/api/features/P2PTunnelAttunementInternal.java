@@ -18,8 +18,8 @@
 
 package appeng.api.features;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -61,7 +61,7 @@ public final class P2PTunnelAttunementInternal {
             }
         }
 
-        for (var entry : P2PTunnelAttunement.apiAttunements.keySet()) {
+        for (var entry : P2PTunnelAttunement.apiAttunements) {
             if (entry.tunnelType() == tunnelItem) {
                 apis.add(entry.api());
             }
@@ -70,15 +70,9 @@ public final class P2PTunnelAttunementInternal {
         return new AttunementInfo(items, mods, apis);
     }
 
-    public static Map<Predicate<ItemStack>, Resultant> getApiTunnels() {
-        var map = new HashMap<Predicate<ItemStack>, Resultant>();
-
-        for (var entry : P2PTunnelAttunement.apiAttunements.entrySet()) {
-            var key = entry.getKey();
-            map.put(key::hasApi, new Resultant(entry.getValue(), key.tunnelType()));
-        }
-
-        return map;
+    public static List<Resultant> getApiTunnels() {
+        return P2PTunnelAttunement.apiAttunements.stream()
+                .map(info -> new Resultant(info.component(), info.tunnelType(), info::hasApi)).toList();
     }
 
     public static Map<TagKey<Item>, Item> getTagTunnels() {
@@ -88,6 +82,6 @@ public final class P2PTunnelAttunementInternal {
     public record AttunementInfo(Set<Item> items, Set<String> mods, Set<ItemApiLookup<?, ?>> apis) {
     }
 
-    public record Resultant(Component description, Item tunnelType) {
+    public record Resultant(Component description, Item tunnelType, Predicate<ItemStack> stackPredicate) {
     }
 }

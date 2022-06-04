@@ -23,8 +23,10 @@
 
 package appeng.api.features;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -62,7 +64,7 @@ public final class P2PTunnelAttunement {
     static final Map<Item, Item> tunnels = new HashMap<>(INITIAL_CAPACITY);
     static final Map<TagKey<Item>, Item> tagTunnels = new IdentityHashMap<>(INITIAL_CAPACITY);
     static final Map<String, Item> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
-    static final Map<ApiAttunement<?>, Component> apiAttunements = new HashMap<>(INITIAL_CAPACITY);
+    static final List<ApiAttunement<?>> apiAttunements = new ArrayList<>(INITIAL_CAPACITY);
 
     /**
      * The default tunnel part for ME tunnels. Use this to register additional attunement options.
@@ -126,7 +128,7 @@ public final class P2PTunnelAttunement {
             Function<ItemStack, T> contextProvider, Component description) {
         Objects.requireNonNull(api, "api");
         Objects.requireNonNull(contextProvider, "contextProvider");
-        apiAttunements.put(new ApiAttunement<>(api, contextProvider, validateTunnelPartItem(tunnelPart)), description);
+        apiAttunements.add(new ApiAttunement<>(api, contextProvider, validateTunnelPartItem(tunnelPart), description));
     }
 
     /**
@@ -137,7 +139,7 @@ public final class P2PTunnelAttunement {
      */
     public synchronized static void registerAttunementApi(ItemLike tunnelPart,
             ItemApiLookup<?, ContainerItemContext> api, Component description) {
-        addItemByApi(api, stack -> ContainerItemContext.ofSingleSlot(new SingleStackStorage() {
+        registerAttunementApi(tunnelPart, api, stack -> ContainerItemContext.ofSingleSlot(new SingleStackStorage() {
             ItemStack buffer = stack;
 
             @Override
@@ -149,7 +151,7 @@ public final class P2PTunnelAttunement {
             protected void setStack(ItemStack stack) {
                 buffer = stack;
             }
-        }), tunnelPart);
+        }), description);
     }
 
     /**
@@ -242,7 +244,7 @@ public final class P2PTunnelAttunement {
         }
 
         // Check provided APIs
-        for (var apiAttunement : apiAttunements.keySet()) {
+        for (var apiAttunement : apiAttunements) {
             if (apiAttunement.hasApi(trigger)) {
                 return new ItemStack(apiAttunement.tunnelType());
             }
@@ -278,7 +280,8 @@ public final class P2PTunnelAttunement {
     record ApiAttunement<T> (
             ItemApiLookup<?, T> api,
             Function<ItemStack, T> contextProvider,
-            Item tunnelType) {
+            Item tunnelType,
+            Component component) {
         public boolean hasApi(ItemStack stack) {
             return api.find(stack, contextProvider.apply(stack)) != null;
         }
