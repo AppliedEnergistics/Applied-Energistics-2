@@ -97,8 +97,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     PowerUnits.AE.textComponent());
             // registerApp(Icon.POWER_UNIT_EU, Settings.POWER_UNITS, PowerUnits.EU, ButtonToolTips.PowerUnits,
             // PowerUnits.EU.textComponent());
-            registerApp(Icon.POWER_UNIT_TR, Settings.POWER_UNITS, PowerUnits.TR, ButtonToolTips.PowerUnits,
-                    PowerUnits.TR.textComponent());
+            registerApp(Icon.POWER_UNIT_RF, Settings.POWER_UNITS, PowerUnits.RF, ButtonToolTips.PowerUnits,
+                    PowerUnits.RF.textComponent());
 
             registerApp(Icon.REDSTONE_IGNORE, Settings.REDSTONE_CONTROLLED, RedstoneMode.IGNORE,
                     ButtonToolTips.RedstoneMode,

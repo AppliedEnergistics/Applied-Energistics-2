@@ -18,12 +18,11 @@
 
 package appeng.init.worldgen;
 
-import java.util.function.Predicate;
-
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 
 import appeng.api.features.AEWorldGen;
 import appeng.api.features.AEWorldGenType;
@@ -35,37 +34,46 @@ public final class InitBiomeModifications {
     private InitBiomeModifications() {
     }
 
-    public static void init() {
-        if (AEConfig.instance().isGenerateQuartzOre()) {
-            BiomeModifications.addFeature(
-                    shouldGenerateIn(AEWorldGenType.CERTUS_QUARTZ),
-                    Decoration.UNDERGROUND_ORES,
-                    WorldgenIds.PLACED_QUARTZ_ORE_KEY);
+    public static void init(BiomeLoadingEvent e) {
+        addQuartzWorldGen(e);
+    }
+
+    private static void addQuartzWorldGen(BiomeLoadingEvent e) {
+        if (shouldGenerateIn(e.getName(), AEConfig.instance().isGenerateQuartzOre(),
+                AEWorldGenType.CERTUS_QUARTZ,
+                e.getCategory())) {
+
+            var quartzOrePlaced = BuiltinRegistries.PLACED_FEATURE.getHolderOrThrow(WorldgenIds.PLACED_QUARTZ_ORE_KEY);
+            e.getGeneration().addFeature(Decoration.UNDERGROUND_ORES, quartzOrePlaced);
         }
     }
 
-    /**
-     * @return A predicate that returns true if the modifier should apply to the given biome.
-     */
-    private static Predicate<BiomeSelectionContext> shouldGenerateIn(AEWorldGenType type) {
-        return context -> {
-            var id = context.getBiomeKey().location();
+    public static boolean shouldGenerateIn(ResourceLocation id,
+            boolean enabled,
+            AEWorldGenType worldGenType,
+            BiomeCategory category) {
+        if (id == null) {
+            return false; // We don't add to unnamed biomes
+        }
 
-            var category = Biome.getBiomeCategory(context.getBiomeRegistryEntry());
-            if (category == Biome.BiomeCategory.THEEND || category == Biome.BiomeCategory.NETHER
-                    || category == Biome.BiomeCategory.NONE) {
-                AELog.debug("Not generating %s in %s because it's of category %s", type, id, category);
-                return false;
-            }
+        if (!enabled) {
+            AELog.debug("Not generating %s in %s because it is disabled in the config", worldGenType, id);
+            return false;
+        }
 
-            if (AEWorldGen.isWorldGenDisabledForBiome(type, id)) {
-                AELog.debug("Not generating %s in %s because the biome is blacklisted by another mod or the config",
-                        type, id);
-                return false;
-            }
+        if (category == BiomeCategory.THEEND || category == BiomeCategory.NETHER
+                || category == BiomeCategory.NONE) {
+            AELog.debug("Not generating %s in %s because it's of category %s", worldGenType, id, category);
+            return false;
+        }
 
-            return true;
-        };
+        if (AEWorldGen.isWorldGenDisabledForBiome(worldGenType, id)) {
+            AELog.debug("Not generating %s in %s because the biome is blacklisted by another mod or the config",
+                    worldGenType, id);
+            return false;
+        }
+
+        return true;
     }
 
 }

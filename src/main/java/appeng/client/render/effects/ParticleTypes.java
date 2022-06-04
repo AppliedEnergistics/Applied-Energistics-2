@@ -20,16 +20,17 @@ package appeng.client.render.effects;
 
 import com.mojang.serialization.Codec;
 
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
+
+import appeng.core.AppEng;
 
 public final class ParticleTypes {
 
     private ParticleTypes() {
     }
 
-    public static final SimpleParticleType CRAFTING = FabricParticleTypes.simple();
+    public static final SimpleParticleType CRAFTING = new SimpleParticleType(false);
     public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
             EnergyParticleData.DESERIALIZER) {
         @Override
@@ -44,8 +45,17 @@ public final class ParticleTypes {
             return null;
         }
     };
-    public static final SimpleParticleType LIGHTNING = FabricParticleTypes.simple();
-    public static final SimpleParticleType MATTER_CANNON = FabricParticleTypes.simple();
-    public static final SimpleParticleType VIBRANT = FabricParticleTypes.simple();
+    public static final SimpleParticleType LIGHTNING = new SimpleParticleType(false);
+    public static final SimpleParticleType MATTER_CANNON = new SimpleParticleType(false);
+    public static final SimpleParticleType VIBRANT = new SimpleParticleType(false);
+
+    static {
+        CRAFTING.setRegistryName(AppEng.MOD_ID, "crafting_fx");
+        ENERGY.setRegistryName(AppEng.MOD_ID, "energy_fx");
+        LIGHTNING_ARC.setRegistryName(AppEng.MOD_ID, "lightning_arc_fx");
+        LIGHTNING.setRegistryName(AppEng.MOD_ID, "lightning_fx");
+        MATTER_CANNON.setRegistryName(AppEng.MOD_ID, "matter_cannon_fx");
+        VIBRANT.setRegistryName(AppEng.MOD_ID, "vibrant_fx");
+    }
 
 }
