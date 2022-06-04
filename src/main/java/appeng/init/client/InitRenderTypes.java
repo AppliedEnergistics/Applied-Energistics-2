@@ -18,10 +18,10 @@
 
 package appeng.init.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -29,7 +29,7 @@ import appeng.core.definitions.BlockDefinition;
 /**
  * Initializes which layers specific blocks render in.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class InitRenderTypes {
 
     /**
@@ -66,12 +66,11 @@ public final class InitRenderTypes {
 
     public static void init() {
         for (var definition : CUTOUT_BLOCKS) {
-            BlockRenderLayerMap.INSTANCE.putBlock(definition.block(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(definition.block(), RenderType.cutout());
         }
 
         // Cable bus multiblock renders in all layers
-        // TODO FABRIC 117 Fabric does not support rendering into multiple render layers simultaneously.
-        BlockRenderLayerMap.INSTANCE.putBlock(AEBlocks.CABLE_BUS.block(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(AEBlocks.CABLE_BUS.block(), rt -> true);
     }
 
 }

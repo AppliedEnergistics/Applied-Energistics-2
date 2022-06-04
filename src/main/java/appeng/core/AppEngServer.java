@@ -28,7 +28,6 @@ import appeng.client.EffectType;
 public class AppEngServer extends AppEngBase {
     public AppEngServer() {
         super();
-        notifyAddons("server");
         registerTests();
     }
 
