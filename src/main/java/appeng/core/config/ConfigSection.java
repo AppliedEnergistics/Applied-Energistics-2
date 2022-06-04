@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.Nullable;
+
 public class ConfigSection {
 
     private final ConfigSection parent;
@@ -59,22 +61,22 @@ public class ConfigSection {
     }
 
     public StringOption addString(String id, String defaultValue) {
-        return addString(id, defaultValue, comment);
+        return addString(id, defaultValue, null);
     }
 
-    public StringOption addString(String id, String defaultValue, String comment) {
+    public StringOption addString(String id, String defaultValue, @Nullable String comment) {
         return addOption(new StringOption(this, id, comment, defaultValue));
     }
 
     public IntegerOption addInt(String id, int defaultValue) {
-        return addInt(id, defaultValue, comment);
+        return addInt(id, defaultValue, null);
     }
 
-    public IntegerOption addInt(String id, int defaultValue, String comment) {
+    public IntegerOption addInt(String id, int defaultValue, @Nullable String comment) {
         return addInt(id, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, comment);
     }
 
-    public IntegerOption addInt(String id, int defaultValue, int minValue, int maxValue, String comment) {
+    public IntegerOption addInt(String id, int defaultValue, int minValue, int maxValue, @Nullable String comment) {
         return addOption(new IntegerOption(this, id, comment, defaultValue, minValue, maxValue));
     }
 
@@ -82,7 +84,7 @@ public class ConfigSection {
         return addDouble(id, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
-    public DoubleOption addDouble(String id, double defaultValue, String comment) {
+    public DoubleOption addDouble(String id, double defaultValue, @Nullable String comment) {
         return addDouble(id, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE, comment);
     }
 
@@ -90,7 +92,8 @@ public class ConfigSection {
         return addDouble(id, defaultValue, minValue, maxValue, null);
     }
 
-    public DoubleOption addDouble(String id, double defaultValue, double minValue, double maxValue, String comment) {
+    public DoubleOption addDouble(String id, double defaultValue, double minValue, double maxValue,
+            @Nullable String comment) {
         return addOption(new DoubleOption(this, id, comment, defaultValue, minValue, maxValue));
     }
 
@@ -98,7 +101,7 @@ public class ConfigSection {
         return addBoolean(id, defaultValue, null);
     }
 
-    public BooleanOption addBoolean(String id, boolean defaultValue, String comment) {
+    public BooleanOption addBoolean(String id, boolean defaultValue, @Nullable String comment) {
         return addOption(new BooleanOption(this, id, comment, defaultValue));
     }
 
@@ -106,7 +109,7 @@ public class ConfigSection {
         return addStringList(id, defaultValue, null);
     }
 
-    public StringListOption addStringList(String id, List<String> defaultValue, String comment) {
+    public StringListOption addStringList(String id, List<String> defaultValue, @Nullable String comment) {
         return addOption(new StringListOption(this, id, comment, defaultValue));
     }
 
@@ -114,7 +117,7 @@ public class ConfigSection {
         return addEnum(id, defaultValue, null);
     }
 
-    public <T extends Enum<T>> EnumOption<T> addEnum(String id, T defaultValue, String comment) {
+    public <T extends Enum<T>> EnumOption<T> addEnum(String id, T defaultValue, @Nullable String comment) {
         return addOption(new EnumOption<>(this, id, comment, defaultValue));
     }
 
