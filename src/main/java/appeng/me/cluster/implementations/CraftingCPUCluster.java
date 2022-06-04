@@ -218,7 +218,8 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
                     0,
                     elapsedTimeTracker.getStartItemCount() - elapsedTimeTracker.getRemainingItemCount());
             return new CraftingJobStatus(
-                    new GenericStack(finalOutput.what(), elapsedTimeTracker.getStartItemCount()),
+                    finalOutput,
+                    elapsedTimeTracker.getStartItemCount(),
                     progress,
                     elapsedTimeTracker.getElapsedTime());
         } else {
