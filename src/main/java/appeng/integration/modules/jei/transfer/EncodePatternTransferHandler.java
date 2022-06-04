@@ -12,12 +12,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
-import me.shedaniel.rei.api.common.display.Display;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -37,7 +39,11 @@ import appeng.util.CraftingRecipeUtil;
  * Handles encoding patterns in the {@link PatternEncodingTermMenu} by clicking the + button on recipes shown in REI (or
  * JEI).
  */
-public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> extends AbstractTransferHandler<T> {
+public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
+        extends AbstractTransferHandler
+        implements IRecipeTransferHandler<T, Object> {
+    private static final int CRAFTING_GRID_WIDTH = 3;
+    private static final int CRAFTING_GRID_HEIGHT = 3;
 
     /**
      * Order of priority: - Craftable Items - Undamaged Items - Items the player has the most of
@@ -51,47 +57,58 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         return !(entry.getWhat() instanceof AEItemKey itemKey) || !itemKey.isDamaged();
     }
 
-    public EncodePatternTransferHandler(Class<T> containerClass) {
-        super(containerClass);
+    private final Class<T> containerClass;
+    private final IRecipeTransferHandlerHelper helper;
+
+    public EncodePatternTransferHandler(Class<T> containerClass, IRecipeTransferHandlerHelper helper) {
+        this.containerClass = containerClass;
+        this.helper = helper;
     }
 
+    @Nullable
     @Override
-    protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
+    public IRecipeTransferError transferRecipe(T menu, Object recipeBase, IRecipeLayout recipeLayout, Player player,
+            boolean maxTransfer, boolean doTransfer) {
+
+        // Recipe displays can be based on anything. Not just Recipe<?>
+        Recipe<?> recipe = null;
+        if (recipeBase instanceof Recipe<?>) {
+            recipe = (Recipe<?>) recipeBase;
+        }
 
         // Crafting recipe slots are not grouped, hence they must fit into the 3x3 grid.
-        boolean craftingRecipe = isCraftingRecipe(recipe, display);
-        if (craftingRecipe && !fitsIn3x3Grid(recipe, display)) {
-            return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
+        boolean craftingRecipe = isCraftingRecipe(recipe, recipeLayout);
+        if (craftingRecipe && !fitsIn3x3Grid(recipe, recipeLayout)) {
+            return helper.createUserErrorWithTooltip(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
         if (doTransfer) {
             if (craftingRecipe) {
                 menu.setMode(EncodingMode.CRAFTING);
-                encodeCraftingRecipe(menu, recipe, getGuiIngredientsForCrafting(display));
+                encodeCraftingRecipe(menu, recipe, getGuiIngredientsForCrafting(recipeLayout));
             } else {
                 menu.setMode(EncodingMode.PROCESSING);
                 encodeProcessingRecipe(menu,
-                        GenericEntryStackHelper.ofInputs(display),
-                        GenericEntryStackHelper.ofOutputs(display));
+                        GenericEntryStackHelper.ofInputs(recipeLayout),
+                        GenericEntryStackHelper.ofOutputs(recipeLayout));
             }
         }
 
-        return Result.createSuccessful().blocksFurtherHandling();
+        return null;
     }
 
     /**
      * In case the recipe does not report inputs, we will use the inputs shown on the JEI GUI instead.
      */
-    private List<List<GenericStack>> getGuiIngredientsForCrafting(Display recipeLayout) {
+    private List<List<GenericStack>> getGuiIngredientsForCrafting(IRecipeLayout recipeLayout) {
         var result = new ArrayList<List<GenericStack>>(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT);
         for (int i = 0; i < CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT; i++) {
             var stacks = new ArrayList<GenericStack>();
 
-            if (i < recipeLayout.getInputEntries().size()) {
-                for (EntryStack<?> entryStack : recipeLayout.getInputEntries().get(i)) {
-                    if (entryStack.getType() == VanillaEntryTypes.ITEM) {
-                        stacks.add(GenericStack.fromItemStack(entryStack.castValue()));
-                    }
+            var guiIngredient = recipeLayout.getItemStacks().getGuiIngredients().get(i);
+            if (guiIngredient != null) {
+                for (var stack : guiIngredient.getAllIngredients()) {
+                    stacks.add(GenericStack.fromItemStack(stack));
                 }
             }
 
@@ -231,6 +248,16 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         }
 
         stacks.add(newStack);
+    }
+
+    @Override
+    public Class<T> getContainerClass() {
+        return containerClass;
+    }
+
+    @Override
+    public Class<Object> getRecipeClass() {
+        return Object.class;
     }
 
 }

@@ -23,11 +23,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import appeng.api.stacks.AEItemKey;
 
 /**
- * Represents the status of machines grouped by their item representation.
+ * Represents the status of machines grouped by their {@link IGridBlock#getMachineRepresentation() item representation}.
  */
 public class MachineGroup {
     /**
      * The item stack used for grouping machines together, which is also used for showing the group in the UI.
+     *
+     * @see IGridBlock#getMachineRepresentation()
      */
     private final AEItemKey display;
 

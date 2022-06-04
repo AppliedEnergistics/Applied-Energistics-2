@@ -31,6 +31,8 @@ class CondenserInventoryTest {
         assertThat(inv).isInstanceOf(CondenserInventory.class);
         assertThat(inv.getAvailableStacks()).isEmpty();
 
+        CondenserOutput.SINGULARITY.requiredPower = 256000;
+
         be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY);
         be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.stack());
         be.addPower(99999999999.0);

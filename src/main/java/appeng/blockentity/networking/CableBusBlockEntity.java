@@ -38,6 +38,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -288,15 +293,30 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public CableBusRenderState getRenderAttachmentData() {
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, @Nullable Direction partLocation) {
+        // Note that null will be translated to INTERNAL here
+
+        IPart part = this.getPart(partLocation);
+        LazyOptional<T> result = part == null ? LazyOptional.empty() : part.getCapability(capabilityClass);
+
+        if (result.isPresent()) {
+            return result;
+        }
+
+        return super.getCapability(capabilityClass, partLocation);
+    }
+
+    @Override
+    public IModelData getModelData() {
+        Level level = getLevel();
         if (level == null) {
-            return null;
+            return EmptyModelData.INSTANCE;
         }
 
         CableBusRenderState renderState = this.cb.getRenderState();
         renderState.setLevel(level);
-        renderState.setPos(getBlockPos());
-        return renderState;
+        renderState.setPos(worldPosition);
+        return new ModelDataMap.Builder().withInitial(CableBusRenderState.PROPERTY, renderState).build();
 
     }
 

@@ -3,13 +3,7 @@ package appeng.api.behaviors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.api.config.Actionable;
-import appeng.api.ids.AEConstants;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
@@ -21,13 +15,6 @@ import appeng.api.stacks.GenericStack;
 @ApiStatus.Experimental
 @ApiStatus.NonExtendable
 public interface GenericInternalInventory {
-    /**
-     * Use this lookup to access instances of generic inventories. Use a fallback to wrap them on-the-fly.
-     */
-    BlockApiLookup<GenericInternalInventory, Direction> SIDED = BlockApiLookup.get(
-            new ResourceLocation(AEConstants.MOD_ID, "genericinternalinventory"), GenericInternalInventory.class,
-            Direction.class);
-
     /**
      * @return The number of slots in this inventory. Never changes.
      */
@@ -91,9 +78,4 @@ public interface GenericInternalInventory {
      * Send a change notification manually, for example because the automatic notification was suppressed.
      */
     void onChange();
-
-    /**
-     * Fabric only: call this before modifying a slot as part of a transaction.
-     */
-    void updateSnapshots(int slot, TransactionContext transaction);
 }
