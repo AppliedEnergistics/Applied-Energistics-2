@@ -126,7 +126,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     public ChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(40));
+        this.setInternalMaxPower(PowerMultiplier.CONFIG.multiply(500));
         this.getMainNode()
                 .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
