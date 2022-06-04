@@ -41,7 +41,7 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("matter_cannon");
 
-    public static final RecipeType<MatterCannonAmmo> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static RecipeType<MatterCannonAmmo> TYPE;
 
     private final ResourceLocation id;
 

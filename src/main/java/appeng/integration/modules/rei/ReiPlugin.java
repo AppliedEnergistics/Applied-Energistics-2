@@ -59,7 +59,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.FacadeCreativeTab;
+import appeng.core.FacadeItemGroup;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -189,7 +189,7 @@ public class ReiPlugin implements REIClientPlugin {
         registry.removeEntryIf(this::shouldEntryBeHidden);
 
         if (AEConfig.instance().isEnableFacadesInJEI()) {
-            registry.addEntries(EntryIngredients.ofItemStacks(FacadeCreativeTab.getSubTypes()));
+            registry.addEntries(EntryIngredients.ofItemStacks(new FacadeItemGroup().getSubTypes()));
         }
     }
 

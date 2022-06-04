@@ -18,8 +18,8 @@
 
 package appeng.init.client;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
@@ -29,7 +29,7 @@ public final class InitParticleTypes {
     private InitParticleTypes() {
     }
 
-    public static void init(Registry<ParticleType<?>> registry) {
+    public static void init(IForgeRegistry<ParticleType<?>> registry) {
         register(registry, ParticleTypes.CRAFTING, "crafting_fx");
         register(registry, ParticleTypes.ENERGY, "energy_fx");
         register(registry, ParticleTypes.LIGHTNING_ARC, "lightning_arc_fx");
@@ -38,8 +38,8 @@ public final class InitParticleTypes {
         register(registry, ParticleTypes.VIBRANT, "vibrant_fx");
     }
 
-    private static void register(Registry<ParticleType<?>> registry, ParticleType<?> type, String name) {
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId(name), type);
+    private static void register(IForgeRegistry<ParticleType<?>> registry, ParticleType<?> type, String name) {
+        registry.register(AppEng.makeId(name), type);
     }
 
 }

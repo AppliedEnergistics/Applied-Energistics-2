@@ -24,13 +24,10 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -51,7 +48,6 @@ import appeng.util.ConfigMenuInventory;
 
 public class GenericStackInv implements MEStorage, GenericInternalInventory {
     protected final GenericStack[] stacks;
-    private final Participant[] participants;
     private final Runnable listener;
     private boolean suppressOnChange;
     private boolean onChangeSuppressed;
@@ -73,7 +69,6 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
 
     public GenericStackInv(@Nullable Runnable listener, Mode mode, int size) {
         this.stacks = new GenericStack[size];
-        this.participants = new Participant[size];
         this.listener = listener;
         this.mode = mode;
     }
@@ -436,46 +431,5 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
      */
     public void setDescription(Component description) {
         this.description = description;
-    }
-
-    @Override
-    public void updateSnapshots(int slot, TransactionContext transaction) {
-        if (participants[slot] == null) {
-            participants[slot] = new Participant(slot);
-        }
-        participants[slot].updateSnapshots(transaction);
-    }
-
-    private class Participant extends SnapshotParticipant<GenericStack> {
-        // SnapshotParticipant doesn't allow null snapshots so we use this marker stack
-        private static final GenericStack EMPTY_STACK = new GenericStack(AEItemKey.of(Items.AIR), 0);
-
-        private final int slotIndex;
-
-        private Participant(int slotIndex) {
-            this.slotIndex = slotIndex;
-        }
-
-        @Override
-        protected GenericStack createSnapshot() {
-            var stack = getStack(slotIndex);
-            return stack != null ? stack : EMPTY_STACK;
-        }
-
-        @Override
-        protected void readSnapshot(GenericStack snapshot) {
-            beginBatch();
-            if (snapshot == EMPTY_STACK) {
-                setStack(slotIndex, null);
-            } else {
-                setStack(slotIndex, snapshot);
-            }
-            endBatchSuppressed();
-        }
-
-        @Override
-        protected void onFinalCommit() {
-            onChange();
-        }
     }
 }

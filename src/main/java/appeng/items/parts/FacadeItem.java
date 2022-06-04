@@ -47,10 +47,9 @@ import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
 import appeng.facade.IFacadeItem;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 
-public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
+public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
     private static final String NBT_ITEM_ID = "item";
 
