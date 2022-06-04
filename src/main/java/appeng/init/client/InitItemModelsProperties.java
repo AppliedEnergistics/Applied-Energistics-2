@@ -18,11 +18,11 @@
 
 package appeng.init.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
-import net.minecraft.core.Registry;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlockItemChargeable;
@@ -33,7 +33,7 @@ import appeng.items.tools.powered.ColorApplicatorItem;
 /**
  * Registers custom properties that can be used in item model JSON files.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class InitItemModelsProperties {
 
     public static final ResourceLocation GROWTH_PREDICATE_ID = AppEng.makeId("growth");
@@ -45,8 +45,7 @@ public final class InitItemModelsProperties {
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
-        FabricModelPredicateProviderRegistry.register(colorApplicatorItem,
-                COLORED_PREDICATE_ID,
+        ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to
@@ -57,13 +56,12 @@ public final class InitItemModelsProperties {
                 });
 
         // Register the client-only item model property for chargeable items
-        Registry.ITEM.forEach(item -> {
+        ForgeRegistries.ITEMS.forEach(item -> {
             if (!(item instanceof AEBaseBlockItemChargeable chargeable)) {
                 return;
             }
 
-            FabricModelPredicateProviderRegistry.register(chargeable,
-                    ENERGY_FILL_LEVEL_ID,
+            ItemProperties.register(chargeable, ENERGY_FILL_LEVEL_ID,
                     (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);

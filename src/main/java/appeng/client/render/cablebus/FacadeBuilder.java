@@ -30,13 +30,6 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -60,6 +53,13 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerK
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInterpolator;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
+import appeng.thirdparty.fabric.Mesh;
+import appeng.thirdparty.fabric.MeshBuilder;
+import appeng.thirdparty.fabric.MeshBuilderImpl;
+import appeng.thirdparty.fabric.ModelHelper;
+import appeng.thirdparty.fabric.QuadEmitter;
+import appeng.thirdparty.fabric.RenderContext;
+import appeng.thirdparty.fabric.Renderer;
 
 /**
  * The FacadeBuilder builds for facades..
@@ -68,7 +68,7 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
  */
 public class FacadeBuilder {
 
-    private final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+    private final Renderer renderer = Renderer.getInstance();
 
     public static final double THICK_THICKNESS = 2D / 16D;
     public static final double THIN_THICKNESS = 1D / 16D;
@@ -105,7 +105,7 @@ public class FacadeBuilder {
             List<BakedQuad> partQuads = transparentFacadeModel.getQuads(null, null, RandomSource.create());
 
             for (Direction facing : Direction.values()) {
-                MeshBuilder meshBuilder = renderer.meshBuilder();
+                MeshBuilder meshBuilder = new MeshBuilderImpl();
                 QuadEmitter emitter = meshBuilder.getEmitter();
 
                 // Rotate quads accordingly
@@ -127,7 +127,7 @@ public class FacadeBuilder {
             // This constructor is used for item models where transparent facades are not a
             // concern
             for (Direction facing : Direction.values()) {
-                this.transparentFacadeQuads.put(facing, renderer.meshBuilder().build());
+                this.transparentFacadeQuads.put(facing, new MeshBuilderImpl().build());
             }
         }
     }
@@ -345,7 +345,7 @@ public class FacadeBuilder {
 
         QuadReInterpolator interpolator = new QuadReInterpolator();
 
-        var itemColors = Minecraft.getInstance().itemColors;
+        var itemColors = Minecraft.getInstance().getItemColors();
         QuadClamper clamper = new QuadClamper(THICK_FACADE_BOXES[side.ordinal()]);
 
         for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {

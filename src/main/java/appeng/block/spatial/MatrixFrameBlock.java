@@ -18,10 +18,9 @@
 
 package appeng.block.spatial;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -37,6 +36,8 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseBlock;
 
@@ -59,7 +60,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
@@ -96,4 +97,9 @@ public class MatrixFrameBlock extends AEBaseBlock {
         return 1.0f;
     }
 
+    @Override
+    public boolean canEntityDestroy(final BlockState state, final BlockGetter level, final BlockPos pos,
+            final Entity entity) {
+        return false;
+    }
 }

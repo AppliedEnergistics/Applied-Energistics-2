@@ -18,11 +18,10 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-
 import appeng.thirdparty.codechicken.lib.math.InterpHelper;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.QuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This transformer Re-Interpolates the Color, UV's and LightMaps. Use this after all transformations that translate

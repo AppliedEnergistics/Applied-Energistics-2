@@ -18,12 +18,12 @@
 
 package appeng.init.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
@@ -38,7 +38,7 @@ import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
 import appeng.core.definitions.AEBlockEntities;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class InitBlockEntityRenderers {
 
     private InitBlockEntityRenderers() {
@@ -62,7 +62,7 @@ public final class InitBlockEntityRenderers {
 
     private static <T extends BlockEntity> void register(BlockEntityType<T> type,
             BlockEntityRendererProvider<T> factory) {
-        BlockEntityRendererRegistry.register(type, factory);
+        BlockEntityRenderers.register(type, factory);
     }
 
 }
