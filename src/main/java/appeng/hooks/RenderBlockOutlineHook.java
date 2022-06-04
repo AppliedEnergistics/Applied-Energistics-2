@@ -5,10 +5,6 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -24,6 +20,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
@@ -41,22 +39,26 @@ public class RenderBlockOutlineHook {
     }
 
     public static void install() {
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((WorldRenderContext context, @Nullable HitResult hitResult) -> {
-            var level = context.world();
-            var poseStack = context.matrixStack();
-            var buffers = context.consumers();
-            var camera = context.camera();
-            if (level == null || buffers == null) {
-                return true;
-            }
+        MinecraftForge.EVENT_BUS.addListener(RenderBlockOutlineHook::handleEvent);
+    }
 
-            if (!(hitResult instanceof BlockHitResult blockHitResult)
-                    || blockHitResult.getType() != HitResult.Type.BLOCK) {
-                return true;
-            }
+    private static void handleEvent(RenderHighlightEvent.Block evt) {
+        var level = Minecraft.getInstance().level;
+        var poseStack = evt.getPoseStack();
+        var buffers = evt.getMultiBufferSource();
+        var camera = evt.getCamera();
+        if (level == null || buffers == null) {
+            return;
+        }
 
-            return !replaceBlockOutline(level, poseStack, buffers, camera, blockHitResult);
-        });
+        var blockHitResult = evt.getTarget();
+        if (blockHitResult.getType() != HitResult.Type.BLOCK) {
+            return;
+        }
+
+        if (replaceBlockOutline(level, poseStack, buffers, camera, blockHitResult)) {
+            evt.setCanceled(true);
+        }
     }
 
     /*

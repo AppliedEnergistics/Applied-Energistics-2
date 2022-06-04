@@ -18,9 +18,8 @@
 
 package appeng.block;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -51,18 +50,18 @@ public abstract class AEBaseBlock extends Block {
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material) {
+    public static BlockBehaviour.Properties defaultProps(Material material) {
         return defaultProps(material, material.getColor());
     }
 
     /**
      * Utility function to create block properties with some sensible defaults for AE blocks.
      */
-    public static FabricBlockSettings defaultProps(Material material, MaterialColor color) {
-        return FabricBlockSettings.of(material, color)
+    public static BlockBehaviour.Properties defaultProps(Material material, MaterialColor color) {
+        return BlockBehaviour.Properties.of(material, color)
                 // These values previously were encoded in AEBaseBlock
                 .strength(2.2f, 11.f)
-                .sounds(getDefaultSoundByMaterial(material));
+                .sound(getDefaultSoundByMaterial(material));
     }
 
     private static SoundType getDefaultSoundByMaterial(Material mat) {
