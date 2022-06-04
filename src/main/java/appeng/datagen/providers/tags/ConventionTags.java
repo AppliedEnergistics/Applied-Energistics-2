@@ -43,6 +43,10 @@ public final class ConventionTags {
     private ConventionTags() {
     }
 
+    public static TagKey<Item> DUSTS = tag("c:dusts");
+    public static TagKey<Item> GEMS = tag("c:gems");
+    public static TagKey<Block> ORES = blockTag("c:ores");
+
     public static TagKey<Item> SILICON = tag("c:silicon");
 
     // Includes purified versions of certus/nether and the natural ones
