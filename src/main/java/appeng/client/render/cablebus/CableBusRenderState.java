@@ -29,6 +29,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -39,6 +41,8 @@ import appeng.api.util.AEColor;
  * processing.
  */
 public class CableBusRenderState {
+
+    public static final ModelProperty<CableBusRenderState> PROPERTY = new ModelProperty<>();
 
     // The cable type used for rendering the outgoing connections to other blocks
     // and attached parts
@@ -86,7 +90,7 @@ public class CableBusRenderState {
     private List<AABB> boundingBoxes = new ArrayList<>();
 
     // Additional model data passed to the part models
-    private EnumMap<Direction, Object> partModelData = new EnumMap<>(Direction.class);
+    private EnumMap<Direction, IModelData> partModelData = new EnumMap<>(Direction.class);
 
     public CableCoreType getCoreType() {
         return this.coreType;
@@ -168,7 +172,7 @@ public class CableBusRenderState {
         return this.boundingBoxes;
     }
 
-    public EnumMap<Direction, Object> getPartModelData() {
+    public EnumMap<Direction, IModelData> getPartModelData() {
         return this.partModelData;
     }
 

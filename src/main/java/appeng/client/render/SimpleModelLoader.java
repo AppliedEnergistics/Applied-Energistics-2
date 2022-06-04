@@ -20,32 +20,32 @@ package appeng.client.render;
 
 import java.util.function.Supplier;
 
-import net.fabricmc.fabric.api.client.model.ModelProviderContext;
-import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 /**
- * A quaint model provider that provides a single model with a single given resource identifier.
+ * A quaint model loader that does not accept any additional parameters in JSON.
  */
-public class SimpleModelLoader<T extends UnbakedModel> implements ModelResourceProvider {
-
-    private final ResourceLocation identifier;
+public class SimpleModelLoader<T extends IModelGeometry<T>> implements IModelLoader<T> {
 
     private final Supplier<T> factory;
 
-    public SimpleModelLoader(ResourceLocation identifier, Supplier<T> factory) {
+    public SimpleModelLoader(Supplier<T> factory) {
         this.factory = factory;
-        this.identifier = identifier;
     }
 
     @Override
-    public UnbakedModel loadModelResource(ResourceLocation identifier, ModelProviderContext modelProviderContext) {
-        if (identifier.equals(this.identifier)) {
-            return factory.get();
-        } else {
-            return null;
-        }
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+
+    }
+
+    @Override
+    public T read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
+        return factory.get();
     }
 
 }
