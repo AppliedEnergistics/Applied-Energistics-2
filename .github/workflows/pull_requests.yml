@@ -44,8 +44,6 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: ./gradlew build
-      - name: Run Game Tests
-        run: ./gradlew runGametest
       - uses: actions/upload-artifact@v2
         with:
           name: dist

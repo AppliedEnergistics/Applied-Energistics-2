@@ -21,9 +21,10 @@ package appeng.debug;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseBlockEntity;
@@ -80,8 +84,14 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
         super.loadTag(data);
     }
 
-    public Storage<ItemVariant> getItemHandler() {
-        return this.inv.toStorage();
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (CapabilityItemHandler.ITEM_HANDLER_CAPABILITY == capability) {
+            return (LazyOptional<T>) LazyOptional.of(this.inv::toItemHandler);
+        }
+        return super.getCapability(capability, facing);
     }
 
     public void setItem(Item item) {

@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails.IInput;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
