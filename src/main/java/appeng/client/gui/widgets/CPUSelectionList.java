@@ -215,7 +215,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
                 infoBar.add(currentJob.what(), 0.6f);
 
                 // Draw a bar at the bottom of the button to indicate job progress
-                var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1) / Math.max(1, currentJob.amount()));
+                var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1) / Math.max(1, cpu.totalItems()));
                 fill(poseStack,
                         x + 1,
                         y + buttonBg.getSrcHeight() - 2,
