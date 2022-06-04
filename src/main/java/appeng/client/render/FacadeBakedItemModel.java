@@ -18,62 +18,78 @@
 
 package appeng.client.render;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
-import java.util.function.Supplier;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import javax.annotation.Nullable;
+
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.items.parts.FacadeItem;
 
 /**
- * This baked model class is used as a dispatcher to redirect the renderer to the *real* model that should be used based
- * on the item stack. A custom Item Override List is used to accomplish this.
+ * This model used the provided FacadeBuilder to "slice" the item quads for the facade provided.
+ *
+ * @author covers1624
  */
-public class FacadeBakedItemModel extends ForwardingBakedModel {
-    private final FacadeBuilder facadeBuilder;
-    private final Int2ObjectMap<Mesh> cache = new Int2ObjectArrayMap<>();
+public class FacadeBakedItemModel extends DelegateBakedModel {
 
-    public FacadeBakedItemModel(BakedModel baseModel, FacadeBuilder facadeBuilder) {
-        this.wrapped = baseModel;
+    private final ItemStack textureStack;
+    private final FacadeBuilder facadeBuilder;
+    private List<BakedQuad> quads = null;
+
+    protected FacadeBakedItemModel(BakedModel base, ItemStack textureStack, FacadeBuilder facadeBuilder) {
+        super(base);
+        this.textureStack = textureStack;
         this.facadeBuilder = facadeBuilder;
     }
 
     @Override
-    public boolean isVanillaAdapter() {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        return getQuads(state, side, rand, EmptyModelData.INSTANCE);
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand,
+            IModelData data) {
+        if (side != null) {
+            return Collections.emptyList();
+        }
+        if (quads == null) {
+            quads = new ArrayList<>();
+            quads.addAll(this.facadeBuilder.buildFacadeItemQuads(this.textureStack, Direction.NORTH));
+            quads.addAll(this.getBaseModel().getQuads(state, side, rand, data));
+            quads = Collections.unmodifiableList(quads);
+        }
+        return quads;
+    }
+
+    @Override
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        if (!(stack.getItem() instanceof FacadeItem)) {
-            return;
-        }
+    public boolean usesBlockLight() {
+        return false;
+    }
 
-        super.emitItemQuads(stack, randomSupplier, context);
+    @Override
+    public boolean isCustomRenderer() {
+        return false;
+    }
 
-        FacadeItem itemFacade = (FacadeItem) stack.getItem();
-        ItemStack textureItem = itemFacade.getTextureItem(stack);
-
-        int itemId = Item.getId(textureItem.getItem());
-        int hash = Objects.hash(itemId, textureItem.getTag());
-        Mesh mesh = this.cache.get(hash);
-        if (mesh == null) {
-            mesh = this.facadeBuilder.buildFacadeItemQuads(textureItem, Direction.NORTH);
-            this.cache.put(hash, mesh);
-        }
-
-        context.meshConsumer().accept(mesh);
-
+    @Override
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 }

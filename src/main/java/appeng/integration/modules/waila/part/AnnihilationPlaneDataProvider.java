@@ -1,9 +1,8 @@
 package appeng.integration.modules.waila.part;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.parts.IPart;
 import appeng.core.localization.InGameTooltip;
@@ -13,7 +12,7 @@ import appeng.parts.automation.IdentityAnnihilationPlanePart;
 public class AnnihilationPlaneDataProvider implements IPartDataProvider {
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBodyTooltip(IPart part, CompoundTag partTag, ITooltip tooltip) {
         if (part instanceof IdentityAnnihilationPlanePart) {
             tooltip.add(InGameTooltip.IdentityDeprecated.text());
         } else if (part instanceof AnnihilationPlanePart plane) {

@@ -21,21 +21,22 @@ package appeng.blockentity.crafting;
 import java.util.EnumSet;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 
 public class CraftingMonitorModelData extends CraftingCubeModelData {
+
+    public static final ModelProperty<AEColor> COLOR = new ModelProperty<>();
 
     private final AEColor color;
 
     public CraftingMonitorModelData(Direction up, Direction forward, EnumSet<Direction> connections, AEColor color) {
         super(up, forward, connections);
         this.color = Objects.requireNonNull(color);
-    }
-
-    public AEColor getColor() {
-        return color;
     }
 
     @Override
@@ -56,6 +57,21 @@ public class CraftingMonitorModelData extends CraftingCubeModelData {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), color);
+    }
+
+    @Override
+    public boolean hasProperty(ModelProperty<?> prop) {
+        return prop == COLOR || super.hasProperty(prop);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> T getData(ModelProperty<T> prop) {
+        if (prop == COLOR) {
+            return (T) this.color;
+        }
+        return super.getData(prop);
     }
 
 }

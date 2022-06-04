@@ -24,30 +24,32 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.IModelConfiguration;
 
 import appeng.client.render.BasicUnbakedModel;
 import appeng.core.AppEng;
 
-public class QnbFormedModel implements BasicUnbakedModel {
+public class QnbFormedModel implements BasicUnbakedModel<QnbFormedModel> {
 
     private static final ResourceLocation MODEL_RING = new ResourceLocation(AppEng.MOD_ID, "block/qnb/ring");
 
-    @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBakery modelBakery, Function<Material, TextureAtlasSprite> textureGetter,
-            ModelState modelState, ResourceLocation resourceLocation) {
-        BakedModel ringModel = modelBakery.bake(MODEL_RING, modelState);
-        return new QnbFormedBakedModel(ringModel, textureGetter);
+    public BakedModel bake(IModelConfiguration owner, ModelBakery bakery,
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
+        BakedModel ringModel = bakery.bake(MODEL_RING, modelTransform, spriteGetter);
+        return new QnbFormedBakedModel(ringModel, spriteGetter);
     }
 
     @Override
-    public Collection<ResourceLocation> getDependencies() {
+    public Collection<ResourceLocation> getModelDependencies() {
         return ImmutableSet.of(MODEL_RING);
     }
 
