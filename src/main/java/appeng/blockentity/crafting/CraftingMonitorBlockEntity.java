@@ -27,14 +27,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.stacks.GenericStack;
 import appeng.api.util.AEColor;
-import appeng.core.definitions.AEBlocks;
 
 public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements IColorableBlockEntity {
 
@@ -78,16 +76,6 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
     }
 
-    @Override
-    public boolean isAccelerator() {
-        return false;
-    }
-
-    @Override
-    public boolean isStatus() {
-        return true;
-    }
-
     public void setJob(@Nullable GenericStack stack) {
         if (!Objects.equals(this.display, stack)) {
             this.display = stack;
@@ -115,11 +103,6 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
         this.saveChanges();
         this.markForUpdate();
         return true;
-    }
-
-    @Override
-    protected Item getItemFromBlockEntity() {
-        return AEBlocks.CRAFTING_MONITOR.asItem();
     }
 
     @Override

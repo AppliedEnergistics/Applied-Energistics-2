@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,7 +43,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.block.crafting.AbstractCraftingUnitBlock.CraftingUnitType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
@@ -69,11 +69,10 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     protected Item getItemFromBlockEntity() {
-        if (isAccelerator()) {
-            return AEBlocks.CRAFTING_ACCELERATOR.asItem();
-        } else {
-            return AEBlocks.CRAFTING_UNIT.asItem();
+        if (this.level == null) {
+            return Items.AIR;
         }
+        return getUnitBlock().type.getItemFromType();
     }
 
     @Override
@@ -89,15 +88,19 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
     }
 
-    public boolean isAccelerator() {
-        if (this.level == null) {
-            return false;
+    public AbstractCraftingUnitBlock<?> getUnitBlock() {
+        if (this.level == null || this.notLoaded() || this.isRemoved()) {
+            return AEBlocks.CRAFTING_UNIT.block();
         }
+        return (AbstractCraftingUnitBlock<?>) this.level.getBlockState(this.worldPosition).getBlock();
+    }
 
-        final AbstractCraftingUnitBlock<?> unit = (AbstractCraftingUnitBlock<?>) this.level
-                .getBlockState(this.worldPosition)
-                .getBlock();
-        return unit.type == CraftingUnitType.ACCELERATOR;
+    public int getStorageBytes() {
+        return getUnitBlock().type.getStorageBytes();
+    }
+
+    public int getAcceleratorThreads() {
+        return getUnitBlock().type.getAcceleratorThreads();
     }
 
     @Override
@@ -214,18 +217,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         if (reason != IGridNodeListener.State.GRID_BOOT) {
             this.updateSubType(false);
         }
-    }
-
-    public boolean isStatus() {
-        return false;
-    }
-
-    public boolean isStorage() {
-        return false;
-    }
-
-    public int getStorageBytes() {
-        return 0;
     }
 
     public void breakCluster() {

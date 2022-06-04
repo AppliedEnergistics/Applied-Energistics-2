@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 
 public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorBlockEntity> {
-    public CraftingMonitorBlock(BlockBehaviour.Properties props) {
-        super(props, CraftingUnitType.MONITOR);
+    public CraftingMonitorBlock(BlockBehaviour.Properties props, ICraftingUnitType type) {
+        super(props, type);
     }
 }

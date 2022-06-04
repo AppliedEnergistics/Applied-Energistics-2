@@ -39,7 +39,6 @@ import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
-import appeng.blockentity.crafting.CraftingStorageBlockEntity;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
@@ -129,8 +128,8 @@ public final class AEBlockEntities {
     public static final BlockEntityType<CraftingBlockEntity> CRAFTING_UNIT = create("crafting_unit",
             CraftingBlockEntity.class, CraftingBlockEntity::new, AEBlocks.CRAFTING_UNIT,
             AEBlocks.CRAFTING_ACCELERATOR);
-    public static final BlockEntityType<CraftingStorageBlockEntity> CRAFTING_STORAGE = create("crafting_storage",
-            CraftingStorageBlockEntity.class, CraftingStorageBlockEntity::new, AEBlocks.CRAFTING_STORAGE_1K,
+    public static final BlockEntityType<CraftingBlockEntity> CRAFTING_STORAGE = create("crafting_storage",
+            CraftingBlockEntity.class, CraftingBlockEntity::new, AEBlocks.CRAFTING_STORAGE_1K,
             AEBlocks.CRAFTING_STORAGE_4K, AEBlocks.CRAFTING_STORAGE_16K, AEBlocks.CRAFTING_STORAGE_64K,
             AEBlocks.CRAFTING_STORAGE_256K);
     public static final BlockEntityType<CraftingMonitorBlockEntity> CRAFTING_MONITOR = create("crafting_monitor",

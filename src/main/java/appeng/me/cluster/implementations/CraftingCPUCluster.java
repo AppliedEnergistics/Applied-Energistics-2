@@ -61,12 +61,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     private final BlockPos boundsMax;
     // INSTANCE sate
     private final List<CraftingBlockEntity> blockEntities = new ArrayList<>();
-    private final List<CraftingBlockEntity> storage = new ArrayList<>();
     private final List<CraftingMonitorBlockEntity> status = new ArrayList<>();
     private final ConfigManager configManager = new ConfigManager(this::markDirty);
     private Component myName = null;
     private boolean isDestroyed = false;
-    private long availableStorage = 0;
+    private long storage = 0;
     private MachineSource machineSrc = null;
     private int accelerator = 0;
     /**
@@ -147,13 +146,18 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         te.saveChanges();
         this.blockEntities.add(0, te);
 
-        if (te.isStorage()) {
-            this.availableStorage += te.getStorageBytes();
-            this.storage.add(te);
-        } else if (te.isStatus()) {
+        if (te instanceof CraftingMonitorBlockEntity) {
             this.status.add((CraftingMonitorBlockEntity) te);
-        } else if (te.isAccelerator()) {
-            this.accelerator++;
+        }
+        if (te.getStorageBytes() > 0) {
+            this.storage += te.getStorageBytes();
+        }
+        if (te.getAcceleratorThreads() > 0) {
+            if (te.getAcceleratorThreads() <= 16) {
+                this.accelerator += te.getAcceleratorThreads();
+            } else {
+                throw new IllegalArgumentException("Co-processor threads may not exceed 16 per single unit block.");
+            }
         }
     }
 
@@ -228,7 +232,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
 
     @Override
     public long getAvailableStorage() {
-        return this.availableStorage;
+        return this.storage;
     }
 
     @Override
