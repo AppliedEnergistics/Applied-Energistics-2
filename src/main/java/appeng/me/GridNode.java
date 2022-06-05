@@ -541,8 +541,8 @@ public class GridNode implements IGridNode, IPathItem {
 
     void setGridStorage(GridStorage s) {
         this.myStorage = s;
-        this.usedChannels = 0;
-        this.lastUsedChannels = 0;
+        // Don't reset the channels, since we want the node to remain active until repathing is done to immediately
+        // re-add services (such as storage) for active nodes when they join the grid.
     }
 
     @Override
