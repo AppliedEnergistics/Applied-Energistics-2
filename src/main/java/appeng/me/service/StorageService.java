@@ -147,9 +147,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         if (storageProvider != null) {
             ProviderState state = new ProviderState(storageProvider);
             this.nodeProviders.put(node, state);
-            if (node.isActive()) {
-                state.mount();
-            }
+            state.mount();
         }
 
         var watcher = node.getService(IStorageWatcherNode.class);
