@@ -90,4 +90,9 @@ public interface AppEng {
      */
     @Nullable
     MinecraftServer getCurrentServer();
+
+    /**
+     * registers Hotkeys for {@link appeng.hotkeys.HotkeyActions}
+     */
+    void registerHotkey(String id);
 }
