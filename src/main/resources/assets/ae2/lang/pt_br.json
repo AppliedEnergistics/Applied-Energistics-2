@@ -269,8 +269,6 @@
   "gui.ae2.OfSecondOutput": "%1$d%% de Chance de Saída Secundária.",
   "gui.ae2.Or": "ou",
   "gui.ae2.Orange": "Laranja",
-  "gui.ae2.P2PAttunementEnergy": "Armazenamento de Energia Portátil (ex: Baterias)",
-  "gui.ae2.P2PAttunementFluid": "Armazenamento de Fluido Portátil (ex: Tanques, Baldes)",
   "gui.ae2.PartialPlan": "Plano parcial (Ingredientes faltando)",
   "gui.ae2.Partitioned": "Particionado",
   "gui.ae2.PatternAccessTerminal": "Terminal de Acesso aos Padrões",
