@@ -38,6 +38,11 @@ public class AppEngServer extends AppEngBase {
     }
 
     @Override
+    public void registerHotkey(String id) {
+        // don't register any Hotkeys
+    }
+
+    @Override
     public void spawnEffect(EffectType effect, Level level, double posX, double posY, double posZ, Object o) {
         // Spawning client-side effects on a server is impossible
     }

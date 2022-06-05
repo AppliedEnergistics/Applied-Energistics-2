@@ -9,11 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import appeng.api.features.HotkeyAction;
-import appeng.client.Hotkeys;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.tools.powered.PortableCellItem;
-import appeng.util.Platform;
 
 /**
  * registers {@link HotkeyAction}
@@ -63,9 +62,7 @@ public class HotkeyActions {
             REGISTRY.get(id).add(0, hotkeyAction);
         } else {
             REGISTRY.put(id, new ArrayList<>(List.of(hotkeyAction)));
-            if (Platform.isClient()) {
-                Hotkeys.registerHotkey(id);
-            }
+            AppEng.instance().registerHotkey(id);
         }
     }
 }

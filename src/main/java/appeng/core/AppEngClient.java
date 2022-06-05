@@ -145,6 +145,11 @@ public class AppEngClient extends AppEngBase {
         return Minecraft.getInstance().level;
     }
 
+    @Override
+    public void registerHotkey(String id) {
+        Hotkeys.registerHotkey(id);
+    }
+
     public static AppEngClient instance() {
         return Objects.requireNonNull(INSTANCE, "AppEngClient is not initialized");
     }
