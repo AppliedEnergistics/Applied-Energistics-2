@@ -100,7 +100,7 @@ public class InitStackRenderHandlers {
 
         @Override
         public List<Component> getTooltip(AEItemKey stack) {
-            return stack.toStack().getTooltipLines(null,
+            return stack.toStack().getTooltipLines(Minecraft.getInstance().player,
                     Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED
                             : TooltipFlag.Default.NORMAL);
         }
