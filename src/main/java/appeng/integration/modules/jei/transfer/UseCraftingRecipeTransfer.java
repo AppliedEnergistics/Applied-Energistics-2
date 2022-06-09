@@ -51,6 +51,13 @@ import appeng.util.CraftingRecipeUtil;
  */
 public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends AbstractTransferHandler<T> {
 
+    // Colors for the slot highlights
+    private static final int BLUE_SLOT_HIGHLIGHT_COLOR = 0x400000ff;
+    private static final int RED_SLOT_HIGHLIGHT_COLOR = 0x66ff0000;
+    // Colors for the buttons
+    private static final int BLUE_PLUS_BUTTON_COLOR = 0x804545FF;
+    private static final int ORANGE_PLUS_BUTTON_COLOR = 0x80FFA500;
+
     private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
             .comparing(GridInventoryEntry::getStoredAmount);
 
@@ -89,7 +96,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
             if (missingSlots.totalSize() != 0) {
                 // Highlight the slots with missing ingredients
                 var result = Result.createSuccessful()
-                        .color(missingSlots.anyMissing() ? 0x80FFA500 : 0x804545FF)
+                        .color(missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR)
                         .renderer(createErrorRenderer(missingSlots));
 
                 // Redo this once REI allows appending below the tooltip instead of overriding it...
@@ -212,7 +219,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                         matrices.translate(0, 0, 400);
                         Rectangle innerBounds = ((Slot) widget).getInnerBounds();
                         GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                                innerBounds.getMaxY(), missing ? 0x40ff0000 : 0x400000ff);
+                                innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
                         matrices.popPose();
                     }
                 }
