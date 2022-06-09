@@ -19,7 +19,6 @@
 package appeng.core;
 
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,13 +26,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -41,7 +37,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
@@ -56,7 +51,6 @@ import net.minecraft.world.phys.HitResult;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
-import appeng.client.ActionKey;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.gui.style.StyleManager;
@@ -99,8 +93,6 @@ public class AppEngClient extends AppEngBase {
     private final static String KEY_CATEGORY = "key.ae2.category";
 
     private static AppEngClient INSTANCE;
-
-    private final EnumMap<ActionKey, KeyMapping> bindings = new EnumMap<>(ActionKey.class);
 
     /**
      * Last known cable render mode. Used to update all rendered blocks once at the end of the tick when the mode is
@@ -188,12 +180,6 @@ public class AppEngClient extends AppEngBase {
 
         MouseWheelScrolled.EVENT.register(this::wheelEvent);
         WorldRenderEvents.LAST.register(OverlayManager.getInstance()::renderWorldLastEvent);
-
-        for (var key : ActionKey.values()) {
-            var binding = new KeyMapping(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
-            KeyBindingHelper.registerKeyBinding(binding);
-            this.bindings.put(key, binding);
-        }
     }
 
     private void registerEntityRenderers() {
@@ -243,11 +229,6 @@ public class AppEngClient extends AppEngBase {
         }
 
         return false;
-    }
-
-    public boolean isActionKey(ActionKey key, Key pressedKey) {
-        // TODO FABRIC 117 Check if this is accurate (i think scanline is ignored for identified keys)
-        return this.bindings.get(key).matches(pressedKey.getValue(), -1);
     }
 
     public boolean shouldAddParticles(Random r) {
