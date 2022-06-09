@@ -368,7 +368,7 @@
   "gui.ae2.security.inject.tip": "Користувачу дозволено зберігати нові елементи у сховищі.",
   "gui.ae2.security.security.name": "Безпека",
   "gui.ae2.security.security.tip": "Користувач може мати доступ і змінювати термінали безпеки мережі.",
-  "gui.ae2.units.appliedenergstics": "AE",
+  "gui.ae2.units.appliedenergistics": "AE",
   "gui.ae2.units.tr": "Мі",
   "gui.tooltips.ae2.ActiveOnPulse": "Активувати одноразово на імпульс",
   "gui.tooltips.ae2.ActiveWithSignal": "Активне з сигналом",

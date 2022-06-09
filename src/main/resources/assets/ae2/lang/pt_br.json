@@ -369,7 +369,7 @@
   "gui.ae2.security.inject.tip": "O usuário tem permissão para guardar novos itens no armazenamento.",
   "gui.ae2.security.security.name": "Segurança",
   "gui.ae2.security.security.tip": "O usuário pode acessar e modificar o terminal de segurança da rede.",
-  "gui.ae2.units.appliedenergstics": "AE",
+  "gui.ae2.units.appliedenergistics": "AE",
   "gui.ae2.units.tr": "E",
   "gui.tooltips.ae2.ActiveOnPulse": "Ativar uma vez por pulso",
   "gui.tooltips.ae2.ActiveWithSignal": "Ativo com sinal",

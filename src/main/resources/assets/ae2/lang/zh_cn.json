@@ -354,7 +354,7 @@
   "gui.ae2.security.inject.tip": "允许用户向网络中存入物品。",
   "gui.ae2.security.security.name": "安全",
   "gui.ae2.security.security.tip": "用户可以访问并修改网络的安全终端。",
-  "gui.ae2.units.appliedenergstics": "AE",
+  "gui.ae2.units.appliedenergistics": "AE",
   "gui.ae2.units.tr": "E",
   "gui.tooltips.ae2.ActiveOnPulse": "有脉冲信号时激活",
   "gui.tooltips.ae2.ActiveWithSignal": "有信号时激活",

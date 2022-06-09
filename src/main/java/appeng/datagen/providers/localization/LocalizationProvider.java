@@ -107,7 +107,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("gui.ae2.security.inject.tip", "User is allowed to store new items into storage.");
         add("gui.ae2.security.security.name", "Security");
         add("gui.ae2.security.security.tip", "User can access and modify the security terminal of the network.");
-        add("gui.ae2.units.appliedenergstics", "AE");
+        add("gui.ae2.units.appliedenergistics", "AE");
         add("gui.ae2.units.tr", "E");
         add("itemGroup.ae2.facades", "Applied Energistics 2 - Facades");
         add("itemGroup.ae2.main", "Applied Energistics 2");

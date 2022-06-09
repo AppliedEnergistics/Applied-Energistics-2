@@ -332,7 +332,7 @@
   "gui.ae2.security.inject.tip": "Пользователю позволено хранить новые предметы в хранилище.",
   "gui.ae2.security.security.name": "Безопасность",
   "gui.ae2.security.security.tip": "Пользователь может иметь доступ и изменять терминал безопасности сети.",
-  "gui.ae2.units.appliedenergstics": "АЕ",
+  "gui.ae2.units.appliedenergistics": "АЕ",
   "gui.ae2.units.tr": "Е",
   "gui.tooltips.ae2.ActiveOnPulse": "Активируется 1 раз за импульс",
   "gui.tooltips.ae2.ActiveWithSignal": "Активируется сигналом",
