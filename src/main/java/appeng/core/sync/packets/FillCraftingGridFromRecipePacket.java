@@ -19,7 +19,10 @@
 package appeng.core.sync.packets;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -38,7 +41,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AELog;
@@ -69,6 +75,11 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
      */
     private NonNullList<ItemStack> ingredientTemplates;
 
+    /**
+     * True if missing entries should be queued for autocrafting instead.
+     */
+    private boolean craftMissing;
+
     public FillCraftingGridFromRecipePacket(FriendlyByteBuf stream) {
         if (stream.readBoolean()) {
             this.recipeId = stream.readResourceLocation();
@@ -80,10 +91,11 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         for (int i = 0; i < ingredientTemplates.size(); i++) {
             ingredientTemplates.set(i, stream.readItem());
         }
+        craftMissing = stream.readBoolean();
     }
 
     public FillCraftingGridFromRecipePacket(@Nullable ResourceLocation recipeId,
-            NonNullList<ItemStack> ingredientTemplates) {
+            NonNullList<ItemStack> ingredientTemplates, boolean craftMissing) {
         var data = new FriendlyByteBuf(Unpooled.buffer());
 
         data.writeInt(this.getPacketID());
@@ -97,6 +109,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         for (var stack : ingredientTemplates) {
             data.writeItem(stack);
         }
+        data.writeBoolean(craftMissing);
 
         configureWrite(data);
     }
@@ -136,6 +149,10 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         var cachedStorage = grid.getStorageService().getCachedInventory();
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
         var ingredients = getDesiredIngredients(player);
+
+        // Prepare to autocraft some stuff
+        var craftingService = grid.getCraftingService();
+        var toAutoCraft = new LinkedHashMap<AEKey, Long>();
 
         // Handle each slot
         for (var x = 0; x < craftMatrix.size(); x++) {
@@ -190,9 +207,22 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
             }
 
             craftMatrix.setItemDirect(x, currentItem);
+
+            // If we couldn't find the item, schedule its autocrafting
+            if (currentItem.isEmpty() && craftMissing) {
+                findCraftableKey(ingredient, craftingService).ifPresent(key -> {
+                    toAutoCraft.merge(key, 1L, Long::sum);
+                });
+            }
         }
 
         menu.slotsChanged(craftMatrix.toContainer());
+
+        if (!toAutoCraft.isEmpty()) {
+            // This must be the last call since it changes the menu!
+            var stacks = toAutoCraft.entrySet().stream().map(e -> new GenericStack(e.getKey(), e.getValue())).toList();
+            cct.startAutoCrafting(stacks);
+        }
     }
 
     private ItemStack takeIngredientFromPlayer(ServerPlayer player, Ingredient ingredient) {
@@ -262,5 +292,14 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
                 .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))//
                 .map(e -> (AEItemKey) e.getKey())//
                 .toList();
+    }
+
+    private Optional<AEItemKey> findCraftableKey(Ingredient ingredient, ICraftingService craftingService) {
+        return Arrays.stream(ingredient.getItems())//
+                .map(AEItemKey::of)//
+                .map(s -> (AEItemKey) craftingService.getFuzzyCraftable(s,
+                        key -> ingredient.test(((AEItemKey) key).toStack())))//
+                .filter(Objects::nonNull)//
+                .findAny();//
     }
 }
