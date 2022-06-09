@@ -19,11 +19,13 @@
 package appeng.menu.me.items;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -41,6 +43,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -49,6 +52,7 @@ import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
+import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.parts.reporting.CraftingTerminalPart;
@@ -146,6 +150,11 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         return true;
     }
 
+    @Override
+    public void startAutoCrafting(List<GenericStack> toCraft) {
+        CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(), toCraft);
+    }
+
     public Recipe<CraftingContainer> getCurrentRecipe() {
         return this.currentRecipe;
     }
@@ -181,14 +190,16 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     /**
      * Determines which slots of the given slot-to-item map cannot be filled with items based on the contents of this
      * terminal or player inventory.
-     * 
-     * @return The keys of the given slot-map for which no stored ingredients could be found.
+     *
+     * @return The keys of the given slot-map for which no stored ingredients could be found, separated in craftable and
+     *         missing items.
      */
-    public Set<Integer> findMissingIngredients(Map<Integer, Ingredient> ingredients) {
+    public MissingIngredientSlots findMissingIngredients(Map<Integer, Ingredient> ingredients) {
 
         // Try to figure out if any slots have missing ingredients
         // Find every "slot" (in JEI parlance) that has no equivalent item in the item repo or player inventory
-        Set<Integer> missingSlots = new HashSet<>();
+        Set<Integer> missingSlots = new HashSet<>(); // missing but not craftable
+        Set<Integer> craftableSlots = new HashSet<>(); // missing but craftable
 
         // We need to track how many of a given item stack we've already used for other slots in the recipe.
         // Otherwise recipes that need 4x<item> will not correctly show missing items if at least 1 of <item> is in
@@ -225,12 +236,51 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
                 }
             }
 
+            // Check the terminal once again, but this time for craftable items
+            if (!found) {
+                for (var stack : ingredient.getItems()) {
+                    if (isCraftable(stack)) {
+                        craftableSlots.add(entry.getKey());
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
             if (!found) {
                 missingSlots.add(entry.getKey());
             }
         }
 
-        return missingSlots;
+        return new MissingIngredientSlots(missingSlots, craftableSlots);
+    }
+
+    public record MissingIngredientSlots(Set<Integer> missingSlots, Set<Integer> craftableSlots) {
+        public int totalSize() {
+            return missingSlots.size() + craftableSlots.size();
+        }
+
+        public boolean anyMissing() {
+            return missingSlots.size() > 0;
+        }
+
+        public boolean anyCraftable() {
+            return craftableSlots.size() > 0;
+        }
+    }
+
+    protected boolean isCraftable(ItemStack itemStack) {
+        var clientRepo = getClientRepo();
+
+        if (clientRepo != null) {
+            for (var stack : clientRepo.getAllEntries()) {
+                if (AEItemKey.matches(stack.getWhat(), itemStack) && stack.isCraftable()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public void clearToPlayerInventory() {

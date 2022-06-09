@@ -6,12 +6,17 @@ import java.util.Locale;
  * Texts for the integrations with item-mods like REI or JEI.
  */
 public enum ItemModText implements LocalizationEnum {
+    // Recipe transfer handling
     MISSING_ID("Cannot identify recipe"),
     MISSING_ITEMS("Missing items will be skipped"),
     INCOMPATIBLE_RECIPE("Incompatible recipe"),
     NO_OUTPUT("Recipe has no output"),
     RECIPE_TOO_LARGE("Recipe larger than 3x3"),
     REQUIRES_PROCESSING_MODE("Requires processing mode"),
+    NO_ITEMS("Found no compatible items"),
+    WILL_CRAFT("Will craft unavailable items"),
+    CTRL_CLICK_TO_CRAFT("CTRL + click to craft unavailable items"),
+    // Display of AE2-specific REI/JEI entries
     THROWING_IN_WATER_CATEGORY("Throwing In Water"),
     WITH_CRYSTAL_GROWTH_ACCELERATORS("With Crystal Growth Accelerators:"),
     P2P_API_ATTUNEMENT("Attune with any:"),

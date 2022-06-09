@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.GenericStack;
 
 public interface IMenuCraftingPacket {
     /**
@@ -51,4 +52,12 @@ public interface IMenuCraftingPacket {
      * @return array of view cells. can contain empty itemstacks.
      */
     List<ItemStack> getViewCells();
+
+    /**
+     * Autocraft the passed keys, in order. Will likely open the craft confirm menu, so this menu should not be used
+     * afterwards.
+     */
+    default void startAutoCrafting(List<GenericStack> toCraft) {
+        // TODO 1.19: remove default implementation
+    }
 }

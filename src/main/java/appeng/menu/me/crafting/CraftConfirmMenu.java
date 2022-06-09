@@ -18,6 +18,7 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.Level;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
@@ -41,6 +43,7 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.AELog;
@@ -48,8 +51,10 @@ import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
+import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.locator.MenuLocator;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftConfirmScreen
@@ -94,6 +99,16 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     private final ITerminalHost host;
 
+    /**
+     * List of stacks to craft, once this request is through. This is currently used when requesting multiple
+     * ingredients of a recipe in REI at the same time via ctrl+click.
+     * <p>
+     * The list is empty if the stacks have been requested via REI and canceling should just return to the screen, null
+     * if canceling should return to the craft amount menu.
+     */
+    @Nullable
+    private List<GenericStack> autoCraftingQueue;
+
     public CraftConfirmMenu(int id, Inventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
         this.host = te;
@@ -104,6 +119,47 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         registerClientAction(ACTION_BACK, this::goBack);
         registerClientAction(ACTION_CYCLE_CPU, Boolean.class, this::cycleSelectedCPU);
         registerClientAction(ACTION_START_JOB, this::startJob);
+    }
+
+    /**
+     * Open with a list of items to craft, i.e. via REI ctrl+click.
+     */
+    public static void openWithCraftingList(@Nullable IActionHost terminal, ServerPlayer player,
+            @Nullable MenuLocator locator, List<GenericStack> stacksToCraft) {
+        if (terminal == null || locator == null || stacksToCraft.isEmpty()) {
+            return;
+        }
+
+        var firstToCraft = stacksToCraft.get(0);
+        var subsequentCrafts = stacksToCraft.subList(1, stacksToCraft.size());
+
+        final IGridNode gn = terminal.getActionableNode();
+        if (gn == null) {
+            return;
+        }
+
+        final IGrid g = gn.getGrid();
+        Future<ICraftingPlan> futureJob = null;
+        try {
+            var cg = g.getCraftingService();
+            var actionSource = IActionSource.ofPlayer(player, terminal);
+            // Use CRAFT_LESS to still try to partially craft the ingredients.
+            futureJob = cg.beginCraftingCalculation(player.level, () -> actionSource, firstToCraft.what(),
+                    firstToCraft.amount(), CalculationStrategy.CRAFT_LESS);
+
+            MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
+
+            if (player.containerMenu instanceof CraftConfirmMenu ccc) {
+                ccc.setJob(futureJob);
+                ccc.autoCraftingQueue = subsequentCrafts;
+                ccc.broadcastChanges();
+            }
+        } catch (Throwable e) {
+            if (futureJob != null) {
+                futureJob.cancel(true);
+            }
+            AELog.info(e);
+        }
     }
 
     public void cycleSelectedCPU(boolean next) {
@@ -181,7 +237,13 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
             final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
             if (g != null) {
-                this.host.returnToMainMenu(getPlayer(), this);
+                if (autoCraftingQueue != null && !autoCraftingQueue.isEmpty()) {
+                    // Process next stack!
+                    CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(),
+                            autoCraftingQueue);
+                } else {
+                    this.host.returnToMainMenu(getPlayer(), this);
+                }
             }
         }
     }
@@ -268,8 +330,15 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     public void goBack() {
         Player player = getPlayerInventory().player;
         if (player instanceof ServerPlayer serverPlayer) {
-            if (whatToCraft != null) {
+            if (autoCraftingQueue != null && !autoCraftingQueue.isEmpty()) {
+                // Process next stack!
+                CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(),
+                        autoCraftingQueue);
+            } else if (whatToCraft != null) {
                 CraftAmountMenu.open(serverPlayer, getLocator(), whatToCraft, amount);
+            } else {
+                // Go back to host menu
+                this.host.returnToMainMenu(getPlayer(), this);
             }
         } else {
             sendClientAction(ACTION_BACK);
