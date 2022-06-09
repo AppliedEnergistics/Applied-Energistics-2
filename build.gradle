@@ -48,6 +48,13 @@ repositories {
             includeGroup "org.parchmentmc.data"
         }
     }
+    // For the "No Indium?" mod
+    maven {
+        url = 'https://maven.cafeteria.dev/releases/'
+        content {
+            includeGroup "me.luligabi"
+        }
+    }
 }
 
 dependencies {
@@ -76,6 +83,9 @@ dependencies {
     include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
+
+    // Include No Indium? https://github.com/Luligabi1/NoIndium
+    include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
