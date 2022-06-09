@@ -49,7 +49,7 @@ body:
         - 1.12 - UNSUPPORTED
         - 1.10 - UNSUPPORTED
         - 1.7  - UNSUPPORTED
-      description: If the version is UNSUPPORTED, it means your issue will be closed immediately, so don't bother! This is because of our limited development time.
+      description: If the version is UNSUPPORTED, it means your issue will be closed immediately, so don't bother! This is because of the developers' limited time.
     validations:
       required: true
   - type: dropdown
