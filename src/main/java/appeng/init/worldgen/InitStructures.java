@@ -31,6 +31,8 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
+import appeng.core.AEConfig;
+import appeng.core.AELog;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
@@ -50,11 +52,15 @@ public final class InitStructures {
                 MeteoriteStructure.INSTANCE.configured(NoneFeatureConfiguration.INSTANCE,
                         MeteoriteStructure.BIOME_TAG_KEY));
 
-        StructureSets.register(
-                MeteoriteStructure.STRUCTURE_SET_KEY,
-                new StructureSet(
-                        List.of(StructureSet.entry(MeteoriteStructure.CONFIGURED_INSTANCE)),
-                        new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
+        if (AEConfig.instance().isGenerateMeteorites()) {
+            StructureSets.register(
+                    MeteoriteStructure.STRUCTURE_SET_KEY,
+                    new StructureSet(
+                            List.of(StructureSet.entry(MeteoriteStructure.CONFIGURED_INSTANCE)),
+                            new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
+        } else {
+            AELog.info("AE2 meteorites are disabled in the config file.");
+        }
     }
 
     // This mirrors the Vanilla registration method for structures, but uses the
