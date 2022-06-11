@@ -36,6 +36,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.parts.IFacadeContainer;
@@ -335,5 +337,10 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
         return InteractionResult.sidedSuccess(level.isClientSide());
 
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(CollisionContext context) {
+        return cb.getCollisionShape(context);
     }
 }

@@ -32,6 +32,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
@@ -142,6 +145,36 @@ public interface IPartHost extends ICustomCableConnection {
     SelectedPart selectPartLocal(Vec3 pos);
 
     /**
+     * Gets the collision shape of the part host. Used to reject placing parts if the resulting collision shape would be
+     * obstructed in the level.
+     *
+     * @return The collision shape of this part host including all attached parts.
+     */
+    // TODO 1.19: Remove default implementation in 1.19
+    default VoxelShape getCollisionShape(CollisionContext context) {
+        return Shapes.empty();
+    }
+
+    /**
+     * Removes a specific part from this host and returns if the part was actually present and removed.
+     */
+    // TODO 1.19: Remove default implementation in 1.19, rename "removePart(Direction)" to "removePartFromSide", rename
+    // this to "removePart"
+    default boolean removePartInstance(IPart part) {
+        if (getPart(null) == part) {
+            removePart(null);
+            return true;
+        }
+        for (var side : Direction.values()) {
+            if (getPart(side) == part) {
+                removePart(side);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Same as {@link #selectPartLocal(Vec3)}, but with world instead of local coordinates. Provided for easier
      * interoperability with {@link BlockHitResult#getLocation()}.
      */
@@ -188,5 +221,4 @@ public interface IPartHost extends ICustomCableConnection {
      * @return true if block entity is in world
      */
     boolean isInWorld();
-
 }
