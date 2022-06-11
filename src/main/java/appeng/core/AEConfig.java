@@ -381,6 +381,10 @@ public final class AEConfig {
         return COMMON.generateQuartzOre.get();
     }
 
+    public boolean isGenerateMeteorites() {
+        return COMMON.generateMeteorites.get();
+    }
+
     public boolean isMatterCanonBlockDamageEnabled() {
         return COMMON.matterCannonBlockDamage.get();
     }
@@ -534,6 +538,7 @@ public final class AEConfig {
         public final IntegerOption quartzOresPerCluster;
         public final IntegerOption quartzOresClusterAmount;
         public final BooleanOption generateQuartzOre;
+        public final BooleanOption generateMeteorites;
         public final StringListOption quartzOresBiomeBlacklist;
 
         // Meteors
@@ -634,6 +639,7 @@ public final class AEConfig {
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
 
             this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);
+            this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
             this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 7);
             this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
             this.quartzOresBiomeBlacklist = worldGen.addStringList("quartzOresBiomeBlacklist", new ArrayList<>(),
