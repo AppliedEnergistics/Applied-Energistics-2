@@ -85,6 +85,19 @@ public class PartPlacement {
             return null;
         }
 
+        // Check collisions with entities and revert placement
+        // Due to cables being able to react to parts being added to the host, we can't really
+        // simulate this without really placing the part
+        var collisionShape = host.getCollisionShape(null);
+        if (!collisionShape.isEmpty()
+                && !level.isUnobstructed(null, collisionShape.move(pos.getX(), pos.getY(), pos.getZ()))) {
+            host.removePartInstance(addedPart);
+            if (host.isEmpty()) {
+                host.cleanup();
+            }
+            return null;
+        }
+
         // Import settings from the item if possible
         if (configTag != null) {
             try {
