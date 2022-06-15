@@ -66,6 +66,9 @@ public class OverlayManager {
         }
 
         poseStack.popPose();
+
+        buffer.endBatch(OverlayRenderType.getBlockHilightFace());
+        buffer.endBatch(OverlayRenderType.getBlockHilightLine());
     }
 
     public OverlayRenderer showArea(IOverlayDataSource source) {
