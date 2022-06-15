@@ -30,6 +30,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MilkBucketItem;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -371,8 +372,10 @@ public class AECraftingPattern implements IAEPatternDetails {
         }
 
         var containedFluid = FluidContainerHelper.getContainedStack(itemKey.toStack());
+        // Milk is not natively a fluid container, but it might be made one by other mods
+        var isBucket = itemKey.getItem() instanceof BucketItem || itemKey.getItem() instanceof MilkBucketItem;
 
-        if (canSubstituteFluids && containedFluid != null && itemKey.getItem() instanceof BucketItem) {
+        if (canSubstituteFluids && containedFluid != null && isBucket) {
             // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)
 
             // Check that the remaining item is indeed the emptied container.
