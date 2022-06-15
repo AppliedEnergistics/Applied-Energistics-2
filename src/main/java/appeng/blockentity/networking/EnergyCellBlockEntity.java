@@ -227,7 +227,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         return this.internalMaxPower;
     }
 
-    void setInternalMaxPower(double internalMaxPower) {
+    public void setInternalMaxPower(double internalMaxPower) {
         this.internalMaxPower = internalMaxPower;
     }
 
