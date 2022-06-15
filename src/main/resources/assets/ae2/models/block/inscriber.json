@@ -1,149 +1,161 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/orientable",
-	"textures": {
-		"Inside2": "ae2:block/inscriber_inside_2",
-		"particle": "ae2:block/inscriber",
-		"Main": "ae2:block/inscriber",
-		"Inside": "ae2:block/inscriber_inside"
-	},
-	"elements": [
-		{
-			"name": "Topframe",
-			"from": [0, 12, 0],
-			"to": [16, 16, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
-			"faces": {
-				"north": {"uv": [0, 0, 16, 4], "texture": "#Main"},
-				"east": {"uv": [0, 0, 16, 4], "texture": "#Main"},
-				"south": {"uv": [0, 0, 16, 4], "texture": "#Main"},
-				"west": {"uv": [0, 0, 16, 4], "texture": "#Main"},
-				"up": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#Main"},
-				"down": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#Inside"}
-			}
-		},
-		{
-			"name": "Bottomframe",
-			"from": [0, 0, 0],
-			"to": [16, 4, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
-			"faces": {
-				"north": {"uv": [0, 12, 16, 16], "texture": "#Main"},
-				"east": {"uv": [0, 12, 16, 16], "texture": "#Main"},
-				"south": {"uv": [0, 12, 16, 16], "texture": "#Main"},
-				"west": {"uv": [0, 12, 16, 16], "texture": "#Main"},
-				"up": {"uv": [0, 0, 16, 16], "rotation": 90, "texture": "#Inside"},
-				"down": {"uv": [0, 0, 16, 16], "rotation": 90, "texture": "#Main"}
-			}
-		},
-		{
-			"name": "RightJackscrew",
-			"from": [2, 4, 7],
-			"to": [3, 12, 9],
-			"faces": {
-				"north": {"uv": [7, 3, 8, 11], "texture": "#Inside2"},
-				"east": {"uv": [7, 4, 9, 12], "texture": "#Inside2"},
-				"south": {"uv": [8, 5, 9, 13], "texture": "#Inside2"},
-				"west": {"uv": [7, 4, 9, 12], "texture": "#Inside2"},
-				"up": {"uv": [6, 7, 7, 9], "texture": "#Inside2"},
-				"down": {"uv": [6, 7, 7, 9], "texture": "#Inside2"}
-			}
-		},
-		{
-			"name": "Rightframe",
-			"from": [0, 4, 2],
-			"to": [2, 12, 14],
-			"faces": {
-				"north": {"uv": [0, 4, 2, 12], "rotation": 180, "texture": "#Inside"},
-				"east": {"uv": [2, 4, 14, 12], "texture": "#Inside2"},
-				"south": {"uv": [0, 4, 2, 12], "texture": "#Inside"},
-				"west": {"uv": [2, 4, 14, 12], "texture": "#Main"},
-				"up": {"uv": [2, 2, 4, 14], "texture": "#Inside"},
-				"down": {"uv": [2, 2, 4, 14], "texture": "#Inside"}
-			}
-		},
-		{
-			"name": "Leftframe",
-			"from": [14, 4, 2],
-			"to": [16, 12, 14],
-			"faces": {
-				"north": {"uv": [0, 4, 2, 12], "texture": "#Inside"},
-				"east": {"uv": [2, 4, 14, 12], "rotation": 180, "texture": "#Main"},
-				"south": {"uv": [0, 4, 2, 12], "rotation": 180, "texture": "#Inside"},
-				"west": {"uv": [2, 4, 14, 12], "rotation": 180, "texture": "#Inside2"},
-				"up": {"uv": [2, 2, 4, 14], "rotation": 180, "texture": "#Inside"},
-				"down": {"uv": [2, 2, 4, 14], "rotation": 180, "texture": "#Inside"}
-			}
-		},
-		{
-			"name": "LeftJackscrew",
-			"from": [13, 4, 7],
-			"to": [14, 12, 9],
-			"faces": {
-				"north": {"uv": [7, 3, 8, 11], "rotation": 180, "texture": "#Inside2"},
-				"east": {"uv": [7, 4, 9, 12], "rotation": 180, "texture": "#Inside2"},
-				"south": {"uv": [8, 5, 9, 13], "rotation": 180, "texture": "#Inside2"},
-				"west": {"uv": [7, 4, 9, 12], "rotation": 180, "texture": "#Inside2"},
-				"up": {"uv": [6, 7, 7, 9], "rotation": 180, "texture": "#Inside2"},
-				"down": {"uv": [6, 7, 7, 9], "rotation": 180, "texture": "#Inside2"}
-			}
-		},
-		{
-			"name": "Back",
-			"from": [4, 4, 15],
-			"to": [12, 12, 16],
-			"faces": {
-				"north": {"uv": [4, 4, 12, 12], "texture": "#Inside2"},
-				"east": {"uv": [0, 4, 1, 12], "texture": "#Main"},
-				"south": {"uv": [4, 4, 12, 12], "texture": "#Main"},
-				"west": {"uv": [0, 4, 1, 12], "texture": "#Main"},
-				"up": {"uv": [4, 3, 12, 4], "texture": "#Main"},
-				"down": {"uv": [4, 3, 12, 4], "texture": "#Main"}
-			}
-		},
-		{
-			"name": "BackJackscrew",
-			"from": [7, 4, 14],
-			"to": [9, 12, 15],
-			"faces": {
-				"north": {"uv": [7, 4, 9, 12], "texture": "#Inside2"},
-				"east": {"uv": [8, 5, 9, 13], "texture": "#Inside2"},
-				"south": {"uv": [7, 4, 9, 12], "texture": "#Inside2"},
-				"west": {"uv": [7, 3, 8, 11], "texture": "#Inside2"},
-				"up": {"uv": [6, 7, 7, 9], "rotation": 270, "texture": "#Inside2"},
-				"down": {"uv": [6, 7, 7, 9], "rotation": 90, "texture": "#Inside2"}
-			}
-		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [75, 45, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [75, 45, 0],
-			"translation": [0, 2.5, 0],
-			"scale": [0.375, 0.375, 0.375]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, 45, 0],
-			"scale": [0.4, 0.4, 0.4]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
-			"scale": [0.4, 0.4, 0.4]
-		},
-		"ground": {
-			"translation": [0, 3, 0],
-			"scale": [0.25, 0.25, 0.25]
-		},
-		"gui": {
-			"rotation": [30, 225, 0],
-			"scale": [0.625, 0.625, 0.625]
-		},
-		"fixed": {
-			"scale": [0.5, 0.5, 0.5]
-		}
-	}
+  "credit": "Made with Blockbench",
+  "parent": "block/orientable",
+  "textures": {
+    "Inside2": "ae2:block/inscriber_inside_2",
+    "particle": "ae2:block/inscriber",
+    "Main": "ae2:block/inscriber",
+    "Inside": "ae2:block/inscriber_inside"
+  },
+  "elements": [
+    {
+      "name": "Topframe",
+      "from": [0, 12, 0],
+      "to": [16, 16, 16],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 8, 8] },
+      "faces": {
+        "north": { "uv": [0, 0, 16, 4], "texture": "#Main" },
+        "east": { "uv": [0, 0, 16, 4], "texture": "#Main" },
+        "south": { "uv": [0, 0, 16, 4], "texture": "#Main" },
+        "west": { "uv": [0, 0, 16, 4], "texture": "#Main" },
+        "up": { "uv": [0, 0, 16, 16], "rotation": 270, "texture": "#Main" },
+        "down": { "uv": [0, 0, 16, 16], "rotation": 270, "texture": "#Inside" }
+      }
+    },
+    {
+      "name": "Bottomframe",
+      "from": [0, 0, 0],
+      "to": [16, 4, 16],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 8, 8] },
+      "faces": {
+        "north": { "uv": [0, 12, 16, 16], "texture": "#Main" },
+        "east": { "uv": [0, 12, 16, 16], "texture": "#Main" },
+        "south": { "uv": [0, 12, 16, 16], "texture": "#Main" },
+        "west": { "uv": [0, 12, 16, 16], "texture": "#Main" },
+        "up": { "uv": [0, 0, 16, 16], "rotation": 90, "texture": "#Inside" },
+        "down": { "uv": [0, 0, 16, 16], "rotation": 90, "texture": "#Main" }
+      }
+    },
+    {
+      "name": "RightJackscrew",
+      "from": [2, 4, 7],
+      "to": [3, 12, 9],
+      "faces": {
+        "north": { "uv": [7, 3, 8, 11], "texture": "#Inside2" },
+        "east": { "uv": [7, 4, 9, 12], "texture": "#Inside2" },
+        "south": { "uv": [8, 5, 9, 13], "texture": "#Inside2" },
+        "west": { "uv": [7, 4, 9, 12], "texture": "#Inside2" },
+        "up": { "uv": [6, 7, 7, 9], "texture": "#Inside2" },
+        "down": { "uv": [6, 7, 7, 9], "texture": "#Inside2" }
+      }
+    },
+    {
+      "name": "Rightframe",
+      "from": [0, 4, 2],
+      "to": [2, 12, 14],
+      "faces": {
+        "north": { "uv": [0, 4, 2, 12], "rotation": 180, "texture": "#Inside" },
+        "east": { "uv": [2, 4, 14, 12], "texture": "#Inside2" },
+        "south": { "uv": [0, 4, 2, 12], "texture": "#Inside" },
+        "west": { "uv": [2, 4, 14, 12], "texture": "#Main" },
+        "up": { "uv": [2, 2, 4, 14], "texture": "#Inside" },
+        "down": { "uv": [2, 2, 4, 14], "texture": "#Inside" }
+      }
+    },
+    {
+      "name": "Leftframe",
+      "from": [14, 4, 2],
+      "to": [16, 12, 14],
+      "faces": {
+        "north": { "uv": [0, 4, 2, 12], "texture": "#Inside" },
+        "east": { "uv": [2, 4, 14, 12], "rotation": 180, "texture": "#Main" },
+        "south": { "uv": [0, 4, 2, 12], "rotation": 180, "texture": "#Inside" },
+        "west": {
+          "uv": [2, 4, 14, 12],
+          "rotation": 180,
+          "texture": "#Inside2"
+        },
+        "up": { "uv": [2, 2, 4, 14], "rotation": 180, "texture": "#Inside" },
+        "down": { "uv": [2, 2, 4, 14], "rotation": 180, "texture": "#Inside" }
+      }
+    },
+    {
+      "name": "LeftJackscrew",
+      "from": [13, 4, 7],
+      "to": [14, 12, 9],
+      "faces": {
+        "north": {
+          "uv": [7, 3, 8, 11],
+          "rotation": 180,
+          "texture": "#Inside2"
+        },
+        "east": { "uv": [7, 4, 9, 12], "rotation": 180, "texture": "#Inside2" },
+        "south": {
+          "uv": [8, 5, 9, 13],
+          "rotation": 180,
+          "texture": "#Inside2"
+        },
+        "west": { "uv": [7, 4, 9, 12], "rotation": 180, "texture": "#Inside2" },
+        "up": { "uv": [6, 7, 7, 9], "rotation": 180, "texture": "#Inside2" },
+        "down": { "uv": [6, 7, 7, 9], "rotation": 180, "texture": "#Inside2" }
+      }
+    },
+    {
+      "name": "Back",
+      "from": [4, 4, 15],
+      "to": [12, 12, 16],
+      "faces": {
+        "north": { "uv": [4, 4, 12, 12], "texture": "#Inside2" },
+        "east": { "uv": [0, 4, 1, 12], "texture": "#Main" },
+        "south": { "uv": [4, 4, 12, 12], "texture": "#Main" },
+        "west": { "uv": [0, 4, 1, 12], "texture": "#Main" },
+        "up": { "uv": [4, 3, 12, 4], "texture": "#Main" },
+        "down": { "uv": [4, 3, 12, 4], "texture": "#Main" }
+      }
+    },
+    {
+      "name": "BackJackscrew",
+      "from": [7, 4, 14],
+      "to": [9, 12, 15],
+      "faces": {
+        "north": { "uv": [7, 4, 9, 12], "texture": "#Inside2" },
+        "east": { "uv": [8, 5, 9, 13], "texture": "#Inside2" },
+        "south": { "uv": [7, 4, 9, 12], "texture": "#Inside2" },
+        "west": { "uv": [7, 3, 8, 11], "texture": "#Inside2" },
+        "up": { "uv": [6, 7, 7, 9], "rotation": 270, "texture": "#Inside2" },
+        "down": { "uv": [6, 7, 7, 9], "rotation": 90, "texture": "#Inside2" }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [75, 45, 0],
+      "translation": [0, 2.5, 0],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [75, 45, 0],
+      "translation": [0, 2.5, 0],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, 45, 0],
+      "scale": [0.4, 0.4, 0.4]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, 225, 0],
+      "scale": [0.4, 0.4, 0.4]
+    },
+    "ground": {
+      "translation": [0, 3, 0],
+      "scale": [0.25, 0.25, 0.25]
+    },
+    "gui": {
+      "rotation": [30, 225, 0],
+      "scale": [0.625, 0.625, 0.625]
+    },
+    "fixed": {
+      "scale": [0.5, 0.5, 0.5]
+    }
+  }
 }
