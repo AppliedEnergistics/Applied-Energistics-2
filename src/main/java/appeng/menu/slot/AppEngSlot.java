@@ -122,7 +122,7 @@ public class AppEngSlot extends Slot {
 
     @Override
     public void initialize(ItemStack stack) {
-        set(stack);
+        this.inventory.setItemDirect(this.invSlot, stack);
     }
 
     private void notifyContainerSlotChanged() {

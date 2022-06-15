@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -97,9 +97,7 @@ class CraftingPatternItemTest {
         var level = mock(Level.class);
         var recipeManager = mock(RecipeManager.class);
         when(level.getRecipeManager()).thenReturn(recipeManager);
-        var recipeMap = new HashMap<ResourceLocation, CraftingRecipe>();
-        recipeMap.put(TEST_RECIPE_ID, TEST_RECIPE);
-        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(recipeMap);
+        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
 
         return AEItems.CRAFTING_PATTERN.asItem().decode(
                 AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);

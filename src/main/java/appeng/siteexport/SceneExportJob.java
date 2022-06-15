@@ -9,10 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -25,8 +22,6 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.block.RenderShape;
 
 public class SceneExportJob {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private final Path assetFolder;
     private final List<Scene> scenes;
     private final FabricClientCommandSource source;

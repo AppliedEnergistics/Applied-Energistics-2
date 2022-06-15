@@ -18,12 +18,12 @@
 
 package appeng.integration.modules.waila.part;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.parts.IPart;
 import appeng.core.localization.InGameTooltip;
@@ -43,20 +43,20 @@ public final class P2PStateDataProvider implements IPartDataProvider {
     public static final String TAG_P2P_FREQUENCY = "p2pFrequency";
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBody(IPart part, CompoundTag partTag, ITooltip tooltip) {
         if (partTag.contains(TAG_P2P_STATE, Tag.TAG_BYTE)) {
             var state = partTag.getByte(TAG_P2P_STATE);
             var outputs = partTag.getInt(TAG_P2P_OUTPUTS);
 
             switch (state) {
-                case STATE_UNLINKED -> tooltip.add(InGameTooltip.P2PUnlinked.text());
-                case STATE_OUTPUT -> tooltip.add(InGameTooltip.P2POutput.text());
-                case STATE_INPUT -> tooltip.add(getOutputText(outputs));
+                case STATE_UNLINKED -> tooltip.addLine(InGameTooltip.P2PUnlinked.text());
+                case STATE_OUTPUT -> tooltip.addLine(InGameTooltip.P2POutput.text());
+                case STATE_INPUT -> tooltip.addLine(getOutputText(outputs));
             }
 
             var freq = partTag.getShort(TAG_P2P_FREQUENCY);
             var freqTooltip = Platform.p2p().toHexString(freq);
-            tooltip.add(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip));
+            tooltip.addLine(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip));
         }
     }
 

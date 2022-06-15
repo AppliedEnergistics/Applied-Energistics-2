@@ -31,7 +31,6 @@ import net.minecraft.world.level.levelgen.WorldGenSettings;
  */
 @Mixin(WorldGenSettings.class)
 public class WorldGenSettingsMixin {
-
     /**
      * Remove the experimental world settings warning.
      */
@@ -39,5 +38,4 @@ public class WorldGenSettingsMixin {
     private void stable(CallbackInfoReturnable<Boolean> cri) {
         cri.setReturnValue(true);
     }
-
 }

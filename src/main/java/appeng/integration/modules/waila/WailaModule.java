@@ -32,8 +32,8 @@ public class WailaModule implements IWailaPlugin {
         CableBusDataProvider.register(registrar);
 
         var blockEntityProvider = new BlockEntityDataProvider();
-        registrar.registerComponentProvider(blockEntityProvider, TooltipPosition.BODY, AEBaseEntityBlock.class);
-        registrar.registerBlockDataProvider(blockEntityProvider, AEBaseBlockEntity.class);
+        registrar.addComponent(blockEntityProvider, TooltipPosition.BODY, AEBaseEntityBlock.class);
+        registrar.addBlockData(blockEntityProvider, AEBaseBlockEntity.class);
     }
 
 }

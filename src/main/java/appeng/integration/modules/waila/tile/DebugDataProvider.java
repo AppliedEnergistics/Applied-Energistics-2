@@ -19,7 +19,6 @@
 package appeng.integration.modules.waila.tile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -66,12 +66,12 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
     private static final String TAG_NODE_EXPOSED = "exposedSides";
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBody(IPart part, CompoundTag partTag, ITooltip tooltip) {
         addToTooltip(partTag, tooltip);
     }
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         if (!isVisible(accessor.getPlayer())) {
             return;
         }
@@ -80,11 +80,11 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
         addToTooltip(accessor.getServerData(), tooltip);
     }
 
-    private static void addBlockEntityRotation(List<Component> tooltip, IBlockAccessor accessor) {
+    private static void addBlockEntityRotation(ITooltip tooltip, IBlockAccessor accessor) {
         if (accessor.getBlockEntity() instanceof AEBaseBlockEntity be && be.canBeRotated()) {
             var up = be.getUp();
             var forward = be.getForward();
-            tooltip.add(
+            tooltip.addLine(
                     Component.literal("")
                             .append(Component.literal("Up: ").withStyle(ChatFormatting.WHITE))
                             .append(Component.literal(up.name()))
@@ -93,25 +93,25 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
         }
     }
 
-    private static void addToTooltip(CompoundTag serverData, List<Component> tooltip) {
+    private static void addToTooltip(CompoundTag serverData, ITooltip tooltip) {
         boolean hasMainNode = serverData.contains(TAG_MAIN_NODE, Tag.TAG_COMPOUND);
         boolean hasExternalNode = serverData.contains(TAG_EXTERNAL_NODE, Tag.TAG_COMPOUND);
 
         if (hasMainNode) {
             if (hasExternalNode) {
-                tooltip.add(Component.literal("Main Node").withStyle(ChatFormatting.ITALIC));
+                tooltip.addLine(Component.literal("Main Node").withStyle(ChatFormatting.ITALIC));
             }
             addNodeToTooltip(serverData.getCompound(TAG_MAIN_NODE), tooltip);
         }
         if (hasExternalNode) {
             if (hasMainNode) {
-                tooltip.add(Component.literal("External Node").withStyle(ChatFormatting.ITALIC));
+                tooltip.addLine(Component.literal("External Node").withStyle(ChatFormatting.ITALIC));
             }
             addNodeToTooltip(serverData.getCompound(TAG_EXTERNAL_NODE), tooltip);
         }
     }
 
-    private static void addNodeToTooltip(CompoundTag tag, List<Component> tooltip) {
+    private static void addNodeToTooltip(CompoundTag tag, ITooltip tooltip) {
         if (tag.contains(TAG_TICK_TIME, Tag.TAG_LONG_ARRAY)) {
             long[] tickTimes = tag.getLongArray(TAG_TICK_TIME);
             if (tickTimes.length == 3) {
@@ -119,7 +119,7 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
                 var max = tickTimes[1];
                 var sum = tickTimes[2];
 
-                tooltip.add(
+                tooltip.addLine(
                         Component.literal("")
                                 .append(Component.literal("Tick Time: ").withStyle(ChatFormatting.WHITE))
                                 .append(Component.literal("Avg: ").withStyle(ChatFormatting.ITALIC))
@@ -149,11 +149,11 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
                 status.add("Queued");
             }
 
-            tooltip.add(
+            tooltip.addLine(
                     Component.literal("")
                             .append(Component.literal("Tick Status: ").withStyle(ChatFormatting.WHITE))
                             .append(String.join(", ", status)));
-            tooltip.add(
+            tooltip.addLine(
                     Component.literal("")
                             .append(Component.literal("Tick Rate: ").withStyle(ChatFormatting.WHITE))
                             .append(String.valueOf(tag.getInt(TAG_TICK_CURRENT_RATE)))
@@ -173,7 +173,7 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
                 }
                 line.append(sideText);
             }
-            tooltip.add(line);
+            tooltip.addLine(line);
         }
     }
 

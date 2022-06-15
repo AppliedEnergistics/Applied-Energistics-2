@@ -53,7 +53,7 @@ public class ClientReadOnlySlot extends Slot {
     }
 
     @Override
-    public void initialize(ItemStack itemStack) {
+    public void initialize(ItemStack stack) {
     }
 
     @Override

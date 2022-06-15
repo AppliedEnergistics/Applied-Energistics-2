@@ -26,9 +26,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.DimensionTypes;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
@@ -43,7 +44,6 @@ public class DimensionTypesMixin {
 
     @Inject(method = "bootstrap", at = @At("TAIL"))
     private static void bootstrap(Registry<DimensionType> registry, CallbackInfoReturnable<?> cir) {
-
         var dimensionType = new DimensionType(
                 OptionalLong.of(12000), // fixedTime
                 false, // hasSkylight
@@ -59,7 +59,8 @@ public class DimensionTypesMixin {
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
                 1.0f, // ambientLight
-                new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0));
-        Registry.register(registry, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
+                new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0));
+        BuiltinRegistries.register(registry, SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(), dimensionType);
     }
+
 }

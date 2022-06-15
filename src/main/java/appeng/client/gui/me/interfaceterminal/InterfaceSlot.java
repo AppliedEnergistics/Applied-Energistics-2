@@ -73,6 +73,10 @@ public class InterfaceSlot extends AppEngSlot {
     }
 
     @Override
+    public void initialize(ItemStack stack) {
+    }
+
+    @Override
     public final int getMaxStackSize() {
         return 0;
     }

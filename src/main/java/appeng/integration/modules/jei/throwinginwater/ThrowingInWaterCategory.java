@@ -124,7 +124,7 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
                     Component.literal(DurationFormatUtils.formatDurationWords(
                             defaultDuration, true, true)))
                     .noShadow().color(0xFF404040, 0xFFBBBBBB)
-                    .centered().tooltipLines(tooltipLines.stream().map(Component::getString).toArray(String[]::new)));
+                    .centered().tooltip(tooltipLines.toArray(Component[]::new)));
         }
 
         return widgets;

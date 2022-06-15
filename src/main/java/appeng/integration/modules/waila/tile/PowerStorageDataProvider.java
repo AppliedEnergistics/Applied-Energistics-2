@@ -18,17 +18,15 @@
 
 package appeng.integration.modules.waila.tile;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.core.localization.InGameTooltip;
@@ -46,7 +44,7 @@ public final class PowerStorageDataProvider extends BaseDataProvider {
     private static final String TAG_MAX_POWER = "maxPower";
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         var tag = accessor.getServerData();
         if (tag.contains(TAG_MAX_POWER, Tag.TAG_DOUBLE)) {
             var currentPower = tag.getDouble(TAG_CURRENT_POWER);
@@ -55,7 +53,7 @@ public final class PowerStorageDataProvider extends BaseDataProvider {
             var formatCurrentPower = Platform.formatPower(currentPower, false);
             var formatMaxPower = Platform.formatPower(maxPower, false);
 
-            tooltip.add(InGameTooltip.Stored.text(formatCurrentPower, formatMaxPower));
+            tooltip.addLine(InGameTooltip.Stored.text(formatCurrentPower, formatMaxPower));
         }
     }
 

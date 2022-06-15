@@ -101,10 +101,6 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new FacadeRecipeCategory());
         registry.add(new AttunementCategory());
 
-        registry.removePlusButton(ThrowingInWaterCategory.ID);
-        registry.removePlusButton(InscriberRecipeCategory.ID);
-        registry.removePlusButton(CondenserCategory.ID);
-
         registerWorkingStations(registry);
     }
 

@@ -40,6 +40,7 @@ repositories {
         url "https://maven.bai.lol"
         content {
             includeGroup "mcp.mobius.waila"
+            includeGroup "lol.bai"
         }
     }
     maven {
@@ -62,7 +63,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.17.1:2021.12.12@zip")
+        parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
