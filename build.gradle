@@ -123,8 +123,6 @@ tasks.withType(JavaCompile) {
 
 ///////////////////
 // Version Number
-version = version_major + "." + version_minor + "." + version_patch
-
 ext.pr = System.getenv('PR_NUMBER') ?: ""
 if (ext.pr) {
     version = version + "+pr." + ext.pr

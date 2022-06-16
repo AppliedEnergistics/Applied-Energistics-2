@@ -8,16 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/get_latest_release
+        id: version-info
+        with:
+          main-branch: master
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
       - name: Use gradle cache for faster builds
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -32,18 +34,12 @@ jobs:
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Validate no assets
-        run: test ! -d ./src/generated
       - name: Generate assets
-        run: ./gradlew runData
-      - name: Validate assets
-        run: test -d ./src/generated/resources/.cache
-      - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runData build
       - name: Run Game Tests
-        run: ./gradlew runGametest
+        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runGametest
       - name: Upload new Source Text Strings to Crowdin
-        run: ./gradlew uploadToCrowdin
+        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} uploadToCrowdin
         env:
           GIT_BRANCH: master
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}

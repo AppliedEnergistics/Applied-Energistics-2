@@ -1,0 +1,20 @@
+name: 'get_latest_release'
+description: 'Gets info about the latest release on the current branch'
+inputs:
+  main-branch:
+    description: The main branch for this product line (i.e. forge/master, or master)
+    required: true
+  github-token:
+    description: Github token
+    default: ${{ github.token }}
+    required: false
+outputs:
+  release_notes:
+    description: 'Release notes since last release'
+  version:
+    description: 'Version for dev-build after last release'
+  release_version:
+    description: 'Version of last release'
+runs:
+  using: 'node16'
+  main: 'index.mjs'
