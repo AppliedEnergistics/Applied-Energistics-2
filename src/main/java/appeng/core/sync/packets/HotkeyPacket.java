@@ -2,9 +2,8 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import appeng.api.features.HotkeyAction;
@@ -36,9 +35,8 @@ public class HotkeyPacket extends BasePacket {
     public void serverPacketData(ServerPlayer player) {
         var locatingServices = HotkeyActions.REGISTRY.get(hotkey);
         if (locatingServices == null) {
-            player.sendMessage(
-                    PlayerMessages.UnknownHotkey.text().copy().append(new TranslatableComponent("key.ae2." + hotkey)),
-                    Util.NIL_UUID);
+            player.sendSystemMessage(
+                    PlayerMessages.UnknownHotkey.text().copy().append(Component.translatable("key.ae2." + hotkey)));
             AELog.warn("Player %s tried using unknown hotkey \"%s\"", player, hotkey);
             return;
         }

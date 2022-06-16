@@ -4,10 +4,7 @@
   "package": "appeng.mixins",
   "compatibilityLevel": "JAVA_11",
   "mixins": [
-    "spatial.DimensionTypesMixin",
-    "spatial.WorldGenSettingsMixin",
-    "spatial.WorldPresetMixin",
-    "spatial.FixupDimensionsMixin",
+    "spatial.MinecraftServerMixin",
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",
     "EnchantmentHelperMixin",

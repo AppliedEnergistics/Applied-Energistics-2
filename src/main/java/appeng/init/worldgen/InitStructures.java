@@ -56,10 +56,10 @@ public final class InitStructures {
 
         if (AEConfig.instance().isGenerateMeteorites()) {
             MeteoriteStructure.STRUCTURE_SET = StructureSets.register(
-                MeteoriteStructure.STRUCTURE_SET_KEY,
-                new StructureSet(
-                        List.of(StructureSet.entry(MeteoriteStructure.INSTANCE)),
-                        new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
+                    MeteoriteStructure.STRUCTURE_SET_KEY,
+                    new StructureSet(
+                            List.of(StructureSet.entry(MeteoriteStructure.INSTANCE)),
+                            new RandomSpreadStructurePlacement(32, 8, RandomSpreadType.LINEAR, 124895654)));
         } else {
             AELog.info("AE2 meteorites are disabled in the config file.");
         }

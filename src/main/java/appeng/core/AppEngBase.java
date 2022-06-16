@@ -77,6 +77,7 @@ import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
 import appeng.init.worldgen.InitBiomeModifications;
 import appeng.init.worldgen.InitBiomes;
+import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitFeatures;
 import appeng.init.worldgen.InitStructures;
 import appeng.items.tools.NetworkToolItem;
@@ -209,6 +210,10 @@ public abstract class AppEngBase implements AppEng {
         InitParticleTypes.init(registry);
     }
 
+    public void registerDimensionType() {
+        InitDimensionTypes.init();
+    }
+
     public void registerStructures(Registry<StructureType<?>> registry) {
         InitStructures.init(registry);
     }
@@ -223,6 +228,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerDimension() {
+        InitDimensionTypes.init();
         Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
     }
