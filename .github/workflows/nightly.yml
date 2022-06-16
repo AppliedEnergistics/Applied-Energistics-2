@@ -2,3 +2,17 @@ name: 'Nightly'
 
 on:
   workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Which branches to build nightlies for?
+    strategy:
+      matrix:
+        branch: [ "master", "forge/master" ]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ matrix.branch }}
