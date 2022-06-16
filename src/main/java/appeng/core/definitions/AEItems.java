@@ -261,7 +261,7 @@ public final class AEItems {
     public static final ItemDefinition<BasicStorageCell> FLUID_CELL_4K = item("4k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_4K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_4K, FLUID_CELL_HOUSING, 1.0f, 4, 32, 5, AEKeyType.fluids()));
     public static final ItemDefinition<BasicStorageCell> FLUID_CELL_16K = item("16k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_16K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_16K, FLUID_CELL_HOUSING, 1.5f, 16, 128, 5, AEKeyType.fluids()));
     public static final ItemDefinition<BasicStorageCell> FLUID_CELL_64K = item("64k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_64K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_64K, FLUID_CELL_HOUSING, 2.0f, 64, 512, 5, AEKeyType.fluids()));
-    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_256K = item("256k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_256K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_256K, FLUID_CELL_HOUSING, 2.5f, 256, 2048, 63, AEKeyType.fluids()));
+    public static final ItemDefinition<BasicStorageCell> FLUID_CELL_256K = item("256k ME Fluid Storage Cell", AEItemIds.FLUID_CELL_256K, p -> new BasicStorageCell(p.stacksTo(1), CELL_COMPONENT_256K, FLUID_CELL_HOUSING, 2.5f, 256, 2048, 5, AEKeyType.fluids()));
 
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL2 = item("2³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_2, p -> new SpatialStorageCellItem(p.stacksTo(1), 2));
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item("16³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.stacksTo(1), 16));
