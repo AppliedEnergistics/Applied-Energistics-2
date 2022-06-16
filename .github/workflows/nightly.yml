@@ -1,0 +1,4 @@
+name: 'Nightly'
+
+on:
+  workflow_dispatch:
