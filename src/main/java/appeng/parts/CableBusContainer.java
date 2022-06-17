@@ -273,7 +273,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
-    public void removePart(@Nullable Direction side) {
+    public void removePartFromSide(@Nullable Direction side) {
         this.removePartWithoutUpdates(side);
 
         updateAfterPartChange(side);
@@ -736,7 +736,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                         updateBlock = true;
                     }
                 } else if (partItem != null) {
-                    this.removePart(side);
+                    this.removePartFromSide(side);
                     p = this.addPart(partItem, side, null);
                     if (p != null) {
                         p.readFromStream(data);
@@ -747,7 +747,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                     throw new IllegalStateException("Invalid item from server for part: " + itemId);
                 }
             } else if (this.getPart(side) != null) {
-                this.removePart(side);
+                this.removePartFromSide(side);
             }
         }
 
@@ -845,7 +845,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                     }
                 }
             } else {
-                this.removePart(side);
+                this.removePartFromSide(side);
             }
         }
 

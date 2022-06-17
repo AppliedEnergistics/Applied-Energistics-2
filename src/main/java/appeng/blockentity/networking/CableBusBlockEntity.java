@@ -207,8 +207,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void removePart(@Nullable Direction side) {
-        this.getCableBus().removePart(side);
+    public void removePartFromSide(@Nullable Direction side) {
+        this.getCableBus().removePartFromSide(side);
     }
 
     @Override
@@ -318,7 +318,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             if (sp.part != null) {
                 sp.part.addPartDrop(is, true);
                 sp.part.addAdditionalDrops(is, true);
-                cb.removePart(sp.side);
+                cb.removePartFromSide(sp.side);
             }
 
             var pos = getBlockPos();

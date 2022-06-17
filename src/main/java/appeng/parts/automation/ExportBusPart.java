@@ -146,7 +146,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
                     // items)
                     var transferFactory = fuzzyWhat.getKey().getAmountPerOperation();
                     long amount = (long) context.getOperationsRemaining() * transferFactory;
-                    amount = getExportStrategy().transfer(context, fuzzyWhat.getKey(), amount, Actionable.MODULATE);
+                    amount = getExportStrategy().transfer(context, fuzzyWhat.getKey(), amount);
                     context.reduceOperationsRemaining(Math.max(1, amount / transferFactory));
                     if (!context.hasOperationsLeft()) {
                         break;
@@ -156,7 +156,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
                 // The max amount exported is scaled by the key-space's transfer factor (think millibuckets vs. items)
                 var transferFactor = what.getAmountPerOperation();
                 long amount = (long) context.getOperationsRemaining() * transferFactor;
-                amount = getExportStrategy().transfer(context, what, amount, Actionable.MODULATE);
+                amount = getExportStrategy().transfer(context, what, amount);
                 if (amount > 0) {
                     context.reduceOperationsRemaining(Math.max(1, amount / transferFactor));
                 }

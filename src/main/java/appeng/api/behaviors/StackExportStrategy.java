@@ -19,7 +19,7 @@ public interface StackExportStrategy {
     /**
      * Transfer from the network inventory in {@param context} to the external inventory this strategy was created for.
      */
-    long transfer(StackTransferContext context, AEKey what, long maxAmount, Actionable mode);
+    long transfer(StackTransferContext context, AEKey what, long maxAmount);
 
     /**
      * Tries inserting into the adjacent inventory and returns the amount that was pushed.

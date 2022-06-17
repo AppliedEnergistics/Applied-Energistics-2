@@ -91,7 +91,7 @@ public class PartPlacement {
         var collisionShape = host.getCollisionShape(null);
         if (!collisionShape.isEmpty()
                 && !level.isUnobstructed(null, collisionShape.move(pos.getX(), pos.getY(), pos.getZ()))) {
-            host.removePartInstance(addedPart);
+            host.removePart(addedPart);
             if (host.isEmpty()) {
                 host.cleanup();
             }

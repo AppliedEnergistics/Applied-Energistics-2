@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.util.AEColor;
@@ -101,7 +100,7 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @param side onto side or null for center of host
      */
-    void removePart(@Nullable Direction side);
+    void removePartFromSide(@Nullable Direction side);
 
     /**
      * something changed, might want to send a packet to clients to update state.
@@ -150,29 +149,12 @@ public interface IPartHost extends ICustomCableConnection {
      *
      * @return The collision shape of this part host including all attached parts.
      */
-    // TODO 1.19: Remove default implementation in 1.19
-    default VoxelShape getCollisionShape(CollisionContext context) {
-        return Shapes.empty();
-    }
+    VoxelShape getCollisionShape(CollisionContext context);
 
     /**
      * Removes a specific part from this host and returns if the part was actually present and removed.
      */
-    // TODO 1.19: Remove default implementation in 1.19, rename "removePart(Direction)" to "removePartFromSide", rename
-    // this to "removePart"
-    default boolean removePartInstance(IPart part) {
-        if (getPart(null) == part) {
-            removePart(null);
-            return true;
-        }
-        for (var side : Direction.values()) {
-            if (getPart(side) == part) {
-                removePart(side);
-                return true;
-            }
-        }
-        return false;
-    }
+    boolean removePart(IPart part);
 
     /**
      * Same as {@link #selectPartLocal(Vec3)}, but with world instead of local coordinates. Provided for easier

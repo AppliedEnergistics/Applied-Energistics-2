@@ -19,9 +19,9 @@ public class StackExportFacade implements StackExportStrategy {
     }
 
     @Override
-    public long transfer(StackTransferContext context, AEKey what, long maxAmount, Actionable mode) {
+    public long transfer(StackTransferContext context, AEKey what, long maxAmount) {
         for (var strategy : strategies) {
-            var result = strategy.transfer(context, what, maxAmount, mode);
+            var result = strategy.transfer(context, what, maxAmount);
             if (result > 0) {
                 return result;
             }

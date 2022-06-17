@@ -38,7 +38,7 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
     }
 
     @Override
-    public long transfer(StackTransferContext context, AEKey what, long amount, Actionable mode) {
+    public long transfer(StackTransferContext context, AEKey what, long amount) {
         var variant = conversion.getVariant(what);
         if (variant.isBlank()) {
             return 0;
@@ -69,10 +69,9 @@ class StorageExportStrategy<V extends TransferVariant<?>> implements StackExport
             wasInserted = adjacentStorage.insert(variant, extracted, tx);
         }
 
-        if (wasInserted > 0 && mode == Actionable.MODULATE) {
-            // Now *really* extract if we're modulating because the simulate may have
-            // returned more items than we can actually get (i.e. two storage buses
-            // on the same chest).
+        if (wasInserted > 0) {
+            // Now *really* extract because the simulate may have returned more items than we can actually get
+            // (i.e. two storage buses on the same chest).
             extracted = StorageHelper.poweredExtraction(
                     context.getEnergySource(),
                     inv.getInventory(),

@@ -352,7 +352,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
                 var items = new ArrayList<ItemStack>();
                 nodeOwner.addPartDrop(items, false);
                 nodeOwner.addAdditionalDrops(items, false);
-                nodeOwner.getHost().removePart(nodeOwner.getSide());
+                nodeOwner.getHost().removePartFromSide(nodeOwner.getSide());
                 if (!items.isEmpty()) {
                     var be = nodeOwner.getHost().getBlockEntity();
                     Platform.spawnDrops(be.getLevel(), be.getBlockPos(), items);

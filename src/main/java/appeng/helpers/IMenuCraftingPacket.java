@@ -57,7 +57,5 @@ public interface IMenuCraftingPacket {
      * Autocraft the passed keys, in order. Will likely open the craft confirm menu, so this menu should not be used
      * afterwards.
      */
-    default void startAutoCrafting(List<GenericStack> toCraft) {
-        // TODO 1.19: remove default implementation
-    }
+    void startAutoCrafting(List<GenericStack> toCraft);
 }
