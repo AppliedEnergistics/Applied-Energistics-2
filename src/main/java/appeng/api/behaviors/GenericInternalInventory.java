@@ -19,7 +19,6 @@ import appeng.api.stacks.GenericStack;
  * AE2 devices. This is exposed to allow addons to adapt them for foreign capabilities/API lookups.
  */
 @ApiStatus.Experimental
-@ApiStatus.NonExtendable
 public interface GenericInternalInventory {
     /**
      * Use this lookup to access instances of generic inventories. Use a fallback to wrap them on-the-fly.

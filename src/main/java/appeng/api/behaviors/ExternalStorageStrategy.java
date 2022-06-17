@@ -8,7 +8,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
+import appeng.parts.automation.StackWorldBehaviors;
 
 @ApiStatus.Experimental
 public interface ExternalStorageStrategy {
@@ -18,5 +20,9 @@ public interface ExternalStorageStrategy {
     @FunctionalInterface
     interface Factory {
         ExternalStorageStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide);
+    }
+
+    static void register(AEKeyType type, Factory factory) {
+        StackWorldBehaviors.registerExternalStorageStrategy(type, factory);
     }
 }
