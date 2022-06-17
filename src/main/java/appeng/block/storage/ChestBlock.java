@@ -20,7 +20,6 @@ package appeng.block.storage;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -75,7 +74,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
             if (!level.isClientSide()) {
                 if (hit.getDirection() == be.getUp()) {
                     if (!be.openGui(p)) {
-                        p.sendMessage(PlayerMessages.ChestCannotReadStorageCell.text(), Util.NIL_UUID);
+                        p.sendSystemMessage(PlayerMessages.ChestCannotReadStorageCell.text());
                     }
                 } else {
                     be.openCellInventoryMenu(p);

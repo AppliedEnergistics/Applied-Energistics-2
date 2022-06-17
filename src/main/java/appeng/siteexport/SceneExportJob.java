@@ -3,17 +3,13 @@ package appeng.siteexport;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Random;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -21,12 +17,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.block.RenderShape;
 
 public class SceneExportJob {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private final Path assetFolder;
     private final List<Scene> scenes;
     private final FabricClientCommandSource source;
@@ -97,7 +92,7 @@ public class SceneExportJob {
 
     private void renderScene(Path outputPath, Scene scene) throws Exception {
         var blockRenderer = client.getBlockRenderer();
-        var rand = new Random(0);
+        var rand = RandomSource.create(0);
 
         // Set up the world
         scene.clearLighting(clientLevel);
@@ -116,7 +111,7 @@ public class SceneExportJob {
                         new Vector3f(0.5f, 0.5f, 0.5f));
             }
 
-            var random = new Random(12345);
+            var random = RandomSource.create(12345);
 
             var min = scene.getMin();
 

@@ -24,11 +24,9 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -42,7 +40,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
 import net.minecraft.world.level.ClipContext.Fluid;
@@ -137,7 +134,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         var req = itemList.getFirstEntry(AEItemKey.class);
         if (req == null || !(req.getKey() instanceof AEItemKey itemKey)) {
             if (!level.isClientSide()) {
-                player.sendMessage(PlayerMessages.AmmoDepleted.text(), Util.NIL_UUID);
+                player.sendSystemMessage(PlayerMessages.AmmoDepleted.text());
             }
             return true;
         }
@@ -452,11 +449,9 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         var recipes = server.getRecipeManager().byType(MatterCannonAmmo.TYPE);
-        for (Recipe<Container> recipe : recipes.values()) {
-            if (recipe instanceof MatterCannonAmmo ammoRecipe) {
-                if (ammoRecipe.getAmmo().test(itemStack)) {
-                    return ammoRecipe.getWeight();
-                }
+        for (var ammoRecipe : recipes.values()) {
+            if (ammoRecipe.getAmmo().test(itemStack)) {
+                return ammoRecipe.getWeight();
             }
         }
 

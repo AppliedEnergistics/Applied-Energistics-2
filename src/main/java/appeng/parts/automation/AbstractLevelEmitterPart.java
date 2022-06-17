@@ -18,14 +18,13 @@
 
 package appeng.parts.automation;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -101,7 +100,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public final void animateTick(Level level, BlockPos pos, Random r) {
+    public final void animateTick(Level level, BlockPos pos, RandomSource r) {
         if (this.isLevelEmitterOn()) {
             final Direction d = this.getSide();
 

@@ -19,14 +19,12 @@
 package appeng.integration.modules.waila.tile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
@@ -67,12 +66,12 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
     private static final String TAG_NODE_EXPOSED = "exposedSides";
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBody(IPart part, CompoundTag partTag, ITooltip tooltip) {
         addToTooltip(partTag, tooltip);
     }
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         if (!isVisible(accessor.getPlayer())) {
             return;
         }
@@ -81,38 +80,38 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
         addToTooltip(accessor.getServerData(), tooltip);
     }
 
-    private static void addBlockEntityRotation(List<Component> tooltip, IBlockAccessor accessor) {
+    private static void addBlockEntityRotation(ITooltip tooltip, IBlockAccessor accessor) {
         if (accessor.getBlockEntity() instanceof AEBaseBlockEntity be && be.canBeRotated()) {
             var up = be.getUp();
             var forward = be.getForward();
-            tooltip.add(
-                    new TextComponent("")
-                            .append(new TextComponent("Up: ").withStyle(ChatFormatting.WHITE))
-                            .append(new TextComponent(up.name()))
-                            .append(new TextComponent(" Forward: ").withStyle(ChatFormatting.WHITE))
-                            .append(new TextComponent(forward.name())));
+            tooltip.addLine(
+                    Component.literal("")
+                            .append(Component.literal("Up: ").withStyle(ChatFormatting.WHITE))
+                            .append(Component.literal(up.name()))
+                            .append(Component.literal(" Forward: ").withStyle(ChatFormatting.WHITE))
+                            .append(Component.literal(forward.name())));
         }
     }
 
-    private static void addToTooltip(CompoundTag serverData, List<Component> tooltip) {
+    private static void addToTooltip(CompoundTag serverData, ITooltip tooltip) {
         boolean hasMainNode = serverData.contains(TAG_MAIN_NODE, Tag.TAG_COMPOUND);
         boolean hasExternalNode = serverData.contains(TAG_EXTERNAL_NODE, Tag.TAG_COMPOUND);
 
         if (hasMainNode) {
             if (hasExternalNode) {
-                tooltip.add(new TextComponent("Main Node").withStyle(ChatFormatting.ITALIC));
+                tooltip.addLine(Component.literal("Main Node").withStyle(ChatFormatting.ITALIC));
             }
             addNodeToTooltip(serverData.getCompound(TAG_MAIN_NODE), tooltip);
         }
         if (hasExternalNode) {
             if (hasMainNode) {
-                tooltip.add(new TextComponent("External Node").withStyle(ChatFormatting.ITALIC));
+                tooltip.addLine(Component.literal("External Node").withStyle(ChatFormatting.ITALIC));
             }
             addNodeToTooltip(serverData.getCompound(TAG_EXTERNAL_NODE), tooltip);
         }
     }
 
-    private static void addNodeToTooltip(CompoundTag tag, List<Component> tooltip) {
+    private static void addNodeToTooltip(CompoundTag tag, ITooltip tooltip) {
         if (tag.contains(TAG_TICK_TIME, Tag.TAG_LONG_ARRAY)) {
             long[] tickTimes = tag.getLongArray(TAG_TICK_TIME);
             if (tickTimes.length == 3) {
@@ -120,17 +119,17 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
                 var max = tickTimes[1];
                 var sum = tickTimes[2];
 
-                tooltip.add(
-                        new TextComponent("")
-                                .append(new TextComponent("Tick Time: ").withStyle(ChatFormatting.WHITE))
-                                .append(new TextComponent("Avg: ").withStyle(ChatFormatting.ITALIC))
-                                .append(new TextComponent(Platform.formatTimeMeasurement(avg))
+                tooltip.addLine(
+                        Component.literal("")
+                                .append(Component.literal("Tick Time: ").withStyle(ChatFormatting.WHITE))
+                                .append(Component.literal("Avg: ").withStyle(ChatFormatting.ITALIC))
+                                .append(Component.literal(Platform.formatTimeMeasurement(avg))
                                         .withStyle(ChatFormatting.WHITE))
-                                .append(new TextComponent(" Max: ").withStyle(ChatFormatting.ITALIC))
-                                .append(new TextComponent(Platform.formatTimeMeasurement(max))
+                                .append(Component.literal(" Max: ").withStyle(ChatFormatting.ITALIC))
+                                .append(Component.literal(Platform.formatTimeMeasurement(max))
                                         .withStyle(ChatFormatting.WHITE))
-                                .append(new TextComponent(" Sum: ").withStyle(ChatFormatting.ITALIC))
-                                .append(new TextComponent(Platform.formatTimeMeasurement(sum))
+                                .append(Component.literal(" Sum: ").withStyle(ChatFormatting.ITALIC))
+                                .append(Component.literal(Platform.formatTimeMeasurement(sum))
                                         .withStyle(ChatFormatting.WHITE)));
             }
         }
@@ -150,23 +149,23 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
                 status.add("Queued");
             }
 
-            tooltip.add(
-                    new TextComponent("")
-                            .append(new TextComponent("Tick Status: ").withStyle(ChatFormatting.WHITE))
+            tooltip.addLine(
+                    Component.literal("")
+                            .append(Component.literal("Tick Status: ").withStyle(ChatFormatting.WHITE))
                             .append(String.join(", ", status)));
-            tooltip.add(
-                    new TextComponent("")
-                            .append(new TextComponent("Tick Rate: ").withStyle(ChatFormatting.WHITE))
+            tooltip.addLine(
+                    Component.literal("")
+                            .append(Component.literal("Tick Rate: ").withStyle(ChatFormatting.WHITE))
                             .append(String.valueOf(tag.getInt(TAG_TICK_CURRENT_RATE)))
-                            .append(new TextComponent(" Last: ").withStyle(ChatFormatting.WHITE))
+                            .append(Component.literal(" Last: ").withStyle(ChatFormatting.WHITE))
                             .append(tag.getInt(TAG_TICK_LAST_TICK) + " ticks ago"));
         }
 
         if (tag.contains(TAG_NODE_EXPOSED, Tag.TAG_INT)) {
             var exposedSides = tag.getInt(TAG_NODE_EXPOSED);
-            var line = new TextComponent("Node Exposed: ").withStyle(ChatFormatting.WHITE);
+            var line = Component.literal("Node Exposed: ").withStyle(ChatFormatting.WHITE);
             for (Direction value : Direction.values()) {
-                var sideText = new TextComponent(value.name().substring(0, 1));
+                var sideText = Component.literal(value.name().substring(0, 1));
                 if ((exposedSides & (1 << value.ordinal())) == 0) {
                     sideText.withStyle(ChatFormatting.GRAY);
                 } else {
@@ -174,7 +173,7 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
                 }
                 line.append(sideText);
             }
-            tooltip.add(line);
+            tooltip.addLine(line);
         }
     }
 

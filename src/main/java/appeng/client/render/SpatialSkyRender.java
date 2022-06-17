@@ -18,8 +18,6 @@
 
 package appeng.client.render;
 
-import java.util.Random;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -31,12 +29,13 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.util.RandomSource;
 
 public class SpatialSkyRender {
 
     private static final SpatialSkyRender INSTANCE = new SpatialSkyRender();
 
-    private final Random random = new Random();
+    private final RandomSource random = RandomSource.create();
     private final VertexBuffer sparkleBuffer;
     private long cycle = 0;
 
@@ -145,8 +144,7 @@ public class SpatialSkyRender {
                 }
             }
         }
-        vb.end();
 
-        sparkleBuffer.upload(vb);
+        sparkleBuffer.upload(vb.end());
     }
 }

@@ -38,7 +38,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
@@ -72,7 +71,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
             int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING,
                 width - 2 * PADDING - fontRenderer.width("_"), height - 2 * PADDING,
-                TextComponent.EMPTY);
+                Component.empty());
 
         this._fontPad = fontRenderer.width("_");
     }

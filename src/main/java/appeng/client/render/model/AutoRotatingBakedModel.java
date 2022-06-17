@@ -18,7 +18,6 @@
 
 package appeng.client.render.model;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
@@ -29,6 +28,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -53,7 +53,7 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-            Supplier<Random> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
         RenderContext.QuadTransform transform = getTransform(blockView, pos);
 
         if (transform != null) {
@@ -68,7 +68,7 @@ public class AutoRotatingBakedModel extends ForwardingBakedModel implements Fabr
     }
 
     @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
         super.emitItemQuads(stack, randomSupplier, context);
     }
 

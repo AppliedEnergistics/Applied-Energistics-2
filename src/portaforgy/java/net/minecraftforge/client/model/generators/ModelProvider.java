@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
@@ -48,7 +49,6 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
     protected static final ResourceType MODEL = new ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
     protected static final ResourceType MODEL_WITH_EXTENSION = new ResourceType(PackType.CLIENT_RESOURCES, "", "models");
 
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
     protected final DataGenerator generator;
     protected final String modid;
     protected final String folder;
@@ -363,17 +363,17 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         clear();
         registerModels();
         generateAll(cache);
     }
 
-    protected void generateAll(HashCache cache) {
+    protected void generateAll(CachedOutput cache) {
         for (T model : generatedModels.values()) {
             Path target = getPath(model);
             try {
-                DataProvider.save(GSON, cache, model.toJson(), target);
+                DataProvider.saveStable(cache, model.toJson(), target);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -37,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
@@ -210,7 +209,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         final AEColor selected = this.getActiveColor(is);
 
         if (selected != null && Platform.isClient()) {
-            extra = new TranslatableComponent(selected.translationKey);
+            extra = Component.translatable(selected.translationKey);
         }
 
         return super.getName(is).copy().append(" - ").append(extra);
@@ -520,7 +519,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
-        if (allowdedIn(group)) {
+        if (allowedIn(group)) {
             items.add(createFullColorApplicator());
         }
     }

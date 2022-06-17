@@ -18,18 +18,16 @@
 
 package appeng.integration.modules.waila.tile;
 
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.integration.modules.waila.BaseDataProvider;
 import appeng.integration.modules.waila.GridNodeState;
@@ -42,11 +40,11 @@ public final class GridNodeStateDataProvider extends BaseDataProvider {
     private static final String TAG_STATE = "gridNodeState";
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         var tag = accessor.getServerData();
         if (tag.contains(TAG_STATE, Tag.TAG_BYTE)) {
             var state = GridNodeState.values()[tag.getByte(TAG_STATE)];
-            tooltip.add(state.textComponent().withStyle(ChatFormatting.GRAY));
+            tooltip.addLine(state.textComponent().withStyle(ChatFormatting.GRAY));
         }
     }
 

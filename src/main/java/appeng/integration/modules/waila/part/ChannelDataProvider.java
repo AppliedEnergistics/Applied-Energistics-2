@@ -17,13 +17,12 @@
  */
 package appeng.integration.modules.waila.part;
 
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.networking.pathing.ControllerState;
 import appeng.api.parts.IPart;
@@ -40,10 +39,10 @@ public final class ChannelDataProvider implements IPartDataProvider {
     private static final String TAG_ERROR = "channelError";
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBody(IPart part, CompoundTag partTag, ITooltip tooltip) {
         if (partTag.contains(TAG_ERROR, Tag.TAG_STRING)) {
             var error = ChannelError.valueOf(partTag.getString(TAG_ERROR));
-            tooltip.add(error.text.text().withStyle(ChatFormatting.RED));
+            tooltip.addLine(error.text.text().withStyle(ChatFormatting.RED));
             return;
         }
 
@@ -52,9 +51,9 @@ public final class ChannelDataProvider implements IPartDataProvider {
             var maxChannels = partTag.getInt(TAG_MAX_CHANNELS);
             // Even in the maxChannels=0 case, we'll show as infinite
             if (maxChannels <= 0) {
-                tooltip.add(InGameTooltip.Channels.text(usedChannels));
+                tooltip.addLine(InGameTooltip.Channels.text(usedChannels));
             } else {
-                tooltip.add(InGameTooltip.ChannelsOf.text(usedChannels, maxChannels));
+                tooltip.addLine(InGameTooltip.ChannelsOf.text(usedChannels, maxChannels));
             }
         }
     }

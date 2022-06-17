@@ -36,7 +36,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.locale.Language;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 import appeng.client.gui.MockResourceManager;
 import appeng.client.gui.style.ScreenStyle;
@@ -116,8 +116,8 @@ class InitScreensTest {
 
     private void collectMissingTranslations(String path, net.minecraft.network.chat.Component text,
             Map<String, String> errors) {
-        if (text instanceof TranslatableComponent) {
-            String key = ((TranslatableComponent) text).getKey();
+        if (text.getContents() instanceof TranslatableContents translatableContents) {
+            String key = translatableContents.getKey();
             if (!Language.getInstance().has(key)) {
                 errors.merge(path, key, (a, b) -> a + ", " + b);
             }

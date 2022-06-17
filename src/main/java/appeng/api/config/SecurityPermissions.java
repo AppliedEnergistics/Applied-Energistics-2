@@ -26,7 +26,6 @@ package appeng.api.config;
 import java.util.Locale;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 /**
  * Represent the security systems basic permissions, these are not for anti-griefing, they are part of the mod as a
@@ -62,9 +61,9 @@ public enum SecurityPermissions {
 
     private final String translationKey = "gui.ae2.security." + this.name().toLowerCase(Locale.ROOT);
 
-    private final Component displayName = new TranslatableComponent(this.translationKey + ".name");
+    private final Component displayName = Component.translatable(this.translationKey + ".name");
 
-    private final Component displayHint = new TranslatableComponent(this.translationKey + ".tip");
+    private final Component displayHint = Component.translatable(this.translationKey + ".tip");
 
     public Component getDisplayName() {
         return this.displayName;

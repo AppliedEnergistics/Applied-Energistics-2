@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -20,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -200,7 +200,7 @@ public final class TestPlots {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
-            var r = new Random();
+            var r = RandomSource.create();
             for (var i = 0; i < 100; i++) {
                 var item = Registry.ITEM.getRandom(r).map(Holder::value).get();
                 if (cellInv.insert(AEItemKey.of(item), 64, Actionable.MODULATE, new BaseActionSource()) == 0) {
@@ -216,7 +216,7 @@ public final class TestPlots {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
             var cellInv = StorageCells.getCellInventory(cellItem, null);
-            var r = new Random();
+            var r = RandomSource.create();
             for (var i = 0; i < 100; i++) {
                 var fluid = Registry.FLUID.getRandom(r).map(Holder::value).get();
                 if (fluid.isSame(Fluids.EMPTY) || !fluid.isSource(fluid.defaultFluidState())) {

@@ -24,7 +24,6 @@
 package appeng.api.config;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public enum PowerUnits {
     AE("gui.ae2.units.appliedenergistics", "AE"), // Native Units - AE Energy
@@ -66,7 +65,7 @@ public enum PowerUnits {
     }
 
     public Component textComponent() {
-        return new TranslatableComponent(unlocalizedName);
+        return Component.translatable(unlocalizedName);
     }
 
     public String getSymbolName() {

@@ -24,7 +24,6 @@
 package appeng.api.parts;
 
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -39,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -331,7 +331,7 @@ public interface IPart extends ICustomCableConnection {
      * @param pos   location of block
      * @param r     random
      */
-    default void animateTick(Level level, BlockPos pos, Random r) {
+    default void animateTick(Level level, BlockPos pos, RandomSource r) {
     }
 
     /**

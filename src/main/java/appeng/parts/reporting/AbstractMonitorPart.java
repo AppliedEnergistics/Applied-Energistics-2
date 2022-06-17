@@ -24,7 +24,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -177,8 +176,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         if (player.getItemInHand(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
-            player.sendMessage((this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text(),
-                    Util.NIL_UUID);
+            player.sendSystemMessage(
+                    (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text());
             this.getHost().markForSave();
             this.getHost().markForUpdate();
         }

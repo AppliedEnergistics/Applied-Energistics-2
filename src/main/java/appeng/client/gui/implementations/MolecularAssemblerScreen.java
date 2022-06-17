@@ -19,7 +19,6 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.style.ScreenStyle;
@@ -43,7 +42,7 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        this.pb.setFullMsg(new TextComponent(this.menu.getCurrentProgress() + "%"));
+        this.pb.setFullMsg(Component.literal(this.menu.getCurrentProgress() + "%"));
     }
 
 }

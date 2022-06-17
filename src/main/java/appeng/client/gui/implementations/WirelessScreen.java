@@ -19,7 +19,6 @@
 package appeng.client.gui.implementations;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.client.gui.AEBaseScreen;
@@ -41,8 +40,8 @@ public class WirelessScreen extends AEBaseScreen<WirelessMenu> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        Component rangeText = TextComponent.EMPTY;
-        Component energyUseText = TextComponent.EMPTY;
+        Component rangeText = Component.empty();
+        Component energyUseText = Component.empty();
         if (menu.getRange() > 0) {
             double rangeBlocks = menu.getRange() / 10.0;
             rangeText = GuiText.WirelessRange.text(rangeBlocks);

@@ -23,17 +23,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
-
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
 
@@ -46,16 +42,27 @@ public final class MockResourceManager {
     private MockResourceManager() {
     }
 
-    public static ReloadableResourceManager create() throws IOException {
+    public static ReloadableResourceManager create() {
         ReloadableResourceManager resourceManager = mock(ReloadableResourceManager.class, withSettings().lenient());
+
+        // Delegate default methods to real impls
+        try {
+            when(resourceManager.openAsReader(any())).thenCallRealMethod();
+            when(resourceManager.open(any())).thenCallRealMethod();
+            when(resourceManager.getResourceOrThrow(any())).thenCallRealMethod();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         when(resourceManager.getResource(any())).thenAnswer(invoc -> {
             net.minecraft.resources.ResourceLocation loc = invoc.getArgument(0);
             return getResource(loc);
         });
-        when(resourceManager.getResources(any())).thenAnswer(invoc -> {
+        when(resourceManager.getResourceStack(any())).thenAnswer(invoc -> {
             ResourceLocation loc = invoc.getArgument(0);
-            return Collections.singletonList(getResource(loc));
+            return getResource(loc)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
         });
 
         when(resourceManager.getNamespaces()).thenReturn(
@@ -64,44 +71,16 @@ public final class MockResourceManager {
         return resourceManager;
     }
 
-    private static Resource getResource(net.minecraft.resources.ResourceLocation loc) throws FileNotFoundException {
-        InputStream in = MockResourceManager.class
-                .getResourceAsStream("/assets/" + loc.getNamespace() + "/" + loc.getPath());
-        if (in == null) {
-            throw new FileNotFoundException("Missing resource: " + loc.getPath());
+    private static Optional<Resource> getResource(net.minecraft.resources.ResourceLocation loc) {
+        var resourceLocation = "/assets/" + loc.getNamespace() + "/" + loc.getPath();
+        if (MockResourceManager.class.getResource(resourceLocation) == null) {
+            return Optional.empty();
         }
 
-        return new Resource() {
-            @Override
-            public net.minecraft.resources.ResourceLocation getLocation() {
-                return loc;
-            }
-
-            @Override
-            public InputStream getInputStream() {
-                return in;
-            }
-
-            @Override
-            public boolean hasMetadata() {
-                return false;
-            }
-
-            @Nullable
-            @Override
-            public <T> T getMetadata(MetadataSectionSerializer<T> serializer) {
-                return null;
-            }
-
-            @Override
-            public String getSourceName() {
-                return "ae2";
-            }
-
-            @Override
-            public void close() throws IOException {
-                in.close();
-            }
-        };
+        return Optional.of(new Resource(
+                "ae2",
+                () -> {
+                    return MockResourceManager.class.getResourceAsStream(resourceLocation);
+                }));
     }
 }

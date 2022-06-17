@@ -6,15 +6,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
@@ -28,8 +25,6 @@ import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class LocalizationProvider implements IAE2DataProvider {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
     private final Map<String, String> localizations = new HashMap<>();
 
     private final DataGenerator generator;
@@ -41,7 +36,7 @@ public class LocalizationProvider implements IAE2DataProvider {
     }
 
     @Override
-    public final void run(HashCache cache) {
+    public final void run(CachedOutput cache) {
         for (var block : AEBlocks.getBlocks()) {
             add("block.ae2." + block.id().getPath(), block.getEnglishName());
         }
@@ -71,7 +66,7 @@ public class LocalizationProvider implements IAE2DataProvider {
 
     public Component component(String key, String text) {
         add(key, text);
-        return new TranslatableComponent(key);
+        return Component.translatable(key);
     }
 
     public void add(String key, String text) {
@@ -137,7 +132,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("theoneprobe.ae2.unlocked", "Unlocked");
     }
 
-    private void save(HashCache cache, Map<String, String> localizations) {
+    private void save(CachedOutput cache, Map<String, String> localizations) {
         wasSaved = true;
 
         try {
@@ -150,7 +145,7 @@ public class LocalizationProvider implements IAE2DataProvider {
                 jsonLocalization.addProperty(entry.getKey(), entry.getValue());
             }
 
-            DataProvider.save(GSON, cache, jsonLocalization, path);
+            DataProvider.saveStable(cache, jsonLocalization, path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

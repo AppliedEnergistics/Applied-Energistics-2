@@ -17,12 +17,12 @@
  */
 
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
     id "com.diffplug.spotless" version "5.12.4"
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "1.2.1"
-    id 'io.github.juuxel.loom-quiltflower-mini' version '1.2.1'
+    //id 'io.github.juuxel.loom-quiltflower-mini' version '1.2.1'
 }
 
 repositories {
@@ -40,6 +40,7 @@ repositories {
         url "https://maven.bai.lol"
         content {
             includeGroup "mcp.mobius.waila"
+            includeGroup "lol.bai"
         }
     }
     maven {
@@ -62,21 +63,23 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.17.1:2021.12.12@zip")
+        parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+    // TODO 1.19
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
-    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
-        exclude group: "net.fabricmc.fabric-api"
-    }
+    // TODO 1.19
+    //modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+    //    exclude group: "net.fabricmc.fabric-api"
+    //}
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")

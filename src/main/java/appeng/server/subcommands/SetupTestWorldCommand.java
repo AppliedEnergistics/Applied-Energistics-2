@@ -3,7 +3,6 @@ package appeng.server.subcommands;
 import static net.minecraft.commands.Commands.literal;
 
 import java.util.Collections;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -14,7 +13,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -54,13 +53,13 @@ public class SetupTestWorldCommand implements ISubCommand {
         try {
             var player = sender.getPlayerOrException();
             if (!player.isCreative()) {
-                sender.sendFailure(new TextComponent("Command can only be used in creative mode."));
+                sender.sendFailure(Component.literal("Command can only be used in creative mode."));
                 return;
             }
 
             var level = srv.overworld();
             if (!isVoidWorld(level)) {
-                sender.sendFailure(new TextComponent(
+                sender.sendFailure(Component.literal(
                         "A test world can only be set up in a Superflat world with the Void preset!"));
                 return;
             }
@@ -82,10 +81,10 @@ public class SetupTestWorldCommand implements ISubCommand {
                 player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
             }
 
-            sender.sendSuccess(new TextComponent("Test world setup completed in " + sw), true);
+            sender.sendSuccess(Component.literal("Test world setup completed in " + sw), true);
         } catch (RuntimeException | CommandSyntaxException e) {
             AELog.error(e);
-            sender.sendFailure(new TextComponent("Setting up the test world failed: " + e));
+            sender.sendFailure(Component.literal("Setting up the test world failed: " + e));
         }
     }
 
@@ -122,6 +121,6 @@ public class SetupTestWorldCommand implements ISubCommand {
         }
 
         // Only allow actual void worlds
-        return flatLevelSource.settings().getLayers().stream().allMatch(Objects::isNull);
+        return flatLevelSource.settings().getLayers().stream().allMatch(l -> l == null || l.isAir());
     }
 }

@@ -70,7 +70,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
-        ShapedRecipeBuilder.shaped(slabs.block(), 6).pattern("###").define('#', inputBlock)
+        ShapedRecipeBuilder.shaped(outputBlock, 6).pattern("###").define('#', inputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("shaped/slabs/", block.id()));
 

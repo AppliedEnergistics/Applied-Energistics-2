@@ -58,7 +58,7 @@ class StorageImportStrategy<V extends TransferVariant<?>> implements StackImport
             // continue until we've filled the desired amount per transfer
             AEKey extractable = null;
             long extractableAmount = 0;
-            for (var view : adjacentStorage.iterable(tx)) {
+            for (var view : adjacentStorage) {
                 var resource = view.getResource();
                 var resourceKey = conversion.getKey(resource);
                 if (resourceKey == null

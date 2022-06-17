@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.client.AEStackRendering;
@@ -45,7 +44,7 @@ public class InfoBar {
     }
 
     void add(String text, int color, float scale) {
-        widgets.add(new TextWidget(new TextComponent(text), color, scale));
+        widgets.add(new TextWidget(Component.literal(text), color, scale));
     }
 
     void add(Component text, int color, float scale) {

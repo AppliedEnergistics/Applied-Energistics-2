@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 
 import appeng.api.stacks.AmountFormat;
@@ -255,6 +254,6 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
     }
 
     private Component getCpuName(CraftingStatusMenu.CraftingCpuListEntry cpu) {
-        return cpu.name() != null ? cpu.name() : new TextComponent("CPU #" + cpu.serial());
+        return cpu.name() != null ? cpu.name() : Component.literal("CPU #" + cpu.serial());
     }
 }

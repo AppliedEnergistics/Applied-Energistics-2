@@ -19,7 +19,6 @@
 package appeng.client.gui.style;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 /**
  * Text that will be drawn on top of a {@link appeng.client.gui.AEBaseScreen}.
@@ -29,7 +28,7 @@ public class Text {
     /**
      * The text to display.
      */
-    private Component text = TextComponent.EMPTY;
+    private Component text = Component.empty();
 
     /**
      * The color to show the text in.

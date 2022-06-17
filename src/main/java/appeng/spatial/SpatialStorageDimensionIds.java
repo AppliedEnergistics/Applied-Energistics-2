@@ -38,7 +38,7 @@ public final class SpatialStorageDimensionIds {
     /**
      * ID of the {@link DimensionType} used for the spatial storage level.
      * <p>
-     * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
+     * This is defined in {@link appeng.init.worldgen.InitDimensionTypes}.
      */
     public static final ResourceKey<DimensionType> DIMENSION_TYPE_ID = ResourceKey
             .create(Registry.DIMENSION_TYPE_REGISTRY, AppEng.makeId("spatial_storage"));
@@ -57,7 +57,7 @@ public final class SpatialStorageDimensionIds {
     /**
      * ID of the {@link LevelStem} used for the spatial storage dimension.
      * <p>
-     * This is defined in {@link appeng.mixins.spatial.DimensionTypeMixin}.
+     * This is defined in {@link appeng.init.worldgen.InitDimensionTypes}.
      */
     public static final ResourceKey<LevelStem> DIMENSION_ID = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY,
             AppEng.makeId("spatial_storage"));

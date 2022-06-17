@@ -18,10 +18,9 @@
 
 package appeng.integration.modules.waila.part;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.parts.IPart;
 import appeng.core.localization.InGameTooltip;
@@ -33,17 +32,17 @@ import appeng.parts.reporting.AbstractMonitorPart;
 public final class StorageMonitorDataProvider implements IPartDataProvider {
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+    public void appendBody(IPart part, CompoundTag partTag, ITooltip tooltip) {
         if (part instanceof AbstractMonitorPart monitor) {
             var displayed = monitor.getDisplayed();
             var isLocked = monitor.isLocked();
 
             if (displayed != null) {
-                tooltip.add(InGameTooltip.Showing.text().append(": ")
+                tooltip.addLine(InGameTooltip.Showing.text().append(": ")
                         .append(displayed.getDisplayName()));
             }
 
-            tooltip.add(isLocked ? InGameTooltip.Locked.text() : InGameTooltip.Unlocked.text());
+            tooltip.addLine(isLocked ? InGameTooltip.Locked.text() : InGameTooltip.Unlocked.text());
         }
     }
 

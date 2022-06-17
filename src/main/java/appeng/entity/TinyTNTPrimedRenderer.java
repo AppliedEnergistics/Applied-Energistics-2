@@ -24,6 +24,7 @@ import com.mojang.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
@@ -33,10 +34,12 @@ import net.minecraft.world.level.block.Blocks;
 
 @Environment(EnvType.CLIENT)
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
+    private final BlockRenderDispatcher blockRenderer;
 
     public TinyTNTPrimedRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0.25F;
+        this.blockRenderer = context.getBlockRenderDispatcher();
     }
 
     @Override
@@ -68,7 +71,8 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
         mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
         mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-        TntMinecartRenderer.renderWhiteSolidBlock(Blocks.TNT.defaultBlockState(), mStack, buffers, packedLight,
+        TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, Blocks.TNT.defaultBlockState(), mStack, buffers,
+                packedLight,
                 tnt.getFuse() / 5 % 2 == 0);
         mStack.popPose();
         super.render(tnt, entityYaw, partialTicks, mStack, buffers, packedLight);

@@ -32,7 +32,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.stacks.AEKey;
 import appeng.util.Platform;
@@ -64,6 +63,6 @@ public interface IAEStackRenderHandler<T extends AEKey> {
         return List.of(
                 getDisplayName(stack),
                 // Append the name of the mod by default as mods such as REI would also add that
-                new TextComponent(Platform.formatModName(stack.getModId())));
+                Component.literal(Platform.formatModName(stack.getModId())));
     }
 }

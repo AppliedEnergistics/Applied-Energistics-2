@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,9 +29,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
@@ -41,6 +40,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -183,7 +183,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerEntityRenderers() {
-        InitEntityRendering.init(EntityRendererRegistry.INSTANCE::register);
+        InitEntityRendering.init(EntityRendererRegistry::register);
     }
 
     private void registerEntityLayerDefinitions() {
@@ -231,8 +231,8 @@ public class AppEngClient extends AppEngBase {
         return false;
     }
 
-    public boolean shouldAddParticles(Random r) {
-        return switch (Minecraft.getInstance().options.particles) {
+    public boolean shouldAddParticles(RandomSource r) {
+        return switch (Minecraft.getInstance().options.particles().get()) {
             case ALL -> true;
             case DECREASED -> r.nextBoolean();
             case MINIMAL -> false;

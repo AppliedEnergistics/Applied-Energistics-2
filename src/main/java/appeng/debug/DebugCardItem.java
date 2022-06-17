@@ -25,10 +25,9 @@ import com.google.common.collect.Iterables;
 import com.google.common.math.StatsAccumulator;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -90,7 +89,7 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             this.outputSecondaryMessage(player, "Current Tick: ",
                     Long.toString(TickHandler.instance().getCurrentTick()));
             for (var line : TickHandler.instance().getBlockEntityReport()) {
-                player.sendMessage(line, Util.NIL_UUID);
+                player.sendSystemMessage(line);
             }
         }
 
@@ -224,14 +223,14 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
             }
             // Print which sides of the cable are connected
             if (center instanceof CablePart cablePart) {
-                var msg = new TextComponent("");
+                var msg = Component.literal("");
                 for (var v : Direction.values()) {
-                    msg.append(new TextComponent(v.name().substring(0, 1))
+                    msg.append(Component.literal(v.name().substring(0, 1))
                             .withStyle(cablePart.isConnected(v) ? ChatFormatting.GREEN : ChatFormatting.DARK_GRAY));
                 }
-                player.sendMessage(new TextComponent("Connected Sides: ")
+                player.sendSystemMessage(Component.literal("Connected Sides: ")
                         .withStyle(ChatFormatting.GRAY)
-                        .append(msg), Util.NIL_UUID);
+                        .append(msg));
             }
         }
 
@@ -264,11 +263,11 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
     }
 
     private void outputMessage(Entity player, String string, ChatFormatting... chatFormattings) {
-        player.sendMessage(new TextComponent(string).withStyle(chatFormattings), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal(string).withStyle(chatFormattings));
     }
 
     private void outputMessage(Entity player, String string) {
-        player.sendMessage(new TextComponent(string), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal(string));
     }
 
     private void outputPrimaryMessage(Entity player, String label, String value) {
@@ -281,9 +280,9 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
 
     private void outputLabeledMessage(Entity player, String label, String value,
             ChatFormatting... chatFormattings) {
-        player.sendMessage(new TextComponent("")
-                .append(new TextComponent(label + ": ").withStyle(chatFormattings))
-                .append(value), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal("")
+                .append(Component.literal(label + ": ").withStyle(chatFormattings))
+                .append(value));
     }
 
 }

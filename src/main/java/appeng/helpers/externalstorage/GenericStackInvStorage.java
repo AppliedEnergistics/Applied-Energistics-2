@@ -83,7 +83,7 @@ public class GenericStackInvStorage<V extends TransferVariant<?>> implements Sto
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public Iterator<StorageView<V>> iterator(TransactionContext transaction) {
+    public Iterator<StorageView<V>> iterator() {
         return (Iterator) storageViews.iterator();
     }
 

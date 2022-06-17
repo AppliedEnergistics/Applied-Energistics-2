@@ -22,7 +22,6 @@ import java.util.List;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -92,17 +91,17 @@ public class UpgradeCardItem extends AEBaseItem implements AEToolItem {
                     }
                 }
                 if (isFull) {
-                    player.sendMessage(PlayerMessages.MaxUpgradesInstalled.text(), Util.NIL_UUID);
+                    player.sendSystemMessage(PlayerMessages.MaxUpgradesInstalled.text());
                     return InteractionResult.FAIL;
                 }
 
                 var maxInstalled = upgrades.getMaxInstalled(heldStack.getItem());
                 var installed = upgrades.getInstalledUpgrades(heldStack.getItem());
                 if (maxInstalled <= 0) {
-                    player.sendMessage(PlayerMessages.UnsupportedUpgrade.text(), Util.NIL_UUID);
+                    player.sendSystemMessage(PlayerMessages.UnsupportedUpgrade.text());
                     return InteractionResult.FAIL;
                 } else if (installed >= maxInstalled) {
-                    player.sendMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.text(), Util.NIL_UUID);
+                    player.sendSystemMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.text());
                     return InteractionResult.FAIL;
                 }
 

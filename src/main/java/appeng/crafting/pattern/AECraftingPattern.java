@@ -75,11 +75,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
         // Find recipe
         var recipeId = CraftingPatternEncoding.getRecipeId(tag);
-        var recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
-        if (!(recipe instanceof CraftingRecipe craftingRecipe)) {
-            throw new IllegalStateException("recipe id '" + recipeId + "' is not a valid crafting recipe");
-        }
-        this.recipe = craftingRecipe;
+        this.recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
 
         // Build frame and find output
         this.testFrame = new CraftingContainer(new AutoCraftingMenu(), 3, 3);

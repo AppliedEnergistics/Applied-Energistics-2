@@ -1,7 +1,6 @@
 package appeng.menu;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.items.contents.NetworkToolMenuHost;
@@ -55,7 +54,7 @@ public class ToolboxMenu {
     }
 
     public Component getName() {
-        return this.inv != null ? this.inv.getItemStack().getHoverName() : TextComponent.EMPTY;
+        return this.inv != null ? this.inv.getItemStack().getHoverName() : Component.empty();
     }
 
     private void findToolbox(AEBaseMenu menu) {

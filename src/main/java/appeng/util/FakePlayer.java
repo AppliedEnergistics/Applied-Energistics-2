@@ -8,6 +8,7 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +21,7 @@ public class FakePlayer extends ServerPlayer {
             "[AppEng2]");
 
     private FakePlayer(ServerLevel level) {
-        super(level.getServer(), level, PROFILE);
+        super(level.getServer(), level, PROFILE, null);
     }
 
     /**
@@ -52,6 +53,6 @@ public class FakePlayer extends ServerPlayer {
     }
 
     @Override
-    public void sendMessage(Component component, ChatType chatType, UUID uUID) {
+    public void sendSystemMessage(Component component, ResourceKey<ChatType> resourceKey) {
     }
 }

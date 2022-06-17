@@ -18,10 +18,9 @@
 
 package appeng.debug;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -73,7 +71,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
 
             CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
 
-            player.sendMessage(new TextComponent(craterType.name()), Util.NIL_UUID);
+            player.sendSystemMessage(Component.literal(craterType.name()));
 
             return InteractionResultHolder.success(itemStack);
         }
@@ -110,7 +108,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
                 pureCrater);
 
         if (spawned == null) {
-            player.sendMessage(new TextComponent("Un-suitable Location."), Util.NIL_UUID);
+            player.sendSystemMessage(Component.literal("Un-suitable Location."));
             return InteractionResult.FAIL;
         }
 
@@ -124,8 +122,7 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         final MeteoritePlacer placer = new MeteoritePlacer(level, spawned, boundingBox, level.random);
         placer.place();
 
-        player.sendMessage(new TextComponent("Spawned at y=" + spawned.getPos().getY() + " range=" + range
-                + " biomeCategory=" + Biome.getBiomeCategory(level.getBiome(pos))), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal("Spawned at y=" + spawned.getPos().getY() + " range=" + range));
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this

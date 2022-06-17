@@ -36,7 +36,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -326,7 +326,7 @@ public class KeyCounterTest {
     private AEItemKey diamondSword(int durabilityPercent, String customName) {
         var is = new ItemStack(Items.DIAMOND_SWORD);
         if (customName != null) {
-            is.setHoverName(new TextComponent(customName));
+            is.setHoverName(Component.literal(customName));
         }
         var damage = (int) ((100 - durabilityPercent) / 100.0f * is.getMaxDamage());
         is.setDamageValue(damage);
@@ -341,7 +341,7 @@ public class KeyCounterTest {
     private AEItemKey nameTag(String customName) {
         var is = new ItemStack(Items.NAME_TAG);
         if (customName != null) {
-            is.setHoverName(new TextComponent(customName));
+            is.setHoverName(Component.literal(customName));
         }
         return AEItemKey.of(is);
     }

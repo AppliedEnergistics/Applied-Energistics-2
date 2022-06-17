@@ -18,6 +18,15 @@
 
 package appeng.worldgen.meteorite.fallout;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.biome.Biome;
+
 public enum FalloutMode {
 
     /**
@@ -33,15 +42,41 @@ public enum FalloutMode {
     /**
      * For sandy terrain
      */
-    SAND,
+    SAND(ConventionalBiomeTags.DESERT, ConventionalBiomeTags.BEACH),
 
     /**
      * For terracotta (mesa)
      */
-    TERRACOTTA,
+    TERRACOTTA(ConventionalBiomeTags.MESA),
 
     /**
      * Icy/snowy terrain
      */
-    ICE_SNOW;
+    ICE_SNOW(ConventionalBiomeTags.SNOWY, ConventionalBiomeTags.ICY);
+
+    private final List<TagKey<Biome>> biomeTags;
+
+    @SafeVarargs
+    FalloutMode(TagKey<Biome>... biomeTags) {
+        this.biomeTags = ImmutableList.copyOf(biomeTags);
+    }
+
+    public boolean matches(Holder<Biome> biome) {
+        for (var biomeTag : biomeTags) {
+            if (biome.is(biomeTag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static FalloutMode fromBiome(Holder<Biome> biome) {
+        for (var mode : FalloutMode.values()) {
+            if (mode.matches(biome)) {
+                return mode;
+            }
+        }
+
+        return DEFAULT;
+    }
 }

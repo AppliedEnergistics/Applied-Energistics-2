@@ -28,7 +28,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText.StyledContentConsumer;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 
 /**
  * Models a tooltip shown by a custom widget or button.
@@ -83,7 +82,7 @@ public final class Tooltip {
                 }
 
                 String line = parts[i];
-                MutableComponent part = new TextComponent(line).setStyle(style);
+                MutableComponent part = Component.literal(line).setStyle(style);
                 if (currentPart != null) {
                     currentPart = currentPart.append(part);
                 } else {

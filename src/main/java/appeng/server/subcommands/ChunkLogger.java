@@ -22,7 +22,7 @@ import com.mojang.brigadier.context.CommandContext;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -75,9 +75,9 @@ public class ChunkLogger implements ISubCommand {
         this.enabled = !this.enabled;
 
         if (this.enabled) {
-            sender.sendSuccess(new TranslatableComponent("commands.ae2.ChunkLoggerOn"), true);
+            sender.sendSuccess(Component.translatable("commands.ae2.ChunkLoggerOn"), true);
         } else {
-            sender.sendSuccess(new TranslatableComponent("commands.ae2.ChunkLoggerOff"), true);
+            sender.sendSuccess(Component.translatable("commands.ae2.ChunkLoggerOff"), true);
         }
     }
 }

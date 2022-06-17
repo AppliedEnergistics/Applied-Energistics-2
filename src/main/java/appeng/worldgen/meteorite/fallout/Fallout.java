@@ -18,12 +18,9 @@
 
 package appeng.worldgen.meteorite.fallout;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,21 +29,12 @@ import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 public class Fallout {
     private final MeteoriteBlockPutter putter;
     private final BlockState skyStone;
-    protected final Random random;
+    protected final RandomSource random;
 
-    public Fallout(MeteoriteBlockPutter putter, BlockState skyStone, Random random) {
+    public Fallout(MeteoriteBlockPutter putter, BlockState skyStone, RandomSource random) {
         this.putter = putter;
         this.skyStone = skyStone;
         this.random = random;
-    }
-
-    public static FalloutMode fromBiome(Holder<Biome> biome) {
-        return switch (Biome.getBiomeCategory(biome)) {
-            case MESA -> FalloutMode.TERRACOTTA;
-            case DESERT, BEACH -> FalloutMode.SAND;
-            case ICY -> FalloutMode.ICE_SNOW;
-            default -> FalloutMode.DEFAULT;
-        };
     }
 
     public int adjustCrater() {

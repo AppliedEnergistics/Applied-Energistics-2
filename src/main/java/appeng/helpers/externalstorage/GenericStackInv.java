@@ -30,7 +30,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.Items;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
@@ -60,7 +59,7 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
     @org.jetbrains.annotations.Nullable
     private AEKeyFilter filter;
     protected final Mode mode;
-    private Component description = TextComponent.EMPTY;
+    private Component description = Component.empty();
 
     public enum Mode {
         CONFIG_TYPES,

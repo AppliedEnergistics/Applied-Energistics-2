@@ -98,11 +98,7 @@ public class SpawnEntityPacket extends BasePacket {
         Entity entity = type.create(world);
 
         if (entity != null) {
-            entity.setPacketCoordinates(x, y, z);
-            // NOTE: Vanilla doesn't do this for all spawned entities, but why transfer the
-            // velocity???
-            entity.setDeltaMovement(xa, ya, za);
-            entity.setPacketCoordinates(x, y, z);
+            entity.syncPacketPositionCodec(x, y, z);
             entity.moveTo(x, y, z);
             entity.setXRot((float) (xRot * 360) / 256.0F);
             entity.setYRot((float) (yRot * 360) / 256.0F);

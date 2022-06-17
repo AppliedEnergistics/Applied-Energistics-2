@@ -7,7 +7,6 @@ import com.google.gson.JsonParseException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -25,7 +24,7 @@ public final class CustomNameUtil {
         if (name == null || name.isEmpty()) {
             setCustomName(tag, (Component) null);
         } else {
-            setCustomName(tag, new TextComponent(name));
+            setCustomName(tag, Component.literal(name));
         }
     }
 

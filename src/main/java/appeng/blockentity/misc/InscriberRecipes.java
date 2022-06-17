@@ -18,19 +18,13 @@
 
 package appeng.blockentity.misc;
 
-import java.util.Collection;
-
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Iterables;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
@@ -54,9 +48,7 @@ public final class InscriberRecipes {
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
     public static Iterable<InscriberRecipe> getRecipes(Level level) {
-        Collection<Recipe<Container>> unfilteredRecipes = level.getRecipeManager().byType(InscriberRecipe.TYPE)
-                .values();
-        return Iterables.filter(unfilteredRecipes, InscriberRecipe.class);
+        return level.getRecipeManager().byType(InscriberRecipe.TYPE).values();
     }
 
     @Nullable
@@ -103,7 +95,7 @@ public final class InscriberRecipes {
         final ItemStack renamedItem = input.copy();
 
         if (!name.isEmpty()) {
-            renamedItem.setHoverName(new TextComponent(name));
+            renamedItem.setHoverName(Component.literal(name));
         } else {
             renamedItem.setHoverName(null);
         }

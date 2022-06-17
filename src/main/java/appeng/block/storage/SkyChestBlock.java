@@ -20,13 +20,13 @@ package appeng.block.storage;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -123,7 +123,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(SkyChestBlockEntity::recheckOpen);
 
     }

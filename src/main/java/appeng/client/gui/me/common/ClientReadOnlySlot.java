@@ -53,6 +53,10 @@ public class ClientReadOnlySlot extends Slot {
     }
 
     @Override
+    public void initialize(ItemStack stack) {
+    }
+
+    @Override
     public final int getMaxStackSize() {
         return 0;
     }

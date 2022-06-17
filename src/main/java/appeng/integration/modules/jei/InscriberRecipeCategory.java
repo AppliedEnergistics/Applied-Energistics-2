@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import me.shedaniel.math.Point;
@@ -55,7 +54,7 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper>
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("block.ae2.inscriber");
+        return Component.translatable("block.ae2.inscriber");
     }
 
     @Override

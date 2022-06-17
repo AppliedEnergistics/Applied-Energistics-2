@@ -27,7 +27,7 @@ jobs:
       - name: Generate assets
         run: ./gradlew runData --no-daemon --max-workers 1
       - name: Validate assets
-        run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
+        run: test -d ./src/generated/resources/.cache
       - name: Build with Gradle
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -18,8 +18,6 @@
 
 package appeng.client.render.effects;
 
-import java.util.Random;
-
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
@@ -34,13 +32,14 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 @Environment(EnvType.CLIENT)
 public class LightningFX extends TextureSheetParticle {
 
-    private static final Random RANDOM_GENERATOR = new Random();
+    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
     private static final int STEPS = 5;
     private static final int BRIGHTNESS = 13 << 4;
 

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -20,7 +20,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -98,9 +97,7 @@ class CraftingPatternItemTest {
         var level = mock(Level.class);
         var recipeManager = mock(RecipeManager.class);
         when(level.getRecipeManager()).thenReturn(recipeManager);
-        var recipeMap = new HashMap<ResourceLocation, Recipe<CraftingContainer>>();
-        recipeMap.put(TEST_RECIPE_ID, TEST_RECIPE);
-        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(recipeMap);
+        when(recipeManager.byType(RecipeType.CRAFTING)).thenReturn(Map.of(TEST_RECIPE_ID, TEST_RECIPE));
 
         return AEItems.CRAFTING_PATTERN.asItem().decode(
                 AEItemKey.of(AEItems.CRAFTING_PATTERN, tag), level);

@@ -20,10 +20,8 @@ package appeng.decorative.solid;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -36,11 +34,10 @@ public class QuartzOreBlock extends AEBaseBlock {
 
     @Override
     public void spawnAfterBreak(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos,
-            ItemStack itemStack) {
-        super.spawnAfterBreak(blockState, serverLevel, blockPos, itemStack);
-        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, itemStack) == 0) {
-            int i = Mth.nextInt(serverLevel.random, 2, 5);
-            this.popExperience(serverLevel, blockPos, i);
+            ItemStack itemStack, boolean dropXp) {
+        super.spawnAfterBreak(blockState, serverLevel, blockPos, itemStack, dropXp);
+        if (dropXp) {
+            tryDropExperience(serverLevel, blockPos, itemStack, UniformInt.of(2, 5));
         }
     }
 }

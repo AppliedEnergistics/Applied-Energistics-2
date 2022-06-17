@@ -84,7 +84,7 @@ public final class Tooltips {
     @NotNull
     private static Component list(List<Component> components, GuiText lastJoiner) {
         if (components.isEmpty()) {
-            return TextComponent.EMPTY;
+            return Component.empty();
         }
 
         if (components.size() == 2) {
@@ -127,7 +127,7 @@ public final class Tooltips {
             case InputConstants.MOUSE_BUTTON_LEFT -> ButtonToolTips.LeftClick.text();
             case InputConstants.MOUSE_BUTTON_RIGHT -> ButtonToolTips.RightClick.text();
             case InputConstants.MOUSE_BUTTON_MIDDLE -> ButtonToolTips.MiddleClick.text();
-            default -> new TextComponent("Mouse " + button);
+            default -> Component.literal("Mouse " + button);
         };
     }
 
@@ -166,7 +166,7 @@ public final class Tooltips {
         // We don't have 1s, but not 0 either
         if (seconds == 0) {
             if (number > 0) {
-                return new TextComponent("~")
+                return Component.literal("~")
                         .withStyle(NUMBER_TEXT)
                         .append(ButtonToolTips.DurationFormatSeconds.text(0));
             } else {
@@ -175,7 +175,7 @@ public final class Tooltips {
             }
         }
 
-        MutableComponent durationStr = new TextComponent("");
+        MutableComponent durationStr = Component.literal("");
         var hours = TimeUnit.HOURS.convert(seconds, TimeUnit.SECONDS);
         if (hours > 0) {
             durationStr.append(Long.toString(hours)).append("h");
@@ -200,7 +200,7 @@ public final class Tooltips {
     public static final long[] BYTE_NUMS = new long[] { 1024L, 1024 * 1024L, 1024 * 1024 * 1024L, 1024 * 1024 * 1024L };
 
     public static Component ofAmount(GenericStack stack) {
-        return new TextComponent(stack.what().formatAmount(stack.amount(), AmountFormat.FULL))
+        return Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL))
                 .withStyle(NUMBER_TEXT);
     }
 
@@ -284,7 +284,7 @@ public final class Tooltips {
         }
     }
 
-    public static MutableComponent of(TranslatableComponent component) {
+    public static MutableComponent of(Component component) {
         return component.copy().withStyle(NORMAL_TOOLTIP_TEXT);
     }
 
@@ -314,7 +314,7 @@ public final class Tooltips {
     }
 
     public static MutableComponent of(String s) {
-        return new TextComponent(s).withStyle(NORMAL_TOOLTIP_TEXT);
+        return Component.literal(s).withStyle(NORMAL_TOOLTIP_TEXT);
     }
 
     public static MutableComponent of(PowerUnits pU) {
@@ -322,7 +322,7 @@ public final class Tooltips {
     }
 
     public static MutableComponent ofPercent(double percent, boolean oneIsGreen) {
-        return new TextComponent(MessageFormat.format("{0,number,#.##%}", percent))
+        return Component.literal(MessageFormat.format("{0,number,#.##%}", percent))
                 .withStyle(colorFromRatio(percent, oneIsGreen));
     }
 
@@ -346,11 +346,11 @@ public final class Tooltips {
     }
 
     public static MutableComponent ofUnformattedNumber(long number) {
-        return new TextComponent(String.valueOf(number)).withStyle(NUMBER_TEXT);
+        return Component.literal(String.valueOf(number)).withStyle(NUMBER_TEXT);
     }
 
     public static MutableComponent ofUnformattedNumberWithRatioColor(long number, double ratio, boolean oneIsGreen) {
-        return new TextComponent(String.valueOf(number)).withStyle(colorFromRatio(ratio, oneIsGreen));
+        return Component.literal(String.valueOf(number)).withStyle(colorFromRatio(ratio, oneIsGreen));
     }
 
     public static MutableComponent ofBytes(long number) {
@@ -369,7 +369,7 @@ public final class Tooltips {
     }
 
     private static MutableComponent ofNumber(Amount number) {
-        return new TextComponent(number.digit() + number.unit()).withStyle(NUMBER_TEXT);
+        return Component.literal(number.digit() + number.unit()).withStyle(NUMBER_TEXT);
     }
 
     public static MutableComponent ofNumber(long number, long max) {
@@ -384,14 +384,14 @@ public final class Tooltips {
 
     private static MutableComponent ofNumber(MaxedAmount number) {
         boolean numberUnit = !number.digit().equals("0");
-        return new TextComponent(number.digit() + (numberUnit ? number.unit() : "")).withStyle(NUMBER_TEXT)
-                .append(new TextComponent("/")
+        return Component.literal(number.digit() + (numberUnit ? number.unit() : "")).withStyle(NUMBER_TEXT)
+                .append(Component.literal("/")
                         .withStyle(NORMAL_TOOLTIP_TEXT))
                 .append(number.maxDigit() + number.unit()).withStyle(NUMBER_TEXT);
     }
 
     public static MutableComponent of(Component... components) {
-        MutableComponent s = new TextComponent("");
+        MutableComponent s = Component.literal("");
         for (var c : components) {
             s = s.append(c);
         }

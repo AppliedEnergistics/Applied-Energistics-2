@@ -18,12 +18,9 @@
 
 package appeng.integration.modules.waila.tile;
 
-import java.util.List;
-
-import net.minecraft.network.chat.Component;
-
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.core.localization.InGameTooltip;
@@ -35,13 +32,13 @@ import appeng.integration.modules.waila.BaseDataProvider;
 public final class CraftingMonitorDataProvider extends BaseDataProvider {
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         var blockEntity = accessor.getBlockEntity();
         if (blockEntity instanceof CraftingMonitorBlockEntity monitor) {
             var displayStack = monitor.getJobProgress();
 
             if (displayStack != null) {
-                tooltip.add(InGameTooltip.Crafting.text(displayStack.what().getDisplayName()));
+                tooltip.addLine(InGameTooltip.Crafting.text(displayStack.what().getDisplayName()));
             }
         }
     }

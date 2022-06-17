@@ -116,54 +116,49 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
             return false;
         }
 
-        try (var tx = Transaction.openOuter()) {
-            for (var view : storage.iterable(tx)) {
-                var storedKey = conversion.getKey(view.getResource());
-                if (storedKey != null && view.getAmount() > 0) {
-                    var key = storedKey.dropSecondary();
-                    if (keys.contains(key)) {
-                        return true;
-                    }
+        for (var view : storage) {
+            var storedKey = conversion.getKey(view.getResource());
+            if (storedKey != null && view.getAmount() > 0) {
+                var key = storedKey.dropSecondary();
+                if (keys.contains(key)) {
+                    return true;
                 }
             }
         }
+
         return false;
     }
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
         if (storage != null) {
-            try (var tx = Transaction.openOuter()) {
-                for (var view : storage.iterable(tx)) {
-                    var resource = view.getResource();
+            for (var view : storage) {
+                var resource = view.getResource();
 
-                    if (resource.isBlank()) {
-                        continue;
-                    }
+                if (resource.isBlank()) {
+                    continue;
+                }
 
-                    // Skip resources that cannot be extracted if that filter was enabled
-                    if (extractableOnly) {
-                        // Use an inner TX to prevent two tanks that can be extracted from only mutually exclusively
-                        // from not being influenced by our extraction test here.
-                        try (var innerTx = tx.openNested()) {
-                            var extracted = view.extract(resource, 1, innerTx);
-                            // If somehow extracting the minimal amount doesn't work, check if everything could be
-                            // extracted because the tank might have a minimum (or fixed) allowed extraction amount.
-                            // In addition, re-check if the resource is now blank since the inventory may have performed
-                            // cleanup on our failed extraction attempt.
-                            if (extracted == 0) {
-                                extracted = view.extract(resource, view.getAmount(), innerTx);
-                            }
-                            if (extracted == 0) {
-                                // We weren't able to simulate extraction of any fluid, so skip this one
-                                continue;
-                            }
+                // Skip resources that cannot be extracted if that filter was enabled
+                if (extractableOnly) {
+                    try (var tx = Transaction.openOuter()) {
+                        var extracted = view.extract(resource, 1, tx);
+                        // If somehow extracting the minimal amount doesn't work, check if everything could be
+                        // extracted because the tank might have a minimum (or fixed) allowed extraction amount.
+                        // In addition, re-check if the resource is now blank since the inventory may have performed
+                        // cleanup on our failed extraction attempt.
+                        if (extracted == 0) {
+                            extracted = view.extract(resource, view.getAmount(), tx);
+                        }
+                        if (extracted == 0) {
+                            // We weren't able to simulate extraction of any fluid, so skip this one
+                            continue;
                         }
                     }
-
-                    long amount = Math.min(view.getAmount(), MAX_REPORTED_AMOUNT);
-                    out.add(conversion.getKey(resource), amount);
                 }
+
+                long amount = Math.min(view.getAmount(), MAX_REPORTED_AMOUNT);
+                out.add(conversion.getKey(resource), amount);
             }
         }
     }

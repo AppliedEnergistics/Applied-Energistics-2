@@ -117,6 +117,10 @@ public class QuartzKnifeMenu extends AEBaseMenu {
             }
         }
 
+        @Override
+        public void initialize(ItemStack stack) {
+        }
+
         private void makePlate() {
             if (isServerSide() && !this.getInventory().extractItem(0, 1, false).isEmpty()) {
                 final ItemStack item = itemMenuHost.getItemStack();

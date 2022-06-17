@@ -26,18 +26,21 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.HitResult;
 
 import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IRegistrar;
+import mcp.mobius.waila.api.IServerAccessor;
 import mcp.mobius.waila.api.IServerDataProvider;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.ITooltipComponent;
 import mcp.mobius.waila.api.TooltipPosition;
+import mcp.mobius.waila.api.WailaConstants;
+import mcp.mobius.waila.api.component.ItemComponent;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
@@ -66,17 +69,17 @@ public final class CableBusDataProvider {
     }
 
     public static void register(IRegistrar registrar) {
-        registrar.addDisplayItem(new IconProvider(), CableBusBlock.class);
-        registrar.registerComponentProvider(new NameProvider(),
+        registrar.addIcon(new IconProvider(), CableBusBlock.class);
+        registrar.addComponent(new NameProvider(),
                 TooltipPosition.HEAD, CableBusBlock.class);
-        registrar.registerComponentProvider(new TooltipAdapter(),
+        registrar.addComponent(new TooltipAdapter(),
                 TooltipPosition.BODY, CableBusBlock.class);
-        registrar.registerBlockDataProvider(new ServerDataAdapter(), CableBusBlockEntity.class);
+        registrar.addBlockData(new ServerDataAdapter(), CableBusBlockEntity.class);
     }
 
-    private static class NameProvider implements IComponentProvider {
+    private static class NameProvider implements IBlockComponentProvider {
         @Override
-        public void appendHead(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+        public void appendHead(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
             var blockEntity = accessor.getBlockEntity();
             var hitResult = accessor.getHitResult();
 
@@ -91,8 +94,7 @@ public final class CableBusDataProvider {
 
             // Replace the object name
             if (name != null) {
-                tooltip.clear();
-                tooltip.add(name.copy().withStyle(style -> {
+                tooltip.setLine(WailaConstants.OBJECT_NAME_TAG, name.copy().withStyle(style -> {
                     // Don't overwrite a text color if one is present
                     if (style.getColor() == null) {
                         return style.withColor(ChatFormatting.WHITE);
@@ -104,9 +106,13 @@ public final class CableBusDataProvider {
         }
     }
 
-    private static class IconProvider implements IComponentProvider {
+    private static class IconProvider implements IBlockComponentProvider {
         @Override
-        public ItemStack getDisplayItem(IBlockAccessor accessor, IPluginConfig config) {
+        public ITooltipComponent getIcon(IBlockAccessor accessor, IPluginConfig config) {
+            return new ItemComponent(getIcon(accessor));
+        }
+
+        private ItemStack getIcon(IBlockAccessor accessor) {
             var blockEntity = accessor.getBlockEntity();
             var hitResult = accessor.getHitResult();
 
@@ -121,9 +127,9 @@ public final class CableBusDataProvider {
         }
     }
 
-    private static class TooltipAdapter implements IComponentProvider {
+    private static class TooltipAdapter implements IBlockComponentProvider {
         @Override
-        public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+        public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
             // Pick the part the cursor is on
             var selected = getPart(accessor.getBlockEntity(), accessor.getHitResult());
             if (selected.part != null) {
@@ -139,10 +145,10 @@ public final class CableBusDataProvider {
 
     private static class ServerDataAdapter implements IServerDataProvider<BlockEntity> {
         @Override
-        public void appendServerData(CompoundTag serverData, ServerPlayer serverPlayer, Level level,
-                BlockEntity blockEntity) {
+        public void appendServerData(CompoundTag data, IServerAccessor<BlockEntity> accessor, IPluginConfig config) {
+            accessor.getWorld();
 
-            if (!(blockEntity instanceof CableBusBlockEntity cableBus)) {
+            if (!(accessor.getTarget() instanceof CableBusBlockEntity cableBus)) {
                 return;
             }
 
@@ -154,17 +160,18 @@ public final class CableBusDataProvider {
                 }
 
                 for (var provider : PROVIDERS) {
-                    provider.appendServerData(serverPlayer, part, partTag);
+                    provider.appendServerData(accessor.getPlayer(), part, partTag);
                 }
 
                 // Send it to the client if there's some data for it
                 if (!partTag.isEmpty()) {
-                    serverData.put(getPartDataName(location), partTag);
+                    data.put(getPartDataName(location), partTag);
                     partTag = new CompoundTag();
                 }
             }
 
         }
+
     }
 
     private static String getPartDataName(@Nullable Direction location) {

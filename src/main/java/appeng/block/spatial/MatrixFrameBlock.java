@@ -50,7 +50,7 @@ public class MatrixFrameBlock extends AEBaseBlock {
             PushReaction.PUSH_ONLY);
 
     public MatrixFrameBlock() {
-        super(BlockBehaviour.Properties.of(MATERIAL).strength(-1.0F, 6000000.0F).noOcclusion().noDrops());
+        super(BlockBehaviour.Properties.of(MATERIAL).strength(-1.0F, 6000000.0F).noOcclusion().noLootTable());
     }
 
     @Override

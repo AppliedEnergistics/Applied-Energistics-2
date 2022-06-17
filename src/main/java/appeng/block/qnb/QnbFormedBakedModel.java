@@ -20,7 +20,6 @@ package appeng.block.qnb;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -43,6 +42,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
@@ -105,13 +105,13 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
 
     }
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-            Supplier<Random> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
         QnbFormedState formedState = getState(blockView, pos);
 
         if (formedState == null) {
@@ -124,7 +124,7 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, RandomSource random) {
         return baseModel.getQuads(state, face, random);
     }
 

@@ -21,7 +21,6 @@ package appeng.client.render.model;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -30,6 +29,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -59,7 +59,7 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
 
     private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
             TextureAtlasSprite texBright) {
-        List<BakedQuad> quads = this.wrapped.getQuads(null, facing, new Random(0));
+        List<BakedQuad> quads = this.wrapped.getQuads(null, facing, RandomSource.create(0));
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {
             int tint;
@@ -84,7 +84,7 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         if (side == null) {
             return this.generalQuads;
         }

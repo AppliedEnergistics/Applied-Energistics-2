@@ -26,6 +26,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -33,7 +34,6 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -176,7 +176,7 @@ public class InitStackRenderHandlers {
 
         @Override
         public Component getDisplayName(AEFluidKey stack) {
-            return FluidVariantRendering.getName(stack.toVariant());
+            return FluidVariantAttributes.getName(stack.toVariant());
         }
 
         @Override
@@ -186,7 +186,7 @@ public class InitStackRenderHandlers {
             // Heuristic: If the last line doesn't include the modname, add it ourselves
             var modName = Platform.formatModName(stack.getModId());
             if (tooltip.isEmpty() || !tooltip.get(tooltip.size() - 1).getString().equals(modName)) {
-                tooltip.add(new TextComponent(modName));
+                tooltip.add(Component.literal(modName));
             }
 
             return tooltip;

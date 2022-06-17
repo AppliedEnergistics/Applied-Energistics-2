@@ -36,7 +36,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -337,7 +336,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     public Component getCustomInventoryName() {
-        return new TextComponent(
+        return Component.literal(
                 this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
     }
 

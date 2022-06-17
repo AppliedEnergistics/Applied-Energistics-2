@@ -21,15 +21,14 @@ package appeng.integration.modules.waila;
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
 import mcp.mobius.waila.api.IServerDataProvider;
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.integration.modules.waila.tile.ChargerDataProvider;
 import appeng.integration.modules.waila.tile.CraftingMonitorDataProvider;
@@ -38,13 +37,13 @@ import appeng.integration.modules.waila.tile.GridNodeStateDataProvider;
 import appeng.integration.modules.waila.tile.PowerStorageDataProvider;
 
 /**
- * Delegation provider for tiles through {@link mcp.mobius.waila.api.IComponentProvider}
+ * Delegation provider for tiles through {@link mcp.mobius.waila.api.IBlockComponentProvider}
  *
  * @author thatsIch
  * @version rv2
  * @since rv2
  */
-public final class BlockEntityDataProvider implements IComponentProvider, IServerDataProvider<BlockEntity> {
+public final class BlockEntityDataProvider implements IBlockComponentProvider, IServerDataProvider<BlockEntity> {
     /**
      * Contains all providers
      */
@@ -63,16 +62,16 @@ public final class BlockEntityDataProvider implements IComponentProvider, IServe
     }
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         for (var provider : providers) {
             provider.appendBody(tooltip, accessor, config);
         }
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
+    public void appendServerData(CompoundTag data, IServerAccessor<BlockEntity> accessor, IPluginConfig config) {
         for (var provider : providers) {
-            provider.appendServerData(tag, player, level, blockEntity);
+            provider.appendServerData(data, accessor.getPlayer(), accessor.getWorld(), accessor.getTarget());
         }
     }
 

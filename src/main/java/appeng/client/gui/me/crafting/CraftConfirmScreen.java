@@ -27,7 +27,6 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.stacks.GenericStack;
@@ -79,7 +78,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
 
         // Show additional status about the selected CPU and plan when the planning is done
         Component planDetails = GuiText.CalculatingWait.text();
-        Component cpuDetails = TextComponent.EMPTY;
+        Component cpuDetails = Component.empty();
         if (plan != null) {
             String byteUsed = NumberFormat.getInstance().format(plan.getUsedBytes());
             planDetails = GuiText.BytesUsed.text(byteUsed);

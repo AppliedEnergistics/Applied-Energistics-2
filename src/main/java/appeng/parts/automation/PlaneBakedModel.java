@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -39,6 +38,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -87,7 +87,7 @@ public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
 
     @Override
     public void emitQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-            Supplier<Random> randomSupplier,
+            Supplier<RandomSource> randomSupplier,
             RenderContext context, Direction partSide, @Nullable Object modelData) {
         PlaneConnections connections = DEFAULT_PERMUTATION;
 
@@ -104,7 +104,7 @@ public class PlaneBakedModel implements BakedModel, IDynamicPartBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return Collections.emptyList();
     }
 

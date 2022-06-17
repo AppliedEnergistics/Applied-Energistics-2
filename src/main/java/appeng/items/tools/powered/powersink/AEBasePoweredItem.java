@@ -73,7 +73,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
 
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             final ItemStack charged = new ItemStack(this, 1);
             injectAEPower(charged, getAEMaxPower(charged), Actionable.MODULATE);
             items.add(charged);

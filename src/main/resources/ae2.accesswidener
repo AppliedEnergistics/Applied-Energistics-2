@@ -20,8 +20,9 @@ accessible method net/minecraft/world/item/crafting/RecipeManager byType (Lnet/m
 extendable method net/minecraft/world/entity/item/ItemEntity setUnderwaterMovement ()V
 
 # For structure registration
-accessible field net/minecraft/world/level/levelgen/feature/StructureFeature STEP Ljava/util/Map;
-accessible method net/minecraft/data/worldgen/StructureFeatures register (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/levelgen/feature/ConfiguredStructureFeature;)Lnet/minecraft/core/Holder;
+accessible method net/minecraft/data/worldgen/Structures structure (Lnet/minecraft/tags/TagKey;Ljava/util/Map;Lnet/minecraft/world/level/levelgen/GenerationStep$Decoration;Lnet/minecraft/world/level/levelgen/structure/TerrainAdjustment;)Lnet/minecraft/world/level/levelgen/structure/Structure$StructureSettings;
+accessible method net/minecraft/data/worldgen/Structures register (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/levelgen/structure/Structure;)Lnet/minecraft/core/Holder;
+accessible method net/minecraft/world/level/levelgen/structure/StructureType register (Ljava/lang/String;Lcom/mojang/serialization/Codec;)Lnet/minecraft/world/level/levelgen/structure/StructureType;
 accessible method net/minecraft/world/level/levelgen/structure/pieces/StructurePieceType setPieceId (Lnet/minecraft/world/level/levelgen/structure/pieces/StructurePieceType$ContextlessType;Ljava/lang/String;)Lnet/minecraft/world/level/levelgen/structure/pieces/StructurePieceType;
 
 # features

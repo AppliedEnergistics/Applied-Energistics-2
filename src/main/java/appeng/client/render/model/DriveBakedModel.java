@@ -21,7 +21,6 @@ package appeng.client.render.model;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import com.mojang.math.Vector3f;
@@ -41,6 +40,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -78,7 +78,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-            Supplier<Random> randomSupplier, RenderContext context) {
+            Supplier<RandomSource> randomSupplier, RenderContext context) {
 
         super.emitBlockQuads(blockView, state, pos, randomSupplier, context);
 
@@ -198,7 +198,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
     private Mesh convertCellModel(BakedModel bakedModel) {
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-        Random random = new Random();
+        RandomSource random = RandomSource.create();
         MeshBuilder meshBuilder = renderer.meshBuilder();
         QuadEmitter emitter = meshBuilder.getEmitter();
         emitter.material(renderer.materialFinder().disableDiffuse(0, false).disableAo(0, true).find());

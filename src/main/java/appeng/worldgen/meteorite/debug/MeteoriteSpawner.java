@@ -27,7 +27,7 @@ import net.minecraft.world.level.block.Block;
 
 import appeng.worldgen.meteorite.CraterType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
-import appeng.worldgen.meteorite.fallout.Fallout;
+import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 /**
  * Makes decisions about spawning meteorites in the level.
@@ -64,7 +64,7 @@ public class MeteoriteSpawner {
             return null;
         }
 
-        var fallout = Fallout.fromBiome(level.getBiome(pos));
+        var fallout = FalloutMode.fromBiome(level.getBiome(pos));
 
         boolean craterLake = false;
 

@@ -18,13 +18,12 @@
 
 package appeng.block.misc;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -87,7 +86,7 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, Random r) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource r) {
         if (!AEConfig.instance().isEnableEffects()) {
             return;
         }

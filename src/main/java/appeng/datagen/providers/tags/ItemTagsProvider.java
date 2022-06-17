@@ -18,8 +18,6 @@
 
 package appeng.datagen.providers.tags;
 
-import java.nio.file.Path;
-
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -32,7 +30,6 @@ import net.minecraft.world.item.Items;
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AETags;
 import appeng.api.util.AEColor;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -310,16 +307,5 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .addTag(ConventionTags.GLASS_CABLE)
                 .addTag(ConventionTags.SMART_CABLE)
                 .addTag(ConventionTags.SMART_DENSE_CABLE);
-    }
-
-    @Override
-    protected Path getPath(ResourceLocation id) {
-        return this.generator.getOutputFolder()
-                .resolve("data/" + id.getNamespace() + "/tags/items/" + id.getPath() + ".json");
-    }
-
-    @Override
-    public String getName() {
-        return AppEng.MOD_NAME + " Item Tags";
     }
 }

@@ -20,7 +20,6 @@ package appeng.spatial;
 
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeBuilder;
-import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects.Builder;
@@ -33,7 +32,7 @@ public class SpatialStorageBiome {
 
     public static final Biome INSTANCE = new BiomeBuilder()
             .generationSettings(new BiomeGenerationSettings.Builder().build())
-            .precipitation(Precipitation.NONE).biomeCategory(BiomeCategory.NONE)
+            .precipitation(Precipitation.NONE)
             // Copied from the vanilla void biome
             .temperature(0.5F).downfall(0.5F)
             .specialEffects(new Builder().waterColor(4159204).waterFogColor(329011).fogColor(0)

@@ -31,16 +31,15 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -90,7 +89,7 @@ public class Platform {
     /*
      * random source, use it for item drop locations...
      */
-    private static final Random RANDOM_GENERATOR = new Random();
+    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -101,7 +100,7 @@ public class Platform {
         return P2P_HELPER;
     }
 
-    public static Random getRandom() {
+    public static RandomSource getRandom() {
         return RANDOM_GENERATOR;
     }
 
@@ -206,8 +205,8 @@ public class Platform {
             var sg = g.getSecurityService();
             if (!sg.hasPermission(player, requiredPermission)) {
                 if (notifyPlayer) {
-                    player.sendMessage(new TranslatableComponent("ae2.permission_denied")
-                            .withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    player.sendSystemMessage(Component.translatable("ae2.permission_denied")
+                            .withStyle(ChatFormatting.RED));
                 }
                 return false;
             }
@@ -292,7 +291,7 @@ public class Platform {
 
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
         // no usage of the tag, but we keep it for compatibility
-        return new TranslatableComponent(getDescriptionId(fluid));
+        return Component.translatable(getDescriptionId(fluid));
     }
 
     // tag copy is not necessary, as the tag is not modified.

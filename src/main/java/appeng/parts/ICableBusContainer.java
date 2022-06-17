@@ -18,12 +18,11 @@
 
 package appeng.parts;
 
-import java.util.Random;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,7 +58,7 @@ public interface ICableBusContainer {
     boolean isLadder(LivingEntity entity);
 
     @Environment(EnvType.CLIENT)
-    void animateTick(Level level, BlockPos pos, Random r);
+    void animateTick(Level level, BlockPos pos, RandomSource r);
 
     int getLightValue();
 

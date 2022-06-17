@@ -20,7 +20,6 @@ package appeng.block.networking;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -35,6 +34,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -97,7 +97,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public CableBusBlock() {
-        super(defaultProps(AEMaterials.GLASS).noOcclusion().noDrops().dynamicShape()
+        super(defaultProps(AEMaterials.GLASS).noOcclusion().noLootTable().dynamicShape()
                 .lightLevel(state -> state.getValue(LIGHT_LEVEL)));
         registerDefaultState(defaultBlockState().setValue(LIGHT_LEVEL, 0).setValue(WATERLOGGED, false));
     }
@@ -119,7 +119,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, Random rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         this.cb(level, pos).animateTick(level, pos, rand);
     }
 

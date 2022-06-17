@@ -18,8 +18,6 @@
 
 package appeng.client.render.effects;
 
-import java.util.Random;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,11 +25,12 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.util.RandomSource;
 
 @Environment(EnvType.CLIENT)
 public class LightningArcFX extends LightningFX {
 
-    private static final Random RANDOM_GENERATOR = new Random();
+    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
 
     private final double rx;
     private final double ry;

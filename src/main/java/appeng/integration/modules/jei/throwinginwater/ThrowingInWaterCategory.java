@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -115,17 +114,17 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
             tooltipLines.add(ItemModText.WITH_CRYSTAL_GROWTH_ACCELERATORS.text());
             for (var i = 1; i <= 5; i++) {
                 var duration = GrowingCrystalEntity.getGrowthDuration(i).toMillis();
-                tooltipLines.add(new TextComponent(i + ": " + DurationFormatUtils.formatDurationWords(
+                tooltipLines.add(Component.literal(i + ": " + DurationFormatUtils.formatDurationWords(
                         duration, true, true)));
             }
 
             var defaultDuration = GrowingCrystalEntity.getGrowthDuration(0).toMillis();
             widgets.add(Widgets.createLabel(
                     new Point(col3 + 7, durationY),
-                    new TextComponent(DurationFormatUtils.formatDurationWords(
+                    Component.literal(DurationFormatUtils.formatDurationWords(
                             defaultDuration, true, true)))
                     .noShadow().color(0xFF404040, 0xFFBBBBBB)
-                    .centered().tooltipLines(tooltipLines.stream().map(Component::getString).toArray(String[]::new)));
+                    .centered().tooltip(tooltipLines.toArray(Component[]::new)));
         }
 
         return widgets;

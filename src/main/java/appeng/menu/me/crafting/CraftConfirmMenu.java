@@ -23,9 +23,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -201,8 +199,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
                 sendPacketToClient(new CraftConfirmPlanPacket(plan));
             } catch (Throwable e) {
-                this.getPlayerInventory().player.sendMessage(new TextComponent("Error: " + e),
-                        Util.NIL_UUID);
+                this.getPlayerInventory().player.sendSystemMessage(Component.literal("Error: " + e));
                 AELog.debug(e);
                 this.setValidMenu(false);
                 this.result = null;

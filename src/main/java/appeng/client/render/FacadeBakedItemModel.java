@@ -19,7 +19,6 @@
 package appeng.client.render;
 
 import java.util.Objects;
-import java.util.Random;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -27,6 +26,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -55,7 +55,7 @@ public class FacadeBakedItemModel extends ForwardingBakedModel {
     }
 
     @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
         if (!(stack.getItem() instanceof FacadeItem)) {
             return;
         }

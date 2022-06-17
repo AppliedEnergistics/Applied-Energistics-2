@@ -19,7 +19,6 @@
 package appeng.me.storage;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
@@ -40,6 +39,6 @@ public class NullInventory implements MEStorage {
 
     @Override
     public Component getDescription() {
-        return TextComponent.EMPTY;
+        return Component.empty();
     }
 }

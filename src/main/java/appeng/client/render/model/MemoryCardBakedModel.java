@@ -18,7 +18,6 @@
 
 package appeng.client.render.model;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -26,6 +25,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -50,7 +50,7 @@ class MemoryCardBakedModel extends ForwardingBakedModel implements FabricBakedMo
     }
 
     @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
 
         context.fallbackConsumer().accept(wrapped);
 

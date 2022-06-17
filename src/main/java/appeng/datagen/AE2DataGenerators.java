@@ -49,38 +49,38 @@ public class AE2DataGenerators {
         var localization = new LocalizationProvider(generator);
 
         // Loot
-        generator.addProvider(new BlockDropProvider(generator.getOutputFolder()));
-        generator.addProvider(new ChestDropProvider(generator.getOutputFolder()));
+        generator.addProvider(true, new BlockDropProvider(generator.getOutputFolder()));
+        generator.addProvider(true, new ChestDropProvider(generator.getOutputFolder()));
 
         // Tags
         BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator);
-        generator.addProvider(blockTagsProvider);
-        generator.addProvider(new ItemTagsProvider(generator, blockTagsProvider));
-        generator.addProvider(new FluidTagsProvider(generator));
-        generator.addProvider(new BiomeTagsProvider(generator));
+        generator.addProvider(true, blockTagsProvider);
+        generator.addProvider(true, new ItemTagsProvider(generator, blockTagsProvider));
+        generator.addProvider(true, new FluidTagsProvider(generator));
+        generator.addProvider(true, new BiomeTagsProvider(generator));
 
         // Models
-        generator.addProvider(new BlockModelProvider(generator, existingFileHelper));
-        generator.addProvider(new DecorationModelProvider(generator, existingFileHelper));
-        generator.addProvider(new ItemModelProvider(generator, existingFileHelper));
-        generator.addProvider(new CableModelProvider(generator, existingFileHelper));
-        generator.addProvider(new PartModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new BlockModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new DecorationModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new ItemModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new CableModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new PartModelProvider(generator, existingFileHelper));
 
         // Misc
-        generator.addProvider(new AdvancementGenerator(generator, localization));
+        generator.addProvider(true, new AdvancementGenerator(generator, localization));
 
         // Recipes
-        generator.addProvider(new DecorationRecipes(generator));
-        generator.addProvider(new DecorationBlockRecipes(generator));
-        generator.addProvider(new MatterCannonAmmoProvider(generator));
-        generator.addProvider(new EntropyRecipes(generator));
-        generator.addProvider(new InscriberRecipes(generator));
-        generator.addProvider(new SmeltingRecipes(generator));
-        generator.addProvider(new CraftingRecipes(generator));
-        generator.addProvider(new SmithingRecipes(generator));
+        generator.addProvider(true, new DecorationRecipes(generator));
+        generator.addProvider(true, new DecorationBlockRecipes(generator));
+        generator.addProvider(true, new MatterCannonAmmoProvider(generator));
+        generator.addProvider(true, new EntropyRecipes(generator));
+        generator.addProvider(true, new InscriberRecipes(generator));
+        generator.addProvider(true, new SmeltingRecipes(generator));
+        generator.addProvider(true, new CraftingRecipes(generator));
+        generator.addProvider(true, new SmithingRecipes(generator));
 
         // Must run last
-        generator.addProvider(localization);
+        generator.addProvider(true, localization);
     }
 
 }

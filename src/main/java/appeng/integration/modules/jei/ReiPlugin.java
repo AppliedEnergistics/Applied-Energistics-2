@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -100,10 +100,6 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new InscriberRecipeCategory());
         registry.add(new FacadeRecipeCategory());
         registry.add(new AttunementCategory());
-
-        registry.removePlusButton(ThrowingInWaterCategory.ID);
-        registry.removePlusButton(InscriberRecipeCategory.ID);
-        registry.removePlusButton(CondenserCategory.ID);
 
         registerWorkingStations(registry);
     }
@@ -286,7 +282,7 @@ public class ReiPlugin implements REIClientPlugin {
     private static void addDescription(DisplayRegistry registry, ItemDefinition<?> itemDefinition, String... message) {
         DefaultInformationDisplay info = DefaultInformationDisplay.createFromEntry(EntryStacks.of(itemDefinition),
                 itemDefinition.asItem().getDescription());
-        info.lines(Arrays.stream(message).map(TranslatableComponent::new).collect(Collectors.toList()));
+        info.lines(Arrays.stream(message).map(Component::translatable).collect(Collectors.toList()));
         registry.add(info);
     }
 

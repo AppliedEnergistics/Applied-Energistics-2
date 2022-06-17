@@ -18,32 +18,36 @@
 
 package appeng.integration.modules.waila;
 
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
 import mcp.mobius.waila.api.IServerDataProvider;
+import mcp.mobius.waila.api.ITooltip;
 
 /**
- * Base implementation for {@link mcp.mobius.waila.api.IComponentProvider}
+ * Base implementation for {@link mcp.mobius.waila.api.IBlockComponentProvider}
  *
  * @author thatsIch
  * @version rv2
  * @since rv2
  */
-public abstract class BaseDataProvider implements IComponentProvider, IServerDataProvider<BlockEntity> {
+public abstract class BaseDataProvider implements IBlockComponentProvider, IServerDataProvider<BlockEntity> {
 
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    @Override
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
     }
 
     @Override
+    public final void appendServerData(CompoundTag data, IServerAccessor<BlockEntity> accessor, IPluginConfig config) {
+        appendServerData(data, accessor.getPlayer(), accessor.getWorld(), accessor.getTarget());
+    }
+
     public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
     }
 

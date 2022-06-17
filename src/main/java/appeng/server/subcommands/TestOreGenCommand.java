@@ -31,7 +31,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -148,7 +148,7 @@ public class TestOreGenCommand implements ISubCommand {
     }
 
     private static void sendLine(CommandSourceStack sender, String text, Object... args) {
-        sender.sendSuccess(new TextComponent(String.format(Locale.ROOT, text, args)), true);
+        sender.sendSuccess(Component.literal(String.format(Locale.ROOT, text, args)), true);
     }
 
     private static class Stats {

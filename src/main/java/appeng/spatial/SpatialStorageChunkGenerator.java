@@ -35,16 +35,16 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep.Carving;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 
@@ -110,12 +110,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public Climate.Sampler climateSampler() {
-        return Climate.empty();
-    }
-
-    @Override
-    public void buildSurface(WorldGenRegion region, StructureFeatureManager structureFeatureManager,
+    public void buildSurface(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState,
             ChunkAccess chunk) {
         this.fillChunk(chunk);
         chunk.setUnsaved(false);
@@ -143,33 +138,29 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public ChunkGenerator withSeed(long seed) {
-        return this;
-    }
-
-    @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender,
-            StructureFeatureManager structureFeatureManager, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState randomState,
+            StructureManager structureManager, ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
     @Override
-    public int getBaseHeight(int x, int z, Types heightmapType, LevelHeightAccessor levelHeightAccessor) {
+    public int getBaseHeight(int i, int j, Types types, LevelHeightAccessor levelHeightAccessor,
+            RandomState randomState) {
         return MIN_Y;
     }
 
     @Override
-    public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor levelHeightAccessor) {
+    public NoiseColumn getBaseColumn(int i, int j, LevelHeightAccessor levelHeightAccessor, RandomState randomState) {
         return columnSample;
     }
 
     @Override
-    public void addDebugScreenInfo(List<String> list, BlockPos pos) {
+    public void addDebugScreenInfo(List<String> list, RandomState randomState, BlockPos blockPos) {
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion worldGenRegion, long l, BiomeManager biomeManager,
-            StructureFeatureManager structureFeatureManager, ChunkAccess chunkAccess, Carving carving) {
+    public void applyCarvers(WorldGenRegion worldGenRegion, long l, RandomState randomState, BiomeManager biomeManager,
+            StructureManager structureManager, ChunkAccess chunkAccess, Carving carving) {
     }
 
     @Override

@@ -18,10 +18,9 @@
 
 package appeng.parts;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -87,7 +86,7 @@ public class NullCableBusContainer implements ICableBusContainer {
     }
 
     @Override
-    public void animateTick(Level level, BlockPos pos, Random r) {
+    public void animateTick(Level level, BlockPos pos, RandomSource r) {
 
     }
 

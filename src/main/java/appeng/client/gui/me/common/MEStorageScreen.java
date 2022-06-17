@@ -34,7 +34,6 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -591,7 +590,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (Minecraft.getInstance().options.advancedItemTooltips) {
             currentToolTip
-                    .add(new TextComponent("Serial: " + entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
+                    .add(Component.literal("Serial: " + entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
         }
 
         this.renderComponentTooltip(poseStack, currentToolTip, x, y);

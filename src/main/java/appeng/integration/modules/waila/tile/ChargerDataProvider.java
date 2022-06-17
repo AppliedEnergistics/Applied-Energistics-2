@@ -18,14 +18,12 @@
 
 package appeng.integration.modules.waila.tile;
 
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.blockentity.misc.ChargerBlockEntity;
@@ -39,21 +37,21 @@ import appeng.util.Platform;
 public final class ChargerDataProvider extends BaseDataProvider {
 
     @Override
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         var blockEntity = accessor.getBlockEntity();
         if (blockEntity instanceof ChargerBlockEntity charger) {
             var chargerInventory = charger.getInternalInventory();
             var chargingItem = chargerInventory.getStackInSlot(0);
 
             if (!chargingItem.isEmpty()) {
-                tooltip.add(InGameTooltip.Contains.text(
+                tooltip.addLine(InGameTooltip.Contains.text(
                         chargingItem.getHoverName().copy().withStyle(ChatFormatting.WHITE)));
 
                 if (chargingItem.getItem() instanceof IAEItemPowerStorage powerStorage
                         && Platform.isChargeable(chargingItem)) {
                     var fillRate = Mth.floor(powerStorage.getAECurrentPower(chargingItem) * 100 /
                             powerStorage.getAEMaxPower(chargingItem));
-                    tooltip.add(InGameTooltip.Charged.text(
+                    tooltip.addLine(InGameTooltip.Charged.text(
                             fillRate));
                 }
             }

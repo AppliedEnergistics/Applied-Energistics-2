@@ -28,7 +28,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 import appeng.client.gui.style.Blitter;
 import appeng.core.localization.GuiText;
@@ -49,7 +48,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
 
     public ProgressBar(IProgressProvider source, Blitter blitter,
             Direction dir, Component title) {
-        super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), TextComponent.EMPTY);
+        super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), Component.empty());
         this.source = source;
         this.blitter = blitter.copy();
         this.layout = dir;
@@ -99,10 +98,10 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
             return Collections.singletonList(this.fullMsg);
         }
 
-        Component result = this.titleName != null ? this.titleName : TextComponent.EMPTY;
+        Component result = this.titleName != null ? this.titleName : Component.empty();
         return Arrays.asList(
                 result,
-                new TextComponent(this.source.getCurrentProgress() + " ")
+                Component.literal(this.source.getCurrentProgress() + " ")
                         .append(GuiText.Of.text().copy().append(" " + this.source.getMaxProgress())));
     }
 
