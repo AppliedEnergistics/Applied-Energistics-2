@@ -56,8 +56,8 @@ import appeng.util.EnumCycler;
 
 public final class AEConfig {
 
-    public static final String CLIENT_CONFIG_PATH = "appliedenergistics2/client.json";
-    public static final String COMMON_CONFIG_PATH = "appliedenergistics2/common.json";
+    public static final String CLIENT_CONFIG_PATH = "ae2/client.json";
+    public static final String COMMON_CONFIG_PATH = "ae2/common.json";
     public final ClientConfig CLIENT;
     public final ConfigFileManager clientConfigManager;
     public final CommonConfig COMMON;
