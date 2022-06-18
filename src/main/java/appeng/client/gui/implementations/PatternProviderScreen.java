@@ -37,7 +37,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
 
     private final SettingToggleButton<YesNo> blockingModeButton;
-    private final ToggleButton showInInterfaceTerminalButton;
+    private final ToggleButton showInPatternAccessTerminalButton;
 
     public PatternProviderScreen(PatternProviderMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -48,11 +48,11 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
 
         widgets.addOpenPriorityButton();
 
-        this.showInInterfaceTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
+        this.showInPatternAccessTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
                 Icon.PATTERN_ACCESS_HIDE,
                 GuiText.PatternAccessTerminal.text(), GuiText.PatternAccessTerminalHint.text(),
-                btn -> selectNextInterfaceMode());
-        this.addToLeftToolbar(this.showInInterfaceTerminalButton);
+                btn -> selectNextPatternProviderMode());
+        this.addToLeftToolbar(this.showInPatternAccessTerminalButton);
     }
 
     @Override
@@ -60,10 +60,10 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
         super.updateBeforeRender();
 
         this.blockingModeButton.set(this.menu.getBlockingMode());
-        this.showInInterfaceTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
+        this.showInPatternAccessTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
     }
 
-    private void selectNextInterfaceMode() {
+    private void selectNextPatternProviderMode() {
         final boolean backwards = isHandlingRightClick();
         NetworkHandler.instance().sendToServer(new ConfigButtonPacket(Settings.PATTERN_ACCESS_TERMINAL, backwards));
     }

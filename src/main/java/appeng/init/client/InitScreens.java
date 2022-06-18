@@ -62,39 +62,15 @@ import appeng.client.gui.me.crafting.CraftConfirmScreen;
 import appeng.client.gui.me.crafting.CraftingCPUScreen;
 import appeng.client.gui.me.crafting.CraftingStatusScreen;
 import appeng.client.gui.me.crafting.SetStockAmountScreen;
-import appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen;
 import appeng.client.gui.me.items.CraftingTermScreen;
 import appeng.client.gui.me.items.PatternEncodingTermScreen;
 import appeng.client.gui.me.networktool.NetworkStatusScreen;
 import appeng.client.gui.me.networktool.NetworkToolScreen;
+import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.StyleManager;
 import appeng.menu.AEBaseMenu;
-import appeng.menu.implementations.CellWorkbenchMenu;
-import appeng.menu.implementations.ChestMenu;
-import appeng.menu.implementations.CondenserMenu;
-import appeng.menu.implementations.DriveMenu;
-import appeng.menu.implementations.EnergyLevelEmitterMenu;
-import appeng.menu.implementations.FormationPlaneMenu;
-import appeng.menu.implementations.IOBusMenu;
-import appeng.menu.implementations.IOPortMenu;
-import appeng.menu.implementations.InscriberMenu;
-import appeng.menu.implementations.InterfaceMenu;
-import appeng.menu.implementations.InterfaceTerminalMenu;
-import appeng.menu.implementations.MolecularAssemblerMenu;
-import appeng.menu.implementations.PatternProviderMenu;
-import appeng.menu.implementations.PriorityMenu;
-import appeng.menu.implementations.QNBMenu;
-import appeng.menu.implementations.QuartzKnifeMenu;
-import appeng.menu.implementations.SecurityStationMenu;
-import appeng.menu.implementations.SetStockAmountMenu;
-import appeng.menu.implementations.SkyChestMenu;
-import appeng.menu.implementations.SpatialAnchorMenu;
-import appeng.menu.implementations.SpatialIOPortMenu;
-import appeng.menu.implementations.StorageBusMenu;
-import appeng.menu.implementations.StorageLevelEmitterMenu;
-import appeng.menu.implementations.VibrationChamberMenu;
-import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.implementations.*;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
@@ -148,8 +124,6 @@ public final class InitScreens {
         register(MolecularAssemblerMenu.TYPE, MolecularAssemblerScreen::new, "/screens/molecular_assembler.json");
         register(CraftAmountMenu.TYPE, CraftAmountScreen::new, "/screens/craft_amount.json");
         register(CraftConfirmMenu.TYPE, CraftConfirmScreen::new, "/screens/craft_confirm.json");
-        InitScreens.<InterfaceTerminalMenu, InterfaceTerminalScreen<InterfaceTerminalMenu>>register(
-                InterfaceTerminalMenu.TYPE, InterfaceTerminalScreen::new, "/screens/pattern_access_terminal.json");
         register(CraftingStatusMenu.TYPE, CraftingStatusScreen::new, "/screens/crafting_status.json");
         register(SpatialAnchorMenu.TYPE, SpatialAnchorScreen::new, "/screens/spatial_anchor.json");
 
@@ -185,6 +159,8 @@ public final class InitScreens {
                 PatternEncodingTermMenu.TYPE,
                 PatternEncodingTermScreen::new,
                 "/screens/terminals/pattern_encoding_terminal.json");
+        InitScreens.<PatternAccessTermMenu, PatternAccessTermScreen<PatternAccessTermMenu>>register(
+                PatternAccessTermMenu.TYPE, PatternAccessTermScreen::new, "/screens/pattern_access_terminal.json");
     }
 
     /**

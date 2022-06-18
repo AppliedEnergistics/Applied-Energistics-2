@@ -70,7 +70,7 @@ public class BasePacketHandler {
 
         ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
-        ME_INTERFACE_UPDATE(InterfaceTerminalPacket.class, InterfaceTerminalPacket::new),
+        PATTERN_PROVIDER_UPDATE(PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::new),
 
         NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new),
 
