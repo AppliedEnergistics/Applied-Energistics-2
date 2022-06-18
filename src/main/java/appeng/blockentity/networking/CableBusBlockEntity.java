@@ -212,6 +212,11 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
+    public boolean removePart(IPart part) {
+        return this.getCableBus().removePart(part);
+    }
+
+    @Override
     public DimensionalBlockPos getLocation() {
         return new DimensionalBlockPos(this);
     }

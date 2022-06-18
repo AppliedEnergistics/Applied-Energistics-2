@@ -285,6 +285,21 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
     }
 
+    @Override
+    public boolean removePart(IPart part) {
+        if (getPart(null) == part) {
+            removePart(null);
+            return true;
+        }
+        for (var side : Direction.values()) {
+            if (getPart(side) == part) {
+                removePartFromSide(side);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void updateAfterPartChange(Direction side) {
         this.invalidateShapes();
         this.updateDynamicRender();
