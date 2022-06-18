@@ -33,7 +33,7 @@ import appeng.api.util.IConfigurableObject;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.InterfaceTerminalMenu;
+import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.PartModel;
 import appeng.util.ConfigManager;
@@ -63,7 +63,7 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IC
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (!super.onPartActivate(player, hand, pos) && !isClientSide()) {
-            MenuOpener.open(InterfaceTerminalMenu.TYPE, player, MenuLocators.forPart(this));
+            MenuOpener.open(PatternAccessTermMenu.TYPE, player, MenuLocators.forPart(this));
         }
         return true;
     }

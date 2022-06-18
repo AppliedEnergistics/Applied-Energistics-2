@@ -45,8 +45,9 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
+import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.AELog;
-import appeng.core.sync.packets.InterfaceTerminalPacket;
+import appeng.core.sync.packets.PatternAccessTerminalPacket;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.InventoryAction;
 import appeng.helpers.iface.PatternProviderLogic;
@@ -60,9 +61,9 @@ import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 /**
- * @see appeng.client.gui.me.interfaceterminal.InterfaceTerminalScreen
+ * @see PatternAccessTermScreen
  */
-public class InterfaceTerminalMenu extends AEBaseMenu {
+public class PatternAccessTermMenu extends AEBaseMenu {
 
     private final IConfigurableObject host;
     @GuiSync(1)
@@ -72,10 +73,10 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         return showPatternProviders;
     }
 
-    public static final MenuType<InterfaceTerminalMenu> TYPE = MenuTypeBuilder
-            .create(InterfaceTerminalMenu::new, PatternAccessTerminalPart.class)
+    public static final MenuType<PatternAccessTermMenu> TYPE = MenuTypeBuilder
+            .create(PatternAccessTermMenu::new, PatternAccessTerminalPart.class)
             .requirePermission(SecurityPermissions.BUILD)
-            .build("interfaceterminal");
+            .build("patternaccessterminal");
 
     /**
      * this stuff is all server side.
@@ -92,11 +93,11 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
      */
     private final Set<PatternProviderLogicHost> pinnedHosts = Collections.newSetFromMap(new IdentityHashMap<>());
 
-    public InterfaceTerminalMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
+    public PatternAccessTermMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
     }
 
-    public InterfaceTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IConfigurableObject host,
+    public PatternAccessTermMenu(MenuType<?> menuType, int id, Inventory ip, IConfigurableObject host,
             boolean bindInventory) {
         super(menuType, id, ip, host);
         this.host = host;
@@ -123,8 +124,8 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         VisitorState state = new VisitorState();
         if (grid != null) {
-            visitInterfaceHosts(grid, PatternProviderBlockEntity.class, state);
-            visitInterfaceHosts(grid, PatternProviderPart.class, state);
+            visitPatternProviderHosts(grid, PatternProviderBlockEntity.class, state);
+            visitPatternProviderHosts(grid, PatternProviderPart.class, state);
 
             // Ensure we don't keep references to removed hosts
             pinnedHosts.removeIf(host -> host.getLogic().getGrid() != grid);
@@ -152,7 +153,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
     }
 
     private static class VisitorState {
-        // Total number of interface hosts founds
+        // Total number of pattern provider hosts found
         int total;
         // Set to true if any visited machines were missing from diList, or had a different name
         boolean forceFullUpdate;
@@ -178,7 +179,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         };
     }
 
-    private <T extends PatternProviderLogicHost> void visitInterfaceHosts(IGrid grid, Class<T> machineClass,
+    private <T extends PatternProviderLogicHost> void visitPatternProviderHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
         for (var ih : grid.getActiveMachines(machineClass)) {
             var dual = ih.getLogic();
@@ -214,35 +215,35 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
         final ItemStack is = inv.server.getStackInSlot(slot);
 
-        var interfaceSlot = new FilteredInternalInventory(inv.server.getSlotInv(slot), new PatternSlotFilter());
+        var patternSlot = new FilteredInternalInventory(inv.server.getSlotInv(slot), new PatternSlotFilter());
 
         var carried = getCarried();
         switch (action) {
             case PICKUP_OR_SET_DOWN:
 
                 if (!carried.isEmpty()) {
-                    ItemStack inSlot = interfaceSlot.getStackInSlot(0);
+                    ItemStack inSlot = patternSlot.getStackInSlot(0);
                     if (inSlot.isEmpty()) {
-                        setCarried(interfaceSlot.addItems(carried));
+                        setCarried(patternSlot.addItems(carried));
                     } else {
                         inSlot = inSlot.copy();
                         final ItemStack inHand = carried.copy();
 
-                        interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
+                        patternSlot.setItemDirect(0, ItemStack.EMPTY);
                         setCarried(ItemStack.EMPTY);
 
-                        setCarried(interfaceSlot.addItems(inHand.copy()));
+                        setCarried(patternSlot.addItems(inHand.copy()));
 
                         if (carried.isEmpty()) {
                             setCarried(inSlot);
                         } else {
                             setCarried(inHand);
-                            interfaceSlot.setItemDirect(0, inSlot);
+                            patternSlot.setItemDirect(0, inSlot);
                         }
                     }
                 } else {
-                    setCarried(interfaceSlot.getStackInSlot(0));
-                    interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
+                    setCarried(patternSlot.getStackInSlot(0));
+                    patternSlot.setItemDirect(0, ItemStack.EMPTY);
                 }
 
                 break;
@@ -251,22 +252,22 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
                 if (!carried.isEmpty()) {
                     ItemStack extra = carried.split(1);
                     if (!extra.isEmpty()) {
-                        extra = interfaceSlot.addItems(extra);
+                        extra = patternSlot.addItems(extra);
                     }
                     if (!extra.isEmpty()) {
                         carried.grow(extra.getCount());
                     }
                 } else if (!is.isEmpty()) {
-                    setCarried(interfaceSlot.extractItem(0, (is.getCount() + 1) / 2, false));
+                    setCarried(patternSlot.extractItem(0, (is.getCount() + 1) / 2, false));
                 }
 
                 break;
             case SHIFT_CLICK: {
-                var stack = interfaceSlot.getStackInSlot(0).copy();
+                var stack = patternSlot.getStackInSlot(0).copy();
                 if (!player.getInventory().add(stack)) {
-                    interfaceSlot.setItemDirect(0, stack);
+                    patternSlot.setItemDirect(0, stack);
                 } else {
-                    interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
+                    patternSlot.setItemDirect(0, ItemStack.EMPTY);
                 }
             }
                 break;
@@ -274,9 +275,9 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
                 for (int x = 0; x < inv.server.size(); x++) {
                     var stack = inv.server.getStackInSlot(x);
                     if (!player.getInventory().add(stack)) {
-                        interfaceSlot.setItemDirect(0, stack);
+                        patternSlot.setItemDirect(0, stack);
                     } else {
-                        interfaceSlot.setItemDirect(0, ItemStack.EMPTY);
+                        patternSlot.setItemDirect(0, ItemStack.EMPTY);
                     }
                 }
 
@@ -293,7 +294,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
         this.byId.clear();
         this.diList.clear();
 
-        sendPacketToClient(InterfaceTerminalPacket.clearExistingData());
+        sendPacketToClient(PatternAccessTerminalPacket.clearExistingData());
 
         if (grid == null) {
             return;
@@ -317,7 +318,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
             this.byId.put(inv.serverId, inv);
             CompoundTag data = new CompoundTag();
             this.addItems(data, inv, 0, inv.server.size());
-            sendPacketToClient(InterfaceTerminalPacket.inventory(inv.serverId, data));
+            sendPacketToClient(PatternAccessTerminalPacket.inventory(inv.serverId, data));
         }
     }
 
@@ -333,7 +334,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
                 }
             }
             if (data != null) {
-                sendPacketToClient(InterfaceTerminalPacket.inventory(inv.serverId, data));
+                sendPacketToClient(PatternAccessTerminalPacket.inventory(inv.serverId, data));
             }
         }
     }
