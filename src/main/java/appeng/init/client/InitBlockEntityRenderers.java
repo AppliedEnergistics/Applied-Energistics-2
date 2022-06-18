@@ -28,7 +28,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import appeng.blockentity.networking.CableBusTESR;
 import appeng.client.render.crafting.CraftingMonitorRenderer;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
-import appeng.client.render.tesr.*;
+import appeng.client.render.tesr.ChargerBlockEntityRenderer;
+import appeng.client.render.tesr.ChestBlockEntityRenderer;
+import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
+import appeng.client.render.tesr.InscriberTESR;
+import appeng.client.render.tesr.SkyChestTESR;
+import appeng.client.render.tesr.SkyCompassTESR;
+import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
 import appeng.core.definitions.AEBlockEntities;
 
 @Environment(EnvType.CLIENT)

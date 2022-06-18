@@ -19,7 +19,9 @@
 package appeng.util;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Strings;
