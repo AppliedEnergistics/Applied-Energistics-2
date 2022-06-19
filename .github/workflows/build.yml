@@ -18,6 +18,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - uses: ./.github/actions/gradle_cache
+      # This has to run first, separately, because there is a cyclic dependency
+      # processResources needs to run for runData to work, but runData generates new input for processResources...
       - name: Generate Assets
         run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runData
       - name: Build
@@ -31,7 +33,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
       - uses: actions/upload-artifact@v2
         with:
-          name: dist
+          name: snapshot-${{ steps.version-info.outputs.version }}
           path: build/libs/
 
   test:
