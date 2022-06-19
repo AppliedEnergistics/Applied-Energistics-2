@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
@@ -74,6 +75,8 @@ import appeng.block.networking.WirelessBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.block.qnb.QuantumLinkChamberBlock;
 import appeng.block.qnb.QuantumRingBlock;
+import appeng.block.quartz.BuddingCertusQuartzBlock;
+import appeng.block.quartz.CertusQuartzClusterBlock;
 import appeng.block.spatial.MatrixFrameBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
@@ -105,6 +108,8 @@ import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 public final class AEBlocks {
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
+    private static final Properties QUARTZ_CRYSTAL_PROPERTIES = defaultProps(Material.AMETHYST,
+            MaterialColor.COLOR_CYAN).requiresCorrectToolForDrops();
     private static final Properties QUARTZ_PROPERTIES = defaultProps(Material.STONE)
             .strength(3, 5).requiresCorrectToolForDrops();
     private static final Properties SKYSTONE_PROPERTIES = defaultProps(Material.STONE)
@@ -115,6 +120,16 @@ public final class AEBlocks {
             .strength(5, 150).noOcclusion();
 
     // spotless:off
+    // TODO: cleanup Properties (vanilla might be a good inspiration here... maybe we can reuse the amethyst sounds)
+    public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWLESS_BUDDING_QUARTZ = block("Flawless Budding Certus Quartz", AEBlockIds.FLAWLESS_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_CRYSTAL_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWED_BUDDING_QUARTZ = block("Flawed Budding Certus Quartz", AEBlockIds.FLAWED_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_CRYSTAL_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<BuddingCertusQuartzBlock> CHIPPED_BUDDING_QUARTZ = block("Chipped Budding Certus Quartz", AEBlockIds.CHIPPED_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_CRYSTAL_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<BuddingCertusQuartzBlock> DAMAGED_BUDDING_QUARTZ = block("Damaged Budding Certus Quartz", AEBlockIds.DAMAGED_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_CRYSTAL_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<CertusQuartzClusterBlock> SMALL_QUARTZ_BUD = block("Small Certus Quartz Bud", AEBlockIds.SMALL_QUARTZ_BUD, () -> new CertusQuartzClusterBlock(3, 4, QUARTZ_CRYSTAL_PROPERTIES));
+    public static final BlockDefinition<CertusQuartzClusterBlock> MEDIUM_QUARTZ_BUD = block("Medium Certus Quartz Bud", AEBlockIds.MEDIUM_QUARTZ_BUD, () -> new CertusQuartzClusterBlock(4, 3, QUARTZ_CRYSTAL_PROPERTIES));
+    public static final BlockDefinition<CertusQuartzClusterBlock> LARGE_QUARTZ_BUD = block("Large Certus Quartz Bud", AEBlockIds.LARGE_QUARTZ_BUD, () -> new CertusQuartzClusterBlock(5, 3, QUARTZ_CRYSTAL_PROPERTIES));
+    public static final BlockDefinition<CertusQuartzClusterBlock> QUARTZ_CLUSTER = block("Certus Quartz Cluster", AEBlockIds.QUARTZ_CLUSTER, () -> new CertusQuartzClusterBlock(7, 3, QUARTZ_CRYSTAL_PROPERTIES));
+
     public static final BlockDefinition<QuartzOreBlock> QUARTZ_ORE = block("Certus Quartz Ore", AEBlockIds.QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<QuartzOreBlock> DEEPSLATE_QUARTZ_ORE = block("Deepslate Certus Quartz Ore", AEBlockIds.DEEPSLATE_QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES.strength(4.5f, 5).sound(SoundType.DEEPSLATE)));
     public static final BlockDefinition<MatrixFrameBlock> MATRIX_FRAME = block("Matrix Frame", AEBlockIds.MATRIX_FRAME, MatrixFrameBlock::new);

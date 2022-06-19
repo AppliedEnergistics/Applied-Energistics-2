@@ -401,6 +401,10 @@ public final class AEConfig {
         return COMMON.disassemblyCrafting.get();
     }
 
+    public int getGrowthAcceleratorSpeed() {
+        return COMMON.growthAcceleratorSpeed.get();
+    }
+
     public boolean isSecurityAuditLogEnabled() {
         return COMMON.securityAuditLog.get();
     }
@@ -503,6 +507,7 @@ public final class AEConfig {
         public final BooleanOption inWorldFluix;
         public final BooleanOption inWorldCrystalGrowth;
         public final BooleanOption disassemblyCrafting;
+        public final IntegerOption growthAcceleratorSpeed;
 
         // Spatial IO/Dimension
         public final DoubleOption spatialPowerExponent;
@@ -599,6 +604,8 @@ public final class AEConfig {
                     "Enable the in-world crafting of crystals.");
             disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
+            growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 5, 1, 100,
+                    "Number of ticks between two crystal growth accelerator ticks");
 
             ConfigSection spatialio = root.subsection("spatialio");
             this.spatialPowerMultiplier = spatialio.addDouble("spatialPowerMultiplier", 1250.0);

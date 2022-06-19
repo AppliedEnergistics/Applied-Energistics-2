@@ -51,6 +51,12 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                         AEBlocks.QUARTZ_GLASS.block(),
                         AEBlocks.QUARTZ_VIBRANT_GLASS.block())
                 .addTag(ConventionTags.STAINED_GLASS_BLOCK);
+        tag(AETags.GROWTH_ACCELERATABLE)
+                .add(Blocks.BUDDING_AMETHYST)
+                .add(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block())
+                .add(AEBlocks.FLAWED_BUDDING_QUARTZ.block())
+                .add(AEBlocks.CHIPPED_BUDDING_QUARTZ.block())
+                .add(AEBlocks.DAMAGED_BUDDING_QUARTZ.block());
 
         tag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK)
                 .add(AEBlocks.QUARTZ_ORE.block())

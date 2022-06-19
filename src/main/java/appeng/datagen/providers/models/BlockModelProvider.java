@@ -52,6 +52,16 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         simpleBlock(AEBlocks.SPATIAL_PYLON.block(), models().getBuilder(modelPath(AEBlocks.SPATIAL_PYLON)));
         itemModels().cubeAll(modelPath(AEBlocks.SPATIAL_PYLON), makeId("item/spatial_pylon"));
 
+        simpleBlockAndItem(AEBlocks.FLAWLESS_BUDDING_QUARTZ);
+        simpleBlockAndItem(AEBlocks.FLAWED_BUDDING_QUARTZ);
+        simpleBlockAndItem(AEBlocks.CHIPPED_BUDDING_QUARTZ);
+        simpleBlockAndItem(AEBlocks.DAMAGED_BUDDING_QUARTZ);
+
+        generateQuartzCluster(AEBlocks.SMALL_QUARTZ_BUD);
+        generateQuartzCluster(AEBlocks.MEDIUM_QUARTZ_BUD);
+        generateQuartzCluster(AEBlocks.LARGE_QUARTZ_BUD);
+        generateQuartzCluster(AEBlocks.QUARTZ_CLUSTER);
+
         generateOreBlock(AEBlocks.QUARTZ_ORE);
         generateOreBlock(AEBlocks.DEEPSLATE_QUARTZ_ORE);
 
@@ -255,5 +265,13 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                                 makeId("block/" + name + "_3")))
                         .build());
         simpleBlockItem(block.block(), primaryModel);
+    }
+
+    private void generateQuartzCluster(BlockDefinition<?> quartz) {
+        var name = quartz.id().getPath();
+        var texture = makeId("block/" + name);
+        var model = models().cross(name, texture);
+        directionalBlock(quartz.block(), model);
+        itemModels().withExistingParent(name, mcLoc("item/generated")).texture("layer0", texture);
     }
 }
