@@ -39,7 +39,8 @@ public enum GuiText implements LocalizationEnum {
     Cancel("Cancel"),
     CantStoreItems("Can't Store Contents!"),
     CellWorkbench("Cell Workbench"),
-    CertusQuartzObtain("Certus Quartz is grown by the various Budding Certus Quartz blocks, which can be found in meteors, or crafted from regular Certus Quartz blocks."),
+    CertusQuartzObtain(
+            "Certus Quartz is grown by the various Budding Certus Quartz blocks, which can be found in meteors, or crafted from regular Certus Quartz blocks."),
     ChannelEnergyDrain("Channel Passive Drain: %s"),
     ChargedQuartz(
             "Charged Certus Quartz is crafted by inserting an uncharged Certus Quartz Crystal into the Charger, and powering it."),

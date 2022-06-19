@@ -242,7 +242,7 @@ public final class MeteoritePlacer {
                         int drSquared = dx * dx + dy * dy + dz * dz;
                         if (crystalType == CrystalType.FLUIX && drSquared <= 1) {
                             this.putter.put(level, pos, fluixBlock);
-                        } else if (crystalType == CrystalType.CERTUS_QUARTZ && drSquared <= 3) {
+                        } else if (crystalType == CrystalType.CERTUS_QUARTZ && drSquared <= 1) {
                             this.putter.put(level, pos, quartzBlocks.get(random.nextInt(quartzBlocks.size())));
                         } else {
                             this.putter.put(level, pos, skyStone);

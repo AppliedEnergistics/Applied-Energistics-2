@@ -50,8 +50,8 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
     // TODO: datapack support
     public static List<TransformRecipe> RECIPES = List.of(
-            // Fluix
-            new TransformRecipe(Set.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_DUST.asItem(), 2),
+            // Fluix crystals
+            new TransformRecipe(Set.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_CRYSTAL.asItem(), 2),
             // Recycle dust back into crystals
             new TransformRecipe(Set.of(AEItems.CERTUS_QUARTZ_DUST.asItem()), AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2),
             new TransformRecipe(Set.of(AEItems.FLUIX_DUST.asItem()), AEItems.FLUIX_CRYSTAL.asItem(), 1),
