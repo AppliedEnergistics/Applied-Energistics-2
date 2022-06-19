@@ -218,6 +218,7 @@ task cleanGametestWorld(type: Delete) {
     delete "build/gametest"
 }
 tasks.runGametest.dependsOn cleanGametestWorld
+tasks.check.dependsOn tasks.runGametest
 
 //////////////
 // Artifacts

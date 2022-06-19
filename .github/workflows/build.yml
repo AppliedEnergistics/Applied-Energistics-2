@@ -34,10 +34,8 @@ jobs:
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-      - name: Generate assets
-        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runData build
-      - name: Run Game Tests
-        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runGametest
+      - name: Build
+        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runData check
       - name: Upload new Source Text Strings to Crowdin
         run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} uploadToCrowdin
         env:
