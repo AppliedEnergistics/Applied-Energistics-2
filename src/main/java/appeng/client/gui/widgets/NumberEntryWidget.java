@@ -45,7 +45,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
-import appeng.client.gui.*;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.MathExpressionParser;
+import appeng.client.gui.NumberEntryType;
+import appeng.client.gui.Rects;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.core.localization.GuiText;
 

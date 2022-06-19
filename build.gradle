@@ -348,6 +348,15 @@ spotless {
         toggleOffOn()
         eclipse().configFile 'codeformat/codeformat.xml'
         importOrderFile 'codeformat/ae2.importorder'
+
+        // courtesy of diffplug/spotless#240
+        // https://github.com/diffplug/spotless/issues/240#issuecomment-385206606
+        custom 'noWildcardImports', {
+            if (it.contains('*;\n')) {
+                throw new Error('No wildcard imports allowed')
+            }
+        }
+        bumpThisNumberIfACustomStepChanges(1)
     }
 
     format 'json', {
