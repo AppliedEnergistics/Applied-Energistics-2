@@ -31,10 +31,11 @@ jobs:
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
         continue-on-error: true
         if: github.ref == 'refs/heads/master'
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: snapshot-${{ steps.version-info.outputs.version }}
           path: build/libs/
+          retention-days: 5
 
   test:
     runs-on: ubuntu-latest
