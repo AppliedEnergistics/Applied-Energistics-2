@@ -6,7 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/get_latest_release
@@ -18,24 +17,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Use gradle cache for faster builds
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-      - name: Cleanup Gradle Cache
-        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
-        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
-      - name: Setup Gradle Wrapper Cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      - uses: ./.github/actions/gradle_cache
+      - name: Generate Assets
+        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runData
       - name: Build
-        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} runData check
+        run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} build -x test -x check
       - name: Upload new Source Text Strings to Crowdin
         run: ./gradlew -Pversion=${{ steps.version-info.outputs.version }} uploadToCrowdin
         env:
@@ -47,3 +33,18 @@ jobs:
         with:
           name: dist
           path: build/libs/
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: ./.github/actions/gradle_cache
+      - name: Generate Assets
+        run: ./gradlew runData
+      - name: Test
+        run: ./gradlew check

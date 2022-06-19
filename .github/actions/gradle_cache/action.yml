@@ -1,0 +1,22 @@
+name: 'Gradle Cache'
+description: 'Sets up gradle and gradle wrapper cache'
+runs:
+  using: "composite"
+  steps:
+    - name: Use gradle cache for faster builds
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+    - name: Cleanup Gradle Cache
+      # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+      # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+      run: |
+        rm -f ~/.gradle/caches/modules-2/modules-2.lock
+        rm -f ~/.gradle/caches/modules-2/gc.properties
+      shell: bash
+    - name: Setup Gradle Wrapper Cache
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
