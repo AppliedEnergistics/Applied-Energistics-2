@@ -26,6 +26,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 
 import appeng.worldgen.meteorite.CraterType;
+import appeng.worldgen.meteorite.CrystalType;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
@@ -38,7 +39,7 @@ public class MeteoriteSpawner {
     }
 
     public PlacedMeteoriteSettings trySpawnMeteoriteAtSuitableHeight(LevelReader level, BlockPos startPos,
-            float coreRadius, CraterType craterType, boolean pureCrater) {
+            float coreRadius, CraterType craterType, boolean pureCrater, CrystalType crystalType) {
         int stepSize = Math.min(5, (int) Math.ceil(coreRadius) + 1);
         int minY = 10 + stepSize;
         MutableBlockPos mutablePos = startPos.mutable();
@@ -46,7 +47,8 @@ public class MeteoriteSpawner {
         mutablePos.move(Direction.DOWN, stepSize);
 
         while (mutablePos.getY() > minY) {
-            PlacedMeteoriteSettings spawned = trySpawnMeteorite(level, mutablePos, coreRadius, craterType, pureCrater);
+            PlacedMeteoriteSettings spawned = trySpawnMeteorite(level, mutablePos, coreRadius, craterType, pureCrater,
+                    crystalType);
             if (spawned != null) {
                 return spawned;
             }
@@ -59,7 +61,7 @@ public class MeteoriteSpawner {
 
     @Nullable
     public PlacedMeteoriteSettings trySpawnMeteorite(LevelReader level, BlockPos pos, float coreRadius,
-            CraterType craterType, boolean pureCrater) {
+            CraterType craterType, boolean pureCrater, CrystalType crystalType) {
         if (!areSurroundingsSuitable(level, pos)) {
             return null;
         }
@@ -68,7 +70,7 @@ public class MeteoriteSpawner {
 
         boolean craterLake = false;
 
-        return new PlacedMeteoriteSettings(pos, coreRadius, craterType, fallout, pureCrater, craterLake);
+        return new PlacedMeteoriteSettings(pos, coreRadius, craterType, fallout, pureCrater, craterLake, crystalType);
     }
 
     private boolean areSurroundingsSuitable(LevelReader level, BlockPos pos) {

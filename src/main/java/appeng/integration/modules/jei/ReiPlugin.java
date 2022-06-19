@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import dev.architectury.event.CompoundEventResult;
@@ -65,6 +64,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
+import appeng.entity.ChargedQuartzEntity;
 import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
@@ -115,30 +115,17 @@ public class ReiPlugin implements REIClientPlugin {
 
         registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
 
-        // Add displays for crystal growth
-        if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
-            registry.add(
-                    new ThrowingInWaterDisplay(
-                            List.of(
-                                    Ingredient.of(AEItems.CERTUS_CRYSTAL_SEED)),
-                            AEItems.CERTUS_QUARTZ_CRYSTAL.stack(),
-                            true));
-            registry.add(
-                    new ThrowingInWaterDisplay(
-                            List.of(
-                                    Ingredient.of(AEItems.FLUIX_CRYSTAL_SEED)),
-                            AEItems.FLUIX_CRYSTAL.stack(),
-                            true));
-        }
-        if (AEConfig.instance().isInWorldFluixEnabled()) {
-            registry.add(
-                    new ThrowingInWaterDisplay(
-                            List.of(
-                                    Ingredient.of(Items.REDSTONE),
-                                    Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED),
-                                    Ingredient.of(Items.QUARTZ)),
-                            AEItems.FLUIX_DUST.stack(2),
-                            false));
+        // Add displays for charged quartz transformation
+        if (AEConfig.instance().isInWorldChargedQuartzTransformEnabled()) {
+            for (var recipe : ChargedQuartzEntity.RECIPES) {
+                var ingredients = new ArrayList<Ingredient>();
+                ingredients.add(Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED));
+                for (var additional : recipe.additionalItems()) {
+                    ingredients.add(Ingredient.of(additional));
+                }
+
+                registry.add(new ThrowingInWaterDisplay(ingredients, new ItemStack(recipe.output(), recipe.count())));
+            }
         }
     }
 

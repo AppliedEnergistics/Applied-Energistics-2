@@ -175,14 +175,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_dusts/fluix", has(ConventionTags.FLUIX_DUST))
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("misc/fluixpearl"));
-        ShapedRecipeBuilder.shaped(AEBlocks.SKY_COMPASS)
-                .pattern(" a ")
-                .pattern("aba")
-                .pattern(" a ")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED)
-                .unlockedBy("has_charged_certus_quartz_crystal", has(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
-                .save(consumer, AppEng.makeId("misc/meteors_sky_compass"));
         ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_CRYSTAL_SEED, 2)
                 .requires(ItemTags.SAND)
                 .requires(ConventionTags.CERTUS_QUARTZ_DUST)

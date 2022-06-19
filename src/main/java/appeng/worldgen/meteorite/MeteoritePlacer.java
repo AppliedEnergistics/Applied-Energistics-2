@@ -18,6 +18,9 @@
 
 package appeng.worldgen.meteorite;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -42,9 +45,16 @@ import appeng.worldgen.meteorite.fallout.FalloutSand;
 import appeng.worldgen.meteorite.fallout.FalloutSnow;
 
 public final class MeteoritePlacer {
+    public static void place(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox,
+            RandomSource random) {
+        var placer = new MeteoritePlacer(level, settings, boundingBox, random);
+        placer.place();
+    }
+
     private static final ResourceLocation METEORITE_CHEST_LOOTTABLE = AppEng.makeId("chests/meteorite");
     private final BlockDefinition<?> skyChestDefinition;
     private final BlockState skyStone;
+    private final List<BlockState> quartzBlocks;
     private final BlockState fluixBlock;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
     private final LevelAccessor level;
@@ -61,9 +71,10 @@ public final class MeteoritePlacer {
     private final CraterType craterType;
     private final boolean pureCrater;
     private final boolean craterLake;
+    private final CrystalType crystalType;
     private final BoundingBox boundingBox;
 
-    public MeteoritePlacer(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox,
+    private MeteoritePlacer(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox,
             RandomSource random) {
         this.boundingBox = boundingBox;
         this.level = level;
@@ -77,6 +88,7 @@ public final class MeteoritePlacer {
         this.craterType = settings.getCraterType();
         this.pureCrater = settings.isPureCrater();
         this.craterLake = settings.isCraterLake();
+        this.crystalType = settings.getCrystalType();
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
 
         double realCrater = this.meteoriteSize * 2 + 5;
@@ -84,6 +96,12 @@ public final class MeteoritePlacer {
 
         this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
         this.fluixBlock = AEBlocks.FLUIX_BLOCK.block().defaultBlockState();
+        this.quartzBlocks = Stream.of(
+                AEBlocks.QUARTZ_BLOCK,
+                AEBlocks.DAMAGED_BUDDING_QUARTZ,
+                AEBlocks.CHIPPED_BUDDING_QUARTZ,
+                AEBlocks.FLAWED_BUDDING_QUARTZ,
+                AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
         this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
 
         this.type = getFallout(level, settings.getPos(), settings.getFallout());
@@ -221,8 +239,11 @@ public final class MeteoritePlacer {
                     var dz = k - z;
 
                     if (dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < this.squaredMeteoriteSize) {
-                        if ((dx * dx + dy * dy + dz * dz) <= 1) {
+                        int drSquared = dx * dx + dy * dy + dz * dz;
+                        if (crystalType == CrystalType.FLUIX && drSquared <= 1) {
                             this.putter.put(level, pos, fluixBlock);
+                        } else if (crystalType == CrystalType.CERTUS_QUARTZ && drSquared <= 3) {
+                            this.putter.put(level, pos, quartzBlocks.get(random.nextInt(quartzBlocks.size())));
                         } else {
                             this.putter.put(level, pos, skyStone);
                         }
@@ -285,13 +306,13 @@ public final class MeteoritePlacer {
                                 }
                             }
                         }
-                    } else // decay.
-                    if (level.isEmptyBlock(blockPosUp) && random.nextDouble() > 0.4) {
+                    } else if (level.isEmptyBlock(blockPosUp) && random.nextDouble() > 0.4) { // decay.
                         final double dx = i - x;
                         final double dy = j - y;
                         final double dz = k - z;
+                        double dr2 = dx * dx + dy * dy + dz * dz;
 
-                        if (dx * dx + dy * dy + dz * dz < this.crater * 1.6) {
+                        if (/* this.squaredMeteoriteSize < dr2 && */dr2 < this.crater * 1.6) {
                             this.type.getRandomInset(level, blockPos);
                         }
                     }

@@ -389,8 +389,8 @@ public final class AEConfig {
         return COMMON.inWorldSingularity.get();
     }
 
-    public boolean isInWorldFluixEnabled() {
-        return COMMON.inWorldFluix.get();
+    public boolean isInWorldChargedQuartzTransformEnabled() {
+        return COMMON.inWorldChargedQuartzTransform.get();
     }
 
     public boolean isInWorldCrystalGrowthEnabled() {
@@ -504,7 +504,7 @@ public final class AEConfig {
 
         // Crafting
         public final BooleanOption inWorldSingularity;
-        public final BooleanOption inWorldFluix;
+        public final BooleanOption inWorldChargedQuartzTransform;
         public final BooleanOption inWorldCrystalGrowth;
         public final BooleanOption disassemblyCrafting;
         public final IntegerOption growthAcceleratorSpeed;
@@ -599,12 +599,13 @@ public final class AEConfig {
             var crafting = root.subsection("crafting");
             inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
                     "Enable the in-world crafting of singularities.");
-            inWorldFluix = crafting.addBoolean("inWorldFluix", true, "Enable the in-world crafting of fluix crystals.");
+            inWorldChargedQuartzTransform = crafting.addBoolean("inWorldChargedQuartzTransform", true,
+                    "Enable the in-world transformation of charged certus quartz crystals to other items (e.g. fluix dust).");
             inWorldCrystalGrowth = crafting.addBoolean("inWorldCrystalGrowth", true,
                     "Enable the in-world crafting of crystals.");
             disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
-            growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 5, 1, 100,
+            growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 10, 1, 100,
                     "Number of ticks between two crystal growth accelerator ticks");
 
             ConfigSection spatialio = root.subsection("spatialio");

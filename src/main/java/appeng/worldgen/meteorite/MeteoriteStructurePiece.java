@@ -46,9 +46,10 @@ public class MeteoriteStructurePiece extends StructurePiece {
     private final PlacedMeteoriteSettings settings;
 
     protected MeteoriteStructurePiece(BlockPos center, float coreRadius, CraterType craterType, FalloutMode fallout,
-            boolean pureCrater, boolean craterLake) {
+            boolean pureCrater, boolean craterLake, CrystalType crystalType) {
         super(TYPE, 0, createBoundingBox(center));
-        this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake);
+        this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake,
+                crystalType);
     }
 
     private static BoundingBox createBoundingBox(BlockPos origin) {
@@ -72,8 +73,10 @@ public class MeteoriteStructurePiece extends StructurePiece {
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];
         boolean pureCrater = tag.getBoolean(Constants.TAG_PURE);
         boolean craterLake = tag.getBoolean(Constants.TAG_LAKE);
+        CrystalType crystalType = CrystalType.values()[tag.getByte(Constants.TAG_CRYSTAL)];
 
-        this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake);
+        this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake,
+                crystalType);
     }
 
     public boolean isFinalized() {
@@ -92,13 +95,13 @@ public class MeteoriteStructurePiece extends StructurePiece {
         tag.putByte(Constants.TAG_FALLOUT, (byte) settings.getFallout().ordinal());
         tag.putBoolean(Constants.TAG_PURE, settings.isPureCrater());
         tag.putBoolean(Constants.TAG_LAKE, settings.isCraterLake());
+        tag.putByte(Constants.TAG_CRYSTAL, (byte) settings.getCrystalType().ordinal());
     }
 
     @Override
     public void postProcess(WorldGenLevel level, StructureManager structureManager, ChunkGenerator chunkGenerator,
             RandomSource rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
-        MeteoritePlacer placer = new MeteoritePlacer(level, settings, bounds, rand);
-        placer.place();
+        MeteoritePlacer.place(level, settings, bounds, rand);
 
         CompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x, chunkPos.z));
     }

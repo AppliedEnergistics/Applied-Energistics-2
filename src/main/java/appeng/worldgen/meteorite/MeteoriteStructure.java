@@ -129,11 +129,13 @@ public class MeteoriteStructure extends Structure {
         boolean craterLake = locateWaterAroundTheCrater(actualPos, meteoriteRadius, context);
         CraterType craterType = determineCraterType(spawnBiome, random);
         boolean pureCrater = random.nextFloat() > .9f;
+        CrystalType crystalType = CrystalType.values()[random.next(CrystalType.values().length)];
 
         var fallout = FalloutMode.fromBiome(spawnBiome);
 
         piecesBuilder.addPiece(
-                new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake));
+                new MeteoriteStructurePiece(actualPos, meteoriteRadius, craterType, fallout, pureCrater, craterLake,
+                        crystalType));
     }
 
     /**
