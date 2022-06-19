@@ -338,14 +338,6 @@ public final class AEConfig {
         return () -> this.chargedStaffBattery;
     }
 
-    public int getQuartzOresPerCluster() {
-        return COMMON.quartzOresPerCluster.get();
-    }
-
-    public int getQuartzOresClusterAmount() {
-        return COMMON.quartzOresClusterAmount.get();
-    }
-
     @Nullable
     public TagKey<Fluid> getImprovedFluidTag() {
         if (improvedFluidTagKey == null) {
@@ -367,10 +359,6 @@ public final class AEConfig {
 
     public boolean isSpawnPressesInMeteoritesEnabled() {
         return COMMON.spawnPressesInMeteorites.get();
-    }
-
-    public boolean isGenerateQuartzOre() {
-        return COMMON.generateQuartzOre.get();
     }
 
     public boolean isGenerateMeteorites() {
@@ -531,10 +519,6 @@ public final class AEConfig {
         public final IntegerOption colorApplicatorBattery;
         public final IntegerOption chargedStaffBattery;
 
-        // Certus quartz
-        public final IntegerOption quartzOresPerCluster;
-        public final IntegerOption quartzOresClusterAmount;
-        public final BooleanOption generateQuartzOre;
         public final BooleanOption generateMeteorites;
 
         // Meteors
@@ -637,10 +621,7 @@ public final class AEConfig {
 
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
 
-            this.generateQuartzOre = worldGen.addBoolean("generateQuartzOre", true);
             this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
-            this.quartzOresPerCluster = worldGen.addInt("quartzOresPerCluster", 7);
-            this.quartzOresClusterAmount = worldGen.addInt("quartzOresClusterAmount", 20);
 
             ConfigSection wireless = root.subsection("wireless");
             this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);

@@ -247,9 +247,9 @@ public class ReiPlugin implements REIClientPlugin {
                     ItemModText.P2P_TAG_ATTUNEMENT.text()));
         }
 
-        if (AEConfig.instance().isGenerateQuartzOre()) {
-            addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
-        }
+        addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL, GuiText.CertusQuartzObtain.getTranslationKey());
+        addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
+        addDescription(registry, AEBlocks.SKY_COMPASS, GuiText.Compass.getTranslationKey());
 
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());

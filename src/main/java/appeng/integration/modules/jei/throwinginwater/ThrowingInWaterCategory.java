@@ -13,11 +13,11 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
-import appeng.items.misc.CrystalSeedItem;
 
 public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterDisplay> {
     public static final CategoryIdentifier<ThrowingInWaterDisplay> ID = CategoryIdentifier
@@ -26,19 +26,7 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
     private final Renderer icon;
 
     public ThrowingInWaterCategory() {
-        var stage1 = AEItems.CERTUS_CRYSTAL_SEED.stack();
-        CrystalSeedItem.setGrowthTicks(stage1, 0);
-        var stage2 = AEItems.CERTUS_CRYSTAL_SEED.stack();
-        CrystalSeedItem.setGrowthTicks(stage2, (int) (CrystalSeedItem.GROWTH_TICKS_REQUIRED * 0.4f));
-        var stage3 = AEItems.CERTUS_CRYSTAL_SEED.stack();
-        CrystalSeedItem.setGrowthTicks(stage3, (int) (CrystalSeedItem.GROWTH_TICKS_REQUIRED * 0.7f));
-        var result = AEItems.CERTUS_QUARTZ_CRYSTAL.stack();
-
-        icon = new GrowingSeedIconRenderer(List.of(
-                stage1,
-                stage2,
-                stage3,
-                result));
+        icon = EntryStacks.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
     }
 
     @Override

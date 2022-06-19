@@ -41,15 +41,6 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         builtInItemModel("facade");
         builtInItemModel("sky_compass");
 
-        crystalSeed(AEItems.CERTUS_CRYSTAL_SEED,
-                "item/crystal_seed_certus",
-                "item/crystal_seed_certus2",
-                "item/crystal_seed_certus3");
-        crystalSeed(AEItems.FLUIX_CRYSTAL_SEED,
-                "item/crystal_seed_fluix",
-                "item/crystal_seed_fluix2",
-                "item/crystal_seed_fluix3");
-
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");
         flatSingleLayer(AEItems.ANNIHILATION_CORE, "item/annihilation_core");
@@ -162,34 +153,6 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
                 "layer0",
                 makeId(background))
                         .texture("layer1", "item/portable_cell_led");
-    }
-
-    /**
-     * Define a crystal seed item model with three growth stages shown by three textures. The fully grown crystal is not
-     * part of this model.
-     */
-    private void crystalSeed(ItemDefinition<?> seed,
-            String texture0,
-            String texture1,
-            String texture2) {
-
-        var baseId = seed.id().getPath();
-
-        var model1 = flatSingleLayer(makeId(baseId + "_1"), texture1);
-        var model2 = flatSingleLayer(makeId(baseId + "_2"), texture2);
-
-        withExistingParent(baseId, "item/generated")
-                .texture("layer0", makeId(texture0))
-                // 2nd growth stage
-                .override()
-                .predicate(InitItemModelsProperties.GROWTH_PREDICATE_ID, 0.333f)
-                .model(model1)
-                .end()
-                // 3rd growth stage
-                .override()
-                .predicate(InitItemModelsProperties.GROWTH_PREDICATE_ID, 0.666f)
-                .model(model2)
-                .end();
     }
 
     private void registerHandheld() {

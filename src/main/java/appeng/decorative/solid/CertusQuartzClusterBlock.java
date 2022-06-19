@@ -1,4 +1,4 @@
-package appeng.block.quartz;
+package appeng.decorative.solid;
 
 import java.util.List;
 
@@ -29,7 +29,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class CertusQuartzClusterBlock extends CertusQuartzBlock {
+import appeng.block.AEBaseBlock;
+
+public class CertusQuartzClusterBlock extends AEBaseBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     protected final VoxelShape northAabb;

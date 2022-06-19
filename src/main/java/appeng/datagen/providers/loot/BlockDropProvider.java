@@ -43,7 +43,6 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -57,8 +56,6 @@ import appeng.datagen.providers.IAE2DataProvider;
 public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
     private final Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
             .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
-            .put(AEBlocks.QUARTZ_ORE.block(), BlockDropProvider::createQuartzOreLootTable)
-            .put(AEBlocks.DEEPSLATE_QUARTZ_ORE.block(), BlockDropProvider::createQuartzOreLootTable)
             // Budding quartz degrades by 1 with silk touch, and degrades entirely without silk touch.
             .put(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.FLAWED_BUDDING_QUARTZ))
             .put(AEBlocks.FLAWED_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.CHIPPED_BUDDING_QUARTZ))
@@ -102,33 +99,6 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
                 .when(ExplosionCondition.survivesExplosion());
 
         return LootTable.lootTable().withPool(pool);
-    }
-
-    private static LootTable.Builder createQuartzOreLootTable(Block b) {
-        return createSilkTouchDispatchTable(b,
-                LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_DUST)
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 5.0F)))
-                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
-                        .apply(ApplyExplosionDecay.explosionDecay())).withPool(
-                                /*
-                                 * Additional pool to add a chance for crystals when no silk touch is used.
-                                 */
-                                LootPool.lootPool()
-                                        .when(HAS_NO_SILK_TOUCH)
-                                        .when(
-                                                /*
-                                                 * 5% chance initially + 5% per level of fortune to drop *any* crystals
-                                                 */
-                                                BonusLevelTableCondition.bonusLevelFlatChance(
-                                                        Enchantments.BLOCK_FORTUNE,
-                                                        0.05F, 0.10F, 0.15F, 0.20F))
-                                        .add(
-                                                LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
-                                                        .apply(SetItemCountFunction.setCount(
-                                                                UniformGenerator.between(1.0F, 4.0F)))
-                                                        .apply(ApplyBonusCount.addUniformBonusCount(
-                                                                Enchantments.BLOCK_FORTUNE))
-                                                        .apply(ApplyExplosionDecay.explosionDecay())));
     }
 
     private static LootTable.Builder buddingQuartz(BlockDefinition<?> degradedVersion) {

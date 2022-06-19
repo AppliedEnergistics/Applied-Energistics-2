@@ -76,7 +76,6 @@ public final class TestPlots {
             .put(AppEng.makeId("item_chest"), TestPlots::itemChest)
             .put(AppEng.makeId("fluid_chest"), TestPlots::fluidChest)
             .put(AppEng.makeId("skycompass_rendering"), TestPlots::skyCompassRendering)
-            .put(AppEng.makeId("crystal_growth_autocrafting"), TestPlots::crystalGrowthAutoCrafting)
             .put(AppEng.makeId("import_exportbus"), TestPlots::importExportBus)
             .put(AppEng.makeId("inscriber"), TestPlots::inscriber)
             .put(AppEng.makeId("autocrafting_testplot"), AutoCraftingTestPlot::create)
@@ -253,91 +252,6 @@ public final class TestPlots {
         plot.blockEntity("1 2 1", AEBlocks.SKY_COMPASS, skyCompass -> {
             skyCompass.setOrientation(Direction.DOWN, Direction.EAST);
         });
-    }
-
-    public static void crystalGrowthAutoCrafting(PlotBuilder plot) {
-        // Lower subnet for formation plane and power for growth accelerators
-        plot.cable("[4,6] 1 6", AEParts.GLASS_CABLE);
-        plot.part("6 1 6", Direction.UP, AEParts.FORMATION_PLANE);
-        plot.part("5 1 6", Direction.UP, AEParts.QUARTZ_FIBER);
-        plot.cable("7 1 6", AEParts.GLASS_CABLE);
-        plot.part("7 1 6", Direction.UP, AEParts.QUARTZ_FIBER);
-        plot.cable("6 1 7", AEParts.GLASS_CABLE);
-        plot.part("6 1 7", Direction.UP, AEParts.QUARTZ_FIBER);
-        // Quartz fiber over to main net
-        plot.part("4 1 6", Direction.WEST, AEParts.QUARTZ_FIBER);
-
-        // Crystal growth part
-        plot.block("5 2 6", AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
-        plot.block("7 2 6", AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
-        plot.block("6 2 5", Blocks.GLASS);
-        plot.block("6 2 7", AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
-        plot.fluid("6 2 6", Fluids.WATER);
-
-        // Interface that will receive the crafting ingredients
-        plot.part("4 1 6", Direction.UP, AEParts.INTERFACE);
-        plot.blockEntity("4 2 6", AEBlocks.PATTERN_PROVIDER, provider -> {
-            // Make it point down (not strictly necessary, but more optimal)
-            provider.setPushDirection(Direction.DOWN);
-            // Add a pattern for fluix crystal growth
-            var encodedPattern = PatternDetailsHelper.encodeProcessingPattern(
-                    new GenericStack[] {
-                            AEItems.CERTUS_CRYSTAL_SEED.genericStack(1)
-                    },
-                    new GenericStack[] {
-                            AEItems.CERTUS_QUARTZ_CRYSTAL.genericStack(1)
-                    });
-            provider.getLogic().getPatternInv().addItems(encodedPattern);
-            // Add a pattern for fluix crystal growth
-            encodedPattern = PatternDetailsHelper.encodeProcessingPattern(
-                    new GenericStack[] {
-                            AEItems.FLUIX_CRYSTAL_SEED.genericStack(1)
-                    },
-                    new GenericStack[] {
-                            AEItems.FLUIX_CRYSTAL.genericStack(1)
-                    });
-            provider.getLogic().getPatternInv().addItems(encodedPattern);
-            // Add a pattern for fluix dust
-            encodedPattern = PatternDetailsHelper.encodeProcessingPattern(
-                    new GenericStack[] {
-                            AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.genericStack(1),
-                            GenericStack.fromItemStack(new ItemStack(Items.QUARTZ)),
-                            GenericStack.fromItemStack(new ItemStack(Items.REDSTONE))
-                    },
-                    new GenericStack[] {
-                            AEItems.FLUIX_DUST.genericStack(2)
-                    });
-            provider.getLogic().getPatternInv().addItems(encodedPattern);
-        });
-        // Terminal to issue crafts + access results
-        plot.cable("3 2 6", AEParts.GLASS_CABLE);
-        plot.part("3 2 6", Direction.NORTH, AEParts.TERMINAL);
-        plot.blockEntity("3 3 6", AEBlocks.DRIVE, drive -> {
-            // Adds a creative cell with crafting ingredients
-            drive.getInternalInventory().addItems(CreativeCellItem.ofItems(
-                    AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
-                    Items.QUARTZ,
-                    Items.REDSTONE,
-                    AEItems.CERTUS_CRYSTAL_SEED,
-                    AEItems.FLUIX_CRYSTAL_SEED));
-            // Add a cell to store the crafting results
-            drive.getInternalInventory().addItems(AEItems.ITEM_CELL_64K.stack());
-        });
-        plot.block("3 1 6", AEBlocks.CREATIVE_ENERGY_CELL);
-        plot.block("3 0 6", AEBlocks.CRAFTING_STORAGE_64K);
-
-        // Top subnet for grabbing the crafting results
-        plot.cable("[4,6] 3 6", AEParts.GLASS_CABLE);
-        plot.part("4 3 6", Direction.WEST, AEParts.QUARTZ_FIBER);
-        plot.part("4 3 6", Direction.DOWN, AEParts.STORAGE_BUS, storageBus -> {
-            // Ensure only the completed crystals are accepted
-            var config = storageBus.getConfig();
-            config.setStack(0, AEItems.CERTUS_QUARTZ_CRYSTAL.genericStack(1));
-            config.setStack(1, AEItems.FLUIX_CRYSTAL.genericStack(1));
-            config.setStack(2, AEItems.FLUIX_DUST.genericStack(1));
-        });
-        plot.part("5 3 6", Direction.DOWN, AEParts.QUARTZ_FIBER);
-        plot.part("6 3 6", Direction.DOWN, AEParts.ANNIHILATION_PLANE);
     }
 
     public static void importExportBus(PlotBuilder plot) {

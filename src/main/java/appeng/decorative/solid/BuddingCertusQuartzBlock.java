@@ -1,4 +1,4 @@
-package appeng.block.quartz;
+package appeng.decorative.solid;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,9 +12,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 
+import appeng.block.AEBaseBlock;
 import appeng.core.definitions.AEBlocks;
 
-public class BuddingCertusQuartzBlock extends CertusQuartzBlock {
+public class BuddingCertusQuartzBlock extends AEBaseBlock {
     public static final int GROWTH_CHANCE = 5;
     public static final int DECAY_CHANCE = 12;
     private static final Direction[] DIRECTIONS = Direction.values();

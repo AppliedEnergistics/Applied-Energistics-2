@@ -50,7 +50,6 @@ import appeng.items.materials.CustomEntityItem;
 import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
 import appeng.items.materials.StorageComponentItem;
-import appeng.items.misc.CrystalSeedItem;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.items.parts.FacadeItem;
@@ -233,15 +232,6 @@ public final class AEItems {
     public static final ItemDefinition<CustomEntityItem> ENDER_DUST = item("Ender Dust", AEItemIds.ENDER_DUST, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> SINGULARITY = item("Singularity", AEItemIds.SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> QUANTUM_ENTANGLED_SINGULARITY = item("Quantum Entangled Singularity", AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
-
-    ///
-    /// SEEDS
-    ///
-
-    public static final ItemDefinition<CrystalSeedItem> CERTUS_CRYSTAL_SEED = item("Certus Quartz Seed", AEItemIds.CERTUS_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, CERTUS_QUARTZ_CRYSTAL.asItem()));
-    public static final ItemDefinition<CrystalSeedItem> FLUIX_CRYSTAL_SEED = item("Fluix Seed", AEItemIds.FLUIX_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, FLUIX_CRYSTAL.asItem()));
 
     ///
     /// CELLS

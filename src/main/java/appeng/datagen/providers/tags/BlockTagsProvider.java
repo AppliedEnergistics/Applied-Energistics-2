@@ -58,13 +58,6 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 .add(AEBlocks.CHIPPED_BUDDING_QUARTZ.block())
                 .add(AEBlocks.DAMAGED_BUDDING_QUARTZ.block());
 
-        tag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK)
-                .add(AEBlocks.QUARTZ_ORE.block())
-                .add(AEBlocks.DEEPSLATE_QUARTZ_ORE.block());
-
-        tag(ConventionTags.ORES)
-                .addTag(ConventionTags.CERTUS_QUARTZ_ORE_BLOCK);
-
         tag(ConventionTags.CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK)
                 .add(AEBlocks.QUARTZ_BLOCK.block());
         tag("c:storage_blocks")

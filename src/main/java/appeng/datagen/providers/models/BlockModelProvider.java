@@ -62,9 +62,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         generateQuartzCluster(AEBlocks.LARGE_QUARTZ_BUD);
         generateQuartzCluster(AEBlocks.QUARTZ_CLUSTER);
 
-        generateOreBlock(AEBlocks.QUARTZ_ORE);
-        generateOreBlock(AEBlocks.DEEPSLATE_QUARTZ_ORE);
-
         simpleBlockAndItem(AEBlocks.CONDENSER);
         simpleBlockAndItem(AEBlocks.ENERGY_ACCEPTOR);
         simpleBlockAndItem(AEBlocks.INTERFACE);
@@ -236,35 +233,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                         // Empty model, will be replaced dynamically
                         new ConfiguredModel(models().getBuilder("block/crafting/" + name + "_formed")));
         simpleBlockItem(block.block(), blockModel);
-    }
-
-    /**
-     * Generate an ore block with 4 variants (0 to 3, inclusive).
-     */
-    private void generateOreBlock(BlockDefinition<?> block) {
-        String name = block.id().getPath();
-        BlockModelBuilder primaryModel = models().cubeAll(
-                name + "_0",
-                makeId("block/" + name + "_0"));
-
-        simpleBlock(
-                block.block(),
-                ConfiguredModel.builder()
-                        .modelFile(primaryModel)
-                        .nextModel()
-                        .modelFile(models().cubeAll(
-                                name + "_1",
-                                makeId("block/" + name + "_1")))
-                        .nextModel()
-                        .modelFile(models().cubeAll(
-                                name + "_2",
-                                makeId("block/" + name + "_2")))
-                        .nextModel()
-                        .modelFile(models().cubeAll(
-                                name + "_3",
-                                makeId("block/" + name + "_3")))
-                        .build());
-        simpleBlockItem(block.block(), primaryModel);
     }
 
     private void generateQuartzCluster(BlockDefinition<?> quartz) {
