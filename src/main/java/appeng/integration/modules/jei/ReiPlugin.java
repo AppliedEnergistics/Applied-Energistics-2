@@ -121,9 +121,7 @@ public class ReiPlugin implements REIClientPlugin {
             for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
                 var ingredients = new ArrayList<Ingredient>();
                 ingredients.add(Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED));
-                for (var additional : recipe.additionalItems()) {
-                    ingredients.add(Ingredient.of(additional));
-                }
+                ingredients.add(recipe.ingredients);
 
                 registry.add(new ThrowingInWaterDisplay(ingredients, new ItemStack(recipe.output(), recipe.count())));
             }

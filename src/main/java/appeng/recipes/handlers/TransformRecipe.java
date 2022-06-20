@@ -5,26 +5,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-
-import java.util.Objects;
-import java.util.Set;
 
 public final class TransformRecipe implements Recipe<Container>{
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
     public static final RecipeType<TransformRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
-    public final Set<Item> additionalItems;
+    public final Ingredient ingredients;
     public final Item output;
     public final int count;
 
-    public TransformRecipe(ResourceLocation id, Set<Item> additionalItems, Item output, int count){
+    public TransformRecipe(ResourceLocation id, Ingredient ingredients, Item output, int count){
         this.id = id;
-        this.additionalItems = additionalItems;
+        this.ingredients = ingredients;
         this.output = output;
         this.count = count;
     }
@@ -68,10 +66,6 @@ public final class TransformRecipe implements Recipe<Container>{
         return id;
     }
 
-    public Set<Item> additionalItems(){
-        return additionalItems;
-    }
-
     public Item output(){
         return output;
     }
@@ -79,30 +73,4 @@ public final class TransformRecipe implements Recipe<Container>{
     public int count(){
         return count;
     }
-
-    @Override
-    public boolean equals(Object obj){
-        if(obj == this) return true;
-        if(obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (TransformRecipe)obj;
-        return Objects.equals(this.id, that.id) &&
-        Objects.equals(this.additionalItems, that.additionalItems) &&
-        Objects.equals(this.output, that.output) &&
-        this.count == that.count;
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(id, additionalItems, output, count);
-    }
-
-    @Override
-    public String toString(){
-        return "TransformRecipe[" +
-        "id=" + id + ", " +
-        "additionalItems=" + additionalItems + ", " +
-        "output=" + output + ", " +
-        "count=" + count + ']';
-    }
-
 }

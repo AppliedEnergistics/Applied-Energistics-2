@@ -45,26 +45,27 @@ public class TransformRecipes extends AE2RecipeProvider {
     @Override
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
+
         // Fluix crystals
-        transform(Set.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_CRYSTAL.asItem(), 2).save(consumer, "fluix_crystals");
+        transform(Ingredient.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_CRYSTAL.asItem(), 2).save(consumer, "fluix_crystals");
 
         // Recycle dust back into crystals
-        transform(Set.of(AEItems.CERTUS_QUARTZ_DUST.asItem()), AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2).save(consumer, "certus_quartz_crystal");
-        transform(Set.of(AEItems.FLUIX_DUST.asItem()), AEItems.FLUIX_CRYSTAL.asItem(), 1).save(consumer, "fluix_crystal");
+        transform(Ingredient.of(AEItems.CERTUS_QUARTZ_DUST.asItem()), AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2).save(consumer, "certus_quartz_crystals");
+        transform(Ingredient.of(AEItems.FLUIX_DUST.asItem()), AEItems.FLUIX_CRYSTAL.asItem(), 1).save(consumer, "fluix_crystal");
         // Restore budding quartz
-        transform(Set.of(AEBlocks.QUARTZ_BLOCK.asItem()),
+        transform(Ingredient.of(AEBlocks.QUARTZ_BLOCK.asItem()),
         AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "damaged_budding_quartz");
-        transform(Set.of(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem()),
+        transform(Ingredient.of(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem()),
         AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "chipped_budding_quartz");
-        transform(Set.of(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem()),
+        transform(Ingredient.of(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem()),
         AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "flawed_budding_quartz");
     }
 
-    private TransformRecipeBuilder transform(Set<Item> additionalItems, Item output, int count) {
-        return new TransformRecipeBuilder(additionalItems, output, count);
+    private TransformRecipeBuilder transform(Ingredient inputs, Item output, int count) {
+        return new TransformRecipeBuilder(inputs, output, count);
     }
 
-    public record TransformRecipeBuilder(Set<Item> additionalItems, Item output, int count) {
+    public record TransformRecipeBuilder(Ingredient ingredients, Item output, int count) {
 
         public void save(Consumer<FinishedRecipe> consumer, String name) {
             consumer.accept(new Result(name));
@@ -80,10 +81,7 @@ public class TransformRecipes extends AE2RecipeProvider {
             @Override
             public void serializeRecipeData(JsonObject json) {
                 json.add("result", toJson(new ItemStack(output, count)));
-
-                var ingredients = new JsonArray();
-                additionalItems.forEach(item -> ingredients.add(Ingredient.of(item).toJson()));
-                json.add("ingredients", ingredients);
+                json.add("ingredients", ingredients.toJson());
             }
 
             @Override

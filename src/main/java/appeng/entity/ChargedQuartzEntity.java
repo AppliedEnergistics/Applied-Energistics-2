@@ -109,7 +109,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 if (e instanceof ItemEntity itemEntity && !e.isRemoved()) {
                     final ItemStack other = itemEntity.getItem();
                     if (!other.isEmpty()) {
-                        if (!recipe.additionalItems.contains(other.getItem())) {
+                        if (!recipe.ingredients.test(other)) {
                             continue; // Skip not required item
                         }
 
@@ -124,7 +124,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 }
             }
 
-            if (selectedEntities.size() == recipe.additionalItems.size()) {
+            if (selectedEntities.size() == recipe.ingredients.getItems().length) {
                 this.getItem().grow(-1);
 
                 if (this.getItem().getCount() <= 0) {

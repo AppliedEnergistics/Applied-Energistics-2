@@ -22,15 +22,12 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nullable;
-import java.util.Set;
-import java.util.HashSet;
 
 public class TransformRecipeSerializer implements RecipeSerializer<TransformRecipe> {
 
@@ -41,39 +38,25 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
 
     @Override
     public TransformRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-
-        Ingredient ingredients = Ingredient.fromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
+        Ingredient ingredients = Ingredient.fromJson(json.get("ingredients"));
         ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
-        Set<Item> additionalItems = new HashSet<>();
-        for (ItemStack itemStack : ingredients.getItems()) {
-            additionalItems.add(itemStack.getItem());
-        }
-
-        return new TransformRecipe(recipeId, additionalItems, result.getItem(), result.getCount());
+        return new TransformRecipe(recipeId, ingredients, result.getItem(), result.getCount());
     }
 
     @Nullable
     @Override
     public TransformRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         ItemStack output = buffer.readItem();
+        Ingredient ingredients = Ingredient.fromNetwork(buffer);
 
-        Set<Item> inputs = new HashSet<>();
-        for(int i = 0; i < buffer.readInt(); i++){
-            inputs.add(buffer.readItem().getItem());
-        }
-
-        return new TransformRecipe(recipeId, inputs, output.getItem(), output.getCount());
+        return new TransformRecipe(recipeId, ingredients, output.getItem(), output.getCount());
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, TransformRecipe recipe) {
         buffer.writeItem(new ItemStack(recipe.output, recipe.count));
-
-        buffer.writeInt(recipe.additionalItems.size());
-        recipe.additionalItems.forEach(additionalItem -> {
-            buffer.writeItem(new ItemStack(additionalItem));
-        });
+        recipe.ingredients.toNetwork(buffer);
     }
 
 }
