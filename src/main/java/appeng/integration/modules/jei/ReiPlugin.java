@@ -73,6 +73,7 @@ import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.handlers.TransformRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
 
@@ -117,7 +118,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         // Add displays for charged quartz transformation
         if (AEConfig.instance().isInWorldChargedQuartzTransformEnabled()) {
-            for (var recipe : ChargedQuartzEntity.RECIPES) {
+            for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
                 var ingredients = new ArrayList<Ingredient>();
                 ingredients.add(Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED));
                 for (var additional : recipe.additionalItems()) {

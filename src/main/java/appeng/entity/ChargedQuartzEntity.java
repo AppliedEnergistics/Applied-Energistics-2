@@ -21,15 +21,14 @@ package appeng.entity;
 import java.util.List;
 import java.util.Set;
 
+import appeng.recipes.handlers.TransformRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -40,27 +39,10 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
-    public record TransformRecipe(Set<Item> additionalItems, Item output, int count) {
-    }
-
-    // TODO: datapack support
-    public static List<TransformRecipe> RECIPES = List.of(
-            // Fluix crystals
-            new TransformRecipe(Set.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_CRYSTAL.asItem(), 2),
-            // Recycle dust back into crystals
-            new TransformRecipe(Set.of(AEItems.CERTUS_QUARTZ_DUST.asItem()), AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2),
-            new TransformRecipe(Set.of(AEItems.FLUIX_DUST.asItem()), AEItems.FLUIX_CRYSTAL.asItem(), 1),
-            // Restore budding quartz
-            new TransformRecipe(Set.of(AEBlocks.QUARTZ_BLOCK.asItem()), AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1),
-            new TransformRecipe(Set.of(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem()),
-                    AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1),
-            new TransformRecipe(Set.of(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem()),
-                    AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1));
 
     private static final RandomSource RANDOM = RandomSource.create();
 
@@ -120,7 +102,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 this.getX() + 1, this.getY() + 1, this.getZ() + 1);
         final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
 
-        for (var recipe : RECIPES) {
+        for (var recipe : level.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
             Set<ItemEntity> selectedEntities = new ReferenceOpenHashSet<>();
 
             entityLoop: for (Entity e : l) {

@@ -38,6 +38,7 @@ import appeng.datagen.providers.recipes.InscriberRecipes;
 import appeng.datagen.providers.recipes.MatterCannonAmmoProvider;
 import appeng.datagen.providers.recipes.SmeltingRecipes;
 import appeng.datagen.providers.recipes.SmithingRecipes;
+import appeng.datagen.providers.recipes.TransformRecipes;
 import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
@@ -78,6 +79,7 @@ public class AE2DataGenerators {
         generator.addProvider(true, new SmeltingRecipes(generator));
         generator.addProvider(true, new CraftingRecipes(generator));
         generator.addProvider(true, new SmithingRecipes(generator));
+        generator.addProvider(true, new TransformRecipes(generator));
 
         // Must run last
         generator.addProvider(true, localization);
