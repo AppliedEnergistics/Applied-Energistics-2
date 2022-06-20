@@ -100,7 +100,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
         final AABB region = new AABB(this.getX() - 1, this.getY() - 1, this.getZ() - 1,
                 this.getX() + 1, this.getY() + 1, this.getZ() + 1);
-        final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
+        final List<Entity> l = this.getCheckedEntitiesWithinAABB(region);
 
         for (var recipe : level.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
             Set<ItemEntity> selectedEntities = new ReferenceOpenHashSet<>();

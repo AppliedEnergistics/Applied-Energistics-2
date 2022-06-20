@@ -120,8 +120,9 @@ public class ReiPlugin implements REIClientPlugin {
         if (AEConfig.instance().isInWorldChargedQuartzTransformEnabled()) {
             for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
                 var ingredients = new ArrayList<Ingredient>();
-                ingredients.add(Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED));
-                ingredients.add(recipe.ingredients);
+                for (ItemStack itemStack : recipe.ingredients.getItems()) {
+                    ingredients.add(Ingredient.of(itemStack));
+                }
 
                 registry.add(new ThrowingInWaterDisplay(ingredients, new ItemStack(recipe.output(), recipe.count())));
             }
