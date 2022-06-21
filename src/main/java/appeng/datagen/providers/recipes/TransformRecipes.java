@@ -22,6 +22,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.recipes.handlers.TransformRecipeSerializer;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -34,6 +35,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -61,13 +63,15 @@ public class TransformRecipes extends AE2RecipeProvider {
     }
 
     private TransformRecipeBuilder transform(Set<Item> inputs, Item output, int count) {
-        ArrayList<Item> inputz = new ArrayList<>(inputs);
-        inputz.add(0, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
+        List<Ingredient> ingredients = new ArrayList<>(3);
 
-        return new TransformRecipeBuilder(Ingredient.of(inputz.toArray(Item[]::new)), output, count);
+        ingredients.add(Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem()));
+        inputs.forEach(item -> ingredients.add(Ingredient.of(item)));
+
+        return new TransformRecipeBuilder(ingredients, output, count);
     }
 
-    public record TransformRecipeBuilder(Ingredient ingredients, Item output, int count) {
+    public record TransformRecipeBuilder(List<Ingredient> ingredients, Item output, int count) {
 
         public void save(Consumer<FinishedRecipe> consumer, String name) {
             consumer.accept(new Result(name));
@@ -83,7 +87,10 @@ public class TransformRecipes extends AE2RecipeProvider {
             @Override
             public void serializeRecipeData(JsonObject json) {
                 json.add("result", toJson(new ItemStack(output, count)));
-                json.add("ingredients", ingredients.toJson());
+
+                JsonArray inputs = new JsonArray();
+                ingredients.forEach(ingredient -> inputs.add(ingredient.toJson()));
+                json.add("ingredients", inputs);
             }
 
             @Override

@@ -11,16 +11,18 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 public final class TransformRecipe implements Recipe<Container>{
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
     public static final RecipeType<TransformRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
-    public final Ingredient ingredients;
+    public final List<Ingredient> ingredients;
     public final Item output;
     public final int count;
 
-    public TransformRecipe(ResourceLocation id, Ingredient ingredients, Item output, int count){
+    public TransformRecipe(ResourceLocation id, List<Ingredient> ingredients, Item output, int count){
         this.id = id;
         this.ingredients = ingredients;
         this.output = output;

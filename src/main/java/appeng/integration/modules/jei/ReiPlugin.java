@@ -119,12 +119,7 @@ public class ReiPlugin implements REIClientPlugin {
         // Add displays for charged quartz transformation
         if (AEConfig.instance().isInWorldChargedQuartzTransformEnabled()) {
             for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
-                var ingredients = new ArrayList<Ingredient>();
-                for (ItemStack itemStack : recipe.ingredients.getItems()) {
-                    ingredients.add(Ingredient.of(itemStack));
-                }
-
-                registry.add(new ThrowingInWaterDisplay(ingredients, new ItemStack(recipe.output(), recipe.count())));
+                registry.add(new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
             }
         }
     }

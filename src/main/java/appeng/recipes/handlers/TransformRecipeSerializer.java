@@ -28,6 +28,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransformRecipeSerializer implements RecipeSerializer<TransformRecipe> {
 
@@ -38,7 +40,9 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
 
     @Override
     public TransformRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        Ingredient ingredients = Ingredient.fromJson(json.get("ingredients"));
+        List<Ingredient> ingredients = new ArrayList<>();
+        GsonHelper.getAsJsonArray(json, "ingredients").forEach(ingredient -> ingredients.add(Ingredient.fromJson(ingredient)));
+
         ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
         return new TransformRecipe(recipeId, ingredients, result.getItem(), result.getCount());
@@ -48,7 +52,11 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
     @Override
     public TransformRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         ItemStack output = buffer.readItem();
-        Ingredient ingredients = Ingredient.fromNetwork(buffer);
+
+        List<Ingredient> ingredients = new ArrayList<>();
+        for(int i = 0; i < buffer.readByte(); i++){
+            ingredients.add(Ingredient.fromNetwork(buffer));
+        }
 
         return new TransformRecipe(recipeId, ingredients, output.getItem(), output.getCount());
     }
@@ -56,7 +64,9 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
     @Override
     public void toNetwork(FriendlyByteBuf buffer, TransformRecipe recipe) {
         buffer.writeItem(new ItemStack(recipe.output, recipe.count));
-        recipe.ingredients.toNetwork(buffer);
+
+        buffer.writeByte(recipe.ingredients.size());
+        recipe.ingredients.forEach(ingredient -> ingredient.toNetwork(buffer));
     }
 
 }
