@@ -109,7 +109,7 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                 if (e instanceof ItemEntity itemEntity && !e.isRemoved()) {
                     final ItemStack other = itemEntity.getItem();
                     if (!other.isEmpty()) {
-                        if (recipe.ingredients.stream().anyMatch(ingredient -> ingredient.test(other))) {
+                        if (recipe.ingredients.stream().noneMatch(ingredient -> ingredient.test(other))) {
                             continue; // Skip not required item
                         }
 
