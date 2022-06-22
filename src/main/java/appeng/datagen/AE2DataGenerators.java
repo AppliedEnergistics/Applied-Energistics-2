@@ -18,7 +18,6 @@
 
 package appeng.datagen;
 
-import appeng.datagen.providers.recipes.ChargerRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -31,6 +30,7 @@ import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.models.ItemModelProvider;
 import appeng.datagen.providers.models.PartModelProvider;
+import appeng.datagen.providers.recipes.ChargerRecipes;
 import appeng.datagen.providers.recipes.CraftingRecipes;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
 import appeng.datagen.providers.recipes.DecorationRecipes;

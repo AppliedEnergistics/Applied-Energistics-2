@@ -1,11 +1,13 @@
 package appeng.blockentity.misc;
 
-import appeng.recipes.handlers.ChargerRecipe;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
-import java.util.List;
+import appeng.recipes.handlers.ChargerRecipe;
 
 public class ChargerRecipes {
 

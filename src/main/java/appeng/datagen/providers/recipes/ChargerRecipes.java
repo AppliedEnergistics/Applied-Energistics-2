@@ -1,10 +1,11 @@
 package appeng.datagen.providers.recipes;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.recipes.handlers.ChargerRecipeSerializer;
+import java.util.function.Consumer;
+
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -13,9 +14,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.recipes.handlers.ChargerRecipeSerializer;
 
 public class ChargerRecipes extends AE2RecipeProvider {
     public ChargerRecipes(DataGenerator generator) {
@@ -25,7 +28,8 @@ public class ChargerRecipes extends AE2RecipeProvider {
     @Override
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
-        charge(consumer, "charged_certus_quartz_crystal", AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
+        charge(consumer, "charged_certus_quartz_crystal", AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(),
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
         charge(consumer, "sky_compass", Items.COMPASS, AEBlocks.SKY_COMPASS.asItem());
     }
 

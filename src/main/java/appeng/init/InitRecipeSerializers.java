@@ -18,8 +18,6 @@
 
 package appeng.init;
 
-import appeng.recipes.handlers.ChargerRecipe;
-import appeng.recipes.handlers.ChargerRecipeSerializer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,6 +28,8 @@ import appeng.items.parts.FacadeItem;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.FacadeRecipe;
+import appeng.recipes.handlers.ChargerRecipe;
+import appeng.recipes.handlers.ChargerRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
