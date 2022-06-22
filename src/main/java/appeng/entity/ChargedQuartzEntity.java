@@ -21,7 +21,6 @@ package appeng.entity;
 import java.util.List;
 import java.util.Set;
 
-import appeng.recipes.handlers.TransformRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -41,6 +40,7 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
+import appeng.recipes.handlers.TransformRecipe;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
 

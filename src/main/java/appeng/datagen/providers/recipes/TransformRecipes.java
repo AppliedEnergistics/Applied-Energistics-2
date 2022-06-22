@@ -18,12 +18,16 @@
 
 package appeng.datagen.providers.recipes;
 
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.recipes.handlers.TransformRecipeSerializer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -33,11 +37,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.recipes.handlers.TransformRecipeSerializer;
 
 public class TransformRecipes extends AE2RecipeProvider {
     public TransformRecipes(DataGenerator generator) {
@@ -48,18 +51,21 @@ public class TransformRecipes extends AE2RecipeProvider {
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
         // Fluix crystals
-        transform(Set.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_CRYSTAL.asItem(), 2).save(consumer, "fluix_crystals");
+        transform(Set.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_CRYSTAL.asItem(), 2).save(consumer,
+                "fluix_crystals");
 
         // Recycle dust back into crystals
-        transform(Set.of(AEItems.CERTUS_QUARTZ_DUST.asItem()), AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2).save(consumer, "certus_quartz_crystals");
-        transform(Set.of(AEItems.FLUIX_DUST.asItem()), AEItems.FLUIX_CRYSTAL.asItem(), 1).save(consumer, "fluix_crystal");
+        transform(Set.of(AEItems.CERTUS_QUARTZ_DUST.asItem()), AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2).save(consumer,
+                "certus_quartz_crystals");
+        transform(Set.of(AEItems.FLUIX_DUST.asItem()), AEItems.FLUIX_CRYSTAL.asItem(), 1).save(consumer,
+                "fluix_crystal");
         // Restore budding quartz
         transform(Set.of(AEBlocks.QUARTZ_BLOCK.asItem()),
-        AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "damaged_budding_quartz");
+                AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "damaged_budding_quartz");
         transform(Set.of(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem()),
-        AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "chipped_budding_quartz");
+                AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "chipped_budding_quartz");
         transform(Set.of(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem()),
-        AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "flawed_budding_quartz");
+                AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1).save(consumer, "flawed_budding_quartz");
     }
 
     private TransformRecipeBuilder transform(Set<Item> inputs, Item output, int count) {

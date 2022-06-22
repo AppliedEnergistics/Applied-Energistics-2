@@ -18,7 +18,13 @@
 
 package appeng.recipes.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -26,10 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TransformRecipeSerializer implements RecipeSerializer<TransformRecipe> {
 
@@ -41,7 +43,8 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
     @Override
     public TransformRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
         List<Ingredient> ingredients = new ArrayList<>();
-        GsonHelper.getAsJsonArray(json, "ingredients").forEach(ingredient -> ingredients.add(Ingredient.fromJson(ingredient)));
+        GsonHelper.getAsJsonArray(json, "ingredients")
+                .forEach(ingredient -> ingredients.add(Ingredient.fromJson(ingredient)));
 
         ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
@@ -54,7 +57,7 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
         ItemStack output = buffer.readItem();
 
         List<Ingredient> ingredients = new ArrayList<>();
-        for(int i = 0; i < buffer.readByte(); i++){
+        for (int i = 0; i < buffer.readByte(); i++) {
             ingredients.add(Ingredient.fromNetwork(buffer));
         }
 

@@ -64,7 +64,6 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
-import appeng.entity.ChargedQuartzEntity;
 import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
@@ -119,7 +118,8 @@ public class ReiPlugin implements REIClientPlugin {
         // Add displays for charged quartz transformation
         if (AEConfig.instance().isInWorldChargedQuartzTransformEnabled()) {
             for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
-                registry.add(new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
+                registry.add(
+                        new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
             }
         }
     }

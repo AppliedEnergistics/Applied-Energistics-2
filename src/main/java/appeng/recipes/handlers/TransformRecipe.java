@@ -1,6 +1,7 @@
 package appeng.recipes.handlers;
 
-import appeng.core.AppEng;
+import java.util.List;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -11,9 +12,9 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
+import appeng.core.AppEng;
 
-public final class TransformRecipe implements Recipe<Container>{
+public final class TransformRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
     public static final RecipeType<TransformRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
@@ -22,7 +23,7 @@ public final class TransformRecipe implements Recipe<Container>{
     public final Item output;
     public final int count;
 
-    public TransformRecipe(ResourceLocation id, List<Ingredient> ingredients, Item output, int count){
+    public TransformRecipe(ResourceLocation id, List<Ingredient> ingredients, Item output, int count) {
         this.id = id;
         this.ingredients = ingredients;
         this.output = output;
@@ -30,49 +31,49 @@ public final class TransformRecipe implements Recipe<Container>{
     }
 
     @Override
-    public boolean matches(Container container, Level level){
+    public boolean matches(Container container, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(Container container){
+    public ItemStack assemble(Container container) {
         return null;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height){
+    public boolean canCraftInDimensions(int width, int height) {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(){
+    public ItemStack getResultItem() {
         return new ItemStack(output, count);
     }
 
     @Override
-    public ResourceLocation getId(){
+    public ResourceLocation getId() {
         return id;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer(){
+    public RecipeSerializer<?> getSerializer() {
         return TransformRecipeSerializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType(){
+    public RecipeType<?> getType() {
         return TYPE;
     }
 
-    public ResourceLocation id(){
+    public ResourceLocation id() {
         return id;
     }
 
-    public Item output(){
+    public Item output() {
         return output;
     }
 
-    public int count(){
+    public int count() {
         return count;
     }
 }
