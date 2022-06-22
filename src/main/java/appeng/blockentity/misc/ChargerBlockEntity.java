@@ -55,7 +55,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
-    // TODO: use datapacks and show recipes in JEI/REI
+
     private static final Map<Item, Item> CHARGING_RECIPES = Map.of(
             AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem(),
             Items.COMPASS, AEBlocks.SKY_COMPASS.asItem());
