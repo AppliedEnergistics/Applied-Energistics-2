@@ -21,6 +21,8 @@ package appeng.entity;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -28,6 +30,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -103,14 +106,15 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
         final List<Entity> l = this.getCheckedEntitiesWithinAABB(region);
 
         for (var recipe : level.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
+            List<Ingredient> missingIngredients = Lists.newArrayList(recipe.ingredients);
             Set<ItemEntity> selectedEntities = new ReferenceOpenHashSet<>();
 
             entityLoop: for (Entity e : l) {
                 if (e instanceof ItemEntity itemEntity && !e.isRemoved()) {
                     final ItemStack other = itemEntity.getItem();
                     if (!other.isEmpty()) {
-                        if (recipe.ingredients.stream().noneMatch(ingredient -> ingredient.test(other))) {
-                            continue; // Skip not required item
+                        if (missingIngredients.stream().noneMatch(ingredient -> ingredient.test(other))) {
+                            continue; // Skip items that are not required (anymore)
                         }
 
                         for (var selectedEntity : selectedEntities) {
@@ -119,7 +123,14 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                             }
                         }
 
-                        selectedEntities.add(itemEntity);
+                        for (var it = missingIngredients.iterator(); it.hasNext();) {
+                            Ingredient ing = it.next();
+                            if (ing.test(other)) {
+                                selectedEntities.add(itemEntity);
+                                it.remove();
+                                break;
+                            }
+                        }
                     }
                 }
             }
