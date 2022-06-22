@@ -18,6 +18,7 @@
 
 package appeng.datagen;
 
+import appeng.datagen.providers.recipes.ChargerRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -78,6 +79,7 @@ public class AE2DataGenerators {
         generator.addProvider(true, new SmeltingRecipes(generator));
         generator.addProvider(true, new CraftingRecipes(generator));
         generator.addProvider(true, new SmithingRecipes(generator));
+        generator.addProvider(true, new ChargerRecipes(generator));
 
         // Must run last
         generator.addProvider(true, localization);

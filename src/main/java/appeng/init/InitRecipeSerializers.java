@@ -18,6 +18,8 @@
 
 package appeng.init;
 
+import appeng.recipes.handlers.ChargerRecipe;
+import appeng.recipes.handlers.ChargerRecipeSerializer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -44,6 +46,7 @@ public final class InitRecipeSerializers {
         register(registry, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));
         register(registry, EntropyRecipe.TYPE_ID, EntropyRecipeSerializer.INSTANCE);
         register(registry, MatterCannonAmmo.TYPE_ID, MatterCannonAmmoSerializer.INSTANCE);
+        register(registry, ChargerRecipe.TYPE_ID, ChargerRecipeSerializer.INSTANCE);
     }
 
     private static void register(Registry<RecipeSerializer<?>> registry, ResourceLocation id,
