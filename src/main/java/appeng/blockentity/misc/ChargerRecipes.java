@@ -17,7 +17,6 @@ public class ChargerRecipes {
 
     @Nullable
     public static ChargerRecipe findRecipe(Level level, ItemStack input) {
-        System.out.println(List.of(getRecipes(level)).size());
         for (ChargerRecipe recipe : getRecipes(level)) {
             if (recipe.ingredient.test(input)) {
                 return recipe;
