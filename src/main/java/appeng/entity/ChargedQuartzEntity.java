@@ -21,15 +21,16 @@ package appeng.entity;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -40,27 +41,11 @@ import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import appeng.client.EffectType;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
+import appeng.recipes.handlers.TransformRecipe;
 
 public final class ChargedQuartzEntity extends AEBaseItemEntity {
-    public record TransformRecipe(Set<Item> additionalItems, Item output, int count) {
-    }
-
-    // TODO: datapack support
-    public static List<TransformRecipe> RECIPES = List.of(
-            // Fluix crystals
-            new TransformRecipe(Set.of(Items.REDSTONE, Items.QUARTZ), AEItems.FLUIX_CRYSTAL.asItem(), 2),
-            // Recycle dust back into crystals
-            new TransformRecipe(Set.of(AEItems.CERTUS_QUARTZ_DUST.asItem()), AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2),
-            new TransformRecipe(Set.of(AEItems.FLUIX_DUST.asItem()), AEItems.FLUIX_CRYSTAL.asItem(), 1),
-            // Restore budding quartz
-            new TransformRecipe(Set.of(AEBlocks.QUARTZ_BLOCK.asItem()), AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1),
-            new TransformRecipe(Set.of(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem()),
-                    AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1),
-            new TransformRecipe(Set.of(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem()),
-                    AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1));
 
     private static final RandomSource RANDOM = RandomSource.create();
 
@@ -118,17 +103,18 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
 
         final AABB region = new AABB(this.getX() - 1, this.getY() - 1, this.getZ() - 1,
                 this.getX() + 1, this.getY() + 1, this.getZ() + 1);
-        final List<Entity> l = this.getCheckedEntitiesWithinAABBExcludingEntity(region);
+        final List<Entity> l = this.getCheckedEntitiesWithinAABB(region);
 
-        for (var recipe : RECIPES) {
+        for (var recipe : level.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
+            List<Ingredient> missingIngredients = Lists.newArrayList(recipe.ingredients);
             Set<ItemEntity> selectedEntities = new ReferenceOpenHashSet<>();
 
             entityLoop: for (Entity e : l) {
                 if (e instanceof ItemEntity itemEntity && !e.isRemoved()) {
                     final ItemStack other = itemEntity.getItem();
                     if (!other.isEmpty()) {
-                        if (!recipe.additionalItems.contains(other.getItem())) {
-                            continue; // Skip not required item
+                        if (missingIngredients.stream().noneMatch(ingredient -> ingredient.test(other))) {
+                            continue; // Skip items that are not required (anymore)
                         }
 
                         for (var selectedEntity : selectedEntities) {
@@ -137,12 +123,19 @@ public final class ChargedQuartzEntity extends AEBaseItemEntity {
                             }
                         }
 
-                        selectedEntities.add(itemEntity);
+                        for (var it = missingIngredients.iterator(); it.hasNext();) {
+                            Ingredient ing = it.next();
+                            if (ing.test(other)) {
+                                selectedEntities.add(itemEntity);
+                                it.remove();
+                                break;
+                            }
+                        }
                     }
                 }
             }
 
-            if (selectedEntities.size() == recipe.additionalItems.size()) {
+            if (selectedEntities.size() == recipe.ingredients.size()) {
                 this.getItem().grow(-1);
 
                 if (this.getItem().getCount() <= 0) {

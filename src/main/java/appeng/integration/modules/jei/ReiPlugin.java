@@ -64,7 +64,6 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
-import appeng.entity.ChargedQuartzEntity;
 import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
@@ -73,6 +72,7 @@ import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.handlers.TransformRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
 
@@ -117,14 +117,9 @@ public class ReiPlugin implements REIClientPlugin {
 
         // Add displays for charged quartz transformation
         if (AEConfig.instance().isInWorldChargedQuartzTransformEnabled()) {
-            for (var recipe : ChargedQuartzEntity.RECIPES) {
-                var ingredients = new ArrayList<Ingredient>();
-                ingredients.add(Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED));
-                for (var additional : recipe.additionalItems()) {
-                    ingredients.add(Ingredient.of(additional));
-                }
-
-                registry.add(new ThrowingInWaterDisplay(ingredients, new ItemStack(recipe.output(), recipe.count())));
+            for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
+                registry.add(
+                        new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
             }
         }
     }

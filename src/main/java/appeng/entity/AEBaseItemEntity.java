@@ -46,6 +46,10 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
         this.setItem(stack);
     }
 
+    protected List<Entity> getCheckedEntitiesWithinAABB(AABB region) {
+        return this.level.getEntities(null, region);
+    }
+
     protected List<Entity> getCheckedEntitiesWithinAABBExcludingEntity(AABB region) {
         return this.level.getEntities(this, region);
     }
