@@ -28,6 +28,8 @@ import appeng.items.parts.FacadeItem;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.entropy.EntropyRecipeSerializer;
 import appeng.recipes.game.FacadeRecipe;
+import appeng.recipes.handlers.ChargerRecipe;
+import appeng.recipes.handlers.ChargerRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
@@ -44,6 +46,7 @@ public final class InitRecipeSerializers {
         register(registry, AppEng.makeId("facade"), FacadeRecipe.getSerializer(facadeItem));
         register(registry, EntropyRecipe.TYPE_ID, EntropyRecipeSerializer.INSTANCE);
         register(registry, MatterCannonAmmo.TYPE_ID, MatterCannonAmmoSerializer.INSTANCE);
+        register(registry, ChargerRecipe.TYPE_ID, ChargerRecipeSerializer.INSTANCE);
     }
 
     private static void register(Registry<RecipeSerializer<?>> registry, ResourceLocation id,
