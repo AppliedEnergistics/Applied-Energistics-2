@@ -28,10 +28,6 @@ import java.util.function.DoubleSupplier;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Strings;
-
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 
@@ -50,7 +46,6 @@ import appeng.core.config.ConfigValidationException;
 import appeng.core.config.DoubleOption;
 import appeng.core.config.EnumOption;
 import appeng.core.config.IntegerOption;
-import appeng.core.config.StringOption;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
 
@@ -338,21 +333,6 @@ public final class AEConfig {
         return () -> this.chargedStaffBattery;
     }
 
-    @Nullable
-    public TagKey<Fluid> getImprovedFluidTag() {
-        if (improvedFluidTagKey == null) {
-            var tagName = Strings.emptyToNull(COMMON.improvedFluidTag.get());
-            if (tagName != null) {
-                improvedFluidTagKey = TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(tagName));
-            }
-        }
-        return improvedFluidTagKey;
-    }
-
-    public float getImprovedFluidMultiplier() {
-        return (float) COMMON.improvedFluidMultiplier.get();
-    }
-
     public boolean isShowDebugGuiOverlays() {
         return CLIENT.debugGuiOverlays.get();
     }
@@ -375,14 +355,6 @@ public final class AEConfig {
 
     public boolean isInWorldSingularityEnabled() {
         return COMMON.inWorldSingularity.get();
-    }
-
-    public boolean isInWorldChargedQuartzTransformEnabled() {
-        return COMMON.inWorldChargedQuartzTransform.get();
-    }
-
-    public boolean isInWorldCrystalGrowthEnabled() {
-        return COMMON.inWorldCrystalGrowth.get();
     }
 
     public boolean isDisassemblyCraftingEnabled() {
@@ -492,8 +464,6 @@ public final class AEConfig {
 
         // Crafting
         public final BooleanOption inWorldSingularity;
-        public final BooleanOption inWorldChargedQuartzTransform;
-        public final BooleanOption inWorldCrystalGrowth;
         public final BooleanOption disassemblyCrafting;
         public final IntegerOption growthAcceleratorSpeed;
 
@@ -544,11 +514,6 @@ public final class AEConfig {
         public final IntegerOption condenserMatterBallsPower;
         public final IntegerOption condenserSingularityPower;
 
-        // In-World Crystal Growth
-        // Settings for improved speed depending on fluid the crystal is in
-        public final StringOption improvedFluidTag;
-        public final DoubleOption improvedFluidMultiplier;
-
         public final Map<TickRates, IntegerOption> tickRateMin = new HashMap<>();
         public final Map<TickRates, IntegerOption> tickRateMax = new HashMap<>();
 
@@ -583,10 +548,6 @@ public final class AEConfig {
             var crafting = root.subsection("crafting");
             inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
                     "Enable the in-world crafting of singularities.");
-            inWorldChargedQuartzTransform = crafting.addBoolean("inWorldChargedQuartzTransform", true,
-                    "Enable the in-world transformation of charged certus quartz crystals to other items (e.g. fluix dust).");
-            inWorldCrystalGrowth = crafting.addBoolean("inWorldCrystalGrowth", true,
-                    "Enable the in-world crafting of crystals.");
             disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
             growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 10, 1, 100,
@@ -653,11 +614,6 @@ public final class AEConfig {
 
             ConfigSection inWorldCrystalGrowth = root.subsection("inWorldCrystalGrowth",
                     "Settings for in-world growth of crystals.");
-
-            improvedFluidTag = inWorldCrystalGrowth.addString("improvedFluidTag", "",
-                    "A fluid tag that identifies fluids that improve crystal growth speed. Does not affect growth with water/lava.");
-            improvedFluidMultiplier = inWorldCrystalGrowth.addDouble("improvedFluidMultiplier", 2.0, 1.0, 10.0,
-                    "The speed multiplier to use when the crystals are submerged in the improved fluid.");
         }
 
     }

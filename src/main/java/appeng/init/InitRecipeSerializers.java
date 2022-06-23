@@ -32,10 +32,10 @@ import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.ChargerRecipeSerializer;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.handlers.InscriberRecipeSerializer;
-import appeng.recipes.handlers.TransformRecipe;
-import appeng.recipes.handlers.TransformRecipeSerializer;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;
+import appeng.recipes.transform.TransformRecipe;
+import appeng.recipes.transform.TransformRecipeSerializer;
 
 public final class InitRecipeSerializers {
 

@@ -72,7 +72,7 @@ import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
-import appeng.recipes.handlers.TransformRecipe;
+import appeng.recipes.transform.TransformRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
 
@@ -116,11 +116,9 @@ public class ReiPlugin implements REIClientPlugin {
         registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
 
         // Add displays for charged quartz transformation
-        if (AEConfig.instance().isInWorldChargedQuartzTransformEnabled()) {
-            for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
-                registry.add(
-                        new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
-            }
+        for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
+            registry.add(
+                    new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
         }
     }
 

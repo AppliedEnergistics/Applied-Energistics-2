@@ -46,7 +46,6 @@ public final class AEBlockIds {
     public static final ResourceLocation LARGE_QUARTZ_BUD = id("large_quartz_bud");
     public static final ResourceLocation QUARTZ_CLUSTER = id("quartz_cluster");
 
-    // TODO: remove stuff that's not needed from below
     public static final ResourceLocation QUARTZ_FIXTURE = id("quartz_fixture");
     public static final ResourceLocation SKY_STONE_CHEST = id("sky_stone_chest");
     public static final ResourceLocation SMOOTH_SKY_STONE_CHEST = id("smooth_sky_stone_chest");

@@ -44,7 +44,6 @@ import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
-import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 import appeng.items.materials.CustomEntityItem;
 import appeng.items.materials.MaterialItem;
@@ -184,7 +183,7 @@ public final class AEItems {
     ///
 
     public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_CRYSTAL = item("Certus Quartz Crystal", AEItemIds.CERTUS_QUARTZ_CRYSTAL, MaterialItem::new);
-    public static final ItemDefinition<CustomEntityItem> CERTUS_QUARTZ_CRYSTAL_CHARGED = item("Charged Certus Quartz Crystal", AEItemIds.CERTUS_QUARTZ_CRYSTAL_CHARGED, p -> new CustomEntityItem(p, ChargedQuartzEntity::new));
+    public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_CRYSTAL_CHARGED = item("Charged Certus Quartz Crystal", AEItemIds.CERTUS_QUARTZ_CRYSTAL_CHARGED, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_DUST = item("Certus Quartz Dust", AEItemIds.CERTUS_QUARTZ_DUST, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SILICON = item("Silicon", AEItemIds.SILICON, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> MATTER_BALL = item("Matter Ball", AEItemIds.MATTER_BALL, MaterialItem::new);

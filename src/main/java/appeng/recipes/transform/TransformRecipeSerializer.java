@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.recipes.handlers;
+package appeng.recipes.transform;
 
 import java.util.ArrayList;
 import java.util.List;

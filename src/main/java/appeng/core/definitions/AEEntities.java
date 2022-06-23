@@ -31,7 +31,6 @@ import net.minecraft.world.entity.EntityType.Builder;
 import net.minecraft.world.entity.EntityType.EntityFactory;
 import net.minecraft.world.entity.MobCategory;
 
-import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
 
@@ -48,13 +47,6 @@ public final class AEEntities {
             "singularity",
             "Singularity",
             SingularityEntity::new,
-            MobCategory.MISC,
-            builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
-
-    public static final EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
-            "charged_quartz",
-            "Charged Quartz",
-            ChargedQuartzEntity::new,
             MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
 

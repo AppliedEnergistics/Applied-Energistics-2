@@ -16,9 +16,9 @@ public class ChargerRecipe implements Recipe<Container> {
 
     public static final RecipeType<ChargerRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
-    private ResourceLocation id;
-    public Ingredient ingredient;
-    public ItemStack result;
+    private final ResourceLocation id;
+    public final Ingredient ingredient;
+    public final ItemStack result;
 
     public ChargerRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result) {
         this.id = id;
@@ -43,7 +43,7 @@ public class ChargerRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return null;
+        return result;
     }
 
     @Override

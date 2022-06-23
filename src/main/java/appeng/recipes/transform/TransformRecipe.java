@@ -1,4 +1,4 @@
-package appeng.recipes.handlers;
+package appeng.recipes.transform;
 
 import java.util.List;
 

@@ -24,24 +24,12 @@ public class ChargerRecipes {
         return null;
     }
 
-    public static boolean allowInsert(Level level, ItemStack input) {
-        for (ChargerRecipe recipe : getRecipes(level)) {
-            if (recipe.ingredient.test(input)) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean allowInsert(Level level, ItemStack stack) {
+        return findRecipe(level, stack) != null;
     }
 
-    public static boolean allowExtract(Level level, ItemStack output) {
-        for (ChargerRecipe recipe : getRecipes(level)) {
-            if (recipe.ingredient.test(output)) {
-                return false;
-            }
-        }
-
-        return true;
+    public static boolean allowExtract(Level level, ItemStack stack) {
+        return findRecipe(level, stack) == null;
     }
 
 }
