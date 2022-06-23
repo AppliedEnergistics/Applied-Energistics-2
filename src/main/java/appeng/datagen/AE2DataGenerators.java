@@ -30,6 +30,7 @@ import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
 import appeng.datagen.providers.models.ItemModelProvider;
 import appeng.datagen.providers.models.PartModelProvider;
+import appeng.datagen.providers.recipes.ChargerRecipes;
 import appeng.datagen.providers.recipes.CraftingRecipes;
 import appeng.datagen.providers.recipes.DecorationBlockRecipes;
 import appeng.datagen.providers.recipes.DecorationRecipes;
@@ -80,6 +81,7 @@ public class AE2DataGenerators {
         generator.addProvider(true, new CraftingRecipes(generator));
         generator.addProvider(true, new SmithingRecipes(generator));
         generator.addProvider(true, new TransformRecipes(generator));
+        generator.addProvider(true, new ChargerRecipes(generator));
 
         // Must run last
         generator.addProvider(true, localization);
