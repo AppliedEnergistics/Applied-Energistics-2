@@ -21,7 +21,7 @@
   "depends": {
     "fabricloader": ">=0.14.8",
     "fabric": ">=0.56.0",
-    "minecraft": "1.19.0"
+    "minecraft": "1.19.x"
   },
   "conflicts": {
     "appliedenergistics2": "*"

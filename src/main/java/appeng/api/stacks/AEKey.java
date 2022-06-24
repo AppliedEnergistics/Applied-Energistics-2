@@ -19,7 +19,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.config.FuzzyMode;
 import appeng.core.AELog;
-import appeng.items.misc.WrappedGenericStack;
 
 /**
  * Uniquely identifies something that "stacks" within an ME inventory.
@@ -244,10 +243,7 @@ public abstract class AEKey {
     /**
      * @return The ID of the resource identified by this key.
      */
-    // TODO: 1.19 make this abstract
-    public ResourceLocation getId() {
-        return new ResourceLocation("unknown");
-    }
+    public abstract ResourceLocation getId();
 
     public abstract void writeToPacket(FriendlyByteBuf data);
 
@@ -256,16 +252,6 @@ public abstract class AEKey {
      */
     public ItemStack wrapForDisplayOrFilter() {
         return GenericStack.wrapInItemStack(this, 0);
-    }
-
-    /**
-     * Wraps a key in an ItemStack that can be unwrapped into a key later.
-     *
-     * @see GenericStack#wrapInItemStack(AEKey, long) use this instead
-     */
-    @Deprecated(forRemoval = true)
-    public ItemStack wrap(int amount) {
-        return WrappedGenericStack.wrap(this, amount);
     }
 
     /**

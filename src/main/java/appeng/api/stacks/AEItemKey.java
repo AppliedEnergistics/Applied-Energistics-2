@@ -199,11 +199,6 @@ public final class AEItemKey extends AEKey {
     }
 
     @Override
-    public ItemStack wrap(int amount) {
-        return toStack(amount);
-    }
-
-    @Override
     public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         while (amount > 0) {
             if (drops.size() > 1000) {

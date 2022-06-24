@@ -82,11 +82,6 @@ public class Text {
         this.align = align;
     }
 
-    @Deprecated(forRemoval = true, since = "1.18")
-    public void setCenterHorizontally(boolean enable) {
-        align = enable ? TextAlignment.CENTER : TextAlignment.LEFT;
-    }
-
     public float getScale() {
         return scale;
     }

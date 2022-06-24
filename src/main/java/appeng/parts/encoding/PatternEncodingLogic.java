@@ -197,14 +197,8 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             this.setSubstitution(data.getBoolean("substitute"));
             this.setFluidSubstitution(data.getBoolean("substituteFluids"));
 
-            // TODO: Remove in 1.19
-            if (data.contains("pattern")) {
-                var pattern = new AppEngInternalInventory(null, 2);
-                pattern.readFromNBT(data, "pattern");
-            } else {
-                blankPatternInv.readFromNBT(data, "blankPattern");
-                encodedPatternInv.readFromNBT(data, "encodedPattern");
-            }
+            blankPatternInv.readFromNBT(data, "blankPattern");
+            encodedPatternInv.readFromNBT(data, "encodedPattern");
 
             encodedInputInv.readFromChildTag(data, "encodedInputs");
             encodedOutputInv.readFromChildTag(data, "encodedOutputs");
