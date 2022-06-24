@@ -363,8 +363,17 @@ public class AECraftingPattern implements IAEPatternDetails {
         return output;
     }
 
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
-        return this.recipe.getRemainingItems(container);
+    public NonNullList<ItemStack> getRemainingItems(Container container) {
+        var nonNullList = NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
+
+        for(int i = 0; i < nonNullList.size(); ++i) {
+            Item item = container.getItem(i).getItem();
+            if (item.hasCraftingRemainingItem()) {
+                nonNullList.set(i, new ItemStack(item.getCraftingRemainingItem()));
+            }
+        }
+
+        return nonNullList;
     }
 
     private GenericStack getItemOrFluidInput(int slot, GenericStack item) {

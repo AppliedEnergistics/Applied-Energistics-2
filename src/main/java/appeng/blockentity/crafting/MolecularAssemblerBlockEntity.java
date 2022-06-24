@@ -23,15 +23,13 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,11 +68,13 @@ import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.CraftingPatternItem;
-import appeng.menu.AutoCraftingMenu;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         implements IUpgradeableObject, IGridTickable, ICraftingMachine, IPowerChannelState {
@@ -84,11 +84,11 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
      */
     public static final ResourceLocation INV_MAIN = AppEng.makeId("molecular_assembler");
 
-    private final CraftingContainer craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
     private final AppEngInternalInventory patternInv = new AppEngInternalInventory(this, 1, 1);
     private final InternalInventory gridInvExt = new FilteredInternalInventory(this.gridInv, new CraftingGridFilter());
     private final InternalInventory internalInv = new CombinedInternalInventory(this.gridInv, this.patternInv);
+    private final Container inputAdapter;
     private final IUpgradeInventory upgrades;
     private boolean isPowered = false;
     private Direction pushDirection = null;
@@ -110,8 +110,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 .addService(IGridTickable.class, this);
         this.upgrades = UpgradeInventories.forMachine(AEBlocks.MOLECULAR_ASSEMBLER, getUpgradeSlots(),
                 this::saveChanges);
-        this.craftingInv = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
-
+        inputAdapter = gridInv.getSubInventory(0, 9).toContainer();
     }
 
     private int getUpgradeSlots() {
@@ -213,12 +212,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         if (this.myPlan == null) {
             return false;
         }
-
-        for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
-            this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
-        }
-
-        return !this.myPlan.getOutput(this.craftingInv, this.getLevel()).isEmpty();
+        return !this.myPlan.getOutput(this.inputAdapter, this.getLevel()).isEmpty();
     }
 
     @Override
@@ -422,21 +416,17 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         if (this.progress >= 100) {
-            for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
-                this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
-            }
-
             this.progress = 0;
-            final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getLevel());
+            final ItemStack output = this.myPlan.getOutput(this.inputAdapter, this.getLevel());
             if (!output.isEmpty()) {
-                CraftingEvent.fireAutoCraftingEvent(getLevel(), this.myPlan, output, this.craftingInv);
+                CraftingEvent.fireAutoCraftingEvent(getLevel(), this.myPlan, output, this.inputAdapter);
 
                 // pushOut might reset the plan back to null, so get the remaining items before
-                var craftingRemainders = this.myPlan.getRemainingItems(this.craftingInv);
+                var craftingRemainders = this.myPlan.getRemainingItems(this.inputAdapter);
 
                 this.pushOut(output.copy());
 
-                for (int x = 0; x < this.craftingInv.getContainerSize(); x++) {
+                for (int x = 0; x < this.inputAdapter.getContainerSize(); x++) {
                     this.gridInv.setItemDirect(x, craftingRemainders.get(x));
                 }
 
