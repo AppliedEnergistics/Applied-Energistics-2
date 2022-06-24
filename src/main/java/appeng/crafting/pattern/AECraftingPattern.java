@@ -25,6 +25,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -275,7 +276,7 @@ public class AECraftingPattern implements IAEPatternDetails {
 
     /**
      * Retrieve a previous result of testing whether <code>what</code> is a valid ingredient for <code>slot</code>.
-     * 
+     *
      * @return null if the result is unknown, otherwise indicates whether the key is valid or not.
      */
     @Nullable
@@ -315,14 +316,14 @@ public class AECraftingPattern implements IAEPatternDetails {
         return sparseToCompressed[sparse];
     }
 
-    public ItemStack getOutput(CraftingContainer craftingContainer, Level level) {
+    public ItemStack getOutput(Container container, Level level) {
         if (canSubstitute && recipe.isSpecial()) {
             // For special recipes, we need to test the recipe with assemble, unfortunately, since the output might
             // depend on the inputs in a way that can't be detected by changing one input at the time.
             specialRecipeTestFrame.clearContent();
 
-            for (int x = 0; x < craftingContainer.getContainerSize(); ++x) {
-                ItemStack item = craftingContainer.getItem(x);
+            for (int x = 0; x < container.getContainerSize(); ++x) {
+                ItemStack item = container.getItem(x);
                 var stack = GenericStack.unwrapItemStack(item);
                 if (stack != null) {
                     // If we receive a pure fluid stack, we convert it to the appropriate container item
@@ -339,8 +340,8 @@ public class AECraftingPattern implements IAEPatternDetails {
             return recipe.assemble(specialRecipeTestFrame);
         }
 
-        for (int x = 0; x < craftingContainer.getContainerSize(); x++) {
-            ItemStack item = craftingContainer.getItem(x);
+        for (int x = 0; x < container.getContainerSize(); x++) {
+            ItemStack item = container.getItem(x);
             var stack = GenericStack.unwrapItemStack(item);
             if (stack != null) {
                 // If we receive a pure fluid stack, we'll convert it to the appropriate container item
