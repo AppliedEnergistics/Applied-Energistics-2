@@ -33,10 +33,6 @@ import java.util.function.Function;
 
 import javax.annotation.concurrent.ThreadSafe;
 
-import com.google.common.base.Preconditions;
-
-import org.jetbrains.annotations.ApiStatus;
-
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
@@ -46,7 +42,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.core.definitions.AEParts;
@@ -114,7 +109,7 @@ public final class P2PTunnelAttunement {
      */
     public synchronized static void registerAttunementTag(ItemLike tunnel) {
         Objects.requireNonNull(tunnel.asItem(), "tunnel.asItem()");
-        addItemByTag(getAttunementTag(tunnel), tunnel);
+        tagTunnels.put(getAttunementTag(tunnel), validateTunnelPartItem(tunnel));
     }
 
     /**
@@ -151,72 +146,6 @@ public final class P2PTunnelAttunement {
                 buffer = stack;
             }
         }), description);
-    }
-
-    /**
-     * Allows third parties to register items from their mod as potential attunements for AE's P2P Tunnels
-     *
-     * @param trigger    - the item which triggers attunement
-     * @param tunnelPart The P2P-tunnel part item.
-     * @deprecated Add your trigger to the {@linkplain #getAttunementTag standard tag} instead.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
-    @Deprecated(forRemoval = true)
-    public synchronized static void addItem(ItemLike trigger, ItemLike tunnelPart) {
-        Objects.requireNonNull(trigger, "trigger");
-        Item triggerItem = trigger.asItem();
-        Objects.requireNonNull(triggerItem, "trigger.asItem()");
-        Preconditions.checkArgument(triggerItem != Items.AIR, "trigger shouldn't be air!");
-        tunnels.put(triggerItem, validateTunnelPartItem(tunnelPart));
-    }
-
-    /**
-     * Allows third parties to register items in a tag as potential attunements for AE's P2P Tunnels
-     *
-     * @param trigger    The tag which triggers attunement
-     * @param tunnelPart The P2P-tunnel part item.
-     * @deprecated Add your trigger to the {@linkplain #getAttunementTag standard tag} instead.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
-    @Deprecated(forRemoval = true)
-    public synchronized static void addItemByTag(TagKey<Item> trigger, ItemLike tunnelPart) {
-        Objects.requireNonNull(trigger, "trigger");
-        tagTunnels.put(trigger, validateTunnelPartItem(tunnelPart));
-    }
-
-    /**
-     * Adds all items from the given mod as attunement items for the given tunnel part.
-     *
-     * @param modId      The mod-id that triggers attunement into the given tunnel part.
-     * @param tunnelPart The P2P-tunnel part item.
-     * @deprecated Add relevant triggers to the {@linkplain #getAttunementTag} standard tag} instead.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
-    @Deprecated(forRemoval = true)
-    public synchronized static void addItemByMod(String modId, ItemLike tunnelPart) {
-        Objects.requireNonNull(modId, "modId");
-        modIdTunnels.put(modId, validateTunnelPartItem(tunnelPart));
-    }
-
-    /**
-     * @deprecated Use the overload with a description Component instead.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
-    @Deprecated(forRemoval = true)
-    public synchronized static <T> void addItemByApi(ItemApiLookup<?, T> api,
-            Function<ItemStack, T> contextProvider,
-            ItemLike tunnelPart) {
-        registerAttunementApi(tunnelPart, api, contextProvider, Component.literal("<missing description>"));
-    }
-
-    /**
-     * @deprecated Use the overload with a description Component instead.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.19")
-    @Deprecated(forRemoval = true)
-    public synchronized static void addItemByApi(ItemApiLookup<?, ContainerItemContext> api,
-            ItemLike tunnelPart) {
-        registerAttunementApi(tunnelPart, api, Component.literal("<missing description>"));
     }
 
     /**
