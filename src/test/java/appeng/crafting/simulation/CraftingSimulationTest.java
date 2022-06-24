@@ -336,6 +336,40 @@ public class CraftingSimulationTest {
                 .usedMatch(mult(input, 547));
     }
 
+    /**
+     * This tests that leftovers from previous crafting iterations reused in a subsequent iteration, are not scheduled
+     * for extraction from the network.
+     * <p>
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6391.
+     */
+    @Test
+    public void testReusedLeftovers() {
+        var env = new SimulationEnv();
+
+        var output = item(Items.DIAMOND_BLOCK);
+        // There is a recipe to produce 4 of this item, and one to use 3 only. The extra 1 should be reused.
+        var reusedItem = item(Items.DIAMOND);
+        // Used to produce reusedItem
+        var sourceItem = item(Items.DIAMOND_ORE);
+        // Alternative ingredient for output. Not present in the network, but will create a branch in the crafting
+        // tree that will force our interesting recipe to be crafted 1 by 1.
+        var alternativeIngredient = item(Items.GOLD_INGOT);
+
+        var targetPattern = env.addPattern(new ProcessingPatternBuilder(output).addPreciseInput(3, reusedItem).build());
+        var alternativePattern = env
+                .addPattern(new ProcessingPatternBuilder(output).addPreciseInput(1, alternativeIngredient).build());
+        var sourcePattern = env
+                .addPattern(new ProcessingPatternBuilder(mult(reusedItem, 4)).addPreciseInput(1, sourceItem).build());
+
+        env.addStoredItem(mult(sourceItem, 3));
+
+        var plan = env.runSimulation(mult(output, 4), CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(targetPattern, 4, sourcePattern, 3)
+                .usedMatch(mult(sourceItem, 3));
+    }
+
     private static GenericStack item(Item item) {
         return GenericStack.fromItemStack(new ItemStack(item));
     }
