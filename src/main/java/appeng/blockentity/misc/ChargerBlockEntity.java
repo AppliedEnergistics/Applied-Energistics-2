@@ -21,6 +21,7 @@ package appeng.blockentity.misc;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,18 +45,19 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.AEConfig;
-import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
+    // TODO: show recipes in JEI/REI
+
     private static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
     private boolean working;
 
-    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter());
+    private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1, 1, new ChargerInvFilter(this));
 
     public ChargerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -135,8 +137,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         if (myItem.isEmpty()) {
             ItemStack held = player.getInventory().getSelected();
 
-            if (AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(held)
-                    || Platform.isChargeable(held)) {
+            if (ChargerRecipes.findRecipe(level, held) != null || Platform.isChargeable(held)) {
                 held = player.getInventory().removeItem(player.getInventory().selected, 1);
                 this.inv.setItemDirect(0, held);
             }
@@ -144,7 +145,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             final List<ItemStack> drops = new ArrayList<>();
             drops.add(myItem);
             this.inv.setItemDirect(0, ItemStack.EMPTY);
-            Platform.spawnDrops(this.level, this.worldPosition.relative(this.getForward()), drops);
+            Platform.spawnDrops(player.level, this.worldPosition.relative(this.getForward()), drops);
         }
     }
 
@@ -204,12 +205,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                     }
                 }
             } else if (this.getInternalCurrentPower() > POWER_THRESHOLD
-                    && AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(myItem)) {
+                    && ChargerRecipes.findRecipe(level, myItem) != null) {
                 this.working = true;
                 if (Platform.getRandomFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                    ItemStack charged = AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack(myItem.getCount());
+                    ItemStack charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
                     this.inv.setItemDirect(0, charged);
 
                     changed = true;
@@ -239,10 +240,11 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         return working;
     }
 
-    private static class ChargerInvFilter implements IAEItemFilter {
+    private record ChargerInvFilter(ChargerBlockEntity chargerBlockEntity) implements IAEItemFilter {
+
         @Override
         public boolean allowInsert(InternalInventory inv, int i, ItemStack itemstack) {
-            return Platform.isChargeable(itemstack) || AEItems.CERTUS_QUARTZ_CRYSTAL.isSameAs(itemstack);
+            return Platform.isChargeable(itemstack) || ChargerRecipes.allowInsert(chargerBlockEntity.level, itemstack);
         }
 
         @Override
@@ -256,7 +258,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 }
             }
 
-            return AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.isSameAs(extractedItem);
+            return ChargerRecipes.allowExtract(chargerBlockEntity.level, extractedItem);
         }
     }
 }

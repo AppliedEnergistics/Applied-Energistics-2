@@ -35,8 +35,17 @@ public final class AEBlockIds {
     ///
     /// WORLDGEN/MISC
     ///
-    public static final ResourceLocation QUARTZ_ORE = id("quartz_ore");
-    public static final ResourceLocation DEEPSLATE_QUARTZ_ORE = id("deepslate_quartz_ore");
+    // Budding certus quartz
+    public static final ResourceLocation FLAWLESS_BUDDING_QUARTZ = id("flawless_budding_quartz");
+    public static final ResourceLocation FLAWED_BUDDING_QUARTZ = id("flawed_budding_quartz");
+    public static final ResourceLocation CHIPPED_BUDDING_QUARTZ = id("chipped_budding_quartz");
+    public static final ResourceLocation DAMAGED_BUDDING_QUARTZ = id("damaged_budding_quartz");
+    // Certus quartz clusters
+    public static final ResourceLocation SMALL_QUARTZ_BUD = id("small_quartz_bud");
+    public static final ResourceLocation MEDIUM_QUARTZ_BUD = id("medium_quartz_bud");
+    public static final ResourceLocation LARGE_QUARTZ_BUD = id("large_quartz_bud");
+    public static final ResourceLocation QUARTZ_CLUSTER = id("quartz_cluster");
+
     public static final ResourceLocation QUARTZ_FIXTURE = id("quartz_fixture");
     public static final ResourceLocation SKY_STONE_CHEST = id("sky_stone_chest");
     public static final ResourceLocation SMOOTH_SKY_STONE_CHEST = id("smooth_sky_stone_chest");

@@ -31,8 +31,6 @@ import net.minecraft.world.entity.EntityType.Builder;
 import net.minecraft.world.entity.EntityType.EntityFactory;
 import net.minecraft.world.entity.MobCategory;
 
-import appeng.entity.ChargedQuartzEntity;
-import appeng.entity.GrowingCrystalEntity;
 import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
 
@@ -52,26 +50,12 @@ public final class AEEntities {
             MobCategory.MISC,
             builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
 
-    public static final EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
-            "charged_quartz",
-            "Charged Quartz",
-            ChargedQuartzEntity::new,
-            MobCategory.MISC,
-            builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
-
     public static final EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
             "tiny_tnt_primed",
             "Tiny TNT Primed",
             TinyTNTPrimedEntity::new,
             MobCategory.MISC,
             builder -> builder.clientTrackingRange(16).updateInterval(4));
-
-    public static EntityType<GrowingCrystalEntity> GROWING_CRYSTAL = create(
-            "growing_crystal",
-            "Growing Crystal",
-            GrowingCrystalEntity::new,
-            MobCategory.MISC,
-            builder -> builder.sized(0.25F, 0.4F));
 
     private static <T extends Entity> EntityType<T> create(String id,
             String englishName,

@@ -44,13 +44,11 @@ import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
-import appeng.entity.ChargedQuartzEntity;
 import appeng.entity.SingularityEntity;
 import appeng.items.materials.CustomEntityItem;
 import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
 import appeng.items.materials.StorageComponentItem;
-import appeng.items.misc.CrystalSeedItem;
 import appeng.items.misc.PaintBallItem;
 import appeng.items.misc.WrappedGenericStack;
 import appeng.items.parts.FacadeItem;
@@ -185,7 +183,7 @@ public final class AEItems {
     ///
 
     public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_CRYSTAL = item("Certus Quartz Crystal", AEItemIds.CERTUS_QUARTZ_CRYSTAL, MaterialItem::new);
-    public static final ItemDefinition<CustomEntityItem> CERTUS_QUARTZ_CRYSTAL_CHARGED = item("Charged Certus Quartz Crystal", AEItemIds.CERTUS_QUARTZ_CRYSTAL_CHARGED, p -> new CustomEntityItem(p, ChargedQuartzEntity::new));
+    public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_CRYSTAL_CHARGED = item("Charged Certus Quartz Crystal", AEItemIds.CERTUS_QUARTZ_CRYSTAL_CHARGED, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> CERTUS_QUARTZ_DUST = item("Certus Quartz Dust", AEItemIds.CERTUS_QUARTZ_DUST, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SILICON = item("Silicon", AEItemIds.SILICON, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> MATTER_BALL = item("Matter Ball", AEItemIds.MATTER_BALL, MaterialItem::new);
@@ -233,15 +231,6 @@ public final class AEItems {
     public static final ItemDefinition<CustomEntityItem> ENDER_DUST = item("Ender Dust", AEItemIds.ENDER_DUST, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> SINGULARITY = item("Singularity", AEItemIds.SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
     public static final ItemDefinition<CustomEntityItem> QUANTUM_ENTANGLED_SINGULARITY = item("Quantum Entangled Singularity", AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
-
-    ///
-    /// SEEDS
-    ///
-
-    public static final ItemDefinition<CrystalSeedItem> CERTUS_CRYSTAL_SEED = item("Certus Quartz Seed", AEItemIds.CERTUS_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, CERTUS_QUARTZ_CRYSTAL.asItem()));
-    public static final ItemDefinition<CrystalSeedItem> FLUIX_CRYSTAL_SEED = item("Fluix Seed", AEItemIds.FLUIX_CRYSTAL_SEED,
-            p -> new CrystalSeedItem(p, FLUIX_CRYSTAL.asItem()));
 
     ///
     /// CELLS

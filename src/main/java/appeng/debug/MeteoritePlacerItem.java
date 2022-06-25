@@ -40,6 +40,7 @@ import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.CraterType;
+import appeng.worldgen.meteorite.CrystalType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.debug.MeteoriteSpawner;
@@ -102,10 +103,11 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         float coreRadius = Platform.getRandomFloat() * 6.0f + 2;
         boolean pureCrater = Platform.getRandomFloat() > 0.5f;
         CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
+        CrystalType crystalType = CrystalType.values()[Platform.getRandom().nextInt(CrystalType.values().length)];
 
         MeteoriteSpawner spawner = new MeteoriteSpawner();
         PlacedMeteoriteSettings spawned = spawner.trySpawnMeteoriteAtSuitableHeight(level, pos, coreRadius, craterType,
-                pureCrater);
+                pureCrater, crystalType);
 
         if (spawned == null) {
             player.sendSystemMessage(Component.literal("Un-suitable Location."));
@@ -116,11 +118,10 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         // we have to assume maximum size
         int range = (int) Math.ceil((coreRadius * 2 + 5) * 5f);
 
-        BoundingBox boundingBox = new BoundingBox(pos.getX() - range, pos.getY(), pos.getZ() - range,
-                pos.getX() + range, pos.getY(), pos.getZ() + range);
+        BoundingBox boundingBox = new BoundingBox(pos.getX() - range, pos.getY() - 10, pos.getZ() - range,
+                pos.getX() + range, pos.getY() + 10, pos.getZ() + range);
 
-        final MeteoritePlacer placer = new MeteoritePlacer(level, spawned, boundingBox, level.random);
-        placer.place();
+        MeteoritePlacer.place(level, spawned, boundingBox, level.random);
 
         player.sendSystemMessage(Component.literal("Spawned at y=" + spawned.getPos().getY() + " range=" + range));
 

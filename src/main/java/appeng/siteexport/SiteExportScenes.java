@@ -45,7 +45,6 @@ final class SiteExportScenes {
                 singleBlock(AEBlocks.CRAFTING_STORAGE_64K, craftingStorageState),
                 singleBlock(AEBlocks.CRAFTING_STORAGE_256K, craftingStorageState),
                 singleBlock(AEBlocks.CELL_WORKBENCH),
-                singleBlock(AEBlocks.QUARTZ_ORE),
                 singleBlock(AEBlocks.QUARTZ_BLOCK),
                 singleBlock(AEBlocks.QUARTZ_FIXTURE, b -> b.setValue(QuartzFixtureBlock.FACING, Direction.UP)),
                 singleBlock(AEBlocks.QUARTZ_FIXTURE, b -> b.setValue(QuartzFixtureBlock.FACING, Direction.EAST)),

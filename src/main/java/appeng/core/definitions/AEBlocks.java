@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
@@ -91,9 +92,10 @@ import appeng.debug.EnergyGeneratorBlock;
 import appeng.debug.ItemGenBlock;
 import appeng.debug.PhantomNodeBlock;
 import appeng.decorative.AEDecorativeBlock;
+import appeng.decorative.solid.BuddingCertusQuartzBlock;
+import appeng.decorative.solid.CertusQuartzClusterBlock;
 import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.decorative.solid.QuartzLampBlock;
-import appeng.decorative.solid.QuartzOreBlock;
 import appeng.decorative.solid.QuartzPillarBlock;
 import appeng.decorative.solid.SkyStoneBlock;
 import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
@@ -105,6 +107,8 @@ import appeng.decorative.solid.SkyStoneBlock.SkystoneType;
 public final class AEBlocks {
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
+    private static final Properties QUARTZ_CLUSTER_PROPERTIES = defaultProps(Material.AMETHYST,
+            MaterialColor.COLOR_CYAN).strength(1.5f).requiresCorrectToolForDrops();
     private static final Properties QUARTZ_PROPERTIES = defaultProps(Material.STONE)
             .strength(3, 5).requiresCorrectToolForDrops();
     private static final Properties SKYSTONE_PROPERTIES = defaultProps(Material.STONE)
@@ -115,8 +119,15 @@ public final class AEBlocks {
             .strength(5, 150).noOcclusion();
 
     // spotless:off
-    public static final BlockDefinition<QuartzOreBlock> QUARTZ_ORE = block("Certus Quartz Ore", AEBlockIds.QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES));
-    public static final BlockDefinition<QuartzOreBlock> DEEPSLATE_QUARTZ_ORE = block("Deepslate Certus Quartz Ore", AEBlockIds.DEEPSLATE_QUARTZ_ORE, () -> new QuartzOreBlock(QUARTZ_PROPERTIES.strength(4.5f, 5).sound(SoundType.DEEPSLATE)));
+    public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWLESS_BUDDING_QUARTZ = block("Flawless Budding Certus Quartz", AEBlockIds.FLAWLESS_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWED_BUDDING_QUARTZ = block("Flawed Budding Certus Quartz", AEBlockIds.FLAWED_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<BuddingCertusQuartzBlock> CHIPPED_BUDDING_QUARTZ = block("Chipped Budding Certus Quartz", AEBlockIds.CHIPPED_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<BuddingCertusQuartzBlock> DAMAGED_BUDDING_QUARTZ = block("Damaged Budding Certus Quartz", AEBlockIds.DAMAGED_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_PROPERTIES.randomTicks()));
+    public static final BlockDefinition<CertusQuartzClusterBlock> SMALL_QUARTZ_BUD = block("Small Certus Quartz Bud", AEBlockIds.SMALL_QUARTZ_BUD, () -> new CertusQuartzClusterBlock(3, 4, QUARTZ_CLUSTER_PROPERTIES.sound(SoundType.SMALL_AMETHYST_BUD).lightLevel(s -> 1)));
+    public static final BlockDefinition<CertusQuartzClusterBlock> MEDIUM_QUARTZ_BUD = block("Medium Certus Quartz Bud", AEBlockIds.MEDIUM_QUARTZ_BUD, () -> new CertusQuartzClusterBlock(4, 3, QUARTZ_CLUSTER_PROPERTIES.sound(SoundType.MEDIUM_AMETHYST_BUD).lightLevel(s -> 2)));
+    public static final BlockDefinition<CertusQuartzClusterBlock> LARGE_QUARTZ_BUD = block("Large Certus Quartz Bud", AEBlockIds.LARGE_QUARTZ_BUD, () -> new CertusQuartzClusterBlock(5, 3, QUARTZ_CLUSTER_PROPERTIES.sound(SoundType.LARGE_AMETHYST_BUD).lightLevel(s -> 4)));
+    public static final BlockDefinition<CertusQuartzClusterBlock> QUARTZ_CLUSTER = block("Certus Quartz Cluster", AEBlockIds.QUARTZ_CLUSTER, () -> new CertusQuartzClusterBlock(7, 3, QUARTZ_CLUSTER_PROPERTIES.sound(SoundType.AMETHYST_CLUSTER).lightLevel(s -> 5)));
+
     public static final BlockDefinition<MatrixFrameBlock> MATRIX_FRAME = block("Matrix Frame", AEBlockIds.MATRIX_FRAME, MatrixFrameBlock::new);
 
     public static final BlockDefinition<AEDecorativeBlock> QUARTZ_BLOCK = block("Certus Quartz Block", AEBlockIds.QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));

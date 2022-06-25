@@ -30,7 +30,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import me.shedaniel.rei.api.client.registry.display.DynamicDisplayGenerator;
-import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.plugin.common.displays.crafting.DefaultShapedDisplay;
@@ -78,18 +77,14 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
 
         // Looking up if a certain block can be used to make a facade
         ItemStack itemStack = entry.castValue();
+        itemStack = itemStack.copy();
+        itemStack.setCount(1);
         ItemStack facade = this.itemFacade.createFacadeForItem(itemStack, false);
 
         if (!facade.isEmpty()) {
             return Optional.of(Collections.singletonList(make(itemStack, this.cableAnchor, facade)));
         }
 
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<List<DefaultShapedDisplay>> generate(ViewSearchBuilder builder) {
-        // FABRIC FIXME Return a list of all facade recipes here
         return Optional.empty();
     }
 

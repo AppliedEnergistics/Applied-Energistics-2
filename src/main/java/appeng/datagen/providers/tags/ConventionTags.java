@@ -47,7 +47,6 @@ public final class ConventionTags {
 
     public static TagKey<Item> DUSTS = tag("c:dusts");
     public static TagKey<Item> GEMS = tag("c:gems");
-    public static TagKey<Block> ORES = blockTag("c:ores");
 
     public static TagKey<Item> SILICON = tag("c:silicon");
 
@@ -59,8 +58,6 @@ public final class ConventionTags {
     // Includes charged, synthetic/purified and natural certus quartz
     public static TagKey<Item> ALL_CERTUS_QUARTZ = tag("ae2:all_certus_quartz");
     public static TagKey<Item> CERTUS_QUARTZ = tag("c:certus_quartz");
-    public static TagKey<Item> CERTUS_QUARTZ_ORE = tag("c:certus_quartz_ores");
-    public static TagKey<Block> CERTUS_QUARTZ_ORE_BLOCK = blockTag("c:certus_quartz_ores");
     public static TagKey<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("c:certus_quartz_blocks");
     public static TagKey<Item> CERTUS_QUARTZ_DUST = tag("c:certus_quartz_dusts");
 

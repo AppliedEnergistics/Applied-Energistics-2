@@ -3,8 +3,6 @@ package appeng.integration.modules.jei.throwinginwater;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.time.DurationFormatUtils;
-
 import net.minecraft.network.chat.Component;
 
 import me.shedaniel.math.Point;
@@ -15,12 +13,11 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
-import appeng.entity.GrowingCrystalEntity;
-import appeng.items.misc.CrystalSeedItem;
 
 public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterDisplay> {
     public static final CategoryIdentifier<ThrowingInWaterDisplay> ID = CategoryIdentifier
@@ -29,19 +26,7 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
     private final Renderer icon;
 
     public ThrowingInWaterCategory() {
-        var stage1 = AEItems.CERTUS_CRYSTAL_SEED.stack();
-        CrystalSeedItem.setGrowthTicks(stage1, 0);
-        var stage2 = AEItems.CERTUS_CRYSTAL_SEED.stack();
-        CrystalSeedItem.setGrowthTicks(stage2, (int) (CrystalSeedItem.GROWTH_TICKS_REQUIRED * 0.4f));
-        var stage3 = AEItems.CERTUS_CRYSTAL_SEED.stack();
-        CrystalSeedItem.setGrowthTicks(stage3, (int) (CrystalSeedItem.GROWTH_TICKS_REQUIRED * 0.7f));
-        var result = AEItems.CERTUS_QUARTZ_CRYSTAL.stack();
-
-        icon = new GrowingSeedIconRenderer(List.of(
-                stage1,
-                stage2,
-                stage3,
-                result));
+        icon = EntryStacks.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);
     }
 
     @Override
@@ -105,27 +90,6 @@ public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterD
                 .entries(display.getOutputEntries().get(0))
                 .markOutput();
         widgets.add(slot);
-
-        // Add descriptive text explaining the duration centered on the water block
-        if (display.isSupportsAccelerators()) {
-            var durationY = bounds.y + 10 + display.getInputEntries().size() * 18 + 2;
-
-            List<Component> tooltipLines = new ArrayList<>();
-            tooltipLines.add(ItemModText.WITH_CRYSTAL_GROWTH_ACCELERATORS.text());
-            for (var i = 1; i <= 5; i++) {
-                var duration = GrowingCrystalEntity.getGrowthDuration(i).toMillis();
-                tooltipLines.add(Component.literal(i + ": " + DurationFormatUtils.formatDurationWords(
-                        duration, true, true)));
-            }
-
-            var defaultDuration = GrowingCrystalEntity.getGrowthDuration(0).toMillis();
-            widgets.add(Widgets.createLabel(
-                    new Point(col3 + 7, durationY),
-                    Component.literal(DurationFormatUtils.formatDurationWords(
-                            defaultDuration, true, true)))
-                    .noShadow().color(0xFF404040, 0xFFBBBBBB)
-                    .centered().tooltip(tooltipLines.toArray(Component[]::new)));
-        }
 
         return widgets;
     }

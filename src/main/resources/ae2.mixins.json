@@ -9,6 +9,7 @@
     "EarlyStartupMixin",
     "EnchantmentHelperMixin",
     "DynamicLadderMixin",
+    "ItemEntityMixin",
     "OnNeighborUpdateMixin",
     "ServerLevelCustomItemEntityMixin",
     "ConditionalRecipeMixin",

@@ -87,9 +87,6 @@ public final class AEItemIds {
     public static final ResourceLocation COLOR_APPLICATOR = id("color_applicator");
     public static final ResourceLocation WIRELESS_TERMINAL = id("wireless_terminal");
     public static final ResourceLocation WIRELESS_CRAFTING_TERMINAL = id("wireless_crafting_terminal");
-    public static final ResourceLocation NETHER_QUARTZ_SEED = id("nether_quartz_seed");
-    public static final ResourceLocation FLUIX_CRYSTAL_SEED = id("fluix_crystal_seed");
-    public static final ResourceLocation CERTUS_CRYSTAL_SEED = id("certus_crystal_seed");
     public static final ResourceLocation WRAPPED_GENERIC_STACK = id("wrapped_generic_stack");
     public static final ResourceLocation FACADE = id("facade");
 

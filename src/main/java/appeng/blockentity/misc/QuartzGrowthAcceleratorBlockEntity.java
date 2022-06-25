@@ -23,14 +23,21 @@ import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.ids.AETags;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.blockentities.ICrystalGrowthAccelerator;
+import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.api.networking.ticking.TickRateModulation;
+import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.core.AEConfig;
 
 public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
         implements IPowerChannelState, ICrystalGrowthAccelerator {
@@ -42,6 +49,36 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags();
         this.getMainNode().setIdlePowerUsage(8);
+        this.getMainNode().addService(IGridTickable.class, new IGridTickable() {
+            @Override
+            public TickingRequest getTickingRequest(IGridNode node) {
+                int speed = AEConfig.instance().getGrowthAcceleratorSpeed();
+                return new TickingRequest(speed, speed, false, false);
+            }
+
+            @Override
+            public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+                onTick();
+                return TickRateModulation.SAME;
+            }
+        });
+    }
+
+    private void onTick() {
+        if (!getMainNode().isPowered()) {
+            return;
+        }
+
+        for (var direction : Direction.values()) {
+            var adjPos = getBlockPos().relative(direction);
+            var adjState = getLevel().getBlockState(adjPos);
+
+            if (!adjState.getBlock().builtInRegistryHolder().is(AETags.GROWTH_ACCELERATABLE)) {
+                continue;
+            }
+
+            adjState.randomTick((ServerLevel) getLevel(), adjPos, getLevel().getRandom());
+        }
     }
 
     @Override

@@ -76,6 +76,12 @@ public final class AETags {
      */
     public static final TagKey<Block> FACADE_BLOCK_WHITELIST = blockTag("ae2:whitelisted/facades");
 
+    /**
+     * Crystal growth accelerators will trigger additional random ticks for blocks in that tag, regardless of what the
+     * blocks are. By default, includes budding amethyst and the various budding certus quartz blocks.
+     */
+    public static final TagKey<Block> GROWTH_ACCELERATABLE = blockTag("ae2:growth_acceleratable");
+
     private static TagKey<Item> itemTag(String name) {
         return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(name));
     }

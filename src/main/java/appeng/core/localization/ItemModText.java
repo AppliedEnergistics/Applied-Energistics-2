@@ -18,7 +18,6 @@ public enum ItemModText implements LocalizationEnum {
     CTRL_CLICK_TO_CRAFT("CTRL + click to craft unavailable items"),
     // Display of AE2-specific REI/JEI entries
     THROWING_IN_WATER_CATEGORY("Throwing In Water"),
-    WITH_CRYSTAL_GROWTH_ACCELERATORS("With Crystal Growth Accelerators:"),
     P2P_API_ATTUNEMENT("Attune with any:"),
     P2P_TUNNEL_ATTUNEMENT("P2P Tunnel Attunement"),
     P2P_TAG_ATTUNEMENT("Attune with any shown item");

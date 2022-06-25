@@ -28,8 +28,6 @@ import appeng.api.util.AEColor;
 import appeng.block.AEBaseBlockItemChargeable;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
-import appeng.core.definitions.ItemDefinition;
-import appeng.items.misc.CrystalSeedItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 
 /**
@@ -58,9 +56,6 @@ public final class InitItemModelsProperties {
                     return col != null ? 1 : 0;
                 });
 
-        registerSeedGrowth(AEItems.CERTUS_CRYSTAL_SEED);
-        registerSeedGrowth(AEItems.FLUIX_CRYSTAL_SEED);
-
         // Register the client-only item model property for chargeable items
         Registry.ITEM.forEach(item -> {
             if (!(item instanceof AEBaseBlockItemChargeable chargeable)) {
@@ -76,17 +71,6 @@ public final class InitItemModelsProperties {
                         return (int) Math.round(100 * curPower / maxPower);
                     });
         });
-    }
-
-    /**
-     * Exposes a predicate "growth", which is used in the item model to differentiate the growth stages.
-     */
-    private static void registerSeedGrowth(ItemDefinition<?> definition) {
-        // Expose the growth of the seed to the model system
-        FabricModelPredicateProviderRegistry.register(definition.asItem(),
-                GROWTH_PREDICATE_ID,
-                (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is)
-                        / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
     }
 
 }

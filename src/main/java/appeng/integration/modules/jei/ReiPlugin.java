@@ -30,7 +30,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import dev.architectury.event.CompoundEventResult;
@@ -73,6 +72,7 @@ import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.transform.TransformRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
 
@@ -115,30 +115,10 @@ public class ReiPlugin implements REIClientPlugin {
 
         registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
 
-        // Add displays for crystal growth
-        if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
+        // Add displays for charged quartz transformation
+        for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
             registry.add(
-                    new ThrowingInWaterDisplay(
-                            List.of(
-                                    Ingredient.of(AEItems.CERTUS_CRYSTAL_SEED)),
-                            AEItems.CERTUS_QUARTZ_CRYSTAL.stack(),
-                            true));
-            registry.add(
-                    new ThrowingInWaterDisplay(
-                            List.of(
-                                    Ingredient.of(AEItems.FLUIX_CRYSTAL_SEED)),
-                            AEItems.FLUIX_CRYSTAL.stack(),
-                            true));
-        }
-        if (AEConfig.instance().isInWorldFluixEnabled()) {
-            registry.add(
-                    new ThrowingInWaterDisplay(
-                            List.of(
-                                    Ingredient.of(Items.REDSTONE),
-                                    Ingredient.of(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED),
-                                    Ingredient.of(Items.QUARTZ)),
-                            AEItems.FLUIX_DUST.stack(2),
-                            false));
+                    new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
         }
     }
 
@@ -260,9 +240,9 @@ public class ReiPlugin implements REIClientPlugin {
                     ItemModText.P2P_TAG_ATTUNEMENT.text()));
         }
 
-        if (AEConfig.instance().isGenerateQuartzOre()) {
-            addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
-        }
+        addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL, GuiText.CertusQuartzObtain.getTranslationKey());
+        addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
+        addDescription(registry, AEBlocks.SKY_COMPASS, GuiText.Compass.getTranslationKey());
 
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());

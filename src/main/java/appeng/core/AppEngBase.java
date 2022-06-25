@@ -47,7 +47,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
 import appeng.api.IAEAddonEntrypoint;
@@ -75,10 +74,8 @@ import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
-import appeng.init.worldgen.InitBiomeModifications;
 import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
-import appeng.init.worldgen.InitFeatures;
 import appeng.init.worldgen.InitStructures;
 import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
@@ -141,7 +138,6 @@ public abstract class AppEngBase implements AppEng {
         registerMenuTypes(Registry.MENU);
         registerRecipeSerializers(Registry.RECIPE_SERIALIZER);
         registerStructures(Registry.STRUCTURE_TYPES);
-        registerFeatures(Registry.FEATURE);
 
         postRegistrationInitialization();
 
@@ -154,7 +150,6 @@ public abstract class AppEngBase implements AppEng {
 
         UseBlockCallback.EVENT.register(WrenchHook::onPlayerUseBlock);
         UseBlockCallback.EVENT.register(ToolItemHook::onPlayerUseBlock);
-        InitBiomeModifications.init();
     }
 
     /**
@@ -216,10 +211,6 @@ public abstract class AppEngBase implements AppEng {
 
     public void registerStructures(Registry<StructureType<?>> registry) {
         InitStructures.init(registry);
-    }
-
-    public void registerFeatures(Registry<Feature<?>> registry) {
-        InitFeatures.init(registry);
     }
 
     public void registerCommands(MinecraftServer server) {
