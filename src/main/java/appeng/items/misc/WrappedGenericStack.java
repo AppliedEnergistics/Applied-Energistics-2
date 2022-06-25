@@ -34,6 +34,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
@@ -41,6 +42,7 @@ import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.Platform;
+import appeng.util.fluid.FluidSoundHelper;
 
 /**
  * Wraps a {@link GenericStack} in an {@link ItemStack}. Even stacks that actually represent vanilla {@link Item items}
@@ -123,6 +125,13 @@ public class WrappedGenericStack extends AEBaseItem {
     }
 
     /**
+     * Stores the timestamp of when the last time a fill sound was played from {@code overrideStackOnMe}
+     * <p>
+     * Used to prevent the sound being played multiple times for the same fill action.
+     */
+    private static long lastFillSound = 0;
+
+    /**
      * Allows picking up the contained fluid with a bucket.
      */
     @Override
@@ -141,6 +150,11 @@ public class WrappedGenericStack extends AEBaseItem {
             if (heldContainer != null) {
                 long amount = unwrapAmount(itemInSlot);
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
+
+                if (what instanceof AEFluidKey && System.currentTimeMillis() > lastFillSound + 50) {
+                    FluidSoundHelper.playFillSound(player, (AEFluidKey) what);
+                    lastFillSound = System.currentTimeMillis();
+                }
 
                 if (inserted >= amount) {
                     slot.set(ItemStack.EMPTY);
