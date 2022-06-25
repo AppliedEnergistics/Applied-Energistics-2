@@ -76,6 +76,10 @@ public class SpatialStorageHelper {
             return entity;
         }
         if (newLevel == oldLevel) {
+            // just set the location. Minecraft will handle eventual passengers
+            newLevel.getChunkSource().getChunk(Mth.floor(link.x) >> 4, Mth.floor(link.z) >> 4,
+                    ChunkStatus.FULL, true);
+            entity.teleportTo(link.x, link.y, link.z);
             return entity;
         }
 
