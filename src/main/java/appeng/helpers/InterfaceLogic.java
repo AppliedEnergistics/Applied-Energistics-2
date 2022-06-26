@@ -105,7 +105,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is) {
         this.host = host;
-        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig);
+        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig, false);
         this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::updatePlan);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)

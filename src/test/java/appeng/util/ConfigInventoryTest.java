@@ -27,7 +27,7 @@ public class ConfigInventoryTest {
      */
     @Nested
     class ChannelFiltering {
-        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 2, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 2, null, false);
 
         @BeforeEach
         void loadMixedStacks() {
@@ -69,7 +69,7 @@ public class ConfigInventoryTest {
 
     @Nested
     class StacksMode {
-        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 1, null);
+        ConfigInventory inv = ConfigInventory.configStacks(AEItemKey.filter(), 1, null, false);
 
         @Test
         void stacksWithAmountZeroAreDropped() {
