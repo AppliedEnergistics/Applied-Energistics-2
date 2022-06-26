@@ -23,6 +23,7 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.SlotAccess;
@@ -125,13 +126,6 @@ public class WrappedGenericStack extends AEBaseItem {
     }
 
     /**
-     * Stores the timestamp of when the last time a fill sound was played from {@code overrideStackOnMe}
-     * <p>
-     * Used to prevent the sound being played multiple times for the same fill action.
-     */
-    private static long lastFillSound = 0;
-
-    /**
      * Allows picking up the contained fluid with a bucket.
      */
     @Override
@@ -151,10 +145,9 @@ public class WrappedGenericStack extends AEBaseItem {
                 long amount = unwrapAmount(itemInSlot);
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
 
-                if (what instanceof AEFluidKey && System.currentTimeMillis() > lastFillSound + 50) {
+                if (what instanceof AEFluidKey && player instanceof LocalPlayer) {
                     FluidSoundHelper.playFillSound(player, (AEFluidKey) what);
                     heldContainer.playFillSound(player, what);
-                    lastFillSound = System.currentTimeMillis();
                 }
 
                 if (inserted >= amount) {
