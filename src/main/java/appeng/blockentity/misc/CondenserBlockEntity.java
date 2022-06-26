@@ -109,7 +109,10 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     public void addPower(double rawPower) {
         this.setStoredPower(this.getStoredPower() + rawPower);
         this.setStoredPower(Math.max(0.0, Math.min(this.getStorage(), this.getStoredPower())));
+        fillOutput();
+    }
 
+    private void fillOutput() {
         var requiredPower = this.getRequiredPower();
         var output = this.getOutput();
         while (requiredPower <= this.getStoredPower() && !output.isEmpty() && requiredPower > 0) {
@@ -159,6 +162,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
+        if (inv == outputSlot)
+            fillOutput();
     }
 
     @Override
