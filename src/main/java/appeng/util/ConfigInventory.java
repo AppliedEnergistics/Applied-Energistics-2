@@ -30,8 +30,12 @@ import appeng.me.helpers.BaseActionSource;
  * returned keys, not just when setting them.
  */
 public class ConfigInventory extends GenericStackInv {
-    protected ConfigInventory(@Nullable AEKeyFilter filter, Mode mode, int size, @Nullable Runnable listener) {
+    private final boolean allowOverstacking;
+
+    protected ConfigInventory(@Nullable AEKeyFilter filter, Mode mode, int size, @Nullable Runnable listener,
+            boolean allowOverstacking) {
         super(listener, mode, size);
+        this.allowOverstacking = allowOverstacking;
         setFilter(filter);
     }
 
@@ -40,7 +44,7 @@ public class ConfigInventory extends GenericStackInv {
      * inventory.
      */
     public static ConfigInventory configTypes(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(null, Mode.CONFIG_TYPES, size, changeListener);
+        return new ConfigInventory(null, Mode.CONFIG_TYPES, size, changeListener, false);
     }
 
     /**
@@ -49,22 +53,22 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static ConfigInventory configTypes(@Nullable AEKeyFilter filter, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory(filter, Mode.CONFIG_TYPES, size, changeListener);
+        return new ConfigInventory(filter, Mode.CONFIG_TYPES, size, changeListener, false);
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
     public static ConfigInventory configStacks(@Nullable AEKeyFilter filter, int size,
-            @Nullable Runnable changeListener) {
-        return new ConfigInventory(filter, Mode.CONFIG_STACKS, size, changeListener);
+            @Nullable Runnable changeListener, boolean allowOverstacking) {
+        return new ConfigInventory(filter, Mode.CONFIG_STACKS, size, changeListener, allowOverstacking);
     }
 
     /**
      * When in stack mode, the config inventory will respect amounts and drop stacks with amounts of 0 or less.
      */
     public static ConfigInventory storage(int size, @Nullable Runnable changeListener) {
-        return new ConfigInventory(null, Mode.STORAGE, size, changeListener);
+        return new ConfigInventory(null, Mode.STORAGE, size, changeListener, false);
     }
 
     /**
@@ -72,7 +76,7 @@ public class ConfigInventory extends GenericStackInv {
      */
     public static ConfigInventory storage(@Nullable AEKeyFilter filter, int size,
             @Nullable Runnable changeListener) {
-        return new ConfigInventory(filter, Mode.STORAGE, size, changeListener);
+        return new ConfigInventory(filter, Mode.STORAGE, size, changeListener, false);
     }
 
     @Nullable
@@ -129,6 +133,13 @@ public class ConfigInventory extends GenericStackInv {
             }
         }
         super.setStack(slot, stack);
+    }
+
+    @Override
+    public long getMaxAmount(AEKey key) {
+        if (allowOverstacking)
+            return getCapacity(key.getType());
+        return super.getMaxAmount(key);
     }
 
     @Override
