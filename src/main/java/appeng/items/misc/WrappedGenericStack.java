@@ -153,6 +153,7 @@ public class WrappedGenericStack extends AEBaseItem {
 
                 if (what instanceof AEFluidKey && System.currentTimeMillis() > lastFillSound + 50) {
                     FluidSoundHelper.playFillSound(player, (AEFluidKey) what);
+                    heldContainer.playFillSound(player, what);
                     lastFillSound = System.currentTimeMillis();
                 }
 
