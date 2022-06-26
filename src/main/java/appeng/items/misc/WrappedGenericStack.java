@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.SlotAccess;
@@ -43,7 +42,6 @@ import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.Platform;
-import appeng.util.fluid.FluidSoundHelper;
 
 /**
  * Wraps a {@link GenericStack} in an {@link ItemStack}. Even stacks that actually represent vanilla {@link Item items}
@@ -145,8 +143,7 @@ public class WrappedGenericStack extends AEBaseItem {
                 long amount = unwrapAmount(itemInSlot);
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
 
-                if (what instanceof AEFluidKey && player instanceof LocalPlayer) {
-                    FluidSoundHelper.playFillSound(player, (AEFluidKey) what);
+                if (what instanceof AEFluidKey && player.getLevel().isClientSide) {
                     heldContainer.playFillSound(player, what);
                 }
 
