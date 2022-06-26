@@ -32,8 +32,8 @@ import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 public class QuantumRingBlock extends QuantumBaseBlock {
 
     private static final VoxelShape SHAPE = createShape(2.0 / 16.0);
-    private static final VoxelShape SHAPE_CORNER = createShape(4.0 / 16.0);
-    private static final VoxelShape SHAPE_FORMED = createShape(1.0 / 16.0);
+    private static final VoxelShape SHAPE_CORNER = createShape(2.0 / 16.0);
+    private static final VoxelShape SHAPE_FORMED = createShape(0.0 / 16.0);
 
     public QuantumRingBlock() {
         super(defaultProps(Material.METAL));
