@@ -103,7 +103,7 @@ public class NetworkStorage implements MEStorage {
             return 0;
         }
 
-        if (this.testPermission(src, SecurityPermissions.INJECT)) {
+        if (this.isPermissionDenied(src, SecurityPermissions.INJECT)) {
             this.surface(type);
             return 0;
         }
@@ -195,22 +195,23 @@ public class NetworkStorage implements MEStorage {
         return false;
     }
 
-    private boolean testPermission(IActionSource src, SecurityPermissions permission) {
+    private boolean isPermissionDenied(IActionSource src, SecurityPermissions permission) {
         if (src.player().isPresent()) {
             if (!this.security.hasPermission(src.player().get(), permission)) {
                 return true;
             }
         } else if (src.machine().isPresent() && this.security.isAvailable()) {
-            var n = src.machine().get().getActionableNode();
-            if (n == null) {
+            var sourceNode = src.machine().get().getActionableNode();
+            if (sourceNode == null) {
                 return true;
             }
 
-            var gn = n.getGrid();
-            if (gn != this.security.getGrid()) {
+            var sourceGrid = sourceNode.getGrid();
+            if (sourceGrid != this.security.getGrid()) {
 
-                var sg = gn.getSecurityService();
-                var playerID = sg.getOwner();
+                var sg = sourceGrid.getSecurityService();
+                // If the subnet has a security station, check for its owner. Else check for the owner of the grid node.
+                var playerID = sg.isAvailable() ? sg.getOwner() : sourceNode.getOwningPlayerId();
 
                 if (!this.security.hasPermission(playerID, permission)) {
                     return true;
@@ -244,7 +245,7 @@ public class NetworkStorage implements MEStorage {
             return 0;
         }
 
-        if (this.testPermission(source, SecurityPermissions.EXTRACT)) {
+        if (this.isPermissionDenied(source, SecurityPermissions.EXTRACT)) {
             this.surface(mode);
             return 0;
         }
