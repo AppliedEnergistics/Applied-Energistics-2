@@ -50,7 +50,7 @@ class GenericStackInvTest {
      */
     @Test
     void testSaveLargeAndLoadIntoSmallerInventory() {
-        var large = ConfigInventory.configStacks(AEItemKey.filter(), 2, null);
+        var large = ConfigInventory.configStacks(AEItemKey.filter(), 2, null, false);
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 

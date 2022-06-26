@@ -94,7 +94,7 @@ class ConfigMenuInventoryTest {
         return DynamicTest.dynamicTest(
                 displayName,
                 () -> {
-                    var inv = ConfigInventory.configStacks(channel.filter(), 64, null);
+                    var inv = ConfigInventory.configStacks(channel.filter(), 64, null, false);
                     if (initialStack != null) {
                         inv.setStack(0, initialStack);
                     }
