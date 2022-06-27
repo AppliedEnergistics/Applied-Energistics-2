@@ -34,7 +34,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
-import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
@@ -143,7 +142,8 @@ public class WrappedGenericStack extends AEBaseItem {
                 long amount = unwrapAmount(itemInSlot);
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
 
-                if (what instanceof AEFluidKey && player.getLevel().isClientSide) {
+                // Check client to avoid duplicate sounds in singleplayer
+                if (player.getLevel().isClientSide) {
                     heldContainer.playFillSound(player, what);
                 }
 
