@@ -142,6 +142,11 @@ public class WrappedGenericStack extends AEBaseItem {
                 long amount = unwrapAmount(itemInSlot);
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
 
+                // Check client to avoid duplicate sounds in singleplayer
+                if (player.getLevel().isClientSide) {
+                    heldContainer.playFillSound(player, what);
+                }
+
                 if (inserted >= amount) {
                     slot.set(ItemStack.EMPTY);
                 } else {
