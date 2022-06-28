@@ -1085,6 +1085,9 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     private void updateNeighborShapeOnSide(Direction side) {
+        if (side == null) {
+            return; // side can be null for cable
+        }
         // Update the shape of the neighbor asynchronously (i.e. for walls)
         var be = getBlockEntity();
         if (be != null && be.getLevel() != null && !be.getLevel().isClientSide()) {
