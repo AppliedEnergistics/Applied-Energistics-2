@@ -7,7 +7,7 @@
   },
   "slots": {
     "MACHINE_OUTPUT": {
-      "left": 14,
+      "left": 23,
       "top": 53
     }
   },
@@ -24,7 +24,7 @@
   },
   "widgets": {
     "save": {
-      "left": 128,
+      "left": 120,
       "top": 51,
       "width": 38,
       "height": 20
@@ -40,9 +40,9 @@
       "height": 62
     },
     "amountToStockInput": {
-      "left": 40,
+      "left": 48,
       "top": 55,
-      "width": 61,
+      "width": 66,
       "height": 12
     }
   }
