@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -48,7 +49,8 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey key, FuzzyMode fuzzy) {
         Objects.requireNonNull(key, "key");
-        return getSubIndex(key).findFuzzy(key, fuzzy);
+        var subIndex = getSubIndexOrNull(key);
+        return subIndex == null ? List.of() : subIndex.findFuzzy(key, fuzzy);
     }
 
     public void removeZeros() {
@@ -145,12 +147,17 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     private VariantCounter getSubIndex(AEKey key) {
-        var subIndex = lists.get(key.getPrimaryKey());
+        var subIndex = getSubIndexOrNull(key);
         if (subIndex == null) {
             subIndex = VariantCounter.create(key);
             lists.put(key.getPrimaryKey(), subIndex);
         }
         return subIndex;
+    }
+
+    @Nullable
+    private VariantCounter getSubIndexOrNull(AEKey key) {
+        return lists.get(key.getPrimaryKey());
     }
 
     @Nullable
