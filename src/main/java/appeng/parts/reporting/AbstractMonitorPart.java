@@ -281,7 +281,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         if (what.equals(this.configuredItem)) {
             this.amount = amount;
 
-            var humanReadableText = what.formatAmount(amount, AmountFormat.PREVIEW_REGULAR);
+            var humanReadableText = what.formatAmount(amount, AmountFormat.SLOT);
 
             // Try throttling to only relevant updates
             if (!humanReadableText.equals(this.lastHumanReadableText)) {

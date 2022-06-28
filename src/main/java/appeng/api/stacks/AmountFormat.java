@@ -29,12 +29,12 @@ public enum AmountFormat {
      */
     FULL,
     /**
-     * Display the summary with the regular font, for example "1.23K" instead of 1234.
+     * Display the summary with the regular font, for example "1.23K" instead of 1234. This should fit in a slot.
      */
-    PREVIEW_REGULAR,
+    SLOT,
     /**
-     * Display the summary with a large font, for example "1.2K" instead of 1234. Should be shorter than
-     * {@link #PREVIEW_REGULAR} as the font is larger.
+     * Display the summary with a large font, for example "1.2K" instead of 1234. This should also fit in a slot. Should
+     * be shorter than {@link #SLOT} as the font is larger.
      */
-    PREVIEW_LARGE_FONT
+    SLOT_LARGE_FONT
 }

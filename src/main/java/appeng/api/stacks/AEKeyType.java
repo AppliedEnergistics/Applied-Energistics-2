@@ -196,8 +196,8 @@ public abstract class AEKeyType {
     public final String formatAmount(long amount, AmountFormat format) {
         return switch (format) {
             case FULL -> formatFullAmount(amount);
-            case PREVIEW_REGULAR -> formatShortAmount(amount, 4);
-            case PREVIEW_LARGE_FONT -> formatShortAmount(amount, 3);
+            case SLOT -> formatShortAmount(amount, 4);
+            case SLOT_LARGE_FONT -> formatShortAmount(amount, 3);
         };
     }
 

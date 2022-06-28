@@ -101,7 +101,7 @@ public class BlockEntityRenderHelper {
             int textColor) {
         renderItem2d(poseStack, buffers, what, itemScale, LightTexture.FULL_BRIGHT);
 
-        var renderedStackSize = what.formatAmount(amount, AmountFormat.PREVIEW_REGULAR);
+        var renderedStackSize = what.formatAmount(amount, AmountFormat.SLOT);
 
         // Render the item count
         var fr = Minecraft.getInstance().font;

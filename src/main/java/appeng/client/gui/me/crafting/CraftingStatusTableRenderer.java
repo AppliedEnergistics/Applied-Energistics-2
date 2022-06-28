@@ -44,17 +44,17 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     protected List<Component> getEntryDescription(CraftingStatusEntry entry) {
         List<Component> lines = new ArrayList<>(3);
         if (entry.getStoredAmount() > 0) {
-            String amount = entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.SLOT);
             lines.add(GuiText.FromStorage.text(amount));
         }
 
         if (entry.getActiveAmount() > 0) {
-            String amount = entry.getWhat().formatAmount(entry.getActiveAmount(), AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getActiveAmount(), AmountFormat.SLOT);
             lines.add(GuiText.Crafting.text(amount));
         }
 
         if (entry.getPendingAmount() > 0) {
-            String amount = entry.getWhat().formatAmount(entry.getPendingAmount(), AmountFormat.PREVIEW_REGULAR);
+            String amount = entry.getWhat().formatAmount(entry.getPendingAmount(), AmountFormat.SLOT);
             lines.add(GuiText.Scheduled.text(amount));
         }
         return lines;

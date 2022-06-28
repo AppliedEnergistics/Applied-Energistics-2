@@ -208,7 +208,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
                 // Show what was initially requested
                 infoBar.add(Icon.PERMISSION_CRAFT, 0.6f);
                 infoBar.addSpace(2);
-                var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.PREVIEW_REGULAR);
+                var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.SLOT);
                 infoBar.add(craftAmt, textColor.toARGB(), 0.6f);
                 infoBar.addSpace(1);
                 infoBar.add(currentJob.what(), 0.6f);

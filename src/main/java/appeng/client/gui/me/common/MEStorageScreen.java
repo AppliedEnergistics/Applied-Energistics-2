@@ -513,8 +513,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
                                 : GuiText.SmallFontCraft.getLocal();
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
                     } else {
-                        AmountFormat format = useLargeFonts ? AmountFormat.PREVIEW_LARGE_FONT
-                                : AmountFormat.PREVIEW_REGULAR;
+                        AmountFormat format = useLargeFonts ? AmountFormat.SLOT_LARGE_FONT
+                                : AmountFormat.SLOT;
                         var text = entry.getWhat().formatAmount(storedAmount, format);
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
                         if (craftable) {
