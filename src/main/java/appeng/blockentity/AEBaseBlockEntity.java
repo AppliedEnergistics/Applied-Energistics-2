@@ -54,6 +54,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridHelper;
 import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
@@ -88,7 +89,7 @@ public class AEBaseBlockEntity extends BlockEntity
     private boolean setChangedQueued = false;
     /**
      * For diagnosing issues with the delayed block entity initialization, this tracks how often this BE has been queued
-     * for defered initializiation using {@link TickHandler#addInit(AEBaseBlockEntity)}.
+     * for defered initializiation using {@link appeng.api.networking.GridHelper#onFirstTick}.
      */
     private byte queuedForReady = 0;
     /**
@@ -168,9 +169,16 @@ public class AEBaseBlockEntity extends BlockEntity
 
     /**
      * Deferred initialization when block entities actually start first ticking in a chunk. The block entity needs to
-     * override {@link #clearRemoved()} and call <code>TickHandler.instance().addInit(this);</code> to make this work.
+     * override {@link #clearRemoved()} and call {@link #scheduleInit()} to make this work.
      */
+    @OverridingMethodsMustInvokeSuper
     public void onReady() {
+        readyInvoked++;
+    }
+
+    protected void scheduleInit() {
+        queuedForReady++;
+        GridHelper.onFirstTick(this, AEBaseBlockEntity::onReady);
     }
 
     /**
@@ -450,15 +458,7 @@ public class AEBaseBlockEntity extends BlockEntity
         return queuedForReady;
     }
 
-    public void setQueuedForReady(byte queuedForReady) {
-        this.queuedForReady = queuedForReady;
-    }
-
     public byte getReadyInvoked() {
         return readyInvoked;
-    }
-
-    public void setReadyInvoked(byte readyInvoked) {
-        this.readyInvoked = readyInvoked;
     }
 }
