@@ -60,7 +60,7 @@ public interface ICraftingProvider extends IGridNodeService {
     boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder);
 
     /**
-     * @return if this is false, the crafting engine will refuse to send patterns to this provider.
+     * @return if this is true, the crafting engine will refuse to send patterns to this provider.
      */
     boolean isBusy();
 
