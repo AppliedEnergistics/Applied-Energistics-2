@@ -33,7 +33,6 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
@@ -123,7 +122,7 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        TickHandler.instance().addInit(this); // Required for onReady to be called
+        scheduleInit(); // Required for onReady to be called
     }
 
 }

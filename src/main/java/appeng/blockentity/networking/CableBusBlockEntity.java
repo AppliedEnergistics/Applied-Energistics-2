@@ -51,7 +51,6 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.render.cablebus.CableBusRenderState;
 import appeng.core.AppEng;
 import appeng.helpers.AEMultiBlockEntity;
-import appeng.hooks.ticking.TickHandler;
 import appeng.parts.CableBusContainer;
 import appeng.util.Platform;
 
@@ -115,7 +114,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        TickHandler.instance().addInit(this);
+        scheduleInit(); // Required for onReady to be called
     }
 
     @Override

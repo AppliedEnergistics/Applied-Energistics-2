@@ -21,26 +21,31 @@ package appeng.hooks.ticking;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import appeng.blockentity.AEBaseBlockEntity;
-
 /**
  * A class to hold data related to ticking block entities.
  */
 class ServerBlockEntityRepo {
+    record FirstTickInfo<T extends BlockEntity> (T blockEntity, Consumer<? super T> initFunction) {
+        void callInit() {
+            initFunction.accept(blockEntity);
+        }
+    }
 
     // Mapping is level -> encoded chunk pos -> block entities waiting to be initialized
-    private final Map<LevelAccessor, Long2ObjectMap<List<AEBaseBlockEntity>>> blockEntities = new Object2ObjectOpenHashMap<>();
+    private final Map<LevelAccessor, Long2ObjectMap<List<FirstTickInfo<?>>>> blockEntities = new Object2ObjectOpenHashMap<>();
 
     /**
      * Resets all internal data
@@ -52,7 +57,7 @@ class ServerBlockEntityRepo {
     /**
      * Add a new block entity to be initializes in a later tick.
      */
-    synchronized void addBlockEntity(AEBaseBlockEntity blockEntity) {
+    synchronized <T extends BlockEntity> void addBlockEntity(T blockEntity, Consumer<? super T> initFunction) {
         final LevelAccessor level = blockEntity.getLevel();
         final int x = blockEntity.getBlockPos().getX() >> 4;
         final int z = blockEntity.getBlockPos().getZ() >> 4;
@@ -60,10 +65,11 @@ class ServerBlockEntityRepo {
 
         // Note: in some cases, the level load event might be fired after addBlockEntity is called if a mod loads chunks
         // during an earlier listener. To avoid such issues, we use computeIfAbsent in addBlockEntity directly.
-        Long2ObjectMap<List<AEBaseBlockEntity>> worldQueue = this.blockEntities.computeIfAbsent(level,
+        Long2ObjectMap<List<FirstTickInfo<?>>> worldQueue = this.blockEntities.computeIfAbsent(level,
                 key -> new Long2ObjectOpenHashMap<>());
 
-        worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>()).add(blockEntity);
+        worldQueue.computeIfAbsent(chunkPos, key -> new ArrayList<>())
+                .add(new FirstTickInfo<>(blockEntity, initFunction));
     }
 
     /**
@@ -80,7 +86,7 @@ class ServerBlockEntityRepo {
      * chunk to save memory.
      */
     synchronized void removeChunk(LevelAccessor level, long chunkPos) {
-        Map<Long, List<AEBaseBlockEntity>> queue = this.blockEntities.get(level);
+        Map<Long, List<FirstTickInfo<?>>> queue = this.blockEntities.get(level);
         if (queue != null) {
             queue.remove(chunkPos);
         }
@@ -89,7 +95,7 @@ class ServerBlockEntityRepo {
     /**
      * Get the block entities needing to be initialized in this specific {@link LevelAccessor}.
      */
-    public Long2ObjectMap<List<AEBaseBlockEntity>> getBlockEntities(LevelAccessor level) {
+    public Long2ObjectMap<List<FirstTickInfo<?>>> getBlockEntities(LevelAccessor level) {
         return blockEntities.get(level);
     }
 

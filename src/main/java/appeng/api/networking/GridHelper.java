@@ -32,22 +32,49 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
+import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridConnection;
 import appeng.me.GridEventBus;
 import appeng.me.ManagedGridNode;
 
 /**
- * A helper responsible for creating new {@link IGridNode}, and connecting existing nodes.
- *
- * @author yueh
- * @version rv5
- * @since rv5
+ * A helper responsible for creating new {@link IGridNode}, connecting existing nodes, and related features.
  */
 public final class GridHelper {
     private GridHelper() {
+    }
+
+    /**
+     * On the server side, schedule a call to the passed callback once the block entity is in a ticking chunk. Any
+     * action which might cause other chunks to be initialized, such as {@linkplain IManagedGridNode#create creating a
+     * grid node}, should not be done immediately when the block entity is added to the world, but should rather be
+     * deferred using this function.
+     * <p>
+     * This function should usually be called from {@link BlockEntity#clearRemoved()}, for example:
+     *
+     * <pre>
+     * {@code
+     * atOverride
+     * public void clearRemoved() {
+     *     super.clearRemoved();
+     *     GridHelper.onFirstTick(this, MyBlockEntity::onFirstTick);
+     * }
+     *
+     * private void onFirstTick() {
+     *     // First tick logic here, for example:
+     *     this.managedGridNode.create(getLevel(), getBlockPos());
+     * }
+     * }
+     * </pre>
+     * <p>
+     * Client side this can be safely called, it will do nothing.
+     */
+    public static <T extends BlockEntity> void onFirstTick(T blockEntity, Consumer<? super T> callback) {
+        TickHandler.instance().addInit(blockEntity, callback);
     }
 
     /**

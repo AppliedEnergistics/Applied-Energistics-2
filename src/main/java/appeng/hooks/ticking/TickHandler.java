@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -44,6 +45,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import appeng.blockentity.AEBaseBlockEntity;
@@ -132,17 +134,15 @@ public class TickHandler {
 
     /**
      * Add a {@link AEBaseBlockEntity} to be initializes with the next update.
-     * <p>
-     * Must be called on the server.
      *
-     * @param blockEntity to be added, must be not null
+     * @see appeng.api.networking.GridHelper#onFirstTick
      */
-    public void addInit(AEBaseBlockEntity blockEntity) {
+    public <T extends BlockEntity> void addInit(T blockEntity, Consumer<? super T> initFunction) {
+        Objects.requireNonNull(blockEntity);
+
         // for no there is no reason to care about this on the client...
         if (!blockEntity.getLevel().isClientSide()) {
-            Objects.requireNonNull(blockEntity);
-            blockEntity.setQueuedForReady((byte) (blockEntity.getQueuedForReady() + 1));
-            this.blockEntities.addBlockEntity(blockEntity);
+            this.blockEntities.addBlockEntity(blockEntity, initFunction);
         }
     }
 
@@ -359,16 +359,16 @@ public class TickHandler {
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 
-                for (var bt : chunkQueue) {
+                for (var info : chunkQueue) {
                     // Only ready block entities which weren't destroyed in the meantime.
-                    if (!bt.isRemoved()) {
+                    if (!info.blockEntity().isRemoved()) {
                         try {
                             // This could load more chunks, but the earliest time to be initialized is the next tick.
-                            bt.onReady();
-                            bt.setReadyInvoked((byte) (bt.getReadyInvoked() + 1));
+                            info.callInit();
                         } catch (Throwable t) {
                             CrashReport crashReport = CrashReport.forThrowable(t, "Readying AE2 block entity");
-                            bt.fillCrashReportCategory(crashReport.addCategory("Block entity being readied"));
+                            info.blockEntity()
+                                    .fillCrashReportCategory(crashReport.addCategory("Block entity being readied"));
                             throw new ReportedException(crashReport);
                         }
                     }
