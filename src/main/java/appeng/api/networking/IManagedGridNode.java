@@ -56,6 +56,9 @@ public interface IManagedGridNode {
     /**
      * Finish creation of the node, which means it'll try to make a connection to adjacent nodes if it's exposed on the
      * host, and it'll be available for connections from other nodes.
+     * <p>
+     * This should only be called when the node is in a ticking chunk, for example from a callback registered to
+     * {@link GridHelper#onFirstTick}.
      */
     void create(Level level, @Nullable BlockPos blockPos);
 

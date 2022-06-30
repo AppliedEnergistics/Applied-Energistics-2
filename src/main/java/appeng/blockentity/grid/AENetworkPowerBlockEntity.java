@@ -33,7 +33,6 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
-import appeng.hooks.ticking.TickHandler;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
@@ -95,7 +94,7 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
     @Override
     public void clearRemoved() {
         super.clearRemoved();
-        TickHandler.instance().addInit(this); // Required for onReady to be called
+        scheduleInit(); // Required for onReady to be called
     }
 
     @Override
