@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestAssertException;
 
 import appeng.api.networking.crafting.CalculationStrategy;
-import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.stacks.AEKey;
@@ -29,8 +28,7 @@ public class TestCraftingJob {
     private Future<ICraftingPlan> planFuture;
     @Nullable
     private ICraftingPlan plan;
-    @Nullable
-    private ICraftingLink link;
+    private boolean submitted = false;
 
     public TestCraftingJob(PlotTestHelper helper, BlockPos gridOrigin, AEKey what, long amount) {
         this(helper, gridOrigin, what, amount, CalculationStrategy.REPORT_MISSING_ITEMS);
@@ -68,11 +66,12 @@ public class TestCraftingJob {
                 throw new GameTestAssertException("Crafting job planning did not complete");
             }
         }
-        if (link == null) {
+        if (!submitted) {
             var grid = helper.getGrid(BlockPos.ZERO);
-            link = grid.getCraftingService().submitJob(plan, null, null, true,
-                    new BaseActionSource()).link();
-            helper.check(link != null, "failed to submit job");
+            var result = grid.getCraftingService().submitJob(plan, null, null, true,
+                    new BaseActionSource());
+            helper.check(result.successful(), "failed to submit job");
+            submitted = true;
         }
     }
 }
