@@ -35,17 +35,16 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import appeng.helpers.IMenuCraftingPacket;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
@@ -105,7 +104,8 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
      * if canceling should return to the craft amount menu.
      */
     @Nullable
-    private List<GenericStack> autoCraftingQueue;
+    private List<IMenuCraftingPacket.AutoCraftEntry> autoCraftingQueue;
+    private List<Integer> requestedSlots;
 
     public CraftConfirmMenu(int id, Inventory ip, ITerminalHost te) {
         super(TYPE, id, ip, te);
@@ -123,7 +123,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
      * Open with a list of items to craft, i.e. via REI ctrl+click.
      */
     public static void openWithCraftingList(@Nullable IActionHost terminal, ServerPlayer player,
-            @Nullable MenuLocator locator, List<GenericStack> stacksToCraft) {
+            @Nullable MenuLocator locator, List<IMenuCraftingPacket.AutoCraftEntry> stacksToCraft) {
         if (terminal == null || locator == null || stacksToCraft.isEmpty()) {
             return;
         }
@@ -143,13 +143,14 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
             var actionSource = IActionSource.ofPlayer(player, terminal);
             // Use CRAFT_LESS to still try to partially craft the ingredients.
             futureJob = cg.beginCraftingCalculation(player.level, () -> actionSource, firstToCraft.what(),
-                    firstToCraft.amount(), CalculationStrategy.CRAFT_LESS);
+                    firstToCraft.slots().size(), CalculationStrategy.CRAFT_LESS);
 
             MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
             if (player.containerMenu instanceof CraftConfirmMenu ccc) {
                 ccc.setJob(futureJob);
                 ccc.autoCraftingQueue = subsequentCrafts;
+                ccc.requestedSlots = firstToCraft.slots();
                 ccc.broadcastChanges();
             }
         } catch (Throwable e) {
@@ -231,9 +232,9 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
         if (this.result != null && !this.result.simulation()) {
             final ICraftingService cc = this.getGrid().getCraftingService();
-            final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
+            var submitResult = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
-            if (g != null) {
+            if (submitResult.successful()) {
                 if (autoCraftingQueue != null && !autoCraftingQueue.isEmpty()) {
                     // Process next stack!
                     CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(),
@@ -346,4 +347,5 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     public ISubMenuHost getHost() {
         return host;
     }
+
 }

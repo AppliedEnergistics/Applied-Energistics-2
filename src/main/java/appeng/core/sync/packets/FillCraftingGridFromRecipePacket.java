@@ -39,12 +39,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.StorageHelper;
 import appeng.core.AELog;
@@ -152,7 +153,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
 
         // Prepare to autocraft some stuff
         var craftingService = grid.getCraftingService();
-        var toAutoCraft = new LinkedHashMap<AEKey, Long>();
+        var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
 
         // Handle each slot
         for (var x = 0; x < craftMatrix.size(); x++) {
@@ -210,8 +211,9 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
 
             // If we couldn't find the item, schedule its autocrafting
             if (currentItem.isEmpty() && craftMissing) {
+                int slot = x;
                 findCraftableKey(ingredient, craftingService).ifPresent(key -> {
-                    toAutoCraft.merge(key, 1L, Long::sum);
+                    toAutoCraft.computeIfAbsent(key, k -> new IntArrayList()).add(slot);
                 });
             }
         }
@@ -220,7 +222,8 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
 
         if (!toAutoCraft.isEmpty()) {
             // This must be the last call since it changes the menu!
-            var stacks = toAutoCraft.entrySet().stream().map(e -> new GenericStack(e.getKey(), e.getValue())).toList();
+            var stacks = toAutoCraft.entrySet().stream()
+                    .map(e -> new IMenuCraftingPacket.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
     }

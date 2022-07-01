@@ -88,6 +88,10 @@ public interface ICraftingService extends IGridService {
 
     /**
      * Submit the job to the Crafting system for processing.
+     * <p>
+     * If you send a requestingMachine you need to keep track of the resulting {@link ICraftingLink}, persist it to nbt,
+     * and expose it in {@link ICraftingRequester#getRequestedJobs()} so that the requester can be linked back to the
+     * CPU after a chunk unload / grid change.
      *
      * @param job               - the crafting job from beginCraftingJob
      * @param requestingMachine - a machine if its being requested via automation, may be null.
@@ -97,12 +101,9 @@ public interface ICraftingService extends IGridService {
      * @param src               - the action source to use when starting the job, this will be used for extracting
      *                          items, should usually be the same as the one provided to beginCraftingJob.
      *
-     * @return null ( if failed ) or an {@link ICraftingLink} other wise, if you send requestingMachine you need to
-     *         properly keep track of this and handle the nbt saving and loading of the object as well as the
-     *         {@link ICraftingRequester} methods. if you send null, this object should be discarded after verifying the
-     *         return state.
+     * @return the success/failure state, and a crafting link in case if successful and there was a requestingMachine.
      */
-    ICraftingLink submitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
+    ICraftingSubmitResult submitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
             @Nullable ICraftingCPU target,
             boolean prioritizePower, IActionSource src);
 

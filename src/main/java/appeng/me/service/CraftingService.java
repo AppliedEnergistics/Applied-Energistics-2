@@ -53,6 +53,7 @@ import appeng.api.networking.crafting.ICraftingProvider;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
+import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
@@ -65,6 +66,7 @@ import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
+import appeng.crafting.execution.CraftingSubmitResultImpl;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.StackWatcher;
@@ -283,10 +285,10 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public ICraftingLink submitJob(ICraftingPlan job, ICraftingRequester requestingMachine,
-            ICraftingCPU target, boolean prioritizePower, IActionSource src) {
+    public ICraftingSubmitResult submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
+            boolean prioritizePower, IActionSource src) {
         if (job.simulation()) {
-            return null;
+            return CraftingSubmitResultImpl.FAILED;
         }
 
         CraftingCPUCluster cpuCluster;
@@ -301,7 +303,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             return cpuCluster.submitJob(this.grid, job, src, requestingMachine);
         }
 
-        return null;
+        return CraftingSubmitResultImpl.FAILED;
     }
 
     @Nullable

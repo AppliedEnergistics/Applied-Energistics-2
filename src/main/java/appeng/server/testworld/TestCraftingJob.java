@@ -71,7 +71,7 @@ public class TestCraftingJob {
         if (link == null) {
             var grid = helper.getGrid(BlockPos.ZERO);
             link = grid.getCraftingService().submitJob(plan, null, null, true,
-                    new BaseActionSource());
+                    new BaseActionSource()).link();
             helper.check(link != null, "failed to submit job");
         }
     }

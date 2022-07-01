@@ -43,7 +43,6 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
@@ -151,7 +150,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     }
 
     @Override
-    public void startAutoCrafting(List<GenericStack> toCraft) {
+    public void startAutoCrafting(List<AutoCraftEntry> toCraft) {
         CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(), toCraft);
     }
 
