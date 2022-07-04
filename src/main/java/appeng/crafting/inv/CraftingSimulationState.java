@@ -100,17 +100,10 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         }
     }
 
-    private void updateRequiredExtract(AEKey template) {
-        long amountUnmodified = unmodifiedCache.get(template);
-        long amountModified = modifiableCache.get(template);
-        long amountDifference = amountUnmodified - amountModified;
-
-        if (amountDifference > 0) {
-            long alreadyRequired = this.requiredExtract.get(template);
-
-            if (alreadyRequired < amountDifference) {
-                this.requiredExtract.add(template, amountDifference - alreadyRequired);
-            }
+    private void updateRequiredExtract(AEKey key, long delta) {
+        if (delta > 0) {
+            long max = Math.max(delta, this.requiredExtract.get(key));
+            this.requiredExtract.set(key, max);
         }
     }
 
@@ -127,7 +120,7 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
             modifiableCache.remove(what, extracted);
         }
 
-        updateRequiredExtract(what);
+        updateRequiredExtract(what, unmodifiedCache.get(what) - modifiableCache.get(what));
 
         return extracted;
     }
@@ -164,8 +157,14 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
     }
 
     public void applyDiff(CraftingSimulationState parent) {
-        // It's important to apply this hereto ensure that the extract below doesn't make us count some stacks twice.
-        parent.requiredExtract.addAll(requiredExtract);
+        // It's important to apply this here to ensure that the extract below doesn't make us count some stacks twice.
+        for (var entry : requiredExtract) {
+            var key = entry.getKey();
+            // To compute the new parent max difference during the processing of the child's queries:
+            // Take current parent difference, and add required extract (= max difference observed in the child).
+            long delta = parent.unmodifiedCache.get(key) - parent.modifiableCache.get(key) + entry.getLongValue();
+            parent.updateRequiredExtract(key, delta);
+        }
 
         for (var entry : modifiableCache) {
             var unmodified = unmodifiedCache.get(entry.getKey());
