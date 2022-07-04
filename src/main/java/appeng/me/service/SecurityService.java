@@ -147,9 +147,8 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
             var perms = this.playerPerms.get(playerID);
 
             if (perms == null) {
-                if (playerID == -1) // no default?
-                {
-                    return false;
+                if (playerID == -1) {
+                    return true; // no default permission -> allow!
                 } else {
                     return this.hasPermission(-1, perm);
                 }
