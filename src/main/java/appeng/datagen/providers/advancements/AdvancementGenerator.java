@@ -104,7 +104,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var root = Advancement.Builder.advancement()
                 .display(
-                        AEItems.CERTUS_QUARTZ_DUST,
+                        AEItems.CERTUS_QUARTZ_CRYSTAL,
                         localization.component("achievement.ae2.Root", "Applied Energistics"),
                         localization.component("achievement.ae2.Root.desc", "When a chest is simply not enough."),
                         AppEng.makeId("textures/block/sky_stone_brick.png"),
@@ -113,25 +113,8 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* announceChat */,
                         false /* hidden */
                 )
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_DUST))
+                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL))
                 .save(consumer, "ae2:main/root");
-
-        var quartzCrystal = Advancement.Builder.advancement()
-                .display(
-                        AEItems.CERTUS_QUARTZ_CRYSTAL,
-                        localization.component("achievement.ae2.QuartzCrystal", "Applied Energistics 2"),
-                        localization.component("achievement.ae2.QuartzCrystal.desc",
-                                "Obtain your first Certus Quartz Crystal."),
-                        null /* background */,
-                        FrameType.TASK,
-                        true /* showToast */,
-                        true /* announceChat */,
-                        false /* hidden */
-                )
-                .parent(root)
-                .addCriterion("certus",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL))
-                .save(consumer, "ae2:main/quartz_crystal");
 
         var chargedQuartz = Advancement.Builder.advancement()
                 .display(
@@ -144,7 +127,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         true /* announceChat */,
                         false /* hidden */
                 )
-                .parent(quartzCrystal)
+                .parent(root)
                 .addCriterion("certus",
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
                 .save(consumer, "ae2:main/charged_quartz");
@@ -175,7 +158,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         true /* announceChat */,
                         false /* hidden */
                 )
-                .parent(quartzCrystal)
+                .parent(root)
                 .addCriterion("compass", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.SKY_COMPASS))
                 .save(consumer, "ae2:main/compass");
 
@@ -301,9 +284,9 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var fluix = Advancement.Builder.advancement()
                 .display(
-                        AEItems.FLUIX_DUST,
+                        AEItems.FLUIX_CRYSTAL,
                         localization.component("achievement.ae2.Fluix", "Unnatural"),
-                        localization.component("achievement.ae2.Fluix.desc", "Create Fluix Dust"),
+                        localization.component("achievement.ae2.Fluix.desc", "Create Fluix Crystals"),
                         null /* background */,
                         FrameType.TASK,
                         true /* showToast */,
@@ -311,7 +294,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(chargedQuartz)
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.FLUIX_DUST))
+                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.FLUIX_CRYSTAL))
                 .save(consumer, "ae2:main/fluix");
 
         var glassCable = Advancement.Builder.advancement()

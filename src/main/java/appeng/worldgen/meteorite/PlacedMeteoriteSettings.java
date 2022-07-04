@@ -31,17 +31,15 @@ public final class PlacedMeteoriteSettings {
     private final FalloutMode fallout;
     private final boolean pureCrater;
     private final boolean craterLake;
-    private final CrystalType crystalType;
 
     public PlacedMeteoriteSettings(BlockPos pos, float meteoriteRadius, CraterType craterType, FalloutMode fallout,
-            boolean pureCrater, boolean craterLake, CrystalType crystalType) {
+            boolean pureCrater, boolean craterLake) {
         this.pos = pos;
         this.craterType = craterType;
         this.meteoriteRadius = meteoriteRadius;
         this.fallout = fallout;
         this.pureCrater = pureCrater;
         this.craterLake = craterLake;
-        this.crystalType = crystalType;
     }
 
     public BlockPos getPos() {
@@ -72,10 +70,6 @@ public final class PlacedMeteoriteSettings {
         return craterLake;
     }
 
-    public CrystalType getCrystalType() {
-        return crystalType;
-    }
-
     public CompoundTag write(CompoundTag tag) {
         tag.putLong(Constants.TAG_POS, pos.asLong());
 
@@ -94,10 +88,8 @@ public final class PlacedMeteoriteSettings {
         FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];
         boolean pureCrater = tag.getBoolean(Constants.TAG_PURE);
         boolean craterLake = tag.getBoolean(Constants.TAG_LAKE);
-        CrystalType crystalType = CrystalType.values()[tag.getByte(Constants.TAG_CRYSTAL)];
 
-        return new PlacedMeteoriteSettings(pos, meteoriteRadius, craterType, fallout, pureCrater, craterLake,
-                crystalType);
+        return new PlacedMeteoriteSettings(pos, meteoriteRadius, craterType, fallout, pureCrater, craterLake);
     }
 
     @Override

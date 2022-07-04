@@ -23,10 +23,12 @@ import java.util.stream.Stream;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -55,7 +57,7 @@ public final class MeteoritePlacer {
     private final BlockDefinition<?> skyChestDefinition;
     private final BlockState skyStone;
     private final List<BlockState> quartzBlocks;
-    private final BlockState fluixBlock;
+    private final List<BlockState> quartzBuds;
     private final MeteoriteBlockPutter putter = new MeteoriteBlockPutter();
     private final LevelAccessor level;
     private final RandomSource random;
@@ -71,7 +73,6 @@ public final class MeteoritePlacer {
     private final CraterType craterType;
     private final boolean pureCrater;
     private final boolean craterLake;
-    private final CrystalType crystalType;
     private final BoundingBox boundingBox;
 
     private MeteoritePlacer(LevelAccessor level, PlacedMeteoriteSettings settings, BoundingBox boundingBox,
@@ -88,20 +89,22 @@ public final class MeteoritePlacer {
         this.craterType = settings.getCraterType();
         this.pureCrater = settings.isPureCrater();
         this.craterLake = settings.isCraterLake();
-        this.crystalType = settings.getCrystalType();
         this.squaredMeteoriteSize = this.meteoriteSize * this.meteoriteSize;
 
         double realCrater = this.meteoriteSize * 2 + 5;
         this.crater = realCrater * realCrater;
 
         this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
-        this.fluixBlock = AEBlocks.FLUIX_BLOCK.block().defaultBlockState();
         this.quartzBlocks = Stream.of(
                 AEBlocks.QUARTZ_BLOCK,
                 AEBlocks.DAMAGED_BUDDING_QUARTZ,
                 AEBlocks.CHIPPED_BUDDING_QUARTZ,
                 AEBlocks.FLAWED_BUDDING_QUARTZ,
                 AEBlocks.FLAWLESS_BUDDING_QUARTZ).map(def -> def.block().defaultBlockState()).toList();
+        this.quartzBuds = Stream.of(
+                AEBlocks.SMALL_QUARTZ_BUD,
+                AEBlocks.MEDIUM_QUARTZ_BUD,
+                AEBlocks.LARGE_QUARTZ_BUD).map(def -> def.block().defaultBlockState()).toList();
         this.skyStone = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
 
         this.type = getFallout(level, settings.getPos(), settings.getFallout());
@@ -239,11 +242,20 @@ public final class MeteoritePlacer {
                     var dz = k - z;
 
                     if (dx * dx * 0.7 + dy * dy * (j > y ? 1.4 : 0.8) + dz * dz * 0.7 < this.squaredMeteoriteSize) {
-                        int drSquared = dx * dx + dy * dy + dz * dz;
-                        if (crystalType == CrystalType.FLUIX && drSquared <= 1) {
-                            this.putter.put(level, pos, fluixBlock);
-                        } else if (crystalType == CrystalType.CERTUS_QUARTZ && drSquared <= 1) {
-                            this.putter.put(level, pos, quartzBlocks.get(random.nextInt(quartzBlocks.size())));
+                        // Leave a tiny room in the center
+                        if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && Math.abs(dz) <= 1) {
+                            if (dy == -1) {
+                                // Certus
+                                var certusIndex = random.nextInt(quartzBlocks.size());
+                                this.putter.put(level, pos, quartzBlocks.get(certusIndex));
+                                // Add a bud on top if it's not a regular certus block (index 0), and not the center.
+                                // (70% chance)
+                                if (certusIndex != 0 && (dx != 0 || dz != 0) && random.nextFloat() <= 0.7) {
+                                    var bud = quartzBuds.get(random.nextInt(quartzBuds.size()));
+                                    var budState = bud.setValue(AmethystClusterBlock.FACING, Direction.UP);
+                                    this.putter.put(level, pos.offset(0, 1, 0), budState);
+                                }
+                            }
                         } else {
                             this.putter.put(level, pos, skyStone);
                         }
@@ -312,7 +324,8 @@ public final class MeteoritePlacer {
                         final double dz = k - z;
                         double dr2 = dx * dx + dy * dy + dz * dz;
 
-                        if (/* this.squaredMeteoriteSize < dr2 && */dr2 < this.crater * 1.6) {
+                        // Don't touch the center room!
+                        if (!(Math.abs(dx) <= 1 && Math.abs(dy) <= 1 && Math.abs(dz) <= 1) && dr2 < this.crater * 1.6) {
                             this.type.getRandomInset(level, blockPos);
                         }
                     }

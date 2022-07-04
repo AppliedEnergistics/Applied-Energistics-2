@@ -40,7 +40,6 @@ import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.worldgen.meteorite.CraterType;
-import appeng.worldgen.meteorite.CrystalType;
 import appeng.worldgen.meteorite.MeteoritePlacer;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.debug.MeteoriteSpawner;
@@ -103,11 +102,10 @@ public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
         float coreRadius = Platform.getRandomFloat() * 6.0f + 2;
         boolean pureCrater = Platform.getRandomFloat() > 0.5f;
         CraterType craterType = CraterType.values()[tag.getByte(MODE_TAG)];
-        CrystalType crystalType = CrystalType.values()[Platform.getRandom().nextInt(CrystalType.values().length)];
 
         MeteoriteSpawner spawner = new MeteoriteSpawner();
         PlacedMeteoriteSettings spawned = spawner.trySpawnMeteoriteAtSuitableHeight(level, pos, coreRadius, craterType,
-                pureCrater, crystalType);
+                pureCrater);
 
         if (spawned == null) {
             player.sendSystemMessage(Component.literal("Un-suitable Location."));
