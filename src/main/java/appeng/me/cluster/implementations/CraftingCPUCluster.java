@@ -37,9 +37,9 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CraftingJobStatus;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
@@ -202,7 +202,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         craftingLogic.cancel();
     }
 
-    public ICraftingLink submitJob(IGrid g, ICraftingPlan plan, IActionSource src,
+    public ICraftingSubmitResult submitJob(IGrid g, ICraftingPlan plan, IActionSource src,
             ICraftingRequester requestingMachine) {
         return craftingLogic.trySubmitJob(g, plan, src, requestingMachine);
     }

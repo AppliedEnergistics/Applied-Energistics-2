@@ -30,11 +30,11 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
+import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEKey;
@@ -151,7 +151,8 @@ public class SimulationEnv {
             }
 
             @Override
-            public ICraftingLink submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
+            public ICraftingSubmitResult submitJob(ICraftingPlan job, ICraftingRequester requestingMachine,
+                    ICraftingCPU target,
                     boolean prioritizePower, IActionSource src) {
                 throw new UnsupportedOperationException();
             }

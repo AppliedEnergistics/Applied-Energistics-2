@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.AEItemKey;
 
 public interface IMenuCraftingPacket {
     /**
@@ -57,6 +57,9 @@ public interface IMenuCraftingPacket {
      * Autocraft the passed keys, in order. Will likely open the craft confirm menu, so this menu should not be used
      * afterwards.
      */
-    default void startAutoCrafting(List<GenericStack> toCraft) {
+    default void startAutoCrafting(List<AutoCraftEntry> toCraft) {
+    }
+
+    record AutoCraftEntry(AEItemKey what, List<Integer> slots) {
     }
 }
