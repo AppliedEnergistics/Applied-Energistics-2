@@ -56,8 +56,9 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
     public TransformRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         ItemStack output = buffer.readItem();
 
-        List<Ingredient> ingredients = new ArrayList<>();
-        for (int i = 0; i < buffer.readByte(); i++) {
+        int size = buffer.readByte();
+        List<Ingredient> ingredients = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
             ingredients.add(Ingredient.fromNetwork(buffer));
         }
 
