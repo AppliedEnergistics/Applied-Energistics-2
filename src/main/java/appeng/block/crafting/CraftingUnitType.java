@@ -21,8 +21,8 @@ public enum CraftingUnitType implements ICraftingUnitType {
     }
 
     @Override
-    public int getStorageBytes() {
-        return 1024 * this.storageKb;
+    public long getStorageBytes() {
+        return 1024L * this.storageKb;
     }
 
     @Override

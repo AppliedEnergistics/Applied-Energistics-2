@@ -151,6 +151,10 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         }
         if (te.getStorageBytes() > 0) {
             this.storage += te.getStorageBytes();
+            // Overflow safe
+            if(storage < 0) {
+                storage = Long.MAX_VALUE;
+            }
         }
         if (te.getAcceleratorThreads() > 0) {
             if (te.getAcceleratorThreads() <= 16) {
