@@ -95,7 +95,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         return (AbstractCraftingUnitBlock<?>) this.level.getBlockState(this.worldPosition).getBlock();
     }
 
-    public int getStorageBytes() {
+    public long getStorageBytes() {
         return getUnitBlock().type.getStorageBytes();
     }
 

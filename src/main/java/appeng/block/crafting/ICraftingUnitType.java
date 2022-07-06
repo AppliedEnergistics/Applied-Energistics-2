@@ -10,7 +10,7 @@ public interface ICraftingUnitType {
     /**
      * @return the capacity of a given crafting <i>storage</i> block in bytes (should be 0 if not storage).
      */
-    int getStorageBytes();
+    long getStorageBytes();
 
     /**
      * @return how many co-processors a crafting unit provides. For lag-mitigation purposes, a hard-coded limit has been
