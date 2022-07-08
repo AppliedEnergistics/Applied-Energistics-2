@@ -210,7 +210,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerStructures(Registry<StructureType<?>> registry) {
-        InitStructures.init(registry);
+        InitStructures.init();
     }
 
     public void registerCommands(MinecraftServer server) {

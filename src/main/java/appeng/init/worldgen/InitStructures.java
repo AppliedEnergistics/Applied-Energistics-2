@@ -21,7 +21,6 @@ package appeng.init.worldgen;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.StructureSets;
 import net.minecraft.data.worldgen.Structures;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
@@ -41,7 +40,7 @@ public final class InitStructures {
     private InitStructures() {
     }
 
-    public static void init(Registry<StructureType<?>> registry) {
+    public static void init() {
         MeteoriteStructurePiece.register();
 
         MeteoriteStructure.TYPE = StructureType.register("ae2mtrt", MeteoriteStructure.CODEC);

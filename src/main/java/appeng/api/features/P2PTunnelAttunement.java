@@ -24,7 +24,6 @@
 package appeng.api.features;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +54,7 @@ import appeng.parts.p2p.P2PTunnelPart;
 public final class P2PTunnelAttunement {
     private static final int INITIAL_CAPACITY = 40;
 
-    static final Map<Item, Item> tunnels = new HashMap<>(INITIAL_CAPACITY);
     static final Map<TagKey<Item>, Item> tagTunnels = new IdentityHashMap<>(INITIAL_CAPACITY);
-    static final Map<String, Item> modIdTunnels = new HashMap<>(INITIAL_CAPACITY);
     static final List<ApiAttunement<?>> apiAttunements = new ArrayList<>(INITIAL_CAPACITY);
 
     /**
@@ -157,13 +154,7 @@ public final class P2PTunnelAttunement {
             return ItemStack.EMPTY;
         }
 
-        // First match exact items
-        var tunnelItem = tunnels.get(trigger.getItem());
-        if (tunnelItem != null) {
-            return new ItemStack(tunnelItem);
-        }
-
-        // Tags second
+        // Tags first
         for (var tag : trigger.getTags().toList()) {
             var tagTunnelItem = tagTunnels.get(tag);
             if (tagTunnelItem != null) {
@@ -175,14 +166,6 @@ public final class P2PTunnelAttunement {
         for (var apiAttunement : apiAttunements) {
             if (apiAttunement.hasApi(trigger)) {
                 return new ItemStack(apiAttunement.tunnelType());
-            }
-        }
-
-        // Use the mod id as last option.
-        for (var entry : modIdTunnels.entrySet()) {
-            var id = Registry.ITEM.getKey(trigger.getItem());
-            if (id.getNamespace().equals(entry.getKey())) {
-                return new ItemStack(entry.getValue());
             }
         }
 
