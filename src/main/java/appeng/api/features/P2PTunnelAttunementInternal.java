@@ -45,21 +45,7 @@ public final class P2PTunnelAttunementInternal {
     public static AttunementInfo getAttunementInfo(ItemLike tunnelType) {
         var tunnelItem = tunnelType.asItem();
 
-        Set<Item> items = new HashSet<>();
-        Set<String> mods = new HashSet<>();
         Set<ItemApiLookup<?, ?>> apis = new HashSet<>();
-
-        for (var entry : P2PTunnelAttunement.tunnels.entrySet()) {
-            if (entry.getValue() == tunnelItem) {
-                items.add(entry.getKey());
-            }
-        }
-
-        for (var entry : P2PTunnelAttunement.modIdTunnels.entrySet()) {
-            if (entry.getValue() == tunnelItem) {
-                mods.add(entry.getKey());
-            }
-        }
 
         for (var entry : P2PTunnelAttunement.apiAttunements) {
             if (entry.tunnelType() == tunnelItem) {
@@ -67,7 +53,7 @@ public final class P2PTunnelAttunementInternal {
             }
         }
 
-        return new AttunementInfo(items, mods, apis);
+        return new AttunementInfo(apis);
     }
 
     public static List<Resultant> getApiTunnels() {
@@ -79,7 +65,7 @@ public final class P2PTunnelAttunementInternal {
         return P2PTunnelAttunement.tagTunnels;
     }
 
-    public record AttunementInfo(Set<Item> items, Set<String> mods, Set<ItemApiLookup<?, ?>> apis) {
+    public record AttunementInfo(Set<ItemApiLookup<?, ?>> apis) {
     }
 
     public record Resultant(Component description, Item tunnelType, Predicate<ItemStack> stackPredicate) {

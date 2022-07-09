@@ -11,8 +11,6 @@ public class P2PTypeInfo {
     public String tunnelItemId;
     // IDs of items that cause attunement to this type
     public List<String> attunementItemIds = new ArrayList<>();
-    // Mod IDs that cause attunement to this type
-    public List<String> attunementModIds = new ArrayList<>();
     // Class-Names of APIs provided by items that cause attunement to this type
     public List<String> attunementApiClasses = new ArrayList<>();
 }

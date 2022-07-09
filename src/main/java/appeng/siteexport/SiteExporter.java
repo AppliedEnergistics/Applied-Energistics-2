@@ -175,13 +175,18 @@ public final class SiteExporter {
             var typeInfo = new P2PTypeInfo();
             typeInfo.tunnelItemId = getItemId(tunnelItem.asItem()).toString();
 
+            Set<Item> items = new HashSet<>();
+            for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {
+                if (entry.getValue() == tunnelItem.asItem()) {
+                    Registry.ITEM.getTagOrEmpty(entry.getKey()).forEach(h -> items.add(h.value()));
+                }
+            }
+            items.stream().map(i -> getItemId(i).toString()).forEach(typeInfo.attunementItemIds::add);
+
             // Export attunement info
             var attunementInfo = P2PTunnelAttunementInternal.getAttunementInfo(tunnelItem);
-            usedVanillaItems.addAll(attunementInfo.items());
             attunementInfo.apis().stream().map(lookup -> lookup.apiClass().getName())
                     .forEach(typeInfo.attunementApiClasses::add);
-            typeInfo.attunementModIds.addAll(attunementInfo.mods());
-            attunementInfo.items().stream().map(i -> getItemId(i).toString()).forEach(typeInfo.attunementItemIds::add);
 
             siteExport.addP2PType(typeInfo);
         }
