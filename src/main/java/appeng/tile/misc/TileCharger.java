@@ -308,9 +308,7 @@ public class TileCharger extends AENetworkPowerTile implements ICrankable, IGrid
 		@Override
 		public boolean allowInsert( IItemHandler inv, final int i, final ItemStack itemstack )
 		{
-			final IItemDefinition cert = AEApi.instance().definitions().materials().certusQuartzCrystal();
-
-			return Platform.isChargeable( itemstack ) || cert.isSameAs( itemstack );
+			return AEItemStack.fromItemStack( itemstack ).sameOre( AEItemStack.fromItemStack( AEApi.instance().definitions().materials().certusQuartzCrystal().maybeStack( 1 ).orElse( ItemStack.EMPTY ) ) ) || Platform.isChargeable( itemstack );
 		}
 
 		@Override
