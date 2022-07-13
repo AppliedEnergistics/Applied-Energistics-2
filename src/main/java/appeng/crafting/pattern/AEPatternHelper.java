@@ -1,38 +1,40 @@
 package appeng.crafting.pattern;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
-import com.google.common.collect.ImmutableList;
-
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 
 /**
  * Helpers that apply to both processing and crafting patterns.
  */
 final class AEPatternHelper {
-    private static final Comparator<GenericStack> COMPARE_BY_STACKSIZE = (left, right) -> Long
-            .compare(right.amount(), left.amount());
-
     private AEPatternHelper() {
     }
 
     /**
      * Given an array of potentially null stacks, which can include multiples of the same type, produce an array that
-     * has no null elements and only contains every input type once.
+     * has no null elements and only contains every input type once, while preserving order.
      */
     public static GenericStack[] condenseStacks(GenericStack[] sparseInput) {
-        var merged = Arrays.stream(sparseInput).filter(Objects::nonNull)
-                .collect(Collectors.toMap(GenericStack::what, Function.identity(), GenericStack::sum))
-                .values().stream().sorted(COMPARE_BY_STACKSIZE).collect(ImmutableList.toImmutableList());
+        // Use a linked map to preserve ordering.
+        var map = new LinkedHashMap<AEKey, Long>();
 
-        if (merged.isEmpty()) {
+        for (var input : sparseInput) {
+            if (input != null) {
+                map.merge(input.what(), input.amount(), Long::sum);
+            }
+        }
+
+        if (map.isEmpty()) {
             throw new IllegalStateException("No pattern here!");
         }
 
-        return merged.toArray(new GenericStack[0]);
+        GenericStack[] out = new GenericStack[map.size()];
+        int i = 0;
+        for (var entry : map.entrySet()) {
+            out[i++] = new GenericStack(entry.getKey(), entry.getValue());
+        }
+        return out;
     }
 }
