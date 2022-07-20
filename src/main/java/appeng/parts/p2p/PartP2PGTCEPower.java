@@ -2,6 +2,7 @@ package appeng.parts.p2p;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.me.GridAccessException;
@@ -23,7 +24,6 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 	private static final P2PModels MODELS = new P2PModels( "part/p2p/p2p_tunnel_gteu" );
 	private static final IEnergyContainer NULL_ENERGY_STORAGE = new NullEnergyStorage();
 	private final IEnergyContainer inputHandler = new InputEnergyStorage();
-	private final IEnergyContainer outputHandler = new OutputEnergyStorage();
 	private final Queue<PartP2PGTCEPower> outputs = new ArrayDeque<>();
 
 	public PartP2PGTCEPower( ItemStack is )
@@ -67,9 +67,12 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 	@Override
 	public boolean hasCapability( @Nonnull Capability<?> capability )
 	{
-		if( capability == GregtechCapabilities.CAPABILITY_ENERGY_CONTAINER )
+		if( !this.isOutput() )
 		{
-			return true;
+			if( capability == GregtechCapabilities.CAPABILITY_ENERGY_CONTAINER )
+			{
+				return true;
+			}
 		}
 		return super.hasCapability( capability );
 	}
@@ -82,7 +85,7 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 		{
 			if( this.isOutput() )
 			{
-				return (T) this.outputHandler;
+				return null;
 			}
 			return (T) this.inputHandler;
 		}
@@ -112,7 +115,10 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 			{
 				PartP2PGTCEPower target = outputs.poll();
 				final IEnergyContainer output = target.getAttachedEnergyStorage();
-
+				if( output == this )
+				{
+					return 0;
+				}
 				if( output == null || output.getEnergyCanBeInserted() <= 0 )
 				{
 					continue;
@@ -140,24 +146,26 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 				}
 			}
 
-			while ( !outputs.isEmpty() )
+			voltage = (long) ( voltage * 0.95 );
+
+			if( voltage > 0 )
 			{
-				PartP2PGTCEPower target = outputs.poll();
-				final IEnergyContainer output = target.getAttachedEnergyStorage();
-
-				if( output == null || !output.inputsEnergy( facing ) || output.getEnergyCanBeInserted() <= 0 )
+				while ( !outputs.isEmpty() )
 				{
-					continue;
-				}
+					PartP2PGTCEPower target = outputs.poll();
+					final IEnergyContainer output = target.getAttachedEnergyStorage();
 
-				if( voltage > 0 )
-				{
+					if( output == null || !output.inputsEnergy( facing ) || output.getEnergyCanBeInserted() <= 0 )
+					{
+						continue;
+					}
+
 					amperesUsed += output.acceptEnergyFromNetwork( facing, voltage, amperage - amperesUsed );
-				}
 
-				if( amperage == amperesUsed )
-				{
-					break;
+					if( amperage >= amperesUsed )
+					{
+						break;
+					}
 				}
 			}
 			return amperesUsed;
@@ -165,67 +173,6 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 
 		@Override
 		public boolean inputsEnergy( EnumFacing enumFacing )
-		{
-			return true;
-		}
-
-		@Override
-		public long changeEnergy( long l )
-		{
-			return 0;
-		}
-
-		@Override
-		public long getEnergyStored()
-		{
-			return 0;
-		}
-
-		@Override
-		public long getEnergyCapacity()
-		{
-			return 0;
-		}
-
-		@Override
-		public long getInputAmperage()
-		{
-			return 0;
-		}
-
-		@Override
-		public long getInputVoltage()
-		{
-			return 0;
-		}
-	}
-
-	class OutputEnergyStorage implements IEnergyContainer
-	{
-		@Override
-		public long acceptEnergyFromNetwork( EnumFacing facing, long voltage, long amperage )
-		{
-			if( facing == getSide().getFacing() )
-			{
-				return 0;
-			}
-			final IEnergyContainer output = getAttachedEnergyStorage();
-			voltage *= 0.95;
-			if( voltage > 0 )
-			{
-				return output.acceptEnergyFromNetwork( facing, voltage, amperage );
-			}
-			return 0;
-		}
-
-		@Override
-		public boolean inputsEnergy( EnumFacing enumFacing )
-		{
-			return false;
-		}
-
-		@Override
-		public boolean outputsEnergy( EnumFacing side )
 		{
 			return true;
 		}
