@@ -20,6 +20,7 @@ package appeng.container.implementations;
 
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -50,7 +51,7 @@ public class ContainerNetworkTool extends AEBaseContainer
 			for( int x = 0; x < 3; x++ )
 			{
 				this.addSlotToContainer( ( new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.UPGRADES, te
-						.getInventory(), y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.getInventoryPlayer() ) ) );
+						                                                                                                   .getInventory(), y * 3 + x, 80 - 18 + x * 18, 37 - 18 + y * 18, this.getInventoryPlayer() ) ) );
 			}
 		}
 
@@ -96,6 +97,13 @@ public class ContainerNetworkTool extends AEBaseContainer
 
 		super.detectAndSendChanges();
 	}
+
+	@Override
+	public void onSlotChange( Slot s )
+	{
+		super.detectAndSendChanges();
+	}
+
 
 	public boolean isFacadeMode()
 	{
