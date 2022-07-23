@@ -18,17 +18,18 @@
 
 package appeng.integration.abstraction;
 
-import appeng.integration.IIntegrationModule;
-
 /**
- * Abstracts access to the JEI API functionality.
+ * Abstracts access to the REI API functionality.
  */
-public interface IREI extends IIntegrationModule {
+public interface IREI {
+    default boolean isEnabled() {
+        return false;
+    }
 
     default String getSearchText() {
         return "";
     }
 
-    class Stub extends IIntegrationModule.Stub implements IREI {
+    class Stub implements IREI {
     }
 }
