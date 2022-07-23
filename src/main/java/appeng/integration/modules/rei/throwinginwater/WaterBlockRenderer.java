@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.throwinginwater;
+package appeng.integration.modules.rei.throwinginwater;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;

@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.transfer;
+package appeng.integration.modules.rei.transfer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,7 +26,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
-import appeng.integration.modules.jei.GenericEntryStackHelper;
+import appeng.integration.modules.rei.GenericEntryStackHelper;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.slot.FakeSlot;

@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.transfer;
+package appeng.integration.modules.rei.transfer;
 
 import java.util.ArrayList;
 import java.util.Comparator;

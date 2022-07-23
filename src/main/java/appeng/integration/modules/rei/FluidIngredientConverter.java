@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei;
+package appeng.integration.modules.rei;
 
 import org.jetbrains.annotations.Nullable;
 

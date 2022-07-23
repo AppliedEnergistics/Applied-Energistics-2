@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.jei;
+package appeng.integration.modules.rei;
 
 import java.util.ArrayList;
 import java.util.List;

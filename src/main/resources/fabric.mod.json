@@ -15,7 +15,7 @@
   "entrypoints": {
     "client": ["appeng.core.AppEngClientStartup"],
     "server": ["appeng.core.AppEngServerStartup"],
-    "rei_client": ["appeng.integration.modules.jei.ReiPlugin"]
+    "rei_client": ["appeng.integration.modules.rei.ReiPlugin"]
   },
   "mixins": ["ae2.mixins.json"],
   "depends": {

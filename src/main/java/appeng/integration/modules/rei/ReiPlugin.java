@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.jei;
+package appeng.integration.modules.rei;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,10 +65,10 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.REIFacade;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
-import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
-import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
+import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterCategory;
+import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterDisplay;
+import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
+import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -98,7 +98,6 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new ThrowingInWaterCategory());
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
-        registry.add(new FacadeRecipeCategory());
         registry.add(new AttunementCategory());
 
         registerWorkingStations(registry);

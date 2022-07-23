@@ -320,9 +320,6 @@ public class FacadeBuilder {
                             quadTinter.transform(emitter);
                         }
 
-//                // Overrides the quad's alpha if we are forcing transparent facades.
-//                .addElement("transparent", QuadAlphaOverride.FACTORY, false, e -> e.setAlphaOverride(0x4C / 255F)).build()//
-
                         emitter.emit();
                     }
                 }
