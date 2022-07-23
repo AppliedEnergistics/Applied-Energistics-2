@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-package appeng.integration.modules.waila.part;
+package appeng.integration.modules.wthit.part;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;

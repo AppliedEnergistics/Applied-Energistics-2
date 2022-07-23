@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.tile;
+package appeng.integration.modules.wthit.tile;
 
 import java.util.ArrayList;
 
@@ -41,8 +41,8 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.parts.IPart;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.definitions.AEItems;
-import appeng.integration.modules.waila.BaseDataProvider;
-import appeng.integration.modules.waila.part.IPartDataProvider;
+import appeng.integration.modules.wthit.BaseDataProvider;
+import appeng.integration.modules.wthit.part.IPartDataProvider;
 import appeng.me.InWorldGridNode;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;

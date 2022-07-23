@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.part;
+package appeng.integration.modules.wthit.part;
 
 import net.minecraft.nbt.CompoundTag;
 

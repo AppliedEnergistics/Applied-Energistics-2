@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.tile;
+package appeng.integration.modules.wthit.tile;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -24,7 +24,7 @@ import mcp.mobius.waila.api.ITooltip;
 
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.core.localization.InGameTooltip;
-import appeng.integration.modules.waila.BaseDataProvider;
+import appeng.integration.modules.wthit.BaseDataProvider;
 
 /**
  * Shows the name of the item being crafted.

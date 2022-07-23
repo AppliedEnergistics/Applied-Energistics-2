@@ -16,9 +16,8 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.tile;
+package appeng.integration.modules.wthit.tile;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,30 +28,42 @@ import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
 
-import appeng.integration.modules.waila.BaseDataProvider;
-import appeng.integration.modules.waila.GridNodeState;
-import appeng.me.helpers.IGridConnectedBlockEntity;
+import appeng.api.networking.energy.IAEPowerStorage;
+import appeng.core.localization.InGameTooltip;
+import appeng.integration.modules.wthit.BaseDataProvider;
+import appeng.util.Platform;
 
 /**
- * Provide info about the grid connection status of a machine.
+ * Shows stored power and max stored power for an {@link IAEPowerStorage} block entity.
  */
-public final class GridNodeStateDataProvider extends BaseDataProvider {
-    private static final String TAG_STATE = "gridNodeState";
+public final class PowerStorageDataProvider extends BaseDataProvider {
+    /**
+     * Power key used for the transferred {@link net.minecraft.nbt.CompoundTag}
+     */
+    private static final String TAG_CURRENT_POWER = "currentPower";
+    private static final String TAG_MAX_POWER = "maxPower";
 
     @Override
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         var tag = accessor.getServerData();
-        if (tag.contains(TAG_STATE, Tag.TAG_BYTE)) {
-            var state = GridNodeState.values()[tag.getByte(TAG_STATE)];
-            tooltip.addLine(state.textComponent().withStyle(ChatFormatting.GRAY));
+        if (tag.contains(TAG_MAX_POWER, Tag.TAG_DOUBLE)) {
+            var currentPower = tag.getDouble(TAG_CURRENT_POWER);
+            var maxPower = tag.getDouble(TAG_MAX_POWER);
+
+            var formatCurrentPower = Platform.formatPower(currentPower, false);
+            var formatMaxPower = Platform.formatPower(maxPower, false);
+
+            tooltip.addLine(InGameTooltip.Stored.text(formatCurrentPower, formatMaxPower));
         }
     }
 
     @Override
     public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
-        if (blockEntity instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
-            var state = GridNodeState.fromNode(gridConnectedBlockEntity.getActionableNode());
-            tag.putByte(TAG_STATE, (byte) state.ordinal());
+        if (blockEntity instanceof IAEPowerStorage storage) {
+            if (storage.getAEMaxPower() > 0) {
+                tag.putDouble(TAG_CURRENT_POWER, storage.getAECurrentPower());
+                tag.putDouble(TAG_MAX_POWER, storage.getAEMaxPower());
+            }
         }
     }
 

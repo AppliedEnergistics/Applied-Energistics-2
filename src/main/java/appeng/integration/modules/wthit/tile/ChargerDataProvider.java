@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.tile;
+package appeng.integration.modules.wthit.tile;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Mth;
@@ -28,7 +28,7 @@ import mcp.mobius.waila.api.ITooltip;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.core.localization.InGameTooltip;
-import appeng.integration.modules.waila.BaseDataProvider;
+import appeng.integration.modules.wthit.BaseDataProvider;
 import appeng.util.Platform;
 
 /**

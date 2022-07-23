@@ -1,4 +1,4 @@
-package appeng.integration.modules.waila.part;
+package appeng.integration.modules.wthit.part;
 
 import net.minecraft.nbt.CompoundTag;
 

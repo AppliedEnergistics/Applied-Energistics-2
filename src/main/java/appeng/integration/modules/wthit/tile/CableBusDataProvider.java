@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.tile;
+package appeng.integration.modules.wthit.tile;
 
 import java.util.List;
 
@@ -47,12 +47,12 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
 import appeng.block.networking.CableBusBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.integration.modules.waila.part.AnnihilationPlaneDataProvider;
-import appeng.integration.modules.waila.part.ChannelDataProvider;
-import appeng.integration.modules.waila.part.GridNodeStateProvider;
-import appeng.integration.modules.waila.part.IPartDataProvider;
-import appeng.integration.modules.waila.part.P2PStateDataProvider;
-import appeng.integration.modules.waila.part.StorageMonitorDataProvider;
+import appeng.integration.modules.wthit.part.AnnihilationPlaneDataProvider;
+import appeng.integration.modules.wthit.part.ChannelDataProvider;
+import appeng.integration.modules.wthit.part.GridNodeStateProvider;
+import appeng.integration.modules.wthit.part.IPartDataProvider;
+import appeng.integration.modules.wthit.part.P2PStateDataProvider;
+import appeng.integration.modules.wthit.part.StorageMonitorDataProvider;
 import appeng.util.Platform;
 
 public final class CableBusDataProvider {
