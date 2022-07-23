@@ -56,6 +56,14 @@ repositories {
             includeGroup "me.luligabi"
         }
     }
+
+    maven { // modmaven, maven proxy
+        name 'modmaven'
+        url "https://modmaven.dev/"
+        content {
+            includeGroup "mezz.jei"
+        }
+    }
 }
 
 dependencies {
@@ -67,6 +75,10 @@ dependencies {
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
+        exclude group: "mezz.jei"
+    }
 
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude group: "net.fabricmc.fabric-api"
