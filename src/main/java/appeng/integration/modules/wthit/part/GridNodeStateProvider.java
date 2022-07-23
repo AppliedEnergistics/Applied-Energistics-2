@@ -16,35 +16,37 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila;
+package appeng.integration.modules.wthit.part;
 
 import java.util.List;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.IServerDataProvider;
+import appeng.api.parts.IPart;
+import appeng.integration.modules.wthit.GridNodeState;
 
 /**
- * Base implementation for {@link mcp.mobius.waila.api.IComponentProvider}
- *
- * @author thatsIch
- * @version rv2
- * @since rv2
+ * Provide info about the grid connection status of a part.
  */
-public abstract class BaseDataProvider implements IComponentProvider, IServerDataProvider<BlockEntity> {
+public final class GridNodeStateProvider implements IPartDataProvider {
+    private static final String TAG_STATE = "gridNodeState";
 
-    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+    @Override
+    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+        if (partTag.contains(TAG_STATE, Tag.TAG_BYTE)) {
+            var state = GridNodeState.values()[partTag.getByte(TAG_STATE)];
+            tooltip.add(state.textComponent().withStyle(ChatFormatting.GRAY));
+        }
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
+    public void appendServerData(ServerPlayer player, IPart part, CompoundTag partTag) {
+        var state = GridNodeState.fromNode(part.getGridNode());
+        partTag.putByte(TAG_STATE, (byte) state.ordinal());
     }
 
 }

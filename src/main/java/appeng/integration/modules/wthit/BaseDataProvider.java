@@ -15,23 +15,36 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
-package appeng.integration.modules.waila.part;
+
+package appeng.integration.modules.wthit;
 
 import java.util.List;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.parts.IPart;
+import mcp.mobius.waila.api.IBlockAccessor;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerDataProvider;
 
 /**
- * Interface for part data providers that only work with server-side data.
+ * Base implementation for {@link mcp.mobius.waila.api.IComponentProvider}
+ *
+ * @author thatsIch
+ * @version rv2
+ * @since rv2
  */
-public interface IPartDataProvider {
-    default void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
+public abstract class BaseDataProvider implements IComponentProvider, IServerDataProvider<BlockEntity> {
+
+    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
     }
 
-    default void appendServerData(ServerPlayer player, IPart part, CompoundTag partTag) {
+    @Override
+    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
     }
+
 }

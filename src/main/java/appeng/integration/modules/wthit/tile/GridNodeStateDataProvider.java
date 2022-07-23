@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.tile;
+package appeng.integration.modules.wthit.tile;
 
 import java.util.List;
 
@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 
-import appeng.integration.modules.waila.BaseDataProvider;
-import appeng.integration.modules.waila.GridNodeState;
+import appeng.integration.modules.wthit.BaseDataProvider;
+import appeng.integration.modules.wthit.GridNodeState;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
 /**

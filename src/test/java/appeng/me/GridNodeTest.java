@@ -14,7 +14,7 @@ import appeng.me.service.PathingService;
 
 class GridNodeTest extends AbstractGridNodeTest {
     /**
-     * Regression test for the {@link appeng.integration.modules.waila.GridNodeState#NETWORK_BOOTING} notification. It
+     * Regression test for the {@link appeng.integration.modules.wthit.GridNodeState#NETWORK_BOOTING} notification. It
      * was previously sent before the state actually changed, causing various problems.
      */
     @Test

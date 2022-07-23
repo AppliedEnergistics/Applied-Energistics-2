@@ -16,35 +16,33 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.part;
+package appeng.integration.modules.wthit.tile;
 
 import java.util.List;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 
-import appeng.api.parts.IPart;
+import mcp.mobius.waila.api.IBlockAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+
+import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.core.localization.InGameTooltip;
-import appeng.parts.reporting.AbstractMonitorPart;
+import appeng.integration.modules.wthit.BaseDataProvider;
 
 /**
- * Displays the stack if present and if the monitor is locked.
+ * Shows the name of the item being crafted.
  */
-public final class StorageMonitorDataProvider implements IPartDataProvider {
+public final class CraftingMonitorDataProvider extends BaseDataProvider {
 
     @Override
-    public void appendBody(IPart part, CompoundTag partTag, List<Component> tooltip) {
-        if (part instanceof AbstractMonitorPart monitor) {
-            var displayed = monitor.getDisplayed();
-            var isLocked = monitor.isLocked();
+    public void appendBody(List<Component> tooltip, IBlockAccessor accessor, IPluginConfig config) {
+        var blockEntity = accessor.getBlockEntity();
+        if (blockEntity instanceof CraftingMonitorBlockEntity monitor) {
+            var displayStack = monitor.getJobProgress();
 
-            if (displayed != null) {
-                tooltip.add(InGameTooltip.Showing.text().append(": ")
-                        .append(displayed.getDisplayName()));
+            if (displayStack != null) {
+                tooltip.add(InGameTooltip.Crafting.text(displayStack.what().getDisplayName()));
             }
-
-            tooltip.add(isLocked ? InGameTooltip.Locked.text() : InGameTooltip.Unlocked.text());
         }
     }
-
 }

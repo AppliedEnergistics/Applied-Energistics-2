@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila;
+package appeng.integration.modules.wthit;
 
 import javax.annotation.Nullable;
 

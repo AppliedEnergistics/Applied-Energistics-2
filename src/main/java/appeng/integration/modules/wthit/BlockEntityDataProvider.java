@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila;
+package appeng.integration.modules.wthit;
 
 import java.util.List;
 
@@ -31,11 +31,11 @@ import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerDataProvider;
 
-import appeng.integration.modules.waila.tile.ChargerDataProvider;
-import appeng.integration.modules.waila.tile.CraftingMonitorDataProvider;
-import appeng.integration.modules.waila.tile.DebugDataProvider;
-import appeng.integration.modules.waila.tile.GridNodeStateDataProvider;
-import appeng.integration.modules.waila.tile.PowerStorageDataProvider;
+import appeng.integration.modules.wthit.tile.ChargerDataProvider;
+import appeng.integration.modules.wthit.tile.CraftingMonitorDataProvider;
+import appeng.integration.modules.wthit.tile.DebugDataProvider;
+import appeng.integration.modules.wthit.tile.GridNodeStateDataProvider;
+import appeng.integration.modules.wthit.tile.PowerStorageDataProvider;
 
 /**
  * Delegation provider for tiles through {@link mcp.mobius.waila.api.IComponentProvider}

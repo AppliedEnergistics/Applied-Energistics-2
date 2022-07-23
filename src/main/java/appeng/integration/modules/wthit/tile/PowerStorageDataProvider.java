@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila.tile;
+package appeng.integration.modules.wthit.tile;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ import mcp.mobius.waila.api.IPluginConfig;
 
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.core.localization.InGameTooltip;
-import appeng.integration.modules.waila.BaseDataProvider;
+import appeng.integration.modules.wthit.BaseDataProvider;
 import appeng.util.Platform;
 
 /**

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.waila;
+package appeng.integration.modules.wthit;
 
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
@@ -24,9 +24,9 @@ import mcp.mobius.waila.api.TooltipPosition;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.integration.modules.waila.tile.CableBusDataProvider;
+import appeng.integration.modules.wthit.tile.CableBusDataProvider;
 
-public class WailaModule implements IWailaPlugin {
+public class WthitModule implements IWailaPlugin {
 
     public void register(IRegistrar registrar) {
         CableBusDataProvider.register(registrar);

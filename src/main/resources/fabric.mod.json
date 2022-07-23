@@ -30,8 +30,8 @@
   "accessWidener": "ae2.accesswidener",
   "custom": {
     "waila:plugins": {
-      "id": "ae2:waila",
-      "initializer": "appeng.integration.modules.waila.WailaModule"
+      "id": "ae2:wthit",
+      "initializer": "appeng.integration.modules.wthit.WthitModule"
     }
   }
 }
