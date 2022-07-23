@@ -38,6 +38,7 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.ButtonArea;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
@@ -57,6 +58,7 @@ import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.FacadeCreativeTab;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -69,6 +71,7 @@ import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterDisplay;
 import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
+import appeng.items.parts.FacadeItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -186,9 +189,16 @@ public class ReiPlugin implements REIClientPlugin {
         registry.removeEntryIf(this::shouldEntryBeHidden);
 
         if (AEConfig.instance().isEnableFacadesInJEI()) {
-            for (ItemStack stack : FacadeCreativeTab.getSubTypes()) {
-                registry.addEntry(EntryStacks.of(stack));
-            }
+            registry.addEntries(EntryIngredients.ofItemStacks(FacadeCreativeTab.getSubTypes()));
+        }
+    }
+
+    @Override
+    public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
+        if (AEConfig.instance().isEnableFacadesInJEI()) {
+            FacadeItem facadeItem = AEItems.FACADE.asItem();
+            registry.group(AppEng.makeId("facades"), Component.translatable("itemGroup.ae2.facades"),
+                    stack -> stack.getType() == VanillaEntryTypes.ITEM && stack.<ItemStack>castValue().is(facadeItem));
         }
     }
 
