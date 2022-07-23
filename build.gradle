@@ -57,11 +57,19 @@ repositories {
         }
     }
 
-    maven { // modmaven, maven proxy
+    maven {
         name 'modmaven'
         url "https://modmaven.dev/"
         content {
             includeGroup "mezz.jei"
+        }
+    }
+
+    maven {
+        name 'cursemaven'
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
         }
     }
 }
@@ -88,13 +96,17 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    modRuntimeOnly("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+    modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+
+    modCompileOnly("curse.maven:jade-324717:3879361") {
         exclude group: "net.fabricmc.fabric-api"
     }
 
