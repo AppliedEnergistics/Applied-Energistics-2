@@ -1,61 +1,30 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
+package appeng.integration.modules.igtooltip;
 
-package appeng.integration.modules.wthit.tile;
-
-import java.util.ArrayList;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
-import mcp.mobius.waila.api.ITooltip;
-
+import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
-import appeng.api.parts.IPart;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.definitions.AEItems;
-import appeng.integration.modules.wthit.BaseDataProvider;
-import appeng.integration.modules.wthit.part.IPartDataProvider;
 import appeng.me.InWorldGridNode;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
-import appeng.parts.AEBasePart;
 import appeng.util.Platform;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-/**
- * Add debug info to the waila tooltip if the user is holding a debug card.
- */
-public class DebugDataProvider extends BaseDataProvider implements IPartDataProvider {
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 
-    private static final String TAG_MAIN_NODE = "debugMainNode";
-    private static final String TAG_EXTERNAL_NODE = "debugExposedNode";
+public final class DebugTooltip {
+    private static final String TAG_NODES = "debugNodes";
+    private static final String TAG_NODE_NAME = "nodeName";
     private static final String TAG_TICK_TIME = "tickTime";
     private static final String TAG_TICK_SLEEPING = "tickSleeping";
     private static final String TAG_TICK_ALERTABLE = "tickAlertable";
@@ -65,23 +34,11 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
     private static final String TAG_TICK_LAST_TICK = "tickLastTick";
     private static final String TAG_NODE_EXPOSED = "exposedSides";
 
-    @Override
-    public void appendBody(IPart part, CompoundTag partTag, ITooltip tooltip) {
-        addToTooltip(partTag, tooltip);
+    private DebugTooltip() {
     }
 
-    @Override
-    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
-        if (!isVisible(accessor.getPlayer())) {
-            return;
-        }
-
-        addBlockEntityRotation(tooltip, accessor);
-        addToTooltip(accessor.getServerData(), tooltip);
-    }
-
-    private static void addBlockEntityRotation(ITooltip tooltip, IBlockAccessor accessor) {
-        if (accessor.getBlockEntity() instanceof AEBaseBlockEntity be && be.canBeRotated()) {
+    public static void addBlockEntityRotation(BlockEntity blockEntity, InGameTooltipBuilder tooltip) {
+        if (blockEntity instanceof AEBaseBlockEntity be && be.canBeRotated()) {
             var up = be.getUp();
             var forward = be.getForward();
             tooltip.addLine(
@@ -93,25 +50,20 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
         }
     }
 
-    private static void addToTooltip(CompoundTag serverData, ITooltip tooltip) {
-        boolean hasMainNode = serverData.contains(TAG_MAIN_NODE, Tag.TAG_COMPOUND);
-        boolean hasExternalNode = serverData.contains(TAG_EXTERNAL_NODE, Tag.TAG_COMPOUND);
+    public static void addToTooltip(CompoundTag serverData, InGameTooltipBuilder tooltip) {
+        var nodes = serverData.getList(TAG_NODES, Tag.TAG_COMPOUND);
 
-        if (hasMainNode) {
-            if (hasExternalNode) {
-                tooltip.addLine(Component.literal("Main Node").withStyle(ChatFormatting.ITALIC));
+        for (var node : nodes) {
+            var nodeCompound = (CompoundTag) node;
+            if (nodes.size() > 1) {
+                var nodeName = ((CompoundTag) node).getString(TAG_NODE_NAME);
+                tooltip.addLine(Component.literal(nodeName).withStyle(ChatFormatting.ITALIC));
             }
-            addNodeToTooltip(serverData.getCompound(TAG_MAIN_NODE), tooltip);
-        }
-        if (hasExternalNode) {
-            if (hasMainNode) {
-                tooltip.addLine(Component.literal("External Node").withStyle(ChatFormatting.ITALIC));
-            }
-            addNodeToTooltip(serverData.getCompound(TAG_EXTERNAL_NODE), tooltip);
+            addNodeToTooltip(nodeCompound, tooltip);
         }
     }
 
-    private static void addNodeToTooltip(CompoundTag tag, ITooltip tooltip) {
+    private static void addNodeToTooltip(CompoundTag tag, InGameTooltipBuilder tooltip) {
         if (tag.contains(TAG_TICK_TIME, Tag.TAG_LONG_ARRAY)) {
             long[] tickTimes = tag.getLongArray(TAG_TICK_TIME);
             if (tickTimes.length == 3) {
@@ -177,48 +129,37 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
         }
     }
 
-    @Override
-    public void appendServerData(ServerPlayer player, IPart part, CompoundTag partTag) {
-        if (isVisible(player) && part instanceof AEBasePart basePart) {
-            addServerDataMainNode(partTag, basePart.getMainNode());
+    public static void addServerDataMainNode(CompoundTag tag, IManagedGridNode managedGridNode) {
+        addServerDataNode(tag, "Main Node", managedGridNode.getNode());
+    }
 
-            CompoundTag externalNodeTag = toServerData(basePart.getExternalFacingNode());
-            if (externalNodeTag != null) {
-                partTag.put(TAG_EXTERNAL_NODE, externalNodeTag);
+    public static void addServerDataNode(CompoundTag tag, String name, @Nullable IGridNode node) {
+        var nodeTag = toServerData(node, name);
+        if (nodeTag != null) {
+            var nodes = (ListTag) tag.get(TAG_NODES);
+            if (nodes == null) {
+                nodes = new ListTag();
+                tag.put(TAG_NODES, nodes);
             }
+            nodes.add(nodeTag);
         }
     }
 
-    @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity) {
-        if (isVisible(player) && blockEntity instanceof IGridConnectedBlockEntity gridConnected) {
-            addServerDataMainNode(tag, gridConnected.getMainNode());
-        }
-    }
-
-    private static void addServerDataMainNode(CompoundTag tag, IManagedGridNode managedGridNode) {
-        var node = managedGridNode.getNode();
-        if (node != null) {
-            var nodeTag = toServerData(managedGridNode.getNode());
-            if (nodeTag != null) {
-                tag.put(TAG_MAIN_NODE, nodeTag);
-            }
-        }
-    }
-
-    private static CompoundTag toServerData(IGridNode node) {
+    public static CompoundTag toServerData(IGridNode node, String name) {
         if (node == null) {
             return null;
         }
 
         CompoundTag tag = new CompoundTag();
+        tag.putString(TAG_NODE_NAME, name);
+
         if (node.getService(IGridTickable.class) != null) {
             var tickManager = (TickManagerService) node.getGrid().getTickManager();
             var avg = tickManager.getAverageTime(node);
             var max = tickManager.getMaximumTime(node);
             var sum = tickManager.getOverallTime(node);
 
-            tag.putLongArray(TAG_TICK_TIME, new long[] { avg, max, sum });
+            tag.putLongArray(TAG_TICK_TIME, new long[]{avg, max, sum});
 
             var status = tickManager.getStatus(node);
             tag.putBoolean(TAG_TICK_SLEEPING, status.sleeping());
@@ -243,7 +184,7 @@ public class DebugDataProvider extends BaseDataProvider implements IPartDataProv
         return tag;
     }
 
-    private static boolean isVisible(Player player) {
+    public static boolean isVisible(Player player) {
         return AEItems.DEBUG_CARD.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))
                 || AEItems.DEBUG_CARD.isSameAs(player.getItemInHand(InteractionHand.MAIN_HAND));
     }

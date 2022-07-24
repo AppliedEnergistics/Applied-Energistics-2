@@ -1,39 +1,35 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2021, TeamAppliedEnergistics, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
-
 package appeng.integration.modules.wthit;
 
+import appeng.integration.modules.igtooltip.InGameTooltipProviders;
+import mcp.mobius.waila.api.IBlockAccessor;
+import mcp.mobius.waila.api.IBlockComponentProvider;
+import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IRegistrar;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.ITooltipComponent;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
-
-import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.AEBaseBlockEntity;
-import appeng.integration.modules.wthit.tile.CableBusDataProvider;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class WthitModule implements IWailaPlugin {
 
     public void register(IRegistrar registrar) {
-        CableBusDataProvider.register(registrar);
+        for (var blockProvider : InGameTooltipProviders.getBlockProviders()) {
+            register(registrar, blockProvider);
+        }
+    }
 
-        var blockEntityProvider = new BlockEntityDataProvider();
-        registrar.addComponent(blockEntityProvider, TooltipPosition.BODY, AEBaseEntityBlock.class);
-        registrar.addBlockData(blockEntityProvider, AEBaseBlockEntity.class);
+    private <T extends BlockEntity> void register(IRegistrar registrar, InGameTooltipProviders.BlockRegistration<T> blockProvider) {
+        var adapter = new BlockEntityDataProvider<>(
+                blockProvider.provider(),
+                blockProvider.blockEntityClass()
+        );
+        registrar.addBlockData(adapter, blockProvider.blockEntityClass());
+        registrar.addComponent(adapter, TooltipPosition.HEAD, blockProvider.blockEntityClass());
+        registrar.addComponent(adapter, TooltipPosition.BODY, blockProvider.blockEntityClass());
+        registrar.addComponent(adapter, TooltipPosition.TAIL, blockProvider.blockEntityClass());
+        registrar.addIcon(adapter, blockProvider.blockClass());
     }
 
 }
