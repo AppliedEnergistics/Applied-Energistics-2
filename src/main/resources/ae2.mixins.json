@@ -16,7 +16,11 @@
     "BreakSpeedMixin",
     "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin",
-    "StructureTemplateMixin"
+    "StructureTemplateMixin",
+    "tests.StructureUtilsMixin",
+    "chunkloading.DistanceManagerMixin",
+    "chunkloading.ForcedChunksSavedDataMixin",
+    "chunkloading.MinecraftServerMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",

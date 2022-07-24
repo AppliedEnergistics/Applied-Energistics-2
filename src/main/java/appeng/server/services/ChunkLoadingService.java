@@ -21,8 +21,15 @@ package appeng.server.services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class ChunkLoadingService {
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
+import appeng.core.AppEng;
+import appeng.thirdparty.net.minecraftforge.world.ForgeChunkManager;
+import appeng.thirdparty.net.minecraftforge.world.ForgeChunkManager.LoadingValidationCallback;
+import appeng.thirdparty.net.minecraftforge.world.ForgeChunkManager.TicketHelper;
+
+public class ChunkLoadingService implements LoadingValidationCallback {
 
     private static final ChunkLoadingService INSTANCE = new ChunkLoadingService();
 
@@ -30,8 +37,7 @@ public class ChunkLoadingService {
     private boolean running = true;
 
     public static void register() {
-        // FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//        ForgeChunkManager.setForcedChunkLoadingCallback(AppEng.MOD_ID, INSTANCE);
+        ForgeChunkManager.setForcedChunkLoadingCallback(AppEng.MOD_ID, INSTANCE);
     }
 
     public void onServerAboutToStart() {
@@ -45,39 +51,37 @@ public class ChunkLoadingService {
     public static ChunkLoadingService getInstance() {
         return INSTANCE;
     }
-// FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//    @Override
-//    public void validateTickets(ServerLevel level, TicketHelper ticketHelper) {
-//        // Iterate over all blockpos registered as chunk loader to initialize them
-//        ticketHelper.getBlockTickets().forEach((blockPos, chunks) -> {
-//            BlockEntity blockEntity = level.getBlockEntity(blockPos);
-//
-//            // Add all persisted chunks to the list of handled ones by each anchor.
-//            // Or remove all in case the anchor no longer exists.
-//            if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
-//                for (Long chunk : chunks.getSecond()) {
-//                    anchor.registerChunk(new ChunkPos(chunk.longValue()));
-//                }
-//            } else {
-//                ticketHelper.removeAllTickets(blockPos);
-//            }
-//        });
-//    }
+
+    @Override
+    public void validateTickets(ServerLevel level, TicketHelper ticketHelper) {
+        // Iterate over all blockpos registered as chunk loader to initialize them
+        ticketHelper.getBlockTickets().forEach((blockPos, chunks) -> {
+            BlockEntity blockEntity = level.getBlockEntity(blockPos);
+
+            // Add all persisted chunks to the list of handled ones by each anchor.
+            // Or remove all in case the anchor no longer exists.
+            if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
+                for (Long chunk : chunks.getSecond()) {
+                    anchor.registerChunk(new ChunkPos(chunk));
+                }
+            } else {
+                ticketHelper.removeAllTickets(blockPos);
+            }
+        });
+    }
 
     public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
-// FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//        if (running) {
-//            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, true, true);
-//        }
+        if (running) {
+            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, true, true);
+        }
 
         return false;
     }
 
     public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
-// FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//        if (running) {
-//            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, false, true);
-//        }
+        if (running) {
+            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, false, true);
+        }
 
         return false;
     }
