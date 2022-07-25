@@ -1,15 +1,16 @@
 package appeng.integration.modules.igtooltip.blocks;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
 import appeng.api.integrations.igtooltip.InGameTooltipContext;
 import appeng.api.integrations.igtooltip.InGameTooltipProvider;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.core.localization.InGameTooltip;
 import appeng.util.Platform;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Shows stored power and max stored power for an {@link IAEPowerStorage} block entity.

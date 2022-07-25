@@ -1,14 +1,9 @@
 package appeng.integration.modules.igtooltip;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.ticking.IGridTickable;
-import appeng.blockentity.AEBaseBlockEntity;
-import appeng.core.definitions.AEItems;
-import appeng.me.InWorldGridNode;
-import appeng.me.service.TickManagerService;
-import appeng.util.Platform;
+import java.util.ArrayList;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -19,8 +14,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
+import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.ticking.IGridTickable;
+import appeng.blockentity.AEBaseBlockEntity;
+import appeng.core.definitions.AEItems;
+import appeng.me.InWorldGridNode;
+import appeng.me.service.TickManagerService;
+import appeng.util.Platform;
 
 public final class DebugTooltip {
     private static final String TAG_NODES = "debugNodes";
@@ -159,7 +161,7 @@ public final class DebugTooltip {
             var max = tickManager.getMaximumTime(node);
             var sum = tickManager.getOverallTime(node);
 
-            tag.putLongArray(TAG_TICK_TIME, new long[]{avg, max, sum});
+            tag.putLongArray(TAG_TICK_TIME, new long[] { avg, max, sum });
 
             var status = tickManager.getStatus(node);
             tag.putBoolean(TAG_TICK_SLEEPING, status.sleeping());

@@ -1,13 +1,14 @@
 package appeng.integration.modules.igtooltip.blocks;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
 import appeng.api.integrations.igtooltip.InGameTooltipContext;
 import appeng.api.integrations.igtooltip.InGameTooltipProvider;
 import appeng.integration.modules.igtooltip.DebugTooltip;
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class BlockDebugProvider implements InGameTooltipProvider<BlockEntity> {
     @Override

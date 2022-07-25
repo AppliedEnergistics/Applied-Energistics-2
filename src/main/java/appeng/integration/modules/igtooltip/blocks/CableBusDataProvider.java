@@ -1,5 +1,16 @@
 package appeng.integration.modules.igtooltip.blocks;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
 import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
 import appeng.api.integrations.igtooltip.InGameTooltipContext;
 import appeng.api.integrations.igtooltip.InGameTooltipProvider;
@@ -9,13 +20,6 @@ import appeng.api.parts.SelectedPart;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.integration.modules.igtooltip.InGameTooltipProviders;
 import appeng.util.Platform;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 public class CableBusDataProvider implements InGameTooltipProvider<CableBusBlockEntity> {
     @Override
@@ -29,6 +33,22 @@ public class CableBusDataProvider implements InGameTooltipProvider<CableBusBlock
         } else {
             return null;
         }
+    }
+
+    @Override
+    public @Nullable String getModName(CableBusBlockEntity object, InGameTooltipContext context) {
+        var selected = getPart(object, context.hitLocation());
+
+        Item item;
+        if (selected.facade != null) {
+            item = selected.facade.getItemStack().getItem();
+        } else if (selected.part != null) {
+            item = selected.part.getPartItem().asItem();
+        } else {
+            return null;
+        }
+
+        return Platform.getModName(Registry.ITEM.getKey(item).getNamespace());
     }
 
     @Override
@@ -56,9 +76,9 @@ public class CableBusDataProvider implements InGameTooltipProvider<CableBusBlock
     }
 
     private <T extends IPart> void buildPartTooltip(T part,
-                                                    CompoundTag partTag,
-                                                    InGameTooltipContext blockContext,
-                                                    InGameTooltipBuilder tooltip) {
+            CompoundTag partTag,
+            InGameTooltipContext blockContext,
+            InGameTooltipBuilder tooltip) {
         var partContext = new InGameTooltipContext(partTag, blockContext.hitLocation(), blockContext.player());
 
         for (var provider : InGameTooltipProviders.getPartProviders(part)) {

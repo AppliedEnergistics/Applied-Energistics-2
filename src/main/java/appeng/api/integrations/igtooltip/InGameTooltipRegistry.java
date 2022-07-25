@@ -34,7 +34,8 @@ public class InGameTooltipRegistry {
         InGameTooltipProviders.registerPart(partClass, provider);
     }
 
-    public static <T extends IPart> void registerPart(Class<T> partClass, InGameTooltipProvider<? super T> provider, int position) {
+    public static <T extends IPart> void registerPart(Class<T> partClass, InGameTooltipProvider<? super T> provider,
+            int position) {
         InGameTooltipProviders.registerPart(partClass, provider, position);
     }
 }

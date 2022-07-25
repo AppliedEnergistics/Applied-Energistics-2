@@ -1,8 +1,12 @@
 package appeng.integration.modules.wthit;
 
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
-import appeng.util.Platform;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -12,17 +16,15 @@ import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.ITooltipComponent;
 import mcp.mobius.waila.api.WailaConstants;
 import mcp.mobius.waila.api.component.ItemComponent;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.api.integrations.igtooltip.InGameTooltipContext;
+import appeng.api.integrations.igtooltip.InGameTooltipProvider;
 
 /**
  * Delegation provider for tiles through {@link mcp.mobius.waila.api.IBlockComponentProvider}
  */
-public final class BlockEntityDataProvider<T extends BlockEntity> implements IBlockComponentProvider, IServerDataProvider<T> {
+public final class BlockEntityDataProvider<T extends BlockEntity>
+        implements IBlockComponentProvider, IServerDataProvider<T> {
     /**
      * Contains all providers
      */
@@ -72,16 +74,13 @@ public final class BlockEntityDataProvider<T extends BlockEntity> implements IBl
     public void appendTail(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         var context = getContext(accessor);
         var obj = objectClass.cast(accessor.getBlockEntity());
-        var icon = provider.getIcon(obj, context);
-        if (icon != null) {
-            var modId = Registry.ITEM.getKey(icon.getItem()).getNamespace();
-            var modName = Platform.getModName(modId);
 
+        var modName = provider.getModName(obj, context);
+        if (modName != null) {
             // Only add the mod name if it's already there
             if (tooltip.getLine(WailaConstants.MOD_NAME_TAG) != null) {
                 tooltip.setLine(WailaConstants.MOD_NAME_TAG, Component.literal(modName).withStyle(
-                        ChatFormatting.BLUE, ChatFormatting.ITALIC
-                ));
+                        ChatFormatting.BLUE, ChatFormatting.ITALIC));
             }
         }
     }
@@ -90,8 +89,7 @@ public final class BlockEntityDataProvider<T extends BlockEntity> implements IBl
         return new InGameTooltipContext(
                 accessor.getServerData(),
                 accessor.getHitResult().getLocation(),
-                accessor.getPlayer()
-        );
+                accessor.getPlayer());
     }
 
     @Override

@@ -1,16 +1,12 @@
 package appeng.integration.modules.wthit;
 
-import appeng.integration.modules.igtooltip.InGameTooltipProviders;
-import mcp.mobius.waila.api.IBlockAccessor;
-import mcp.mobius.waila.api.IBlockComponentProvider;
-import mcp.mobius.waila.api.IPluginConfig;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.ITooltip;
-import mcp.mobius.waila.api.ITooltipComponent;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.integration.modules.igtooltip.InGameTooltipProviders;
 
 public class WthitModule implements IWailaPlugin {
 
@@ -20,11 +16,11 @@ public class WthitModule implements IWailaPlugin {
         }
     }
 
-    private <T extends BlockEntity> void register(IRegistrar registrar, InGameTooltipProviders.BlockRegistration<T> blockProvider) {
+    private <T extends BlockEntity> void register(IRegistrar registrar,
+            InGameTooltipProviders.BlockRegistration<T> blockProvider) {
         var adapter = new BlockEntityDataProvider<>(
                 blockProvider.provider(),
-                blockProvider.blockEntityClass()
-        );
+                blockProvider.blockEntityClass());
         registrar.addBlockData(adapter, blockProvider.blockEntityClass());
         registrar.addComponent(adapter, TooltipPosition.HEAD, blockProvider.blockEntityClass());
         registrar.addComponent(adapter, TooltipPosition.BODY, blockProvider.blockEntityClass());

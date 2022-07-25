@@ -1,14 +1,15 @@
 package appeng.integration.modules.igtooltip;
 
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
-
-import javax.annotation.concurrent.GuardedBy;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.annotation.concurrent.GuardedBy;
+
+import appeng.api.integrations.igtooltip.InGameTooltipProvider;
 
 class ProviderRegistrationMap<T extends ProviderRegistrationMap.Registration> {
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -40,7 +41,8 @@ class ProviderRegistrationMap<T extends ProviderRegistrationMap.Registration> {
         if (providers == null) {
             writeLock.lock();
             try {
-                providers = ((CachedProviders<U>) cache.computeIfAbsent(objectClass, this::createProviderList)).providers();
+                providers = ((CachedProviders<U>) cache.computeIfAbsent(objectClass, this::createProviderList))
+                        .providers();
             } finally {
                 writeLock.unlock();
             }
@@ -90,6 +92,6 @@ class ProviderRegistrationMap<T extends ProviderRegistrationMap.Registration> {
         int getPosition();
     }
 
-    record CachedProviders<U>(List<InGameTooltipProvider<? super U>> providers) {
+    record CachedProviders<U> (List<InGameTooltipProvider<? super U>> providers) {
     }
 }

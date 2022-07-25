@@ -23,15 +23,21 @@
 
 package appeng.api.integrations.igtooltip;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public interface InGameTooltipProvider<T> {
     @Nullable
     default Component getName(T object, InGameTooltipContext context) {
+        return null;
+    }
+
+    @Nullable
+    default String getModName(T object, InGameTooltipContext context) {
         return null;
     }
 

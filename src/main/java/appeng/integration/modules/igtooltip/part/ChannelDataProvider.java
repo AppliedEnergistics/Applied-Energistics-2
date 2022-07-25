@@ -1,13 +1,13 @@
 package appeng.integration.modules.igtooltip.part;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 
+import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
+import appeng.api.integrations.igtooltip.InGameTooltipContext;
+import appeng.api.integrations.igtooltip.InGameTooltipProvider;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.core.localization.InGameTooltip;
 import appeng.me.service.PathingService;

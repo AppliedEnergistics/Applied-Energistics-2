@@ -1,12 +1,13 @@
 package appeng.integration.modules.igtooltip.part;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+
 import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
 import appeng.api.integrations.igtooltip.InGameTooltipContext;
 import appeng.api.integrations.igtooltip.InGameTooltipProvider;
 import appeng.integration.modules.igtooltip.DebugTooltip;
 import appeng.parts.AEBasePart;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Add debug info to the ingame tooltip if the user is holding a debug card and hovers over a part.

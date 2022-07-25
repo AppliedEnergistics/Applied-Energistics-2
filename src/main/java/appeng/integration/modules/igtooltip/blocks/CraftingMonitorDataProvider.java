@@ -11,7 +11,8 @@ import appeng.core.localization.InGameTooltip;
  */
 public final class CraftingMonitorDataProvider implements InGameTooltipProvider<CraftingMonitorBlockEntity> {
     @Override
-    public void buildTooltip(CraftingMonitorBlockEntity monitor, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public void buildTooltip(CraftingMonitorBlockEntity monitor, InGameTooltipContext context,
+            InGameTooltipBuilder tooltip) {
         var displayStack = monitor.getJobProgress();
 
         if (displayStack != null) {
