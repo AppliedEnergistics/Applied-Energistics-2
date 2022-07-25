@@ -270,7 +270,14 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     private void addQty(long delta) {
         var currentValue = getValueInternal().orElse(BigDecimal.ZERO);
-        setValueInternal(currentValue.add(BigDecimal.valueOf(delta)));
+        var newValue = currentValue.add(BigDecimal.valueOf(delta));
+        var minimum = BigDecimal.valueOf(this.minValue);
+        if (newValue.compareTo(minimum) < 0) {
+            newValue = minimum;
+        } else if (currentValue.compareTo(BigDecimal.ONE) == 0 && delta > 0 && delta % 10 == 0) {
+            newValue = newValue.subtract(BigDecimal.ONE);
+        }
+        setValueInternal(newValue);
     }
 
     /**
