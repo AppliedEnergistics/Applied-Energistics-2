@@ -24,10 +24,8 @@ import java.util.Set;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.block.AEBaseBlock;
@@ -95,31 +93,18 @@ public final class InitAutoRotatingModel {
         return new AutoRotatingBakedModel(model);
     }
 
-    private static void onModelBake(Map<ResourceLocation, BakedModel> modelRegistry) {
-        Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
-        BakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
+    private static BakedModel onModelBake(ResourceLocation location, BakedModel model, BakedModel missingModel) {
+        if (!location.getNamespace().equals(AppEng.MOD_ID))
+            return model;
 
-        for (ResourceLocation location : keys) {
-            if (!location.getNamespace().equals(AppEng.MOD_ID)) {
-                continue;
-            }
+        // Don't customize the missing model. This causes Forge to swallow exceptions
+        if (model == missingModel)
+            return model;
 
-            BakedModel orgModel = modelRegistry.get(location);
-
-            // Don't customize the missing model. This causes Forge to swallow exceptions
-            if (orgModel == missingModel) {
-                continue;
-            }
-
-            Function<BakedModel, BakedModel> customizer = CUSTOMIZERS.get(location.getPath());
-            if (customizer != null) {
-                BakedModel newModel = customizer.apply(orgModel);
-
-                if (newModel != orgModel) {
-                    modelRegistry.put(location, newModel);
-                }
-            }
-        }
+        Function<BakedModel, BakedModel> customizer = CUSTOMIZERS.get(location.getPath());
+        if (customizer != null)
+            model = customizer.apply(model);
+        return model;
     }
 
 }
