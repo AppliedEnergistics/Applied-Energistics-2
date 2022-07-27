@@ -25,6 +25,7 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.runtime.IIngredientVisibility;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -33,6 +34,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
+import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.GenericEntryStackHelper;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
@@ -65,6 +67,8 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
     private final MenuType<T> menuType;
     private final Class<T> menuClass;
     private final IRecipeTransferHandlerHelper helper;
+    @Nullable
+    private IIngredientVisibility ingredientVisibility;
 
     public EncodePatternTransferHandler(MenuType<T> menuType,
             Class<T> menuClass,
@@ -172,6 +176,11 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         var encodedInputs = NonNullList.withSize(menu.getCraftingGridSlots().length, ItemStack.EMPTY);
 
         if (recipe != null) {
+            // Cache the ingredient visibility instance for checks for the best ingredient.
+            if (ingredientVisibility == null) {
+                ingredientVisibility = JEIFacade.instance().getRuntime().getIngredientVisibility();
+            }
+
             // When we have access to a crafting recipe, we'll switch modes and try to find suitable
             // ingredients based on the recipe ingredients, which allows for fuzzy-matching.
             var ingredients3x3 = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
@@ -191,7 +200,16 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
                         .max(Comparator.comparingInt(Map.Entry::getValue))
                         .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
 
-                var bestIngredient = bestNetworkIngredient.orElse(ingredient.getItems()[0]);
+                // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
+                // stack, otherwise we'll use the first entry.
+                var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
+                    for (var stack : ingredient.getItems()) {
+                        if (ingredientVisibility.isIngredientVisible(VanillaTypes.ITEM_STACK, stack)) {
+                            return stack;
+                        }
+                    }
+                    return ingredient.getItems()[0];
+                });
 
                 encodedInputs.set(slot, bestIngredient);
             }
