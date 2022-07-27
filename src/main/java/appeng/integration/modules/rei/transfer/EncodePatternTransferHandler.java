@@ -1,7 +1,9 @@
 package appeng.integration.modules.rei.transfer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,9 +17,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
+import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -50,6 +54,8 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
     private static Boolean isUndamaged(GridInventoryEntry entry) {
         return !(entry.getWhat() instanceof AEItemKey itemKey) || !itemKey.isDamaged();
     }
+
+    private final IngredientVisibility ingredientVisibility = new IngredientVisibility();
 
     public EncodePatternTransferHandler(Class<T> containerClass) {
         super(containerClass);
@@ -164,7 +170,16 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                         .max(Comparator.comparingInt(Map.Entry::getValue))
                         .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
 
-                var bestIngredient = bestNetworkIngredient.orElse(ingredient.getItems()[0]);
+                // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
+                // stack, otherwise we'll use the first entry.
+                var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
+                    for (var stack : ingredient.getItems()) {
+                        if (ingredientVisibility.isVisible(stack)) {
+                            return stack;
+                        }
+                    }
+                    return ingredient.getItems()[0];
+                });
 
                 encodedInputs.set(slot, bestIngredient);
             }
@@ -233,4 +248,30 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         stacks.add(newStack);
     }
 
+    private class IngredientVisibility {
+
+        private final EntryRegistry registry;
+        private final Map<ItemStack, Boolean> cache = new HashMap<>();
+
+        private IngredientVisibility() {
+            this.registry = EntryRegistry.getInstance();
+        }
+
+        private boolean isVisible(ItemStack stack) {
+            if (cache.containsKey(stack)) {
+                return cache.get(stack);
+            }
+
+            var entryStack = EntryStacks.of(stack);
+            if (!registry.alreadyContain(entryStack)) {
+                cache.put(stack, false);
+                return false;
+            }
+
+            var entryStacks = registry.refilterNew(false, Collections.singleton(entryStack));
+            var visible = !entryStacks.isEmpty();
+            cache.put(stack, visible);
+            return visible;
+        }
+    }
 }
