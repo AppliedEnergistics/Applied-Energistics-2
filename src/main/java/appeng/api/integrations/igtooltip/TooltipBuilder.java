@@ -23,19 +23,17 @@
 
 package appeng.api.integrations.igtooltip;
 
-import appeng.api.parts.IPart;
-import appeng.integration.modules.igtooltip.InGameTooltipProviders;
+import org.jetbrains.annotations.ApiStatus;
 
-public class InGameTooltipRegistry {
-    private InGameTooltipRegistry() {
-    }
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-    public static <T extends IPart> void registerPart(Class<T> partClass, InGameTooltipProvider<? super T> provider) {
-        InGameTooltipProviders.registerPart(partClass, provider);
-    }
+/**
+ * Abstraction for building an in-game tooltip for mods like WAILA, Jade, WTHIT, and others.
+ */
+@ApiStatus.Experimental
+public interface TooltipBuilder {
+    void addLine(Component line);
 
-    public static <T extends IPart> void registerPart(Class<T> partClass, InGameTooltipProvider<? super T> provider,
-            int position) {
-        InGameTooltipProviders.registerPart(partClass, provider, position);
-    }
+    void addLine(Component line, ResourceLocation id);
 }

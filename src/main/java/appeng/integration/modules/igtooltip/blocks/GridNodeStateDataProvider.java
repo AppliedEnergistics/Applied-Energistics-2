@@ -6,20 +6,21 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
+import appeng.api.integrations.igtooltip.providers.BodyProvider;
+import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.integration.modules.igtooltip.GridNodeState;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
 /**
  * Provide info about the grid connection status of a machine.
  */
-public final class GridNodeStateDataProvider implements InGameTooltipProvider<BlockEntity> {
+public final class GridNodeStateDataProvider implements BodyProvider<BlockEntity>, ServerDataProvider<BlockEntity> {
     private static final String TAG_STATE = "gridNodeState";
 
     @Override
-    public void buildTooltip(BlockEntity object, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public void buildTooltip(BlockEntity object, TooltipContext context, TooltipBuilder tooltip) {
         var tag = context.serverData();
         if (tag.contains(TAG_STATE, Tag.TAG_BYTE)) {
             var state = GridNodeState.values()[tag.getByte(TAG_STATE)];

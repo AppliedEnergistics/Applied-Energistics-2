@@ -8,23 +8,24 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.IServerDataProvider;
 
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
-import appeng.api.integrations.waila.AEJadeIds;
+import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
+import appeng.core.AppEng;
 
-public class ServerDataAdapter<T> implements IServerDataProvider<BlockEntity> {
+class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockEntity> {
+    private static final ResourceLocation ID = AppEng.makeId("server_data");
 
-    private final InGameTooltipProvider<? super T> provider;
+    private final ServerDataProvider<? super T> provider;
 
     private final Class<T> objectClass;
 
-    public ServerDataAdapter(InGameTooltipProvider<? super T> provider, Class<T> objectClass) {
+    public ServerDataProviderAdapter(ServerDataProvider<? super T> provider, Class<T> objectClass) {
         this.provider = provider;
         this.objectClass = objectClass;
     }
 
     @Override
     public ResourceLocation getUid() {
-        return AEJadeIds.BLOCK_ENTITIES_PROVIDER;
+        return ID;
     }
 
     @Override
@@ -33,5 +34,4 @@ public class ServerDataAdapter<T> implements IServerDataProvider<BlockEntity> {
         var obj = objectClass.cast(blockEntity);
         provider.provideServerData(player, obj, tag);
     }
-
 }

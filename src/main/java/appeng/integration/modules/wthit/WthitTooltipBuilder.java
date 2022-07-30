@@ -5,9 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import mcp.mobius.waila.api.ITooltip;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
 
-public class WthitTooltipBuilder implements InGameTooltipBuilder {
+class WthitTooltipBuilder implements TooltipBuilder {
     private final ITooltip tooltip;
 
     public WthitTooltipBuilder(ITooltip tooltip) {

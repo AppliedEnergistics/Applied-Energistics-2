@@ -1,17 +1,17 @@
-package appeng.integration.modules.igtooltip.part;
+package appeng.integration.modules.igtooltip.parts;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
+import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.core.localization.InGameTooltip;
 import appeng.parts.reporting.AbstractMonitorPart;
 
 /**
  * Displays the stack if present and if the monitor is locked.
  */
-public final class StorageMonitorDataProvider implements InGameTooltipProvider<AbstractMonitorPart> {
+public final class StorageMonitorDataProvider implements BodyProvider<AbstractMonitorPart> {
     @Override
-    public void buildTooltip(AbstractMonitorPart monitor, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public void buildTooltip(AbstractMonitorPart monitor, TooltipContext context, TooltipBuilder tooltip) {
         var displayed = monitor.getDisplayed();
         var isLocked = monitor.isLocked();
 

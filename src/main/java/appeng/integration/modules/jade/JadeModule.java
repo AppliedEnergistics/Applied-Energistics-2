@@ -1,5 +1,7 @@
 package appeng.integration.modules.jade;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.IWailaClientRegistration;
@@ -7,45 +9,66 @@ import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
 
-import appeng.integration.modules.igtooltip.InGameTooltipProviders;
+import appeng.api.integrations.igtooltip.ClientRegistration;
+import appeng.api.integrations.igtooltip.CommonRegistration;
+import appeng.api.integrations.igtooltip.providers.BodyProvider;
+import appeng.api.integrations.igtooltip.providers.IconProvider;
+import appeng.api.integrations.igtooltip.providers.ModNameProvider;
+import appeng.api.integrations.igtooltip.providers.NameProvider;
+import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
+import appeng.integration.modules.igtooltip.TooltipProviders;
 
 @WailaPlugin
 public class JadeModule implements IWailaPlugin {
+
     @Override
     public void register(IWailaCommonRegistration registration) {
-        for (var blockProvider : InGameTooltipProviders.getBlockProviders()) {
-            register(registration, blockProvider);
-        }
+        TooltipProviders.loadCommon(new CommonRegistration() {
+            @Override
+            public <T extends BlockEntity> void addBlockEntityData(Class<T> blockEntityClass,
+                    ServerDataProvider<? super T> provider) {
+                var adapter = new ServerDataProviderAdapter<>(provider, blockEntityClass);
+                registration.registerBlockDataProvider(adapter, blockEntityClass);
+            }
+        });
     }
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
-        for (var blockProvider : InGameTooltipProviders.getBlockProviders()) {
-            register(registration, blockProvider);
-        }
-    }
+        TooltipProviders.loadClient(new ClientRegistration() {
+            @Override
+            public <T extends BlockEntity> void addBlockEntityBody(Class<T> blockEntityClass,
+                    Class<? extends Block> blockClass, ResourceLocation id, BodyProvider<? super T> provider,
+                    int priority) {
+                var adapter = new BodyProviderAdapter<>(id, priority, provider, blockEntityClass);
+                registration.registerBlockComponent(adapter, blockClass);
+            }
 
-    private <T extends BlockEntity> void register(IWailaCommonRegistration registration,
-            InGameTooltipProviders.BlockRegistration<T> blockProvider) {
-        var adapter = new ServerDataAdapter<>(
-                blockProvider.provider(),
-                blockProvider.blockEntityClass());
-        registration.registerBlockDataProvider(adapter, blockProvider.blockEntityClass());
-    }
+            @Override
+            public <T extends BlockEntity> void addBlockEntityIcon(Class<T> blockEntityClass,
+                    Class<? extends Block> blockClass, ResourceLocation id, IconProvider<? super T> provider,
+                    int priority) {
+                var adapter = new IconProviderAdapter<>(id, priority, registration.getElementHelper(), provider,
+                        blockEntityClass);
+                registration.registerBlockIcon(adapter, blockClass);
+            }
 
-    private <T extends BlockEntity> void register(IWailaClientRegistration registration,
-            InGameTooltipProviders.BlockRegistration<T> blockProvider) {
-        var adapter = new BlockEntityDataProvider<>(
-                registration.getElementHelper(),
-                blockProvider.provider(),
-                blockProvider.blockEntityClass());
-        registration.registerBlockComponent(adapter, blockProvider.blockClass());
-        registration.registerBlockIcon(adapter, blockProvider.blockClass());
+            @Override
+            public <T extends BlockEntity> void addBlockEntityName(Class<T> blockEntityClass,
+                    Class<? extends Block> blockClass, ResourceLocation id, NameProvider<? super T> provider,
+                    int priority) {
+                var adapter = new NameProviderAdapter<>(id, priority, provider, blockEntityClass);
+                registration.registerBlockComponent(adapter, blockClass);
+            }
 
-        // Register a post-processing adapter to modify other tooltip providers
-        registration.registerBlockComponent(new PostProcessAdapter<>(
-                blockProvider.provider(),
-                blockProvider.blockEntityClass()), blockProvider.blockClass());
+            @Override
+            public <T extends BlockEntity> void addBlockEntityModName(Class<T> blockEntityClass,
+                    Class<? extends Block> blockClass, ResourceLocation id, ModNameProvider<? super T> provider,
+                    int priority) {
+                var adapter = new ModNameProviderAdapter<>(id, provider, blockEntityClass);
+                registration.registerBlockComponent(adapter, blockClass);
+            }
+        });
     }
 
 }

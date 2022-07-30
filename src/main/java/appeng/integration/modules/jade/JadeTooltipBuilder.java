@@ -5,9 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import snownee.jade.api.ITooltip;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
 
-public class JadeTooltipBuilder implements InGameTooltipBuilder {
+class JadeTooltipBuilder implements TooltipBuilder {
     private final ITooltip tooltip;
 
     public JadeTooltipBuilder(ITooltip tooltip) {

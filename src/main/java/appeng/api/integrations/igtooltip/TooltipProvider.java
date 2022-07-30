@@ -23,32 +23,38 @@
 
 package appeng.api.integrations.igtooltip;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
+/**
+ * Implement this in your addon to register additional block entity tooltips using AE2's abstraction over
+ * Jade/WTHIT/TOP.
+ * <p/>
+ * AE2 uses the Java Service Loader mechanism to find your implementations.
+ * <p/>
+ * In Short: Name a text-file <code>META-INF/services/appeng.api.integrations.igtooltip.TooltipProvider</code> and place
+ * a line in it that has the fully qualified name of your implementation class.
+ */
+@ApiStatus.Experimental
+@ApiStatus.OverrideOnly
+public interface TooltipProvider {
+    int DEFAULT_PRIORITY = 1000;
+    int DEBUG_PRIORITY = 5000;
 
-public interface InGameTooltipProvider<T> {
-    @Nullable
-    default Component getName(T object, InGameTooltipContext context) {
-        return null;
+    /**
+     * Called on both dedicated servers and clients to register providers for server-data.
+     */
+    default void registerCommon(CommonRegistration registration) {
     }
 
-    @Nullable
-    default String getModName(T object, InGameTooltipContext context) {
-        return null;
+    /**
+     * Called on clients to register providers that supply tooltip data.
+     */
+    default void registerClient(ClientRegistration registration) {
     }
 
-    @Nullable
-    default ItemStack getIcon(T object, InGameTooltipContext context) {
-        return null;
-    }
-
-    default void buildTooltip(T object, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
-    }
-
-    default void provideServerData(ServerPlayer player, T object, CompoundTag serverData) {
+    /**
+     * Allows an addon to register additional block entity base-classes that benefit from default AE2 tooltip providers.
+     */
+    default void registerBlockEntityBaseClasses(BaseClassRegistration registration) {
     }
 }

@@ -1,13 +1,14 @@
-package appeng.integration.modules.igtooltip.part;
+package appeng.integration.modules.igtooltip.parts;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
+import appeng.api.integrations.igtooltip.providers.BodyProvider;
+import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.core.localization.InGameTooltip;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
@@ -16,7 +17,7 @@ import appeng.util.Platform;
  * Provides information about a P2P tunnel to WAILA.
  */
 @SuppressWarnings("rawtypes")
-public final class P2PStateDataProvider implements InGameTooltipProvider<P2PTunnelPart> {
+public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, ServerDataProvider<P2PTunnelPart> {
     private static final byte STATE_UNLINKED = 0;
     private static final byte STATE_OUTPUT = 1;
     private static final byte STATE_INPUT = 2;
@@ -25,7 +26,7 @@ public final class P2PStateDataProvider implements InGameTooltipProvider<P2PTunn
     public static final String TAG_P2P_FREQUENCY = "p2pFrequency";
 
     @Override
-    public void buildTooltip(P2PTunnelPart object, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public void buildTooltip(P2PTunnelPart object, TooltipContext context, TooltipBuilder tooltip) {
         var serverData = context.serverData();
 
         if (serverData.contains(TAG_P2P_STATE, Tag.TAG_BYTE)) {

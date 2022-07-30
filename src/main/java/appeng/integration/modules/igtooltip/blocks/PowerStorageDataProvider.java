@@ -5,9 +5,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
+import appeng.api.integrations.igtooltip.providers.BodyProvider;
+import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.core.localization.InGameTooltip;
 import appeng.util.Platform;
@@ -15,7 +16,7 @@ import appeng.util.Platform;
 /**
  * Shows stored power and max stored power for an {@link IAEPowerStorage} block entity.
  */
-public final class PowerStorageDataProvider implements InGameTooltipProvider<BlockEntity> {
+public final class PowerStorageDataProvider implements BodyProvider<BlockEntity>, ServerDataProvider<BlockEntity> {
 
     /**
      * Power key used for the transferred {@link net.minecraft.nbt.CompoundTag}
@@ -24,7 +25,7 @@ public final class PowerStorageDataProvider implements InGameTooltipProvider<Blo
     private static final String TAG_MAX_POWER = "maxPower";
 
     @Override
-    public void buildTooltip(BlockEntity object, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public void buildTooltip(BlockEntity object, TooltipContext context, TooltipBuilder tooltip) {
         var tag = context.serverData();
         if (tag.contains(TAG_MAX_POWER, Tag.TAG_DOUBLE)) {
             var currentPower = tag.getDouble(TAG_CURRENT_POWER);

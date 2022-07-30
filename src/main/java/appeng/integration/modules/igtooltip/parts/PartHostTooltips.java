@@ -1,4 +1,4 @@
-package appeng.integration.modules.igtooltip.blocks;
+package appeng.integration.modules.igtooltip.parts;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -9,34 +9,49 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
-import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.integration.modules.igtooltip.InGameTooltipProviders;
 import appeng.util.Platform;
 
-public class CableBusDataProvider implements InGameTooltipProvider<CableBusBlockEntity> {
-    @Override
-    public @Nullable Component getName(CableBusBlockEntity object, InGameTooltipContext context) {
+public final class PartHostTooltips {
+
+    private PartHostTooltips() {
+    }
+
+    public static @Nullable Component getName(BlockEntity object, TooltipContext context) {
+        return getName((IPartHost) object, context);
+    }
+
+    public static @Nullable Component getName(IPartHost object, TooltipContext context) {
         var selected = getPart(object, context.hitLocation());
 
         if (selected.facade != null) {
             return selected.facade.getItemStack().getHoverName();
         } else if (selected.part != null) {
+            for (var provider : PartTooltipProviders.getProviders(selected.part).nameProviders()) {
+                var name = provider.getName(selected.part, context);
+                if (name != null) {
+                    return name;
+                }
+            }
+
             return selected.part.getPartItem().asItem().getDescription();
         } else {
             return null;
         }
     }
 
-    @Override
-    public @Nullable String getModName(CableBusBlockEntity object, InGameTooltipContext context) {
+    public static @Nullable String getModName(BlockEntity blockEntity, TooltipContext context) {
+        return getModName((IPartHost) blockEntity, context);
+    }
+
+    public static @Nullable String getModName(IPartHost object, TooltipContext context) {
         var selected = getPart(object, context.hitLocation());
 
         Item item;
@@ -51,20 +66,34 @@ public class CableBusDataProvider implements InGameTooltipProvider<CableBusBlock
         return Platform.getModName(Registry.ITEM.getKey(item).getNamespace());
     }
 
-    @Override
-    public @Nullable ItemStack getIcon(CableBusBlockEntity object, InGameTooltipContext context) {
+    public static @Nullable ItemStack getIcon(BlockEntity object, TooltipContext context) {
+        return getIcon((IPartHost) object, context);
+    }
+
+    public static @Nullable ItemStack getIcon(IPartHost object, TooltipContext context) {
         var selected = getPart(object, context.hitLocation());
         if (selected.facade != null) {
             return selected.facade.getItemStack();
         } else if (selected.part != null) {
+            for (var provider : PartTooltipProviders.getProviders(selected.part).iconProviders()) {
+                var icon = provider.getIcon(selected.part, context);
+                if (icon != null) {
+                    return icon;
+                }
+            }
+
             return new ItemStack(selected.part.getPartItem());
         } else {
             return null;
         }
     }
 
-    @Override
-    public void buildTooltip(CableBusBlockEntity object, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public static void buildTooltip(BlockEntity object, TooltipContext context, TooltipBuilder tooltip) {
+        buildTooltip((IPartHost) object, context, tooltip);
+    }
+
+    public static void buildTooltip(IPartHost object, TooltipContext context,
+            TooltipBuilder tooltip) {
         // Pick the part the cursor is on
         var selected = getPart(object, context.hitLocation());
         if (selected.part != null) {
@@ -75,19 +104,22 @@ public class CableBusDataProvider implements InGameTooltipProvider<CableBusBlock
         }
     }
 
-    private <T extends IPart> void buildPartTooltip(T part,
+    private static <T extends IPart> void buildPartTooltip(T part,
             CompoundTag partTag,
-            InGameTooltipContext blockContext,
-            InGameTooltipBuilder tooltip) {
-        var partContext = new InGameTooltipContext(partTag, blockContext.hitLocation(), blockContext.player());
+            TooltipContext blockContext,
+            TooltipBuilder tooltip) {
+        var partContext = new TooltipContext(partTag, blockContext.hitLocation(), blockContext.player());
 
-        for (var provider : InGameTooltipProviders.getPartProviders(part)) {
+        for (var provider : PartTooltipProviders.getProviders(part).bodyProviders()) {
             provider.buildTooltip(part, partContext, tooltip);
         }
     }
 
-    @Override
-    public void provideServerData(ServerPlayer player, CableBusBlockEntity object, CompoundTag serverData) {
+    public static void provideServerData(ServerPlayer player, BlockEntity object, CompoundTag serverData) {
+        provideServerData(player, (IPartHost) object, serverData);
+    }
+
+    public static void provideServerData(ServerPlayer player, IPartHost object, CompoundTag serverData) {
         var partTag = new CompoundTag();
         for (var location : Platform.DIRECTIONS_WITH_NULL) {
             var part = object.getPart(location);
@@ -95,7 +127,7 @@ public class CableBusDataProvider implements InGameTooltipProvider<CableBusBlock
                 continue;
             }
 
-            for (var provider : InGameTooltipProviders.getPartProviders(part)) {
+            for (var provider : PartTooltipProviders.getProviders(part).serverDataProviders()) {
                 provider.provideServerData(player, part, partTag);
             }
 

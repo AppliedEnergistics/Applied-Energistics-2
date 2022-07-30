@@ -4,9 +4,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.util.Mth;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
+import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.core.localization.InGameTooltip;
 import appeng.util.Platform;
@@ -14,10 +14,9 @@ import appeng.util.Platform;
 /**
  * Shows the tooltip of the item being charged, which usually includes a charge meter.
  */
-public final class ChargerDataProvider implements InGameTooltipProvider<ChargerBlockEntity> {
-
+public final class ChargerDataProvider implements BodyProvider<ChargerBlockEntity> {
     @Override
-    public void buildTooltip(ChargerBlockEntity charger, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public void buildTooltip(ChargerBlockEntity charger, TooltipContext context, TooltipBuilder tooltip) {
         var chargerInventory = charger.getInternalInventory();
         var chargingItem = chargerInventory.getStackInSlot(0);
 

@@ -1,13 +1,14 @@
-package appeng.integration.modules.igtooltip.part;
+package appeng.integration.modules.igtooltip.parts;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
-import appeng.api.integrations.igtooltip.InGameTooltipContext;
-import appeng.api.integrations.igtooltip.InGameTooltipProvider;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
+import appeng.api.integrations.igtooltip.providers.BodyProvider;
+import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.core.localization.InGameTooltip;
 import appeng.me.service.PathingService;
@@ -16,13 +17,14 @@ import appeng.parts.networking.IUsedChannelProvider;
 /**
  * Shows the used and maximum channel count for a part that implements {@link IUsedChannelProvider}.
  */
-public final class ChannelDataProvider<T extends IUsedChannelProvider> implements InGameTooltipProvider<T> {
+public final class ChannelDataProvider
+        implements BodyProvider<IUsedChannelProvider>, ServerDataProvider<IUsedChannelProvider> {
     private static final String TAG_MAX_CHANNELS = "maxChannels";
     private static final String TAG_USED_CHANNELS = "usedChannels";
     private static final String TAG_ERROR = "channelError";
 
     @Override
-    public void buildTooltip(T object, InGameTooltipContext context, InGameTooltipBuilder tooltip) {
+    public void buildTooltip(IUsedChannelProvider object, TooltipContext context, TooltipBuilder tooltip) {
         var serverData = context.serverData();
         if (serverData.contains(TAG_ERROR, Tag.TAG_STRING)) {
             var error = ChannelError.valueOf(serverData.getString(TAG_ERROR));

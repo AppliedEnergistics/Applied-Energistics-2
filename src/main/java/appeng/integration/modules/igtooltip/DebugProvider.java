@@ -10,21 +10,25 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.integrations.igtooltip.InGameTooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipBuilder;
+import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.definitions.AEItems;
 import appeng.me.InWorldGridNode;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 import appeng.me.service.TickManagerService;
+import appeng.parts.AEBasePart;
 import appeng.util.Platform;
 
-public final class DebugTooltip {
+public final class DebugProvider {
     private static final String TAG_NODES = "debugNodes";
     private static final String TAG_NODE_NAME = "nodeName";
     private static final String TAG_TICK_TIME = "tickTime";
@@ -36,10 +40,38 @@ public final class DebugTooltip {
     private static final String TAG_TICK_LAST_TICK = "tickLastTick";
     private static final String TAG_NODE_EXPOSED = "exposedSides";
 
-    private DebugTooltip() {
+    private DebugProvider() {
     }
 
-    public static void addBlockEntityRotation(BlockEntity blockEntity, InGameTooltipBuilder tooltip) {
+    public static void provideBlockEntityBody(BlockEntity object, TooltipContext context, TooltipBuilder tooltip) {
+        var player = context.player();
+
+        if (!DebugProvider.isVisible(player)) {
+            return;
+        }
+
+        DebugProvider.addBlockEntityRotation(object, tooltip);
+        DebugProvider.addToTooltip(context.serverData(), tooltip);
+    }
+
+    public static void provideBlockEntityData(ServerPlayer player, BlockEntity object, CompoundTag serverData) {
+        if (object instanceof IGridConnectedBlockEntity gridConnected && DebugProvider.isVisible(player)) {
+            DebugProvider.addServerDataMainNode(serverData, gridConnected.getMainNode());
+        }
+    }
+
+    public static void providePartBody(AEBasePart object, TooltipContext context, TooltipBuilder tooltip) {
+        DebugProvider.addToTooltip(context.serverData(), tooltip);
+    }
+
+    public static void providePartData(ServerPlayer player, AEBasePart part, CompoundTag serverData) {
+        if (DebugProvider.isVisible(player)) {
+            DebugProvider.addServerDataMainNode(serverData, part.getMainNode());
+            DebugProvider.addServerDataNode(serverData, "External Node", part.getExternalFacingNode());
+        }
+    }
+
+    private static void addBlockEntityRotation(BlockEntity blockEntity, TooltipBuilder tooltip) {
         if (blockEntity instanceof AEBaseBlockEntity be && be.canBeRotated()) {
             var up = be.getUp();
             var forward = be.getForward();
@@ -52,7 +84,7 @@ public final class DebugTooltip {
         }
     }
 
-    public static void addToTooltip(CompoundTag serverData, InGameTooltipBuilder tooltip) {
+    private static void addToTooltip(CompoundTag serverData, TooltipBuilder tooltip) {
         var nodes = serverData.getList(TAG_NODES, Tag.TAG_COMPOUND);
 
         for (var node : nodes) {
@@ -65,7 +97,7 @@ public final class DebugTooltip {
         }
     }
 
-    private static void addNodeToTooltip(CompoundTag tag, InGameTooltipBuilder tooltip) {
+    private static void addNodeToTooltip(CompoundTag tag, TooltipBuilder tooltip) {
         if (tag.contains(TAG_TICK_TIME, Tag.TAG_LONG_ARRAY)) {
             long[] tickTimes = tag.getLongArray(TAG_TICK_TIME);
             if (tickTimes.length == 3) {
@@ -131,11 +163,11 @@ public final class DebugTooltip {
         }
     }
 
-    public static void addServerDataMainNode(CompoundTag tag, IManagedGridNode managedGridNode) {
+    private static void addServerDataMainNode(CompoundTag tag, IManagedGridNode managedGridNode) {
         addServerDataNode(tag, "Main Node", managedGridNode.getNode());
     }
 
-    public static void addServerDataNode(CompoundTag tag, String name, @Nullable IGridNode node) {
+    private static void addServerDataNode(CompoundTag tag, String name, @Nullable IGridNode node) {
         var nodeTag = toServerData(node, name);
         if (nodeTag != null) {
             var nodes = (ListTag) tag.get(TAG_NODES);
@@ -147,7 +179,7 @@ public final class DebugTooltip {
         }
     }
 
-    public static CompoundTag toServerData(IGridNode node, String name) {
+    private static CompoundTag toServerData(IGridNode node, String name) {
         if (node == null) {
             return null;
         }
@@ -186,7 +218,7 @@ public final class DebugTooltip {
         return tag;
     }
 
-    public static boolean isVisible(Player player) {
+    private static boolean isVisible(Player player) {
         return AEItems.DEBUG_CARD.isSameAs(player.getItemInHand(InteractionHand.OFF_HAND))
                 || AEItems.DEBUG_CARD.isSameAs(player.getItemInHand(InteractionHand.MAIN_HAND));
     }
