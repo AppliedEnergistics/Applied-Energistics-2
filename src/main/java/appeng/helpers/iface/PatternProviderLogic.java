@@ -404,6 +404,10 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     // TODO: get rid of this awful code
     private static final Collection<Block> BAD_BLOCKS = new HashSet<>(100);
 
+    /**
+     * @return Gets the name used to show this pattern provider in the
+     *         {@link appeng.menu.implementations.PatternAccessTermMenu}.
+     */
     public Component getTermName() {
         final BlockEntity host = this.host.getBlockEntity();
         final Level hostWorld = host.getLevel();

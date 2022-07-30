@@ -14,7 +14,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.integrations.waila.AEJadeIds;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
@@ -25,6 +24,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.localization.LocalizationEnum;
 import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.integration.modules.igtooltip.TooltipIds;
 
 public class LocalizationProvider implements IAE2DataProvider {
     private final Map<String, String> localizations = new HashMap<>();
@@ -63,15 +63,19 @@ public class LocalizationProvider implements IAE2DataProvider {
     }
 
     private void generateJadeLocalizations() {
-        addJadeProviderDisplayName(AEJadeIds.PART_PROVIDER, "Part");
-        addJadeProviderDisplayName(AEJadeIds.PART_NAME_PROVIDER, "Part Name");
-        addJadeProviderDisplayName(AEJadeIds.PART_ICON_PROVIDER, "Part Icon");
-        addJadeProviderDisplayName(AEJadeIds.CHARGER_PROVIDER, "Charger");
-        addJadeProviderDisplayName(AEJadeIds.BLOCK_ENTITIES_PROVIDER, "Block Entities");
+        addJadeProviderDisplayName(TooltipIds.DEBUG, "AE2 Debug Info");
+        addJadeProviderDisplayName(TooltipIds.GRID_NODE_STATE, "AE2 Network State");
+        addJadeProviderDisplayName(TooltipIds.POWER_STORAGE, "AE2 Power State");
+        addJadeProviderDisplayName(TooltipIds.CRAFTING_MONITOR, "AE2 Crafting Monitor");
+        addJadeProviderDisplayName(TooltipIds.CHARGER, "AE2 Charger");
+        addJadeProviderDisplayName(TooltipIds.PART_NAME, "AE2 Part Name");
+        addJadeProviderDisplayName(TooltipIds.PART_ICON, "AE2 Part Icon");
+        addJadeProviderDisplayName(TooltipIds.PART_MOD_NAME, "AE2 Mod Name");
+        addJadeProviderDisplayName(TooltipIds.PART_TOOLTIP, "AE2 Part Tooltip");
     }
 
     private void addJadeProviderDisplayName(ResourceLocation providerId, String name) {
-        add("config.jade.plugin_ae2." + providerId.getPath(), name);
+        add("config.jade.plugin_" + providerId.getNamespace() + "." + providerId.getPath(), name);
     }
 
     public <T extends Enum<T> & LocalizationEnum> void addEnum(Class<T> localizedEnum) {
