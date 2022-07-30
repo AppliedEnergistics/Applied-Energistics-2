@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 
 import com.google.common.collect.ImmutableList;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -81,5 +82,7 @@ public abstract class MinecraftServerMixin {
         // NOTE: We don't register the spatial dimension for the world-border. Players can't move freely in that
         // dimension anyway.
         this.levels.put(SpatialStorageDimensionIds.WORLD_ID, level);
+        // Fabric hooks the "levels.put" call to emit the world load event. We have to trigger it manually here.
+        ServerWorldEvents.LOAD.invoker().onWorldLoad((MinecraftServer) (Object) this, level);
     }
 }
