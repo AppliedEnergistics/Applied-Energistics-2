@@ -1,24 +1,22 @@
 package appeng.mixins;
 
-import java.util.Map;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 import appeng.hooks.ModelsReloadCallback;
 
-@Mixin(ModelBakery.class)
+@Mixin(ModelManager.class)
 public class ModelsReloadMixin {
-
-    @Inject(method = "getBakedTopLevelModels", at = @At("RETURN"))
-    public void onGetBakedModelMap(CallbackInfoReturnable<Map<ResourceLocation, BakedModel>> ci) {
-        ModelsReloadCallback.EVENT.invoker().onModelsReloaded(ci.getReturnValue());
+    @Inject(method = "apply(Lnet/minecraft/client/resources/model/ModelBakery;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/BlockModelShaper;rebuildCache()V"))
+    public void onGetBakedModelMap(ModelBakery modelBakery, ResourceManager resourceManager,
+            ProfilerFiller profilerFiller, CallbackInfo callbackInfo) {
+        ModelsReloadCallback.EVENT.invoker().onModelsReloaded(modelBakery.getBakedTopLevelModels());
     }
-
 }
