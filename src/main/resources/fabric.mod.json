@@ -22,8 +22,8 @@
   "mixins": ["ae2.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14.8",
-    "fabric": ">=0.56.0",
-    "minecraft": "1.19.x"
+    "fabric": ">=0.58.5",
+    "minecraft": ">=1.19.1"
   },
   "conflicts": {
     "appliedenergistics2": "*"
