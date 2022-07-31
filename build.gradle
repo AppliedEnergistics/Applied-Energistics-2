@@ -84,12 +84,24 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
-        exclude group: "mezz.jei"
-    }
+    if (project.runtime_itemlist_mod == "jei") {
+        modImplementation("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
+            exclude group: "mezz.jei"
+        }
 
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-        exclude group: "net.fabricmc.fabric-api"
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
+    } else if (project.runtime_itemlist_mod == "rei") {
+        modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
+            exclude group: "mezz.jei"
+        }
+
+        modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
+    } else {
+        throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
 
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {

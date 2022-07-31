@@ -305,7 +305,7 @@ public class SpatialStorageCommand implements ISubCommand {
 
     private static void runCommandFor(CommandSourceStack source, String command) {
         Commands commandManager = source.getServer().getCommands();
-        commandManager.performCommand(source, command);
+        commandManager.performPrefixedCommand(source, command);
     }
 
     private static String getTeleportCommand(ResourceLocation worldId, BlockPos pos) {
