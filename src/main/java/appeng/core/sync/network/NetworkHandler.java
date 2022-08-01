@@ -18,13 +18,14 @@
 
 package appeng.core.sync.network;
 
+import java.util.function.Consumer;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketListener;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.RunningOnDifferentThreadException;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkDirection;
@@ -32,16 +33,17 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.event.EventNetworkChannel;
 
+import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.BasePacket;
+import appeng.core.sync.BasePacketHandler;
 
 public class NetworkHandler {
     private static NetworkHandler instance;
 
     private final ResourceLocation myChannelName;
 
-    private final IPacketHandler clientHandler;
-    private final IPacketHandler serverHandler;
+    private final Consumer<BasePacket> clientHandler;
 
     public NetworkHandler(final ResourceLocation channelName) {
         EventNetworkChannel ec = NetworkRegistry.ChannelBuilder.named(myChannelName = channelName)
@@ -49,8 +51,9 @@ public class NetworkHandler {
                 .eventNetworkChannel();
         ec.registerObject(this);
 
-        this.clientHandler = DistExecutor.unsafeRunForDist(() -> ClientPacketHandler::new, () -> () -> null);
-        this.serverHandler = this.createServerSide();
+        this.clientHandler = DistExecutor.unsafeRunForDist(() -> () -> ClientPacketHandler::onPacketData,
+                () -> () -> pkt -> {
+                });
     }
 
     public static void init(final ResourceLocation channelName) {
@@ -61,28 +64,23 @@ public class NetworkHandler {
         return instance;
     }
 
-    private IPacketHandler createServerSide() {
-        try {
-            return new ServerPacketHandler();
-        } catch (final Throwable t) {
-            return null;
-        }
-    }
-
     @SubscribeEvent
     public void serverPacket(final NetworkEvent.ClientCustomPayloadEvent ev) {
-        if (this.serverHandler != null) {
-            try {
-                NetworkEvent.Context ctx = ev.getSource().get();
-                ServerGamePacketListenerImpl netHandler = (ServerGamePacketListenerImpl) ctx.getNetworkManager()
-                        .getPacketListener();
-                ctx.setPacketHandled(true);
-                ctx.enqueueWork(
-                        () -> this.serverHandler.onPacketData(netHandler, ev.getPayload(), netHandler.player));
+        try {
+            NetworkEvent.Context ctx = ev.getSource().get();
+            ctx.setPacketHandled(true);
+            var packet = deserializePacket(ev.getPayload());
+            var player = ctx.getSender();
+            ctx.enqueueWork(
+                    () -> {
+                        try {
+                            packet.serverPacketData(player);
+                        } catch (final IllegalArgumentException e) {
+                            AELog.warn(e);
+                        }
+                    });
+        } catch (final RunningOnDifferentThreadException ignored) {
 
-            } catch (final RunningOnDifferentThreadException ignored) {
-
-            }
         }
     }
 
@@ -94,13 +92,20 @@ public class NetworkHandler {
         if (this.clientHandler != null) {
             try {
                 NetworkEvent.Context ctx = ev.getSource().get();
-                PacketListener netHandler = ctx.getNetworkManager().getPacketListener();
                 ctx.setPacketHandled(true);
-                ctx.enqueueWork(() -> this.clientHandler.onPacketData(netHandler, ev.getPayload(), null));
+
+                var packet = deserializePacket(ev.getPayload());
+
+                ctx.enqueueWork(() -> this.clientHandler.accept(packet));
             } catch (RunningOnDifferentThreadException ignored) {
 
             }
         }
+    }
+
+    private static BasePacket deserializePacket(FriendlyByteBuf payload) {
+        var packetId = payload.readInt();
+        return BasePacketHandler.PacketTypes.getPacket(packetId).parsePacket(payload);
     }
 
     public ResourceLocation getChannel() {

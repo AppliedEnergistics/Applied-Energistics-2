@@ -19,23 +19,17 @@
 package appeng.core.sync.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.PacketListener;
-import net.minecraft.world.entity.player.Player;
 
 import appeng.core.AELog;
 import appeng.core.sync.BasePacket;
-import appeng.core.sync.BasePacketHandler;
-import appeng.core.sync.BasePacketHandler.PacketTypes;
 
-public class ClientPacketHandler extends BasePacketHandler implements IPacketHandler {
+public class ClientPacketHandler {
+    private ClientPacketHandler() {
+    }
 
-    @Override
-    public void onPacketData(final PacketListener handler, final FriendlyByteBuf packet, final Player player) {
+    public static void onPacketData(BasePacket packet) {
         try {
-            final int packetType = packet.readInt();
-            final BasePacket pack = PacketTypes.getPacket(packetType).parsePacket(packet);
-            pack.clientPacketData(Minecraft.getInstance().player);
+            packet.clientPacketData(Minecraft.getInstance().player);
         } catch (final IllegalArgumentException e) {
             AELog.debug(e);
         }
