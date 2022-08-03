@@ -66,7 +66,7 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
                 .build(new CacheLoader<>() {
                     @Override
                     public List<BakedQuad>[] load(AutoRotatingCacheKey key) {
-                        return AutoRotatingBakedModel.this.getRotatedModel(key.getBlockState(), key.getModelData());
+                        return getRotatedModel(key.getBlockState(), key.getModelData());
                     }
                 });
     }
@@ -134,11 +134,12 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
 
     private void rotateQuadsFromSide(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
             ModelData modelData, FacingToRotation f2r, QuadEmitter quadEmitter) {
-        var original = this.parent.getQuads(state, f2r.resultingRotate(side), rand,
+        var cullFace = f2r.resultingRotate(side);
+        var original = this.parent.getQuads(state, cullFace, rand,
                 modelData, null);
 
         for (var quad : original) {
-            quadEmitter.fromVanilla(quad, side);
+            quadEmitter.fromVanilla(quad, cullFace);
 
             var quadRotator = QuadRotator.get(f2r);
             quadRotator.transform(quadEmitter);
