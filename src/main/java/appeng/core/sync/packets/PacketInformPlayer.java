@@ -33,10 +33,10 @@ public class PacketInformPlayer extends AppEngPacket
 		}
 	}
 
-	public PacketInformPlayer( IAEItemStack extra, IAEItemStack result, InfoType type ) throws IOException
+	public PacketInformPlayer( IAEItemStack expected, IAEItemStack actual, InfoType type ) throws IOException
 	{
-		this.reportedItem = extra;
-		this.actualItem = result;
+		this.reportedItem = expected;
+		this.actualItem = actual;
 		this.type = type;
 
 		final ByteBuf data = Unpooled.buffer();

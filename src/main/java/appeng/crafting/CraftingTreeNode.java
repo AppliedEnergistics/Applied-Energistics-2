@@ -360,21 +360,21 @@ public class CraftingTreeNode
 	{
 		for( final IAEItemStack i : this.used )
 		{
-			final IAEItemStack ex = storage.extractItems( i, Actionable.MODULATE, src );
+			final IAEItemStack actuallyExtracted = storage.extractItems( i, Actionable.MODULATE, src );
 
-			if( ex == null || ex.getStackSize() != i.getStackSize() )
+			if( actuallyExtracted == null || actuallyExtracted.getStackSize() != i.getStackSize() )
 			{
 				if( src.player().isPresent() )
 				{
 					try
 					{
-						if( ex == null )
+						if( actuallyExtracted == null )
 						{
 							NetworkHandler.instance().sendTo( new PacketInformPlayer( i, null, PacketInformPlayer.InfoType.NO_ITEMS_EXTRACTED ), (EntityPlayerMP) src.player().get() );
 						}
 						else
 						{
-							NetworkHandler.instance().sendTo( new PacketInformPlayer( ex, i, PacketInformPlayer.InfoType.PARTIAL_ITEM_EXTRACTION ), (EntityPlayerMP) src.player().get() );
+							NetworkHandler.instance().sendTo( new PacketInformPlayer( i, actuallyExtracted, PacketInformPlayer.InfoType.PARTIAL_ITEM_EXTRACTION ), (EntityPlayerMP) src.player().get() );
 						}
 					}
 					catch( IOException e )
@@ -385,7 +385,7 @@ public class CraftingTreeNode
 				throw new CraftBranchFailure( i, i.getStackSize() );
 			}
 
-			craftingCPUCluster.addStorage( ex );
+			craftingCPUCluster.addStorage( actuallyExtracted );
 		}
 
 		if( this.howManyEmitted > 0 )

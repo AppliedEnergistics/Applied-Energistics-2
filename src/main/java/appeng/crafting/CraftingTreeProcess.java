@@ -251,7 +251,7 @@ public class CraftingTreeProcess
 		{
 			final IAEItemStack stack = entry.getKey().request( inv, entry.getValue() * amountOfTimes, src );
 
-			if( stack.getItem().hasContainerItem( stack.getDefinition() ) )
+			if( this.details.isCraftable() && stack.getItem().hasContainerItem( stack.getDefinition() ) )
 			{
 				final ItemStack is = Platform.getContainerItem( stack.createItemStack() );
 				final IAEItemStack o = AEItemStack.fromItemStack( is );
