@@ -80,6 +80,7 @@ public final class ApiParts implements IParts
 	private final IItemDefinition interfaceTerminal;
 	private final IItemDefinition patternTerminal;
 	private final IItemDefinition expandedProcessingPatternTerminal;
+	private final IItemDefinition configuringInterfaceTerminal;
 	private final IItemDefinition craftingTerminal;
 	private final IItemDefinition terminal;
 	private final IItemDefinition storageMonitor;
@@ -142,6 +143,7 @@ public final class ApiParts implements IParts
 		this.interfaceTerminal = new DamagedItemDefinition( "part.terminal.interface", itemPart.createPart( PartType.INTERFACE_TERMINAL ) );
 		this.patternTerminal = new DamagedItemDefinition( "part.terminal.pattern", itemPart.createPart( PartType.PATTERN_TERMINAL ) );
 		this.expandedProcessingPatternTerminal = new DamagedItemDefinition( "part.terminal.expanded_processing_pattern", itemPart.createPart( PartType.EXPANDED_PROCESSING_PATTERN_TERMINAL ) );
+		this.configuringInterfaceTerminal = new DamagedItemDefinition( "part.terminal.configuring_interface_terminal", itemPart.createPart( PartType.CONFIGURING_INTERFACE_TERMINAL ) );
 		this.craftingTerminal = new DamagedItemDefinition( "part.terminal.crafting", itemPart.createPart( PartType.CRAFTING_TERMINAL ) );
 		this.terminal = new DamagedItemDefinition( "part.terminal", itemPart.createPart( PartType.TERMINAL ) );
 		this.storageMonitor = new DamagedItemDefinition( "part.monitor.storage", itemPart.createPart( PartType.STORAGE_MONITOR ) );
