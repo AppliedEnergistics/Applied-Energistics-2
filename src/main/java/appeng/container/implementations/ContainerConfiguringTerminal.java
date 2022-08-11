@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import appeng.api.config.Upgrades;
 import appeng.parts.reporting.PartConfiguringTerminal;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -45,9 +44,7 @@ import appeng.core.sync.packets.PacketCompressedNBT;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.InventoryAction;
-import appeng.items.misc.ItemEncodedPattern;
 import appeng.parts.misc.PartInterface;
-import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.TileInterface;
 import appeng.util.InventoryAdaptor;
@@ -55,7 +52,6 @@ import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
-import appeng.util.inv.WrapperFilteredItemHandler;
 import appeng.util.inv.WrapperRangeItemHandler;
 import appeng.util.inv.filter.IAEItemFilter;
 
@@ -214,119 +210,67 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 
 			final InventoryAdaptor playerHand = new AdaptorItemHandler( new WrapperCursorItemHandler( player.inventory ) );
 
-			final IItemHandler theSlot = new WrapperFilteredItemHandler( new WrapperRangeItemHandler( inv.server, slot, slot + 1 ), new PatternSlotFilter() );
+			final IItemHandler theSlot = new WrapperRangeItemHandler( inv.server, slot, slot + 1 );
 			final InventoryAdaptor interfaceSlot = new AdaptorItemHandler( theSlot );
 
-			IItemHandler interfaceHandler = inv.server;
-			boolean canInsert = true;
+			ItemStack inSlot = theSlot.getStackInSlot( 0 );
 
 			switch ( action )
 			{
 				case PICKUP_OR_SET_DOWN:
 					if( hasItemInHand )
 					{
-						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
-						{
-							if( Platform.itemComparisons().isSameItem( interfaceHandler.getStackInSlot( s ), player.inventory.getItemStack() ) )
-							{
-								canInsert = false;
-								break;
-							}
-						}
-						if( canInsert )
-						{
-							ItemStack inSlot = theSlot.getStackInSlot( 0 );
-							if( inSlot.isEmpty() )
-							{
-								player.inventory.setItemStack( interfaceSlot.addItems( player.inventory.getItemStack() ) );
-							}
-							else
-							{
-								inSlot = inSlot.copy();
-								final ItemStack inHand = player.inventory.getItemStack().copy();
-
-								ItemHandlerUtil.setStackInSlot( theSlot, 0, ItemStack.EMPTY );
-								player.inventory.setItemStack( ItemStack.EMPTY );
-
-								player.inventory.setItemStack( interfaceSlot.addItems( inHand.copy() ) );
-
-								if( player.inventory.getItemStack().isEmpty() )
-								{
-									player.inventory.setItemStack( inSlot );
-								}
-								else
-								{
-									player.inventory.setItemStack( inHand );
-									ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot );
-								}
-							}
-						}
+						ItemHandlerUtil.setStackInSlot( theSlot, 0, player.inventory.getItemStack().copy() );
 					}
 					else
 					{
-						ItemHandlerUtil.setStackInSlot( theSlot, 0, playerHand.addItems( theSlot.getStackInSlot( 0 ) ) );
+						ItemHandlerUtil.setStackInSlot( theSlot, 0, ItemStack.EMPTY );
 					}
-
+					break;
+				case PLACE_SINGLE:
+					if( inSlot.getMaxStackSize() > inSlot.getCount() )
+					{
+						inSlot.grow( 1 );
+						ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot );
+					}
+					break;
+				case PICKUP_SINGLE:
+					if( theSlot.getStackInSlot( 0 ).getCount() > 1 )
+					{
+						inSlot.shrink( 1 );
+						ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot );
+					}
 					break;
 				case SPLIT_OR_PLACE_SINGLE:
 					if( hasItemInHand )
 					{
-						for( int s = 0; s < interfaceHandler.getSlots(); s++ )
+						if( ItemStack.areItemsEqual( inSlot, player.inventory.getItemStack() ) && ItemStack.areItemStackTagsEqual( inSlot, player.inventory.getItemStack() ) )
 						{
-							if( Platform.itemComparisons().isSameItem( interfaceHandler.getStackInSlot( s ), player.inventory.getItemStack() ) )
-							{
-								canInsert = false;
-								break;
-							}
+							inSlot.grow( 1 );
+							ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot.copy() );
 						}
-						if( canInsert )
+						else
 						{
-							ItemStack extra = playerHand.removeItems( 1, ItemStack.EMPTY, null );
-							if( !extra.isEmpty() && !interfaceSlot.containsItems() )
-							{
-								extra = interfaceSlot.addItems( extra );
-							}
-							if( !extra.isEmpty() )
-							{
-								playerHand.addItems( extra );
-							}
+							ItemHandlerUtil.setStackInSlot( theSlot, 0, player.inventory.getItemStack().copy() );
 						}
+
 					}
 					else if( !is.isEmpty() )
 					{
-						ItemStack extra = interfaceSlot.removeItems( ( is.getCount() + 1 ) / 2, ItemStack.EMPTY, null );
-						if( !extra.isEmpty() )
-						{
-							extra = playerHand.addItems( extra );
-						}
-						if( !extra.isEmpty() )
-						{
-							interfaceSlot.addItems( extra );
-						}
+						inSlot.shrink( 1 );
+						ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot.copy() );
 					}
 
 					break;
 				case SHIFT_CLICK:
-
-					final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor( player );
-
-					ItemHandlerUtil.setStackInSlot( theSlot, 0, playerInv.addItems( theSlot.getStackInSlot( 0 ) ) );
-
+					ItemHandlerUtil.setStackInSlot( theSlot, 0, ItemStack.EMPTY );
 					break;
-				case MOVE_REGION:
 
-					final InventoryAdaptor playerInvAd = InventoryAdaptor.getAdaptor( player );
-					for( int x = 0; x < inv.server.getSlots(); x++ )
-					{
-						ItemHandlerUtil.setStackInSlot( inv.server, x, playerInvAd.addItems( inv.server.getStackInSlot( x ) ) );
-					}
-
-					break;
 				case CREATIVE_DUPLICATE:
 
-					if( player.capabilities.isCreativeMode && !hasItemInHand )
+					if( player.capabilities.isCreativeMode && hasItemInHand )
 					{
-						player.inventory.setItemStack( is.isEmpty() ? ItemStack.EMPTY : is.copy() );
+						ItemHandlerUtil.setStackInSlot( theSlot, 0, player.inventory.getItemStack().copy() );
 					}
 
 					break;
@@ -355,7 +299,7 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 					final DualityInterface dual = ih.getInterfaceDuality();
 					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 					{
-						this.diList.put( ih, new ConfigTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+						this.diList.put( ih, new ConfigTracker( dual, dual.getConfig(), dual.getTermName() ) );
 					}
 				}
 
@@ -365,7 +309,7 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 					final DualityInterface dual = ih.getInterfaceDuality();
 					if( gn.isActive() && dual.getConfigManager().getSetting( Settings.INTERFACE_TERMINAL ) == YesNo.YES )
 					{
-						this.diList.put( ih, new ConfigTracker( dual, dual.getPatterns(), dual.getTermName() ) );
+						this.diList.put( ih, new ConfigTracker( dual, dual.getConfig(), dual.getTermName() ) );
 					}
 				}
 			}
@@ -407,7 +351,6 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 			tag.setString( "un", inv.unlocalizedName );
 			tag.setTag( "pos", NBTUtil.createPosTag( inv.pos ) );
 			tag.setInteger( "dim", inv.dim );
-			tag.setInteger( "numUpgrades", inv.numUpgrades );
 		}
 
 		for( int x = 0; x < length; x++ )
@@ -440,32 +383,15 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 		private final IItemHandler server;
 		private final BlockPos pos;
 		private final int dim;
-		private final int numUpgrades;
 
-		public ConfigTracker( final DualityInterface dual, final IItemHandler patterns, final String unlocalizedName )
+		public ConfigTracker( final DualityInterface dual, final IItemHandler configSlots, final String unlocalizedName )
 		{
-			this.server = patterns;
+			this.server = configSlots;
 			this.client = new AppEngInternalInventory( null, this.server.getSlots() );
 			this.unlocalizedName = unlocalizedName;
 			this.sortBy = dual.getSortValue();
 			this.pos = dual.getLocation().getPos();
 			this.dim = dual.getLocation().getWorld().provider.getDimension();
-			this.numUpgrades = dual.getInstalledUpgrades( Upgrades.PATTERN_EXPANSION );
-		}
-	}
-
-	private static class PatternSlotFilter implements IAEItemFilter
-	{
-		@Override
-		public boolean allowExtract( IItemHandler inv, int slot, int amount )
-		{
-			return true;
-		}
-
-		@Override
-		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
-		{
-			return !stack.isEmpty() && stack.getItem() instanceof ItemEncodedPattern;
 		}
 	}
 }

@@ -168,6 +168,7 @@ gui.appliedenergistics2.StoredFluids=Stored Fluids
 gui.appliedenergistics2.Terminal=Terminal
 gui.appliedenergistics2.InterfaceTerminal=Interface Terminal
 gui.appliedenergistics2.InterfaceTerminalHint=Show Or Hide on Interface Terminal.
+gui.appliedenergistics2.InterfaceConfigurationTerminal=Interface Configuration Terminal
 gui.appliedenergistics2.FormationPlane=Formation Plane
 gui.appliedenergistics2.FluidFormationPlane=Fluid Formation Plane
 gui.appliedenergistics2.VibrationChamber=Vibration Chamber

@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import appeng.client.gui.implementations.GuiConfiguringTerminal;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -112,6 +113,10 @@ public class PacketCompressedNBT extends AppEngPacket
 		if( gs instanceof GuiInterfaceTerminal )
 		{
 			( (GuiInterfaceTerminal) gs ).postUpdate( this.in );
+		}
+		else if( gs instanceof GuiConfiguringTerminal )
+		{
+			( (GuiConfiguringTerminal) gs ).postUpdate( this.in );
 		}
 	}
 }

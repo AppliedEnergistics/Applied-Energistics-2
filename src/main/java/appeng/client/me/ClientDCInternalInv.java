@@ -43,6 +43,14 @@ public class ClientDCInternalInv implements Comparable<ClientDCInternalInv>
 		this.sortBy = sortBy;
 	}
 
+	public ClientDCInternalInv( final int size, final long id, final long sortBy, final String unlocalizedName, int stackSize )
+	{
+		this.inventory = new AppEngInternalInventory( null, size, stackSize );
+		this.unlocalizedName = unlocalizedName;
+		this.id = id;
+		this.sortBy = sortBy;
+	}
+
 	public String getName()
 	{
 		final String s = I18n.translateToLocal( this.unlocalizedName + ".name" );

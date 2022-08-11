@@ -25,10 +25,17 @@ import java.util.*;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.me.SlotME;
+import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerConfiguringTerminal;
+import appeng.container.slot.SlotFake;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.worlddata.IWorldPlayerMapping;
 import appeng.helpers.DualityInterface;
+import appeng.helpers.InventoryAction;
 import appeng.parts.misc.PartInterface;
 import appeng.parts.reporting.PartConfiguringTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -39,6 +46,7 @@ import com.google.common.collect.HashMultimap;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -84,11 +92,8 @@ public class GuiConfiguringTerminal extends AEBaseGui
 	private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
 
 	private boolean refreshList = false;
-	private MEGuiTextField searchFieldOutputs;
 	private MEGuiTextField searchFieldInputs;
 	private PartConfiguringTerminal partInterfaceTerminal;
-	private GuiButton guiButtonHide;
-	private GuiButton guiButtonNextAssembler;
 	private HashMap<ClientDCInternalInv, Integer> dimHashMap = new HashMap<>();
 
 	public GuiConfiguringTerminal( final InventoryPlayer inventoryPlayer, final PartConfiguringTerminal te )
@@ -118,13 +123,6 @@ public class GuiConfiguringTerminal extends AEBaseGui
 		this.searchFieldInputs.setVisible( true );
 		this.searchFieldInputs.setFocused( false );
 
-		this.searchFieldOutputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 32, this.offsetX ), this.guiTop + 38, 65, 12 );
-		this.searchFieldOutputs.setEnableBackgroundDrawing( false );
-		this.searchFieldOutputs.setMaxStringLength( 25 );
-		this.searchFieldOutputs.setTextColor( 0xFFFFFF );
-		this.searchFieldOutputs.setVisible( true );
-		this.searchFieldOutputs.setFocused( true );
-
 		this.searchFieldInputs.setText( partInterfaceTerminal.in );
 	}
 
@@ -140,7 +138,7 @@ public class GuiConfiguringTerminal extends AEBaseGui
 	{
 		this.buttonList.clear();
 
-		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceTerminal.getLocal() ), 8, 6, 4210752 );
+		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.InterfaceConfigurationTerminal.getLocal() ), 8, 6, 4210752 );
 		this.fontRenderer.drawString( GuiText.inventory.getLocal(), this.offsetX + 2, this.ySize - 96 + 3, 4210752 );
 
 		final int currentScroll = this.getScrollBar().getCurrentScroll();
@@ -198,11 +196,6 @@ public class GuiConfiguringTerminal extends AEBaseGui
 		{
 			drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Inputs OR names" );
 		}
-		else if( searchFieldOutputs.isMouseIn( mouseX, mouseY ) )
-		{
-			drawTooltip( Mouse.getEventX() * this.width / this.mc.displayWidth - offsetX, mouseY - guiTop, "Outputs OR names" );
-		}
-
 	}
 
 	@Override
@@ -213,14 +206,6 @@ public class GuiConfiguringTerminal extends AEBaseGui
 		if( btn == 1 && this.searchFieldInputs.isMouseIn( xCoord, yCoord ) )
 		{
 			this.searchFieldInputs.setText( "" );
-			this.refreshList();
-		}
-
-		this.searchFieldOutputs.mouseClicked( xCoord, yCoord, btn );
-
-		if( btn == 1 && this.searchFieldOutputs.isMouseIn( xCoord, yCoord ) )
-		{
-			this.searchFieldOutputs.setText( "" );
 			this.refreshList();
 		}
 
@@ -253,6 +238,26 @@ public class GuiConfiguringTerminal extends AEBaseGui
 				mc.player.sendStatusMessage( new TextComponentString( "The interface is now highlighted at " + "X: " + blockPos.getX() + " Y: " + blockPos.getY() + " Z: " + blockPos.getZ() ), false );
 			}
 			mc.player.closeScreen();
+		}
+	}
+
+	@Override
+	protected void mouseWheelEvent( final int x, final int y, final int wheel )
+	{
+		final Slot slot = this.getSlot( x, y );
+		if( slot instanceof SlotDisconnected )
+		{
+			final ItemStack stack = slot.getStack();
+			if( stack != ItemStack.EMPTY )
+			{
+				InventoryAction direction = wheel > 0 ? InventoryAction.PLACE_SINGLE : InventoryAction.PICKUP_SINGLE;
+				final PacketInventoryAction p = new PacketInventoryAction( direction, slot.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
+				NetworkHandler.instance().sendToServer( p );
+			}
+		}
+		else
+		{
+			super.mouseWheelEvent( x, y, wheel );
 		}
 	}
 
@@ -293,11 +298,6 @@ public class GuiConfiguringTerminal extends AEBaseGui
 		{
 			this.searchFieldInputs.drawTextBox();
 		}
-
-		if( this.searchFieldOutputs != null )
-		{
-			this.searchFieldOutputs.drawTextBox();
-		}
 	}
 
 	@Override
@@ -310,12 +310,7 @@ public class GuiConfiguringTerminal extends AEBaseGui
 				return;
 			}
 
-			if( character == ' ' && this.searchFieldOutputs.getText().isEmpty() && this.searchFieldOutputs.isFocused() )
-			{
-				return;
-			}
-
-			if( this.searchFieldInputs.textboxKeyTyped( character, key ) || this.searchFieldOutputs.textboxKeyTyped( character, key ) )
+			if( this.searchFieldInputs.textboxKeyTyped( character, key ) )
 			{
 				this.refreshList();
 			}
@@ -385,7 +380,6 @@ public class GuiConfiguringTerminal extends AEBaseGui
 		this.matchedStacks.clear();
 
 		final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
-		final String searchFieldOutputs = this.searchFieldOutputs.getText().toLowerCase();
 
 		final Set<Object> cachedSearch = this.getCacheForSearchTerm( searchFieldInputs );
 		final boolean rebuild = cachedSearch.isEmpty();
@@ -400,8 +394,7 @@ public class GuiConfiguringTerminal extends AEBaseGui
 
 			// Shortcut to skip any filter if search term is ""/empty
 
-			boolean found = ( searchFieldInputs.isEmpty() && searchFieldOutputs.isEmpty() );
-			boolean interfaceHasFreeSlots = false;
+			boolean found = searchFieldInputs.isEmpty();
 
 			// Search if the current inventory holds a pattern containing the search term.
 			if( !found )
@@ -413,46 +406,19 @@ public class GuiConfiguringTerminal extends AEBaseGui
 					{
 						break;
 					}
-					if( !searchFieldInputs.isEmpty() && !searchFieldOutputs.isEmpty() )
+					if( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs ) )
 					{
-						if( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) || this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) )
-						{
-							found = true;
-							matchedStacks.add( itemStack );
-						}
-					}
-					else if( !searchFieldInputs.isEmpty() )
-					{
-						if( this.itemStackMatchesSearchTerm( itemStack, searchFieldInputs, 0 ) )
-						{
-							found = true;
-							matchedStacks.add( itemStack );
-						}
-					}
-					else if( !searchFieldOutputs.isEmpty() )
-					{
-						if( this.itemStackMatchesSearchTerm( itemStack, searchFieldOutputs, 1 ) )
-						{
-							found = true;
-							matchedStacks.add( itemStack );
-						}
-					}
-					// If only Interfaces with empty slots should be shown, check that here
-					if( itemStack.isEmpty() )
-					{
-						interfaceHasFreeSlots = true;
+						found = true;
+						matchedStacks.add( itemStack );
 					}
 					slot++;
 				}
 			}
 			// if found, filter skipped or machine name matching the search term, add it
-			if( found || ( entry.getName().toLowerCase().contains( searchFieldInputs ) && entry.getName().toLowerCase().contains( searchFieldOutputs ) ) )
+			if( found || entry.getName().toLowerCase().contains( searchFieldInputs ) )
 			{
-				if( interfaceHasFreeSlots )
-				{
-					this.byName.put( entry.getName(), entry );
-					cachedSearch.add( entry );
-				}
+				this.byName.put( entry.getName(), entry );
+				cachedSearch.add( entry );
 			}
 			else
 			{
@@ -482,7 +448,7 @@ public class GuiConfiguringTerminal extends AEBaseGui
 		this.getScrollBar().setRange( 0, this.lines.size() - 1, 1 );
 	}
 
-	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm, int pass )
+	private boolean itemStackMatchesSearchTerm( final ItemStack itemStack, final String searchTerm )
 	{
 		if( itemStack.isEmpty() )
 		{
@@ -496,16 +462,7 @@ public class GuiConfiguringTerminal extends AEBaseGui
 			return false;
 		}
 
-		NBTTagList tag = new NBTTagList();
-
-		if( pass == 0 )
-		{
-			tag = encodedValue.getTagList( "in", 10 );
-		}
-		else
-		{
-			tag = encodedValue.getTagList( "out", 10 );
-		}
+		NBTTagList tag = encodedValue.getTagList( "in", 10 );
 
 		boolean foundMatchingItemStack = false;
 
@@ -581,7 +538,7 @@ public class GuiConfiguringTerminal extends AEBaseGui
 
 		if( o == null )
 		{
-			this.byId.put( id, o = new ClientDCInternalInv( DualityInterface.NUMBER_OF_PATTERN_SLOTS, id, sortBy, string ) );
+			this.byId.put( id, o = new ClientDCInternalInv( DualityInterface.NUMBER_OF_CONFIG_SLOTS, id, sortBy, string, 64 ) );
 			this.refreshList = true;
 		}
 
