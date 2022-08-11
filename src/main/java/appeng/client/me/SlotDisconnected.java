@@ -19,6 +19,7 @@
 package appeng.client.me;
 
 
+import appeng.container.slot.IJEITargetSlot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ import appeng.items.misc.ItemEncodedPattern;
 import appeng.util.Platform;
 
 
-public class SlotDisconnected extends AppEngSlot
+public class SlotDisconnected extends AppEngSlot implements IJEITargetSlot
 {
 
 	private final ClientDCInternalInv mySlot;

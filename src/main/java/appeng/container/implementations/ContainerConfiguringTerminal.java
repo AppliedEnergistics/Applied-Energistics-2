@@ -53,7 +53,6 @@ import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperRangeItemHandler;
-import appeng.util.inv.filter.IAEItemFilter;
 
 
 public final class ContainerConfiguringTerminal extends AEBaseContainer
@@ -199,19 +198,19 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 		}
 	}
 
+	public ConfigTracker getSlotByID( long id )
+	{
+		return this.byId.get( id );
+	}
+
 	@Override
 	public void doAction( final EntityPlayerMP player, final InventoryAction action, final int slot, final long id )
 	{
 		final ConfigTracker inv = this.byId.get( id );
 		if( inv != null )
 		{
-			final ItemStack is = inv.server.getStackInSlot( slot );
 			final boolean hasItemInHand = !player.inventory.getItemStack().isEmpty();
-
-			final InventoryAdaptor playerHand = new AdaptorItemHandler( new WrapperCursorItemHandler( player.inventory ) );
-
 			final IItemHandler theSlot = new WrapperRangeItemHandler( inv.server, slot, slot + 1 );
-			final InventoryAdaptor interfaceSlot = new AdaptorItemHandler( theSlot );
 
 			ItemStack inSlot = theSlot.getStackInSlot( 0 );
 
@@ -255,7 +254,7 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 						}
 
 					}
-					else if( !is.isEmpty() )
+					else if( !inSlot.isEmpty() )
 					{
 						inSlot.shrink( 1 );
 						ItemHandlerUtil.setStackInSlot( theSlot, 0, inSlot.copy() );
@@ -373,7 +372,7 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 		data.setTag( name, tag );
 	}
 
-	private static class ConfigTracker
+	public static class ConfigTracker
 	{
 
 		private final long sortBy;
@@ -392,6 +391,11 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 			this.sortBy = dual.getSortValue();
 			this.pos = dual.getLocation().getPos();
 			this.dim = dual.getLocation().getWorld().provider.getDimension();
+		}
+
+		public IItemHandler getServer()
+		{
+			return server;
 		}
 	}
 }

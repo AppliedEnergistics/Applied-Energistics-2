@@ -19,8 +19,10 @@
 package appeng.client.gui.implementations;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
@@ -30,6 +32,7 @@ import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.me.SlotME;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerConfiguringTerminal;
+import appeng.container.interfaces.IJEIGhostIngredients;
 import appeng.container.slot.SlotFake;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
@@ -41,8 +44,10 @@ import appeng.parts.reporting.PartConfiguringTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.TileInterface;
 import appeng.util.BlockPosUtils;
+import appeng.util.item.AEItemStack;
 import com.google.common.collect.HashMultimap;
 
+import mezz.jei.api.gui.IGhostIngredientHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -72,7 +77,7 @@ import org.lwjgl.input.Mouse;
 import static appeng.client.render.BlockPosHighlighter.hilightBlock;
 
 
-public class GuiConfiguringTerminal extends AEBaseGui
+public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngredients
 {
 
 	private static final int LINES_ON_PAGE = 6;
@@ -95,6 +100,7 @@ public class GuiConfiguringTerminal extends AEBaseGui
 	private MEGuiTextField searchFieldInputs;
 	private PartConfiguringTerminal partInterfaceTerminal;
 	private HashMap<ClientDCInternalInv, Integer> dimHashMap = new HashMap<>();
+	public Map<IGhostIngredientHandler.Target<?>, Object> mapTargetSlot = new HashMap<>();
 
 	public GuiConfiguringTerminal( final InventoryPlayer inventoryPlayer, final PartConfiguringTerminal te )
 	{
@@ -543,5 +549,55 @@ public class GuiConfiguringTerminal extends AEBaseGui
 		}
 
 		return o;
+	}
+
+	@Override
+	public List<IGhostIngredientHandler.Target<?>> getPhantomTargets( Object ingredient )
+	{
+		if( !( ingredient instanceof ItemStack ) )
+		{
+			return Collections.emptyList();
+		}
+		List<IGhostIngredientHandler.Target<?>> targets = new ArrayList<>();
+		for( Slot slot : this.inventorySlots.inventorySlots )
+		{
+			if( slot instanceof SlotDisconnected )
+			{
+				ItemStack itemStack = (ItemStack) ingredient;
+				IGhostIngredientHandler.Target<Object> target = new IGhostIngredientHandler.Target<Object>()
+				{
+					@Override
+					public Rectangle getArea()
+					{
+						return new Rectangle( getGuiLeft() + slot.xPos, getGuiTop() + slot.yPos, 16, 16 );
+					}
+
+					@Override
+					public void accept( Object ingredient )
+					{
+						final PacketInventoryAction p;
+						try
+						{
+							p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (SlotDisconnected) slot, AEItemStack.fromItemStack( itemStack ) );
+							NetworkHandler.instance().sendToServer( p );
+
+						}
+						catch( IOException e )
+						{
+							e.printStackTrace();
+						}
+					}
+				};
+				targets.add( target );
+				mapTargetSlot.putIfAbsent( target, slot );
+			}
+		}
+		return targets;
+	}
+
+	@Override
+	public Map<IGhostIngredientHandler.Target<?>, Object> getFakeSlotTargetMap()
+	{
+		return IJEIGhostIngredients.super.getFakeSlotTargetMap();
 	}
 }
