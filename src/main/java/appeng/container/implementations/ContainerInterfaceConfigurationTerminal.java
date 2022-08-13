@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import appeng.parts.reporting.PartConfiguringTerminal;
+import appeng.parts.reporting.PartInterfaceConfigurationTerminal;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -47,15 +47,12 @@ import appeng.helpers.InventoryAction;
 import appeng.parts.misc.PartInterface;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.misc.TileInterface;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperRangeItemHandler;
 
 
-public final class ContainerConfiguringTerminal extends AEBaseContainer
+public final class ContainerInterfaceConfigurationTerminal extends AEBaseContainer
 {
 
 	/**
@@ -68,7 +65,7 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 	private IGrid grid;
 	private NBTTagCompound data = new NBTTagCompound();
 
-	public ContainerConfiguringTerminal( final InventoryPlayer ip, final PartConfiguringTerminal anchor )
+	public ContainerInterfaceConfigurationTerminal( final InventoryPlayer ip, final PartInterfaceConfigurationTerminal anchor )
 	{
 		super( ip, anchor );
 
@@ -77,7 +74,7 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 			this.grid = anchor.getActionableNode().getGrid();
 		}
 
-		this.bindPlayerInventory( ip, 14, 256 - /* height of player inventory */82 );
+		this.bindPlayerInventory( ip, 14, 235 - /* height of player inventory */82 );
 	}
 
 	@Override
@@ -250,7 +247,9 @@ public final class ContainerConfiguringTerminal extends AEBaseContainer
 						}
 						else
 						{
-							ItemHandlerUtil.setStackInSlot( theSlot, 0, player.inventory.getItemStack().copy() );
+							ItemStack configuredStack = player.inventory.getItemStack().copy();
+							configuredStack.setCount( 1 );
+							ItemHandlerUtil.setStackInSlot( theSlot, 0, configuredStack );
 						}
 
 					}

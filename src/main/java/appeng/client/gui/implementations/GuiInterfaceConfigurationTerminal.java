@@ -26,23 +26,14 @@ import java.util.List;
 
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
-import appeng.api.config.Upgrades;
-import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiImgButton;
-import appeng.client.me.SlotME;
-import appeng.container.AEBaseContainer;
-import appeng.container.implementations.ContainerConfiguringTerminal;
+import appeng.container.implementations.ContainerInterfaceConfigurationTerminal;
 import appeng.container.interfaces.IJEIGhostIngredients;
-import appeng.container.slot.SlotFake;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.core.worlddata.IWorldPlayerMapping;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.InventoryAction;
-import appeng.parts.misc.PartInterface;
-import appeng.parts.reporting.PartConfiguringTerminal;
-import appeng.tile.inventory.AppEngInternalInventory;
-import appeng.tile.misc.TileInterface;
+import appeng.parts.reporting.PartInterfaceConfigurationTerminal;
 import appeng.util.BlockPosUtils;
 import appeng.util.item.AEItemStack;
 import com.google.common.collect.HashMultimap;
@@ -54,7 +45,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
@@ -63,9 +53,7 @@ import appeng.client.gui.widgets.GuiScrollbar;
 import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
-import appeng.container.implementations.ContainerInterfaceTerminal;
 import appeng.core.localization.GuiText;
-import appeng.parts.reporting.PartInterfaceTerminal;
 import appeng.util.Platform;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
@@ -77,7 +65,7 @@ import org.lwjgl.input.Mouse;
 import static appeng.client.render.BlockPosHighlighter.hilightBlock;
 
 
-public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngredients
+public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEIGhostIngredients
 {
 
 	private static final int LINES_ON_PAGE = 6;
@@ -98,19 +86,19 @@ public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngred
 
 	private boolean refreshList = false;
 	private MEGuiTextField searchFieldInputs;
-	private PartConfiguringTerminal partInterfaceTerminal;
+	private PartInterfaceConfigurationTerminal partInterfaceTerminal;
 	private HashMap<ClientDCInternalInv, Integer> dimHashMap = new HashMap<>();
 	public Map<IGhostIngredientHandler.Target<?>, Object> mapTargetSlot = new HashMap<>();
 
-	public GuiConfiguringTerminal( final InventoryPlayer inventoryPlayer, final PartConfiguringTerminal te )
+	public GuiInterfaceConfigurationTerminal( final InventoryPlayer inventoryPlayer, final PartInterfaceConfigurationTerminal te )
 	{
-		super( new ContainerConfiguringTerminal( inventoryPlayer, te ) );
+		super( new ContainerInterfaceConfigurationTerminal( inventoryPlayer, te ) );
 
 		this.partInterfaceTerminal = te;
 		final GuiScrollbar scrollbar = new GuiScrollbar();
 		this.setScrollBar( scrollbar );
 		this.xSize = 208;
-		this.ySize = 255;
+		this.ySize = 235;
 	}
 
 	@Override
@@ -120,9 +108,9 @@ public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngred
 
 		this.getScrollBar().setLeft( 189 );
 		this.getScrollBar().setHeight( 106 );
-		this.getScrollBar().setTop( 51 );
+		this.getScrollBar().setTop( 31 );
 
-		this.searchFieldInputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 32, this.offsetX ), this.guiTop + 25, 65, 12 );
+		this.searchFieldInputs = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 32, this.offsetX ), this.guiTop + 17, 65, 12 );
 		this.searchFieldInputs.setEnableBackgroundDrawing( false );
 		this.searchFieldInputs.setMaxStringLength( 25 );
 		this.searchFieldInputs.setTextColor( 0xFFFFFF );
@@ -151,7 +139,7 @@ public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngred
 
 		this.inventorySlots.inventorySlots.removeIf( slot -> slot instanceof SlotDisconnected );
 
-		int offset = 52;
+		int offset = 30;
 		int linesDraw = 0;
 		for( int x = 0; x < LINES_ON_PAGE && linesDraw < LINES_ON_PAGE && currentScroll + x < this.lines.size(); x++ )
 		{
@@ -270,10 +258,10 @@ public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngred
 	@Override
 	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
 	{
-		this.bindTexture( "guis/newinterfaceterminal.png" );
+		this.bindTexture( "guis/interfaceconfigurationterminal.png" );
 		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
 
-		int offset = 51;
+		int offset = 29;
 		final int ex = this.getScrollBar().getCurrentScroll();
 		int linesDraw = 0;
 		for( int x = 0; x < LINES_ON_PAGE && linesDraw < LINES_ON_PAGE && ex + x < this.lines.size(); x++ )
@@ -288,7 +276,7 @@ public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngred
 
 				for( int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row )
 				{
-					this.drawTexturedModalRect( offsetX + 20, offsetY + offset, 20, 173, width, 18 );
+					this.drawTexturedModalRect( offsetX + 20, offsetY + offset, 20, 170, width, 18 );
 					offset += 18;
 					linesDraw++;
 				}
@@ -461,41 +449,25 @@ public class GuiConfiguringTerminal extends AEBaseGui implements IJEIGhostIngred
 			return false;
 		}
 
-		final NBTTagCompound encodedValue = itemStack.getTagCompound();
-
-		if( encodedValue == null )
-		{
-			return false;
-		}
-
-		NBTTagList tag = encodedValue.getTagList( "in", 10 );
-
 		boolean foundMatchingItemStack = false;
 
-		for( int i = 0; i < tag.tagCount(); i++ )
-		{
-			final ItemStack parsedItemStack = new ItemStack( tag.getCompoundTagAt( i ) );
-			if( !parsedItemStack.isEmpty() )
-			{
-				final String displayName = Platform
-						                           .getItemDisplayName( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( parsedItemStack ) )
-						                           .toLowerCase();
+		final String displayName = Platform
+				                           .getItemDisplayName( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( itemStack ) )
+				                           .toLowerCase();
 
-				for( String term : searchTerm.split( " " ) )
+		for( String term : searchTerm.split( " " ) )
+		{
+			if( term.length() > 1 && ( term.startsWith( "-" ) || term.startsWith( "!" ) ) )
+			{
+				term = term.substring( 1 );
+				if( displayName.contains( term ) )
 				{
-					if( term.length() > 1 && ( term.startsWith( "-" ) || term.startsWith( "!" ) ) )
-					{
-						term = term.substring( 1 );
-						if( displayName.contains( term ) )
-						{
-							return false;
-						}
-					}
-					else if( displayName.contains( term ) )
-					{
-						foundMatchingItemStack = true;
-					}
+					return false;
 				}
+			}
+			else if( displayName.contains( term ) )
+			{
+				foundMatchingItemStack = true;
 			}
 		}
 		return foundMatchingItemStack;

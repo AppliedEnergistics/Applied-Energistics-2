@@ -179,7 +179,7 @@ public enum GuiBridge implements IGuiHandler
 
 	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
-	GUI_CONFIG_INTERFACE_TERMINAL( ContainerConfiguringTerminal.class, PartConfiguringTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD );
+	GUI_INTERFACE_CONFIGURATION_TERMINAL( ContainerInterfaceConfigurationTerminal.class, PartInterfaceConfigurationTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD );
 
 	private final Class tileClass;
 	private final Class containerClass;

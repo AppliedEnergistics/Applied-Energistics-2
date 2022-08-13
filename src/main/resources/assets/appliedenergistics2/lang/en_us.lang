@@ -549,6 +549,7 @@ item.appliedenergistics2.multi_part.inverted_toggle_bus.name=ME Inverted Toggle 
 item.appliedenergistics2.multi_part.toggle_bus.name=ME Toggle Bus
 item.appliedenergistics2.multi_part.crafting_monitor.name=ME Crafting Monitor
 item.appliedenergistics2.multi_part.interface_terminal.name=ME Interface Terminal
+item.appliedenergistics2.multi_part.interface_configuration_terminal.name=ME Configuration Interface Terminal
 item.appliedenergistics2.multi_part.fluid_terminal.name=ME Fluid Terminal
 item.appliedenergistics2.multi_part.invalid_type.name=Disabled Item
 

@@ -285,7 +285,7 @@ public enum PartType
 	INTERFACE_TERMINAL( 480, "interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceTerminal.class ),
 
 	FLUID_TERMINAL( 520, "fluid_terminal", EnumSet.of( AEFeature.FLUID_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartFluidTerminal.class ),
-	CONFIGURING_INTERFACE_TERMINAL( 521, "configuring_interface_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartConfiguringTerminal.class );
+	INTERFACE_CONFIGURATION_TERMINAL( 521, "interface_configuration_terminal", EnumSet.of( AEFeature.INTERFACE_TERMINAL ), EnumSet.noneOf( IntegrationType.class ), PartInterfaceConfigurationTerminal.class );
 
 	private final int baseDamage;
 	private final Set<AEFeature> features;

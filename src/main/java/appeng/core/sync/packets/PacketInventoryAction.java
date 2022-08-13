@@ -24,8 +24,8 @@ import java.util.Collections;
 
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.me.SlotDisconnected;
-import appeng.container.implementations.ContainerConfiguringTerminal;
-import appeng.container.implementations.ContainerConfiguringTerminal.ConfigTracker;
+import appeng.container.implementations.ContainerInterfaceConfigurationTerminal;
+import appeng.container.implementations.ContainerInterfaceConfigurationTerminal.ConfigTracker;
 import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
 import appeng.core.AELog;
@@ -223,9 +223,9 @@ public class PacketInventoryAction extends AppEngPacket
 						}
 					}
 				}
-				else if( sender.openContainer instanceof ContainerConfiguringTerminal )
+				else if( sender.openContainer instanceof ContainerInterfaceConfigurationTerminal )
 				{
-					ConfigTracker inv = ( (ContainerConfiguringTerminal) sender.openContainer ).getSlotByID( this.id );
+					ConfigTracker inv = ( (ContainerInterfaceConfigurationTerminal) sender.openContainer ).getSlotByID( this.id );
 					final IItemHandler theSlot = new WrapperRangeItemHandler( inv.getServer(), 0, slot + 1 );
 
 					ItemHandlerUtil.setStackInSlot( theSlot, this.slot, this.slotItem.createItemStack() );
