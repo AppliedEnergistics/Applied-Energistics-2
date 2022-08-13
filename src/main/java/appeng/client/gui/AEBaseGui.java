@@ -474,7 +474,15 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 				{
 					if( slot.getStack().isEmpty() )
 					{
-						InventoryAction action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
+						InventoryAction action;
+						if( slot.getSlotStackLimit() == 1 )
+						{
+							action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
+						}
+						else
+						{
+							action = InventoryAction.PICKUP_OR_SET_DOWN;
+						}
 						final PacketInventoryAction p = new PacketInventoryAction( action, slot.getSlotIndex(), ( (SlotDisconnected) slot ).getSlot().getId() );
 						NetworkHandler.instance().sendToServer( p );
 					}
@@ -640,14 +648,13 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			switch ( clickType )
 			{
 				case PICKUP: // pickup / set-down.
-					if( slot.getStack().isEmpty() && !player.inventory.getItemStack().isEmpty() )
+					if( mouseButton == 1 )
 					{
 						action = InventoryAction.SPLIT_OR_PLACE_SINGLE;
 					}
-					if( !slot.getStack().isEmpty() && player.inventory.getItemStack().getCount() <= 1 )
+					else
 					{
 						action = InventoryAction.PICKUP_OR_SET_DOWN;
-						this.haltDragging = true;
 					}
 					break;
 				case QUICK_MOVE:
@@ -861,7 +868,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 		}
 	}
 
-	private void mouseWheelEvent( final int x, final int y, final int wheel )
+	protected void mouseWheelEvent( final int x, final int y, final int wheel )
 	{
 		final Slot slot = this.getSlot( x, y );
 		if( slot instanceof SlotME )

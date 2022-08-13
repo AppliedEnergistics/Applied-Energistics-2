@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.util.Collections;
 
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.client.me.SlotDisconnected;
+import appeng.container.implementations.ContainerInterfaceConfigurationTerminal;
+import appeng.container.implementations.ContainerInterfaceConfigurationTerminal.ConfigTracker;
 import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
 import appeng.core.AELog;
@@ -30,11 +33,14 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.container.ContainerFluidConfigurable;
 import appeng.fluids.util.AEFluidStack;
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.WrapperRangeItemHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -50,6 +56,7 @@ import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.IItemHandler;
 
 
 public class PacketInventoryAction extends AppEngPacket
@@ -111,14 +118,25 @@ public class PacketInventoryAction extends AppEngPacket
 		this.configureWrite( data );
 	}
 
-	public PacketInventoryAction(final InventoryAction action, final IJEITargetSlot slot, final IAEItemStack slotItem ) throws IOException
+	public PacketInventoryAction( final InventoryAction action, final IJEITargetSlot slot, final IAEItemStack slotItem ) throws IOException
 	{
 
 		this.action = action;
-		if (slot instanceof SlotFake)
-		this.slot = ((SlotFake) slot).slotNumber;
-		else this.slot = ((GuiFluidSlot) slot).getId();
-		this.id = 0;
+		if( slot instanceof SlotFake )
+		{
+			this.slot = ( (SlotFake) slot ).slotNumber;
+			this.id = 0;
+		}
+		else if( slot instanceof SlotDisconnected )
+		{
+			this.slot = ( (SlotDisconnected) slot ).getSlotIndex();
+			this.id = ( (SlotDisconnected) slot ).getSlot().getId();
+		}
+		else
+		{
+			this.slot = ( (GuiFluidSlot) slot ).getId();
+			this.id = 0;
+		}
 		this.slotItem = slotItem;
 
 		final ByteBuf data = Unpooled.buffer();
@@ -205,29 +223,44 @@ public class PacketInventoryAction extends AppEngPacket
 						}
 					}
 				}
-				else if( this.slot < sender.openContainer.inventorySlots.size() && sender.openContainer.inventorySlots.get( this.slot ) instanceof SlotFake )
+				else if( sender.openContainer instanceof ContainerInterfaceConfigurationTerminal )
 				{
-					if( this.slotItem != null )
+					ConfigTracker inv = ( (ContainerInterfaceConfigurationTerminal) sender.openContainer ).getSlotByID( this.id );
+					final IItemHandler theSlot = new WrapperRangeItemHandler( inv.getServer(), 0, slot + 1 );
+
+					ItemHandlerUtil.setStackInSlot( theSlot, this.slot, this.slotItem.createItemStack() );
+
+				}
+				else if( this.slot < sender.openContainer.inventorySlots.size() )
+				{
+					Slot senderSlot = sender.openContainer.inventorySlots.get( this.slot );
+					if( senderSlot instanceof SlotFake )
 					{
-						sender.openContainer.inventorySlots.get( this.slot ).putStack( this.slotItem.createItemStack() );
-						if( sender.openContainer.inventorySlots.get( this.slot ).getStack().isEmpty() )
+						if( this.slotItem != null )
 						{
-							IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
-							if( aefs != null )
+							senderSlot.putStack( this.slotItem.createItemStack() );
+							if( senderSlot.getStack().isEmpty() )
 							{
-								FluidStack fluid = aefs.getFluidStack();
-								sender.openContainer.inventorySlots.get( this.slot ).putStack( AEFluidStack.fromFluidStack( fluid ).asItemStackRepresentation() );
+								IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
+								if( aefs != null )
+								{
+									FluidStack fluid = aefs.getFluidStack();
+									senderSlot.putStack( AEFluidStack.fromFluidStack( fluid ).asItemStackRepresentation() );
+								}
 							}
 						}
-					}
-					else sender.openContainer.inventorySlots.get( this.slot ).putStack( ItemStack.EMPTY );
-					try
-					{
-						NetworkHandler.instance().sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( ItemStack.EMPTY ) ), sender );
-					}
-					catch( final IOException e )
-					{
-						AELog.debug( e );
+						else
+						{
+							senderSlot.putStack( ItemStack.EMPTY );
+						}
+						try
+						{
+							NetworkHandler.instance().sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( ItemStack.EMPTY ) ), sender );
+						}
+						catch( final IOException e )
+						{
+							AELog.debug( e );
+						}
 					}
 				}
 			}
