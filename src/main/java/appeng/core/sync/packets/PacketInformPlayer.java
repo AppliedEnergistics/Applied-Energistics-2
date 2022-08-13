@@ -61,7 +61,7 @@ public class PacketInformPlayer extends AppEngPacket
 
 		if( this.type == InfoType.PARTIAL_ITEM_EXTRACTION )
 		{
-			AppEng.proxy.getPlayers().get( 0 ).sendStatusMessage( new TextComponentString( "System reported " + reportedItem.getStackSize() + " " + reportedItem.getItem().getItemStackDisplayName( reportedItem.getDefinition() ) + " available but could only extract" + actualItem.getStackSize() ), false );
+			AppEng.proxy.getPlayers().get( 0 ).sendStatusMessage( new TextComponentString( "System reported " + reportedItem.getStackSize() + " " + reportedItem.getItem().getItemStackDisplayName( reportedItem.getDefinition() ) + " available but could only extract " + actualItem.getStackSize() ), false );
 		}
 		else if( this.type == InfoType.NO_ITEMS_EXTRACTED )
 		{

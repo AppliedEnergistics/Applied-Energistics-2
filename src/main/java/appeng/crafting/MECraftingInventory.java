@@ -318,11 +318,11 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 						{
 							if( result == null )
 							{
-								NetworkHandler.instance().sendTo( new PacketInformPlayer( null, extra, PacketInformPlayer.InfoType.NO_ITEMS_EXTRACTED ), (EntityPlayerMP) src.player().get() );
+								NetworkHandler.instance().sendTo( new PacketInformPlayer( extra, null, PacketInformPlayer.InfoType.NO_ITEMS_EXTRACTED ), (EntityPlayerMP) src.player().get() );
 							}
 							else
 							{
-								NetworkHandler.instance().sendTo( new PacketInformPlayer( result, extra, PacketInformPlayer.InfoType.PARTIAL_ITEM_EXTRACTION ), (EntityPlayerMP) src.player().get() );
+								NetworkHandler.instance().sendTo( new PacketInformPlayer( extra, result, PacketInformPlayer.InfoType.PARTIAL_ITEM_EXTRACTION ), (EntityPlayerMP) src.player().get() );
 							}
 						}
 						catch( IOException e )
