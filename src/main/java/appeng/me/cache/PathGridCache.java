@@ -103,22 +103,11 @@ public class PathGridCache implements IPathingGrid
 			this.updateNetwork = false;
 			this.setChannelsInUse( 0 );
 
-			if( !AEConfig.instance().isFeatureEnabled( AEFeature.CHANNELS ) )
-			{
-				final int used = this.calculateRequiredChannels();
-
-				final int nodes = this.myGrid.getNodes().size();
-				this.ticksUntilReady = 20 + Math.max( 0, nodes / 100 - 20 );
-				this.setChannelsByBlocks( nodes * used );
-				this.setChannelPowerUsage( this.getChannelsByBlocks() / 128.0 );
-
-				this.myGrid.getPivot().beginVisit( new AdHocChannelUpdater( used ) );
-			}
-			else if( this.controllerState == ControllerState.NO_CONTROLLER )
+			if( this.controllerState == ControllerState.NO_CONTROLLER )
 			{
 				final int requiredChannels = this.calculateRequiredChannels();
 				int used = requiredChannels;
-				if( requiredChannels > 8 )
+				if( AEConfig.instance().isFeatureEnabled( AEFeature.CHANNELS ) && requiredChannels > 8 )
 				{
 					used = 0;
 				}
@@ -168,7 +157,7 @@ public class PathGridCache implements IPathingGrid
 		if( !this.active.isEmpty() || this.ticksUntilReady > 0 )
 		{
 			final Iterator<PathSegment> i = this.active.iterator();
-			while( i.hasNext() )
+			while ( i.hasNext() )
 			{
 				final PathSegment pat = i.next();
 				if( pat.step() )
@@ -330,7 +319,7 @@ public class PathGridCache implements IPathingGrid
 				{
 					final IGridMultiblock gmb = (IGridMultiblock) gb;
 					final Iterator<IGridNode> i = gmb.getMultiblockNodes();
-					while( i.hasNext() )
+					while ( i.hasNext() )
 					{
 						this.semiOpen.add( (IPathItem) i.next() );
 					}

@@ -21,6 +21,8 @@ package appeng.integration.modules.waila.part;
 
 import java.util.List;
 
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -65,16 +67,19 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	/**
 	 * Adds the used and max channel to the tool tip
 	 *
-	 * @param part being looked at part
+	 * @param part           being looked at part
 	 * @param currentToolTip current tool tip
-	 * @param accessor wrapper for various world information
-	 * @param config config to react to various settings
-	 *
+	 * @param accessor       wrapper for various world information
+	 * @param config         config to react to various settings
 	 * @return modified tool tip
 	 */
 	@Override
 	public List<String> getWailaBody( final IPart part, final List<String> currentToolTip, final IWailaDataAccessor accessor, final IWailaConfigHandler config )
 	{
+		if( !AEConfig.instance().isFeatureEnabled( AEFeature.CHANNELS ) )
+		{
+			return currentToolTip;
+		}
 		if( part instanceof PartCableSmart || part instanceof PartDenseCableSmart )
 		{
 			final NBTTagCompound tag = accessor.getNBTData();
@@ -99,10 +104,9 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * If the client received information of the channels on the server, they are used, else if the cache contains a
 	 * previous stored value, this will be used. Default value is 0.
 	 *
-	 * @param part part to be looked at
-	 * @param tag tag maybe containing the channel information
+	 * @param part  part to be looked at
+	 * @param tag   tag maybe containing the channel information
 	 * @param cache cache with previous knowledge
-	 *
 	 * @return used channels on the cable
 	 */
 	private byte getUsedChannels( final IPart part, final NBTTagCompound tag, final Object2ByteMap<IPart> cache )
@@ -133,12 +137,11 @@ public final class ChannelWailaDataProvider extends BasePartWailaDataProvider
 	 * key.
 	 *
 	 * @param player player looking at the part
-	 * @param part part being looked at
-	 * @param te host of the part
-	 * @param tag transferred tag which is send to the client
-	 * @param world world of the part
-	 * @param pos pos of the part
-	 *
+	 * @param part   part being looked at
+	 * @param te     host of the part
+	 * @param tag    transferred tag which is send to the client
+	 * @param world  world of the part
+	 * @param pos    pos of the part
 	 * @return tag send to the client
 	 */
 	@Override

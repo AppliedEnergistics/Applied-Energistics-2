@@ -19,6 +19,8 @@
 package appeng.integration.modules.theoneprobe.part;
 
 
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +42,10 @@ public class ChannelInfoProvider implements IPartProbInfoProvider
 	@Override
 	public void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
 	{
+		if( !AEConfig.instance().isFeatureEnabled( AEFeature.CHANNELS ) )
+		{
+			return;
+		}
 		if( part instanceof PartDenseCableSmart || part instanceof PartCableSmart )
 		{
 			final int usedChannels;
