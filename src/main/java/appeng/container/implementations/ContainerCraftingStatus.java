@@ -184,34 +184,6 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 				}
 			}
 		}
-		/*Collections.sort( this.cpus );
-
-		if( this.selectedCpu >= this.cpus.size() )
-		{
-			this.selectedCpu = -1;
-			this.myName = "";
-		}
-		else if( this.selectedCpu != -1 )
-		{
-			this.myName = this.cpus.get( this.selectedCpu ).getName();
-		}
-
-		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
-		{
-			this.selectedCpu = 0;
-		}
-
-		if( this.selectedCpu != -1 )
-		{
-			if( this.cpus.get( this.selectedCpu ).getCpu() != this.getMonitor() )
-			{
-				this.setCPU( this.cpus.get( this.selectedCpu ).getCpu() );
-			}
-		}
-		else
-		{
-			this.setCPU( null );
-		}*/
 	}
 
 
@@ -250,43 +222,6 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 			}
 		}
 	}
-
-	/*public void cycleCpu( final boolean next )
-	{
-		if( next )
-		{
-			this.selectedCpu++;
-		}
-		else
-		{
-			this.selectedCpu--;
-		}
-
-		if( this.selectedCpu < -1 )
-		{
-			this.selectedCpu = this.cpus.size() - 1;
-		}
-		else if( this.selectedCpu >= this.cpus.size() )
-		{
-			this.selectedCpu = -1;
-		}
-
-		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
-		{
-			this.selectedCpu = 0;
-		}
-
-		if( this.selectedCpu == -1 )
-		{
-			this.myName = "";
-			this.setCPU( null );
-		}
-		else
-		{
-			this.myName = this.cpus.get( this.selectedCpu ).getName();
-			this.setCPU( this.cpus.get( this.selectedCpu ).getCpu() );
-		}
-	} */
 
 	public List<CraftingCPUStatus> getCPUs()
 	{
