@@ -112,10 +112,10 @@ public class PacketValueConfig extends AppEngPacket
 			final IMouseWheelItem si = (IMouseWheelItem) is.getItem();
 			si.onWheel( is, this.Value.equals( "WheelUp" ) );
 		}
-		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftingStatus )
+		else if( this.Name.equals( "Terminal.Cpu.Set" ) && c instanceof ContainerCraftingStatus )
 		{
 			final ContainerCraftingStatus qk = (ContainerCraftingStatus) c;
-			qk.cycleCpu( this.Value.equals( "Next" ) );
+			qk.selectCPU( Integer.parseInt( this.Value ) );
 		}
 		else if( this.Name.equals( "Terminal.Cpu" ) && c instanceof ContainerCraftConfirm )
 		{

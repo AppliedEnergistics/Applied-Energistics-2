@@ -34,7 +34,7 @@ import appeng.core.sync.AppEngPacket;
 
 public class NetworkHandler
 {
-	private static NetworkHandler instance;
+	public static NetworkHandler instance;
 
 	private final FMLEventChannel ec;
 	private final String myChannelName;
