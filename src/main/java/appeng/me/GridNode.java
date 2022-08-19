@@ -27,6 +27,8 @@ import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.core.AEConfig;
+import appeng.core.features.AEFeature;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -375,7 +377,14 @@ public class GridNode implements IGridNode, IPathItem
 	@Override
 	public boolean meetsChannelRequirements()
 	{
-		return ( !this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) || this.getUsedChannels() > 0 );
+		if( this.gridProxy.getFlags().contains( GridFlags.REQUIRE_CHANNEL ) )
+		{
+			if( AEConfig.instance().isFeatureEnabled( AEFeature.CHANNELS ) )
+			{
+				return this.getUsedChannels() > 0;
+			}
+		}
+		return true;
 	}
 
 	@Override
