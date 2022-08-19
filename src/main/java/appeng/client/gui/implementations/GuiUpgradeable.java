@@ -61,7 +61,7 @@ import appeng.parts.automation.PartImportBus;
 
 public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 {
-	private final Map<Target<?>,Object> mapTargetSlot = new HashMap<>();
+	private final Map<Target<?>, Object> mapTargetSlot = new HashMap<>();
 	protected final ContainerUpgradeable cvb;
 	protected final IUpgradeableHost bc;
 
@@ -95,6 +95,20 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 	{
 		super.initGui();
 		this.addButtons();
+	}
+
+	@Override
+	public List<Rectangle> getJEIExclusionArea()
+	{
+		List<Rectangle> exclusionArea = new ArrayList<>();
+
+		int yOffset = guiTop + 8;
+
+		int visibleButtons = (int) this.buttonList.stream().filter( v -> v.enabled && v.x < guiLeft ).count();
+		Rectangle sortDir = new Rectangle( guiLeft - 18, yOffset, 18, visibleButtons * 18 + visibleButtons - 2 );
+		exclusionArea.add( sortDir );
+
+		return exclusionArea;
 	}
 
 	protected void addButtons()
@@ -218,7 +232,7 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 	}
 
 	@Override
-	public List<Target<?>> getPhantomTargets(Object ingredient)
+	public List<Target<?>> getPhantomTargets( Object ingredient )
 	{
 		mapTargetSlot.clear();
 
@@ -236,7 +250,9 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 		}
 
 		if( !( ingredient instanceof ItemStack ) && !( ingredient instanceof FluidStack ) )
+		{
 			return Collections.emptyList();
+		}
 
 		List<Target<?>> targets = new ArrayList<>();
 
@@ -300,7 +316,10 @@ public class GuiUpgradeable extends AEBaseGui implements IJEIGhostIngredients
 						}
 						else
 						{
-							if( finalFluidStack == null ) return;
+							if( finalFluidStack == null )
+							{
+								return;
+							}
 							p = new PacketInventoryAction( InventoryAction.PLACE_JEI_GHOST_ITEM, (IJEITargetSlot) slot, AEItemStack.fromItemStack( AEFluidStack.fromFluidStack( finalFluidStack ).asItemStackRepresentation() ) );
 						}
 						NetworkHandler.instance().sendToServer( p );

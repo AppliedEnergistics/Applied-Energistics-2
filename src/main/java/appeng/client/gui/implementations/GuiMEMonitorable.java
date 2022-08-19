@@ -25,12 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appeng.client.me.SlotME;
-import appeng.container.slot.SlotRestrictedInput;
-import appeng.core.features.ColoredItemDefinition;
-import mezz.jei.gui.GuiHelper;
-import mezz.jei.gui.elements.GuiIconButton;
-import mezz.jei.gui.overlay.bookmarks.BookmarkButton;
-import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -183,7 +177,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 				}
 			}
 		}
-		
+
 		if( !this.delayedUpdate )
 		{
 			this.repo.updateView();
@@ -258,9 +252,9 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		this.maxRows = this.getMaxRows();
 		this.perRow = AEConfig.instance()
-				.getConfigManager()
-				.getSetting(
-						Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
+				              .getConfigManager()
+				              .getSetting(
+						              Settings.TERMINAL_STYLE ) != TerminalStyle.FULL ? 9 : 9 + ( ( this.width - this.standardSize ) / 18 );
 
 		final int magicNumber = 114 + 1;
 		final int extraSpace = this.height - magicNumber - this.reservedSpace;
@@ -306,11 +300,6 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		int offset = this.guiTop + 8;
 
-		if(Loader.isModLoaded("jei")) {
-			// JEI Bookmark Next page button
-			offset += 16;
-		}
-
 		if( this.customSortOrder )
 		{
 			this.buttonList
@@ -326,22 +315,22 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		}
 
 		this.buttonList.add( this.SortDirBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_DIRECTION, this.configSrc
-				.getSetting( Settings.SORT_DIRECTION ) ) );
+				                                                                                                             .getSetting( Settings.SORT_DIRECTION ) ) );
 		offset += 20;
 
 		this.buttonList.add(
 				this.searchBoxSettings = new GuiImgButton( this.guiLeft - 18, offset, Settings.SEARCH_MODE, AEConfig.instance()
-						.getConfigManager()
-						.getSetting(
-								Settings.SEARCH_MODE ) ) );
+						                                                                                            .getConfigManager()
+						                                                                                            .getSetting(
+								                                                                                            Settings.SEARCH_MODE ) ) );
 
 		offset += 20;
 
 		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm )
 		{
 			this.buttonList.add( this.terminalStyleBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.TERMINAL_STYLE, AEConfig.instance()
-					.getConfigManager()
-					.getSetting( Settings.TERMINAL_STYLE ) ) );
+					                                                                                                                   .getConfigManager()
+					                                                                                                                   .getSetting( Settings.TERMINAL_STYLE ) ) );
 		}
 
 		this.searchField = new MEGuiTextField( this.fontRenderer, this.guiLeft + Math.max( 80, this.offsetX ), this.guiTop + 4, 90, 12 );
@@ -354,7 +343,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		if( this.viewCell || this instanceof GuiWirelessTerm )
 		{
 			this.buttonList.add( this.craftingStatusBtn = new GuiTabButton( this.guiLeft + 170, this.guiTop - 4, 2 + 11 * 16, GuiText.CraftingStatus
-					.getLocal(), this.itemRender ) );
+					                                                                                                                  .getLocal(), this.itemRender ) );
 			this.craftingStatusBtn.setHideEdge( 13 );
 		}
 
@@ -410,38 +399,20 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	}
 
 	@Override
-	public List<Rectangle> getJEIExclusionArea() {
+	public List<Rectangle> getJEIExclusionArea()
+	{
 		List<Rectangle> exclusionArea = new ArrayList<>();
 
 		int yOffset = guiTop + 8;
 
-		if(Loader.isModLoaded("jei")) {
-			yOffset += 16;
-		}
+		int visibleButtons = (int) this.buttonList.stream().filter( v -> v.enabled && v.x < guiLeft ).count();
+		Rectangle sortDir = new Rectangle( guiLeft - 18, yOffset, 20, visibleButtons * 20 + visibleButtons - 2 );
+		exclusionArea.add( sortDir );
 
-		if(this.customSortOrder) {
-			Rectangle sortOrder = new Rectangle(guiLeft - 18, yOffset, 18, 18);
-			exclusionArea.add(sortOrder);
-			yOffset += 20;
-		}
-
-		if(this.viewCell || this instanceof GuiWirelessTerm) {
-			Rectangle viewMode = new Rectangle(guiLeft - 18, yOffset, 18, 18);
-			exclusionArea.add(viewMode);
-			yOffset += 20;
-		}
-
-		Rectangle sortDir = new Rectangle(guiLeft - 18, yOffset, 18, 18);
-		exclusionArea.add(sortDir);
-		yOffset += 20;
-
-		Rectangle searchSettings = new Rectangle(guiLeft - 18, yOffset, 18, 18);
-		exclusionArea.add(searchSettings);
-		yOffset += 20;
-
-		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm ) {
-			Rectangle terminalStyle = new Rectangle(guiLeft - 18, yOffset, 18, 18);
-			exclusionArea.add(terminalStyle);
+		if( this.viewCell )
+		{
+			Rectangle viewMode = new Rectangle( guiLeft + 205, yOffset, 24, 19 * monitorableContainer.getViewCells().length );
+			exclusionArea.add( viewMode );
 		}
 
 		return exclusionArea;
