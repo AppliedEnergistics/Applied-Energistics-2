@@ -19,12 +19,16 @@
 package appeng.container.implementations;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
+import appeng.api.networking.IGrid;
+import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.PacketCraftingCPUsUpdate;
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -37,13 +41,13 @@ import appeng.util.Platform;
 public class ContainerCraftingStatus extends ContainerCraftingCPU
 {
 
-	private final List<CraftingCPURecord> cpus = new ArrayList<>();
-	@GuiSync( 5 )
-	public int selectedCpu = -1;
-	@GuiSync( 6 )
-	public boolean noCPU = true;
-	@GuiSync( 7 )
-	public String myName = "";
+	private ImmutableSet<ICraftingCPU> lastCpuSet = null;
+	private List<CraftingCPUStatus> cpus = new ArrayList<CraftingCPUStatus>();
+	private final WeakHashMap<ICraftingCPU, Integer> cpuSerialMap = new WeakHashMap<>();
+	private int nextCpuSerial = 1;
+	private int lastUpdate = 0;
+	@GuiSync(5)
+	public int selectedCpuSerial = -1;
 
 	public ContainerCraftingStatus( final InventoryPlayer ip, final ITerminalHost te )
 	{
@@ -53,12 +57,13 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 	@Override
 	public void detectAndSendChanges()
 	{
-		if( Platform.isServer() && this.getNetwork() != null )
+		IGrid network = this.getNetwork();
+		if( Platform.isServer() && network != null )
 		{
-			final ICraftingGrid cc = this.getNetwork().getCache( ICraftingGrid.class );
+			final ICraftingGrid cc = network.getCache( ICraftingGrid.class );
 			final ImmutableSet<ICraftingCPU> cpuSet = cc.getCpus();
 
-			int matches = 0;
+			/*int matches = 0;
 			boolean changed = false;
 			for( final ICraftingCPU c : cpuSet )
 			{
@@ -98,10 +103,63 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 				this.sendCPUs();
 			}
 
-			this.noCPU = this.cpus.isEmpty();
+			this.noCPU = this.cpus.isEmpty(); */
+
+			// Update at least once a second
+			++lastUpdate;
+			if (!cpuSet.equals( lastCpuSet ) || lastUpdate > 20) {
+				lastUpdate = 0;
+				lastCpuSet = cpuSet;
+				updateCpuList();
+				sendCPUs();
+			}
+		}
+
+
+		// Clear selection if CPU is no longer in list
+		if (selectedCpuSerial != -1) {
+			if (cpus.stream().noneMatch(c -> c.getSerial() == selectedCpuSerial)) {
+				selectCPU(-1);
+			}
+		}
+
+		// Select a suitable CPU if none is selected
+		if (selectedCpuSerial == -1) {
+			// Try busy CPUs first
+			for (CraftingCPUStatus cpu : cpus) {
+				if (cpu.getRemainingItems() > 0) {
+					selectCPU(cpu.getSerial());
+					break;
+				}
+			}
+			// If we couldn't find a busy one, just select the first
+			if (selectedCpuSerial == -1 && !cpus.isEmpty()) {
+				selectCPU(cpus.get(0).getSerial());
+			}
 		}
 
 		super.detectAndSendChanges();
+	}
+
+	private static final Comparator<CraftingCPUStatus> CPU_COMPARATOR = Comparator
+			.comparing((CraftingCPUStatus e) -> e.getName() == null || e.getName().isEmpty())
+			.thenComparing(e -> e.getName() != null ? e.getName() : "")
+			.thenComparingInt(CraftingCPUStatus::getSerial);
+
+	private void updateCpuList()
+	{
+		this.cpus.clear();
+		for (ICraftingCPU cpu : lastCpuSet)
+		{
+			int serial = getOrAssignCpuSerial(cpu);
+			this.cpus.add( new CraftingCPUStatus( cpu, serial ) );
+		}
+		this.cpus.sort(CPU_COMPARATOR);
+	}
+
+	private int getOrAssignCpuSerial( ICraftingCPU cpu )
+	{
+		return cpuSerialMap.computeIfAbsent( cpu, unused -> nextCpuSerial++ );
 	}
 
 	private boolean cpuMatches( final ICraftingCPU c )
@@ -111,70 +169,67 @@ public class ContainerCraftingStatus extends ContainerCraftingCPU
 
 	private void sendCPUs()
 	{
-		Collections.sort( this.cpus );
-
-		if( this.selectedCpu >= this.cpus.size() )
+		final PacketCraftingCPUsUpdate update;
+		for( final Object player : this.listeners )
 		{
-			this.selectedCpu = -1;
-			this.myName = "";
-		}
-		else if( this.selectedCpu != -1 )
-		{
-			this.myName = this.cpus.get( this.selectedCpu ).getName();
-		}
-
-		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
-		{
-			this.selectedCpu = 0;
-		}
-
-		if( this.selectedCpu != -1 )
-		{
-			if( this.cpus.get( this.selectedCpu ).getCpu() != this.getMonitor() )
+			if( player instanceof EntityPlayerMP)
 			{
-				this.setCPU( this.cpus.get( this.selectedCpu ).getCpu() );
+				try
+				{
+					NetworkHandler.instance.sendTo( new PacketCraftingCPUsUpdate( this.cpus ), (EntityPlayerMP) player );
+				}
+				catch( IOException e )
+				{
+					AELog.debug( e );
+				}
 			}
-		}
-		else
-		{
-			this.setCPU( null );
 		}
 	}
 
-	public void cycleCpu( final boolean next )
+
+	public void selectCPU( int serial )
 	{
-		if( next )
+		if (Platform.isServer())
 		{
-			this.selectedCpu++;
-		}
-		else
-		{
-			this.selectedCpu--;
-		}
+			if( serial < -1 )
+			{
+				serial = -1;
+			}
 
-		if( this.selectedCpu < -1 )
-		{
-			this.selectedCpu = this.cpus.size() - 1;
-		}
-		else if( this.selectedCpu >= this.cpus.size() )
-		{
-			this.selectedCpu = -1;
-		}
+			final int searchedSerial = serial;
+			if( serial > -1 && cpus.stream().noneMatch(c -> c.getSerial() == searchedSerial) )
+			{
+				serial = -1;
+			}
 
-		if( this.selectedCpu == -1 && this.cpus.size() > 0 )
-		{
-			this.selectedCpu = 0;
-		}
+			ICraftingCPU newSelectedCpu = null;
+			if( serial != -1 )
+			{
+				for( ICraftingCPU cpu : lastCpuSet )
+				{
+					if( cpuSerialMap.getOrDefault( cpu, -1 ) == serial )
+					{
+						newSelectedCpu = cpu;
+						break;
+					}
+				}
+			}
 
-		if( this.selectedCpu == -1 )
-		{
-			this.myName = "";
-			this.setCPU( null );
+			if( newSelectedCpu != getMonitor() )
+			{
+				this.selectedCpuSerial = serial;
+				setCPU( newSelectedCpu );
+			}
 		}
-		else
-		{
-			this.myName = this.cpus.get( this.selectedCpu ).getName();
-			this.setCPU( this.cpus.get( this.selectedCpu ).getCpu() );
-		}
+	}
+
+	public List<CraftingCPUStatus> getCPUs()
+	{
+		return Collections.unmodifiableList( cpus );
+	}
+
+	public void postCPUUpdate( CraftingCPUStatus[] cpus )
+	{
+		this.cpus = Arrays.asList( cpus );
 	}
 }

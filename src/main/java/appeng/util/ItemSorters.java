@@ -89,6 +89,19 @@ public class ItemSorters
 		}
 	}
 
+	public static int compareLong( final long a, final long b )
+	{
+		if( a == b )
+		{
+			return 0;
+		}
+		if( a < b )
+		{
+			return -1;
+		}
+		return 1;
+	}
+
 	private static SortDir getDirection()
 	{
 		return Direction;

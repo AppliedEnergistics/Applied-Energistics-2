@@ -19,6 +19,7 @@
 package appeng.client.gui.implementations;
 
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,10 @@ import java.util.List;
 import appeng.client.me.SlotME;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.features.ColoredItemDefinition;
+import mezz.jei.gui.GuiHelper;
+import mezz.jei.gui.elements.GuiIconButton;
+import mezz.jei.gui.overlay.bookmarks.BookmarkButton;
+import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -301,6 +306,11 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		int offset = this.guiTop + 8;
 
+		if(Loader.isModLoaded("jei")) {
+			// JEI Bookmark Next page button
+			offset += 16;
+		}
+
 		if( this.customSortOrder )
 		{
 			this.buttonList
@@ -397,6 +407,44 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		craftingGridOffsetX -= 25;
 		craftingGridOffsetY -= 6;
 
+	}
+
+	@Override
+	public List<Rectangle> getJEIExclusionArea() {
+		List<Rectangle> exclusionArea = new ArrayList<>();
+
+		int yOffset = guiTop + 8;
+
+		if(Loader.isModLoaded("jei")) {
+			yOffset += 16;
+		}
+
+		if(this.customSortOrder) {
+			Rectangle sortOrder = new Rectangle(guiLeft - 18, yOffset, 18, 18);
+			exclusionArea.add(sortOrder);
+			yOffset += 20;
+		}
+
+		if(this.viewCell || this instanceof GuiWirelessTerm) {
+			Rectangle viewMode = new Rectangle(guiLeft - 18, yOffset, 18, 18);
+			exclusionArea.add(viewMode);
+			yOffset += 20;
+		}
+
+		Rectangle sortDir = new Rectangle(guiLeft - 18, yOffset, 18, 18);
+		exclusionArea.add(sortDir);
+		yOffset += 20;
+
+		Rectangle searchSettings = new Rectangle(guiLeft - 18, yOffset, 18, 18);
+		exclusionArea.add(searchSettings);
+		yOffset += 20;
+
+		if( !( this instanceof GuiMEPortableCell ) || this instanceof GuiWirelessTerm ) {
+			Rectangle terminalStyle = new Rectangle(guiLeft - 18, yOffset, 18, 18);
+			exclusionArea.add(terminalStyle);
+		}
+
+		return exclusionArea;
 	}
 
 	@Override

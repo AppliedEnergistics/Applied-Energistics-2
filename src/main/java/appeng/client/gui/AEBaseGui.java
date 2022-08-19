@@ -23,13 +23,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import appeng.container.slot.*;
@@ -215,6 +210,10 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
 			bookmarkedJEIghostItem( mouseX, mouseY );
 		}
 		GlStateManager.disableDepth();
+	}
+
+	public List<Rectangle> getJEIExclusionArea() {
+		return Collections.emptyList();
 	}
 
 	@Optional.Method( modid = "jei" )

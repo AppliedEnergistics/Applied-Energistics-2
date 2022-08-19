@@ -1,5 +1,6 @@
 package appeng.client.gui;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.implementations.*;
@@ -20,6 +21,7 @@ import java.util.List;
 public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngredientHandler<AEBaseGui>
 {
     @Override
+    @Nonnull
     public Class<AEBaseGui> getGuiContainerClass()
     {
         return AEBaseGui.class;
@@ -27,14 +29,14 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
 
     @Nullable
     @Override
-    public List<Rectangle> getGuiExtraAreas( AEBaseGui guiContainer )
+    public List<Rectangle> getGuiExtraAreas( @Nonnull AEBaseGui guiContainer )
     {
-        return Collections.emptyList();
+        return guiContainer.getJEIExclusionArea();
     }
 
     @Nullable
     @Override
-    public Object getIngredientUnderMouse( AEBaseGui guiContainer, int mouseX, int mouseY )
+    public Object getIngredientUnderMouse( @Nonnull AEBaseGui guiContainer, int mouseX, int mouseY )
     {
         List<IAEItemStack> visual;
         int guiSlotIdx;
@@ -93,7 +95,8 @@ public class AEGuiHandler implements IAdvancedGuiHandler<AEBaseGui>, IGhostIngre
     }
 
     @Override
-    public <I> List<Target<I>> getTargets( AEBaseGui gui, I ingredient, boolean doStart )
+    @Nonnull
+    public <I> List<Target<I>> getTargets( @Nonnull AEBaseGui gui, @Nonnull I ingredient, boolean doStart )
     {
         ArrayList<Target<I>> targets = new ArrayList<>();
         if( gui instanceof IJEIGhostIngredients )

@@ -23,9 +23,17 @@
 package appeng.client.gui.implementations;
 
 
+import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import appeng.api.storage.data.IAEItemStack;
+import appeng.client.gui.widgets.GuiScrollbar;
+import appeng.container.implementations.CraftingCPUStatus;
 import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -48,17 +56,27 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
+import org.lwjgl.opengl.GL11;
 
 
 public class GuiCraftingStatus extends GuiCraftingCPU
 {
 
+	private static final int CPU_TABLE_WIDTH = 94;
+	private static final int CPU_TABLE_HEIGHT = 164;
+	private static final int CPU_TABLE_SLOT_XOFF = 100;
+	private static final int CPU_TABLE_SLOT_YOFF = 0;
+	private static final int CPU_TABLE_SLOT_WIDTH = 67;
+	private static final int CPU_TABLE_SLOT_HEIGHT = 23;
+
 	private final ContainerCraftingStatus status;
 	private GuiButton selectCPU;
+	private GuiScrollbar cpuScrollbar;
 
 	private GuiTabButton originalGuiBtn;
 	private GuiBridge originalGui;
 	private ItemStack myIcon = ItemStack.EMPTY;
+	private String selectedCPUName = "";
 
 	public GuiCraftingStatus( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -111,18 +129,6 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		final boolean backwards = Mouse.isButtonDown( 1 );
 
-		if( btn == this.selectCPU )
-		{
-			try
-			{
-				NetworkHandler.instance().sendToServer( new PacketValueConfig( "Terminal.Cpu", backwards ? "Prev" : "Next" ) );
-			}
-			catch( final IOException e )
-			{
-				AELog.debug( e );
-			}
-		}
-
 		if( btn == this.originalGuiBtn )
 		{
 			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.originalGui ) );
@@ -136,8 +142,14 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 
 		this.selectCPU = new GuiButton( 0, this.guiLeft + 8, this.guiTop + this.ySize - 25, 150, 20, GuiText.CraftingCPU
 				.getLocal() + ": " + GuiText.NoCraftingCPUs );
-		// selectCPU.enabled = false;
+		selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
+
+		this.cpuScrollbar = new GuiScrollbar();
+		this.cpuScrollbar.setLeft( -16 );
+		this.cpuScrollbar.setTop( 19 );
+		this.cpuScrollbar.setWidth( 12 );
+		this.cpuScrollbar.setHeight( 137 );
 
 		if( !this.myIcon.isEmpty() )
 		{
@@ -150,28 +162,271 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	@Override
 	public void drawScreen( final int mouseX, final int mouseY, final float btn )
 	{
+		List<CraftingCPUStatus> cpus = this.status.getCPUs();
+		this.selectedCPUName = null;
+		this.cpuScrollbar.setRange( 0, Integer.max(0, cpus.size() - 6), 1 );
+		for (CraftingCPUStatus cpu : cpus)
+		{
+			if (cpu.getSerial() == this.status.selectedCpuSerial)
+			{
+				this.selectedCPUName = cpu.getName();
+			}
+		}
 		this.updateCPUButtonText();
 		super.drawScreen( mouseX, mouseY, btn );
+	}
+
+	@Override
+	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		super.drawFG( offsetX, offsetY, mouseX, mouseY );
+		if (this.cpuScrollbar != null)
+		{
+			this.cpuScrollbar.draw( this );
+		}
+
+		List<CraftingCPUStatus> cpus = this.status.getCPUs();
+		final int firstCpu = this.cpuScrollbar.getCurrentScroll();
+		CraftingCPUStatus hoveredCpu = hitCpu( mouseX, mouseY );
+		{
+			FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+			final int TEXT_COLOR = 0x202020;
+			for( int i = firstCpu; i < firstCpu + 6; i++ )
+			{
+				if( i < 0 || i >= cpus.size() )
+				{
+					continue;
+				}
+				CraftingCPUStatus cpu = cpus.get( i );
+				if( cpu == null )
+				{
+					continue;
+				}
+				int x = -CPU_TABLE_WIDTH + 9;
+				int y = 19 + ( i - firstCpu ) * CPU_TABLE_SLOT_HEIGHT;
+				if( cpu.getSerial() == this.status.selectedCpuSerial )
+				{
+					GL11.glColor4f( 0.0F, 0.8352F, 1.0F, 1.0F );
+				}
+				else if( hoveredCpu != null && hoveredCpu.getSerial() == cpu.getSerial() )
+				{
+					GL11.glColor4f( 0.65F, 0.9F, 1.0F, 1.0F );
+				} else
+				{
+					GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+				}
+				this.bindTexture( "guis/cpu_selector.png" );
+				this.drawTexturedModalRect( x, y, CPU_TABLE_SLOT_XOFF, CPU_TABLE_SLOT_YOFF, CPU_TABLE_SLOT_WIDTH, CPU_TABLE_SLOT_HEIGHT );
+				GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+
+				String name = cpu.getName();
+				if( name == null || name.isEmpty() )
+				{
+					name = GuiText.CPUs.getLocal() + " #" + cpu.getSerial();
+				}
+				if( name.length() > 12 )
+				{
+					name = name.substring( 0, 11 ) + "..";
+				}
+				GL11.glPushMatrix();
+				GL11.glTranslatef( x + 3, y + 3, 0 );
+				GL11.glScalef( 0.8f, 0.8f, 1.0f );
+				font.drawString( name, 0, 0, TEXT_COLOR );
+				GL11.glPopMatrix();
+
+				GL11.glPushMatrix();
+				GL11.glTranslatef( x + 3, y + 11, 0 );
+				final IAEItemStack craftingStack = cpu.getCrafting();
+				if( craftingStack != null )
+				{
+					final int iconIndex = 16 * 11 + 2;
+					this.bindTexture( "guis/states.png" );
+					final int uv_y = iconIndex / 16;
+					final int uv_x = iconIndex - uv_y * 16;
+
+					GL11.glScalef( 0.5f, 0.5f, 1.0f );
+					GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+					this.drawTexturedModalRect( 0, 0, uv_x * 16, uv_y * 16, 16, 16 );
+					GL11.glTranslatef( 18.0f, 2.0f, 0.0f );
+					String amount = Long.toString( craftingStack.getStackSize() );
+					if( amount.length() > 5 )
+					{
+						amount = amount.substring( 0, 5 ) + "..";
+					}
+					GL11.glScalef( 1.5f, 1.5f, 1.0f );
+					font.drawString( amount, 0, 0, 0x009000 );
+					GL11.glPopMatrix();
+					GL11.glPushMatrix();
+					GL11.glTranslatef( x + CPU_TABLE_SLOT_WIDTH - 19, y + 3, 0 );
+					this.drawItem( 0, 0, craftingStack.createItemStack() );
+				}
+				else
+				{
+					final int iconIndex = 16 * 4 + 3;
+					this.bindTexture( "guis/states.png" );
+					final int uv_y = iconIndex / 16;
+					final int uv_x = iconIndex - uv_y * 16;
+
+					GL11.glScalef( 0.5f, 0.5f, 1.0f );
+					GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+					this.drawTexturedModalRect( 0, 0, uv_x * 16, uv_y * 16, 16, 16 );
+					GL11.glTranslatef( 18.0f, 2.0f, 0.0f );
+					GL11.glScalef( 1.5f, 1.5f, 1.0f );
+					font.drawString( cpu.formatStorage(), 0, 0, TEXT_COLOR );
+				}
+				GL11.glPopMatrix();
+			}
+			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
+		}
+		if( hoveredCpu != null )
+		{
+			StringBuilder tooltip = new StringBuilder();
+			String name = hoveredCpu.getName();
+			if( name != null && !name.isEmpty() )
+			{
+				tooltip.append( name );
+				tooltip.append( '\n' );
+			}
+			else
+			{
+				tooltip.append ( GuiText.CPUs.getLocal() );
+				tooltip.append ( " #" );
+				tooltip.append ( hoveredCpu.getSerial() );
+				tooltip.append ( '\n' );
+			}
+			IAEItemStack crafting = hoveredCpu.getCrafting();
+			if( crafting != null && crafting.getStackSize() > 0 )
+			{
+				tooltip.append( GuiText.Crafting.getLocal() );
+				tooltip.append( ": " );
+				tooltip.append( crafting.getStackSize() );
+				tooltip.append( ' ' );
+				tooltip.append( crafting.createItemStack().getDisplayName() );
+				tooltip.append( '\n' );
+				tooltip.append( hoveredCpu.getRemainingItems() );
+				tooltip.append( " / " );
+				tooltip.append( hoveredCpu.getTotalItems() );
+				tooltip.append( '\n' );
+			}
+			if ( hoveredCpu.getStorage() > 0 )
+			{
+				tooltip.append( GuiText.Bytes.getLocal() );
+				tooltip.append( ": " );
+				tooltip.append( hoveredCpu.formatStorage() );
+				tooltip.append( '\n' );
+			}
+			if ( hoveredCpu.getCoprocessors() > 0 )
+			{
+				tooltip.append( GuiText.CoProcessors.getLocal() );
+				tooltip.append( ": " );
+				tooltip.append( hoveredCpu.getCoprocessors() );
+				tooltip.append( '\n' );
+			}
+			if (tooltip.length() > 0)
+			{
+				this.drawTooltip( mouseX - offsetX, mouseY - offsetY, tooltip.toString() );
+			}
+		}
+	}
+
+	@Override
+	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
+	{
+		super.drawBG( offsetX, offsetY, mouseX, mouseY );
+		this.bindTexture( "guis/cpu_selector.png" );
+		this.drawTexturedModalRect( offsetX - CPU_TABLE_WIDTH, offsetY, 0, 0, CPU_TABLE_WIDTH, CPU_TABLE_HEIGHT );
+	}
+
+	@Override
+	public List<Rectangle> getJEIExclusionArea() {
+		Rectangle craftingCPUArea = new Rectangle(this.guiLeft - CPU_TABLE_WIDTH, this.guiTop, CPU_TABLE_WIDTH, CPU_TABLE_HEIGHT);
+		List<Rectangle> area = new ArrayList<Rectangle>();
+		area.add(craftingCPUArea);
+		return area;
+	}
+
+	@Override
+	protected void mouseClicked( int xCoord, int yCoord, int btn ) throws IOException {
+		super.mouseClicked( xCoord, yCoord, btn );
+
+		if( cpuScrollbar != null )
+		{
+			cpuScrollbar.click( this, xCoord - this.guiLeft, yCoord - this.guiTop );
+		}
+		CraftingCPUStatus hit = hitCpu( xCoord, yCoord );
+		if (hit != null)
+		{
+			try
+			{
+				NetworkHandler.instance.sendToServer( new PacketValueConfig( "Terminal.Cpu.Set", Integer.toString( hit.getSerial() ) ) );
+			}
+			catch( final IOException e )
+			{
+				AELog.debug( e );
+			}
+		}
+	}
+
+	@Override
+	protected void mouseClickMove( int x, int y, int c, long d )
+	{
+		super.mouseClickMove( x, y, c, d );
+		if( cpuScrollbar != null )
+		{
+			cpuScrollbar.click( this, x - this.guiLeft, y - this.guiTop );
+		}
+	}
+
+	@Override
+	public void handleMouseInput() throws IOException {
+		int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+		int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+		x -= guiLeft - CPU_TABLE_WIDTH;
+		y -= guiTop;
+		int dwheel = Mouse.getEventDWheel();
+		if (x >= 9 && x < CPU_TABLE_SLOT_WIDTH + 9 && y >= 19 && y < 19 + 6 * CPU_TABLE_SLOT_HEIGHT)
+		{
+			if (this.cpuScrollbar != null && dwheel != 0)
+			{
+				this.cpuScrollbar.wheel( dwheel );
+				return;
+			}
+		}
+		super.handleMouseInput();
+	}
+
+	private CraftingCPUStatus hitCpu( int x, int y )
+	{
+		x -= guiLeft - CPU_TABLE_WIDTH;
+		y -= guiTop;
+		if (!(x >= 9 && x < CPU_TABLE_SLOT_WIDTH + 9 && y >= 19 && y < 19 + 6 * CPU_TABLE_SLOT_HEIGHT))
+		{
+			return null;
+		}
+		int scrollOffset = this.cpuScrollbar != null ? this.cpuScrollbar.getCurrentScroll() : 0;
+		int cpuId = scrollOffset + (y - 19) / CPU_TABLE_SLOT_HEIGHT;
+		List<CraftingCPUStatus> cpus = this.status.getCPUs();
+		return (cpuId >= 0 && cpuId < cpus.size()) ? cpus.get(cpuId) : null;
 	}
 
 	private void updateCPUButtonText()
 	{
 		String btnTextText = GuiText.NoCraftingJobs.getLocal();
 
-		if( this.status.selectedCpu >= 0 )// && status.selectedCpu < status.cpus.size() )
+		if( this.status.selectedCpuSerial >= 0 )// && status.selectedCpu < status.cpus.size() )
 		{
-			if( this.status.myName.length() > 0 )
+			if( this.selectedCPUName != null && this.selectedCPUName.length() > 0 )
 			{
-				final String name = this.status.myName.substring( 0, Math.min( 20, this.status.myName.length() ) );
+				final String name = this.selectedCPUName.substring( 0, Math.min( 20, this.selectedCPUName.length() ) );
 				btnTextText = GuiText.CPUs.getLocal() + ": " + name;
 			}
 			else
 			{
-				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.status.selectedCpu;
+				btnTextText = GuiText.CPUs.getLocal() + ": #" + this.status.selectedCpuSerial;
 			}
 		}
 
-		if( this.status.noCPU )
+		if( this.status.getCPUs().isEmpty() )
 		{
 			btnTextText = GuiText.NoCraftingJobs.getLocal();
 		}
@@ -183,5 +438,10 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	protected String getGuiDisplayName( final String in )
 	{
 		return in; // the cup name is on the button
+	}
+
+	public void postCPUUpdate( CraftingCPUStatus[] cpus )
+	{
+		this.status.postCPUUpdate(cpus);
 	}
 }

@@ -84,7 +84,9 @@ public class AppEngPacketHandlerBase
 
 		PACKET_FLUID_TANK( PacketFluidSlot.class ),
 
-		PACKET_INFORM_PLAYER( PacketInformPlayer.class );
+		PACKET_INFORM_PLAYER( PacketInformPlayer.class ),
+
+		PACKET_CRAFTING_CPUS_UPDATE( PacketCraftingCPUsUpdate.class);
 
 
 		private final Class<? extends AppEngPacket> packetClass;

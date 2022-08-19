@@ -28,6 +28,8 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.data.IAEItemStack;
 
+import javax.annotation.Nullable;
+
 
 public interface ICraftingCPU extends IBaseMonitor<IAEItemStack>
 {
@@ -56,4 +58,30 @@ public interface ICraftingCPU extends IBaseMonitor<IAEItemStack>
 	 * @return an empty string or the name of the cpu.
 	 */
 	String getName();
+
+
+	/**
+	 * @return final output of the current crafting operation, or null if not crafting
+	 */
+	@Nullable
+	default IAEItemStack getFinalOutput()
+	{
+		return null;
+	}
+
+	/**
+	 * @return remaining count of items (or other units of processing) for the current crafting job
+	 */
+	default long getRemainingItemCount()
+	{
+		return 0;
+	}
+
+	/**
+	 * @return total count of items (or other units of processing) for the current crafting job
+	 */
+	default long getStartItemCount()
+	{
+		return 0;
+	}
 }
