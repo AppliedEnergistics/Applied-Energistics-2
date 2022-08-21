@@ -115,7 +115,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         encodeBestMatchingStacksIntoSlots(
                 genericIngredients,
                 ingredientPriorities,
-                menu.getCraftingGridSlots());
+                menu.getProcessingInputSlots());
         encodeBestMatchingStacksIntoSlots(
                 // For the outputs, it's only one possible item per slot
                 genericResults.stream().map(List::of).toList(),
