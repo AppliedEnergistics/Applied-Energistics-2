@@ -16,6 +16,7 @@ public enum ItemModText implements LocalizationEnum {
     NO_ITEMS("Found no compatible items"),
     WILL_CRAFT("Will craft unavailable items"),
     CTRL_CLICK_TO_CRAFT("CTRL + click to craft unavailable items"),
+    INGREDIENT_CRAFTABLE("Ingredients is craftable"),
     // Display of AE2-specific REI/JEI entries
     THROWING_IN_WATER_CATEGORY("Throwing In Water"),
     WITH_CRYSTAL_GROWTH_ACCELERATORS("With Crystal Growth Accelerators:"),

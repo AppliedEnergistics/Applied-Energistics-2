@@ -1,14 +1,21 @@
 package appeng.integration.modules.jei.transfer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
+import appeng.api.stacks.AEFluidKey;
 import com.google.common.math.LongMath;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import mezz.jei.api.gui.ingredient.IGuiIngredient;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -47,6 +54,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         implements IRecipeTransferHandler<T, Object> {
     private static final int CRAFTING_GRID_WIDTH = 3;
     private static final int CRAFTING_GRID_HEIGHT = 3;
+    private static final int BLUE_SLOT_HIGHLIGHT_COLOR = 0x400000ff;
 
     /**
      * Order of priority: - Craftable Items - Undamaged Items - Items the player has the most of
@@ -73,7 +81,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
     @Nullable
     @Override
     public IRecipeTransferError transferRecipe(T menu, Object recipeBase, IRecipeLayout recipeLayout, Player player,
-            boolean maxTransfer, boolean doTransfer) {
+                                               boolean maxTransfer, boolean doTransfer) {
 
         // Recipe displays can be based on anything. Not just Recipe<?>
         Recipe<?> recipe = null;
@@ -96,6 +104,11 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
                 encodeProcessingRecipe(menu,
                         GenericEntryStackHelper.ofInputs(recipeLayout),
                         GenericEntryStackHelper.ofOutputs(recipeLayout));
+            }
+        }else {
+            Set<Integer> craftableSlots = findCraftableSlots(menu, recipeLayout);
+            if (!craftableSlots.isEmpty()) {
+                return new CraftableIngredientError(craftableSlots);
             }
         }
 
@@ -124,7 +137,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
     }
 
     private void encodeProcessingRecipe(T menu, List<List<GenericStack>> genericIngredients,
-            List<GenericStack> genericResults) {
+                                        List<GenericStack> genericResults) {
         // Note that this runs on the client and getClientRepo() is guaranteed to be available there.
         var ingredientPriorities = getIngredientPriorities(menu, ENTRY_COMPARATOR);
 
@@ -140,8 +153,8 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
     }
 
     private void encodeBestMatchingStacksIntoSlots(List<List<GenericStack>> possibleInputsBySlot,
-            Map<AEKey, Integer> ingredientPriorities,
-            FakeSlot[] slots) {
+                                                   Map<AEKey, Integer> ingredientPriorities,
+                                                   FakeSlot[] slots) {
         var encodedInputs = new ArrayList<GenericStack>();
         for (var genericIngredient : possibleInputsBySlot) {
             if (!genericIngredient.isEmpty()) {
@@ -159,8 +172,8 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
     }
 
     private void encodeCraftingRecipe(T menu,
-            @Nullable Recipe<?> recipe,
-            List<List<GenericStack>> genericIngredients) {
+                                      @Nullable Recipe<?> recipe,
+                                      List<List<GenericStack>> genericIngredients) {
         // Note that this runs on the client and getClientRepo() is guaranteed to be available there.
         var prioritizedNetworkInv = getIngredientPriorities(menu, ENTRY_COMPARATOR);
 
@@ -238,7 +251,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
 
     // Given a set of possible ingredients, find the one that has the highest priority
     private static GenericStack findBestIngredient(Map<AEKey, Integer> ingredientPriorities,
-            List<GenericStack> possibleIngredients) {
+                                                   List<GenericStack> possibleIngredients) {
         return possibleIngredients.stream()
                 .map(gi -> Pair.of(gi, ingredientPriorities.getOrDefault(gi.what(), Integer.MIN_VALUE)))
                 .max(Comparator.comparingInt(Pair::getRight))
@@ -269,6 +282,37 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         stacks.add(newStack);
     }
 
+    private Set<Integer> findCraftableSlots(T menu, IRecipeLayout recipeLayout) {
+        var clientRepo = menu.getClientRepo();
+        if (clientRepo == null) return Collections.emptySet();
+
+        Set<Integer> craftableSlots = new HashSet<>();
+        var itemIngredients = recipeLayout.getItemStacks().getGuiIngredients();
+        var fluidIngredient = recipeLayout.getFluidStacks().getGuiIngredients();
+        var allEntries = menu.getClientRepo().getAllEntries();
+        itemIngredients.forEach((key, value) -> {
+            var ingredients = value.getAllIngredients();
+            boolean isCraftable = ingredients.parallelStream()
+                    .anyMatch(ingredient -> allEntries.parallelStream()
+                            .anyMatch(menuEntry -> AEItemKey.matches(menuEntry.getWhat(), ingredient) && menuEntry.isCraftable())
+                    );
+            if (isCraftable) {
+                craftableSlots.add(key);
+            }
+        });
+        fluidIngredient.forEach((key, value) -> {
+            var ingredients = value.getAllIngredients();
+            boolean isCraftable = ingredients.parallelStream()
+                    .anyMatch(ingredient -> allEntries.parallelStream()
+                            .anyMatch(menuEntry -> AEFluidKey.matches(menuEntry.getWhat(), ingredient) && menuEntry.isCraftable())
+                    );
+            if (isCraftable) {
+                craftableSlots.add(key);
+            }
+        });
+        return craftableSlots;
+    }
+
     @Override
     public Class<T> getContainerClass() {
         return containerClass;
@@ -277,6 +321,51 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
     @Override
     public Class<Object> getRecipeClass() {
         return Object.class;
+    }
+
+    private record CraftableIngredientError(Set<Integer> craftableSlots) implements IRecipeTransferError {
+
+        @Override
+        public @NotNull Type getType() {
+            return Type.COSMETIC;
+        }
+
+        @Override
+        public void showError(@NotNull PoseStack poseStack, int mouseX, int mouseY, @NotNull IRecipeLayout recipeLayout, int recipeX, int recipeY) {
+            var itemIngredients = recipeLayout.getItemStacks().getGuiIngredients();
+            var fluidIngredient = recipeLayout.getFluidStacks().getGuiIngredients();
+            List<IGuiIngredient<?>> craftableIngredients = new ArrayList<>();
+            for (Integer slot : craftableSlots) {
+                if (itemIngredients.containsKey(slot)) {
+                    craftableIngredients.add(itemIngredients.get(slot));
+                } else if (fluidIngredient.containsKey(slot)) {
+                    craftableIngredients.add(fluidIngredient.get(slot));
+                }
+            }
+            for (var ingredient : craftableIngredients) {
+                ingredient.drawHighlight(poseStack,BLUE_SLOT_HIGHLIGHT_COLOR ,recipeX, recipeY);
+            }
+            drawHoveringText(poseStack, Collections.singletonList(ItemModText.INGREDIENT_CRAFTABLE.text().withStyle(ChatFormatting.BLUE)), mouseX, mouseY);
+        }
+
+        // Copy-pasted from JEI since it doesn't seem to expose these
+        public static void drawHoveringText(PoseStack poseStack, List<Component> textLines, int x, int y) {
+            Minecraft minecraft = Minecraft.getInstance();
+            Font font = minecraft.font;
+            drawHoveringText(poseStack, textLines, x, y, ItemStack.EMPTY, font);
+        }
+
+        private static void drawHoveringText(PoseStack poseStack, List<Component> textLines, int x, int y,
+                                             ItemStack itemStack, Font font) {
+            Minecraft minecraft = Minecraft.getInstance();
+            Screen screen = minecraft.screen;
+            if (screen == null) {
+                return;
+            }
+
+            Optional<TooltipComponent> tooltipImage = itemStack.getTooltipImage();
+            screen.renderTooltip(poseStack, textLines, tooltipImage, x, y, font, itemStack);
+        }
     }
 
 }
