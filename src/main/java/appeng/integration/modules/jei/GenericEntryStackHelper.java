@@ -59,7 +59,7 @@ public final class GenericEntryStackHelper {
     }
 
     public static List<GenericStack> ofOutputs(IRecipeSlotsView recipeLayout) {
-        return recipeLayout.getSlotViews(RecipeIngredientRole.INPUT)
+        return recipeLayout.getSlotViews(RecipeIngredientRole.OUTPUT)
                 .stream()
                 .flatMap(slot -> ofSlot(slot).stream().limit(1))
                 .toList();

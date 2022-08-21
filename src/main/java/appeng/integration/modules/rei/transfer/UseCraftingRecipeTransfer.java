@@ -1,7 +1,6 @@
 package appeng.integration.modules.rei.transfer;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,16 +23,10 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
-import appeng.api.stacks.AEItemKey;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.ItemModText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
-import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.common.MEStorageMenu;
+import appeng.integration.modules.jeirei.CraftingHelper;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.util.CraftingRecipeUtil;
 
 /**
  * Recipe transfer implementation with the intended purpose of actually crafting an item. Most of the work is done
@@ -57,9 +50,6 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
     // Colors for the buttons
     private static final int BLUE_PLUS_BUTTON_COLOR = 0x804545FF;
     private static final int ORANGE_PLUS_BUTTON_COLOR = 0x80FFA500;
-
-    private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
-            .comparing(GridInventoryEntry::getStoredAmount);
 
     public UseCraftingRecipeTransfer(Class<T> containerClass) {
         super(containerClass);
@@ -118,7 +108,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                 return result;
             }
         } else {
-            performTransfer(menu, recipe, craftMissing);
+            CraftingHelper.performTransfer(menu, recipe, craftMissing);
         }
 
         // No error
@@ -138,46 +128,6 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
 
         return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT,
                 ingredients, ItemStack.EMPTY);
-    }
-
-    protected void performTransfer(T menu, Recipe<?> recipe, boolean craftMissing) {
-
-        // We send the items in the recipe in any case to serve as a fallback in case the recipe is transient
-        var templateItems = findGoodTemplateItems(recipe, menu);
-
-        var recipeId = recipe.getId();
-        // Don't transmit a recipe id to the server in case the recipe is not actually resolvable
-        // this is the case for recipes synthetically generated for JEI
-        if (menu.getPlayer().level.getRecipeManager().byKey(recipe.getId()).isEmpty()) {
-            AELog.debug("Cannot send recipe id %s to server because it's transient", recipeId);
-            recipeId = null;
-        }
-
-        NetworkHandler.instance()
-                .sendToServer(new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing));
-    }
-
-    private NonNullList<ItemStack> findGoodTemplateItems(Recipe<?> recipe, MEStorageMenu menu) {
-        var ingredientPriorities = getIngredientPriorities(menu, ENTRY_COMPARATOR);
-
-        var templateItems = NonNullList.withSize(9, ItemStack.EMPTY);
-        var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
-        for (int i = 0; i < ingredients.size(); i++) {
-            var ingredient = ingredients.get(i);
-            if (!ingredient.isEmpty()) {
-                // Try to find the best item. In case the ingredient is a tag, it might contain versions the
-                // player doesn't actually have
-                var stack = ingredientPriorities.entrySet()
-                        .stream()
-                        .filter(e -> e.getKey() instanceof AEItemKey itemKey && ingredient.test(itemKey.toStack()))
-                        .max(Comparator.comparingInt(Map.Entry::getValue))
-                        .map(e -> ((AEItemKey) e.getKey()).toStack())
-                        .orElse(ingredient.getItems()[0]);
-
-                templateItems.set(i, stack);
-            }
-        }
-        return templateItems;
     }
 
     private Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
