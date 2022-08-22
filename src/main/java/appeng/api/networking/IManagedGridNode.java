@@ -170,6 +170,8 @@ public interface IManagedGridNode {
 
     boolean isActive();
 
+    boolean isPassive();
+
     boolean isPowered();
 
     /**

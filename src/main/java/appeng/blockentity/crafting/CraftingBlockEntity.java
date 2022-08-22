@@ -133,11 +133,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
 
         final boolean formed = this.isFormed();
-        boolean power = false;
-
-        if (this.getMainNode().isReady()) {
-            power = this.getMainNode().isActive();
-        }
+        boolean power = this.getMainNode().isPassive();
 
         final BlockState current = this.level.getBlockState(this.worldPosition);
 

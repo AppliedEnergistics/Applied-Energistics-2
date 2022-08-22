@@ -212,6 +212,18 @@ public class ManagedGridNode implements IManagedGridNode {
         return this.node.isActive();
     }
 
+    /**
+     * @see IGridNode#isPassive()
+     */
+    @Override
+    public boolean isPassive() {
+        if (this.node == null) {
+            return false;
+        }
+
+        return this.node.isPassive();
+    }
+
     @Override
     public boolean isPowered() {
         var grid = getGrid();

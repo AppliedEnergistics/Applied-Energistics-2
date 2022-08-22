@@ -189,7 +189,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
 
     public boolean isActive() {
         if (level != null && !level.isClientSide) {
-            return this.getMainNode().isActive();
+            return this.getMainNode().isPassive();
         } else {
             return this.isActive;
         }

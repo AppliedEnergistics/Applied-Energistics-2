@@ -124,7 +124,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     @Override
     protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
-        data.writeBoolean(this.getMainNode().isActive());
+        data.writeBoolean(this.getMainNode().isPassive());
         data.writeByte(this.paintedColor.ordinal());
     }
 
@@ -208,7 +208,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
 
     public boolean isActive() {
         if (level != null && !level.isClientSide) {
-            return isPowered();
+            return this.getMainNode().isPassive();
         } else {
             return this.isActive;
         }
@@ -217,10 +217,6 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public MEStorage getInventory() {
         return inventory;
-    }
-
-    public boolean isPowered() {
-        return this.getMainNode().isActive();
     }
 
     @Override

@@ -73,7 +73,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     private final DriveWatcher[] invBySlot = new DriveWatcher[SLOT_COUNT];
     private boolean isCached = false;
     private int priority = 0;
-    private boolean wasActive = false;
+    private boolean wasPassive = false;
     // This is only used on the client
     private final Item[] cellItems = new Item[SLOT_COUNT];
 
@@ -221,7 +221,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
             return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
         }
 
-        return this.getMainNode().isActive();
+        return this.getMainNode().isPassive();
     }
 
     @Override
@@ -256,7 +256,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
         int newState = 0;
 
-        if (getMainNode().isActive()) {
+        if (getMainNode().isPassive()) {
             newState |= BIT_POWER_MASK;
         }
 
@@ -268,13 +268,11 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        if (reason != IGridNodeListener.State.GRID_BOOT) {
-            var currentActive = getMainNode().isActive();
-            if (this.wasActive != currentActive) {
-                this.wasActive = currentActive;
-                IStorageProvider.requestUpdate(getMainNode());
-                updateVisualStateIfNeeded();
-            }
+        var currentPassive = getMainNode().isPassive();
+        if (this.wasPassive != currentPassive) {
+            this.wasPassive = currentPassive;
+            IStorageProvider.requestUpdate(getMainNode());
+            updateVisualStateIfNeeded();
         }
     }
 
@@ -342,7 +340,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void mountInventories(IStorageMounts storageMounts) {
-        if (this.getMainNode().isActive()) {
+        if (this.getMainNode().isPassive()) {
             this.updateState();
             for (var inventory : this.invBySlot) {
                 if (inventory != null) {

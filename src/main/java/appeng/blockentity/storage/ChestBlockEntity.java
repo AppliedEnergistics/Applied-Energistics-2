@@ -112,7 +112,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private final IConfigManager config = new ConfigManager(this::saveChanges);
     private int priority = 0;
     private int state = 0;
-    private boolean wasActive = false;
+    private boolean wasPassive = false;
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isCached = false;
     private ChestMonitorHandler cellHandler;
@@ -367,13 +367,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        if (reason != IGridNodeListener.State.GRID_BOOT) {
-            var currentActive = this.getMainNode().isActive();
-            if (this.wasActive != currentActive) {
-                this.wasActive = currentActive;
-                IStorageProvider.requestUpdate(getMainNode());
-                recalculateDisplay();
-            }
+        var currentPassive = this.getMainNode().isPassive();
+        if (this.wasPassive != currentPassive) {
+            this.wasPassive = currentPassive;
+            IStorageProvider.requestUpdate(getMainNode());
+            recalculateDisplay();
         }
     }
 
@@ -446,7 +444,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void mountInventories(IStorageMounts storageMounts) {
-        if (this.getMainNode().isActive()) {
+        if (this.getMainNode().isPassive()) {
             this.updateHandler();
 
             if (this.cellHandler != null) {

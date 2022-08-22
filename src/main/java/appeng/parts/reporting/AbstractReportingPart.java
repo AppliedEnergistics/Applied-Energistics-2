@@ -58,7 +58,6 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     protected static final int POWERED_FLAG = 4;
     protected static final int CHANNEL_FLAG = 16;
-    private static final int BOOTING_FLAG = 8;
 
     private byte spin = 0; // 0-3
     private int clientFlags = 0; // sent as byte.
@@ -77,7 +76,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
 
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        if (reason != IGridNodeListener.State.GRID_BOOT || !this.isLightSource()) {
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
             this.getHost().markForUpdate();
         }
     }
@@ -117,10 +116,6 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
         if (node != null) {
             if (node.isPowered()) {
                 this.clientFlags = this.getClientFlags() | AbstractReportingPart.POWERED_FLAG;
-            }
-
-            if (!node.hasGridBooted()) {
-                this.clientFlags = this.getClientFlags() | AbstractReportingPart.BOOTING_FLAG;
             }
 
             if (node.meetsChannelRequirements()) {
