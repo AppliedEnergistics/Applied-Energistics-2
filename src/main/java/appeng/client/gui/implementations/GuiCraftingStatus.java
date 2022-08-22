@@ -179,12 +179,6 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 	@Override
 	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
 	{
-		super.drawFG( offsetX, offsetY, mouseX, mouseY );
-		if (this.cpuScrollbar != null)
-		{
-			this.cpuScrollbar.draw( this );
-		}
-
 		List<CraftingCPUStatus> cpus = this.status.getCPUs();
 		final int firstCpu = this.cpuScrollbar.getCurrentScroll();
 		CraftingCPUStatus hoveredCpu = hitCpu( mouseX, mouseY );
@@ -278,9 +272,9 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 			}
 			GL11.glColor4f( 1.0F, 1.0F, 1.0F, 1.0F );
 		}
+		StringBuilder tooltip = new StringBuilder();
 		if( hoveredCpu != null )
 		{
-			StringBuilder tooltip = new StringBuilder();
 			String name = hoveredCpu.getName();
 			if( name != null && !name.isEmpty() )
 			{
@@ -322,10 +316,15 @@ public class GuiCraftingStatus extends GuiCraftingCPU
 				tooltip.append( hoveredCpu.getCoprocessors() );
 				tooltip.append( '\n' );
 			}
-			if (tooltip.length() > 0)
-			{
-				this.drawTooltip( mouseX - offsetX, mouseY - offsetY, tooltip.toString() );
-			}
+		}
+		if (this.cpuScrollbar != null)
+		{
+			this.cpuScrollbar.draw( this );
+		}
+		super.drawFG( offsetX, offsetY, mouseX, mouseY );
+		if (tooltip.length() > 0)
+		{
+			this.drawTooltip( mouseX - offsetX, mouseY - offsetY, tooltip.toString() );
 		}
 	}
 
