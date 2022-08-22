@@ -34,6 +34,8 @@ public final class EncodingHelper {
     private EncodingHelper() {
     }
 
+    public static final int BLUE_SLOT_HIGHLIGHT_COLOR = 0x400000ff;
+
     /**
      * Order of priority: - Craftable Items - Undamaged Items - Items the player has the most of
      */

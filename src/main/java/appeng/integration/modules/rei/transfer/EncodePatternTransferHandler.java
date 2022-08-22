@@ -1,24 +1,34 @@
 package appeng.integration.modules.rei.transfer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.fluids.FluidStack;
 
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
 import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.integration.modules.rei.GenericEntryStackHelper;
+import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
@@ -26,6 +36,8 @@ import appeng.menu.me.items.PatternEncodingTermMenu;
  * JEI).
  */
 public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> extends AbstractTransferHandler<T> {
+
+    private static final int BLUE_PLUS_BUTTON_COLOR = 0x804545FF;
 
     private final IngredientVisibility ingredientVisibility = new IngredientVisibility();
 
@@ -53,6 +65,17 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                         GenericEntryStackHelper.ofInputs(display),
                         GenericEntryStackHelper.ofOutputs(display));
             }
+        } else {
+            Pair<Set<Integer>, Set<Integer>> craftableSlots = findCraftableSlots(menu, display);
+            if (!craftableSlots.getLeft().isEmpty() || !craftableSlots.getRight().isEmpty()) {
+                return Result.createSuccessful()
+                        .color(BLUE_PLUS_BUTTON_COLOR)
+                        .renderer(createErrorRenderer(craftableSlots))
+                        .overrideTooltipRenderer((point, sink) -> sink.accept(
+                                Tooltip.create(Collections.singletonList(
+                                        ItemModText.INGREDIENT_CRAFTABLE.text().withStyle(ChatFormatting.BLUE)))));
+            }
+
         }
 
         return Result.createSuccessful().blocksFurtherHandling();
@@ -84,6 +107,40 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         return result;
     }
 
+    private Pair<Set<Integer>, Set<Integer>> findCraftableSlots(T menu, Display display) {
+
+        var clientRepo = menu.getClientRepo();
+        if (clientRepo == null)
+            return Pair.of(new HashSet<>(), new HashSet<>());
+
+        var allEntries = clientRepo.getAllEntries();
+
+        return Pair.of(
+                findCraftableSlots(display.getInputEntries(), allEntries),
+                findCraftableSlots(display.getOutputEntries(), allEntries));
+    }
+
+    private Set<Integer> findCraftableSlots(List<EntryIngredient> entries, Set<GridInventoryEntry> allEntries) {
+        Set<Integer> craftableSlots = new HashSet<>();
+        for (int i = 0, inputEntriesSize = entries.size(); i < inputEntriesSize; i++) {
+            EntryIngredient entryStacks = entries.get(i);
+            var itemIngredients = entryStacks.stream()
+                    .filter(entryStack -> entryStack.getType() == VanillaEntryTypes.ITEM)
+                    .map(entryStack -> (ItemStack) entryStack.castValue());
+            var fluidIngredients = entryStacks.stream()
+                    .filter(entryStack -> entryStack.getType() == VanillaEntryTypes.FLUID)
+                    .map(entryStack -> (FluidStack) entryStack.castValue());
+            boolean isCraftable = itemIngredients.parallel().anyMatch(ingredient -> allEntries.parallelStream()
+                    .anyMatch(entry -> entry.isCraftable() && AEItemKey.matches(entry.getWhat(), ingredient))) ||
+                    fluidIngredients.parallel().anyMatch(ingredient -> allEntries.parallelStream()
+                            .anyMatch(entry -> entry.isCraftable() && AEFluidKey.matches(entry.getWhat(), ingredient)));
+            if (isCraftable) {
+                craftableSlots.add(i);
+            }
+        }
+        return craftableSlots;
+    }
+
     private static class IngredientVisibility {
 
         private final EntryRegistry registry;
@@ -109,5 +166,37 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
             cache.put(stack, visible);
             return visible;
         }
+    }
+
+    private static TransferHandlerRenderer createErrorRenderer(Pair<Set<Integer>, Set<Integer>> craftableSlots) {
+        return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
+            int inputIndex = 0;
+            int outputIndex = 0;
+            for (Widget widget : widgets) {
+                if (widget instanceof Slot slot) {
+                    boolean renderHighlight = false;
+                    if (slot.getNoticeMark() == Slot.INPUT) {
+                        if (craftableSlots.getLeft().contains(inputIndex)) {
+                            renderHighlight = true;
+                        }
+                        inputIndex++;
+                    }
+                    if (slot.getNoticeMark() == Slot.OUTPUT) {
+                        if (craftableSlots.getRight().contains(outputIndex)) {
+                            renderHighlight = true;
+                        }
+                        outputIndex++;
+                    }
+                    if (renderHighlight) {
+                        matrices.pushPose();
+                        matrices.translate(0, 0, 400);
+                        Rectangle innerBounds = slot.getInnerBounds();
+                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                                innerBounds.getMaxY(), EncodingHelper.BLUE_SLOT_HIGHLIGHT_COLOR);
+                        matrices.popPose();
+                    }
+                }
+            }
+        };
     }
 }
