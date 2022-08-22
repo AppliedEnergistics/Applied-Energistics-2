@@ -2,8 +2,6 @@ package appeng.integration.modules.rei.transfer;
 
 import java.util.*;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +26,6 @@ import appeng.api.stacks.GenericStack;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.integration.modules.rei.GenericEntryStackHelper;
-import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
@@ -66,8 +63,8 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                         GenericEntryStackHelper.ofOutputs(display));
             }
         } else {
-            Pair<Set<Integer>, Set<Integer>> craftableSlots = findCraftableSlots(menu, display);
-            if (!craftableSlots.getLeft().isEmpty() || !craftableSlots.getRight().isEmpty()) {
+            Set<Integer> craftableSlots = findCraftableSlots(menu, display);
+            if (!craftableSlots.isEmpty()) {
                 return Result.createSuccessful()
                         .color(BLUE_PLUS_BUTTON_COLOR)
                         .renderer(createErrorRenderer(craftableSlots))
@@ -107,23 +104,18 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         return result;
     }
 
-    private Pair<Set<Integer>, Set<Integer>> findCraftableSlots(T menu, Display display) {
+    private Set<Integer> findCraftableSlots(T menu, Display display) {
 
         var clientRepo = menu.getClientRepo();
         if (clientRepo == null)
-            return Pair.of(new HashSet<>(), new HashSet<>());
+            return Collections.emptySet();
 
         var allEntries = clientRepo.getAllEntries();
 
-        return Pair.of(
-                findCraftableSlots(display.getInputEntries(), allEntries),
-                findCraftableSlots(display.getOutputEntries(), allEntries));
-    }
-
-    private Set<Integer> findCraftableSlots(List<EntryIngredient> entries, Set<GridInventoryEntry> allEntries) {
         Set<Integer> craftableSlots = new HashSet<>();
-        for (int i = 0, inputEntriesSize = entries.size(); i < inputEntriesSize; i++) {
-            EntryIngredient entryStacks = entries.get(i);
+        List<EntryIngredient> inputEntries = display.getInputEntries();
+        for (int i = 0, inputEntriesSize = inputEntries.size(); i < inputEntriesSize; i++) {
+            EntryIngredient entryStacks = inputEntries.get(i);
             var itemIngredients = entryStacks.stream()
                     .filter(entryStack -> entryStack.getType() == VanillaEntryTypes.ITEM)
                     .map(entryStack -> (ItemStack) entryStack.castValue());
@@ -168,32 +160,21 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         }
     }
 
-    private static TransferHandlerRenderer createErrorRenderer(Pair<Set<Integer>, Set<Integer>> craftableSlots) {
+    private static TransferHandlerRenderer createErrorRenderer(Set<Integer> craftableSlots) {
         return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
             int inputIndex = 0;
-            int outputIndex = 0;
             for (Widget widget : widgets) {
                 if (widget instanceof Slot slot) {
-                    boolean renderHighlight = false;
                     if (slot.getNoticeMark() == Slot.INPUT) {
-                        if (craftableSlots.getLeft().contains(inputIndex)) {
-                            renderHighlight = true;
+                        if (craftableSlots.contains(inputIndex)) {
+                            matrices.pushPose();
+                            matrices.translate(0, 0, 400);
+                            Rectangle innerBounds = slot.getInnerBounds();
+                            GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                                    innerBounds.getMaxY(), EncodingHelper.BLUE_SLOT_HIGHLIGHT_COLOR);
+                            matrices.popPose();
                         }
                         inputIndex++;
-                    }
-                    if (slot.getNoticeMark() == Slot.OUTPUT) {
-                        if (craftableSlots.getRight().contains(outputIndex)) {
-                            renderHighlight = true;
-                        }
-                        outputIndex++;
-                    }
-                    if (renderHighlight) {
-                        matrices.pushPose();
-                        matrices.translate(0, 0, 400);
-                        Rectangle innerBounds = slot.getInnerBounds();
-                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                                innerBounds.getMaxY(), EncodingHelper.BLUE_SLOT_HIGHLIGHT_COLOR);
-                        matrices.popPose();
                     }
                 }
             }

@@ -19,6 +19,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
@@ -134,7 +135,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         Set<IRecipeSlotView> craftableSlots = new HashSet<>();
         // How do I check the other AEKeys?
         var allEntries = clientRepo.getAllEntries();
-        for (IRecipeSlotView slotView : slotsView.getSlotViews()) {
+        for (IRecipeSlotView slotView : slotsView.getSlotViews(RecipeIngredientRole.INPUT)) {
             var itemIngredients = slotView.getItemStacks();
             var fluidIngredients = slotView.getIngredients(ForgeTypes.FLUID_STACK);
             boolean isCraftable = itemIngredients.parallel().anyMatch(ingredient -> allEntries.parallelStream()
