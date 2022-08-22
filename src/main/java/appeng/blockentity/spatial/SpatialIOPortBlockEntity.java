@@ -109,7 +109,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
 
     public boolean isActive() {
         if (level != null && !level.isClientSide) {
-            return this.getMainNode().isPassive();
+            return this.getMainNode().isOnline();
         } else {
             return this.isActive;
         }

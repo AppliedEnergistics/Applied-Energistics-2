@@ -68,7 +68,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     private static final PlaneModels MODELS = new PlaneModels("part/formation_plane",
             "part/formation_plane_on");
 
-    private boolean wasPassive = false;
+    private boolean wasOnline = false;
     private int priority = 0;
     private final PlaneConnectionHelper connectionHelper = new PlaneConnectionHelper(this);
     private final MEStorage inventory = new InWorldStorage();
@@ -127,9 +127,9 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     @Override
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        var currentPassive = this.getMainNode().isPassive();
-        if (this.wasPassive != currentPassive) {
-            this.wasPassive = currentPassive;
+        var currentOnline = this.getMainNode().isOnline();
+        if (this.wasOnline != currentOnline) {
+            this.wasOnline = currentOnline;
             this.remountStorage();
             this.getHost().markForUpdate();
         }
@@ -214,7 +214,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     @Override
     public void mountInventories(IStorageMounts mounts) {
-        if (getMainNode().isPassive()) {
+        if (getMainNode().isOnline()) {
             // Update the filter at least once before registering the inventory
             updateFilter();
             mounts.mount(inventory, priority);

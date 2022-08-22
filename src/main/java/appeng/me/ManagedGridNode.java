@@ -213,15 +213,15 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     /**
-     * @see IGridNode#isPassive()
+     * @see IGridNode#isOnline()
      */
     @Override
-    public boolean isPassive() {
+    public boolean isOnline() {
         if (this.node == null) {
             return false;
         }
 
-        return this.node.isPassive();
+        return this.node.isOnline();
     }
 
     @Override
