@@ -109,7 +109,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
 
     public boolean isActive() {
         if (level != null && !level.isClientSide) {
-            return this.getMainNode().isActive();
+            return this.getMainNode().isOnline();
         } else {
             return this.isActive;
         }
@@ -134,12 +134,12 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
 
     private boolean isSpatialCell(ItemStack cell) {
         if (!cell.isEmpty() && cell.getItem() instanceof ISpatialStorageCell sc) {
-            return sc != null && sc.isSpatialStorage(cell);
+            return sc.isSpatialStorage(cell);
         }
         return false;
     }
 
-    private void transition() throws Exception {
+    private void transition() {
         if (!(this.level instanceof ServerLevel serverLevel)) {
             return;
         }
@@ -150,6 +150,10 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
         }
 
         final ISpatialStorageCell sc = (ISpatialStorageCell) cell.getItem();
+
+        if (!getMainNode().isActive()) {
+            return;
+        }
 
         getMainNode().ifPresent((grid, node) -> {
             var spc = grid.getSpatialService();

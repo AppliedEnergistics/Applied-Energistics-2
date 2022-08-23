@@ -226,7 +226,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         // Initialize once the network is ready and there are no entries marked as loaded.
-        if (!this.initialized && this.getMainNode().isActive()) {
+        if (!this.initialized && this.getMainNode().isOnline()) {
             this.forceAll();
             this.initialized = true;
         } else {
@@ -235,7 +235,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
 
         // Be a bit lenient to not unload all chunks immediately upon power loss
         if (this.powerlessTicks > 200) {
-            if (!this.getMainNode().isPowered() || !this.getMainNode().isActive()) {
+            if (!this.getMainNode().isOnline()) {
                 this.releaseAll();
             }
             this.powerlessTicks = 0;
@@ -245,7 +245,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         }
 
         // Count ticks without power
-        if (!this.getMainNode().isPowered() || !this.getMainNode().isActive()) {
+        if (!this.getMainNode().isOnline()) {
             this.powerlessTicks += ticksSinceLastCall;
             return TickRateModulation.SAME;
         }
@@ -264,7 +264,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
 
     public boolean isActive() {
         if (level != null && !level.isClientSide) {
-            return this.getMainNode().isActive();
+            return this.getMainNode().isOnline();
         } else {
             return this.isActive;
         }

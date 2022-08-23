@@ -150,7 +150,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
             return this.isPowered() && CHANNEL_FLAG == (this.getClientFlags() & CHANNEL_FLAG);
         }
 
-        return this.getMainNode().isActive();
+        return this.getMainNode().isOnline();
     }
 
     @Override

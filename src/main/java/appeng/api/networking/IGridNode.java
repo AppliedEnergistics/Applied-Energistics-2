@@ -110,9 +110,23 @@ public interface IGridNode {
     /**
      * Reflects the networks status, returns true only if the network is powered, and the network has fully booted, and
      * this node has the channels it needs (if any).
+     * <p>
+     * This should be used for active behavior such as network I/O, but {@link #isOnline()} should be used instead for
+     * visual state display to avoid the device looking disabled while the grid is booting.
      */
     default boolean isActive() {
         return isPowered() && hasGridBooted() && meetsChannelRequirements();
+    }
+
+    /**
+     * Return true only if the network is powered and the node has the channels it needs (if any).
+     * <p>
+     * This ignores whether the network is booting, so it should be used for "enabled" visuals or other "passive"
+     * behavior, but should not perform active actions (such as network I/O) without checking that booting is finished,
+     * as the channels might still be outdated.
+     */
+    default boolean isOnline() {
+        return isPowered() && meetsChannelRequirements();
     }
 
     /**

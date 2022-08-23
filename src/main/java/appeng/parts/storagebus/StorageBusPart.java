@@ -117,7 +117,7 @@ public class StorageBusPart extends UpgradeablePart
     private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
     @Nullable
     private Map<AEKeyType, ExternalStorageStrategy> externalStorageStrategies;
-    private boolean wasActive = false;
+    private boolean wasOnline = false;
     private int priority = 0;
     /**
      * Indicates that the storage-bus should reevaluate the block it's attached to on the next tick and update the
@@ -141,13 +141,11 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        if (reason != IGridNodeListener.State.GRID_BOOT) {
-            var currentActive = this.getMainNode().isActive();
-            if (this.wasActive != currentActive) {
-                this.wasActive = currentActive;
-                this.getHost().markForUpdate();
-                remountStorage();
-            }
+        var currentOnline = this.getMainNode().isOnline();
+        if (this.wasOnline != currentOnline) {
+            this.wasOnline = currentOnline;
+            this.getHost().markForUpdate();
+            remountStorage();
         }
     }
 
@@ -279,7 +277,7 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     private boolean hasRegisteredCellToNetwork() {
-        return getMainNode().isActive() && !(this.handler.getDelegate() instanceof NullInventory);
+        return getMainNode().isOnline() && !(this.handler.getDelegate() instanceof NullInventory);
     }
 
     public Component getConnectedToDescription() {
