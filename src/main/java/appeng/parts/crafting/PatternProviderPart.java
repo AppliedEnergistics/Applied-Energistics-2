@@ -29,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -70,6 +71,11 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     @Override
     public void saveChanges() {
         getHost().markForSave();
+    }
+
+    @Override
+    public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        this.logic.onMainNodeStateChanged();
     }
 
     @Override
