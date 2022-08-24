@@ -21,7 +21,7 @@ import appeng.api.storage.StorageHelper;
 import appeng.util.IVariantConversion;
 import appeng.util.Platform;
 
-class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
+public class StorageExportStrategy<V extends TransferVariant<?>> implements StackExportStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageExportStrategy.class);
     private final BlockApiCache<Storage<V>, Direction> apiCache;
     private final Direction fromSide;
