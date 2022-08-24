@@ -611,9 +611,6 @@ public final class AEConfig {
                 tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
                 tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
-
-            ConfigSection inWorldCrystalGrowth = root.subsection("inWorldCrystalGrowth",
-                    "Settings for in-world growth of crystals.");
         }
 
     }
