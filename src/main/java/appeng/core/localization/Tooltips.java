@@ -414,14 +414,14 @@ public final class Tooltips {
     }
 
     public static Component bytesUsed(long bytes, long max) {
-        return Tooltips.of(
-                ofUnformattedNumberWithRatioColor(bytes, (double) bytes / max, false),
-                of(" "),
-                of(GuiText.Of),
-                of(" "),
-                ofUnformattedNumber(max),
-                of(" "),
-                of(GuiText.BytesUsed));
+        return of(
+                GuiText.BytesUsed,
+                Tooltips.of(
+                        ofUnformattedNumberWithRatioColor(bytes, (double) bytes / max, false),
+                        of(" "),
+                        of(GuiText.Of),
+                        of(" "),
+                        ofUnformattedNumber(max)));
     }
 
     public static Component typesUsed(long types, long max) {
