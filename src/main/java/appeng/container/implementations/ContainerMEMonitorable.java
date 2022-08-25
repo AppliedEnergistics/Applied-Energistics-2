@@ -71,6 +71,7 @@ import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import net.minecraftforge.fml.common.Loader;
 
 
 public class ContainerMEMonitorable extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack>
@@ -88,6 +89,8 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 	private IConfigManagerHost gui;
 	private IConfigManager serverCM;
 	private IGridNode networkNode;
+	protected int jeiOffset = Loader.isModLoaded( "jei" ) ? 24 : 0;
+
 
 	public ContainerMEMonitorable( final InventoryPlayer ip, final ITerminalHost monitorable )
 	{
@@ -167,7 +170,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 			for( int y = 0; y < 5; y++ )
 			{
 				this.cellView[y] = new SlotRestrictedInput( SlotRestrictedInput.PlacableItemType.VIEW_CELL, ( (IViewCellStorage) monitorable )
-						.getViewCellStorage(), y, 206, y * 18 + 8, this.getInventoryPlayer() );
+						                                                                                            .getViewCellStorage(), y, 206, y * 18 + 8 + jeiOffset, this.getInventoryPlayer() );
 				this.cellView[y].setAllowEdit( this.canAccessViewCells );
 				this.addSlotToContainer( this.cellView[y] );
 			}

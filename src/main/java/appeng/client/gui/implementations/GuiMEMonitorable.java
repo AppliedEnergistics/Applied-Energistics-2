@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appeng.client.me.SlotME;
+import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -104,6 +105,8 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	private int currentMouseX = 0;
 	private int currentMouseY = 0;
 	private boolean delayedUpdate;
+
+	protected int jeiOffset = Loader.isModLoaded( "jei" ) ? 24 : 0;
 
 	public GuiMEMonitorable( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
 	{
@@ -298,13 +301,15 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 		final int unusedSpace = this.height - this.ySize;
 		this.guiTop = (int) Math.floor( unusedSpace / ( unusedSpace < 0 ? 3.8f : 2.0f ) );
 
-		int offset = this.guiTop + 8;
+		int offset = this.guiTop + 8 + jeiOffset;
 
-		if( this.customSortOrder )
 		{
-			this.buttonList
-					.add( this.SortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
-			offset += 20;
+			if( this.customSortOrder )
+			{
+				this.buttonList
+						.add( this.SortByBox = new GuiImgButton( this.guiLeft - 18, offset, Settings.SORT_BY, this.configSrc.getSetting( Settings.SORT_BY ) ) );
+				offset += 20;
+			}
 		}
 
 		if( this.viewCell || this instanceof GuiWirelessTerm )
@@ -403,7 +408,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 	{
 		List<Rectangle> exclusionArea = new ArrayList<>();
 
-		int yOffset = guiTop + 8;
+		int yOffset = guiTop + 8 + jeiOffset;
 
 		int visibleButtons = (int) this.buttonList.stream().filter( v -> v.enabled && v.x < guiLeft ).count();
 		Rectangle sortDir = new Rectangle( guiLeft - 18, yOffset, 20, visibleButtons * 20 + visibleButtons - 2 );
@@ -411,7 +416,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if( this.viewCell )
 		{
-			Rectangle viewMode = new Rectangle( guiLeft + 205, yOffset, 24, 19 * monitorableContainer.getViewCells().length );
+			Rectangle viewMode = new Rectangle( guiLeft + 205, yOffset - 4, 24, 19 * monitorableContainer.getViewCells().length );
 			exclusionArea.add( viewMode );
 		}
 
@@ -462,7 +467,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
 		if( this.viewCell || ( this instanceof GuiSecurityStation ) )
 		{
-			this.drawTexturedModalRect( offsetX + x_width, offsetY, x_width, 0, 46, 128 );
+			this.drawTexturedModalRect( offsetX + x_width, offsetY + jeiOffset, x_width, 0, 46, 128 );
 		}
 
 		for( int x = 0; x < this.rows; x++ )
