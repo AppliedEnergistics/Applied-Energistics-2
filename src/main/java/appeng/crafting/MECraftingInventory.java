@@ -187,6 +187,25 @@ public class MECraftingInventory implements IMEInventory<IAEItemStack>
 		this.par = null;
 	}
 
+	public MECraftingInventory( final IItemList<IAEItemStack> itemList )
+	{
+		this.localCache = new ItemListIgnoreCrafting<>( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() );
+		this.target = null;
+		this.logExtracted = false;
+		this.logInjections = false;
+		this.logMissing = false;
+		this.missingCache = null;
+		this.extractedCache = null;
+		this.injectedCache = null;
+
+		for( IAEItemStack iaeItemStack : itemList )
+		{
+			this.localCache.add( iaeItemStack );
+		}
+
+		this.par = null;
+	}
+
 	@Override
 	public IAEItemStack injectItems( final IAEItemStack input, final Actionable mode, final IActionSource src )
 	{

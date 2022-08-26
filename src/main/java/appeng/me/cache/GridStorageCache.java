@@ -69,7 +69,6 @@ public class GridStorageCache implements IStorageGrid
 	private final HashMap<IGridNode, IStackWatcher> watchers = new HashMap<>();
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkInventoryHandler<?>> storageNetworks;
 	private final Map<IStorageChannel<? extends IAEStack>, NetworkMonitor<?>> storageMonitors;
-	private MECraftingInventory localCache = null;
 	private int localDepth;
 
 	public GridStorageCache( final IGrid g )
@@ -84,7 +83,6 @@ public class GridStorageCache implements IStorageGrid
 	@Override
 	public void onUpdateTick()
 	{
-		this.localCache = null;
 		this.storageMonitors.forEach( ( channel, monitor ) -> monitor.onTick() );
 	}
 
@@ -170,15 +168,6 @@ public class GridStorageCache implements IStorageGrid
 	public <T extends IAEStack<T>> IMEMonitor<T> getInventory( IStorageChannel<T> channel )
 	{
 		return (IMEMonitor<T>) this.storageMonitors.get( channel );
-	}
-
-	public MECraftingInventory getExtractableList( IActionSource src )
-	{
-		if( localCache == null )
-		{
-			localCache = new MECraftingInventory( getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ), src, false, false, false );
-		}
-		return localCache;
 	}
 
 	private CellChangeTracker addCellProvider( final ICellProvider cc, final CellChangeTracker tracker )

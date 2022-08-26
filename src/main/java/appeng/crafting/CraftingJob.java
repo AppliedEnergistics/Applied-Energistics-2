@@ -88,7 +88,7 @@ public class CraftingJob implements Runnable, ICraftingJob
 
 		this.cc = grid.getCache( ICraftingGrid.class );
 		final GridStorageCache sg = grid.getCache( IStorageGrid.class );
-		this.original = sg.getExtractableList( actionSrc );
+		this.original = new MECraftingInventory( sg.getInventory( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ) ).getStorageList() );
 
 		this.setTree( this.getCraftingTree( cc, what ) );
 		this.availableCheck = null;
