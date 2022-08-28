@@ -210,7 +210,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     public boolean mouseClicked(double xCoord, double yCoord, int btn) {
         if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
             this.searchField.setValue("");
-            return true;
+            // Don't return immediately to also grab focus.
         }
 
         return super.mouseClicked(xCoord, yCoord, btn);
