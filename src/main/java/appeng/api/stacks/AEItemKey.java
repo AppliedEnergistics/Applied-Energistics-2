@@ -26,6 +26,7 @@ public final class AEItemKey extends AEKey {
     @Nullable
     private final CompoundTag tag;
     private final int hashCode;
+    private int cachedDamage = -1;
 
     private AEItemKey(Item item, @Nullable CompoundTag tag) {
         super(Platform.getItemDisplayName(item, tag));
@@ -156,7 +157,13 @@ public final class AEItemKey extends AEKey {
      */
     @Override
     public int getFuzzySearchValue() {
-        return this.tag == null ? 0 : this.tag.getInt("Damage");
+        if (this.tag == null) {
+            return 0;
+        }
+        if (this.cachedDamage == -1) {
+            this.cachedDamage = this.tag.getInt("Damage");
+        }
+        return this.cachedDamage;
     }
 
     /**
