@@ -69,7 +69,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         var player = context.getPlayer();
 
         var facade = createPartFromItemStack(stack, context.getClickedFace());
-        if (!placeFacade(facade, level, pos)) {
+        if (facade == null || !placeFacade(facade, level, pos)) {
             return InteractionResult.FAIL;
         }
 
