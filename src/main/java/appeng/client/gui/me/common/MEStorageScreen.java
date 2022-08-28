@@ -597,7 +597,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Special case to support the Item API of visual tooltip components
         if (entry.getWhat() instanceof AEItemKey itemKey) {
             var stack = itemKey.toStack();
-            this.renderTooltip(poseStack, currentToolTip, itemKey.getItem().getTooltipImage(stack), x, y);
+            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y);
         } else {
             this.renderComponentTooltip(poseStack, currentToolTip, x, y);
         }
