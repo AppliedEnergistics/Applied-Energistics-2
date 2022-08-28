@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -26,13 +27,18 @@ public final class AEItemKey extends AEKey {
     @Nullable
     private final CompoundTag tag;
     private final int hashCode;
-    private int cachedDamage = -1;
+    private final int cachedDamage;
 
     private AEItemKey(Item item, @Nullable CompoundTag tag) {
         super(Platform.getItemDisplayName(item, tag));
         this.item = item;
         this.tag = tag;
         this.hashCode = Objects.hash(item, tag);
+        if (this.tag != null && tag.get("Damage") instanceof NumericTag numericTag) {
+            this.cachedDamage = numericTag.getAsInt();
+        } else {
+            this.cachedDamage = 0;
+        }
     }
 
     @Nullable
@@ -157,12 +163,6 @@ public final class AEItemKey extends AEKey {
      */
     @Override
     public int getFuzzySearchValue() {
-        if (this.tag == null) {
-            return 0;
-        }
-        if (this.cachedDamage == -1) {
-            this.cachedDamage = this.tag.getInt("Damage");
-        }
         return this.cachedDamage;
     }
 
