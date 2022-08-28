@@ -400,7 +400,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
             this.searchField.setValue("");
             setSearchText("");
-            return true;
+            // Don't return immediately to also grab focus.
         }
 
         // handler for middle mouse button crafting in survival mode
