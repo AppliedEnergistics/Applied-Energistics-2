@@ -248,7 +248,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     public long insertIntoCpus(AEKey what, long amount, Actionable type) {
         long inserted = 0;
         for (var cpu : this.craftingCPUClusters) {
-            inserted += cpu.craftingLogic.insert(what, amount, type);
+            inserted += cpu.craftingLogic.insert(what, amount - inserted, type);
         }
 
         return inserted;
