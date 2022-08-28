@@ -51,6 +51,7 @@ import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.config.YesNo;
 import appeng.api.implementations.blockentities.IMEChest;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
@@ -594,7 +595,13 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     .add(new TextComponent("Serial: " + entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
         }
 
-        this.renderComponentTooltip(poseStack, currentToolTip, x, y);
+        // Special case to support the Item API of visual tooltip components
+        if (entry.getWhat() instanceof AEItemKey itemKey) {
+            var stack = itemKey.toStack();
+            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y);
+        } else {
+            this.renderComponentTooltip(poseStack, currentToolTip, x, y);
+        }
     }
 
     private int getMaxRows() {
