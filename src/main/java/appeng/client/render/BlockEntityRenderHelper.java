@@ -29,11 +29,32 @@ import net.minecraft.core.Direction;
 import appeng.api.client.AEStackRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
+import appeng.util.Platform;
 
 /**
  * Helper methods for rendering block entities.
  */
 public class BlockEntityRenderHelper {
+    /**
+     * Find the spin based on two-direction orientation, for use with {@link #rotateToFace}.
+     */
+    public static byte findSpin(Direction facing, Direction up) {
+        // Find spin by iterating rotation...
+        Direction currentUp = switch (facing) {
+            case UP -> Direction.NORTH;
+            case DOWN -> Direction.SOUTH;
+            default -> Direction.UP;
+        };
+
+        for (byte spin = 0; spin < 4; ++spin) {
+            if (currentUp == up) {
+                return spin;
+            }
+
+            currentUp = Platform.rotateAround(currentUp, facing);
+        }
+        return 0;
+    }
 
     /**
      * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
@@ -41,34 +62,16 @@ public class BlockEntityRenderHelper {
      */
     public static void rotateToFace(PoseStack mStack, Direction face, byte spin) {
         switch (face) {
-            case UP:
-                mStack.mulPose(Vector3f.XP.rotationDegrees(270));
-                mStack.mulPose(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
-                break;
-
-            case DOWN:
-                mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                mStack.mulPose(Vector3f.ZP.rotationDegrees(spin * -90.0F));
-                break;
-
-            case EAST:
-                mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-                break;
-
-            case WEST:
-                mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
-                break;
-
-            case NORTH:
-                mStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-                break;
-
-            case SOUTH:
-                break;
-
-            default:
-                break;
+            case UP -> mStack.mulPose(Vector3f.XP.rotationDegrees(270));
+            case DOWN -> mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+            case EAST -> mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+            case WEST -> mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+            case NORTH -> mStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+            case SOUTH -> {
+            }
         }
+
+        mStack.last().pose().multiply(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
     }
 
     /**
