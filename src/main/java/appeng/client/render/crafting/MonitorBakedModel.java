@@ -90,6 +90,7 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
         builder.addCube(x1, y1, z1, x2, y2, z2);
 
         // Reset back to default
+        builder.setColor(-1);
         builder.setEmissiveMaterial(false);
     }
 

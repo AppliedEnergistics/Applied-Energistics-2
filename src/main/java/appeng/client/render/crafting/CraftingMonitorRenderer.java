@@ -51,8 +51,9 @@ public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMoni
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5); // Move to the center of the block
 
-            BlockEntityRenderHelper.rotateToFace(poseStack, facing, (byte) 0);
-            poseStack.translate(0, 0.08, 0.5);
+            byte spin = BlockEntityRenderHelper.findSpin(facing, te.getUp());
+            BlockEntityRenderHelper.rotateToFace(poseStack, facing, spin);
+            poseStack.translate(0, 0.02, 0.5);
 
             BlockEntityRenderHelper.renderItem2dWithAmount(
                     poseStack,
