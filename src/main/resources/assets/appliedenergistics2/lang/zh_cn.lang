@@ -167,6 +167,7 @@ gui.appliedenergistics2.StoredItems=已存储物品
 gui.appliedenergistics2.StoredFluids=已存储流体
 gui.appliedenergistics2.Terminal=终端
 gui.appliedenergistics2.InterfaceTerminal=接口终端
+gui.appliedenergistics2.InterfaceConfigurationTerminal=接口配置终端
 gui.appliedenergistics2.InterfaceTerminalHint=在接口终端显示或隐藏.
 gui.appliedenergistics2.FormationPlane=成型面板
 gui.appliedenergistics2.FluidFormationPlane=流体成型面板
@@ -548,6 +549,7 @@ item.appliedenergistics2.multi_part.inverted_toggle_bus.name=ME反相触发总�
 item.appliedenergistics2.multi_part.toggle_bus.name=ME触发总线
 item.appliedenergistics2.multi_part.crafting_monitor.name=ME合成监控器
 item.appliedenergistics2.multi_part.interface_terminal.name=ME接口终端
+item.appliedenergistics2.multi_part.interface_configuration_terminal.name=ME接口配置终端
 item.appliedenergistics2.multi_part.fluid_terminal.name=ME流体终端
 item.appliedenergistics2.multi_part.invalid_type.name=已禁用
 
