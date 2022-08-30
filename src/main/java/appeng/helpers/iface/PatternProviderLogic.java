@@ -32,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -95,6 +96,8 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private Direction sendDirection;
     // Stack returning logic
     private final PatternProviderReturnInventory returnInv;
+
+    private final PatternProviderTargetCache[] targetCaches = new PatternProviderTargetCache[6];
 
     public PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
         this.host = host;
@@ -239,7 +242,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 continue;
             }
 
-            var adapter = PatternProviderTarget.get(level, adjPos, adjBe, adjBeSide, this.actionSource);
+            var adapter = findAdapter(direction);
             if (adapter == null)
                 continue;
 
@@ -275,6 +278,20 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
+    @Nullable
+    private PatternProviderTarget findAdapter(Direction side) {
+        if (targetCaches[side.get3DDataValue()] == null) {
+            var thisBe = host.getBlockEntity();
+            targetCaches[side.get3DDataValue()] = new PatternProviderTargetCache(
+                    (ServerLevel) thisBe.getLevel(),
+                    thisBe.getBlockPos().relative(side),
+                    side.getOpposite(),
+                    actionSource);
+        }
+
+        return targetCaches[side.get3DDataValue()].find();
+    }
+
     private boolean adapterAcceptsAll(PatternProviderTarget target, KeyCounter[] inputHolder) {
         for (var inputList : inputHolder) {
             for (var input : inputList) {
@@ -303,12 +320,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             return false;
         }
 
-        var be = this.host.getBlockEntity();
-        var level = be.getLevel();
-        var adjPos = be.getBlockPos().relative(sendDirection);
-        var adjBe = level.getBlockEntity(adjPos);
-        var adapter = PatternProviderTarget.get(level, adjPos, adjBe, sendDirection.getOpposite(), actionSource);
-
+        var adapter = findAdapter(sendDirection);
         if (adapter == null) {
             return false;
         }
