@@ -1,9 +1,8 @@
 package appeng.me.storage;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -29,25 +28,15 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
     private static final long MAX_REPORTED_AMOUNT = 1L << 42;
     private final IVariantConversion<V> conversion;
     private boolean extractableOnly;
-    @Nullable
-    private Storage<V> storage;
+    private final Supplier<@Nullable Storage<V>> storageSupplier;
 
-    public StorageAdapter(IVariantConversion<V> conversion, @Nullable Storage<V> storage) {
+    public StorageAdapter(IVariantConversion<V> conversion, Supplier<@Nullable Storage<V>> storageSupplier) {
         this.conversion = conversion;
-        this.storage = storage;
-    }
-
-    @Nullable
-    public Storage<V> getStorage() {
-        return storage;
+        this.storageSupplier = storageSupplier;
     }
 
     public IVariantConversion<V> getConversion() {
         return conversion;
-    }
-
-    public void setStorage(Storage<V> newHandler) {
-        this.storage = Objects.requireNonNull(newHandler);
     }
 
     public void setExtractableOnly(boolean extractableOnly) {
@@ -63,7 +52,8 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
 
     @Override
     public long insert(AEKey what, long amount, Actionable type, IActionSource src) {
-        if (this.storage == null) {
+        var storage = this.storageSupplier.get();
+        if (storage == null) {
             return 0;
         }
 
@@ -73,7 +63,7 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
         }
 
         try (var tx = Platform.openOrJoinTx()) {
-            var inserted = this.storage.insert(variant, amount, tx);
+            var inserted = storage.insert(variant, amount, tx);
 
             if (inserted > 0 && type == Actionable.MODULATE) {
                 tx.commit();
@@ -86,7 +76,8 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-        if (this.storage == null) {
+        var storage = this.storageSupplier.get();
+        if (storage == null) {
             return 0;
         }
 
@@ -96,7 +87,7 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
         }
 
         try (var tx = Platform.openOrJoinTx()) {
-            var extracted = this.storage.extract(variant, amount, tx);
+            var extracted = storage.extract(variant, amount, tx);
 
             if (extracted > 0 && mode == Actionable.MODULATE) {
                 tx.commit();
@@ -107,30 +98,9 @@ public class StorageAdapter<V extends TransferVariant<?>> implements MEStorage {
         }
     }
 
-    /**
-     * Tests if the external storage contains any of the given keys using fuzzy matching. Used to detect if the inputs
-     * pushed into an external machine are still present.
-     */
-    public boolean containsAnyFuzzy(Set<AEKey> keys) {
-        if (storage == null) {
-            return false;
-        }
-
-        for (var view : storage) {
-            var storedKey = conversion.getKey(view.getResource());
-            if (storedKey != null && view.getAmount() > 0) {
-                var key = storedKey.dropSecondary();
-                if (keys.contains(key)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     @Override
     public void getAvailableStacks(KeyCounter out) {
+        var storage = this.storageSupplier.get();
         if (storage != null) {
             for (var view : storage) {
                 var resource = view.getResource();
