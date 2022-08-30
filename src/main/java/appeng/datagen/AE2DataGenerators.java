@@ -44,6 +44,7 @@ import appeng.datagen.providers.tags.BiomeTagsProvider;
 import appeng.datagen.providers.tags.BlockTagsProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
+import appeng.datagen.providers.tags.PoiTypeTagsProvider;
 
 public class AE2DataGenerators {
 
@@ -60,6 +61,7 @@ public class AE2DataGenerators {
         generator.addProvider(true, new ItemTagsProvider(generator, blockTagsProvider));
         generator.addProvider(true, new FluidTagsProvider(generator));
         generator.addProvider(true, new BiomeTagsProvider(generator));
+        generator.addProvider(true, new PoiTypeTagsProvider(generator));
 
         // Models
         generator.addProvider(true, new BlockModelProvider(generator, existingFileHelper));

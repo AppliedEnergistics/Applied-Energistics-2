@@ -68,6 +68,7 @@ import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
+import appeng.init.InitVillager;
 import appeng.init.client.InitKeyTypes;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitGridLinkables;
@@ -125,6 +126,7 @@ public abstract class AppEngBase implements AppEng {
         // Now that item instances are available, we can initialize registries that need item instances
         InitGridLinkables.init();
         InitStorageCells.init();
+        InitVillager.init();
 
         FacadeCreativeTab.init(); // This call has a side-effect (adding it to the creative screen)
 

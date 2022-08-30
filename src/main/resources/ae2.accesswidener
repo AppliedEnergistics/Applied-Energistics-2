@@ -75,6 +75,9 @@ mutable field net/minecraft/world/item/Item craftingRemainingItem Lnet/minecraft
 
 accessible class net/minecraft/client/renderer/block/model/BlockElementFace$Deserializer
 
+accessible class net/minecraft/world/entity/npc/VillagerTrades$EmeraldForItems
+accessible class net/minecraft/world/entity/npc/VillagerTrades$ItemsForEmeralds
+
 ## Tests
 accessible field net/minecraft/gametest/framework/GameTestHelper testInfo Lnet/minecraft/gametest/framework/GameTestInfo;
 
