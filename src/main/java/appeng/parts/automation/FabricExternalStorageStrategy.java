@@ -37,10 +37,11 @@ public class FabricExternalStorageStrategy<V extends TransferVariant<?>> impleme
     public MEStorage createWrapper(boolean extractableOnly, Runnable injectOrExtractCallback) {
         var storage = apiCache.find(fromSide);
         if (storage == null) {
+            // If storage is absent, never query again until the next update.
             return null;
         }
 
-        var result = new StorageAdapter<>(conversion, storage) {
+        var result = new StorageAdapter<>(conversion, () -> apiCache.find(fromSide)) {
             @Override
             protected void onInjectOrExtract() {
                 injectOrExtractCallback.run();
