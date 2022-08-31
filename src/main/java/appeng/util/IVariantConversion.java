@@ -18,6 +18,10 @@ public interface IVariantConversion<V extends TransferVariant<?>> {
 
     AEKeyType getKeyType();
 
+    /**
+     * Convert key to variant. If the key is null or of the wrong type, return a blank variant. Keys are not always of
+     * this type, make sure to always check.
+     */
     V getVariant(@Nullable AEKey key);
 
     @Nullable
