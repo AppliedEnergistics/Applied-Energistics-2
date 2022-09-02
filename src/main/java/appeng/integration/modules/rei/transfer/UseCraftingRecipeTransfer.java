@@ -1,15 +1,16 @@
 package appeng.integration.modules.rei.transfer;
 
-import java.util.ArrayList;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -26,6 +27,7 @@ import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import appeng.core.AppEng;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.CraftingHelper;
+import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**
@@ -43,13 +45,6 @@ import appeng.menu.me.items.CraftingTermMenu;
  * </ul>
  */
 public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends AbstractTransferHandler<T> {
-
-    // Colors for the slot highlights
-    private static final int BLUE_SLOT_HIGHLIGHT_COLOR = 0x400000ff;
-    private static final int RED_SLOT_HIGHLIGHT_COLOR = 0x66ff0000;
-    // Colors for the buttons
-    private static final int BLUE_PLUS_BUTTON_COLOR = 0x804545FF;
-    private static final int ORANGE_PLUS_BUTTON_COLOR = 0x80FFA500;
 
     public UseCraftingRecipeTransfer(Class<T> containerClass) {
         super(containerClass);
@@ -85,25 +80,13 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         if (!doTransfer) {
             if (missingSlots.totalSize() != 0) {
                 // Highlight the slots with missing ingredients
+                int color = missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR;
                 var result = Result.createSuccessful()
-                        .color(missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR)
+                        .color(color)
                         .renderer(createErrorRenderer(missingSlots));
 
-                // Redo this once REI allows appending below the tooltip instead of overriding it...
-                List<Component> extraTooltip = new ArrayList<>();
-                if (missingSlots.anyCraftable()) {
-                    if (craftMissing) {
-                        extraTooltip.add(ItemModText.WILL_CRAFT.text().withStyle(ChatFormatting.BLUE));
-                    } else {
-                        extraTooltip.add(ItemModText.CTRL_CLICK_TO_CRAFT.text().withStyle(ChatFormatting.BLUE));
-                    }
-                }
-                if (missingSlots.anyMissing()) {
-                    extraTooltip.add(ItemModText.MISSING_ITEMS.text().withStyle(ChatFormatting.RED));
-                }
-                if (!extraTooltip.isEmpty()) {
-                    result.overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(extraTooltip)));
-                }
+                var tooltip = TransferHelper.createCraftingTooltip(missingSlots, craftMissing);
+                result.overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(tooltip)));
 
                 return result;
             }
@@ -160,14 +143,14 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
             int i = 0;
             for (Widget widget : widgets) {
-                if (widget instanceof Slot && ((Slot) widget).getNoticeMark() == Slot.INPUT) {
+                if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
                     boolean missing = indices.missingSlots().contains(i);
                     boolean craftable = indices.craftableSlots().contains(i);
                     i++;
                     if (missing || craftable) {
                         matrices.pushPose();
                         matrices.translate(0, 0, 400);
-                        Rectangle innerBounds = ((Slot) widget).getInnerBounds();
+                        Rectangle innerBounds = slot.getInnerBounds();
                         GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
                                 innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
                         matrices.popPose();

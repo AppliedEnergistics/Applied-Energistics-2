@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
@@ -228,6 +230,17 @@ public class JEIPlugin implements IModPlugin {
                     toRemove);
         }
 
+    }
+
+    // Copy-pasted from JEI since it doesn't seem to expose these
+    public static void drawHoveringText(PoseStack poseStack, List<Component> textLines, int x, int y) {
+        var minecraft = Minecraft.getInstance();
+        var screen = minecraft.screen;
+        if (screen == null) {
+            return;
+        }
+
+        screen.renderTooltip(poseStack, textLines, Optional.empty(), x, y);
     }
 
 }

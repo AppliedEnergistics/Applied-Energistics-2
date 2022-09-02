@@ -1,18 +1,18 @@
 package appeng.integration.modules.jei.transfer;
 
-import java.util.ArrayList;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -29,23 +29,29 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.jei.JEIPlugin;
 import appeng.integration.modules.jeirei.CraftingHelper;
+import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**
  * Recipe transfer implementation with the intended purpose of actually crafting an item. Most of the work is done
  * server-side because permission-checks and inventory extraction cannot be done client-side.
+ * <p>
+ * Here is how it works, depending on the various cases. In any case, we highlight missing entries in red and craftable
+ * entries in blue. How the {@code +} button is rendered and what it does depends on various cases:
+ * <ul>
+ * <li><b>All items are present:</b> normal gray, can click + to move.</li>
+ * <li><b>All items are missing:</b> red, can't click.</li>
+ * <li><b>Some items are missing, all craftable:</b> blue, can click to move what's available or ctrl + click to
+ * additionally schedule autocrafting of what's craftable.</li>
+ * <li><b>Some items are missing, some not craftable:</b> orange, same action as above.</li>
+ * </ul>
  */
 public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         extends AbstractTransferHandler
         implements IRecipeTransferHandler<T, CraftingRecipe> {
 
-    // Colors for the slot highlights
-    private static final int BLUE_SLOT_HIGHLIGHT_COLOR = 0x400000ff;
-    private static final int RED_SLOT_HIGHLIGHT_COLOR = 0x66ff0000;
-    // Colors for the buttons
-    private static final int BLUE_PLUS_BUTTON_COLOR = 0x804545FF;
-    private static final int ORANGE_PLUS_BUTTON_COLOR = 0x80FFA500;
     private final Class<T> menuClass;
     private final MenuType<T> menuType;
     private final IRecipeTransferHandlerHelper helper;
@@ -91,11 +97,13 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         if (!doTransfer) {
             if (missingSlots.totalSize() != 0) {
                 // Highlight the slots with missing ingredients.
-                return new ErrorRenderer(menu, recipe);
+                int color = missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR;
+                return new ErrorRenderer(missingSlots, craftMissing, color);
             }
         } else {
             CraftingHelper.performTransfer(menu, recipe, craftMissing);
         }
+
         // No error
         return null;
     }
@@ -173,10 +181,16 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         return RecipeTypes.CRAFTING;
     }
 
-    private record ErrorRenderer(CraftingTermMenu menu, Recipe<?> recipe) implements IRecipeTransferError {
+    private record ErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices, boolean craftMissing,
+            int color) implements IRecipeTransferError {
         @Override
         public Type getType() {
             return Type.COSMETIC;
+        }
+
+        @Override
+        public int getButtonHighlightColor() {
+            return color;
         }
 
         @Override
@@ -185,28 +199,12 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
             poseStack.pushPose();
             poseStack.translate(recipeX, recipeY, 0);
 
-            // This needs to be recomputed every time since JEI reuses the error renderer.
-            boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            var missingSlots = menu.findMissingIngredients(getGuiSlotToIngredientMap(recipe));
-
-            List<Component> extraTooltip = new ArrayList<>();
-            if (missingSlots.anyCraftable()) {
-                if (craftMissing) {
-                    extraTooltip.add(ItemModText.WILL_CRAFT.text().withStyle(ChatFormatting.BLUE));
-                } else {
-                    extraTooltip.add(ItemModText.CTRL_CLICK_TO_CRAFT.text().withStyle(ChatFormatting.BLUE));
-                }
-            }
-            if (missingSlots.anyMissing()) {
-                extraTooltip.add(ItemModText.MISSING_ITEMS.text().withStyle(ChatFormatting.RED));
-            }
-
             // 1) draw slot highlights
             var slotViews = slots.getSlotViews(RecipeIngredientRole.INPUT);
             for (int i = 0; i < slotViews.size(); i++) {
                 var slotView = slotViews.get(i);
-                boolean missing = missingSlots.missingSlots().contains(i);
-                boolean craftable = missingSlots.craftableSlots().contains(i);
+                boolean missing = indices.missingSlots().contains(i);
+                boolean craftable = indices.craftableSlots().contains(i);
                 if (missing || craftable) {
                     slotView.drawHighlight(
                             poseStack,
@@ -217,18 +215,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
             poseStack.popPose();
 
             // 2) draw tooltip
-            drawHoveringText(poseStack, extraTooltip, mouseX, mouseY);
-        }
-
-        // Copy-pasted from JEI since it doesn't seem to expose these
-        public static void drawHoveringText(PoseStack poseStack, List<Component> textLines, int x, int y) {
-            var minecraft = Minecraft.getInstance();
-            var screen = minecraft.screen;
-            if (screen == null) {
-                return;
-            }
-
-            screen.renderTooltip(poseStack, textLines, Optional.empty(), x, y);
+            var tooltip = TransferHelper.createCraftingTooltip(indices, craftMissing);
+            JEIPlugin.drawHoveringText(poseStack, tooltip, mouseX, mouseY);
         }
     }
 }
