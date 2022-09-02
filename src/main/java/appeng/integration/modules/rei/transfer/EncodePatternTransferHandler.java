@@ -1,24 +1,37 @@
 package appeng.integration.modules.rei.transfer;
 
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.EncodingHelper;
+import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.integration.modules.rei.GenericEntryStackHelper;
+import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
@@ -53,6 +66,19 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                         GenericEntryStackHelper.ofInputs(display),
                         GenericEntryStackHelper.ofOutputs(display));
             }
+        } else {
+            var repo = menu.getClientRepo();
+            Set<AEKey> craftableKeys = repo != null ? repo.getAllEntries().stream()
+                    .filter(GridInventoryEntry::isCraftable)
+                    .map(GridInventoryEntry::getWhat)
+                    .collect(Collectors.toSet()) : Set.of();
+
+            var anyCraftable = display.getInputEntries().stream().anyMatch(ing -> isCraftable(craftableKeys, ing));
+            var tooltip = TransferHelper.createEncodingTooltip(anyCraftable);
+            return Result.createSuccessful()
+                    .blocksFurtherHandling()
+                    .overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(tooltip)))
+                    .renderer(createErrorRenderer(craftableKeys));
         }
 
         return Result.createSuccessful().blocksFurtherHandling();
@@ -109,5 +135,29 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
             cache.put(stack, visible);
             return visible;
         }
+    }
+
+    private static boolean isCraftable(Set<AEKey> craftableKeys, List<EntryStack<?>> ingredient) {
+        return ingredient.stream().anyMatch(entryStack -> {
+            var stack = GenericEntryStackHelper.ingredientToStack(entryStack);
+            return stack != null && craftableKeys.contains(stack.what());
+        });
+    }
+
+    private static TransferHandlerRenderer createErrorRenderer(Set<AEKey> craftableKeys) {
+        return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
+            for (Widget widget : widgets) {
+                if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
+                    if (isCraftable(craftableKeys, slot.getEntries())) {
+                        matrices.pushPose();
+                        matrices.translate(0, 0, 400);
+                        Rectangle innerBounds = slot.getInnerBounds();
+                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                                innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
+                        matrices.popPose();
+                    }
+                }
+            }
+        };
     }
 }

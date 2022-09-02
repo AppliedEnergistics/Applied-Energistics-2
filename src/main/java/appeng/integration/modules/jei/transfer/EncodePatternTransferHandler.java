@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
@@ -25,7 +30,10 @@ import appeng.api.stacks.GenericStack;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.GenericEntryStackHelper;
+import appeng.integration.modules.jei.JEIPlugin;
 import appeng.integration.modules.jeirei.EncodingHelper;
+import appeng.integration.modules.jeirei.TransferHelper;
+import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
@@ -81,6 +89,9 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
                         GenericEntryStackHelper.ofInputs(slotsView),
                         GenericEntryStackHelper.ofOutputs(slotsView));
             }
+        } else {
+            var craftableSlots = findCraftableSlots(menu, slotsView);
+            return new ErrorRenderer(craftableSlots);
         }
 
         return null;
@@ -116,6 +127,25 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         return result;
     }
 
+    private List<IRecipeSlotView> findCraftableSlots(T menu, IRecipeSlotsView slotsView) {
+        var repo = menu.getClientRepo();
+        if (repo == null) {
+            return List.of();
+        }
+
+        var craftableKeys = repo.getAllEntries().stream()
+                .filter(GridInventoryEntry::isCraftable)
+                .map(GridInventoryEntry::getWhat)
+                .collect(Collectors.toSet());
+
+        return slotsView.getSlotViews(RecipeIngredientRole.INPUT).stream()
+                .filter(slotView -> slotView.getAllIngredients().anyMatch(ingredient -> {
+                    var stack = GenericEntryStackHelper.ingredientToStack(ingredient);
+                    return stack != null && craftableKeys.contains(stack.what());
+                }))
+                .toList();
+    }
+
     @Override
     public Optional<MenuType<T>> getMenuType() {
         return Optional.of(menuType);
@@ -132,4 +162,31 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         return null;
     }
 
+    private record ErrorRenderer(List<IRecipeSlotView> craftableSlots) implements IRecipeTransferError {
+        @Override
+        public Type getType() {
+            return Type.COSMETIC;
+        }
+
+        @Override
+        public int getButtonHighlightColor() {
+            return 0; // We never want the orange highlight!
+        }
+
+        @Override
+        public void showError(PoseStack poseStack, int mouseX, int mouseY, IRecipeSlotsView recipeSlotsView,
+                int recipeX, int recipeY) {
+            poseStack.pushPose();
+            poseStack.translate(recipeX, recipeY, 0);
+
+            for (IRecipeSlotView slotView : craftableSlots) {
+                slotView.drawHighlight(poseStack, TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR);
+            }
+
+            poseStack.popPose();
+
+            JEIPlugin.drawHoveringText(poseStack, TransferHelper.createEncodingTooltip(!craftableSlots.isEmpty()),
+                    mouseX, mouseY);
+        }
+    }
 }
