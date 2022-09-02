@@ -16,7 +16,7 @@ public enum ItemModText implements LocalizationEnum {
     NO_ITEMS("Found no compatible items"),
     WILL_CRAFT("Will craft unavailable items"),
     CTRL_CLICK_TO_CRAFT("CTRL + click to craft unavailable items"),
-    HAS_ENCODED_INGREDIENTS("Highlighted elements are already encoded"),
+    HAS_ENCODED_INGREDIENTS("Highlighted elements are already craftable"),
     MOVE_ITEMS("Move items"),
     ENCODE_PATTERN("Encode pattern"),
     // Display of AE2-specific REI/JEI entries
