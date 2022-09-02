@@ -23,7 +23,8 @@
   "depends": {
     "fabricloader": ">=0.14.8",
     "fabric": ">=0.58.5",
-    "minecraft": ">=1.19.1"
+    "minecraft": ">=1.19.1",
+    "jei": ">=11.3.0.260"
   },
   "conflicts": {
     "appliedenergistics2": "*"
