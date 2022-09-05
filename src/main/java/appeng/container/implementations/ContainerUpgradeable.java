@@ -19,6 +19,7 @@
 package appeng.container.implementations;
 
 
+import appeng.items.contents.NetworkToolViewer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -45,7 +46,6 @@ import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.bootstrap.contents.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.parts.automation.PartExportBus;
 import appeng.util.Platform;

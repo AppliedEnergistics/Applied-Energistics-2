@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import java.io.IOException;
 
+import appeng.items.contents.QuartzKnifeObj;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.InventoryPlayer;
 
@@ -30,7 +31,6 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.bootstrap.contents.QuartzKnifeObj;
 
 
 public class GuiQuartzKnife extends AEBaseGui

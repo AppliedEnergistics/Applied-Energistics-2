@@ -28,6 +28,7 @@ import java.util.List;
 import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import com.google.common.base.Joiner;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.gui.GuiButton;
@@ -127,7 +128,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		this.buttonList.add( this.start );
 
 		this.selectCPU = new GuiButton( 0, this.guiLeft + ( 219 - 180 ) / 2, this.guiTop + this.ySize - 68, 180, 20, GuiText.CraftingCPU
-				.getLocal() + ": " + GuiText.Automatic );
+				                                                                                                             .getLocal() + ": " + GuiText.Automatic );
 		this.selectCPU.enabled = false;
 		this.buttonList.add( this.selectCPU );
 
@@ -227,7 +228,7 @@ public class GuiCraftConfirm extends AEBaseGui
 		else
 		{
 			dsp = this.ccc.getCpuAvailableBytes() > 0 ? ( GuiText.Bytes.getLocal() + ": " + this.ccc.getCpuAvailableBytes() + " : " + GuiText.CoProcessors
-					.getLocal() + ": " + this.ccc.getCpuCoProcessors() ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
+					                                                                                                                          .getLocal() + ": " + this.ccc.getCpuCoProcessors() ) : GuiText.Bytes.getLocal() + ": N/A : " + GuiText.CoProcessors.getLocal() + ": N/A";
 		}
 
 		final int offset = ( 219 - this.fontRenderer.getStringWidth( dsp ) ) / 2;
@@ -294,7 +295,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					str = GuiText.FromStorage.getLocal() + ": " + str;
 					final int w = 4 + this.fontRenderer.getStringWidth( str );
 					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ),
-							( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					                              ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -320,7 +321,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					str = GuiText.Missing.getLocal() + ": " + str;
 					final int w = 4 + this.fontRenderer.getStringWidth( str );
 					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ),
-							( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					                              ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -346,7 +347,7 @@ public class GuiCraftConfirm extends AEBaseGui
 					str = GuiText.ToCraft.getLocal() + ": " + str;
 					final int w = 4 + this.fontRenderer.getStringWidth( str );
 					this.fontRenderer.drawString( str, (int) ( ( x * ( 1 + sectionLength ) + xo + sectionLength - 19 - ( w * 0.5 ) ) * 2 ),
-							( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
+					                              ( y * offY + yo + 6 - negY + downY ) * 2, 4210752 );
 
 					if( this.tooltip == z - viewStart )
 					{
@@ -416,7 +417,7 @@ public class GuiCraftConfirm extends AEBaseGui
 
 	public void postUpdate( final List<IAEItemStack> list, final byte ref )
 	{
-		switch( ref )
+		switch ( ref )
 		{
 			case 0:
 				for( final IAEItemStack l : list )
@@ -513,7 +514,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	private void deleteVisualStack( final IAEItemStack l )
 	{
 		final Iterator<IAEItemStack> i = this.visual.iterator();
-		while( i.hasNext() )
+		while ( i.hasNext() )
 		{
 			final IAEItemStack o = i.next();
 			if( o.equals( l ) )
@@ -544,7 +545,7 @@ public class GuiCraftConfirm extends AEBaseGui
 	{
 		if( !this.checkHotbarKeys( key ) )
 		{
-			if( key == 28 )
+			if( key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER )
 			{
 				this.actionPerformed( this.start );
 			}

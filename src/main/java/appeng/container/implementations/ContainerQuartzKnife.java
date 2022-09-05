@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import javax.annotation.Nonnull;
 
+import appeng.items.contents.QuartzKnifeObj;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,6 @@ import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.bootstrap.contents.QuartzKnifeObj;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 
@@ -122,12 +122,12 @@ public class ContainerQuartzKnife extends AEBaseContainer
 				if( ContainerQuartzKnife.this.myName.length() > 0 )
 				{
 					return AEApi.instance().definitions().materials().namePress().maybeStack( 1 ).map( namePressStack ->
-					{
-						final NBTTagCompound compound = Platform.openNbtData( namePressStack );
-						compound.setString( "InscribeName", ContainerQuartzKnife.this.myName );
+					                                                                                   {
+						                                                                                   final NBTTagCompound compound = Platform.openNbtData( namePressStack );
+						                                                                                   compound.setString( "InscribeName", ContainerQuartzKnife.this.myName );
 
-						return namePressStack;
-					} ).orElse( ItemStack.EMPTY );
+						                                                                                   return namePressStack;
+					                                                                                   } ).orElse( ItemStack.EMPTY );
 				}
 			}
 			return ItemStack.EMPTY;
