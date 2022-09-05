@@ -45,7 +45,7 @@ import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.OptionalSlotFakeTypeOnly;
 import appeng.container.slot.SlotFakeTypeOnly;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.items.contents.NetworkToolViewer;
+import appeng.bootstrap.contents.NetworkToolViewer;
 import appeng.items.tools.ToolNetworkTool;
 import appeng.parts.automation.PartExportBus;
 import appeng.util.Platform;

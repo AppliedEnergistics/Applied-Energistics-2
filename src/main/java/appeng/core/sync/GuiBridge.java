@@ -22,6 +22,7 @@ package appeng.core.sync;
 import java.lang.reflect.Constructor;
 
 import appeng.container.implementations.*;
+import appeng.helpers.ICustomNameObject;
 import appeng.parts.misc.PartOreDicStorageBus;
 import appeng.parts.reporting.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,7 +71,7 @@ import appeng.fluids.parts.PartSharedFluidBus;
 import appeng.helpers.IInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.helpers.WirelessTerminalGuiObject;
-import appeng.items.contents.QuartzKnifeObj;
+import appeng.bootstrap.contents.QuartzKnifeObj;
 import appeng.parts.automation.PartFormationPlane;
 import appeng.parts.automation.PartLevelEmitter;
 import appeng.parts.misc.PartStorageBus;
@@ -180,6 +181,8 @@ public enum GuiBridge implements IGuiHandler
 	GUI_CRAFTING_STATUS( ContainerCraftingStatus.class, ITerminalHost.class, GuiHostType.ITEM_OR_WORLD, SecurityPermissions.CRAFT ),
 
 	GUI_INTERFACE_CONFIGURATION_TERMINAL( ContainerInterfaceConfigurationTerminal.class, PartInterfaceConfigurationTerminal.class, GuiHostType.WORLD, SecurityPermissions.BUILD );
+
+	GUI_RENAMER(ContainerRenamer.class, ICustomNameObject.class, GuiHostType.WORLD, SecurityPermissions.BUILD);
 
 	private final Class tileClass;
 	private final Class containerClass;

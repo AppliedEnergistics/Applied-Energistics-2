@@ -247,6 +247,7 @@ gui.appliedenergistics2.Precise=Precise
 gui.appliedenergistics2.Fuzzy=Fuzzy
 gui.appliedenergistics2.SmallFontCraft=Craft
 gui.appliedenergistics2.LargeFontCraft=+
+gui.appliedenergistics2.Renamer=Custom Name: (Enter to set)
 gui.appliedenergistics2.Nothing=Nothing
 
 // GUI Tooltips

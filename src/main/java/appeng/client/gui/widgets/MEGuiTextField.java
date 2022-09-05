@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import org.lwjgl.input.Keyboard;
 
 
 /**
@@ -67,6 +68,8 @@ public class MEGuiTextField extends GuiTextField
 		this._height = height;
 	}
 
+	public void onTextChange(final String oldText) {}
+
 	@Override
 	public boolean mouseClicked( final int xPos, final int yPos, final int button )
 	{
@@ -97,6 +100,28 @@ public class MEGuiTextField extends GuiTextField
 		return withinXRange && withinYRange;
 	}
 
+	public boolean textboxKeyTyped(final char keyChar, final int keyID) {
+		if (!isFocused()) {
+			return false;
+		}
+
+		final String oldText = getText();
+		boolean handled = super.textboxKeyTyped(keyChar, keyID);
+
+		if (!handled
+				&& (keyID == Keyboard.KEY_RETURN
+				|| keyID == Keyboard.KEY_NUMPADENTER
+				|| keyID == Keyboard.KEY_ESCAPE)) {
+			setFocused(false);
+		}
+
+		if (handled) {
+			onTextChange(oldText);
+		}
+
+		return handled;
+	}
+
 	public void selectAll()
 	{
 		this.setCursorPosition( 0 );
@@ -125,6 +150,21 @@ public class MEGuiTextField extends GuiTextField
 			}
 			super.drawTextBox();
 		}
+	}
+
+	public void setText(String text, boolean ignoreTrigger) {
+		final String oldText = getText();
+
+		super.setText(text);
+		super.setCursorPositionEnd();
+
+		if (!ignoreTrigger) {
+			onTextChange(oldText);
+		}
+	}
+
+	public void setText(String text) {
+		setText(text, false);
 	}
 
 	@Override

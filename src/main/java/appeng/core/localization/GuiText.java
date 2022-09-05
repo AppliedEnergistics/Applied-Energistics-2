@@ -90,6 +90,8 @@ public enum GuiText
 	Inscriber,
 	QuartzCuttingKnife,
 
+	Renamer,
+
 	// tunnel names
 	METunnel,
 	ItemTunnel,

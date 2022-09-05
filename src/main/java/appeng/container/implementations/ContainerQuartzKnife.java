@@ -33,7 +33,7 @@ import appeng.api.AEApi;
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotOutput;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.items.contents.QuartzKnifeObj;
+import appeng.bootstrap.contents.QuartzKnifeObj;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 

@@ -26,9 +26,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import appeng.core.sync.GuiBridge;
 import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.parts.PartFluidLevelEmitter;
 import appeng.fluids.util.AEFluidInventory;
+import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
 import appeng.parts.automation.PartLevelEmitter;
 import com.google.common.base.Preconditions;
 
@@ -47,6 +49,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -203,7 +206,12 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return this.getItemStack().hasDisplayName();
 	}
 
-	public void addEntityCrashInfo( final CrashReportCategory crashreportcategory )
+	@Override
+	public void setCustomName(String name) {
+		this.getItemStack().setStackDisplayName(name);
+	}
+
+	public void addEntityCrashInfo(final CrashReportCategory crashreportcategory )
 	{
 		crashreportcategory.addCrashSection( "Part Side", this.getSide() );
 	}
@@ -514,10 +522,20 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
 		return false;
 	}
 
+	private boolean useRenamer(final EntityPlayer player) {
+		final ItemStack stack = player.inventory.getCurrentItem();
+		if(stack != null && stack.getItem() instanceof ToolQuartzCuttingKnife) {
+			if(ForgeEventFactory.onItemUseStart(player, stack, 1) <= 0) return false;
+			Platform.openGUI(player, tile, side, GuiBridge.GUI_RENAMER);
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public final boolean onActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
 	{
-		if( this.useMemoryCard( player ) )
+		if( this.useMemoryCard( player ) || useRenamer(player) )
 		{
 			return true;
 		}

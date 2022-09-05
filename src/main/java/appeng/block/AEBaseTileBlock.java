@@ -25,6 +25,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import appeng.api.util.AEPartLocation;
+import appeng.core.sync.GuiBridge;
+import appeng.items.tools.quartz.ToolQuartzCuttingKnife;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
@@ -46,6 +49,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import appeng.api.implementations.items.IMemoryCard;
@@ -365,6 +369,14 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
 					}
 				}
 
+				return true;
+			}
+
+			if (heldItem.getItem() instanceof ToolQuartzCuttingKnife && !(this instanceof BlockCableBus)) {
+				if (ForgeEventFactory.onItemUseStart(player, heldItem, 1) <= 0) return false;
+				final AEBaseTile tile = this.getTileEntity(world, pos);
+				if (tile == null) return false;
+				Platform.openGUI(player, tile, AEPartLocation.fromFacing(facing), GuiBridge.GUI_RENAMER);
 				return true;
 			}
 		}

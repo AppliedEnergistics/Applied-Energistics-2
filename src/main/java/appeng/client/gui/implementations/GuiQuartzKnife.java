@@ -30,7 +30,7 @@ import appeng.core.AELog;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketValueConfig;
-import appeng.items.contents.QuartzKnifeObj;
+import appeng.bootstrap.contents.QuartzKnifeObj;
 
 
 public class GuiQuartzKnife extends AEBaseGui

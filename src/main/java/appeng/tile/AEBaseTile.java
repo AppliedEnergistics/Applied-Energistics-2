@@ -419,9 +419,6 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	 * returns the contents of the tile entity, into the world, defaults to dropping everything in the inventory.
 	 *
 	 * @param w world
-	 * @param x x pos of tile entity
-	 * @param y y pos of tile entity
-	 * @param z z pos of tile entity
 	 * @param drops drops of tile entity
 	 */
 	@Override
@@ -497,6 +494,11 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 	public boolean hasCustomInventoryName()
 	{
 		return this.customName != null && this.customName.length() > 0;
+	}
+
+	@Override
+	public void setCustomName(@Nullable String customName) {
+		setName(customName);
 	}
 
 	public void securityBreak()
