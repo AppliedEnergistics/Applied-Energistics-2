@@ -66,7 +66,7 @@ public class PlotTestHelper extends GameTestHelper {
             return gridConnectedBlockEntity.getMainNode().getGrid();
         }
 
-        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(getLevel(), pos);
+        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(getLevel(), this.absolutePos(pos));
         if (nodeHost != null) {
             for (var side : Direction.values()) {
                 var node = nodeHost.getGridNode(side);
