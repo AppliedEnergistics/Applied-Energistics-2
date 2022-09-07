@@ -25,6 +25,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.implementations.blockentities.ICraftingMachine;
+import appeng.api.implementations.blockentities.ICrankable;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.storage.IStorageMonitorableAccessor;
 
 /**
@@ -45,6 +47,14 @@ public final class Capabilities {
     });
 
     public static Capability<GenericInternalInventory> GENERIC_INTERNAL_INV = CapabilityManager
+            .get(new CapabilityToken<>() {
+            });
+
+    public static Capability<IInWorldGridNodeHost> IN_WORLD_GRID_NODE_HOST = CapabilityManager
+            .get(new CapabilityToken<>() {
+            });
+
+    public static Capability<ICrankable> CRANKABLE = CapabilityManager
             .get(new CapabilityToken<>() {
             });
 }

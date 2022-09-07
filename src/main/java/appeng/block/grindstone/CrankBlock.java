@@ -39,11 +39,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.block.AEBaseEntityBlock;
 import appeng.tile.grindstone.CrankBlockEntity;
-import appeng.util.FakePlayer;
 
 public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 

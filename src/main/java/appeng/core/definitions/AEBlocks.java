@@ -240,7 +240,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block("Dev.CubeGen", AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new);
     public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block("Dev.EnergyGen", AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new);
 
-    public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).nonOpaque().noCollision()));
+    public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).noCollission()));
 
     // spotless:on
 
