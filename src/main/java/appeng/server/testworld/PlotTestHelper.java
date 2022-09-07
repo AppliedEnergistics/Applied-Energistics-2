@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.IPartHost;
@@ -63,7 +64,10 @@ public class PlotTestHelper extends GameTestHelper {
         var be = getBlockEntity(pos);
         if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
             return gridConnectedBlockEntity.getMainNode().getGrid();
-        } else if (be instanceof IInWorldGridNodeHost nodeHost) {
+        }
+
+        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(getLevel(), pos);
+        if (nodeHost != null) {
             for (var side : Direction.values()) {
                 var node = nodeHost.getGridNode(side);
                 if (node != null) {
