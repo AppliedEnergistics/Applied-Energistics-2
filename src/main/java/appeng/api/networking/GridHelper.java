@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.exceptions.FailedConnectionException;
@@ -129,11 +129,12 @@ public final class GridHelper {
      * Finds an {@link IInWorldGridNodeHost} at the given world location, or returns null if there isn't one.
      */
     @Nullable
-    public static IInWorldGridNodeHost getNodeHost(LevelAccessor level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof IInWorldGridNodeHost host) {
+    public static IInWorldGridNodeHost getNodeHost(Level level, BlockPos pos) {
+        var be = level.getBlockEntity(pos);
+        if (be instanceof IInWorldGridNodeHost host) {
             return host;
         }
-        return null;
+        return IInWorldGridNodeHost.LOOKUP.find(level, pos, null, be, null);
     }
 
     /**
@@ -142,10 +143,10 @@ public final class GridHelper {
      * <p/>
      * Nodes that have been destroyed or have not completed initialization will not be returned.
      *
-     * @see #getNodeHost(LevelAccessor, BlockPos)
+     * @see #getNodeHost(Level, BlockPos)
      */
     @Nullable
-    public static IGridNode getExposedNode(LevelAccessor level, BlockPos pos,
+    public static IGridNode getExposedNode(Level level, BlockPos pos,
             Direction side) {
         var host = getNodeHost(level, pos);
         if (host == null) {
