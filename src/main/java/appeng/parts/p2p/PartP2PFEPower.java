@@ -133,22 +133,40 @@ public class PartP2PFEPower extends PartP2PTunnel<PartP2PFEPower>
 				}
 
 				final int amountPerOutput = maxReceive / outputTunnels;
-				int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
+				int overflow = 0;
 
-				if (outputs.isEmpty())
-				{
-					for ( PartP2PFEPower o : PartP2PFEPower.this.getOutputs())
+				for( PartP2PFEPower o : PartP2PFEPower.this.getOutputs() )
 					outputs.add( o );
-				}
 
-				while ( !outputs.isEmpty() ) {
+				while( !outputs.isEmpty() )
+				{
 					PartP2PFEPower target = outputs.poll();
 					final IEnergyStorage output = target.getAttachedEnergyStorage();
-					final int toSend = amountPerOutput + overflow;
-					final int received = output.receiveEnergy( toSend, simulate );
+					final int received = output.receiveEnergy( amountPerOutput, simulate );
 
-					overflow = toSend - received;
+					overflow += amountPerOutput - received;
 					total += received;
+				}
+
+				if( overflow > 0 )
+				{
+					for( PartP2PFEPower o : PartP2PFEPower.this.getOutputs() )
+						outputs.add( o );
+
+					while( !outputs.isEmpty() )
+					{
+						PartP2PFEPower target = outputs.poll();
+						final IEnergyStorage output = target.getAttachedEnergyStorage();
+						final int received = output.receiveEnergy( overflow, simulate );
+
+						overflow -= received;
+						total += received;
+						if( overflow == 0 )
+						{
+							outputs.clear();
+							break;
+						}
+					}
 				}
 
 				if( !simulate )

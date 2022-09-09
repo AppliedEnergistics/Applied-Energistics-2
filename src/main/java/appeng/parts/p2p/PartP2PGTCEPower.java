@@ -164,6 +164,7 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 
 					if( amperage >= amperesUsed )
 					{
+						outputs.clear();
 						break;
 					}
 				}
