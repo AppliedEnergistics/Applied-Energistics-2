@@ -7,10 +7,12 @@ import team.reborn.energy.api.EnergyStorage;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.implementations.blockentities.ICraftingMachine;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.PartApiLookup;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
@@ -45,6 +47,7 @@ public final class InitApiLookup {
         initEnergyAcceptors();
         initP2P();
         initPoweredItem();
+        initCrankable();
 
         ItemStorage.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
             if (blockEntity instanceof AEBaseInvBlockEntity baseInvBlockEntity) {
@@ -145,6 +148,10 @@ public final class InitApiLookup {
             }
             return null;
         });
+    }
+
+    private static void initCrankable() {
+        ICrankable.LOOKUP.registerForBlockEntity(ChargerBlockEntity::getCrankable, AEBlockEntities.CHARGER);
     }
 
 }

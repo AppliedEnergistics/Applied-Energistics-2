@@ -30,6 +30,7 @@ import appeng.client.render.crafting.CraftingMonitorRenderer;
 import appeng.client.render.crafting.MolecularAssemblerRenderer;
 import appeng.client.render.tesr.ChargerBlockEntityRenderer;
 import appeng.client.render.tesr.ChestBlockEntityRenderer;
+import appeng.client.render.tesr.CrankRenderer;
 import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
@@ -45,6 +46,7 @@ public final class InitBlockEntityRenderers {
 
     public static void init() {
 
+        register(AEBlockEntities.CRANK, CrankRenderer::new);
         register(AEBlockEntities.INSCRIBER, InscriberTESR::new);
         register(AEBlockEntities.SKY_CHEST, SkyChestTESR::new);
         register(AEBlockEntities.CHARGER, ChargerBlockEntityRenderer.FACTORY);

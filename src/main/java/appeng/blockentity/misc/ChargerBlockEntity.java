@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,6 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
@@ -52,7 +55,7 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
     // TODO: show recipes in JEI/REI
-
+    private static final int POWER_PER_CRANK_TURN = 160;
     private static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
     private boolean working;
@@ -240,6 +243,18 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         return working;
     }
 
+    /**
+     * Allow cranking from the top or bottom.
+     */
+    @Nullable
+    public ICrankable getCrankable(Direction direction) {
+        var up = getUp();
+        if (direction == up || direction == up.getOpposite()) {
+            return new Crankable();
+        }
+        return null;
+    }
+
     private record ChargerInvFilter(ChargerBlockEntity chargerBlockEntity) implements IAEItemFilter {
 
         @Override
@@ -259,6 +274,18 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             }
 
             return ChargerRecipes.allowExtract(chargerBlockEntity.level, extractedItem);
+        }
+    }
+
+    class Crankable implements ICrankable {
+        @Override
+        public boolean canTurn() {
+            return getInternalCurrentPower() < getInternalMaxPower();
+        }
+
+        @Override
+        public void applyTurn() {
+            injectExternalPower(PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }

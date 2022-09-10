@@ -23,7 +23,8 @@ public enum ItemModText implements LocalizationEnum {
     THROWING_IN_WATER_CATEGORY("Throwing In Water"),
     P2P_API_ATTUNEMENT("Attune with any:"),
     P2P_TUNNEL_ATTUNEMENT("P2P Tunnel Attunement"),
-    P2P_TAG_ATTUNEMENT("Attune with any shown item");
+    P2P_TAG_ATTUNEMENT("Attune with any shown item"),
+    CRANK_DESCRIPTION("Attach the crank to a charger to power it manually.");
 
     private final String englishText;
 

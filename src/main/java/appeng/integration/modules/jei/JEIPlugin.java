@@ -44,6 +44,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
+import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
@@ -121,6 +122,10 @@ public class JEIPlugin implements IModPlugin {
                     new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
         }
         registration.addRecipes(ThrowingInWaterCategory.RECIPE_TYPE, inWater);
+
+        registration.addItemStackInfo(
+                AEBlocks.CRANK.stack(),
+                ItemModText.CRANK_DESCRIPTION.text());
     }
 
     @Override
