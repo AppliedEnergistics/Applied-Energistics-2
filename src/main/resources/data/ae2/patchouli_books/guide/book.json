@@ -1,0 +1,19 @@
+{
+  "name": "patchouli.ae2.guidebook_name",
+  "landing_text": "patchouli.ae2.guidebook_landingtext",
+  "use_resource_pack": true, 
+  "book_texture": "ae2:textures/patchouli/patchouli_gui.png",
+  "filler_texture": "ae2:textures/patchouli/patchouli_filler.png",
+  "model": "ae2:patchouli",
+  "show_progress": false,
+  "nameplate_color": "8A5BA4",
+  "link_color": "8A5BA4",
+  "link_hover_color": "D7BBEC",
+  "version": 1,
+  "creative_tab": "misc",
+  "macros": {
+    "$(item)": "$(#582E70)",
+    "$(thing)": "$(#582E70)",
+    "$(todo)": "$(#FF0000)"
+  }
+}

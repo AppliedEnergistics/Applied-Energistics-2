@@ -72,6 +72,11 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    
+    // For Patchouli
+    maven { 
+    	url 'https://maven.blamejared.com' 
+    }
 }
 
 dependencies {
@@ -147,6 +152,7 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
     testImplementation("org.mockito:mockito-inline:4.0.0")
 
+    modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 }
 
 group = artifact_group
