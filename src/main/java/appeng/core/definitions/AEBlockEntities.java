@@ -74,6 +74,7 @@ import appeng.debug.CubeGeneratorBlockEntity;
 import appeng.debug.EnergyGeneratorBlockEntity;
 import appeng.debug.ItemGenBlockEntity;
 import appeng.debug.PhantomNodeBlockEntity;
+import appeng.tile.grindstone.CrankBlockEntity;
 
 @SuppressWarnings("unused")
 public final class AEBlockEntities {
@@ -168,6 +169,9 @@ public final class AEBlockEntities {
             CubeGeneratorBlockEntity.class, CubeGeneratorBlockEntity::new, AEBlocks.DEBUG_CUBE_GEN);
     public static final BlockEntityType<EnergyGeneratorBlockEntity> DEBUG_ENERGY_GEN = create("debug_energy_gen",
             EnergyGeneratorBlockEntity.class, EnergyGeneratorBlockEntity::new, AEBlocks.DEBUG_ENERGY_GEN);
+
+    public static final BlockEntityType<CrankBlockEntity> CRANK = create("crank", CrankBlockEntity.class,
+            CrankBlockEntity::new, AEBlocks.CRANK);
 
     private AEBlockEntities() {
     }

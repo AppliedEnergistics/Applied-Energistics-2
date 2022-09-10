@@ -151,6 +151,8 @@ public final class AEBlockIds {
     public static final ResourceLocation CHISELED_QUARTZ_SLAB = id("chiseled_quartz_slab");
     public static final ResourceLocation QUARTZ_PILLAR_SLAB = id("quartz_pillar_slab");
 
+    public static final ResourceLocation CRANK = id("crank");
+
     private static ResourceLocation id(String id) {
         return new ResourceLocation(AEConstants.MOD_ID, id);
     }

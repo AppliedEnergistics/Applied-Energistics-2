@@ -53,6 +53,7 @@ import appeng.block.crafting.CraftingUnitBlock;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.block.crafting.MolecularAssemblerBlock;
 import appeng.block.crafting.PatternProviderBlock;
+import appeng.block.grindstone.CrankBlock;
 import appeng.block.misc.CellWorkbenchBlock;
 import appeng.block.misc.ChargerBlock;
 import appeng.block.misc.CondenserBlock;
@@ -238,6 +239,9 @@ public final class AEBlocks {
     public static final BlockDefinition<PhantomNodeBlock> DEBUG_PHANTOM_NODE = block("Dev.PhantomNode", AppEng.makeId("debug_phantom_node"), PhantomNodeBlock::new);
     public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block("Dev.CubeGen", AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new);
     public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block("Dev.EnergyGen", AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new);
+
+    public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).nonOpaque().noCollision()));
+
     // spotless:on
 
     public static List<BlockDefinition<?>> getBlocks() {

@@ -295,6 +295,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('b', ConventionTags.COPPER_INGOT)
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("network/blocks/crystal_processing_charger"));
+        ShapedRecipeBuilder.shaped(AEBlocks.CRANK)
+                .pattern("aaa")
+                .pattern("  a")
+                .pattern("  a")
+                .define('a', ConventionTags.WOOD_STICK)
+                .unlockedBy("has_stick", has(ConventionTags.WOOD_STICK))
+                .save(consumer, AppEng.makeId("network/blocks/crank"));
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_GROWTH_ACCELERATOR)
                 .pattern("aba")
                 .pattern("cdc")

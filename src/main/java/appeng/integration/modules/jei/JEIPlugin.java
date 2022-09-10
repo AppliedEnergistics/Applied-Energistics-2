@@ -1,23 +1,30 @@
 package appeng.integration.modules.jei;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
+import appeng.api.config.CondenserOutput;
+import appeng.api.integrations.jei.IngredientConverters;
+import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.implementations.InscriberScreen;
+import appeng.core.AEConfig;
+import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ItemDefinition;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.ItemModText;
+import appeng.integration.abstraction.JEIFacade;
+import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
+import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
+import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
+import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
+import appeng.items.parts.FacadeItem;
+import appeng.menu.me.items.CraftingTermMenu;
+import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.menu.me.items.WirelessCraftingTermMenu;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.transform.TransformRecipe;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
-
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -32,29 +39,19 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
 
-import appeng.api.config.CondenserOutput;
-import appeng.api.integrations.jei.IngredientConverters;
-import appeng.client.gui.AEBaseScreen;
-import appeng.client.gui.implementations.InscriberScreen;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ItemDefinition;
-import appeng.core.localization.GuiText;
-import appeng.integration.abstraction.JEIFacade;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
-import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
-import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
-import appeng.items.parts.FacadeItem;
-import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.me.items.PatternEncodingTermMenu;
-import appeng.menu.me.items.WirelessCraftingTermMenu;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.recipes.transform.TransformRecipe;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
@@ -121,6 +118,11 @@ public class JEIPlugin implements IModPlugin {
                     new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
         }
         registration.addRecipes(ThrowingInWaterCategory.RECIPE_TYPE, inWater);
+
+        registration.addItemStackInfo(
+                AEBlocks.CRANK.stack(),
+                ItemModText.CRANK_DESCRIPTION.text()
+        );
     }
 
     @Override
@@ -154,7 +156,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private void addDescription(IRecipeRegistration registry, ItemDefinition<?> itemDefinition,
-            Component... message) {
+                                Component... message) {
         registry.addIngredientInfo(itemDefinition.stack(), VanillaTypes.ITEM_STACK, message);
     }
 
@@ -191,7 +193,7 @@ public class JEIPlugin implements IModPlugin {
 
                     @Override
                     public Collection<IGuiClickableArea> getGuiClickableAreas(AEBaseScreen<?> screen, double mouseX,
-                            double mouseY) {
+                                                                              double mouseY) {
                         if (screen instanceof InscriberScreen) {
                             return Collections.singletonList(
                                     IGuiClickableArea.createBasic(82, 39, 26, 16, InscriberRecipeCategory.RECIPE_TYPE));
