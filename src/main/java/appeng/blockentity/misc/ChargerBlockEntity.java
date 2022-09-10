@@ -55,8 +55,8 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
     // TODO: show recipes in JEI/REI
-    private static final int POWER_PER_CRANK_TURN = 160;
-    private static final int POWER_MAXIMUM_AMOUNT = 1600;
+    public static final int POWER_PER_CRANK_TURN = 160;
+    public static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
     private boolean working;
 

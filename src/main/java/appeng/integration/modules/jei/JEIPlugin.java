@@ -54,6 +54,7 @@ import appeng.items.parts.FacadeItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
+import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
 
@@ -81,7 +82,8 @@ public class JEIPlugin implements IModPlugin {
         registry.addRecipeCategories(
                 new ThrowingInWaterCategory(registry.getJeiHelpers().getGuiHelper()),
                 new CondenserCategory(registry.getJeiHelpers().getGuiHelper()),
-                new InscriberRecipeCategory(registry.getJeiHelpers().getGuiHelper()));
+                new InscriberRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
+                new ChargerCategory(registry.getJeiHelpers()));
     }
 
     @Override
@@ -108,6 +110,8 @@ public class JEIPlugin implements IModPlugin {
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
         registration.addRecipes(InscriberRecipeCategory.RECIPE_TYPE,
                 List.copyOf(recipeManager.byType(InscriberRecipe.TYPE).values()));
+        registration.addRecipes(ChargerCategory.RECIPE_TYPE,
+                List.copyOf(recipeManager.byType(ChargerRecipe.TYPE).values()));
         registration.addRecipes(CondenserCategory.RECIPE_TYPE,
                 ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY));
 
@@ -130,17 +134,21 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ItemStack condenser = AEBlocks.CONDENSER.stack();
+        var condenser = AEBlocks.CONDENSER.stack();
         registration.addRecipeCatalyst(condenser, CondenserCategory.RECIPE_TYPE);
 
-        ItemStack inscriber = AEBlocks.INSCRIBER.stack();
+        var inscriber = AEBlocks.INSCRIBER.stack();
         registration.addRecipeCatalyst(inscriber, InscriberRecipeCategory.RECIPE_TYPE);
 
-        ItemStack craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
+        var craftingTerminal = AEParts.CRAFTING_TERMINAL.stack();
         registration.addRecipeCatalyst(craftingTerminal, RecipeTypes.CRAFTING);
 
-        ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
+        var wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
         registration.addRecipeCatalyst(wirelessCraftingTerminal, RecipeTypes.CRAFTING);
+
+        // Both the charger and crank will be used as catalysts here to make it more discoverable
+        registration.addRecipeCatalyst(AEBlocks.CHARGER.stack(), ChargerCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(AEBlocks.CRANK.stack(), ChargerCategory.RECIPE_TYPE);
     }
 
     private void registerDescriptions(IRecipeRegistration registry) {
