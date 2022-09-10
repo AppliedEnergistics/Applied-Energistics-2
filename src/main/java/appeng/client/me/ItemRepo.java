@@ -41,6 +41,7 @@ import appeng.client.gui.widgets.IScrollSource;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.core.AEConfig;
 import appeng.integration.Integrations;
+import appeng.integration.modules.bogosorter.InventoryBogoSortModule;
 import appeng.items.storage.ItemViewCell;
 import appeng.util.ItemSorters;
 import appeng.util.Platform;
@@ -237,7 +238,14 @@ public class ItemRepo
 		}
 		else if( SortBy == SortOrder.INVTWEAKS )
 		{
-			Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS );
+			if( InventoryBogoSortModule.isLoaded() )
+			{
+				Collections.sort( this.view, InventoryBogoSortModule.COMPARATOR );
+			}
+			else
+			{
+				Collections.sort( this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS );
+			}
 		}
 		else
 		{

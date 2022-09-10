@@ -129,6 +129,7 @@ import appeng.core.sync.GuiHostType;
 import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
+import appeng.integration.modules.bogosorter.InventoryBogoSortModule;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -354,7 +355,7 @@ public class Platform
 
 	private static boolean isNotValidSetting( final Enum e )
 	{
-		if( e == SortOrder.INVTWEAKS && !Integrations.invTweaks().isEnabled() )
+		if( e == SortOrder.INVTWEAKS && !Integrations.invTweaks().isEnabled() && !InventoryBogoSortModule.isLoaded() )
 		{
 			return true;
 		}
