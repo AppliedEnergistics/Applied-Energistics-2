@@ -77,11 +77,10 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 	@Override
 	public void setStackInSlot( int slot, @Nonnull ItemStack stack )
 	{
-		if( stack == this.getStackInSlot( slot ) )
+		if( stack != this.getStackInSlot( slot ) )
 		{
-			return;
+			this.previousStack = this.getStackInSlot( slot ).copy();
 		}
-		this.previousStack = this.getStackInSlot( slot ).copy();
 		super.setStackInSlot( slot, stack );
 	}
 
