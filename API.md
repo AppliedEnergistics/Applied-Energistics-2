@@ -307,3 +307,11 @@ Custom storage cells have been simplified, and the same class can be used to cre
 cells for any stored item key. Due to the storage math still being different for items and fluids,
 there are still key-type specific cells, which are all based on the same class `BasicStorageCell`,
 which doesn't have a guaranteed API however (this is an improvement for later).
+
+## Crank
+
+The crank uses `ICrankable` to inject energy into the block it's attached to, when the player turns the crank.
+On Fabric, use `ICrankable.LOOKUP` to expose it on your own blocks if you'd like to allow cranks to inject 
+energy. On Forge, expose the `ICrankable.CRANKABLE` capability.
+You can limit which sides of your block a crank is allowed on by only returning a non-null object for the sides
+of your block you want to allow it on.
