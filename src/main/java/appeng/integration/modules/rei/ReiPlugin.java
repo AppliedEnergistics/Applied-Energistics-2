@@ -74,6 +74,7 @@ import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
 import appeng.items.parts.FacadeItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
 
@@ -102,6 +103,7 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new AttunementCategory());
+        registry.add(new ChargerCategory());
 
         registerWorkingStations(registry);
     }
@@ -109,6 +111,7 @@ public class ReiPlugin implements REIClientPlugin {
     @Override
     public void registerDisplays(DisplayRegistry registry) {
         registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeWrapper::new);
+        registry.registerRecipeFiller(ChargerRecipe.class, ChargerRecipe.TYPE, ChargerDisplay::new);
 
         registry.add(new CondenserOutputDisplay(CondenserOutput.MATTER_BALLS));
         registry.add(new CondenserOutputDisplay(CondenserOutput.SINGULARITY));
@@ -229,6 +232,9 @@ public class ReiPlugin implements REIClientPlugin {
 
         ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
         registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(wirelessCraftingTerminal));
+
+        registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CHARGER.stack()));
+        registry.addWorkstations(ChargerDisplay.ID, EntryStacks.of(AEBlocks.CRANK.stack()));
     }
 
     private void registerDescriptions(DisplayRegistry registry) {
@@ -251,7 +257,6 @@ public class ReiPlugin implements REIClientPlugin {
 
         addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL, GuiText.CertusQuartzObtain.getTranslationKey());
         addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.getTranslationKey());
-        addDescription(registry, AEBlocks.SKY_COMPASS, GuiText.Compass.getTranslationKey());
 
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
             addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());
@@ -266,6 +271,8 @@ public class ReiPlugin implements REIClientPlugin {
             addDescription(registry, AEItems.QUANTUM_ENTANGLED_SINGULARITY,
                     GuiText.inWorldSingularity.getTranslationKey());
         }
+
+        addDescription(registry, AEBlocks.CRANK, ItemModText.CRANK_DESCRIPTION.getTranslationKey());
     }
 
     private static void addDescription(DisplayRegistry registry, ItemDefinition<?> itemDefinition, String... message) {

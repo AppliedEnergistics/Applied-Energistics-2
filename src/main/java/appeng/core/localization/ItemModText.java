@@ -24,7 +24,8 @@ public enum ItemModText implements LocalizationEnum {
     P2P_API_ATTUNEMENT("Attune with any:"),
     P2P_TUNNEL_ATTUNEMENT("P2P Tunnel Attunement"),
     P2P_TAG_ATTUNEMENT("Attune with any shown item"),
-    CRANK_DESCRIPTION("Attach the crank to a charger to power it manually.");
+    CRANK_DESCRIPTION("Attach the crank to a charger to power it manually."),
+    CHARGER_REQUIRED_POWER("%d turns or %d AE");
 
     private final String englishText;
 
