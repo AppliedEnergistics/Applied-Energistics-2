@@ -40,13 +40,13 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.ids.AETags;
+import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.PartHelper;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.facade.FacadePart;
-import appeng.facade.IFacadeItem;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 
@@ -83,7 +83,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
-    public static boolean canPlaceFacade(IPartHost host, FacadePart facade) {
+    public static boolean canPlaceFacade(IPartHost host, IFacadePart facade) {
         // Can only place a facade on cables if there's actually a cable at the center to hold them
         if (host.getPart(null) == null) {
             return false;
