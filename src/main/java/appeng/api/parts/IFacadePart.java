@@ -23,6 +23,8 @@
 
 package appeng.api.parts;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
  *
  * not intended for implementation.
  */
+@ApiStatus.NonExtendable
 public interface IFacadePart {
 
     /**
