@@ -315,3 +315,35 @@ On Fabric, use `ICrankable.LOOKUP` to expose it on your own blocks if you'd like
 energy. On Forge, expose the `ICrankable.CRANKABLE` capability.
 You can limit which sides of your block a crank is allowed on by only returning a non-null object for the sides
 of your block you want to allow it on.
+
+Fabric Example:
+```java
+ICrankable.LOOKUP.registerForBlockEntity(ChargerBlockEntity::getCrankable, AEBlockEntities.CHARGER);
+
+[...]
+class ChargerBlockEntity {
+  /**
+   * Allow cranking from the top or bottom.
+   */
+  @Nullable
+  public ICrankable getCrankable(Direction direction) {
+    var up = getUp();
+    if (direction == up || direction == up.getOpposite()) {
+      return new Crankable();
+    }
+    return null;
+  }
+
+  class Crankable implements ICrankable {
+    @Override
+    public boolean canTurn() {
+      return getInternalCurrentPower() < getInternalMaxPower();
+    }
+
+    @Override
+    public void applyTurn() {
+      injectExternalPower(PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE);
+    }
+  }
+}
+```
