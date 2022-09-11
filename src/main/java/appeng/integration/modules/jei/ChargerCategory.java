@@ -1,5 +1,7 @@
 package appeng.integration.modules.jei;
 
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -13,6 +15,7 @@ import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.integration.modules.jei.widgets.View;
+import appeng.integration.modules.jei.widgets.Widget;
 import appeng.integration.modules.jei.widgets.WidgetFactory;
 import appeng.recipes.handlers.ChargerRecipe;
 
@@ -53,8 +56,8 @@ public class ChargerCategory extends ViewBasedCategory<ChargerRecipe> {
     }
 
     @Override
-    protected View<ChargerRecipe> getView(ChargerRecipe recipe) {
-        return new View<>(recipe) {
+    protected View getView(ChargerRecipe recipe) {
+        return new View() {
             @Override
             public void buildSlots(IRecipeLayoutBuilder builder) {
                 builder.addSlot(RecipeIngredientRole.INPUT, 31, 8)
@@ -70,7 +73,7 @@ public class ChargerCategory extends ViewBasedCategory<ChargerRecipe> {
             }
 
             @Override
-            public void createWidgets(WidgetFactory factory) {
+            public void createWidgets(WidgetFactory factory, List<Widget> widgets) {
                 widgets.add(factory.unfilledArrow(52, 8));
 
                 var turns = (ChargerBlockEntity.POWER_MAXIMUM_AMOUNT + ChargerBlockEntity.POWER_PER_CRANK_TURN - 1)
