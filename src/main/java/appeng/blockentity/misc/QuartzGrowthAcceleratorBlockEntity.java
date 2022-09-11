@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.ids.AETags;
 import appeng.api.implementations.IPowerChannelState;
-import appeng.api.implementations.blockentities.ICrystalGrowthAccelerator;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
@@ -38,17 +38,24 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.AEConfig;
+import appeng.tile.grindstone.CrankBlockEntity;
 
-public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
-        implements IPowerChannelState, ICrystalGrowthAccelerator {
+public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity implements IPowerChannelState {
+
+    // Allow storage of up to 10 cranks
+    public static final int MAX_STORED_POWER = 10 * CrankBlockEntity.POWER_PER_CRANK_TURN;
+    private static final int POWER_PER_TICK = 8;
 
     private boolean hasPower = false;
+
+    // For cranking!
+    private float storedPower;
 
     public QuartzGrowthAcceleratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags();
-        this.getMainNode().setIdlePowerUsage(8);
+        this.getMainNode().setIdlePowerUsage(POWER_PER_TICK);
         this.getMainNode().addService(IGridTickable.class, new IGridTickable() {
             @Override
             public TickingRequest getTickingRequest(IGridNode node) {
@@ -58,14 +65,21 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
 
             @Override
             public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-                onTick();
+                onTick(ticksSinceLastCall);
                 return TickRateModulation.SAME;
             }
         });
     }
 
-    private void onTick() {
-        if (!getMainNode().isPowered()) {
+    private void onTick(int ticksSinceLastCall) {
+        // We drain local power in *addition* to network power, which is handled via idle power consumption
+        if (storedPower > 0) {
+            storedPower -= POWER_PER_TICK * Math.max(1, ticksSinceLastCall);
+            if (storedPower <= 0) {
+                storedPower = 0;
+                markForUpdate();
+            }
+        } else if (!getMainNode().isPowered()) {
             return;
         }
 
@@ -73,7 +87,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
             var adjPos = getBlockPos().relative(direction);
             var adjState = getLevel().getBlockState(adjPos);
 
-            if (!adjState.getBlock().builtInRegistryHolder().is(AETags.GROWTH_ACCELERATABLE)) {
+            if (!adjState.is(AETags.GROWTH_ACCELERATABLE)) {
                 continue;
             }
 
@@ -122,7 +136,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
     @Override
     public boolean isPowered() {
         if (!isClientSide()) {
-            return this.getMainNode().isPowered();
+            return this.getMainNode().isPowered() || storedPower > 0;
         }
 
         return this.hasPower;
@@ -135,5 +149,40 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity
 
     private void setPowered(boolean hasPower) {
         this.hasPower = hasPower;
+    }
+
+    /**
+     * Allow cranking from the top or bottom.
+     */
+    @org.jetbrains.annotations.Nullable
+    public ICrankable getCrankable(Direction direction) {
+        if (direction == getUp() || direction == getUp().getOpposite()) {
+            return new Crankable();
+        }
+        return null;
+    }
+
+    class Crankable implements ICrankable {
+        @Override
+        public boolean canTurn() {
+            return storedPower < MAX_STORED_POWER;
+        }
+
+        @Override
+        public void applyTurn() {
+            if (isClientSide()) {
+                return; // Only apply crank-turns server-side
+            }
+
+            // Cranking will always add enough power for at least one tick,
+            // so we should send a transition from unpowered to powered to clients.
+            boolean needsUpdate = !isPowered();
+
+            storedPower = Math.min(MAX_STORED_POWER, storedPower + CrankBlockEntity.POWER_PER_CRANK_TURN);
+
+            if (needsUpdate) {
+                markForUpdate();
+            }
+        }
     }
 }

@@ -18,6 +18,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.ItemModText;
+import appeng.tile.grindstone.CrankBlockEntity;
 
 public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
     private final Renderer icon;
@@ -68,8 +69,8 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
 
         widgets.add(Widgets.createArrow(new Point(x + 52, y + 8)));
 
-        var turns = (ChargerBlockEntity.POWER_MAXIMUM_AMOUNT + ChargerBlockEntity.POWER_PER_CRANK_TURN - 1)
-                / ChargerBlockEntity.POWER_PER_CRANK_TURN;
+        var turns = (ChargerBlockEntity.POWER_MAXIMUM_AMOUNT + CrankBlockEntity.POWER_PER_CRANK_TURN - 1)
+                / CrankBlockEntity.POWER_PER_CRANK_TURN;
         widgets.add(Widgets
                 .createLabel(new Point(x + 20, y + 35),
                         ItemModText.CHARGER_REQUIRED_POWER.text(turns, ChargerBlockEntity.POWER_MAXIMUM_AMOUNT))

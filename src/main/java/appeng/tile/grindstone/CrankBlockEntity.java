@@ -33,6 +33,7 @@ import appeng.blockentity.ServerTickingBlockEntity;
 
 public class CrankBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, ClientTickingBlockEntity {
 
+    public static final int POWER_PER_CRANK_TURN = 160;
     private final int ticksPerRotation = 18;
 
     // sided values..

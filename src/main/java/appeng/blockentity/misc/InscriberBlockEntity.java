@@ -35,6 +35,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.PowerUnits;
+import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
@@ -53,6 +55,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.tile.grindstone.CrankBlockEntity;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -356,6 +359,17 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     /**
+     * Allow cranking from any side other than the front.
+     */
+    @org.jetbrains.annotations.Nullable
+    public ICrankable getCrankable(Direction direction) {
+        if (direction != getForward()) {
+            return new Crankable();
+        }
+        return null;
+    }
+
+    /**
      * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
      * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
      * another mod attempted insertion of items when there were already items in the slot.
@@ -389,6 +403,18 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
                 return InscriberRecipes.isValidOptionalIngredient(getLevel(), stack);
             }
             return true;
+        }
+    }
+
+    class Crankable implements ICrankable {
+        @Override
+        public boolean canTurn() {
+            return getInternalCurrentPower() < getInternalMaxPower();
+        }
+
+        @Override
+        public void applyTurn() {
+            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }
