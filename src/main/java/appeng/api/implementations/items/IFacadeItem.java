@@ -16,15 +16,17 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.facade;
+package appeng.api.implementations.items;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.parts.IFacadePart;
+
 public interface IFacadeItem {
 
-    FacadePart createPartFromItemStack(ItemStack is, Direction side);
+    IFacadePart createPartFromItemStack(ItemStack is, Direction side);
 
     ItemStack getTextureItem(ItemStack is);
 
