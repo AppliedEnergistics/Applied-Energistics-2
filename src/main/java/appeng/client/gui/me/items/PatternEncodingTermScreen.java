@@ -122,10 +122,10 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 getMenu()::setSubstitute);
         button.setHalfSize(true);
         button.setTooltipOn(List.of(
-                ButtonToolTips.Substitutions.text(),
+                ButtonToolTips.SubstitutionsOn.text(),
                 ButtonToolTips.SubstitutionsDescEnabled.text()));
         button.setTooltipOff(List.of(
-                ButtonToolTips.Substitutions.text(),
+                ButtonToolTips.SubstitutionsOff.text(),
                 ButtonToolTips.SubstitutionsDescDisabled.text()));
         widgets.add("craftingSubstitutions", button);
         buttonsByMode.put(EncodingMode.CRAFTING, button);
