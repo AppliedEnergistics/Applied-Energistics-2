@@ -16,18 +16,43 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.facade;
+package appeng.api.implementations.items;
 
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.parts.IFacadePart;
+
+/**
+ * Implemented on a {@link Item}
+ */
 public interface IFacadeItem {
 
-    FacadePart createPartFromItemStack(ItemStack is, Direction side);
+    /**
+     * creates an IFacadePart from the facade ItemStack and the Direction
+     *
+     * @param is   the facade ItemStack you want the IFacadePart for
+     * @param side the Direction the IFacadePart is for
+     * @return the created IFacadePart
+     */
+    IFacadePart createPartFromItemStack(ItemStack is, Direction side);
 
+    /**
+     * get the ItemStack texture the facade was created with
+     *
+     * @param is the facade ItemStack you want the texture from
+     * @return the ItemStack texture
+     */
     ItemStack getTextureItem(ItemStack is);
 
+    /**
+     * get the BlockState texture the ItemStack stores
+     *
+     * @param is the facade ItemStack you want the texture from
+     * @return the texture as BlockState
+     */
     BlockState getTextureBlockState(ItemStack is);
 
 }

@@ -23,13 +23,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.common.MinecraftForge;
 
+import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEParts;
-import appeng.facade.IFacadeItem;
 import appeng.items.parts.FacadeItem;
 import appeng.parts.BusCollisionHelper;
 import appeng.parts.PartPlacement;
