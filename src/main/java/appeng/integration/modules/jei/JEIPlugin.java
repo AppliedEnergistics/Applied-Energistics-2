@@ -13,9 +13,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 
 import mezz.jei.api.IModPlugin;
@@ -34,6 +36,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.api.config.CondenserOutput;
+import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.integrations.jei.IngredientConverters;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
@@ -79,11 +82,13 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
+        var jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(
-                new ThrowingInWaterCategory(registry.getJeiHelpers().getGuiHelper()),
-                new CondenserCategory(registry.getJeiHelpers().getGuiHelper()),
-                new InscriberRecipeCategory(registry.getJeiHelpers().getGuiHelper()),
-                new ChargerCategory(registry.getJeiHelpers()));
+                new ThrowingInWaterCategory(jeiHelpers.getGuiHelper()),
+                new CondenserCategory(jeiHelpers.getGuiHelper()),
+                new InscriberRecipeCategory(jeiHelpers.getGuiHelper()),
+                new ChargerCategory(jeiHelpers),
+                new AttunementCategory(jeiHelpers));
     }
 
     @Override
@@ -115,6 +120,7 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipes(CondenserCategory.RECIPE_TYPE,
                 ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY));
 
+        registerP2PAttunement(registration);
         registerDescriptions(registration);
 
         // Add displays for crystal growth
@@ -130,6 +136,32 @@ public class JEIPlugin implements IModPlugin {
         registration.addItemStackInfo(
                 AEBlocks.CRANK.stack(),
                 ItemModText.CRANK_DESCRIPTION.text());
+    }
+
+    private void registerP2PAttunement(IRecipeRegistration registration) {
+
+        List<AttunementDisplay> attunementRecipes = new ArrayList<>();
+        for (var entry : P2PTunnelAttunementInternal.getApiTunnels()) {
+            attunementRecipes.add(
+                    new AttunementDisplay(
+                            Ingredient.of(Registry.ITEM.stream()
+                                    .map(ItemStack::new)
+                                    .filter(entry.stackPredicate())
+                                    .toArray(ItemStack[]::new)),
+                            entry.tunnelType(),
+                            ItemModText.P2P_API_ATTUNEMENT.text(),
+                            entry.description()));
+        }
+
+        for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {
+            attunementRecipes.add(new AttunementDisplay(
+                    Ingredient.of(entry.getKey()),
+                    entry.getValue(),
+                    ItemModText.P2P_TAG_ATTUNEMENT.text()));
+        }
+
+        registration.addRecipes(AttunementCategory.TYPE, attunementRecipes);
+
     }
 
     @Override
