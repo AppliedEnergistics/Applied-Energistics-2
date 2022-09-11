@@ -1,6 +1,7 @@
 package appeng.integration.modules.jei;
 
 import java.util.Collections;
+import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -15,6 +16,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jei.widgets.View;
+import appeng.integration.modules.jei.widgets.Widget;
 import appeng.integration.modules.jei.widgets.WidgetFactory;
 
 public class AttunementCategory extends ViewBasedCategory<AttunementDisplay> {
@@ -55,11 +57,11 @@ public class AttunementCategory extends ViewBasedCategory<AttunementDisplay> {
     }
 
     @Override
-    protected View<AttunementDisplay> getView(AttunementDisplay recipe) {
+    protected View getView(AttunementDisplay recipe) {
         var x = background.getWidth() / 2 - 41;
         var y = background.getHeight() / 2 - 13;
 
-        return new View<>(recipe) {
+        return new View() {
             @Override
             public void buildSlots(IRecipeLayoutBuilder builder) {
                 builder.addSlot(RecipeIngredientRole.INPUT, x + 4, y + 5)
@@ -74,7 +76,7 @@ public class AttunementCategory extends ViewBasedCategory<AttunementDisplay> {
             }
 
             @Override
-            public void createWidgets(WidgetFactory factory) {
+            public void createWidgets(WidgetFactory factory, List<Widget> widgets) {
                 widgets.add(factory.unfilledArrow(x + 27, y + 4));
             }
         };

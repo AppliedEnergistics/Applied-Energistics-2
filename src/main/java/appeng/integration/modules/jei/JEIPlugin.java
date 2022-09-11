@@ -88,7 +88,8 @@ public class JEIPlugin implements IModPlugin {
                 new CondenserCategory(jeiHelpers.getGuiHelper()),
                 new InscriberRecipeCategory(jeiHelpers.getGuiHelper()),
                 new ChargerCategory(jeiHelpers),
-                new AttunementCategory(jeiHelpers));
+                new AttunementCategory(jeiHelpers),
+                new CertusGrowthCategory(jeiHelpers));
     }
 
     @Override
@@ -136,6 +137,8 @@ public class JEIPlugin implements IModPlugin {
         registration.addItemStackInfo(
                 AEBlocks.CRANK.stack(),
                 ItemModText.CRANK_DESCRIPTION.text());
+
+        registration.addRecipes(CertusGrowthCategory.TYPE, List.of(CertusGrowthCategory.Page.values()));
     }
 
     private void registerP2PAttunement(IRecipeRegistration registration) {

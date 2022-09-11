@@ -1,5 +1,6 @@
 package appeng.integration.modules.jei.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -9,35 +10,36 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 public class Label implements Widget {
     public final float x;
     public final float y;
     public final Component text;
-    private final int width;
     private final Font font;
     @Nullable
     public Component tooltip;
     public int color = -1;
+    public int maxWidth = -1;
     public boolean shadow = true;
     private LabelAlignment align = LabelAlignment.CENTER;
+    private List<FormattedLine> formattedLines = null;
 
     public Label(float x, float y, Component text) {
         this.x = x;
         this.y = y;
         this.text = text;
-        font = Minecraft.getInstance().font;
-        this.width = font.width(text);
+        this.font = Minecraft.getInstance().font;
     }
 
     @Override
     public void draw(PoseStack stack) {
-        float alignedX = getAlignedX();
-
-        if (shadow) {
-            font.drawShadow(stack, text, alignedX, y, color);
-        } else {
-            font.draw(stack, text, alignedX, y, color);
+        for (var line : getLines()) {
+            if (shadow) {
+                font.drawShadow(stack, line.text, line.x, line.y, color);
+            } else {
+                font.draw(stack, line.text, line.x, line.y, color);
+            }
         }
     }
 
@@ -66,11 +68,22 @@ public class Label implements Widget {
         return this;
     }
 
+    public Label bodyText() {
+        noShadow();
+        bodyColor();
+        return this;
+    }
+
     @Override
     public boolean hitTest(double x, double y) {
-        var alignedX = getAlignedX();
-        return x >= alignedX && x < alignedX + width
-                && y >= this.y && y < this.y + font.lineHeight;
+        for (var line : getLines()) {
+            if (x >= line.x && x < line.x + line.width
+                    && y >= line.y && y < line.y + line.height) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -81,7 +94,7 @@ public class Label implements Widget {
         return List.of();
     }
 
-    private float getAlignedX() {
+    private float getAlignedX(int width) {
         return switch (align) {
             case LEFT -> x;
             case CENTER -> x - width / 2f;
@@ -89,9 +102,49 @@ public class Label implements Widget {
         };
     }
 
+    public Label maxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
+        return this;
+    }
+
     private enum LabelAlignment {
         LEFT,
         CENTER,
         RIGHT
+    }
+
+    /**
+     * Lazily apply the max-width using current settings and split into a line-based layout.
+     */
+    private List<FormattedLine> getLines() {
+        if (formattedLines != null) {
+            return formattedLines;
+        }
+
+        if (maxWidth == -1) {
+            var formattedText = text.getVisualOrderText();
+            var width = font.width(formattedText);
+            formattedLines = List.of(
+                    new FormattedLine(formattedText, getAlignedX(width), y, width, font.lineHeight));
+        } else {
+            var splitLines = font.split(text, maxWidth);
+            var formattedLines = new ArrayList<FormattedLine>(splitLines.size());
+            for (int i = 0; i < splitLines.size(); i++) {
+                var splitLine = splitLines.get(i);
+                var width = font.width(splitLine);
+                formattedLines.add(new FormattedLine(
+                        splitLine,
+                        getAlignedX(width),
+                        y + i * font.lineHeight,
+                        width,
+                        font.lineHeight));
+            }
+            this.formattedLines = formattedLines;
+        }
+
+        return formattedLines;
+    }
+
+    private record FormattedLine(FormattedCharSequence text, float x, float y, int width, int height) {
     }
 }
