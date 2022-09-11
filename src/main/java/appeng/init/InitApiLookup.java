@@ -13,6 +13,8 @@ import appeng.api.inventories.PartApiLookup;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
+import appeng.blockentity.misc.InscriberBlockEntity;
+import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
@@ -152,6 +154,9 @@ public final class InitApiLookup {
 
     private static void initCrankable() {
         ICrankable.LOOKUP.registerForBlockEntity(ChargerBlockEntity::getCrankable, AEBlockEntities.CHARGER);
+        ICrankable.LOOKUP.registerForBlockEntity(InscriberBlockEntity::getCrankable, AEBlockEntities.INSCRIBER);
+        ICrankable.LOOKUP.registerForBlockEntity(QuartzGrowthAcceleratorBlockEntity::getCrankable,
+                AEBlockEntities.QUARTZ_GROWTH_ACCELERATOR);
     }
 
 }

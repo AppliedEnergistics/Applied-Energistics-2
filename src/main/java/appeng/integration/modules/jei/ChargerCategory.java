@@ -18,6 +18,7 @@ import appeng.integration.modules.jei.widgets.View;
 import appeng.integration.modules.jei.widgets.Widget;
 import appeng.integration.modules.jei.widgets.WidgetFactory;
 import appeng.recipes.handlers.ChargerRecipe;
+import appeng.tile.grindstone.CrankBlockEntity;
 
 public class ChargerCategory extends ViewBasedCategory<ChargerRecipe> {
 
@@ -76,8 +77,8 @@ public class ChargerCategory extends ViewBasedCategory<ChargerRecipe> {
             public void createWidgets(WidgetFactory factory, List<Widget> widgets) {
                 widgets.add(factory.unfilledArrow(52, 8));
 
-                var turns = (ChargerBlockEntity.POWER_MAXIMUM_AMOUNT + ChargerBlockEntity.POWER_PER_CRANK_TURN - 1)
-                        / ChargerBlockEntity.POWER_PER_CRANK_TURN;
+                var turns = (ChargerBlockEntity.POWER_MAXIMUM_AMOUNT + CrankBlockEntity.POWER_PER_CRANK_TURN - 1)
+                        / CrankBlockEntity.POWER_PER_CRANK_TURN;
                 widgets.add(factory
                         .label(20, 35,
                                 Component.literal(

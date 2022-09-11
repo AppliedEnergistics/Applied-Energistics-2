@@ -49,12 +49,12 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
+import appeng.tile.grindstone.CrankBlockEntity;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable {
-    public static final int POWER_PER_CRANK_TURN = 160;
     public static final int POWER_MAXIMUM_AMOUNT = 1600;
     private static final int POWER_THRESHOLD = POWER_MAXIMUM_AMOUNT - 1;
     private boolean working;
@@ -284,7 +284,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
 
         @Override
         public void applyTurn() {
-            injectExternalPower(PowerUnits.AE, POWER_PER_CRANK_TURN, Actionable.MODULATE);
+            injectExternalPower(PowerUnits.AE, CrankBlockEntity.POWER_PER_CRANK_TURN, Actionable.MODULATE);
         }
     }
 }
