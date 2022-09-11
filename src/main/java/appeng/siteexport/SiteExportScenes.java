@@ -39,6 +39,7 @@ final class SiteExportScenes {
         Collections.addAll(
                 scenes,
                 singleBlock(AEBlocks.CONTROLLER),
+                singleBlock(AEBlocks.CHARGER),
                 singleBlock(AEBlocks.CRAFTING_STORAGE_1K, craftingStorageState),
                 singleBlock(AEBlocks.CRAFTING_STORAGE_4K, craftingStorageState),
                 singleBlock(AEBlocks.CRAFTING_STORAGE_16K, craftingStorageState),
