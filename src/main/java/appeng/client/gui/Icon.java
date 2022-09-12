@@ -20,6 +20,9 @@ package appeng.client.gui;
 
 import appeng.client.gui.style.Blitter;
 
+/**
+ * Edit in {@code assets/ae2/textures/guis/states.png}.
+ */
 public enum Icon {
 
     // ROW 0
@@ -70,8 +73,8 @@ public enum Icon {
     SEARCH_REI(96, 32),
     SEARCH_AUTO_FOCUS_REMEMBER(112, 32),
     SEARCH_REMEMBER(128, 32),
-    UNUSED_02_09(144, 32),
-    UNUSED_02_10(160, 32),
+    SEARCH_JEI_AUTO_CLEAR(144, 32),
+    SEARCH_REI_AUTO_CLEAR(160, 32),
     UNUSED_02_11(176, 32),
     UNUSED_02_12(192, 32),
     UNUSED_02_13(208, 32),

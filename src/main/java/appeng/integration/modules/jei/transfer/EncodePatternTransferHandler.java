@@ -31,6 +31,7 @@ import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.GenericEntryStackHelper;
 import appeng.integration.modules.jei.JEIPlugin;
+import appeng.integration.modules.jei.JeiRuntimeAdapter;
 import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.common.GridInventoryEntry;
@@ -100,7 +101,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
     private boolean isIngredientVisible(ItemStack itemStack) {
         // Cache the ingredient visibility instance for checks for the best ingredient.
         if (ingredientVisibility == null) {
-            ingredientVisibility = JEIFacade.instance().getRuntime().getIngredientVisibility();
+            ingredientVisibility = ((JeiRuntimeAdapter) JEIFacade.instance()).getRuntime().getIngredientVisibility();
         }
         return ingredientVisibility.isIngredientVisible(VanillaTypes.ITEM_STACK, itemStack);
     }

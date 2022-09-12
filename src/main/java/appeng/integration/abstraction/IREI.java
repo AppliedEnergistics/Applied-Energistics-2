@@ -30,6 +30,9 @@ public interface IREI {
         return "";
     }
 
+    default void setSearchText(String text) {
+    }
+
     class Stub implements IREI {
     }
 }

@@ -178,9 +178,15 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.SEARCH_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI,
                     ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_JEI.text());
+            registerApp(Icon.SEARCH_JEI_AUTO_CLEAR, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTO_CLEAR,
+                    ButtonToolTips.SearchMode,
+                    ButtonToolTips.SearchMode_JEI_AutoClear.text());
             registerApp(Icon.SEARCH_REI, Settings.SEARCH_MODE, SearchBoxMode.REI,
                     ButtonToolTips.SearchMode,
                     ButtonToolTips.SearchMode_REI.text());
+            registerApp(Icon.SEARCH_REI_AUTO_CLEAR, Settings.SEARCH_MODE, SearchBoxMode.REI_AUTO_CLEAR,
+                    ButtonToolTips.SearchMode,
+                    ButtonToolTips.SearchMode_REI_AutoClear.text());
 
             registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
                     ButtonToolTips.TerminalStyle,

@@ -6,7 +6,7 @@ import mezz.jei.api.runtime.IJeiRuntime;
 
 import appeng.integration.abstraction.IJEI;
 
-class JeiRuntimeAdapter implements IJEI {
+public class JeiRuntimeAdapter implements IJEI {
 
     private final IJeiRuntime runtime;
 
@@ -19,7 +19,6 @@ class JeiRuntimeAdapter implements IJEI {
         return true;
     }
 
-    @Override
     public IJeiRuntime getRuntime() {
         return runtime;
     }
@@ -27,5 +26,10 @@ class JeiRuntimeAdapter implements IJEI {
     @Override
     public String getSearchText() {
         return Strings.nullToEmpty(this.runtime.getIngredientFilter().getFilterText());
+    }
+
+    @Override
+    public void setSearchText(String text) {
+        this.runtime.getIngredientFilter().setFilterText(text);
     }
 }
