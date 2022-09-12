@@ -112,6 +112,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private int currentMouseX = 0;
     private int currentMouseY = 0;
     private final Scrollbar scrollbar;
+    private boolean firstInit = true;
 
     public MEStorageScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -332,6 +333,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             this.searchField.setValue(memoryText);
             this.searchField.selectAll();
             setSearchText(memoryText);
+        }
+
+        if (firstInit) { // Avoid clearing again on resize, layout change, etc...
+            Platform.clearExternalSearchTextIfNeeded(searchMode);
+            firstInit = false;
         }
 
         this.updateScrollbar();

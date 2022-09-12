@@ -18,8 +18,6 @@
 
 package appeng.integration.abstraction;
 
-import mezz.jei.api.runtime.IJeiRuntime;
-
 /**
  * Abstracts access to the JEI API functionality.
  */
@@ -28,12 +26,11 @@ public interface IJEI {
         return false;
     }
 
-    default IJeiRuntime getRuntime() {
-        return null;
-    }
-
     default String getSearchText() {
         return "";
+    }
+
+    default void setSearchText(String text) {
     }
 
     class Stub implements IJEI {

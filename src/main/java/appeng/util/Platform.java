@@ -495,21 +495,29 @@ public class Platform {
     }
 
     public static boolean isSearchModeAvailable(SearchBoxMode mode) {
-        if (mode == SearchBoxMode.JEI) {
+        if (mode == SearchBoxMode.JEI || mode == SearchBoxMode.JEI_AUTO_CLEAR) {
             return JEIFacade.instance().isEnabled();
-        } else if (mode == SearchBoxMode.REI) {
+        } else if (mode == SearchBoxMode.REI || mode == SearchBoxMode.REI_AUTO_CLEAR) {
             return REIFacade.instance().isEnabled();
         }
         return true;
     }
 
     public static String getExternalSearchText(SearchBoxMode mode) {
-        if (mode == SearchBoxMode.JEI) {
+        if (mode == SearchBoxMode.JEI || mode == SearchBoxMode.JEI_AUTO_CLEAR) {
             return Strings.nullToEmpty(JEIFacade.instance().getSearchText());
-        } else if (mode == SearchBoxMode.REI) {
+        } else if (mode == SearchBoxMode.REI || mode == SearchBoxMode.REI_AUTO_CLEAR) {
             return Strings.nullToEmpty(REIFacade.instance().getSearchText());
         } else {
             return "";
+        }
+    }
+
+    public static void clearExternalSearchTextIfNeeded(SearchBoxMode mode) {
+        if (mode == SearchBoxMode.JEI_AUTO_CLEAR) {
+            JEIFacade.instance().setSearchText("");
+        } else if (mode == SearchBoxMode.REI_AUTO_CLEAR) {
+            REIFacade.instance().setSearchText("");
         }
     }
 

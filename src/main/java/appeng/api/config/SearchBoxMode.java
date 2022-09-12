@@ -29,7 +29,9 @@ public enum SearchBoxMode {
     AUTO_FOCUS(false, true, false),
     AUTO_FOCUS_AND_REMEMBER_SEARCH(true, true, false),
     JEI(false, false, true),
-    REI(false, false, true);
+    JEI_AUTO_CLEAR(false, false, true),
+    REI(false, false, true),
+    REI_AUTO_CLEAR(false, false, true);
 
     private final boolean rememberSearch;
 

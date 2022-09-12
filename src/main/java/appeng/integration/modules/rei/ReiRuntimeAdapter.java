@@ -48,4 +48,11 @@ class ReiRuntimeAdapter implements IREI {
         return Strings.nullToEmpty(searchField.getText());
     }
 
+    @Override
+    public void setSearchText(String text) {
+        var searchField = this.runtime.getSearchTextField();
+        if (searchField != null) {
+            searchField.setText(text);
+        }
+    }
 }
