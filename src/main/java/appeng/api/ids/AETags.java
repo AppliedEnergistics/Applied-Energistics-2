@@ -78,7 +78,8 @@ public final class AETags {
 
     /**
      * Crystal growth accelerators will trigger additional random ticks for blocks in that tag, regardless of what the
-     * blocks are. By default, includes budding amethyst and the various budding certus quartz blocks.
+     * blocks are. By default, includes {@code c:budding_blocks} / {@code forge:budding} which includes budding amethyst
+     * and the various budding certus quartz blocks.
      */
     public static final TagKey<Block> GROWTH_ACCELERATABLE = blockTag("ae2:growth_acceleratable");
 

@@ -120,11 +120,6 @@ public final class ConventionTags {
     public static TagKey<Biome> METEORITE_OCEAN = ConventionalBiomeTags.OCEAN;
 
     /**
-     * Indicates biomes that quartz ore generates in.
-     */
-    public static TagKey<Biome> HAS_QUARTZ_ORE = biomeTag("ae2:has_quartz_ore");
-
-    /**
      * Used to identify items that act as wrenches.
      */
     public static final TagKey<Item> WRENCH = tag("c:wrenches");
@@ -137,6 +132,8 @@ public final class ConventionTags {
     public static final TagKey<Block> STAINED_GLASS_BLOCK = blockTag("c:stained_glass");
 
     public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
+
+    public static final TagKey<Block> BUDDING_BLOCKS = blockTag("c:budding_blocks");
 
     public static TagKey<Item> dye(DyeColor color) {
         return DYES.get(color);
