@@ -298,9 +298,11 @@ public class CraftingRecipes extends AE2RecipeProvider {
         ShapedRecipeBuilder.shaped(AEBlocks.CRANK)
                 .pattern("aaa")
                 .pattern("  a")
-                .pattern("  a")
+                .pattern("  b")
                 .define('a', ConventionTags.WOOD_STICK)
+                .define('b', ConventionTags.COPPER_INGOT)
                 .unlockedBy("has_stick", has(ConventionTags.WOOD_STICK))
+                .unlockedBy("has_copper_ingot", has(ConventionTags.COPPER_INGOT))
                 .save(consumer, AppEng.makeId("network/blocks/crank"));
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_GROWTH_ACCELERATOR)
                 .pattern("aba")
