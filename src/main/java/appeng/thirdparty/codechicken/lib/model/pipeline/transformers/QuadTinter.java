@@ -29,18 +29,21 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
  */
 public class QuadTinter implements RenderContext.QuadTransform {
 
-    private int tint;
+    private int abgr;
 
     QuadTinter() {
         super();
     }
 
-    public QuadTinter(int tint) {
-        this.tint = tint | 0xFF000000;
+    public QuadTinter(int rgb) {
+        this.abgr = 0xFF << 24 |
+                ((rgb & 0xFF) << 16) |
+                (rgb & 0xFF00) |
+                ((rgb >> 16) & 0xFF);
     }
 
-    public QuadTinter setTint(int tint) {
-        this.tint = tint;
+    public QuadTinter setTint(int abgr) {
+        this.abgr = abgr;
         return this;
     }
 
@@ -50,7 +53,7 @@ public class QuadTinter implements RenderContext.QuadTransform {
         quad.colorIndex(-1);
         for (int i = 0; i < 4; i++) {
             int color = quad.spriteColor(i, 0);
-            color = ColorHelper.multiplyColor(color, tint);
+            color = ColorHelper.multiplyColor(color, abgr);
             quad.spriteColor(i, 0, color);
         }
         return true;
