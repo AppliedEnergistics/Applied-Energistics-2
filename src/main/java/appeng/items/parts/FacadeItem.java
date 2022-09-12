@@ -70,7 +70,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
 
         var facade = createPartFromItemStack(stack, context.getClickedFace());
         if (facade == null || !placeFacade(facade, level, pos)) {
-            return InteractionResult.FAIL;
+            return InteractionResult.PASS;
         }
 
         if (!level.isClientSide && player != null && !player.isCreative()) {
