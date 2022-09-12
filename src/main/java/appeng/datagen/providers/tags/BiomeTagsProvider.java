@@ -31,7 +31,6 @@ public class BiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvider
 
     @Override
     protected void addTags() {
-        tag(ConventionTags.HAS_QUARTZ_ORE).addOptionalTag(ConventionalBiomeTags.IN_OVERWORLD.location());
         tag(MeteoriteStructure.BIOME_TAG_KEY).addOptionalTag(ConventionalBiomeTags.IN_OVERWORLD.location());
     }
 }
