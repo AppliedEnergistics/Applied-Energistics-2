@@ -84,6 +84,7 @@ import appeng.parts.PartModel;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.parts.automation.UpgradeablePart;
 import appeng.util.ConfigInventory;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -298,23 +299,26 @@ public class StorageBusPart extends UpgradeablePart
         MEStorage foundMonitor = null;
         Map<AEKeyType, MEStorage> foundExternalApi = Collections.emptyMap();
 
-        // Prioritize a handler to directly link to another ME network
-        var accessor = adjacentStorageAccessor.find();
+        // If the target position is not ticking, don't search for a target.
+        if (Platform.areBlockEntitiesTicking(getLevel(), getBlockEntity().getBlockPos().relative(getSide()))) {
+            // Prioritize a handler to directly link to another ME network
+            IStorageMonitorableAccessor accessor = adjacentStorageAccessor.find();
 
-        if (accessor != null) {
-            var inventory = accessor.getInventory(this.source);
-            if (inventory != null) {
-                foundMonitor = inventory;
+            if (accessor != null) {
+                var inventory = accessor.getInventory(this.source);
+                if (inventory != null) {
+                    foundMonitor = inventory;
+                }
+
+                // So this could / can be a design decision. If the block entity does support our custom capability,
+                // but it does not return an inventory for the action source, we do NOT fall back to using the external
+                // API, as that might circumvent the security settings, and might also cause performance issues.
+            } else {
+                // Query all available external APIs
+                // TODO: If a filter is configured, we might want to only query external APIs for compatible key spaces
+                foundExternalApi = new IdentityHashMap<>(2);
+                findExternalStorages(foundExternalApi);
             }
-
-            // So this could / can be a design decision. If the block entity does support our custom capability,
-            // but it does not return an inventory for the action source, we do NOT fall back to using the external
-            // API, as that might circumvent the security settings, and might also cause performance issues.
-        } else {
-            // Query all available external APIs
-            // TODO: If a filter is configured, we might want to only query external APIs for compatible key spaces
-            foundExternalApi = new IdentityHashMap<>(2);
-            findExternalStorages(foundExternalApi);
         }
 
         if (!forceFullUpdate && this.handler.getDelegate() instanceof CompositeStorage compositeStorage
