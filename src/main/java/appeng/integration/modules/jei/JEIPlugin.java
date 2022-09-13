@@ -42,6 +42,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.core.FacadeCreativeTab;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -208,7 +209,7 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerAdvanced(IAdvancedRegistration registration) {
-        if (AEConfig.instance().isEnableFacadesInJEI()) {
+        if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
             FacadeItem itemFacade = AEItems.FACADE.asItem();
             ItemStack cableAnchor = AEParts.CABLE_ANCHOR.stack();
             registration.addRecipeManagerPlugin(new FacadeRegistryPlugin(itemFacade, cableAnchor));
@@ -256,6 +257,11 @@ public class JEIPlugin implements IModPlugin {
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
         JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
         this.hideDebugTools(jeiRuntime);
+
+        if (!AEConfig.instance().isEnableFacadesInJEI()) {
+            jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
+                    FacadeCreativeTab.getSubTypes());
+        }
     }
 
     private void hideDebugTools(IJeiRuntime jeiRuntime) {
