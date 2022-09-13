@@ -48,6 +48,20 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         // Provide empty blacklist tags
         tag(AETags.ANNIHILATION_PLANE_ITEM_BLACKLIST);
 
+        // Only provide amethyst in the budding tag since that's the one we use; the other tags are for other mods
+        tag(ConventionTags.BUDDING_BLOCKS)
+                .add(Items.BUDDING_AMETHYST)
+                .add(AEBlocks.FLAWLESS_BUDDING_QUARTZ.asItem())
+                .add(AEBlocks.FLAWED_BUDDING_QUARTZ.asItem())
+                .add(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem())
+                .add(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem());
+        tag(ConventionTags.BUDS)
+                .add(AEBlocks.SMALL_QUARTZ_BUD.asItem())
+                .add(AEBlocks.MEDIUM_QUARTZ_BUD.asItem())
+                .add(AEBlocks.LARGE_QUARTZ_BUD.asItem());
+        tag(ConventionTags.CLUSTERS)
+                .add(AEBlocks.QUARTZ_CLUSTER.asItem());
+
         tag(ConventionTags.CERTUS_QUARTZ_DUST)
                 .add(AEItems.CERTUS_QUARTZ_DUST.asItem());
         tag(ConventionTags.ENDER_PEARL_DUST)

@@ -114,6 +114,14 @@ public final class ConventionTags {
     public static TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
     public static TagKey<Item> MEMORY_CARDS = tag("ae2:memory_cards");
 
+    // Budding stuff
+    public static final TagKey<Item> BUDDING_BLOCKS = tag("c:budding_blocks");
+    public static final TagKey<Item> BUDS = tag("c:buds");
+    public static final TagKey<Item> CLUSTERS = tag("c:clusters");
+    public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = blockTag("c:budding_blocks");
+    public static final TagKey<Block> BUDS_BLOCKS = blockTag("c:buds");
+    public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("c:clusters");
+
     /**
      * For Worldgen Biomes
      */
@@ -132,8 +140,6 @@ public final class ConventionTags {
     public static final TagKey<Block> STAINED_GLASS_BLOCK = blockTag("c:stained_glass");
 
     public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
-
-    public static final TagKey<Block> BUDDING_BLOCKS = blockTag("c:budding_blocks");
 
     public static TagKey<Item> dye(DyeColor color) {
         return DYES.get(color);

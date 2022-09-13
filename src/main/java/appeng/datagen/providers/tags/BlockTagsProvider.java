@@ -51,14 +51,22 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                         AEBlocks.QUARTZ_GLASS.block(),
                         AEBlocks.QUARTZ_VIBRANT_GLASS.block())
                 .addTag(ConventionTags.STAINED_GLASS_BLOCK);
-        tag(ConventionTags.BUDDING_BLOCKS)
+        tag(AETags.GROWTH_ACCELERATABLE)
+                .addTag(ConventionTags.BUDDING_BLOCKS_BLOCKS);
+
+        // Only provide amethyst in the budding tag since that's the one we use; the other tags are for other mods
+        tag(ConventionTags.BUDDING_BLOCKS_BLOCKS)
                 .add(Blocks.BUDDING_AMETHYST)
                 .add(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block())
                 .add(AEBlocks.FLAWED_BUDDING_QUARTZ.block())
                 .add(AEBlocks.CHIPPED_BUDDING_QUARTZ.block())
                 .add(AEBlocks.DAMAGED_BUDDING_QUARTZ.block());
-        tag(AETags.GROWTH_ACCELERATABLE)
-                .addTag(ConventionTags.BUDDING_BLOCKS);
+        tag(ConventionTags.BUDS_BLOCKS)
+                .add(AEBlocks.SMALL_QUARTZ_BUD.block())
+                .add(AEBlocks.MEDIUM_QUARTZ_BUD.block())
+                .add(AEBlocks.LARGE_QUARTZ_BUD.block());
+        tag(ConventionTags.CLUSTERS_BLOCKS)
+                .add(AEBlocks.QUARTZ_CLUSTER.block());
 
         tag(ConventionTags.CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK)
                 .add(AEBlocks.QUARTZ_BLOCK.block());
