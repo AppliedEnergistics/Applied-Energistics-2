@@ -5,7 +5,7 @@ import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIG
 import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -127,7 +127,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
             }
         }
 
-        var result = new HashMap<Integer, Ingredient>(ingredients.size());
+        var result = new LinkedHashMap<Integer, Ingredient>(ingredients.size());
         for (int i = 0; i < ingredients.size(); i++) {
             var guiSlot = getCraftingIndex(i, width, height);
             var ingredient = ingredients.get(i);
