@@ -118,7 +118,9 @@ public class ReiPlugin implements REIClientPlugin {
 
         registerDescriptions(registry);
 
-        registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
+        if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
+            registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
+        }
 
         // Add displays for charged quartz transformation
         for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
