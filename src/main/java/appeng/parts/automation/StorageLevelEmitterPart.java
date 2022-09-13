@@ -194,6 +194,13 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
     }
 
     @Override
+    protected void onReportingValueChanged() {
+        // Since we stop iteration below once lastReportedValue > reportingValue, we must recompute lastReportedValue if
+        // reportingValue is updated.
+        getMainNode().ifPresent(this::updateReportingValue);
+    }
+
+    @Override
     protected void configureWatchers() {
         var myStack = getConfiguredKey();
 
@@ -238,6 +245,10 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
             this.lastReportedValue = 0;
             for (var st : stacks) {
                 this.lastReportedValue += st.getLongValue();
+                if (this.lastReportedValue > this.getReportingValue()) {
+                    // Stop here, we have enough info! This prevents blank emitter spam from causing lots of lag.
+                    break;
+                }
             }
         } else if (isUpgradedWith(AEItems.FUZZY_CARD)) {
             this.lastReportedValue = 0;
@@ -245,6 +256,10 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
             var fuzzyList = stacks.findFuzzy(myStack, fzMode);
             for (var st : fuzzyList) {
                 this.lastReportedValue += st.getLongValue();
+                if (this.lastReportedValue > this.getReportingValue()) {
+                    // Stop here, we have enough info!
+                    break;
+                }
             }
         } else {
             this.lastReportedValue = stacks.get(myStack);

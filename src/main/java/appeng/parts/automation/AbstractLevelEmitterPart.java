@@ -86,7 +86,11 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
 
     public final void setReportingValue(long v) {
         this.reportingValue = v;
+        onReportingValueChanged();
         this.updateState();
+    }
+
+    protected void onReportingValueChanged() {
     }
 
     @Override
@@ -182,7 +186,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     @Override
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
-        reportingValue = input.getLong("reportingValue");
+        setReportingValue(input.getLong("reportingValue"));
     }
 
     @Override
