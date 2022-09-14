@@ -169,6 +169,12 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     protected final void repositionSlots(SlotSemantic semantic) {
         var position = style.getSlots().get(semantic.id());
 
+        if (position.isHidden()) {
+            menu.hideSlot(semantic.id());
+            setSlotsHidden(semantic, true);
+            return;
+        }
+
         var slots = menu.getSlots(semantic);
         for (int i = 0; i < slots.size(); i++) {
             Slot slot = slots.get(i);
