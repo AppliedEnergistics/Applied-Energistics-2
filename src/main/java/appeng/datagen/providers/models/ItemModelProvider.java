@@ -39,7 +39,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         }
 
         builtInItemModel("facade");
-        builtInItemModel("sky_compass");
+        builtInItemModel("meteorite_compass");
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");

@@ -16,7 +16,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.recipes.handlers.ChargerRecipeSerializer;
 
@@ -30,7 +29,7 @@ public class ChargerRecipes extends AE2RecipeProvider {
 
         charge(consumer, "charged_certus_quartz_crystal", AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(),
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
-        charge(consumer, "sky_compass", Items.COMPASS, AEBlocks.SKY_COMPASS.asItem());
+        charge(consumer, "meteorite_compass", Items.COMPASS, AEItems.METEORITE_COMPASS.asItem());
     }
 
     private void charge(Consumer<FinishedRecipe> consumer, String name, Item input, Item output) {

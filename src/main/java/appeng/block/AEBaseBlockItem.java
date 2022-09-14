@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.Block;
 import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.misc.LightDetectorBlock;
-import appeng.block.misc.SkyCompassBlock;
 import appeng.block.networking.WirelessBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 
@@ -88,7 +87,7 @@ public class AEBaseBlockItem extends BlockItem {
                 } else {
                     forward = Direction.UP;
                 }
-            } else if (this.blockType instanceof WirelessBlock || this.blockType instanceof SkyCompassBlock) {
+            } else if (this.blockType instanceof WirelessBlock) {
                 forward = side;
                 if (forward == Direction.UP || forward == Direction.DOWN) {
                     up = Direction.SOUTH;

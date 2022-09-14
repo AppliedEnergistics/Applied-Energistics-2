@@ -34,7 +34,6 @@ import appeng.client.render.tesr.CrankRenderer;
 import appeng.client.render.tesr.DriveLedBlockEntityRenderer;
 import appeng.client.render.tesr.InscriberTESR;
 import appeng.client.render.tesr.SkyChestTESR;
-import appeng.client.render.tesr.SkyCompassTESR;
 import appeng.client.render.tesr.SkyStoneTankBlockEntityRenderer;
 import appeng.core.definitions.AEBlockEntities;
 
@@ -55,7 +54,6 @@ public final class InitBlockEntityRenderers {
         register(AEBlockEntities.CRAFTING_MONITOR, CraftingMonitorRenderer::new);
         register(AEBlockEntities.MOLECULAR_ASSEMBLER, MolecularAssemblerRenderer::new);
         register(AEBlockEntities.CABLE_BUS, CableBusTESR::new);
-        register(AEBlockEntities.SKY_COMPASS, SkyCompassTESR::new);
         register(AEBlockEntities.SKY_STONE_TANK, SkyStoneTankBlockEntityRenderer::new);
 
     }

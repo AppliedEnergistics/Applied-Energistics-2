@@ -41,7 +41,7 @@ import appeng.client.render.model.ColorApplicatorModel;
 import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.GlassModel;
 import appeng.client.render.model.MemoryCardModel;
-import appeng.client.render.model.SkyCompassModel;
+import appeng.client.render.model.MeteoriteCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PlaneModel;
@@ -54,8 +54,7 @@ public final class InitBuiltInModels {
     public static void init() {
         addBuiltInModel("block/cable_bus", CableBusModel::new);
         addBuiltInModel("block/quartz_glass", GlassModel::new);
-        addBuiltInModel("block/sky_compass", SkyCompassModel::new);
-        addBuiltInModel("item/sky_compass", SkyCompassModel::new);
+        addBuiltInModel("item/meteorite_compass", MeteoriteCompassModel::new);
         for (AEColor color : AEColor.values()) {
             String builtInItemModelName = "memory_card"
                     + (color != AEColor.TRANSPARENT ? ("_" + color.registryPrefix) : "");

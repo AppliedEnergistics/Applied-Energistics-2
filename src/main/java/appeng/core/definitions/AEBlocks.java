@@ -63,7 +63,6 @@ import appeng.block.misc.LightDetectorBlock;
 import appeng.block.misc.QuartzFixtureBlock;
 import appeng.block.misc.QuartzGrowthAcceleratorBlock;
 import appeng.block.misc.SecurityStationBlock;
-import appeng.block.misc.SkyCompassBlock;
 import appeng.block.misc.TinyTNTBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.CableBusBlock;
@@ -154,7 +153,6 @@ public final class AEBlocks {
     public static final BlockDefinition<SkyStoneTankBlock> SKY_STONE_TANK = block("Sky Stone Tank", AEBlockIds.SKY_STONE_TANK, () -> new SkyStoneTankBlock(SKY_STONE_CHEST_PROPS));
 
 
-    public static final BlockDefinition<SkyCompassBlock> SKY_COMPASS = block("Meteorite Compass", AEBlockIds.SKY_COMPASS, () -> new SkyCompassBlock(defaultProps(Material.DECORATION)));
     public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.METAL).noOcclusion()));
     public static final BlockDefinition<WirelessBlock> WIRELESS_ACCESS_POINT = block("ME Wireless Access Point", AEBlockIds.WIRELESS_ACCESS_POINT, WirelessBlock::new);
     public static final BlockDefinition<ChargerBlock> CHARGER = block("Charger", AEBlockIds.CHARGER, ChargerBlock::new);
