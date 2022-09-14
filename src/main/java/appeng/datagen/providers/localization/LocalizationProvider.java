@@ -135,8 +135,8 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("key.ae2.portable_item_cell", "Open Portable Item Cell");
         add("key.ae2.wireless_terminal", "Open Wireless Terminal");
         add("key.toggle_focus.desc", "Toggle search box focus");
-        add("patchouli.ae2.guidebook_name", "ME Catalog");
-        add("patchouli.ae2.guidebook_landingtext", "Catalog of items for Applied Energistics 2.$(br2)This is more or less an in-game version of the $(l:https://ae-mod.info/)official wiki$(/l)");
+        add("patchouli.ae2.guidebook_name", "ME Guidebook (WIP)");
+        add("patchouli.ae2.guidebook_landingtext", "This is a work-in-progress guidebook for Applied Energistics 2.$(br2)More information about the mod can be found on the existing $(l:https://appliedenergistics.github.io/)official wiki$(/l)");
         add("stat.ae2.items_extracted", "Items extracted from ME Storage");
         add("stat.ae2.items_inserted", "Items added to ME Storage");
         add("theoneprobe.ae2.channels", "%1$d Channels");

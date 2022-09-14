@@ -1,0 +1,16 @@
+{
+  "name": "Meteorites & Compass",
+  "category": "ae2:getting_started",
+  "icon": "ae2:sky_compass",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(thing)Meteorites$() can normally be found all across the $(thing)Overworld$(). They are known to contain $(l:ae2:getting_started/certus)Certus Quartz$(/l) and a $(thing)Sky Stone Chest$() containing $(l:ae2:getting_started/inscriber#presses)Inscriber Presses.$() The main bulk of $(thing)Meteorites$() is made of $(item)Sky Stone$(), which can be mined, albeit slowly, with an $(item)Iron Pickaxe$().$(br2)The easiest way to find a Meteorite is to use a $(thing)Meteorite$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(thing)Compass$(), which will point to the nearest $(thing)Chunk$() with $(thing)Sky Stone$() in it.$(br2)The $(thing)Compass$() is crafted by putting a normal $(item)Compass$() in a powered $(l:ae2:getting_started/charger)Charger$().$(br2)The $(thing)Compass$() will spin quickly if you are standing in a $(item)Chunk$() with $(thing)Sky Stone$() in it.  It will spin slowly if it is not able to find any $(thing)Sky Stone$() within range."
+    }
+  ]
+}

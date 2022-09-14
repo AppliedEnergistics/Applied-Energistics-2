@@ -1,0 +1,17 @@
+{
+  "name": "Charger",
+  "category": "ae2:getting_started",
+  "icon": "ae2:charger",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(thing)Charger$() is used to charge $(l:ae2:catalog/chargable)various AE2 items$(/l), and for some crafting.  Notably it is used to craft the $(l:ae2:getting_started/compass)Meteorite Compass$(/l) and $(l:ae2:getting_started/certus#charged)Charged Certus Quartz$(/l).$(br2)The $(thing)Charger$() accepts most $(l:ae2:concepts/ae_power)external forms of power$(/l), or can be powered manually using a $(thing)Wooden Crank$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "ae2:network/blocks/crystal_processing_charger",
+      "recipe2": "ae2:network/blocks/crank"
+    }
+  ]
+}
