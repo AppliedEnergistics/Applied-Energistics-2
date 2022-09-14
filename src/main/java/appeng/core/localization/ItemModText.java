@@ -33,7 +33,7 @@ public enum ItemModText implements LocalizationEnum {
     FULLY_GROWN_BUDS_DROP_CRYSTALS("A fully grown quartz bud drops crystals."),
     FORTUNE_APPLIES("Fortune enchantment applies"),
     IMPERFECT_BUDDING_QUARTZ_DECAYS("Imperfect budding quartz has a chance to decay when buds grow."),
-    DECAY_CHANCE("%d chance"),
+    DECAY_CHANCE("%d%% chance"),
     BUDDING_QUARTZ_DECAYS_WHEN_BROKEN("Budding quartz decays into quartz when broken."),
     SILK_TOUCH_CAUSES_LESS_DECAY("Silk touch causes less decay"),
     SPATIAL_IO_CAUSES_NONE("Spatial I/O causes none"),
