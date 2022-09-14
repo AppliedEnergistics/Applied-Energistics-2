@@ -117,6 +117,8 @@ public final class AEBlocks {
             p4) -> false;
     private static final Properties SKY_STONE_CHEST_PROPS = defaultProps(Material.STONE)
             .strength(5, 150).noOcclusion();
+    private static final Properties MYSTERIOUS_CUBE_PROPS = defaultProps(Material.METAL).strength(10, 1000)
+            .noOcclusion();
 
     // spotless:off
     public static final BlockDefinition<BuddingCertusQuartzBlock> FLAWLESS_BUDDING_QUARTZ = block("Flawless Budding Certus Quartz", AEBlockIds.FLAWLESS_BUDDING_QUARTZ, () -> new BuddingCertusQuartzBlock(QUARTZ_PROPERTIES.randomTicks()));
@@ -151,7 +153,7 @@ public final class AEBlocks {
     public static final BlockDefinition<SkyChestBlock> SMOOTH_SKY_STONE_CHEST = block("Sky Stone Block Chest", AEBlockIds.SMOOTH_SKY_STONE_CHEST, () -> new SkyChestBlock(SkyChestBlock.SkyChestType.BLOCK, SKY_STONE_CHEST_PROPS));
 
     public static final BlockDefinition<SkyStoneTankBlock> SKY_STONE_TANK = block("Sky Stone Tank", AEBlockIds.SKY_STONE_TANK, () -> new SkyStoneTankBlock(SKY_STONE_CHEST_PROPS));
-
+    public static final BlockDefinition<AEDecorativeBlock> MYSTERIOUS_CUBE = block("Mysterious Cube", AEBlockIds.MYSTERIOUS_CUBE, () -> new AEDecorativeBlock(MYSTERIOUS_CUBE_PROPS));
 
     public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.METAL).noOcclusion()));
     public static final BlockDefinition<WirelessBlock> WIRELESS_ACCESS_POINT = block("ME Wireless Access Point", AEBlockIds.WIRELESS_ACCESS_POINT, WirelessBlock::new);

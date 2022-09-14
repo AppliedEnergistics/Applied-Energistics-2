@@ -113,6 +113,7 @@ public final class ConventionTags {
     public static TagKey<Item> QUARTZ_KNIFE = tag("ae2:knife");
     public static TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
     public static TagKey<Item> MEMORY_CARDS = tag("ae2:memory_cards");
+    public static TagKey<Item> INSCRIBER_PRESSES = tag("ae2:inscriber_presses");
 
     // Budding stuff
     public static final TagKey<Item> BUDDING_BLOCKS = tag("c:budding_blocks");

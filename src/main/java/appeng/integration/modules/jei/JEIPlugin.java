@@ -196,6 +196,8 @@ public class JEIPlugin implements IModPlugin {
                 GuiText.inWorldCraftingPresses.text());
         this.addDescription(registry, AEItems.ENGINEERING_PROCESSOR_PRESS,
                 GuiText.inWorldCraftingPresses.text());
+        this.addDescription(registry, AEItems.SILICON_PRESS,
+                GuiText.inWorldCraftingPresses.text());
 
         if (AEConfig.instance().isInWorldSingularityEnabled()) {
             this.addDescription(registry, AEItems.QUANTUM_ENTANGLED_SINGULARITY, GuiText.inWorldSingularity.text());

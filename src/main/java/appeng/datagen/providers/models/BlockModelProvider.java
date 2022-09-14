@@ -93,6 +93,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         spatialAnchor();
         patternProvider();
         ioPorts();
+        simpleBlockAndItem(AEBlocks.MYSTERIOUS_CUBE, models().getExistingFile(makeId("block/mysterious_cube")));
     }
 
     private void vibrationChamber() {

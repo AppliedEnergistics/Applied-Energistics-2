@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.LevelAccessor;
@@ -36,10 +35,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.BlockDefinition;
 import appeng.worldgen.meteorite.fallout.Fallout;
 import appeng.worldgen.meteorite.fallout.FalloutCopy;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
@@ -53,8 +49,6 @@ public final class MeteoritePlacer {
         placer.place();
     }
 
-    private static final ResourceLocation METEORITE_CHEST_LOOTTABLE = AppEng.makeId("chests/meteorite");
-    private final BlockDefinition<?> skyChestDefinition;
     private final BlockState skyStone;
     private final List<BlockState> quartzBlocks;
     private final List<BlockState> quartzBuds;
@@ -94,7 +88,6 @@ public final class MeteoritePlacer {
         double realCrater = this.meteoriteSize * 2 + 5;
         this.crater = realCrater * realCrater;
 
-        this.skyChestDefinition = AEBlocks.SKY_STONE_CHEST;
         this.quartzBlocks = Stream.of(
                 AEBlocks.QUARTZ_BLOCK,
                 AEBlocks.DAMAGED_BUDDING_QUARTZ,
@@ -216,11 +209,7 @@ public final class MeteoritePlacer {
 
     private void placeChest() {
         if (AEConfig.instance().isSpawnPressesInMeteoritesEnabled()) {
-            this.putter.put(level, pos, this.skyChestDefinition.block().defaultBlockState());
-
-            level.getBlockEntity(pos, AEBlockEntities.SKY_CHEST).ifPresent(chest -> {
-                chest.setLootTable(METEORITE_CHEST_LOOTTABLE, random.nextLong());
-            });
+            this.putter.put(level, pos, AEBlocks.MYSTERIOUS_CUBE.block().defaultBlockState());
         }
     }
 
