@@ -27,6 +27,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import org.joml.Vector3f;
 
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
@@ -83,7 +84,7 @@ class CellLedRenderer {
     public static final RenderType RENDER_LAYER = RenderType.create("ae_drive_leds",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 32565, false, true,
             RenderType.CompositeState.builder()
-                    .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                    .setShaderState(new RenderStateShard.ShaderStateShard(GameRenderer::getPositionColorShader))
                     .createCompositeState(false));
 
     public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, PoseStack ms,

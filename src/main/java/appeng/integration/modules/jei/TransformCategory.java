@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.fabric.constants.FabricTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -127,7 +127,7 @@ public class TransformCategory extends ViewBasedCategory<TransformRecipe> {
                         slot.addFluidStack(fluid, fluidHelper.bucketVolume());
                     }
 
-                    slot.setCustomRenderer(FabricTypes.FLUID_STACK, fluidRenderer);
+                    slot.setCustomRenderer(ForgeTypes.FLUID_STACK, fluidRenderer);
                 } else if (recipe.circumstance.isExplosion()) {
                     builder.addSlot(RecipeIngredientRole.CATALYST, 55 + 1, yOffset + 1)
                             .setSlotName("explosion")

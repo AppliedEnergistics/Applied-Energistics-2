@@ -42,14 +42,14 @@ public final class MockResourceManager {
 
     public static ReloadableResourceManager create() {
 
-        var testResourceBasePath = AppEng.class.getResource("/fabric.mod.json");
+        var testResourceBasePath = AppEng.class.getResource("/META-INF/mods.toml");
         if (testResourceBasePath == null) {
             throw new IllegalStateException("Couldn't find root of assets");
         }
 
         Path assetRootPath;
         try {
-            assetRootPath = Paths.get(testResourceBasePath.toURI()).getParent();
+            assetRootPath = Paths.get(testResourceBasePath.toURI()).getParent().getParent();
         } catch (Exception e) {
             throw new IllegalStateException(
                     "Failed to convert asset root to a path on disk. (" + testResourceBasePath + ")");
