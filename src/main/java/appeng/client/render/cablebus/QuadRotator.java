@@ -24,12 +24,12 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.Direction;
 
 import appeng.client.render.FacingToRotation;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired

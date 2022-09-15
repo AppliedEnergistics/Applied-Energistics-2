@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {
@@ -25,9 +25,9 @@ public final class CraftingRecipeUtil {
 
         // shaped recipes can be smaller than 3x3, expand to 3x3 to match the crafting
         // matrix
-        if (recipe instanceof ShapedRecipe shapedRecipe) {
-            var width = shapedRecipe.getWidth();
-            var height = shapedRecipe.getHeight();
+        if (recipe instanceof IShapedRecipe<?>shapedRecipe) {
+            var width = shapedRecipe.getRecipeWidth();
+            var height = shapedRecipe.getRecipeHeight();
             Preconditions.checkArgument(width <= 3 && height <= 3);
 
             for (var h = 0; h < height; h++) {

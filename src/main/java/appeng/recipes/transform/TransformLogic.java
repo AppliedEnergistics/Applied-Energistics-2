@@ -7,14 +7,16 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
@@ -105,20 +107,23 @@ public final class TransformLogic {
         return ret;
     }
 
-    static {
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> transformableItemsCache = null);
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
-            if (success) {
-                transformableItemsCache = null;
-            }
-        });
-        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-            if (client) {
-                // a bit cheesy, but probably fine (technically we should be listening for recipes, not tags)
-                // TODO: PR client recipe load callback to fabric
-                transformableItemsCache = null;
-            }
-        });
+    public static void resetCache() {
+        transformableItemsCache = null;
+    }
+
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent e) {
+        transformableItemsCache = null;
+    }
+
+    @SubscribeEvent
+    public static void onReloadServerResources(AddReloadListenerEvent e) {
+        transformableItemsCache = null;
+    }
+
+    @SubscribeEvent
+    public static void onClientRecipesUpdated(RecipesUpdatedEvent e) {
+        transformableItemsCache = null;
     }
 
     private TransformLogic() {

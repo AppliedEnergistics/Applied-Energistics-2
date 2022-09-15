@@ -29,6 +29,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IMonitorPart;
@@ -37,6 +38,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.client.render.model.AEModelData;
 import appeng.parts.AEBasePart;
 import appeng.util.InteractionUtil;
 
@@ -215,8 +217,10 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return new ReportingModelData(getSpin());
+    public ModelData getModelData() {
+        return ModelData.builder()
+                .with(AEModelData.SPIN, getSpin())
+                .build();
     }
 
     public final int getClientFlags() {

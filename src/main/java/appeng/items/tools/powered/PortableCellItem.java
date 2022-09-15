@@ -23,8 +23,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -39,11 +37,14 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -204,7 +205,7 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
@@ -280,9 +281,8 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
-            ItemStack newStack) {
-        return false;
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
     }
 
     /**
@@ -387,7 +387,7 @@ public class PortableCellItem extends AEBasePoweredItem
                 if (insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.SIMULATE) == fluidStack
                         .amount()) {
                     var extracted = FluidContainerHelper.extractFromCarried(player, (AEFluidKey) fluidStack.what(),
-                            fluidStack.amount(), stack);
+                            fluidStack.amount(), other);
                     if (extracted > 0) {
                         insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
                         FluidSoundHelper.playEmptySound(player, (AEFluidKey) fluidStack.what());
