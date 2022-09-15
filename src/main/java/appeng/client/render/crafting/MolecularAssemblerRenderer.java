@@ -21,8 +21,6 @@ package appeng.client.render.crafting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -36,17 +34,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
 
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerBlockEntity> {
 
     public static final ResourceLocation LIGHTS_MODEL = AppEng.makeId("block/molecular_assembler_lights");
@@ -82,12 +82,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
     private void renderPowerLight(PoseStack ms, MultiBufferSource bufferIn, int combinedLightIn,
             int combinedOverlayIn) {
         Minecraft minecraft = Minecraft.getInstance();
-        BakedModel lightsModel = minecraft.getModelManager().bakedRegistry.get(LIGHTS_MODEL);
-        if (lightsModel == null) {
-            AELog.warn("Lights model missing");
-            return;
-        }
-
+        BakedModel lightsModel = minecraft.getModelManager().getModel(LIGHTS_MODEL);
         // tripwire layer has the shader-property we're looking for:
         // alpha testing
         // translucency
@@ -95,7 +90,7 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
 
         // certainly doesn't use alpha testing, making it look like it will not work.
         minecraft.getBlockRenderer().getModelRenderer().renderModel(ms.last(), buffer, null,
-                lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn);
+                lightsModel, 1, 1, 1, combinedLightIn, combinedOverlayIn, ModelData.EMPTY, null);
     }
 
     private void renderStatus(MolecularAssemblerBlockEntity molecularAssembler, PoseStack ms,
