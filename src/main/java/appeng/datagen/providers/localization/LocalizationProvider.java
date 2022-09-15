@@ -110,7 +110,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("commands.ae2.permissions", "You do not have adequate permissions to run this command.");
         add("commands.ae2.usage",
                 "Commands provided by Applied Energistics 2 - use /ae2 list for a list, and /ae2 help _____ for help with a command.");
-        add("entity.minecraft.villager.fluix_researcher", "Fluix Researcher");
+        add("entity.minecraft.villager.ae2.fluix_researcher", "Fluix Researcher");
         add("gui.ae2.PatternEncoding.primary_processing_result_hint",
                 "Can be requested through the automated crafting system.");
         add("gui.ae2.PatternEncoding.primary_processing_result_tooltip", "Primary Processing Result");

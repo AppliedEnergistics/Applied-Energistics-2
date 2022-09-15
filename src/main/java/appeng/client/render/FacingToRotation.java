@@ -118,6 +118,9 @@ public enum FacingToRotation implements StringRepresentable {
     }
 
     public Direction resultingRotate(Direction facing) {
+        if (facing == null) {
+            return null;
+        }
         for (Direction face : Direction.values()) {
             if (this.rotate(face) == facing) {
                 return face;
