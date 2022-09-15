@@ -20,7 +20,6 @@ package appeng.client.render.effects;
 
 import com.mojang.serialization.Codec;
 
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 
@@ -29,7 +28,7 @@ public final class ParticleTypes {
     private ParticleTypes() {
     }
 
-    public static final SimpleParticleType CRAFTING = FabricParticleTypes.simple();
+    public static final SimpleParticleType CRAFTING = new SimpleParticleType(false);
     public static final ParticleType<EnergyParticleData> ENERGY = new ParticleType<EnergyParticleData>(false,
             EnergyParticleData.DESERIALIZER) {
         @Override
@@ -44,8 +43,8 @@ public final class ParticleTypes {
             return null;
         }
     };
-    public static final SimpleParticleType LIGHTNING = FabricParticleTypes.simple();
-    public static final SimpleParticleType MATTER_CANNON = FabricParticleTypes.simple();
-    public static final SimpleParticleType VIBRANT = FabricParticleTypes.simple();
+    public static final SimpleParticleType LIGHTNING = new SimpleParticleType(false);
+    public static final SimpleParticleType MATTER_CANNON = new SimpleParticleType(false);
+    public static final SimpleParticleType VIBRANT = new SimpleParticleType(false);
 
 }

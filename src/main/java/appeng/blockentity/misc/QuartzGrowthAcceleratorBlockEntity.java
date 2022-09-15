@@ -26,6 +26,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.ids.AETags;
 import appeng.api.implementations.IPowerChannelState;
@@ -37,6 +39,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.core.AEConfig;
 
 public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity implements IPowerChannelState {
@@ -159,6 +162,21 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
             return new Crankable();
         }
         return null;
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        if (Capabilities.CRANKABLE.equals(capability)) {
+            var crankable = getCrankable(facing);
+            if (crankable == null) {
+                return LazyOptional.empty();
+            }
+            return Capabilities.CRANKABLE.orEmpty(
+                    capability,
+                    LazyOptional.of(() -> crankable));
+        }
+
+        return super.getCapability(capability, facing);
     }
 
     class Crankable implements ICrankable {
