@@ -1,14 +1,11 @@
 package appeng.integration.modules.rei.transfer;
 
 import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
 import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
-import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -17,8 +14,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.widgets.Slot;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
@@ -145,19 +140,19 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
             int i = 0;
             for (Widget widget : widgets) {
-                if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
-                    boolean missing = indices.missingSlots().contains(i);
-                    boolean craftable = indices.craftableSlots().contains(i);
-                    i++;
-                    if (missing || craftable) {
-                        matrices.pushPose();
-                        matrices.translate(0, 0, 400);
-                        Rectangle innerBounds = slot.getInnerBounds();
-                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                                innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-                        matrices.popPose();
-                    }
-                }
+                // TODO 1.19.3 if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
+                // TODO 1.19.3 boolean missing = indices.missingSlots().contains(i);
+                // TODO 1.19.3 boolean craftable = indices.craftableSlots().contains(i);
+                // TODO 1.19.3 i++;
+                // TODO 1.19.3 if (missing || craftable) {
+                // TODO 1.19.3 matrices.pushPose();
+                // TODO 1.19.3 matrices.translate(0, 0, 400);
+                // TODO 1.19.3 Rectangle innerBounds = slot.getInnerBounds();
+                // TODO 1.19.3 GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                // TODO 1.19.3 innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
+                // TODO 1.19.3 matrices.popPose();
+                // TODO 1.19.3 }
+                // TODO 1.19.3 }
             }
         };
     }

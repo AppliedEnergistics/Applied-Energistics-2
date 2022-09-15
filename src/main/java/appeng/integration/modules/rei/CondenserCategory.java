@@ -31,7 +31,6 @@ import net.minecraft.resources.ResourceLocation;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
-import me.shedaniel.rei.api.client.gui.widgets.Slot;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
@@ -102,13 +101,15 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
             }
         }));
 
-        Slot outputSlot = Widgets.createSlot(new Point(origin.x + 55, origin.y + 27)).disableBackground().markOutput()
-                .entries(recipeDisplay.getOutputEntries().get(0));
-        widgets.add(outputSlot);
-
-        Slot storageCellSlot = Widgets.createSlot(new Point(origin.x + 51, origin.y + 1)).disableBackground()
-                .markInput().entries(recipeDisplay.getViableStorageComponents());
-        widgets.add(storageCellSlot);
+        // TODO 1.19.3 Slot outputSlot = Widgets.createSlot(new Point(origin.x + 55, origin.y +
+        // 27)).disableBackground().markOutput()
+        // TODO 1.19.3 .entries(recipeDisplay.getOutputEntries().get(0));
+        // TODO 1.19.3 widgets.add(outputSlot);
+// TODO 1.19.3
+        // TODO 1.19.3 Slot storageCellSlot = Widgets.createSlot(new Point(origin.x + 51, origin.y +
+        // 1)).disableBackground()
+        // TODO 1.19.3 .markInput().entries(recipeDisplay.getViableStorageComponents());
+        // TODO 1.19.3 widgets.add(storageCellSlot);
 
         return widgets;
 

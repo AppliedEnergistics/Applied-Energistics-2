@@ -36,7 +36,6 @@ import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
-import appeng.hooks.ModelsReloadCallback;
 
 public final class InitAutoRotatingModel {
 
@@ -78,8 +77,6 @@ public final class InitAutoRotatingModel {
                 register(block, AutoRotatingBakedModel::new);
             }
         }
-
-        ModelsReloadCallback.EVENT.register(InitAutoRotatingModel::onModelBake);
     }
 
     private static void register(BlockDefinition<?> block, Function<BakedModel, BakedModel> customizer) {
@@ -95,7 +92,7 @@ public final class InitAutoRotatingModel {
         return new AutoRotatingBakedModel(model);
     }
 
-    private static void onModelBake(Map<ResourceLocation, BakedModel> modelRegistry) {
+    public static void onModelBake(Map<ResourceLocation, BakedModel> modelRegistry) {
         Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
         BakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
 

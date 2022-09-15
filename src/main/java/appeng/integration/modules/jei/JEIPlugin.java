@@ -42,7 +42,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.FacadeCreativeTab;
+import appeng.core.MainCreativeTab;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -257,7 +257,7 @@ public class JEIPlugin implements IModPlugin {
 
         if (!AEConfig.instance().isEnableFacadesInJEI()) {
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
-                    FacadeCreativeTab.getGroup().getDisplayItems());
+                    MainCreativeTab.INSTANCE.getDisplayItems());
         }
     }
 
