@@ -51,7 +51,7 @@ import appeng.hooks.CompassResult;
  * This baked model combines the quads of a compass base and the quads of a compass pointer, which will be rotated
  * around the Y-axis to get the compass to point in the right direction.
  */
-public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
+public class MeteoriteCompassBakedModel implements BakedModel, FabricBakedModel {
 
     // Rotation is expressed as radians
 
@@ -61,7 +61,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
 
     private float fallbackRotation = 0;
 
-    public SkyCompassBakedModel(BakedModel base, BakedModel pointer) {
+    public MeteoriteCompassBakedModel(BakedModel base, BakedModel pointer) {
         this.base = base;
         this.pointer = pointer;
     }
@@ -162,10 +162,10 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
 
                     float offRads = (float) (player.getYRot() / 180.0f * (float) Math.PI + Math.PI);
 
-                    SkyCompassBakedModel.this.fallbackRotation = offRads
-                            + getAnimatedRotation(player.blockPosition(), true);
+                    MeteoriteCompassBakedModel.this.fallbackRotation = getAnimatedRotation(player.blockPosition(), true,
+                            offRads);
                 } else {
-                    SkyCompassBakedModel.this.fallbackRotation = getAnimatedRotation(null, false);
+                    MeteoriteCompassBakedModel.this.fallbackRotation = getAnimatedRotation(null, false, 0);
                 }
 
                 return originalModel;
@@ -176,13 +176,13 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
     /**
      * Gets the effective, animated rotation for the compass given the current position of the compass.
      */
-    public static float getAnimatedRotation(@Nullable BlockPos pos, boolean prefetch) {
+    public static float getAnimatedRotation(@Nullable BlockPos pos, boolean prefetch, float playerRotation) {
 
         // Only query for a meteor position if we know our own position
         if (pos != null) {
             CompassResult cr = CompassManager.INSTANCE.getCompassDirection(0, pos.getX(), pos.getY(), pos.getZ());
 
-            // Prefetch meteor positions from the server for adjacent blocks so they are
+            // Prefetch meteor positions from the server for adjacent blocks, so they are
             // available more quickly when
             // we're moving
             if (prefetch) {
@@ -201,7 +201,7 @@ public class SkyCompassBakedModel implements BakedModel, FabricBakedModel {
                     timeMillis %= 500;
                     return timeMillis / 500.f * (float) Math.PI * 2;
                 } else {
-                    return (float) cr.getRad();
+                    return (float) cr.getRad() + playerRotation;
                 }
             }
         }

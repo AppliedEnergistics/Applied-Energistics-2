@@ -75,7 +75,6 @@ public final class TestPlots {
             .put(AppEng.makeId("all_terminals"), TestPlots::allTerminals)
             .put(AppEng.makeId("item_chest"), TestPlots::itemChest)
             .put(AppEng.makeId("fluid_chest"), TestPlots::fluidChest)
-            .put(AppEng.makeId("skycompass_rendering"), TestPlots::skyCompassRendering)
             .put(AppEng.makeId("import_exportbus"), TestPlots::importExportBus)
             .put(AppEng.makeId("inscriber"), TestPlots::inscriber)
             .put(AppEng.makeId("autocrafting_testplot"), AutoCraftingTestPlot::create)
@@ -229,29 +228,6 @@ public final class TestPlots {
             chest.setCell(cellItem);
         });
         plot.creativeEnergyCell("0 -1 0");
-    }
-
-    public static void skyCompassRendering(PlotBuilder plot) {
-        plot.block("1 0 1", Blocks.STONE);
-        plot.blockEntity("0 0 1", AEBlocks.SKY_COMPASS, skyCompass -> {
-            skyCompass.setOrientation(Direction.WEST, Direction.UP);
-        });
-        plot.blockEntity("1 0 0", AEBlocks.SKY_COMPASS, skyCompass -> {
-            skyCompass.setOrientation(Direction.NORTH, Direction.UP);
-        });
-        plot.blockEntity("2 0 1", AEBlocks.SKY_COMPASS, skyCompass -> {
-            skyCompass.setOrientation(Direction.EAST, Direction.UP);
-        });
-        plot.blockEntity("1 0 2", AEBlocks.SKY_COMPASS, skyCompass -> {
-            skyCompass.setOrientation(Direction.SOUTH, Direction.UP);
-        });
-        plot.blockEntity("1 1 1", AEBlocks.SKY_COMPASS, skyCompass -> {
-            skyCompass.setOrientation(Direction.UP, Direction.EAST);
-        });
-        plot.block("1 3 1", Blocks.STONE);
-        plot.blockEntity("1 2 1", AEBlocks.SKY_COMPASS, skyCompass -> {
-            skyCompass.setOrientation(Direction.DOWN, Direction.EAST);
-        });
     }
 
     public static void importExportBus(PlotBuilder plot) {

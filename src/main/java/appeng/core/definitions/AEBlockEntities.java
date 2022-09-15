@@ -50,7 +50,6 @@ import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
-import appeng.blockentity.misc.SkyCompassBlockEntity;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
@@ -152,8 +151,6 @@ public final class AEBlockEntities {
             PaintSplotchesBlockEntity::new, AEBlocks.PAINT);
     public static final BlockEntityType<SkyChestBlockEntity> SKY_CHEST = create("sky_chest", SkyChestBlockEntity.class,
             SkyChestBlockEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
-    public static final BlockEntityType<SkyCompassBlockEntity> SKY_COMPASS = create("sky_compass",
-            SkyCompassBlockEntity.class, SkyCompassBlockEntity::new, AEBlocks.SKY_COMPASS);
 
     public static final BlockEntityType<SkyStoneTankBlockEntity> SKY_STONE_TANK = create("sky_tank",
             SkyStoneTankBlockEntity.class,

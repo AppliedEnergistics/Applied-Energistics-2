@@ -260,7 +260,7 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                     builder.addSlot(RecipeIngredientRole.CATALYST, 1, 43)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStack(AEBlocks.SKY_COMPASS.stack());
+                            .addItemStack(AEItems.METEORITE_COMPASS.stack());
                 }
             };
             /*
@@ -283,7 +283,7 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                     builder.addSlot(RecipeIngredientRole.INPUT, 1, 33)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStack(AEBlocks.SKY_COMPASS.stack());
+                            .addItemStack(AEItems.METEORITE_COMPASS.stack());
                 }
             };
             /*

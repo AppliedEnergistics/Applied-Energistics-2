@@ -35,7 +35,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         builtInModel(AEBlocks.QUARTZ_GLASS, true);
         builtInModel(AEBlocks.CABLE_BUS);
         builtInModel(AEBlocks.PAINT);
-        builtInModel(AEBlocks.SKY_COMPASS, true);
         builtInBlockModel("drive");
         builtInBlockModel("spatial_pylon");
         builtInBlockModel("qnb/qnb_formed");

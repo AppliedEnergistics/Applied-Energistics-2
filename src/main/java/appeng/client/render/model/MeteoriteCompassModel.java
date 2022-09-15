@@ -37,13 +37,13 @@ import appeng.client.render.BasicUnbakedModel;
 /**
  * The parent model for the compass baked model. Declares the dependencies for the base and pointer submodels mostly.
  */
-public class SkyCompassModel implements BasicUnbakedModel {
+public class MeteoriteCompassModel implements BasicUnbakedModel {
 
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(
-            "ae2:block/sky_compass_base");
+            "ae2:item/meteorite_compass_base");
 
     private static final ResourceLocation MODEL_POINTER = new ResourceLocation(
-            "ae2:block/sky_compass_pointer");
+            "ae2:item/meteorite_compass_pointer");
 
     @Nullable
     @Override
@@ -51,7 +51,7 @@ public class SkyCompassModel implements BasicUnbakedModel {
             ModelState rotationContainer, ResourceLocation modelId) {
         BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
         BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);
-        return new SkyCompassBakedModel(baseModel, pointerModel);
+        return new MeteoriteCompassBakedModel(baseModel, pointerModel);
     }
 
     @Override

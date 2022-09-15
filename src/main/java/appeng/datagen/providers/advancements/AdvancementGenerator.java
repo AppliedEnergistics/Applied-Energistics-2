@@ -149,7 +149,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var compass = Advancement.Builder.advancement()
                 .display(
-                        AEBlocks.SKY_COMPASS,
+                        AEItems.METEORITE_COMPASS,
                         localization.component("achievement.ae2.Compass", "Meteorite Hunter"),
                         localization.component("achievement.ae2.Compass.desc", "Craft a Meteorite Compass"),
                         null /* background */,
@@ -159,7 +159,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(root)
-                .addCriterion("compass", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.SKY_COMPASS))
+                .addCriterion("compass", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.METEORITE_COMPASS))
                 .save(consumer, "ae2:main/compass");
 
         var pressesBuilder = Advancement.Builder.advancement()
