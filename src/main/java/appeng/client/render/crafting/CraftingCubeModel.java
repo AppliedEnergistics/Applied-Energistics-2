@@ -21,19 +21,21 @@ package appeng.client.render.crafting;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 
 import appeng.client.render.BasicUnbakedModel;
 
 /**
  * The built-in model for the connected texture crafting cube.
  */
-public class CraftingCubeModel implements BasicUnbakedModel {
+public class CraftingCubeModel implements BasicUnbakedModel<CraftingCubeModel> {
     private final AbstractCraftingUnitModelProvider<?> provider;
 
     public CraftingCubeModel(AbstractCraftingUnitModelProvider<?> provider) {
@@ -45,10 +47,10 @@ public class CraftingCubeModel implements BasicUnbakedModel {
         return this.provider.getMaterials().stream();
     }
 
-    @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> spriteGetter,
-            ModelState modelState, ResourceLocation modelId) {
+    public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery,
+            Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+            ItemOverrides overrides, ResourceLocation modelLocation) {
         return this.provider.getBakedModel(spriteGetter);
     }
 }

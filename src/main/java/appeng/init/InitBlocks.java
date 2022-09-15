@@ -18,8 +18,8 @@
 
 package appeng.init;
 
-import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
@@ -29,9 +29,9 @@ public final class InitBlocks {
     private InitBlocks() {
     }
 
-    public static void init(Registry<Block> registry) {
+    public static void init(IForgeRegistry<Block> registry) {
         for (BlockDefinition<?> definition : AEBlocks.getBlocks()) {
-            Registry.register(registry, definition.id(), definition.block());
+            registry.register(definition.id(), definition.block());
         }
     }
 

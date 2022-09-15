@@ -18,13 +18,14 @@
 
 package appeng.init.client;
 
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingUnitType;
@@ -46,12 +47,16 @@ import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PlaneModel;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class InitBuiltInModels {
     private InitBuiltInModels() {
     }
 
-    public static void init() {
+    private static BiConsumer<String, IGeometryLoader<?>> register = null;
+
+    public static void init(BiConsumer<String, IGeometryLoader<?>> register) {
+        InitBuiltInModels.register = register;
+
         addBuiltInModel("block/cable_bus", CableBusModel::new);
         addBuiltInModel("block/quartz_glass", GlassModel::new);
         addBuiltInModel("item/meteorite_compass", MeteoriteCompassModel::new);
@@ -93,17 +98,20 @@ public final class InitBuiltInModels {
                 () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.MONITOR)));
         addBuiltInModel("block/crafting/unit_formed",
                 () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.UNIT)));
+
+        InitBuiltInModels.register = null;
     }
 
-    private static void addPlaneModel(String planeName, String frontTexture) {
+    private static void addPlaneModel(String planeName,
+            String frontTexture) {
         ResourceLocation frontTextureId = AppEng.makeId(frontTexture);
         ResourceLocation sidesTextureId = AppEng.makeId("part/plane_sides");
         ResourceLocation backTextureId = AppEng.makeId("part/transition_plane_back");
         addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
     }
 
-    private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoadingRegistry.INSTANCE
-                .registerResourceProvider(resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory));
+    private static <T extends IUnbakedGeometry<T>> void addBuiltInModel(String id,
+            Supplier<T> modelFactory) {
+        register.accept(id, new SimpleModelLoader<>(modelFactory));
     }
 }

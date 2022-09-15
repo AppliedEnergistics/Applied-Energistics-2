@@ -22,40 +22,21 @@ import java.util.EnumSet;
 import java.util.Objects;
 
 import net.minecraft.core.Direction;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 
-public class CraftingMonitorModelData extends CraftingCubeModelData {
+public final class CraftingMonitorModelData {
+    public static final ModelProperty<AEColor> COLOR = new ModelProperty<>();
 
-    private final AEColor color;
-
-    public CraftingMonitorModelData(Direction up, Direction forward, EnumSet<Direction> connections, AEColor color) {
-        super(up, forward, connections);
-        this.color = Objects.requireNonNull(color);
+    public static ModelData.Builder builder(Direction up, Direction forward, EnumSet<Direction> connections,
+            AEColor color) {
+        return CraftingCubeModelData.builder(up, forward, connections)
+                .with(COLOR, Objects.requireNonNull(color));
     }
 
-    public AEColor getColor() {
-        return color;
+    public static ModelData create(Direction up, Direction forward, EnumSet<Direction> connections, AEColor color) {
+        return builder(up, forward, connections, color).build();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        CraftingMonitorModelData that = (CraftingMonitorModelData) o;
-        return color == that.color;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), color);
-    }
-
 }
