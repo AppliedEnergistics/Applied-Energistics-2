@@ -2,30 +2,27 @@ package appeng.parts;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.common.capabilities.Capability;
 
+import appeng.util.BlockApiCache;
 import appeng.util.Platform;
 
 /**
  * Utility class to cache an API that is adjacent to a part.
- *
- * @param <A>
  */
-public class PartAdjacentApi<A> {
+public class PartAdjacentApi<C> {
     private final AEBasePart part;
-    private final BlockApiLookup<A, Direction> apiLookup;
-    private BlockApiCache<A, Direction> apiCache;
+    private final Capability<C> apiLookup;
+    private BlockApiCache<C> apiCache;
 
-    public PartAdjacentApi(AEBasePart part, BlockApiLookup<A, Direction> apiLookup) {
+    public PartAdjacentApi(AEBasePart part, Capability<C> apiLookup) {
         this.apiLookup = apiLookup;
         this.part = part;
     }
 
     @Nullable
-    public A find() {
+    public C find() {
         if (!(part.getLevel() instanceof ServerLevel serverLevel)) {
             return null;
         }

@@ -24,30 +24,30 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
 
-/**
- * This baked model will take the generated item model for the colored color applicator, and associate tint indices with
- * the added layers that correspond to the light/medium/dark variants of the {@link appeng.api.util.AEColor}.
- * <p>
- * Using the color provider registered in {@link appeng.items.tools.powered.ColorApplicatorItemRendering}, this results
- * in the right color being multiplied with the corresponding layer.
- */
-class ColorApplicatorBakedModel extends ForwardingBakedModel {
+class ColorApplicatorBakedModel implements BakedModel {
+
+    private final BakedModel baseModel;
 
     private final EnumMap<Direction, List<BakedQuad>> quadsBySide;
 
     private final List<BakedQuad> generalQuads;
 
-    ColorApplicatorBakedModel(BakedModel baseModel, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
-            TextureAtlasSprite texBright) {
-        this.wrapped = baseModel;
+    ColorApplicatorBakedModel(BakedModel baseModel, TextureAtlasSprite texDark,
+            TextureAtlasSprite texMedium, TextureAtlasSprite texBright) {
+        this.baseModel = baseModel;
 
         // Put the tint indices in... Since this is an item model, we are ignoring rand
         this.generalQuads = this.fixQuadTint(null, texDark, texMedium, texBright);
@@ -59,7 +59,7 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
 
     private List<BakedQuad> fixQuadTint(Direction facing, TextureAtlasSprite texDark, TextureAtlasSprite texMedium,
             TextureAtlasSprite texBright) {
-        List<BakedQuad> quads = this.wrapped.getQuads(null, facing, RandomSource.create(0));
+        List<BakedQuad> quads = this.baseModel.getQuads(null, facing, RandomSource.create(0), ModelData.EMPTY, null);
         List<BakedQuad> result = new ArrayList<>(quads.size());
         for (BakedQuad quad : quads) {
             int tint;
@@ -91,4 +91,44 @@ class ColorApplicatorBakedModel extends ForwardingBakedModel {
         return this.quadsBySide.get(side);
     }
 
+    @Override
+    public boolean useAmbientOcclusion() {
+        return this.baseModel.useAmbientOcclusion();
+    }
+
+    @Override
+    public boolean isGui3d() {
+        return this.baseModel.isGui3d();
+    }
+
+    @Override
+    public boolean usesBlockLight() {
+        return false;// TODO
+    }
+
+    @Override
+    public boolean isCustomRenderer() {
+        return this.baseModel.isCustomRenderer();
+    }
+
+    @Override
+    public TextureAtlasSprite getParticleIcon() {
+        return this.baseModel.getParticleIcon();
+    }
+
+    @Override
+    public ItemTransforms getTransforms() {
+        return this.baseModel.getTransforms();
+    }
+
+    @Override
+    public ItemOverrides getOverrides() {
+        return this.baseModel.getOverrides();
+    }
+
+    @Override
+    public BakedModel applyTransform(TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+        baseModel.applyTransform(transformType, poseStack, applyLeftHandTransform);
+        return this;
+    }
 }

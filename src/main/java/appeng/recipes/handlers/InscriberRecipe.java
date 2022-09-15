@@ -33,7 +33,7 @@ import appeng.core.AppEng;
 public class InscriberRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
-    public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static RecipeType<InscriberRecipe> TYPE;
 
     private final ResourceLocation id;
 

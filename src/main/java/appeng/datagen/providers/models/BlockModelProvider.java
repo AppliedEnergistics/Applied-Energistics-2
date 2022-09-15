@@ -4,10 +4,9 @@ import static appeng.core.AppEng.makeId;
 
 import java.util.ArrayList;
 
-import net.minecraft.data.PackOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -23,8 +22,8 @@ import appeng.core.definitions.BlockDefinition;
 import appeng.init.client.InitItemModelsProperties;
 
 public class BlockModelProvider extends AE2BlockStateProvider {
-    public BlockModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, AppEng.MOD_ID, exFileHelper);
+    public BlockModelProvider(DataGenerator generator, ExistingFileHelper exFileHelper) {
+        super(generator, AppEng.MOD_ID, exFileHelper);
     }
 
     @Override
@@ -198,11 +197,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private BlockModelBuilder builtInBlockModel(String name) {
-        var model = models().getBuilder("block/" + name);
-        var loaderId = AppEng.makeId("block/" + name);
-        model.customLoader((bmb, efh) -> new CustomLoaderBuilder<>(loaderId, bmb, efh) {
-        });
-        return model;
+        return models().getBuilder("block/" + name);
     }
 
     private void energyCell(

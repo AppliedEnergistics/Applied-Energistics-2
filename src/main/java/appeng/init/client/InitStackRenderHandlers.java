@@ -18,6 +18,7 @@
 
 package appeng.init.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -25,18 +26,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.joml.Matrix4f;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.client.IAEStackRenderHandler;
@@ -119,13 +120,13 @@ public class InitStackRenderHandlers {
         @Override
         public void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEFluidKey what, float scale,
                 int combinedLight) {
-            var variant = what.toVariant();
-            var color = FluidVariantRendering.getColor(variant);
-            var sprite = FluidVariantRendering.getSprite(variant);
 
-            if (sprite == null) {
-                return;
-            }
+            var fluidStack = what.toStack(1);
+            var renderProps = IClientFluidTypeExtensions.of(what.getFluid());
+            var texture = renderProps.getStillTexture(fluidStack);
+            var color = renderProps.getTintColor(fluidStack);
+            var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                    .apply(texture);
 
             poseStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting
@@ -177,12 +178,13 @@ public class InitStackRenderHandlers {
 
         @Override
         public Component getDisplayName(AEFluidKey stack) {
-            return FluidVariantAttributes.getName(stack.toVariant());
+            return stack.getDisplayName();
         }
 
         @Override
         public List<Component> getTooltip(AEFluidKey stack) {
-            var tooltip = FluidVariantRendering.getTooltip(stack.toVariant());
+            var tooltip = new ArrayList<Component>();
+            tooltip.add(stack.toStack(1).getDisplayName());
 
             // Heuristic: If the last line doesn't include the modname, add it ourselves
             var modName = Platform.formatModName(stack.getModId());

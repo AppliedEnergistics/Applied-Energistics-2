@@ -13,13 +13,13 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-import appeng.hooks.ModelsReloadCallback;
+import appeng.init.client.InitAutoRotatingModel;
 
 @Mixin(ModelManager.class)
 public class ModelsReloadMixin {
     @Inject(method = "loadModels(Lnet/minecraft/util/profiling/ProfilerFiller;Ljava/util/Map;Lnet/minecraft/client/resources/model/ModelBakery;)Lnet/minecraft/client/resources/model/ModelManager$ReloadState;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/resources/model/ModelBakery;bakeModels(Ljava/util/function/BiFunction;)V", shift = At.Shift.AFTER))
     public void onGetBakedModelMap(ProfilerFiller profilerFiller, Map<ResourceLocation, AtlasSet.StitchResult> map,
             ModelBakery modelBakery, CallbackInfoReturnable<ModelManager.ReloadState> callbackInfo) {
-        ModelsReloadCallback.EVENT.invoker().onModelsReloaded(modelBakery.getBakedTopLevelModels());
+        InitAutoRotatingModel.onModelBake(modelBakery.getBakedTopLevelModels());
     }
 }

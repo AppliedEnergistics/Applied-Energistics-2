@@ -20,18 +20,16 @@ package appeng.init.client;
 
 import java.util.function.Supplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
 import appeng.client.render.FacadeItemModel;
-import appeng.client.render.SimpleModelLoader;
 import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModel;
@@ -44,9 +42,10 @@ import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.MeteoriteCompassModel;
 import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.AppEng;
+import appeng.hooks.BuiltInModelHooks;
 import appeng.parts.automation.PlaneModel;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class InitBuiltInModels {
     private InitBuiltInModels() {
     }
@@ -95,15 +94,16 @@ public final class InitBuiltInModels {
                 () -> new CraftingCubeModel(new CraftingUnitModelProvider(CraftingUnitType.UNIT)));
     }
 
-    private static void addPlaneModel(String planeName, String frontTexture) {
+    private static void addPlaneModel(String planeName,
+            String frontTexture) {
         ResourceLocation frontTextureId = AppEng.makeId(frontTexture);
         ResourceLocation sidesTextureId = AppEng.makeId("part/plane_sides");
         ResourceLocation backTextureId = AppEng.makeId("part/transition_plane_back");
         addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
     }
 
-    private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoadingRegistry.INSTANCE
-                .registerResourceProvider(resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory));
+    private static <T extends UnbakedModel> void addBuiltInModel(String id,
+            Supplier<T> modelFactory) {
+        BuiltInModelHooks.addBuiltInModel(AppEng.makeId(id), modelFactory.get());
     }
 }

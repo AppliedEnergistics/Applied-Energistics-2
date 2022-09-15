@@ -28,7 +28,11 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import appeng.core.AppEng;
 import appeng.datagen.providers.WorldGenProvider;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
@@ -54,7 +58,13 @@ import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
 import appeng.datagen.providers.tags.PoiTypeTagsProvider;
 
+@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
+
+    @SubscribeEvent
+    public static void onGatherData(GatherDataEvent dataEvent) {
+        onGatherData(dataEvent.getGenerator(), dataEvent.getExistingFileHelper());
+    }
 
     public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         var registries = CompletableFuture.supplyAsync(VanillaRegistries::createLookup, Util.backgroundExecutor());
@@ -70,18 +80,20 @@ public class AE2DataGenerators {
         mainPack.addProvider(BlockDropProvider::new);
 
         // Tags
-        var blockTagsProvider = mainPack.addProvider(bindRegistries(BlockTagsProvider::new, registries));
-        mainPack.addProvider(packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider));
-        mainPack.addProvider(bindRegistries(FluidTagsProvider::new, registries));
-        mainPack.addProvider(bindRegistries(BiomeTagsProvider::new, registries));
-        mainPack.addProvider(bindRegistries(PoiTypeTagsProvider::new, registries));
+        var blockTagsProvider = mainPack
+                .addProvider(packOutput -> new BlockTagsProvider(packOutput, registries, existingFileHelper));
+        mainPack.addProvider(
+                packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider, existingFileHelper));
+        mainPack.addProvider(packOutput -> new FluidTagsProvider(packOutput, registries, existingFileHelper));
+        mainPack.addProvider(packOutput -> new BiomeTagsProvider(packOutput, registries, existingFileHelper));
+        mainPack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries, existingFileHelper));
 
         // Models
-        mainPack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new DecorationModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new ItemModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new CableModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new PartModelProvider(packOutput, existingFileHelper));
+        mainPack.addProvider(packOutput -> new BlockModelProvider(generator, existingFileHelper));
+        mainPack.addProvider(packOutput -> new DecorationModelProvider(generator, existingFileHelper));
+        mainPack.addProvider(packOutput -> new ItemModelProvider(generator, existingFileHelper));
+        mainPack.addProvider(packOutput -> new CableModelProvider(generator, existingFileHelper));
+        mainPack.addProvider(packOutput -> new PartModelProvider(generator, existingFileHelper));
 
         // Misc
         mainPack.addProvider(packOutput -> new AdvancementGenerator(packOutput, localization));

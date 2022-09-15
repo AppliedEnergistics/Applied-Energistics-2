@@ -51,7 +51,7 @@ public class EntropyRecipe implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    public static final RecipeType<EntropyRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static RecipeType<EntropyRecipe> TYPE;
 
     private final ResourceLocation id;
 
