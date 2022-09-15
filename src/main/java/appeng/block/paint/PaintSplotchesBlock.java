@@ -18,8 +18,6 @@
 
 package appeng.block.paint;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
@@ -38,6 +36,8 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
@@ -69,7 +69,7 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
         // do nothing
     }
