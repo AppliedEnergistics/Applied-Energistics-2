@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -704,13 +705,15 @@ public class MEStorageMenu extends AEBaseMenu
     /**
      * Checks if the terminal has a given amount of the requested item. Used to determine for REI/JEI if a recipe is
      * potentially craftable based on the available items.
+     * <p/>
+     * This method is <strong>slow</strong>, but it is client-only and thus doesn't scale with the player count.
      */
-    public boolean hasItemType(ItemStack itemStack, int amount) {
+    public boolean hasIngredient(Predicate<ItemStack> ingredient, int amount) {
         var clientRepo = getClientRepo();
 
         if (clientRepo != null) {
             for (var stack : clientRepo.getAllEntries()) {
-                if (AEItemKey.matches(stack.getWhat(), itemStack)) {
+                if (stack.getWhat() instanceof AEItemKey itemKey && ingredient.test(itemKey.toStack())) {
                     if (stack.getStoredAmount() >= amount) {
                         return true;
                     }

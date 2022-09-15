@@ -21,9 +21,9 @@ package appeng.init;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.menu.implementations.CellWorkbenchMenu;
 import appeng.menu.implementations.ChestMenu;
@@ -67,7 +67,7 @@ public final class InitMenuTypes {
     private InitMenuTypes() {
     }
 
-    public static void init(Registry<MenuType<?>> registry) {
+    public static void init(IForgeRegistry<MenuType<?>> registry) {
         registerAll(registry,
                 CellWorkbenchMenu.TYPE,
                 ChestMenu.TYPE,
@@ -111,16 +111,14 @@ public final class InitMenuTypes {
                 WirelessMenu.TYPE);
     }
 
-    private static void registerAll(Registry<MenuType<?>> registry, MenuType<?>... types) {
+    private static void registerAll(IForgeRegistry<MenuType<?>> registry, MenuType<?>... types) {
         // Flush the registration queue. Calling the static ctor of each menu class will have
         // filled it.
         for (var entry : REGISTRATION_QUEUE.entrySet()) {
-            Registry.register(registry, entry.getKey(), entry.getValue());
+            registry.register(entry.getKey(), entry.getValue());
         }
         REGISTRATION_QUEUE.clear();
 
-        // Fabric registers the container types at creation time, we just do this
-        // to ensure all static CTORs are called in a predictable manner
         for (var type : types) {
             if (registry.getResourceKey(type).isEmpty()) {
                 throw new IllegalStateException("Menu Type " + type + " is not registered");
