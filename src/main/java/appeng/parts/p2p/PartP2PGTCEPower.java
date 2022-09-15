@@ -162,7 +162,7 @@ public class PartP2PGTCEPower extends PartP2PTunnel<PartP2PGTCEPower>
 
 					amperesUsed += output.acceptEnergyFromNetwork( target.getSide().getFacing().getOpposite(), voltage, amperage - amperesUsed );
 
-					if( amperage >= amperesUsed )
+					if( amperesUsed == amperage)
 					{
 						outputs.clear();
 						break;
