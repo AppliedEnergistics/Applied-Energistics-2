@@ -194,6 +194,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 var effectiveRow = i - processingScrollbar.getCurrentScroll();
 
                 slot.setActive(effectiveRow >= 0 && effectiveRow < 3);
+
                 slot.y -= processingScrollbar.getCurrentScroll() * 18;
             }
         }

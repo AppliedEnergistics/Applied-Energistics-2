@@ -21,17 +21,19 @@ package appeng.init.worldgen;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.StructureSets;
 import net.minecraft.data.worldgen.Structures;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
-import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 import appeng.worldgen.meteorite.MeteoriteStructurePiece;
 
@@ -43,9 +45,9 @@ public final class InitStructures {
     public static void init() {
         MeteoriteStructurePiece.register();
 
-        MeteoriteStructure.TYPE = StructureType.register("ae2mtrt", MeteoriteStructure.CODEC);
-        MeteoriteStructure.INSTANCE = Structures.register(
-                MeteoriteStructure.KEY,
+        MeteoriteStructure.TYPE = Registry.register(Registry.STRUCTURE_TYPES, AppEng.makeId("mtrt"),
+                () -> MeteoriteStructure.CODEC);
+        MeteoriteStructure.INSTANCE = BuiltinRegistries.register(BuiltinRegistries.STRUCTURES, MeteoriteStructure.KEY,
                 new MeteoriteStructure(
                         Structures.structure(
                                 MeteoriteStructure.BIOME_TAG_KEY,
