@@ -28,6 +28,7 @@ import net.minecraft.world.phys.AABB;
 
 import appeng.api.behaviors.PickupSink;
 import appeng.api.behaviors.PickupStrategy;
+import appeng.api.behaviors.PickupStrategy.Result;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergySource;

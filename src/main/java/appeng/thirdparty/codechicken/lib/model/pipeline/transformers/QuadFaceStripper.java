@@ -20,10 +20,11 @@ package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 import static net.minecraft.core.Direction.AxisDirection.POSITIVE;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
+
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This transformer strips quads that are on faces. Simply set the bounds for the faces, and the strip mask.

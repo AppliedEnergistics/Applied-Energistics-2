@@ -671,7 +671,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Special case to support the Item API of visual tooltip components
         if (entry.getWhat() instanceof AEItemKey itemKey) {
             var stack = itemKey.toStack();
-            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y);
+            // By using the overload of the renderTooltip method that takes an ItemStack, we support the Forge tooltip
+            // event system
+            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y, stack);
         } else {
             this.renderComponentTooltip(poseStack, currentToolTip, x, y);
         }

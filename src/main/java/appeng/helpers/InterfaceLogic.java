@@ -32,6 +32,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -59,6 +61,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.me.helpers.MachineSource;
@@ -586,4 +589,13 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         }
     }
 
+    public <T> LazyOptional<T> getCapability(Capability<T> capabilityClass, Direction facing) {
+        if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV) {
+            return LazyOptional.of(this::getStorage).cast();
+        } else if (capabilityClass == Capabilities.STORAGE_MONITORABLE_ACCESSOR) {
+            return LazyOptional.of(() -> this.accessor).cast();
+        } else {
+            return LazyOptional.empty();
+        }
+    }
 }
