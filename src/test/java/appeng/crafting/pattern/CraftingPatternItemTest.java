@@ -25,6 +25,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.VanillaIngredientSerializer;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
@@ -34,6 +36,10 @@ import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 class CraftingPatternItemTest {
+
+    static {
+        CraftingHelper.register(new ResourceLocation("minecraft", "item"), VanillaIngredientSerializer.INSTANCE);
+    }
 
     private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
 
