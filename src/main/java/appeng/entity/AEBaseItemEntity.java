@@ -27,11 +27,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.network.NetworkHooks;
 
-import appeng.core.sync.packets.ICustomEntity;
-import appeng.core.sync.packets.SpawnEntityPacket;
-
-public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEntity {
+public abstract class AEBaseItemEntity extends ItemEntity {
 
     protected AEBaseItemEntity(EntityType<? extends AEBaseItemEntity> entityType, Level level) {
         super(entityType, level);
@@ -44,6 +42,7 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
         this.setYRot(this.random.nextFloat() * 360.0F);
         this.setDeltaMovement(this.random.nextDouble() * 0.2D - 0.1D, 0.2D, this.random.nextDouble() * 0.2D - 0.1D);
         this.setItem(stack);
+        this.lifespan = stack.getEntityLifespan(level);
     }
 
     protected List<Entity> getCheckedEntitiesWithinAABB(AABB region) {
@@ -54,8 +53,9 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
         return this.level.getEntities(this, region);
     }
 
+    @Override
     public Packet<?> getAddEntityPacket() {
-        return SpawnEntityPacket.create(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
 }

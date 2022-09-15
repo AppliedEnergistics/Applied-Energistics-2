@@ -30,14 +30,15 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 /**
  * An unbaked model that has standard models as a dependency and produces a custom baked model as a result.
  */
-public interface BasicUnbakedModel extends UnbakedModel {
+public interface BasicUnbakedModel<T extends IUnbakedGeometry<T>> extends IUnbakedGeometry<T> {
 
-    @Override
-    default Collection<ResourceLocation> getDependencies() {
+    default Collection<ResourceLocation> getModelDependencies() {
         return Collections.emptyList();
     }
 
@@ -46,11 +47,12 @@ public interface BasicUnbakedModel extends UnbakedModel {
     }
 
     @Override
-    default Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
+    default Collection<Material> getMaterials(IGeometryBakingContext owner,
+            Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
             Set<Pair<String, String>> unresolvedTextureReferences) {
         return Stream.concat(
-                getDependencies().stream().map(unbakedModelGetter).flatMap(
-                        ubm -> ubm.getMaterials(unbakedModelGetter, unresolvedTextureReferences).stream()),
+                getModelDependencies().stream().map(unbakedModelGetter)
+                        .flatMap(ubm -> ubm.getMaterials(unbakedModelGetter, unresolvedTextureReferences).stream()),
                 getAdditionalTextures()).collect(Collectors.toList());
     }
 

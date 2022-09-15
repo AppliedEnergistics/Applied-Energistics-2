@@ -21,6 +21,7 @@ package appeng.items.tools.quartz;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -38,11 +39,10 @@ import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.menu.locator.MenuLocators;
 
 public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
+    private final RandomSource random = RandomSource.create();
 
     public QuartzCuttingKnifeItem(Item.Properties props, QuartzToolType type) {
         super(props);
-        // TODO FABRIC 117 This means knife doesnt lose durability when used in normal crafting
-        this.craftingRemainingItem = this;
     }
 
     @Override
@@ -66,21 +66,20 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
                 p.getItemInHand(hand));
     }
 
-    // TODO FABRIC 117 recipe remainders
-//    @Override
-//    public ItemStack getContainerItem(ItemStack itemStack) {
-//        ItemStack damagedStack = itemStack.copy();
-//        if (damagedStack.hurt(1, random, null)) {
-//            return ItemStack.EMPTY;
-//        } else {
-//            return damagedStack;
-//        }
-//    }
-//
-//    @Override
-//    public boolean hasContainerItem(ItemStack stack) {
-//        return true;
-//    }
+    @Override
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        ItemStack damagedStack = itemStack.copy();
+        if (damagedStack.hurt(1, random, null)) {
+            return ItemStack.EMPTY;
+        } else {
+            return damagedStack;
+        }
+    }
+
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return true;
+    }
 
     @Nullable
     @Override

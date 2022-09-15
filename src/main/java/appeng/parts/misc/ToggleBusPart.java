@@ -41,6 +41,7 @@ import appeng.api.util.AECableType;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
+import appeng.parts.AEBasePart.NodeListener;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 

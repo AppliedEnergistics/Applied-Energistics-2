@@ -1,31 +1,29 @@
 package appeng.integration.modules.jei;
 
-import java.util.Optional;
+import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
-import mezz.jei.api.fabric.constants.FabricTypes;
-import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.ingredients.IIngredientType;
 
 import appeng.api.integrations.jei.IngredientConverter;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 
-public class FluidIngredientConverter implements IngredientConverter<IJeiFluidIngredient> {
+public class FluidIngredientConverter implements IngredientConverter<FluidStack> {
     @Override
-    public IIngredientType<IJeiFluidIngredient> getIngredientType() {
-        return FabricTypes.FLUID_STACK;
+    public IIngredientType<FluidStack> getIngredientType() {
+        return ForgeTypes.FLUID_STACK;
     }
 
     @Nullable
     @Override
-    public IJeiFluidIngredient getIngredientFromStack(GenericStack stack) {
+    public FluidStack getIngredientFromStack(GenericStack stack) {
         if (stack.what() instanceof AEFluidKey fluidKey) {
-            return new Ingredient(fluidKey, Math.max(1, stack.amount()));
+            return fluidKey.toStack(Math.max(1, Ints.saturatedCast(stack.amount())));
         } else {
             return null;
         }
@@ -33,25 +31,7 @@ public class FluidIngredientConverter implements IngredientConverter<IJeiFluidIn
 
     @Nullable
     @Override
-    public GenericStack getStackFromIngredient(IJeiFluidIngredient ingredient) {
-        var key = AEFluidKey.of(ingredient.getFluid(), ingredient.getTag().orElse(null));
-        return new GenericStack(key, ingredient.getAmount());
-    }
-
-    record Ingredient(AEFluidKey key, long amount) implements IJeiFluidIngredient {
-        @Override
-        public Fluid getFluid() {
-            return key.getFluid();
-        }
-
-        @Override
-        public long getAmount() {
-            return amount;
-        }
-
-        @Override
-        public Optional<CompoundTag> getTag() {
-            return Optional.ofNullable(key.getTag());
-        }
+    public GenericStack getStackFromIngredient(FluidStack ingredient) {
+        return GenericStack.fromFluidStack(ingredient);
     }
 }

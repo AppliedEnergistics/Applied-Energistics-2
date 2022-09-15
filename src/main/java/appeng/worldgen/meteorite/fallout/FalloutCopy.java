@@ -18,12 +18,13 @@
 
 package appeng.worldgen.meteorite.fallout;
 
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.Tags;
 
 import appeng.worldgen.meteorite.MeteoriteBlockPutter;
 
@@ -40,13 +41,13 @@ public class FalloutCopy extends Fallout {
         super(putter, skyStone, random);
         this.putter = putter;
         var biome = level.getBiome(pos);
-        if (biome.is(ConventionalBiomeTags.MESA)) {
+        if (biome.is(BiomeTags.IS_BADLANDS)) {
             block = Blocks.TERRACOTTA.defaultBlockState();
-        } else if (biome.is(ConventionalBiomeTags.ICY)) {
+        } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
             block = Blocks.SNOW_BLOCK.defaultBlockState();
-        } else if (biome.is(ConventionalBiomeTags.BEACH) || biome.is(ConventionalBiomeTags.DESERT)) {
+        } else if (biome.is(BiomeTags.IS_BEACH) || biome.is(Tags.Biomes.IS_SANDY)) {
             block = Blocks.SAND.defaultBlockState();
-        } else if (biome.is(ConventionalBiomeTags.PLAINS) || biome.is(ConventionalBiomeTags.FOREST)) {
+        } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
             block = Blocks.DIRT.defaultBlockState();
         } else {
             block = Blocks.COBBLESTONE.defaultBlockState();
