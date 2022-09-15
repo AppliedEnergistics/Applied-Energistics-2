@@ -91,6 +91,12 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
             tag(ConventionTags.MEMORY_CARDS).add(AEItems.MEMORY_CARDS.item(color));
         }
 
+        tag(ConventionTags.INSCRIBER_PRESSES)
+                .add(AEItems.CALCULATION_PROCESSOR_PRESS.asItem())
+                .add(AEItems.ENGINEERING_PROCESSOR_PRESS.asItem())
+                .add(AEItems.LOGIC_PROCESSOR_PRESS.asItem())
+                .add(AEItems.SILICON_PRESS.asItem());
+
         for (AEColor color : AEColor.VALID_COLORS) {
             tag(ConventionTags.PAINT_BALLS).add(AEItems.COLORED_PAINT_BALL.item(color));
         }

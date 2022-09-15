@@ -63,6 +63,7 @@ public final class InitRenderTypes {
             AEBlocks.MEDIUM_QUARTZ_BUD,
             AEBlocks.LARGE_QUARTZ_BUD,
             AEBlocks.QUARTZ_CLUSTER,
+            AEBlocks.MYSTERIOUS_CUBE,
     };
 
     private InitRenderTypes() {

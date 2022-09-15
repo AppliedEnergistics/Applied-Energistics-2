@@ -18,14 +18,9 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.block.AEBaseBlock;
-import appeng.server.services.compass.CompassService;
 
 public class SkyStoneBlock extends AEBaseBlock {
     private final SkystoneType type;
@@ -37,26 +32,6 @@ public class SkyStoneBlock extends AEBaseBlock {
 
     public SkystoneType getType() {
         return type;
-    }
-
-    @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (level instanceof ServerLevel serverLevel) {
-            CompassService.notifyBlockChange(serverLevel, pos);
-        }
-    }
-
-    @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.getBlock() == state.getBlock()) {
-            return; // Just a block state change
-        }
-
-        super.onRemove(state, level, pos, newState, isMoving);
-
-        if (level instanceof ServerLevel serverLevel) {
-            CompassService.notifyBlockChange(serverLevel, pos);
-        }
     }
 
     public enum SkystoneType {

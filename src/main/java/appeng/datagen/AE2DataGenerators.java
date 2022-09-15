@@ -24,7 +24,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.BlockDropProvider;
-import appeng.datagen.providers.loot.ChestDropProvider;
 import appeng.datagen.providers.models.BlockModelProvider;
 import appeng.datagen.providers.models.CableModelProvider;
 import appeng.datagen.providers.models.DecorationModelProvider;
@@ -53,7 +52,6 @@ public class AE2DataGenerators {
 
         // Loot
         generator.addProvider(true, new BlockDropProvider(generator.getOutputFolder()));
-        generator.addProvider(true, new ChestDropProvider(generator.getOutputFolder()));
 
         // Tags
         BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator);

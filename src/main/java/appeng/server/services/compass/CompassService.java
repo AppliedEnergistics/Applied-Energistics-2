@@ -166,7 +166,7 @@ public final class CompassService {
         }
 
         // Count how many skystone blocks there are
-        var desiredState = AEBlocks.SKY_STONE_BLOCK.block().defaultBlockState();
+        var desiredState = AEBlocks.MYSTERIOUS_CUBE.block().defaultBlockState();
         var blockCount = new AtomicInteger(0);
         section.getStates().count((state, count) -> {
             if (state == desiredState) {

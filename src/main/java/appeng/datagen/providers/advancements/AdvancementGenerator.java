@@ -64,8 +64,6 @@ import appeng.core.stats.AdvancementTriggers;
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.tags.ConventionTags;
-import appeng.loot.NeededPressType;
-import appeng.loot.NeedsPressCondition;
 
 public class AdvancementGenerator implements IAE2DataProvider {
 
@@ -106,36 +104,21 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .display(
                         AEItems.CERTUS_QUARTZ_CRYSTAL,
                         localization.component("achievement.ae2.Root", "Applied Energistics"),
-                        localization.component("achievement.ae2.Root.desc", "When a chest is simply not enough."),
+                        localization.component("achievement.ae2.Root.desc",
+                                "When a chest is simply not enough. Acquire Copper to start your AE2 adventure."),
                         AppEng.makeId("textures/block/sky_stone_brick.png"),
                         FrameType.TASK,
                         false /* showToast */,
                         false /* announceChat */,
                         false /* hidden */
                 )
-                .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL))
+                .addCriterion("copper", InventoryChangeTrigger.TriggerInstance.hasItems(Items.COPPER_INGOT))
                 .save(consumer, "ae2:main/root");
-
-        var chargedQuartz = Advancement.Builder.advancement()
-                .display(
-                        AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
-                        localization.component("achievement.ae2.ChargedQuartz", "Shocking"),
-                        localization.component("achievement.ae2.ChargedQuartz.desc", "Charge Quartz with a Charger"),
-                        null /* background */,
-                        FrameType.TASK,
-                        true /* showToast */,
-                        true /* announceChat */,
-                        false /* hidden */
-                )
-                .parent(root)
-                .addCriterion("certus",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
-                .save(consumer, "ae2:main/charged_quartz");
 
         var charger = Advancement.Builder.advancement()
                 .display(
                         AEBlocks.CHARGER,
-                        localization.component("achievement.ae2.Charger", "Fluix Production"),
+                        localization.component("achievement.ae2.Charger", "It's Chargin' Time !"),
                         localization.component("achievement.ae2.Charger.desc", "Craft a Charger"),
                         null /* background */,
                         FrameType.TASK,
@@ -143,7 +126,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         true /* announceChat */,
                         false /* hidden */
                 )
-                .parent(chargedQuartz)
+                .parent(root)
                 .addCriterion("certus", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CHARGER))
                 .save(consumer, "ae2:main/charger");
 
@@ -158,9 +141,25 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         true /* announceChat */,
                         false /* hidden */
                 )
-                .parent(root)
+                .parent(charger)
                 .addCriterion("compass", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.METEORITE_COMPASS))
                 .save(consumer, "ae2:main/compass");
+
+        var chargedQuartz = Advancement.Builder.advancement()
+                .display(
+                        AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
+                        localization.component("achievement.ae2.ChargedQuartz", "Shocking"),
+                        localization.component("achievement.ae2.ChargedQuartz.desc", "Charge Quartz with a Charger"),
+                        null /* background */,
+                        FrameType.TASK,
+                        true /* showToast */,
+                        true /* announceChat */,
+                        false /* hidden */
+                )
+                .parent(charger)
+                .addCriterion("certus",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED))
+                .save(consumer, "ae2:main/charged_quartz");
 
         var pressesBuilder = Advancement.Builder.advancement()
                 .display(
@@ -174,13 +173,13 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(root)
-                // This MUST be AND, otherwise the tracking stops after the first acquired press
-                .requirements(RequirementsStrategy.AND);
-        for (var neededPress : NeededPressType.values()) {
-            pressesBuilder.addCriterion(neededPress.getCriterionName(),
-                    InventoryChangeTrigger.TriggerInstance.hasItems(neededPress.getItem()));
-        }
-        var presses = pressesBuilder.save(consumer, NeedsPressCondition.ADVANCEMENT_ID.toString());
+                .addCriterion("calculation",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.CALCULATION_PROCESSOR_PRESS))
+                .addCriterion("engineering",
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ENGINEERING_PROCESSOR_PRESS))
+                .addCriterion("logic", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.LOGIC_PROCESSOR_PRESS))
+                .addCriterion("silicon", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.SILICON_PRESS));
+        var presses = pressesBuilder.save(consumer, "ae2:main/presses");
 
         var controller = Advancement.Builder.advancement()
                 .display(
