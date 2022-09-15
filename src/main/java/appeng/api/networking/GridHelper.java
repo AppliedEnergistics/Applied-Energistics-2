@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.events.GridEvent;
+import appeng.capabilities.Capabilities;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridConnection;
 import appeng.me.GridEventBus;
@@ -134,7 +135,7 @@ public final class GridHelper {
         if (be instanceof IInWorldGridNodeHost host) {
             return host;
         }
-        return IInWorldGridNodeHost.LOOKUP.find(level, pos, null, be, null);
+        return be != null ? be.getCapability(Capabilities.IN_WORLD_GRID_NODE_HOST).orElse(null) : null;
     }
 
     /**

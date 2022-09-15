@@ -2,10 +2,8 @@ package appeng.init;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +13,9 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -26,14 +27,15 @@ public class InitVillager {
 
     public static final ResourceLocation ID = AppEng.makeId("fluix_researcher");
 
-    public static final PoiType POI_TYPE = PointOfInterestHelper.register(ID, 1, 1, AEBlocks.CHARGER.block());
+    public static PoiType POI_TYPE = new PoiType(ImmutableSet.of(AEBlocks.CHARGER.block().defaultBlockState()), 1, 1);
     public static final ResourceKey<PoiType> POI_KEY = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, ID);
 
     public static final VillagerProfession PROFESSION = new VillagerProfession(ID.toString(), e -> e.is(POI_KEY),
             e -> e.is(POI_KEY), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_LIBRARIAN);
 
     public static void init() {
-        Registry.register(BuiltInRegistries.VILLAGER_PROFESSION, ID, PROFESSION);
+        ForgeRegistries.POI_TYPES.register(ID, POI_TYPE);
+        ForgeRegistries.VILLAGER_PROFESSIONS.register(ID, PROFESSION);
 
         buyItems(1, AEItems.CERTUS_QUARTZ_CRYSTAL, 3, 4, 10);
         buyItems(1, AEItems.METEORITE_COMPASS, 2, 1, 5);
@@ -55,14 +57,21 @@ public class InitVillager {
     }
 
     private static void sellItems(int minLevel, ItemLike soldItem, int numberOfItems, int maxUses, int xp) {
-        TradeOfferHelper.registerVillagerOffers(PROFESSION, minLevel, builder -> {
-            builder.add(new VillagerTrades.EmeraldForItems(soldItem, numberOfItems, maxUses, xp));
-        });
+        addOffers(
+                minLevel,
+                new VillagerTrades.EmeraldForItems(soldItem, numberOfItems, maxUses, xp));
     }
 
     private static void buyItems(int minLevel, ItemLike boughtItem, int emeraldCost, int numberOfItems, int xp) {
-        TradeOfferHelper.registerVillagerOffers(PROFESSION, minLevel, builder -> {
-            builder.add(new VillagerTrades.ItemsForEmeralds(boughtItem.asItem(), emeraldCost, numberOfItems, xp));
-        });
+        addOffers(
+                minLevel,
+                new VillagerTrades.ItemsForEmeralds(boughtItem.asItem(), emeraldCost, numberOfItems, xp));
+    }
+
+    private static void addOffers(int minLevel, VillagerTrades.ItemListing... newOffers) {
+        var offersByLevel = VillagerTrades.TRADES.computeIfAbsent(PROFESSION, key -> new Int2ObjectOpenHashMap<>());
+        var entries = offersByLevel.computeIfAbsent(minLevel, key -> new VillagerTrades.ItemListing[0]);
+        entries = ArrayUtils.addAll(entries, newOffers);
+        offersByLevel.put(minLevel, entries);
     }
 }

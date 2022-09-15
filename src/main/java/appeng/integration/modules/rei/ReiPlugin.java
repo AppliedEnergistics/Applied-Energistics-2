@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.api.distmarker.Dist;
 
 import dev.architectury.event.CompoundEventResult;
 import me.shedaniel.math.Rectangle;
@@ -48,6 +49,7 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.forge.REIPlugin;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import me.shedaniel.rei.plugin.common.displays.DefaultInformationDisplay;
 
@@ -59,7 +61,7 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.FacadeCreativeTab;
+import appeng.core.FacadeItemGroup;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -77,6 +79,7 @@ import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
 
+@REIPlugin(Dist.CLIENT)
 public class ReiPlugin implements REIClientPlugin {
 
     // Will be hidden if developer items are disabled in the config
@@ -209,7 +212,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         if (AEConfig.instance().isEnableFacadesInJEI()) {
             registry.addEntries(
-                    EntryIngredients.ofItemStacks(FacadeCreativeTab.getGroup().getDisplayItems()));
+                    EntryIngredients.ofItemStacks(new FacadeItemGroup().getGroup().getDisplayItems()));
         }
     }
 

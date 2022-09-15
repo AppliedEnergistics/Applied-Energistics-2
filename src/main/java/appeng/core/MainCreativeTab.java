@@ -21,9 +21,13 @@ package appeng.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraftforge.event.CreativeModeTabEvent;
 
 import appeng.api.ids.AECreativeTabIds;
 import appeng.block.AEBaseBlock;
@@ -34,19 +38,33 @@ import appeng.items.AEBaseItem;
 
 public final class MainCreativeTab {
 
+    private static final Multimap<CreativeModeTab, ItemDefinition<?>> externalItemDefs = HashMultimap.create();
     private static final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
 
     public static CreativeModeTab INSTANCE;
 
-    public static void init() {
-        INSTANCE = FabricItemGroup.builder(AECreativeTabIds.MAIN)
-                .icon(() -> AEBlocks.CONTROLLER.stack(1))
-                .displayItems(MainCreativeTab::buildDisplayItems)
-                .build();
+    public static void init(CreativeModeTabEvent.Register register) {
+        INSTANCE = register.registerCreativeModeTab(AECreativeTabIds.MAIN, builder -> {
+            builder
+                    .title(Component.translatable("itemGroup.ae2.main"))
+                    .icon(() -> AEBlocks.CONTROLLER.stack(1))
+                    .displayItems(MainCreativeTab::buildDisplayItems)
+                    .build();
+        });
+    }
+
+    public static void initExternal(CreativeModeTabEvent.BuildContents contents) {
+        for (var itemDefinition : externalItemDefs.get(contents.getTab())) {
+            contents.registerSimple(contents.getTab(), itemDefinition);
+        }
     }
 
     public static void add(ItemDefinition<?> itemDef) {
         itemDefs.add(itemDef);
+    }
+
+    public static void addExternal(CreativeModeTab tab, ItemDefinition<?> itemDef) {
+        externalItemDefs.put(tab, itemDef);
     }
 
     private static void buildDisplayItems(FeatureFlagSet featureFlagSet, CreativeModeTab.Output output,

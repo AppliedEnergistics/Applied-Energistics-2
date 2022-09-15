@@ -21,48 +21,39 @@ package appeng.client.render.model;
 import java.util.Objects;
 
 import net.minecraft.core.Direction;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 /**
  * This implementation of IModelData allows us to know precisely which data is part of the model data. This is relevant
  * for {@link AutoRotatingBakedModel} and {@link AutoRotatingCacheKey}.
  */
-public class AEModelData {
+public final class AEModelData {
 
-    private final Direction up;
-    private final Direction forward;
+    public static final ModelProperty<Direction> UP = new ModelProperty<>();
+    public static final ModelProperty<Direction> FORWARD = new ModelProperty<>();
+    public static final ModelProperty<Boolean> SKIP_CACHE = new ModelProperty<>();
+    public static final ModelProperty<Byte> SPIN = new ModelProperty<>();
 
-    public AEModelData(Direction up, Direction forward) {
-        this.up = Objects.requireNonNull(up);
-        this.forward = Objects.requireNonNull(forward);
+    public static ModelData.Builder builder(Direction up, Direction forward) {
+        return ModelData.builder()
+                .with(UP, up)
+                .with(FORWARD, forward);
     }
 
-    public Direction getUp() {
-        return up;
+    public static ModelData create(Direction up, Direction forward) {
+        return builder(up, forward).build();
     }
 
-    public Direction getForward() {
-        return forward;
+    public static byte getSpin(ModelData modelData) {
+        return Objects.requireNonNullElse(modelData.get(SPIN), (byte) 0);
     }
 
-    public boolean isCacheable() {
-        return true;
+    public static Direction getForward(ModelData modelData) {
+        return Objects.requireNonNullElse(modelData.get(FORWARD), Direction.NORTH);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AEModelData that = (AEModelData) o;
-        return up == that.up && forward == that.forward;
+    public static Direction getUp(ModelData modelData) {
+        return Objects.requireNonNullElse(modelData.get(UP), Direction.UP);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(up, forward);
-    }
-
 }

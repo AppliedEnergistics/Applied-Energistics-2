@@ -15,7 +15,7 @@ import appeng.core.AppEng;
 public class ChargerRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("charger");
 
-    public static final RecipeType<ChargerRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static RecipeType<ChargerRecipe> TYPE;
 
     private final ResourceLocation id;
     public final Ingredient ingredient;

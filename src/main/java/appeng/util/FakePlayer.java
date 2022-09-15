@@ -6,57 +6,32 @@ import java.util.WeakHashMap;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.OutgoingChatMessage;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-public class FakePlayer extends ServerPlayer {
-    private static final WeakHashMap<Level, FakePlayer> FAKE_PLAYERS = new WeakHashMap<>();
+public final class FakePlayer {
+    private static final WeakHashMap<Level, net.minecraftforge.common.util.FakePlayer> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final GameProfile PROFILE = new GameProfile(UUID.fromString("60C173A5-E1E6-4B87-85B1-272CE424521D"),
             "[AE2]");
 
-    private FakePlayer(ServerLevel level) {
-        super(level.getServer(), level, PROFILE);
+    private FakePlayer() {
     }
 
     /**
      * DO NOT COPY THE PLAYER ANYWHERE! It will keep the world alive, always call this method if you need it.
      */
-    static FakePlayer getOrCreate(ServerLevel level) {
+    static Player getOrCreate(ServerLevel level) {
         Objects.requireNonNull(level);
 
-        final FakePlayer wrp = FAKE_PLAYERS.get(level);
+        var wrp = FAKE_PLAYERS.get(level);
         if (wrp != null) {
             return wrp;
         }
 
-        FakePlayer p = new FakePlayer(level);
+        var p = new net.minecraftforge.common.util.FakePlayer(level, PROFILE);
         FAKE_PLAYERS.put(level, p);
         return p;
-    }
-
-    public static boolean isFakePlayer(Player player) {
-        return player instanceof ServerPlayer && player.getClass() != ServerPlayer.class;
-    }
-
-    @Override
-    public void tick() {
-    }
-
-    @Override
-    public void doTick() {
-    }
-
-    @Override
-    public void sendSystemMessage(Component component, boolean bl) {
-    }
-
-    @Override
-    public void sendChatMessage(OutgoingChatMessage outgoingChatMessage, boolean bl, ChatType.Bound bound) {
     }
 }
