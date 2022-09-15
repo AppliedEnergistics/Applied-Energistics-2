@@ -19,7 +19,6 @@
 package appeng.core;
 
 import appeng.init.InitAdvancementTriggers;
-import appeng.init.InitLootConditions;
 import appeng.init.InitStats;
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridServices;
@@ -46,7 +45,6 @@ public final class AppEngBootstrap {
             // This has to be initialized here because Forge's common setup event will not run in datagens.
             InitStats.init();
             InitAdvancementTriggers.init();
-            InitLootConditions.init();
         }
     }
 
