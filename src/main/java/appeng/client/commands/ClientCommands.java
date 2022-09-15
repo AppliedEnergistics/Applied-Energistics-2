@@ -4,12 +4,11 @@ import java.util.List;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 import appeng.core.AEConfig;
-import appeng.siteexport.SiteExporter;
 
 public final class ClientCommands {
 
@@ -22,23 +21,19 @@ public final class ClientCommands {
 
     @FunctionalInterface
     public interface CommandBuilder {
-        void build(LiteralArgumentBuilder<FabricClientCommandSource> builder);
+        void build(LiteralArgumentBuilder<CommandSourceStack> builder);
     }
 
-    private static void exportSiteData(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
-        builder.then(ClientCommandManager.literal("export_site_data").executes(context -> {
-            SiteExporter.export(context.getSource());
-            return 0;
-        }));
+    private static void exportSiteData(LiteralArgumentBuilder<CommandSourceStack> builder) {
     }
 
-    private static void highlightGuiAreas(LiteralArgumentBuilder<FabricClientCommandSource> builder) {
-        builder.then(ClientCommandManager.literal("highlight_gui_areas").executes(context -> {
+    private static void highlightGuiAreas(LiteralArgumentBuilder<CommandSourceStack> builder) {
+        builder.then(Commands.literal("highlight_gui_areas").executes(context -> {
             var src = context.getSource();
             var toggle = !AEConfig.instance().isShowDebugGuiOverlays();
             AEConfig.instance().setShowDebugGuiOverlays(toggle);
             AEConfig.instance().save();
-            src.sendFeedback(Component.literal("GUI Overlays: " + toggle));
+            src.sendSystemMessage(Component.literal("GUI Overlays: " + toggle));
             return 0;
         }));
     }

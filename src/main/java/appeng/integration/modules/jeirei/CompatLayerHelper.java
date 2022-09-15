@@ -1,6 +1,6 @@
 package appeng.integration.modules.jeirei;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraftforge.fml.ModList;
 
 /**
  * We prevent most of the REI compat from loading when the JEI compat is loaded. Two exceptions:
@@ -10,5 +10,5 @@ import net.fabricmc.loader.api.FabricLoader;
  * </ul>
  */
 public class CompatLayerHelper {
-    public static final boolean IS_LOADED = FabricLoader.getInstance().isModLoaded("rei_plugin_compatibilities");
+    public static final boolean IS_LOADED = ModList.get().isLoaded("rei_plugin_compatibilities");
 }

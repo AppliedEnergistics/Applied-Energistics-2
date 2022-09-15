@@ -47,7 +47,7 @@ public final class AEEntities {
             "Tiny TNT Primed",
             TinyTNTPrimedEntity::new,
             MobCategory.MISC,
-            builder -> builder.clientTrackingRange(16).updateInterval(4));
+            builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true));
 
     private static <T extends Entity> EntityType<T> create(String id,
             String englishName,
