@@ -22,7 +22,7 @@
   "mixins": ["ae2.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14.8",
-    "fabric": ">=0.58.5",
+    "fabric": ">=0.61.0",
     "minecraft": ">=1.19.1"
   },
   "conflicts": {
