@@ -58,12 +58,15 @@ import appeng.items.parts.FacadeItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
+import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
 
 @JeiPlugin
 public class JEIPlugin implements IModPlugin {
+    public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
+
     private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
 
     public JEIPlugin() {
@@ -90,7 +93,8 @@ public class JEIPlugin implements IModPlugin {
                 new InscriberRecipeCategory(jeiHelpers.getGuiHelper()),
                 new ChargerCategory(jeiHelpers),
                 new AttunementCategory(jeiHelpers),
-                new CertusGrowthCategory(jeiHelpers));
+                new CertusGrowthCategory(jeiHelpers),
+                new EntropyManipulatorCategory(jeiHelpers));
     }
 
     @Override
@@ -121,6 +125,8 @@ public class JEIPlugin implements IModPlugin {
                 List.copyOf(recipeManager.byType(ChargerRecipe.TYPE).values()));
         registration.addRecipes(CondenserCategory.RECIPE_TYPE,
                 ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY));
+        registration.addRecipes(EntropyManipulatorCategory.TYPE,
+                List.copyOf(recipeManager.byType(EntropyRecipe.TYPE).values()));
 
         registerP2PAttunement(registration);
         registerDescriptions(registration);
@@ -185,6 +191,8 @@ public class JEIPlugin implements IModPlugin {
         // Both the charger and crank will be used as catalysts here to make it more discoverable
         registration.addRecipeCatalyst(AEBlocks.CHARGER.stack(), ChargerCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(AEBlocks.CRANK.stack(), ChargerCategory.RECIPE_TYPE);
+
+        registration.addRecipeCatalyst(AEItems.ENTROPY_MANIPULATOR.stack(), EntropyManipulatorCategory.TYPE);
     }
 
     private void registerDescriptions(IRecipeRegistration registry) {

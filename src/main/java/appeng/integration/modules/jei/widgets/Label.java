@@ -5,20 +5,17 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
-public class Label implements Widget {
+public class Label extends AbstractWidget implements Widget {
     public final float x;
     public final float y;
     public final Component text;
     private final Font font;
-    @Nullable
-    public Component tooltip;
     public int color = -1;
     public int maxWidth = -1;
     public boolean shadow = true;
@@ -30,6 +27,20 @@ public class Label implements Widget {
         this.y = y;
         this.text = text;
         this.font = Minecraft.getInstance().font;
+    }
+
+    public Rect2i getBounds() {
+        int top = Integer.MAX_VALUE;
+        int bottom = Integer.MIN_VALUE;
+        int left = Integer.MAX_VALUE;
+        int right = Integer.MIN_VALUE;
+        for (var formattedLine : getLines()) {
+            top = Math.min(top, (int) formattedLine.y);
+            left = Math.min(left, (int) formattedLine.x);
+            bottom = Math.max(bottom, (int) (formattedLine.y + formattedLine.height));
+            right = Math.max(right, (int) (formattedLine.x + formattedLine.width));
+        }
+        return new Rect2i(left, top, right - left, bottom - top);
     }
 
     @Override
@@ -59,7 +70,7 @@ public class Label implements Widget {
     }
 
     public Label tooltip(Component text) {
-        this.tooltip = text;
+        this.setTooltipLines(List.of(text));
         return this;
     }
 
@@ -84,14 +95,6 @@ public class Label implements Widget {
         }
 
         return false;
-    }
-
-    @Override
-    public List<Component> getTooltipLines() {
-        if (tooltip != null) {
-            return List.of(tooltip);
-        }
-        return List.of();
     }
 
     private float getAlignedX(int width) {

@@ -43,7 +43,14 @@ public enum ItemModText implements LocalizationEnum {
             "Flawless budding quartz never decays when growing buds. It may only be found in meteorites."),
     CRYSTAL_GROWTH_ACCELERATORS_EFFECT(
             "Powered crystal growth accelerators speed up the growth of adjacent budding quartz."),
-            ;
+
+    ENTROPY_MANIPULATOR_HEAT("Heat (%d AE)"),
+    ENTROPY_MANIPULATOR_COOL("Cool (%d AE)"),
+    RIGHT_CLICK("Right-Click"),
+    SHIFT_RIGHT_CLICK("Shift+Right-Click"),
+    CONSUMED("Consumed"),
+    FLOWING_FLUID_NAME("%s (flowing)"),
+    ;
 
     private final String englishText;
 

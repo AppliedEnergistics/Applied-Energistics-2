@@ -18,7 +18,10 @@
 
 package appeng.client.gui;
 
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.client.gui.style.Blitter;
+import appeng.core.AppEng;
 
 /**
  * Edit in {@code assets/ae2/textures/guis/states.png}.
@@ -301,10 +304,14 @@ public enum Icon {
     UNUSED_15_14(224, 240),
     TOOLBAR_BUTTON_BACKGROUND(240, 240);
 
-    private final int x;
-    private final int y;
-    private final int width;
-    private final int height;
+    public final int x;
+    public final int y;
+    public final int width;
+    public final int height;
+
+    public static final ResourceLocation TEXTURE = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
+    public static final int TEXTURE_WIDTH = 256;
+    public static final int TEXTURE_HEIGHT = 256;
 
     Icon(int x, int y) {
         this(x, y, 16, 16);
@@ -318,7 +325,7 @@ public enum Icon {
     }
 
     public Blitter getBlitter() {
-        return Blitter.texture("guis/states.png", 256, 256)
+        return Blitter.texture(TEXTURE, TEXTURE_WIDTH, TEXTURE_HEIGHT)
                 .src(x, y, width, height);
     }
 
