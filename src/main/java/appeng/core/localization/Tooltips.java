@@ -40,6 +40,7 @@ public final class Tooltips {
     public static final ChatFormatting MUTED_COLOR = ChatFormatting.DARK_GRAY;
 
     public static final Style NORMAL_TOOLTIP_TEXT = Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false);
+    public static final Style QUOTE_TEXT = NORMAL_TOOLTIP_TEXT.withItalic(true);
     public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x886eff)).withItalic(false);
     public static final Style UNIT_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
 
