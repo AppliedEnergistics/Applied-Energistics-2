@@ -3,7 +3,6 @@ package appeng.integration.modules.jei.throwinginwater;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -18,9 +17,9 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.jei.JEIPlugin;
 
 public class ThrowingInWaterCategory implements IRecipeCategory<ThrowingInWaterDisplay> {
-    private static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
 
     public static final RecipeType<ThrowingInWaterDisplay> RECIPE_TYPE = RecipeType.create(AppEng.MOD_ID,
             "throwing_in_water", ThrowingInWaterDisplay.class);
@@ -35,10 +34,10 @@ public class ThrowingInWaterCategory implements IRecipeCategory<ThrowingInWaterD
 
     public ThrowingInWaterCategory(IGuiHelper guiHelper) {
         background = guiHelper.createBlankDrawable(130, 62);
-        slotBackground = guiHelper.createDrawable(TEXTURE, 0, 34, 18, 18);
+        slotBackground = guiHelper.createDrawable(JEIPlugin.TEXTURE, 0, 34, 18, 18);
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK,
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.stack());
-        arrow = guiHelper.createDrawable(TEXTURE, 0, 17, 24, 17);
+        arrow = guiHelper.createDrawable(JEIPlugin.TEXTURE, 0, 17, 24, 17);
     }
 
     @Override

@@ -11,11 +11,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
+import appeng.client.gui.Icon;
 import appeng.integration.modules.jei.widgets.View;
 import appeng.integration.modules.jei.widgets.Widget;
 import appeng.integration.modules.jei.widgets.WidgetFactory;
@@ -26,7 +29,13 @@ public abstract class ViewBasedCategory<T> implements IRecipeCategory<T> {
 
     private final LoadingCache<T, CachedView> cache;
 
+    protected final IGuiHelper guiHelper;
+
+    protected final IJeiHelpers jeiHelpers;
+
     protected ViewBasedCategory(IJeiHelpers helpers) {
+        this.jeiHelpers = helpers;
+        this.guiHelper = helpers.getGuiHelper();
         widgetFactory = new WidgetFactory(helpers);
         cache = CacheBuilder.newBuilder()
                 .maximumSize(10)
@@ -75,6 +84,12 @@ public abstract class ViewBasedCategory<T> implements IRecipeCategory<T> {
         }
 
         return List.of();
+    }
+
+    protected final IDrawable getIconDrawable(Icon icon) {
+        return guiHelper.drawableBuilder(Icon.TEXTURE, icon.x, icon.y, icon.width, icon.height)
+                .setTextureSize(Icon.TEXTURE_WIDTH, Icon.TEXTURE_HEIGHT)
+                .build();
     }
 
     private List<Widget> getWidgets(CachedView cachedView) {

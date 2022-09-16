@@ -69,7 +69,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     /**
      * The amount of AE energy consumed per use.
      */
-    private static final int ENERGY_PER_USE = 1600;
+    public static final int ENERGY_PER_USE = 1600;
 
     public EntropyManipulatorItem(Item.Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
