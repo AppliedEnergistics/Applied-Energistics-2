@@ -18,7 +18,11 @@
 
 package appeng.menu;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -51,6 +55,11 @@ public final class SlotSemantics {
             throw new IllegalArgumentException("Unknown slot semantic: " + key);
         }
         return semantic;
+    }
+
+    @Nullable
+    public static SlotSemantic get(String key) {
+        return REGISTRY.get(key);
     }
 
     public static final SlotSemantic STORAGE = register("STORAGE", false);

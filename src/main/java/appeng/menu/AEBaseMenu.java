@@ -98,7 +98,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final Set<Slot> clientSideSlot = new HashSet<>();
 
     public AEBaseMenu(MenuType<?> menuType, int id, Inventory playerInventory,
-            Object host) {
+                      Object host) {
         super(menuType, id);
         this.playerInventory = playerInventory;
         this.blockEntity = host instanceof BlockEntity ? (BlockEntity) host : null;
@@ -329,11 +329,22 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         if (isClientSide()) {
             sendClientAction(HIDE_SLOT, semantic);
         }
-        for (Slot s : getSlots(SlotSemantics.getOrThrow(semantic))) {
-            if (s instanceof AppEngSlot slot) {
-                slot.setSlotEnabled(false);
+        var slotSemantic = SlotSemantics.get(semantic);
+        if(slotSemantic == null) return;
+        if(canSlotsBeHidden(slotSemantic)) {
+            for (Slot s : getSlots(slotSemantic)) {
+                if (s instanceof AppEngSlot slot) {
+                    slot.setSlotEnabled(false);
+                }
             }
         }
+    }
+
+    /**
+     * Return true if the client is allowed to hide slots with this semantic, false otherwise. You should return false unless you have checked that hiding the slots doesn't risk crashing the game or causing other severe issues.
+     */
+    protected boolean canSlotsBeHidden(SlotSemantic semantic) {
+        return false;
     }
 
     @Override
@@ -698,7 +709,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                     fakeSlot.set(GenericStack.wrapInItemStack(emptyingAction.what(), emptyingAction.maxAmount()));
                 }
             }
-                break;
+            break;
             default:
                 break;
         }
