@@ -647,7 +647,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         // recipes/network/parts
         // ====================================================
 
-        ShapelessRecipeBuilder.shapeless(AEParts.CABLE_ANCHOR, 3)
+        ShapelessRecipeBuilder.shapeless(AEParts.CABLE_ANCHOR, 4)
                 .requires(AETags.METAL_INGOTS)
                 .requires(ConventionTags.QUARTZ_KNIFE)
                 .unlockedBy("has_knife", has(ConventionTags.QUARTZ_KNIFE))
