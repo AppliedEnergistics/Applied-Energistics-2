@@ -87,6 +87,10 @@ public class InscriberRecipes extends AE2RecipeProvider {
         inscribe(Ingredient.of(AEBlocks.SKY_STONE_BLOCK), AEItems.SKY_DUST.stack())
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, "sky_stone_dust");
+
+        inscribe(Ingredient.of(Items.ENDER_PEARL), AEItems.ENDER_DUST.stack())
+                .setMode(InscriberProcessType.INSCRIBE)
+                .save(consumer, "ender_dust");
     }
 
     private void processor(Consumer<FinishedRecipe> consumer,

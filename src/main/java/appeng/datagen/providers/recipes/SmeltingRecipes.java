@@ -59,10 +59,5 @@ public class SmeltingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_sky_stone_block", has(AEBlocks.SKY_STONE_BLOCK))
                 .save(consumer, AppEng.makeId("smelting/smooth_sky_stone_block"));
 
-        SimpleCookingRecipeBuilder
-                .blasting(Ingredient.of(ConventionTags.ENDER_PEARL), AEItems.ENDER_DUST, 1f, DEFAULT_SMELTING_TIME)
-                .unlockedBy("has_ender_pearls", has(ConventionTags.ENDER_PEARL))
-                .save(consumer, AppEng.makeId("blasting/ender_dust"));
-
     }
 }
