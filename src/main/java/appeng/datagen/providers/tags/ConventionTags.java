@@ -24,6 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -125,6 +126,11 @@ public final class ConventionTags {
     public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = blockTag("c:budding_blocks");
     public static final TagKey<Block> BUDS_BLOCKS = blockTag("c:buds");
     public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("c:clusters");
+
+    /**
+     * Platform tags for blocks that should not be moved, i.e. some pipes, chunk loaders, etc...
+     */
+    public static final TagKey<Block> IMMOVABLE_BLOCKS = ConventionalBlockTags.MOVEMENT_RESTRICTED;
 
     /**
      * For Worldgen Biomes
