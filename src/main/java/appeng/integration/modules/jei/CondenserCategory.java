@@ -52,7 +52,7 @@ import appeng.core.definitions.AEItems;
 
 class CondenserCategory implements IRecipeCategory<CondenserOutput> {
 
-    private static final String TITLE_TRANSLATION_KEY = "block.ae2.Condenser";
+    private static final String TITLE_TRANSLATION_KEY = "block.ae2.condenser";
 
     public static final ResourceLocation UID = new ResourceLocation(AppEng.MOD_ID, "condenser");
 
