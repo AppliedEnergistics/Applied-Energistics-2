@@ -21,6 +21,8 @@ package appeng.menu;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Registry for {@link SlotSemantic}.
  * <p/>
@@ -51,6 +53,11 @@ public final class SlotSemantics {
             throw new IllegalArgumentException("Unknown slot semantic: " + key);
         }
         return semantic;
+    }
+
+    @Nullable
+    public static SlotSemantic get(String key) {
+        return REGISTRY.get(key);
     }
 
     public static final SlotSemantic STORAGE = register("STORAGE", false);

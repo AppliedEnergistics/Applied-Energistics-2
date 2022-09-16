@@ -41,6 +41,7 @@ public class AppEngSlot extends Slot {
     private final InternalInventory inventory;
     private final int invSlot;
     private boolean hideAmount;
+    private boolean isEnabled = true;
     /**
      * Tooltip for this slot if the slot is empty.
      */
@@ -194,7 +195,11 @@ public class AppEngSlot extends Slot {
     }
 
     public boolean isSlotEnabled() {
-        return true;
+        return isEnabled;
+    }
+
+    public void setSlotEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
     }
 
     /**

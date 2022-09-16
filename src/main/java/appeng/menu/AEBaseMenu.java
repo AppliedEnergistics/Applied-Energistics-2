@@ -76,6 +76,7 @@ import appeng.util.Platform;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
+    private static final String HIDE_SLOT = "HideSlot";
 
     private final IActionSource mySrc;
     @Nullable
@@ -113,6 +114,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         }
 
         this.mySrc = new PlayerSource(getPlayer(), this.getActionHost());
+        registerClientAction(HIDE_SLOT, String.class, this::hideSlot);
     }
 
     protected final IActionHost getActionHost() {
@@ -321,6 +323,30 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 || slotSemantic == SlotSemantics.PLAYER_HOTBAR
                 // The crafting grid in the crafting terminal also shift-clicks into the network
                 || slotSemantic == SlotSemantics.CRAFTING_GRID;
+    }
+
+    public void hideSlot(String semantic) {
+        if (isClientSide()) {
+            sendClientAction(HIDE_SLOT, semantic);
+        }
+        var slotSemantic = SlotSemantics.get(semantic);
+        if (slotSemantic == null)
+            return;
+        if (canSlotsBeHidden(slotSemantic)) {
+            for (Slot s : getSlots(slotSemantic)) {
+                if (s instanceof AppEngSlot slot) {
+                    slot.setSlotEnabled(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * Return true if the client is allowed to hide slots with this semantic, false otherwise. You should return false
+     * unless you have checked that hiding the slots doesn't risk crashing the game or causing other severe issues.
+     */
+    protected boolean canSlotsBeHidden(SlotSemantic semantic) {
+        return false;
     }
 
     @Override
