@@ -1,11 +1,9 @@
 package appeng.blockentity.storage;
 
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,18 +57,8 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
         storage.amount = data.getLong("amount");
     }
 
-    public boolean onPlayerUse(Player player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND)
-                .find(FluidStorage.ITEM);
-        if (handIo != null) {
-            // move from hand into this tank
-            if (StorageUtil.move(handIo, storage, f -> true, Long.MAX_VALUE, null) > 0)
-                return true;
-            // move from this tank into hand
-            if (StorageUtil.move(storage, handIo, f -> true, Long.MAX_VALUE, null) > 0)
-                return true;
-        }
-        return false;
+    public boolean onPlayerUse(Player player, InteractionHand hand) {
+        return FluidStorageUtil.interactWithFluidStorage(storage, player, hand);
     }
 
     public Storage<FluidVariant> getStorage(Direction direction) {

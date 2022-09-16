@@ -32,8 +32,8 @@ public class SkyStoneTankBlock extends AEBaseEntityBlock<SkyStoneTankBlockEntity
             InteractionHand hand, BlockHitResult hit) {
         if (super.use(state, level, pos, player, hand, hit) == InteractionResult.PASS) {
             SkyStoneTankBlockEntity be = (SkyStoneTankBlockEntity) level.getBlockEntity(pos);
-            if (be.onPlayerUse(player)) {
-                return InteractionResult.SUCCESS;
+            if (be != null && be.onPlayerUse(player, hand)) {
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
 
         }
