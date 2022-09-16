@@ -46,7 +46,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
         // Black- and whitelist tags
         tag(AETags.SPATIAL_BLACKLIST)
                 .add(Blocks.BEDROCK)
-                .addTag(ConventionTags.IMMOVABLE_BLOCKS);
+                .addOptionalTag(ConventionTags.IMMOVABLE_BLOCKS.location());
         tag(AETags.ANNIHILATION_PLANE_BLOCK_BLACKLIST);
         tag(AETags.FACADE_BLOCK_WHITELIST)
                 .add(Blocks.GLASS,
