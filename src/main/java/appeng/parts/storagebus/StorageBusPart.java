@@ -120,11 +120,8 @@ public class StorageBusPart extends UpgradeablePart
     private Map<AEKeyType, ExternalStorageStrategy> externalStorageStrategies;
     private boolean wasOnline = false;
     private int priority = 0;
-    /**
-     * Indicates that the storage-bus should reevaluate the block it's attached to on the next tick and update the
-     * target inventory - if necessary.
-     */
-    private boolean shouldUpdateTarget = true;
+
+    private PendingUpdateStatus updateStatus = PendingUpdateStatus.FAST_UPDATE;
     private ITickingMonitor monitor = null;
 
     public StorageBusPart(IPartItem<?> partItem) {
@@ -174,7 +171,7 @@ public class StorageBusPart extends UpgradeablePart
             return;
         }
 
-        this.shouldUpdateTarget = true;
+        this.updateStatus = PendingUpdateStatus.FAST_UPDATE;
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().alertDevice(node);
         });
@@ -258,16 +255,16 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public final TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        if (this.shouldUpdateTarget) {
+        if (this.updateStatus != PendingUpdateStatus.NO_UPDATE) {
             this.updateTarget(false);
-            this.shouldUpdateTarget = false;
         }
 
         if (this.monitor != null) {
             return this.monitor.onTick();
         }
 
-        return TickRateModulation.SLEEP;
+        return this.updateStatus == PendingUpdateStatus.SLOW_UPDATE ? TickRateModulation.IDLE
+                : TickRateModulation.SLEEP;
     }
 
     /**
@@ -301,6 +298,9 @@ public class StorageBusPart extends UpgradeablePart
 
         // If the target position is not ticking, don't search for a target.
         if (Platform.areBlockEntitiesTicking(getLevel(), getBlockEntity().getBlockPos().relative(getSide()))) {
+            // In any case we don't need any further update
+            this.updateStatus = PendingUpdateStatus.NO_UPDATE;
+
             // Prioritize a handler to directly link to another ME network
             IStorageMonitorableAccessor accessor = adjacentStorageAccessor.find();
 
@@ -319,6 +319,9 @@ public class StorageBusPart extends UpgradeablePart
                 foundExternalApi = new IdentityHashMap<>(2);
                 findExternalStorages(foundExternalApi);
             }
+        } else {
+            // Try again in the future...
+            this.updateStatus = PendingUpdateStatus.SLOW_UPDATE;
         }
 
         if (!forceFullUpdate && this.handler.getDelegate() instanceof CompositeStorage compositeStorage
@@ -523,4 +526,21 @@ public class StorageBusPart extends UpgradeablePart
         }
         return externalStorageStrategies;
     }
+
+    private enum PendingUpdateStatus {
+        /**
+         * Indicates that the storage-bus should reevaluate the block it's attached to on the next tick and update the
+         * target inventory - if necessary.
+         */
+        FAST_UPDATE,
+        /**
+         * Indicates that the storage bus couldn't find an inventory because it was pointing at an unloaded chunk, and
+         * should eventually try again in the future.
+         */
+        SLOW_UPDATE,
+        /**
+         * Indicates that no update is required at the moment.
+         */
+        NO_UPDATE;
+    };
 }
