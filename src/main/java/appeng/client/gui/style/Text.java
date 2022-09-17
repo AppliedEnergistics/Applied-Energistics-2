@@ -50,6 +50,11 @@ public class Text {
      */
     private float scale = 1.0f;
 
+    /**
+     * Allows text to be word-wrapped to fit a given maximum width.
+     */
+    private int maxWidth = 0;
+
     public Component getText() {
         return text;
     }
@@ -88,5 +93,13 @@ public class Text {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public int getMaxWidth() {
+        return maxWidth;
+    }
+
+    public void setMaxWidth(int maxWidth) {
+        this.maxWidth = maxWidth;
     }
 }
