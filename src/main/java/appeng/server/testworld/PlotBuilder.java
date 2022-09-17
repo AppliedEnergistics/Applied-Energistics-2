@@ -1,6 +1,7 @@
 package appeng.server.testworld;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -199,6 +200,10 @@ public interface PlotBuilder {
 
     default void hopper(BlockPos pos, Direction direction, ItemStack... stacks) {
         hopper(posToBb(pos), direction, stacks);
+    }
+
+    default void hopper(BlockPos pos, Direction direction, ItemLike... items) {
+        hopper(pos, direction, Arrays.stream(items).map(ItemStack::new).toArray(ItemStack[]::new));
     }
 
     default void hopper(String bb, Direction direction, ItemStack... stacks) {
