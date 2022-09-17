@@ -107,6 +107,13 @@ public class PlotTestHelper extends GameTestHelper {
         }
     }
 
+    public void assertContainsNot(MEStorage storage, AEKey key) {
+        var count = storage.getAvailableStacks().get(key);
+        if (count > 0) {
+            throw new GameTestAssertException("Network storage does contains " + key + ".");
+        }
+    }
+
     public void clearStorage(IGrid grid) {
         clearStorage(grid.getStorageService().getInventory());
     }

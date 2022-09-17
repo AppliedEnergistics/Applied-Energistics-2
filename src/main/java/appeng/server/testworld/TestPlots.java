@@ -87,6 +87,7 @@ public final class TestPlots {
             .put(AppEng.makeId("import_on_pulse_transactioncrash"), TestPlots::importOnPulseTransactionCrash)
             .put(AppEng.makeId("mattercannon_range"), TestPlots::matterCannonRange)
             .put(AppEng.makeId("insert_fluid_into_mechest"), TestPlots::testInsertFluidIntoMEChest)
+            .put(AppEng.makeId("insert_item_into_mechest"), TestPlots::testInsertItemsIntoMEChest)
             .put(AppEng.makeId("maxchannels_adhoctest"), TestPlots::maxChannelsAdHocTest)
             .put(AppEng.makeId("blockingmode_subnetwork_chesttest"), TestPlots::blockingModeSubnetworkChestTest)
             .put(AppEng.makeId("canceling_jobs_from_interfacecrash"), TestPlots::cancelingJobsFromInterfaceCrash)
@@ -621,6 +622,28 @@ public final class TestPlots {
         plot.test(helper -> helper.succeedWhen(() -> {
             var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
+        }));
+    }
+
+    /**
+     * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6582
+     */
+    public static void testInsertItemsIntoMEChest(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.blockEntity(origin, AEBlocks.CHEST, chest -> {
+            var cell = AEItems.ITEM_CELL_1K.stack();
+            AEItems.ITEM_CELL_1K.asItem().getConfigInventory(cell).addFilter(Items.REDSTONE);
+            chest.setCell(cell);
+        });
+        // Hopper to test insertion of stuff. It should try to insert stick first.
+        plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
+
+        plot.test(helper -> helper.succeedWhen(() -> {
+            var meChest = (appeng.blockentity.storage.ChestBlockEntity) helper.getBlockEntity(origin);
+            helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
+            // The stick should still be in the hopper
+            helper.assertContainerContains(origin.above(), Items.STICK);
         }));
     }
 
