@@ -13,7 +13,6 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.core.localization.GuiText;
-import appeng.helpers.iface.PatternProviderLogicHost;
 
 /**
  * Combines several ME storages that each handle only a given key-space.
@@ -45,35 +44,23 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
         var storage = storages.get(what.getType());
         var inserted = storage != null ? storage.insert(what, amount, mode, source) : 0;
 
-        // If a pattern provider in blocking mode successfully inserts its input into this storage bus,
-        // and we do not currently report that item as being in this storage, we have to refresh
-        // the cache the next time it's queried. Otherwise, the pattern provider would not correctly
-        // detect the pattern input to already be stored here.
-        if (inserted > 0
-                && !forceCacheRebuild
-                && isPatternProviderInBlockingMode(source)
-                && !cache.contains(what)) {
+        if (inserted > 0 && mode == Actionable.MODULATE) {
             forceCacheRebuild = true;
         }
 
         return inserted;
     }
 
-    private static boolean isPatternProviderInBlockingMode(IActionSource source) {
-        if (source.machine().isEmpty()) {
-            return false;
-        }
-        var machineNode = source.machine().get().getActionableNode();
-        if (machineNode != null && machineNode.getOwner() instanceof PatternProviderLogicHost host) {
-            return host.getLogic().isBlocking();
-        }
-        return false;
-    }
-
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         var storage = storages.get(what.getType());
-        return storage != null ? storage.extract(what, amount, mode, source) : 0;
+        var extracted = storage != null ? storage.extract(what, amount, mode, source) : 0;
+
+        if (extracted > 0 && mode == Actionable.MODULATE) {
+            forceCacheRebuild = true;
+        }
+
+        return extracted;
     }
 
     /**
