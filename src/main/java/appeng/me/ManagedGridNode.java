@@ -128,9 +128,6 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
-    /**
-     * Changes the name of the NBT subtag in the host's NBT data that this node's data will be stored as.
-     */
     @Override
     public ManagedGridNode setTagName(String tagName) {
         if (getInitData().data != null) {

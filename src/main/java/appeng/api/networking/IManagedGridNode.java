@@ -150,8 +150,15 @@ public interface IManagedGridNode {
         return setVisualRepresentation(AEItemKey.of(visualRepresentation));
     }
 
+    /**
+     * Changes whether this node can be discovered by other nodes in-world via the position of its owner and the sides
+     * exposed via {@link #setExposedOnSides(Set)}. By default, all sides are exposed.
+     */
     IManagedGridNode setInWorldNode(boolean accessible);
 
+    /**
+     * Changes the name of the NBT subtag in the host's NBT data that this node's data will be stored as.
+     */
     IManagedGridNode setTagName(String tagName);
 
     /**
