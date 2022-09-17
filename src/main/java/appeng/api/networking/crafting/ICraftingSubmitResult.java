@@ -8,7 +8,22 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.NonExtendable
 public interface ICraftingSubmitResult {
-    boolean successful();
+    default boolean successful() {
+        return errorCode() == null;
+    }
+
+    /**
+     * @return A not-null error code if the auto-crafting request was not submitted succesfully.
+     */
+    @Nullable
+    CraftingSubmitErrorCode errorCode();
+
+    /**
+     * If {@link #errorCode()} is not-null, this may optionally give additional error details. Type depends on the error
+     * code returned in {@link #errorCode()}.
+     */
+    @Nullable
+    Object errorDetail();
 
     /**
      * The crafting link, only available for successful requests with a requester. Make sure to properly keep track of

@@ -37,6 +37,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
+import org.apache.commons.lang3.mutable.MutableObject;
+
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -55,6 +57,7 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
+import appeng.api.networking.crafting.UnsuitableCpus;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.api.networking.security.IActionSource;
@@ -66,7 +69,7 @@ import appeng.blockentity.crafting.CraftingBlockEntity;
 import appeng.crafting.CraftingCalculation;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.CraftingLinkNexus;
-import appeng.crafting.execution.CraftingSubmitResultImpl;
+import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.StackWatcher;
@@ -288,7 +291,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     public ICraftingSubmitResult submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
             boolean prioritizePower, IActionSource src) {
         if (job.simulation()) {
-            return CraftingSubmitResultImpl.FAILED;
+            return CraftingSubmitResult.INCOMPLETE_PLAN;
         }
 
         CraftingCPUCluster cpuCluster;
@@ -296,24 +299,55 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         if (target instanceof CraftingCPUCluster) {
             cpuCluster = (CraftingCPUCluster) target;
         } else {
-            cpuCluster = findSuitableCraftingCPU(job, prioritizePower, src);
+            var unsuitableCpusResult = new MutableObject<UnsuitableCpus>();
+            cpuCluster = findSuitableCraftingCPU(job, prioritizePower, src, unsuitableCpusResult);
+            if (cpuCluster == null) {
+                var unsuitableCpus = unsuitableCpusResult.getValue();
+                // If no CPUs were unsuitable, but we couldn't find one, that means there aren't any
+                if (unsuitableCpus == null) {
+                    return CraftingSubmitResult.NO_CPU_FOUND;
+                } else {
+                    return CraftingSubmitResult.noSuitableCpu(unsuitableCpus);
+                }
+            }
         }
 
-        if (cpuCluster != null) {
-            return cpuCluster.submitJob(this.grid, job, src, requestingMachine);
-        }
-
-        return CraftingSubmitResultImpl.FAILED;
+        return cpuCluster.submitJob(this.grid, job, src, requestingMachine);
     }
 
     @Nullable
-    private CraftingCPUCluster findSuitableCraftingCPU(ICraftingPlan job, boolean prioritizePower, IActionSource src) {
+    private CraftingCPUCluster findSuitableCraftingCPU(ICraftingPlan job, boolean prioritizePower, IActionSource src,
+            MutableObject<UnsuitableCpus> unsuitableCpus) {
         var validCpusClusters = new ArrayList<CraftingCPUCluster>(this.craftingCPUClusters.size());
+        int offline = 0;
+        int busy = 0;
+        int tooSmall = 0;
+        int excluded = 0;
         for (var cpu : this.craftingCPUClusters) {
-            if (cpu.isActive() && !cpu.isBusy() && cpu.getAvailableStorage() >= job.bytes()
-                    && cpu.canBeAutoSelectedFor(src)) {
-                validCpusClusters.add(cpu);
+            if (!cpu.isActive()) {
+                offline++;
+                continue;
             }
+            if (cpu.isBusy()) {
+                busy++;
+                continue;
+            }
+            if (cpu.getAvailableStorage() < job.bytes()) {
+                tooSmall++;
+                continue;
+            }
+            if (!cpu.canBeAutoSelectedFor(src)) {
+                excluded++;
+                continue;
+            }
+            validCpusClusters.add(cpu);
+        }
+
+        if (validCpusClusters.isEmpty()) {
+            if (offline > 0 || busy > 0 || tooSmall > 0 || excluded > 0) {
+                unsuitableCpus.setValue(new UnsuitableCpus(offline, busy, tooSmall, excluded));
+            }
+            return null;
         }
 
         validCpusClusters.sort((a, b) -> {
@@ -332,11 +366,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
         });
 
-        if (!validCpusClusters.isEmpty()) {
-            return validCpusClusters.get(0);
-        } else {
-            return null;
-        }
+        return validCpusClusters.get(0);
     }
 
     @Override
