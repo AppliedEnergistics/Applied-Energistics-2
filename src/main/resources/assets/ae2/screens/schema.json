@@ -369,6 +369,12 @@
             "type": "string",
             "default": "LEFT",
             "enum": ["LEFT", "CENTER", "RIGHT"]
+          },
+          "maxWidth": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0,
+            "description": "If greater than 0, the text will be word-wrapped when it reaches the given width in pixels."
           }
         }
       }
