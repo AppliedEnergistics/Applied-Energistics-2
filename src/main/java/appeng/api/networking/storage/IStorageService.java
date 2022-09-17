@@ -81,4 +81,12 @@ public interface IStorageService extends IGridService {
      * @throws IllegalArgumentException If the given provider has not been {@link #addGlobalStorageProvider registered}.
      */
     void refreshGlobalStorageProvider(IStorageProvider provider);
+
+    /**
+     * Invalidates the {@link #getCachedInventory() cached inventory}, causing it to be re-calculated the next time it
+     * is accessed.
+     * <p>
+     * <strong>THIS IS A PERFORMANCE INTENSIVE OPERATION AND SHOULD BE USED WITH CARE.</strong>
+     */
+    void invalidateCache();
 }

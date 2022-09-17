@@ -140,20 +140,22 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
 
         var grid = node.getGrid();
 
+        var storageService = grid.getStorageService();
         var security = grid.getSecurityService();
         var energy = grid.getEnergyService();
         var craftMatrix = cct.getCraftingMatrix();
 
         // We'll try to use the best possible ingredients based on what's available in the network
 
-        var storage = grid.getStorageService().getInventory();
-        var cachedStorage = grid.getStorageService().getCachedInventory();
+        var storage = storageService.getInventory();
+        var cachedStorage = storageService.getCachedInventory();
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
         var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
         var craftingService = grid.getCraftingService();
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
+        boolean touchedGridStorage = false;
 
         // Handle each slot
         for (var x = 0; x < craftMatrix.size(); x++) {
@@ -171,6 +173,9 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
                         var in = AEItemKey.of(currentItem);
                         var inserted = StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
                                 cct.getActionSource());
+                        if (inserted > 0) {
+                            touchedGridStorage = true;
+                        }
                         if (inserted < currentItem.getCount()) {
                             currentItem = currentItem.copy();
                             currentItem.shrink((int) inserted);
@@ -196,6 +201,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
                 for (var what : request) {
                     var extracted = StorageHelper.poweredExtraction(energy, storage, what, 1, cct.getActionSource());
                     if (extracted > 0) {
+                        touchedGridStorage = true;
                         currentItem = what.toStack(Ints.saturatedCast(extracted));
                         break;
                     }
@@ -221,6 +227,12 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         menu.slotsChanged(craftMatrix.toContainer());
 
         if (!toAutoCraft.isEmpty()) {
+            // Invalidate the grid storage cache if we modified it. The crafting plan will use
+            // the outdated cached inventory otherwise.
+            if (touchedGridStorage) {
+                storageService.invalidateCache();
+            }
+
             // This must be the last call since it changes the menu!
             var stacks = toAutoCraft.entrySet().stream()
                     .map(e -> new IMenuCraftingPacket.AutoCraftEntry(e.getKey(), e.getValue())).toList();
