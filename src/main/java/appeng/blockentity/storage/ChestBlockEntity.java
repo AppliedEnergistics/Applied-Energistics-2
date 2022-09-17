@@ -671,9 +671,18 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            if (ChestBlockEntity.this.isPowered()) {
-                ChestBlockEntity.this.updateHandler();
-                return ChestBlockEntity.this.cellHandler != null;
+            if (isPowered()) {
+                updateHandler();
+                if (cellHandler == null) {
+                    return false;
+                }
+
+                var what = AEItemKey.of(stack);
+                if (what == null) {
+                    return false;
+                }
+
+                return cellHandler.insert(what, stack.getCount(), Actionable.SIMULATE, mySrc) > 0;
             }
             return false;
         }
