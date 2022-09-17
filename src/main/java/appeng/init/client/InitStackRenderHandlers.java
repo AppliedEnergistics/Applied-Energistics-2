@@ -84,7 +84,7 @@ public class InitStackRenderHandlers {
             // This cannot replace a proper projection, but it's cheap and gives the desired effect.
             // We don't scale the normal matrix to avoid lighting issues.
             poseStack.mulPoseMatrix(Matrix4f.createScaleMatrix(scale, scale, 0.001f));
-            // Rotate the normal matrix a little bit for nicer lighting.
+            // Rotate the normal matrix a little for nicer lighting.
             poseStack.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
 
             Minecraft.getInstance().getItemRenderer().renderStatic(what.toStack(), ItemTransforms.TransformType.GUI,

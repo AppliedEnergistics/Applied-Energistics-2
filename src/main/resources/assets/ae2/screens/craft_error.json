@@ -1,0 +1,51 @@
+{
+  "$schema": "schema.json",
+  "includes": ["common/common.json"],
+  "background": {
+    "texture": "guis/craft_error.png",
+    "srcRect": [0, 0, 219, 87]
+  },
+  "text": {
+    "dialog_title": {
+      "position": {
+        "left": 8,
+        "top": 7
+      }
+    },
+    "errorText": {
+      "position": {
+        "left": 110,
+        "top": 10
+      },
+      "align": "CENTER",
+      "maxWidth": 200,
+      "color": "ERROR"
+    }
+  },
+  "slots": {
+    "MISSING_INGREDIENT": {
+      "left": 101,
+      "top": 35
+    }
+  },
+  "widgets": {
+    "replan": {
+      "left": 5,
+      "bottom": 25,
+      "width": 50,
+      "height": 20
+    },
+    "retry": {
+      "left": 84,
+      "bottom": 25,
+      "width": 50,
+      "height": 20
+    },
+    "cancel": {
+      "right": 55,
+      "bottom": 25,
+      "width": 50,
+      "height": 20
+    }
+  }
+}

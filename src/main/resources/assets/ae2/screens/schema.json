@@ -337,7 +337,8 @@
           "CRAFTING_RESULT",
           "PROCESSING_INPUTS",
           "PROCESSING_OUTPUTS",
-          "BIOMETRIC_CARD"
+          "BIOMETRIC_CARD",
+          "MISSING_INGREDIENT"
         ]
       }
     },
@@ -352,7 +353,7 @@
           },
           "color": {
             "$comment": "See enum PaletteColor",
-            "enum": ["DEFAULT_TEXT_COLOR"],
+            "enum": ["DEFAULT_TEXT_COLOR", "SELECTION_COLOR", "ERROR"],
             "default": "DEFAULT_TEXT_COLOR"
           },
           "position": {
