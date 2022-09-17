@@ -78,20 +78,21 @@ public class CraftingCpuLogic {
             @Nullable ICraftingRequester requester) {
         // Already have a job.
         if (this.job != null)
-            return CraftingSubmitResultImpl.FAILED;
+            return CraftingSubmitResult.CPU_BUSY;
         // Check that the node is active.
         if (!cluster.isActive())
-            return CraftingSubmitResultImpl.FAILED;
+            return CraftingSubmitResult.CPU_OFFLINE;
         // Check bytes.
         if (cluster.getAvailableStorage() < plan.bytes())
-            return CraftingSubmitResultImpl.FAILED;
+            return CraftingSubmitResult.CPU_TOO_SMALL;
 
         if (!inventory.list.isEmpty())
             AELog.warn("Crafting CPU inventory is not empty yet a job was submitted.");
 
         // Try to extract required items.
-        if (!CraftingCpuHelper.tryExtractInitialItems(plan, grid, inventory, src))
-            return CraftingSubmitResultImpl.FAILED;
+        var missingIngredient = CraftingCpuHelper.tryExtractInitialItems(plan, grid, inventory, src);
+        if (missingIngredient != null)
+            return CraftingSubmitResult.missingIngredient(missingIngredient);
 
         // Set CPU link and job.
         var craftId = this.generateCraftId(plan.finalOutput());
@@ -110,9 +111,9 @@ public class CraftingCpuLogic {
             craftingService.addLink(linkCpu);
             craftingService.addLink(linkReq);
 
-            return new CraftingSubmitResultImpl(true, linkReq);
+            return CraftingSubmitResult.successful(linkReq);
         } else {
-            return new CraftingSubmitResultImpl(true, null);
+            return CraftingSubmitResult.successful(null);
         }
     }
 

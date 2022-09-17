@@ -32,6 +32,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.inv.ICraftingInventory;
 import appeng.crafting.inv.ListCraftingInventory;
@@ -40,7 +41,12 @@ import appeng.crafting.inv.ListCraftingInventory;
  * Helper functions used by the CPU.
  */
 public class CraftingCpuHelper {
-    public static boolean tryExtractInitialItems(ICraftingPlan plan, IGrid grid,
+    /**
+     * Tries to extract all ingredients defined by the plan. Returns null on success and otherwise a
+     * {@link GenericStack} explaining what is missing.
+     */
+    @Nullable
+    public static GenericStack tryExtractInitialItems(ICraftingPlan plan, IGrid grid,
             ListCraftingInventory cpuInventory, IActionSource src) {
         var storage = grid.getStorageService().getInventory();
 
@@ -58,11 +64,11 @@ public class CraftingCpuHelper {
                 }
                 cpuInventory.clear();
 
-                return false;
+                return new GenericStack(what, toExtract - extracted);
             }
         }
 
-        return true;
+        return null;
     }
 
     public static CompoundTag generateLinkData(String craftingID, boolean standalone, boolean req) {
