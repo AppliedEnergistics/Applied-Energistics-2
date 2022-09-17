@@ -393,42 +393,57 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         int color = style.getColor(text.getColor()).toARGB();
 
+        Point pos = text.getPosition().resolve(getBounds(false));
+
+        float scale = text.getScale();
+
         // Allow overrides for which content is shown
         Component content = text.getText();
         if (override != null && override.getContent() != null) {
             content = override.getContent().copy().withStyle(content.getStyle());
         }
 
-        Point pos = text.getPosition().resolve(getBounds(false));
-
-        float scale = text.getScale();
-
-        if (text.getAlign() == TextAlignment.CENTER) {
-            int textWidth = Math.round(this.font.width(content) * scale);
-            pos = pos.move(-textWidth / 2, 0);
-        } else if (text.getAlign() == TextAlignment.RIGHT) {
-            int textWidth = Math.round(this.font.width(content) * scale);
-            pos = pos.move(-textWidth, 0);
+        // Account for max width and split into lines
+        List<FormattedCharSequence> lines;
+        if (text.getMaxWidth() <= 0) {
+            var line = content.getVisualOrderText();
+            lines = List.of(line);
+        } else {
+            lines = this.font.split(content, text.getMaxWidth());
         }
 
-        if (text.getScale() == 1) {
-            this.font.draw(
-                    poseStack,
-                    content,
-                    pos.getX(),
-                    pos.getY(),
-                    color);
-        } else {
-            poseStack.pushPose();
-            poseStack.translate(pos.getX(), pos.getY(), 0);
-            poseStack.scale(text.getScale(), text.getScale(), 1);
-            this.font.draw(
-                    poseStack,
-                    content,
-                    0,
-                    0,
-                    color);
-            poseStack.popPose();
+        float y = pos.getY();
+        for (var line : lines) {
+            int lineWidth = this.font.width(line);
+            int x = pos.getX();
+            if (text.getAlign() == TextAlignment.CENTER) {
+                int textWidth = Math.round(lineWidth * scale);
+                x -= textWidth / 2;
+            } else if (text.getAlign() == TextAlignment.RIGHT) {
+                int textWidth = Math.round(lineWidth * scale);
+                x -= textWidth;
+            }
+
+            if (text.getScale() == 1) {
+                this.font.draw(
+                        poseStack,
+                        line,
+                        x,
+                        y,
+                        color);
+            } else {
+                poseStack.pushPose();
+                poseStack.translate(x, y, 0);
+                poseStack.scale(text.getScale(), text.getScale(), 1);
+                this.font.draw(
+                        poseStack,
+                        line,
+                        0,
+                        0,
+                        color);
+                poseStack.popPose();
+            }
+            y += text.getScale() * this.font.lineHeight;
         }
     }
 
