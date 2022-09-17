@@ -19,46 +19,40 @@
 package appeng.integration.modules.waila;
 
 
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-
-import mcp.mobius.waila.api.IWailaDataProvider;
-import mcp.mobius.waila.api.IWailaRegistrar;
-
 import appeng.integration.IIntegrationModule;
 import appeng.integration.IntegrationHelper;
 import appeng.tile.AEBaseTile;
+import mcp.mobius.waila.api.IWailaDataProvider;
+import mcp.mobius.waila.api.IWailaRegistrar;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 
 
-public class WailaModule implements IIntegrationModule
-{
+public class WailaModule implements IIntegrationModule {
 
-	public WailaModule()
-	{
-		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaDataProvider.class );
-		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaRegistrar.class );
-		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaConfigHandler.class );
-		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.IWailaDataAccessor.class );
-		IntegrationHelper.testClassExistence( this, mcp.mobius.waila.api.ITaggedList.class );
-	}
+    public WailaModule() {
+        IntegrationHelper.testClassExistence(this, mcp.mobius.waila.api.IWailaDataProvider.class);
+        IntegrationHelper.testClassExistence(this, mcp.mobius.waila.api.IWailaRegistrar.class);
+        IntegrationHelper.testClassExistence(this, mcp.mobius.waila.api.IWailaConfigHandler.class);
+        IntegrationHelper.testClassExistence(this, mcp.mobius.waila.api.IWailaDataAccessor.class);
+        IntegrationHelper.testClassExistence(this, mcp.mobius.waila.api.ITaggedList.class);
+    }
 
-	public static void register( final IWailaRegistrar registrar )
-	{
-		final IWailaDataProvider partHost = new PartWailaDataProvider();
+    public static void register(final IWailaRegistrar registrar) {
+        final IWailaDataProvider partHost = new PartWailaDataProvider();
 
-		registrar.registerStackProvider( partHost, AEBaseTile.class );
-		registrar.registerBodyProvider( partHost, AEBaseTile.class );
-		registrar.registerNBTProvider( partHost, AEBaseTile.class );
+        registrar.registerStackProvider(partHost, AEBaseTile.class);
+        registrar.registerBodyProvider(partHost, AEBaseTile.class);
+        registrar.registerNBTProvider(partHost, AEBaseTile.class);
 
-		final IWailaDataProvider tile = new TileWailaDataProvider();
+        final IWailaDataProvider tile = new TileWailaDataProvider();
 
-		registrar.registerBodyProvider( tile, AEBaseTile.class );
-		registrar.registerNBTProvider( tile, AEBaseTile.class );
-	}
+        registrar.registerBodyProvider(tile, AEBaseTile.class);
+        registrar.registerNBTProvider(tile, AEBaseTile.class);
+    }
 
-	@Override
-	public void init() throws Throwable
-	{
-		FMLInterModComms.sendMessage( "waila", "register", this.getClass().getName() + ".register" );
-	}
+    @Override
+    public void init() throws Throwable {
+        FMLInterModComms.sendMessage("waila", "register", this.getClass().getName() + ".register");
+    }
 
 }

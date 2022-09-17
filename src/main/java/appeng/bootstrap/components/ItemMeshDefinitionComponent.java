@@ -19,35 +19,31 @@
 package appeng.bootstrap.components;
 
 
-import javax.annotation.Nonnull;
-
+import appeng.bootstrap.IModelRegistry;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IModelRegistry;
+import javax.annotation.Nonnull;
 
 
 /**
  * Registers a custom item mesh definition that can be used to dynamically determine the item model based on
  * item stack properties.
  */
-public class ItemMeshDefinitionComponent implements IModelRegistrationComponent
-{
+public class ItemMeshDefinitionComponent implements IModelRegistrationComponent {
 
-	private final Item item;
+    private final Item item;
 
-	private final ItemMeshDefinition meshDefinition;
+    private final ItemMeshDefinition meshDefinition;
 
-	public ItemMeshDefinitionComponent( @Nonnull Item item, @Nonnull ItemMeshDefinition meshDefinition )
-	{
-		this.item = item;
-		this.meshDefinition = meshDefinition;
-	}
+    public ItemMeshDefinitionComponent(@Nonnull Item item, @Nonnull ItemMeshDefinition meshDefinition) {
+        this.item = item;
+        this.meshDefinition = meshDefinition;
+    }
 
-	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
-	{
-		registry.setCustomMeshDefinition( this.item, this.meshDefinition );
-	}
+    @Override
+    public void modelRegistration(Side side, IModelRegistry registry) {
+        registry.setCustomMeshDefinition(this.item, this.meshDefinition);
+    }
 }

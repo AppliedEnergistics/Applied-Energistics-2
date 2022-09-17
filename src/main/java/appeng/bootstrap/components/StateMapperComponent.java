@@ -19,6 +19,7 @@
 package appeng.bootstrap.components;
 
 
+import appeng.bootstrap.IModelRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
@@ -26,33 +27,27 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IModelRegistry;
-
 
 /**
  * Registers a custom state mapper for a given block.
  */
-public class StateMapperComponent implements IModelRegistrationComponent
-{
+public class StateMapperComponent implements IModelRegistrationComponent {
 
-	private final Block block;
+    private final Block block;
 
-	private final IStateMapper stateMapper;
+    private final IStateMapper stateMapper;
 
-	public StateMapperComponent( Block block, IStateMapper stateMapper )
-	{
-		this.block = block;
-		this.stateMapper = stateMapper;
-	}
+    public StateMapperComponent(Block block, IStateMapper stateMapper) {
+        this.block = block;
+        this.stateMapper = stateMapper;
+    }
 
-	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
-	{
-		registry.setCustomStateMapper( this.block, this.stateMapper );
-		if( this.stateMapper instanceof IResourceManagerReloadListener )
-		{
-			( (IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager() )
-					.registerReloadListener( (IResourceManagerReloadListener) this.stateMapper );
-		}
-	}
+    @Override
+    public void modelRegistration(Side side, IModelRegistry registry) {
+        registry.setCustomStateMapper(this.block, this.stateMapper);
+        if (this.stateMapper instanceof IResourceManagerReloadListener) {
+            ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager())
+                    .registerReloadListener((IResourceManagerReloadListener) this.stateMapper);
+        }
+    }
 }

@@ -6,8 +6,7 @@ import net.minecraftforge.fml.common.Loader;
 
 import java.util.Comparator;
 
-public class InventoryBogoSortModule
-{
+public class InventoryBogoSortModule {
     private static final boolean loaded = Loader.isModLoaded("bogosorter");
 
     public static final Comparator<IAEItemStack> COMPARATOR = (o1, o2) -> SortHandler.ITEM_COMPARATOR.compare(o1.getDefinition(), o2.getDefinition());

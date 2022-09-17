@@ -19,9 +19,9 @@
 package appeng.parts;
 
 
-import java.util.EnumSet;
-import java.util.Random;
-
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CableBusRenderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,102 +32,85 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
+import java.util.EnumSet;
+import java.util.Random;
 
 
-public class NullCableBusContainer implements ICableBusContainer
-{
+public class NullCableBusContainer implements ICableBusContainer {
 
-	@Override
-	public int isProvidingStrongPower( final EnumFacing opposite )
-	{
-		return 0;
-	}
+    @Override
+    public int isProvidingStrongPower(final EnumFacing opposite) {
+        return 0;
+    }
 
-	@Override
-	public int isProvidingWeakPower( final EnumFacing opposite )
-	{
-		return 0;
-	}
+    @Override
+    public int isProvidingWeakPower(final EnumFacing opposite) {
+        return 0;
+    }
 
-	@Override
-	public boolean canConnectRedstone( final EnumSet<EnumFacing> of )
-	{
-		return false;
-	}
+    @Override
+    public boolean canConnectRedstone(final EnumSet<EnumFacing> of) {
+        return false;
+    }
 
-	@Override
-	public void onEntityCollision( final Entity e )
-	{
+    @Override
+    public void onEntityCollision(final Entity e) {
 
-	}
+    }
 
-	@Override
-	public boolean activate( final EntityPlayer player, final EnumHand hand, final Vec3d vecFromPool )
-	{
-		return false;
-	}
+    @Override
+    public boolean activate(final EntityPlayer player, final EnumHand hand, final Vec3d vecFromPool) {
+        return false;
+    }
 
-	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
-	{
+    @Override
+    public void onNeighborChanged(IBlockAccess w, BlockPos pos, BlockPos neighbor) {
 
-	}
+    }
 
-	@Override
-	public boolean isSolidOnSide( final EnumFacing side )
-	{
-		return false;
-	}
+    @Override
+    public boolean isSolidOnSide(final EnumFacing side) {
+        return false;
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return true;
-	}
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
 
-	@Override
-	public SelectedPart selectPart( final Vec3d v3 )
-	{
-		return new SelectedPart();
-	}
+    @Override
+    public SelectedPart selectPart(final Vec3d v3) {
+        return new SelectedPart();
+    }
 
-	@Override
-	public boolean recolourBlock( final EnumFacing side, final AEColor colour, final EntityPlayer who )
-	{
-		return false;
-	}
+    @Override
+    public boolean recolourBlock(final EnumFacing side, final AEColor colour, final EntityPlayer who) {
+        return false;
+    }
 
-	@Override
-	public boolean isLadder( final EntityLivingBase entity )
-	{
-		return false;
-	}
+    @Override
+    public boolean isLadder(final EntityLivingBase entity) {
+        return false;
+    }
 
-	@Override
-	public void randomDisplayTick( final World world, final BlockPos pos, final Random r )
-	{
+    @Override
+    public void randomDisplayTick(final World world, final BlockPos pos, final Random r) {
 
-	}
+    }
 
-	@Override
-	public int getLightValue()
-	{
-		return 0;
-	}
+    @Override
+    public int getLightValue() {
+        return 0;
+    }
 
-	@Override
-	public CableBusRenderState getRenderState()
-	{
-		return new CableBusRenderState();
-	}
+    @Override
+    public CableBusRenderState getRenderState() {
+        return new CableBusRenderState();
+    }
 
-	@Override
-	public boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec )
-	{
-		return false;
-	}
+    @Override
+    public boolean clicked(EntityPlayer player, EnumHand hand, Vec3d hitVec) {
+        return false;
+    }
 
 }

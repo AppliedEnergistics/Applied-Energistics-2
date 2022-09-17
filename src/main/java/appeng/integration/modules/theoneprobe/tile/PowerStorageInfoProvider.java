@@ -19,48 +19,41 @@
 package appeng.integration.modules.theoneprobe.tile;
 
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.integration.modules.theoneprobe.TheOneProbeText;
 import appeng.tile.AEBaseTile;
 import appeng.util.Platform;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
 
-public class PowerStorageInfoProvider implements ITileProbInfoProvider
-{
+public class PowerStorageInfoProvider implements ITileProbInfoProvider {
 
-	@Override
-	public void addProbeInfo( AEBaseTile tile, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
-	{
-		if( tile instanceof IAEPowerStorage )
-		{
-			final IAEPowerStorage storage = (IAEPowerStorage) tile;
-			final double maxPower = storage.getAEMaxPower();
+    @Override
+    public void addProbeInfo(AEBaseTile tile, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        if (tile instanceof IAEPowerStorage) {
+            final IAEPowerStorage storage = (IAEPowerStorage) tile;
+            final double maxPower = storage.getAEMaxPower();
 
-			if( maxPower > 0 )
-			{
-				final long internalCurrentPower = (long) ( storage.getAECurrentPower() * 100 );
+            if (maxPower > 0) {
+                final long internalCurrentPower = (long) (storage.getAECurrentPower() * 100);
 
-				if( internalCurrentPower >= 0 )
-				{
-					final long internalMaxPower = (long) ( 100 * maxPower );
+                if (internalCurrentPower >= 0) {
+                    final long internalMaxPower = (long) (100 * maxPower);
 
-					final String formatCurrentPower = Platform.formatPowerLong( internalCurrentPower, false );
-					final String formatMaxPower = Platform.formatPowerLong( internalMaxPower, false );
-					final String formattedString = String.format( TheOneProbeText.STORED_ENERGY.getLocal(), formatCurrentPower, formatMaxPower );
+                    final String formatCurrentPower = Platform.formatPowerLong(internalCurrentPower, false);
+                    final String formatMaxPower = Platform.formatPowerLong(internalMaxPower, false);
+                    final String formattedString = String.format(TheOneProbeText.STORED_ENERGY.getLocal(), formatCurrentPower, formatMaxPower);
 
-					probeInfo.text( formattedString );
-				}
-			}
-		}
+                    probeInfo.text(formattedString);
+                }
+            }
+        }
 
-	}
+    }
 
 }

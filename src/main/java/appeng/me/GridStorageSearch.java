@@ -22,56 +22,43 @@ package appeng.me;
 import java.lang.ref.WeakReference;
 
 
-public class GridStorageSearch
-{
+public class GridStorageSearch {
 
-	private final long id;
-	private WeakReference<GridStorage> gridStorage;
+    private final long id;
+    private WeakReference<GridStorage> gridStorage;
 
-	/**
-	 * for use with the world settings
-	 *
-	 * @param id ID of grid storage search
-	 */
-	public GridStorageSearch( final long id )
-	{
-		this.id = id;
-	}
+    /**
+     * for use with the world settings
+     *
+     * @param id ID of grid storage search
+     */
+    public GridStorageSearch(final long id) {
+        this.id = id;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return ( (Long) this.id ).hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return ((Long) this.id).hashCode();
+    }
 
-	@Override
-	public boolean equals( final Object obj )
-	{
-		if( obj == null )
-		{
-			return false;
-		}
-		if( this.getClass() != obj.getClass() )
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
 
-		final GridStorageSearch other = (GridStorageSearch) obj;
-		if( this.id == other.id )
-		{
-			return true;
-		}
+        final GridStorageSearch other = (GridStorageSearch) obj;
+        return this.id == other.id;
+    }
 
-		return false;
-	}
+    public WeakReference<GridStorage> getGridStorage() {
+        return this.gridStorage;
+    }
 
-	public WeakReference<GridStorage> getGridStorage()
-	{
-		return this.gridStorage;
-	}
-
-	public void setGridStorage( final WeakReference<GridStorage> gridStorage )
-	{
-		this.gridStorage = gridStorage;
-	}
+    public void setGridStorage(final WeakReference<GridStorage> gridStorage) {
+        this.gridStorage = gridStorage;
+    }
 }

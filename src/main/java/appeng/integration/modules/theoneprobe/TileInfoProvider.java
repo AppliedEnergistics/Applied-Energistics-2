@@ -19,62 +19,49 @@
 package appeng.integration.modules.theoneprobe;
 
 
-import java.util.List;
-
+import appeng.core.AppEng;
+import appeng.integration.modules.theoneprobe.tile.*;
+import appeng.tile.AEBaseTile;
 import com.google.common.collect.Lists;
-
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoProvider;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.IProbeInfoProvider;
-import mcjty.theoneprobe.api.ProbeMode;
-
-import appeng.core.AppEng;
-import appeng.integration.modules.theoneprobe.tile.ChargerInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.CraftingMonitorInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.ITileProbInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.PowerStateInfoProvider;
-import appeng.integration.modules.theoneprobe.tile.PowerStorageInfoProvider;
-import appeng.tile.AEBaseTile;
+import java.util.List;
 
 
-public final class TileInfoProvider implements IProbeInfoProvider
-{
-	private final List<ITileProbInfoProvider> providers;
+public final class TileInfoProvider implements IProbeInfoProvider {
+    private final List<ITileProbInfoProvider> providers;
 
-	public TileInfoProvider()
-	{
-		final ITileProbInfoProvider charger = new ChargerInfoProvider();
-		final ITileProbInfoProvider energyCell = new CraftingMonitorInfoProvider();
-		final ITileProbInfoProvider craftingBlock = new PowerStateInfoProvider();
-		final ITileProbInfoProvider craftingMonitor = new PowerStorageInfoProvider();
+    public TileInfoProvider() {
+        final ITileProbInfoProvider charger = new ChargerInfoProvider();
+        final ITileProbInfoProvider energyCell = new CraftingMonitorInfoProvider();
+        final ITileProbInfoProvider craftingBlock = new PowerStateInfoProvider();
+        final ITileProbInfoProvider craftingMonitor = new PowerStorageInfoProvider();
 
-		this.providers = Lists.newArrayList( charger, energyCell, craftingBlock, craftingMonitor );
-	}
+        this.providers = Lists.newArrayList(charger, energyCell, craftingBlock, craftingMonitor);
+    }
 
-	@Override
-	public String getID()
-	{
-		return AppEng.MOD_ID + ":TileInfoProvider";
-	}
+    @Override
+    public String getID() {
+        return AppEng.MOD_ID + ":TileInfoProvider";
+    }
 
-	@Override
-	public void addProbeInfo( ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
-	{
-		final TileEntity tile = world.getTileEntity( data.getPos() );
+    @Override
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        final TileEntity tile = world.getTileEntity(data.getPos());
 
-		if( tile instanceof AEBaseTile )
-		{
-			final AEBaseTile aeBaseTile = (AEBaseTile) tile;
+        if (tile instanceof AEBaseTile) {
+            final AEBaseTile aeBaseTile = (AEBaseTile) tile;
 
-			for( final ITileProbInfoProvider provider : this.providers )
-			{
-				provider.addProbeInfo( aeBaseTile, mode, probeInfo, player, world, blockState, data );
-			}
-		}
-	}
+            for (final ITileProbInfoProvider provider : this.providers) {
+                provider.addProbeInfo(aeBaseTile, mode, probeInfo, player, world, blockState, data);
+            }
+        }
+    }
 }

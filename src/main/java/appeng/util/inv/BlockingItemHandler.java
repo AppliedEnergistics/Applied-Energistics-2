@@ -10,45 +10,37 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.Iterator;
 
 
-public class BlockingItemHandler extends BlockingInventoryAdaptor
-{
-	protected final IItemHandler itemHandler;
-	private final String domain;
+public class BlockingItemHandler extends BlockingInventoryAdaptor {
+    protected final IItemHandler itemHandler;
+    private final String domain;
 
-	public BlockingItemHandler( IItemHandler itemHandler, String domain )
-	{
-		this.itemHandler = itemHandler;
-		this.domain = domain;
-	}
+    public BlockingItemHandler(IItemHandler itemHandler, String domain) {
+        this.itemHandler = itemHandler;
+        this.domain = domain;
+    }
 
-	boolean isBlockableItem( ItemStack stack )
-	{
-		Object2ObjectOpenHashMap<Item, IntSet> map = NonBlockingItems.INSTANCE.getMap().get( domain );
-		if( map.get( stack.getItem() ) != null )
-		{
-			return !map.get( stack.getItem() ).contains( stack.getMetadata() );
-		}
-		return true;
-	}
+    boolean isBlockableItem(ItemStack stack) {
+        Object2ObjectOpenHashMap<Item, IntSet> map = NonBlockingItems.INSTANCE.getMap().get(domain);
+        if (map.get(stack.getItem()) != null) {
+            return !map.get(stack.getItem()).contains(stack.getMetadata());
+        }
+        return true;
+    }
 
-	@Override
-	public boolean containsBlockingItems()
-	{
-		int slots = this.itemHandler.getSlots();
-		for( int slot = 0; slot < slots; slot++ )
-		{
-			ItemStack is = this.itemHandler.getStackInSlot( slot );
-			if( !is.isEmpty() && isBlockableItem( is ) )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean containsBlockingItems() {
+        int slots = this.itemHandler.getSlots();
+        for (int slot = 0; slot < slots; slot++) {
+            ItemStack is = this.itemHandler.getStackInSlot(slot);
+            if (!is.isEmpty() && isBlockableItem(is)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public Iterator<ItemSlot> iterator()
-	{
-		return new ItemHandlerIterator( this.itemHandler );
-	}
+    @Override
+    public Iterator<ItemSlot> iterator() {
+        return new ItemHandlerIterator(this.itemHandler);
+    }
 }

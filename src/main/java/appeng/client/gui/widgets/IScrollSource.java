@@ -19,8 +19,7 @@
 package appeng.client.gui.widgets;
 
 
-public interface IScrollSource
-{
+public interface IScrollSource {
 
-	int getCurrentScroll();
+    int getCurrentScroll();
 }

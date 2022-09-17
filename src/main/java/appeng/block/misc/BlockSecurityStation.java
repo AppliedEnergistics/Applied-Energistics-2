@@ -19,8 +19,11 @@
 package appeng.block.misc;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.util.AEPartLocation;
+import appeng.block.AEBaseTileBlock;
+import appeng.core.sync.GuiBridge;
+import appeng.tile.misc.TileSecurityStation;
+import appeng.util.Platform;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -34,70 +37,56 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import appeng.api.util.AEPartLocation;
-import appeng.block.AEBaseTileBlock;
-import appeng.core.sync.GuiBridge;
-import appeng.tile.misc.TileSecurityStation;
-import appeng.util.Platform;
+import javax.annotation.Nullable;
 
 
-public class BlockSecurityStation extends AEBaseTileBlock
-{
+public class BlockSecurityStation extends AEBaseTileBlock {
 
-	private static final PropertyBool POWERED = PropertyBool.create( "powered" );
+    private static final PropertyBool POWERED = PropertyBool.create("powered");
 
-	public BlockSecurityStation()
-	{
-		super( Material.IRON );
+    public BlockSecurityStation() {
+        super(Material.IRON);
 
-		this.setDefaultState( this.getDefaultState().withProperty( POWERED, false ) );
-	}
+        this.setDefaultState(this.getDefaultState().withProperty(POWERED, false));
+    }
 
-	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { POWERED };
-	}
+    @Override
+    protected IProperty[] getAEStates() {
+        return new IProperty[]{POWERED};
+    }
 
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
-	}
+    @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
 
-	@Override
-	public IBlockState getActualState( IBlockState state, IBlockAccess world, BlockPos pos )
-	{
-		boolean powered = false;
-		TileSecurityStation te = this.getTileEntity( world, pos );
-		if( te != null )
-		{
-			powered = te.isActive();
-		}
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        boolean powered = false;
+        TileSecurityStation te = this.getTileEntity(world, pos);
+        if (te != null) {
+            powered = te.isActive();
+        }
 
-		return super.getActualState( state, world, pos )
-				.withProperty( POWERED, powered );
-	}
+        return super.getActualState(state, world, pos)
+                .withProperty(POWERED, powered);
+    }
 
-	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
-	{
-		if( p.isSneaking() )
-		{
-			return false;
-		}
+    @Override
+    public boolean onActivated(final World w, final BlockPos pos, final EntityPlayer p, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+        if (p.isSneaking()) {
+            return false;
+        }
 
-		final TileSecurityStation tg = this.getTileEntity( w, pos );
-		if( tg != null )
-		{
-			if( Platform.isClient() )
-			{
-				return true;
-			}
+        final TileSecurityStation tg = this.getTileEntity(w, pos);
+        if (tg != null) {
+            if (Platform.isClient()) {
+                return true;
+            }
 
-			Platform.openGUI( p, tg, AEPartLocation.fromFacing( side ), GuiBridge.GUI_SECURITY );
-			return true;
-		}
-		return false;
-	}
+            Platform.openGUI(p, tg, AEPartLocation.fromFacing(side), GuiBridge.GUI_SECURITY);
+            return true;
+        }
+        return false;
+    }
 }

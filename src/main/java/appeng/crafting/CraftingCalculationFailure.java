@@ -22,17 +22,15 @@ package appeng.crafting;
 import appeng.api.storage.data.IAEItemStack;
 
 
-public class CraftingCalculationFailure extends RuntimeException
-{
+public class CraftingCalculationFailure extends RuntimeException {
 
-	private static final long serialVersionUID = 654603652836724823L;
+    private static final long serialVersionUID = 654603652836724823L;
 
-	private final IAEItemStack missing;
+    private final IAEItemStack missing;
 
-	public CraftingCalculationFailure( final IAEItemStack what, final long howMany )
-	{
-		super( "this should have been caught!" );
-		this.missing = what.copy();
-		this.missing.setStackSize( howMany );
-	}
+    public CraftingCalculationFailure(final IAEItemStack what, final long howMany) {
+        super("this should have been caught!");
+        this.missing = what.copy();
+        this.missing.setStackSize(howMany);
+    }
 }

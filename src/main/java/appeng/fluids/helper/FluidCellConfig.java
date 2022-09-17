@@ -19,16 +19,15 @@
 package appeng.fluids.helper;
 
 
-import javax.annotation.Nonnull;
-
+import appeng.core.Api;
+import appeng.fluids.items.FluidDummyItem;
+import appeng.items.contents.CellConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-import appeng.core.Api;
-import appeng.fluids.items.FluidDummyItem;
-import appeng.items.contents.CellConfig;
+import javax.annotation.Nonnull;
 
 
 /**
@@ -36,71 +35,60 @@ import appeng.items.contents.CellConfig;
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class FluidCellConfig extends CellConfig
-{
-	public FluidCellConfig( ItemStack is )
-	{
-		super( is );
-	}
+public class FluidCellConfig extends CellConfig {
+    public FluidCellConfig(ItemStack is) {
+        super(is);
+    }
 
-	@Override
-	@Nonnull
-	public ItemStack insertItem( int slot, @Nonnull ItemStack stack, boolean simulate )
-	{
-		if( stack.isEmpty() || stack.getItem() instanceof FluidDummyItem )
-		{
-			super.insertItem( slot, stack, simulate );
-		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
-		{
-			return stack;
-		}
+    @Override
+    @Nonnull
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
+            super.insertItem(slot, stack, simulate);
+        }
+        FluidStack fluid = FluidUtil.getFluidContained(stack);
+        if (fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+            return stack;
+        }
 
-		fluid.amount = Fluid.BUCKET_VOLUME;
-		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		return super.insertItem( slot, is, simulate );
-	}
+        fluid.amount = Fluid.BUCKET_VOLUME;
+        ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).get();
+        FluidDummyItem item = (FluidDummyItem) is.getItem();
+        item.setFluidStack(is, fluid);
+        return super.insertItem(slot, is, simulate);
+    }
 
-	@Override
-	public void setStackInSlot( int slot, @Nonnull ItemStack stack )
-	{
-		if( stack.isEmpty() || stack.getItem() instanceof FluidDummyItem )
-		{
-			super.setStackInSlot( slot, stack );
-		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
-		{
-			return;
-		}
+    @Override
+    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
+            super.setStackInSlot(slot, stack);
+        }
+        FluidStack fluid = FluidUtil.getFluidContained(stack);
+        if (fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+            return;
+        }
 
-		fluid.amount = Fluid.BUCKET_VOLUME;
-		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		super.setStackInSlot( slot, is );
-	}
+        fluid.amount = Fluid.BUCKET_VOLUME;
+        ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).get();
+        FluidDummyItem item = (FluidDummyItem) is.getItem();
+        item.setFluidStack(is, fluid);
+        super.setStackInSlot(slot, is);
+    }
 
-	@Override
-	public boolean isItemValid( int slot, ItemStack stack )
-	{
-		if( stack.isEmpty() || stack.getItem() instanceof FluidDummyItem )
-		{
-			super.isItemValid( slot, stack );
-		}
-		FluidStack fluid = FluidUtil.getFluidContained( stack );
-		if( fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).isPresent() )
-		{
-			return false;
-		}
-		fluid.amount = Fluid.BUCKET_VOLUME;
-		ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack( 1 ).get();
-		FluidDummyItem item = (FluidDummyItem) is.getItem();
-		item.setFluidStack( is, fluid );
-		return super.isItemValid( slot, is );
-	}
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        if (stack.isEmpty() || stack.getItem() instanceof FluidDummyItem) {
+            super.isItemValid(slot, stack);
+        }
+        FluidStack fluid = FluidUtil.getFluidContained(stack);
+        if (fluid == null || !Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).isPresent()) {
+            return false;
+        }
+        fluid.amount = Fluid.BUCKET_VOLUME;
+        ItemStack is = Api.INSTANCE.definitions().items().dummyFluidItem().maybeStack(1).get();
+        FluidDummyItem item = (FluidDummyItem) is.getItem();
+        item.setFluidStack(is, fluid);
+        return super.isItemValid(slot, is);
+    }
 
 }

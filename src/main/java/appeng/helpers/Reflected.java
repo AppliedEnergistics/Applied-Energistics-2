@@ -28,9 +28,8 @@ import java.lang.annotation.Target;
 /**
  * Marker interface to help identify invocation of reflection
  */
-@Retention( RetentionPolicy.SOURCE )
-@Target( { ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.TYPE, ElementType.METHOD } )
-public @interface Reflected
-{
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
+public @interface Reflected {
 
 }

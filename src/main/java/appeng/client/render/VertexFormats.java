@@ -28,42 +28,31 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 /**
  * Utility for managing extended Vertex Formats without having to re-clone existing vertex formats over and over again.
  */
-public final class VertexFormats
-{
+public final class VertexFormats {
 
-	// Standard item format extended with lightmap coordinates
-	private static final VertexFormat itemFormatWithLightMap = new VertexFormat( DefaultVertexFormats.ITEM ).addElement( DefaultVertexFormats.TEX_2S );
+    // Standard item format extended with lightmap coordinates
+    private static final VertexFormat itemFormatWithLightMap = new VertexFormat(DefaultVertexFormats.ITEM).addElement(DefaultVertexFormats.TEX_2S);
 
-	private VertexFormats()
-	{
-	}
+    private VertexFormats() {
+    }
 
-	public static VertexFormat getFormatWithLightMap( VertexFormat format )
-	{
-		// Do not use this when Optifine is present or if the vanilla lighting pipeline is used
-		if( FMLClientHandler.instance().hasOptifine() || !ForgeModContainer.forgeLightPipelineEnabled )
-		{
-			return format;
-		}
+    public static VertexFormat getFormatWithLightMap(VertexFormat format) {
+        // Do not use this when Optifine is present or if the vanilla lighting pipeline is used
+        if (FMLClientHandler.instance().hasOptifine() || !ForgeModContainer.forgeLightPipelineEnabled) {
+            return format;
+        }
 
-		VertexFormat result;
-		if( format == DefaultVertexFormats.BLOCK )
-		{
-			result = DefaultVertexFormats.BLOCK;
-		}
-		else if( format == DefaultVertexFormats.ITEM )
-		{
-			result = itemFormatWithLightMap;
-		}
-		else if( !format.hasUvOffset( 1 ) )
-		{
-			result = new VertexFormat( format );
-			result.addElement( DefaultVertexFormats.TEX_2S );
-		}
-		else
-		{
-			result = format; // Already has the needed UV, so keep it
-		}
-		return result;
-	}
+        VertexFormat result;
+        if (format == DefaultVertexFormats.BLOCK) {
+            result = DefaultVertexFormats.BLOCK;
+        } else if (format == DefaultVertexFormats.ITEM) {
+            result = itemFormatWithLightMap;
+        } else if (!format.hasUvOffset(1)) {
+            result = new VertexFormat(format);
+            result.addElement(DefaultVertexFormats.TEX_2S);
+        } else {
+            result = format; // Already has the needed UV, so keep it
+        }
+        return result;
+    }
 }

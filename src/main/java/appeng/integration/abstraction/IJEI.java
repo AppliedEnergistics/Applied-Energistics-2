@@ -25,19 +25,15 @@ import appeng.integration.IIntegrationModule;
 /**
  * Abstracts access to the JEI API functionality.
  */
-public interface IJEI extends IIntegrationModule
-{
+public interface IJEI extends IIntegrationModule {
 
-	default String getSearchText()
-	{
-		return "";
-	}
+    default String getSearchText() {
+        return "";
+    }
 
-	default void setSearchText( String searchText )
-	{
-	}
+    default void setSearchText(String searchText) {
+    }
 
-	class Stub extends IIntegrationModule.Stub implements IJEI
-	{
-	}
+    class Stub extends IIntegrationModule.Stub implements IJEI {
+    }
 }

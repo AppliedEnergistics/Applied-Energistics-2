@@ -40,101 +40,87 @@ import java.util.List;
 import java.util.Map;
 
 
-public class DriveBakedModel implements IBakedModel
-{
-	private final IBakedModel bakedBase;
-	private final Map<DriveSlotState, IBakedModel> bakedCells;
+public class DriveBakedModel implements IBakedModel {
+    private final IBakedModel bakedBase;
+    private final Map<DriveSlotState, IBakedModel> bakedCells;
 
-	public DriveBakedModel( IBakedModel bakedBase, Map<DriveSlotState, IBakedModel> bakedCells )
-	{
-		this.bakedBase = bakedBase;
-		this.bakedCells = bakedCells;
-	}
+    public DriveBakedModel(IBakedModel bakedBase, Map<DriveSlotState, IBakedModel> bakedCells) {
+        this.bakedBase = bakedBase;
+        this.bakedCells = bakedCells;
+    }
 
-	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
-	{
+    @Override
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
 
-		List<BakedQuad> result = new ArrayList<>( this.bakedBase.getQuads( state, side, rand ) );
+        List<BakedQuad> result = new ArrayList<>(this.bakedBase.getQuads(state, side, rand));
 
-		if( side == null && state instanceof IExtendedBlockState )
-		{
-			IExtendedBlockState extState = (IExtendedBlockState) state;
+        if (side == null && state instanceof IExtendedBlockState) {
+            IExtendedBlockState extState = (IExtendedBlockState) state;
 
-			if (!extState.getUnlistedNames().contains( BlockDrive.SLOTS_STATE ))
-			{
-				return result;
-			}
+            if (!extState.getUnlistedNames().contains(BlockDrive.SLOTS_STATE)) {
+                return result;
+            }
 
-			DriveSlotsState slotsState = extState.getValue( BlockDrive.SLOTS_STATE );
+            DriveSlotsState slotsState = extState.getValue(BlockDrive.SLOTS_STATE);
 
-			for( int row = 0; row < 5; row++ )
-			{
-				for( int col = 0; col < 2; col++ )
-				{
-					DriveSlotState slotState = slotsState.getState( row * 2 + col );
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 2; col++) {
+                    DriveSlotState slotState = slotsState.getState(row * 2 + col);
 
-					IBakedModel bakedCell = this.bakedCells.get( slotState );
+                    IBakedModel bakedCell = this.bakedCells.get(slotState);
 
-					Matrix4f transform = new Matrix4f();
-					transform.setIdentity();
+                    Matrix4f transform = new Matrix4f();
+                    transform.setIdentity();
 
-					// Position this drive model copy at the correct slot. The transform is based on the
-					// cell-model being in slot 0,0 at the top left of the drive.
-					float xOffset = -col * 7 / 16.0f;
-					float yOffset = -row * 3 / 16.0f;
+                    // Position this drive model copy at the correct slot. The transform is based on the
+                    // cell-model being in slot 0,0 at the top left of the drive.
+                    float xOffset = -col * 7 / 16.0f;
+                    float yOffset = -row * 3 / 16.0f;
 
-					transform.setTranslation( new Vector3f( xOffset, yOffset, 0 ) );
+                    transform.setTranslation(new Vector3f(xOffset, yOffset, 0));
 
-					MatrixVertexTransformer transformer = new MatrixVertexTransformer( transform );
-					for( BakedQuad bakedQuad : bakedCell.getQuads( state, null, rand ) )
-					{
-						UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder( bakedQuad.getFormat() );
-						transformer.setParent( builder );
-						transformer.setVertexFormat( builder.getVertexFormat() );
-						bakedQuad.pipe( transformer );
-						result.add( builder.build() );
-					}
-				}
-			}
-		}
+                    MatrixVertexTransformer transformer = new MatrixVertexTransformer(transform);
+                    for (BakedQuad bakedQuad : bakedCell.getQuads(state, null, rand)) {
+                        UnpackedBakedQuad.Builder builder = new UnpackedBakedQuad.Builder(bakedQuad.getFormat());
+                        transformer.setParent(builder);
+                        transformer.setVertexFormat(builder.getVertexFormat());
+                        bakedQuad.pipe(transformer);
+                        result.add(builder.build());
+                    }
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return this.bakedBase.isAmbientOcclusion();
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return this.bakedBase.isAmbientOcclusion();
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return this.bakedBase.isGui3d();
-	}
+    @Override
+    public boolean isGui3d() {
+        return this.bakedBase.isGui3d();
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return this.bakedBase.isGui3d();
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return this.bakedBase.isGui3d();
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return this.bakedBase.getParticleTexture();
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return this.bakedBase.getParticleTexture();
+    }
 
-	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
-	{
-		return this.bakedBase.getItemCameraTransforms();
-	}
+    @Override
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return this.bakedBase.getItemCameraTransforms();
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return this.bakedBase.getOverrides();
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return this.bakedBase.getOverrides();
+    }
 }

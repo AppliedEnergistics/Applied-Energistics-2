@@ -19,41 +19,35 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotNormal;
 import appeng.tile.storage.TileSkyChest;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
-public class ContainerSkyChest extends AEBaseContainer
-{
+public class ContainerSkyChest extends AEBaseContainer {
 
-	private final TileSkyChest chest;
+    private final TileSkyChest chest;
 
-	public ContainerSkyChest( final InventoryPlayer ip, final TileSkyChest chest )
-	{
-		super( ip, chest, null );
-		this.chest = chest;
+    public ContainerSkyChest(final InventoryPlayer ip, final TileSkyChest chest) {
+        super(ip, chest, null);
+        this.chest = chest;
 
-		for( int y = 0; y < 4; y++ )
-		{
-			for( int x = 0; x < 9; x++ )
-			{
-				this.addSlotToContainer( new SlotNormal( this.chest.getInternalInventory(), y * 9 + x, 8 + 18 * x, 24 + 18 * y ) );
-			}
-		}
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 9; x++) {
+                this.addSlotToContainer(new SlotNormal(this.chest.getInternalInventory(), y * 9 + x, 8 + 18 * x, 24 + 18 * y));
+            }
+        }
 
-		this.chest.openInventory( ip.player );
+        this.chest.openInventory(ip.player);
 
-		this.bindPlayerInventory( ip, 0, 195 - /* height of player inventory */82 );
-	}
+        this.bindPlayerInventory(ip, 0, 195 - /* height of player inventory */82);
+    }
 
-	@Override
-	public void onContainerClosed( final EntityPlayer par1EntityPlayer )
-	{
-		super.onContainerClosed( par1EntityPlayer );
-		this.chest.closeInventory( par1EntityPlayer );
-	}
+    @Override
+    public void onContainerClosed(final EntityPlayer par1EntityPlayer) {
+        super.onContainerClosed(par1EntityPlayer);
+        this.chest.closeInventory(par1EntityPlayer);
+    }
 }

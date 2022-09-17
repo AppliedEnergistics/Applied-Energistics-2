@@ -19,13 +19,6 @@
 package appeng.tile.misc;
 
 
-import java.io.IOException;
-import java.util.EnumSet;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.util.EnumFacing;
-
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.tiles.ICrystalGrowthAccelerator;
 import appeng.api.networking.events.MENetworkEventSubscribe;
@@ -35,88 +28,76 @@ import appeng.api.util.AEPartLocation;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.Platform;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.util.EnumFacing;
+
+import java.io.IOException;
+import java.util.EnumSet;
 
 
-public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState, ICrystalGrowthAccelerator
-{
+public class TileQuartzGrowthAccelerator extends AENetworkTile implements IPowerChannelState, ICrystalGrowthAccelerator {
 
-	private boolean hasPower = false;
+    private boolean hasPower = false;
 
-	public TileQuartzGrowthAccelerator()
-	{
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
-		this.getProxy().setFlags();
-		this.getProxy().setIdlePowerUsage( 8 );
-	}
+    public TileQuartzGrowthAccelerator() {
+        this.getProxy().setValidSides(EnumSet.noneOf(EnumFacing.class));
+        this.getProxy().setFlags();
+        this.getProxy().setIdlePowerUsage(8);
+    }
 
-	@MENetworkEventSubscribe
-	public void onPower( final MENetworkPowerStatusChange ch )
-	{
-		this.markForUpdate();
-	}
+    @MENetworkEventSubscribe
+    public void onPower(final MENetworkPowerStatusChange ch) {
+        this.markForUpdate();
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.COVERED;
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return AECableType.COVERED;
+    }
 
-	@Override
-	public boolean readFromStream( final ByteBuf data ) throws IOException
-	{
-		final boolean c = super.readFromStream( data );
-		final boolean hadPower = this.isPowered();
-		this.setPowered( data.readBoolean() );
-		return this.isPowered() != hadPower || c;
-	}
+    @Override
+    public boolean readFromStream(final ByteBuf data) throws IOException {
+        final boolean c = super.readFromStream(data);
+        final boolean hadPower = this.isPowered();
+        this.setPowered(data.readBoolean());
+        return this.isPowered() != hadPower || c;
+    }
 
-	@Override
-	public void writeToStream( final ByteBuf data ) throws IOException
-	{
-		super.writeToStream( data );
-		try
-		{
-			data.writeBoolean( this.getProxy().getEnergy().isNetworkPowered() );
-		}
-		catch( final GridAccessException e )
-		{
-			data.writeBoolean( false );
-		}
-	}
+    @Override
+    public void writeToStream(final ByteBuf data) throws IOException {
+        super.writeToStream(data);
+        try {
+            data.writeBoolean(this.getProxy().getEnergy().isNetworkPowered());
+        } catch (final GridAccessException e) {
+            data.writeBoolean(false);
+        }
+    }
 
-	@Override
-	public void setOrientation( final EnumFacing inForward, final EnumFacing inUp )
-	{
-		super.setOrientation( inForward, inUp );
-		this.getProxy().setValidSides( EnumSet.of( this.getUp(), this.getUp().getOpposite() ) );
-	}
+    @Override
+    public void setOrientation(final EnumFacing inForward, final EnumFacing inUp) {
+        super.setOrientation(inForward, inUp);
+        this.getProxy().setValidSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+    }
 
-	@Override
-	public boolean isPowered()
-	{
-		if( Platform.isServer() )
-		{
-			try
-			{
-				return this.getProxy().getEnergy().isNetworkPowered();
-			}
-			catch( final GridAccessException e )
-			{
-				return false;
-			}
-		}
+    @Override
+    public boolean isPowered() {
+        if (Platform.isServer()) {
+            try {
+                return this.getProxy().getEnergy().isNetworkPowered();
+            } catch (final GridAccessException e) {
+                return false;
+            }
+        }
 
-		return this.hasPower;
-	}
+        return this.hasPower;
+    }
 
-	@Override
-	public boolean isActive()
-	{
-		return this.isPowered();
-	}
+    @Override
+    public boolean isActive() {
+        return this.isPowered();
+    }
 
-	private void setPowered( final boolean hasPower )
-	{
-		this.hasPower = hasPower;
-	}
+    private void setPowered(final boolean hasPower) {
+        this.hasPower = hasPower;
+    }
 }

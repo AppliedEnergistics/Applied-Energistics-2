@@ -19,108 +19,85 @@
 package appeng.me.helpers;
 
 
+import appeng.api.storage.data.IAEStack;
+import com.google.common.collect.Multimap;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.google.common.collect.Multimap;
 
-import appeng.api.storage.data.IAEStack;
+public class GenericInterestManager<T> {
 
+    private final Multimap<IAEStack, T> container;
+    private List<SavedTransactions> transactions = null;
+    private int transDepth = 0;
 
-public class GenericInterestManager<T>
-{
+    public GenericInterestManager(final Multimap<IAEStack, T> interests) {
+        this.container = interests;
+    }
 
-	private final Multimap<IAEStack, T> container;
-	private List<SavedTransactions> transactions = null;
-	private int transDepth = 0;
+    public void enableTransactions() {
+        if (this.transDepth == 0) {
+            this.transactions = new ArrayList<>();
+        }
 
-	public GenericInterestManager( final Multimap<IAEStack, T> interests )
-	{
-		this.container = interests;
-	}
+        this.transDepth++;
+    }
 
-	public void enableTransactions()
-	{
-		if( this.transDepth == 0 )
-		{
-			this.transactions = new ArrayList<>();
-		}
+    public void disableTransactions() {
+        this.transDepth--;
 
-		this.transDepth++;
-	}
+        if (this.transDepth == 0) {
+            final List<SavedTransactions> myActions = this.transactions;
+            this.transactions = null;
 
-	public void disableTransactions()
-	{
-		this.transDepth--;
+            for (final SavedTransactions t : myActions) {
+                if (t.put) {
+                    this.put(t.stack, t.iw);
+                } else {
+                    this.remove(t.stack, t.iw);
+                }
+            }
+        }
+    }
 
-		if( this.transDepth == 0 )
-		{
-			final List<SavedTransactions> myActions = this.transactions;
-			this.transactions = null;
+    public boolean put(final IAEStack stack, final T iw) {
+        if (this.transactions != null) {
+            this.transactions.add(new SavedTransactions(true, stack, iw));
+            return true;
+        } else {
+            return this.container.put(stack, iw);
+        }
+    }
 
-			for( final SavedTransactions t : myActions )
-			{
-				if( t.put )
-				{
-					this.put( t.stack, t.iw );
-				}
-				else
-				{
-					this.remove( t.stack, t.iw );
-				}
-			}
-		}
-	}
+    public boolean remove(final IAEStack stack, final T iw) {
+        if (this.transactions != null) {
+            this.transactions.add(new SavedTransactions(false, stack, iw));
+            return true;
+        } else {
+            return this.container.remove(stack, iw);
+        }
+    }
 
-	public boolean put( final IAEStack stack, final T iw )
-	{
-		if( this.transactions != null )
-		{
-			this.transactions.add( new SavedTransactions( true, stack, iw ) );
-			return true;
-		}
-		else
-		{
-			return this.container.put( stack, iw );
-		}
-	}
+    public boolean containsKey(final IAEStack stack) {
+        return this.container.containsKey(stack);
+    }
 
-	public boolean remove( final IAEStack stack, final T iw )
-	{
-		if( this.transactions != null )
-		{
-			this.transactions.add( new SavedTransactions( false, stack, iw ) );
-			return true;
-		}
-		else
-		{
-			return this.container.remove( stack, iw );
-		}
-	}
+    public Collection<T> get(final IAEStack stack) {
+        return this.container.get(stack);
+    }
 
-	public boolean containsKey( final IAEStack stack )
-	{
-		return this.container.containsKey( stack );
-	}
+    private class SavedTransactions {
 
-	public Collection<T> get( final IAEStack stack )
-	{
-		return this.container.get( stack );
-	}
+        private final boolean put;
+        private final IAEStack stack;
+        private final T iw;
 
-	private class SavedTransactions
-	{
-
-		private final boolean put;
-		private final IAEStack stack;
-		private final T iw;
-
-		public SavedTransactions( final boolean putOperation, final IAEStack myStack, final T watcher )
-		{
-			this.put = putOperation;
-			this.stack = myStack;
-			this.iw = watcher;
-		}
-	}
+        public SavedTransactions(final boolean putOperation, final IAEStack myStack, final T watcher) {
+            this.put = putOperation;
+            this.stack = myStack;
+            this.iw = watcher;
+        }
+    }
 }

@@ -19,40 +19,35 @@
 package appeng.client.render;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.implementations.tiles.IColorableTile;
+import appeng.api.util.AEColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.implementations.tiles.IColorableTile;
-import appeng.api.util.AEColor;
+import javax.annotation.Nullable;
 
 
 /**
  * Automatically exposes the color of a colorable tile using tint indices 0-2
  */
-public class ColorableTileBlockColor implements IBlockColor
-{
+public class ColorableTileBlockColor implements IBlockColor {
 
-	public static final ColorableTileBlockColor INSTANCE = new ColorableTileBlockColor();
+    public static final ColorableTileBlockColor INSTANCE = new ColorableTileBlockColor();
 
-	@Override
-	public int colorMultiplier( IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex )
-	{
-		AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
+    @Override
+    public int colorMultiplier(IBlockState state, @Nullable IBlockAccess worldIn, @Nullable BlockPos pos, int tintIndex) {
+        AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
-		if( worldIn != null && pos != null )
-		{
-			TileEntity te = worldIn.getTileEntity( pos );
-			if( te instanceof IColorableTile )
-			{
-				color = ( (IColorableTile) te ).getColor();
-			}
-		}
+        if (worldIn != null && pos != null) {
+            TileEntity te = worldIn.getTileEntity(pos);
+            if (te instanceof IColorableTile) {
+                color = ((IColorableTile) te).getColor();
+            }
+        }
 
-		return color.getVariantByTintIndex( tintIndex );
-	}
+        return color.getVariantByTintIndex(tintIndex);
+    }
 }

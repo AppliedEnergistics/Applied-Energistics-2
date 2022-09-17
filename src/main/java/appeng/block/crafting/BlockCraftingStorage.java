@@ -19,12 +19,10 @@
 package appeng.block.crafting;
 
 
-public class BlockCraftingStorage extends BlockCraftingUnit
-{
+public class BlockCraftingStorage extends BlockCraftingUnit {
 
-	public BlockCraftingStorage( final CraftingUnitType type )
-	{
-		super( type );
-	}
+    public BlockCraftingStorage(final CraftingUnitType type) {
+        super(type);
+    }
 
 }

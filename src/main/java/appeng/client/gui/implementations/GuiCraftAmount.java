@@ -19,13 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import java.io.IOException;
-
-import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
@@ -44,267 +37,229 @@ import appeng.core.sync.packets.PacketSwitchGuis;
 import appeng.helpers.Reflected;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.parts.reporting.PartCraftingTerminal;
+import appeng.parts.reporting.PartExpandedProcessingPatternTerminal;
 import appeng.parts.reporting.PartPatternTerminal;
 import appeng.parts.reporting.PartTerminal;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 
+import java.io.IOException;
 
-public class GuiCraftAmount extends AEBaseGui
-{
-	private GuiNumberBox amountToCraft;
-	private GuiTabButton originalGuiBtn;
 
-	private GuiButton next;
+public class GuiCraftAmount extends AEBaseGui {
+    private GuiNumberBox amountToCraft;
+    private GuiTabButton originalGuiBtn;
 
-	private GuiButton plus1;
-	private GuiButton plus10;
-	private GuiButton plus100;
-	private GuiButton plus1000;
-	private GuiButton minus1;
-	private GuiButton minus10;
-	private GuiButton minus100;
-	private GuiButton minus1000;
+    private GuiButton next;
 
-	private GuiBridge originalGui;
+    private GuiButton plus1;
+    private GuiButton plus10;
+    private GuiButton plus100;
+    private GuiButton plus1000;
+    private GuiButton minus1;
+    private GuiButton minus10;
+    private GuiButton minus100;
+    private GuiButton minus1000;
 
-	@Reflected
-	public GuiCraftAmount( final InventoryPlayer inventoryPlayer, final ITerminalHost te )
-	{
-		super( new ContainerCraftAmount( inventoryPlayer, te ) );
-	}
+    private GuiBridge originalGui;
 
-	@Override
-	public void initGui()
-	{
-		super.initGui();
+    @Reflected
+    public GuiCraftAmount(final InventoryPlayer inventoryPlayer, final ITerminalHost te) {
+        super(new ContainerCraftAmount(inventoryPlayer, te));
+    }
 
-		final int a = AEConfig.instance().craftItemsByStackAmounts( 0 );
-		final int b = AEConfig.instance().craftItemsByStackAmounts( 1 );
-		final int c = AEConfig.instance().craftItemsByStackAmounts( 2 );
-		final int d = AEConfig.instance().craftItemsByStackAmounts( 3 );
+    @Override
+    public void initGui() {
+        super.initGui();
 
-		this.buttonList.add( this.plus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a ) );
-		this.buttonList.add( this.plus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b ) );
-		this.buttonList.add( this.plus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c ) );
-		this.buttonList.add( this.plus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d ) );
+        final int a = AEConfig.instance().craftItemsByStackAmounts(0);
+        final int b = AEConfig.instance().craftItemsByStackAmounts(1);
+        final int c = AEConfig.instance().craftItemsByStackAmounts(2);
+        final int d = AEConfig.instance().craftItemsByStackAmounts(3);
 
-		this.buttonList.add( this.minus1 = new GuiButton( 0, this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a ) );
-		this.buttonList.add( this.minus10 = new GuiButton( 0, this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b ) );
-		this.buttonList.add( this.minus100 = new GuiButton( 0, this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c ) );
-		this.buttonList.add( this.minus1000 = new GuiButton( 0, this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d ) );
+        this.buttonList.add(this.plus1 = new GuiButton(0, this.guiLeft + 20, this.guiTop + 26, 22, 20, "+" + a));
+        this.buttonList.add(this.plus10 = new GuiButton(0, this.guiLeft + 48, this.guiTop + 26, 28, 20, "+" + b));
+        this.buttonList.add(this.plus100 = new GuiButton(0, this.guiLeft + 82, this.guiTop + 26, 32, 20, "+" + c));
+        this.buttonList.add(this.plus1000 = new GuiButton(0, this.guiLeft + 120, this.guiTop + 26, 38, 20, "+" + d));
 
-		this.buttonList.add( this.next = new GuiButton( 0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal() ) );
+        this.buttonList.add(this.minus1 = new GuiButton(0, this.guiLeft + 20, this.guiTop + 75, 22, 20, "-" + a));
+        this.buttonList.add(this.minus10 = new GuiButton(0, this.guiLeft + 48, this.guiTop + 75, 28, 20, "-" + b));
+        this.buttonList.add(this.minus100 = new GuiButton(0, this.guiLeft + 82, this.guiTop + 75, 32, 20, "-" + c));
+        this.buttonList.add(this.minus1000 = new GuiButton(0, this.guiLeft + 120, this.guiTop + 75, 38, 20, "-" + d));
 
-		ItemStack myIcon = null;
-		final Object target = ( (AEBaseContainer) this.inventorySlots ).getTarget();
-		final IDefinitions definitions = AEApi.instance().definitions();
-		final IParts parts = definitions.parts();
+        this.buttonList.add(this.next = new GuiButton(0, this.guiLeft + 128, this.guiTop + 51, 38, 20, GuiText.Next.getLocal()));
 
-		if( target instanceof WirelessTerminalGuiObject )
-		{
-			myIcon = definitions.items().wirelessTerminal().maybeStack( 1 ).orElse( myIcon );
+        ItemStack myIcon = null;
+        final Object target = ((AEBaseContainer) this.inventorySlots).getTarget();
+        final IDefinitions definitions = AEApi.instance().definitions();
+        final IParts parts = definitions.parts();
 
-			this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
-		}
+        if (target instanceof WirelessTerminalGuiObject) {
+            myIcon = definitions.items().wirelessTerminal().maybeStack(1).orElse(myIcon);
 
-		if( target instanceof PartTerminal )
-		{
-			myIcon = parts.terminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-			this.originalGui = GuiBridge.GUI_ME;
-		}
+            this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
+        }
 
-		if( target instanceof PartCraftingTerminal )
-		{
-			myIcon = parts.craftingTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-			this.originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
-		}
+        if (target instanceof PartTerminal) {
+            myIcon = parts.terminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.originalGui = GuiBridge.GUI_ME;
+        }
 
-		if( target instanceof PartPatternTerminal )
-		{
-			myIcon = parts.patternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-			this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
-		}
+        if (target instanceof PartCraftingTerminal) {
+            myIcon = parts.craftingTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.originalGui = GuiBridge.GUI_CRAFTING_TERMINAL;
+        }
 
-		if( target instanceof PartExpandedProcessingPatternTerminal )
-		{
-			myIcon = parts.expandedProcessingPatternTerminal().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-			this.originalGui = GuiBridge.GUI_EXPANDED_PROCESSING_PATTERN_TERMINAL;
-		}
+        if (target instanceof PartPatternTerminal) {
+            myIcon = parts.patternTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.originalGui = GuiBridge.GUI_PATTERN_TERMINAL;
+        }
 
-		if( this.originalGui != null && !myIcon.isEmpty() )
-		{
-			this.buttonList.add( this.originalGuiBtn = new GuiTabButton( this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender ) );
-		}
+        if (target instanceof PartExpandedProcessingPatternTerminal) {
+            myIcon = parts.expandedProcessingPatternTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
+            this.originalGui = GuiBridge.GUI_EXPANDED_PROCESSING_PATTERN_TERMINAL;
+        }
 
-		this.amountToCraft = new GuiNumberBox( this.fontRenderer, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRenderer.FONT_HEIGHT, Integer.class );
-		this.amountToCraft.setEnableBackgroundDrawing( false );
-		this.amountToCraft.setMaxStringLength( 16 );
-		this.amountToCraft.setTextColor( 0xFFFFFF );
-		this.amountToCraft.setVisible( true );
-		this.amountToCraft.setFocused( true );
-		this.amountToCraft.setText( "1" );
-		this.amountToCraft.setSelectionPos( 0 );
-	}
+        if (this.originalGui != null && !myIcon.isEmpty()) {
+            this.buttonList.add(this.originalGuiBtn = new GuiTabButton(this.guiLeft + 154, this.guiTop, myIcon, myIcon.getDisplayName(), this.itemRender));
+        }
 
-	@Override
-	public void drawFG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.fontRenderer.drawString( GuiText.SelectAmount.getLocal(), 8, 6, 4210752 );
-	}
+        this.amountToCraft = new GuiNumberBox(this.fontRenderer, this.guiLeft + 62, this.guiTop + 57, 59, this.fontRenderer.FONT_HEIGHT, Integer.class);
+        this.amountToCraft.setEnableBackgroundDrawing(false);
+        this.amountToCraft.setMaxStringLength(16);
+        this.amountToCraft.setTextColor(0xFFFFFF);
+        this.amountToCraft.setVisible(true);
+        this.amountToCraft.setFocused(true);
+        this.amountToCraft.setText("1");
+        this.amountToCraft.setSelectionPos(0);
+    }
 
-	@Override
-	public void drawBG( final int offsetX, final int offsetY, final int mouseX, final int mouseY )
-	{
-		this.next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
+    @Override
+    public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.fontRenderer.drawString(GuiText.SelectAmount.getLocal(), 8, 6, 4210752);
+    }
 
-		this.bindTexture( "guis/craft_amt.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
+    @Override
+    public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
+        this.next.displayString = isShiftKeyDown() ? GuiText.Start.getLocal() : GuiText.Next.getLocal();
 
-		try
-		{
-			long amt = Long.parseLong( this.amountToCraft.getText() );
-			this.next.enabled = ( !this.amountToCraft.getText().isEmpty() && amt > 0 );
-		}
-		catch( final NumberFormatException e )
-		{
-			this.next.enabled = false;
-		}
+        this.bindTexture("guis/craft_amt.png");
+        this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
 
-		this.amountToCraft.drawTextBox();
-	}
+        try {
+            long amt = Long.parseLong(this.amountToCraft.getText());
+            this.next.enabled = (!this.amountToCraft.getText().isEmpty() && amt > 0);
+        } catch (final NumberFormatException e) {
+            this.next.enabled = false;
+        }
 
-	@Override
-	protected void keyTyped( final char character, final int key ) throws IOException
-	{
-		if( !this.checkHotbarKeys( key ) )
-		{
-			if( key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER )
-			{
-				this.actionPerformed( this.next );
-			}
-			if( ( key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit( character ) ) && this.amountToCraft
-					.textboxKeyTyped( character, key ) )
-			{
-				try
-				{
-					String out = this.amountToCraft.getText();
+        this.amountToCraft.drawTextBox();
+    }
 
-					boolean fixed = false;
-					while ( out.startsWith( "0" ) && out.length() > 1 )
-					{
-						out = out.substring( 1 );
-						fixed = true;
-					}
+    @Override
+    protected void keyTyped(final char character, final int key) throws IOException {
+        if (!this.checkHotbarKeys(key)) {
+            if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
+                this.actionPerformed(this.next);
+            }
+            if ((key == 211 || key == 205 || key == 203 || key == 14 || character == '-' || Character.isDigit(character)) && this.amountToCraft
+                    .textboxKeyTyped(character, key)) {
+                try {
+                    String out = this.amountToCraft.getText();
 
-					if( fixed )
-					{
-						this.amountToCraft.setText( out );
-					}
+                    boolean fixed = false;
+                    while (out.startsWith("0") && out.length() > 1) {
+                        out = out.substring(1);
+                        fixed = true;
+                    }
 
-					if( out.isEmpty() )
-					{
-						out = "0";
-					}
+                    if (fixed) {
+                        this.amountToCraft.setText(out);
+                    }
 
-					final long result = Long.parseLong( out );
-					if( result < 0 )
-					{
-						this.amountToCraft.setText( "1" );
-					}
-				}
-				catch( final NumberFormatException e )
-				{
-					// :P
-				}
-			}
-			else
-			{
-				super.keyTyped( character, key );
-			}
-		}
-	}
+                    if (out.isEmpty()) {
+                        out = "0";
+                    }
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
+                    final long result = Long.parseLong(out);
+                    if (result < 0) {
+                        this.amountToCraft.setText("1");
+                    }
+                } catch (final NumberFormatException e) {
+                    // :P
+                }
+            } else {
+                super.keyTyped(character, key);
+            }
+        }
+    }
 
-		try
-		{
+    @Override
+    protected void actionPerformed(final GuiButton btn) throws IOException {
+        super.actionPerformed(btn);
 
-			if( btn == this.originalGuiBtn )
-			{
-				NetworkHandler.instance().sendToServer( new PacketSwitchGuis( this.originalGui ) );
-			}
+        try {
 
-			if( btn == this.next )
-			{
-				NetworkHandler.instance().sendToServer( new PacketCraftRequest( Integer.parseInt( this.amountToCraft.getText() ), isShiftKeyDown() ) );
-			}
-		}
-		catch( final NumberFormatException e )
-		{
-			// nope..
-			this.amountToCraft.setText( "1" );
-		}
+            if (btn == this.originalGuiBtn) {
+                NetworkHandler.instance().sendToServer(new PacketSwitchGuis(this.originalGui));
+            }
 
-		final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
-		final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
+            if (btn == this.next) {
+                NetworkHandler.instance().sendToServer(new PacketCraftRequest(Integer.parseInt(this.amountToCraft.getText()), isShiftKeyDown()));
+            }
+        } catch (final NumberFormatException e) {
+            // nope..
+            this.amountToCraft.setText("1");
+        }
 
-		if( isPlus || isMinus )
-		{
-			this.addQty( this.getQty( btn ) );
-		}
-	}
+        final boolean isPlus = btn == this.plus1 || btn == this.plus10 || btn == this.plus100 || btn == this.plus1000;
+        final boolean isMinus = btn == this.minus1 || btn == this.minus10 || btn == this.minus100 || btn == this.minus1000;
 
-	private void addQty( final int i )
-	{
-		try
-		{
-			String out = this.amountToCraft.getText();
+        if (isPlus || isMinus) {
+            this.addQty(this.getQty(btn));
+        }
+    }
 
-			boolean fixed = false;
-			while ( out.startsWith( "0" ) && out.length() > 1 )
-			{
-				out = out.substring( 1 );
-				fixed = true;
-			}
+    private void addQty(final int i) {
+        try {
+            String out = this.amountToCraft.getText();
 
-			if( fixed )
-			{
-				this.amountToCraft.setText( out );
-			}
+            boolean fixed = false;
+            while (out.startsWith("0") && out.length() > 1) {
+                out = out.substring(1);
+                fixed = true;
+            }
 
-			if( out.isEmpty() )
-			{
-				out = "0";
-			}
+            if (fixed) {
+                this.amountToCraft.setText(out);
+            }
 
-			long result = Integer.parseInt( out );
+            if (out.isEmpty()) {
+                out = "0";
+            }
 
-			if( result == 1 && i > 1 )
-			{
-				result = 0;
-			}
+            long result = Integer.parseInt(out);
 
-			result += i;
-			if( result < 1 )
-			{
-				result = 1;
-			}
+            if (result == 1 && i > 1) {
+                result = 0;
+            }
 
-			out = Long.toString( result );
-			Integer.parseInt( out );
-			this.amountToCraft.setText( out );
-		}
-		catch( final NumberFormatException e )
-		{
-			// :P
-		}
-	}
+            result += i;
+            if (result < 1) {
+                result = 1;
+            }
 
-	protected String getBackground()
-	{
-		return "guis/craftAmt.png";
-	}
+            out = Long.toString(result);
+            Integer.parseInt(out);
+            this.amountToCraft.setText(out);
+        } catch (final NumberFormatException e) {
+            // :P
+        }
+    }
+
+    protected String getBackground() {
+        return "guis/craftAmt.png";
+    }
 }

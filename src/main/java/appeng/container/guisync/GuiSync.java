@@ -29,10 +29,9 @@ import java.lang.annotation.Target;
  * Annotates that this field should be synchronized between the server and client.
  * Requires the field to be public.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.FIELD )
-public @interface GuiSync
-{
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface GuiSync {
 
-	int value();
+    int value();
 }

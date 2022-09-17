@@ -21,15 +21,13 @@ package appeng.services.version.exceptions;
 
 /**
  * Indicates a version without a valid separator.
- *
+ * <p>
  * Valid separators are a dash ("-") or dot (".")
  */
-public class MissingSeparatorException extends VersionCheckerException
-{
-	private static final long serialVersionUID = 8366370192017020750L;
+public class MissingSeparatorException extends VersionCheckerException {
+    private static final long serialVersionUID = 8366370192017020750L;
 
-	public MissingSeparatorException()
-	{
-		super( "Invalid Revision: Needs to match 'rv' followed by a natural number." );
-	}
+    public MissingSeparatorException() {
+        super("Invalid Revision: Needs to match 'rv' followed by a natural number.");
+    }
 }

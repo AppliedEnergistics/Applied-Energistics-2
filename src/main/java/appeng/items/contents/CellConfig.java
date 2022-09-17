@@ -19,27 +19,23 @@
 package appeng.items.contents;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
+import net.minecraft.item.ItemStack;
 
 
-public class CellConfig extends AppEngInternalInventory
-{
+public class CellConfig extends AppEngInternalInventory {
 
-	private final ItemStack is;
+    private final ItemStack is;
 
-	public CellConfig( final ItemStack is )
-	{
-		super( null, 63 );
-		this.is = is;
-		this.readFromNBT( Platform.openNbtData( is ), "list" );
-	}
+    public CellConfig(final ItemStack is) {
+        super(null, 63);
+        this.is = is;
+        this.readFromNBT(Platform.openNbtData(is), "list");
+    }
 
-	@Override
-	protected void onContentsChanged( int slot )
-	{
-		this.writeToNBT( Platform.openNbtData( this.is ), "list" );
-	}
+    @Override
+    protected void onContentsChanged(int slot) {
+        this.writeToNBT(Platform.openNbtData(this.is), "list");
+    }
 }

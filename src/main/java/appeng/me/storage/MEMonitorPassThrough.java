@@ -19,10 +19,6 @@
 package appeng.me.storage;
 
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IBaseMonitor;
 import appeng.api.storage.IMEInventory;
@@ -34,142 +30,119 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.inv.ItemListIgnoreCrafting;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
-public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T>
-{
 
-	private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
-	private IActionSource changeSource;
-	private IMEMonitor<T> monitor;
+public class MEMonitorPassThrough<T extends IAEStack<T>> extends MEPassThrough<T> implements IMEMonitor<T>, IMEMonitorHandlerReceiver<T> {
 
-	public MEMonitorPassThrough( final IMEInventory<T> i, final IStorageChannel channel )
-	{
-		super( i, channel );
-		if( i instanceof IMEMonitor )
-		{
-			this.monitor = (IMEMonitor<T>) i;
-		}
-	}
+    private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
+    private IActionSource changeSource;
+    private IMEMonitor<T> monitor;
 
-	@Override
-	public void setInternal( final IMEInventory<T> i )
-	{
-		if( this.monitor != null )
-		{
-			this.monitor.removeListener( this );
-		}
+    public MEMonitorPassThrough(final IMEInventory<T> i, final IStorageChannel channel) {
+        super(i, channel);
+        if (i instanceof IMEMonitor) {
+            this.monitor = (IMEMonitor<T>) i;
+        }
+    }
 
-		this.monitor = null;
-		final IItemList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal()
-				.getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
+    @Override
+    public void setInternal(final IMEInventory<T> i) {
+        if (this.monitor != null) {
+            this.monitor.removeListener(this);
+        }
 
-		super.setInternal( i );
-		if( i instanceof IMEMonitor )
-		{
-			this.monitor = (IMEMonitor<T>) i;
-		}
+        this.monitor = null;
+        final IItemList<T> before = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal()
+                .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
 
-		final IItemList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal()
-				.getAvailableItems( new ItemListIgnoreCrafting( this.getWrappedChannel().createList() ) );
+        super.setInternal(i);
+        if (i instanceof IMEMonitor) {
+            this.monitor = (IMEMonitor<T>) i;
+        }
 
-		if( this.monitor != null && this.listeners.size() > 0 )
-		{
-			this.monitor.addListener( this, this.monitor );
-		}
+        final IItemList<T> after = this.getInternal() == null ? this.getWrappedChannel().createList() : this.getInternal()
+                .getAvailableItems(new ItemListIgnoreCrafting(this.getWrappedChannel().createList()));
 
-		Platform.postListChanges( before, after, this, this.getChangeSource() );
-	}
+        if (this.monitor != null && this.listeners.size() > 0) {
+            this.monitor.addListener(this, this.monitor);
+        }
 
-	@Override
-	public IItemList<T> getAvailableItems( final IItemList out )
-	{
-		super.getAvailableItems( new ItemListIgnoreCrafting( out ) );
-		return out;
-	}
+        Platform.postListChanges(before, after, this, this.getChangeSource());
+    }
 
-	@Override
-	public void addListener( final IMEMonitorHandlerReceiver<T> l, final Object verificationToken )
-	{
-		if( this.listeners.size() == 0 )
-		{
-			if( this.monitor != null )
-			{
-				this.monitor.addListener( this, this.monitor );
-			}
-		}
-		this.listeners.put( l, verificationToken );
-	}
+    @Override
+    public IItemList<T> getAvailableItems(final IItemList out) {
+        super.getAvailableItems(new ItemListIgnoreCrafting(out));
+        return out;
+    }
 
-	@Override
-	public void removeListener( final IMEMonitorHandlerReceiver<T> l )
-	{
-		this.listeners.remove( l );
-	}
+    @Override
+    public void addListener(final IMEMonitorHandlerReceiver<T> l, final Object verificationToken) {
+        if (this.listeners.size() == 0) {
+            if (this.monitor != null) {
+                this.monitor.addListener(this, this.monitor);
+            }
+        }
+        this.listeners.put(l, verificationToken);
+    }
 
-	@Override
-	public IItemList<T> getStorageList()
-	{
-		if( this.monitor == null )
-		{
-			final IItemList<T> out = this.getWrappedChannel().createList();
-			this.getInternal().getAvailableItems( new ItemListIgnoreCrafting( out ) );
-			return out;
-		}
-		return this.monitor.getStorageList();
-	}
+    @Override
+    public void removeListener(final IMEMonitorHandlerReceiver<T> l) {
+        this.listeners.remove(l);
+    }
 
-	@Override
-	public boolean isValid( final Object verificationToken )
-	{
-		return verificationToken == this.monitor;
-	}
+    @Override
+    public IItemList<T> getStorageList() {
+        if (this.monitor == null) {
+            final IItemList<T> out = this.getWrappedChannel().createList();
+            this.getInternal().getAvailableItems(new ItemListIgnoreCrafting(out));
+            return out;
+        }
+        return this.monitor.getStorageList();
+    }
 
-	@Override
-	public void postChange( final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source )
-	{
-		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
-		while( i.hasNext() )
-		{
-			final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-			final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
-			if( receiver.isValid( e.getValue() ) )
-			{
-				receiver.postChange( this, change, source );
-			}
-			else
-			{
-				i.remove();
-			}
-		}
-	}
+    @Override
+    public boolean isValid(final Object verificationToken) {
+        return verificationToken == this.monitor;
+    }
 
-	@Override
-	public void onListUpdate()
-	{
-		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
-		while( i.hasNext() )
-		{
-			final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
-			final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
-			if( receiver.isValid( e.getValue() ) )
-			{
-				receiver.onListUpdate();
-			}
-			else
-			{
-				i.remove();
-			}
-		}
-	}
+    @Override
+    public void postChange(final IBaseMonitor<T> monitor, final Iterable<T> change, final IActionSource source) {
+        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
+        while (i.hasNext()) {
+            final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
+            final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+            if (receiver.isValid(e.getValue())) {
+                receiver.postChange(this, change, source);
+            } else {
+                i.remove();
+            }
+        }
+    }
 
-	private IActionSource getChangeSource()
-	{
-		return this.changeSource;
-	}
+    @Override
+    public void onListUpdate() {
+        final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.listeners.entrySet().iterator();
+        while (i.hasNext()) {
+            final Entry<IMEMonitorHandlerReceiver<T>, Object> e = i.next();
+            final IMEMonitorHandlerReceiver<T> receiver = e.getKey();
+            if (receiver.isValid(e.getValue())) {
+                receiver.onListUpdate();
+            } else {
+                i.remove();
+            }
+        }
+    }
 
-	public void setChangeSource( final IActionSource changeSource )
-	{
-		this.changeSource = changeSource;
-	}
+    private IActionSource getChangeSource() {
+        return this.changeSource;
+    }
+
+    public void setChangeSource(final IActionSource changeSource) {
+        this.changeSource = changeSource;
+    }
 
 }

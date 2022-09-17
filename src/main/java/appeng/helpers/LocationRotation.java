@@ -19,54 +19,46 @@
 package appeng.helpers;
 
 
+import appeng.api.util.IOrientable;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.util.IOrientable;
 
+public class LocationRotation implements IOrientable {
 
-public class LocationRotation implements IOrientable
-{
+    private final IBlockAccess w;
+    private final int x;
+    private final int y;
+    private final int z;
 
-	private final IBlockAccess w;
-	private final int x;
-	private final int y;
-	private final int z;
+    public LocationRotation(final IBlockAccess world, final int x, final int y, final int z) {
+        this.w = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
-	public LocationRotation( final IBlockAccess world, final int x, final int y, final int z )
-	{
-		this.w = world;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+    @Override
+    public boolean canBeRotated() {
+        return false;
+    }
 
-	@Override
-	public boolean canBeRotated()
-	{
-		return false;
-	}
+    @Override
+    public EnumFacing getForward() {
+        if (this.getUp().getFrontOffsetY() == 0) {
+            return EnumFacing.UP;
+        }
+        return EnumFacing.SOUTH;
+    }
 
-	@Override
-	public EnumFacing getForward()
-	{
-		if( this.getUp().getFrontOffsetY() == 0 )
-		{
-			return EnumFacing.UP;
-		}
-		return EnumFacing.SOUTH;
-	}
+    @Override
+    public EnumFacing getUp() {
+        final int num = Math.abs(this.x + this.y + this.z) % 6;
+        return EnumFacing.VALUES[num];
+    }
 
-	@Override
-	public EnumFacing getUp()
-	{
-		final int num = Math.abs( this.x + this.y + this.z ) % 6;
-		return EnumFacing.VALUES[num];
-	}
+    @Override
+    public void setOrientation(final EnumFacing forward, final EnumFacing up) {
 
-	@Override
-	public void setOrientation( final EnumFacing forward, final EnumFacing up )
-	{
-
-	}
+    }
 }

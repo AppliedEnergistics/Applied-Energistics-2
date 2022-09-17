@@ -19,14 +19,6 @@
 package appeng.tile.misc;
 
 
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
@@ -41,216 +33,183 @@ import appeng.util.IConfigManagerHost;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+
+import java.util.List;
 
 
-public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost
-{
+public class TileCellWorkbench extends AEBaseTile implements IUpgradeableHost, IAEAppEngInventory, IConfigManagerHost {
 
-	private final AppEngInternalInventory cell = new AppEngInternalInventory( this, 1 );
-	private final AppEngInternalAEInventory config = new AppEngInternalAEInventory( this, 63 );
-	private final ConfigManager manager = new ConfigManager( this );
+    private final AppEngInternalInventory cell = new AppEngInternalInventory(this, 1);
+    private final AppEngInternalAEInventory config = new AppEngInternalAEInventory(this, 63);
+    private final ConfigManager manager = new ConfigManager(this);
 
-	private IItemHandler cacheUpgrades = null;
-	private IItemHandler cacheConfig = null;
-	private boolean locked = false;
+    private IItemHandler cacheUpgrades = null;
+    private IItemHandler cacheConfig = null;
+    private boolean locked = false;
 
-	public TileCellWorkbench()
-	{
-		this.manager.registerSetting( Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE );
-		this.cell.setEnableClientEvents( true );
-	}
+    public TileCellWorkbench() {
+        this.manager.registerSetting(Settings.COPY_MODE, CopyMode.CLEAR_ON_REMOVE);
+        this.cell.setEnableClientEvents(true);
+    }
 
-	public IItemHandler getCellUpgradeInventory()
-	{
-		if( this.cacheUpgrades == null )
-		{
-			final ICellWorkbenchItem cell = this.getCell();
-			if( cell == null )
-			{
-				return null;
-			}
+    public IItemHandler getCellUpgradeInventory() {
+        if (this.cacheUpgrades == null) {
+            final ICellWorkbenchItem cell = this.getCell();
+            if (cell == null) {
+                return null;
+            }
 
-			final ItemStack is = this.cell.getStackInSlot( 0 );
-			if( is.isEmpty() )
-			{
-				return null;
-			}
+            final ItemStack is = this.cell.getStackInSlot(0);
+            if (is.isEmpty()) {
+                return null;
+            }
 
-			final IItemHandler inv = cell.getUpgradesInventory( is );
-			if( inv == null )
-			{
-				return null;
-			}
+            final IItemHandler inv = cell.getUpgradesInventory(is);
+            if (inv == null) {
+                return null;
+            }
 
-			return this.cacheUpgrades = inv;
-		}
-		return this.cacheUpgrades;
-	}
+            return this.cacheUpgrades = inv;
+        }
+        return this.cacheUpgrades;
+    }
 
-	public ICellWorkbenchItem getCell()
-	{
-		if( this.cell.getStackInSlot( 0 ).isEmpty() )
-		{
-			return null;
-		}
+    public ICellWorkbenchItem getCell() {
+        if (this.cell.getStackInSlot(0).isEmpty()) {
+            return null;
+        }
 
-		if( this.cell.getStackInSlot( 0 ).getItem() instanceof ICellWorkbenchItem )
-		{
-			return( (ICellWorkbenchItem) this.cell.getStackInSlot( 0 ).getItem() );
-		}
+        if (this.cell.getStackInSlot(0).getItem() instanceof ICellWorkbenchItem) {
+            return ((ICellWorkbenchItem) this.cell.getStackInSlot(0).getItem());
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		this.cell.writeToNBT( data, "cell" );
-		this.config.writeToNBT( data, "config" );
-		this.manager.writeToNBT( data );
-		return data;
-	}
+    @Override
+    public NBTTagCompound writeToNBT(final NBTTagCompound data) {
+        super.writeToNBT(data);
+        this.cell.writeToNBT(data, "cell");
+        this.config.writeToNBT(data, "config");
+        this.manager.writeToNBT(data);
+        return data;
+    }
 
-	@Override
-	public void readFromNBT( final NBTTagCompound data )
-	{
-		super.readFromNBT( data );
-		this.cell.readFromNBT( data, "cell" );
-		this.config.readFromNBT( data, "config" );
-		this.manager.readFromNBT( data );
-	}
+    @Override
+    public void readFromNBT(final NBTTagCompound data) {
+        super.readFromNBT(data);
+        this.cell.readFromNBT(data, "cell");
+        this.config.readFromNBT(data, "config");
+        this.manager.readFromNBT(data);
+    }
 
-	@Override
-	public IItemHandler getInventoryByName( final String name )
-	{
-		if( name.equals( "config" ) )
-		{
-			return this.config;
-		}
+    @Override
+    public IItemHandler getInventoryByName(final String name) {
+        if (name.equals("config")) {
+            return this.config;
+        }
 
-		if( name.equals( "cell" ) )
-		{
-			return this.cell;
-		}
+        if (name.equals("cell")) {
+            return this.cell;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public int getInstalledUpgrades( final Upgrades u )
-	{
-		return 0;
-	}
+    @Override
+    public int getInstalledUpgrades(final Upgrades u) {
+        return 0;
+    }
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack )
-	{
-		if( inv == this.cell && !this.locked )
-		{
-			this.locked = true;
+    @Override
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack) {
+        if (inv == this.cell && !this.locked) {
+            this.locked = true;
 
-			this.cacheUpgrades = null;
-			this.cacheConfig = null;
+            this.cacheUpgrades = null;
+            this.cacheConfig = null;
 
-			final IItemHandler configInventory = this.getCellConfigInventory();
-			if( configInventory != null )
-			{
-				boolean cellHasConfig = false;
-				for( int x = 0; x < configInventory.getSlots(); x++ )
-				{
-					if( !configInventory.getStackInSlot( x ).isEmpty() )
-					{
-						cellHasConfig = true;
-						break;
-					}
-				}
+            final IItemHandler configInventory = this.getCellConfigInventory();
+            if (configInventory != null) {
+                boolean cellHasConfig = false;
+                for (int x = 0; x < configInventory.getSlots(); x++) {
+                    if (!configInventory.getStackInSlot(x).isEmpty()) {
+                        cellHasConfig = true;
+                        break;
+                    }
+                }
 
-				if( cellHasConfig )
-				{
-					for( int x = 0; x < this.config.getSlots(); x++ )
-					{
-						this.config.setStackInSlot( x, configInventory.getStackInSlot( x ) );
-					}
-				}
-				else
-				{
-					ItemHandlerUtil.copy( this.config, configInventory, false );
-				}
-			}
-			else if( this.manager.getSetting( Settings.COPY_MODE ) == CopyMode.CLEAR_ON_REMOVE )
-			{
-				for( int x = 0; x < this.config.getSlots(); x++ )
-				{
-					this.config.setStackInSlot( x, ItemStack.EMPTY );
-				}
+                if (cellHasConfig) {
+                    for (int x = 0; x < this.config.getSlots(); x++) {
+                        this.config.setStackInSlot(x, configInventory.getStackInSlot(x));
+                    }
+                } else {
+                    ItemHandlerUtil.copy(this.config, configInventory, false);
+                }
+            } else if (this.manager.getSetting(Settings.COPY_MODE) == CopyMode.CLEAR_ON_REMOVE) {
+                for (int x = 0; x < this.config.getSlots(); x++) {
+                    this.config.setStackInSlot(x, ItemStack.EMPTY);
+                }
 
-				this.saveChanges();
-			}
+                this.saveChanges();
+            }
 
-			this.locked = false;
-		}
-		else if( inv == this.config && !this.locked )
-		{
-			this.locked = true;
-			final IItemHandler c = this.getCellConfigInventory();
-			if( c != null )
-			{
-				ItemHandlerUtil.copy( this.config, c, false );
-				// copy items back. The ConfigInventory may changed the items on insert
-				ItemHandlerUtil.copy( c, this.config, false );
-			}
-			this.locked = false;
-		}
-	}
+            this.locked = false;
+        } else if (inv == this.config && !this.locked) {
+            this.locked = true;
+            final IItemHandler c = this.getCellConfigInventory();
+            if (c != null) {
+                ItemHandlerUtil.copy(this.config, c, false);
+                // copy items back. The ConfigInventory may changed the items on insert
+                ItemHandlerUtil.copy(c, this.config, false);
+            }
+            this.locked = false;
+        }
+    }
 
-	private IItemHandler getCellConfigInventory()
-	{
-		if( this.cacheConfig == null )
-		{
-			final ICellWorkbenchItem cell = this.getCell();
-			if( cell == null )
-			{
-				return null;
-			}
+    private IItemHandler getCellConfigInventory() {
+        if (this.cacheConfig == null) {
+            final ICellWorkbenchItem cell = this.getCell();
+            if (cell == null) {
+                return null;
+            }
 
-			final ItemStack is = this.cell.getStackInSlot( 0 );
-			if( is.isEmpty() )
-			{
-				return null;
-			}
+            final ItemStack is = this.cell.getStackInSlot(0);
+            if (is.isEmpty()) {
+                return null;
+            }
 
-			final IItemHandler inv = cell.getConfigInventory( is );
-			if( inv == null )
-			{
-				return null;
-			}
+            final IItemHandler inv = cell.getConfigInventory(is);
+            if (inv == null) {
+                return null;
+            }
 
-			this.cacheConfig = inv;
-		}
-		return this.cacheConfig;
-	}
+            this.cacheConfig = inv;
+        }
+        return this.cacheConfig;
+    }
 
-	@Override
-	public void getDrops( final World w, final BlockPos pos, final List<ItemStack> drops )
-	{
-		super.getDrops( w, pos, drops );
+    @Override
+    public void getDrops(final World w, final BlockPos pos, final List<ItemStack> drops) {
+        super.getDrops(w, pos, drops);
 
-		if( this.cell.getStackInSlot( 0 ) != null )
-		{
-			drops.add( this.cell.getStackInSlot( 0 ) );
-		}
-	}
+        if (this.cell.getStackInSlot(0) != null) {
+            drops.add(this.cell.getStackInSlot(0));
+        }
+    }
 
-	@Override
-	public IConfigManager getConfigManager()
-	{
-		return this.manager;
-	}
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.manager;
+    }
 
-	@Override
-	public void updateSetting( final IConfigManager manager, final Enum settingName, final Enum newValue )
-	{
-		// nothing here..
-	}
+    @Override
+    public void updateSetting(final IConfigManager manager, final Enum settingName, final Enum newValue) {
+        // nothing here..
+    }
 }

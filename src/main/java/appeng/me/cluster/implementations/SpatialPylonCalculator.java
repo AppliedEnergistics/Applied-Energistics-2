@@ -19,92 +19,76 @@
 package appeng.me.cluster.implementations;
 
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.WorldCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 import appeng.tile.spatial.TileSpatialPylon;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 
-public class SpatialPylonCalculator extends MBCalculator
-{
+public class SpatialPylonCalculator extends MBCalculator {
 
-	private final TileSpatialPylon tqb;
+    private final TileSpatialPylon tqb;
 
-	public SpatialPylonCalculator( final IAEMultiBlock t )
-	{
-		super( t );
-		this.tqb = (TileSpatialPylon) t;
-	}
+    public SpatialPylonCalculator(final IAEMultiBlock t) {
+        super(t);
+        this.tqb = (TileSpatialPylon) t;
+    }
 
-	@Override
-	public boolean checkMultiblockScale( final WorldCoord min, final WorldCoord max )
-	{
-		return ( min.x == max.x && min.y == max.y && min.z != max.z ) || ( min.x == max.x && min.y != max.y && min.z == max.z ) || ( min.x != max.x && min.y == max.y && min.z == max.z );
-	}
+    @Override
+    public boolean checkMultiblockScale(final WorldCoord min, final WorldCoord max) {
+        return (min.x == max.x && min.y == max.y && min.z != max.z) || (min.x == max.x && min.y != max.y && min.z == max.z) || (min.x != max.x && min.y == max.y && min.z == max.z);
+    }
 
-	@Override
-	public IAECluster createCluster( final World w, final WorldCoord min, final WorldCoord max )
-	{
-		return new SpatialPylonCluster( new DimensionalCoord( w, min.x, min.y, min.z ), new DimensionalCoord( w, max.x, max.y, max.z ) );
-	}
+    @Override
+    public IAECluster createCluster(final World w, final WorldCoord min, final WorldCoord max) {
+        return new SpatialPylonCluster(new DimensionalCoord(w, min.x, min.y, min.z), new DimensionalCoord(w, max.x, max.y, max.z));
+    }
 
-	@Override
-	public boolean verifyInternalStructure( final World w, final WorldCoord min, final WorldCoord max )
-	{
+    @Override
+    public boolean verifyInternalStructure(final World w, final WorldCoord min, final WorldCoord max) {
 
-		for( int x = min.x; x <= max.x; x++ )
-		{
-			for( int y = min.y; y <= max.y; y++ )
-			{
-				for( int z = min.z; z <= max.z; z++ )
-				{
-					final IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity( new BlockPos( x, y, z ) );
+        for (int x = min.x; x <= max.x; x++) {
+            for (int y = min.y; y <= max.y; y++) {
+                for (int z = min.z; z <= max.z; z++) {
+                    final IAEMultiBlock te = (IAEMultiBlock) w.getTileEntity(new BlockPos(x, y, z));
 
-					if( !te.isValid() )
-					{
-						return false;
-					}
-				}
-			}
-		}
+                    if (!te.isValid()) {
+                        return false;
+                    }
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public void disconnect()
-	{
-		this.tqb.disconnect( true );
-	}
+    @Override
+    public void disconnect() {
+        this.tqb.disconnect(true);
+    }
 
-	@Override
-	public void updateTiles( final IAECluster cl, final World w, final WorldCoord min, final WorldCoord max )
-	{
-		final SpatialPylonCluster c = (SpatialPylonCluster) cl;
+    @Override
+    public void updateTiles(final IAECluster cl, final World w, final WorldCoord min, final WorldCoord max) {
+        final SpatialPylonCluster c = (SpatialPylonCluster) cl;
 
-		for( int x = min.x; x <= max.x; x++ )
-		{
-			for( int y = min.y; y <= max.y; y++ )
-			{
-				for( int z = min.z; z <= max.z; z++ )
-				{
-					final TileSpatialPylon te = (TileSpatialPylon) w.getTileEntity( new BlockPos( x, y, z ) );
-					te.updateStatus( c );
-					c.getLine().add( ( te ) );
-				}
-			}
-		}
-	}
+        for (int x = min.x; x <= max.x; x++) {
+            for (int y = min.y; y <= max.y; y++) {
+                for (int z = min.z; z <= max.z; z++) {
+                    final TileSpatialPylon te = (TileSpatialPylon) w.getTileEntity(new BlockPos(x, y, z));
+                    te.updateStatus(c);
+                    c.getLine().add((te));
+                }
+            }
+        }
+    }
 
-	@Override
-	public boolean isValidTile( final TileEntity te )
-	{
-		return te instanceof TileSpatialPylon;
-	}
+    @Override
+    public boolean isValidTile(final TileEntity te) {
+        return te instanceof TileSpatialPylon;
+    }
 }

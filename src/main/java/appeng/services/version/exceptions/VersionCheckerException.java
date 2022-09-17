@@ -25,12 +25,10 @@ import javax.annotation.Nonnull;
 /**
  * A super class for any exception thrown by the version checker for easier handling.
  */
-public class VersionCheckerException extends Exception
-{
-	private static final long serialVersionUID = 4582501864800542884L;
+public class VersionCheckerException extends Exception {
+    private static final long serialVersionUID = 4582501864800542884L;
 
-	public VersionCheckerException( @Nonnull final String string )
-	{
-		super( string );
-	}
+    public VersionCheckerException(@Nonnull final String string) {
+        super(string);
+    }
 }

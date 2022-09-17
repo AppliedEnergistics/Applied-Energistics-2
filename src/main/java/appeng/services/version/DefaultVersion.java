@@ -27,25 +27,22 @@ import javax.annotation.Nonnull;
  * AE prints version like rv2-beta-8
  * GitHub prints version like rv2.beta.8
  */
-public final class DefaultVersion extends BaseVersion
-{
-	/**
-	 * @param revision natural number
-	 * @param channel either alpha, beta or release
-	 * @param build natural number
-	 */
-	public DefaultVersion( @Nonnegative final int revision, @Nonnull final Channel channel, @Nonnegative final int build )
-	{
-		super( revision, channel, build );
-	}
+public final class DefaultVersion extends BaseVersion {
+    /**
+     * @param revision natural number
+     * @param channel  either alpha, beta or release
+     * @param build    natural number
+     */
+    public DefaultVersion(@Nonnegative final int revision, @Nonnull final Channel channel, @Nonnegative final int build) {
+        super(revision, channel, build);
+    }
 
-	@Override
-	public boolean isNewerAs( final Version maybeOlder )
-	{
-		final boolean isNewerRevision = this.revision() > maybeOlder.revision();
-		final boolean isNewerChannel = this.channel().compareTo( maybeOlder.channel() ) > 0;
-		final boolean isNewerBuild = this.build() > maybeOlder.build();
+    @Override
+    public boolean isNewerAs(final Version maybeOlder) {
+        final boolean isNewerRevision = this.revision() > maybeOlder.revision();
+        final boolean isNewerChannel = this.channel().compareTo(maybeOlder.channel()) > 0;
+        final boolean isNewerBuild = this.build() > maybeOlder.build();
 
-		return isNewerRevision || isNewerChannel || isNewerBuild;
-	}
+        return isNewerRevision || isNewerChannel || isNewerBuild;
+    }
 }

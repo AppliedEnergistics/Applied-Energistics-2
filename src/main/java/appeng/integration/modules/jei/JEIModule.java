@@ -22,37 +22,31 @@ package appeng.integration.modules.jei;
 import appeng.integration.abstraction.IJEI;
 
 
-public class JEIModule implements IJEI
-{
+public class JEIModule implements IJEI {
 
-	private IJEI jei = new IJEI.Stub();
+    private IJEI jei = new IJEI.Stub();
 
-	public void setJei( IJEI jei )
-	{
-		this.jei = jei;
-	}
+    public void setJei(IJEI jei) {
+        this.jei = jei;
+    }
 
-	public IJEI getJei()
-	{
-		return this.jei;
-	}
+    public IJEI getJei() {
+        return this.jei;
+    }
 
-	@Override
-	public String getSearchText()
-	{
-		return this.jei.getSearchText();
-	}
+    @Override
+    public String getSearchText() {
+        return this.jei.getSearchText();
+    }
 
-	@Override
-	public void setSearchText( String searchText )
-	{
-		this.jei.setSearchText( searchText );
-	}
+    @Override
+    public void setSearchText(String searchText) {
+        this.jei.setSearchText(searchText);
+    }
 
-	@Override
-	public boolean isEnabled()
-	{
-		return this.jei.isEnabled();
-	}
+    @Override
+    public boolean isEnabled() {
+        return this.jei.isEnabled();
+    }
 
 }

@@ -19,104 +19,88 @@
 package appeng.hooks;
 
 
-import java.util.HashMap;
-import java.util.Iterator;
-
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketCompassRequest;
 
+import java.util.HashMap;
+import java.util.Iterator;
 
-public class CompassManager
-{
 
-	public static final CompassManager INSTANCE = new CompassManager();
-	private final HashMap<CompassRequest, CompassResult> requests = new HashMap<>();
+public class CompassManager {
 
-	public void postResult( final long attunement, final int x, final int y, final int z, final CompassResult result )
-	{
-		final CompassRequest r = new CompassRequest( attunement, x, y, z );
-		this.requests.put( r, result );
-	}
+    public static final CompassManager INSTANCE = new CompassManager();
+    private final HashMap<CompassRequest, CompassResult> requests = new HashMap<>();
 
-	public CompassResult getCompassDirection( final long attunement, final int x, final int y, final int z )
-	{
-		final long now = System.currentTimeMillis();
+    public void postResult(final long attunement, final int x, final int y, final int z, final CompassResult result) {
+        final CompassRequest r = new CompassRequest(attunement, x, y, z);
+        this.requests.put(r, result);
+    }
 
-		final Iterator<CompassResult> i = this.requests.values().iterator();
-		while( i.hasNext() )
-		{
-			final CompassResult res = i.next();
-			final long diff = now - res.getTime();
-			if( diff > 20000 )
-			{
-				i.remove();
-			}
-		}
+    public CompassResult getCompassDirection(final long attunement, final int x, final int y, final int z) {
+        final long now = System.currentTimeMillis();
 
-		final CompassRequest r = new CompassRequest( attunement, x, y, z );
-		CompassResult res = this.requests.get( r );
+        final Iterator<CompassResult> i = this.requests.values().iterator();
+        while (i.hasNext()) {
+            final CompassResult res = i.next();
+            final long diff = now - res.getTime();
+            if (diff > 20000) {
+                i.remove();
+            }
+        }
 
-		if( res == null )
-		{
-			res = new CompassResult( false, true, 0 );
-			this.requests.put( r, res );
-			this.requestUpdate( r );
-		}
-		else if( now - res.getTime() > 1000 * 3 )
-		{
-			if( !res.isRequested() )
-			{
-				res.setRequested( true );
-				this.requestUpdate( r );
-			}
-		}
+        final CompassRequest r = new CompassRequest(attunement, x, y, z);
+        CompassResult res = this.requests.get(r);
 
-		return res;
-	}
+        if (res == null) {
+            res = new CompassResult(false, true, 0);
+            this.requests.put(r, res);
+            this.requestUpdate(r);
+        } else if (now - res.getTime() > 1000 * 3) {
+            if (!res.isRequested()) {
+                res.setRequested(true);
+                this.requestUpdate(r);
+            }
+        }
 
-	private void requestUpdate( final CompassRequest r )
-	{
-		NetworkHandler.instance().sendToServer( new PacketCompassRequest( r.attunement, r.cx, r.cz, r.cdy ) );
-	}
+        return res;
+    }
 
-	private static class CompassRequest
-	{
+    private void requestUpdate(final CompassRequest r) {
+        NetworkHandler.instance().sendToServer(new PacketCompassRequest(r.attunement, r.cx, r.cz, r.cdy));
+    }
 
-		private final int hash;
-		private final long attunement;
-		private final int cx;
-		private final int cdy;
-		private final int cz;
+    private static class CompassRequest {
 
-		public CompassRequest( final long attunement, final int x, final int y, final int z )
-		{
-			this.attunement = attunement;
-			this.cx = x >> 4;
-			this.cdy = y >> 5;
-			this.cz = z >> 4;
-			this.hash = ( (Integer) this.cx ).hashCode() ^ ( (Integer) this.cdy ).hashCode() ^ ( (Integer) this.cz ).hashCode() ^ ( (Long) attunement )
-					.hashCode();
-		}
+        private final int hash;
+        private final long attunement;
+        private final int cx;
+        private final int cdy;
+        private final int cz;
 
-		@Override
-		public int hashCode()
-		{
-			return this.hash;
-		}
+        public CompassRequest(final long attunement, final int x, final int y, final int z) {
+            this.attunement = attunement;
+            this.cx = x >> 4;
+            this.cdy = y >> 5;
+            this.cz = z >> 4;
+            this.hash = ((Integer) this.cx).hashCode() ^ ((Integer) this.cdy).hashCode() ^ ((Integer) this.cz).hashCode() ^ ((Long) attunement)
+                    .hashCode();
+        }
 
-		@Override
-		public boolean equals( final Object obj )
-		{
-			if( obj == null )
-			{
-				return false;
-			}
-			if( this.getClass() != obj.getClass() )
-			{
-				return false;
-			}
-			final CompassRequest other = (CompassRequest) obj;
-			return this.attunement == other.attunement && this.cx == other.cx && this.cdy == other.cdy && this.cz == other.cz;
-		}
-	}
+        @Override
+        public int hashCode() {
+            return this.hash;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (this.getClass() != obj.getClass()) {
+                return false;
+            }
+            final CompassRequest other = (CompassRequest) obj;
+            return this.attunement == other.attunement && this.cx == other.cx && this.cdy == other.cdy && this.cz == other.cz;
+        }
+    }
 }

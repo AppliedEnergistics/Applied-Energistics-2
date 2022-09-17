@@ -22,12 +22,10 @@ package appeng.services.version.exceptions;
 /**
  * Indicates a invalid build number, which is any string except a natural number.
  */
-public class InvalidBuildException extends VersionCheckerException
-{
-	private static final long serialVersionUID = 3015432444672364991L;
+public class InvalidBuildException extends VersionCheckerException {
+    private static final long serialVersionUID = 3015432444672364991L;
 
-	public InvalidBuildException()
-	{
-		super( "Invalid Build: Needs to be a natural number." );
-	}
+    public InvalidBuildException() {
+        super("Invalid Build: Needs to be a natural number.");
+    }
 }

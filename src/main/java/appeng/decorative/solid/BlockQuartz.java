@@ -19,15 +19,12 @@
 package appeng.decorative.solid;
 
 
+import appeng.block.AEDecorativeBlock;
 import net.minecraft.block.material.Material;
 
-import appeng.block.AEDecorativeBlock;
 
-
-public final class BlockQuartz extends AEDecorativeBlock
-{
-	public BlockQuartz()
-	{
-		super( Material.ROCK );
-	}
+public final class BlockQuartz extends AEDecorativeBlock {
+    public BlockQuartz() {
+        super(Material.ROCK);
+    }
 }

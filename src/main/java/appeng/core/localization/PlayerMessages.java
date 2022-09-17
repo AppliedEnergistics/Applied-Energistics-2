@@ -23,34 +23,32 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
 
-public enum PlayerMessages
-{
-	ChestCannotReadStorageCell,
-	InvalidMachine,
-	LoadedSettings,
-	SavedSettings,
-	ResetSettings,
-	MachineNotPowered,
+public enum PlayerMessages {
+    ChestCannotReadStorageCell,
+    InvalidMachine,
+    LoadedSettings,
+    SavedSettings,
+    ResetSettings,
+    MachineNotPowered,
 
-	isNowLocked,
-	isNowUnlocked,
-	AmmoDepleted,
-	CommunicationError,
-	OutOfRange,
-	DeviceNotPowered,
-	DeviceNotWirelessTerminal,
-	DeviceNotLinked,
-	StationCanNotBeLocated,
-	SettingCleared,;
+    isNowLocked,
+    isNowUnlocked,
+    AmmoDepleted,
+    CommunicationError,
+    OutOfRange,
+    DeviceNotPowered,
+    DeviceNotWirelessTerminal,
+    DeviceNotLinked,
+    StationCanNotBeLocated,
+    SettingCleared,
+    ;
 
-	public ITextComponent get()
-	{
-		return new TextComponentTranslation( this.getName() );
-	}
+    public ITextComponent get() {
+        return new TextComponentTranslation(this.getName());
+    }
 
-	String getName()
-	{
-		return "chat.appliedenergistics2." + this.toString();
-	}
+    String getName() {
+        return "chat.appliedenergistics2." + this;
+    }
 
 }

@@ -19,15 +19,6 @@
 package appeng.me.storage;
 
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
@@ -41,289 +32,236 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 import appeng.me.cache.SecurityCache;
 
+import java.util.*;
 
-public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T>
-{
 
-	private static final ThreadLocal<Deque> DEPTH_MOD = new ThreadLocal<>();
-	private static final ThreadLocal<Deque> DEPTH_SIM = new ThreadLocal<>();
-	private static final Comparator<Integer> PRIORITY_SORTER = ( o1, o2 ) -> Integer.compare( o2, o1 );
+public class NetworkInventoryHandler<T extends IAEStack<T>> implements IMEInventoryHandler<T> {
 
-	private static int currentPass = 0;
-	private final IStorageChannel<T> myChannel;
-	private final SecurityCache security;
-	private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
-	private int myPass = 0;
+    private static final ThreadLocal<Deque> DEPTH_MOD = new ThreadLocal<>();
+    private static final ThreadLocal<Deque> DEPTH_SIM = new ThreadLocal<>();
+    private static final Comparator<Integer> PRIORITY_SORTER = (o1, o2) -> Integer.compare(o2, o1);
 
-	public NetworkInventoryHandler( final IStorageChannel<T> chan, final SecurityCache security )
-	{
-		this.myChannel = chan;
-		this.security = security;
-		this.priorityInventory = new TreeMap<>( PRIORITY_SORTER );
-	}
+    private static int currentPass = 0;
+    private final IStorageChannel<T> myChannel;
+    private final SecurityCache security;
+    private final NavigableMap<Integer, List<IMEInventoryHandler<T>>> priorityInventory;
+    private int myPass = 0;
 
-	public void addNewStorage( final IMEInventoryHandler<T> h )
-	{
-		final int priority = h.getPriority();
-		List<IMEInventoryHandler<T>> list = this.priorityInventory.get( priority );
-		if( list == null )
-		{
-			this.priorityInventory.put( priority, list = new ArrayList<>() );
-		}
+    public NetworkInventoryHandler(final IStorageChannel<T> chan, final SecurityCache security) {
+        this.myChannel = chan;
+        this.security = security;
+        this.priorityInventory = new TreeMap<>(PRIORITY_SORTER);
+    }
 
-		list.add( h );
-	}
+    public void addNewStorage(final IMEInventoryHandler<T> h) {
+        final int priority = h.getPriority();
+        List<IMEInventoryHandler<T>> list = this.priorityInventory.get(priority);
+        if (list == null) {
+            this.priorityInventory.put(priority, list = new ArrayList<>());
+        }
 
-	@Override
-	public T injectItems( T input, final Actionable type, final IActionSource src )
-	{
-		if( this.diveList( this, type ) )
-		{
-			return input;
-		}
+        list.add(h);
+    }
 
-		if( this.testPermission( src, SecurityPermissions.INJECT ) )
-		{
-			this.surface( this, type );
-			return input;
-		}
+    @Override
+    public T injectItems(T input, final Actionable type, final IActionSource src) {
+        if (this.diveList(this, type)) {
+            return input;
+        }
 
-		for( final List<IMEInventoryHandler<T>> invList : this.priorityInventory.values() )
-		{
-			Iterator<IMEInventoryHandler<T>> ii = invList.iterator();
-			while( ii.hasNext() && input != null )
-			{
-				final IMEInventoryHandler<T> inv = ii.next();
+        if (this.testPermission(src, SecurityPermissions.INJECT)) {
+            this.surface(this, type);
+            return input;
+        }
 
-				if( inv.validForPass( 1 ) && inv
-						.canAccept( input ) && ( inv.isPrioritized( input ) || inv.extractItems( input, Actionable.SIMULATE, src ) != null ) )
-				{
-					input = inv.injectItems( input, type, src );
-				}
-			}
+        for (final List<IMEInventoryHandler<T>> invList : this.priorityInventory.values()) {
+            Iterator<IMEInventoryHandler<T>> ii = invList.iterator();
+            while (ii.hasNext() && input != null) {
+                final IMEInventoryHandler<T> inv = ii.next();
 
-			// We need to ignore prioritized inventories in the second pass. If they were not able to store everything
-			// during the first pass, they will do so in the second, but as this is stateless we will just report twice
-			// the amount of storable items.
-			// ignores craftingcache on the second pass.
-			ii = invList.iterator();
-			while( ii.hasNext() && input != null )
-			{
-				final IMEInventoryHandler<T> inv = ii.next();
+                if (inv.validForPass(1) && inv
+                        .canAccept(input) && (inv.isPrioritized(input) || inv.extractItems(input, Actionable.SIMULATE, src) != null)) {
+                    input = inv.injectItems(input, type, src);
+                }
+            }
 
-				if( inv.validForPass( 2 ) && inv.canAccept( input ) && !inv.isPrioritized( input ) )
-				{
-					input = inv.injectItems( input, type, src );
-				}
-			}
-		}
+            // We need to ignore prioritized inventories in the second pass. If they were not able to store everything
+            // during the first pass, they will do so in the second, but as this is stateless we will just report twice
+            // the amount of storable items.
+            // ignores craftingcache on the second pass.
+            ii = invList.iterator();
+            while (ii.hasNext() && input != null) {
+                final IMEInventoryHandler<T> inv = ii.next();
 
-		this.surface( this, type );
+                if (inv.validForPass(2) && inv.canAccept(input) && !inv.isPrioritized(input)) {
+                    input = inv.injectItems(input, type, src);
+                }
+            }
+        }
 
-		return input;
-	}
+        this.surface(this, type);
 
-	private boolean diveList( final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type )
-	{
-		final Deque cDepth = this.getDepth( type );
-		if( cDepth.contains( networkInventoryHandler ) )
-		{
-			return true;
-		}
+        return input;
+    }
 
-		cDepth.push( this );
-		return false;
-	}
+    private boolean diveList(final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type) {
+        final Deque cDepth = this.getDepth(type);
+        if (cDepth.contains(networkInventoryHandler)) {
+            return true;
+        }
 
-	private boolean testPermission( final IActionSource src, final SecurityPermissions permission )
-	{
-		if( src.player().isPresent() )
-		{
-			if( !this.security.hasPermission( src.player().get(), permission ) )
-			{
-				return true;
-			}
-		}
-		else if( src.machine().isPresent() )
-		{
-			if( this.security.isAvailable() )
-			{
-				final IGridNode n = src.machine().get().getActionableNode();
-				if( n == null )
-				{
-					return true;
-				}
+        cDepth.push(this);
+        return false;
+    }
 
-				final IGrid gn = n.getGrid();
-				if( gn != this.security.getGrid() )
-				{
+    private boolean testPermission(final IActionSource src, final SecurityPermissions permission) {
+        if (src.player().isPresent()) {
+            return !this.security.hasPermission(src.player().get(), permission);
+        } else if (src.machine().isPresent()) {
+            if (this.security.isAvailable()) {
+                final IGridNode n = src.machine().get().getActionableNode();
+                if (n == null) {
+                    return true;
+                }
 
-					final ISecurityGrid sg = gn.getCache( ISecurityGrid.class );
-					final int playerID = sg.getOwner();
+                final IGrid gn = n.getGrid();
+                if (gn != this.security.getGrid()) {
 
-					if( !this.security.hasPermission( playerID, permission ) )
-					{
-						return true;
-					}
-				}
-			}
-		}
+                    final ISecurityGrid sg = gn.getCache(ISecurityGrid.class);
+                    final int playerID = sg.getOwner();
 
-		return false;
-	}
+                    return !this.security.hasPermission(playerID, permission);
+                }
+            }
+        }
 
-	private void surface( final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type )
-	{
-		if( this.getDepth( type ).pop() != this )
-		{
-			throw new IllegalStateException( "Invalid Access to Networked Storage API detected." );
-		}
-	}
+        return false;
+    }
 
-	private Deque getDepth( final Actionable type )
-	{
-		final ThreadLocal<Deque> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
+    private void surface(final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type) {
+        if (this.getDepth(type).pop() != this) {
+            throw new IllegalStateException("Invalid Access to Networked Storage API detected.");
+        }
+    }
 
-		Deque s = depth.get();
+    private Deque getDepth(final Actionable type) {
+        final ThreadLocal<Deque> depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
 
-		if( s == null )
-		{
-			depth.set( s = new ArrayDeque<>() );
-		}
+        Deque s = depth.get();
 
-		return s;
-	}
+        if (s == null) {
+            depth.set(s = new ArrayDeque<>());
+        }
 
-	@Override
-	public T extractItems( T request, final Actionable mode, final IActionSource src )
-	{
-		if( this.diveList( this, mode ) )
-		{
-			return null;
-		}
+        return s;
+    }
 
-		if( this.testPermission( src, SecurityPermissions.EXTRACT ) )
-		{
-			this.surface( this, mode );
-			return null;
-		}
+    @Override
+    public T extractItems(T request, final Actionable mode, final IActionSource src) {
+        if (this.diveList(this, mode)) {
+            return null;
+        }
 
-		final Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();// priorityInventory.asMap().descendingMap().entrySet().iterator();
+        if (this.testPermission(src, SecurityPermissions.EXTRACT)) {
+            this.surface(this, mode);
+            return null;
+        }
 
-		final T output = request.copy();
-		request = request.copy();
-		output.setStackSize( 0 );
-		final long req = request.getStackSize();
+        final Iterator<List<IMEInventoryHandler<T>>> i = this.priorityInventory.descendingMap().values().iterator();// priorityInventory.asMap().descendingMap().entrySet().iterator();
 
-		while( i.hasNext() )
-		{
-			final List<IMEInventoryHandler<T>> invList = i.next();
+        final T output = request.copy();
+        request = request.copy();
+        output.setStackSize(0);
+        final long req = request.getStackSize();
 
-			final Iterator<IMEInventoryHandler<T>> ii = invList.iterator();
-			while( ii.hasNext() && output.getStackSize() < req )
-			{
-				final IMEInventoryHandler<T> inv = ii.next();
+        while (i.hasNext()) {
+            final List<IMEInventoryHandler<T>> invList = i.next();
 
-				request.setStackSize( req - output.getStackSize() );
-				output.add( inv.extractItems( request, mode, src ) );
-			}
-		}
+            final Iterator<IMEInventoryHandler<T>> ii = invList.iterator();
+            while (ii.hasNext() && output.getStackSize() < req) {
+                final IMEInventoryHandler<T> inv = ii.next();
 
-		this.surface( this, mode );
+                request.setStackSize(req - output.getStackSize());
+                output.add(inv.extractItems(request, mode, src));
+            }
+        }
 
-		if( output.getStackSize() <= 0 )
-		{
-			return null;
-		}
+        this.surface(this, mode);
 
-		return output;
-	}
+        if (output.getStackSize() <= 0) {
+            return null;
+        }
 
-	@Override
-	public IItemList<T> getAvailableItems( IItemList<T> out )
-	{
-		if( this.diveIteration( this, Actionable.SIMULATE ) )
-		{
-			return out;
-		}
+        return output;
+    }
 
-		// for (Entry<Integer, IMEInventoryHandler<T>> h : priorityInventory.entries())
-		for( final List<IMEInventoryHandler<T>> i : this.priorityInventory.values() )
-		{
-			for( final IMEInventoryHandler<T> j : i )
-			{
-				out = j.getAvailableItems( out );
-			}
-		}
+    @Override
+    public IItemList<T> getAvailableItems(IItemList<T> out) {
+        if (this.diveIteration(this, Actionable.SIMULATE)) {
+            return out;
+        }
 
-		this.surface( this, Actionable.SIMULATE );
+        // for (Entry<Integer, IMEInventoryHandler<T>> h : priorityInventory.entries())
+        for (final List<IMEInventoryHandler<T>> i : this.priorityInventory.values()) {
+            for (final IMEInventoryHandler<T> j : i) {
+                out = j.getAvailableItems(out);
+            }
+        }
 
-		return out;
-	}
+        this.surface(this, Actionable.SIMULATE);
 
-	private boolean diveIteration( final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type )
-	{
-		final Deque cDepth = this.getDepth( type );
-		if( cDepth.isEmpty() )
-		{
-			currentPass++;
-			this.myPass = currentPass;
-		}
-		else
-		{
-			if( currentPass == this.myPass )
-			{
-				return true;
-			}
-			else
-			{
-				this.myPass = currentPass;
-			}
-		}
+        return out;
+    }
 
-		cDepth.push( this );
-		return false;
-	}
+    private boolean diveIteration(final NetworkInventoryHandler<T> networkInventoryHandler, final Actionable type) {
+        final Deque cDepth = this.getDepth(type);
+        if (cDepth.isEmpty()) {
+            currentPass++;
+            this.myPass = currentPass;
+        } else {
+            if (currentPass == this.myPass) {
+                return true;
+            } else {
+                this.myPass = currentPass;
+            }
+        }
 
-	@Override
-	public IStorageChannel<T> getChannel()
-	{
-		return this.myChannel;
-	}
+        cDepth.push(this);
+        return false;
+    }
 
-	@Override
-	public AccessRestriction getAccess()
-	{
-		return AccessRestriction.READ_WRITE;
-	}
+    @Override
+    public IStorageChannel<T> getChannel() {
+        return this.myChannel;
+    }
 
-	@Override
-	public boolean isPrioritized( final T input )
-	{
-		return false;
-	}
+    @Override
+    public AccessRestriction getAccess() {
+        return AccessRestriction.READ_WRITE;
+    }
 
-	@Override
-	public boolean canAccept( final T input )
-	{
-		return true;
-	}
+    @Override
+    public boolean isPrioritized(final T input) {
+        return false;
+    }
 
-	@Override
-	public int getPriority()
-	{
-		return 0;
-	}
+    @Override
+    public boolean canAccept(final T input) {
+        return true;
+    }
 
-	@Override
-	public int getSlot()
-	{
-		return 0;
-	}
+    @Override
+    public int getPriority() {
+        return 0;
+    }
 
-	@Override
-	public boolean validForPass( final int i )
-	{
-		return true;
-	}
+    @Override
+    public int getSlot() {
+        return 0;
+    }
+
+    @Override
+    public boolean validForPass(final int i) {
+        return true;
+    }
 }

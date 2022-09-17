@@ -19,32 +19,28 @@
 package appeng.bootstrap.components;
 
 
-import java.util.Collection;
-
+import appeng.bootstrap.IModelRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 
-import appeng.bootstrap.IModelRegistry;
+import java.util.Collection;
 
 
-public class ItemVariantsComponent implements IModelRegistrationComponent
-{
+public class ItemVariantsComponent implements IModelRegistrationComponent {
 
-	private final Item item;
+    private final Item item;
 
-	private final Collection<ResourceLocation> resources;
+    private final Collection<ResourceLocation> resources;
 
-	public ItemVariantsComponent( Item item, Collection<ResourceLocation> resources )
-	{
-		this.item = item;
-		this.resources = resources;
-	}
+    public ItemVariantsComponent(Item item, Collection<ResourceLocation> resources) {
+        this.item = item;
+        this.resources = resources;
+    }
 
-	@Override
-	public void modelRegistration( Side side, IModelRegistry registry )
-	{
-		ResourceLocation[] resourceArr = this.resources.toArray( new ResourceLocation[0] );
-		registry.registerItemVariants( this.item, resourceArr );
-	}
+    @Override
+    public void modelRegistration(Side side, IModelRegistry registry) {
+        ResourceLocation[] resourceArr = this.resources.toArray(new ResourceLocation[0]);
+        registry.registerItemVariants(this.item, resourceArr);
+    }
 }

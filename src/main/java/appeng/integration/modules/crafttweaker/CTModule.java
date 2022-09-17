@@ -19,112 +19,83 @@
 package appeng.integration.modules.crafttweaker;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
+import appeng.integration.abstraction.ICraftTweaker;
+import appeng.util.Platform;
+import crafttweaker.CraftTweakerAPI;
+import crafttweaker.IAction;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
-import crafttweaker.CraftTweakerAPI;
-import crafttweaker.IAction;
-import crafttweaker.api.item.IIngredient;
-import crafttweaker.api.item.IItemStack;
-
-import appeng.integration.abstraction.ICraftTweaker;
-import appeng.util.Platform;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
-public class CTModule implements ICraftTweaker
-{
-	static final List<IAction> MODIFICATIONS = new ArrayList<>();
+public class CTModule implements ICraftTweaker {
+    static final List<IAction> MODIFICATIONS = new ArrayList<>();
 
-	@Override
-	public void preInit()
-	{
-		CraftTweakerAPI.registerClass( GrinderRecipes.class );
-		CraftTweakerAPI.registerClass( InscriberRecipes.class );
-		CraftTweakerAPI.registerClass( SpatialRegistry.class );
-		CraftTweakerAPI.registerClass( AttunementRegistry.class );
-		CraftTweakerAPI.registerClass( CannonRegistry.class );
-	}
+    @Override
+    public void preInit() {
+        CraftTweakerAPI.registerClass(GrinderRecipes.class);
+        CraftTweakerAPI.registerClass(InscriberRecipes.class);
+        CraftTweakerAPI.registerClass(SpatialRegistry.class);
+        CraftTweakerAPI.registerClass(AttunementRegistry.class);
+        CraftTweakerAPI.registerClass(CannonRegistry.class);
+    }
 
-	@Override
-	public void postInit()
-	{
-		MODIFICATIONS.forEach( CraftTweakerAPI::apply );
-	}
+    @Override
+    public void postInit() {
+        MODIFICATIONS.forEach(CraftTweakerAPI::apply);
+    }
 
-	public static ItemStack toStack( IItemStack iStack )
-	{
-		if( iStack == null )
-		{
-			return ItemStack.EMPTY;
-		}
-		else
-		{
-			return (ItemStack) iStack.getInternal();
-		}
-	}
+    public static ItemStack toStack(IItemStack iStack) {
+        if (iStack == null) {
+            return ItemStack.EMPTY;
+        } else {
+            return (ItemStack) iStack.getInternal();
+        }
+    }
 
-	public static List<ItemStack> toStackExpand( IItemStack iStack )
-	{
-		if( iStack == null )
-		{
-			return Collections.emptyList();
-		}
-		else
-		{
-			ItemStack is = (ItemStack) iStack.getInternal();
-			if( !is.isItemStackDamageable() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE )
-			{
-				NonNullList<ItemStack> ret = NonNullList.create();
-				is.getItem().getSubItems( CreativeTabs.SEARCH, ret );
-				return ret.stream().map( i -> new ItemStack( i.getItem(), iStack.getAmount(), i.getItemDamage() ) ).collect( Collectors.toList() );
-			}
-			else
-			{
-				return Collections.singletonList( is );
-			}
-		}
-	}
+    public static List<ItemStack> toStackExpand(IItemStack iStack) {
+        if (iStack == null) {
+            return Collections.emptyList();
+        } else {
+            ItemStack is = (ItemStack) iStack.getInternal();
+            if (!is.isItemStackDamageable() && is.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+                NonNullList<ItemStack> ret = NonNullList.create();
+                is.getItem().getSubItems(CreativeTabs.SEARCH, ret);
+                return ret.stream().map(i -> new ItemStack(i.getItem(), iStack.getAmount(), i.getItemDamage())).collect(Collectors.toList());
+            } else {
+                return Collections.singletonList(is);
+            }
+        }
+    }
 
-	public static Optional<Collection<ItemStack>> toStacks( IIngredient ingredient )
-	{
-		if( ingredient == null )
-		{
-			return Optional.empty();
-		}
-		Set<ItemStack> ret = new TreeSet<>( CTModule::compareItemStacks );
-		ingredient.getItems().stream().map( CTModule::toStackExpand ).forEach( ret::addAll );
-		if( ret.isEmpty() )
-		{
-			return Optional.empty();
-		}
-		return Optional.of( ret );
-	}
+    public static Optional<Collection<ItemStack>> toStacks(IIngredient ingredient) {
+        if (ingredient == null) {
+            return Optional.empty();
+        }
+        Set<ItemStack> ret = new TreeSet<>(CTModule::compareItemStacks);
+        ingredient.getItems().stream().map(CTModule::toStackExpand).forEach(ret::addAll);
+        if (ret.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(ret);
+    }
 
-	private static int compareItemStacks( ItemStack a, ItemStack b )
-	{
-		if( Platform.itemComparisons().isSameItem( a, b ) )
-		{
-			return 0;
-		}
-		if( a == null )
-		{
-			return -1;
-		}
-		if( b == null )
-		{
-			return 1;
-		}
-		return System.identityHashCode( a ) - System.identityHashCode( b );
-	}
+    private static int compareItemStacks(ItemStack a, ItemStack b) {
+        if (Platform.itemComparisons().isSameItem(a, b)) {
+            return 0;
+        }
+        if (a == null) {
+            return -1;
+        }
+        if (b == null) {
+            return 1;
+        }
+        return System.identityHashCode(a) - System.identityHashCode(b);
+    }
 }

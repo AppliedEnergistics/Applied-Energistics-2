@@ -30,63 +30,53 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
 /**
  * This transformer Re-Interpolates the Color, UV's and LightMaps.
  * Use this after all transformations that translate vertices in the pipeline.
- *
+ * <p>
  * This Transformation can only be used in the BakedPipeline.
  *
  * @author covers1624
  */
-public class QuadReInterpolator extends QuadTransformer
-{
+public class QuadReInterpolator extends QuadTransformer {
 
-	public static final IPipelineElementFactory<QuadReInterpolator> FACTORY = QuadReInterpolator::new;
+    public static final IPipelineElementFactory<QuadReInterpolator> FACTORY = QuadReInterpolator::new;
 
-	private Quad interpCache = new Quad();
-	private InterpHelper interpHelper = new InterpHelper();
+    private final Quad interpCache = new Quad();
+    private final InterpHelper interpHelper = new InterpHelper();
 
-	QuadReInterpolator()
-	{
-		super();
-	}
+    QuadReInterpolator() {
+        super();
+    }
 
-	@Override
-	public void reset( CachedFormat format )
-	{
-		super.reset( format );
-		this.interpCache.reset( format );
-	}
+    @Override
+    public void reset(CachedFormat format) {
+        super.reset(format);
+        this.interpCache.reset(format);
+    }
 
-	@Override
-	public void setInputQuad( Quad quad )
-	{
-		super.setInputQuad( quad );
-		quad.resetInterp( this.interpHelper, quad.orientation.ordinal() >> 1 );
-	}
+    @Override
+    public void setInputQuad(Quad quad) {
+        super.setInputQuad(quad);
+        quad.resetInterp(this.interpHelper, quad.orientation.ordinal() >> 1);
+    }
 
-	@Override
-	public boolean transform()
-	{
-		int s = this.quad.orientation.ordinal() >> 1;
-		if( this.format.hasColor || this.format.hasUV || this.format.hasLightMap )
-		{
-			this.interpCache.copyFrom( this.quad );
-			this.interpHelper.setup();
-			for( Vertex v : this.quad.vertices )
-			{
-				this.interpHelper.locate( v.dx( s ), v.dy( s ) );
-				if( this.format.hasColor )
-				{
-					v.interpColorFrom( this.interpHelper, this.interpCache.vertices );
-				}
-				if( this.format.hasUV )
-				{
-					v.interpUVFrom( this.interpHelper, this.interpCache.vertices );
-				}
-				if( this.format.hasLightMap )
-				{
-					v.interpLightMapFrom( this.interpHelper, this.interpCache.vertices );
-				}
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean transform() {
+        int s = this.quad.orientation.ordinal() >> 1;
+        if (this.format.hasColor || this.format.hasUV || this.format.hasLightMap) {
+            this.interpCache.copyFrom(this.quad);
+            this.interpHelper.setup();
+            for (Vertex v : this.quad.vertices) {
+                this.interpHelper.locate(v.dx(s), v.dy(s));
+                if (this.format.hasColor) {
+                    v.interpColorFrom(this.interpHelper, this.interpCache.vertices);
+                }
+                if (this.format.hasUV) {
+                    v.interpUVFrom(this.interpHelper, this.interpCache.vertices);
+                }
+                if (this.format.hasLightMap) {
+                    v.interpLightMapFrom(this.interpHelper, this.interpCache.vertices);
+                }
+            }
+        }
+        return true;
+    }
 }

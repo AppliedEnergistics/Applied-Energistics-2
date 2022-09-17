@@ -22,39 +22,33 @@ package appeng.container.slot;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class OptionalSlotNormal extends AppEngSlot implements IOptionalSlot
-{
+public class OptionalSlotNormal extends AppEngSlot implements IOptionalSlot {
 
-	private final int groupNum;
-	private final IOptionalSlotHost host;
+    private final int groupNum;
+    private final IOptionalSlotHost host;
 
-	public OptionalSlotNormal( final IItemHandler inv, final IOptionalSlotHost containerBus, final int slot, final int xPos, final int yPos, final int groupNum )
-	{
-		super( inv, slot, xPos, yPos );
-		this.groupNum = groupNum;
-		this.host = containerBus;
-	}
+    public OptionalSlotNormal(final IItemHandler inv, final IOptionalSlotHost containerBus, final int slot, final int xPos, final int yPos, final int groupNum) {
+        super(inv, slot, xPos, yPos);
+        this.groupNum = groupNum;
+        this.host = containerBus;
+    }
 
-	@Override
-	public boolean isSlotEnabled()
-	{
-		if( this.host == null )
-		{
-			return false;
-		}
+    @Override
+    public boolean isSlotEnabled() {
+        if (this.host == null) {
+            return false;
+        }
 
-		return this.host.isSlotEnabled( this.groupNum );
-	}
+        return this.host.isSlotEnabled(this.groupNum);
+    }
 
-	@Override
-	public int getSourceX()
-	{
-		return this.xPos;
-	}
+    @Override
+    public int getSourceX() {
+        return this.xPos;
+    }
 
-	@Override
-	public int getSourceY()
-	{
-		return this.yPos;
-	}
+    @Override
+    public int getSourceY() {
+        return this.yPos;
+    }
 }

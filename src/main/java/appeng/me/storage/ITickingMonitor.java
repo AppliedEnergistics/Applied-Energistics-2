@@ -24,15 +24,13 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.ticking.TickRateModulation;
 
 
-public interface ITickingMonitor
-{
+public interface ITickingMonitor {
 
-	TickRateModulation onTick();
+    TickRateModulation onTick();
 
-	void setActionSource( IActionSource actionSource );
+    void setActionSource(IActionSource actionSource);
 
-	default void setMode( StorageFilter setting )
-	{
+    default void setMode(StorageFilter setting) {
 
-	}
+    }
 }

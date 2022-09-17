@@ -25,48 +25,40 @@ import appeng.tile.AEBaseTile;
 /**
  * @author GuntherDW
  */
-public class TileEntityDefinition
-{
+public class TileEntityDefinition {
 
-	private final Class<? extends AEBaseTile> tileEntityClass;
-	private String name;
-	private boolean isRegistered = false;
+    private final Class<? extends AEBaseTile> tileEntityClass;
+    private String name;
+    private boolean isRegistered = false;
 
-	// This signals the BlockDefinitionBuilder to set the name of the TE to the blockname.
-	public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass )
-	{
-		this.tileEntityClass = tileEntityClass;
-		this.name = null;
-	}
+    // This signals the BlockDefinitionBuilder to set the name of the TE to the blockname.
+    public TileEntityDefinition(Class<? extends AEBaseTile> tileEntityClass) {
+        this.tileEntityClass = tileEntityClass;
+        this.name = null;
+    }
 
-	public TileEntityDefinition( Class<? extends AEBaseTile> tileEntityClass, String optionalName )
-	{
-		this.tileEntityClass = tileEntityClass;
-		this.name = optionalName;
-	}
+    public TileEntityDefinition(Class<? extends AEBaseTile> tileEntityClass, String optionalName) {
+        this.tileEntityClass = tileEntityClass;
+        this.name = optionalName;
+    }
 
-	public Class<? extends AEBaseTile> getTileEntityClass()
-	{
-		return this.tileEntityClass;
-	}
+    public Class<? extends AEBaseTile> getTileEntityClass() {
+        return this.tileEntityClass;
+    }
 
-	public void setName( String name )
-	{
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName()
-	{
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public boolean isRegistered()
-	{
-		return this.isRegistered;
-	}
+    public boolean isRegistered() {
+        return this.isRegistered;
+    }
 
-	public void setRegistered( boolean registered )
-	{
-		this.isRegistered = registered;
-	}
+    public void setRegistered(boolean registered) {
+        this.isRegistered = registered;
+    }
 }

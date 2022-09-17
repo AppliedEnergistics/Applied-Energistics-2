@@ -19,7 +19,6 @@
 package appeng.client;
 
 
-public enum EffectType
-{
-	Energy, Lightning, Vibrant, Crafting, Assembler, LightningArc
+public enum EffectType {
+    Energy, Lightning, Vibrant, Crafting, Assembler, LightningArc
 }

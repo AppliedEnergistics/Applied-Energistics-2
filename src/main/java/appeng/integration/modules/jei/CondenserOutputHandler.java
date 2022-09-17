@@ -19,47 +19,41 @@
 package appeng.integration.modules.jei;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
+import appeng.api.config.CondenserOutput;
+import appeng.core.AppEng;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.api.recipe.IRecipeWrapperFactory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
-import appeng.api.config.CondenserOutput;
-import appeng.core.AppEng;
 
+class CondenserOutputHandler implements IRecipeWrapperFactory<CondenserOutput> {
 
-class CondenserOutputHandler implements IRecipeWrapperFactory<CondenserOutput>
-{
+    private final ItemStack matterBall;
+    private final ItemStack singularity;
+    private final IDrawable iconButtonMatterBall;
+    private final IDrawable iconButtonSingularity;
 
-	private final ItemStack matterBall;
-	private final ItemStack singularity;
-	private final IDrawable iconButtonMatterBall;
-	private final IDrawable iconButtonSingularity;
+    public CondenserOutputHandler(IGuiHelper guiHelper, ItemStack matterBall, ItemStack singularity) {
+        this.matterBall = matterBall;
+        this.singularity = singularity;
 
-	public CondenserOutputHandler( IGuiHelper guiHelper, ItemStack matterBall, ItemStack singularity )
-	{
-		this.matterBall = matterBall;
-		this.singularity = singularity;
+        ResourceLocation statesLocation = new ResourceLocation(AppEng.MOD_ID, "textures/guis/states.png");
+        this.iconButtonMatterBall = guiHelper.createDrawable(statesLocation, 16, 112, 14, 14, 28, 0, 78, 0);
+        this.iconButtonSingularity = guiHelper.createDrawable(statesLocation, 32, 112, 14, 14, 28, 0, 78, 0);
+    }
 
-		ResourceLocation statesLocation = new ResourceLocation( AppEng.MOD_ID, "textures/guis/states.png" );
-		this.iconButtonMatterBall = guiHelper.createDrawable( statesLocation, 16, 112, 14, 14, 28, 0, 78, 0 );
-		this.iconButtonSingularity = guiHelper.createDrawable( statesLocation, 32, 112, 14, 14, 28, 0, 78, 0 );
-	}
-
-	@Override
-	public IRecipeWrapper getRecipeWrapper( CondenserOutput recipe )
-	{
-		switch( recipe )
-		{
-			case MATTER_BALLS:
-				return new CondenserOutputWrapper( recipe, this.matterBall, this.iconButtonMatterBall );
-			case SINGULARITY:
-				return new CondenserOutputWrapper( recipe, this.singularity, this.iconButtonSingularity );
-			default:
-				return null;
-		}
-	}
+    @Override
+    public IRecipeWrapper getRecipeWrapper(CondenserOutput recipe) {
+        switch (recipe) {
+            case MATTER_BALLS:
+                return new CondenserOutputWrapper(recipe, this.matterBall, this.iconButtonMatterBall);
+            case SINGULARITY:
+                return new CondenserOutputWrapper(recipe, this.singularity, this.iconButtonSingularity);
+            default:
+                return null;
+        }
+    }
 }

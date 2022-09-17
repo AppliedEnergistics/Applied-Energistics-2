@@ -25,64 +25,49 @@ import appeng.api.implementations.tiles.IChestOrDrive;
 /**
  * Contains the full information about what the state of the slots in a BlockDrive is.
  */
-public class DriveSlotsState
-{
+public class DriveSlotsState {
 
-	private final DriveSlotState[] slots;
+    private final DriveSlotState[] slots;
 
-	private DriveSlotsState( DriveSlotState[] slots )
-	{
-		this.slots = slots;
-	}
+    private DriveSlotsState(DriveSlotState[] slots) {
+        this.slots = slots;
+    }
 
-	public DriveSlotState getState( int index )
-	{
-		if( index >= this.slots.length )
-		{
-			return DriveSlotState.EMPTY;
-		}
-		return this.slots[index];
-	}
+    public DriveSlotState getState(int index) {
+        if (index >= this.slots.length) {
+            return DriveSlotState.EMPTY;
+        }
+        return this.slots[index];
+    }
 
-	public int getSlotCount()
-	{
-		return this.slots.length;
-	}
+    public int getSlotCount() {
+        return this.slots.length;
+    }
 
-	/**
-	 * Retrieve an array that describes the state of each slot in this drive or chest.
-	 */
-	public static DriveSlotsState fromChestOrDrive( IChestOrDrive chestOrDrive )
-	{
-		DriveSlotState[] slots = new DriveSlotState[chestOrDrive.getCellCount()];
-		for( int i = 0; i < chestOrDrive.getCellCount(); i++ )
-		{
-			if( !chestOrDrive.isPowered() )
-			{
-				if( chestOrDrive.getCellStatus( i ) != 0 )
-				{
-					slots[i] = DriveSlotState.OFFLINE;
-				}
-				else
-				{
-					slots[i] = DriveSlotState.EMPTY;
-				}
-			}
-			else
-			{
-				slots[i] = DriveSlotState.fromCellStatus( chestOrDrive.getCellStatus( i ) );
-			}
-		}
-		return new DriveSlotsState( slots );
-	}
+    /**
+     * Retrieve an array that describes the state of each slot in this drive or chest.
+     */
+    public static DriveSlotsState fromChestOrDrive(IChestOrDrive chestOrDrive) {
+        DriveSlotState[] slots = new DriveSlotState[chestOrDrive.getCellCount()];
+        for (int i = 0; i < chestOrDrive.getCellCount(); i++) {
+            if (!chestOrDrive.isPowered()) {
+                if (chestOrDrive.getCellStatus(i) != 0) {
+                    slots[i] = DriveSlotState.OFFLINE;
+                } else {
+                    slots[i] = DriveSlotState.EMPTY;
+                }
+            } else {
+                slots[i] = DriveSlotState.fromCellStatus(chestOrDrive.getCellStatus(i));
+            }
+        }
+        return new DriveSlotsState(slots);
+    }
 
-	public static DriveSlotsState createEmpty( int slotCount )
-	{
-		DriveSlotState[] slots = new DriveSlotState[slotCount];
-		for( int i = 0; i < slotCount; i++ )
-		{
-			slots[i] = DriveSlotState.EMPTY;
-		}
-		return new DriveSlotsState( slots );
-	}
+    public static DriveSlotsState createEmpty(int slotCount) {
+        DriveSlotState[] slots = new DriveSlotState[slotCount];
+        for (int i = 0; i < slotCount; i++) {
+            slots[i] = DriveSlotState.EMPTY;
+        }
+        return new DriveSlotsState(slots);
+    }
 }

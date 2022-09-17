@@ -32,67 +32,58 @@ import appeng.core.features.registries.PartModels;
 import appeng.core.features.registries.RegistryContainer;
 
 
-public final class Api implements IAppEngApi
-{
-	public static final Api INSTANCE = new Api();
+public final class Api implements IAppEngApi {
+    public static final Api INSTANCE = new Api();
 
-	private final ApiPart partHelper;
+    private final ApiPart partHelper;
 
-	// private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
-	private final IRegistryContainer registryContainer;
-	private final IStorageHelper storageHelper;
-	private final IGridHelper networkHelper;
-	private final ApiDefinitions definitions;
-	private final IClientHelper client;
+    // private MovableTileRegistry MovableRegistry = new MovableTileRegistry();
+    private final IRegistryContainer registryContainer;
+    private final IStorageHelper storageHelper;
+    private final IGridHelper networkHelper;
+    private final ApiDefinitions definitions;
+    private final IClientHelper client;
 
-	private Api()
-	{
-		this.storageHelper = new ApiStorage();
-		this.networkHelper = new ApiGrid();
-		this.registryContainer = new RegistryContainer();
-		this.partHelper = new ApiPart();
-		this.definitions = new ApiDefinitions( (PartModels) this.registryContainer.partModels() );
-		this.client = new ApiClientHelper();
-	}
+    private Api() {
+        this.storageHelper = new ApiStorage();
+        this.networkHelper = new ApiGrid();
+        this.registryContainer = new RegistryContainer();
+        this.partHelper = new ApiPart();
+        this.definitions = new ApiDefinitions((PartModels) this.registryContainer.partModels());
+        this.client = new ApiClientHelper();
+    }
 
-	public PartModels getPartModels()
-	{
-		return (PartModels) this.registryContainer.partModels();
-	}
+    public PartModels getPartModels() {
+        return (PartModels) this.registryContainer.partModels();
+    }
 
-	@Override
-	public IRegistryContainer registries()
-	{
-		return this.registryContainer;
-	}
+    @Override
+    public IRegistryContainer registries() {
+        return this.registryContainer;
+    }
 
-	@Override
-	public IStorageHelper storage()
-	{
-		return this.storageHelper;
-	}
+    @Override
+    public IStorageHelper storage() {
+        return this.storageHelper;
+    }
 
-	@Override
-	public IGridHelper grid()
-	{
-		return this.networkHelper;
-	}
+    @Override
+    public IGridHelper grid() {
+        return this.networkHelper;
+    }
 
-	@Override
-	public ApiPart partHelper()
-	{
-		return this.partHelper;
-	}
+    @Override
+    public ApiPart partHelper() {
+        return this.partHelper;
+    }
 
-	@Override
-	public ApiDefinitions definitions()
-	{
-		return this.definitions;
-	}
+    @Override
+    public ApiDefinitions definitions() {
+        return this.definitions;
+    }
 
-	@Override
-	public IClientHelper client()
-	{
-		return this.client;
-	}
+    @Override
+    public IClientHelper client() {
+        return this.client;
+    }
 }

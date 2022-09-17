@@ -19,15 +19,6 @@
 package appeng.core.sync.packets;
 
 
-import java.io.IOException;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -35,87 +26,81 @@ import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.items.IItemHandler;
+
+import java.io.IOException;
 
 
-public class PacketPatternSlot extends AppEngPacket
-{
+public class PacketPatternSlot extends AppEngPacket {
 
-	public final IAEItemStack slotItem;
+    public final IAEItemStack slotItem;
 
-	public final IAEItemStack[] pattern = new IAEItemStack[9];
+    public final IAEItemStack[] pattern = new IAEItemStack[9];
 
-	public final boolean shift;
+    public final boolean shift;
 
-	// automatic.
-	public PacketPatternSlot( final ByteBuf stream ) throws IOException
-	{
+    // automatic.
+    public PacketPatternSlot(final ByteBuf stream) throws IOException {
 
-		this.shift = stream.readBoolean();
+        this.shift = stream.readBoolean();
 
-		this.slotItem = this.readItem( stream );
+        this.slotItem = this.readItem(stream);
 
-		for( int x = 0; x < 9; x++ )
-		{
-			this.pattern[x] = this.readItem( stream );
-		}
-	}
+        for (int x = 0; x < 9; x++) {
+            this.pattern[x] = this.readItem(stream);
+        }
+    }
 
-	private IAEItemStack readItem( final ByteBuf stream ) throws IOException
-	{
-		final boolean hasItem = stream.readBoolean();
+    private IAEItemStack readItem(final ByteBuf stream) throws IOException {
+        final boolean hasItem = stream.readBoolean();
 
-		if( hasItem )
-		{
-			return AEItemStack.fromPacket( stream );
-		}
+        if (hasItem) {
+            return AEItemStack.fromPacket(stream);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	// api
-	public PacketPatternSlot( final IItemHandler pat, final IAEItemStack slotItem, final boolean shift ) throws IOException
-	{
+    // api
+    public PacketPatternSlot(final IItemHandler pat, final IAEItemStack slotItem, final boolean shift) throws IOException {
 
-		this.slotItem = slotItem;
-		this.shift = shift;
+        this.slotItem = slotItem;
+        this.shift = shift;
 
-		final ByteBuf data = Unpooled.buffer();
+        final ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( this.getPacketID() );
+        data.writeInt(this.getPacketID());
 
-		data.writeBoolean( shift );
+        data.writeBoolean(shift);
 
-		this.writeItem( slotItem, data );
-		for( int x = 0; x < 9; x++ )
-		{
-			this.pattern[x] = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createStack( pat.getStackInSlot( x ) );
-			this.writeItem( this.pattern[x], data );
-		}
+        this.writeItem(slotItem, data);
+        for (int x = 0; x < 9; x++) {
+            this.pattern[x] = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(pat.getStackInSlot(x));
+            this.writeItem(this.pattern[x], data);
+        }
 
-		this.configureWrite( data );
-	}
+        this.configureWrite(data);
+    }
 
-	private void writeItem( final IAEItemStack slotItem, final ByteBuf data ) throws IOException
-	{
-		if( slotItem == null )
-		{
-			data.writeBoolean( false );
-		}
-		else
-		{
-			data.writeBoolean( true );
-			slotItem.writeToPacket( data );
-		}
-	}
+    private void writeItem(final IAEItemStack slotItem, final ByteBuf data) throws IOException {
+        if (slotItem == null) {
+            data.writeBoolean(false);
+        } else {
+            data.writeBoolean(true);
+            slotItem.writeToPacket(data);
+        }
+    }
 
-	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
-	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
-		if( sender.openContainer instanceof ContainerPatternTerm )
-		{
-			final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
-			patternTerminal.craftOrGetItem( this );
-		}
-	}
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player) {
+        final EntityPlayerMP sender = (EntityPlayerMP) player;
+        if (sender.openContainer instanceof ContainerPatternTerm) {
+            final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
+            patternTerminal.craftOrGetItem(this);
+        }
+    }
 }

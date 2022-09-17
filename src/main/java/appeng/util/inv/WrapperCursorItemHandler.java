@@ -23,21 +23,18 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraftforge.items.ItemStackHandler;
 
 
-public class WrapperCursorItemHandler extends ItemStackHandler
-{
-	private final InventoryPlayer inv;
+public class WrapperCursorItemHandler extends ItemStackHandler {
+    private final InventoryPlayer inv;
 
-	public WrapperCursorItemHandler( InventoryPlayer inventoryPlayer )
-	{
-		super( 1 );
+    public WrapperCursorItemHandler(InventoryPlayer inventoryPlayer) {
+        super(1);
 
-		this.inv = inventoryPlayer;
-		this.setStackInSlot( 0, inventoryPlayer.getItemStack() );
-	}
+        this.inv = inventoryPlayer;
+        this.setStackInSlot(0, inventoryPlayer.getItemStack());
+    }
 
-	@Override
-	protected void onContentsChanged( int slot )
-	{
-		this.inv.setItemStack( this.getStackInSlot( slot ) );
-	}
+    @Override
+    protected void onContentsChanged(int slot) {
+        this.inv.setItemStack(this.getStackInSlot(slot));
+    }
 }

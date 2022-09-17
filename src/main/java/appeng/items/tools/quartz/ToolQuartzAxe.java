@@ -19,26 +19,22 @@
 package appeng.items.tools.quartz;
 
 
+import appeng.core.features.AEFeature;
+import appeng.util.Platform;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 
-import appeng.core.features.AEFeature;
-import appeng.util.Platform;
 
+public class ToolQuartzAxe extends ItemAxe {
+    private final AEFeature type;
 
-public class ToolQuartzAxe extends ItemAxe
-{
-	private final AEFeature type;
+    public ToolQuartzAxe(final AEFeature type) {
+        super(ToolMaterial.IRON);
+        this.type = type;
+    }
 
-	public ToolQuartzAxe( final AEFeature type )
-	{
-		super( ToolMaterial.IRON );
-		this.type = type;
-	}
-
-	@Override
-	public boolean getIsRepairable( final ItemStack a, final ItemStack b )
-	{
-		return Platform.canRepair( this.type, a, b );
-	}
+    @Override
+    public boolean getIsRepairable(final ItemStack a, final ItemStack b) {
+        return Platform.canRepair(this.type, a, b);
+    }
 }

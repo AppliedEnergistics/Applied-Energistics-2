@@ -19,59 +19,51 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
-
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.core.sync.GuiBridge;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 
-public class PartInterfaceConfigurationTerminal extends AbstractPartDisplay
-{
+public class PartInterfaceConfigurationTerminal extends AbstractPartDisplay {
 
-	@PartModels
-	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/interface_configuration_terminal_off" );
-	@PartModels
-	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/interface_configuration_terminal_on" );
+    @PartModels
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/interface_configuration_terminal_off");
+    @PartModels
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/interface_configuration_terminal_on");
 
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF );
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_ON );
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL );
-	public String in = "";
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+    public String in = "";
 
-	public PartInterfaceConfigurationTerminal( final ItemStack is )
-	{
-		super( is );
-	}
+    public PartInterfaceConfigurationTerminal(final ItemStack is) {
+        super(is);
+    }
 
-	@Override
-	public boolean onPartActivate( final EntityPlayer player, final EnumHand hand, final Vec3d pos )
-	{
-		if( !super.onPartActivate( player, hand, pos ) )
-		{
-			if( Platform.isServer() )
-			{
-				Platform.openGUI( player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_INTERFACE_CONFIGURATION_TERMINAL );
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean onPartActivate(final EntityPlayer player, final EnumHand hand, final Vec3d pos) {
+        if (!super.onPartActivate(player, hand, pos)) {
+            if (Platform.isServer()) {
+                Platform.openGUI(player, this.getHost().getTile(), this.getSide(), GuiBridge.GUI_INTERFACE_CONFIGURATION_TERMINAL);
+            }
+        }
+        return true;
+    }
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return this.selectModel( MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL );
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
+    }
 
-	public void saveSearchStrings( String in )
-	{
-		this.in = in;
-	}
+    public void saveSearchStrings(String in) {
+        this.in = in;
+    }
 }

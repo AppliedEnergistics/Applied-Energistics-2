@@ -22,11 +22,9 @@ package appeng.container.slot;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class SlotFakeCraftingMatrix extends SlotFake
-{
+public class SlotFakeCraftingMatrix extends SlotFake {
 
-	public SlotFakeCraftingMatrix( final IItemHandler inv, final int idx, final int x, final int y )
-	{
-		super( inv, idx, x, y );
-	}
+    public SlotFakeCraftingMatrix(final IItemHandler inv, final int idx, final int x, final int y) {
+        super(inv, idx, x, y);
+    }
 }

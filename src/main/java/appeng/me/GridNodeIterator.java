@@ -19,68 +19,57 @@
 package appeng.me;
 
 
-import java.util.Iterator;
-import java.util.Map;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
+
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
  * Nested iterator for {@link appeng.me.MachineSet}
- *
+ * <p>
  * Traverses first over the {@link appeng.me.MachineSet} and then over every containing
  * {@link appeng.api.networking.IGridNode}
  */
-public class GridNodeIterator implements Iterator<IGridNode>
-{
-	private final Iterator<MachineSet> outerIterator;
-	private Iterator<IGridNode> innerIterator;
+public class GridNodeIterator implements Iterator<IGridNode> {
+    private final Iterator<MachineSet> outerIterator;
+    private Iterator<IGridNode> innerIterator;
 
-	public GridNodeIterator( final Map<Class<? extends IGridHost>, MachineSet> machines )
-	{
-		this.outerIterator = machines.values().iterator();
-		this.innerHasNext();
-	}
+    public GridNodeIterator(final Map<Class<? extends IGridHost>, MachineSet> machines) {
+        this.outerIterator = machines.values().iterator();
+        this.innerHasNext();
+    }
 
-	private boolean innerHasNext()
-	{
-		final boolean hasNext = this.outerIterator.hasNext();
+    private boolean innerHasNext() {
+        final boolean hasNext = this.outerIterator.hasNext();
 
-		if( hasNext )
-		{
-			final MachineSet nextElem = this.outerIterator.next();
-			this.innerIterator = nextElem.iterator();
-		}
+        if (hasNext) {
+            final MachineSet nextElem = this.outerIterator.next();
+            this.innerIterator = nextElem.iterator();
+        }
 
-		return hasNext;
-	}
+        return hasNext;
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		while( true )
-		{
-			if( this.innerIterator.hasNext() )
-			{
-				return true;
-			}
-			else if( !this.innerHasNext() )
-			{
-				return false;
-			}
-		}
-	}
+    @Override
+    public boolean hasNext() {
+        while (true) {
+            if (this.innerIterator.hasNext()) {
+                return true;
+            } else if (!this.innerHasNext()) {
+                return false;
+            }
+        }
+    }
 
-	@Override
-	public IGridNode next()
-	{
-		return this.innerIterator.next();
-	}
+    @Override
+    public IGridNode next() {
+        return this.innerIterator.next();
+    }
 
-	@Override
-	public void remove()
-	{
-		this.innerIterator.remove();
-	}
+    @Override
+    public void remove() {
+        this.innerIterator.remove();
+    }
 }

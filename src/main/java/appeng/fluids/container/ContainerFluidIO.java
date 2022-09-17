@@ -19,10 +19,9 @@
 package appeng.fluids.container;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.fluids.parts.PartSharedFluidBus;
 import appeng.fluids.util.IAEFluidTank;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
 /**
@@ -30,25 +29,21 @@ import appeng.fluids.util.IAEFluidTank;
  * @version rv5 - 1/05/2018
  * @since rv5 1/05/2018
  */
-public class ContainerFluidIO extends ContainerFluidConfigurable
-{
-	private final PartSharedFluidBus bus;
+public class ContainerFluidIO extends ContainerFluidConfigurable {
+    private final PartSharedFluidBus bus;
 
-	public ContainerFluidIO( InventoryPlayer ip, PartSharedFluidBus te )
-	{
-		super( ip, te );
-		this.bus = te;
-	}
+    public ContainerFluidIO(InventoryPlayer ip, PartSharedFluidBus te) {
+        super(ip, te);
+        this.bus = te;
+    }
 
-	@Override
-	public IAEFluidTank getFluidConfigInventory()
-	{
-		return this.bus.getConfig();
-	}
+    @Override
+    public IAEFluidTank getFluidConfigInventory() {
+        return this.bus.getConfig();
+    }
 
-	@Override
-	protected void setupConfig()
-	{
-		this.setupUpgrades();
-	}
+    @Override
+    protected void setupConfig() {
+        this.setupUpgrades();
+    }
 }

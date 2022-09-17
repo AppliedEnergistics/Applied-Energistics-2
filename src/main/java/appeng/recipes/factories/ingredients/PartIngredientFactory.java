@@ -19,50 +19,43 @@
 package appeng.recipes.factories.ingredients;
 
 
-import javax.annotation.Nonnull;
-
-import com.google.gson.JsonObject;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.crafting.IIngredientFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-
 import appeng.api.recipes.ResolverResult;
 import appeng.api.recipes.ResolverResultSet;
 import appeng.core.AELog;
 import appeng.core.Api;
 import appeng.core.AppEng;
+import com.google.gson.JsonObject;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.crafting.IIngredientFactory;
+import net.minecraftforge.common.crafting.JsonContext;
+
+import javax.annotation.Nonnull;
 
 
-public class PartIngredientFactory implements IIngredientFactory
-{
+public class PartIngredientFactory implements IIngredientFactory {
 
-	@Nonnull
-	@Override
-	public net.minecraft.item.crafting.Ingredient parse( JsonContext context, JsonObject json )
-	{
-		final String partName = json.get( "part" ).getAsString();
-		final Object result = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, partName );
+    @Nonnull
+    @Override
+    public net.minecraft.item.crafting.Ingredient parse(JsonContext context, JsonObject json) {
+        final String partName = json.get("part").getAsString();
+        final Object result = Api.INSTANCE.registries().recipes().resolveItem(AppEng.MOD_ID, partName);
 
-		if( result instanceof ResolverResultSet )
-		{
-			final ResolverResultSet resolverResultSet = (ResolverResultSet) result;
+        if (result instanceof ResolverResultSet) {
+            final ResolverResultSet resolverResultSet = (ResolverResultSet) result;
 
-			return net.minecraft.item.crafting.Ingredient
-					.fromStacks( resolverResultSet.results.toArray( new ItemStack[resolverResultSet.results.size()] ) );
-		}
-		else if( result instanceof ResolverResult )
-		{
-			final ResolverResult resolverResult = (ResolverResult) result;
+            return net.minecraft.item.crafting.Ingredient
+                    .fromStacks(resolverResultSet.results.toArray(new ItemStack[resolverResultSet.results.size()]));
+        } else if (result instanceof ResolverResult) {
+            final ResolverResult resolverResult = (ResolverResult) result;
 
-			final Item item = Item.getByNameOrId( AppEng.MOD_ID + ":" + resolverResult.itemName );
-			final ItemStack itemStack = new ItemStack( item, 1, resolverResult.damageValue, resolverResult.compound );
+            final Item item = Item.getByNameOrId(AppEng.MOD_ID + ":" + resolverResult.itemName);
+            final ItemStack itemStack = new ItemStack(item, 1, resolverResult.damageValue, resolverResult.compound);
 
-			return net.minecraft.item.crafting.Ingredient.fromStacks( itemStack );
-		}
+            return net.minecraft.item.crafting.Ingredient.fromStacks(itemStack);
+        }
 
-		AELog.warn( "Looking for ingredient with name '" + partName + "' ended up with a null item!" );
-		return net.minecraft.item.crafting.Ingredient.EMPTY;
-	}
+        AELog.warn("Looking for ingredient with name '" + partName + "' ended up with a null item!");
+        return net.minecraft.item.crafting.Ingredient.EMPTY;
+    }
 }

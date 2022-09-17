@@ -19,64 +19,58 @@
 package appeng.integration.modules.jei;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.wrapper.IShapedCraftingRecipeWrapper;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Acts as a fake facade recipe wrapper, created by {@link FacadeRegistryPlugin}.
  */
-class FacadeRecipeWrapper implements IShapedCraftingRecipeWrapper
-{
+class FacadeRecipeWrapper implements IShapedCraftingRecipeWrapper {
 
-	private final ItemStack textureItem;
+    private final ItemStack textureItem;
 
-	private final ItemStack cableAnchor;
+    private final ItemStack cableAnchor;
 
-	private final ItemStack facade;
+    private final ItemStack facade;
 
-	FacadeRecipeWrapper( ItemStack textureItem, ItemStack cableAnchor, ItemStack facade )
-	{
-		this.textureItem = textureItem;
-		this.cableAnchor = cableAnchor;
-		this.facade = facade;
-	}
+    FacadeRecipeWrapper(ItemStack textureItem, ItemStack cableAnchor, ItemStack facade) {
+        this.textureItem = textureItem;
+        this.cableAnchor = cableAnchor;
+        this.facade = facade;
+    }
 
-	@Override
-	public int getWidth()
-	{
-		return 3;
-	}
+    @Override
+    public int getWidth() {
+        return 3;
+    }
 
-	@Override
-	public int getHeight()
-	{
-		return 3;
-	}
+    @Override
+    public int getHeight() {
+        return 3;
+    }
 
-	@Override
-	public void getIngredients( IIngredients ingredients )
-	{
-		List<ItemStack> input = new ArrayList<>( 9 );
+    @Override
+    public void getIngredients(IIngredients ingredients) {
+        List<ItemStack> input = new ArrayList<>(9);
 
-		input.add( ItemStack.EMPTY );
-		input.add( this.cableAnchor );
-		input.add( ItemStack.EMPTY );
+        input.add(ItemStack.EMPTY);
+        input.add(this.cableAnchor);
+        input.add(ItemStack.EMPTY);
 
-		input.add( this.cableAnchor );
-		input.add( this.textureItem );
-		input.add( this.cableAnchor );
+        input.add(this.cableAnchor);
+        input.add(this.textureItem);
+        input.add(this.cableAnchor);
 
-		input.add( ItemStack.EMPTY );
-		input.add( this.cableAnchor );
-		input.add( ItemStack.EMPTY );
+        input.add(ItemStack.EMPTY);
+        input.add(this.cableAnchor);
+        input.add(ItemStack.EMPTY);
 
-		ingredients.setInputs( ItemStack.class, input );
-		ingredients.setOutput( ItemStack.class, this.facade );
-	}
+        ingredients.setInputs(ItemStack.class, input);
+        ingredients.setOutput(ItemStack.class, this.facade);
+    }
 }

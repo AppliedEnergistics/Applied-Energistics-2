@@ -22,13 +22,11 @@ package appeng.services.version.exceptions;
 /**
  * Indicates a invalid revision, which does not match the pattern "rv" followed by a natural number.
  */
-public class InvalidRevisionException extends VersionCheckerException
-{
+public class InvalidRevisionException extends VersionCheckerException {
 
-	private static final long serialVersionUID = 4828906902143875942L;
+    private static final long serialVersionUID = 4828906902143875942L;
 
-	public InvalidRevisionException()
-	{
-		super( "Invalid Revision: Needs to be 'rv' followd by a natural number." );
-	}
+    public InvalidRevisionException() {
+        super("Invalid Revision: Needs to be 'rv' followd by a natural number.");
+    }
 }

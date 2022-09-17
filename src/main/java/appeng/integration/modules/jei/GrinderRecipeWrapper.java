@@ -19,71 +19,63 @@
 package appeng.integration.modules.jei;
 
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.features.IGrinderRecipe;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 
-import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.IRecipeWrapper;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import appeng.api.features.IGrinderRecipe;
 
+class GrinderRecipeWrapper implements IRecipeWrapper {
 
-class GrinderRecipeWrapper implements IRecipeWrapper
-{
+    private final IGrinderRecipe recipe;
 
-	private final IGrinderRecipe recipe;
+    GrinderRecipeWrapper(IGrinderRecipe recipe) {
+        this.recipe = recipe;
+    }
 
-	GrinderRecipeWrapper( IGrinderRecipe recipe )
-	{
-		this.recipe = recipe;
-	}
+    @Override
+    public void getIngredients(IIngredients ingredients) {
+        ingredients.setInput(ItemStack.class, this.recipe.getInput());
+        List<ItemStack> outputs = new ArrayList<>(3);
+        outputs.add(this.recipe.getOutput());
+        this.recipe.getOptionalOutput().ifPresent(outputs::add);
+        this.recipe.getSecondOptionalOutput().ifPresent(outputs::add);
+        ingredients.setOutputs(ItemStack.class, outputs);
+    }
 
-	@Override
-	public void getIngredients( IIngredients ingredients )
-	{
-		ingredients.setInput( ItemStack.class, this.recipe.getInput() );
-		List<ItemStack> outputs = new ArrayList<>( 3 );
-		outputs.add( this.recipe.getOutput() );
-		this.recipe.getOptionalOutput().ifPresent( outputs::add );
-		this.recipe.getSecondOptionalOutput().ifPresent( outputs::add );
-		ingredients.setOutputs( ItemStack.class, outputs );
-	}
+    @Override
+    public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
 
-	@Override
-	public void drawInfo( Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY )
-	{
+        FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
 
-		FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
+        int x = 118;
 
-		int x = 118;
+        final float scale = 0.85f;
+        final float invScale = 1 / scale;
+        GlStateManager.scale(scale, scale, 1);
 
-		final float scale = 0.85f;
-		final float invScale = 1 / scale;
-		GlStateManager.scale( scale, scale, 1 );
+        if (this.recipe.getOptionalOutput() != null) {
+            String text = String.format("%d%%", (int) (this.recipe.getOptionalChance() * 100));
+            float width = fr.getStringWidth(text) * scale;
+            int xScaled = Math.round((x + (18 - width) / 2) * invScale);
+            fr.drawString(text, xScaled, (int) (65 * invScale), Color.gray.getRGB());
+            x += 18;
+        }
 
-		if( this.recipe.getOptionalOutput() != null )
-		{
-			String text = String.format( "%d%%", (int) ( this.recipe.getOptionalChance() * 100 ) );
-			float width = fr.getStringWidth( text ) * scale;
-			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
-			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
-			x += 18;
-		}
+        if (this.recipe.getSecondOptionalOutput() != null) {
+            String text = String.format("%d%%", (int) (this.recipe.getSecondOptionalChance() * 100));
+            float width = fr.getStringWidth(text) * scale;
+            int xScaled = Math.round((x + (18 - width) / 2) * invScale);
+            fr.drawString(text, xScaled, (int) (65 * invScale), Color.gray.getRGB());
+        }
 
-		if( this.recipe.getSecondOptionalOutput() != null )
-		{
-			String text = String.format( "%d%%", (int) ( this.recipe.getSecondOptionalChance() * 100 ) );
-			float width = fr.getStringWidth( text ) * scale;
-			int xScaled = Math.round( ( x + ( 18 - width ) / 2 ) * invScale );
-			fr.drawString( text, xScaled, (int) ( 65 * invScale ), Color.gray.getRGB() );
-		}
-
-		GlStateManager.scale( invScale, invScale, 1 );
-	}
+        GlStateManager.scale(invScale, invScale, 1);
+    }
 }

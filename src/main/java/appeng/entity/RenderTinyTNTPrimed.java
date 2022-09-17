@@ -31,76 +31,68 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-@SideOnly( Side.CLIENT )
-public class RenderTinyTNTPrimed extends Render<EntityTinyTNTPrimed>
-{
+@SideOnly(Side.CLIENT)
+public class RenderTinyTNTPrimed extends Render<EntityTinyTNTPrimed> {
 
-	public RenderTinyTNTPrimed( final RenderManager p_i46134_1_ )
-	{
-		super( p_i46134_1_ );
-		this.shadowSize = 0.5F;
-	}
+    public RenderTinyTNTPrimed(final RenderManager p_i46134_1_) {
+        super(p_i46134_1_);
+        this.shadowSize = 0.5F;
+    }
 
-	@Override
-	public void doRender( final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life )
-	{
-		final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-		GlStateManager.pushMatrix();
-		GlStateManager.translate( (float) x, (float) y + 0.25F, (float) z );
-		float f2;
+    @Override
+    public void doRender(final EntityTinyTNTPrimed tnt, final double x, final double y, final double z, final float unused, final float life) {
+        final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate((float) x, (float) y + 0.25F, (float) z);
+        float f2;
 
-		if( tnt.getFuse() - life + 1.0F < 10.0F )
-		{
-			f2 = 1.0F - ( tnt.getFuse() - life + 1.0F ) / 10.0F;
+        if (tnt.getFuse() - life + 1.0F < 10.0F) {
+            f2 = 1.0F - (tnt.getFuse() - life + 1.0F) / 10.0F;
 
-			if( f2 < 0.0F )
-			{
-				f2 = 0.0F;
-			}
+            if (f2 < 0.0F) {
+                f2 = 0.0F;
+            }
 
-			if( f2 > 1.0F )
-			{
-				f2 = 1.0F;
-			}
+            if (f2 > 1.0F) {
+                f2 = 1.0F;
+            }
 
-			f2 *= f2;
-			f2 *= f2;
-			final float f3 = 1.0F + f2 * 0.3F;
-			GlStateManager.scale( f3, f3, f3 );
-		}
+            f2 *= f2;
+            f2 *= f2;
+            final float f3 = 1.0F + f2 * 0.3F;
+            GlStateManager.scale(f3, f3, f3);
+        }
 
-		GlStateManager.scale( 0.5f, 0.5f, 0.5f );
-		f2 = ( 1.0F - ( tnt.getFuse() - life + 1.0F ) / 100.0F ) * 0.8F;
-		this.bindEntityTexture( tnt );
-		GlStateManager.translate( -0.5F, -0.5F, 0.5F );
-		blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), tnt.getBrightness() );
-		GlStateManager.translate( 0.0F, 0.0F, 1.0F );
+        GlStateManager.scale(0.5f, 0.5f, 0.5f);
+        f2 = (1.0F - (tnt.getFuse() - life + 1.0F) / 100.0F) * 0.8F;
+        this.bindEntityTexture(tnt);
+        GlStateManager.translate(-0.5F, -0.5F, 0.5F);
+        blockrendererdispatcher.renderBlockBrightness(Blocks.TNT.getDefaultState(), tnt.getBrightness());
+        GlStateManager.translate(0.0F, 0.0F, 1.0F);
 
-		if( tnt.getFuse() / 5 % 2 == 0 )
-		{
-			GlStateManager.disableTexture2D();
-			GlStateManager.disableLighting();
-			GlStateManager.enableBlend();
-			GlStateManager.blendFunc( 770, 772 );
-			GlStateManager.color( 1.0F, 1.0F, 1.0F, f2 );
-			GlStateManager.doPolygonOffset( -3.0F, -3.0F );
-			GlStateManager.enablePolygonOffset();
-			blockrendererdispatcher.renderBlockBrightness( Blocks.TNT.getDefaultState(), 1.0F );
-			GlStateManager.doPolygonOffset( 0.0F, 0.0F );
-			GlStateManager.disablePolygonOffset();
-			GlStateManager.color( 1.0F, 1.0F, 1.0F, 1.0F );
-			GlStateManager.disableBlend();
-			GlStateManager.enableLighting();
-			GlStateManager.enableTexture2D();
-		}
+        if (tnt.getFuse() / 5 % 2 == 0) {
+            GlStateManager.disableTexture2D();
+            GlStateManager.disableLighting();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(770, 772);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, f2);
+            GlStateManager.doPolygonOffset(-3.0F, -3.0F);
+            GlStateManager.enablePolygonOffset();
+            blockrendererdispatcher.renderBlockBrightness(Blocks.TNT.getDefaultState(), 1.0F);
+            GlStateManager.doPolygonOffset(0.0F, 0.0F);
+            GlStateManager.disablePolygonOffset();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.disableBlend();
+            GlStateManager.enableLighting();
+            GlStateManager.enableTexture2D();
+        }
 
-		GlStateManager.popMatrix();
-		super.doRender( tnt, x, y, z, unused, life );
-	}
+        GlStateManager.popMatrix();
+        super.doRender(tnt, x, y, z, unused, life);
+    }
 
-	@Override
-	protected ResourceLocation getEntityTexture( final EntityTinyTNTPrimed entity )
-	{
-		return TextureMap.LOCATION_BLOCKS_TEXTURE;
-	}
+    @Override
+    protected ResourceLocation getEntityTexture(final EntityTinyTNTPrimed entity) {
+        return TextureMap.LOCATION_BLOCKS_TEXTURE;
+    }
 }

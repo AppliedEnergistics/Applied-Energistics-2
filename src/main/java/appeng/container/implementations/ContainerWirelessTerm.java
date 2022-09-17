@@ -19,42 +19,34 @@
 package appeng.container.implementations;
 
 
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
-public class ContainerWirelessTerm extends ContainerMEPortableCell
-{
+public class ContainerWirelessTerm extends ContainerMEPortableCell {
 
-	private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
+    private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
-	public ContainerWirelessTerm( final InventoryPlayer ip, final WirelessTerminalGuiObject gui )
-	{
-		super( ip, gui );
-		this.wirelessTerminalGUIObject = gui;
-	}
+    public ContainerWirelessTerm(final InventoryPlayer ip, final WirelessTerminalGuiObject gui) {
+        super(ip, gui);
+        this.wirelessTerminalGUIObject = gui;
+    }
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		super.detectAndSendChanges();
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
 
-		if( !this.wirelessTerminalGUIObject.rangeCheck() )
-		{
-			if( Platform.isServer() && this.isValidContainer() )
-			{
-				this.getPlayerInv().player.sendMessage( PlayerMessages.OutOfRange.get() );
-			}
+        if (!this.wirelessTerminalGUIObject.rangeCheck()) {
+            if (Platform.isServer() && this.isValidContainer()) {
+                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+            }
 
-			this.setValidContainer( false );
-		}
-		else
-		{
-			this.setPowerMultiplier( AEConfig.instance().wireless_getDrainRate( this.wirelessTerminalGUIObject.getRange() ) );
-		}
-	}
+            this.setValidContainer(false);
+        } else {
+            this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
+        }
+    }
 }

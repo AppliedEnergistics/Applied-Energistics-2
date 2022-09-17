@@ -19,128 +19,105 @@
 package appeng.parts;
 
 
-import javax.annotation.Nullable;
-
 import appeng.api.implementations.parts.IPartCable;
 import appeng.api.parts.IFacadePart;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEPartLocation;
 
+import javax.annotation.Nullable;
+
 
 /**
  * Thin data storage to optimize memory usage for cables.
  */
-public class CableBusStorage
-{
+public class CableBusStorage {
 
-	private IPartCable center;
-	private IPart[] sides;
-	private IFacadePart[] facades;
+    private IPartCable center;
+    private IPart[] sides;
+    private IFacadePart[] facades;
 
-	protected IPartCable getCenter()
-	{
-		return this.center;
-	}
+    protected IPartCable getCenter() {
+        return this.center;
+    }
 
-	protected void setCenter( final IPartCable center )
-	{
-		this.center = center;
-	}
+    protected void setCenter(final IPartCable center) {
+        this.center = center;
+    }
 
-	protected IPart getSide( final AEPartLocation side )
-	{
-		final int x = side.ordinal();
-		if( this.sides != null && this.sides.length > x )
-		{
-			return this.sides[x];
-		}
+    protected IPart getSide(final AEPartLocation side) {
+        final int x = side.ordinal();
+        if (this.sides != null && this.sides.length > x) {
+            return this.sides[x];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	protected void setSide( final AEPartLocation side, final IPart part )
-	{
-		final int x = side.ordinal();
+    protected void setSide(final AEPartLocation side, final IPart part) {
+        final int x = side.ordinal();
 
-		if( this.sides != null && this.sides.length > x && part == null )
-		{
-			this.sides[x] = null;
-			this.sides = this.shrink( this.sides, true );
-		}
-		else if( part != null )
-		{
-			this.sides = this.grow( this.sides, x, true );
-			this.sides[x] = part;
-		}
-	}
+        if (this.sides != null && this.sides.length > x && part == null) {
+            this.sides[x] = null;
+            this.sides = this.shrink(this.sides, true);
+        } else if (part != null) {
+            this.sides = this.grow(this.sides, x, true);
+            this.sides[x] = part;
+        }
+    }
 
-	private <T> T[] shrink( final T[] in, final boolean parts )
-	{
-		int newSize = -1;
-		for( int x = 0; x < in.length; x++ )
-		{
-			if( in[x] != null )
-			{
-				newSize = x;
-			}
-		}
+    private <T> T[] shrink(final T[] in, final boolean parts) {
+        int newSize = -1;
+        for (int x = 0; x < in.length; x++) {
+            if (in[x] != null) {
+                newSize = x;
+            }
+        }
 
-		if( newSize == -1 )
-		{
-			return null;
-		}
+        if (newSize == -1) {
+            return null;
+        }
 
-		newSize++;
-		if( newSize == in.length )
-		{
-			return in;
-		}
+        newSize++;
+        if (newSize == in.length) {
+            return in;
+        }
 
-		final T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
-		System.arraycopy( in, 0, newArray, 0, newSize );
+        final T[] newArray = (T[]) (parts ? new IPart[newSize] : new IFacadePart[newSize]);
+        System.arraycopy(in, 0, newArray, 0, newSize);
 
-		return newArray;
-	}
+        return newArray;
+    }
 
-	private <T> T[] grow( final T[] in, final int newValue, final boolean parts )
-	{
-		if( in != null && in.length > newValue )
-		{
-			return in;
-		}
+    private <T> T[] grow(final T[] in, final int newValue, final boolean parts) {
+        if (in != null && in.length > newValue) {
+            return in;
+        }
 
-		final int newSize = newValue + 1;
+        final int newSize = newValue + 1;
 
-		final T[] newArray = (T[]) ( parts ? new IPart[newSize] : new IFacadePart[newSize] );
-		if( in != null )
-		{
-			System.arraycopy( in, 0, newArray, 0, in.length );
-		}
+        final T[] newArray = (T[]) (parts ? new IPart[newSize] : new IFacadePart[newSize]);
+        if (in != null) {
+            System.arraycopy(in, 0, newArray, 0, in.length);
+        }
 
-		return newArray;
-	}
+        return newArray;
+    }
 
-	public IFacadePart getFacade( final int x )
-	{
-		if( this.facades != null && this.facades.length > x )
-		{
-			return this.facades[x];
-		}
+    public IFacadePart getFacade(final int x) {
+        if (this.facades != null && this.facades.length > x) {
+            return this.facades[x];
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public void setFacade( final int x, @Nullable final IFacadePart facade )
-	{
-		if( this.facades != null && this.facades.length > x && facade == null )
-		{
-			this.facades[x] = null;
-			this.facades = this.shrink( this.facades, false );
-		}
-		else
-		{
-			this.facades = this.grow( this.facades, x, false );
-			this.facades[x] = facade;
-		}
-	}
+    public void setFacade(final int x, @Nullable final IFacadePart facade) {
+        if (this.facades != null && this.facades.length > x && facade == null) {
+            this.facades[x] = null;
+            this.facades = this.shrink(this.facades, false);
+        } else {
+            this.facades = this.grow(this.facades, x, false);
+            this.facades[x] = facade;
+        }
+    }
 }

@@ -18,11 +18,11 @@
 
 package appeng.util.item;
 
+import appeng.api.storage.data.IAEItemStack;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import appeng.api.storage.data.IAEItemStack;
 
 /**
  * This iterator will only return items from a collection that are meaningful (w.r.t.

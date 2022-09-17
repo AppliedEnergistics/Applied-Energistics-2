@@ -19,50 +19,44 @@
 package appeng.decorative.solid;
 
 
-import java.util.EnumSet;
-
 import net.minecraft.util.EnumFacing;
+
+import java.util.EnumSet;
 
 
 /**
  * Immutable (and thus thread-safe) class that encapsulates the rendering state required for a connected texture
  * glass block.
  */
-public final class GlassState
-{
+public final class GlassState {
 
-	private final int x;
-	private final int y;
-	private final int z;
+    private final int x;
+    private final int y;
+    private final int z;
 
-	private final EnumSet<EnumFacing> flushWith = EnumSet.noneOf( EnumFacing.class );
+    private final EnumSet<EnumFacing> flushWith = EnumSet.noneOf(EnumFacing.class);
 
-	public GlassState( int x, int y, int z, EnumSet<EnumFacing> flushWith )
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.flushWith.addAll( flushWith );
-	}
+    public GlassState(int x, int y, int z, EnumSet<EnumFacing> flushWith) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.flushWith.addAll(flushWith);
+    }
 
-	public int getX()
-	{
-		return this.x;
-	}
+    public int getX() {
+        return this.x;
+    }
 
-	public int getY()
-	{
-		return this.y;
-	}
+    public int getY() {
+        return this.y;
+    }
 
-	public int getZ()
-	{
-		return this.z;
-	}
+    public int getZ() {
+        return this.z;
+    }
 
-	public boolean isFlushWith( EnumFacing side )
-	{
-		return this.flushWith.contains( side );
-	}
+    public boolean isFlushWith(EnumFacing side) {
+        return this.flushWith.contains(side);
+    }
 
 }

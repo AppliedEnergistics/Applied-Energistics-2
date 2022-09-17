@@ -19,11 +19,10 @@
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-
 import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
 import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
 import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
+import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 
 /**
@@ -32,40 +31,33 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
  *
  * @author covers1624
  */
-public class QuadAlphaOverride extends QuadTransformer
-{
+public class QuadAlphaOverride extends QuadTransformer {
 
-	public static final IPipelineElementFactory<QuadAlphaOverride> FACTORY = QuadAlphaOverride::new;
+    public static final IPipelineElementFactory<QuadAlphaOverride> FACTORY = QuadAlphaOverride::new;
 
-	private float alphaOverride;
+    private float alphaOverride;
 
-	QuadAlphaOverride()
-	{
-		super();
-	}
+    QuadAlphaOverride() {
+        super();
+    }
 
-	public QuadAlphaOverride( IVertexConsumer consumer, float alphaOverride )
-	{
-		super( consumer );
-		this.alphaOverride = alphaOverride;
-	}
+    public QuadAlphaOverride(IVertexConsumer consumer, float alphaOverride) {
+        super(consumer);
+        this.alphaOverride = alphaOverride;
+    }
 
-	public QuadAlphaOverride setAlphaOverride( float alphaOverride )
-	{
-		this.alphaOverride = alphaOverride;
-		return this;
-	}
+    public QuadAlphaOverride setAlphaOverride(float alphaOverride) {
+        this.alphaOverride = alphaOverride;
+        return this;
+    }
 
-	@Override
-	public boolean transform()
-	{
-		if( this.format.hasColor )
-		{
-			for( Vertex v : this.quad.vertices )
-			{
-				v.color[3] = this.alphaOverride;
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean transform() {
+        if (this.format.hasColor) {
+            for (Vertex v : this.quad.vertices) {
+                v.color[3] = this.alphaOverride;
+            }
+        }
+        return true;
+    }
 }

@@ -29,44 +29,35 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-@SideOnly( Side.CLIENT )
-public class RenderFloatingItem extends RenderEntityItem
-{
+@SideOnly(Side.CLIENT)
+public class RenderFloatingItem extends RenderEntityItem {
 
-	public RenderFloatingItem( final RenderManager manager )
-	{
-		super( manager, Minecraft.getMinecraft().getRenderItem() );
-		this.shadowOpaque = 0.0F;
-	}
+    public RenderFloatingItem(final RenderManager manager) {
+        super(manager, Minecraft.getMinecraft().getRenderItem());
+        this.shadowOpaque = 0.0F;
+    }
 
-	@Override
-	public void doRender( final EntityItem entityItem, final double x, final double y, final double z, final float yaw, final float partialTick )
-	{
-		if( entityItem instanceof EntityFloatingItem )
-		{
-			final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
-			if( efi.getProgress() > 0.0 )
-			{
-				GlStateManager.pushMatrix();
+    @Override
+    public void doRender(final EntityItem entityItem, final double x, final double y, final double z, final float yaw, final float partialTick) {
+        if (entityItem instanceof EntityFloatingItem) {
+            final EntityFloatingItem efi = (EntityFloatingItem) entityItem;
+            if (efi.getProgress() > 0.0) {
+                GlStateManager.pushMatrix();
 
-				if( !( efi.getItem().getItem() instanceof ItemBlock ) )
-				{
-					GlStateManager.translate( 0, -0.3f, 0 );
-				}
-				else
-				{
-					GlStateManager.translate( 0, -0.2f, 0 );
-				}
+                if (!(efi.getItem().getItem() instanceof ItemBlock)) {
+                    GlStateManager.translate(0, -0.3f, 0);
+                } else {
+                    GlStateManager.translate(0, -0.2f, 0);
+                }
 
-				super.doRender( efi, x, y, z, yaw, 0 );
-				GlStateManager.popMatrix();
-			}
-		}
-	}
+                super.doRender(efi, x, y, z, yaw, 0);
+                GlStateManager.popMatrix();
+            }
+        }
+    }
 
-	@Override
-	public boolean shouldBob()
-	{
-		return false;
-	}
+    @Override
+    public boolean shouldBob() {
+        return false;
+    }
 }

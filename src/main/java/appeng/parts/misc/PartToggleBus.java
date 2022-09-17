@@ -19,17 +19,6 @@
 package appeng.parts.misc;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-
 import appeng.api.AEApi;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridConnection;
@@ -46,184 +35,161 @@ import appeng.items.parts.PartModels;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.PartBasicState;
 import appeng.parts.PartModel;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+
+import java.util.EnumSet;
 
 
-public class PartToggleBus extends PartBasicState
-{
+public class PartToggleBus extends PartBasicState {
 
-	@PartModels
-	public static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_base" );
-	@PartModels
-	public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_status_off" );
-	@PartModels
-	public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_status_on" );
-	@PartModels
-	public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation( AppEng.MOD_ID, "part/toggle_bus_status_has_channel" );
+    @PartModels
+    public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_base");
+    @PartModels
+    public static final ResourceLocation MODEL_STATUS_OFF = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_status_off");
+    @PartModels
+    public static final ResourceLocation MODEL_STATUS_ON = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_status_on");
+    @PartModels
+    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = new ResourceLocation(AppEng.MOD_ID, "part/toggle_bus_status_has_channel");
 
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_STATUS_OFF );
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_STATUS_ON );
-	public static final IPartModel MODELS_HAS_CHANNEL = new PartModel( MODEL_BASE, MODEL_STATUS_HAS_CHANNEL );
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
 
-	private static final int REDSTONE_FLAG = 4;
-	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", ItemStack.EMPTY, true );
-	private IGridConnection connection;
-	private boolean hasRedstone = false;
+    private static final int REDSTONE_FLAG = 4;
+    private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer", ItemStack.EMPTY, true);
+    private IGridConnection connection;
+    private boolean hasRedstone = false;
 
-	@Reflected
-	public PartToggleBus( final ItemStack is )
-	{
-		super( is );
+    @Reflected
+    public PartToggleBus(final ItemStack is) {
+        super(is);
 
-		this.getProxy().setIdlePowerUsage( 0.0 );
-		this.getOuterProxy().setIdlePowerUsage( 0.0 );
-		this.getProxy().setFlags();
-		this.getOuterProxy().setFlags();
-	}
+        this.getProxy().setIdlePowerUsage(0.0);
+        this.getOuterProxy().setIdlePowerUsage(0.0);
+        this.getProxy().setFlags();
+        this.getOuterProxy().setFlags();
+    }
 
-	@Override
-	protected int populateFlags( final int cf )
-	{
-		return cf | ( this.getIntention() ? REDSTONE_FLAG : 0 );
-	}
+    @Override
+    protected int populateFlags(final int cf) {
+        return cf | (this.getIntention() ? REDSTONE_FLAG : 0);
+    }
 
-	public boolean hasRedstoneFlag()
-	{
-		return ( this.getClientFlags() & REDSTONE_FLAG ) == REDSTONE_FLAG;
-	}
+    public boolean hasRedstoneFlag() {
+        return (this.getClientFlags() & REDSTONE_FLAG) == REDSTONE_FLAG;
+    }
 
-	protected boolean getIntention()
-	{
-		return this.getHost().hasRedstone( this.getSide() );
-	}
+    protected boolean getIntention() {
+        return this.getHost().hasRedstone(this.getSide());
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.GLASS;
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return AECableType.GLASS;
+    }
 
-	@Override
-	public void getBoxes( final IPartCollisionHelper bch )
-	{
-		bch.addBox( 6, 6, 11, 10, 10, 16 );
-	}
+    @Override
+    public void getBoxes(final IPartCollisionHelper bch) {
+        bch.addBox(6, 6, 11, 10, 10, 16);
+    }
 
-	@Override
-	public void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor )
-	{
-		final boolean oldHasRedstone = this.hasRedstone;
-		this.hasRedstone = this.getHost().hasRedstone( this.getSide() );
+    @Override
+    public void onNeighborChanged(IBlockAccess w, BlockPos pos, BlockPos neighbor) {
+        final boolean oldHasRedstone = this.hasRedstone;
+        this.hasRedstone = this.getHost().hasRedstone(this.getSide());
 
-		if( this.hasRedstone != oldHasRedstone )
-		{
-			this.updateInternalState();
-			this.getHost().markForUpdate();
-		}
-	}
+        if (this.hasRedstone != oldHasRedstone) {
+            this.updateInternalState();
+            this.getHost().markForUpdate();
+        }
+    }
 
-	@Override
-	public void readFromNBT( final NBTTagCompound extra )
-	{
-		super.readFromNBT( extra );
-		this.getOuterProxy().readFromNBT( extra );
-	}
+    @Override
+    public void readFromNBT(final NBTTagCompound extra) {
+        super.readFromNBT(extra);
+        this.getOuterProxy().readFromNBT(extra);
+    }
 
-	@Override
-	public void writeToNBT( final NBTTagCompound extra )
-	{
-		super.writeToNBT( extra );
-		this.getOuterProxy().writeToNBT( extra );
-	}
+    @Override
+    public void writeToNBT(final NBTTagCompound extra) {
+        super.writeToNBT(extra);
+        this.getOuterProxy().writeToNBT(extra);
+    }
 
-	@Override
-	public void removeFromWorld()
-	{
-		super.removeFromWorld();
-		this.getOuterProxy().invalidate();
-	}
+    @Override
+    public void removeFromWorld() {
+        super.removeFromWorld();
+        this.getOuterProxy().invalidate();
+    }
 
-	@Override
-	public void addToWorld()
-	{
-		super.addToWorld();
-		this.getOuterProxy().onReady();
-		this.hasRedstone = this.getHost().hasRedstone( this.getSide() );
-		this.updateInternalState();
-	}
+    @Override
+    public void addToWorld() {
+        super.addToWorld();
+        this.getOuterProxy().onReady();
+        this.hasRedstone = this.getHost().hasRedstone(this.getSide());
+        this.updateInternalState();
+    }
 
-	@Override
-	public void setPartHostInfo( final AEPartLocation side, final IPartHost host, final TileEntity tile )
-	{
-		super.setPartHostInfo( side, host, tile );
-		this.outerProxy.setValidSides( EnumSet.of( side.getFacing() ) );
-	}
+    @Override
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+        super.setPartHostInfo(side, host, tile);
+        this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
+    }
 
-	@Override
-	public IGridNode getExternalFacingNode()
-	{
-		return this.getOuterProxy().getNode();
-	}
+    @Override
+    public IGridNode getExternalFacingNode() {
+        return this.getOuterProxy().getNode();
+    }
 
-	@Override
-	public float getCableConnectionLength( AECableType cable )
-	{
-		return 5;
-	}
+    @Override
+    public float getCableConnectionLength(AECableType cable) {
+        return 5;
+    }
 
-	@Override
-	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
-	{
-		super.onPlacement( player, hand, held, side );
-		this.getOuterProxy().setOwner( player );
-	}
+    @Override
+    public void onPlacement(final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side) {
+        super.onPlacement(player, hand, held, side);
+        this.getOuterProxy().setOwner(player);
+    }
 
-	private void updateInternalState()
-	{
-		final boolean intention = this.getIntention();
-		if( intention == ( this.connection == null ) )
-		{
-			if( this.getProxy().getNode() != null && this.getOuterProxy().getNode() != null )
-			{
-				if( intention )
-				{
-					try
-					{
-						this.connection = AEApi.instance().grid().createGridConnection( this.getProxy().getNode(), this.getOuterProxy().getNode() );
-					}
-					catch( final FailedConnectionException e )
-					{
-						// :(
-						AELog.debug( e );
-					}
-				}
-				else
-				{
-					this.connection.destroy();
-					this.connection = null;
-				}
-			}
-		}
-	}
+    private void updateInternalState() {
+        final boolean intention = this.getIntention();
+        if (intention == (this.connection == null)) {
+            if (this.getProxy().getNode() != null && this.getOuterProxy().getNode() != null) {
+                if (intention) {
+                    try {
+                        this.connection = AEApi.instance().grid().createGridConnection(this.getProxy().getNode(), this.getOuterProxy().getNode());
+                    } catch (final FailedConnectionException e) {
+                        // :(
+                        AELog.debug(e);
+                    }
+                } else {
+                    this.connection.destroy();
+                    this.connection = null;
+                }
+            }
+        }
+    }
 
-	AENetworkProxy getOuterProxy()
-	{
-		return this.outerProxy;
-	}
+    AENetworkProxy getOuterProxy() {
+        return this.outerProxy;
+    }
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		if( this.hasRedstoneFlag() && this.isActive() && this.isPowered() )
-		{
-			return MODELS_HAS_CHANNEL;
-		}
-		else if( this.hasRedstoneFlag() && this.isPowered() )
-		{
-			return MODELS_ON;
-		}
-		else
-		{
-			return MODELS_OFF;
-		}
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        if (this.hasRedstoneFlag() && this.isActive() && this.isPowered()) {
+            return MODELS_HAS_CHANNEL;
+        } else if (this.hasRedstoneFlag() && this.isPowered()) {
+            return MODELS_ON;
+        } else {
+            return MODELS_OFF;
+        }
+    }
 }

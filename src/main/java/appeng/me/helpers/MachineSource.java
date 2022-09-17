@@ -19,61 +19,51 @@
 package appeng.me.helpers;
 
 
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.IActionSource;
+import net.minecraft.entity.player.EntityPlayer;
+
 import java.util.Objects;
 import java.util.Optional;
 
-import net.minecraft.entity.player.EntityPlayer;
 
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
+public class MachineSource implements IActionSource {
 
+    private final IActionHost via;
 
-public class MachineSource implements IActionSource
-{
+    public MachineSource(final IActionHost v) {
+        this.via = v;
+    }
 
-	private final IActionHost via;
+    @Override
+    public Optional<EntityPlayer> player() {
+        return Optional.empty();
+    }
 
-	public MachineSource( final IActionHost v )
-	{
-		this.via = v;
-	}
+    @Override
+    public Optional<IActionHost> machine() {
+        return Optional.of(this.via);
+    }
 
-	@Override
-	public Optional<EntityPlayer> player()
-	{
-		return Optional.empty();
-	}
+    @Override
+    public <T> Optional<T> context(Class<T> key) {
+        return Optional.empty();
+    }
 
-	@Override
-	public Optional<IActionHost> machine()
-	{
-		return Optional.of( this.via );
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MachineSource that = (MachineSource) o;
+        return via.equals(that.via);
+    }
 
-	@Override
-	public <T> Optional<T> context( Class<T> key )
-	{
-		return Optional.empty();
-	}
-
-	@Override
-	public boolean equals( Object o )
-	{
-		if( this == o )
-		{
-			return true;
-		}
-		if( o == null || getClass() != o.getClass() )
-		{
-			return false;
-		}
-		MachineSource that = (MachineSource) o;
-		return via.equals( that.via );
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash( via );
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(via);
+    }
 }

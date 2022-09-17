@@ -28,9 +28,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * used
  * due to them not being able to be annotated with @SideOnly(CLIENT).
  */
-public abstract class ItemRenderingCustomizer
-{
+public abstract class ItemRenderingCustomizer {
 
-	@SideOnly( Side.CLIENT )
-	public abstract void customize( IItemRendering rendering );
+    @SideOnly(Side.CLIENT)
+    public abstract void customize(IItemRendering rendering);
 }

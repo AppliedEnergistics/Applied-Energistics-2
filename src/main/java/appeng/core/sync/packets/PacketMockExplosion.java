@@ -19,57 +19,51 @@
 package appeng.core.sync.packets;
 
 
+import appeng.core.AppEng;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.network.INetworkInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.core.AppEng;
-import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.network.INetworkInfo;
 
+public class PacketMockExplosion extends AppEngPacket {
 
-public class PacketMockExplosion extends AppEngPacket
-{
+    private final double x;
+    private final double y;
+    private final double z;
 
-	private final double x;
-	private final double y;
-	private final double z;
+    // automatic.
+    public PacketMockExplosion(final ByteBuf stream) {
+        this.x = stream.readDouble();
+        this.y = stream.readDouble();
+        this.z = stream.readDouble();
+    }
 
-	// automatic.
-	public PacketMockExplosion( final ByteBuf stream )
-	{
-		this.x = stream.readDouble();
-		this.y = stream.readDouble();
-		this.z = stream.readDouble();
-	}
+    // api
+    public PacketMockExplosion(final double x, final double y, final double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
-	// api
-	public PacketMockExplosion( final double x, final double y, final double z )
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
+        final ByteBuf data = Unpooled.buffer();
 
-		final ByteBuf data = Unpooled.buffer();
+        data.writeInt(this.getPacketID());
+        data.writeDouble(x);
+        data.writeDouble(y);
+        data.writeDouble(z);
 
-		data.writeInt( this.getPacketID() );
-		data.writeDouble( x );
-		data.writeDouble( y );
-		data.writeDouble( z );
+        this.configureWrite(data);
+    }
 
-		this.configureWrite( data );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
-	{
-		final World world = AppEng.proxy.getWorld();
-		world.spawnParticle( EnumParticleTypes.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D, new int[0] );
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void clientPacketData(final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player) {
+        final World world = AppEng.proxy.getWorld();
+        world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+    }
 }

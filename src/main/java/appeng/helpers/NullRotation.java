@@ -19,40 +19,33 @@
 package appeng.helpers;
 
 
+import appeng.api.util.IOrientable;
 import net.minecraft.util.EnumFacing;
 
-import appeng.api.util.IOrientable;
 
+public class NullRotation implements IOrientable {
 
-public class NullRotation implements IOrientable
-{
+    public NullRotation() {
 
-	public NullRotation()
-	{
+    }
 
-	}
+    @Override
+    public boolean canBeRotated() {
+        return false;
+    }
 
-	@Override
-	public boolean canBeRotated()
-	{
-		return false;
-	}
+    @Override
+    public EnumFacing getForward() {
+        return EnumFacing.SOUTH;
+    }
 
-	@Override
-	public EnumFacing getForward()
-	{
-		return EnumFacing.SOUTH;
-	}
+    @Override
+    public EnumFacing getUp() {
+        return EnumFacing.UP;
+    }
 
-	@Override
-	public EnumFacing getUp()
-	{
-		return EnumFacing.UP;
-	}
+    @Override
+    public void setOrientation(final EnumFacing forward, final EnumFacing up) {
 
-	@Override
-	public void setOrientation( final EnumFacing forward, final EnumFacing up )
-	{
-
-	}
+    }
 }

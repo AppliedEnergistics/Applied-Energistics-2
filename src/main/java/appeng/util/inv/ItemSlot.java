@@ -19,62 +19,52 @@
 package appeng.util.inv;
 
 
-import net.minecraft.item.ItemStack;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.util.item.AEItemStack;
+import net.minecraft.item.ItemStack;
 
 
-public class ItemSlot
-{
+public class ItemSlot {
 
-	private int slot;
-	private boolean isExtractable;
-	// one or the other..
-	private IAEItemStack aeItemStack;
-	private ItemStack itemStack;
+    private int slot;
+    private boolean isExtractable;
+    // one or the other..
+    private IAEItemStack aeItemStack;
+    private ItemStack itemStack;
 
-	public ItemStack getItemStack()
-	{
-		return this.itemStack
-				.isEmpty() ? ( this.aeItemStack == null ? ItemStack.EMPTY : ( this.itemStack = this.aeItemStack.createItemStack() ) ) : this.itemStack;
-	}
+    public ItemStack getItemStack() {
+        return this.itemStack
+                .isEmpty() ? (this.aeItemStack == null ? ItemStack.EMPTY : (this.itemStack = this.aeItemStack.createItemStack())) : this.itemStack;
+    }
 
-	public void setItemStack( final ItemStack is )
-	{
-		this.aeItemStack = null;
-		this.itemStack = is;
-	}
+    public void setItemStack(final ItemStack is) {
+        this.aeItemStack = null;
+        this.itemStack = is;
+    }
 
-	public IAEItemStack getAEItemStack()
-	{
-		return this.aeItemStack == null ? ( this.itemStack
-				.isEmpty() ? null : ( this.aeItemStack = AEItemStack.fromItemStack( this.itemStack ) ) ) : this.aeItemStack;
-	}
+    public IAEItemStack getAEItemStack() {
+        return this.aeItemStack == null ? (this.itemStack
+                .isEmpty() ? null : (this.aeItemStack = AEItemStack.fromItemStack(this.itemStack))) : this.aeItemStack;
+    }
 
-	void setAEItemStack( final IAEItemStack is )
-	{
-		this.aeItemStack = is;
-		this.itemStack = ItemStack.EMPTY;
-	}
+    void setAEItemStack(final IAEItemStack is) {
+        this.aeItemStack = is;
+        this.itemStack = ItemStack.EMPTY;
+    }
 
-	public boolean isExtractable()
-	{
-		return this.isExtractable;
-	}
+    public boolean isExtractable() {
+        return this.isExtractable;
+    }
 
-	void setExtractable( final boolean isExtractable )
-	{
-		this.isExtractable = isExtractable;
-	}
+    void setExtractable(final boolean isExtractable) {
+        this.isExtractable = isExtractable;
+    }
 
-	public int getSlot()
-	{
-		return this.slot;
-	}
+    public int getSlot() {
+        return this.slot;
+    }
 
-	public void setSlot( final int slot )
-	{
-		this.slot = slot;
-	}
+    public void setSlot(final int slot) {
+        this.slot = slot;
+    }
 }

@@ -32,31 +32,27 @@
 package appeng.core.api.imc;
 
 
+import appeng.api.AEApi;
+import appeng.core.api.IIMCProcessor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
-import appeng.api.AEApi;
-import appeng.core.api.IIMCProcessor;
 
+public class IMCMatterCannon implements IIMCProcessor {
 
-public class IMCMatterCannon implements IIMCProcessor
-{
+    @Override
+    public void process(final IMCMessage m) {
+        final NBTTagCompound msg = m.getNBTValue();
+        final NBTTagCompound item = (NBTTagCompound) msg.getTag("item");
 
-	@Override
-	public void process( final IMCMessage m )
-	{
-		final NBTTagCompound msg = m.getNBTValue();
-		final NBTTagCompound item = (NBTTagCompound) msg.getTag( "item" );
+        final ItemStack ammo = new ItemStack(item);
+        final double weight = msg.getDouble("weight");
 
-		final ItemStack ammo = new ItemStack( item );
-		final double weight = msg.getDouble( "weight" );
+        if (ammo.isEmpty()) {
+            throw new IllegalStateException("invalid item in message " + m);
+        }
 
-		if( ammo.isEmpty() )
-		{
-			throw new IllegalStateException( "invalid item in message " + m );
-		}
-
-		AEApi.instance().registries().matterCannon().registerAmmo( ammo, weight );
-	}
+        AEApi.instance().registries().matterCannon().registerAmmo(ammo, weight);
+    }
 }

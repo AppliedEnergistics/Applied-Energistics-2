@@ -19,9 +19,8 @@
 package appeng.spatial;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.api.AEApi;
+import appeng.core.AppEng;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
@@ -30,89 +29,75 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
 
-import appeng.api.AEApi;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class StorageChunkProvider extends ChunkGeneratorOverworld
-{
+public class StorageChunkProvider extends ChunkGeneratorOverworld {
 
-	private final World world;
+    private final World world;
 
-	public StorageChunkProvider( final World world, final long i )
-	{
-		super( world, i, false, null );
-		this.world = world;
-	}
+    public StorageChunkProvider(final World world, final long i) {
+        super(world, i, false, null);
+        this.world = world;
+    }
 
-	@Override
-	public Chunk generateChunk( final int x, final int z )
-	{
-		final Chunk chunk = new Chunk( this.world, x, z );
+    @Override
+    public Chunk generateChunk(final int x, final int z) {
+        final Chunk chunk = new Chunk(this.world, x, z);
 
-		final byte[] biomes = chunk.getBiomeArray();
-		Biome biome = AppEng.instance().getStorageBiome();
-		byte biomeId = (byte) Biome.getIdForBiome( biome );
+        final byte[] biomes = chunk.getBiomeArray();
+        Biome biome = AppEng.instance().getStorageBiome();
+        byte biomeId = (byte) Biome.getIdForBiome(biome);
 
-		for( int k = 0; k < biomes.length; ++k )
-		{
-			biomes[k] = biomeId;
-		}
+        for (int k = 0; k < biomes.length; ++k) {
+            biomes[k] = biomeId;
+        }
 
-		AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent( block -> this.fillChunk( chunk, block.getDefaultState() ) );
+        AEApi.instance().definitions().blocks().matrixFrame().maybeBlock().ifPresent(block -> this.fillChunk(chunk, block.getDefaultState()));
 
-		chunk.setModified( false );
+        chunk.setModified(false);
 
-		if( !chunk.isTerrainPopulated() )
-		{
-			chunk.setTerrainPopulated( true );
-			chunk.resetRelightChecks();
-		}
+        if (!chunk.isTerrainPopulated()) {
+            chunk.setTerrainPopulated(true);
+            chunk.resetRelightChecks();
+        }
 
-		return chunk;
-	}
+        return chunk;
+    }
 
-	private void fillChunk( Chunk chunk, IBlockState defaultState )
-	{
-		for( int cx = 0; cx < 16; cx++ )
-		{
-			for( int cz = 0; cz < 16; cz++ )
-			{
-				for( int cy = 0; cy < 256; cy++ )
-				{
-					chunk.setBlockState( new BlockPos( cx, cy, cz ), defaultState );
-				}
-			}
-		}
-	}
+    private void fillChunk(Chunk chunk, IBlockState defaultState) {
+        for (int cx = 0; cx < 16; cx++) {
+            for (int cz = 0; cz < 16; cz++) {
+                for (int cy = 0; cy < 256; cy++) {
+                    chunk.setBlockState(new BlockPos(cx, cy, cz), defaultState);
+                }
+            }
+        }
+    }
 
-	@Override
-	public void populate( final int par2, final int par3 )
-	{
+    @Override
+    public void populate(final int par2, final int par3) {
 
-	}
+    }
 
-	@Override
-	public List getPossibleCreatures( final EnumCreatureType creatureType, final BlockPos pos )
-	{
-		return new ArrayList();
-	}
+    @Override
+    public List getPossibleCreatures(final EnumCreatureType creatureType, final BlockPos pos) {
+        return new ArrayList();
+    }
 
-	@Override
-	public boolean generateStructures( Chunk chunkIn, int x, int z )
-	{
-		return false;
-	}
+    @Override
+    public boolean generateStructures(Chunk chunkIn, int x, int z) {
+        return false;
+    }
 
-	@Override
-	public BlockPos getNearestStructurePos( World worldIn, String structureName, BlockPos position, boolean p_180513_4_ )
-	{
-		return null;
-	}
+    @Override
+    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean p_180513_4_) {
+        return null;
+    }
 
-	@Override
-	public void recreateStructures( Chunk chunkIn, int x, int z )
-	{
+    @Override
+    public void recreateStructures(Chunk chunkIn, int x, int z) {
 
-	}
+    }
 }

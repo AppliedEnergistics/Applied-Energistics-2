@@ -19,38 +19,31 @@
 package appeng.integration.modules.jei;
 
 
+import appeng.integration.abstraction.IJEI;
 import com.google.common.base.Strings;
-
 import mezz.jei.api.IJeiRuntime;
 
-import appeng.integration.abstraction.IJEI;
 
+class JeiRuntimeAdapter implements IJEI {
 
-class JeiRuntimeAdapter implements IJEI
-{
+    private final IJeiRuntime runtime;
 
-	private final IJeiRuntime runtime;
+    JeiRuntimeAdapter(IJeiRuntime jeiRuntime) {
+        this.runtime = jeiRuntime;
+    }
 
-	JeiRuntimeAdapter( IJeiRuntime jeiRuntime )
-	{
-		this.runtime = jeiRuntime;
-	}
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
-	@Override
-	public boolean isEnabled()
-	{
-		return true;
-	}
+    @Override
+    public String getSearchText() {
+        return Strings.nullToEmpty(this.runtime.getIngredientFilter().getFilterText());
+    }
 
-	@Override
-	public String getSearchText()
-	{
-		return Strings.nullToEmpty( this.runtime.getIngredientFilter().getFilterText() );
-	}
-
-	@Override
-	public void setSearchText( String searchText )
-	{
-		this.runtime.getIngredientFilter().setFilterText( Strings.nullToEmpty( searchText ) );
-	}
+    @Override
+    public void setSearchText(String searchText) {
+        this.runtime.getIngredientFilter().setFilterText(Strings.nullToEmpty(searchText));
+    }
 }

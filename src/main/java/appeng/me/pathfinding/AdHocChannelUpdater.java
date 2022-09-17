@@ -26,32 +26,28 @@ import appeng.me.GridConnection;
 import appeng.me.GridNode;
 
 
-public class AdHocChannelUpdater implements IGridConnectionVisitor
-{
+public class AdHocChannelUpdater implements IGridConnectionVisitor {
 
-	private final int usedChannels;
+    private final int usedChannels;
 
-	public AdHocChannelUpdater( final int used )
-	{
-		this.usedChannels = used;
-	}
+    public AdHocChannelUpdater(final int used) {
+        this.usedChannels = used;
+    }
 
-	@Override
-	public boolean visitNode( final IGridNode n )
-	{
-		final GridNode gn = (GridNode) n;
-		gn.setControllerRoute( null, true );
-		gn.incrementChannelCount( this.usedChannels );
-		gn.finalizeChannels();
-		return true;
-	}
+    @Override
+    public boolean visitNode(final IGridNode n) {
+        final GridNode gn = (GridNode) n;
+        gn.setControllerRoute(null, true);
+        gn.incrementChannelCount(this.usedChannels);
+        gn.finalizeChannels();
+        return true;
+    }
 
-	@Override
-	public void visitConnection( final IGridConnection gcc )
-	{
-		final GridConnection gc = (GridConnection) gcc;
-		gc.setControllerRoute( null, true );
-		gc.incrementChannelCount( this.usedChannels );
-		gc.finalizeChannels();
-	}
+    @Override
+    public void visitConnection(final IGridConnection gcc) {
+        final GridConnection gc = (GridConnection) gcc;
+        gc.setControllerRoute(null, true);
+        gc.incrementChannelCount(this.usedChannels);
+        gc.finalizeChannels();
+    }
 }

@@ -25,61 +25,51 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridStorage;
 
 
-public class GridCacheWrapper implements IGridCache
-{
+public class GridCacheWrapper implements IGridCache {
 
-	private final IGridCache myCache;
-	private final String name;
+    private final IGridCache myCache;
+    private final String name;
 
-	public GridCacheWrapper( final IGridCache gc )
-	{
-		this.myCache = gc;
-		this.name = this.getCache().getClass().getName();
-	}
+    public GridCacheWrapper(final IGridCache gc) {
+        this.myCache = gc;
+        this.name = this.getCache().getClass().getName();
+    }
 
-	@Override
-	public void onUpdateTick()
-	{
-		this.getCache().onUpdateTick();
-	}
+    @Override
+    public void onUpdateTick() {
+        this.getCache().onUpdateTick();
+    }
 
-	@Override
-	public void removeNode( final IGridNode gridNode, final IGridHost machine )
-	{
-		this.getCache().removeNode( gridNode, machine );
-	}
+    @Override
+    public void removeNode(final IGridNode gridNode, final IGridHost machine) {
+        this.getCache().removeNode(gridNode, machine);
+    }
 
-	@Override
-	public void addNode( final IGridNode gridNode, final IGridHost machine )
-	{
-		this.getCache().addNode( gridNode, machine );
-	}
+    @Override
+    public void addNode(final IGridNode gridNode, final IGridHost machine) {
+        this.getCache().addNode(gridNode, machine);
+    }
 
-	@Override
-	public void onSplit( final IGridStorage storageB )
-	{
-		this.getCache().onSplit( storageB );
-	}
+    @Override
+    public void onSplit(final IGridStorage storageB) {
+        this.getCache().onSplit(storageB);
+    }
 
-	@Override
-	public void onJoin( final IGridStorage storageB )
-	{
-		this.getCache().onJoin( storageB );
-	}
+    @Override
+    public void onJoin(final IGridStorage storageB) {
+        this.getCache().onJoin(storageB);
+    }
 
-	@Override
-	public void populateGridStorage( final IGridStorage storage )
-	{
-		this.getCache().populateGridStorage( storage );
-	}
+    @Override
+    public void populateGridStorage(final IGridStorage storage) {
+        this.getCache().populateGridStorage(storage);
+    }
 
-	public String getName()
-	{
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	IGridCache getCache()
-	{
-		return this.myCache;
-	}
+    IGridCache getCache() {
+        return this.myCache;
+    }
 }

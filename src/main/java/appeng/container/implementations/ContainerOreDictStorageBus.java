@@ -1,7 +1,10 @@
 package appeng.container.implementations;
 
 import appeng.api.AEApi;
-import appeng.api.config.*;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Settings;
+import appeng.api.config.StorageFilter;
 import appeng.api.storage.IMEInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -23,118 +26,96 @@ import java.util.Iterator;
 import java.util.Set;
 
 
-public class ContainerOreDictStorageBus extends AEBaseContainer
-{
+public class ContainerOreDictStorageBus extends AEBaseContainer {
     private final PartOreDicStorageBus part;
 
-    @GuiSync( 3 )
+    @GuiSync(3)
     public AccessRestriction rwMode = AccessRestriction.READ_WRITE;
 
-    @GuiSync( 4 )
+    @GuiSync(4)
     public StorageFilter storageFilter = StorageFilter.EXTRACTABLE_ONLY;
 
-    public ContainerOreDictStorageBus( final InventoryPlayer ip, final PartOreDicStorageBus anchor )
-    {
-        super( ip, anchor );
+    public ContainerOreDictStorageBus(final InventoryPlayer ip, final PartOreDicStorageBus anchor) {
+        super(ip, anchor);
         this.part = anchor;
 
-        this.bindPlayerInventory( ip, 14, 256 - /* height of player inventory */82 );
+        this.bindPlayerInventory(ip, 14, 256 - /* height of player inventory */82);
     }
 
     @Override
-    public void detectAndSendChanges()
-    {
-        this.verifyPermissions( SecurityPermissions.BUILD, false );
+    public void detectAndSendChanges() {
+        this.verifyPermissions(SecurityPermissions.BUILD, false);
 
-        if( Platform.isServer() )
-        {
-            this.setReadWriteMode( (AccessRestriction) part.getConfigManager().getSetting( Settings.ACCESS ) );
-            this.setStorageFilter( (StorageFilter) part.getConfigManager().getSetting( Settings.STORAGE_FILTER ) );
+        if (Platform.isServer()) {
+            this.setReadWriteMode((AccessRestriction) part.getConfigManager().getSetting(Settings.ACCESS));
+            this.setStorageFilter((StorageFilter) part.getConfigManager().getSetting(Settings.STORAGE_FILTER));
         }
 
         super.detectAndSendChanges();
     }
 
-    public void partition()
-    {
+    public void partition() {
         final IMEInventory<IAEItemStack> cellInv = this.part.getInternalHandler();
 
-        if( cellInv == null )
-        {
+        if (cellInv == null) {
             return;
         }
 
         Set<Integer> oreIDs = new HashSet<>();
 
-        for( IAEItemStack itemStack : cellInv.getAvailableItems( AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList() ) )
-        {
-            OreReference ref = ( (AEItemStack) itemStack ).getOre().orElse( null );
-            if( ref != null )
-            {
-                oreIDs.addAll( ref.getOres() );
+        for (IAEItemStack itemStack : cellInv.getAvailableItems(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList())) {
+            OreReference ref = ((AEItemStack) itemStack).getOre().orElse(null);
+            if (ref != null) {
+                oreIDs.addAll(ref.getOres());
             }
         }
 
         String oreMatch = "(";
         String append = "";
 
-        for( Iterator<Integer> it = oreIDs.iterator(); it.hasNext(); )
-        {
+        for (Iterator<Integer> it = oreIDs.iterator(); it.hasNext(); ) {
             int oreID = it.next();
-            if( it.hasNext() )
-            {
+            if (it.hasNext()) {
                 append = ")|(";
-            }
-            else
-            {
+            } else {
                 append = ")";
             }
-            oreMatch = oreMatch.concat( OreDictionary.getOreName( oreID ) + append );
+            oreMatch = oreMatch.concat(OreDictionary.getOreName(oreID) + append);
         }
 
-        if( oreMatch.equals( "(" ) )
-        {
+        if (oreMatch.equals("(")) {
             oreMatch = "";
         }
-        part.saveOreMatch( oreMatch );
+        part.saveOreMatch(oreMatch);
 
         this.detectAndSendChanges();
     }
 
-    public void saveOreMatch( String value )
-    {
-        part.saveOreMatch( value );
+    public void saveOreMatch(String value) {
+        part.saveOreMatch(value);
     }
 
-    public void sendRegex()
-    {
-        try
-        {
-            NetworkHandler.instance().sendTo( new PacketValueConfig( "OreDictStorageBus.sendRegex", part.getOreExp() ), (EntityPlayerMP) getInventoryPlayer().player );
-        }
-        catch( IOException e )
-        {
+    public void sendRegex() {
+        try {
+            NetworkHandler.instance().sendTo(new PacketValueConfig("OreDictStorageBus.sendRegex", part.getOreExp()), (EntityPlayerMP) getInventoryPlayer().player);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public AccessRestriction getReadWriteMode()
-    {
+    public AccessRestriction getReadWriteMode() {
         return this.rwMode;
     }
 
-    private void setReadWriteMode( final AccessRestriction rwMode )
-    {
+    private void setReadWriteMode(final AccessRestriction rwMode) {
         this.rwMode = rwMode;
     }
 
-    public StorageFilter getStorageFilter()
-    {
+    public StorageFilter getStorageFilter() {
         return this.storageFilter;
     }
 
-    private void setStorageFilter( final StorageFilter storageFilter )
-    {
+    private void setStorageFilter(final StorageFilter storageFilter) {
         this.storageFilter = storageFilter;
     }
 }

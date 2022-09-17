@@ -24,9 +24,8 @@ import net.minecraft.network.INetHandler;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 
-public interface IPacketHandler
-{
+public interface IPacketHandler {
 
-	void onPacketData( INetworkInfo manager, INetHandler handler, FMLProxyPacket packet, EntityPlayer player );
+    void onPacketData(INetworkInfo manager, INetHandler handler, FMLProxyPacket packet, EntityPlayer player);
 
 }

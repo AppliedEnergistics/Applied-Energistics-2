@@ -19,43 +19,38 @@
 package appeng.parts.reporting;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.helpers.Reflected;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 
-public class PartDarkPanel extends AbstractPartPanel
-{
+public class PartDarkPanel extends AbstractPartPanel {
 
-	@PartModels
-	public static final ResourceLocation MODEL_OFF = new ResourceLocation( AppEng.MOD_ID, "part/monitor_dark_off" );
-	@PartModels
-	public static final ResourceLocation MODEL_ON = new ResourceLocation( AppEng.MOD_ID, "part/monitor_dark_on" );
+    @PartModels
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/monitor_dark_off");
+    @PartModels
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/monitor_dark_on");
 
-	public static final IPartModel MODELS_OFF = new PartModel( MODEL_BASE, MODEL_OFF );
-	public static final IPartModel MODELS_ON = new PartModel( MODEL_BASE, MODEL_ON );
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON);
 
-	@Reflected
-	public PartDarkPanel( final ItemStack is )
-	{
-		super( is );
-	}
+    @Reflected
+    public PartDarkPanel(final ItemStack is) {
+        super(is);
+    }
 
-	@Override
-	protected int getBrightnessColor()
-	{
-		return this.getColor().mediumVariant;
-	}
+    @Override
+    protected int getBrightnessColor() {
+        return this.getColor().mediumVariant;
+    }
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return this.isPowered() ? MODELS_ON : MODELS_OFF;
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        return this.isPowered() ? MODELS_ON : MODELS_OFF;
+    }
 
 }

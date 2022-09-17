@@ -22,11 +22,10 @@ package appeng.util.prioritylist;
 import appeng.api.storage.data.IAEStack;
 
 
-public interface IPartitionList<T extends IAEStack<T>>
-{
-	boolean isListed( T input );
+public interface IPartitionList<T extends IAEStack<T>> {
+    boolean isListed(T input);
 
-	boolean isEmpty();
+    boolean isEmpty();
 
-	Iterable<T> getItems();
+    Iterable<T> getItems();
 }

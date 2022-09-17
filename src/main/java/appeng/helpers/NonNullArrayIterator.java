@@ -22,40 +22,34 @@ package appeng.helpers;
 import java.util.Iterator;
 
 
-public class NonNullArrayIterator<E> implements Iterator<E>
-{
+public class NonNullArrayIterator<E> implements Iterator<E> {
 
-	private final E[] g;
-	private int offset = 0;
+    private final E[] g;
+    private int offset = 0;
 
-	public NonNullArrayIterator( final E[] o )
-	{
-		this.g = o;
-	}
+    public NonNullArrayIterator(final E[] o) {
+        this.g = o;
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		while( this.offset < this.g.length && this.g[this.offset] == null )
-		{
-			this.offset++;
-		}
+    @Override
+    public boolean hasNext() {
+        while (this.offset < this.g.length && this.g[this.offset] == null) {
+            this.offset++;
+        }
 
-		return this.offset != this.g.length;
-	}
+        return this.offset != this.g.length;
+    }
 
-	@Override
-	public E next()
-	{
-		final E result = this.g[this.offset];
-		this.offset++;
+    @Override
+    public E next() {
+        final E result = this.g[this.offset];
+        this.offset++;
 
-		return result;
-	}
+        return result;
+    }
 
-	@Override
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

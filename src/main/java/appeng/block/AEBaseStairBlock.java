@@ -20,31 +20,27 @@ package appeng.block;
 
 
 import com.google.common.base.Preconditions;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
 
 
-public abstract class AEBaseStairBlock extends BlockStairs
-{
+public abstract class AEBaseStairBlock extends BlockStairs {
 
-	protected AEBaseStairBlock( final Block block, final String type )
-	{
-		super( block.getDefaultState() );
+    protected AEBaseStairBlock(final Block block, final String type) {
+        super(block.getDefaultState());
 
-		Preconditions.checkNotNull( block );
-		Preconditions.checkNotNull( block.getUnlocalizedName() );
-		Preconditions.checkArgument( block.getUnlocalizedName().length() > 0 );
+        Preconditions.checkNotNull(block);
+        Preconditions.checkNotNull(block.getUnlocalizedName());
+        Preconditions.checkArgument(block.getUnlocalizedName().length() > 0);
 
-		this.setUnlocalizedName( "stair." + type );
-		this.setLightOpacity( 0 );
-	}
+        this.setUnlocalizedName("stair." + type);
+        this.setLightOpacity(0);
+    }
 
-	@Override
-	public String toString()
-	{
-		String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
-		return this.getClass().getSimpleName() + "[" + regName + "]";
-	}
+    @Override
+    public String toString() {
+        String regName = this.getRegistryName() != null ? this.getRegistryName().getResourcePath() : "unregistered";
+        return this.getClass().getSimpleName() + "[" + regName + "]";
+    }
 
 }

@@ -24,25 +24,23 @@ import appeng.api.config.PowerUnits;
 import appeng.api.networking.energy.IAEPowerStorage;
 
 
-public interface IExternalPowerSink extends IAEPowerStorage
-{
+public interface IExternalPowerSink extends IAEPowerStorage {
 
-	/**
-	 * Inject power into the network
-	 * 
-	 * @param externalUnit The {@link PowerUnits} used by the input
-	 * @param amount The amount offered to the sink.
-	 * @param mode Modulate or simulate the operation.
-	 * @return The unused amount, which could not be inserted into the sink.
-	 */
-	double injectExternalPower( PowerUnits externalUnit, double amount, Actionable mode );
+    /**
+     * Inject power into the network
+     *
+     * @param externalUnit The {@link PowerUnits} used by the input
+     * @param amount       The amount offered to the sink.
+     * @param mode         Modulate or simulate the operation.
+     * @return The unused amount, which could not be inserted into the sink.
+     */
+    double injectExternalPower(PowerUnits externalUnit, double amount, Actionable mode);
 
-	/**
-	 * 
-	 * @param externalUnit The {@link PowerUnits} used by the input
-	 * @param maxPowerRequired Limit the demand to this upper bound.
-	 * @return The amount of power demanded by the sink.
-	 */
-	double getExternalPowerDemand( PowerUnits externalUnit, double maxPowerRequired );
+    /**
+     * @param externalUnit     The {@link PowerUnits} used by the input
+     * @param maxPowerRequired Limit the demand to this upper bound.
+     * @return The amount of power demanded by the sink.
+     */
+    double getExternalPowerDemand(PowerUnits externalUnit, double maxPowerRequired);
 
 }

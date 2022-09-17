@@ -19,56 +19,48 @@
 package appeng.me.cache.helpers;
 
 
+import appeng.parts.p2p.PartP2PTunnel;
+
 import java.util.Collection;
 import java.util.Iterator;
 
-import appeng.parts.p2p.PartP2PTunnel;
 
+public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T> {
 
-public class TunnelIterator<T extends PartP2PTunnel> implements Iterator<T>
-{
+    private final Iterator<T> wrapped;
+    private final Class targetType;
+    private T Next;
 
-	private final Iterator<T> wrapped;
-	private final Class targetType;
-	private T Next;
+    public TunnelIterator(final Collection<T> tunnelSources, final Class clz) {
+        this.wrapped = tunnelSources.iterator();
+        this.targetType = clz;
+        this.findNext();
+    }
 
-	public TunnelIterator( final Collection<T> tunnelSources, final Class clz )
-	{
-		this.wrapped = tunnelSources.iterator();
-		this.targetType = clz;
-		this.findNext();
-	}
+    private void findNext() {
+        while (this.Next == null && this.wrapped.hasNext()) {
+            this.Next = this.wrapped.next();
+            if (!this.targetType.isInstance(this.Next)) {
+                this.Next = null;
+            }
+        }
+    }
 
-	private void findNext()
-	{
-		while( this.Next == null && this.wrapped.hasNext() )
-		{
-			this.Next = this.wrapped.next();
-			if( !this.targetType.isInstance( this.Next ) )
-			{
-				this.Next = null;
-			}
-		}
-	}
+    @Override
+    public boolean hasNext() {
+        this.findNext();
+        return this.Next != null;
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		this.findNext();
-		return this.Next != null;
-	}
+    @Override
+    public T next() {
+        final T tmp = this.Next;
+        this.Next = null;
+        return tmp;
+    }
 
-	@Override
-	public T next()
-	{
-		final T tmp = this.Next;
-		this.Next = null;
-		return tmp;
-	}
-
-	@Override
-	public void remove()
-	{
-		// no.
-	}
+    @Override
+    public void remove() {
+        // no.
+    }
 }

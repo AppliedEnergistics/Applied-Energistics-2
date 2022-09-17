@@ -19,13 +19,6 @@
 package appeng.container.implementations;
 
 
-import java.io.IOException;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IContainerListener;
-
 import appeng.api.AEApi;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CraftingItemList;
@@ -48,236 +41,195 @@ import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
 import appeng.tile.crafting.TileCraftingTile;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IContainerListener;
+
+import java.io.IOException;
 
 
-public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject
-{
+public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject {
 
-	private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
-	private IGrid network;
-	private CraftingCPUCluster monitor = null;
-	private String cpuName = null;
+    private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+    private IGrid network;
+    private CraftingCPUCluster monitor = null;
+    private String cpuName = null;
 
-	@GuiSync( 0 )
-	public long eta = -1;
+    @GuiSync(0)
+    public long eta = -1;
 
-	public ContainerCraftingCPU( final InventoryPlayer ip, final Object te )
-	{
-		super( ip, te );
-		final IActionHost host = (IActionHost) ( te instanceof IActionHost ? te : null );
+    public ContainerCraftingCPU(final InventoryPlayer ip, final Object te) {
+        super(ip, te);
+        final IActionHost host = (IActionHost) (te instanceof IActionHost ? te : null);
 
-		if( host != null && host.getActionableNode() != null )
-		{
-			this.setNetwork( host.getActionableNode().getGrid() );
-		}
+        if (host != null && host.getActionableNode() != null) {
+            this.setNetwork(host.getActionableNode().getGrid());
+        }
 
-		if( te instanceof TileCraftingTile )
-		{
-			this.setCPU( (ICraftingCPU) ( (IAEMultiBlock) te ).getCluster() );
-		}
+        if (te instanceof TileCraftingTile) {
+            this.setCPU((ICraftingCPU) ((IAEMultiBlock) te).getCluster());
+        }
 
-		if( this.getNetwork() == null && Platform.isServer() )
-		{
-			this.setValidContainer( false );
-		}
-	}
+        if (this.getNetwork() == null && Platform.isServer()) {
+            this.setValidContainer(false);
+        }
+    }
 
-	protected void setCPU( final ICraftingCPU c )
-	{
-		if( c == this.getMonitor() )
-		{
-			return;
-		}
+    protected void setCPU(final ICraftingCPU c) {
+        if (c == this.getMonitor()) {
+            return;
+        }
 
-		if( this.getMonitor() != null )
-		{
-			this.getMonitor().removeListener( this );
-		}
+        if (this.getMonitor() != null) {
+            this.getMonitor().removeListener(this);
+        }
 
-		for( final Object g : this.listeners )
-		{
-			if( g instanceof EntityPlayer )
-			{
-				try
-				{
-					NetworkHandler.instance().sendTo( new PacketValueConfig( "CraftingStatus", "Clear" ), (EntityPlayerMP) g );
-				}
-				catch( final IOException e )
-				{
-					AELog.debug( e );
-				}
-			}
-		}
+        for (final Object g : this.listeners) {
+            if (g instanceof EntityPlayer) {
+                try {
+                    NetworkHandler.instance().sendTo(new PacketValueConfig("CraftingStatus", "Clear"), (EntityPlayerMP) g);
+                } catch (final IOException e) {
+                    AELog.debug(e);
+                }
+            }
+        }
 
-		if( c instanceof CraftingCPUCluster )
-		{
-			this.cpuName = c.getName();
-			this.setMonitor( (CraftingCPUCluster) c );
-			this.list.resetStatus();
-			this.getMonitor().getListOfItem( this.list, CraftingItemList.ALL );
-			this.getMonitor().addListener( this, null );
-			this.setEstimatedTime( 0 );
-		}
-		else
-		{
-			this.setMonitor( null );
-			this.cpuName = "";
-			this.setEstimatedTime( -1 );
-		}
-	}
+        if (c instanceof CraftingCPUCluster) {
+            this.cpuName = c.getName();
+            this.setMonitor((CraftingCPUCluster) c);
+            this.list.resetStatus();
+            this.getMonitor().getListOfItem(this.list, CraftingItemList.ALL);
+            this.getMonitor().addListener(this, null);
+            this.setEstimatedTime(0);
+        } else {
+            this.setMonitor(null);
+            this.cpuName = "";
+            this.setEstimatedTime(-1);
+        }
+    }
 
-	public void cancelCrafting()
-	{
-		if( this.getMonitor() != null )
-		{
-			this.getMonitor().cancel();
-		}
-		this.setEstimatedTime( -1 );
-	}
+    public void cancelCrafting() {
+        if (this.getMonitor() != null) {
+            this.getMonitor().cancel();
+        }
+        this.setEstimatedTime(-1);
+    }
 
-	@Override
-	public void removeListener( final IContainerListener c )
-	{
-		super.removeListener( c );
+    @Override
+    public void removeListener(final IContainerListener c) {
+        super.removeListener(c);
 
-		if( this.listeners.isEmpty() && this.getMonitor() != null )
-		{
-			this.getMonitor().removeListener( this );
-		}
-	}
+        if (this.listeners.isEmpty() && this.getMonitor() != null) {
+            this.getMonitor().removeListener(this);
+        }
+    }
 
-	@Override
-	public void onContainerClosed( final EntityPlayer player )
-	{
-		super.onContainerClosed( player );
-		if( this.getMonitor() != null )
-		{
-			this.getMonitor().removeListener( this );
-		}
-	}
+    @Override
+    public void onContainerClosed(final EntityPlayer player) {
+        super.onContainerClosed(player);
+        if (this.getMonitor() != null) {
+            this.getMonitor().removeListener(this);
+        }
+    }
 
-	@Override
-	public void detectAndSendChanges()
-	{
-		if( Platform.isServer() && this.getMonitor() != null )
-		{
-			if( this.getEstimatedTime() >= 0 )
-			{
-				final long elapsedTime = this.getMonitor().getElapsedTime();
-				final double remainingItems = this.getMonitor().getRemainingItemCount();
-				final double startItems = this.getMonitor().getStartItemCount();
-				final long eta = (long) ( elapsedTime / Math.max( 1d, ( startItems - remainingItems ) ) * remainingItems );
-				this.setEstimatedTime( eta );
-			}
-			if( !this.list.isEmpty() )
-			{
-				try
-				{
-					final PacketMEInventoryUpdate a = new PacketMEInventoryUpdate( (byte) 0 );
-					final PacketMEInventoryUpdate b = new PacketMEInventoryUpdate( (byte) 1 );
-					final PacketMEInventoryUpdate c = new PacketMEInventoryUpdate( (byte) 2 );
+    @Override
+    public void detectAndSendChanges() {
+        if (Platform.isServer() && this.getMonitor() != null) {
+            if (this.getEstimatedTime() >= 0) {
+                final long elapsedTime = this.getMonitor().getElapsedTime();
+                final double remainingItems = this.getMonitor().getRemainingItemCount();
+                final double startItems = this.getMonitor().getStartItemCount();
+                final long eta = (long) (elapsedTime / Math.max(1d, (startItems - remainingItems)) * remainingItems);
+                this.setEstimatedTime(eta);
+            }
+            if (!this.list.isEmpty()) {
+                try {
+                    final PacketMEInventoryUpdate a = new PacketMEInventoryUpdate((byte) 0);
+                    final PacketMEInventoryUpdate b = new PacketMEInventoryUpdate((byte) 1);
+                    final PacketMEInventoryUpdate c = new PacketMEInventoryUpdate((byte) 2);
 
-					for( final IAEItemStack out : this.list )
-					{
-						a.appendItem( this.getMonitor().getItemStack( out, CraftingItemList.STORAGE ) );
-						b.appendItem( this.getMonitor().getItemStack( out, CraftingItemList.ACTIVE ) );
-						c.appendItem( this.getMonitor().getItemStack( out, CraftingItemList.PENDING ) );
-					}
+                    for (final IAEItemStack out : this.list) {
+                        a.appendItem(this.getMonitor().getItemStack(out, CraftingItemList.STORAGE));
+                        b.appendItem(this.getMonitor().getItemStack(out, CraftingItemList.ACTIVE));
+                        c.appendItem(this.getMonitor().getItemStack(out, CraftingItemList.PENDING));
+                    }
 
-					this.list.resetStatus();
+                    this.list.resetStatus();
 
-					for( final Object g : this.listeners )
-					{
-						if( g instanceof EntityPlayer )
-						{
-							if( !a.isEmpty() )
-							{
-								NetworkHandler.instance().sendTo( a, (EntityPlayerMP) g );
-							}
+                    for (final Object g : this.listeners) {
+                        if (g instanceof EntityPlayer) {
+                            if (!a.isEmpty()) {
+                                NetworkHandler.instance().sendTo(a, (EntityPlayerMP) g);
+                            }
 
-							if( !b.isEmpty() )
-							{
-								NetworkHandler.instance().sendTo( b, (EntityPlayerMP) g );
-							}
+                            if (!b.isEmpty()) {
+                                NetworkHandler.instance().sendTo(b, (EntityPlayerMP) g);
+                            }
 
-							if( !c.isEmpty() )
-							{
-								NetworkHandler.instance().sendTo( c, (EntityPlayerMP) g );
-							}
-						}
-					}
-				}
-				catch( final IOException e )
-				{
-					// :P
-				}
-			}
-		}
-		super.detectAndSendChanges();
-	}
+                            if (!c.isEmpty()) {
+                                NetworkHandler.instance().sendTo(c, (EntityPlayerMP) g);
+                            }
+                        }
+                    }
+                } catch (final IOException e) {
+                    // :P
+                }
+            }
+        }
+        super.detectAndSendChanges();
+    }
 
-	@Override
-	public boolean isValid( final Object verificationToken )
-	{
-		return true;
-	}
+    @Override
+    public boolean isValid(final Object verificationToken) {
+        return true;
+    }
 
-	@Override
-	public void postChange( final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource actionSource )
-	{
-		for( IAEItemStack is : change )
-		{
-			is = is.copy();
-			is.setStackSize( 1 );
-			this.list.add( is );
-		}
-	}
+    @Override
+    public void postChange(final IBaseMonitor<IAEItemStack> monitor, final Iterable<IAEItemStack> change, final IActionSource actionSource) {
+        for (IAEItemStack is : change) {
+            is = is.copy();
+            is.setStackSize(1);
+            this.list.add(is);
+        }
+    }
 
-	@Override
-	public void onListUpdate()
-	{
+    @Override
+    public void onListUpdate() {
 
-	}
+    }
 
-	@Override
-	public String getCustomInventoryName()
-	{
-		return this.cpuName;
-	}
+    @Override
+    public String getCustomInventoryName() {
+        return this.cpuName;
+    }
 
-	@Override
-	public boolean hasCustomInventoryName()
-	{
-		return this.cpuName != null && this.cpuName.length() > 0;
-	}
+    @Override
+    public boolean hasCustomInventoryName() {
+        return this.cpuName != null && this.cpuName.length() > 0;
+    }
 
-	public long getEstimatedTime()
-	{
-		return this.eta;
-	}
+    public long getEstimatedTime() {
+        return this.eta;
+    }
 
-	private void setEstimatedTime( final long eta )
-	{
-		this.eta = eta;
-	}
+    private void setEstimatedTime(final long eta) {
+        this.eta = eta;
+    }
 
-	CraftingCPUCluster getMonitor()
-	{
-		return this.monitor;
-	}
+    CraftingCPUCluster getMonitor() {
+        return this.monitor;
+    }
 
-	private void setMonitor( final CraftingCPUCluster monitor )
-	{
-		this.monitor = monitor;
-	}
+    private void setMonitor(final CraftingCPUCluster monitor) {
+        this.monitor = monitor;
+    }
 
-	IGrid getNetwork()
-	{
-		return this.network;
-	}
+    IGrid getNetwork() {
+        return this.network;
+    }
 
-	private void setNetwork( final IGrid network )
-	{
-		this.network = network;
-	}
+    private void setNetwork(final IGrid network) {
+        this.network = network;
+    }
 }

@@ -19,8 +19,7 @@
 package appeng.thirdparty.codechicken.lib.model;
 
 
-import javax.vecmath.Vector3f;
-
+import appeng.thirdparty.codechicken.lib.math.InterpHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -32,7 +31,7 @@ import net.minecraftforge.client.model.pipeline.IVertexProducer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
-import appeng.thirdparty.codechicken.lib.math.InterpHelper;
+import javax.vecmath.Vector3f;
 
 
 /**
@@ -40,166 +39,141 @@ import appeng.thirdparty.codechicken.lib.math.InterpHelper;
  *
  * @author covers1624
  */
-public class Quad implements IVertexProducer, ISmartVertexConsumer
-{
+public class Quad implements IVertexProducer, ISmartVertexConsumer {
 
-	public CachedFormat format;
+    public CachedFormat format;
 
-	public int tintIndex = -1;
-	public EnumFacing orientation;
-	public boolean diffuseLighting = true;
-	public TextureAtlasSprite sprite;
+    public int tintIndex = -1;
+    public EnumFacing orientation;
+    public boolean diffuseLighting = true;
+    public TextureAtlasSprite sprite;
 
-	public Vertex[] vertices = new Vertex[4];
-	public boolean full;
+    public Vertex[] vertices = new Vertex[4];
+    public boolean full;
 
-	// Not copied.
-	private int vertexIndex = 0;
-	// Cache for normal computation.
-	private Vector3f v1 = new Vector3f();
-	private Vector3f v2 = new Vector3f();
-	private Vector3f t = new Vector3f();
-	private Vector3f normal = new Vector3f();
+    // Not copied.
+    private int vertexIndex = 0;
+    // Cache for normal computation.
+    private final Vector3f v1 = new Vector3f();
+    private final Vector3f v2 = new Vector3f();
+    private final Vector3f t = new Vector3f();
+    private final Vector3f normal = new Vector3f();
 
-	/**
-	 * Use this if you reset the quad each time you use it.
-	 */
-	public Quad()
-	{
-	}
+    /**
+     * Use this if you reset the quad each time you use it.
+     */
+    public Quad() {
+    }
 
-	/**
-	 * use this if you want to initialize the quad with a format.
-	 *
-	 * @param format The format.
-	 */
-	public Quad( CachedFormat format )
-	{
-		this.format = format;
-	}
+    /**
+     * use this if you want to initialize the quad with a format.
+     *
+     * @param format The format.
+     */
+    public Quad(CachedFormat format) {
+        this.format = format;
+    }
 
-	@Override
-	public VertexFormat getVertexFormat()
-	{
-		return this.format.format;
-	}
+    @Override
+    public VertexFormat getVertexFormat() {
+        return this.format.format;
+    }
 
-	@Override
-	public void setQuadTint( int tint )
-	{
-		this.tintIndex = tint;
-	}
+    @Override
+    public void setQuadTint(int tint) {
+        this.tintIndex = tint;
+    }
 
-	@Override
-	public void setQuadOrientation( EnumFacing orientation )
-	{
-		this.orientation = orientation;
-	}
+    @Override
+    public void setQuadOrientation(EnumFacing orientation) {
+        this.orientation = orientation;
+    }
 
-	@Override
-	public void setApplyDiffuseLighting( boolean diffuse )
-	{
-		this.diffuseLighting = diffuse;
-	}
+    @Override
+    public void setApplyDiffuseLighting(boolean diffuse) {
+        this.diffuseLighting = diffuse;
+    }
 
-	@Override
-	public void setTexture( TextureAtlasSprite texture )
-	{
-		this.sprite = texture;
-	}
+    @Override
+    public void setTexture(TextureAtlasSprite texture) {
+        this.sprite = texture;
+    }
 
-	@Override
-	public void put( int element, float... data )
-	{
-		if( this.full )
-		{
-			throw new RuntimeException( "Unable to add data when full." );
-		}
-		Vertex v = this.vertices[this.vertexIndex];
-		if( v == null )
-		{
-			v = new Vertex( this.format );
-			this.vertices[this.vertexIndex] = v;
-		}
-		System.arraycopy( data, 0, v.raw[element], 0, data.length );
-		if( element == ( this.format.elementCount - 1 ) )
-		{
-			this.vertexIndex++;
-			if( this.vertexIndex == 4 )
-			{
-				this.vertexIndex = 0;
-				this.full = true;
-				if(orientation == null)
-				{
-				    calculateOrientation(false);
+    @Override
+    public void put(int element, float... data) {
+        if (this.full) {
+            throw new RuntimeException("Unable to add data when full.");
+        }
+        Vertex v = this.vertices[this.vertexIndex];
+        if (v == null) {
+            v = new Vertex(this.format);
+            this.vertices[this.vertexIndex] = v;
+        }
+        System.arraycopy(data, 0, v.raw[element], 0, data.length);
+        if (element == (this.format.elementCount - 1)) {
+            this.vertexIndex++;
+            if (this.vertexIndex == 4) {
+                this.vertexIndex = 0;
+                this.full = true;
+                if (orientation == null) {
+                    calculateOrientation(false);
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
-	@Override
-	public void put( Quad quad )
-	{
-		this.copyFrom( quad );
-	}
+    @Override
+    public void put(Quad quad) {
+        this.copyFrom(quad);
+    }
 
-	@Override
-	public void pipe( IVertexConsumer consumer )
-	{
-		if( consumer instanceof ISmartVertexConsumer )
-		{
-			( (ISmartVertexConsumer) consumer ).put( this );
-		}
-		else
-		{
-			consumer.setQuadTint( this.tintIndex );
-			consumer.setQuadOrientation( this.orientation );
-			consumer.setApplyDiffuseLighting( this.diffuseLighting );
-			consumer.setTexture( this.sprite );
-			for( Vertex v : this.vertices )
-			{
-				for( int e = 0; e < this.format.elementCount; e++ )
-				{
-					consumer.put( e, v.raw[e] );
-				}
-			}
-		}
-	}
+    @Override
+    public void pipe(IVertexConsumer consumer) {
+        if (consumer instanceof ISmartVertexConsumer) {
+            ((ISmartVertexConsumer) consumer).put(this);
+        } else {
+            consumer.setQuadTint(this.tintIndex);
+            consumer.setQuadOrientation(this.orientation);
+            consumer.setApplyDiffuseLighting(this.diffuseLighting);
+            consumer.setTexture(this.sprite);
+            for (Vertex v : this.vertices) {
+                for (int e = 0; e < this.format.elementCount; e++) {
+                    consumer.put(e, v.raw[e]);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Used to reset the interpolation values inside the provided helper.
-	 *
-	 * @param helper The helper.
-	 * @param s The axis. side >> 1;
-	 *
-	 * @return The same helper.
-	 */
-	public InterpHelper resetInterp( InterpHelper helper, int s )
-	{
-		helper.reset( //
-				this.vertices[0].dx( s ), this.vertices[0].dy( s ), //
-				this.vertices[1].dx( s ), this.vertices[1].dy( s ), //
-				this.vertices[2].dx( s ), this.vertices[2].dy( s ), //
-				this.vertices[3].dx( s ), this.vertices[3].dy( s ) );
-		return helper;
-	}
+    /**
+     * Used to reset the interpolation values inside the provided helper.
+     *
+     * @param helper The helper.
+     * @param s      The axis. side >> 1;
+     * @return The same helper.
+     */
+    public InterpHelper resetInterp(InterpHelper helper, int s) {
+        helper.reset( //
+                this.vertices[0].dx(s), this.vertices[0].dy(s), //
+                this.vertices[1].dx(s), this.vertices[1].dy(s), //
+                this.vertices[2].dx(s), this.vertices[2].dy(s), //
+                this.vertices[3].dx(s), this.vertices[3].dy(s));
+        return helper;
+    }
 
-	/**
-	 * Clamps the Quad inside the box.
-	 *
-	 * @param bb The box.
-	 */
-	public void clamp( AxisAlignedBB bb )
-	{
-		for( Vertex vertex : this.vertices )
-		{
-			float[] vec = vertex.vec;
-			vec[0] = (float) MathHelper.clamp( vec[0], bb.minX, bb.maxX );
-			vec[1] = (float) MathHelper.clamp( vec[1], bb.minY, bb.maxY );
-			vec[2] = (float) MathHelper.clamp( vec[2], bb.minZ, bb.maxZ );
-		}
-		calculateOrientation(true);
-	}
+    /**
+     * Clamps the Quad inside the box.
+     *
+     * @param bb The box.
+     */
+    public void clamp(AxisAlignedBB bb) {
+        for (Vertex vertex : this.vertices) {
+            float[] vec = vertex.vec;
+            vec[0] = (float) MathHelper.clamp(vec[0], bb.minX, bb.maxX);
+            vec[1] = (float) MathHelper.clamp(vec[1], bb.minY, bb.maxY);
+            vec[2] = (float) MathHelper.clamp(vec[2], bb.minZ, bb.maxZ);
+        }
+        calculateOrientation(true);
+    }
 
     /**
      * Re-calculates the Orientation of this quad,
@@ -207,358 +181,306 @@ public class Quad implements IVertexProducer, ISmartVertexConsumer
      *
      * @param setNormal If the normal vector should be updated.
      */
-	public void calculateOrientation( boolean setNormal )
-    {
-        this.v1.set( this.vertices[3].vec );
-        this.t.set( this.vertices[1].vec );
-        this.v1.sub( this.t );
+    public void calculateOrientation(boolean setNormal) {
+        this.v1.set(this.vertices[3].vec);
+        this.t.set(this.vertices[1].vec);
+        this.v1.sub(this.t);
 
-        this.v2.set( this.vertices[2].vec );
-        this.t.set( this.vertices[0].vec );
-        this.v2.sub( this.t );
+        this.v2.set(this.vertices[2].vec);
+        this.t.set(this.vertices[0].vec);
+        this.v2.sub(this.t);
 
-        this.normal.cross( this.v2, this.v1 );
+        this.normal.cross(this.v2, this.v1);
         this.normal.normalize();
 
-        if( this.format.hasNormal && setNormal)
-        {
-            for( Vertex vertex : this.vertices )
-            {
+        if (this.format.hasNormal && setNormal) {
+            for (Vertex vertex : this.vertices) {
                 vertex.normal[0] = this.normal.x;
                 vertex.normal[1] = this.normal.y;
                 vertex.normal[2] = this.normal.z;
                 vertex.normal[3] = 0;
             }
         }
-        this.orientation = EnumFacing.getFacingFromVector( this.normal.x, this.normal.y, this.normal.z );
+        this.orientation = EnumFacing.getFacingFromVector(this.normal.x, this.normal.y, this.normal.z);
     }
 
-	/**
-	 * Used to create a new quad complete copy of this one.
-	 *
-	 * @return The new quad.
-	 */
-	public Quad copy()
-	{
-		if( !this.full )
-		{
-			throw new RuntimeException( "Only copying full quads is supported." );
-		}
-		Quad quad = new Quad( this.format );
-		quad.tintIndex = this.tintIndex;
-		quad.orientation = this.orientation;
-		quad.diffuseLighting = this.diffuseLighting;
-		quad.sprite = this.sprite;
-		quad.full = true;
-		for( int i = 0; i < 4; i++ )
-		{
-			quad.vertices[i] = this.vertices[i].copy();
-		}
-		return quad;
-	}
+    /**
+     * Used to create a new quad complete copy of this one.
+     *
+     * @return The new quad.
+     */
+    public Quad copy() {
+        if (!this.full) {
+            throw new RuntimeException("Only copying full quads is supported.");
+        }
+        Quad quad = new Quad(this.format);
+        quad.tintIndex = this.tintIndex;
+        quad.orientation = this.orientation;
+        quad.diffuseLighting = this.diffuseLighting;
+        quad.sprite = this.sprite;
+        quad.full = true;
+        for (int i = 0; i < 4; i++) {
+            quad.vertices[i] = this.vertices[i].copy();
+        }
+        return quad;
+    }
 
-	/**
-	 * Copies the data inside the given quad to this one. This ignores VertexFormat, please make sure your quads are in
-	 * the same format.
-	 *
-	 * @param quad The Quad to copy from.
-	 *
-	 * @return This quad.
-	 */
-	public Quad copyFrom( Quad quad )
-	{
-		this.tintIndex = quad.tintIndex;
-		this.orientation = quad.orientation;
-		this.diffuseLighting = quad.diffuseLighting;
-		this.sprite = quad.sprite;
-		this.full = quad.full;
-		for( int v = 0; v < 4; v++ )
-		{
-			for( int e = 0; e < this.format.elementCount; e++ )
-			{
-				System.arraycopy( quad.vertices[v].raw[e], 0, this.vertices[v].raw[e], 0, 4 );
-			}
-		}
-		return this;
-	}
+    /**
+     * Copies the data inside the given quad to this one. This ignores VertexFormat, please make sure your quads are in
+     * the same format.
+     *
+     * @param quad The Quad to copy from.
+     * @return This quad.
+     */
+    public Quad copyFrom(Quad quad) {
+        this.tintIndex = quad.tintIndex;
+        this.orientation = quad.orientation;
+        this.diffuseLighting = quad.diffuseLighting;
+        this.sprite = quad.sprite;
+        this.full = quad.full;
+        for (int v = 0; v < 4; v++) {
+            for (int e = 0; e < this.format.elementCount; e++) {
+                System.arraycopy(quad.vertices[v].raw[e], 0, this.vertices[v].raw[e], 0, 4);
+            }
+        }
+        return this;
+    }
 
-	/**
-	 * Reset the quad to the new format.
-	 *
-	 * @param format The new format.
-	 */
-	public void reset( CachedFormat format )
-	{
-		this.format = format;
-		this.tintIndex = -1;
-		this.orientation = null;
-		this.diffuseLighting = true;
-		this.sprite = null;
-		for( int i = 0; i < this.vertices.length; i++ )
-		{
-			Vertex v = this.vertices[i];
-			if( v == null )
-			{
-				this.vertices[i] = v = new Vertex( format );
-			}
-			v.reset( format );
-		}
-		this.vertexIndex = 0;
-		this.full = false;
-	}
+    /**
+     * Reset the quad to the new format.
+     *
+     * @param format The new format.
+     */
+    public void reset(CachedFormat format) {
+        this.format = format;
+        this.tintIndex = -1;
+        this.orientation = null;
+        this.diffuseLighting = true;
+        this.sprite = null;
+        for (int i = 0; i < this.vertices.length; i++) {
+            Vertex v = this.vertices[i];
+            if (v == null) {
+                this.vertices[i] = v = new Vertex(format);
+            }
+            v.reset(format);
+        }
+        this.vertexIndex = 0;
+        this.full = false;
+    }
 
-	/**
-	 * Bakes this Quad to a BakedQuad.
-	 *
-	 * @return The BakedQuad.
-	 */
-	public BakedQuad bake()
-	{
-		int[] packedData = new int[this.format.format.getNextOffset()];
-		for( int v = 0; v < 4; v++ )
-		{
-			for( int e = 0; e < this.format.elementCount; e++ )
-			{
-				LightUtil.pack( this.vertices[v].raw[e], packedData, this.format.format, v, e );
-			}
-		}
-		return new BakedQuad( packedData, this.tintIndex, this.orientation, this.sprite, this.diffuseLighting, this.format.format );
-	}
+    /**
+     * Bakes this Quad to a BakedQuad.
+     *
+     * @return The BakedQuad.
+     */
+    public BakedQuad bake() {
+        int[] packedData = new int[this.format.format.getNextOffset()];
+        for (int v = 0; v < 4; v++) {
+            for (int e = 0; e < this.format.elementCount; e++) {
+                LightUtil.pack(this.vertices[v].raw[e], packedData, this.format.format, v, e);
+            }
+        }
+        return new BakedQuad(packedData, this.tintIndex, this.orientation, this.sprite, this.diffuseLighting, this.format.format);
+    }
 
-	/**
-	 * Bakes this quad to an UnpackedBakedQuad.
-	 *
-	 * @return The UnpackedBakedQuad.
-	 */
-	public UnpackedBakedQuad bakeUnpacked()
-	{
-		UnpackedBakedQuad.Builder quad = new UnpackedBakedQuad.Builder( this.format.format );
-		this.pipe( quad );
-		return quad.build();
-	}
+    /**
+     * Bakes this quad to an UnpackedBakedQuad.
+     *
+     * @return The UnpackedBakedQuad.
+     */
+    public UnpackedBakedQuad bakeUnpacked() {
+        UnpackedBakedQuad.Builder quad = new UnpackedBakedQuad.Builder(this.format.format);
+        this.pipe(quad);
+        return quad.build();
+    }
 
-	/**
-	 * A simple vertex format.
-	 */
-	public static class Vertex
-	{
+    /**
+     * A simple vertex format.
+     */
+    public static class Vertex {
 
-		public CachedFormat format;
+        public CachedFormat format;
 
-		/**
-		 * The raw data.
-		 */
-		public float[][] raw;
+        /**
+         * The raw data.
+         */
+        public float[][] raw;
 
-		// References to the arrays inside raw.
-		public float[] vec;
-		public float[] normal;
-		public float[] color;
-		public float[] uv;
-		public float[] lightmap;
+        // References to the arrays inside raw.
+        public float[] vec;
+        public float[] normal;
+        public float[] color;
+        public float[] uv;
+        public float[] lightmap;
 
-		/**
-		 * Create a new Vertex.
-		 *
-		 * @param format The format for the vertex.
-		 */
-		public Vertex( CachedFormat format )
-		{
-			this.format = format;
-			this.raw = new float[format.elementCount][4];
-			this.preProcess();
-		}
+        /**
+         * Create a new Vertex.
+         *
+         * @param format The format for the vertex.
+         */
+        public Vertex(CachedFormat format) {
+            this.format = format;
+            this.raw = new float[format.elementCount][4];
+            this.preProcess();
+        }
 
-		/**
-		 * Creates a new Vertex using the data inside the other. A copy!
-		 *
-		 * @param other The other.
-		 */
-		public Vertex( Vertex other )
-		{
-			this.format = other.format;
-			this.raw = other.raw.clone();
-			for( int v = 0; v < this.format.elementCount; v++ )
-			{
-				this.raw[v] = other.raw[v].clone();
-			}
-			this.preProcess();
-		}
+        /**
+         * Creates a new Vertex using the data inside the other. A copy!
+         *
+         * @param other The other.
+         */
+        public Vertex(Vertex other) {
+            this.format = other.format;
+            this.raw = other.raw.clone();
+            for (int v = 0; v < this.format.elementCount; v++) {
+                this.raw[v] = other.raw[v].clone();
+            }
+            this.preProcess();
+        }
 
-		/**
-		 * Pulls references to the individual element's arrays inside raw. Modifying the individual element arrays will
-		 * update raw.
-		 */
-		public void preProcess()
-		{
-			if( this.format.hasPosition )
-			{
-				this.vec = this.raw[this.format.positionIndex];
-			}
-			if( this.format.hasNormal )
-			{
-				this.normal = this.raw[this.format.normalIndex];
-			}
-			if( this.format.hasColor )
-			{
-				this.color = this.raw[this.format.colorIndex];
-			}
-			if( this.format.hasUV )
-			{
-				this.uv = this.raw[this.format.uvIndex];
-			}
-			if( this.format.hasLightMap )
-			{
-				this.lightmap = this.raw[this.format.lightMapIndex];
-			}
-		}
+        /**
+         * Pulls references to the individual element's arrays inside raw. Modifying the individual element arrays will
+         * update raw.
+         */
+        public void preProcess() {
+            if (this.format.hasPosition) {
+                this.vec = this.raw[this.format.positionIndex];
+            }
+            if (this.format.hasNormal) {
+                this.normal = this.raw[this.format.normalIndex];
+            }
+            if (this.format.hasColor) {
+                this.color = this.raw[this.format.colorIndex];
+            }
+            if (this.format.hasUV) {
+                this.uv = this.raw[this.format.uvIndex];
+            }
+            if (this.format.hasLightMap) {
+                this.lightmap = this.raw[this.format.lightMapIndex];
+            }
+        }
 
-		/**
-		 * Gets the 2d X coord for the given axis.
-		 *
-		 * @param s The axis. side >> 1
-		 *
-		 * @return The x coord.
-		 */
-		public float dx( int s )
-		{
-			if( s <= 1 )
-			{
-				return this.vec[0];
-			}
-			else
-			{
-				return this.vec[2];
-			}
-		}
+        /**
+         * Gets the 2d X coord for the given axis.
+         *
+         * @param s The axis. side >> 1
+         * @return The x coord.
+         */
+        public float dx(int s) {
+            if (s <= 1) {
+                return this.vec[0];
+            } else {
+                return this.vec[2];
+            }
+        }
 
-		/**
-		 * Gets the 2d Y coord for the given axis.
-		 *
-		 * @param s The axis. side >> 1
-		 *
-		 * @return The y coord.
-		 */
-		public float dy( int s )
-		{
-			if( s > 0 )
-			{
-				return this.vec[1];
-			}
-			else
-			{
-				return this.vec[2];
-			}
-		}
+        /**
+         * Gets the 2d Y coord for the given axis.
+         *
+         * @param s The axis. side >> 1
+         * @return The y coord.
+         */
+        public float dy(int s) {
+            if (s > 0) {
+                return this.vec[1];
+            } else {
+                return this.vec[2];
+            }
+        }
 
-		/**
-		 * Interpolates the new color values for this Vertex using the others as a reference.
-		 *
-		 * @param interpHelper The InterpHelper to use.
-		 * @param others The other Vertices to use as a template.
-		 *
-		 * @return The same Vertex.
-		 */
-		public Vertex interpColorFrom( InterpHelper interpHelper, Vertex[] others )
-		{
-			for( int e = 0; e < 4; e++ )
-			{
-				float p1 = others[0].color[e];
-				float p2 = others[1].color[e];
-				float p3 = others[2].color[e];
-				float p4 = others[3].color[e];
-				// Only interpolate if colors are different.
-				if( p1 != p2 || p2 != p3 || p3 != p4 )
-				{
-					this.color[e] = interpHelper.interpolate( p1, p2, p3, p4 );
-				}
-			}
-			return this;
-		}
+        /**
+         * Interpolates the new color values for this Vertex using the others as a reference.
+         *
+         * @param interpHelper The InterpHelper to use.
+         * @param others       The other Vertices to use as a template.
+         * @return The same Vertex.
+         */
+        public Vertex interpColorFrom(InterpHelper interpHelper, Vertex[] others) {
+            for (int e = 0; e < 4; e++) {
+                float p1 = others[0].color[e];
+                float p2 = others[1].color[e];
+                float p3 = others[2].color[e];
+                float p4 = others[3].color[e];
+                // Only interpolate if colors are different.
+                if (p1 != p2 || p2 != p3 || p3 != p4) {
+                    this.color[e] = interpHelper.interpolate(p1, p2, p3, p4);
+                }
+            }
+            return this;
+        }
 
-		/**
-		 * Interpolates the new UV values for this Vertex using the others as a reference.
-		 *
-		 * @param interpHelper The InterpHelper to use.
-		 * @param others The other Vertices to use as a template.
-		 *
-		 * @return The same Vertex.
-		 */
-		public Vertex interpUVFrom( InterpHelper interpHelper, Vertex[] others )
-		{
-			for( int e = 0; e < 2; e++ )
-			{
-				float p1 = others[0].uv[e];
-				float p2 = others[1].uv[e];
-				float p3 = others[2].uv[e];
-				float p4 = others[3].uv[e];
-				if( p1 != p2 || p2 != p3 || p3 != p4 )
-				{
-					this.uv[e] = interpHelper.interpolate( p1, p2, p3, p4 );
-				}
-			}
-			return this;
-		}
+        /**
+         * Interpolates the new UV values for this Vertex using the others as a reference.
+         *
+         * @param interpHelper The InterpHelper to use.
+         * @param others       The other Vertices to use as a template.
+         * @return The same Vertex.
+         */
+        public Vertex interpUVFrom(InterpHelper interpHelper, Vertex[] others) {
+            for (int e = 0; e < 2; e++) {
+                float p1 = others[0].uv[e];
+                float p2 = others[1].uv[e];
+                float p3 = others[2].uv[e];
+                float p4 = others[3].uv[e];
+                if (p1 != p2 || p2 != p3 || p3 != p4) {
+                    this.uv[e] = interpHelper.interpolate(p1, p2, p3, p4);
+                }
+            }
+            return this;
+        }
 
-		/**
-		 * Interpolates the new LightMap values for this Vertex using the others as a reference.
-		 *
-		 * @param interpHelper The InterpHelper to use.
-		 * @param others The other Vertices to use as a template.
-		 *
-		 * @return The same Vertex.
-		 */
-		public Vertex interpLightMapFrom( InterpHelper interpHelper, Vertex[] others )
-		{
-			for( int e = 0; e < 2; e++ )
-			{
-				float p1 = others[0].lightmap[e];
-				float p2 = others[1].lightmap[e];
-				float p3 = others[2].lightmap[e];
-				float p4 = others[3].lightmap[e];
-				if( p1 != p2 || p2 != p3 || p3 != p4 )
-				{
-					this.lightmap[e] = interpHelper.interpolate( p1, p2, p3, p4 );
-				}
-			}
-			return this;
-		}
+        /**
+         * Interpolates the new LightMap values for this Vertex using the others as a reference.
+         *
+         * @param interpHelper The InterpHelper to use.
+         * @param others       The other Vertices to use as a template.
+         * @return The same Vertex.
+         */
+        public Vertex interpLightMapFrom(InterpHelper interpHelper, Vertex[] others) {
+            for (int e = 0; e < 2; e++) {
+                float p1 = others[0].lightmap[e];
+                float p2 = others[1].lightmap[e];
+                float p3 = others[2].lightmap[e];
+                float p4 = others[3].lightmap[e];
+                if (p1 != p2 || p2 != p3 || p3 != p4) {
+                    this.lightmap[e] = interpHelper.interpolate(p1, p2, p3, p4);
+                }
+            }
+            return this;
+        }
 
-		/**
-		 * Copies this Vertex to a new one.
-		 *
-		 * @return The new Vertex.
-		 */
-		public Vertex copy()
-		{
-			return new Vertex( this );
-		}
+        /**
+         * Copies this Vertex to a new one.
+         *
+         * @return The new Vertex.
+         */
+        public Vertex copy() {
+            return new Vertex(this);
+        }
 
-		/**
-		 * Resets the Vertex to a new format. Expands the raw array if needed.
-		 *
-		 * @param format The format to reset to.
-		 */
-		public void reset( CachedFormat format )
-		{
-			// If the format is different and our raw array is smaller, then expand it.
-			if( !this.format.equals( format ) && format.elementCount > this.raw.length )
-			{
-				this.raw = new float[format.elementCount][4];
-			}
-			this.format = format;
+        /**
+         * Resets the Vertex to a new format. Expands the raw array if needed.
+         *
+         * @param format The format to reset to.
+         */
+        public void reset(CachedFormat format) {
+            // If the format is different and our raw array is smaller, then expand it.
+            if (!this.format.equals(format) && format.elementCount > this.raw.length) {
+                this.raw = new float[format.elementCount][4];
+            }
+            this.format = format;
 
-			this.vec = null;
-			this.normal = null;
-			this.color = null;
-			this.uv = null;
-			this.lightmap = null;
+            this.vec = null;
+            this.normal = null;
+            this.color = null;
+            this.uv = null;
+            this.lightmap = null;
 
-			// for (float[] f : raw) {
-			// Arrays.fill(f, 0F);
-			// }
+            // for (float[] f : raw) {
+            // Arrays.fill(f, 0F);
+            // }
 
-			this.preProcess();
-		}
-	}
+            this.preProcess();
+        }
+    }
 }

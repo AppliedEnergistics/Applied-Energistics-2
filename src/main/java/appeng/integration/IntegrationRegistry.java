@@ -19,86 +19,70 @@
 package appeng.integration;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
+import java.util.ArrayList;
+import java.util.Collection;
 
-public enum IntegrationRegistry
-{
-	INSTANCE;
 
-	private final Collection<IntegrationNode> modules = new ArrayList<>();
+public enum IntegrationRegistry {
+    INSTANCE;
 
-	public void add( final IntegrationType type )
-	{
-		if( type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER )
-		{
-			return;
-		}
+    private final Collection<IntegrationNode> modules = new ArrayList<>();
 
-		if( type.side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT )
-		{
-			return;
-		}
+    public void add(final IntegrationType type) {
+        if (type.side == IntegrationSide.CLIENT && FMLLaunchHandler.side() == Side.SERVER) {
+            return;
+        }
 
-		this.modules.add( new IntegrationNode( type.dspName, type.modID, type ) );
-	}
+        if (type.side == IntegrationSide.SERVER && FMLLaunchHandler.side() == Side.CLIENT) {
+            return;
+        }
 
-	public void preInit()
-	{
-		for( final IntegrationNode node : this.modules )
-		{
-			node.call( IntegrationStage.PRE_INIT );
-		}
-	}
+        this.modules.add(new IntegrationNode(type.dspName, type.modID, type));
+    }
 
-	public void init()
-	{
-		for( final IntegrationNode node : this.modules )
-		{
-			node.call( IntegrationStage.INIT );
-		}
-	}
+    public void preInit() {
+        for (final IntegrationNode node : this.modules) {
+            node.call(IntegrationStage.PRE_INIT);
+        }
+    }
 
-	public void postInit()
-	{
-		for( final IntegrationNode node : this.modules )
-		{
-			node.call( IntegrationStage.POST_INIT );
-		}
-	}
+    public void init() {
+        for (final IntegrationNode node : this.modules) {
+            node.call(IntegrationStage.INIT);
+        }
+    }
 
-	public String getStatus()
-	{
-		final StringBuilder builder = new StringBuilder( this.modules.size() * 3 );
+    public void postInit() {
+        for (final IntegrationNode node : this.modules) {
+            node.call(IntegrationStage.POST_INIT);
+        }
+    }
 
-		for( final IntegrationNode node : this.modules )
-		{
-			if( builder.length() != 0 )
-			{
-				builder.append( ", " );
-			}
+    public String getStatus() {
+        final StringBuilder builder = new StringBuilder(this.modules.size() * 3);
 
-			final String integrationState = node.getType() + ":" + ( node.getState() == IntegrationStage.FAILED ? "OFF" : "ON" );
-			builder.append( integrationState );
-		}
+        for (final IntegrationNode node : this.modules) {
+            if (builder.length() != 0) {
+                builder.append(", ");
+            }
 
-		return builder.toString();
-	}
+            final String integrationState = node.getType() + ":" + (node.getState() == IntegrationStage.FAILED ? "OFF" : "ON");
+            builder.append(integrationState);
+        }
 
-	public boolean isEnabled( final IntegrationType name )
-	{
-		for( final IntegrationNode node : this.modules )
-		{
-			if( node.getType() == name )
-			{
-				return node.isActive();
-			}
-		}
-		return false;
-	}
+        return builder.toString();
+    }
+
+    public boolean isEnabled(final IntegrationType name) {
+        for (final IntegrationNode node : this.modules) {
+            if (node.getType() == name) {
+                return node.isActive();
+            }
+        }
+        return false;
+    }
 
 }

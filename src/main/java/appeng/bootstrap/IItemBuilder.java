@@ -19,37 +19,35 @@
 package appeng.bootstrap;
 
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
+import appeng.core.features.AEFeature;
+import appeng.core.features.ItemDefinition;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.item.Item;
 
-import appeng.core.features.AEFeature;
-import appeng.core.features.ItemDefinition;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 /**
  * Allows an item to be defined and registered with the game.
  * The item is only registered once build is called.
  */
-public interface IItemBuilder
-{
-	IItemBuilder bootstrap( Function<Item, IBootstrapComponent> component );
+public interface IItemBuilder {
+    IItemBuilder bootstrap(Function<Item, IBootstrapComponent> component);
 
-	IItemBuilder features( AEFeature... features );
+    IItemBuilder features(AEFeature... features);
 
-	IItemBuilder addFeatures( AEFeature... features );
+    IItemBuilder addFeatures(AEFeature... features);
 
-	IItemBuilder creativeTab( CreativeTabs tab );
+    IItemBuilder creativeTab(CreativeTabs tab);
 
-	IItemBuilder rendering( ItemRenderingCustomizer callback );
+    IItemBuilder rendering(ItemRenderingCustomizer callback);
 
-	/**
-	 * Registers a custom dispenser behavior for this item.
-	 */
-	IItemBuilder dispenserBehavior( Supplier<IBehaviorDispenseItem> behavior );
+    /**
+     * Registers a custom dispenser behavior for this item.
+     */
+    IItemBuilder dispenserBehavior(Supplier<IBehaviorDispenseItem> behavior);
 
-	ItemDefinition build();
+    ItemDefinition build();
 }

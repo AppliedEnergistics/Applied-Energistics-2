@@ -19,122 +19,106 @@
 package appeng.parts.automation;
 
 
+import com.google.common.base.Strings;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.Strings;
 
 
 /**
  * Models in which directions - looking at the front face - a plane (annihilation, formation, etc.) is connected to
  * other planes of the same type.
  */
-public final class PlaneConnections
-{
+public final class PlaneConnections {
 
-	private final boolean up;
-	private final boolean right;
-	private final boolean down;
-	private final boolean left;
+    private final boolean up;
+    private final boolean right;
+    private final boolean down;
+    private final boolean left;
 
-	private static final int BITMASK_UP = 8;
-	private static final int BITMASK_RIGHT = 4;
-	private static final int BITMASK_DOWN = 2;
-	private static final int BITMASK_LEFT = 1;
+    private static final int BITMASK_UP = 8;
+    private static final int BITMASK_RIGHT = 4;
+    private static final int BITMASK_DOWN = 2;
+    private static final int BITMASK_LEFT = 1;
 
-	public static final List<PlaneConnections> PERMUTATIONS = generatePermutations();
+    public static final List<PlaneConnections> PERMUTATIONS = generatePermutations();
 
-	private static List<PlaneConnections> generatePermutations()
-	{
-		List<PlaneConnections> connections = new ArrayList<>( 16 );
+    private static List<PlaneConnections> generatePermutations() {
+        List<PlaneConnections> connections = new ArrayList<>(16);
 
-		for( int i = 0; i < 16; i++ )
-		{
-			boolean up = ( i & BITMASK_UP ) != 0;
-			boolean right = ( i & BITMASK_RIGHT ) != 0;
-			boolean down = ( i & BITMASK_DOWN ) != 0;
-			boolean left = ( i & BITMASK_LEFT ) != 0;
+        for (int i = 0; i < 16; i++) {
+            boolean up = (i & BITMASK_UP) != 0;
+            boolean right = (i & BITMASK_RIGHT) != 0;
+            boolean down = (i & BITMASK_DOWN) != 0;
+            boolean left = (i & BITMASK_LEFT) != 0;
 
-			connections.add( new PlaneConnections( up, right, down, left ) );
-		}
+            connections.add(new PlaneConnections(up, right, down, left));
+        }
 
-		return connections;
-	}
+        return connections;
+    }
 
-	private PlaneConnections( boolean up, boolean right, boolean down, boolean left )
-	{
-		this.up = up;
-		this.right = right;
-		this.down = down;
-		this.left = left;
-	}
+    private PlaneConnections(boolean up, boolean right, boolean down, boolean left) {
+        this.up = up;
+        this.right = right;
+        this.down = down;
+        this.left = left;
+    }
 
-	public static PlaneConnections of( boolean up, boolean right, boolean down, boolean left )
-	{
-		return PERMUTATIONS.get( getIndex( up, right, down, left ) );
-	}
+    public static PlaneConnections of(boolean up, boolean right, boolean down, boolean left) {
+        return PERMUTATIONS.get(getIndex(up, right, down, left));
+    }
 
-	public boolean isUp()
-	{
-		return this.up;
-	}
+    public boolean isUp() {
+        return this.up;
+    }
 
-	public boolean isRight()
-	{
-		return this.right;
-	}
+    public boolean isRight() {
+        return this.right;
+    }
 
-	public boolean isDown()
-	{
-		return this.down;
-	}
+    public boolean isDown() {
+        return this.down;
+    }
 
-	public boolean isLeft()
-	{
-		return this.left;
-	}
+    public boolean isLeft() {
+        return this.left;
+    }
 
-	// The combination of connections expressed as a number ranging from [0,15]
-	public int getIndex()
-	{
-		return getIndex( this.up, this.right, this.down, this.left );
-	}
+    // The combination of connections expressed as a number ranging from [0,15]
+    public int getIndex() {
+        return getIndex(this.up, this.right, this.down, this.left);
+    }
 
-	private static int getIndex( boolean up, boolean right, boolean down, boolean left )
-	{
-		return ( up ? BITMASK_UP : 0 ) + ( right ? BITMASK_RIGHT : 0 ) + ( left ? BITMASK_LEFT : 0 ) + ( down ? BITMASK_DOWN : 0 );
-	}
+    private static int getIndex(boolean up, boolean right, boolean down, boolean left) {
+        return (up ? BITMASK_UP : 0) + (right ? BITMASK_RIGHT : 0) + (left ? BITMASK_LEFT : 0) + (down ? BITMASK_DOWN : 0);
+    }
 
-	// Returns a suffix that expresses the connection states as a string
-	public String getFilenameSuffix()
-	{
-		String suffix = Integer.toBinaryString( this.getIndex() );
-		return Strings.padStart( suffix, 4, '0' );
-	}
+    // Returns a suffix that expresses the connection states as a string
+    public String getFilenameSuffix() {
+        String suffix = Integer.toBinaryString(this.getIndex());
+        return Strings.padStart(suffix, 4, '0');
+    }
 
-	@Override
-	public boolean equals( Object o )
-	{
-		if( this == o )
-		{
-			return true;
-		}
-		if( o == null || this.getClass() != o.getClass() )
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
 
-		PlaneConnections that = (PlaneConnections) o;
-		return this.up == that.up && this.right == that.right && this.down == that.down && this.left == that.left;
-	}
+        PlaneConnections that = (PlaneConnections) o;
+        return this.up == that.up && this.right == that.right && this.down == that.down && this.left == that.left;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		int result = ( this.up ? 1 : 0 );
-		result = 31 * result + ( this.right ? 1 : 0 );
-		result = 31 * result + ( this.down ? 1 : 0 );
-		result = 31 * result + ( this.left ? 1 : 0 );
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = (this.up ? 1 : 0);
+        result = 31 * result + (this.right ? 1 : 0);
+        result = 31 * result + (this.down ? 1 : 0);
+        result = 31 * result + (this.left ? 1 : 0);
+        return result;
+    }
 }

@@ -29,102 +29,85 @@ import appeng.api.storage.data.IAEStack;
 import appeng.api.storage.data.IItemList;
 
 
-class CondenserVoidInventory<T extends IAEStack<T>> implements IMEMonitor<T>
-{
+class CondenserVoidInventory<T extends IAEStack<T>> implements IMEMonitor<T> {
 
-	private final TileCondenser target;
-	private final IStorageChannel<T> channel;
+    private final TileCondenser target;
+    private final IStorageChannel<T> channel;
 
-	CondenserVoidInventory( final TileCondenser te, final IStorageChannel<T> channel )
-	{
-		this.target = te;
-		this.channel = channel;
-	}
+    CondenserVoidInventory(final TileCondenser te, final IStorageChannel<T> channel) {
+        this.target = te;
+        this.channel = channel;
+    }
 
-	@Override
-	public T injectItems( final T input, final Actionable mode, final IActionSource src )
-	{
-		if( mode == Actionable.SIMULATE )
-		{
-			return null;
-		}
+    @Override
+    public T injectItems(final T input, final Actionable mode, final IActionSource src) {
+        if (mode == Actionable.SIMULATE) {
+            return null;
+        }
 
-		if( input != null )
-		{
-			this.target.addPower( input.getStackSize() / (double) this.channel.transferFactor() );
-		}
-		return null;
-	}
+        if (input != null) {
+            this.target.addPower(input.getStackSize() / (double) this.channel.transferFactor());
+        }
+        return null;
+    }
 
-	@Override
-	public T extractItems( final T request, final Actionable mode, final IActionSource src )
-	{
-		return null;
-	}
+    @Override
+    public T extractItems(final T request, final Actionable mode, final IActionSource src) {
+        return null;
+    }
 
-	@Override
-	public IItemList<T> getAvailableItems( final IItemList<T> out )
-	{
-		return out;
-	}
+    @Override
+    public IItemList<T> getAvailableItems(final IItemList<T> out) {
+        return out;
+    }
 
-	@Override
-	public IItemList<T> getStorageList()
-	{
-		return this.channel.createList();
-	}
+    @Override
+    public IItemList<T> getStorageList() {
+        return this.channel.createList();
+    }
 
-	@Override
-	public IStorageChannel<T> getChannel()
-	{
-		return this.channel;
-	}
+    @Override
+    public IStorageChannel<T> getChannel() {
+        return this.channel;
+    }
 
-	@Override
-	public AccessRestriction getAccess()
-	{
-		return AccessRestriction.WRITE;
-	}
+    @Override
+    public AccessRestriction getAccess() {
+        return AccessRestriction.WRITE;
+    }
 
-	@Override
-	public boolean isPrioritized( final T input )
-	{
-		return false;
-	}
+    @Override
+    public boolean isPrioritized(final T input) {
+        return false;
+    }
 
-	@Override
-	public boolean canAccept( final T input )
-	{
-		return true;
-	}
+    @Override
+    public boolean canAccept(final T input) {
+        return true;
+    }
 
-	@Override
-	public int getPriority()
-	{
-		return 0;
-	}
+    @Override
+    public int getPriority() {
+        return 0;
+    }
 
-	@Override
-	public int getSlot()
-	{
-		return 0;
-	}
+    @Override
+    public int getSlot() {
+        return 0;
+    }
 
-	@Override
-	public boolean validForPass( final int i )
-	{
-		return i == 2;
-	}
+    @Override
+    public boolean validForPass(final int i) {
+        return i == 2;
+    }
 
-	@Override
-	public void addListener( IMEMonitorHandlerReceiver<T> l, Object verificationToken )
-	{
-		// Not implemented since the Condenser automatically voids everything, and there are no updates
-	}
+    @Override
+    public void addListener(IMEMonitorHandlerReceiver<T> l, Object verificationToken) {
+        // Not implemented since the Condenser automatically voids everything, and there are no updates
+    }
 
-	@Override
-	public void removeListener( IMEMonitorHandlerReceiver<T> l )
-	{
-		// Not implemented since we don't remember registered listeners anyway
-	}
+    @Override
+    public void removeListener(IMEMonitorHandlerReceiver<T> l) {
+        // Not implemented since we don't remember registered listeners anyway
+    }
 }

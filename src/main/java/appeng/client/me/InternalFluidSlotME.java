@@ -27,39 +27,33 @@ import appeng.api.storage.data.IAEFluidStack;
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class InternalFluidSlotME
-{
+public class InternalFluidSlotME {
 
-	private final int offset;
-	private final int xPos;
-	private final int yPos;
-	private final FluidRepo repo;
+    private final int offset;
+    private final int xPos;
+    private final int yPos;
+    private final FluidRepo repo;
 
-	public InternalFluidSlotME( final FluidRepo def, final int offset, final int displayX, final int displayY )
-	{
-		this.repo = def;
-		this.offset = offset;
-		this.xPos = displayX;
-		this.yPos = displayY;
-	}
+    public InternalFluidSlotME(final FluidRepo def, final int offset, final int displayX, final int displayY) {
+        this.repo = def;
+        this.offset = offset;
+        this.xPos = displayX;
+        this.yPos = displayY;
+    }
 
-	IAEFluidStack getAEStack()
-	{
-		return this.repo.getReferenceFluid( this.offset );
-	}
+    IAEFluidStack getAEStack() {
+        return this.repo.getReferenceFluid(this.offset);
+    }
 
-	boolean hasPower()
-	{
-		return this.repo.hasPower();
-	}
+    boolean hasPower() {
+        return this.repo.hasPower();
+    }
 
-	int getxPosition()
-	{
-		return this.xPos;
-	}
+    int getxPosition() {
+        return this.xPos;
+    }
 
-	int getyPosition()
-	{
-		return this.yPos;
-	}
+    int getyPosition() {
+        return this.yPos;
+    }
 }

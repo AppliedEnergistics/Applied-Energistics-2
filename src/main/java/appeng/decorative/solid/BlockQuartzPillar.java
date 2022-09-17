@@ -19,6 +19,10 @@
 package appeng.decorative.solid;
 
 
+import appeng.api.util.IOrientable;
+import appeng.api.util.IOrientableBlock;
+import appeng.block.AEBaseBlock;
+import appeng.helpers.MetaRotation;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
@@ -27,53 +31,41 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseBlock;
-import appeng.helpers.MetaRotation;
 
+public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock {
+    public static final PropertyEnum<EnumFacing.Axis> AXIS_ORIENTATION = PropertyEnum.create("axis", EnumFacing.Axis.class);
 
-public class BlockQuartzPillar extends AEBaseBlock implements IOrientableBlock
-{
-	public static final PropertyEnum<EnumFacing.Axis> AXIS_ORIENTATION = PropertyEnum.create( "axis", EnumFacing.Axis.class );
+    public BlockQuartzPillar() {
+        super(Material.ROCK);
+        // The upwards facing pillar is the default (i.e. for the item model)
+        this.setDefaultState(this.getDefaultState().withProperty(AXIS_ORIENTATION, EnumFacing.Axis.Y));
+    }
 
-	public BlockQuartzPillar()
-	{
-		super( Material.ROCK );
-		// The upwards facing pillar is the default (i.e. for the item model)
-		this.setDefaultState( this.getDefaultState().withProperty( AXIS_ORIENTATION, EnumFacing.Axis.Y ) );
-	}
+    @Override
+    public int getMetaFromState(final IBlockState state) {
+        return state.getValue(AXIS_ORIENTATION).ordinal();
+    }
 
-	@Override
-	public int getMetaFromState( final IBlockState state )
-	{
-		return state.getValue( AXIS_ORIENTATION ).ordinal();
-	}
+    @Override
+    public IBlockState getStateFromMeta(final int meta) {
+        // Simply use the ordinal here
+        EnumFacing.Axis axis = EnumFacing.Axis.values()[meta];
+        return this.getDefaultState().withProperty(AXIS_ORIENTATION, axis);
+    }
 
-	@Override
-	public IBlockState getStateFromMeta( final int meta )
-	{
-		// Simply use the ordinal here
-		EnumFacing.Axis axis = EnumFacing.Axis.values()[meta];
-		return this.getDefaultState().withProperty( AXIS_ORIENTATION, axis );
-	}
+    @Override
+    protected IProperty[] getAEStates() {
+        return new IProperty[]{AXIS_ORIENTATION};
+    }
 
-	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { AXIS_ORIENTATION };
-	}
+    @Override
+    public boolean usesMetadata() {
+        return true;
+    }
 
-	@Override
-	public boolean usesMetadata()
-	{
-		return true;
-	}
-
-	@Override
-	public IOrientable getOrientable( final IBlockAccess w, final BlockPos pos )
-	{
-		return new MetaRotation( w, pos, null );
-	}
+    @Override
+    public IOrientable getOrientable(final IBlockAccess w, final BlockPos pos) {
+        return new MetaRotation(w, pos, null);
+    }
 
 }

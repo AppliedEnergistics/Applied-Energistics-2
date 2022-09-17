@@ -19,39 +19,34 @@
 package appeng.bootstrap.components;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
+import appeng.client.render.model.BuiltInModelLoader;
 import com.google.common.base.Preconditions;
-
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.client.render.model.BuiltInModelLoader;
+import java.util.HashMap;
+import java.util.Map;
 
 
-@SideOnly( Side.CLIENT )
-public class BuiltInModelComponent implements IPreInitComponent
-{
+@SideOnly(Side.CLIENT)
+public class BuiltInModelComponent implements IPreInitComponent {
 
-	private final Map<String, IModel> builtInModels = new HashMap<>();
+    private final Map<String, IModel> builtInModels = new HashMap<>();
 
-	private boolean hasInitialized = false;
+    private boolean hasInitialized = false;
 
-	public void addModel( String path, IModel model )
-	{
-		Preconditions.checkState( !this.hasInitialized );
-		this.builtInModels.put( path, model );
-	}
+    public void addModel(String path, IModel model) {
+        Preconditions.checkState(!this.hasInitialized);
+        this.builtInModels.put(path, model);
+    }
 
-	@Override
-	public void preInitialize( Side side )
-	{
-		this.hasInitialized = true;
+    @Override
+    public void preInitialize(Side side) {
+        this.hasInitialized = true;
 
-		BuiltInModelLoader loader = new BuiltInModelLoader( this.builtInModels );
-		ModelLoaderRegistry.registerLoader( loader );
-	}
+        BuiltInModelLoader loader = new BuiltInModelLoader(this.builtInModels);
+        ModelLoaderRegistry.registerLoader(loader);
+    }
 }

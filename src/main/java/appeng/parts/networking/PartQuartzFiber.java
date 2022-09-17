@@ -19,17 +19,6 @@
 package appeng.parts.networking;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
@@ -46,154 +35,139 @@ import appeng.me.GridAccessException;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
 
 
-public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider
-{
+public class PartQuartzFiber extends AEBasePart implements IEnergyGridProvider {
 
-	@PartModels
-	private static final IPartModel MODELS = new PartModel( new ResourceLocation( AppEng.MOD_ID, "part/quartz_fiber" ) );
+    @PartModels
+    private static final IPartModel MODELS = new PartModel(new ResourceLocation(AppEng.MOD_ID, "part/quartz_fiber"));
 
-	private final AENetworkProxy outerProxy = new AENetworkProxy( this, "outer", this.getProxy().getMachineRepresentation(), true );
+    private final AENetworkProxy outerProxy = new AENetworkProxy(this, "outer", this.getProxy().getMachineRepresentation(), true);
 
-	public PartQuartzFiber( final ItemStack is )
-	{
-		super( is );
-		this.getProxy().setIdlePowerUsage( 0 );
-		this.getProxy().setFlags( GridFlags.CANNOT_CARRY );
-		this.outerProxy.setIdlePowerUsage( 0 );
-		this.outerProxy.setFlags( GridFlags.CANNOT_CARRY );
-	}
+    public PartQuartzFiber(final ItemStack is) {
+        super(is);
+        this.getProxy().setIdlePowerUsage(0);
+        this.getProxy().setFlags(GridFlags.CANNOT_CARRY);
+        this.outerProxy.setIdlePowerUsage(0);
+        this.outerProxy.setFlags(GridFlags.CANNOT_CARRY);
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.GLASS;
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return AECableType.GLASS;
+    }
 
-	@Override
-	public void getBoxes( final IPartCollisionHelper bch )
-	{
-		bch.addBox( 6, 6, 10, 10, 10, 16 );
-	}
+    @Override
+    public void getBoxes(final IPartCollisionHelper bch) {
+        bch.addBox(6, 6, 10, 10, 10, 16);
+    }
 
-	@Override
-	public void readFromNBT( final NBTTagCompound extra )
-	{
-		super.readFromNBT( extra );
-		this.outerProxy.readFromNBT( extra );
-	}
+    @Override
+    public void readFromNBT(final NBTTagCompound extra) {
+        super.readFromNBT(extra);
+        this.outerProxy.readFromNBT(extra);
+    }
 
-	@Override
-	public void writeToNBT( final NBTTagCompound extra )
-	{
-		super.writeToNBT( extra );
-		this.outerProxy.writeToNBT( extra );
-	}
+    @Override
+    public void writeToNBT(final NBTTagCompound extra) {
+        super.writeToNBT(extra);
+        this.outerProxy.writeToNBT(extra);
+    }
 
-	@Override
-	public void removeFromWorld()
-	{
-		super.removeFromWorld();
-		this.outerProxy.invalidate();
-	}
+    @Override
+    public void removeFromWorld() {
+        super.removeFromWorld();
+        this.outerProxy.invalidate();
+    }
 
-	@Override
-	public void addToWorld()
-	{
-		super.addToWorld();
-		this.outerProxy.onReady();
-	}
+    @Override
+    public void addToWorld() {
+        super.addToWorld();
+        this.outerProxy.onReady();
+    }
 
-	@Override
-	public void setPartHostInfo( final AEPartLocation side, final IPartHost host, final TileEntity tile )
-	{
-		super.setPartHostInfo( side, host, tile );
-		this.outerProxy.setValidSides( EnumSet.of( side.getFacing() ) );
-	}
+    @Override
+    public void setPartHostInfo(final AEPartLocation side, final IPartHost host, final TileEntity tile) {
+        super.setPartHostInfo(side, host, tile);
+        this.outerProxy.setValidSides(EnumSet.of(side.getFacing()));
+    }
 
-	@Override
-	public IGridNode getExternalFacingNode()
-	{
-		return this.outerProxy.getNode();
-	}
+    @Override
+    public IGridNode getExternalFacingNode() {
+        return this.outerProxy.getNode();
+    }
 
-	@Override
-	public float getCableConnectionLength( AECableType cable )
-	{
-		return 16;
-	}
+    @Override
+    public float getCableConnectionLength(AECableType cable) {
+        return 16;
+    }
 
-	@Override
-	public void onPlacement( final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side )
-	{
-		super.onPlacement( player, hand, held, side );
-		this.outerProxy.setOwner( player );
-	}
+    @Override
+    public void onPlacement(final EntityPlayer player, final EnumHand hand, final ItemStack held, final AEPartLocation side) {
+        super.onPlacement(player, hand, held, side);
+        this.outerProxy.setOwner(player);
+    }
 
-	@Override
-	public Collection<IEnergyGridProvider> providers()
-	{
-		Collection<IEnergyGridProvider> providers = new ArrayList<>();
+    @Override
+    public Collection<IEnergyGridProvider> providers() {
+        Collection<IEnergyGridProvider> providers = new ArrayList<>();
 
-		try
-		{
-			final IEnergyGrid eg = this.getProxy().getEnergy();
+        try {
+            final IEnergyGrid eg = this.getProxy().getEnergy();
 
-			providers.add( eg );
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
+            providers.add(eg);
+        } catch (final GridAccessException e) {
+            // :P
+        }
 
-		try
-		{
-			final IEnergyGrid eg = this.outerProxy.getEnergy();
+        try {
+            final IEnergyGrid eg = this.outerProxy.getEnergy();
 
-			providers.add( eg );
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
+            providers.add(eg);
+        } catch (final GridAccessException e) {
+            // :P
+        }
 
-		return providers;
-	}
+        return providers;
+    }
 
-	@Override
-	public double extractProviderPower( final double amt, final Actionable mode )
-	{
-		return 0;
-	}
+    @Override
+    public double extractProviderPower(final double amt, final Actionable mode) {
+        return 0;
+    }
 
-	@Override
-	public double injectProviderPower( final double amt, final Actionable mode )
-	{
-		return amt;
-	}
+    @Override
+    public double injectProviderPower(final double amt, final Actionable mode) {
+        return amt;
+    }
 
-	@Override
-	public double getProviderEnergyDemand( final double amt )
-	{
-		return 0;
-	}
+    @Override
+    public double getProviderEnergyDemand(final double amt) {
+        return 0;
+    }
 
-	@Override
-	public double getProviderStoredEnergy()
-	{
-		return 0;
-	}
+    @Override
+    public double getProviderStoredEnergy() {
+        return 0;
+    }
 
-	@Override
-	public double getProviderMaxEnergy()
-	{
-		return 0;
-	}
+    @Override
+    public double getProviderMaxEnergy() {
+        return 0;
+    }
 
-	@Override
-	public IPartModel getStaticModels()
-	{
-		return MODELS;
-	}
+    @Override
+    public IPartModel getStaticModels() {
+        return MODELS;
+    }
 }

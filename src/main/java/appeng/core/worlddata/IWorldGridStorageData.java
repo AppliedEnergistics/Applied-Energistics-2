@@ -19,10 +19,10 @@
 package appeng.core.worlddata;
 
 
+import appeng.me.GridStorage;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import appeng.me.GridStorage;
 
 
 /**
@@ -30,17 +30,16 @@ import appeng.me.GridStorage;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public interface IWorldGridStorageData
-{
-	@Nullable
-	GridStorage getGridStorage( long storageID );
+public interface IWorldGridStorageData {
+    @Nullable
+    GridStorage getGridStorage(long storageID);
 
-	@Nonnull
-	GridStorage getNewGridStorage();
+    @Nonnull
+    GridStorage getNewGridStorage();
 
-	long nextGridStorage();
+    long nextGridStorage();
 
-	void destroyGridStorage( long id );
+    void destroyGridStorage(long id);
 
-	int getNextOrderedValue( String name );
+    int getNextOrderedValue(String name);
 }

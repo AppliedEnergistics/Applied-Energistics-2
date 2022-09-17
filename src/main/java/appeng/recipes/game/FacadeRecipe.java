@@ -19,8 +19,10 @@
 package appeng.recipes.game;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.AEApi;
+import appeng.api.definitions.IComparableDefinition;
+import appeng.api.definitions.IDefinitions;
+import appeng.items.parts.ItemFacade;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -29,72 +31,59 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-import appeng.api.AEApi;
-import appeng.api.definitions.IComparableDefinition;
-import appeng.api.definitions.IDefinitions;
-import appeng.items.parts.ItemFacade;
+import javax.annotation.Nullable;
 
 
-public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
-{
-	private final IComparableDefinition anchor;
-	private final ItemFacade facade;
+public final class FacadeRecipe extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+    private final IComparableDefinition anchor;
+    private final ItemFacade facade;
 
-	public FacadeRecipe( ItemFacade facade )
-	{
-		this.facade = facade;
-		final IDefinitions definitions = AEApi.instance().definitions();
+    public FacadeRecipe(ItemFacade facade) {
+        this.facade = facade;
+        final IDefinitions definitions = AEApi.instance().definitions();
 
-		this.anchor = definitions.parts().cableAnchor();
-	}
+        this.anchor = definitions.parts().cableAnchor();
+    }
 
-	@Override
-	public boolean matches( final InventoryCrafting inv, final World w )
-	{
-		return !this.getOutput( inv, false ).isEmpty();
-	}
+    @Override
+    public boolean matches(final InventoryCrafting inv, final World w) {
+        return !this.getOutput(inv, false).isEmpty();
+    }
 
-	@Nullable
-	private ItemStack getOutput( final IInventory inv, final boolean createFacade )
-	{
-		if( inv.getStackInSlot( 0 ).isEmpty() && inv.getStackInSlot( 2 ).isEmpty() && inv.getStackInSlot( 6 ).isEmpty() && inv.getStackInSlot( 8 ).isEmpty() )
-		{
-			if( this.anchor.isSameAs( inv.getStackInSlot( 1 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 3 ) ) && this.anchor
-					.isSameAs( inv.getStackInSlot( 5 ) ) && this.anchor.isSameAs( inv.getStackInSlot( 7 ) ) )
-			{
-				final ItemStack facades = this.facade.createFacadeForItem( inv.getStackInSlot( 4 ), !createFacade );
-				if( !facades.isEmpty() && createFacade )
-				{
-					facades.setCount( 4 );
-				}
-				return facades;
-			}
-		}
+    @Nullable
+    private ItemStack getOutput(final IInventory inv, final boolean createFacade) {
+        if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(2).isEmpty() && inv.getStackInSlot(6).isEmpty() && inv.getStackInSlot(8).isEmpty()) {
+            if (this.anchor.isSameAs(inv.getStackInSlot(1)) && this.anchor.isSameAs(inv.getStackInSlot(3)) && this.anchor
+                    .isSameAs(inv.getStackInSlot(5)) && this.anchor.isSameAs(inv.getStackInSlot(7))) {
+                final ItemStack facades = this.facade.createFacadeForItem(inv.getStackInSlot(4), !createFacade);
+                if (!facades.isEmpty() && createFacade) {
+                    facades.setCount(4);
+                }
+                return facades;
+            }
+        }
 
-		return ItemStack.EMPTY;
-	}
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack getCraftingResult( final InventoryCrafting inv )
-	{
-		return this.getOutput( inv, true );
-	}
+    @Override
+    public ItemStack getCraftingResult(final InventoryCrafting inv) {
+        return this.getOutput(inv, true);
+    }
 
-	@Override
-	public boolean canFit( int i, int i1 )
-	{
-		return false;
-	}
+    @Override
+    public boolean canFit(int i, int i1) {
+        return false;
+    }
 
-	@Override
-	public ItemStack getRecipeOutput() // no default output..
-	{
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack getRecipeOutput() // no default output..
+    {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public NonNullList<ItemStack> getRemainingItems( final InventoryCrafting inv )
-	{
-		return ForgeHooks.defaultRecipeGetRemainingItems( inv );
-	}
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(final InventoryCrafting inv) {
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+    }
 }

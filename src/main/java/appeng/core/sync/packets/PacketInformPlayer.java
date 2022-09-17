@@ -12,65 +12,55 @@ import net.minecraft.util.text.TextComponentString;
 
 import java.io.IOException;
 
-public class PacketInformPlayer extends AppEngPacket
-{
-	private IAEItemStack actualItem = null;
-	private IAEItemStack reportedItem = null;
-	private final InfoType type;
+public class PacketInformPlayer extends AppEngPacket {
+    private IAEItemStack actualItem = null;
+    private IAEItemStack reportedItem = null;
+    private final InfoType type;
 
-	public PacketInformPlayer( ByteBuf stream ) throws IOException
-	{
-		this.type = InfoType.values()[stream.readInt()];
-		switch ( type )
-		{
-			case PARTIAL_ITEM_EXTRACTION:
-				this.reportedItem = AEItemStack.fromPacket( stream );
-				this.actualItem = AEItemStack.fromPacket( stream );
-				break;
-			case NO_ITEMS_EXTRACTED:
-				this.reportedItem = AEItemStack.fromPacket( stream );
-				break;
-		}
-	}
+    public PacketInformPlayer(ByteBuf stream) throws IOException {
+        this.type = InfoType.values()[stream.readInt()];
+        switch (type) {
+            case PARTIAL_ITEM_EXTRACTION:
+                this.reportedItem = AEItemStack.fromPacket(stream);
+                this.actualItem = AEItemStack.fromPacket(stream);
+                break;
+            case NO_ITEMS_EXTRACTED:
+                this.reportedItem = AEItemStack.fromPacket(stream);
+                break;
+        }
+    }
 
-	public PacketInformPlayer( IAEItemStack expected, IAEItemStack actual, InfoType type ) throws IOException
-	{
-		this.reportedItem = expected;
-		this.actualItem = actual;
-		this.type = type;
+    public PacketInformPlayer(IAEItemStack expected, IAEItemStack actual, InfoType type) throws IOException {
+        this.reportedItem = expected;
+        this.actualItem = actual;
+        this.type = type;
 
-		final ByteBuf data = Unpooled.buffer();
+        final ByteBuf data = Unpooled.buffer();
 
-		data.writeInt( this.getPacketID() );
+        data.writeInt(this.getPacketID());
 
-		data.writeInt( type.ordinal() );
+        data.writeInt(type.ordinal());
 
-		reportedItem.writeToPacket( data );
-		if( actualItem != null )
-		{
-			actualItem.writeToPacket( data );
-		}
+        reportedItem.writeToPacket(data);
+        if (actualItem != null) {
+            actualItem.writeToPacket(data);
+        }
 
-		this.configureWrite( data );
-	}
+        this.configureWrite(data);
+    }
 
-	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
-	{
-		TextComponentString msg = null;
+    @Override
+    public void clientPacketData(final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player) {
+        TextComponentString msg = null;
 
-		if( this.type == InfoType.PARTIAL_ITEM_EXTRACTION )
-		{
-			AppEng.proxy.getPlayers().get( 0 ).sendStatusMessage( new TextComponentString( "System reported " + reportedItem.getStackSize() + " " + reportedItem.getItem().getItemStackDisplayName( reportedItem.getDefinition() ) + " available but could only extract " + actualItem.getStackSize() ), false );
-		}
-		else if( this.type == InfoType.NO_ITEMS_EXTRACTED )
-		{
-			AppEng.proxy.getPlayers().get( 0 ).sendStatusMessage( new TextComponentString( "System reported " + reportedItem.getStackSize() + " " + reportedItem.getItem().getItemStackDisplayName( reportedItem.getDefinition() ) + " available but could not extract anything" ), false );
-		}
-	}
+        if (this.type == InfoType.PARTIAL_ITEM_EXTRACTION) {
+            AppEng.proxy.getPlayers().get(0).sendStatusMessage(new TextComponentString("System reported " + reportedItem.getStackSize() + " " + reportedItem.getItem().getItemStackDisplayName(reportedItem.getDefinition()) + " available but could only extract " + actualItem.getStackSize()), false);
+        } else if (this.type == InfoType.NO_ITEMS_EXTRACTED) {
+            AppEng.proxy.getPlayers().get(0).sendStatusMessage(new TextComponentString("System reported " + reportedItem.getStackSize() + " " + reportedItem.getItem().getItemStackDisplayName(reportedItem.getDefinition()) + " available but could not extract anything"), false);
+        }
+    }
 
-	public enum InfoType
-	{
-		PARTIAL_ITEM_EXTRACTION, NO_ITEMS_EXTRACTED
-	}
+    public enum InfoType {
+        PARTIAL_ITEM_EXTRACTION, NO_ITEMS_EXTRACTED
+    }
 }

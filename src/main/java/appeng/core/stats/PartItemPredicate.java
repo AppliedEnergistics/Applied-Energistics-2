@@ -19,52 +19,41 @@
 package appeng.core.stats;
 
 
+import appeng.core.AppEng;
+import appeng.items.parts.ItemPart;
+import appeng.items.parts.PartType;
 import com.google.gson.JsonObject;
-
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.advancements.critereon.ItemPredicates;
 
-import appeng.core.AppEng;
-import appeng.items.parts.ItemPart;
-import appeng.items.parts.PartType;
 
+public class PartItemPredicate extends ItemPredicate {
+    private final PartType partType;
 
-public class PartItemPredicate extends ItemPredicate
-{
-	private final PartType partType;
+    public PartItemPredicate(String partName) {
+        this.partType = PartType.valueOf(partName.toUpperCase());
+    }
 
-	public PartItemPredicate( String partName )
-	{
-		this.partType = PartType.valueOf( partName.toUpperCase() );
-	}
+    @Override
+    public boolean test(ItemStack item) {
+        if (ItemPart.instance != null && item.getItem() == ItemPart.instance) {
+            return ItemPart.instance.getTypeByStack(item) == this.partType;
+        }
+        return false;
+    }
 
-	@Override
-	public boolean test( ItemStack item )
-	{
-		if( ItemPart.instance != null && item.getItem() == ItemPart.instance )
-		{
-			return ItemPart.instance.getTypeByStack( item ) == this.partType;
-		}
-		return false;
-	}
+    public static ItemPredicate deserialize(JsonObject jsonobject) {
+        if (jsonobject.has("part")) {
+            return new PartItemPredicate(JsonUtils.getString(jsonobject, "part"));
+        } else {
+            return ItemPredicate.ANY;
+        }
+    }
 
-	public static ItemPredicate deserialize( JsonObject jsonobject )
-	{
-		if( jsonobject.has( "part" ) )
-		{
-			return new PartItemPredicate( JsonUtils.getString( jsonobject, "part" ) );
-		}
-		else
-		{
-			return ItemPredicate.ANY;
-		}
-	}
-
-	public static void register()
-	{
-		ItemPredicates.register( new ResourceLocation( AppEng.MOD_ID, "part" ), PartItemPredicate::deserialize );
-	}
+    public static void register() {
+        ItemPredicates.register(new ResourceLocation(AppEng.MOD_ID, "part"), PartItemPredicate::deserialize);
+    }
 }

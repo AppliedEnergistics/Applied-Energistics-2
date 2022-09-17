@@ -19,6 +19,7 @@
 package appeng.util;
 
 
+import appeng.api.config.FuzzyMode;
 import appeng.util.inv.*;
 import com.jaquadro.minecraft.storagedrawers.api.capabilities.IItemRepository;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,70 +31,59 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.config.FuzzyMode;
-
 /**
  * Universal Facade for other inventories. Used to conveniently interact with various types of inventories. This is not
  * used for
  * actually monitoring an inventory. It is just for insertion and extraction, and is primarily used by import/export
  * buses.
  */
-public abstract class InventoryAdaptor implements Iterable<ItemSlot>
-{
-	@CapabilityInject( IItemRepository.class)
-	public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
+public abstract class InventoryAdaptor implements Iterable<ItemSlot> {
+    @CapabilityInject(IItemRepository.class)
+    public static Capability<IItemRepository> ITEM_REPOSITORY_CAPABILITY = null;
 
-	public static InventoryAdaptor getAdaptor( final TileEntity te, final EnumFacing d )
-	{
-		if( te != null )
-		{
-			if( ITEM_REPOSITORY_CAPABILITY != null && te.hasCapability( ITEM_REPOSITORY_CAPABILITY, d ) )
-			{
-				IItemRepository itemRepository = te.getCapability( ITEM_REPOSITORY_CAPABILITY, d );
-				if (itemRepository != null){
-					return new AdaptorItemRepository( itemRepository );
-				}
-			}
-			else if( te.hasCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d ) )
-			{
+    public static InventoryAdaptor getAdaptor(final TileEntity te, final EnumFacing d) {
+        if (te != null) {
+            if (ITEM_REPOSITORY_CAPABILITY != null && te.hasCapability(ITEM_REPOSITORY_CAPABILITY, d)) {
+                IItemRepository itemRepository = te.getCapability(ITEM_REPOSITORY_CAPABILITY, d);
+                if (itemRepository != null) {
+                    return new AdaptorItemRepository(itemRepository);
+                }
+            } else if (te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d)) {
 
-				// Attempt getting an IItemHandler for the given side via caps
-				IItemHandler itemHandler = te.getCapability( CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d );
-				if( itemHandler != null )
-				{
-					return new AdaptorItemHandler( itemHandler );
-				}
-			}
-		}
-		return null;
-	}
+                // Attempt getting an IItemHandler for the given side via caps
+                IItemHandler itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, d);
+                if (itemHandler != null) {
+                    return new AdaptorItemHandler(itemHandler);
+                }
+            }
+        }
+        return null;
+    }
 
-	public static InventoryAdaptor getAdaptor( final EntityPlayer te )
-	{
-		if( te != null )
-		{
-			return new AdaptorItemHandlerPlayerInv( te );
-		}
-		return null;
-	}
+    public static InventoryAdaptor getAdaptor(final EntityPlayer te) {
+        if (te != null) {
+            return new AdaptorItemHandlerPlayerInv(te);
+        }
+        return null;
+    }
 
-	// return what was extracted.
-	public abstract ItemStack removeItems( int amount, ItemStack filter, IInventoryDestination destination );
+    // return what was extracted.
+    public abstract ItemStack removeItems(int amount, ItemStack filter, IInventoryDestination destination);
 
-	public abstract ItemStack simulateRemove( int amount, ItemStack filter, IInventoryDestination destination );
+    public abstract ItemStack simulateRemove(int amount, ItemStack filter, IInventoryDestination destination);
 
-	// return what was extracted.
-	public abstract ItemStack removeSimilarItems( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination );
+    // return what was extracted.
+    public abstract ItemStack removeSimilarItems(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination);
 
-	public abstract ItemStack simulateSimilarRemove( int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination );
+    public abstract ItemStack simulateSimilarRemove(int amount, ItemStack filter, FuzzyMode fuzzyMode, IInventoryDestination destination);
 
-	// return what isn't used...
-	public abstract ItemStack addItems( ItemStack toBeAdded );
+    // return what isn't used...
+    public abstract ItemStack addItems(ItemStack toBeAdded);
 
-	public abstract ItemStack simulateAdd( ItemStack toBeSimulated );
+    public abstract ItemStack simulateAdd(ItemStack toBeSimulated);
 
-	public abstract boolean containsItems();
+    public abstract boolean containsItems();
 
-	public abstract boolean hasSlots();
+    public abstract boolean hasSlots();
 
 }

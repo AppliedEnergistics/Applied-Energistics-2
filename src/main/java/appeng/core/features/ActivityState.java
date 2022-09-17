@@ -19,19 +19,14 @@
 package appeng.core.features;
 
 
-public enum ActivityState
-{
-	Enabled, Disabled;
+public enum ActivityState {
+    Enabled, Disabled;
 
-	public static ActivityState from( final boolean enabled )
-	{
-		if( enabled )
-		{
-			return ActivityState.Enabled;
-		}
-		else
-		{
-			return ActivityState.Disabled;
-		}
-	}
+    public static ActivityState from(final boolean enabled) {
+        if (enabled) {
+            return ActivityState.Enabled;
+        } else {
+            return ActivityState.Disabled;
+        }
+    }
 }

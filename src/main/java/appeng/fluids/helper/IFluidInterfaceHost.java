@@ -19,23 +19,21 @@
 package appeng.fluids.helper;
 
 
-import java.util.EnumSet;
-
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.me.helpers.IGridProxyable;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+
+import java.util.EnumSet;
 
 
-public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgradeableHost
-{
-	DualityFluidInterface getDualityFluidInterface();
+public interface IFluidInterfaceHost extends IActionHost, IGridProxyable, IUpgradeableHost {
+    DualityFluidInterface getDualityFluidInterface();
 
-	EnumSet<EnumFacing> getTargets();
+    EnumSet<EnumFacing> getTargets();
 
-	TileEntity getTileEntity();
+    TileEntity getTileEntity();
 
-	void saveChanges();
+    void saveChanges();
 }

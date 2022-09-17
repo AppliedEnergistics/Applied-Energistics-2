@@ -19,6 +19,9 @@
 package appeng.block.crafting;
 
 
+import appeng.api.util.AEColor;
+import appeng.client.UnlistedProperty;
+import appeng.tile.crafting.TileCraftingMonitorTile;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -33,57 +36,47 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.util.AEColor;
-import appeng.client.UnlistedProperty;
-import appeng.tile.crafting.TileCraftingMonitorTile;
 
+public class BlockCraftingMonitor extends BlockCraftingUnit {
 
-public class BlockCraftingMonitor extends BlockCraftingUnit
-{
+    public static final UnlistedProperty<AEColor> COLOR = new UnlistedProperty<>("color", AEColor.class);
 
-	public static final UnlistedProperty<AEColor> COLOR = new UnlistedProperty<>( "color", AEColor.class );
+    public BlockCraftingMonitor() {
+        super(CraftingUnitType.MONITOR);
+    }
 
-	public BlockCraftingMonitor()
-	{
-		super( CraftingUnitType.MONITOR );
-	}
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, this.getAEStates(), new IUnlistedProperty[]{
+                STATE,
+                COLOR,
+                FORWARD,
+                UP
+        });
+    }
 
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, this.getAEStates(), new IUnlistedProperty[] {
-				STATE,
-				COLOR,
-				FORWARD,
-				UP
-		} );
-	}
+    @Override
+    public IExtendedBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        AEColor color = AEColor.TRANSPARENT;
+        EnumFacing forward = EnumFacing.NORTH;
+        EnumFacing up = EnumFacing.UP;
 
-	@Override
-	public IExtendedBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
-	{
-		AEColor color = AEColor.TRANSPARENT;
-		EnumFacing forward = EnumFacing.NORTH;
-		EnumFacing up = EnumFacing.UP;
+        TileCraftingMonitorTile te = this.getTileEntity(world, pos);
+        if (te != null) {
+            color = te.getColor();
+            forward = te.getForward();
+            up = te.getUp();
+        }
 
-		TileCraftingMonitorTile te = this.getTileEntity( world, pos );
-		if( te != null )
-		{
-			color = te.getColor();
-			forward = te.getForward();
-			up = te.getUp();
-		}
+        return super.getExtendedState(state, world, pos)
+                .withProperty(COLOR, color)
+                .withProperty(FORWARD, forward)
+                .withProperty(UP, up);
+    }
 
-		return super.getExtendedState( state, world, pos )
-				.withProperty( COLOR, color )
-				.withProperty( FORWARD, forward )
-				.withProperty( UP, up );
-	}
-
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
-	{
-		itemStacks.add( new ItemStack( this, 1, 0 ) );
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks) {
+        itemStacks.add(new ItemStack(this, 1, 0));
+    }
 }

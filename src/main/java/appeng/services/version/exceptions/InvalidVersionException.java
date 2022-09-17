@@ -22,13 +22,11 @@ package appeng.services.version.exceptions;
 /**
  * Indicates an invalid version, which does not consists of 3 parts matching /(rv\d+)-(alpha|beta|stable)-(b\d+)/.
  */
-public class InvalidVersionException extends VersionCheckerException
-{
+public class InvalidVersionException extends VersionCheckerException {
 
-	private static final long serialVersionUID = 4828906902143875942L;
+    private static final long serialVersionUID = 4828906902143875942L;
 
-	public InvalidVersionException()
-	{
-		super( "Invalid Version Format: Need to consist of exactly 3 parts separated by a dash." );
-	}
+    public InvalidVersionException() {
+        super("Invalid Version Format: Need to consist of exactly 3 parts separated by a dash.");
+    }
 }

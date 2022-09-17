@@ -19,10 +19,10 @@
 package appeng.block.paint;
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.helpers.Splotch;
+import appeng.tile.misc.TilePaint;
+import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.MaterialLiquid;
@@ -44,128 +44,108 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.helpers.Splotch;
-import appeng.tile.misc.TilePaint;
-import appeng.util.Platform;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 
-public class BlockPaint extends AEBaseTileBlock
-{
+public class BlockPaint extends AEBaseTileBlock {
 
-	static final PaintSplotchesProperty SPLOTCHES = new PaintSplotchesProperty();
+    static final PaintSplotchesProperty SPLOTCHES = new PaintSplotchesProperty();
 
-	public BlockPaint()
-	{
-		super( new MaterialLiquid( MapColor.AIR ) );
+    public BlockPaint() {
+        super(new MaterialLiquid(MapColor.AIR));
 
-		this.setLightOpacity( 0 );
-		this.setFullSize( false );
-		this.setOpaque( false );
-	}
+        this.setLightOpacity(0);
+        this.setFullSize(false);
+        this.setOpaque(false);
+    }
 
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return new ExtendedBlockState( this, new IProperty[0], new IUnlistedProperty[] { SPLOTCHES } );
-	}
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[]{SPLOTCHES});
+    }
 
-	@Override
-	public IBlockState getExtendedState( IBlockState state, IBlockAccess world, BlockPos pos )
-	{
-		IExtendedBlockState extState = (IExtendedBlockState) state;
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        IExtendedBlockState extState = (IExtendedBlockState) state;
 
-		TilePaint te = this.getTileEntity( world, pos );
+        TilePaint te = this.getTileEntity(world, pos);
 
-		Collection<Splotch> splotches = Collections.emptyList();
-		if( te != null )
-		{
-			splotches = te.getDots();
-		}
+        Collection<Splotch> splotches = Collections.emptyList();
+        if (te != null) {
+            splotches = te.getDots();
+        }
 
-		return extState.withProperty( SPLOTCHES, new PaintSplotches( splotches ) );
-	}
+        return extState.withProperty(SPLOTCHES, new PaintSplotches(splotches));
+    }
 
-	@Override
-	public BlockRenderLayer getBlockLayer()
-	{
-		return BlockRenderLayer.CUTOUT;
-	}
+    @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT;
+    }
 
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
-	{
-		// do nothing
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks) {
+        // do nothing
+    }
 
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox( IBlockState blockState, IBlockAccess worldIn, BlockPos pos )
-	{
-		return null;
-	}
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+        return null;
+    }
 
-	@Override
-	public boolean canCollideCheck( final IBlockState state, final boolean hitIfLiquid )
-	{
-		return false;
-	}
+    @Override
+    public boolean canCollideCheck(final IBlockState state, final boolean hitIfLiquid) {
+        return false;
+    }
 
-	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
-	{
-		final TilePaint tp = this.getTileEntity( world, pos );
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        final TilePaint tp = this.getTileEntity(world, pos);
 
-		if( tp != null )
-		{
-			tp.neighborChanged();
-		}
-	}
+        if (tp != null) {
+            tp.neighborChanged();
+        }
+    }
 
-	@Override
-	public Item getItemDropped( final IBlockState state, final Random rand, final int fortune )
-	{
-		return null;
-	}
+    @Override
+    public Item getItemDropped(final IBlockState state, final Random rand, final int fortune) {
+        return null;
+    }
 
-	@Override
-	public void dropBlockAsItemWithChance( final World worldIn, final BlockPos pos, final IBlockState state, final float chance, final int fortune )
-	{
+    @Override
+    public void dropBlockAsItemWithChance(final World worldIn, final BlockPos pos, final IBlockState state, final float chance, final int fortune) {
 
-	}
+    }
 
-	@Override
-	public void fillWithRain( final World w, final BlockPos pos )
-	{
-		if( Platform.isServer() )
-		{
-			w.setBlockToAir( pos );
-		}
-	}
+    @Override
+    public void fillWithRain(final World w, final BlockPos pos) {
+        if (Platform.isServer()) {
+            w.setBlockToAir(pos);
+        }
+    }
 
-	@Override
-	public int getLightValue( final IBlockState state, final IBlockAccess w, final BlockPos pos )
-	{
-		final TilePaint tp = this.getTileEntity( w, pos );
+    @Override
+    public int getLightValue(final IBlockState state, final IBlockAccess w, final BlockPos pos) {
+        final TilePaint tp = this.getTileEntity(w, pos);
 
-		if( tp != null )
-		{
-			return tp.getLightLevel();
-		}
+        if (tp != null) {
+            return tp.getLightLevel();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public boolean isAir( final IBlockState state, final IBlockAccess world, final BlockPos pos )
-	{
-		return true;
-	}
+    @Override
+    public boolean isAir(final IBlockState state, final IBlockAccess world, final BlockPos pos) {
+        return true;
+    }
 
-	@Override
-	public boolean isReplaceable( final IBlockAccess worldIn, final BlockPos pos )
-	{
-		return true;
-	}
+    @Override
+    public boolean isReplaceable(final IBlockAccess worldIn, final BlockPos pos) {
+        return true;
+    }
 
 }

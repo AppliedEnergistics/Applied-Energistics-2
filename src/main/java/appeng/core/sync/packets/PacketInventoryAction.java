@@ -19,271 +19,218 @@
 package appeng.core.sync.packets;
 
 
-import java.io.IOException;
-import java.util.Collections;
-
 import appeng.api.storage.data.IAEFluidStack;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotDisconnected;
+import appeng.container.AEBaseContainer;
+import appeng.container.ContainerOpenContext;
+import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerInterfaceConfigurationTerminal;
 import appeng.container.implementations.ContainerInterfaceConfigurationTerminal.ConfigTracker;
 import appeng.container.slot.IJEITargetSlot;
 import appeng.container.slot.SlotFake;
 import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.core.sync.AppEngPacket;
+import appeng.core.sync.GuiBridge;
+import appeng.core.sync.network.INetworkInfo;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.container.ContainerFluidConfigurable;
 import appeng.fluids.util.AEFluidStack;
+import appeng.helpers.InventoryAction;
+import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.WrapperRangeItemHandler;
+import appeng.util.item.AEItemStack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-
-import appeng.api.storage.data.IAEItemStack;
-import appeng.container.AEBaseContainer;
-import appeng.container.ContainerOpenContext;
-import appeng.container.implementations.ContainerCraftAmount;
-import appeng.core.AppEng;
-import appeng.core.sync.AppEngPacket;
-import appeng.core.sync.GuiBridge;
-import appeng.core.sync.network.INetworkInfo;
-import appeng.helpers.InventoryAction;
-import appeng.util.Platform;
-import appeng.util.item.AEItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
 
+import java.io.IOException;
+import java.util.Collections;
 
-public class PacketInventoryAction extends AppEngPacket
-{
 
-	private final InventoryAction action;
-	private final int slot;
-	private final long id;
-	private final IAEItemStack slotItem;
+public class PacketInventoryAction extends AppEngPacket {
 
-	// automatic.
-	public PacketInventoryAction( final ByteBuf stream ) throws IOException
-	{
-		this.action = InventoryAction.values()[stream.readInt()];
-		this.slot = stream.readInt();
-		this.id = stream.readLong();
-		final boolean hasItem = stream.readBoolean();
+    private final InventoryAction action;
+    private final int slot;
+    private final long id;
+    private final IAEItemStack slotItem;
 
-		if( hasItem )
-		{
-			this.slotItem = AEItemStack.fromPacket( stream );
-		}
-		else
-		{
-			this.slotItem = null;
-		}
-	}
+    // automatic.
+    public PacketInventoryAction(final ByteBuf stream) throws IOException {
+        this.action = InventoryAction.values()[stream.readInt()];
+        this.slot = stream.readInt();
+        this.id = stream.readLong();
+        final boolean hasItem = stream.readBoolean();
 
-	// api
-	public PacketInventoryAction( final InventoryAction action, final int slot, final IAEItemStack slotItem ) throws IOException
-	{
-		if( Platform.isClient() )
-		{
-			throw new IllegalStateException( "invalid packet, client cannot post inv actions with stacks." );
-		}
+        if (hasItem) {
+            this.slotItem = AEItemStack.fromPacket(stream);
+        } else {
+            this.slotItem = null;
+        }
+    }
 
-		this.action = action;
-		this.slot = slot;
-		this.id = 0;
-		this.slotItem = slotItem;
+    // api
+    public PacketInventoryAction(final InventoryAction action, final int slot, final IAEItemStack slotItem) throws IOException {
+        if (Platform.isClient()) {
+            throw new IllegalStateException("invalid packet, client cannot post inv actions with stacks.");
+        }
 
-		final ByteBuf data = Unpooled.buffer();
+        this.action = action;
+        this.slot = slot;
+        this.id = 0;
+        this.slotItem = slotItem;
 
-		data.writeInt( this.getPacketID() );
-		data.writeInt( action.ordinal() );
-		data.writeInt( slot );
-		data.writeLong( this.id );
+        final ByteBuf data = Unpooled.buffer();
 
-		if( slotItem == null )
-		{
-			data.writeBoolean( false );
-		}
-		else
-		{
-			data.writeBoolean( true );
-			slotItem.writeToPacket( data );
-		}
+        data.writeInt(this.getPacketID());
+        data.writeInt(action.ordinal());
+        data.writeInt(slot);
+        data.writeLong(this.id);
 
-		this.configureWrite( data );
-	}
+        if (slotItem == null) {
+            data.writeBoolean(false);
+        } else {
+            data.writeBoolean(true);
+            slotItem.writeToPacket(data);
+        }
 
-	public PacketInventoryAction( final InventoryAction action, final IJEITargetSlot slot, final IAEItemStack slotItem ) throws IOException
-	{
+        this.configureWrite(data);
+    }
 
-		this.action = action;
-		if( slot instanceof SlotFake )
-		{
-			this.slot = ( (SlotFake) slot ).slotNumber;
-			this.id = 0;
-		}
-		else if( slot instanceof SlotDisconnected )
-		{
-			this.slot = ( (SlotDisconnected) slot ).getSlotIndex();
-			this.id = ( (SlotDisconnected) slot ).getSlot().getId();
-		}
-		else
-		{
-			this.slot = ( (GuiFluidSlot) slot ).getId();
-			this.id = 0;
-		}
-		this.slotItem = slotItem;
+    public PacketInventoryAction(final InventoryAction action, final IJEITargetSlot slot, final IAEItemStack slotItem) throws IOException {
 
-		final ByteBuf data = Unpooled.buffer();
+        this.action = action;
+        if (slot instanceof SlotFake) {
+            this.slot = ((SlotFake) slot).slotNumber;
+            this.id = 0;
+        } else if (slot instanceof SlotDisconnected) {
+            this.slot = ((SlotDisconnected) slot).getSlotIndex();
+            this.id = ((SlotDisconnected) slot).getSlot().getId();
+        } else {
+            this.slot = ((GuiFluidSlot) slot).getId();
+            this.id = 0;
+        }
+        this.slotItem = slotItem;
 
-		data.writeInt( this.getPacketID() );
-		data.writeInt( action.ordinal() );
-		data.writeInt( this.slot );
-		data.writeLong( this.id );
+        final ByteBuf data = Unpooled.buffer();
 
-		if( slotItem == null )
-		{
-			data.writeBoolean( false );
-		}
-		else
-		{
-			data.writeBoolean( true );
-			slotItem.writeToPacket( data );
-		}
+        data.writeInt(this.getPacketID());
+        data.writeInt(action.ordinal());
+        data.writeInt(this.slot);
+        data.writeLong(this.id);
 
-		this.configureWrite( data );
-	}
+        if (slotItem == null) {
+            data.writeBoolean(false);
+        } else {
+            data.writeBoolean(true);
+            slotItem.writeToPacket(data);
+        }
 
-	// api
-	public PacketInventoryAction( final InventoryAction action, final int slot, final long id )
-	{
-		this.action = action;
-		this.slot = slot;
-		this.id = id;
-		this.slotItem = null;
+        this.configureWrite(data);
+    }
 
-		final ByteBuf data = Unpooled.buffer();
+    // api
+    public PacketInventoryAction(final InventoryAction action, final int slot, final long id) {
+        this.action = action;
+        this.slot = slot;
+        this.id = id;
+        this.slotItem = null;
 
-		data.writeInt( this.getPacketID() );
-		data.writeInt( action.ordinal() );
-		data.writeInt( slot );
-		data.writeLong( id );
-		data.writeBoolean( false );
+        final ByteBuf data = Unpooled.buffer();
 
-		this.configureWrite( data );
-	}
+        data.writeInt(this.getPacketID());
+        data.writeInt(action.ordinal());
+        data.writeInt(slot);
+        data.writeLong(id);
+        data.writeBoolean(false);
 
-	@Override
-	public void serverPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
-	{
-		final EntityPlayerMP sender = (EntityPlayerMP) player;
-		if( sender.openContainer instanceof AEBaseContainer )
-		{
-			final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
-			if( this.action == InventoryAction.AUTO_CRAFT )
-			{
-				final ContainerOpenContext context = baseContainer.getOpenContext();
-				if( context != null )
-				{
-					final TileEntity te = context.getTile();
-					Platform.openGUI( sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT );
+        this.configureWrite(data);
+    }
 
-					if( sender.openContainer instanceof ContainerCraftAmount )
-					{
-						final ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
+    @Override
+    public void serverPacketData(final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player) {
+        final EntityPlayerMP sender = (EntityPlayerMP) player;
+        if (sender.openContainer instanceof AEBaseContainer) {
+            final AEBaseContainer baseContainer = (AEBaseContainer) sender.openContainer;
+            if (this.action == InventoryAction.AUTO_CRAFT) {
+                final ContainerOpenContext context = baseContainer.getOpenContext();
+                if (context != null) {
+                    final TileEntity te = context.getTile();
+                    Platform.openGUI(sender, te, baseContainer.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_AMOUNT);
 
-						if( baseContainer.getTargetStack() != null )
-						{
-							cca.getCraftingItem().putStack( baseContainer.getTargetStack().asItemStackRepresentation() );
-							// This is the *actual* item that matters, not the display item above
-							cca.setItemToCraft( baseContainer.getTargetStack() );
-						}
+                    if (sender.openContainer instanceof ContainerCraftAmount) {
+                        final ContainerCraftAmount cca = (ContainerCraftAmount) sender.openContainer;
 
-						cca.detectAndSendChanges();
-					}
-				}
-			}
-			else if( this.action == InventoryAction.PLACE_JEI_GHOST_ITEM )
-			{
-				if( sender.openContainer instanceof ContainerFluidConfigurable )
-				{
-					if( this.slotItem != null )
-					{
-						IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
-						if( aefs != null )
-						{
-							aefs.setStackSize( 1000 );
-							( (ContainerFluidConfigurable) sender.openContainer ).getFluidConfigInventory().setFluidInSlot( this.slot, aefs );
-							NetworkHandler.instance().sendToServer( new PacketFluidSlot( Collections.singletonMap( this.slot, aefs ) ) );
-						}
-					}
-				}
-				else if( sender.openContainer instanceof ContainerInterfaceConfigurationTerminal )
-				{
-					ConfigTracker inv = ( (ContainerInterfaceConfigurationTerminal) sender.openContainer ).getSlotByID( this.id );
-					final IItemHandler theSlot = new WrapperRangeItemHandler( inv.getServer(), 0, slot + 1 );
+                        if (baseContainer.getTargetStack() != null) {
+                            cca.getCraftingItem().putStack(baseContainer.getTargetStack().asItemStackRepresentation());
+                            // This is the *actual* item that matters, not the display item above
+                            cca.setItemToCraft(baseContainer.getTargetStack());
+                        }
 
-					ItemHandlerUtil.setStackInSlot( theSlot, this.slot, this.slotItem.createItemStack() );
+                        cca.detectAndSendChanges();
+                    }
+                }
+            } else if (this.action == InventoryAction.PLACE_JEI_GHOST_ITEM) {
+                if (sender.openContainer instanceof ContainerFluidConfigurable) {
+                    if (this.slotItem != null) {
+                        IAEFluidStack aefs = AEFluidStack.fromNBT(this.slotItem.getDefinition().getTagCompound());
+                        if (aefs != null) {
+                            aefs.setStackSize(1000);
+                            ((ContainerFluidConfigurable) sender.openContainer).getFluidConfigInventory().setFluidInSlot(this.slot, aefs);
+                            NetworkHandler.instance().sendToServer(new PacketFluidSlot(Collections.singletonMap(this.slot, aefs)));
+                        }
+                    }
+                } else if (sender.openContainer instanceof ContainerInterfaceConfigurationTerminal) {
+                    ConfigTracker inv = ((ContainerInterfaceConfigurationTerminal) sender.openContainer).getSlotByID(this.id);
+                    final IItemHandler theSlot = new WrapperRangeItemHandler(inv.getServer(), 0, slot + 1);
 
-				}
-				else if( this.slot < sender.openContainer.inventorySlots.size() )
-				{
-					Slot senderSlot = sender.openContainer.inventorySlots.get( this.slot );
-					if( senderSlot instanceof SlotFake )
-					{
-						if( this.slotItem != null )
-						{
-							senderSlot.putStack( this.slotItem.createItemStack() );
-							if( senderSlot.getStack().isEmpty() )
-							{
-								IAEFluidStack aefs = AEFluidStack.fromNBT( this.slotItem.getDefinition().getTagCompound() );
-								if( aefs != null )
-								{
-									FluidStack fluid = aefs.getFluidStack();
-									senderSlot.putStack( AEFluidStack.fromFluidStack( fluid ).asItemStackRepresentation() );
-								}
-							}
-						}
-						else
-						{
-							senderSlot.putStack( ItemStack.EMPTY );
-						}
-						try
-						{
-							NetworkHandler.instance().sendTo( new PacketInventoryAction( InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack( ItemStack.EMPTY ) ), sender );
-						}
-						catch( final IOException e )
-						{
-							AELog.debug( e );
-						}
-					}
-				}
-			}
-			else
-			{
-				baseContainer.doAction( sender, this.action, this.slot, this.id );
-			}
-		}
-	}
+                    ItemHandlerUtil.setStackInSlot(theSlot, this.slot, this.slotItem.createItemStack());
 
-	@Override
-	public void clientPacketData( final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player )
-	{
-		if( this.action == InventoryAction.UPDATE_HAND )
-		{
-			if( this.slotItem == null )
-			{
-				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( ItemStack.EMPTY );
-			}
-			else
-			{
-				AppEng.proxy.getPlayers().get( 0 ).inventory.setItemStack( this.slotItem.createItemStack() );
-			}
-		}
-	}
+                } else if (this.slot < sender.openContainer.inventorySlots.size()) {
+                    Slot senderSlot = sender.openContainer.inventorySlots.get(this.slot);
+                    if (senderSlot instanceof SlotFake) {
+                        if (this.slotItem != null) {
+                            senderSlot.putStack(this.slotItem.createItemStack());
+                            if (senderSlot.getStack().isEmpty()) {
+                                IAEFluidStack aefs = AEFluidStack.fromNBT(this.slotItem.getDefinition().getTagCompound());
+                                if (aefs != null) {
+                                    FluidStack fluid = aefs.getFluidStack();
+                                    senderSlot.putStack(AEFluidStack.fromFluidStack(fluid).asItemStackRepresentation());
+                                }
+                            }
+                        } else {
+                            senderSlot.putStack(ItemStack.EMPTY);
+                        }
+                        try {
+                            NetworkHandler.instance().sendTo(new PacketInventoryAction(InventoryAction.UPDATE_HAND, 0, AEItemStack.fromItemStack(ItemStack.EMPTY)), sender);
+                        } catch (final IOException e) {
+                            AELog.debug(e);
+                        }
+                    }
+                }
+            } else {
+                baseContainer.doAction(sender, this.action, this.slot, this.id);
+            }
+        }
+    }
+
+    @Override
+    public void clientPacketData(final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player) {
+        if (this.action == InventoryAction.UPDATE_HAND) {
+            if (this.slotItem == null) {
+                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(ItemStack.EMPTY);
+            } else {
+                AppEng.proxy.getPlayers().get(0).inventory.setItemStack(this.slotItem.createItemStack());
+            }
+        }
+    }
 }

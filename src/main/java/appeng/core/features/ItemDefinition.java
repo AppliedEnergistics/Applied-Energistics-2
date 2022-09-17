@@ -19,61 +19,51 @@
 package appeng.core.features;
 
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
+import appeng.api.definitions.IItemDefinition;
+import appeng.util.Platform;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.definitions.IItemDefinition;
-import appeng.util.Platform;
+import javax.annotation.Nonnull;
+import java.util.Optional;
 
 
-public class ItemDefinition implements IItemDefinition
-{
-	private final String identifier;
-	private final Optional<Item> item;
+public class ItemDefinition implements IItemDefinition {
+    private final String identifier;
+    private final Optional<Item> item;
 
-	public ItemDefinition( String registryName, Item item )
-	{
-		Preconditions.checkArgument( !Strings.isNullOrEmpty( registryName ), "registryName" );
-		this.identifier = registryName;
-		this.item = Optional.ofNullable( item );
-	}
+    public ItemDefinition(String registryName, Item item) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(registryName), "registryName");
+        this.identifier = registryName;
+        this.item = Optional.ofNullable(item);
+    }
 
-	@Nonnull
-	@Override
-	public String identifier()
-	{
-		return this.identifier;
-	}
+    @Nonnull
+    @Override
+    public String identifier() {
+        return this.identifier;
+    }
 
-	@Override
-	public final Optional<Item> maybeItem()
-	{
-		return this.item;
-	}
+    @Override
+    public final Optional<Item> maybeItem() {
+        return this.item;
+    }
 
-	@Override
-	public Optional<ItemStack> maybeStack( final int stackSize )
-	{
-		return this.item.map( item -> new ItemStack( item, stackSize ) );
-	}
+    @Override
+    public Optional<ItemStack> maybeStack(final int stackSize) {
+        return this.item.map(item -> new ItemStack(item, stackSize));
+    }
 
-	@Override
-	public boolean isEnabled()
-	{
-		return this.item.isPresent();
-	}
+    @Override
+    public boolean isEnabled() {
+        return this.item.isPresent();
+    }
 
-	@Override
-	public final boolean isSameAs( final ItemStack comparableStack )
-	{
-		return this.isEnabled() && Platform.itemComparisons().isEqualItemType( comparableStack, this.maybeStack( 1 ).get() );
-	}
+    @Override
+    public final boolean isSameAs(final ItemStack comparableStack) {
+        return this.isEnabled() && Platform.itemComparisons().isEqualItemType(comparableStack, this.maybeStack(1).get());
+    }
 
 }

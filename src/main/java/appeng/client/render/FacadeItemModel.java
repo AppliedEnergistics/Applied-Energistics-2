@@ -19,10 +19,8 @@
 package appeng.client.render;
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Function;
-
+import appeng.client.render.cablebus.FacadeBuilder;
+import appeng.core.AppEng;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -31,55 +29,47 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 
-import appeng.client.render.cablebus.FacadeBuilder;
-import appeng.core.AppEng;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Function;
 
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other
  * than the cable anchor.
  */
-public class FacadeItemModel implements IModel
-{
-	// We use this to get the default item transforms and make our lives easier
-	private static final ResourceLocation MODEL_BASE = new ResourceLocation( AppEng.MOD_ID, "item/facade_base" );
+public class FacadeItemModel implements IModel {
+    // We use this to get the default item transforms and make our lives easier
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/facade_base");
 
-	private IModel getBaseModel()
-	{
-		try
-		{
-			return ModelLoaderRegistry.getModel( MODEL_BASE );
-		}
-		catch( Exception e )
-		{
-			throw new RuntimeException( e );
-		}
-	}
+    private IModel getBaseModel() {
+        try {
+            return ModelLoaderRegistry.getModel(MODEL_BASE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public Collection<ResourceLocation> getDependencies() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public Collection<ResourceLocation> getTextures() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		IBakedModel bakedBaseModel = this.getBaseModel().bake( state, format, bakedTextureGetter );
-		FacadeBuilder facadeBuilder = new FacadeBuilder();
+    @Override
+    public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+        IBakedModel bakedBaseModel = this.getBaseModel().bake(state, format, bakedTextureGetter);
+        FacadeBuilder facadeBuilder = new FacadeBuilder();
 
-		return new FacadeDispatcherBakedModel( bakedBaseModel, format, facadeBuilder );
-	}
+        return new FacadeDispatcherBakedModel(bakedBaseModel, format, facadeBuilder);
+    }
 
-	@Override
-	public IModelState getDefaultState()
-	{
-		return this.getBaseModel().getDefaultState();
-	}
+    @Override
+    public IModelState getDefaultState() {
+        return this.getBaseModel().getDefaultState();
+    }
 }

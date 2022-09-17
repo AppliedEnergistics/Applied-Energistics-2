@@ -19,13 +19,11 @@
 package appeng.client.render.cablebus;
 
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.function.Function;
-
+import appeng.api.util.AEColor;
+import appeng.core.AELog;
+import appeng.core.features.registries.PartModels;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -35,84 +33,72 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
-import appeng.api.util.AEColor;
-import appeng.core.AELog;
-import appeng.core.features.registries.PartModels;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
 
 
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements IModel
-{
+public class CableBusModel implements IModel {
 
-	private final PartModels partModels;
+    private final PartModels partModels;
 
-	public CableBusModel( PartModels partModels )
-	{
-		this.partModels = partModels;
-	}
+    public CableBusModel(PartModels partModels) {
+        this.partModels = partModels;
+    }
 
-	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		this.partModels.setInitialized( true );
-		return this.partModels.getModels();
-	}
+    @Override
+    public Collection<ResourceLocation> getDependencies() {
+        this.partModels.setInitialized(true);
+        return this.partModels.getModels();
+    }
 
-	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
-		return ImmutableList.<ResourceLocation>builder()
-				.addAll( CableBuilder.getTextures() )
-				.build();
-	}
+    @Override
+    public Collection<ResourceLocation> getTextures() {
+        return ImmutableList.<ResourceLocation>builder()
+                .addAll(CableBuilder.getTextures())
+                .build();
+    }
 
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels( state, format, bakedTextureGetter );
+    @Override
+    public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+        Map<ResourceLocation, IBakedModel> partModels = this.loadPartModels(state, format, bakedTextureGetter);
 
-		CableBuilder cableBuilder = new CableBuilder( format, bakedTextureGetter );
-		FacadeBuilder facadeBuilder = new FacadeBuilder();
+        CableBuilder cableBuilder = new CableBuilder(format, bakedTextureGetter);
+        FacadeBuilder facadeBuilder = new FacadeBuilder();
 
-		// This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will
-		// crash
-		TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture( CableCoreType.GLASS, AEColor.TRANSPARENT );
+        // This should normally not be used, but we *have* to provide a particle texture or otherwise damage models will
+        // crash
+        TextureAtlasSprite particleTexture = cableBuilder.getCoreTexture(CableCoreType.GLASS, AEColor.TRANSPARENT);
 
-		return new CableBusBakedModel( cableBuilder, facadeBuilder, partModels, particleTexture );
-	}
+        return new CableBusBakedModel(cableBuilder, facadeBuilder, partModels, particleTexture);
+    }
 
-	private Map<ResourceLocation, IBakedModel> loadPartModels( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
+    private Map<ResourceLocation, IBakedModel> loadPartModels(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+        ImmutableMap.Builder<ResourceLocation, IBakedModel> result = ImmutableMap.builder();
 
-		for( ResourceLocation location : this.partModels.getModels() )
-		{
-			IModel model = this.tryLoadPartModel( location );
-			IBakedModel bakedModel = model.bake( state, format, bakedTextureGetter );
-			result.put( location, bakedModel );
-		}
+        for (ResourceLocation location : this.partModels.getModels()) {
+            IModel model = this.tryLoadPartModel(location);
+            IBakedModel bakedModel = model.bake(state, format, bakedTextureGetter);
+            result.put(location, bakedModel);
+        }
 
-		return result.build();
-	}
+        return result.build();
+    }
 
-	private IModel tryLoadPartModel( ResourceLocation location )
-	{
-		try
-		{
-			return ModelLoaderRegistry.getModel( location );
-		}
-		catch( Exception e )
-		{
-			AELog.error( e, "Unable to load part model " + location );
-			return ModelLoaderRegistry.getMissingModel();
-		}
-	}
+    private IModel tryLoadPartModel(ResourceLocation location) {
+        try {
+            return ModelLoaderRegistry.getModel(location);
+        } catch (Exception e) {
+            AELog.error(e, "Unable to load part model " + location);
+            return ModelLoaderRegistry.getMissingModel();
+        }
+    }
 
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
-	}
+    @Override
+    public IModelState getDefaultState() {
+        return TRSRTransformation.identity();
+    }
 }

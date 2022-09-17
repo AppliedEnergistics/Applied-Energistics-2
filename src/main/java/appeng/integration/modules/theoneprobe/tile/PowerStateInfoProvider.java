@@ -19,46 +19,36 @@
 package appeng.integration.modules.theoneprobe.tile;
 
 
+import appeng.api.implementations.IPowerChannelState;
+import appeng.integration.modules.theoneprobe.TheOneProbeText;
+import appeng.tile.AEBaseTile;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
 
-import appeng.api.implementations.IPowerChannelState;
-import appeng.integration.modules.theoneprobe.TheOneProbeText;
-import appeng.tile.AEBaseTile;
+public class PowerStateInfoProvider implements ITileProbInfoProvider {
 
+    @Override
+    public void addProbeInfo(AEBaseTile tile, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        if (tile instanceof IPowerChannelState) {
+            final IPowerChannelState state = (IPowerChannelState) tile;
 
-public class PowerStateInfoProvider implements ITileProbInfoProvider
-{
+            final boolean isActive = state.isActive();
+            final boolean isPowered = state.isPowered();
 
-	@Override
-	public void addProbeInfo( AEBaseTile tile, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
-	{
-		if( tile instanceof IPowerChannelState )
-		{
-			final IPowerChannelState state = (IPowerChannelState) tile;
+            if (isActive && isPowered) {
+                probeInfo.text(TheOneProbeText.DEVICE_ONLINE.getLocal());
+            } else if (isPowered) {
+                probeInfo.text(TheOneProbeText.DEVICE_MISSING_CHANNEL.getLocal());
+            } else {
+                probeInfo.text(TheOneProbeText.DEVICE_OFFLINE.getLocal());
+            }
+        }
 
-			final boolean isActive = state.isActive();
-			final boolean isPowered = state.isPowered();
-
-			if( isActive && isPowered )
-			{
-				probeInfo.text( TheOneProbeText.DEVICE_ONLINE.getLocal() );
-			}
-			else if( isPowered )
-			{
-				probeInfo.text( TheOneProbeText.DEVICE_MISSING_CHANNEL.getLocal() );
-			}
-			else
-			{
-				probeInfo.text( TheOneProbeText.DEVICE_OFFLINE.getLocal() );
-			}
-		}
-
-	}
+    }
 
 }

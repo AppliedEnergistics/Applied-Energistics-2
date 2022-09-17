@@ -19,19 +19,6 @@
 package appeng.fluids.tile;
 
 
-import java.util.EnumSet;
-
-import javax.annotation.Nullable;
-
-import appeng.fluids.helper.IConfigurableFluidInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.networking.IGridNode;
@@ -47,151 +34,139 @@ import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.core.sync.GuiBridge;
 import appeng.fluids.helper.DualityFluidInterface;
+import appeng.fluids.helper.IConfigurableFluidInventory;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.helpers.IPriorityHost;
 import appeng.tile.grid.AENetworkTile;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.items.IItemHandler;
+
+import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 
-public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory
-{
-	private final DualityFluidInterface duality = new DualityFluidInterface( this.getProxy(), this );
+public class TileFluidInterface extends AENetworkTile implements IGridTickable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
+    private final DualityFluidInterface duality = new DualityFluidInterface(this.getProxy(), this);
 
-	@MENetworkEventSubscribe
-	public void stateChange( final MENetworkChannelsChanged c )
-	{
-		this.duality.notifyNeighbors();
-	}
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkChannelsChanged c) {
+        this.duality.notifyNeighbors();
+    }
 
-	@MENetworkEventSubscribe
-	public void stateChange( final MENetworkPowerStatusChange c )
-	{
-		this.duality.notifyNeighbors();
-	}
+    @MENetworkEventSubscribe
+    public void stateChange(final MENetworkPowerStatusChange c) {
+        this.duality.notifyNeighbors();
+    }
 
-	@Override
-	public TickingRequest getTickingRequest( IGridNode node )
-	{
-		return this.duality.getTickingRequest( node );
-	}
+    @Override
+    public TickingRequest getTickingRequest(IGridNode node) {
+        return this.duality.getTickingRequest(node);
+    }
 
-	@Override
-	public TickRateModulation tickingRequest( IGridNode node, int ticksSinceLastCall )
-	{
-		return this.duality.tickingRequest( node, ticksSinceLastCall );
-	}
+    @Override
+    public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+        return this.duality.tickingRequest(node, ticksSinceLastCall);
+    }
 
-	@Override
-	public DualityFluidInterface getDualityFluidInterface()
-	{
-		return this.duality;
-	}
+    @Override
+    public DualityFluidInterface getDualityFluidInterface() {
+        return this.duality;
+    }
 
-	@Override
-	public TileEntity getTileEntity()
-	{
-		return this;
-	}
+    @Override
+    public TileEntity getTileEntity() {
+        return this;
+    }
 
-	@Override
-	public void gridChanged()
-	{
-		this.duality.gridChanged();
-	}
+    @Override
+    public void gridChanged() {
+        this.duality.gridChanged();
+    }
 
-	@Override
-	public NBTTagCompound writeToNBT( final NBTTagCompound data )
-	{
-		super.writeToNBT( data );
-		this.duality.writeToNBT( data );
-		return data;
-	}
+    @Override
+    public NBTTagCompound writeToNBT(final NBTTagCompound data) {
+        super.writeToNBT(data);
+        this.duality.writeToNBT(data);
+        return data;
+    }
 
-	@Override
-	public void readFromNBT( final NBTTagCompound data )
-	{
-		super.readFromNBT( data );
-		this.duality.readFromNBT( data );
-	}
+    @Override
+    public void readFromNBT(final NBTTagCompound data) {
+        super.readFromNBT(data);
+        this.duality.readFromNBT(data);
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return this.duality.getCableConnectionType( dir );
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return this.duality.getCableConnectionType(dir);
+    }
 
-	@Override
-	public DimensionalCoord getLocation()
-	{
-		return this.duality.getLocation();
-	}
+    @Override
+    public DimensionalCoord getLocation() {
+        return this.duality.getLocation();
+    }
 
-	@Override
-	public EnumSet<EnumFacing> getTargets()
-	{
-		return EnumSet.allOf( EnumFacing.class );
-	}
+    @Override
+    public EnumSet<EnumFacing> getTargets() {
+        return EnumSet.allOf(EnumFacing.class);
+    }
 
-	@Override
-	public int getPriority()
-	{
-		return this.duality.getPriority();
-	}
+    @Override
+    public int getPriority() {
+        return this.duality.getPriority();
+    }
 
-	@Override
-	public void setPriority( final int newValue )
-	{
-		this.duality.setPriority( newValue );
-	}
+    @Override
+    public void setPriority(final int newValue) {
+        this.duality.setPriority(newValue);
+    }
 
-	@Override
-	public boolean hasCapability( Capability<?> capability, @Nullable EnumFacing facing )
-	{
-		return this.duality.hasCapability( capability, facing ) || super.hasCapability( capability, facing );
-	}
+    @Override
+    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+        return this.duality.hasCapability(capability, facing) || super.hasCapability(capability, facing);
+    }
 
-	@Override
-	public <T> T getCapability( Capability<T> capability, @Nullable EnumFacing facing )
-	{
-		T result = this.duality.getCapability( capability, facing );
-		if( result != null )
-		{
-			return result;
-		}
-		return super.getCapability( capability, facing );
-	}
+    @Override
+    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+        T result = this.duality.getCapability(capability, facing);
+        if (result != null) {
+            return result;
+        }
+        return super.getCapability(capability, facing);
+    }
 
-	@Override
-	public int getInstalledUpgrades( Upgrades u )
-	{
-		return this.duality.getInstalledUpgrades( u );
-	}
+    @Override
+    public int getInstalledUpgrades(Upgrades u) {
+        return this.duality.getInstalledUpgrades(u);
+    }
 
-	@Override
-	public IConfigManager getConfigManager()
-	{
-		return this.duality.getConfigManager();
-	}
+    @Override
+    public IConfigManager getConfigManager() {
+        return this.duality.getConfigManager();
+    }
 
-	@Override
-	public IItemHandler getInventoryByName( String name )
-	{
-		return this.duality.getInventoryByName( name );
-	}
+    @Override
+    public IItemHandler getInventoryByName(String name) {
+        return this.duality.getInventoryByName(name);
+    }
 
-	@Override
-	public IFluidHandler getFluidInventoryByName(final String name) {
-		return this.duality.getFluidInventoryByName(name);
-	}
+    @Override
+    public IFluidHandler getFluidInventoryByName(final String name) {
+        return this.duality.getFluidInventoryByName(name);
+    }
 
-	@Override
-	public ItemStack getItemStackRepresentation()
-	{
-		return AEApi.instance().definitions().blocks().fluidIface().maybeStack( 1 ).orElse( ItemStack.EMPTY );
-	}
+    @Override
+    public ItemStack getItemStackRepresentation() {
+        return AEApi.instance().definitions().blocks().fluidIface().maybeStack(1).orElse(ItemStack.EMPTY);
+    }
 
-	@Override
-	public GuiBridge getGuiBridge()
-	{
-		return GuiBridge.GUI_FLUID_INTERFACE;
-	}
+    @Override
+    public GuiBridge getGuiBridge() {
+        return GuiBridge.GUI_FLUID_INTERFACE;
+    }
 }

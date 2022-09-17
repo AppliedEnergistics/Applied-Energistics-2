@@ -19,90 +19,78 @@
 package appeng.core.features.registries.grinder;
 
 
-import java.util.Optional;
-
+import appeng.api.features.IGrinderRecipe;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.features.IGrinderRecipe;
+import java.util.Optional;
 
 
-public class AppEngGrinderRecipe implements IGrinderRecipe
-{
+public class AppEngGrinderRecipe implements IGrinderRecipe {
 
-	private final ItemStack in;
-	private final ItemStack out;
+    private final ItemStack in;
+    private final ItemStack out;
 
-	private final float optionalChance;
-	private final Optional<ItemStack> optionalOutput;
+    private final float optionalChance;
+    private final Optional<ItemStack> optionalOutput;
 
-	private final float optionalChance2;
-	private final Optional<ItemStack> optionalOutput2;
+    private final float optionalChance2;
+    private final Optional<ItemStack> optionalOutput2;
 
-	private final int turns;
+    private final int turns;
 
-	AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final int cost )
-	{
-		this( input, output, null, null, 0, 0, cost );
-	}
+    AppEngGrinderRecipe(final ItemStack input, final ItemStack output, final int cost) {
+        this(input, output, null, null, 0, 0, cost);
+    }
 
-	AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional, final float chance, final int cost )
-	{
-		this( input, output, optional, null, chance, 0, cost );
-	}
+    AppEngGrinderRecipe(final ItemStack input, final ItemStack output, final ItemStack optional, final float chance, final int cost) {
+        this(input, output, optional, null, chance, 0, cost);
+    }
 
-	AppEngGrinderRecipe( final ItemStack input, final ItemStack output, final ItemStack optional1, final ItemStack optional2, final float chance1, final float chance2, final int cost )
-	{
-		this.in = input;
-		this.out = output;
+    AppEngGrinderRecipe(final ItemStack input, final ItemStack output, final ItemStack optional1, final ItemStack optional2, final float chance1, final float chance2, final int cost) {
+        this.in = input;
+        this.out = output;
 
-		this.optionalOutput = Optional.ofNullable( optional1 );
-		this.optionalChance = chance1;
+        this.optionalOutput = Optional.ofNullable(optional1);
+        this.optionalChance = chance1;
 
-		this.optionalOutput2 = Optional.ofNullable( optional2 );
-		this.optionalChance2 = chance2;
+        this.optionalOutput2 = Optional.ofNullable(optional2);
+        this.optionalChance2 = chance2;
 
-		this.turns = cost;
-	}
+        this.turns = cost;
+    }
 
-	@Override
-	public ItemStack getInput()
-	{
-		return this.in;
-	}
+    @Override
+    public ItemStack getInput() {
+        return this.in;
+    }
 
-	@Override
-	public ItemStack getOutput()
-	{
-		return this.out;
-	}
+    @Override
+    public ItemStack getOutput() {
+        return this.out;
+    }
 
-	@Override
-	public Optional<ItemStack> getOptionalOutput()
-	{
-		return this.optionalOutput;
-	}
+    @Override
+    public Optional<ItemStack> getOptionalOutput() {
+        return this.optionalOutput;
+    }
 
-	@Override
-	public Optional<ItemStack> getSecondOptionalOutput()
-	{
-		return this.optionalOutput2;
-	}
+    @Override
+    public Optional<ItemStack> getSecondOptionalOutput() {
+        return this.optionalOutput2;
+    }
 
-	@Override
-	public float getOptionalChance()
-	{
-		return this.optionalChance;
-	}
+    @Override
+    public float getOptionalChance() {
+        return this.optionalChance;
+    }
 
-	@Override
-	public float getSecondOptionalChance()
-	{
-		return this.optionalChance2;
-	}
+    @Override
+    public float getSecondOptionalChance() {
+        return this.optionalChance2;
+    }
 
-	@Override
-	public int getRequiredTurns()
-	{
-		return this.turns;
-	}
+    @Override
+    public int getRequiredTurns() {
+        return this.turns;
+    }
 }

@@ -19,43 +19,37 @@
 package appeng.util.iterators;
 
 
-import java.util.Iterator;
-
+import appeng.util.inv.ItemSlot;
 import net.minecraft.item.ItemStack;
 
-import appeng.util.inv.ItemSlot;
+import java.util.Iterator;
 
 
-public class StackToSlotIterator implements Iterator<ItemSlot>
-{
+public class StackToSlotIterator implements Iterator<ItemSlot> {
 
-	private final ItemSlot iss = new ItemSlot();
-	private final Iterator<ItemStack> is;
-	private int x = 0;
+    private final ItemSlot iss = new ItemSlot();
+    private final Iterator<ItemStack> is;
+    private int x = 0;
 
-	public StackToSlotIterator( final Iterator<ItemStack> is )
-	{
-		this.is = is;
-	}
+    public StackToSlotIterator(final Iterator<ItemStack> is) {
+        this.is = is;
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		return this.is.hasNext();
-	}
+    @Override
+    public boolean hasNext() {
+        return this.is.hasNext();
+    }
 
-	@Override
-	public ItemSlot next()
-	{
-		this.iss.setSlot( this.x );
-		this.x++;
-		this.iss.setItemStack( this.is.next() );
-		return this.iss;
-	}
+    @Override
+    public ItemSlot next() {
+        this.iss.setSlot(this.x);
+        this.x++;
+        this.iss.setItemStack(this.is.next());
+        return this.iss;
+    }
 
-	@Override
-	public void remove()
-	{
-		// uhh no.
-	}
+    @Override
+    public void remove() {
+        // uhh no.
+    }
 }

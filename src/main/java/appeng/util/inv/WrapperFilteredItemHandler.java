@@ -19,80 +19,67 @@
 package appeng.util.inv;
 
 
-import javax.annotation.Nonnull;
-
+import appeng.util.helpers.ItemHandlerUtil;
+import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import appeng.util.helpers.ItemHandlerUtil;
-import appeng.util.inv.filter.IAEItemFilter;
+import javax.annotation.Nonnull;
 
 
-public class WrapperFilteredItemHandler implements IItemHandlerModifiable
-{
-	private final IItemHandler handler;
-	private final IAEItemFilter filter;
+public class WrapperFilteredItemHandler implements IItemHandlerModifiable {
+    private final IItemHandler handler;
+    private final IAEItemFilter filter;
 
-	public WrapperFilteredItemHandler( @Nonnull IItemHandler handler, @Nonnull IAEItemFilter filter )
-	{
-		this.handler = handler;
-		this.filter = filter;
-	}
+    public WrapperFilteredItemHandler(@Nonnull IItemHandler handler, @Nonnull IAEItemFilter filter) {
+        this.handler = handler;
+        this.filter = filter;
+    }
 
-	@Override
-	public void setStackInSlot( int slot, ItemStack stack )
-	{
-		ItemHandlerUtil.setStackInSlot( this.handler, slot, stack );
-	}
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack) {
+        ItemHandlerUtil.setStackInSlot(this.handler, slot, stack);
+    }
 
-	@Override
-	public int getSlots()
-	{
-		return this.handler.getSlots();
-	}
+    @Override
+    public int getSlots() {
+        return this.handler.getSlots();
+    }
 
-	@Override
-	public ItemStack getStackInSlot( int slot )
-	{
-		return this.handler.getStackInSlot( slot );
-	}
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        return this.handler.getStackInSlot(slot);
+    }
 
-	@Override
-	public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
-	{
-		if( !this.filter.allowInsert( this.handler, slot, stack ) )
-		{
-			return stack;
-		}
+    @Override
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        if (!this.filter.allowInsert(this.handler, slot, stack)) {
+            return stack;
+        }
 
-		return this.handler.insertItem( slot, stack, simulate );
-	}
+        return this.handler.insertItem(slot, stack, simulate);
+    }
 
-	@Override
-	public ItemStack extractItem( int slot, int amount, boolean simulate )
-	{
-		if( !this.filter.allowExtract( this.handler, slot, amount ) )
-		{
-			return ItemStack.EMPTY;
-		}
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (!this.filter.allowExtract(this.handler, slot, amount)) {
+            return ItemStack.EMPTY;
+        }
 
-		return this.handler.extractItem( slot, amount, simulate );
-	}
+        return this.handler.extractItem(slot, amount, simulate);
+    }
 
-	@Override
-	public int getSlotLimit( int slot )
-	{
-		return this.handler.getSlotLimit( slot );
-	}
+    @Override
+    public int getSlotLimit(int slot) {
+        return this.handler.getSlotLimit(slot);
+    }
 
-	@Override
-	public boolean isItemValid( int slot, ItemStack stack )
-	{
-		if( !this.filter.allowInsert( this.handler, slot, stack ) )
-		{
-			return false;
-		}
-		return this.handler.isItemValid( slot, stack );
-	}
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        if (!this.filter.allowInsert(this.handler, slot, stack)) {
+            return false;
+        }
+        return this.handler.isItemValid(slot, stack);
+    }
 }

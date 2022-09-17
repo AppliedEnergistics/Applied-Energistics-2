@@ -24,38 +24,32 @@ import net.minecraft.stats.StatBasic;
 import net.minecraft.util.text.TextComponentTranslation;
 
 
-public enum Stats
-{
+public enum Stats {
 
-	// done
-	ItemsInserted,
+    // done
+    ItemsInserted,
 
-	// done
-	ItemsExtracted,
+    // done
+    ItemsExtracted,
 
-	// done
-	TurnedCranks;
+    // done
+    TurnedCranks;
 
-	private StatBasic stat;
+    private StatBasic stat;
 
-	Stats()
-	{
-	}
+    Stats() {
+    }
 
-	public void addToPlayer( final EntityPlayer player, final int howMany )
-	{
-		player.addStat( this.stat, howMany );
-	}
+    public void addToPlayer(final EntityPlayer player, final int howMany) {
+        player.addStat(this.stat, howMany);
+    }
 
-	public static void register()
-	{
-		for( final Stats s : Stats.values() )
-		{
-			if( s.stat == null )
-			{
-				s.stat = new StatBasic( "stat.ae2." + s.name(), new TextComponentTranslation( "stat.ae2." + s.name() ) );
-				s.stat.registerStat();
-			}
-		}
-	}
+    public static void register() {
+        for (final Stats s : Stats.values()) {
+            if (s.stat == null) {
+                s.stat = new StatBasic("stat.ae2." + s.name(), new TextComponentTranslation("stat.ae2." + s.name()));
+                s.stat.registerStat();
+            }
+        }
+    }
 }

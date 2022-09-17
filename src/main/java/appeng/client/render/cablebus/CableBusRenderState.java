@@ -19,212 +19,180 @@
 package appeng.client.render.cablebus;
 
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Objects;
-
+import appeng.api.parts.IPartModel;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
-import appeng.api.parts.IPartModel;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
+import java.lang.ref.WeakReference;
+import java.util.*;
 
 
 /**
  * This class captures the entire rendering state needed for a cable bus and transports it to the rendering thread
  * for processing.
  */
-public class CableBusRenderState
-{
+public class CableBusRenderState {
 
-	// The cable type used for rendering the outgoing connections to other blocks and attached parts
-	private AECableType cableType = AECableType.NONE;
+    // The cable type used for rendering the outgoing connections to other blocks and attached parts
+    private AECableType cableType = AECableType.NONE;
 
-	// The type to use for rendering the core of the cable.
-	private CableCoreType coreType;
+    // The type to use for rendering the core of the cable.
+    private CableCoreType coreType;
 
-	private AEColor cableColor = AEColor.TRANSPARENT;
+    private AEColor cableColor = AEColor.TRANSPARENT;
 
-	// Describes the outgoing connections of this cable bus to other blocks, and how they should be rendered
-	private EnumMap<EnumFacing, AECableType> connectionTypes = new EnumMap<>( EnumFacing.class );
+    // Describes the outgoing connections of this cable bus to other blocks, and how they should be rendered
+    private EnumMap<EnumFacing, AECableType> connectionTypes = new EnumMap<>(EnumFacing.class);
 
-	// Indicate on which sides signified by connectionTypes above, there is another cable bus. If a side is connected,
-	// but it is absent from this
-	// set, then it means that there is a Grid host, but not a cable bus on that side (i.e. an interface, a controller,
-	// etc.)
-	private EnumSet<EnumFacing> cableBusAdjacent = EnumSet.noneOf( EnumFacing.class );
+    // Indicate on which sides signified by connectionTypes above, there is another cable bus. If a side is connected,
+    // but it is absent from this
+    // set, then it means that there is a Grid host, but not a cable bus on that side (i.e. an interface, a controller,
+    // etc.)
+    private EnumSet<EnumFacing> cableBusAdjacent = EnumSet.noneOf(EnumFacing.class);
 
-	// Specifies the number of channels used for the connection to a given side. Only contains entries if
-	// connections contains a corresponding entry.
-	private EnumMap<EnumFacing, Integer> channelsOnSide = new EnumMap<>( EnumFacing.class );
+    // Specifies the number of channels used for the connection to a given side. Only contains entries if
+    // connections contains a corresponding entry.
+    private EnumMap<EnumFacing, Integer> channelsOnSide = new EnumMap<>(EnumFacing.class);
 
-	private EnumMap<EnumFacing, IPartModel> attachments = new EnumMap<>( EnumFacing.class );
+    private final EnumMap<EnumFacing, IPartModel> attachments = new EnumMap<>(EnumFacing.class);
 
-	// For each attachment, this contains the distance from the edge until which a cable connection should be drawn
-	private EnumMap<EnumFacing, Integer> attachmentConnections = new EnumMap<>( EnumFacing.class );
+    // For each attachment, this contains the distance from the edge until which a cable connection should be drawn
+    private final EnumMap<EnumFacing, Integer> attachmentConnections = new EnumMap<>(EnumFacing.class);
 
-	// Contains the facade to use for each side that has a facade attached
-	private EnumMap<EnumFacing, FacadeRenderState> facades = new EnumMap<>( EnumFacing.class );
+    // Contains the facade to use for each side that has a facade attached
+    private final EnumMap<EnumFacing, FacadeRenderState> facades = new EnumMap<>(EnumFacing.class);
 
-	// Used for Facades.
-	private WeakReference<IBlockAccess> world;
-	private BlockPos pos;
+    // Used for Facades.
+    private WeakReference<IBlockAccess> world;
+    private BlockPos pos;
 
-	// Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
-	// list is only populated if there are
-	// facades on this cable bus
-	private List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
+    // Contains the bounding boxes of all parts on the cable bus to allow facades to cut out holes for the parts. This
+    // list is only populated if there are
+    // facades on this cable bus
+    private final List<AxisAlignedBB> boundingBoxes = new ArrayList<>();
 
-	private EnumMap<EnumFacing, Long> partFlags = new EnumMap<>( EnumFacing.class );
+    private final EnumMap<EnumFacing, Long> partFlags = new EnumMap<>(EnumFacing.class);
 
-	public CableCoreType getCoreType()
-	{
-		return this.coreType;
-	}
+    public CableCoreType getCoreType() {
+        return this.coreType;
+    }
 
-	public void setCoreType( CableCoreType coreType )
-	{
-		this.coreType = coreType;
-	}
+    public void setCoreType(CableCoreType coreType) {
+        this.coreType = coreType;
+    }
 
-	public AECableType getCableType()
-	{
-		return this.cableType;
-	}
+    public AECableType getCableType() {
+        return this.cableType;
+    }
 
-	public void setCableType( AECableType cableType )
-	{
-		this.cableType = cableType;
-	}
+    public void setCableType(AECableType cableType) {
+        this.cableType = cableType;
+    }
 
-	public AEColor getCableColor()
-	{
-		return this.cableColor;
-	}
+    public AEColor getCableColor() {
+        return this.cableColor;
+    }
 
-	public void setCableColor( AEColor cableColor )
-	{
-		this.cableColor = cableColor;
-	}
+    public void setCableColor(AEColor cableColor) {
+        this.cableColor = cableColor;
+    }
 
-	public EnumMap<EnumFacing, Integer> getChannelsOnSide()
-	{
-		return this.channelsOnSide;
-	}
+    public EnumMap<EnumFacing, Integer> getChannelsOnSide() {
+        return this.channelsOnSide;
+    }
 
-	public EnumMap<EnumFacing, AECableType> getConnectionTypes()
-	{
-		return this.connectionTypes;
-	}
+    public EnumMap<EnumFacing, AECableType> getConnectionTypes() {
+        return this.connectionTypes;
+    }
 
-	public void setConnectionTypes( EnumMap<EnumFacing, AECableType> connectionTypes )
-	{
-		this.connectionTypes = connectionTypes;
-	}
+    public void setConnectionTypes(EnumMap<EnumFacing, AECableType> connectionTypes) {
+        this.connectionTypes = connectionTypes;
+    }
 
-	public void setChannelsOnSide( EnumMap<EnumFacing, Integer> channelsOnSide )
-	{
-		this.channelsOnSide = channelsOnSide;
-	}
+    public void setChannelsOnSide(EnumMap<EnumFacing, Integer> channelsOnSide) {
+        this.channelsOnSide = channelsOnSide;
+    }
 
-	public EnumSet<EnumFacing> getCableBusAdjacent()
-	{
-		return this.cableBusAdjacent;
-	}
+    public EnumSet<EnumFacing> getCableBusAdjacent() {
+        return this.cableBusAdjacent;
+    }
 
-	public void setCableBusAdjacent( EnumSet<EnumFacing> cableBusAdjacent )
-	{
-		this.cableBusAdjacent = cableBusAdjacent;
-	}
+    public void setCableBusAdjacent(EnumSet<EnumFacing> cableBusAdjacent) {
+        this.cableBusAdjacent = cableBusAdjacent;
+    }
 
-	public EnumMap<EnumFacing, IPartModel> getAttachments()
-	{
-		return this.attachments;
-	}
+    public EnumMap<EnumFacing, IPartModel> getAttachments() {
+        return this.attachments;
+    }
 
-	public EnumMap<EnumFacing, Integer> getAttachmentConnections()
-	{
-		return this.attachmentConnections;
-	}
+    public EnumMap<EnumFacing, Integer> getAttachmentConnections() {
+        return this.attachmentConnections;
+    }
 
-	public EnumMap<EnumFacing, FacadeRenderState> getFacades()
-	{
-		return this.facades;
-	}
+    public EnumMap<EnumFacing, FacadeRenderState> getFacades() {
+        return this.facades;
+    }
 
-	public IBlockAccess getWorld()
-	{
-		return this.world.get();
-	}
+    public IBlockAccess getWorld() {
+        return this.world.get();
+    }
 
-	public void setWorld( IBlockAccess world )
-	{
-		this.world = new WeakReference<>( world );
-	}
+    public void setWorld(IBlockAccess world) {
+        this.world = new WeakReference<>(world);
+    }
 
-	public BlockPos getPos()
-	{
-		return this.pos;
-	}
+    public BlockPos getPos() {
+        return this.pos;
+    }
 
-	public void setPos( BlockPos pos )
-	{
-		this.pos = pos;
-	}
+    public void setPos(BlockPos pos) {
+        this.pos = pos;
+    }
 
-	public List<AxisAlignedBB> getBoundingBoxes()
-	{
-		return this.boundingBoxes;
-	}
+    public List<AxisAlignedBB> getBoundingBoxes() {
+        return this.boundingBoxes;
+    }
 
-	public EnumMap<EnumFacing, Long> getPartFlags()
-	{
-		return this.partFlags;
-	}
+    public EnumMap<EnumFacing, Long> getPartFlags() {
+        return this.partFlags;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ( ( this.attachmentConnections == null ) ? 0 : this.attachmentConnections.hashCode() );
-		result = prime * result + ( ( this.cableBusAdjacent == null ) ? 0 : this.cableBusAdjacent.hashCode() );
-		result = prime * result + ( ( this.cableColor == null ) ? 0 : this.cableColor.hashCode() );
-		result = prime * result + ( ( this.cableType == null ) ? 0 : this.cableType.hashCode() );
-		result = prime * result + ( ( this.channelsOnSide == null ) ? 0 : this.channelsOnSide.hashCode() );
-		result = prime * result + ( ( this.connectionTypes == null ) ? 0 : this.connectionTypes.hashCode() );
-		result = prime * result + ( ( this.coreType == null ) ? 0 : this.coreType.hashCode() );
-		result = prime * result + ( ( this.partFlags == null ) ? 0 : this.partFlags.hashCode() );
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.attachmentConnections == null) ? 0 : this.attachmentConnections.hashCode());
+        result = prime * result + ((this.cableBusAdjacent == null) ? 0 : this.cableBusAdjacent.hashCode());
+        result = prime * result + ((this.cableColor == null) ? 0 : this.cableColor.hashCode());
+        result = prime * result + ((this.cableType == null) ? 0 : this.cableType.hashCode());
+        result = prime * result + ((this.channelsOnSide == null) ? 0 : this.channelsOnSide.hashCode());
+        result = prime * result + ((this.connectionTypes == null) ? 0 : this.connectionTypes.hashCode());
+        result = prime * result + ((this.coreType == null) ? 0 : this.coreType.hashCode());
+        result = prime * result + ((this.partFlags == null) ? 0 : this.partFlags.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals( Object obj )
-	{
-		if( this == obj )
-		{
-			return true;
-		}
-		if( obj == null )
-		{
-			return false;
-		}
-		if( this.getClass() != obj.getClass() )
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
 
-		final CableBusRenderState other = (CableBusRenderState) obj;
+        final CableBusRenderState other = (CableBusRenderState) obj;
 
-		return this.cableColor == other.cableColor && this.cableType == other.cableType && this.coreType == other.coreType && Objects
-				.equals( this.attachmentConnections, other.attachmentConnections ) && Objects.equals( this.cableBusAdjacent, other.cableBusAdjacent ) && Objects
-						.equals( this.channelsOnSide, other.channelsOnSide ) && Objects.equals( this.connectionTypes, other.connectionTypes ) && Objects
-								.equals( this.partFlags, other.partFlags );
-	}
+        return this.cableColor == other.cableColor && this.cableType == other.cableType && this.coreType == other.coreType && Objects
+                .equals(this.attachmentConnections, other.attachmentConnections) && Objects.equals(this.cableBusAdjacent, other.cableBusAdjacent) && Objects
+                .equals(this.channelsOnSide, other.channelsOnSide) && Objects.equals(this.connectionTypes, other.connectionTypes) && Objects
+                .equals(this.partFlags, other.partFlags);
+    }
 }

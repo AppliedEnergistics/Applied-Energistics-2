@@ -19,180 +19,174 @@
 package appeng.core.localization;
 
 
-import appeng.api.config.SchedulingMode;
 import net.minecraft.util.text.translation.I18n;
 
 
-public enum ButtonToolTips
-{
-	PowerUnits,
-	IOMode,
-	CondenserOutput,
-	RedstoneMode,
-	MatchingFuzzy,
+public enum ButtonToolTips {
+    PowerUnits,
+    IOMode,
+    CondenserOutput,
+    RedstoneMode,
+    MatchingFuzzy,
 
-	MatchingMode,
-	TransferDirection,
-	SortOrder,
-	SortBy,
-	View,
+    MatchingMode,
+    TransferDirection,
+    SortOrder,
+    SortBy,
+    View,
 
-	PartitionStorage,
-	Clear,
-	FuzzyMode,
-	OperationMode,
-	TrashController,
+    PartitionStorage,
+    Clear,
+    FuzzyMode,
+    OperationMode,
+    TrashController,
 
-	InterfaceBlockingMode,
-	InterfaceCraftingMode,
-	Trash,
-	MatterBalls,
+    InterfaceBlockingMode,
+    InterfaceCraftingMode,
+    Trash,
+    MatterBalls,
 
-	Singularity,
-	Read,
-	Write,
-	ReadWrite,
-	AlwaysActive,
+    Singularity,
+    Read,
+    Write,
+    ReadWrite,
+    AlwaysActive,
 
-	ActiveWithoutSignal,
-	ActiveWithSignal,
-	ActiveOnPulse,
+    ActiveWithoutSignal,
+    ActiveWithSignal,
+    ActiveOnPulse,
 
-	EmitLevelsBelow,
-	EmitLevelAbove,
-	MatchingExact,
-	TransferToNetwork,
+    EmitLevelsBelow,
+    EmitLevelAbove,
+    MatchingExact,
+    TransferToNetwork,
 
-	TransferToStorageCell,
-	ToggleSortDirection,
+    TransferToStorageCell,
+    ToggleSortDirection,
 
-	SearchMode_Auto,
-	SearchMode_Standard,
-	SearchMode_JEIAuto,
-	SearchMode_JEIStandard,
-	SearchMode_AutoKeep,
-	SearchMode_StandardKeep,
-	SearchMode_JEIAutoKeep,
-	SearchMode_JEIStandardKeep,
+    SearchMode_Auto,
+    SearchMode_Standard,
+    SearchMode_JEIAuto,
+    SearchMode_JEIStandard,
+    SearchMode_AutoKeep,
+    SearchMode_StandardKeep,
+    SearchMode_JEIAutoKeep,
+    SearchMode_JEIStandardKeep,
 
-	SearchMode,
-	ItemName,
-	NumberOfItems,
-	PartitionStorageHint,
+    SearchMode,
+    ItemName,
+    NumberOfItems,
+    PartitionStorageHint,
 
-	ClearSettings,
-	StoredItems,
-	StoredCraftable,
-	Craftable,
+    ClearSettings,
+    StoredItems,
+    StoredCraftable,
+    Craftable,
 
-	FZPercent_25,
-	FZPercent_50,
-	FZPercent_75,
-	FZPercent_99,
-	FZIgnoreAll,
+    FZPercent_25,
+    FZPercent_50,
+    FZPercent_75,
+    FZPercent_99,
+    FZIgnoreAll,
 
-	MoveWhenEmpty,
-	MoveWhenWorkIsDone,
-	MoveWhenFull,
-	Disabled,
-	Enable,
+    MoveWhenEmpty,
+    MoveWhenWorkIsDone,
+    MoveWhenFull,
+    Disabled,
+    Enable,
 
-	Blocking,
-	NonBlocking,
+    Blocking,
+    NonBlocking,
 
-	LevelType,
-	LevelType_Energy,
-	LevelType_Item,
-	InventoryTweaks,
-	TerminalStyle,
-	TerminalStyle_Full,
-	TerminalStyle_Tall,
-	TerminalStyle_Small,
+    LevelType,
+    LevelType_Energy,
+    LevelType_Item,
+    InventoryTweaks,
+    TerminalStyle,
+    TerminalStyle_Full,
+    TerminalStyle_Tall,
+    TerminalStyle_Small,
 
-	Stash,
-	StashDesc,
-	Encode,
-	EncodeDescription,
-	Substitutions,
-	SubstitutionsOn,
-	SubstitutionsOff,
-	SubstitutionsDescEnabled,
-	SubstitutionsDescDisabled,
-	CraftOnly,
-	CraftEither,
+    Stash,
+    StashDesc,
+    Encode,
+    EncodeDescription,
+    Substitutions,
+    SubstitutionsOn,
+    SubstitutionsOff,
+    SubstitutionsDescEnabled,
+    SubstitutionsDescDisabled,
+    CraftOnly,
+    CraftEither,
 
-	Craft,
-	Mod,
-	DoesntDespawn,
-	EmitterMode,
-	CraftViaRedstone,
-	EmitWhenCrafting,
-	ReportInaccessibleItems,
-	ReportInaccessibleItemsYes,
-	ReportInaccessibleItemsNo,
-	ReportInaccessibleFluids,
-	ReportInaccessibleFluidsYes,
-	ReportInaccessibleFluidsNo,
+    Craft,
+    Mod,
+    DoesntDespawn,
+    EmitterMode,
+    CraftViaRedstone,
+    EmitWhenCrafting,
+    ReportInaccessibleItems,
+    ReportInaccessibleItemsYes,
+    ReportInaccessibleItemsNo,
+    ReportInaccessibleFluids,
+    ReportInaccessibleFluidsYes,
+    ReportInaccessibleFluidsNo,
 
-	BlockPlacement,
-	BlockPlacementYes,
-	BlockPlacementNo,
+    BlockPlacement,
+    BlockPlacementYes,
+    BlockPlacementNo,
 
-	MultiplyByTwo,
-	MultiplyByTwoDesc,
-	MultiplyByThree,
-	MultiplyByThreeDesc,
-	IncreaseByOne,
-	IncreaseByOneDesc,
-	DivideByTwo,
-	DivideByTwoDesc,
-	DivideByThree,
-	DivideByThreeDesc,
-	DecreaseByOne,
-	DecreaseByOneDesc,
-	MaxCount,
-	MaxCountDesc,
-	FreeMolecularSlotShortcut,
-	FreeMolecularSlotShortcutDesc,
-	ToggleShowFullInterfaces,
-	ToggleShowFullInterfacesOnDesc,
-	ToggleShowFullInterfacesOffDesc,
-	HighlightInterface,
-	HighlightInterfaceDesc,
+    MultiplyByTwo,
+    MultiplyByTwoDesc,
+    MultiplyByThree,
+    MultiplyByThreeDesc,
+    IncreaseByOne,
+    IncreaseByOneDesc,
+    DivideByTwo,
+    DivideByTwoDesc,
+    DivideByThree,
+    DivideByThreeDesc,
+    DecreaseByOne,
+    DecreaseByOneDesc,
+    MaxCount,
+    MaxCountDesc,
+    FreeMolecularSlotShortcut,
+    FreeMolecularSlotShortcutDesc,
+    ToggleShowFullInterfaces,
+    ToggleShowFullInterfacesOnDesc,
+    ToggleShowFullInterfacesOffDesc,
+    HighlightInterface,
+    HighlightInterfaceDesc,
 
-	// Used in the tooltips of the items in the terminal, when moused over
-	ItemsStored,
-	ItemsRequestable,
+    // Used in the tooltips of the items in the terminal, when moused over
+    ItemsStored,
+    ItemsRequestable,
 
-	SchedulingMode,
-	SchedulingModeDefault,
-	SchedulingModeRoundRobin,
-	SchedulingModeRandom,
+    SchedulingMode,
+    SchedulingModeDefault,
+    SchedulingModeRoundRobin,
+    SchedulingModeRandom,
 
-	FilterMode,
-	FilterModeKeep,
-	FilterModeClear;
+    FilterMode,
+    FilterModeKeep,
+    FilterModeClear;
 
-	private final String root;
+    private final String root;
 
-	ButtonToolTips()
-	{
-		this.root = "gui.tooltips.appliedenergistics2";
-	}
+    ButtonToolTips() {
+        this.root = "gui.tooltips.appliedenergistics2";
+    }
 
-	ButtonToolTips( final String r )
-	{
-		this.root = r;
-	}
+    ButtonToolTips(final String r) {
+        this.root = r;
+    }
 
-	public String getLocal()
-	{
-		return I18n.translateToLocal( this.getUnlocalized() );
-	}
+    public String getLocal() {
+        return I18n.translateToLocal(this.getUnlocalized());
+    }
 
-	public String getUnlocalized()
-	{
-		return this.root + '.' + this.toString();
-	}
+    public String getUnlocalized() {
+        return this.root + '.' + this;
+    }
 
 }

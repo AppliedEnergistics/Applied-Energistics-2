@@ -22,78 +22,71 @@ package appeng.core.settings;
 import appeng.core.AEConfig;
 
 
-public enum TickRates
-{
+public enum TickRates {
 
-	Interface( 5, 120 ),
+    Interface(5, 120),
 
-	ImportBus( 5, 40 ),
+    ImportBus(5, 40),
 
-	FluidImportBus( 5, 40 ),
+    FluidImportBus(5, 40),
 
-	ExportBus( 5, 60 ),
+    ExportBus(5, 60),
 
-	FluidExportBus( 5, 60 ),
+    FluidExportBus(5, 60),
 
-	AnnihilationPlane( 2, 120 ),
+    AnnihilationPlane(2, 120),
 
-	METunnel( 5, 20 ),
+    METunnel(5, 20),
 
-	Inscriber( 1, 1 ),
+    Inscriber(1, 1),
 
-	Charger( 10, 120 ),
+    Charger(10, 120),
 
-	IOPort( 1, 5 ),
+    IOPort(1, 5),
 
-	VibrationChamber( 10, 40 ),
+    VibrationChamber(10, 40),
 
-	StorageBus( 5, 60 ),
+    StorageBus(5, 60),
 
-	FluidStorageBus( 5, 60 ),
+    FluidStorageBus(5, 60),
 
-	ItemTunnel( 5, 60 ),
+    ItemTunnel(5, 60),
 
-	LightTunnel( 5, 60 ),
+    LightTunnel(5, 60),
 
-	OpenComputersTunnel( 1, 5 ),
+    OpenComputersTunnel(1, 5),
 
-	PressureTunnel( 1, 120 );
+    PressureTunnel(1, 120);
 
-	private int min;
-	private int max;
+    private int min;
+    private int max;
 
-	TickRates( final int min, final int max )
-	{
-		this.setMin( min );
-		this.setMax( max );
-	}
+    TickRates(final int min, final int max) {
+        this.setMin(min);
+        this.setMax(max);
+    }
 
-	public void Load( final AEConfig config )
-	{
-		config.addCustomCategoryComment( "TickRates",
-				" Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested." );
-		this.setMin( config.get( "TickRates", this.name() + ".min", this.getMin() ).getInt( this.getMin() ) );
-		this.setMax( config.get( "TickRates", this.name() + ".max", this.getMax() ).getInt( this.getMax() ) );
-	}
+    public void Load(final AEConfig config) {
+        config.addCustomCategoryComment("TickRates",
+                " Min / Max Tickrates for dynamic ticking, most of these components also use sleeping, to prevent constant ticking, adjust with care, non standard rates are not supported or tested.");
+        this.setMin(config.get("TickRates", this.name() + ".min", this.getMin()).getInt(this.getMin()));
+        this.setMax(config.get("TickRates", this.name() + ".max", this.getMax()).getInt(this.getMax()));
+    }
 
-	public int getMax()
-	{
-		return this.max;
-	}
+    public int getMax() {
+        return this.max;
+    }
 
-	public void setMax( final int max )
-	{
-		this.max = max;
-	}
+    public void setMax(final int max) {
+        this.max = max;
+    }
 
-	public int getMin()
-	{
-		return this.min;
-	}
+    public int getMin() {
+        return this.min;
+    }
 
-	public void setMin( final int min )
-	{
-		this.min = min;
-	}
+    public void setMin(final int min) {
+        this.min = min;
+    }
 
 }

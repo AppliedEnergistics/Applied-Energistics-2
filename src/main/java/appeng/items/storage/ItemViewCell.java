@@ -19,9 +19,6 @@
 package appeng.items.storage;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
@@ -39,125 +36,103 @@ import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.MergedPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 
-public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem
-{
-	public ItemViewCell()
-	{
-		this.setMaxStackSize( 1 );
-	}
+public class ItemViewCell extends AEBaseItem implements ICellWorkbenchItem {
+    public ItemViewCell() {
+        this.setMaxStackSize(1);
+    }
 
-	public static IPartitionList<IAEItemStack> createFilter( final ItemStack[] list )
-	{
-		IPartitionList<IAEItemStack> myPartitionList = null;
+    public static IPartitionList<IAEItemStack> createFilter(final ItemStack[] list) {
+        IPartitionList<IAEItemStack> myPartitionList = null;
 
-		final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<>();
+        final MergedPriorityList<IAEItemStack> myMergedList = new MergedPriorityList<>();
 
-		for( final ItemStack currentViewCell : list )
-		{
-			if( currentViewCell == null )
-			{
-				continue;
-			}
+        for (final ItemStack currentViewCell : list) {
+            if (currentViewCell == null) {
+                continue;
+            }
 
-			if( ( currentViewCell.getItem() instanceof ItemViewCell ) )
-			{
-				final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel( IItemStorageChannel.class ).createList();
+            if ((currentViewCell.getItem() instanceof ItemViewCell)) {
+                final IItemList<IAEItemStack> priorityList = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
 
-				final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
-				final IItemHandler upgrades = vc.getUpgradesInventory( currentViewCell );
-				final IItemHandler config = vc.getConfigInventory( currentViewCell );
-				final FuzzyMode fzMode = vc.getFuzzyMode( currentViewCell );
+                final ICellWorkbenchItem vc = (ICellWorkbenchItem) currentViewCell.getItem();
+                final IItemHandler upgrades = vc.getUpgradesInventory(currentViewCell);
+                final IItemHandler config = vc.getConfigInventory(currentViewCell);
+                final FuzzyMode fzMode = vc.getFuzzyMode(currentViewCell);
 
-				boolean hasInverter = false;
-				boolean hasFuzzy = false;
+                boolean hasInverter = false;
+                boolean hasFuzzy = false;
 
-				for( int x = 0; x < upgrades.getSlots(); x++ )
-				{
-					final ItemStack is = upgrades.getStackInSlot( x );
-					if( !is.isEmpty() && is.getItem() instanceof IUpgradeModule )
-					{
-						final Upgrades u = ( (IUpgradeModule) is.getItem() ).getType( is );
-						if( u != null )
-						{
-							switch( u )
-							{
-								case FUZZY:
-									hasFuzzy = true;
-									break;
-								case INVERTER:
-									hasInverter = true;
-									break;
-								default:
-							}
-						}
-					}
-				}
+                for (int x = 0; x < upgrades.getSlots(); x++) {
+                    final ItemStack is = upgrades.getStackInSlot(x);
+                    if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
+                        final Upgrades u = ((IUpgradeModule) is.getItem()).getType(is);
+                        if (u != null) {
+                            switch (u) {
+                                case FUZZY:
+                                    hasFuzzy = true;
+                                    break;
+                                case INVERTER:
+                                    hasInverter = true;
+                                    break;
+                                default:
+                            }
+                        }
+                    }
+                }
 
-				for( int x = 0; x < config.getSlots(); x++ )
-				{
-					final ItemStack is = config.getStackInSlot( x );
-					if( !is.isEmpty() )
-					{
-						priorityList.add( AEItemStack.fromItemStack( is ) );
-					}
-				}
+                for (int x = 0; x < config.getSlots(); x++) {
+                    final ItemStack is = config.getStackInSlot(x);
+                    if (!is.isEmpty()) {
+                        priorityList.add(AEItemStack.fromItemStack(is));
+                    }
+                }
 
-				if( !priorityList.isEmpty() )
-				{
-					if( hasFuzzy )
-					{
-						myMergedList.addNewList( new FuzzyPriorityList<>( priorityList, fzMode ), !hasInverter );
-					}
-					else
-					{
-						myMergedList.addNewList( new PrecisePriorityList<>( priorityList ), !hasInverter );
-					}
+                if (!priorityList.isEmpty()) {
+                    if (hasFuzzy) {
+                        myMergedList.addNewList(new FuzzyPriorityList<>(priorityList, fzMode), !hasInverter);
+                    } else {
+                        myMergedList.addNewList(new PrecisePriorityList<>(priorityList), !hasInverter);
+                    }
 
-					myPartitionList = myMergedList;
-				}
-			}
-		}
+                    myPartitionList = myMergedList;
+                }
+            }
+        }
 
-		return myPartitionList;
-	}
+        return myPartitionList;
+    }
 
-	@Override
-	public boolean isEditable( final ItemStack is )
-	{
-		return true;
-	}
+    @Override
+    public boolean isEditable(final ItemStack is) {
+        return true;
+    }
 
-	@Override
-	public IItemHandler getUpgradesInventory( final ItemStack is )
-	{
-		return new CellUpgrades( is, 2 );
-	}
+    @Override
+    public IItemHandler getUpgradesInventory(final ItemStack is) {
+        return new CellUpgrades(is, 2);
+    }
 
-	@Override
-	public IItemHandler getConfigInventory( final ItemStack is )
-	{
-		return new CellConfig( is );
-	}
+    @Override
+    public IItemHandler getConfigInventory(final ItemStack is) {
+        return new CellConfig(is);
+    }
 
-	@Override
-	public FuzzyMode getFuzzyMode( final ItemStack is )
-	{
-		final String fz = Platform.openNbtData( is ).getString( "FuzzyMode" );
-		try
-		{
-			return FuzzyMode.valueOf( fz );
-		}
-		catch( final Throwable t )
-		{
-			return FuzzyMode.IGNORE_ALL;
-		}
-	}
+    @Override
+    public FuzzyMode getFuzzyMode(final ItemStack is) {
+        final String fz = Platform.openNbtData(is).getString("FuzzyMode");
+        try {
+            return FuzzyMode.valueOf(fz);
+        } catch (final Throwable t) {
+            return FuzzyMode.IGNORE_ALL;
+        }
+    }
 
-	@Override
-	public void setFuzzyMode( final ItemStack is, final FuzzyMode fzMode )
-	{
-		Platform.openNbtData( is ).setString( "FuzzyMode", fzMode.name() );
-	}
+    @Override
+    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+        Platform.openNbtData(is).setString("FuzzyMode", fzMode.name());
+    }
 }

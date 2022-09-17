@@ -23,42 +23,34 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class AEItemFilters
-{
-	public static final IAEItemFilter INSERT_ONLY = new InsertOnlyFilter();
-	public static final IAEItemFilter EXTRACT_ONLY = new ExtractOnlyFilter();
+public class AEItemFilters {
+    public static final IAEItemFilter INSERT_ONLY = new InsertOnlyFilter();
+    public static final IAEItemFilter EXTRACT_ONLY = new ExtractOnlyFilter();
 
-	private AEItemFilters()
-	{
-	}
+    private AEItemFilters() {
+    }
 
-	private static class InsertOnlyFilter implements IAEItemFilter
-	{
-		@Override
-		public boolean allowExtract( IItemHandler inv, int slot, int amount )
-		{
-			return false;
-		}
+    private static class InsertOnlyFilter implements IAEItemFilter {
+        @Override
+        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+            return false;
+        }
 
-		@Override
-		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
-		{
-			return true;
-		}
-	}
+        @Override
+        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+            return true;
+        }
+    }
 
-	private static class ExtractOnlyFilter implements IAEItemFilter
-	{
-		@Override
-		public boolean allowExtract( IItemHandler inv, int slot, int amount )
-		{
-			return true;
-		}
+    private static class ExtractOnlyFilter implements IAEItemFilter {
+        @Override
+        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+            return true;
+        }
 
-		@Override
-		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
-		{
-			return false;
-		}
-	}
+        @Override
+        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+            return false;
+        }
+    }
 }

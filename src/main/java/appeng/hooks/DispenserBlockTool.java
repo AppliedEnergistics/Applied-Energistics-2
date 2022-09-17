@@ -19,6 +19,7 @@
 package appeng.hooks;
 
 
+import appeng.util.Platform;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
@@ -29,28 +30,22 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import appeng.util.Platform;
 
+public final class DispenserBlockTool extends BehaviorDefaultDispenseItem {
 
-public final class DispenserBlockTool extends BehaviorDefaultDispenseItem
-{
+    @Override
+    protected ItemStack dispenseStack(final IBlockSource dispenser, final ItemStack dispensedItem) {
+        final Item i = dispensedItem.getItem();
+        if (i instanceof IBlockTool) {
+            final EnumFacing enumfacing = dispenser.getBlockState().getValue(BlockDispenser.FACING);
+            final IBlockTool tm = (IBlockTool) i;
 
-	@Override
-	protected ItemStack dispenseStack( final IBlockSource dispenser, final ItemStack dispensedItem )
-	{
-		final Item i = dispensedItem.getItem();
-		if( i instanceof IBlockTool )
-		{
-			final EnumFacing enumfacing = dispenser.getBlockState().getValue( BlockDispenser.FACING );
-			final IBlockTool tm = (IBlockTool) i;
-
-			final World w = dispenser.getWorld();
-			if( w instanceof WorldServer )
-			{
-				tm.onItemUse( dispensedItem, Platform.getPlayer( (WorldServer) w ), w, dispenser.getBlockPos().offset( enumfacing ), EnumHand.MAIN_HAND,
-						enumfacing, 0.5f, 0.5f, 0.5f );
-			}
-		}
-		return dispensedItem;
-	}
+            final World w = dispenser.getWorld();
+            if (w instanceof WorldServer) {
+                tm.onItemUse(dispensedItem, Platform.getPlayer((WorldServer) w), w, dispenser.getBlockPos().offset(enumfacing), EnumHand.MAIN_HAND,
+                        enumfacing, 0.5f, 0.5f, 0.5f);
+            }
+        }
+        return dispensedItem;
+    }
 }

@@ -19,10 +19,9 @@
 package appeng.core.worlddata;
 
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.UUID;
-
-import javax.annotation.Nonnull;
 
 
 /**
@@ -30,25 +29,23 @@ import javax.annotation.Nonnull;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public interface IWorldPlayerMapping
-{
-	/**
-	 * Tries to retrieve the UUID of a player.
-	 * Might not be stored inside of the map.
-	 * Should not happen though.
-	 *
-	 * @param id ID of the to be searched player
-	 *
-	 * @return maybe the UUID of the searched player
-	 */
-	@Nonnull
-	Optional<UUID> get( int id );
+public interface IWorldPlayerMapping {
+    /**
+     * Tries to retrieve the UUID of a player.
+     * Might not be stored inside of the map.
+     * Should not happen though.
+     *
+     * @param id ID of the to be searched player
+     * @return maybe the UUID of the searched player
+     */
+    @Nonnull
+    Optional<UUID> get(int id);
 
-	/**
-	 * Put in new players when they join the server
-	 *
-	 * @param id id of new player
-	 * @param uuid UUID of new player
-	 */
-	void put( int id, @Nonnull UUID uuid );
+    /**
+     * Put in new players when they join the server
+     *
+     * @param id   id of new player
+     * @param uuid UUID of new player
+     */
+    void put(int id, @Nonnull UUID uuid);
 }

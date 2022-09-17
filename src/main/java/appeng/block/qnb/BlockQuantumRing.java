@@ -19,55 +19,44 @@
 package appeng.block.qnb;
 
 
-import java.util.Collections;
-import java.util.List;
-
+import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import appeng.tile.qnb.TileQuantumBridge;
+import java.util.Collections;
+import java.util.List;
 
 
-public class BlockQuantumRing extends BlockQuantumBase
-{
+public class BlockQuantumRing extends BlockQuantumBase {
 
-	public BlockQuantumRing()
-	{
-		super( Material.IRON );
-	}
+    public BlockQuantumRing() {
+        super(Material.IRON);
+    }
 
-	@Override
-	public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool( final World w, final BlockPos pos, final Entity thePlayer, final boolean b )
-	{
-		double onePixel = 2.0 / 16.0;
-		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
-		if( bridge != null && bridge.isCorner() )
-		{
-			onePixel = 4.0 / 16.0;
-		}
-		else if( bridge != null && bridge.isFormed() )
-		{
-			onePixel = 1.0 / 16.0;
-		}
-		return Collections.singletonList( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
-	}
+    @Override
+    public Iterable<AxisAlignedBB> getSelectedBoundingBoxesFromPool(final World w, final BlockPos pos, final Entity thePlayer, final boolean b) {
+        double onePixel = 2.0 / 16.0;
+        final TileQuantumBridge bridge = this.getTileEntity(w, pos);
+        if (bridge != null && bridge.isCorner()) {
+            onePixel = 4.0 / 16.0;
+        } else if (bridge != null && bridge.isFormed()) {
+            onePixel = 1.0 / 16.0;
+        }
+        return Collections.singletonList(new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+    }
 
-	@Override
-	public void addCollidingBlockToList( final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e )
-	{
-		double onePixel = 2.0 / 16.0;
-		final TileQuantumBridge bridge = this.getTileEntity( w, pos );
-		if( bridge != null && bridge.isCorner() )
-		{
-			onePixel = 4.0 / 16.0;
-		}
-		else if( bridge != null && bridge.isFormed() )
-		{
-			onePixel = 1.0 / 16.0;
-		}
-		out.add( new AxisAlignedBB( onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel ) );
-	}
+    @Override
+    public void addCollidingBlockToList(final World w, final BlockPos pos, final AxisAlignedBB bb, final List<AxisAlignedBB> out, final Entity e) {
+        double onePixel = 2.0 / 16.0;
+        final TileQuantumBridge bridge = this.getTileEntity(w, pos);
+        if (bridge != null && bridge.isCorner()) {
+            onePixel = 4.0 / 16.0;
+        } else if (bridge != null && bridge.isFormed()) {
+            onePixel = 1.0 / 16.0;
+        }
+        out.add(new AxisAlignedBB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
+    }
 }

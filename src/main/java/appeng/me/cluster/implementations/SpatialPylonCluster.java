@@ -19,123 +19,99 @@
 package appeng.me.cluster.implementations;
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import appeng.api.networking.IGridHost;
 import appeng.api.util.DimensionalCoord;
 import appeng.me.cluster.IAECluster;
 import appeng.tile.spatial.TileSpatialPylon;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public class SpatialPylonCluster implements IAECluster
-{
 
-	private final DimensionalCoord min;
-	private final DimensionalCoord max;
-	private final List<TileSpatialPylon> line = new ArrayList<>();
-	private boolean isDestroyed = false;
+public class SpatialPylonCluster implements IAECluster {
 
-	private Axis currentAxis = Axis.UNFORMED;
-	private boolean isValid;
+    private final DimensionalCoord min;
+    private final DimensionalCoord max;
+    private final List<TileSpatialPylon> line = new ArrayList<>();
+    private boolean isDestroyed = false;
 
-	public SpatialPylonCluster( final DimensionalCoord min, final DimensionalCoord max )
-	{
-		this.min = min.copy();
-		this.max = max.copy();
+    private Axis currentAxis = Axis.UNFORMED;
+    private boolean isValid;
 
-		if( this.getMin().x != this.getMax().x )
-		{
-			this.setCurrentAxis( Axis.X );
-		}
-		else if( this.getMin().y != this.getMax().y )
-		{
-			this.setCurrentAxis( Axis.Y );
-		}
-		else if( this.getMin().z != this.getMax().z )
-		{
-			this.setCurrentAxis( Axis.Z );
-		}
-		else
-		{
-			this.setCurrentAxis( Axis.UNFORMED );
-		}
-	}
+    public SpatialPylonCluster(final DimensionalCoord min, final DimensionalCoord max) {
+        this.min = min.copy();
+        this.max = max.copy();
 
-	@Override
-	public void updateStatus( final boolean updateGrid )
-	{
-		for( final TileSpatialPylon r : this.getLine() )
-		{
-			r.recalculateDisplay();
-		}
-	}
+        if (this.getMin().x != this.getMax().x) {
+            this.setCurrentAxis(Axis.X);
+        } else if (this.getMin().y != this.getMax().y) {
+            this.setCurrentAxis(Axis.Y);
+        } else if (this.getMin().z != this.getMax().z) {
+            this.setCurrentAxis(Axis.Z);
+        } else {
+            this.setCurrentAxis(Axis.UNFORMED);
+        }
+    }
 
-	@Override
-	public void destroy()
-	{
+    @Override
+    public void updateStatus(final boolean updateGrid) {
+        for (final TileSpatialPylon r : this.getLine()) {
+            r.recalculateDisplay();
+        }
+    }
 
-		if( this.isDestroyed )
-		{
-			return;
-		}
-		this.isDestroyed = true;
+    @Override
+    public void destroy() {
 
-		for( final TileSpatialPylon r : this.getLine() )
-		{
-			r.updateStatus( null );
-		}
-	}
+        if (this.isDestroyed) {
+            return;
+        }
+        this.isDestroyed = true;
 
-	@Override
-	public Iterator<IGridHost> getTiles()
-	{
-		return (Iterator) this.getLine().iterator();
-	}
+        for (final TileSpatialPylon r : this.getLine()) {
+            r.updateStatus(null);
+        }
+    }
 
-	public int tileCount()
-	{
-		return this.getLine().size();
-	}
+    @Override
+    public Iterator<IGridHost> getTiles() {
+        return (Iterator) this.getLine().iterator();
+    }
 
-	public Axis getCurrentAxis()
-	{
-		return this.currentAxis;
-	}
+    public int tileCount() {
+        return this.getLine().size();
+    }
 
-	private void setCurrentAxis( final Axis currentAxis )
-	{
-		this.currentAxis = currentAxis;
-	}
+    public Axis getCurrentAxis() {
+        return this.currentAxis;
+    }
 
-	public boolean isValid()
-	{
-		return this.isValid;
-	}
+    private void setCurrentAxis(final Axis currentAxis) {
+        this.currentAxis = currentAxis;
+    }
 
-	public void setValid( final boolean isValid )
-	{
-		this.isValid = isValid;
-	}
+    public boolean isValid() {
+        return this.isValid;
+    }
 
-	public DimensionalCoord getMax()
-	{
-		return this.max;
-	}
+    public void setValid(final boolean isValid) {
+        this.isValid = isValid;
+    }
 
-	public DimensionalCoord getMin()
-	{
-		return this.min;
-	}
+    public DimensionalCoord getMax() {
+        return this.max;
+    }
 
-	List<TileSpatialPylon> getLine()
-	{
-		return this.line;
-	}
+    public DimensionalCoord getMin() {
+        return this.min;
+    }
 
-	public enum Axis
-	{
-		X, Y, Z, UNFORMED
-	}
+    List<TileSpatialPylon> getLine() {
+        return this.line;
+    }
+
+    public enum Axis {
+        X, Y, Z, UNFORMED
+    }
 }

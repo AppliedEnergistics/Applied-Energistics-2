@@ -19,64 +19,56 @@
 package appeng.util.inv;
 
 
-import java.util.Iterator;
-
-import net.minecraft.item.ItemStack;
-
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
 
 
-public final class IMEAdaptorIterator implements Iterator<ItemSlot>
-{
-	private final Iterator<IAEItemStack> stack;
-	private final ItemSlot slot = new ItemSlot();
-	private final IMEAdaptor parent;
-	private final int containerSize;
+public final class IMEAdaptorIterator implements Iterator<ItemSlot> {
+    private final Iterator<IAEItemStack> stack;
+    private final ItemSlot slot = new ItemSlot();
+    private final IMEAdaptor parent;
+    private final int containerSize;
 
-	private int offset = 0;
-	private boolean hasNext;
+    private int offset = 0;
+    private boolean hasNext;
 
-	public IMEAdaptorIterator( final IMEAdaptor parent, final IItemList<IAEItemStack> availableItems )
-	{
-		this.stack = availableItems.iterator();
-		this.containerSize = parent.getMaxSlots();
-		this.parent = parent;
-	}
+    public IMEAdaptorIterator(final IMEAdaptor parent, final IItemList<IAEItemStack> availableItems) {
+        this.stack = availableItems.iterator();
+        this.containerSize = parent.getMaxSlots();
+        this.parent = parent;
+    }
 
-	@Override
-	public boolean hasNext()
-	{
-		this.hasNext = this.stack.hasNext();
-		return this.offset < this.containerSize || this.hasNext;
-	}
+    @Override
+    public boolean hasNext() {
+        this.hasNext = this.stack.hasNext();
+        return this.offset < this.containerSize || this.hasNext;
+    }
 
-	@Override
-	public ItemSlot next()
-	{
-		this.slot.setSlot( this.offset );
-		this.offset++;
-		this.slot.setExtractable( true );
+    @Override
+    public ItemSlot next() {
+        this.slot.setSlot(this.offset);
+        this.offset++;
+        this.slot.setExtractable(true);
 
-		if( this.parent.getMaxSlots() < this.offset )
-		{
-			this.parent.setMaxSlots( this.offset );
-		}
+        if (this.parent.getMaxSlots() < this.offset) {
+            this.parent.setMaxSlots(this.offset);
+        }
 
-		if( this.hasNext )
-		{
-			final IAEItemStack item = this.stack.next();
-			this.slot.setAEItemStack( item );
-			return this.slot;
-		}
+        if (this.hasNext) {
+            final IAEItemStack item = this.stack.next();
+            this.slot.setAEItemStack(item);
+            return this.slot;
+        }
 
-		this.slot.setItemStack( ItemStack.EMPTY );
-		return this.slot;
-	}
+        this.slot.setItemStack(ItemStack.EMPTY);
+        return this.slot;
+    }
 
-	@Override
-	public void remove()
-	{
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

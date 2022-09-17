@@ -19,13 +19,6 @@
 package appeng.client.me;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
 import appeng.api.AEApi;
 import appeng.api.config.Settings;
 import appeng.api.config.SortOrder;
@@ -41,203 +34,170 @@ import appeng.fluids.util.FluidSorters;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
 
 /**
  * @author BrockWS
  * @version rv6 - 22/05/2018
  * @since rv6 22/05/2018
  */
-public class FluidRepo
-{
-	private final IItemList<IAEFluidStack> list = AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class ).createList();
-	private final ArrayList<IAEFluidStack> view = new ArrayList<>();
-	private final IScrollSource src;
-	private final ISortSource sortSrc;
+public class FluidRepo {
+    private final IItemList<IAEFluidStack> list = AEApi.instance().storage().getStorageChannel(IFluidStorageChannel.class).createList();
+    private final ArrayList<IAEFluidStack> view = new ArrayList<>();
+    private final IScrollSource src;
+    private final ISortSource sortSrc;
 
-	private int rowSize = 9;
+    private int rowSize = 9;
 
-	private String searchString = "";
-	private IPartitionList<IAEFluidStack> myPartitionList;
-	private boolean hasPower;
+    private String searchString = "";
+    private IPartitionList<IAEFluidStack> myPartitionList;
+    private boolean hasPower;
 
-	public FluidRepo( final IScrollSource src, final ISortSource sortSrc )
-	{
-		this.src = src;
-		this.sortSrc = sortSrc;
-	}
+    public FluidRepo(final IScrollSource src, final ISortSource sortSrc) {
+        this.src = src;
+        this.sortSrc = sortSrc;
+    }
 
-	public void updateView()
-	{
-		this.view.clear();
+    public void updateView() {
+        this.view.clear();
 
-		this.view.ensureCapacity( this.list.size() );
+        this.view.ensureCapacity(this.list.size());
 
-		String innerSearch = this.searchString;
+        String innerSearch = this.searchString;
 
-		boolean searchMod = false;
-		if( innerSearch.startsWith( "@" ) )
-		{
-			searchMod = true;
-			innerSearch = innerSearch.substring( 1 );
-		}
+        boolean searchMod = false;
+        if (innerSearch.startsWith("@")) {
+            searchMod = true;
+            innerSearch = innerSearch.substring(1);
+        }
 
-		Pattern m;
-		try
-		{
-			m = Pattern.compile( innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE );
-		}
-		catch( final Exception ignore1 )
-		{
-			try
-			{
-				m = Pattern.compile( Pattern.quote( innerSearch.toLowerCase() ), Pattern.CASE_INSENSITIVE );
-			}
-			catch( final Exception ignore2 )
-			{
-				return;
-			}
-		}
+        Pattern m;
+        try {
+            m = Pattern.compile(innerSearch.toLowerCase(), Pattern.CASE_INSENSITIVE);
+        } catch (final Exception ignore1) {
+            try {
+                m = Pattern.compile(Pattern.quote(innerSearch.toLowerCase()), Pattern.CASE_INSENSITIVE);
+            } catch (final Exception ignore2) {
+                return;
+            }
+        }
 
-		final Enum viewMode = this.sortSrc.getSortDisplay();
-		final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
-		final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting( Settings.SEARCH_TOOLTIPS ) != YesNo.NO;
+        final Enum viewMode = this.sortSrc.getSortDisplay();
+        final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
+        final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting(Settings.SEARCH_TOOLTIPS) != YesNo.NO;
 
-		boolean notDone = false;
-		for( IAEFluidStack fs : this.list )
-		{
-			if( this.myPartitionList != null && !this.myPartitionList.isListed( fs ) )
-			{
-				continue;
-			}
+        boolean notDone = false;
+        for (IAEFluidStack fs : this.list) {
+            if (this.myPartitionList != null && !this.myPartitionList.isListed(fs)) {
+                continue;
+            }
 
-			if( viewMode == ViewItems.CRAFTABLE && !fs.isCraftable() )
-			{
-				continue;
-			}
+            if (viewMode == ViewItems.CRAFTABLE && !fs.isCraftable()) {
+                continue;
+            }
 
-			if( viewMode == ViewItems.STORED && fs.getStackSize() == 0 )
-			{
-				continue;
-			}
+            if (viewMode == ViewItems.STORED && fs.getStackSize() == 0) {
+                continue;
+            }
 
-			final String dspName = searchMod ? Platform.getModId( fs ) : Platform.getFluidDisplayName( fs );
-			boolean foundMatchingFluidStack = false;
-			notDone = true;
+            final String dspName = searchMod ? Platform.getModId(fs) : Platform.getFluidDisplayName(fs);
+            boolean foundMatchingFluidStack = false;
+            notDone = true;
 
-			if( m.matcher( dspName.toLowerCase() ).find() )
-			{
-				notDone = false;
-				foundMatchingFluidStack = true;
-			}
+            if (m.matcher(dspName.toLowerCase()).find()) {
+                notDone = false;
+                foundMatchingFluidStack = true;
+            }
 
-			if( terminalSearchToolTips && notDone && !searchMod )
-			{
-				final List<String> tooltip = Platform.getTooltip( fs );
+            if (terminalSearchToolTips && notDone && !searchMod) {
+                final List<String> tooltip = Platform.getTooltip(fs);
 
-				for( final String line : tooltip )
-				{
-					if( m.matcher( line ).find() )
-					{
-						foundMatchingFluidStack = true;
-						break;
-					}
-				}
-			}
+                for (final String line : tooltip) {
+                    if (m.matcher(line).find()) {
+                        foundMatchingFluidStack = true;
+                        break;
+                    }
+                }
+            }
 
-			if( foundMatchingFluidStack )
-			{
-				if( needsZeroCopy )
-				{
-					fs = fs.copy();
-					fs.setStackSize( 0 );
-				}
+            if (foundMatchingFluidStack) {
+                if (needsZeroCopy) {
+                    fs = fs.copy();
+                    fs.setStackSize(0);
+                }
 
-				this.view.add( fs );
-			}
-		}
+                this.view.add(fs);
+            }
+        }
 
-		final Enum sortBy = this.sortSrc.getSortBy();
-		final Enum sortDir = this.sortSrc.getSortDir();
+        final Enum sortBy = this.sortSrc.getSortBy();
+        final Enum sortDir = this.sortSrc.getSortDir();
 
-		FluidSorters.setDirection( (appeng.api.config.SortDir) sortDir );
+        FluidSorters.setDirection((appeng.api.config.SortDir) sortDir);
 
-		if( sortBy == SortOrder.MOD )
-		{
-			Collections.sort( this.view, FluidSorters.CONFIG_BASED_SORT_BY_MOD );
-		}
-		else if( sortBy == SortOrder.AMOUNT )
-		{
-			Collections.sort( this.view, FluidSorters.CONFIG_BASED_SORT_BY_SIZE );
-		}
-		else
-		{
-			Collections.sort( this.view, FluidSorters.CONFIG_BASED_SORT_BY_NAME );
-		}
-	}
+        if (sortBy == SortOrder.MOD) {
+            Collections.sort(this.view, FluidSorters.CONFIG_BASED_SORT_BY_MOD);
+        } else if (sortBy == SortOrder.AMOUNT) {
+            Collections.sort(this.view, FluidSorters.CONFIG_BASED_SORT_BY_SIZE);
+        } else {
+            Collections.sort(this.view, FluidSorters.CONFIG_BASED_SORT_BY_NAME);
+        }
+    }
 
-	public void postUpdate( final IAEFluidStack is )
-	{
-		final IAEFluidStack st = this.list.findPrecise( is );
+    public void postUpdate(final IAEFluidStack is) {
+        final IAEFluidStack st = this.list.findPrecise(is);
 
-		if( st != null )
-		{
-			st.reset();
-			st.add( is );
-		}
-		else
-		{
-			this.list.add( is );
-		}
-	}
+        if (st != null) {
+            st.reset();
+            st.add(is);
+        } else {
+            this.list.add(is);
+        }
+    }
 
-	public IAEFluidStack getReferenceFluid( int idx )
-	{
-		idx += this.src.getCurrentScroll() * this.rowSize;
+    public IAEFluidStack getReferenceFluid(int idx) {
+        idx += this.src.getCurrentScroll() * this.rowSize;
 
-		if( idx >= this.view.size() )
-		{
-			return null;
-		}
-		return this.view.get( idx );
-	}
+        if (idx >= this.view.size()) {
+            return null;
+        }
+        return this.view.get(idx);
+    }
 
-	public int size()
-	{
-		return this.view.size();
-	}
+    public int size() {
+        return this.view.size();
+    }
 
-	public void clear()
-	{
-		this.list.resetStatus();
-	}
+    public void clear() {
+        this.list.resetStatus();
+    }
 
-	public boolean hasPower()
-	{
-		return this.hasPower;
-	}
+    public boolean hasPower() {
+        return this.hasPower;
+    }
 
-	public void setPower( final boolean hasPower )
-	{
-		this.hasPower = hasPower;
-	}
+    public void setPower(final boolean hasPower) {
+        this.hasPower = hasPower;
+    }
 
-	public int getRowSize()
-	{
-		return this.rowSize;
-	}
+    public int getRowSize() {
+        return this.rowSize;
+    }
 
-	public void setRowSize( final int rowSize )
-	{
-		this.rowSize = rowSize;
-	}
+    public void setRowSize(final int rowSize) {
+        this.rowSize = rowSize;
+    }
 
-	public String getSearchString()
-	{
-		return this.searchString;
-	}
+    public String getSearchString() {
+        return this.searchString;
+    }
 
-	public void setSearchString( @Nonnull final String searchString )
-	{
-		this.searchString = searchString;
-	}
+    public void setSearchString(@Nonnull final String searchString) {
+        this.searchString = searchString;
+    }
 }

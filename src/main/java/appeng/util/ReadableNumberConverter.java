@@ -32,93 +32,85 @@ import java.text.Format;
  * @version rv2
  * @since rv2
  */
-public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWideReadableNumberConverter
-{
-	INSTANCE;
+public enum ReadableNumberConverter implements ISlimReadableNumberConverter, IWideReadableNumberConverter {
+    INSTANCE;
 
-	/**
-	 * Defines the base for a division, non-si standard could be 1024 for kilobytes
-	 */
-	private static final int DIVISION_BASE = 1000;
+    /**
+     * Defines the base for a division, non-si standard could be 1024 for kilobytes
+     */
+    private static final int DIVISION_BASE = 1000;
 
-	/**
-	 * String representation of the sorted postfixes
-	 */
-	private static final char[] ENCODED_POSTFIXES = "KMGTPE".toCharArray();
+    /**
+     * String representation of the sorted postfixes
+     */
+    private static final char[] ENCODED_POSTFIXES = "KMGTPE".toCharArray();
 
-	private final Format format;
+    private final Format format;
 
-	/**
-	 * Initializes the specific decimal format with special format for negative and positive numbers
-	 */
-	ReadableNumberConverter()
-	{
-		final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-		symbols.setDecimalSeparator( '.' );
-		final DecimalFormat format = new DecimalFormat( ".#;0.#" );
-		format.setDecimalFormatSymbols( symbols );
-		format.setRoundingMode( RoundingMode.DOWN );
+    /**
+     * Initializes the specific decimal format with special format for negative and positive numbers
+     */
+    ReadableNumberConverter() {
+        final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        final DecimalFormat format = new DecimalFormat(".#;0.#");
+        format.setDecimalFormatSymbols(symbols);
+        format.setRoundingMode(RoundingMode.DOWN);
 
-		this.format = format;
-	}
+        this.format = format;
+    }
 
-	@Override
-	public String toSlimReadableForm( final long number )
-	{
-		return this.toReadableFormRestrictedByWidth( number, 3 );
-	}
+    @Override
+    public String toSlimReadableForm(final long number) {
+        return this.toReadableFormRestrictedByWidth(number, 3);
+    }
 
-	/**
-	 * restricts a string representation of a number to a specific width
-	 *
-	 * @param number to be formatted number
-	 * @param width width limitation of the resulting number
-	 *
-	 * @return formatted number restricted by the width limitation
-	 */
-	private String toReadableFormRestrictedByWidth( final long number, final int width )
-	{
-		assert number >= 0;
+    /**
+     * restricts a string representation of a number to a specific width
+     *
+     * @param number to be formatted number
+     * @param width  width limitation of the resulting number
+     * @return formatted number restricted by the width limitation
+     */
+    private String toReadableFormRestrictedByWidth(final long number, final int width) {
+        assert number >= 0;
 
-		// handles low numbers more efficiently since no format is needed
-		final String numberString = Long.toString( number );
-		int numberSize = numberString.length();
-		if( numberSize <= width )
-		{
-			return numberString;
-		}
+        // handles low numbers more efficiently since no format is needed
+        final String numberString = Long.toString(number);
+        int numberSize = numberString.length();
+        if (numberSize <= width) {
+            return numberString;
+        }
 
-		long base = number;
-		double last = base * 1000;
-		int exponent = -1;
-		String postFix = "";
+        long base = number;
+        double last = base * 1000;
+        int exponent = -1;
+        String postFix = "";
 
-		while( numberSize > width )
-		{
-			last = base;
-			base /= DIVISION_BASE;
+        while (numberSize > width) {
+            last = base;
+            base /= DIVISION_BASE;
 
-			exponent++;
+            exponent++;
 
-			// adds +1 due to the postfix
-			numberSize = Long.toString( base ).length() + 1;
-			postFix = String.valueOf( ENCODED_POSTFIXES[exponent] );
-		}
+            // adds +1 due to the postfix
+            numberSize = Long.toString(base).length() + 1;
+            postFix = String.valueOf(ENCODED_POSTFIXES[exponent]);
+        }
 
-		final String withPrecision = this.format.format( last / DIVISION_BASE ) + postFix;
-		final String withoutPrecision = Long.toString( base ) + postFix;
+        final String withPrecision = this.format.format(last / DIVISION_BASE) + postFix;
+        final String withoutPrecision = base + postFix;
 
-		final String slimResult = ( withPrecision.length() <= width ) ? withPrecision : withoutPrecision;
+        final String slimResult = (withPrecision.length() <= width) ? withPrecision : withoutPrecision;
 
-		// post condition
-		assert slimResult.length() <= width;
+        // post condition
+        assert slimResult.length() <= width;
 
-		return slimResult;
-	}
+        return slimResult;
+    }
 
-	@Override
-	public String toWideReadableForm( final long number )
-	{
-		return this.toReadableFormRestrictedByWidth( number, 4 );
-	}
+    @Override
+    public String toWideReadableForm(final long number) {
+        return this.toReadableFormRestrictedByWidth(number, 4);
+    }
 }

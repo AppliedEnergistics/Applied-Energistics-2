@@ -19,19 +19,17 @@
 package appeng.facade;
 
 
+import appeng.api.util.AEPartLocation;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 
-import appeng.api.util.AEPartLocation;
 
+public interface IFacadeItem {
 
-public interface IFacadeItem
-{
+    FacadePart createPartFromItemStack(ItemStack is, AEPartLocation side);
 
-	FacadePart createPartFromItemStack( ItemStack is, AEPartLocation side );
+    ItemStack getTextureItem(ItemStack is);
 
-	ItemStack getTextureItem( ItemStack is );
-
-	IBlockState getTextureBlockState( ItemStack is );
+    IBlockState getTextureBlockState(ItemStack is);
 
 }

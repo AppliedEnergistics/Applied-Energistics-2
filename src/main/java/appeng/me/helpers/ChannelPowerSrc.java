@@ -25,25 +25,21 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
 
 
-public class ChannelPowerSrc implements IEnergySource
-{
+public class ChannelPowerSrc implements IEnergySource {
 
-	private final IGridNode node;
-	private final IEnergySource realSrc;
+    private final IGridNode node;
+    private final IEnergySource realSrc;
 
-	public ChannelPowerSrc( final IGridNode networkNode, final IEnergySource src )
-	{
-		this.node = networkNode;
-		this.realSrc = src;
-	}
+    public ChannelPowerSrc(final IGridNode networkNode, final IEnergySource src) {
+        this.node = networkNode;
+        this.realSrc = src;
+    }
 
-	@Override
-	public double extractAEPower( final double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier )
-	{
-		if( this.node.isActive() )
-		{
-			return this.realSrc.extractAEPower( amt, mode, usePowerMultiplier );
-		}
-		return 0.0;
-	}
+    @Override
+    public double extractAEPower(final double amt, final Actionable mode, final PowerMultiplier usePowerMultiplier) {
+        if (this.node.isActive()) {
+            return this.realSrc.extractAEPower(amt, mode, usePowerMultiplier);
+        }
+        return 0.0;
+    }
 }

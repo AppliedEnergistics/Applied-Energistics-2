@@ -19,84 +19,71 @@
 package appeng.core.features;
 
 
+import appeng.api.util.AEColor;
+import appeng.api.util.AEColoredItemDefinition;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import appeng.api.util.AEColor;
-import appeng.api.util.AEColoredItemDefinition;
 
+public final class ColoredItemDefinition implements AEColoredItemDefinition {
 
-public final class ColoredItemDefinition implements AEColoredItemDefinition
-{
+    private final ItemStackSrc[] colors = new ItemStackSrc[17];
 
-	private final ItemStackSrc[] colors = new ItemStackSrc[17];
+    public void add(final AEColor v, final ItemStackSrc is) {
+        this.colors[v.ordinal()] = is;
+    }
 
-	public void add( final AEColor v, final ItemStackSrc is )
-	{
-		this.colors[v.ordinal()] = is;
-	}
+    @Override
+    public Block block(final AEColor color) {
+        return null;
+    }
 
-	@Override
-	public Block block( final AEColor color )
-	{
-		return null;
-	}
+    @Override
+    public Item item(final AEColor color) {
+        final ItemStackSrc is = this.colors[color.ordinal()];
 
-	@Override
-	public Item item( final AEColor color )
-	{
-		final ItemStackSrc is = this.colors[color.ordinal()];
+        if (is == null) {
+            return null;
+        }
 
-		if( is == null )
-		{
-			return null;
-		}
+        return is.getItem();
+    }
 
-		return is.getItem();
-	}
+    @Override
+    public Class<? extends TileEntity> entity(final AEColor color) {
+        return null;
+    }
 
-	@Override
-	public Class<? extends TileEntity> entity( final AEColor color )
-	{
-		return null;
-	}
+    @Override
+    public ItemStack stack(final AEColor color, final int stackSize) {
+        final ItemStackSrc is = this.colors[color.ordinal()];
 
-	@Override
-	public ItemStack stack( final AEColor color, final int stackSize )
-	{
-		final ItemStackSrc is = this.colors[color.ordinal()];
+        if (is == null) {
+            return ItemStack.EMPTY;
+        }
 
-		if( is == null )
-		{
-			return ItemStack.EMPTY;
-		}
+        return is.stack(stackSize);
+    }
 
-		return is.stack( stackSize );
-	}
+    @Override
+    public ItemStack[] allStacks(final int stackSize) {
+        final ItemStack[] is = new ItemStack[this.colors.length];
+        for (int x = 0; x < is.length; x++) {
+            is[x] = this.colors[x].stack(1);
+        }
+        return is;
+    }
 
-	@Override
-	public ItemStack[] allStacks( final int stackSize )
-	{
-		final ItemStack[] is = new ItemStack[this.colors.length];
-		for( int x = 0; x < is.length; x++ )
-		{
-			is[x] = this.colors[x].stack( 1 );
-		}
-		return is;
-	}
+    @Override
+    public boolean sameAs(final AEColor color, final ItemStack comparableItem) {
+        final ItemStackSrc is = this.colors[color.ordinal()];
 
-	@Override
-	public boolean sameAs( final AEColor color, final ItemStack comparableItem )
-	{
-		final ItemStackSrc is = this.colors[color.ordinal()];
+        if (comparableItem.isEmpty() || is == null) {
+            return false;
+        }
 
-		if( comparableItem.isEmpty() || is == null )
-		{
-			return false;
-		}
-
-		return comparableItem.getItem() == is.getItem() && comparableItem.getItemDamage() == is.getDamage();
-	}
+        return comparableItem.getItem() == is.getItem() && comparableItem.getItemDamage() == is.getDamage();
+    }
 }

@@ -19,57 +19,47 @@
 package appeng.util.inv;
 
 
+import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
-import appeng.util.Platform;
 
+public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler {
+    public AdaptorItemHandlerPlayerInv(final EntityPlayer playerInv) {
+        super(new PlayerMainInvWrapper(playerInv.inventory));
+    }
 
-public class AdaptorItemHandlerPlayerInv extends AdaptorItemHandler
-{
-	public AdaptorItemHandlerPlayerInv( final EntityPlayer playerInv )
-	{
-		super( new PlayerMainInvWrapper( playerInv.inventory ) );
-	}
+    /**
+     * Tries to fill existing stacks first
+     */
+    @Override
+    protected ItemStack addItems(final ItemStack itemsToAdd, final boolean simulate) {
+        if (itemsToAdd.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
 
-	/**
-	 * Tries to fill existing stacks first
-	 */
-	@Override
-	protected ItemStack addItems( final ItemStack itemsToAdd, final boolean simulate )
-	{
-		if( itemsToAdd.isEmpty() )
-		{
-			return ItemStack.EMPTY;
-		}
+        ItemStack left = itemsToAdd.copy();
 
-		ItemStack left = itemsToAdd.copy();
+        for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
+            ItemStack is = this.itemHandler.getStackInSlot(slot);
 
-		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
-		{
-			ItemStack is = this.itemHandler.getStackInSlot( slot );
+            if (Platform.itemComparisons().isSameItem(is, left)) {
+                left = this.itemHandler.insertItem(slot, left, simulate);
+            }
+            if (left.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
 
-			if( Platform.itemComparisons().isSameItem( is, left ) )
-			{
-				left = this.itemHandler.insertItem( slot, left, simulate );
-			}
-			if( left.isEmpty() )
-			{
-				return ItemStack.EMPTY;
-			}
-		}
+        for (int slot = 0; slot < this.itemHandler.getSlots(); slot++) {
+            left = this.itemHandler.insertItem(slot, left, simulate);
+            if (left.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
 
-		for( int slot = 0; slot < this.itemHandler.getSlots(); slot++ )
-		{
-			left = this.itemHandler.insertItem( slot, left, simulate );
-			if( left.isEmpty() )
-			{
-				return ItemStack.EMPTY;
-			}
-		}
-
-		return left;
-	}
+        return left;
+    }
 
 }

@@ -29,17 +29,14 @@ import appeng.api.recipes.IRecipeLoader;
  * @version rv3 - 10.08.2015
  * @since rv0
  */
-public class RecipeHandler implements IRecipeHandler
-{
-	@Override
-	public void parseRecipes( final IRecipeLoader loader, final String path )
-	{
-		// dummy
-	}
+public class RecipeHandler implements IRecipeHandler {
+    @Override
+    public void parseRecipes(final IRecipeLoader loader, final String path) {
+        // dummy
+    }
 
-	@Override
-	public void injectRecipes()
-	{
-		// dummy
-	}
+    @Override
+    public void injectRecipes() {
+        // dummy
+    }
 }

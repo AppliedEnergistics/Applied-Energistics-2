@@ -19,13 +19,7 @@
 package appeng.client.render.model;
 
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -35,53 +29,50 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+
 
 /**
  * The parent model for the compass baked model. Declares the dependencies for the base and pointer submodels mostly.
  */
-public class SkyCompassModel implements IModel
-{
+public class SkyCompassModel implements IModel {
 
-	private static final ResourceLocation MODEL_BASE = new ResourceLocation( "appliedenergistics2:block/sky_compass_base" );
+    private static final ResourceLocation MODEL_BASE = new ResourceLocation("appliedenergistics2:block/sky_compass_base");
 
-	private static final ResourceLocation MODEL_POINTER = new ResourceLocation( "appliedenergistics2:block/sky_compass_pointer" );
+    private static final ResourceLocation MODEL_POINTER = new ResourceLocation("appliedenergistics2:block/sky_compass_pointer");
 
-	private static final List<ResourceLocation> DEPENDENCIES = ImmutableList.of( MODEL_BASE, MODEL_POINTER );
+    private static final List<ResourceLocation> DEPENDENCIES = ImmutableList.of(MODEL_BASE, MODEL_POINTER);
 
-	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return DEPENDENCIES;
-	}
+    @Override
+    public Collection<ResourceLocation> getDependencies() {
+        return DEPENDENCIES;
+    }
 
-	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public Collection<ResourceLocation> getTextures() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		IModel baseModel, pointerModel;
-		try
-		{
-			baseModel = ModelLoaderRegistry.getModel( MODEL_BASE );
-			pointerModel = ModelLoaderRegistry.getModel( MODEL_POINTER );
-		}
-		catch( Exception e )
-		{
-			throw new RuntimeException( e );
-		}
+    @Override
+    public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+        IModel baseModel, pointerModel;
+        try {
+            baseModel = ModelLoaderRegistry.getModel(MODEL_BASE);
+            pointerModel = ModelLoaderRegistry.getModel(MODEL_POINTER);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-		IBakedModel bakedBase = baseModel.bake( state, format, bakedTextureGetter );
-		IBakedModel bakedPointer = pointerModel.bake( state, format, bakedTextureGetter );
-		return new SkyCompassBakedModel( bakedBase, bakedPointer );
-	}
+        IBakedModel bakedBase = baseModel.bake(state, format, bakedTextureGetter);
+        IBakedModel bakedPointer = pointerModel.bake(state, format, bakedTextureGetter);
+        return new SkyCompassBakedModel(bakedBase, bakedPointer);
+    }
 
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
-	}
+    @Override
+    public IModelState getDefaultState() {
+        return TRSRTransformation.identity();
+    }
 }

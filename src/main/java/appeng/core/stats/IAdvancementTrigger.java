@@ -23,7 +23,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 
 @FunctionalInterface
-public interface IAdvancementTrigger
-{
-	void trigger( EntityPlayerMP parPlayer );
+public interface IAdvancementTrigger {
+    void trigger(EntityPlayerMP parPlayer);
 }

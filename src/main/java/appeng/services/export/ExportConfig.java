@@ -27,56 +27,55 @@ import javax.annotation.Nonnull;
  * @version rv3 - 14.08.2015
  * @since rv3 14.08.2015
  */
-public interface ExportConfig
-{
-	/**
-	 * config switch to disable the exporting.
-	 * if the recipes system is not used
-	 * there is no reason to export them.
-	 * Still can be useful for debugging purpose,
-	 * thus not tying it to the recipe system directly.
-	 *
-	 * @return true if exporting is enabled
-	 */
-	boolean isExportingItemNamesEnabled();
+public interface ExportConfig {
+    /**
+     * config switch to disable the exporting.
+     * if the recipes system is not used
+     * there is no reason to export them.
+     * Still can be useful for debugging purpose,
+     * thus not tying it to the recipe system directly.
+     *
+     * @return true if exporting is enabled
+     */
+    boolean isExportingItemNamesEnabled();
 
-	/**
-	 * config switch for using the digest cache.
-	 *
-	 * @return true if cache is enabled
-	 */
-	boolean isCacheEnabled();
+    /**
+     * config switch for using the digest cache.
+     *
+     * @return true if cache is enabled
+     */
+    boolean isCacheEnabled();
 
-	/**
-	 * config switch to always refresh the CSV. Might be useful to activate on debugging.
-	 *
-	 * @return true if force refresh is enabled
-	 */
-	boolean isForceRefreshEnabled();
+    /**
+     * config switch to always refresh the CSV. Might be useful to activate on debugging.
+     *
+     * @return true if force refresh is enabled
+     */
+    boolean isForceRefreshEnabled();
 
-	/**
-	 * config switch to export more information mostly used for debugging
-	 *
-	 * @return true if additional information are enabled
-	 */
-	boolean isAdditionalInformationEnabled();
+    /**
+     * config switch to export more information mostly used for debugging
+     *
+     * @return true if additional information are enabled
+     */
+    boolean isAdditionalInformationEnabled();
 
-	/**
-	 * Will get the cache from last session. Can be used to reduce I/O operations though containing itself calculation.
-	 *
-	 * @return a digest from the last calculation
-	 */
-	String getCache();
+    /**
+     * Will get the cache from last session. Can be used to reduce I/O operations though containing itself calculation.
+     *
+     * @return a digest from the last calculation
+     */
+    String getCache();
 
-	/**
-	 * sets the cache for the next session to reduce calculation overhead
-	 *
-	 * @param digest new digest for the cache
-	 */
-	void setCache( @Nonnull String digest );
+    /**
+     * sets the cache for the next session to reduce calculation overhead
+     *
+     * @param digest new digest for the cache
+     */
+    void setCache(@Nonnull String digest);
 
-	/**
-	 * Will delegate the saving
-	 */
-	void save();
+    /**
+     * Will delegate the saving
+     */
+    void save();
 }

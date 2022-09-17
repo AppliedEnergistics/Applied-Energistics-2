@@ -19,52 +19,44 @@
 package appeng.util.helpers;
 
 
+import appeng.api.util.AEColor;
 import com.google.common.base.Preconditions;
 
-import appeng.api.util.AEColor;
 
+public class P2PHelper {
 
-public class P2PHelper
-{
+    public AEColor[] toColors(short frequency) {
+        final AEColor[] colors = new AEColor[4];
 
-	public AEColor[] toColors( short frequency )
-	{
-		final AEColor[] colors = new AEColor[4];
+        for (int i = 0; i < 4; i++) {
+            int nibble = (frequency >> 4 * (3 - i)) & 0xF;
 
-		for( int i = 0; i < 4; i++ )
-		{
-			int nibble = ( frequency >> 4 * ( 3 - i ) ) & 0xF;
+            colors[i] = AEColor.values()[nibble];
+        }
 
-			colors[i] = AEColor.values()[nibble];
-		}
+        return colors;
+    }
 
-		return colors;
-	}
+    public short fromColors(AEColor[] colors) {
+        Preconditions.checkArgument(colors.length == 4);
 
-	public short fromColors( AEColor[] colors )
-	{
-		Preconditions.checkArgument( colors.length == 4 );
+        int t = 0;
 
-		int t = 0;
+        for (int i = 0; i < 4; i++) {
+            int code = colors[3 - i].ordinal() << 4 * i;
 
-		for( int i = 0; i < 4; i++ )
-		{
-			int code = colors[3 - i].ordinal() << 4 * i;
+            t |= code;
+        }
 
-			t |= code;
-		}
+        return (short) (t & 0xFFFF);
+    }
 
-		return (short) ( t & 0xFFFF );
-	}
+    public String toHexDigit(AEColor color) {
+        return String.format("%01X", color.ordinal());
+    }
 
-	public String toHexDigit( AEColor color )
-	{
-		return String.format( "%01X", color.ordinal() );
-	}
-
-	public String toHexString( short frequency )
-	{
-		return String.format( "%04X", frequency );
-	}
+    public String toHexString(short frequency) {
+        return String.format("%04X", frequency);
+    }
 
 }

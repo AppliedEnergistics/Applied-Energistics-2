@@ -19,8 +19,11 @@
 package appeng.block.grindstone;
 
 
-import javax.annotation.Nullable;
-
+import appeng.api.implementations.tiles.ICrankable;
+import appeng.block.AEBaseTileBlock;
+import appeng.core.stats.Stats;
+import appeng.tile.AEBaseTile;
+import appeng.tile.grindstone.TileCrank;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
@@ -37,145 +40,114 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 
-import appeng.api.implementations.tiles.ICrankable;
-import appeng.block.AEBaseTileBlock;
-import appeng.core.stats.Stats;
-import appeng.tile.AEBaseTile;
-import appeng.tile.grindstone.TileCrank;
+import javax.annotation.Nullable;
 
 
-public class BlockCrank extends AEBaseTileBlock
-{
+public class BlockCrank extends AEBaseTileBlock {
 
-	public BlockCrank()
-	{
-		super( Material.WOOD );
+    public BlockCrank() {
+        super(Material.WOOD);
 
-		this.setLightOpacity( 0 );
-		this.setHarvestLevel( "axe", 0 );
-		this.setFullSize( this.setOpaque( false ) );
-	}
+        this.setLightOpacity(0);
+        this.setHarvestLevel("axe", 0);
+        this.setFullSize(this.setOpaque(false));
+    }
 
-	@Override
-	public boolean onActivated( final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ )
-	{
-		if( player instanceof FakePlayer || player == null )
-		{
-			this.dropCrank( w, pos );
-			return true;
-		}
+    @Override
+    public boolean onActivated(final World w, final BlockPos pos, final EntityPlayer player, final EnumHand hand, final @Nullable ItemStack heldItem, final EnumFacing side, final float hitX, final float hitY, final float hitZ) {
+        if (player instanceof FakePlayer || player == null) {
+            this.dropCrank(w, pos);
+            return true;
+        }
 
-		final AEBaseTile tile = this.getTileEntity( w, pos );
-		if( tile instanceof TileCrank )
-		{
-			if( ( (TileCrank) tile ).power() )
-			{
-				Stats.TurnedCranks.addToPlayer( player, 1 );
-			}
-		}
+        final AEBaseTile tile = this.getTileEntity(w, pos);
+        if (tile instanceof TileCrank) {
+            if (((TileCrank) tile).power()) {
+                Stats.TurnedCranks.addToPlayer(player, 1);
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private void dropCrank( final World world, final BlockPos pos )
-	{
-		world.destroyBlock( pos, true ); // w.destroyBlock( x, y, z, true );
-		world.notifyBlockUpdate( pos, this.getDefaultState(), world.getBlockState( pos ), 3 );
-	}
+    private void dropCrank(final World world, final BlockPos pos) {
+        world.destroyBlock(pos, true); // w.destroyBlock( x, y, z, true );
+        world.notifyBlockUpdate(pos, this.getDefaultState(), world.getBlockState(pos), 3);
+    }
 
-	@Override
-	public void onBlockPlacedBy( final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack )
-	{
-		final AEBaseTile tile = this.getTileEntity( world, pos );
-		if( tile != null )
-		{
-			final EnumFacing mnt = this.findCrankable( world, pos );
-			EnumFacing forward = EnumFacing.UP;
-			if( mnt == EnumFacing.UP || mnt == EnumFacing.DOWN )
-			{
-				forward = EnumFacing.SOUTH;
-			}
-			tile.setOrientation( forward, mnt.getOpposite() );
-		}
-		else
-		{
-			this.dropCrank( world, pos );
-		}
-	}
+    @Override
+    public void onBlockPlacedBy(final World world, final BlockPos pos, final IBlockState state, final EntityLivingBase placer, final ItemStack stack) {
+        final AEBaseTile tile = this.getTileEntity(world, pos);
+        if (tile != null) {
+            final EnumFacing mnt = this.findCrankable(world, pos);
+            EnumFacing forward = EnumFacing.UP;
+            if (mnt == EnumFacing.UP || mnt == EnumFacing.DOWN) {
+                forward = EnumFacing.SOUTH;
+            }
+            tile.setOrientation(forward, mnt.getOpposite());
+        } else {
+            this.dropCrank(world, pos);
+        }
+    }
 
-	@Override
-	public boolean isValidOrientation( final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up )
-	{
-		final TileEntity te = w.getTileEntity( pos );
-		return !( te instanceof TileCrank ) || this.isCrankable( w, pos, up.getOpposite() );
-	}
+    @Override
+    public boolean isValidOrientation(final World w, final BlockPos pos, final EnumFacing forward, final EnumFacing up) {
+        final TileEntity te = w.getTileEntity(pos);
+        return !(te instanceof TileCrank) || this.isCrankable(w, pos, up.getOpposite());
+    }
 
-	private EnumFacing findCrankable( final World world, final BlockPos pos )
-	{
-		for( final EnumFacing dir : EnumFacing.VALUES )
-		{
-			if( this.isCrankable( world, pos, dir ) )
-			{
-				return dir;
-			}
-		}
-		return null;
-	}
+    private EnumFacing findCrankable(final World world, final BlockPos pos) {
+        for (final EnumFacing dir : EnumFacing.VALUES) {
+            if (this.isCrankable(world, pos, dir)) {
+                return dir;
+            }
+        }
+        return null;
+    }
 
-	private boolean isCrankable( final World world, final BlockPos pos, final EnumFacing offset )
-	{
-		final BlockPos o = pos.offset( offset );
-		final TileEntity te = world.getTileEntity( o );
+    private boolean isCrankable(final World world, final BlockPos pos, final EnumFacing offset) {
+        final BlockPos o = pos.offset(offset);
+        final TileEntity te = world.getTileEntity(o);
 
-		return te instanceof ICrankable && ( (ICrankable) te ).canCrankAttach( offset.getOpposite() );
-	}
+        return te instanceof ICrankable && ((ICrankable) te).canCrankAttach(offset.getOpposite());
+    }
 
-	@Override
-	public EnumBlockRenderType getRenderType( IBlockState state )
-	{
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+    }
 
-	@Override
-	public void neighborChanged( IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos )
-	{
+    @Override
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
 
-		final AEBaseTile tile = this.getTileEntity( world, pos );
-		if( tile != null )
-		{
-			if( !this.isCrankable( world, pos, tile.getUp().getOpposite() ) )
-			{
-				this.dropCrank( world, pos );
-			}
-		}
-		else
-		{
-			this.dropCrank( world, pos );
-		}
-	}
+        final AEBaseTile tile = this.getTileEntity(world, pos);
+        if (tile != null) {
+            if (!this.isCrankable(world, pos, tile.getUp().getOpposite())) {
+                this.dropCrank(world, pos);
+            }
+        } else {
+            this.dropCrank(world, pos);
+        }
+    }
 
-	@Override
-	public boolean canPlaceBlockAt( final World world, final BlockPos pos )
-	{
-		return this.findCrankable( world, pos ) != null;
-	}
+    @Override
+    public boolean canPlaceBlockAt(final World world, final BlockPos pos) {
+        return this.findCrankable(world, pos) != null;
+    }
 
-	@Override
-	public boolean isFullCube( IBlockState state )
-	{
-		return false;
-	}
+    @Override
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
 
-	@Override
-	public boolean canPlaceTorchOnTop( IBlockState state, IBlockAccess world, BlockPos pos )
-	{
-		return false;
-	}
+    @Override
+    public boolean canPlaceTorchOnTop(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return false;
+    }
 
-	@Override
-	public BlockFaceShape getBlockFaceShape( IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face )
-	{
-		return BlockFaceShape.UNDEFINED;
-	}
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
+        return BlockFaceShape.UNDEFINED;
+    }
 
 }

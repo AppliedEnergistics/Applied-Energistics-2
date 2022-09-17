@@ -19,11 +19,10 @@
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
 
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-
 import appeng.thirdparty.codechicken.lib.model.Quad.Vertex;
 import appeng.thirdparty.codechicken.lib.model.pipeline.IPipelineElementFactory;
 import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
+import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 
 
 /**
@@ -32,47 +31,40 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.QuadTransformer;
  *
  * @author covers1624
  */
-public class QuadTinter extends QuadTransformer
-{
+public class QuadTinter extends QuadTransformer {
 
-	public static final IPipelineElementFactory<QuadTinter> FACTORY = QuadTinter::new;
+    public static final IPipelineElementFactory<QuadTinter> FACTORY = QuadTinter::new;
 
-	private int tint;
+    private int tint;
 
-	QuadTinter()
-	{
-		super();
-	}
+    QuadTinter() {
+        super();
+    }
 
-	public QuadTinter( IVertexConsumer consumer, int tint )
-	{
-		super( consumer );
-		this.tint = tint;
-	}
+    public QuadTinter(IVertexConsumer consumer, int tint) {
+        super(consumer);
+        this.tint = tint;
+    }
 
-	public QuadTinter setTint( int tint )
-	{
-		this.tint = tint;
-		return this;
-	}
+    public QuadTinter setTint(int tint) {
+        this.tint = tint;
+        return this;
+    }
 
-	@Override
-	public boolean transform()
-	{
-		// Nuke tintIndex.
-		this.quad.tintIndex = -1;
-		if( this.format.hasColor )
-		{
-			float r = ( this.tint >> 0x10 & 0xFF ) / 255F;
-			float g = ( this.tint >> 0x08 & 0xFF ) / 255F;
-			float b = ( this.tint & 0xFF ) / 255F;
-			for( Vertex v : this.quad.vertices )
-			{
-				v.color[0] *= r;
-				v.color[1] *= g;
-				v.color[2] *= b;
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean transform() {
+        // Nuke tintIndex.
+        this.quad.tintIndex = -1;
+        if (this.format.hasColor) {
+            float r = (this.tint >> 0x10 & 0xFF) / 255F;
+            float g = (this.tint >> 0x08 & 0xFF) / 255F;
+            float b = (this.tint & 0xFF) / 255F;
+            for (Vertex v : this.quad.vertices) {
+                v.color[0] *= r;
+                v.color[1] *= g;
+                v.color[2] *= b;
+            }
+        }
+        return true;
+    }
 }

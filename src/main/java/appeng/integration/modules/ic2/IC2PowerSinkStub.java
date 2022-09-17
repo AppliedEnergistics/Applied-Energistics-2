@@ -25,7 +25,6 @@ import appeng.integration.abstraction.IC2PowerSink;
 /**
  * Implementation of IC2PowerSink that just stubs out all methods and does nothing.
  */
-public enum IC2PowerSinkStub implements IC2PowerSink
-{
-	INSTANCE
+public enum IC2PowerSinkStub implements IC2PowerSink {
+    INSTANCE
 }

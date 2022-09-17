@@ -19,70 +19,59 @@
 package appeng.me.cache.helpers;
 
 
-import java.util.HashMap;
-
-import net.minecraft.world.World;
-
 import appeng.api.networking.IGridNode;
 import appeng.parts.p2p.PartP2PTunnelME;
 import appeng.util.IWorldCallable;
+import net.minecraft.world.World;
+
+import java.util.HashMap;
 
 
-public class Connections implements IWorldCallable<Void>
-{
+public class Connections implements IWorldCallable<Void> {
 
-	private final HashMap<IGridNode, TunnelConnection> connections = new HashMap<>();
-	private final PartP2PTunnelME me;
-	private boolean create = false;
-	private boolean destroy = false;
+    private final HashMap<IGridNode, TunnelConnection> connections = new HashMap<>();
+    private final PartP2PTunnelME me;
+    private boolean create = false;
+    private boolean destroy = false;
 
-	public Connections( final PartP2PTunnelME o )
-	{
-		this.me = o;
-	}
+    public Connections(final PartP2PTunnelME o) {
+        this.me = o;
+    }
 
-	@Override
-	public Void call( final World world ) throws Exception
-	{
-		this.me.updateConnections( this );
+    @Override
+    public Void call(final World world) throws Exception {
+        this.me.updateConnections(this);
 
-		return null;
-	}
+        return null;
+    }
 
-	public void markDestroy()
-	{
-		this.setCreate( false );
-		this.setDestroy( true );
-	}
+    public void markDestroy() {
+        this.setCreate(false);
+        this.setDestroy(true);
+    }
 
-	public void markCreate()
-	{
-		this.setCreate( true );
-		this.setDestroy( false );
-	}
+    public void markCreate() {
+        this.setCreate(true);
+        this.setDestroy(false);
+    }
 
-	public HashMap<IGridNode, TunnelConnection> getConnections()
-	{
-		return this.connections;
-	}
+    public HashMap<IGridNode, TunnelConnection> getConnections() {
+        return this.connections;
+    }
 
-	public boolean isCreate()
-	{
-		return this.create;
-	}
+    public boolean isCreate() {
+        return this.create;
+    }
 
-	private void setCreate( final boolean create )
-	{
-		this.create = create;
-	}
+    private void setCreate(final boolean create) {
+        this.create = create;
+    }
 
-	public boolean isDestroy()
-	{
-		return this.destroy;
-	}
+    public boolean isDestroy() {
+        return this.destroy;
+    }
 
-	private void setDestroy( final boolean destroy )
-	{
-		this.destroy = destroy;
-	}
+    private void setDestroy(final boolean destroy) {
+        this.destroy = destroy;
+    }
 }

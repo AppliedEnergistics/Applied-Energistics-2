@@ -19,182 +19,148 @@
 package appeng.services.version;
 
 
-import java.util.Scanner;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
+import appeng.services.version.exceptions.*;
 import com.google.common.base.Preconditions;
 
-import appeng.services.version.exceptions.InvalidBuildException;
-import appeng.services.version.exceptions.InvalidChannelException;
-import appeng.services.version.exceptions.InvalidRevisionException;
-import appeng.services.version.exceptions.InvalidVersionException;
-import appeng.services.version.exceptions.MissingSeparatorException;
-import appeng.services.version.exceptions.VersionCheckerException;
+import javax.annotation.Nonnull;
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 
 /**
  * can parse a version in form of rv2-beta-8 or rv2.beta.8
  */
-public final class VersionParser
-{
-	private static final Pattern PATTERN_DOT = Pattern.compile( "\\." );
-	private static final Pattern PATTERN_DASH = Pattern.compile( "-" );
-	private static final Pattern PATTERN_REVISION = Pattern.compile( "[^0-9]+" );
-	private static final Pattern PATTERN_BUILD = Pattern.compile( "[^0-9]+" );
-	private static final Pattern PATTERN_NATURAL = Pattern.compile( "[0-9]+" );
-	private static final Pattern PATTERN_VALID_REVISION = Pattern.compile( "^rv\\d+$" );
+public final class VersionParser {
+    private static final Pattern PATTERN_DOT = Pattern.compile("\\.");
+    private static final Pattern PATTERN_DASH = Pattern.compile("-");
+    private static final Pattern PATTERN_REVISION = Pattern.compile("[^0-9]+");
+    private static final Pattern PATTERN_BUILD = Pattern.compile("[^0-9]+");
+    private static final Pattern PATTERN_NATURAL = Pattern.compile("[0-9]+");
+    private static final Pattern PATTERN_VALID_REVISION = Pattern.compile("^rv\\d+$");
 
-	/**
-	 * Parses the {@link Version} out of a String
-	 *
-	 * @param raw String in form of rv2-beta-8 or rv2.beta.8
-	 *
-	 * @return {@link Version} encoded in the raw String
-	 *
-	 * @throws VersionCheckerException if parsing the raw string was not successful.
-	 *
-	 */
-	public Version parse( @Nonnull final String raw ) throws VersionCheckerException
-	{
-		Preconditions.checkNotNull( raw );
+    /**
+     * Parses the {@link Version} out of a String
+     *
+     * @param raw String in form of rv2-beta-8 or rv2.beta.8
+     * @return {@link Version} encoded in the raw String
+     * @throws VersionCheckerException if parsing the raw string was not successful.
+     */
+    public Version parse(@Nonnull final String raw) throws VersionCheckerException {
+        Preconditions.checkNotNull(raw);
 
-		final String transformed = this.transformDelimiter( raw );
-		final String[] split = transformed.split( "_" );
+        final String transformed = this.transformDelimiter(raw);
+        final String[] split = transformed.split("_");
 
-		return this.parseVersion( split );
-	}
+        return this.parseVersion(split);
+    }
 
-	/**
-	 * Replaces all "." and "-" into "_" to make them uniform
-	 *
-	 * @param raw raw version string containing "." or "-"
-	 *
-	 * @return transformed raw, where "." and "-" are replaced by "_"
-	 *
-	 * @throws MissingSeparatorException if not containing valid separators
-	 */
-	private String transformDelimiter( @Nonnull final String raw ) throws MissingSeparatorException
-	{
-		if( !( raw.contains( "." ) || raw.contains( "-" ) ) )
-		{
-			throw new MissingSeparatorException();
-		}
+    /**
+     * Replaces all "." and "-" into "_" to make them uniform
+     *
+     * @param raw raw version string containing "." or "-"
+     * @return transformed raw, where "." and "-" are replaced by "_"
+     * @throws MissingSeparatorException if not containing valid separators
+     */
+    private String transformDelimiter(@Nonnull final String raw) throws MissingSeparatorException {
+        if (!(raw.contains(".") || raw.contains("-"))) {
+            throw new MissingSeparatorException();
+        }
 
-		final String withoutDot = PATTERN_DOT.matcher( raw ).replaceAll( "_" );
-		final String withoutDash = PATTERN_DASH.matcher( withoutDot ).replaceAll( "_" );
+        final String withoutDot = PATTERN_DOT.matcher(raw).replaceAll("_");
+        final String withoutDash = PATTERN_DASH.matcher(withoutDot).replaceAll("_");
 
-		return withoutDash;
-	}
+        return withoutDash;
+    }
 
-	/**
-	 * parses the {@link Version} out of the split.
-	 * The split must have a length of 3,
-	 * representing revision, channel and build.
-	 *
-	 * @param splitRaw raw version split with length of 3
-	 *
-	 * @return {@link Version} represented by the splitRaw
-	 *
-	 * @throws InvalidVersionException when length not 3
-	 * @throws InvalidRevisionException {@link VersionParser#parseRevision(String)}
-	 * @throws InvalidChannelException {@link VersionParser#parseChannel(String)}
-	 * @throws InvalidBuildException {@link VersionParser#parseBuild(String)}
-	 */
-	private Version parseVersion( @Nonnull final String[] splitRaw ) throws InvalidVersionException, InvalidRevisionException, InvalidChannelException, InvalidBuildException
-	{
-		if( splitRaw.length != 3 )
-		{
-			throw new InvalidVersionException();
-		}
+    /**
+     * parses the {@link Version} out of the split.
+     * The split must have a length of 3,
+     * representing revision, channel and build.
+     *
+     * @param splitRaw raw version split with length of 3
+     * @return {@link Version} represented by the splitRaw
+     * @throws InvalidVersionException  when length not 3
+     * @throws InvalidRevisionException {@link VersionParser#parseRevision(String)}
+     * @throws InvalidChannelException  {@link VersionParser#parseChannel(String)}
+     * @throws InvalidBuildException    {@link VersionParser#parseBuild(String)}
+     */
+    private Version parseVersion(@Nonnull final String[] splitRaw) throws InvalidVersionException, InvalidRevisionException, InvalidChannelException, InvalidBuildException {
+        if (splitRaw.length != 3) {
+            throw new InvalidVersionException();
+        }
 
-		final String rawRevision = splitRaw[0];
-		final String rawChannel = splitRaw[1];
-		final String rawBuild = splitRaw[2];
+        final String rawRevision = splitRaw[0];
+        final String rawChannel = splitRaw[1];
+        final String rawBuild = splitRaw[2];
 
-		final int revision = this.parseRevision( rawRevision );
-		final Channel channel = this.parseChannel( rawChannel );
-		final int build = this.parseBuild( rawBuild );
+        final int revision = this.parseRevision(rawRevision);
+        final Channel channel = this.parseChannel(rawChannel);
+        final int build = this.parseBuild(rawBuild);
 
-		return new DefaultVersion( revision, channel, build );
-	}
+        return new DefaultVersion(revision, channel, build);
+    }
 
-	/**
-	 * A revision starts with the keyword "rv", followed by a natural number
-	 *
-	 * @param rawRevision String containing the revision number
-	 *
-	 * @return revision number
-	 *
-	 * @throws InvalidRevisionException if not matching "rv" followed by a natural number.
-	 */
-	private int parseRevision( @Nonnull final String rawRevision ) throws InvalidRevisionException
-	{
-		if( !PATTERN_VALID_REVISION.matcher( rawRevision ).matches() )
-		{
-			throw new InvalidRevisionException();
-		}
+    /**
+     * A revision starts with the keyword "rv", followed by a natural number
+     *
+     * @param rawRevision String containing the revision number
+     * @return revision number
+     * @throws InvalidRevisionException if not matching "rv" followed by a natural number.
+     */
+    private int parseRevision(@Nonnull final String rawRevision) throws InvalidRevisionException {
+        if (!PATTERN_VALID_REVISION.matcher(rawRevision).matches()) {
+            throw new InvalidRevisionException();
+        }
 
-		final Scanner scanner = new Scanner( rawRevision );
+        final Scanner scanner = new Scanner(rawRevision);
 
-		final int revision = scanner.useDelimiter( PATTERN_REVISION ).nextInt();
+        final int revision = scanner.useDelimiter(PATTERN_REVISION).nextInt();
 
-		scanner.close();
+        scanner.close();
 
-		return revision;
-	}
+        return revision;
+    }
 
-	/**
-	 * A channel is atm either one of {@link Channel#Alpha}, {@link Channel#Beta} or {@link Channel#Stable}
-	 *
-	 * @param rawChannel String containing the channel
-	 *
-	 * @return matching {@link Channel} to the String
-	 *
-	 * @throws InvalidChannelException if not one of {@link Channel} values.
-	 */
-	private Channel parseChannel( @Nonnull final String rawChannel ) throws InvalidChannelException
-	{
-		if( !( rawChannel.equalsIgnoreCase( Channel.Alpha.name() ) || rawChannel.equalsIgnoreCase( Channel.Beta.name() ) || rawChannel
-				.equalsIgnoreCase( Channel.Stable.name() ) ) )
-		{
-			throw new InvalidChannelException();
-		}
+    /**
+     * A channel is atm either one of {@link Channel#Alpha}, {@link Channel#Beta} or {@link Channel#Stable}
+     *
+     * @param rawChannel String containing the channel
+     * @return matching {@link Channel} to the String
+     * @throws InvalidChannelException if not one of {@link Channel} values.
+     */
+    private Channel parseChannel(@Nonnull final String rawChannel) throws InvalidChannelException {
+        if (!(rawChannel.equalsIgnoreCase(Channel.Alpha.name()) || rawChannel.equalsIgnoreCase(Channel.Beta.name()) || rawChannel
+                .equalsIgnoreCase(Channel.Stable.name()))) {
+            throw new InvalidChannelException();
+        }
 
-		for( final Channel channel : Channel.values() )
-		{
-			if( channel.name().equalsIgnoreCase( rawChannel ) )
-			{
-				return channel;
-			}
-		}
+        for (final Channel channel : Channel.values()) {
+            if (channel.name().equalsIgnoreCase(rawChannel)) {
+                return channel;
+            }
+        }
 
-		throw new InvalidChannelException();
-	}
+        throw new InvalidChannelException();
+    }
 
-	/**
-	 * A build is just a natural number
-	 *
-	 * @param rawBuild String containing the build number
-	 *
-	 * @return build number
-	 *
-	 * @throws InvalidBuildException if not a natural number.
-	 */
-	private int parseBuild( @Nonnull final String rawBuild ) throws InvalidBuildException
-	{
-		if( !PATTERN_NATURAL.matcher( rawBuild ).matches() )
-		{
-			throw new InvalidBuildException();
-		}
+    /**
+     * A build is just a natural number
+     *
+     * @param rawBuild String containing the build number
+     * @return build number
+     * @throws InvalidBuildException if not a natural number.
+     */
+    private int parseBuild(@Nonnull final String rawBuild) throws InvalidBuildException {
+        if (!PATTERN_NATURAL.matcher(rawBuild).matches()) {
+            throw new InvalidBuildException();
+        }
 
-		final Scanner scanner = new Scanner( rawBuild );
+        final Scanner scanner = new Scanner(rawBuild);
 
-		final int build = scanner.useDelimiter( PATTERN_BUILD ).nextInt();
+        final int build = scanner.useDelimiter(PATTERN_BUILD).nextInt();
 
-		scanner.close();
+        scanner.close();
 
-		return build;
-	}
+        return build;
+    }
 }

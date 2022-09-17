@@ -27,15 +27,14 @@ package appeng.services.export;
  * @see Checker
  * @since rv3 - 25.09.2015
  */
-enum CheckType
-{
-	/**
-	 * If checking resulted in both objects being <b>equal</b>
-	 */
-	EQUAL,
+enum CheckType {
+    /**
+     * If checking resulted in both objects being <b>equal</b>
+     */
+    EQUAL,
 
-	/**
-	 * If checking resulted in both objects being <b>unequal</b>
-	 */
-	UNEQUAL
+    /**
+     * If checking resulted in both objects being <b>unequal</b>
+     */
+    UNEQUAL
 }

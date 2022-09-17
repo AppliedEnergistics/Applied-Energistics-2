@@ -19,35 +19,29 @@
 package appeng.integration.modules.theoneprobe.config;
 
 
+import appeng.tile.AEBaseTile;
+import mcjty.theoneprobe.api.IProbeConfig;
+import mcjty.theoneprobe.api.IProbeConfigProvider;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeHitEntityData;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-import mcjty.theoneprobe.api.IProbeConfig;
-import mcjty.theoneprobe.api.IProbeConfigProvider;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeHitEntityData;
 
-import appeng.tile.AEBaseTile;
+public class AEConfigProvider implements IProbeConfigProvider {
 
+    @Override
+    public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data) {
+        // Still no AE entities.
+    }
 
-public class AEConfigProvider implements IProbeConfigProvider
-{
-
-	@Override
-	public void getProbeConfig( IProbeConfig config, EntityPlayer player, World world, Entity entity, IProbeHitEntityData data )
-	{
-		// Still no AE entities.
-	}
-
-	@Override
-	public void getProbeConfig( IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
-	{
-		if( world.getTileEntity( data.getPos() ) instanceof AEBaseTile )
-		{
-			config.setRFMode( 0 );
-		}
-	}
+    @Override
+    public void getProbeConfig(IProbeConfig config, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        if (world.getTileEntity(data.getPos()) instanceof AEBaseTile) {
+            config.setRFMode(0);
+        }
+    }
 
 }

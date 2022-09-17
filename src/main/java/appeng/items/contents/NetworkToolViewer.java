@@ -19,9 +19,6 @@
 package appeng.items.contents;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.implementations.guiobjects.INetworkTool;
 import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.networking.IGridHost;
@@ -30,73 +27,64 @@ import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 
-public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory
-{
+public class NetworkToolViewer implements INetworkTool, IAEAppEngInventory {
 
-	private final AppEngInternalInventory inv;
-	private final ItemStack is;
-	private final IGridHost gh;
+    private final AppEngInternalInventory inv;
+    private final ItemStack is;
+    private final IGridHost gh;
 
-	public NetworkToolViewer( final ItemStack is, final IGridHost gHost )
-	{
-		this.is = is;
-		this.gh = gHost;
-		this.inv = new AppEngInternalInventory( this, 9 );
-		this.inv.setFilter( new NetworkToolInventoryFilter() );
-		if( is.hasTagCompound() ) // prevent crash when opening network status screen.
-		{
-			this.inv.readFromNBT( Platform.openNbtData( is ), "inv" );
-		}
-	}
+    public NetworkToolViewer(final ItemStack is, final IGridHost gHost) {
+        this.is = is;
+        this.gh = gHost;
+        this.inv = new AppEngInternalInventory(this, 9);
+        this.inv.setFilter(new NetworkToolInventoryFilter());
+        if (is.hasTagCompound()) // prevent crash when opening network status screen.
+        {
+            this.inv.readFromNBT(Platform.openNbtData(is), "inv");
+        }
+    }
 
-	@Override
-	public void saveChanges()
-	{
-		this.inv.writeToNBT( Platform.openNbtData( this.is ), "inv" );
-	}
+    @Override
+    public void saveChanges() {
+        this.inv.writeToNBT(Platform.openNbtData(this.is), "inv");
+    }
 
-	@Override
-	public void onChangeInventory( IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack )
-	{
-	}
+    @Override
+    public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
+    }
 
-	@Override
-	public ItemStack getItemStack()
-	{
-		return this.is;
-	}
+    @Override
+    public ItemStack getItemStack() {
+        return this.is;
+    }
 
-	@Override
-	public IGridHost getGridHost()
-	{
-		return this.gh;
-	}
+    @Override
+    public IGridHost getGridHost() {
+        return this.gh;
+    }
 
-	private static class NetworkToolInventoryFilter implements IAEItemFilter
-	{
-		@Override
-		public boolean allowExtract( IItemHandler inv, int slot, int amount )
-		{
-			return true;
-		}
+    private static class NetworkToolInventoryFilter implements IAEItemFilter {
+        @Override
+        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+            return true;
+        }
 
-		@Override
-		public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
-		{
-			return stack.getItem() instanceof IUpgradeModule && ( (IUpgradeModule) stack.getItem() ).getType( stack ) != null;
-		}
-	}
+        @Override
+        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+            return stack.getItem() instanceof IUpgradeModule && ((IUpgradeModule) stack.getItem()).getType(stack) != null;
+        }
+    }
 
-	public IItemHandler getInternalInventory()
-	{
-		return this.inv;
-	}
+    public IItemHandler getInternalInventory() {
+        return this.inv;
+    }
 
-	@Override
-	public IItemHandler getInventory()
-	{
-		return this.inv;
-	}
+    @Override
+    public IItemHandler getInventory() {
+        return this.inv;
+    }
 }

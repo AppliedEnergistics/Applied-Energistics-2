@@ -22,11 +22,9 @@ package appeng.container.slot;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class SlotNormal extends AppEngSlot
-{
+public class SlotNormal extends AppEngSlot {
 
-	public SlotNormal( final IItemHandler inv, final int slot, final int xPos, final int yPos )
-	{
-		super( inv, slot, xPos, yPos );
-	}
+    public SlotNormal(final IItemHandler inv, final int slot, final int xPos, final int yPos) {
+        super(inv, slot, xPos, yPos);
+    }
 }

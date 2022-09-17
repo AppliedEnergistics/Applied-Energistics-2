@@ -24,7 +24,6 @@ import net.minecraft.advancements.ICriterionTrigger;
 
 
 @FunctionalInterface
-public interface ICriterionTriggerRegistry
-{
-	void register( ICriterionTrigger<? extends ICriterionInstance> trigger );
+public interface ICriterionTriggerRegistry {
+    void register(ICriterionTrigger<? extends ICriterionInstance> trigger);
 }

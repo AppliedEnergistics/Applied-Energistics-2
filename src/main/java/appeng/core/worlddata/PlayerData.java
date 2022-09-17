@@ -19,21 +19,18 @@
 package appeng.core.worlddata;
 
 
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import appeng.core.AppEng;
 import com.google.common.base.Preconditions;
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 
-import appeng.core.AppEng;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.UUID;
 
 
 /**
@@ -45,96 +42,83 @@ import appeng.core.AppEng;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldStoppable
-{
-	private static final String LAST_PLAYER_CATEGORY = "Counters";
-	private static final String LAST_PLAYER_KEY = "lastPlayer";
-	private static final int LAST_PLAYER_DEFAULT = 0;
+final class PlayerData implements IWorldPlayerData, IOnWorldStartable, IOnWorldStoppable {
+    private static final String LAST_PLAYER_CATEGORY = "Counters";
+    private static final String LAST_PLAYER_KEY = "lastPlayer";
+    private static final int LAST_PLAYER_DEFAULT = 0;
 
-	private final Configuration config;
-	private final IWorldPlayerMapping playerMapping;
+    private final Configuration config;
+    private final IWorldPlayerMapping playerMapping;
 
-	private int lastPlayerID;
+    private int lastPlayerID;
 
-	public PlayerData( @Nonnull final Configuration configFile )
-	{
-		Preconditions.checkNotNull( configFile );
+    public PlayerData(@Nonnull final Configuration configFile) {
+        Preconditions.checkNotNull(configFile);
 
-		this.config = configFile;
+        this.config = configFile;
 
-		final ConfigCategory playerList = this.config.getCategory( "players" );
-		this.playerMapping = new PlayerMapping( playerList );
-	}
+        final ConfigCategory playerList = this.config.getCategory("players");
+        this.playerMapping = new PlayerMapping(playerList);
+    }
 
-	@Nullable
-	@Override
-	public EntityPlayer getPlayerFromID( final int playerID )
-	{
-		final Optional<UUID> maybe = this.playerMapping.get( playerID );
+    @Nullable
+    @Override
+    public EntityPlayer getPlayerFromID(final int playerID) {
+        final Optional<UUID> maybe = this.playerMapping.get(playerID);
 
-		if( maybe.isPresent() )
-		{
-			final UUID uuid = maybe.get();
-			for( final EntityPlayer player : AppEng.proxy.getPlayers() )
-			{
-				if( player.getUniqueID().equals( uuid ) )
-				{
-					return player;
-				}
-			}
-		}
+        if (maybe.isPresent()) {
+            final UUID uuid = maybe.get();
+            for (final EntityPlayer player : AppEng.proxy.getPlayers()) {
+                if (player.getUniqueID().equals(uuid)) {
+                    return player;
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public int getPlayerID( @Nonnull final GameProfile profile )
-	{
-		Preconditions.checkNotNull( profile );
-		Preconditions.checkNotNull( this.config.getCategory( "players" ) );
-		Preconditions.checkState( profile.isComplete() );
+    @Override
+    public int getPlayerID(@Nonnull final GameProfile profile) {
+        Preconditions.checkNotNull(profile);
+        Preconditions.checkNotNull(this.config.getCategory("players"));
+        Preconditions.checkState(profile.isComplete());
 
-		final ConfigCategory players = this.config.getCategory( "players" );
-		final String uuid = profile.getId().toString();
-		final Property maybePlayerID = players.get( uuid );
+        final ConfigCategory players = this.config.getCategory("players");
+        final String uuid = profile.getId().toString();
+        final Property maybePlayerID = players.get(uuid);
 
-		if( maybePlayerID != null && maybePlayerID.isIntValue() )
-		{
-			return maybePlayerID.getInt();
-		}
-		else
-		{
-			final int newPlayerID = this.nextPlayer();
-			final Property newPlayer = new Property( uuid, String.valueOf( newPlayerID ), Property.Type.INTEGER );
-			players.put( uuid, newPlayer );
-			this.playerMapping.put( newPlayerID, profile.getId() ); // add to reverse map
-			this.config.save();
+        if (maybePlayerID != null && maybePlayerID.isIntValue()) {
+            return maybePlayerID.getInt();
+        } else {
+            final int newPlayerID = this.nextPlayer();
+            final Property newPlayer = new Property(uuid, String.valueOf(newPlayerID), Property.Type.INTEGER);
+            players.put(uuid, newPlayer);
+            this.playerMapping.put(newPlayerID, profile.getId()); // add to reverse map
+            this.config.save();
 
-			return newPlayerID;
-		}
-	}
+            return newPlayerID;
+        }
+    }
 
-	private int nextPlayer()
-	{
-		final int r = this.lastPlayerID;
-		this.lastPlayerID++;
-		this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, this.lastPlayerID ).set( this.lastPlayerID );
-		return r;
-	}
+    private int nextPlayer() {
+        final int r = this.lastPlayerID;
+        this.lastPlayerID++;
+        this.config.get(LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, this.lastPlayerID).set(this.lastPlayerID);
+        return r;
+    }
 
-	@Override
-	public void onWorldStart()
-	{
-		this.lastPlayerID = this.config.get( LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, LAST_PLAYER_DEFAULT ).getInt( LAST_PLAYER_DEFAULT );
+    @Override
+    public void onWorldStart() {
+        this.lastPlayerID = this.config.get(LAST_PLAYER_CATEGORY, LAST_PLAYER_KEY, LAST_PLAYER_DEFAULT).getInt(LAST_PLAYER_DEFAULT);
 
-		this.config.save();
-	}
+        this.config.save();
+    }
 
-	@Override
-	public void onWorldStop()
-	{
-		this.config.save();
+    @Override
+    public void onWorldStop() {
+        this.config.save();
 
-		this.lastPlayerID = 0;
-	}
+        this.lastPlayerID = 0;
+    }
 }

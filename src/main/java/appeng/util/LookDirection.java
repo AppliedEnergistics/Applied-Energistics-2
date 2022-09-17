@@ -22,25 +22,21 @@ package appeng.util;
 import net.minecraft.util.math.Vec3d;
 
 
-public class LookDirection
-{
+public class LookDirection {
 
-	private final Vec3d a;
-	private final Vec3d b;
+    private final Vec3d a;
+    private final Vec3d b;
 
-	public LookDirection( final Vec3d a, final Vec3d b )
-	{
-		this.a = a;
-		this.b = b;
-	}
+    public LookDirection(final Vec3d a, final Vec3d b) {
+        this.a = a;
+        this.b = b;
+    }
 
-	public Vec3d getA()
-	{
-		return this.a;
-	}
+    public Vec3d getA() {
+        return this.a;
+    }
 
-	public Vec3d getB()
-	{
-		return this.b;
-	}
+    public Vec3d getB() {
+        return this.b;
+    }
 }

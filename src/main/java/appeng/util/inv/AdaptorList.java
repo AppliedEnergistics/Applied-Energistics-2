@@ -19,211 +19,171 @@
 package appeng.util.inv;
 
 
-import java.util.Iterator;
-import java.util.List;
-
-import net.minecraft.item.ItemStack;
-
 import appeng.api.config.FuzzyMode;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.iterators.StackToSlotIterator;
+import net.minecraft.item.ItemStack;
+
+import java.util.Iterator;
+import java.util.List;
 
 
-public class AdaptorList extends InventoryAdaptor
-{
+public class AdaptorList extends InventoryAdaptor {
 
-	private final List<ItemStack> i;
+    private final List<ItemStack> i;
 
-	public AdaptorList( final List<ItemStack> s )
-	{
-		this.i = s;
-	}
+    public AdaptorList(final List<ItemStack> s) {
+        this.i = s;
+    }
 
-	@Override
-	public boolean hasSlots()
-	{
-		return !this.i.isEmpty();
-	}
+    @Override
+    public boolean hasSlots() {
+        return !this.i.isEmpty();
+    }
 
-	@Override
-	public ItemStack removeItems( int amount, final ItemStack filter, final IInventoryDestination destination )
-	{
-		final int s = this.i.size();
-		for( int x = 0; x < s; x++ )
-		{
-			final ItemStack is = this.i.get( x );
-			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isSameItem( is, filter ) ) )
-			{
-				if( amount > is.getCount() )
-				{
-					amount = is.getCount();
-				}
-				if( destination != null && !destination.canInsert( is ) )
-				{
-					amount = 0;
-				}
+    @Override
+    public ItemStack removeItems(int amount, final ItemStack filter, final IInventoryDestination destination) {
+        final int s = this.i.size();
+        for (int x = 0; x < s; x++) {
+            final ItemStack is = this.i.get(x);
+            if (!is.isEmpty() && (filter.isEmpty() || Platform.itemComparisons().isSameItem(is, filter))) {
+                if (amount > is.getCount()) {
+                    amount = is.getCount();
+                }
+                if (destination != null && !destination.canInsert(is)) {
+                    amount = 0;
+                }
 
-				if( amount > 0 )
-				{
-					final ItemStack rv = is.copy();
-					rv.setCount( amount );
-					is.grow( -amount );
+                if (amount > 0) {
+                    final ItemStack rv = is.copy();
+                    rv.setCount(amount);
+                    is.grow(-amount);
 
-					// remove it..
-					if( is.getCount() <= 0 )
-					{
-						this.i.remove( x );
-					}
+                    // remove it..
+                    if (is.getCount() <= 0) {
+                        this.i.remove(x);
+                    }
 
-					return rv;
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-	}
+                    return rv;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack simulateRemove( int amount, final ItemStack filter, final IInventoryDestination destination )
-	{
-		for( final ItemStack is : this.i )
-		{
-			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isSameItem( is, filter ) ) )
-			{
-				if( amount > is.getCount() )
-				{
-					amount = is.getCount();
-				}
-				if( destination != null && !destination.canInsert( is ) )
-				{
-					amount = 0;
-				}
+    @Override
+    public ItemStack simulateRemove(int amount, final ItemStack filter, final IInventoryDestination destination) {
+        for (final ItemStack is : this.i) {
+            if (!is.isEmpty() && (filter.isEmpty() || Platform.itemComparisons().isSameItem(is, filter))) {
+                if (amount > is.getCount()) {
+                    amount = is.getCount();
+                }
+                if (destination != null && !destination.canInsert(is)) {
+                    amount = 0;
+                }
 
-				if( amount > 0 )
-				{
-					final ItemStack rv = is.copy();
-					rv.setCount( amount );
-					return rv;
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-	}
+                if (amount > 0) {
+                    final ItemStack rv = is.copy();
+                    rv.setCount(amount);
+                    return rv;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack removeSimilarItems( int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
-	{
-		final int s = this.i.size();
-		for( int x = 0; x < s; x++ )
-		{
-			final ItemStack is = this.i.get( x );
-			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
-			{
-				if( amount > is.getCount() )
-				{
-					amount = is.getCount();
-				}
-				if( destination != null && !destination.canInsert( is ) )
-				{
-					amount = 0;
-				}
+    @Override
+    public ItemStack removeSimilarItems(int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination) {
+        final int s = this.i.size();
+        for (int x = 0; x < s; x++) {
+            final ItemStack is = this.i.get(x);
+            if (!is.isEmpty() && (filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode))) {
+                if (amount > is.getCount()) {
+                    amount = is.getCount();
+                }
+                if (destination != null && !destination.canInsert(is)) {
+                    amount = 0;
+                }
 
-				if( amount > 0 )
-				{
-					final ItemStack rv = is.copy();
-					rv.setCount( amount );
-					is.grow( -amount );
+                if (amount > 0) {
+                    final ItemStack rv = is.copy();
+                    rv.setCount(amount);
+                    is.grow(-amount);
 
-					// remove it..
-					if( is.getCount() <= 0 )
-					{
-						this.i.remove( x );
-					}
+                    // remove it..
+                    if (is.getCount() <= 0) {
+                        this.i.remove(x);
+                    }
 
-					return rv;
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-	}
+                    return rv;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack simulateSimilarRemove( int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination )
-	{
-		for( final ItemStack is : this.i )
-		{
-			if( !is.isEmpty() && ( filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem( is, filter, fuzzyMode ) ) )
-			{
-				if( amount > is.getCount() )
-				{
-					amount = is.getCount();
-				}
-				if( destination != null && !destination.canInsert( is ) )
-				{
-					amount = 0;
-				}
+    @Override
+    public ItemStack simulateSimilarRemove(int amount, final ItemStack filter, final FuzzyMode fuzzyMode, final IInventoryDestination destination) {
+        for (final ItemStack is : this.i) {
+            if (!is.isEmpty() && (filter.isEmpty() || Platform.itemComparisons().isFuzzyEqualItem(is, filter, fuzzyMode))) {
+                if (amount > is.getCount()) {
+                    amount = is.getCount();
+                }
+                if (destination != null && !destination.canInsert(is)) {
+                    amount = 0;
+                }
 
-				if( amount > 0 )
-				{
-					final ItemStack rv = is.copy();
-					rv.setCount( amount );
-					return rv;
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-	}
+                if (amount > 0) {
+                    final ItemStack rv = is.copy();
+                    rv.setCount(amount);
+                    return rv;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack addItems( final ItemStack toBeAdded )
-	{
-		if( toBeAdded.isEmpty() )
-		{
-			return ItemStack.EMPTY;
-		}
-		if( toBeAdded.getCount() == 0 )
-		{
-			return ItemStack.EMPTY;
-		}
+    @Override
+    public ItemStack addItems(final ItemStack toBeAdded) {
+        if (toBeAdded.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        if (toBeAdded.getCount() == 0) {
+            return ItemStack.EMPTY;
+        }
 
-		final ItemStack left = toBeAdded.copy();
+        final ItemStack left = toBeAdded.copy();
 
-		for( final ItemStack is : this.i )
-		{
-			if( ItemStack.areItemsEqual( is, left ) )
-			{
-				is.grow( left.getCount() );
-				return ItemStack.EMPTY;
-			}
-		}
+        for (final ItemStack is : this.i) {
+            if (ItemStack.areItemsEqual(is, left)) {
+                is.grow(left.getCount());
+                return ItemStack.EMPTY;
+            }
+        }
 
-		this.i.add( left );
-		return ItemStack.EMPTY;
-	}
+        this.i.add(left);
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public ItemStack simulateAdd( final ItemStack toBeSimulated )
-	{
-		return ItemStack.EMPTY;
-	}
+    @Override
+    public ItemStack simulateAdd(final ItemStack toBeSimulated) {
+        return ItemStack.EMPTY;
+    }
 
-	@Override
-	public boolean containsItems()
-	{
-		for( final ItemStack is : this.i )
-		{
-			if( !is.isEmpty() )
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean containsItems() {
+        for (final ItemStack is : this.i) {
+            if (!is.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public Iterator<ItemSlot> iterator()
-	{
-		return new StackToSlotIterator( this.i.iterator() );
-	}
+    @Override
+    public Iterator<ItemSlot> iterator() {
+        return new StackToSlotIterator(this.i.iterator());
+    }
 
 }

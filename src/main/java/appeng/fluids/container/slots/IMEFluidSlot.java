@@ -27,12 +27,10 @@ import appeng.api.storage.data.IAEFluidStack;
  * @version rv6
  * @since rv6
  */
-public interface IMEFluidSlot
-{
-	IAEFluidStack getAEFluidStack();
+public interface IMEFluidSlot {
+    IAEFluidStack getAEFluidStack();
 
-	default boolean shouldRenderAsFluid()
-	{
-		return true;
-	}
+    default boolean shouldRenderAsFluid() {
+        return true;
+    }
 }

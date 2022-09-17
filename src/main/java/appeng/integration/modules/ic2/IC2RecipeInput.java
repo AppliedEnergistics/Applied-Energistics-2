@@ -19,14 +19,12 @@
 package appeng.integration.modules.ic2;
 
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import ic2.api.recipe.IRecipeInput;
 import net.minecraft.item.ItemStack;
 
-import ic2.api.recipe.IRecipeInput;
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -34,33 +32,28 @@ import ic2.api.recipe.IRecipeInput;
  *
  * @author GuntherDW
  */
-public class IC2RecipeInput implements IRecipeInput
-{
-	@Nonnull
-	private final ItemStack itemstack;
-	private final int amount;
+public class IC2RecipeInput implements IRecipeInput {
+    @Nonnull
+    private final ItemStack itemstack;
+    private final int amount;
 
-	public IC2RecipeInput( ItemStack in, int amount )
-	{
-		this.itemstack = in;
-		this.amount = amount;
-	}
+    public IC2RecipeInput(ItemStack in, int amount) {
+        this.itemstack = in;
+        this.amount = amount;
+    }
 
-	@Override
-	public boolean matches( ItemStack itemStack )
-	{
-		return this.itemstack.isItemEqual( itemStack );
-	}
+    @Override
+    public boolean matches(ItemStack itemStack) {
+        return this.itemstack.isItemEqual(itemStack);
+    }
 
-	@Override
-	public int getAmount()
-	{
-		return this.amount;
-	}
+    @Override
+    public int getAmount() {
+        return this.amount;
+    }
 
-	@Override
-	public List<ItemStack> getInputs()
-	{
-		return Collections.unmodifiableList( Collections.singletonList( this.itemstack ) );
-	}
+    @Override
+    public List<ItemStack> getInputs() {
+        return Collections.unmodifiableList(Collections.singletonList(this.itemstack));
+    }
 }

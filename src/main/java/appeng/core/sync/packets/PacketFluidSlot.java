@@ -19,77 +19,65 @@
 package appeng.core.sync.packets;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class PacketFluidSlot extends AppEngPacket
-{
-	private final Map<Integer, IAEFluidStack> list;
+public class PacketFluidSlot extends AppEngPacket {
+    private final Map<Integer, IAEFluidStack> list;
 
-	public PacketFluidSlot( final ByteBuf stream )
-	{
-		this.list = new HashMap<>();
-		NBTTagCompound tag = ByteBufUtils.readTag( stream );
+    public PacketFluidSlot(final ByteBuf stream) {
+        this.list = new HashMap<>();
+        NBTTagCompound tag = ByteBufUtils.readTag(stream);
 
-		for( final String key : tag.getKeySet() )
-		{
-			this.list.put( Integer.parseInt( key ), AEFluidStack.fromNBT( tag.getCompoundTag( key ) ) );
-		}
-	}
+        for (final String key : tag.getKeySet()) {
+            this.list.put(Integer.parseInt(key), AEFluidStack.fromNBT(tag.getCompoundTag(key)));
+        }
+    }
 
-	// api
-	public PacketFluidSlot( final Map<Integer, IAEFluidStack> list )
-	{
-		this.list = list;
-		final NBTTagCompound sendTag = new NBTTagCompound();
-		for( Map.Entry<Integer, IAEFluidStack> fs : list.entrySet() )
-		{
-			final NBTTagCompound tag = new NBTTagCompound();
-			if( fs.getValue() != null )
-			{
-				fs.getValue().writeToNBT( tag );
-			}
-			sendTag.setTag( fs.getKey().toString(), tag );
-		}
+    // api
+    public PacketFluidSlot(final Map<Integer, IAEFluidStack> list) {
+        this.list = list;
+        final NBTTagCompound sendTag = new NBTTagCompound();
+        for (Map.Entry<Integer, IAEFluidStack> fs : list.entrySet()) {
+            final NBTTagCompound tag = new NBTTagCompound();
+            if (fs.getValue() != null) {
+                fs.getValue().writeToNBT(tag);
+            }
+            sendTag.setTag(fs.getKey().toString(), tag);
+        }
 
-		final ByteBuf data = Unpooled.buffer();
-		data.writeInt( this.getPacketID() );
-		ByteBufUtils.writeTag( data, sendTag );
-		this.configureWrite( data );
-	}
+        final ByteBuf data = Unpooled.buffer();
+        data.writeInt(this.getPacketID());
+        ByteBufUtils.writeTag(data, sendTag);
+        this.configureWrite(data);
+    }
 
-	@Override
-	public void clientPacketData( final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player )
-	{
-		final Container c = player.openContainer;
-		if( c instanceof IFluidSyncContainer )
-		{
-			( (IFluidSyncContainer) c ).receiveFluidSlots( this.list );
-		}
-	}
+    @Override
+    public void clientPacketData(final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player) {
+        final Container c = player.openContainer;
+        if (c instanceof IFluidSyncContainer) {
+            ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
+        }
+    }
 
-	@Override
-	public void serverPacketData( INetworkInfo manager, AppEngPacket packet, EntityPlayer player )
-	{
-		final Container c = player.openContainer;
-		if( c instanceof IFluidSyncContainer )
-		{
-			( (IFluidSyncContainer) c ).receiveFluidSlots( this.list );
-		}
-	}
+    @Override
+    public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player) {
+        final Container c = player.openContainer;
+        if (c instanceof IFluidSyncContainer) {
+            ((IFluidSyncContainer) c).receiveFluidSlots(this.list);
+        }
+    }
 }

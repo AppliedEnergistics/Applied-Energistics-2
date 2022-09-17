@@ -19,11 +19,10 @@
 package appeng.core.worlddata;
 
 
-import javax.annotation.Nullable;
-
 import com.mojang.authlib.GameProfile;
-
 import net.minecraft.entity.player.EntityPlayer;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -31,10 +30,9 @@ import net.minecraft.entity.player.EntityPlayer;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public interface IWorldPlayerData
-{
-	@Nullable
-	EntityPlayer getPlayerFromID( int playerID );
+public interface IWorldPlayerData {
+    @Nullable
+    EntityPlayer getPlayerFromID(int playerID);
 
-	int getPlayerID( GameProfile profile );
+    int getPlayerID(GameProfile profile);
 }

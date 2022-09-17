@@ -22,36 +22,29 @@ package appeng.entity;
 import net.minecraft.entity.Entity;
 
 
-public final class EntityIds
-{
-	private static final int TINY_TNT = 10;
-	private static final int SINGULARITY = 11;
-	private static final int CHARGED_QUARTZ = 12;
-	private static final int GROWING_CRYSTAL = 13;
+public final class EntityIds {
+    private static final int TINY_TNT = 10;
+    private static final int SINGULARITY = 11;
+    private static final int CHARGED_QUARTZ = 12;
+    private static final int GROWING_CRYSTAL = 13;
 
-	private EntityIds()
-	{
-	}
+    private EntityIds() {
+    }
 
-	public static int get( final Class<? extends Entity> droppedEntity )
-	{
-		if( droppedEntity == EntityTinyTNTPrimed.class )
-		{
-			return TINY_TNT;
-		}
-		if( droppedEntity == EntitySingularity.class )
-		{
-			return SINGULARITY;
-		}
-		if( droppedEntity == EntityChargedQuartz.class )
-		{
-			return CHARGED_QUARTZ;
-		}
-		if( droppedEntity == EntityGrowingCrystal.class )
-		{
-			return GROWING_CRYSTAL;
-		}
+    public static int get(final Class<? extends Entity> droppedEntity) {
+        if (droppedEntity == EntityTinyTNTPrimed.class) {
+            return TINY_TNT;
+        }
+        if (droppedEntity == EntitySingularity.class) {
+            return SINGULARITY;
+        }
+        if (droppedEntity == EntityChargedQuartz.class) {
+            return CHARGED_QUARTZ;
+        }
+        if (droppedEntity == EntityGrowingCrystal.class) {
+            return GROWING_CRYSTAL;
+        }
 
-		throw new IllegalStateException( "Missing entity id: " + droppedEntity.getName() );
-	}
+        throw new IllegalStateException("Missing entity id: " + droppedEntity.getName());
+    }
 }

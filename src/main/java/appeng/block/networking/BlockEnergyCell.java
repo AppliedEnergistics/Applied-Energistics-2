@@ -19,6 +19,9 @@
 package appeng.block.networking;
 
 
+import appeng.block.AEBaseTileBlock;
+import appeng.helpers.AEGlassMaterial;
+import appeng.util.Platform;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.IBlockState;
@@ -29,56 +32,45 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.helpers.AEGlassMaterial;
-import appeng.util.Platform;
 
+public class BlockEnergyCell extends AEBaseTileBlock {
 
-public class BlockEnergyCell extends AEBaseTileBlock
-{
+    public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create("fullness", 0, 7);
 
-	public static final PropertyInteger ENERGY_STORAGE = PropertyInteger.create( "fullness", 0, 7 );
+    @Override
+    public int getMetaFromState(final IBlockState state) {
+        return state.getValue(ENERGY_STORAGE);
+    }
 
-	@Override
-	public int getMetaFromState( final IBlockState state )
-	{
-		return state.getValue( ENERGY_STORAGE );
-	}
+    @Override
+    public IBlockState getStateFromMeta(final int meta) {
+        return this.getDefaultState().withProperty(ENERGY_STORAGE, Math.min(7, Math.max(0, meta)));
+    }
 
-	@Override
-	public IBlockState getStateFromMeta( final int meta )
-	{
-		return this.getDefaultState().withProperty( ENERGY_STORAGE, Math.min( 7, Math.max( 0, meta ) ) );
-	}
+    public BlockEnergyCell() {
+        super(AEGlassMaterial.INSTANCE);
+    }
 
-	public BlockEnergyCell()
-	{
-		super( AEGlassMaterial.INSTANCE );
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubBlocks(final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks) {
+        super.getSubBlocks(tabs, itemStacks);
 
-	@Override
-	@SideOnly( Side.CLIENT )
-	public void getSubBlocks( final CreativeTabs tabs, final NonNullList<ItemStack> itemStacks )
-	{
-		super.getSubBlocks( tabs, itemStacks );
+        final ItemStack charged = new ItemStack(this, 1);
+        final NBTTagCompound tag = Platform.openNbtData(charged);
+        tag.setDouble("internalCurrentPower", this.getMaxPower());
+        tag.setDouble("internalMaxPower", this.getMaxPower());
 
-		final ItemStack charged = new ItemStack( this, 1 );
-		final NBTTagCompound tag = Platform.openNbtData( charged );
-		tag.setDouble( "internalCurrentPower", this.getMaxPower() );
-		tag.setDouble( "internalMaxPower", this.getMaxPower() );
+        itemStacks.add(charged);
+    }
 
-		itemStacks.add( charged );
-	}
+    public double getMaxPower() {
+        return 200000.0;
+    }
 
-	public double getMaxPower()
-	{
-		return 200000.0;
-	}
-
-	@Override
-	protected IProperty[] getAEStates()
-	{
-		return new IProperty[] { ENERGY_STORAGE };
-	}
+    @Override
+    protected IProperty[] getAEStates() {
+        return new IProperty[]{ENERGY_STORAGE};
+    }
 
 }

@@ -19,22 +19,18 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.api.implementations.guiobjects.IPortableCell;
 import net.minecraft.entity.player.InventoryPlayer;
 
-import appeng.api.implementations.guiobjects.IPortableCell;
 
+public class GuiWirelessTerm extends GuiMEPortableCell {
 
-public class GuiWirelessTerm extends GuiMEPortableCell
-{
+    public GuiWirelessTerm(final InventoryPlayer inventoryPlayer, final IPortableCell te) {
+        super(inventoryPlayer, te);
+    }
 
-	public GuiWirelessTerm( final InventoryPlayer inventoryPlayer, final IPortableCell te )
-	{
-		super( inventoryPlayer, te );
-	}
-
-	@Override
-	int getMaxRows()
-	{
-		return this.defaultGetMaxRows();
-	}
+    @Override
+    int getMaxRows() {
+        return this.defaultGetMaxRows();
+    }
 }

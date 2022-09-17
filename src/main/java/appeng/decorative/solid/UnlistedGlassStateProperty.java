@@ -25,30 +25,25 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 /**
  * This unlisted property is used to transport the connected texture state into our model class.
  */
-public class UnlistedGlassStateProperty implements IUnlistedProperty<GlassState>
-{
+public class UnlistedGlassStateProperty implements IUnlistedProperty<GlassState> {
 
-	@Override
-	public String getName()
-	{
-		return "glass_state";
-	}
+    @Override
+    public String getName() {
+        return "glass_state";
+    }
 
-	@Override
-	public boolean isValid( GlassState value )
-	{
-		return true;
-	}
+    @Override
+    public boolean isValid(GlassState value) {
+        return true;
+    }
 
-	@Override
-	public Class<GlassState> getType()
-	{
-		return GlassState.class;
-	}
+    @Override
+    public Class<GlassState> getType() {
+        return GlassState.class;
+    }
 
-	@Override
-	public String valueToString( GlassState value )
-	{
-		return null;
-	}
+    @Override
+    public String valueToString(GlassState value) {
+        return null;
+    }
 }

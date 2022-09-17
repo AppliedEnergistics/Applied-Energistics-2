@@ -23,8 +23,7 @@ public class CraftingCPUStatus implements Comparable<CraftingCPUStatus> {
     private final long remainingItems;
     private final IAEItemStack crafting;
 
-    public CraftingCPUStatus( )
-    {
+    public CraftingCPUStatus() {
         this.serverCluster = null;
         this.name = "ERROR";
         this.serial = 0;
@@ -35,19 +34,15 @@ public class CraftingCPUStatus implements Comparable<CraftingCPUStatus> {
         this.crafting = null;
     }
 
-    public CraftingCPUStatus( ICraftingCPU cluster, int serial )
-    {
+    public CraftingCPUStatus(ICraftingCPU cluster, int serial) {
         this.serverCluster = cluster;
         this.name = cluster.getName();
         this.serial = serial;
-        if (cluster.isBusy())
-        {
+        if (cluster.isBusy()) {
             crafting = cluster.getFinalOutput();
             totalItems = cluster.getStartItemCount();
             remainingItems = cluster.getRemainingItemCount();
-        }
-        else
-        {
+        } else {
             crafting = null;
             totalItems = 0;
             remainingItems = 0;
@@ -56,141 +51,114 @@ public class CraftingCPUStatus implements Comparable<CraftingCPUStatus> {
         this.coprocessors = cluster.getCoProcessors();
     }
 
-    public CraftingCPUStatus( NBTTagCompound i )
-    {
+    public CraftingCPUStatus(NBTTagCompound i) {
         this.serverCluster = null;
-        this.name = i.getString( "name" );
-        this.serial = i.getInteger( "serial" );
+        this.name = i.getString("name");
+        this.serial = i.getInteger("serial");
         this.storage = i.getLong("storage");
         this.coprocessors = i.getLong("coprocessors");
         this.totalItems = i.getLong("totalItems");
         this.remainingItems = i.getLong("remainingItems");
-        this.crafting = i.hasKey( "crafting" ) ? AEItemStack.fromNBT( i.getCompoundTag( "crafting" ) ) : null;
+        this.crafting = i.hasKey("crafting") ? AEItemStack.fromNBT(i.getCompoundTag("crafting")) : null;
     }
 
-    public CraftingCPUStatus(ByteBuf packet) throws IOException
-    {
-        this(readNBTFromPacket( packet ));
+    public CraftingCPUStatus(ByteBuf packet) throws IOException {
+        this(readNBTFromPacket(packet));
     }
 
-    private static NBTTagCompound readNBTFromPacket(ByteBuf packet) throws IOException
-    {
+    private static NBTTagCompound readNBTFromPacket(ByteBuf packet) throws IOException {
         final int size = packet.readInt();
         final byte[] tagBytes = new byte[size];
-        packet.readBytes( tagBytes );
-        final ByteArrayInputStream di = new ByteArrayInputStream( tagBytes );
-        return CompressedStreamTools.read( new DataInputStream( di ));
+        packet.readBytes(tagBytes);
+        final ByteArrayInputStream di = new ByteArrayInputStream(tagBytes);
+        return CompressedStreamTools.read(new DataInputStream(di));
     }
 
-    public void writeToNBT( NBTTagCompound i )
-    {
-        if (name != null && !name.isEmpty())
-        {
-            i.setString( "name", name );
+    public void writeToNBT(NBTTagCompound i) {
+        if (name != null && !name.isEmpty()) {
+            i.setString("name", name);
         }
-        i.setInteger( "serial", serial );
-        i.setLong( "storage", storage );
-        i.setLong( "coprocessors", coprocessors );
-        i.setLong( "totalItems", totalItems );
-        i.setLong( "remainingItems", remainingItems );
-        if (crafting != null)
-        {
+        i.setInteger("serial", serial);
+        i.setLong("storage", storage);
+        i.setLong("coprocessors", coprocessors);
+        i.setLong("totalItems", totalItems);
+        i.setLong("remainingItems", remainingItems);
+        if (crafting != null) {
             NBTTagCompound stack = new NBTTagCompound();
-            crafting.writeToNBT( stack );
-            i.setTag( "crafting", stack );
+            crafting.writeToNBT(stack);
+            i.setTag("crafting", stack);
         }
     }
 
-    public void writeToPacket( ByteBuf i ) throws IOException
-    {
+    public void writeToPacket(ByteBuf i) throws IOException {
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        final DataOutputStream data = new DataOutputStream( bytes );
+        final DataOutputStream data = new DataOutputStream(bytes);
 
         NBTTagCompound tag = new NBTTagCompound();
-        this.writeToNBT( tag );
-        CompressedStreamTools.write( tag, data );
+        this.writeToNBT(tag);
+        CompressedStreamTools.write(tag, data);
 
         final byte[] tagBytes = bytes.toByteArray();
         final int size = tagBytes.length;
 
-        i.writeInt( size );
-        i.writeBytes( tagBytes );
+        i.writeInt(size);
+        i.writeBytes(tagBytes);
     }
 
     @Nullable
-    public ICraftingCPU getServerCluster()
-    {
+    public ICraftingCPU getServerCluster() {
         return serverCluster;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public int getSerial()
-    {
+    public int getSerial() {
         return serial;
     }
 
-    public long getStorage()
-    {
+    public long getStorage() {
         return storage;
     }
 
-    public long getCoprocessors()
-    {
+    public long getCoprocessors() {
         return coprocessors;
     }
 
-    public long getTotalItems()
-    {
+    public long getTotalItems() {
         return totalItems;
     }
 
-    public long getRemainingItems()
-    {
+    public long getRemainingItems() {
         return remainingItems;
     }
 
-    public IAEItemStack getCrafting()
-    {
+    public IAEItemStack getCrafting() {
         return crafting;
     }
 
     @Override
-    public int compareTo( CraftingCPUStatus o )
-    {
-        final int a = ItemSorters.compareLong( o.getCoprocessors(), this.getCoprocessors() );
-        if( a != 0 )
-        {
+    public int compareTo(CraftingCPUStatus o) {
+        final int a = ItemSorters.compareLong(o.getCoprocessors(), this.getCoprocessors());
+        if (a != 0) {
             return a;
         }
-        return ItemSorters.compareLong( o.getStorage(), this.getStorage() );
+        return ItemSorters.compareLong(o.getStorage(), this.getStorage());
     }
 
-    public String formatStorage()
-    {
+    public String formatStorage() {
         long val = getStorage();
-        if (val > 4_000_000_000_000L)
-        {
+        if (val > 4_000_000_000_000L) {
             return String.format("%dT", val / 1024 / 1024 / 1024 / 1024);
-        }
-        else if (val > 4_000_000_000L)
-        {
+        } else if (val > 4_000_000_000L) {
             return String.format("%dG", val / 1024 / 1024 / 1024);
-        }
-        else if (val > 4_000_000L)
-        {
+        } else if (val > 4_000_000L) {
             return String.format("%dM", val / 1024 / 1024);
-        }
-        else if (val > 4_000L)
-        {
+        } else if (val > 4_000L) {
             return String.format("%dk", val / 1024);
-        }
-        else
-        {
-            return Long.toString( val );
+        } else {
+            return Long.toString(val);
         }
     }
 }

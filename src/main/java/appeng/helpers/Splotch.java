@@ -19,101 +19,82 @@
 package appeng.helpers;
 
 
+import appeng.api.util.AEColor;
 import io.netty.buffer.ByteBuf;
-
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 
-import appeng.api.util.AEColor;
 
+public class Splotch {
 
-public class Splotch
-{
+    private final EnumFacing side;
+    private final boolean lumen;
+    private final AEColor color;
+    private final int pos;
 
-	private final EnumFacing side;
-	private final boolean lumen;
-	private final AEColor color;
-	private final int pos;
+    public Splotch(final AEColor col, final boolean lit, final EnumFacing side, final Vec3d position) {
+        this.color = col;
+        this.lumen = lit;
 
-	public Splotch( final AEColor col, final boolean lit, final EnumFacing side, final Vec3d position )
-	{
-		this.color = col;
-		this.lumen = lit;
+        final double x;
+        final double y;
 
-		final double x;
-		final double y;
+        if (side == EnumFacing.SOUTH || side == EnumFacing.NORTH) {
+            x = position.x;
+            y = position.y;
+        } else if (side == EnumFacing.UP || side == EnumFacing.DOWN) {
+            x = position.x;
+            y = position.z;
+        } else {
+            x = position.y;
+            y = position.z;
+        }
 
-		if( side == EnumFacing.SOUTH || side == EnumFacing.NORTH )
-		{
-			x = position.x;
-			y = position.y;
-		}
+        final int a = (int) (x * 0xF);
+        final int b = (int) (y * 0xF);
+        this.pos = a | (b << 4);
 
-		else if( side == EnumFacing.UP || side == EnumFacing.DOWN )
-		{
-			x = position.x;
-			y = position.z;
-		}
+        this.side = side;
+    }
 
-		else
-		{
-			x = position.y;
-			y = position.z;
-		}
+    public Splotch(final ByteBuf data) {
 
-		final int a = (int) ( x * 0xF );
-		final int b = (int) ( y * 0xF );
-		this.pos = a | ( b << 4 );
+        this.pos = data.readByte();
+        final int val = data.readByte();
 
-		this.side = side;
-	}
+        this.side = EnumFacing.VALUES[val & 0x07];
+        this.color = AEColor.values()[(val >> 3) & 0x0F];
+        this.lumen = ((val >> 7) & 0x01) > 0;
+    }
 
-	public Splotch( final ByteBuf data )
-	{
+    public void writeToStream(final ByteBuf stream) {
+        stream.writeByte(this.pos);
+        final int val = this.getSide().ordinal() | (this.getColor().ordinal() << 3) | (this.isLumen() ? 0x80 : 0x00);
+        stream.writeByte(val);
+    }
 
-		this.pos = data.readByte();
-		final int val = data.readByte();
+    public float x() {
+        return (this.pos & 0x0f) / 15.0f;
+    }
 
-		this.side = EnumFacing.VALUES[val & 0x07];
-		this.color = AEColor.values()[( val >> 3 ) & 0x0F];
-		this.lumen = ( ( val >> 7 ) & 0x01 ) > 0;
-	}
+    public float y() {
+        return ((this.pos >> 4) & 0x0f) / 15.0f;
+    }
 
-	public void writeToStream( final ByteBuf stream )
-	{
-		stream.writeByte( this.pos );
-		final int val = this.getSide().ordinal() | ( this.getColor().ordinal() << 3 ) | ( this.isLumen() ? 0x80 : 0x00 );
-		stream.writeByte( val );
-	}
+    public int getSeed() {
+        final int val = this.getSide().ordinal() | (this.getColor().ordinal() << 3) | (this.isLumen() ? 0x80 : 0x00);
+        return Math.abs(this.pos + val);
+    }
 
-	public float x()
-	{
-		return ( this.pos & 0x0f ) / 15.0f;
-	}
+    public EnumFacing getSide() {
+        return this.side;
+    }
 
-	public float y()
-	{
-		return ( ( this.pos >> 4 ) & 0x0f ) / 15.0f;
-	}
+    public AEColor getColor() {
+        return this.color;
+    }
 
-	public int getSeed()
-	{
-		final int val = this.getSide().ordinal() | ( this.getColor().ordinal() << 3 ) | ( this.isLumen() ? 0x80 : 0x00 );
-		return Math.abs( this.pos + val );
-	}
-
-	public EnumFacing getSide()
-	{
-		return this.side;
-	}
-
-	public AEColor getColor()
-	{
-		return this.color;
-	}
-
-	public boolean isLumen()
-	{
-		return this.lumen;
-	}
+    public boolean isLumen() {
+        return this.lumen;
+    }
 }

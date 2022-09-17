@@ -19,54 +19,45 @@
 package appeng.integration.modules.theoneprobe.part;
 
 
+import appeng.api.parts.IPart;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
+import appeng.integration.modules.theoneprobe.TheOneProbeText;
+import appeng.parts.networking.PartCableSmart;
+import appeng.parts.networking.PartDenseCableSmart;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
 
-import appeng.api.parts.IPart;
-import appeng.integration.modules.theoneprobe.TheOneProbeText;
-import appeng.parts.networking.PartCableSmart;
-import appeng.parts.networking.PartDenseCableSmart;
+public class ChannelInfoProvider implements IPartProbInfoProvider {
 
+    @Override
+    public void addProbeInfo(IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data) {
+        if (!AEConfig.instance().isFeatureEnabled(AEFeature.CHANNELS)) {
+            return;
+        }
+        if (part instanceof PartDenseCableSmart || part instanceof PartCableSmart) {
+            final int usedChannels;
+            final int maxChannels = (part instanceof PartDenseCableSmart) ? 32 : 8;
 
-public class ChannelInfoProvider implements IPartProbInfoProvider
-{
+            if (part.getGridNode().isActive()) {
+                final NBTTagCompound tmp = new NBTTagCompound();
+                part.writeToNBT(tmp);
+                usedChannels = tmp.getByte("usedChannels");
+            } else {
+                usedChannels = 0;
+            }
 
-	@Override
-	public void addProbeInfo( IPart part, ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data )
-	{
-		if( !AEConfig.instance().isFeatureEnabled( AEFeature.CHANNELS ) )
-		{
-			return;
-		}
-		if( part instanceof PartDenseCableSmart || part instanceof PartCableSmart )
-		{
-			final int usedChannels;
-			final int maxChannels = ( part instanceof PartDenseCableSmart ) ? 32 : 8;
+            final String formattedChannelString = String.format(TheOneProbeText.CHANNELS.getLocal(), usedChannels, maxChannels);
 
-			if( part.getGridNode().isActive() )
-			{
-				final NBTTagCompound tmp = new NBTTagCompound();
-				part.writeToNBT( tmp );
-				usedChannels = tmp.getByte( "usedChannels" );
-			}
-			else
-			{
-				usedChannels = 0;
-			}
+            probeInfo.text(formattedChannelString);
+        }
 
-			final String formattedChannelString = String.format( TheOneProbeText.CHANNELS.getLocal(), usedChannels, maxChannels );
-
-			probeInfo.text( formattedChannelString );
-		}
-
-	}
+    }
 
 }

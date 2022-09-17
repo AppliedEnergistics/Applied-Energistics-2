@@ -19,24 +19,6 @@
 package appeng.bootstrap;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import appeng.api.definitions.IItemDefinition;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEColoredItemDefinition;
@@ -48,111 +30,107 @@ import appeng.core.features.ActivityState;
 import appeng.core.features.ColoredItemDefinition;
 import appeng.core.features.ItemStackSrc;
 import appeng.util.Platform;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 
-public class FeatureFactory
-{
+public class FeatureFactory {
 
-	private final AEFeature[] defaultFeatures;
+    private final AEFeature[] defaultFeatures;
 
-	private final Map<Class<? extends IBootstrapComponent>, List<IBootstrapComponent>> bootstrapComponents;
+    private final Map<Class<? extends IBootstrapComponent>, List<IBootstrapComponent>> bootstrapComponents;
 
-	@SideOnly( Side.CLIENT )
-	private ModelOverrideComponent modelOverrideComponent;
+    @SideOnly(Side.CLIENT)
+    private ModelOverrideComponent modelOverrideComponent;
 
-	@SideOnly( Side.CLIENT )
-	private BuiltInModelComponent builtInModelComponent;
+    @SideOnly(Side.CLIENT)
+    private BuiltInModelComponent builtInModelComponent;
 
-	public final TileEntityComponent tileEntityComponent;
+    public final TileEntityComponent tileEntityComponent;
 
-	public FeatureFactory()
-	{
-		this.defaultFeatures = new AEFeature[] { AEFeature.CORE };
-		this.bootstrapComponents = new HashMap<>();
+    public FeatureFactory() {
+        this.defaultFeatures = new AEFeature[]{AEFeature.CORE};
+        this.bootstrapComponents = new HashMap<>();
 
-		this.tileEntityComponent = new TileEntityComponent();
-		this.addBootstrapComponent( this.tileEntityComponent );
+        this.tileEntityComponent = new TileEntityComponent();
+        this.addBootstrapComponent(this.tileEntityComponent);
 
-		if( Platform.isClient() )
-		{
-			this.modelOverrideComponent = new ModelOverrideComponent();
-			this.addBootstrapComponent( this.modelOverrideComponent );
+        if (Platform.isClient()) {
+            this.modelOverrideComponent = new ModelOverrideComponent();
+            this.addBootstrapComponent(this.modelOverrideComponent);
 
-			this.builtInModelComponent = new BuiltInModelComponent();
-			this.addBootstrapComponent( this.builtInModelComponent );
-		}
-	}
+            this.builtInModelComponent = new BuiltInModelComponent();
+            this.addBootstrapComponent(this.builtInModelComponent);
+        }
+    }
 
-	private FeatureFactory( FeatureFactory parent, AEFeature... defaultFeatures )
-	{
-		this.defaultFeatures = defaultFeatures.clone();
-		this.bootstrapComponents = parent.bootstrapComponents;
-		this.tileEntityComponent = parent.tileEntityComponent;
-		if( Platform.isClient() )
-		{
-			this.modelOverrideComponent = parent.modelOverrideComponent;
-			this.builtInModelComponent = parent.builtInModelComponent;
-		}
-	}
+    private FeatureFactory(FeatureFactory parent, AEFeature... defaultFeatures) {
+        this.defaultFeatures = defaultFeatures.clone();
+        this.bootstrapComponents = parent.bootstrapComponents;
+        this.tileEntityComponent = parent.tileEntityComponent;
+        if (Platform.isClient()) {
+            this.modelOverrideComponent = parent.modelOverrideComponent;
+            this.builtInModelComponent = parent.builtInModelComponent;
+        }
+    }
 
-	public IBlockBuilder block( String id, Supplier<Block> block )
-	{
-		return new BlockDefinitionBuilder( this, id, block ).features( this.defaultFeatures );
-	}
+    public IBlockBuilder block(String id, Supplier<Block> block) {
+        return new BlockDefinitionBuilder(this, id, block).features(this.defaultFeatures);
+    }
 
-	public IItemBuilder item( String id, Supplier<Item> item )
-	{
-		return new ItemDefinitionBuilder( this, id, item ).features( this.defaultFeatures );
-	}
+    public IItemBuilder item(String id, Supplier<Item> item) {
+        return new ItemDefinitionBuilder(this, id, item).features(this.defaultFeatures);
+    }
 
-	public AEColoredItemDefinition colored( IItemDefinition target, int offset )
-	{
-		ColoredItemDefinition definition = new ColoredItemDefinition();
+    public AEColoredItemDefinition colored(IItemDefinition target, int offset) {
+        ColoredItemDefinition definition = new ColoredItemDefinition();
 
-		target.maybeItem().ifPresent( targetItem ->
-		{
-			for( final AEColor color : AEColor.VALID_COLORS )
-			{
-				final ActivityState state = ActivityState.from( target.isEnabled() );
+        target.maybeItem().ifPresent(targetItem ->
+        {
+            for (final AEColor color : AEColor.VALID_COLORS) {
+                final ActivityState state = ActivityState.from(target.isEnabled());
 
-				definition.add( color, new ItemStackSrc( targetItem, offset + color.ordinal(), state ) );
-			}
-		} );
+                definition.add(color, new ItemStackSrc(targetItem, offset + color.ordinal(), state));
+            }
+        });
 
-		return definition;
-	}
+        return definition;
+    }
 
-	public FeatureFactory features( AEFeature... features )
-	{
-		return new FeatureFactory( this, features );
-	}
+    public FeatureFactory features(AEFeature... features) {
+        return new FeatureFactory(this, features);
+    }
 
-	public void addBootstrapComponent( IBootstrapComponent component )
-	{
-		Arrays.stream( component.getClass().getInterfaces() )
-				.filter( i -> IBootstrapComponent.class.isAssignableFrom( i ) )
-				.forEach( i -> this.addBootstrapComponent( (Class<? extends IBootstrapComponent>) i, component ) );
-	}
+    public void addBootstrapComponent(IBootstrapComponent component) {
+        Arrays.stream(component.getClass().getInterfaces())
+                .filter(i -> IBootstrapComponent.class.isAssignableFrom(i))
+                .forEach(i -> this.addBootstrapComponent((Class<? extends IBootstrapComponent>) i, component));
+    }
 
-	private <T extends IBootstrapComponent> void addBootstrapComponent( Class<? extends IBootstrapComponent> eventType, T component )
-	{
-		this.bootstrapComponents.computeIfAbsent( eventType, c -> new ArrayList<IBootstrapComponent>() ).add( component );
-	}
+    private <T extends IBootstrapComponent> void addBootstrapComponent(Class<? extends IBootstrapComponent> eventType, T component) {
+        this.bootstrapComponents.computeIfAbsent(eventType, c -> new ArrayList<IBootstrapComponent>()).add(component);
+    }
 
-	@SideOnly( Side.CLIENT )
-	void addBuiltInModel( String path, IModel model )
-	{
-		this.builtInModelComponent.addModel( path, model );
-	}
+    @SideOnly(Side.CLIENT)
+    void addBuiltInModel(String path, IModel model) {
+        this.builtInModelComponent.addModel(path, model);
+    }
 
-	@SideOnly( Side.CLIENT )
-	void addModelOverride( String resourcePath, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
-	{
-		this.modelOverrideComponent.addOverride( resourcePath, customizer );
-	}
+    @SideOnly(Side.CLIENT)
+    void addModelOverride(String resourcePath, BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer) {
+        this.modelOverrideComponent.addOverride(resourcePath, customizer);
+    }
 
-	public <T extends IBootstrapComponent> Iterator<T> getBootstrapComponents( Class<T> eventType )
-	{
-		return (Iterator<T>) this.bootstrapComponents.getOrDefault( eventType, Collections.emptyList() ).iterator();
-	}
+    public <T extends IBootstrapComponent> Iterator<T> getBootstrapComponents(Class<T> eventType) {
+        return (Iterator<T>) this.bootstrapComponents.getOrDefault(eventType, Collections.emptyList()).iterator();
+    }
 }

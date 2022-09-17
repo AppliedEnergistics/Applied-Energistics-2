@@ -19,73 +19,63 @@
 package appeng.me.energy;
 
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherHost;
 import appeng.me.cache.EnergyGridCache;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
-public class EnergyWatcher implements IEnergyWatcher
-{
+public class EnergyWatcher implements IEnergyWatcher {
 
-	private final EnergyGridCache gsc;
-	private final IEnergyWatcherHost watcherHost;
-	private final Set<EnergyThreshold> myInterests = new HashSet<>();
+    private final EnergyGridCache gsc;
+    private final IEnergyWatcherHost watcherHost;
+    private final Set<EnergyThreshold> myInterests = new HashSet<>();
 
-	public EnergyWatcher( final EnergyGridCache cache, final IEnergyWatcherHost host )
-	{
-		this.gsc = cache;
-		this.watcherHost = host;
-	}
+    public EnergyWatcher(final EnergyGridCache cache, final IEnergyWatcherHost host) {
+        this.gsc = cache;
+        this.watcherHost = host;
+    }
 
-	public void post( final EnergyGridCache energyGridCache )
-	{
-		this.watcherHost.onThresholdPass( energyGridCache );
-	}
+    public void post(final EnergyGridCache energyGridCache) {
+        this.watcherHost.onThresholdPass(energyGridCache);
+    }
 
-	public IEnergyWatcherHost getHost()
-	{
-		return this.watcherHost;
-	}
+    public IEnergyWatcherHost getHost() {
+        return this.watcherHost;
+    }
 
-	@Override
-	public boolean add( final double amount )
-	{
-		final EnergyThreshold eh = new EnergyThreshold( amount, this );
+    @Override
+    public boolean add(final double amount) {
+        final EnergyThreshold eh = new EnergyThreshold(amount, this);
 
-		if( this.myInterests.contains( eh ) )
+        if (this.myInterests.contains(eh)) {
+            return false;
+        }
 
-		{
-			return false;
-		}
+        return this.gsc.registerEnergyInterest(eh) && this.myInterests.add(eh);
+    }
 
-		return this.gsc.registerEnergyInterest( eh ) && this.myInterests.add( eh );
-	}
+    @Override
+    public boolean remove(final double amount) {
+        final EnergyThreshold eh = new EnergyThreshold(amount, this);
 
-	@Override
-	public boolean remove( final double amount )
-	{
-		final EnergyThreshold eh = new EnergyThreshold( amount, this );
+        return this.myInterests.remove(eh) && this.gsc.unregisterEnergyInterest(eh);
+    }
 
-		return this.myInterests.remove( eh ) && this.gsc.unregisterEnergyInterest( eh );
-	}
+    @Override
+    public void reset() {
+        for (Iterator<EnergyThreshold> iterator = this.myInterests.iterator(); iterator.hasNext(); ) {
+            final EnergyThreshold threshold = iterator.next();
 
-	@Override
-	public void reset()
-	{
-		for( Iterator<EnergyThreshold> iterator = this.myInterests.iterator(); iterator.hasNext(); )
-		{
-			final EnergyThreshold threshold = iterator.next();
-
-			this.gsc.unregisterEnergyInterest( threshold );
-			iterator.remove();
-		}
-	}
+            this.gsc.unregisterEnergyInterest(threshold);
+            iterator.remove();
+        }
+    }
 
 }

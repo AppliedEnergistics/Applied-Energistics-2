@@ -1,10 +1,5 @@
-
 package appeng.decorative.slab;
 
-
-import java.util.Random;
-
-import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
@@ -19,154 +14,134 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+import java.util.Random;
 
-public abstract class BlockSlabCommon extends BlockSlab
-{
 
-	static final PropertyEnum<BlockSlabCommon.Variant> VARIANT = PropertyEnum.create( "variant", Variant.class );
+public abstract class BlockSlabCommon extends BlockSlab {
 
-	private BlockSlabCommon( Block block )
-	{
-		super( block.getMaterial( block.getDefaultState() ) );
-		this.setHardness( block.getBlockHardness( block.getDefaultState(), null, null ) );
-		this.setResistance( block.getExplosionResistance( null ) * 5.0F / 3.0F );
+    static final PropertyEnum<BlockSlabCommon.Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
 
-		IBlockState iblockstate = this.blockState.getBaseState();
+    private BlockSlabCommon(Block block) {
+        super(block.getMaterial(block.getDefaultState()));
+        this.setHardness(block.getBlockHardness(block.getDefaultState(), null, null));
+        this.setResistance(block.getExplosionResistance(null) * 5.0F / 3.0F);
 
-		if( !this.isDouble() )
-		{
-			iblockstate = iblockstate.withProperty( HALF, BlockSlab.EnumBlockHalf.BOTTOM );
-		}
+        IBlockState iblockstate = this.blockState.getBaseState();
 
-		this.setDefaultState( iblockstate.withProperty( VARIANT, Variant.DEFAULT ) );
-		this.setCreativeTab( CreativeTabs.BUILDING_BLOCKS );
-		this.useNeighborBrightness = true;
-	}
+        if (!this.isDouble()) {
+            iblockstate = iblockstate.withProperty(HALF, BlockSlab.EnumBlockHalf.BOTTOM);
+        }
 
-	/**
-	 * Convert the given metadata into a BlockState for this Block
-	 */
-	@Override
-	public IBlockState getStateFromMeta( int meta )
-	{
-		IBlockState iblockstate = this.getDefaultState().withProperty( VARIANT, Variant.DEFAULT );
+        this.setDefaultState(iblockstate.withProperty(VARIANT, Variant.DEFAULT));
+        this.setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
+        this.useNeighborBrightness = true;
+    }
 
-		if( !this.isDouble() )
-		{
-			iblockstate = iblockstate.withProperty( HALF, ( meta & 8 ) == 0 ? BlockSlab.EnumBlockHalf.BOTTOM : BlockSlab.EnumBlockHalf.TOP );
-		}
+    /**
+     * Convert the given metadata into a BlockState for this Block
+     */
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        IBlockState iblockstate = this.getDefaultState().withProperty(VARIANT, Variant.DEFAULT);
 
-		return iblockstate;
-	}
+        if (!this.isDouble()) {
+            iblockstate = iblockstate.withProperty(HALF, (meta & 8) == 0 ? BlockSlab.EnumBlockHalf.BOTTOM : BlockSlab.EnumBlockHalf.TOP);
+        }
 
-	/**
-	 * Convert the BlockState into the correct metadata value
-	 */
-	@Override
-	public int getMetaFromState( IBlockState state )
-	{
-		int i = 0;
+        return iblockstate;
+    }
 
-		if( !this.isDouble() && state.getValue( HALF ) == BlockSlab.EnumBlockHalf.TOP )
-		{
-			i |= 8;
-		}
+    /**
+     * Convert the BlockState into the correct metadata value
+     */
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        int i = 0;
 
-		return i;
-	}
+        if (!this.isDouble() && state.getValue(HALF) == BlockSlab.EnumBlockHalf.TOP) {
+            i |= 8;
+        }
 
-	@Override
-	protected BlockStateContainer createBlockState()
-	{
-		return this.isDouble() ? new BlockStateContainer( this, VARIANT ) : new BlockStateContainer( this, HALF, VARIANT );
-	}
+        return i;
+    }
 
-	@Override
-	@Nullable
-	public Item getItemDropped( IBlockState state, Random rand, int fortune )
-	{
-		return Item.getItemFromBlock( this );
-	}
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return this.isDouble() ? new BlockStateContainer(this, VARIANT) : new BlockStateContainer(this, HALF, VARIANT);
+    }
 
-	@Override
-	public ItemStack getItem( World worldIn, BlockPos pos, IBlockState state )
-	{
-		return new ItemStack( this, 1, 0 );
-	}
+    @Override
+    @Nullable
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return Item.getItemFromBlock(this);
+    }
 
-	@Override
-	public String getUnlocalizedName( int meta )
-	{
-		return this.getUnlocalizedName();
-	}
+    @Override
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+        return new ItemStack(this, 1, 0);
+    }
 
-	@Override
-	public IProperty<?> getVariantProperty()
-	{
-		return VARIANT;
-	}
+    @Override
+    public String getUnlocalizedName(int meta) {
+        return this.getUnlocalizedName();
+    }
 
-	@Override
-	public Comparable<?> getTypeForItem( ItemStack stack )
-	{
-		return Variant.DEFAULT;
-	}
+    @Override
+    public IProperty<?> getVariantProperty() {
+        return VARIANT;
+    }
 
-	public static class Double extends BlockSlabCommon
-	{
+    @Override
+    public Comparable<?> getTypeForItem(ItemStack stack) {
+        return Variant.DEFAULT;
+    }
 
-		private final Block halfSlabBlock;
+    public static class Double extends BlockSlabCommon {
 
-		public Double( Block halfSlabBlock, Block block )
-		{
-			super( block );
-			this.halfSlabBlock = halfSlabBlock;
-		}
+        private final Block halfSlabBlock;
 
-		@Override
-		public boolean isDouble()
-		{
-			return true;
-		}
+        public Double(Block halfSlabBlock, Block block) {
+            super(block);
+            this.halfSlabBlock = halfSlabBlock;
+        }
 
-		@Override
-		@Nullable
-		public Item getItemDropped( IBlockState state, Random rand, int fortune )
-		{
-			return Item.getItemFromBlock( this.halfSlabBlock );
-		}
+        @Override
+        public boolean isDouble() {
+            return true;
+        }
 
-		@Override
-		public ItemStack getItem( World worldIn, BlockPos pos, IBlockState state )
-		{
-			return new ItemStack( this.halfSlabBlock, 1, 0 );
-		}
+        @Override
+        @Nullable
+        public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+            return Item.getItemFromBlock(this.halfSlabBlock);
+        }
 
-	}
+        @Override
+        public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+            return new ItemStack(this.halfSlabBlock, 1, 0);
+        }
 
-	public static class Half extends BlockSlabCommon
-	{
+    }
 
-		public Half( Block block )
-		{
-			super( block );
-		}
+    public static class Half extends BlockSlabCommon {
 
-		@Override
-		public boolean isDouble()
-		{
-			return false;
-		}
-	}
+        public Half(Block block) {
+            super(block);
+        }
 
-	public enum Variant implements IStringSerializable
-	{
-		DEFAULT;
+        @Override
+        public boolean isDouble() {
+            return false;
+        }
+    }
 
-		@Override
-		public String getName()
-		{
-			return "default";
-		}
-	}
+    public enum Variant implements IStringSerializable {
+        DEFAULT;
+
+        @Override
+        public String getName() {
+            return "default";
+        }
+    }
 }

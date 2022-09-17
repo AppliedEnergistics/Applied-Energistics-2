@@ -21,17 +21,15 @@ package appeng.container.interfaces;
 
 /**
  * Any item providing a GUI and depending on an exact inventory slot.
- *
+ * <p>
  * This interface is likely a volatile one until a general GUI refactoring occurred.
  * Use it with care and expect changes.
- *
  */
-public interface IInventorySlotAware
-{
-	/**
-	 * This is needed to select the correct slot index.
-	 *
-	 * @return the inventory index of this portable cell.
-	 */
-	int getInventorySlot();
+public interface IInventorySlotAware {
+    /**
+     * This is needed to select the correct slot index.
+     *
+     * @return the inventory index of this portable cell.
+     */
+    int getInventorySlot();
 }

@@ -26,64 +26,54 @@ import net.minecraft.util.EnumFacing;
 /**
  * Used as the cache key for caching automatically rotated baked models.
  */
-final class AutoRotatingCacheKey
-{
-	private final IBlockState blockState;
-	private final EnumFacing forward;
-	private final EnumFacing up;
-	private final EnumFacing side;
+final class AutoRotatingCacheKey {
+    private final IBlockState blockState;
+    private final EnumFacing forward;
+    private final EnumFacing up;
+    private final EnumFacing side;
 
-	AutoRotatingCacheKey( IBlockState blockState, EnumFacing forward, EnumFacing up, EnumFacing side )
-	{
-		this.blockState = blockState;
-		this.forward = forward;
-		this.up = up;
-		this.side = side;
-	}
+    AutoRotatingCacheKey(IBlockState blockState, EnumFacing forward, EnumFacing up, EnumFacing side) {
+        this.blockState = blockState;
+        this.forward = forward;
+        this.up = up;
+        this.side = side;
+    }
 
-	public IBlockState getBlockState()
-	{
-		return this.blockState;
-	}
+    public IBlockState getBlockState() {
+        return this.blockState;
+    }
 
-	public EnumFacing getForward()
-	{
-		return this.forward;
-	}
+    public EnumFacing getForward() {
+        return this.forward;
+    }
 
-	public EnumFacing getUp()
-	{
-		return this.up;
-	}
+    public EnumFacing getUp() {
+        return this.up;
+    }
 
-	public EnumFacing getSide()
-	{
-		return this.side;
-	}
+    public EnumFacing getSide() {
+        return this.side;
+    }
 
-	@Override
-	public boolean equals( Object o )
-	{
-		if( this == o )
-		{
-			return true;
-		}
-		if( o == null || this.getClass() != o.getClass() )
-		{
-			return false;
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
 
-		AutoRotatingCacheKey cacheKey = (AutoRotatingCacheKey) o;
-		return this.blockState.equals( cacheKey.blockState ) && this.forward == cacheKey.forward && this.up == cacheKey.up && this.side == cacheKey.side;
-	}
+        AutoRotatingCacheKey cacheKey = (AutoRotatingCacheKey) o;
+        return this.blockState.equals(cacheKey.blockState) && this.forward == cacheKey.forward && this.up == cacheKey.up && this.side == cacheKey.side;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		int result = this.blockState.hashCode();
-		result = 31 * result + this.forward.hashCode();
-		result = 31 * result + this.up.hashCode();
-		result = 31 * result + ( this.side != null ? this.side.hashCode() : 0 );
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = this.blockState.hashCode();
+        result = 31 * result + this.forward.hashCode();
+        result = 31 * result + this.up.hashCode();
+        result = 31 * result + (this.side != null ? this.side.hashCode() : 0);
+        return result;
+    }
 }

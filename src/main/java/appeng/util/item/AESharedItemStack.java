@@ -18,82 +18,70 @@
 
 package appeng.util.item;
 
-import java.util.Objects;
-
 import com.google.common.base.Preconditions;
-
 import net.minecraft.item.ItemStack;
 
+import java.util.Objects;
 
-final class AESharedItemStack
-{
 
-	private final ItemStack itemStack;
-	private final int itemDamage;
-	private final int hashCode;
+final class AESharedItemStack {
 
-	public AESharedItemStack( final ItemStack itemStack )
-	{
-		this( itemStack, itemStack.getItemDamage() );
-	}
+    private final ItemStack itemStack;
+    private final int itemDamage;
+    private final int hashCode;
 
-	/**
-	 * A constructor to explicitly set the damage value and not fetch it from the {@link ItemStack}
-	 *
-	 * @param itemStack The {@link ItemStack} to filter
-	 * @param damage    The damage of the item
-	 */
-	private AESharedItemStack( ItemStack itemStack, int damage )
-	{
-		this.itemStack = itemStack;
-		this.itemDamage = damage;
+    public AESharedItemStack(final ItemStack itemStack) {
+        this(itemStack, itemStack.getItemDamage());
+    }
 
-		// Ensure this is always called last.
-		this.hashCode = this.makeHashCode();
-	}
+    /**
+     * A constructor to explicitly set the damage value and not fetch it from the {@link ItemStack}
+     *
+     * @param itemStack The {@link ItemStack} to filter
+     * @param damage    The damage of the item
+     */
+    private AESharedItemStack(ItemStack itemStack, int damage) {
+        this.itemStack = itemStack;
+        this.itemDamage = damage;
 
-	ItemStack getDefinition()
-	{
-		return this.itemStack;
-	}
+        // Ensure this is always called last.
+        this.hashCode = this.makeHashCode();
+    }
 
-	int getItemDamage()
-	{
-		return this.itemDamage;
-	}
+    ItemStack getDefinition() {
+        return this.itemStack;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return this.hashCode;
-	}
+    int getItemDamage() {
+        return this.itemDamage;
+    }
 
-	@Override
-	public boolean equals( final Object obj )
-	{
-		if( this == obj )
-		{
-			return true;
-		}
-		if( !( obj instanceof AESharedItemStack ) )
-		{
-			return false;
-		}
+    @Override
+    public int hashCode() {
+        return this.hashCode;
+    }
 
-		final AESharedItemStack other = (AESharedItemStack) obj;
-		Preconditions.checkState( this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1" );
-		Preconditions.checkArgument( other.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1" );
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof AESharedItemStack)) {
+            return false;
+        }
 
-		if( this.itemStack == other.itemStack )
-		{
-			return true;
-		}
-		return ItemStack.areItemStacksEqual( this.itemStack, other.itemStack );
-	}
+        final AESharedItemStack other = (AESharedItemStack) obj;
+        Preconditions.checkState(this.itemStack.getCount() == 1, "ItemStack#getCount() has to be 1");
+        Preconditions.checkArgument(other.getDefinition().getCount() == 1, "ItemStack#getCount() has to be 1");
 
-	private int makeHashCode()
-	{
-		return Objects.hash( this.itemStack.getItem(), this.itemDamage, this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound() : 0 );
-	}
+        if (this.itemStack == other.itemStack) {
+            return true;
+        }
+        return ItemStack.areItemStacksEqual(this.itemStack, other.itemStack);
+    }
+
+    private int makeHashCode() {
+        return Objects.hash(this.itemStack.getItem(), this.itemDamage, this.itemStack.hasTagCompound() ? this.itemStack.getTagCompound() : 0);
+    }
 
 }

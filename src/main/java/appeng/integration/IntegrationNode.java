@@ -19,142 +19,116 @@
 package appeng.integration;
 
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModAPIManager;
-
 import appeng.api.exceptions.ModNotInstalledException;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModAPIManager;
 
 
-final class IntegrationNode
-{
+final class IntegrationNode {
 
-	private final String displayName;
-	private final String modID;
-	private final IntegrationType type;
-	private IntegrationStage state = IntegrationStage.PRE_INIT;
-	private Throwable exception = null;
-	private IIntegrationModule mod = null;
+    private final String displayName;
+    private final String modID;
+    private final IntegrationType type;
+    private IntegrationStage state = IntegrationStage.PRE_INIT;
+    private Throwable exception = null;
+    private IIntegrationModule mod = null;
 
-	IntegrationNode( final String displayName, final String modID, final IntegrationType type )
-	{
-		this.displayName = displayName;
-		this.type = type;
-		this.modID = modID;
-	}
+    IntegrationNode(final String displayName, final String modID, final IntegrationType type) {
+        this.displayName = displayName;
+        this.type = type;
+        this.modID = modID;
+    }
 
-	@Override
-	public String toString()
-	{
-		return this.getType().name() + ':' + this.getState().name();
-	}
+    @Override
+    public String toString() {
+        return this.getType().name() + ':' + this.getState().name();
+    }
 
-	boolean isActive()
-	{
-		if( this.getState() == IntegrationStage.PRE_INIT )
-		{
-			this.call( IntegrationStage.PRE_INIT );
-		}
+    boolean isActive() {
+        if (this.getState() == IntegrationStage.PRE_INIT) {
+            this.call(IntegrationStage.PRE_INIT);
+        }
 
-		return this.getState() != IntegrationStage.FAILED;
-	}
+        return this.getState() != IntegrationStage.FAILED;
+    }
 
-	void call( final IntegrationStage stage )
-	{
-		if( this.getState() != IntegrationStage.FAILED )
-		{
-			if( this.getState().ordinal() > stage.ordinal() )
-			{
-				return;
-			}
+    void call(final IntegrationStage stage) {
+        if (this.getState() != IntegrationStage.FAILED) {
+            if (this.getState().ordinal() > stage.ordinal()) {
+                return;
+            }
 
-			try
-			{
-				switch( stage )
-				{
-					case PRE_INIT:
-						final ModAPIManager apiManager = ModAPIManager.INSTANCE;
-						boolean enabled = this.modID == null || Loader.isModLoaded( this.modID ) || apiManager.hasAPI( this.modID );
+            try {
+                switch (stage) {
+                    case PRE_INIT:
+                        final ModAPIManager apiManager = ModAPIManager.INSTANCE;
+                        boolean enabled = this.modID == null || Loader.isModLoaded(this.modID) || apiManager.hasAPI(this.modID);
 
-						AEConfig.instance()
-								.addCustomCategoryComment( "ModIntegration",
-										"Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason." );
-						final String mode = AEConfig.instance().get( "ModIntegration", this.displayName.replace( " ", "" ), "AUTO" ).getString();
+                        AEConfig.instance()
+                                .addCustomCategoryComment("ModIntegration",
+                                        "Valid Values are 'AUTO', 'ON', or 'OFF' - defaults to 'AUTO' ; Suggested that you leave this alone unless your experiencing an issue, or wish to disable the integration for a reason.");
+                        final String mode = AEConfig.instance().get("ModIntegration", this.displayName.replace(" ", ""), "AUTO").getString();
 
-						if( mode.toUpperCase().equals( "ON" ) )
-						{
-							enabled = true;
-						}
-						if( mode.toUpperCase().equals( "OFF" ) )
-						{
-							enabled = false;
-						}
+                        if (mode.equalsIgnoreCase("ON")) {
+                            enabled = true;
+                        }
+                        if (mode.equalsIgnoreCase("OFF")) {
+                            enabled = false;
+                        }
 
-						if( enabled )
-						{
-							this.mod = this.type.createInstance();
-						}
-						else
-						{
-							throw new ModNotInstalledException( this.modID );
-						}
+                        if (enabled) {
+                            this.mod = this.type.createInstance();
+                        } else {
+                            throw new ModNotInstalledException(this.modID);
+                        }
 
-						this.mod.preInit();
-						this.setState( IntegrationStage.INIT );
+                        this.mod.preInit();
+                        this.setState(IntegrationStage.INIT);
 
-						break;
-					case INIT:
-						this.mod.init();
-						this.setState( IntegrationStage.POST_INIT );
+                        break;
+                    case INIT:
+                        this.mod.init();
+                        this.setState(IntegrationStage.POST_INIT);
 
-						break;
-					case POST_INIT:
-						this.mod.postInit();
-						this.setState( IntegrationStage.READY );
+                        break;
+                    case POST_INIT:
+                        this.mod.postInit();
+                        this.setState(IntegrationStage.READY);
 
-						break;
-					case FAILED:
-					default:
-						break;
-				}
-			}
-			catch( final Throwable t )
-			{
-				this.exception = t;
-				this.setState( IntegrationStage.FAILED );
-			}
-		}
+                        break;
+                    case FAILED:
+                    default:
+                        break;
+                }
+            } catch (final Throwable t) {
+                this.exception = t;
+                this.setState(IntegrationStage.FAILED);
+            }
+        }
 
-		if( stage == IntegrationStage.POST_INIT )
-		{
-			if( this.getState() == IntegrationStage.FAILED )
-			{
-				AELog.info( this.displayName + " - Integration Disabled" );
-				if( !( this.exception instanceof ModNotInstalledException ) )
-				{
-					AELog.integration( this.exception );
-				}
-			}
-			else
-			{
-				AELog.info( this.displayName + " - Integration Enable" );
-			}
-		}
-	}
+        if (stage == IntegrationStage.POST_INIT) {
+            if (this.getState() == IntegrationStage.FAILED) {
+                AELog.info(this.displayName + " - Integration Disabled");
+                if (!(this.exception instanceof ModNotInstalledException)) {
+                    AELog.integration(this.exception);
+                }
+            } else {
+                AELog.info(this.displayName + " - Integration Enable");
+            }
+        }
+    }
 
-	IntegrationType getType()
-	{
-		return this.type;
-	}
+    IntegrationType getType() {
+        return this.type;
+    }
 
-	IntegrationStage getState()
-	{
-		return this.state;
-	}
+    IntegrationStage getState() {
+        return this.state;
+    }
 
-	private void setState( final IntegrationStage state )
-	{
-		this.state = state;
-	}
+    private void setState(final IntegrationStage state) {
+        this.state = state;
+    }
 }

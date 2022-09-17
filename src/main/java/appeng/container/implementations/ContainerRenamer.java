@@ -25,7 +25,7 @@ public class ContainerRenamer extends AEBaseContainer {
     @SideOnly(Side.CLIENT)
     public void setTextField(final MEGuiTextField name) {
         this.textField = name;
-        if(getCustomName() != null) textField.setText(getCustomName());
+        if (getCustomName() != null) textField.setText(getCustomName());
     }
 
     public void setNewName(String newValue) {
@@ -36,13 +36,13 @@ public class ContainerRenamer extends AEBaseContainer {
     @Override
     public void setCustomName(final String customName) {
         super.setCustomName(customName);
-        if(!Platform.isServer() && customName != null) textField.setText(customName);
+        if (!Platform.isServer() && customName != null) textField.setText(customName);
     }
 
     @Override
     public void detectAndSendChanges() {
         verifyPermissions(SecurityPermissions.BUILD, false);
         super.detectAndSendChanges();
-        if(!Platform.isServer() && getCustomName() != null) textField.setText(getCustomName());
+        if (!Platform.isServer() && getCustomName() != null) textField.setText(getCustomName());
     }
 }

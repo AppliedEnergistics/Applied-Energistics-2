@@ -19,10 +19,11 @@
 package appeng.bootstrap;
 
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiFunction;
-
+import appeng.block.AEBaseTileBlock;
+import appeng.bootstrap.components.BlockColorComponent;
+import appeng.bootstrap.components.StateMapperComponent;
+import appeng.bootstrap.components.TesrComponent;
+import appeng.client.render.model.AutoRotatingModel;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -33,103 +34,87 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.block.AEBaseTileBlock;
-import appeng.bootstrap.components.BlockColorComponent;
-import appeng.bootstrap.components.StateMapperComponent;
-import appeng.bootstrap.components.TesrComponent;
-import appeng.client.render.model.AutoRotatingModel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 
-class BlockRendering implements IBlockRendering
-{
+class BlockRendering implements IBlockRendering {
 
-	@SideOnly( Side.CLIENT )
-	private BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
+    @SideOnly(Side.CLIENT)
+    private BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
 
-	@SideOnly( Side.CLIENT )
-	private IBlockColor blockColor;
+    @SideOnly(Side.CLIENT)
+    private IBlockColor blockColor;
 
-	@SideOnly( Side.CLIENT )
-	private TileEntitySpecialRenderer<?> tesr;
+    @SideOnly(Side.CLIENT)
+    private TileEntitySpecialRenderer<?> tesr;
 
-	@SideOnly( Side.CLIENT )
-	private IStateMapper stateMapper;
+    @SideOnly(Side.CLIENT)
+    private IStateMapper stateMapper;
 
-	@SideOnly( Side.CLIENT )
-	private Map<String, IModel> builtInModels = new HashMap<>();
+    @SideOnly(Side.CLIENT)
+    private final Map<String, IModel> builtInModels = new HashMap<>();
 
-	@Override
-	@SideOnly( Side.CLIENT )
-	public IBlockRendering modelCustomizer( BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer )
-	{
-		this.modelCustomizer = customizer;
-		return this;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IBlockRendering modelCustomizer(BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> customizer) {
+        this.modelCustomizer = customizer;
+        return this;
+    }
 
-	@SideOnly( Side.CLIENT )
-	@Override
-	public IBlockRendering blockColor( IBlockColor blockColor )
-	{
-		this.blockColor = blockColor;
-		return this;
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IBlockRendering blockColor(IBlockColor blockColor) {
+        this.blockColor = blockColor;
+        return this;
+    }
 
-	@SideOnly( Side.CLIENT )
-	@Override
-	public IBlockRendering tesr( TileEntitySpecialRenderer<?> tesr )
-	{
-		this.tesr = tesr;
-		return this;
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IBlockRendering tesr(TileEntitySpecialRenderer<?> tesr) {
+        this.tesr = tesr;
+        return this;
+    }
 
-	@Override
-	public IBlockRendering builtInModel( String name, IModel model )
-	{
-		this.builtInModels.put( name, model );
-		return this;
-	}
+    @Override
+    public IBlockRendering builtInModel(String name, IModel model) {
+        this.builtInModels.put(name, model);
+        return this;
+    }
 
-	@SideOnly( Side.CLIENT )
-	@Override
-	public IBlockRendering stateMapper( IStateMapper mapper )
-	{
-		this.stateMapper = mapper;
-		return this;
-	}
+    @SideOnly(Side.CLIENT)
+    @Override
+    public IBlockRendering stateMapper(IStateMapper mapper) {
+        this.stateMapper = mapper;
+        return this;
+    }
 
-	void apply( FeatureFactory factory, Block block, Class<?> tileEntityClass )
-	{
-		if( this.tesr != null )
-		{
-			if( tileEntityClass == null )
-			{
-				throw new IllegalStateException( "Tried to register a TESR for " + block + " even though no tile entity has been specified." );
-			}
-			factory.addBootstrapComponent( new TesrComponent( tileEntityClass, this.tesr ) );
-		}
+    void apply(FeatureFactory factory, Block block, Class<?> tileEntityClass) {
+        if (this.tesr != null) {
+            if (tileEntityClass == null) {
+                throw new IllegalStateException("Tried to register a TESR for " + block + " even though no tile entity has been specified.");
+            }
+            factory.addBootstrapComponent(new TesrComponent(tileEntityClass, this.tesr));
+        }
 
-		if( this.modelCustomizer != null )
-		{
-			factory.addModelOverride( block.getRegistryName().getResourcePath(), this.modelCustomizer );
-		}
-		else if( block instanceof AEBaseTileBlock )
-		{
-			// This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as
-			// extended props
-			factory.addModelOverride( block.getRegistryName().getResourcePath(), ( l, m ) -> new AutoRotatingModel( m ) );
-		}
+        if (this.modelCustomizer != null) {
+            factory.addModelOverride(block.getRegistryName().getResourcePath(), this.modelCustomizer);
+        } else if (block instanceof AEBaseTileBlock) {
+            // This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as
+            // extended props
+            factory.addModelOverride(block.getRegistryName().getResourcePath(), (l, m) -> new AutoRotatingModel(m));
+        }
 
-		// TODO : 1.12
-		this.builtInModels.forEach( factory::addBuiltInModel );
+        // TODO : 1.12
+        this.builtInModels.forEach(factory::addBuiltInModel);
 
-		if( this.blockColor != null )
-		{
-			factory.addBootstrapComponent( new BlockColorComponent( block, this.blockColor ) );
-		}
+        if (this.blockColor != null) {
+            factory.addBootstrapComponent(new BlockColorComponent(block, this.blockColor));
+        }
 
-		if( this.stateMapper != null )
-		{
-			factory.addBootstrapComponent( new StateMapperComponent( block, this.stateMapper ) );
-		}
-	}
+        if (this.stateMapper != null) {
+            factory.addBootstrapComponent(new StateMapperComponent(block, this.stateMapper));
+        }
+    }
 }

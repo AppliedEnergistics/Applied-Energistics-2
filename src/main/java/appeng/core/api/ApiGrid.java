@@ -19,8 +19,6 @@
 package appeng.core.api;
 
 
-import com.google.common.base.Preconditions;
-
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.IGridBlock;
 import appeng.api.networking.IGridConnection;
@@ -30,6 +28,7 @@ import appeng.api.util.AEPartLocation;
 import appeng.me.GridConnection;
 import appeng.me.GridNode;
 import appeng.util.Platform;
+import com.google.common.base.Preconditions;
 
 
 /**
@@ -37,29 +36,25 @@ import appeng.util.Platform;
  * @version rv5
  * @since rv5
  */
-public class ApiGrid implements IGridHelper
-{
+public class ApiGrid implements IGridHelper {
 
-	@Override
-	public IGridNode createGridNode( final IGridBlock blk )
-	{
-		Preconditions.checkNotNull( blk );
+    @Override
+    public IGridNode createGridNode(final IGridBlock blk) {
+        Preconditions.checkNotNull(blk);
 
-		if( Platform.isClient() )
-		{
-			throw new IllegalStateException( "Grid features for " + blk + " are server side only." );
-		}
+        if (Platform.isClient()) {
+            throw new IllegalStateException("Grid features for " + blk + " are server side only.");
+        }
 
-		return new GridNode( blk );
-	}
+        return new GridNode(blk);
+    }
 
-	@Override
-	public IGridConnection createGridConnection( final IGridNode a, final IGridNode b ) throws FailedConnectionException
-	{
-		Preconditions.checkNotNull( a );
-		Preconditions.checkNotNull( b );
+    @Override
+    public IGridConnection createGridConnection(final IGridNode a, final IGridNode b) throws FailedConnectionException {
+        Preconditions.checkNotNull(a);
+        Preconditions.checkNotNull(b);
 
-		return GridConnection.create( a, b, AEPartLocation.INTERNAL );
-	}
+        return GridConnection.create(a, b, AEPartLocation.INTERNAL);
+    }
 
 }

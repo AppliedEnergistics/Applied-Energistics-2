@@ -19,86 +19,70 @@
 package appeng.integration;
 
 
-import appeng.integration.abstraction.IIC2;
-import appeng.integration.abstraction.IInvTweaks;
-import appeng.integration.abstraction.IJEI;
-import appeng.integration.abstraction.IMekanism;
-import appeng.integration.abstraction.IRC;
+import appeng.integration.abstraction.*;
 
 
 /**
  * Provides convenient access to various integrations with other mods.
  */
-public final class Integrations
-{
+public final class Integrations {
 
-	static IIC2 ic2 = new IIC2.Stub();
+    static IIC2 ic2 = new IIC2.Stub();
 
-	static IJEI jei = new IJEI.Stub();
+    static IJEI jei = new IJEI.Stub();
 
-	static IRC rc = new IRC.Stub();
+    static IRC rc = new IRC.Stub();
 
-	static IMekanism mekanism = new IMekanism.Stub();
+    static IMekanism mekanism = new IMekanism.Stub();
 
-	static IInvTweaks invTweaks = new IInvTweaks.Stub();
+    static IInvTweaks invTweaks = new IInvTweaks.Stub();
 
-	private Integrations()
-	{
-	}
+    private Integrations() {
+    }
 
-	public static IIC2 ic2()
-	{
-		return ic2;
-	}
+    public static IIC2 ic2() {
+        return ic2;
+    }
 
-	public static IJEI jei()
-	{
-		return jei;
-	}
+    public static IJEI jei() {
+        return jei;
+    }
 
-	public static IRC rc()
-	{
-		return rc;
-	}
+    public static IRC rc() {
+        return rc;
+    }
 
-	public static IMekanism mekanism()
-	{
-		return mekanism;
-	}
+    public static IMekanism mekanism() {
+        return mekanism;
+    }
 
-	public static IInvTweaks invTweaks()
-	{
-		return invTweaks;
-	}
+    public static IInvTweaks invTweaks() {
+        return invTweaks;
+    }
 
-	static IIC2 setIc2( IIC2 ic2 )
-	{
-		Integrations.ic2 = ic2;
-		return ic2;
-	}
+    static IIC2 setIc2(IIC2 ic2) {
+        Integrations.ic2 = ic2;
+        return ic2;
+    }
 
-	static IJEI setJei( IJEI jei )
-	{
-		Integrations.jei = jei;
-		return jei;
-	}
+    static IJEI setJei(IJEI jei) {
+        Integrations.jei = jei;
+        return jei;
+    }
 
-	static IRC setRc( IRC rc )
-	{
-		Integrations.rc = rc;
-		return rc;
-	}
+    static IRC setRc(IRC rc) {
+        Integrations.rc = rc;
+        return rc;
+    }
 
-	static IMekanism setMekanism( IMekanism mekanism )
-	{
-		Integrations.mekanism = mekanism;
-		return mekanism;
-	}
+    static IMekanism setMekanism(IMekanism mekanism) {
+        Integrations.mekanism = mekanism;
+        return mekanism;
+    }
 
-	static IInvTweaks setInvTweaks( IInvTweaks invTweaks )
-	{
-		Integrations.invTweaks = invTweaks;
-		return invTweaks;
-	}
+    static IInvTweaks setInvTweaks(IInvTweaks invTweaks) {
+        Integrations.invTweaks = invTweaks;
+        return invTweaks;
+    }
 
 }

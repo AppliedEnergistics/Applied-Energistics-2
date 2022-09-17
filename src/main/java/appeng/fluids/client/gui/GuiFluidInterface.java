@@ -19,15 +19,9 @@
 package appeng.fluids.client.gui;
 
 
-import java.io.IOException;
-
 import appeng.api.util.IConfigManager;
-import appeng.client.gui.widgets.GuiCustomSlot;
-import appeng.util.IConfigManagerHost;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.entity.player.InventoryPlayer;
-
 import appeng.client.gui.implementations.GuiUpgradeable;
+import appeng.client.gui.widgets.GuiCustomSlot;
 import appeng.client.gui.widgets.GuiTabButton;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
@@ -39,102 +33,92 @@ import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.util.IAEFluidTank;
+import appeng.util.IConfigManagerHost;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.entity.player.InventoryPlayer;
+
+import java.io.IOException;
 
 
-public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerHost
-{
-	public final static int ID_BUTTON_TANK = 222;
+public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerHost {
+    public final static int ID_BUTTON_TANK = 222;
 
-	private final IFluidInterfaceHost host;
-	private final ContainerFluidInterface container;
-	private GuiTabButton priority;
+    private final IFluidInterfaceHost host;
+    private final ContainerFluidInterface container;
+    private GuiTabButton priority;
 
-	public GuiFluidInterface( final InventoryPlayer ip, final IFluidInterfaceHost te )
-	{
-		super( new ContainerFluidInterface( ip, te ) );
-		this.ySize = 231;
-		this.host = te;
-		( this.container = (ContainerFluidInterface) this.inventorySlots ).setGui( this );
+    public GuiFluidInterface(final InventoryPlayer ip, final IFluidInterfaceHost te) {
+        super(new ContainerFluidInterface(ip, te));
+        this.ySize = 231;
+        this.host = te;
+        (this.container = (ContainerFluidInterface) this.inventorySlots).setGui(this);
 
-	}
+    }
 
-	@Override
-	public void initGui()
-	{
-		super.initGui();
+    @Override
+    public void initGui() {
+        super.initGui();
 
-		final IAEFluidTank configFluids = this.host.getDualityFluidInterface().getConfig();
-		final IAEFluidTank fluidTank = this.host.getDualityFluidInterface().getTanks();
+        final IAEFluidTank configFluids = this.host.getDualityFluidInterface().getConfig();
+        final IAEFluidTank fluidTank = this.host.getDualityFluidInterface().getTanks();
 
-		for( int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i )
-		{
-			this.guiSlots.add( new GuiFluidTank( fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, 36 + 18 * i, 57, 16, 64 ) );
-			this.guiSlots.add( new GuiFluidSlot( configFluids, i, i, 35 + 18 * i, 35 ) );
-		}
+        for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
+            this.guiSlots.add(new GuiFluidTank(fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, 36 + 18 * i, 57, 16, 64));
+            this.guiSlots.add(new GuiFluidSlot(configFluids, i, i, 35 + 18 * i, 35));
+        }
 
-		this.priority = new GuiTabButton( this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender );
-		this.buttonList.add( this.priority );
-	}
+        this.priority = new GuiTabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender);
+        this.buttonList.add(this.priority);
+    }
 
-	@Override
-	protected void addButtons()
-	{
-	}
+    @Override
+    protected void addButtons() {
+    }
 
-	@Override
-	public void drawFG( int offsetX, int offsetY, int mouseX, int mouseY )
-	{
-		this.fontRenderer.drawString( this.getGuiDisplayName( GuiText.FluidInterface.getLocal() ), 8, 6, 4210752 );
-		this.fontRenderer.drawString( GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752 );
-		this.fontRenderer.drawString( GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752 );
-		this.fontRenderer.drawString( GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752 );
-	}
+    @Override
+    public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.fontRenderer.drawString(this.getGuiDisplayName(GuiText.FluidInterface.getLocal()), 8, 6, 4210752);
+        this.fontRenderer.drawString(GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
+        this.fontRenderer.drawString(GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
+        this.fontRenderer.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
+    }
 
-	@Override
-	public void drawBG( int offsetX, int offsetY, int mouseX, int mouseY )
-	{
-		this.bindTexture( "guis/interfacefluid.png" );
-		this.drawTexturedModalRect( offsetX, offsetY, 0, 0, this.xSize, this.ySize );
-	}
+    @Override
+    public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.bindTexture("guis/interfacefluid.png");
+        this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+    }
 
-	@Override
-	protected void actionPerformed( final GuiButton btn ) throws IOException
-	{
-		super.actionPerformed( btn );
+    @Override
+    protected void actionPerformed(final GuiButton btn) throws IOException {
+        super.actionPerformed(btn);
 
-		if( btn == this.priority )
-		{
-			NetworkHandler.instance().sendToServer( new PacketSwitchGuis( GuiBridge.GUI_PRIORITY ) );
-		}
-	}
+        if (btn == this.priority) {
+            NetworkHandler.instance().sendToServer(new PacketSwitchGuis(GuiBridge.GUI_PRIORITY));
+        }
+    }
 
-	@Override
-	protected void mouseClicked( int xCoord, int yCoord, int btn ) throws IOException
-	{
-		for( GuiCustomSlot slot : this.guiSlots )
-		{
-			if( slot instanceof GuiFluidTank )
-			{
-				if( this.isPointInRegion( slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord ) && slot.canClick( this.mc.player ) )
-				{
-					this.container.setTargetStack( ( (GuiFluidTank) slot ).getFluidStack() );
-					slot.slotClicked( this.mc.player.inventory.getItemStack(), btn );
-					return;
-				}
-			}
-		}
-		super.mouseClicked( xCoord, yCoord, btn );
-	}
+    @Override
+    protected void mouseClicked(int xCoord, int yCoord, int btn) throws IOException {
+        for (GuiCustomSlot slot : this.guiSlots) {
+            if (slot instanceof GuiFluidTank) {
+                if (this.isPointInRegion(slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord) && slot.canClick(this.mc.player)) {
+                    this.container.setTargetStack(((GuiFluidTank) slot).getFluidStack());
+                    slot.slotClicked(this.mc.player.inventory.getItemStack(), btn);
+                    return;
+                }
+            }
+        }
+        super.mouseClicked(xCoord, yCoord, btn);
+    }
 
-	@Override
-	protected boolean drawUpgrades()
-	{
-		return false;
-	}
+    @Override
+    protected boolean drawUpgrades() {
+        return false;
+    }
 
-	@Override
-	public void updateSetting( IConfigManager manager, Enum settingName, Enum newValue )
-	{
+    @Override
+    public void updateSetting(IConfigManager manager, Enum settingName, Enum newValue) {
 
-	}
+    }
 }

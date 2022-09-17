@@ -28,11 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 
-public interface IBlockTool
-{
-	// Workaround for dispenser logic.
-	EnumActionResult onItemUse( ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ );
+public interface IBlockTool {
+    // Workaround for dispenser logic.
+    EnumActionResult onItemUse(ItemStack is, EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ);
 
-	EnumActionResult onItemUse( EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ );
+    EnumActionResult onItemUse(EntityPlayer p, World w, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ);
 
 }

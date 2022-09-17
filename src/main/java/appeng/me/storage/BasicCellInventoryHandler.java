@@ -19,10 +19,6 @@
 package appeng.me.storage;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.items.IItemHandler;
-
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Upgrades;
@@ -36,6 +32,9 @@ import appeng.api.storage.data.IItemList;
 import appeng.util.Platform;
 import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.IItemHandler;
 
 
 /**
@@ -43,108 +42,88 @@ import appeng.util.prioritylist.PrecisePriorityList;
  * @version rv6 - 2018-01-23
  * @since rv6 2018-01-23
  */
-public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T>
-{
-	public BasicCellInventoryHandler( final IMEInventory c, final IStorageChannel<T> channel )
-	{
-		super( c, channel );
+public class BasicCellInventoryHandler<T extends IAEStack<T>> extends MEInventoryHandler<T> implements ICellInventoryHandler<T> {
+    public BasicCellInventoryHandler(final IMEInventory c, final IStorageChannel<T> channel) {
+        super(c, channel);
 
-		final ICellInventory ci = this.getCellInv();
-		if( ci != null )
-		{
-			final IItemList<T> priorityList = channel.createList();
+        final ICellInventory ci = this.getCellInv();
+        if (ci != null) {
+            final IItemList<T> priorityList = channel.createList();
 
-			final IItemHandler upgrades = ci.getUpgradesInventory();
-			final IItemHandler config = ci.getConfigInventory();
-			final FuzzyMode fzMode = ci.getFuzzyMode();
+            final IItemHandler upgrades = ci.getUpgradesInventory();
+            final IItemHandler config = ci.getConfigInventory();
+            final FuzzyMode fzMode = ci.getFuzzyMode();
 
-			boolean hasInverter = false;
-			boolean hasFuzzy = false;
+            boolean hasInverter = false;
+            boolean hasFuzzy = false;
 
-			for( int x = 0; x < upgrades.getSlots(); x++ )
-			{
-				final ItemStack is = upgrades.getStackInSlot( x );
-				if( !is.isEmpty() && is.getItem() instanceof IUpgradeModule )
-				{
-					final Upgrades u = ( (IUpgradeModule) is.getItem() ).getType( is );
-					if( u != null )
-					{
-						switch( u )
-						{
-							case FUZZY:
-								hasFuzzy = true;
-								break;
-							case INVERTER:
-								hasInverter = true;
-								break;
-							default:
-						}
-					}
-				}
-			}
+            for (int x = 0; x < upgrades.getSlots(); x++) {
+                final ItemStack is = upgrades.getStackInSlot(x);
+                if (!is.isEmpty() && is.getItem() instanceof IUpgradeModule) {
+                    final Upgrades u = ((IUpgradeModule) is.getItem()).getType(is);
+                    if (u != null) {
+                        switch (u) {
+                            case FUZZY:
+                                hasFuzzy = true;
+                                break;
+                            case INVERTER:
+                                hasInverter = true;
+                                break;
+                            default:
+                        }
+                    }
+                }
+            }
 
-			for( int x = 0; x < config.getSlots(); x++ )
-			{
-				final ItemStack is = config.getStackInSlot( x );
-				if( !is.isEmpty() )
-				{
-					final T configItem = channel.createStack( is );
-					if( configItem != null )
-					{
-						priorityList.add( configItem );
-					}
-				}
-			}
+            for (int x = 0; x < config.getSlots(); x++) {
+                final ItemStack is = config.getStackInSlot(x);
+                if (!is.isEmpty()) {
+                    final T configItem = channel.createStack(is);
+                    if (configItem != null) {
+                        priorityList.add(configItem);
+                    }
+                }
+            }
 
-			this.setWhitelist( hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST );
+            this.setWhitelist(hasInverter ? IncludeExclude.BLACKLIST : IncludeExclude.WHITELIST);
 
-			if( !priorityList.isEmpty() )
-			{
-				if( hasFuzzy )
-				{
-					this.setPartitionList( new FuzzyPriorityList<>( priorityList, fzMode ) );
-				}
-				else
-				{
-					this.setPartitionList( new PrecisePriorityList<>( priorityList ) );
-				}
-			}
-		}
-	}
+            if (!priorityList.isEmpty()) {
+                if (hasFuzzy) {
+                    this.setPartitionList(new FuzzyPriorityList<>(priorityList, fzMode));
+                } else {
+                    this.setPartitionList(new PrecisePriorityList<>(priorityList));
+                }
+            }
+        }
+    }
 
-	@Override
-	public ICellInventory getCellInv()
-	{
-		Object o = this.getInternal();
+    @Override
+    public ICellInventory getCellInv() {
+        Object o = this.getInternal();
 
-		if( o instanceof MEPassThrough )
-		{
-			o = ( (MEPassThrough) o ).getInternal();
-		}
+        if (o instanceof MEPassThrough) {
+            o = ((MEPassThrough) o).getInternal();
+        }
 
-		return (ICellInventory) ( o instanceof ICellInventory ? o : null );
-	}
+        return (ICellInventory) (o instanceof ICellInventory ? o : null);
+    }
 
-	@Override
-	public boolean isPreformatted()
-	{
-		return !this.getPartitionList().isEmpty();
-	}
+    @Override
+    public boolean isPreformatted() {
+        return !this.getPartitionList().isEmpty();
+    }
 
-	@Override
-	public boolean isFuzzy()
-	{
-		return this.getPartitionList() instanceof FuzzyPriorityList;
-	}
+    @Override
+    public boolean isFuzzy() {
+        return this.getPartitionList() instanceof FuzzyPriorityList;
+    }
 
-	@Override
-	public IncludeExclude getIncludeExcludeMode()
-	{
-		return this.getWhitelist();
-	}
+    @Override
+    public IncludeExclude getIncludeExcludeMode() {
+        return this.getWhitelist();
+    }
 
-	NBTTagCompound openNbtData()
-	{
-		return Platform.openNbtData( this.getCellInv().getItemStack() );
-	}
+    NBTTagCompound openNbtData() {
+        return Platform.openNbtData(this.getCellInv().getItemStack());
+    }
 }

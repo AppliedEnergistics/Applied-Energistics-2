@@ -19,103 +19,78 @@
 package appeng.util;
 
 
+import appeng.core.AELog;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
-import appeng.core.AELog;
 
+public class ClassInstantiation<T> {
+    private final Class<? extends T> template;
+    private final Object[] args;
 
-public class ClassInstantiation<T>
-{
-	private final Class<? extends T> template;
-	private final Object[] args;
+    public ClassInstantiation(final Class<? extends T> template, final Object... args) {
+        this.template = template;
+        this.args = args;
+    }
 
-	public ClassInstantiation( final Class<? extends T> template, final Object... args )
-	{
-		this.template = template;
-		this.args = args;
-	}
+    public Optional<T> get() {
+        @SuppressWarnings("unchecked") final Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
 
-	public Optional<T> get()
-	{
-		@SuppressWarnings( "unchecked" )
-		final Constructor<T>[] constructors = (Constructor<T>[]) this.template.getConstructors();
+        for (final Constructor<T> constructor : constructors) {
+            final Class<?>[] paramTypes = constructor.getParameterTypes();
+            if (paramTypes.length == this.args.length) {
+                boolean valid = true;
 
-		for( final Constructor<T> constructor : constructors )
-		{
-			final Class<?>[] paramTypes = constructor.getParameterTypes();
-			if( paramTypes.length == this.args.length )
-			{
-				boolean valid = true;
+                for (int idx = 0; idx < paramTypes.length; idx++) {
+                    final Class<?> cz = this.args[idx].getClass();
+                    if (!this.isClassMatch(paramTypes[idx], cz, this.args[idx])) {
+                        valid = false;
+                    }
+                }
 
-				for( int idx = 0; idx < paramTypes.length; idx++ )
-				{
-					final Class<?> cz = this.args[idx].getClass();
-					if( !this.isClassMatch( paramTypes[idx], cz, this.args[idx] ) )
-					{
-						valid = false;
-					}
-				}
+                if (valid) {
+                    try {
+                        return Optional.of(constructor.newInstance(this.args));
+                    } catch (final InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (final IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (final InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            }
+        }
 
-				if( valid )
-				{
-					try
-					{
-						return Optional.of( constructor.newInstance( this.args ) );
-					}
-					catch( final InstantiationException e )
-					{
-						e.printStackTrace();
-					}
-					catch( final IllegalAccessException e )
-					{
-						e.printStackTrace();
-					}
-					catch( final InvocationTargetException e )
-					{
-						e.printStackTrace();
-					}
-					break;
-				}
-			}
-		}
+        return Optional.empty();
+    }
 
-		return Optional.empty();
-	}
+    private boolean isClassMatch(Class<?> expected, Class<?> got, final Object value) {
+        if (value == null && !expected.isPrimitive()) {
+            return true;
+        }
 
-	private boolean isClassMatch( Class<?> expected, Class<?> got, final Object value )
-	{
-		if( value == null && !expected.isPrimitive() )
-		{
-			return true;
-		}
+        expected = this.condense(expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class);
+        got = this.condense(got, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class);
 
-		expected = this.condense( expected, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
-		got = this.condense( got, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class );
+        return expected == got || expected.isAssignableFrom(got);
+    }
 
-		return expected == got || expected.isAssignableFrom( got );
-	}
-
-	private Class<?> condense( final Class<?> expected, final Class<?>... wrappers )
-	{
-		if( expected.isPrimitive() )
-		{
-			for( final Class clz : wrappers )
-			{
-				try
-				{
-					if( expected == clz.getField( "TYPE" ).get( null ) )
-					{
-						return clz;
-					}
-				}
-				catch( final Throwable t )
-				{
-					AELog.debug( t );
-				}
-			}
-		}
-		return expected;
-	}
+    private Class<?> condense(final Class<?> expected, final Class<?>... wrappers) {
+        if (expected.isPrimitive()) {
+            for (final Class clz : wrappers) {
+                try {
+                    if (expected == clz.getField("TYPE").get(null)) {
+                        return clz;
+                    }
+                } catch (final Throwable t) {
+                    AELog.debug(t);
+                }
+            }
+        }
+        return expected;
+    }
 }

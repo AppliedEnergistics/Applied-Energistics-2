@@ -19,63 +19,55 @@
 package appeng.me.storage;
 
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
 import appeng.api.storage.data.IAEStack;
 import appeng.me.cache.GridStorageCache;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 
 /**
  * Maintain my interests, and a global watch list, they should always be fully synchronized.
  */
-public class ItemWatcher implements IStackWatcher
-{
+public class ItemWatcher implements IStackWatcher {
 
-	private final GridStorageCache gsc;
-	private final IStackWatcherHost myObject;
-	private final Set<IAEStack> myInterests = new HashSet<>();
+    private final GridStorageCache gsc;
+    private final IStackWatcherHost myObject;
+    private final Set<IAEStack> myInterests = new HashSet<>();
 
-	public ItemWatcher( final GridStorageCache cache, final IStackWatcherHost host )
-	{
-		this.gsc = cache;
-		this.myObject = host;
-	}
+    public ItemWatcher(final GridStorageCache cache, final IStackWatcherHost host) {
+        this.gsc = cache;
+        this.myObject = host;
+    }
 
-	public IStackWatcherHost getHost()
-	{
-		return this.myObject;
-	}
+    public IStackWatcherHost getHost() {
+        return this.myObject;
+    }
 
-	@Override
-	public boolean add( final IAEStack e )
-	{
-		if( this.myInterests.contains( e ) )
-		{
-			return false;
-		}
+    @Override
+    public boolean add(final IAEStack e) {
+        if (this.myInterests.contains(e)) {
+            return false;
+        }
 
-		return this.myInterests.add( e.copy() ) && this.gsc.getInterestManager().put( e, this );
-	}
+        return this.myInterests.add(e.copy()) && this.gsc.getInterestManager().put(e, this);
+    }
 
-	@Override
-	public boolean remove( final IAEStack o )
-	{
-		return this.myInterests.remove( o ) && this.gsc.getInterestManager().remove( o, this );
-	}
+    @Override
+    public boolean remove(final IAEStack o) {
+        return this.myInterests.remove(o) && this.gsc.getInterestManager().remove(o, this);
+    }
 
-	@Override
-	public void reset()
-	{
-		final Iterator<IAEStack> i = this.myInterests.iterator();
+    @Override
+    public void reset() {
+        final Iterator<IAEStack> i = this.myInterests.iterator();
 
-		while( i.hasNext() )
-		{
-			this.gsc.getInterestManager().remove( i.next(), this );
-			i.remove();
-		}
-	}
+        while (i.hasNext()) {
+            this.gsc.getInterestManager().remove(i.next(), this);
+            i.remove();
+        }
+    }
 }

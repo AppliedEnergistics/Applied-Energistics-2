@@ -14,19 +14,15 @@ public class PartExists implements IConditionFactory {
     private static final String JSON_MATERIAL_KEY = "part";
 
     @Override
-    public BooleanSupplier parse(JsonContext jsonContext, JsonObject jsonObject )
-    {
+    public BooleanSupplier parse(JsonContext jsonContext, JsonObject jsonObject) {
         final boolean result;
 
-        if( JsonUtils.isString( jsonObject, JSON_MATERIAL_KEY ) )
-        {
-            final String part = JsonUtils.getString( jsonObject, JSON_MATERIAL_KEY );
-            final Object item = Api.INSTANCE.registries().recipes().resolveItem( AppEng.MOD_ID, part );
+        if (JsonUtils.isString(jsonObject, JSON_MATERIAL_KEY)) {
+            final String part = JsonUtils.getString(jsonObject, JSON_MATERIAL_KEY);
+            final Object item = Api.INSTANCE.registries().recipes().resolveItem(AppEng.MOD_ID, part);
 
             result = item != null;
-        }
-        else
-        {
+        } else {
             result = false;
         }
 

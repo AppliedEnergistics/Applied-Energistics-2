@@ -25,12 +25,10 @@ import appeng.services.version.Channel;
 /**
  * Indicates an invalid {@link Channel} value.
  */
-public class InvalidChannelException extends VersionCheckerException
-{
-	private static final long serialVersionUID = -1306378515002341620L;
+public class InvalidChannelException extends VersionCheckerException {
+    private static final long serialVersionUID = -1306378515002341620L;
 
-	public InvalidChannelException()
-	{
-		super( "Invalid Channel: Needs to be one of the following values; alpha, beta, or stable." );
-	}
+    public InvalidChannelException() {
+        super("Invalid Channel: Needs to be one of the following values; alpha, beta, or stable.");
+    }
 }

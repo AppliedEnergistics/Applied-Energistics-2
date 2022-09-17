@@ -27,13 +27,12 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 
-public interface IModelRegistry
-{
-	void registerItemVariants( Item item, ResourceLocation... names );
+public interface IModelRegistry {
+    void registerItemVariants(Item item, ResourceLocation... names);
 
-	void setCustomModelResourceLocation( Item item, int metadata, ModelResourceLocation model );
+    void setCustomModelResourceLocation(Item item, int metadata, ModelResourceLocation model);
 
-	void setCustomMeshDefinition( Item item, ItemMeshDefinition meshDefinition );
+    void setCustomMeshDefinition(Item item, ItemMeshDefinition meshDefinition);
 
-	void setCustomStateMapper( Block block, IStateMapper mapper );
+    void setCustomStateMapper(Block block, IStateMapper mapper);
 }

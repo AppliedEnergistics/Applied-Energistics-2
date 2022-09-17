@@ -19,29 +19,25 @@
 package appeng.util.prioritylist;
 
 
-import java.util.Collections;
-
 import appeng.api.storage.data.IAEStack;
 
+import java.util.Collections;
 
-public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
-{
 
-	@Override
-	public boolean isListed( final T input )
-	{
-		return false;
-	}
+public class DefaultPriorityList<T extends IAEStack<T>> implements IPartitionList<T> {
 
-	@Override
-	public boolean isEmpty()
-	{
-		return true;
-	}
+    @Override
+    public boolean isListed(final T input) {
+        return false;
+    }
 
-	@Override
-	public Iterable<T> getItems()
-	{
-		return Collections.emptyList();
-	}
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
+
+    @Override
+    public Iterable<T> getItems() {
+        return Collections.emptyList();
+    }
 }

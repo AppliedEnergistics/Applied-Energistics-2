@@ -19,40 +19,37 @@
 package appeng.helpers;
 
 
+import appeng.api.networking.IGridNode;
+import appeng.api.networking.security.IActionSource;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.security.IActionSource;
 
+public interface IContainerCraftingPacket {
 
-public interface IContainerCraftingPacket
-{
+    /**
+     * @return gain access to network infrastructure.
+     */
+    IGridNode getNetworkNode();
 
-	/**
-	 * @return gain access to network infrastructure.
-	 */
-	IGridNode getNetworkNode();
+    /**
+     * @param string name of inventory
+     * @return the inventory of the part/tile by name.
+     */
+    IItemHandler getInventoryByName(String string);
 
-	/**
-	 * @param string name of inventory
-	 *
-	 * @return the inventory of the part/tile by name.
-	 */
-	IItemHandler getInventoryByName( String string );
+    /**
+     * @return who are we?
+     */
+    IActionSource getActionSource();
 
-	/**
-	 * @return who are we?
-	 */
-	IActionSource getActionSource();
+    /**
+     * @return consume items?
+     */
+    boolean useRealItems();
 
-	/**
-	 * @return consume items?
-	 */
-	boolean useRealItems();
-
-	/**
-	 * @return array of view cells
-	 */
-	ItemStack[] getViewCells();
+    /**
+     * @return array of view cells
+     */
+    ItemStack[] getViewCells();
 }

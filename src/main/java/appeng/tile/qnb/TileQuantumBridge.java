@@ -19,21 +19,6 @@
 package appeng.tile.qnb;
 
 
-import java.io.IOException;
-import java.util.EnumSet;
-import java.util.Optional;
-
-import io.netty.buffer.ByteBuf;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.EmptyHandler;
-
 import appeng.api.AEApi;
 import appeng.api.definitions.IBlockDefinition;
 import appeng.api.networking.GridFlags;
@@ -51,301 +36,260 @@ import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
+
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.Optional;
 
 
-public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable
-{
-	private final byte corner = 16;
-	private final AppEngInternalInventory internalInventory = new AppEngInternalInventory( this, 1, 1 );
-	private final byte hasSingularity = 32;
-	private final byte powered = 64;
+public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable {
+    private final byte corner = 16;
+    private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
+    private final byte hasSingularity = 32;
+    private final byte powered = 64;
 
-	private final QuantumCalculator calc = new QuantumCalculator( this );
-	private byte constructed = -1;
-	private QuantumCluster cluster;
-	private boolean updateStatus = false;
+    private final QuantumCalculator calc = new QuantumCalculator(this);
+    private byte constructed = -1;
+    private QuantumCluster cluster;
+    private boolean updateStatus = false;
 
-	public TileQuantumBridge()
-	{
-		this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
-		this.getProxy().setFlags( GridFlags.DENSE_CAPACITY );
-		this.getProxy().setIdlePowerUsage( 22 );
-	}
+    public TileQuantumBridge() {
+        this.getProxy().setValidSides(EnumSet.noneOf(EnumFacing.class));
+        this.getProxy().setFlags(GridFlags.DENSE_CAPACITY);
+        this.getProxy().setIdlePowerUsage(22);
+    }
 
-	@Override
-	public void update()
-	{
-		if( this.updateStatus )
-		{
-			this.updateStatus = false;
-			if( this.cluster != null )
-			{
-				this.cluster.updateStatus( true );
-			}
-			this.markForUpdate();
-		}
-	}
+    @Override
+    public void update() {
+        if (this.updateStatus) {
+            this.updateStatus = false;
+            if (this.cluster != null) {
+                this.cluster.updateStatus(true);
+            }
+            this.markForUpdate();
+        }
+    }
 
-	@Override
-	protected void writeToStream( final ByteBuf data ) throws IOException
-	{
-		super.writeToStream( data );
-		int out = this.constructed;
+    @Override
+    protected void writeToStream(final ByteBuf data) throws IOException {
+        super.writeToStream(data);
+        int out = this.constructed;
 
-		if( !this.internalInventory.getStackInSlot( 0 ).isEmpty() && this.constructed != -1 )
-		{
-			out |= this.hasSingularity;
-		}
+        if (!this.internalInventory.getStackInSlot(0).isEmpty() && this.constructed != -1) {
+            out |= this.hasSingularity;
+        }
 
-		if( this.getProxy().isActive() && this.constructed != -1 )
-		{
-			out |= this.powered;
-		}
+        if (this.getProxy().isActive() && this.constructed != -1) {
+            out |= this.powered;
+        }
 
-		data.writeByte( (byte) out );
-	}
+        data.writeByte((byte) out);
+    }
 
-	@Override
-	protected boolean readFromStream( final ByteBuf data ) throws IOException
-	{
-		final boolean c = super.readFromStream( data );
-		final int oldValue = this.constructed;
-		this.constructed = data.readByte();
-		return this.constructed != oldValue || c;
-	}
+    @Override
+    protected boolean readFromStream(final ByteBuf data) throws IOException {
+        final boolean c = super.readFromStream(data);
+        final int oldValue = this.constructed;
+        this.constructed = data.readByte();
+        return this.constructed != oldValue || c;
+    }
 
-	@Override
-	public IItemHandler getInternalInventory()
-	{
-		return this.internalInventory;
-	}
+    @Override
+    public IItemHandler getInternalInventory() {
+        return this.internalInventory;
+    }
 
-	@Override
-	public void onChangeInventory( final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added )
-	{
-		if( this.cluster != null )
-		{
-			this.cluster.updateStatus( true );
-		}
-	}
+    @Override
+    public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removed, final ItemStack added) {
+        if (this.cluster != null) {
+            this.cluster.updateStatus(true);
+        }
+    }
 
-	@Override
-	protected IItemHandler getItemHandlerForSide( EnumFacing side )
-	{
-		if( this.isCenter() )
-		{
-			return this.internalInventory;
-		}
-		return EmptyHandler.INSTANCE;
-	}
+    @Override
+    protected IItemHandler getItemHandlerForSide(EnumFacing side) {
+        if (this.isCenter()) {
+            return this.internalInventory;
+        }
+        return EmptyHandler.INSTANCE;
+    }
 
-	private boolean isCenter()
-	{
-		return AEApi.instance()
-				.definitions()
-				.blocks()
-				.quantumLink()
-				.maybeBlock()
-				.map( link -> this.getBlockType() == link )
-				.orElse( false );
-	}
+    private boolean isCenter() {
+        return AEApi.instance()
+                .definitions()
+                .blocks()
+                .quantumLink()
+                .maybeBlock()
+                .map(link -> this.getBlockType() == link)
+                .orElse(false);
+    }
 
-	@MENetworkEventSubscribe
-	public void onPowerStatusChange( final MENetworkPowerStatusChange c )
-	{
-		this.updateStatus = true;
-	}
+    @MENetworkEventSubscribe
+    public void onPowerStatusChange(final MENetworkPowerStatusChange c) {
+        this.updateStatus = true;
+    }
 
-	@Override
-	public void onChunkUnload()
-	{
-		this.disconnect( false );
-		super.onChunkUnload();
-	}
+    @Override
+    public void onChunkUnload() {
+        this.disconnect(false);
+        super.onChunkUnload();
+    }
 
-	@Override
-	public void onReady()
-	{
-		super.onReady();
+    @Override
+    public void onReady() {
+        super.onReady();
 
-		final IBlockDefinition quantumRing = AEApi.instance().definitions().blocks().quantumRing();
-		final Optional<Block> maybeLinkBlock = quantumRing.maybeBlock();
-		final Optional<ItemStack> maybeLinkStack = quantumRing.maybeStack( 1 );
+        final IBlockDefinition quantumRing = AEApi.instance().definitions().blocks().quantumRing();
+        final Optional<Block> maybeLinkBlock = quantumRing.maybeBlock();
+        final Optional<ItemStack> maybeLinkStack = quantumRing.maybeStack(1);
 
-		final boolean isPresent = maybeLinkBlock.isPresent() && maybeLinkStack.isPresent();
+        final boolean isPresent = maybeLinkBlock.isPresent() && maybeLinkStack.isPresent();
 
-		if( isPresent && this.getBlockType() == maybeLinkBlock.get() )
-		{
-			final ItemStack linkStack = maybeLinkStack.get();
+        if (isPresent && this.getBlockType() == maybeLinkBlock.get()) {
+            final ItemStack linkStack = maybeLinkStack.get();
 
-			this.getProxy().setVisualRepresentation( linkStack );
-		}
-	}
+            this.getProxy().setVisualRepresentation(linkStack);
+        }
+    }
 
-	@Override
-	public void invalidate()
-	{
-		this.disconnect( false );
-		super.invalidate();
-	}
+    @Override
+    public void invalidate() {
+        this.disconnect(false);
+        super.invalidate();
+    }
 
-	@Override
-	public void disconnect( final boolean affectWorld )
-	{
-		if( this.cluster != null )
-		{
-			if( !affectWorld )
-			{
-				this.cluster.setUpdateStatus( false );
-			}
+    @Override
+    public void disconnect(final boolean affectWorld) {
+        if (this.cluster != null) {
+            if (!affectWorld) {
+                this.cluster.setUpdateStatus(false);
+            }
 
-			this.cluster.destroy();
-		}
+            this.cluster.destroy();
+        }
 
-		this.cluster = null;
+        this.cluster = null;
 
-		if( affectWorld )
-		{
-			this.getProxy().setValidSides( EnumSet.noneOf( EnumFacing.class ) );
-		}
-	}
+        if (affectWorld) {
+            this.getProxy().setValidSides(EnumSet.noneOf(EnumFacing.class));
+        }
+    }
 
-	@Override
-	public IAECluster getCluster()
-	{
-		return this.cluster;
-	}
+    @Override
+    public IAECluster getCluster() {
+        return this.cluster;
+    }
 
-	@Override
-	public boolean isValid()
-	{
-		return !this.isInvalid();
-	}
+    @Override
+    public boolean isValid() {
+        return !this.isInvalid();
+    }
 
-	public void updateStatus( final QuantumCluster c, final byte flags, final boolean affectWorld )
-	{
-		this.cluster = c;
+    public void updateStatus(final QuantumCluster c, final byte flags, final boolean affectWorld) {
+        this.cluster = c;
 
-		if( affectWorld )
-		{
-			if( this.constructed != flags )
-			{
-				this.constructed = flags;
-				this.markForUpdate();
-			}
+        if (affectWorld) {
+            if (this.constructed != flags) {
+                this.constructed = flags;
+                this.markForUpdate();
+            }
 
-			if( this.isCorner() || this.isCenter() )
-			{
-				final EnumSet<EnumFacing> sides = EnumSet.noneOf( EnumFacing.class );
-				for( final EnumFacing dir : this.getAdjacentQuantumBridges() )
-				{
-					sides.add( dir );
-				}
+            if (this.isCorner() || this.isCenter()) {
+                final EnumSet<EnumFacing> sides = EnumSet.noneOf(EnumFacing.class);
+                for (final EnumFacing dir : this.getAdjacentQuantumBridges()) {
+                    sides.add(dir);
+                }
 
-				this.getProxy().setValidSides( sides );
-			}
-			else
-			{
-				this.getProxy().setValidSides( EnumSet.allOf( EnumFacing.class ) );
-			}
-		}
-	}
+                this.getProxy().setValidSides(sides);
+            } else {
+                this.getProxy().setValidSides(EnumSet.allOf(EnumFacing.class));
+            }
+        }
+    }
 
-	public boolean isCorner()
-	{
-		return ( this.constructed & this.getCorner() ) == this.getCorner() && this.constructed != -1;
-	}
+    public boolean isCorner() {
+        return (this.constructed & this.getCorner()) == this.getCorner() && this.constructed != -1;
+    }
 
-	public EnumSet<EnumFacing> getAdjacentQuantumBridges()
-	{
-		final EnumSet<EnumFacing> set = EnumSet.noneOf( EnumFacing.class );
+    public EnumSet<EnumFacing> getAdjacentQuantumBridges() {
+        final EnumSet<EnumFacing> set = EnumSet.noneOf(EnumFacing.class);
 
-		for( final EnumFacing d : EnumFacing.values() )
-		{
-			final TileEntity te = this.world.getTileEntity( this.pos.offset( d ) );
-			if( te instanceof TileQuantumBridge )
-			{
-				set.add( d );
-			}
-		}
+        for (final EnumFacing d : EnumFacing.values()) {
+            final TileEntity te = this.world.getTileEntity(this.pos.offset(d));
+            if (te instanceof TileQuantumBridge) {
+                set.add(d);
+            }
+        }
 
-		return set;
-	}
+        return set;
+    }
 
-	public long getQEFrequency()
-	{
-		final ItemStack is = this.internalInventory.getStackInSlot( 0 );
-		if( !is.isEmpty() )
-		{
-			final NBTTagCompound c = is.getTagCompound();
-			if( c != null )
-			{
-				return c.getLong( "freq" );
-			}
-		}
-		return 0;
-	}
+    public long getQEFrequency() {
+        final ItemStack is = this.internalInventory.getStackInSlot(0);
+        if (!is.isEmpty()) {
+            final NBTTagCompound c = is.getTagCompound();
+            if (c != null) {
+                return c.getLong("freq");
+            }
+        }
+        return 0;
+    }
 
-	public boolean isPowered()
-	{
-		if( Platform.isClient() )
-		{
-			return ( this.constructed & this.powered ) == this.powered && this.constructed != -1;
-		}
+    public boolean isPowered() {
+        if (Platform.isClient()) {
+            return (this.constructed & this.powered) == this.powered && this.constructed != -1;
+        }
 
-		try
-		{
-			return this.getProxy().getEnergy().isNetworkPowered();
-		}
-		catch( final GridAccessException e )
-		{
-			// :P
-		}
+        try {
+            return this.getProxy().getEnergy().isNetworkPowered();
+        } catch (final GridAccessException e) {
+            // :P
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public boolean isFormed()
-	{
-		return this.constructed != -1;
-	}
+    public boolean isFormed() {
+        return this.constructed != -1;
+    }
 
-	@Override
-	public AECableType getCableConnectionType( final AEPartLocation dir )
-	{
-		return AECableType.DENSE_SMART;
-	}
+    @Override
+    public AECableType getCableConnectionType(final AEPartLocation dir) {
+        return AECableType.DENSE_SMART;
+    }
 
-	public void neighborUpdate()
-	{
-		this.calc.calculateMultiblock( this.world, this.getLocation() );
-	}
+    public void neighborUpdate() {
+        this.calc.calculateMultiblock(this.world, this.getLocation());
+    }
 
-	@Override
-	public DimensionalCoord getLocation()
-	{
-		return new DimensionalCoord( this );
-	}
+    @Override
+    public DimensionalCoord getLocation() {
+        return new DimensionalCoord(this);
+    }
 
-	public boolean hasQES()
-	{
-		if( this.constructed == -1 )
-		{
-			return false;
-		}
-		return ( this.constructed & this.hasSingularity ) == this.hasSingularity;
-	}
+    public boolean hasQES() {
+        if (this.constructed == -1) {
+            return false;
+        }
+        return (this.constructed & this.hasSingularity) == this.hasSingularity;
+    }
 
-	public void breakCluster()
-	{
-		if( this.cluster != null )
-		{
-			this.cluster.destroy();
-		}
-	}
+    public void breakCluster() {
+        if (this.cluster != null) {
+            this.cluster.destroy();
+        }
+    }
 
-	public byte getCorner()
-	{
-		return this.corner;
-	}
+    public byte getCorner() {
+        return this.corner;
+    }
 }

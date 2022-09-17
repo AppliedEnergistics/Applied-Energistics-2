@@ -13,14 +13,13 @@ import org.lwjgl.opengl.GL11;
 
 // taken from McJty's McJtyLib
 
-public class HighlighterHandler
-{
+public class HighlighterHandler {
 
-    public static void tick( RenderWorldLastEvent event ) {
+    public static void tick(RenderWorldLastEvent event) {
         renderHilightedBlock(event);
     }
 
-    private static void renderHilightedBlock( RenderWorldLastEvent event ) {
+    private static void renderHilightedBlock(RenderWorldLastEvent event) {
         BlockPos c = BlockPosHighlighter.getHilightedBlock();
         if (c == null) {
             return;
@@ -30,7 +29,7 @@ public class HighlighterHandler
         long time = System.currentTimeMillis();
 
         if (time > BlockPosHighlighter.getExpireHilight() || dimension != BlockPosHighlighter.getDimension()) {
-            BlockPosHighlighter.hilightBlock(null, -1, BlockPosHighlighter.getDimension() );
+            BlockPosHighlighter.hilightBlock(null, -1, BlockPosHighlighter.getDimension());
             return;
         }
 
@@ -56,7 +55,7 @@ public class HighlighterHandler
         float mx = c.getX();
         float my = c.getY();
         float mz = c.getZ();
-        buffer.begin( GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         renderHighLightedBlocksOutline(buffer, mx, my, mz, 1.0f, 0.0f, 0.0f, 1.0f);
 
         tessellator.draw();

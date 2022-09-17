@@ -19,31 +19,26 @@
 package appeng.util.inv.filter;
 
 
+import appeng.api.definitions.IItemDefinition;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import appeng.api.definitions.IItemDefinition;
 
+public class AEItemDefinitionFilter implements IAEItemFilter {
+    private final IItemDefinition definition;
 
-public class AEItemDefinitionFilter implements IAEItemFilter
-{
-	private final IItemDefinition definition;
+    public AEItemDefinitionFilter(IItemDefinition definition) {
+        this.definition = definition;
+    }
 
-	public AEItemDefinitionFilter( IItemDefinition definition )
-	{
-		this.definition = definition;
-	}
+    @Override
+    public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+        return true;
+    }
 
-	@Override
-	public boolean allowExtract( IItemHandler inv, int slot, int amount )
-	{
-		return true;
-	}
-
-	@Override
-	public boolean allowInsert( IItemHandler inv, int slot, ItemStack stack )
-	{
-		return this.definition.isSameAs( stack );
-	}
+    @Override
+    public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+        return this.definition.isSameAs(stack);
+    }
 
 }

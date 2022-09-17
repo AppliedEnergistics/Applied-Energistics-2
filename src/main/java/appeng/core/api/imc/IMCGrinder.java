@@ -53,72 +53,63 @@
 package appeng.core.api.imc;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
-
 import appeng.api.AEApi;
 import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IGrinderRecipeBuilder;
 import appeng.api.features.IGrinderRegistry;
 import appeng.core.api.IIMCProcessor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 
-public class IMCGrinder implements IIMCProcessor
-{
-	@Override
-	public void process( final IMCMessage m )
-	{
-		final NBTTagCompound msg = m.getNBTValue();
-		final NBTTagCompound inTag = (NBTTagCompound) msg.getTag( "in" );
-		final NBTTagCompound outTag = (NBTTagCompound) msg.getTag( "out" );
+public class IMCGrinder implements IIMCProcessor {
+    @Override
+    public void process(final IMCMessage m) {
+        final NBTTagCompound msg = m.getNBTValue();
+        final NBTTagCompound inTag = (NBTTagCompound) msg.getTag("in");
+        final NBTTagCompound outTag = (NBTTagCompound) msg.getTag("out");
 
-		final ItemStack in = new ItemStack( inTag );
-		final ItemStack out = new ItemStack( outTag );
+        final ItemStack in = new ItemStack(inTag);
+        final ItemStack out = new ItemStack(outTag);
 
-		final int turns = msg.getInteger( "turns" );
+        final int turns = msg.getInteger("turns");
 
-		if( in.isEmpty() )
-		{
-			throw new IllegalStateException( "invalid input" );
-		}
+        if (in.isEmpty()) {
+            throw new IllegalStateException("invalid input");
+        }
 
-		if( out.isEmpty() )
-		{
-			throw new IllegalStateException( "invalid output" );
-		}
+        if (out.isEmpty()) {
+            throw new IllegalStateException("invalid output");
+        }
 
-		if( msg.hasKey( "optional" ) )
-		{
-			final NBTTagCompound optionalTag = (NBTTagCompound) msg.getTag( "optional" );
-			final ItemStack optional = new ItemStack( optionalTag );
+        if (msg.hasKey("optional")) {
+            final NBTTagCompound optionalTag = (NBTTagCompound) msg.getTag("optional");
+            final ItemStack optional = new ItemStack(optionalTag);
 
-			if( optional.isEmpty() )
-			{
-				throw new IllegalStateException( "invalid optional" );
-			}
+            if (optional.isEmpty()) {
+                throw new IllegalStateException("invalid optional");
+            }
 
-			final float chance = msg.getFloat( "chance" );
-			final IGrinderRegistry grinderRegistry = AEApi.instance().registries().grinder();
-			final IGrinderRecipeBuilder builder = grinderRegistry.builder();
-			final IGrinderRecipe grinderRecipe = builder.withInput( in )
-					.withOutput( out )
-					.withFirstOptional( optional, chance )
-					.withTurns( turns )
-					.build();
+            final float chance = msg.getFloat("chance");
+            final IGrinderRegistry grinderRegistry = AEApi.instance().registries().grinder();
+            final IGrinderRecipeBuilder builder = grinderRegistry.builder();
+            final IGrinderRecipe grinderRecipe = builder.withInput(in)
+                    .withOutput(out)
+                    .withFirstOptional(optional, chance)
+                    .withTurns(turns)
+                    .build();
 
-			grinderRegistry.addRecipe( grinderRecipe );
-		}
-		else
-		{
-			final IGrinderRegistry grinderRegistry = AEApi.instance().registries().grinder();
-			final IGrinderRecipeBuilder builder = grinderRegistry.builder();
-			final IGrinderRecipe grinderRecipe = builder.withInput( in )
-					.withOutput( out )
-					.withTurns( turns )
-					.build();
+            grinderRegistry.addRecipe(grinderRecipe);
+        } else {
+            final IGrinderRegistry grinderRegistry = AEApi.instance().registries().grinder();
+            final IGrinderRecipeBuilder builder = grinderRegistry.builder();
+            final IGrinderRecipe grinderRecipe = builder.withInput(in)
+                    .withOutput(out)
+                    .withTurns(turns)
+                    .build();
 
-			grinderRegistry.addRecipe( grinderRecipe );
-		}
-	}
+            grinderRegistry.addRecipe(grinderRecipe);
+        }
+    }
 }

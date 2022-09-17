@@ -24,7 +24,6 @@ package appeng.core.worlddata;
  * @version rv3 - 30.05.2015
  * @since rv3 30.05.2015
  */
-public interface IOnWorldStoppable
-{
-	void onWorldStop();
+public interface IOnWorldStoppable {
+    void onWorldStop();
 }

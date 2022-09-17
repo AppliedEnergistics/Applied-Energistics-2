@@ -19,12 +19,7 @@
 package appeng.client.render;
 
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -32,54 +27,49 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.EnumFacing;
 
+import javax.annotation.Nullable;
+import java.util.List;
+
 
 /**
  * @author DrummerMC
  * @version rv6 - 2018-01-22
  * @since rv6 2018-01-22
  */
-public class DummyFluidBakedModel implements IBakedModel
-{
-	private final ImmutableList<BakedQuad> quads;
+public class DummyFluidBakedModel implements IBakedModel {
+    private final ImmutableList<BakedQuad> quads;
 
-	public DummyFluidBakedModel( ImmutableList<BakedQuad> quads )
-	{
-		this.quads = quads;
-	}
+    public DummyFluidBakedModel(ImmutableList<BakedQuad> quads) {
+        this.quads = quads;
+    }
 
-	@Override
-	public List<BakedQuad> getQuads( @Nullable IBlockState state, @Nullable EnumFacing side, long rand )
-	{
-		return this.quads;
-	}
+    @Override
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+        return this.quads;
+    }
 
-	@Override
-	public boolean isAmbientOcclusion()
-	{
-		return false;
-	}
+    @Override
+    public boolean isAmbientOcclusion() {
+        return false;
+    }
 
-	@Override
-	public boolean isGui3d()
-	{
-		return false;
-	}
+    @Override
+    public boolean isGui3d() {
+        return false;
+    }
 
-	@Override
-	public boolean isBuiltInRenderer()
-	{
-		return false;
-	}
+    @Override
+    public boolean isBuiltInRenderer() {
+        return false;
+    }
 
-	@Override
-	public TextureAtlasSprite getParticleTexture()
-	{
-		return null;
-	}
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return null;
+    }
 
-	@Override
-	public ItemOverrideList getOverrides()
-	{
-		return null;
-	}
+    @Override
+    public ItemOverrideList getOverrides() {
+        return null;
+    }
 }

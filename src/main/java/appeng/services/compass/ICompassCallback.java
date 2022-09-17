@@ -19,16 +19,15 @@
 package appeng.services.compass;
 
 
-public interface ICompassCallback
-{
+public interface ICompassCallback {
 
-	/**
-	 * Called from another thread.
-	 *
-	 * @param hasResult true if found a target
-	 * @param spin true if should spin
-	 * @param radians radians
-	 * @param dist distance
-	 */
-	void calculatedDirection( boolean hasResult, boolean spin, double radians, double dist );
+    /**
+     * Called from another thread.
+     *
+     * @param hasResult true if found a target
+     * @param spin      true if should spin
+     * @param radians   radians
+     * @param dist      distance
+     */
+    void calculatedDirection(boolean hasResult, boolean spin, double radians, double dist);
 }

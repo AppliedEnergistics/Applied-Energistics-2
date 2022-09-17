@@ -23,25 +23,21 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
 
-public class AEGlassMaterial extends Material
-{
+public class AEGlassMaterial extends Material {
 
-	public static final AEGlassMaterial INSTANCE = ( new AEGlassMaterial( MapColor.AIR ) );
+    public static final AEGlassMaterial INSTANCE = (new AEGlassMaterial(MapColor.AIR));
 
-	public AEGlassMaterial( final MapColor color )
-	{
-		super( color );
-	}
+    public AEGlassMaterial(final MapColor color) {
+        super(color);
+    }
 
-	@Override
-	public boolean isSolid()
-	{
-		return false;
-	}
+    @Override
+    public boolean isSolid() {
+        return false;
+    }
 
-	@Override
-	public boolean isOpaque()
-	{
-		return false;
-	}
+    @Override
+    public boolean isOpaque() {
+        return false;
+    }
 }

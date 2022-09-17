@@ -19,63 +19,53 @@
 package appeng.util.inv;
 
 
-import java.util.function.Supplier;
-
+import appeng.util.helpers.ItemHandlerUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import appeng.util.helpers.ItemHandlerUtil;
+import java.util.function.Supplier;
 
 
-public class WrapperSupplierItemHandler implements IItemHandlerModifiable
-{
-	private final Supplier<IItemHandler> sourceHandler;
+public class WrapperSupplierItemHandler implements IItemHandlerModifiable {
+    private final Supplier<IItemHandler> sourceHandler;
 
-	public WrapperSupplierItemHandler( Supplier<IItemHandler> source )
-	{
-		this.sourceHandler = source;
-	}
+    public WrapperSupplierItemHandler(Supplier<IItemHandler> source) {
+        this.sourceHandler = source;
+    }
 
-	@Override
-	public int getSlots()
-	{
-		return this.sourceHandler.get().getSlots();
-	}
+    @Override
+    public int getSlots() {
+        return this.sourceHandler.get().getSlots();
+    }
 
-	@Override
-	public ItemStack getStackInSlot( int slot )
-	{
-		return this.sourceHandler.get().getStackInSlot( slot );
-	}
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        return this.sourceHandler.get().getStackInSlot(slot);
+    }
 
-	@Override
-	public ItemStack insertItem( int slot, ItemStack stack, boolean simulate )
-	{
-		return this.sourceHandler.get().insertItem( slot, stack, simulate );
-	}
+    @Override
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        return this.sourceHandler.get().insertItem(slot, stack, simulate);
+    }
 
-	@Override
-	public ItemStack extractItem( int slot, int amount, boolean simulate )
-	{
-		return this.sourceHandler.get().extractItem( slot, amount, simulate );
-	}
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        return this.sourceHandler.get().extractItem(slot, amount, simulate);
+    }
 
-	@Override
-	public int getSlotLimit( int slot )
-	{
-		return this.sourceHandler.get().getSlotLimit( slot );
-	}
+    @Override
+    public int getSlotLimit(int slot) {
+        return this.sourceHandler.get().getSlotLimit(slot);
+    }
 
-	@Override
-	public void setStackInSlot( int slot, ItemStack stack )
-	{
-		ItemHandlerUtil.setStackInSlot( this.sourceHandler.get(), slot, stack );
-	}
+    @Override
+    public void setStackInSlot(int slot, ItemStack stack) {
+        ItemHandlerUtil.setStackInSlot(this.sourceHandler.get(), slot, stack);
+    }
 
-	@Override
-	public boolean isItemValid( int slot, ItemStack stack )
-	{
-		return this.sourceHandler.get().isItemValid( slot, stack );
-	}
+    @Override
+    public boolean isItemValid(int slot, ItemStack stack) {
+        return this.sourceHandler.get().isItemValid(slot, stack);
+    }
 }

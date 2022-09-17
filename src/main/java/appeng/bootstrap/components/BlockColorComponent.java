@@ -25,23 +25,20 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraftforge.fml.relauncher.Side;
 
 
-public class BlockColorComponent implements IInitComponent
-{
+public class BlockColorComponent implements IInitComponent {
 
-	private final Block block;
+    private final Block block;
 
-	private final IBlockColor blockColor;
+    private final IBlockColor blockColor;
 
-	public BlockColorComponent( Block block, IBlockColor blockColor )
-	{
-		this.block = block;
-		this.blockColor = blockColor;
-	}
+    public BlockColorComponent(Block block, IBlockColor blockColor) {
+        this.block = block;
+        this.blockColor = blockColor;
+    }
 
-	@Override
-	public void initialize( Side side )
-	{
-		Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler( this.blockColor, this.block );
-	}
+    @Override
+    public void initialize(Side side) {
+        Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(this.blockColor, this.block);
+    }
 
 }

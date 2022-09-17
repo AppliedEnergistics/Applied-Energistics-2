@@ -18,12 +18,12 @@
 
 package appeng.util.item;
 
+import appeng.api.config.FuzzyMode;
+import appeng.api.storage.data.IAEItemStack;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
-import appeng.api.config.FuzzyMode;
-import appeng.api.storage.data.IAEItemStack;
 
 /**
  * Stores variants of a single type of {@link net.minecraft.item.Item}, i.e. versions with different durability, or

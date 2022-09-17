@@ -19,6 +19,8 @@
 package appeng.helpers;
 
 
+import appeng.api.util.IOrientable;
+import appeng.decorative.solid.BlockQuartzPillar;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
@@ -27,88 +29,69 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import appeng.api.util.IOrientable;
-import appeng.decorative.solid.BlockQuartzPillar;
 
+public class MetaRotation implements IOrientable {
 
-public class MetaRotation implements IOrientable
-{
+    private final IProperty<EnumFacing> facingProp;
+    private final IBlockAccess w;
+    private final BlockPos pos;
 
-	private final IProperty<EnumFacing> facingProp;
-	private final IBlockAccess w;
-	private final BlockPos pos;
+    public MetaRotation(final IBlockAccess world, final BlockPos pos, final IProperty<EnumFacing> facingProp) {
+        this.w = world;
+        this.pos = pos;
+        this.facingProp = facingProp;
+    }
 
-	public MetaRotation( final IBlockAccess world, final BlockPos pos, final IProperty<EnumFacing> facingProp )
-	{
-		this.w = world;
-		this.pos = pos;
-		this.facingProp = facingProp;
-	}
+    @Override
+    public boolean canBeRotated() {
+        return true;
+    }
 
-	@Override
-	public boolean canBeRotated()
-	{
-		return true;
-	}
+    @Override
+    public EnumFacing getForward() {
+        if (this.getUp().getFrontOffsetY() == 0) {
+            return EnumFacing.UP;
+        }
+        return EnumFacing.SOUTH;
+    }
 
-	@Override
-	public EnumFacing getForward()
-	{
-		if( this.getUp().getFrontOffsetY() == 0 )
-		{
-			return EnumFacing.UP;
-		}
-		return EnumFacing.SOUTH;
-	}
+    @Override
+    public EnumFacing getUp() {
+        final IBlockState state = this.w.getBlockState(this.pos);
 
-	@Override
-	public EnumFacing getUp()
-	{
-		final IBlockState state = this.w.getBlockState( this.pos );
+        if (this.facingProp != null) {
+            return state.getValue(this.facingProp);
+        }
 
-		if( this.facingProp != null )
-		{
-			return state.getValue( this.facingProp );
-		}
+        // TODO 1.10.2-R - Temp
+        Axis a = state.getValue(BlockQuartzPillar.AXIS_ORIENTATION);
 
-		// TODO 1.10.2-R - Temp
-		Axis a = state.getValue( BlockQuartzPillar.AXIS_ORIENTATION );
+        if (a == null) {
+            a = Axis.Y;
+        }
 
-		if( a == null )
-		{
-			a = Axis.Y;
-		}
+        switch (a) {
+            case X:
+                return EnumFacing.EAST;
+            case Z:
+                return EnumFacing.SOUTH;
+            default:
+            case Y:
+                return EnumFacing.UP;
+        }
+    }
 
-		switch( a )
-		{
-			case X:
-				return EnumFacing.EAST;
-			case Z:
-				return EnumFacing.SOUTH;
-			default:
-			case Y:
-				return EnumFacing.UP;
-		}
-	}
-
-	@Override
-	public void setOrientation( final EnumFacing forward, final EnumFacing up )
-	{
-		if( this.w instanceof World )
-		{
-			if( this.facingProp != null )
-			{
-				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( this.facingProp, up ) );
-			}
-			else
-			{
-				// TODO 1.10.2-R - Temp
-				( (World) this.w ).setBlockState( this.pos, this.w.getBlockState( this.pos ).withProperty( BlockQuartzPillar.AXIS_ORIENTATION, up.getAxis() ) );
-			}
-		}
-		else
-		{
-			throw new IllegalStateException( this.w.getClass().getName() + " received, expected World" );
-		}
-	}
+    @Override
+    public void setOrientation(final EnumFacing forward, final EnumFacing up) {
+        if (this.w instanceof World) {
+            if (this.facingProp != null) {
+                ((World) this.w).setBlockState(this.pos, this.w.getBlockState(this.pos).withProperty(this.facingProp, up));
+            } else {
+                // TODO 1.10.2-R - Temp
+                ((World) this.w).setBlockState(this.pos, this.w.getBlockState(this.pos).withProperty(BlockQuartzPillar.AXIS_ORIENTATION, up.getAxis()));
+            }
+        } else {
+            throw new IllegalStateException(this.w.getClass().getName() + " received, expected World");
+        }
+    }
 }

@@ -19,9 +19,9 @@
 package appeng.parts;
 
 
-import java.util.EnumSet;
-import java.util.Random;
-
+import appeng.api.parts.SelectedPart;
+import appeng.api.util.AEColor;
+import appeng.client.render.cablebus.CableBusRenderState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,43 +34,41 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import appeng.api.parts.SelectedPart;
-import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
+import java.util.EnumSet;
+import java.util.Random;
 
 
-public interface ICableBusContainer
-{
+public interface ICableBusContainer {
 
-	int isProvidingStrongPower( EnumFacing opposite );
+    int isProvidingStrongPower(EnumFacing opposite);
 
-	int isProvidingWeakPower( EnumFacing opposite );
+    int isProvidingWeakPower(EnumFacing opposite);
 
-	boolean canConnectRedstone( EnumSet<EnumFacing> of );
+    boolean canConnectRedstone(EnumSet<EnumFacing> of);
 
-	void onEntityCollision( Entity e );
+    void onEntityCollision(Entity e);
 
-	boolean activate( EntityPlayer player, EnumHand hand, Vec3d vecFromPool );
+    boolean activate(EntityPlayer player, EnumHand hand, Vec3d vecFromPool);
 
-	boolean clicked( EntityPlayer player, EnumHand hand, Vec3d hitVec );
+    boolean clicked(EntityPlayer player, EnumHand hand, Vec3d hitVec);
 
-	void onNeighborChanged( IBlockAccess w, BlockPos pos, BlockPos neighbor );
+    void onNeighborChanged(IBlockAccess w, BlockPos pos, BlockPos neighbor);
 
-	boolean isSolidOnSide( EnumFacing side );
+    boolean isSolidOnSide(EnumFacing side);
 
-	boolean isEmpty();
+    boolean isEmpty();
 
-	SelectedPart selectPart( Vec3d v3 );
+    SelectedPart selectPart(Vec3d v3);
 
-	boolean recolourBlock( EnumFacing side, AEColor colour, EntityPlayer who );
+    boolean recolourBlock(EnumFacing side, AEColor colour, EntityPlayer who);
 
-	boolean isLadder( EntityLivingBase entity );
+    boolean isLadder(EntityLivingBase entity);
 
-	@SideOnly( Side.CLIENT )
-	void randomDisplayTick( World world, BlockPos pos, Random r );
+    @SideOnly(Side.CLIENT)
+    void randomDisplayTick(World world, BlockPos pos, Random r);
 
-	int getLightValue();
+    int getLightValue();
 
-	CableBusRenderState getRenderState();
+    CableBusRenderState getRenderState();
 
 }

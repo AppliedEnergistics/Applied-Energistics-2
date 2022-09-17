@@ -35,66 +35,55 @@ import net.minecraft.world.World;
  * @version rv2
  * @since rv2
  */
-public final class Tracer
-{
-	/**
-	 * Trace view of players to blocks.
-	 * Ignore all which are out of reach.
-	 *
-	 * @param world word of block
-	 * @param player player viewing block
-	 * @param pos pos of block
-	 *
-	 * @return trace movement. Can be null
-	 */
-	public RayTraceResult retraceBlock( final World world, final EntityPlayerMP player, BlockPos pos )
-	{
-		IBlockState blockState = world.getBlockState( pos );
+public final class Tracer {
+    /**
+     * Trace view of players to blocks.
+     * Ignore all which are out of reach.
+     *
+     * @param world  word of block
+     * @param player player viewing block
+     * @param pos    pos of block
+     * @return trace movement. Can be null
+     */
+    public RayTraceResult retraceBlock(final World world, final EntityPlayerMP player, BlockPos pos) {
+        IBlockState blockState = world.getBlockState(pos);
 
-		final Vec3d headVec = this.getCorrectedHeadVec( player );
-		final Vec3d lookVec = player.getLook( 1.0F );
-		final double reach = this.getBlockReachDistance_server( player );
-		final Vec3d endVec = headVec.addVector( lookVec.x * reach, lookVec.y * reach, lookVec.z * reach );
+        final Vec3d headVec = this.getCorrectedHeadVec(player);
+        final Vec3d lookVec = player.getLook(1.0F);
+        final double reach = this.getBlockReachDistance_server(player);
+        final Vec3d endVec = headVec.addVector(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
 
-		return blockState.collisionRayTrace( world, pos, headVec, endVec );
-	}
+        return blockState.collisionRayTrace(world, pos, headVec, endVec);
+    }
 
-	/**
-	 * Gets the view point of a player
-	 *
-	 * @param player player with head
-	 *
-	 * @return view point of player
-	 */
-	private Vec3d getCorrectedHeadVec( final EntityPlayer player )
-	{
-		double x = player.posX;
-		double y = player.posY;
-		double z = player.posZ;
+    /**
+     * Gets the view point of a player
+     *
+     * @param player player with head
+     * @return view point of player
+     */
+    private Vec3d getCorrectedHeadVec(final EntityPlayer player) {
+        double x = player.posX;
+        double y = player.posY;
+        double z = player.posZ;
 
-		if( player.world.isRemote )
-		{
-			// compatibility with eye height changing mods
-			y += player.getEyeHeight() - player.getDefaultEyeHeight();
-		}
-		else
-		{
-			y += player.getEyeHeight();
-			if( player instanceof EntityPlayerMP && player.isSneaking() )
-			{
-				y -= 0.08;
-			}
-		}
-		return new Vec3d( x, y, z );
-	}
+        if (player.world.isRemote) {
+            // compatibility with eye height changing mods
+            y += player.getEyeHeight() - player.getDefaultEyeHeight();
+        } else {
+            y += player.getEyeHeight();
+            if (player instanceof EntityPlayerMP && player.isSneaking()) {
+                y -= 0.08;
+            }
+        }
+        return new Vec3d(x, y, z);
+    }
 
-	/**
-	 * @param player multi-player player
-	 *
-	 * @return block reach distance of player
-	 */
-	private double getBlockReachDistance_server( final EntityPlayerMP player )
-	{
-		return player.interactionManager.getBlockReachDistance();
-	}
+    /**
+     * @param player multi-player player
+     * @return block reach distance of player
+     */
+    private double getBlockReachDistance_server(final EntityPlayerMP player) {
+        return player.interactionManager.getBlockReachDistance();
+    }
 }

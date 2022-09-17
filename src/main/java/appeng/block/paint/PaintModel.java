@@ -1,10 +1,5 @@
-
 package appeng.block.paint;
 
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.function.Function;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -14,32 +9,31 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Function;
 
-class PaintModel implements IModel
-{
 
-	@Override
-	public Collection<ResourceLocation> getDependencies()
-	{
-		return Collections.emptyList();
-	}
+class PaintModel implements IModel {
 
-	@Override
-	public Collection<ResourceLocation> getTextures()
-	{
-		return PaintBakedModel.getRequiredTextures();
-	}
+    @Override
+    public Collection<ResourceLocation> getDependencies() {
+        return Collections.emptyList();
+    }
 
-	@Override
-	public IBakedModel bake( IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter )
-	{
-		return new PaintBakedModel( format, bakedTextureGetter );
-	}
+    @Override
+    public Collection<ResourceLocation> getTextures() {
+        return PaintBakedModel.getRequiredTextures();
+    }
 
-	@Override
-	public IModelState getDefaultState()
-	{
-		return TRSRTransformation.identity();
-	}
+    @Override
+    public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+        return new PaintBakedModel(format, bakedTextureGetter);
+    }
+
+    @Override
+    public IModelState getDefaultState() {
+        return TRSRTransformation.identity();
+    }
 
 }

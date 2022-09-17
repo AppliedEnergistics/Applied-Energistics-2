@@ -19,66 +19,53 @@
 package appeng.util.prioritylist;
 
 
+import appeng.api.storage.data.IAEStack;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
-import appeng.api.storage.data.IAEStack;
 
+public final class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList<T> {
 
-public final class MergedPriorityList<T extends IAEStack<T>> implements IPartitionList<T>
-{
+    private final Collection<IPartitionList<T>> positive = new ArrayList<>();
+    private final Collection<IPartitionList<T>> negative = new ArrayList<>();
 
-	private final Collection<IPartitionList<T>> positive = new ArrayList<>();
-	private final Collection<IPartitionList<T>> negative = new ArrayList<>();
+    public void addNewList(final IPartitionList<T> list, final boolean isWhitelist) {
+        if (isWhitelist) {
+            this.positive.add(list);
+        } else {
+            this.negative.add(list);
+        }
+    }
 
-	public void addNewList( final IPartitionList<T> list, final boolean isWhitelist )
-	{
-		if( isWhitelist )
-		{
-			this.positive.add( list );
-		}
-		else
-		{
-			this.negative.add( list );
-		}
-	}
+    @Override
+    public boolean isListed(final T input) {
+        for (final IPartitionList<T> l : this.negative) {
+            if (l.isListed(input)) {
+                return false;
+            }
+        }
 
-	@Override
-	public boolean isListed( final T input )
-	{
-		for( final IPartitionList<T> l : this.negative )
-		{
-			if( l.isListed( input ) )
-			{
-				return false;
-			}
-		}
+        if (!this.positive.isEmpty()) {
+            for (final IPartitionList<T> l : this.positive) {
+                if (l.isListed(input)) {
+                    return true;
+                }
+            }
 
-		if( !this.positive.isEmpty() )
-		{
-			for( final IPartitionList<T> l : this.positive )
-			{
-				if( l.isListed( input ) )
-				{
-					return true;
-				}
-			}
+            return false;
+        }
 
-			return false;
-		}
+        return true;
+    }
 
-		return true;
-	}
+    @Override
+    public boolean isEmpty() {
+        return this.positive.isEmpty() && this.negative.isEmpty();
+    }
 
-	@Override
-	public boolean isEmpty()
-	{
-		return this.positive.isEmpty() && this.negative.isEmpty();
-	}
-
-	@Override
-	public Iterable<T> getItems()
-	{
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public Iterable<T> getItems() {
+        throw new UnsupportedOperationException();
+    }
 }

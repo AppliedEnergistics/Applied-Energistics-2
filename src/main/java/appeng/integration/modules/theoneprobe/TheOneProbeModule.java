@@ -19,33 +19,28 @@
 package appeng.integration.modules.theoneprobe;
 
 
-import java.util.function.Function;
-
-import net.minecraftforge.fml.common.event.FMLInterModComms;
-
-import mcjty.theoneprobe.api.ITheOneProbe;
-
 import appeng.integration.IIntegrationModule;
 import appeng.integration.modules.theoneprobe.config.AEConfigProvider;
+import mcjty.theoneprobe.api.ITheOneProbe;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
+
+import java.util.function.Function;
 
 
-public class TheOneProbeModule implements IIntegrationModule, Function<ITheOneProbe, Void>
-{
-	@Override
-	public void preInit() throws Throwable
-	{
-		FMLInterModComms.sendFunctionMessage( "theoneprobe", "getTheOneProbe", this.getClass().getName() );
-	}
+public class TheOneProbeModule implements IIntegrationModule, Function<ITheOneProbe, Void> {
+    @Override
+    public void preInit() throws Throwable {
+        FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", this.getClass().getName());
+    }
 
-	@Override
-	public Void apply( ITheOneProbe input )
-	{
-		input.registerProbeConfigProvider( new AEConfigProvider() );
+    @Override
+    public Void apply(ITheOneProbe input) {
+        input.registerProbeConfigProvider(new AEConfigProvider());
 
-		input.registerProvider( new TileInfoProvider() );
+        input.registerProvider(new TileInfoProvider());
 
-		input.registerProvider( new PartInfoProvider() );
+        input.registerProvider(new PartInfoProvider());
 
-		return null;
-	}
+        return null;
+    }
 }
