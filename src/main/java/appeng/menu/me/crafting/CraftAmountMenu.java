@@ -19,7 +19,6 @@
 package appeng.menu.me.crafting;
 
 import java.util.Objects;
-import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
@@ -30,19 +29,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
-import appeng.api.networking.crafting.ICraftingPlan;
-import appeng.api.networking.security.IActionHost;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ITerminalHost;
-import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
-import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
@@ -110,10 +102,6 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
         return this.getPlayerInventory().player.level;
     }
 
-    public IActionSource getActionSrc() {
-        return new PlayerSource(this.getPlayerInventory().player, (IActionHost) this.getTarget());
-    }
-
     private void setWhatToCraft(AEKey whatToCraft, int initialAmount) {
         this.whatToCraft = Objects.requireNonNull(whatToCraft, "whatToCraft");
         this.craftingItem.set(GenericStack.wrapInItemStack(whatToCraft, initialAmount));
@@ -132,45 +120,24 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             return;
         }
 
-        final Object target = getTarget();
-        if (target instanceof IActionHost ah) {
-            final IGridNode gn = ah.getActionableNode();
-            if (gn == null) {
-                return;
-            }
-
-            final IGrid g = gn.getGrid();
-            if (this.whatToCraft == null) {
-                return;
-            }
-
-            Future<ICraftingPlan> futureJob = null;
-            try {
-                var cg = g.getCraftingService();
-                var actionSource = getActionSrc();
-                futureJob = cg.beginCraftingCalculation(getLevel(), () -> actionSource, whatToCraft, amount,
-                        CalculationStrategy.REPORT_MISSING_ITEMS);
-
-                var locator = getLocator();
-                if (locator != null) {
-                    Player player = this.getPlayerInventory().player;
-                    MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
-
-                    if (player.containerMenu instanceof CraftConfirmMenu ccc) {
-                        ccc.setAutoStart(autoStart);
-                        ccc.setWhatToCraft(this.whatToCraft, amount);
-                        ccc.setJob(futureJob);
-                        broadcastChanges();
-                    }
-                }
-            } catch (Throwable e) {
-                if (futureJob != null) {
-                    futureJob.cancel(true);
-                }
-                AELog.info(e);
-            }
+        if (this.whatToCraft == null) {
+            return;
         }
 
+        var locator = getLocator();
+        if (locator != null) {
+            Player player = this.getPlayerInventory().player;
+            MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
+
+            if (player.containerMenu instanceof CraftConfirmMenu ccc) {
+                ccc.setAutoStart(autoStart);
+                ccc.planJob(
+                        whatToCraft,
+                        amount,
+                        CalculationStrategy.REPORT_MISSING_ITEMS);
+                broadcastChanges();
+            }
+        }
     }
 
     @Nullable
