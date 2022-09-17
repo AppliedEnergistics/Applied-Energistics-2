@@ -228,6 +228,11 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         throw new IllegalArgumentException("The given node is not part of this grid or has no storage provider.");
     }
 
+    @Override
+    public void invalidateCache() {
+        cachedStacksNeedUpdate = true;
+    }
+
     /**
      * A {@link IStorageProvider}-specific mount table facade which allows the provider to easily mount/remount its
      * storage.
