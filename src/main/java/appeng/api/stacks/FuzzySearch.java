@@ -8,8 +8,8 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 
-import it.unimi.dsi.fastutil.objects.Object2LongAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMap;
 
 import appeng.api.config.FuzzyMode;
 
@@ -23,17 +23,15 @@ final class FuzzySearch {
     /**
      * Creates a map that is searchable via {@link #findFuzzy}.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <K extends AEKey, V> Object2ObjectAVLTreeMap<K, V> createMap() {
-        return new Object2ObjectAVLTreeMap(COMPARATOR);
+    public static <K extends AEKey, V> Object2ObjectSortedMap<K, V> createMap() {
+        return new Object2ObjectAVLTreeMap<>(COMPARATOR);
     }
 
     /**
      * Creates a map that is searchable via {@link #findFuzzy}.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <K extends AEKey> Object2LongAVLTreeMap<K> createMap2Long() {
-        return new Object2LongAVLTreeMap(COMPARATOR);
+    public static AEKey2LongMap.AVLTreeMap createMap2Long() {
+        return new AEKey2LongMap.AVLTreeMap(COMPARATOR);
     }
 
     /**

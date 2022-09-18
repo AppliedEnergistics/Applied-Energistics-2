@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongSortedMap;
 
 import appeng.api.config.FuzzyMode;
@@ -18,17 +17,6 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      * Enable to skip and remove keys that are mapped to zero.
      */
     private boolean dropZeros;
-
-    /**
-     * Creates a variant map that is suitable for the given key, considering it's support for fuzzy search.
-     */
-    public static VariantCounter create(AEKey keyTemplate) {
-        if (keyTemplate.getFuzzySearchMaxValue() > 0) {
-            return new FuzzyVariantMap();
-        } else {
-            return new UnorderedVariantMap();
-        }
-    }
 
     public boolean isDropZeros() {
         return dropZeros;
@@ -43,7 +31,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     public void add(AEKey key, long amount) {
-        this.getRecords().mergeLong(key, amount, Long::sum);
+        this.getRecords().addTo(key, amount);
     }
 
     public void set(AEKey key, long amount) {
@@ -106,7 +94,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         return new NonDefaultIterator();
     }
 
-    abstract Object2LongMap<AEKey> getRecords();
+    abstract AEKey2LongMap getRecords();
 
     /**
      * Sets all amounts to zero.
@@ -188,8 +176,8 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      * This variant list is optimized for items that cannot be damaged and thus do not support querying durability
      * ranges via {@link #findFuzzy}.
      */
-    private static class UnorderedVariantMap extends VariantCounter {
-        private final Object2LongMap<AEKey> records = new Object2LongOpenHashMap<>();
+    static class UnorderedVariantMap extends VariantCounter {
+        private final AEKey2LongMap records = new AEKey2LongMap.OpenHashMap();
 
         /**
          * For keys whose primary key does not support fuzzy range lookups, we simply return all records, which amounts
@@ -201,7 +189,7 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         }
 
         @Override
-        Object2LongMap<AEKey> getRecords() {
+        AEKey2LongMap getRecords() {
             return records;
         }
 
@@ -217,16 +205,17 @@ abstract class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
      * This variant list is optimized for damageable items, and supports selecting durability ranges with
      * {@link #findFuzzy}.
      */
-    private static class FuzzyVariantMap extends VariantCounter {
-        private final Object2LongSortedMap<AEKey> records = FuzzySearch.createMap2Long();
+    static class FuzzyVariantMap extends VariantCounter {
+        private final AEKey2LongMap.AVLTreeMap records = FuzzySearch.createMap2Long();
 
         @Override
         public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey key, FuzzyMode fuzzy) {
-            return FuzzySearch.findFuzzy(records, key, fuzzy).object2LongEntrySet();
+            // The cast is necessary because the subMap in the call is not an instance of AEKey2LongMap.AVLTreeMap!
+            return FuzzySearch.findFuzzy((Object2LongSortedMap<AEKey>) records, key, fuzzy).object2LongEntrySet();
         }
 
         @Override
-        Object2LongMap<AEKey> getRecords() {
+        AEKey2LongMap getRecords() {
             return this.records;
         }
 

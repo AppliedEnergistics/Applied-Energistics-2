@@ -25,10 +25,8 @@ package appeng.api.stacks;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -37,6 +35,8 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Iterators;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
 
@@ -45,7 +45,7 @@ import appeng.api.config.FuzzyMode;
  */
 public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     // First map contains a mapping from AEKey#primaryKey
-    private final Map<Object, VariantCounter> lists = new IdentityHashMap<>();
+    private final Reference2ObjectMap<Object, VariantCounter> lists = new Reference2ObjectOpenHashMap<>();
 
     public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey key, FuzzyMode fuzzy) {
         Objects.requireNonNull(key, "key");
@@ -147,12 +147,12 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     private VariantCounter getSubIndex(AEKey key) {
-        var subIndex = getSubIndexOrNull(key);
-        if (subIndex == null) {
-            subIndex = VariantCounter.create(key);
-            lists.put(key.getPrimaryKey(), subIndex);
+        // We check before the call to computeIfAbsent, otherwise we'd need a capturing lambda.
+        if (key.getFuzzySearchMaxValue() > 0) {
+            return lists.computeIfAbsent(key.getPrimaryKey(), k -> new VariantCounter.FuzzyVariantMap());
+        } else {
+            return lists.computeIfAbsent(key.getPrimaryKey(), k -> new VariantCounter.UnorderedVariantMap());
         }
-        return subIndex;
     }
 
     @Nullable
