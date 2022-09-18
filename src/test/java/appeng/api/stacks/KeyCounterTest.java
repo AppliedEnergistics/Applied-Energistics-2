@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -127,6 +128,7 @@ public class KeyCounterTest {
     }
 
     @Test
+    @Disabled // Disabled because the fastutil maps don't attempt to detect CMEs (by design).
     void testConcurrentModificationByAddingItemType() {
         var sword = diamondSword(100);
         itemList.add(sword, 1);
