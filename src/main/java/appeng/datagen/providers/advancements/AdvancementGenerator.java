@@ -295,11 +295,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false,
                         false)
                 .parent(patternTerminal)
-                .addCriterion("c1k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_1K))
-                .addCriterion("c4k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_4K))
-                .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_16K))
-                .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_64K))
-                .addCriterion("c256k", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_STORAGE_256K))
+                .addCriterion("cu", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_UNIT))
                 .requirements(RequirementsStrategy.OR)
                 .save(consumer, "ae2:main/crafting_cpu");
 
