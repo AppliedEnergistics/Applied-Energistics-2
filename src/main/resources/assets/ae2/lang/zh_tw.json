@@ -54,6 +54,7 @@
   "ae2.rei_jei_integration.no_output": "配方沒有輸出。",
   "ae2.rei_jei_integration.recipe_too_large": "配方大小超過3x3。",
   "ae2.rei_jei_integration.requires_processing_mode": "需要切換至處理模式。",
+  "ae2.rei_jei_integration.right_click": "右鍵點擊",
   "block.ae2.16k_crafting_storage": "16k 合成儲存器",
   "block.ae2.1k_crafting_storage": "1k 合成儲存器",
   "block.ae2.256k_crafting_storage": "256k 合成儲存器",
