@@ -356,7 +356,7 @@ public class BasicCellInventory implements StorageCell {
     }
 
     public int getUnusedItemCount() {
-        final int div = (int) (this.getStoredItemCount() % 8);
+        final int div = (int) (this.getStoredItemCount() % keyType.getAmountPerByte());
 
         if (div == 0) {
             return 0;
