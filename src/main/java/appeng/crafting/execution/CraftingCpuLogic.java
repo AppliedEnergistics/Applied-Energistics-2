@@ -113,7 +113,7 @@ public class CraftingCpuLogic {
 
             return CraftingSubmitResult.successful(linkReq);
         } else {
-            return CraftingSubmitResult.successful(null);
+            return CraftingSubmitResult.successful(linkCpu);
         }
     }
 
