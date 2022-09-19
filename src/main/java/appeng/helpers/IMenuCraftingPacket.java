@@ -60,6 +60,12 @@ public interface IMenuCraftingPacket {
     default void startAutoCrafting(List<AutoCraftEntry> toCraft) {
     }
 
+    /**
+     * @return True if the given player inventory slot is locked by the current menu and should not be used for
+     *         crafting. (i.e. the wireless terminal itself in case of a wireless crafting terminal).
+     */
+    boolean isPlayerInventorySlotLocked(int invSlot);
+
     record AutoCraftEntry(AEItemKey what, List<Integer> slots) {
     }
 }
