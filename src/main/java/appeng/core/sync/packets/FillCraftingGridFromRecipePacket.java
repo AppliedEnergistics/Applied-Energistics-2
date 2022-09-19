@@ -210,7 +210,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
 
             // If still nothing, try taking it from the player inventory
             if (currentItem.isEmpty()) {
-                currentItem = takeIngredientFromPlayer(player, ingredient);
+                currentItem = takeIngredientFromPlayer(cct, player, ingredient);
             }
 
             craftMatrix.setItemDirect(x, currentItem);
@@ -240,9 +240,14 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         }
     }
 
-    private ItemStack takeIngredientFromPlayer(ServerPlayer player, Ingredient ingredient) {
+    private ItemStack takeIngredientFromPlayer(IMenuCraftingPacket cct, ServerPlayer player, Ingredient ingredient) {
         var playerInv = player.getInventory();
         for (int i = 0; i < playerInv.items.size(); i++) {
+            // Do not take ingredients out of locked slots
+            if (cct.isPlayerInventorySlotLocked(i)) {
+                continue;
+            }
+
             var item = playerInv.getItem(i);
             if (ingredient.test(item)) {
                 var result = item.split(1);
