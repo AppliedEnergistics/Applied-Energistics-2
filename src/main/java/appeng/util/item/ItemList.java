@@ -140,6 +140,14 @@ public final class ItemList implements IItemList<IAEItemStack> {
         }
     }
 
+    @Override
+    public ItemList clone() {
+        ItemList list = new ItemList();
+        list.records.putAll(records);
+        list.version.set(version.get());
+        return list;
+    }
+
     private ItemVariantList getOrCreateRecord(Item item) {
         return this.records.computeIfAbsent(item, this::makeRecordMap);
     }
