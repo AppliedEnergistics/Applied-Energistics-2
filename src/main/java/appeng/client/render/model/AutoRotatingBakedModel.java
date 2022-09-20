@@ -92,7 +92,7 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
 
         var quads = new List[CULL_FACES.length];
         for (int i = 0; i < CULL_FACES.length; i++) {
-            quads[i] = rotateQuadsFromSide(state, CULL_FACES[i], rand, modelData, f2r, RenderType.solid());
+            quads[i] = rotateQuadsFromSide(state, CULL_FACES[i], rand, modelData, f2r, null);
         }
 
         return (List<BakedQuad>[]) quads;
@@ -108,7 +108,7 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
-            ModelData modelData, RenderType renderType) {
+            ModelData modelData, @Nullable RenderType renderType) {
         if (state == null) {
             return getBaseModel().getQuads(state, side, rand, modelData, renderType);
         }
@@ -126,7 +126,7 @@ public class AutoRotatingBakedModel extends DelegateBakedModel {
     }
 
     private List<BakedQuad> rotateQuadsFromSide(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
-            ModelData modelData, FacingToRotation f2r, RenderType renderType) {
+            ModelData modelData, FacingToRotation f2r, @Nullable RenderType renderType) {
         var cullFace = f2r.resultingRotate(side);
 
         var result = new ArrayList<>(this.parent.getQuads(state, cullFace, rand,
