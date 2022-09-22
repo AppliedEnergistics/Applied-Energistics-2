@@ -1,0 +1,26 @@
+{
+  "name": "3) Inscriber",
+  "category": "ae2:getting_started",
+  "icon": "ae2:inscriber",
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(thing)Inscriber$() is a common crafting method in AE2. It is used to craft $(thing)Processors$() and certain $(thing)Dusts$().$(br2)It can accept $(l:ae2:concepts/power)Network Power and most external forms of Power$(/l). It cannot be manual powered by the $(thing)Wooden Crank$().$(br2)It is $(l:ae2:concepts/sided)Sided$(/l), and can be $(l:ae2:equipment/wrench)Rotated$(/l)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "ae2:network/blocks/inscribers",
+      "text": "Default Orientation Sidedness:$(li)Top Input = \"Top\" Side$(li)Middle Input = \"Sides\"$(li)Bottom Input = \"Bottom\" Side$(li)Output = \"Sides\"$(br)Sides: North, East, South, West$(br2)The items in the Input Slots will not stack."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "ae2:textures/patchouli/images/inscriber_setup.png"
+      ],
+      "border": true,
+      "title": "Example Semi-Automation",
+      "text": "Note that a $(l:ae2:equipment/wrench)Quartz Wrench$(/l) has been used to rotate this $(thing)Inscriber$()"
+    }
+  ]
+}

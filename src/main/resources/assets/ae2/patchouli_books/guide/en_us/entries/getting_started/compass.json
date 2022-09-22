@@ -1,16 +1,21 @@
 {
-  "name": "Meteorites & Compass",
+  "name": "2) Meteors & Compass",
   "category": "ae2:getting_started",
-  "icon": "ae2:sky_compass",
-  "sortnum": 1,
+  "icon": "ae2:meteorite_compass",
+  "sortnum": 20,
+  "extra_recipe_mappings": {
+    "ae2:mysterious_cube": 0
+  },
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "$(thing)Meteorites$() can normally be found all across the $(thing)Overworld$(). They are known to contain $(l:ae2:getting_started/certus)Certus Quartz$(/l) and a $(thing)Sky Stone Chest$() containing $(l:ae2:getting_started/inscriber#presses)Inscriber Presses.$() The main bulk of $(thing)Meteorites$() is made of $(item)Sky Stone$(), which can be mined, albeit slowly, with an $(item)Iron Pickaxe$().$(br2)The easiest way to find a Meteorite is to use a $(thing)Meteorite$()"
+      "text": "$(thing)Meteorites$() can be found scattered across the surface of the Overworld. They contain some $(l:ae2:getting_started/certus)Certus Quartz$() and a $(thing)Mysterious Cube$() at the center. They are also encased in a large amount of $(item)Sky Stone$().$(br2)The $(thing)Mysterious Cube$() will drop all 4 $(l:ae2:getting_started/inscriber)Inscriber Plates$(/l) when broken."
     },
     {
-      "type": "patchouli:text",
-      "text": "$(thing)Compass$(), which will point to the nearest $(thing)Chunk$() with $(thing)Sky Stone$() in it.$(br2)The $(thing)Compass$() is crafted by putting a normal $(item)Compass$() in a powered $(l:ae2:getting_started/charger)Charger$().$(br2)The $(thing)Compass$() will spin quickly if you are standing in a $(item)Chunk$() with $(thing)Sky Stone$() in it.  It will spin slowly if it is not able to find any $(thing)Sky Stone$() within range."
+      "type": "patchouli:spotlight",
+      "item": "ae2:meteorite_compass",
+      "link_recipe": true,
+      "text": "The $(thing)Meteorite Compass$() is crafted by placing a normal Compass in a $(l:ae2:getting_started/charger)Charger$(/l).$(br2)This $(thing)Compass$() points towards the nearest Chunk containing a $(thing)Mysterious Cube$() (and thus a Meteorite) it can find.$(br2)Slow Spin = Can't find any $(thing)Mysterious Cube$() in range."
     }
   ]
 }
