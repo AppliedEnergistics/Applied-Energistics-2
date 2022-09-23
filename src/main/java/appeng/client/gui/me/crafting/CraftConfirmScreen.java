@@ -70,6 +70,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
+        var errorResult = menu.submitError.result();
+        if (errorResult != null && errorResult.errorCode() != null) {
+            switchToScreen(new CraftErrorScreen(this, errorResult.errorCode(), errorResult.errorDetail()));
+            return;
+        }
+
         this.selectCPU.setMessage(getNextCpuButtonLabel());
 
         CraftingPlanSummary plan = menu.getPlan();

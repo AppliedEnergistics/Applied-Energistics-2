@@ -19,11 +19,13 @@
 package appeng.menu.me.crafting;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.Util;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,10 +38,12 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
+import appeng.api.networking.crafting.CraftingSubmitErrorCode;
 import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingService;
+import appeng.api.networking.crafting.ICraftingSubmitResult;
+import appeng.api.networking.crafting.UnsuitableCpus;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
@@ -48,11 +52,13 @@ import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import appeng.crafting.execution.CraftingSubmitResult;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.guisync.PacketWritable;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.locator.MenuLocator;
 
@@ -64,12 +70,14 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     private static final String ACTION_BACK = "back";
     private static final String ACTION_CYCLE_CPU = "cycleCpu";
     private static final String ACTION_START_JOB = "startJob";
+    private static final String ACTION_REPLAN = "replan";
+
+    private static final SyncableSubmitResult NO_ERROR = new SyncableSubmitResult((ICraftingSubmitResult) null);
 
     public static final MenuType<CraftConfirmMenu> TYPE = MenuTypeBuilder
             .create(CraftConfirmMenu::new, ITerminalHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftconfirm");
-
     private final CraftingCPUCycler cpuCycler;
 
     private ICraftingCPU selectedCpu;
@@ -94,6 +102,8 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     public int cpuCoProcessors;
     @GuiSync(7)
     public Component cpuName;
+    @GuiSync(8)
+    public SyncableSubmitResult submitError = NO_ERROR;
 
     private CraftingPlanSummary plan;
 
@@ -119,6 +129,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         registerClientAction(ACTION_BACK, this::goBack);
         registerClientAction(ACTION_CYCLE_CPU, Boolean.class, this::cycleSelectedCPU);
         registerClientAction(ACTION_START_JOB, this::startJob);
+        registerClientAction(ACTION_REPLAN, this::replan);
     }
 
     /**
@@ -133,33 +144,53 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         var firstToCraft = stacksToCraft.get(0);
         var subsequentCrafts = stacksToCraft.subList(1, stacksToCraft.size());
 
-        final IGridNode gn = terminal.getActionableNode();
-        if (gn == null) {
-            return;
-        }
-
-        final IGrid g = gn.getGrid();
-        Future<ICraftingPlan> futureJob = null;
         try {
-            var cg = g.getCraftingService();
-            var actionSource = IActionSource.ofPlayer(player, terminal);
-            // Use CRAFT_LESS to still try to partially craft the ingredients.
-            futureJob = cg.beginCraftingCalculation(player.level, () -> actionSource, firstToCraft.what(),
-                    firstToCraft.amount(), CalculationStrategy.CRAFT_LESS);
-
             MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
             if (player.containerMenu instanceof CraftConfirmMenu ccc) {
-                ccc.setJob(futureJob);
+                if (!ccc.planJob(
+                        firstToCraft.what(),
+                        (int) firstToCraft.amount(),
+                        // Use CRAFT_LESS to still try to partially craft the ingredients.
+                        CalculationStrategy.CRAFT_LESS)) {
+                    ccc.setValidMenu(false);
+                    return;
+                }
+
                 ccc.autoCraftingQueue = subsequentCrafts;
                 ccc.broadcastChanges();
             }
         } catch (Throwable e) {
-            if (futureJob != null) {
-                futureJob.cancel(true);
-            }
             AELog.info(e);
         }
+    }
+
+    public boolean planJob(AEKey what, int amount, CalculationStrategy strategy) {
+        if (this.job != null) {
+            this.job.cancel(true);
+        }
+        this.result = null;
+        this.clearError();
+
+        this.whatToCraft = what;
+        this.amount = amount;
+
+        var player = getPlayer();
+
+        var grid = getGrid();
+        if (grid == null) {
+            return false;
+        }
+
+        var cg = grid.getCraftingService();
+
+        this.job = cg.beginCraftingCalculation(
+                player.level,
+                this::getActionSrc,
+                what,
+                amount,
+                strategy);
+        return true;
     }
 
     public void cycleSelectedCPU(boolean next) {
@@ -208,7 +239,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 this.result = null;
             }
 
-            this.setJob(null);
+            this.job = null;
         }
         this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
@@ -227,6 +258,8 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public void startJob() {
+        clearError();
+
         if (isClientSide()) {
             sendClientAction(ACTION_START_JOB);
             return;
@@ -234,9 +267,9 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
         if (this.result != null && !this.result.simulation()) {
             final ICraftingService cc = this.getGrid().getCraftingService();
-            final ICraftingLink g = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
+            var submitResult = cc.trySubmitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
             this.setAutoStart(false);
-            if (g != null) {
+            if (submitResult.successful()) {
                 if (autoCraftingQueue != null && !autoCraftingQueue.isEmpty()) {
                     // Process next stack!
                     CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(),
@@ -244,6 +277,13 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 } else {
                     this.host.returnToMainMenu(getPlayer(), this);
                 }
+            } else {
+                AELog.info("Couldn't submit crafting job for %dx%s: %s [Detail: %s]",
+                        result.finalOutput().amount(),
+                        result.finalOutput().what(),
+                        submitResult.errorCode(),
+                        submitResult.errorDetail());
+                this.submitError = new SyncableSubmitResult(submitResult);
             }
         }
     }
@@ -253,11 +293,11 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     @Override
-    public void removed(Player par1PlayerEntity) {
-        super.removed(par1PlayerEntity);
+    public void removed(Player player) {
+        super.removed(player);
         if (this.job != null) {
             this.job.cancel(true);
-            this.setJob(null);
+            this.job = null;
         }
     }
 
@@ -305,11 +345,6 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         return this.noCPU;
     }
 
-    public void setWhatToCraft(AEKey whatToCraft, int amount) {
-        this.whatToCraft = whatToCraft;
-        this.amount = amount;
-    }
-
     public void setJob(Future<ICraftingPlan> job) {
         this.job = job;
     }
@@ -328,6 +363,8 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public void goBack() {
+        clearError();
+
         Player player = getPlayerInventory().player;
         if (player instanceof ServerPlayer serverPlayer) {
             if (autoCraftingQueue != null && !autoCraftingQueue.isEmpty()) {
@@ -349,4 +386,97 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     public ISubMenuHost getHost() {
         return host;
     }
+
+    public void replan() {
+        clearError();
+
+        if (isClientSide()) {
+            sendClientAction(ACTION_REPLAN);
+            return;
+        }
+
+        if (whatToCraft != null) {
+            if (!planJob(whatToCraft, amount, CalculationStrategy.CRAFT_LESS)) {
+                goBack();
+            }
+        } else {
+            goBack();
+        }
+    }
+
+    public void clearError() {
+        this.submitError = NO_ERROR;
+    }
+
+    // Helper to sync the crafting result error
+    public record SyncableSubmitResult(@Nullable ICraftingSubmitResult result) implements PacketWritable {
+        public SyncableSubmitResult(FriendlyByteBuf data) {
+            this(readFromPacket(data));
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            // We use referential equality to ensure that setting a new error is always synced to the client
+            // even if the content remains the same.
+            return this == obj;
+        }
+
+        private static ICraftingSubmitResult readFromPacket(FriendlyByteBuf data) {
+            if (!data.readBoolean()) {
+                return null;
+            }
+
+            if (data.readBoolean()) {
+                return CraftingSubmitResult.successful(null);
+            }
+
+            var errorCode = data.readEnum(CraftingSubmitErrorCode.class);
+            return switch (errorCode) {
+                case NO_SUITABLE_CPU_FOUND -> {
+                    var unsuitableCpus = new UnsuitableCpus(
+                            data.readInt(),
+                            data.readInt(),
+                            data.readInt(),
+                            data.readInt());
+                    yield CraftingSubmitResult.noSuitableCpu(unsuitableCpus);
+                }
+                case MISSING_INGREDIENT -> {
+                    var missingIngredient = GenericStack.readBuffer(data);
+                    yield CraftingSubmitResult.missingIngredient(missingIngredient);
+                }
+                default -> CraftingSubmitResult.simpleError(errorCode);
+            };
+        }
+
+        @Override
+        public void writeToPacket(FriendlyByteBuf data) {
+            if (result == null) {
+                data.writeBoolean(false);
+                return;
+            }
+
+            data.writeBoolean(true);
+            data.writeBoolean(result.successful());
+            // We do not synchronize the link
+            if (!result.successful()) {
+                var errorCode = Objects.requireNonNull(result.errorCode());
+                data.writeEnum(errorCode);
+                // Write details based on error code
+                switch (errorCode) {
+                    case NO_SUITABLE_CPU_FOUND -> {
+                        var unsuitableCpus = Objects.requireNonNull((UnsuitableCpus) result.errorDetail());
+                        data.writeInt(unsuitableCpus.offline());
+                        data.writeInt(unsuitableCpus.busy());
+                        data.writeInt(unsuitableCpus.tooSmall());
+                        data.writeInt(unsuitableCpus.excluded());
+                    }
+                    case MISSING_INGREDIENT -> {
+                        var missingIngredient = Objects.requireNonNull((GenericStack) result.errorDetail());
+                        GenericStack.writeBuffer(missingIngredient, data);
+                    }
+                }
+            }
+        }
+    }
+
 }
