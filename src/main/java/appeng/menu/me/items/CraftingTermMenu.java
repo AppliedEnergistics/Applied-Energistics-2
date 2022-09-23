@@ -214,6 +214,11 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             boolean found = false;
             // Player inventory is cheaper to check
             for (int i = 0; i < playerItems.size(); i++) {
+                // Do not consider locked slots
+                if (isPlayerInventorySlotLocked(i)) {
+                    continue;
+                }
+
                 var stack = playerItems.get(i);
                 if (stack.getCount() - reservedPlayerItems[i] > 0 && ingredient.test(stack)) {
                     reservedPlayerItems[i]++;

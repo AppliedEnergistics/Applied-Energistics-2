@@ -186,6 +186,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         this.lockedPlayerInventorySlots.add(invSlot);
     }
 
+    public final boolean isPlayerInventorySlotLocked(int invSlot) {
+        return this.lockedPlayerInventorySlots.contains(invSlot);
+    }
+
     public Object getTarget() {
         if (this.blockEntity != null) {
             return this.blockEntity;
