@@ -213,6 +213,10 @@ public class SimulationEnv {
             }
 
             @Override
+            public void invalidateCache() {
+            }
+
+            @Override
             public void refreshNodeStorageProvider(IGridNode node) {
                 throw new UnsupportedOperationException();
             }
