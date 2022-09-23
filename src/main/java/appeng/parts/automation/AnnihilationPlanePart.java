@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -42,9 +43,11 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
 import appeng.api.util.AECableType;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
@@ -78,9 +81,31 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     @Nullable
     private Map<Enchantment, Integer> enchantments;
 
+    // Allows annihilation planes to stop pickup and instead go into a continuous generation mode
+    private ContinuousGeneration continuousGeneration;
+    private int continuousGenerationTicks;
+
     public AnnihilationPlanePart(IPartItem<?> partItem) {
         super(partItem);
         getMainNode().addService(IGridTickable.class, this);
+    }
+
+    @Override
+    public void addToWorld() {
+        super.addToWorld();
+
+        var host = getBlockEntity();
+        var buildHeight = host.getLevel().getMaxBuildHeight();
+
+        continuousGenerationTicks = 0;
+        continuousGeneration = null;
+        // When placed at max build height facing up, continuously generate 1 sky stone dust / 10 seconds
+        if (host.getBlockPos().getY() + 1 >= buildHeight && getSide() == Direction.UP) {
+            continuousGeneration = new ContinuousGeneration(
+                    AEItemKey.of(AEItems.SKY_DUST),
+                    1,
+                    200);
+        }
     }
 
     @Override
@@ -252,6 +277,16 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         var grid = node.getGrid();
 
+        if (isActive() && continuousGeneration != null) {
+            continuousGenerationTicks += ticksSinceLastCall;
+            if (continuousGenerationTicks >= continuousGeneration.ticks) {
+                long amount = continuousGenerationTicks / continuousGeneration.ticks;
+                insertIntoGrid(continuousGeneration.what, amount, Actionable.MODULATE);
+                continuousGenerationTicks -= amount * continuousGeneration.ticks;
+            }
+            return TickRateModulation.IDLE;
+        }
+
         if (pendingPickupStrategy != null) {
             pendingPickupStrategy.completePickup(grid.getEnergyService(), this::insertIntoGrid);
             pendingPickupStrategy = null;
@@ -304,4 +339,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
         return getConnections();
     }
 
+    private record ContinuousGeneration(
+            AEKey what,
+            long amount,
+            int ticks) {
+    }
 }
