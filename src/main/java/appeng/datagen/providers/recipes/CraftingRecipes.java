@@ -909,7 +909,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
 
         ShapelessRecipeBuilder.shapeless(AEItems.MEMORY_CARDS.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.MEMORY_CARDS)
-                .requires(Items.WATER_BUCKET)
+                .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_memory_card", has(ConventionTags.MEMORY_CARDS))
                 .save(consumer, AppEng.makeId("network/cables/network_memory_card_clean"));
 
@@ -1380,7 +1380,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         // Remove color from any colored cable
         ShapelessRecipeBuilder.shapeless(AEParts.COVERED_CABLE.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.COVERED_CABLE)
-                .requires(Items.WATER_BUCKET)
+                .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_covered_cable", has(ConventionTags.COVERED_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/covered_fluix_clean"));
         // Craft the actual colored cable initially
@@ -1411,7 +1411,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cables/dense_covered_fluix"));
         ShapelessRecipeBuilder.shapeless(AEParts.COVERED_DENSE_CABLE.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.COVERED_DENSE_CABLE)
-                .requires(Items.WATER_BUCKET)
+                .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_covered_dense_cable", has(ConventionTags.COVERED_DENSE_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/dense_covered_fluix_clean"));
 
@@ -1443,7 +1443,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cables/dense_smart_from_smart"));
         ShapelessRecipeBuilder.shapeless(AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.SMART_DENSE_CABLE)
-                .requires(Items.WATER_BUCKET)
+                .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_smart_dense_cable", has(ConventionTags.SMART_DENSE_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/dense_smart_fluix_clean"));
 
@@ -1468,7 +1468,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cables/glass_fluix"));
         ShapelessRecipeBuilder.shapeless(AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.GLASS_CABLE)
-                .requires(Items.WATER_BUCKET)
+                .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_glass_cable", has(ConventionTags.GLASS_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/glass_fluix_clean"));
 
@@ -1494,7 +1494,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cables/smart_fluix"));
         ShapelessRecipeBuilder.shapeless(AEParts.SMART_CABLE.item(AEColor.TRANSPARENT))
                 .requires(ConventionTags.SMART_CABLE)
-                .requires(Items.WATER_BUCKET)
+                .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_smart_cable", has(ConventionTags.SMART_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/smart_fluix_clean"));
     }

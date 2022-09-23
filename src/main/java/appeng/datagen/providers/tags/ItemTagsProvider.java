@@ -266,8 +266,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         tag(ConventionTags.dye(DyeColor.RED)).add(Items.RED_DYE);
         tag(ConventionTags.dye(DyeColor.BLACK)).add(Items.BLACK_DYE);
 
-        tag(ConventionTags.WHEAT_CROP).add(Items.WHEAT);
-
+        tag(ConventionTags.CAN_REMOVE_COLOR).add(Items.WATER_BUCKET, Items.SNOWBALL);
     }
 
     // Copy the entries AE2 added to certain block tags over to item tags of the same name
