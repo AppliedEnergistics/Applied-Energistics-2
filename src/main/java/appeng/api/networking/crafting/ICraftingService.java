@@ -102,7 +102,14 @@ public interface ICraftingService extends IGridService {
      *         {@link ICraftingRequester} methods. if you send null, this object should be discarded after verifying the
      *         return state.
      */
-    ICraftingLink submitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
+    default ICraftingLink submitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
+            @Nullable ICraftingCPU target,
+            boolean prioritizePower, IActionSource src) {
+        var result = trySubmitJob(job, requestingMachine, target, prioritizePower, src);
+        return result.link();
+    }
+
+    ICraftingSubmitResult trySubmitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
             @Nullable ICraftingCPU target,
             boolean prioritizePower, IActionSource src);
 

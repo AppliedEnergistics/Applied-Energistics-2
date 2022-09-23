@@ -96,4 +96,6 @@ public final class SlotSemantics {
     public static final SlotSemantic CRAFTING_RESULT = register("CRAFTING_RESULT", false);
 
     public static final SlotSemantic BIOMETRIC_CARD = register("BIOMETRIC_CARD", false);
+
+    public static final SlotSemantic MISSING_INGREDIENT = register("MISSING_INGREDIENT", true);
 }

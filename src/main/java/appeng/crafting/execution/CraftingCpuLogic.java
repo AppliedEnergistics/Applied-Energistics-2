@@ -35,6 +35,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
 import appeng.api.networking.crafting.ICraftingRequester;
+import appeng.api.networking.crafting.ICraftingSubmitResult;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
@@ -73,25 +74,25 @@ public class CraftingCpuLogic {
         this.cluster = cluster;
     }
 
-    @Nullable
-    public ICraftingLink trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src,
+    public ICraftingSubmitResult trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src,
             @Nullable ICraftingRequester requester) {
         // Already have a job.
         if (this.job != null)
-            return null;
+            return CraftingSubmitResult.CPU_BUSY;
         // Check that the node is active.
         if (!cluster.isActive())
-            return null;
+            return CraftingSubmitResult.CPU_OFFLINE;
         // Check bytes.
         if (cluster.getAvailableStorage() < plan.bytes())
-            return null;
+            return CraftingSubmitResult.CPU_TOO_SMALL;
 
         if (!inventory.list.isEmpty())
             AELog.warn("Crafting CPU inventory is not empty yet a job was submitted.");
 
         // Try to extract required items.
-        if (!CraftingCpuHelper.tryExtractInitialItems(plan, grid, inventory, src))
-            return null;
+        var missingIngredient = CraftingCpuHelper.tryExtractInitialItems(plan, grid, inventory, src);
+        if (missingIngredient != null)
+            return CraftingSubmitResult.missingIngredient(missingIngredient);
 
         // Set CPU link and job.
         var craftId = this.generateCraftId(plan.finalOutput());
@@ -110,9 +111,9 @@ public class CraftingCpuLogic {
             craftingService.addLink(linkCpu);
             craftingService.addLink(linkReq);
 
-            return linkReq;
+            return CraftingSubmitResult.successful(linkReq);
         } else {
-            return linkCpu;
+            return CraftingSubmitResult.successful(null);
         }
     }
 

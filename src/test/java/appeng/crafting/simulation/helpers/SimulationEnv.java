@@ -146,7 +146,8 @@ public class SimulationEnv {
             }
 
             @Override
-            public ICraftingLink submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
+            public ICraftingSubmitResult trySubmitJob(ICraftingPlan job, ICraftingRequester requestingMachine,
+                    ICraftingCPU target,
                     boolean prioritizePower, IActionSource src) {
                 throw new UnsupportedOperationException();
             }
