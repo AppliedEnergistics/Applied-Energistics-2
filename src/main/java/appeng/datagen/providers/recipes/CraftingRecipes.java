@@ -623,7 +623,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
                 .unlockedBy("has_annihilation_core", has(AEItems.ANNIHILATION_CORE))
                 .save(consumer, AppEng.makeId("network/crafting/molecular_assembler"));
-        ShapedRecipeBuilder.shaped(AEItems.BLANK_PATTERN)
+        ShapedRecipeBuilder.shaped(AEItems.BLANK_PATTERN, 2)
                 .pattern("aba")
                 .pattern("bcb")
                 .pattern("ddd")
