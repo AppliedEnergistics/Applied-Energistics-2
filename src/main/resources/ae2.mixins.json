@@ -13,7 +13,6 @@
     "DynamicLadderMixin",
     "OnNeighborUpdateMixin",
     "ServerLevelCustomItemEntityMixin",
-    "ConditionalRecipeMixin",
     "BreakSpeedMixin",
     "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin"

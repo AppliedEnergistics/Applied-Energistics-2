@@ -20,10 +20,10 @@ package appeng.datagen.providers.recipes;
 
 import javax.annotation.Nullable;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.minecraft.core.Registry;
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -36,16 +36,13 @@ import appeng.recipes.mattercannon.MatterCannonAmmoSerializer;
 record MatterCannonAmmo(ResourceLocation id, TagKey<Item> tag, Item item, float weight) implements FinishedRecipe {
 
     public void serializeRecipeData(JsonObject json) {
-        JsonArray conditions = new JsonArray();
         if (tag != null) {
             json.add("ammo", Ingredient.of(tag).toJson());
-            json.addProperty("ae2:has_tag", tag.location().toString());
+            ConditionJsonProvider.write(json, DefaultResourceConditions.itemTagsPopulated(tag));
         } else if (item != null) {
             json.add("ammo", Ingredient.of(item).toJson());
-            json.addProperty("ae2:has_item", Registry.ITEM.getKey(item).toString());
         }
         json.addProperty("weight", this.weight);
-        json.add("conditions", conditions);
     }
 
     public ResourceLocation getId() {
