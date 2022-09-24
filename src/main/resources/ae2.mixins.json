@@ -12,7 +12,6 @@
     "ItemEntityMixin",
     "OnNeighborUpdateMixin",
     "ServerLevelCustomItemEntityMixin",
-    "ConditionalRecipeMixin",
     "BreakSpeedMixin",
     "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin"
