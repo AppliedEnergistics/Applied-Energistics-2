@@ -99,6 +99,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
     private int currentMouseY = 0;
     private boolean delayedUpdate;
 
+    private boolean updateView = true;
     protected int jeiOffset = Loader.isModLoaded("jei") ? 24 : 0;
 
     public GuiMEMonitorable(final InventoryPlayer inventoryPlayer, final ITerminalHost te) {
@@ -157,8 +158,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
         }
 
         if (!this.delayedUpdate) {
-            this.repo.updateView();
-            this.setScrollBar();
+            this.updateView = true;
         }
     }
 
@@ -315,8 +315,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
             this.searchField.setText(memoryText);
             this.searchField.selectAll();
             this.repo.setSearchString(memoryText);
-            this.repo.updateView();
-            this.setScrollBar();
+            this.updateView = true;
         }
 
         craftingGridOffsetX = Integer.MAX_VALUE;
@@ -377,8 +376,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
         if (btn == 1 && this.searchField.isMouseIn(xCoord, yCoord)) {
             this.searchField.setText("");
             this.repo.setSearchString("");
-            this.repo.updateView();
-            this.setScrollBar();
+            this.updateView = true;
         }
 
         super.mouseClicked(xCoord, yCoord, btn);
@@ -472,8 +470,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
 
             if (this.searchField.textboxKeyTyped(character, key)) {
                 this.repo.setSearchString(this.searchField.getText());
-                this.repo.updateView();
-                this.setScrollBar();
+                this.updateView = true;
                 // tell forge the key event is handled and should not be sent out
                 this.keyHandled = mouseInGui;
             } else {
@@ -500,7 +497,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
                 this.delayedUpdate = false;
             }
         }
-        if (!this.delayedUpdate) {
+        if (!this.delayedUpdate && updateView) {
             this.repo.updateView();
             this.setScrollBar();
         }
@@ -536,7 +533,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
             this.ViewBox.set(this.configSrc.getSetting(Settings.VIEW_MODE));
         }
 
-        this.repo.updateView();
+        this.updateView = true;
     }
 
     int getReservedSpace() {

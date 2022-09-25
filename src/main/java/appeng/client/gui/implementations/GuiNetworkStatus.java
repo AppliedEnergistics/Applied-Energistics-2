@@ -54,6 +54,8 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource {
     private GuiImgButton units;
     private int tooltip = -1;
 
+    private boolean updateView = true;
+
     public GuiNetworkStatus(final InventoryPlayer inventoryPlayer, final INetworkTool te) {
         super(new ContainerNetworkStatus(inventoryPlayer, te));
         final GuiScrollbar scrollbar = new GuiScrollbar();
@@ -202,9 +204,17 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource {
         for (final IAEItemStack is : list) {
             this.repo.postUpdate(is);
         }
+        this.updateView = true;
+    }
 
-        this.repo.updateView();
-        this.setScrollBar();
+    @Override
+    public void updateScreen() {
+        if (updateView) {
+            this.repo.updateView();
+            this.setScrollBar();
+            updateView = false;
+        }
+        super.updateScreen();
     }
 
     private void setScrollBar() {
