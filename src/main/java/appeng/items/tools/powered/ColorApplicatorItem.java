@@ -40,8 +40,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.CreativeModeTab;
@@ -203,6 +208,27 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         return InteractionResult.FAIL;
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack is, Player player, LivingEntity interactionTarget,
+            InteractionHand usedHand) {
+        var paintBall = this.getColor(is);
+        var paintBallColor = this.getColorFromItem(paintBall);
+
+        if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
+            if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
+                if (!player.level.isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
+                    sheep.setColor(paintBallColor.dye);
+                    sheep.level.playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    this.consumeItem(is, AEItemKey.of(paintBall), false);
+                }
+
+                return InteractionResult.sidedSuccess(player.level.isClientSide);
+            }
+        }
+
+        return InteractionResult.PASS;
     }
 
     @Override
