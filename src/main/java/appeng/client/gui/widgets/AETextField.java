@@ -55,7 +55,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
     private static final int PADDING = 2;
 
-    private final int _fontPad;
+    private final int fontPad;
     private int selectionColor = 0xFF00FF00;
     private List<Component> tooltipMessage = Collections.emptyList();
 
@@ -74,7 +74,27 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
                 width - 2 * PADDING - fontRenderer.width("_"), height - 2 * PADDING,
                 TextComponent.EMPTY);
 
-        this._fontPad = fontRenderer.width("_");
+        this.fontPad = fontRenderer.width("_");
+    }
+
+    // Extend the clickable area by the padding so we don't have a mouse deadzone that is still visually within
+    // the background we render.
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        var bounds = getVisualBounds();
+        return mouseX >= bounds.left && mouseX < bounds.right
+                && mouseY >= bounds.top && mouseY < bounds.bottom;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // This hack is used to allow the standard mouse-click logic to recognize our clicks
+        // that are on the padding, but not really inside the edit box.
+        if (isMouseOver(mouseX, mouseY)) {
+            mouseX = Mth.clamp(mouseX, x, x + width - 1);
+            mouseY = Mth.clamp(mouseY, y, y + height - 1);
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -96,7 +116,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
     @Override
     public void resize(int width, int height) {
-        super.setWidth(width - 2 * PADDING - _fontPad);
+        super.setWidth(width - 2 * PADDING - fontPad);
         this.height = height - 2 * PADDING;
     }
 
@@ -119,20 +139,17 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
                 yOffset = 24;
             }
 
-            // Render background
-            int left = x - PADDING;
-            int top = y - PADDING;
-            int right = left + width + 2 * PADDING + _fontPad;
+            var bounds = getVisualBounds();
 
             BLITTER.src(0, yOffset, 1, 12)
-                    .dest(left, top)
+                    .dest(bounds.left, bounds.top)
                     .blit(poseStack, getBlitOffset());
-            var backgroundWidth = Math.min(126, right - left - 2);
+            var backgroundWidth = Math.min(126, bounds.right - bounds.left - 2);
             BLITTER.src(1, yOffset, backgroundWidth, 12)
-                    .dest(left + 1, top)
+                    .dest(bounds.left + 1, bounds.top)
                     .blit(poseStack, getBlitOffset());
             BLITTER.src(127, yOffset, 1, 12)
-                    .dest(right - 1, top)
+                    .dest(bounds.right - 1, bounds.top)
                     .blit(poseStack, getBlitOffset());
 
             super.renderButton(poseStack, mouseX, mouseY, partial);
@@ -190,7 +207,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
         return new Rect2i(
                 x - PADDING,
                 y - PADDING,
-                width + 2 * PADDING + _fontPad,
+                width + 2 * PADDING + fontPad,
                 height + 2 * PADDING);
     }
 
@@ -207,5 +224,20 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
     public void setTooltipMessage(List<Component> tooltipMessage) {
         this.tooltipMessage = Objects.requireNonNull(tooltipMessage);
+    }
+
+    private VisualBounds getVisualBounds() {
+        // Render background
+        int left = x - PADDING;
+        int top = y - PADDING;
+        int right = left + width + 2 * PADDING + fontPad;
+        return new VisualBounds(
+                left,
+                top,
+                right,
+                top + height + 2 * PADDING);
+    }
+
+    private record VisualBounds(int left, int top, int right, int bottom) {
     }
 }
