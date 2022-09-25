@@ -41,14 +41,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEStackRendering;
-import appeng.api.config.SearchBoxMode;
+import appeng.api.config.ActionItems;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
-import appeng.api.config.YesNo;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
@@ -57,18 +56,19 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.AESubScreen;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
-import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
@@ -84,6 +84,7 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 import appeng.menu.me.interaction.StackInteractions;
+import appeng.util.ExternalSearch;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
@@ -108,7 +109,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private SettingToggleButton<TypeFilter> filterTypesToggle;
     private SettingToggleButton<SortOrder> sortByToggle;
     private final SettingToggleButton<SortDir> sortDirToggle;
-    private boolean isAutoFocus = false;
     private int currentMouseX = 0;
     private int currentMouseY = 0;
     private final Scrollbar scrollbar;
@@ -125,12 +125,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         this.searchField = widgets.addTextField("search");
-        this.searchField.setTooltipMessage(List.of(
-                (AEConfig.instance().getSearchTooltips() != YesNo.NO) ? GuiText.SearchTooltipIncludingTooltips.text()
-                        : GuiText.SearchTooltip.text(),
-                GuiText.SearchTooltipModId.text(),
-                GuiText.SearchTooltipItemId.text(),
-                GuiText.SearchTooltipTag.text()));
+        this.searchField.setPlaceholder(Component.literal("Search..."));
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = new Repo(scrollbar, this);
@@ -180,13 +175,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(
                 Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
 
-        SearchBoxMode searchMode = AEConfig.instance().getTerminalSearchMode();
-        this.addToLeftToolbar(new SettingToggleButton<>(Settings.SEARCH_MODE, searchMode,
-                Platform::isSearchModeAvailable, this::toggleTerminalSearchMode));
+        this.addToLeftToolbar(new ActionButton(ActionItems.SEARCH_SETTINGS, this::showSearchSettings));
 
         // Show a button to toggle the terminal style if the style doesn't enforce a max number of rows
         if (this.style.getMaxRows() == null) {
-            appeng.api.config.TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
+            appeng.api.config.TerminalStyle terminalStyle = config.getTerminalStyle();
             this.addToLeftToolbar(new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle,
                     this::toggleTerminalStyle));
         }
@@ -197,6 +190,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (menu.getToolbox().isPresent()) {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
         }
+    }
+
+    private void showSearchSettings() {
+        switchToScreen(new SearchSettingsScreen<>(this));
     }
 
     @Nullable
@@ -322,21 +319,20 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         super.init();
 
-        var searchMode = AEConfig.instance().getTerminalSearchMode();
-        this.isAutoFocus = searchMode.isAutoFocus();
-
-        if (this.isAutoFocus) {
+        if (shouldAutoFocus()) {
             setInitialFocus(this.searchField);
         }
 
-        if (searchMode.isRememberSearch() && memoryText != null && !memoryText.isEmpty()) {
+        if (config.isRememberLastSearch() && memoryText != null && !memoryText.isEmpty()) {
             this.searchField.setValue(memoryText);
             this.searchField.selectAll();
             setSearchText(memoryText);
         }
 
         if (firstInit) { // Avoid clearing again on resize, layout change, etc...
-            Platform.clearExternalSearchTextIfNeeded(searchMode);
+            if (config.isUseExternalSearch() && config.isClearExternalSearchOnOpen()) {
+                ExternalSearch.clearExternalSearchText();
+            }
             firstInit = false;
         }
 
@@ -359,10 +355,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void updateSearch() {
-        var searchMode = AEConfig.instance().getTerminalSearchMode();
-        if (searchMode.shouldUseExternalSearchBox()) {
+        if (config.isUseExternalSearch()) {
             this.searchField.setVisible(false);
-            var externalSearchText = Platform.getExternalSearchText(searchMode);
+            var externalSearchText = ExternalSearch.getExternalSearchText();
             if (!Objects.equals(repo.getSearchString(), externalSearchText)) {
                 setSearchText(externalSearchText);
             }
@@ -378,6 +373,36 @@ public class MEStorageScreen<C extends MEStorageMenu>
         } else {
             this.searchField.setVisible(true);
             setTextHidden(TEXT_ID_ENTRIES_SHOWN, true);
+
+            // This can change due to changes in the search settings sub-screen
+            this.searchField.setTooltipMessage(List.of(
+                    config.isSearchTooltips() ? GuiText.SearchTooltipIncludingTooltips.text()
+                            : GuiText.SearchTooltip.text(),
+                    GuiText.SearchTooltipModId.text(),
+                    GuiText.SearchTooltipItemId.text(),
+                    GuiText.SearchTooltipTag.text()));
+
+            // Sync the search text both ways but make the direction depend on which search has the focus
+            if (config.isSyncWithExternalSearch()) {
+                if (searchField.isFocused()) {
+                    ExternalSearch.setExternalSearchText(searchField.getValue());
+                } else if (ExternalSearch.isExternalSearchFocused()) {
+                    var externalSearchText = ExternalSearch.getExternalSearchText();
+                    if (!Objects.equals(externalSearchText, searchField.getValue())) {
+                        searchField.setValue(externalSearchText);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected <P extends AEBaseScreen<C>> void onReturnFromSubScreen(AESubScreen<C, P> subScreen) {
+        if (subScreen instanceof SearchSettingsScreen<?>) {
+            this.reinitalize();
+            if (!config.isUseExternalSearch()) {
+                setSearchText(searchField.getValue());
+            }
         }
     }
 
@@ -514,7 +539,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     // regardless of stack size
                     long storedAmount = entry.getStoredAmount();
                     boolean craftable = entry.isCraftable();
-                    var useLargeFonts = AEConfig.instance().isUseLargeFonts();
+                    var useLargeFonts = config.isUseLargeFonts();
                     if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
                         var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
                                 : GuiText.SmallFontCraft.getLocal();
@@ -614,7 +639,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (maxRows != null) {
             return maxRows;
         }
-        return AEConfig.instance().getTerminalStyle() == appeng.api.config.TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
+        return config.getTerminalStyle() == appeng.api.config.TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
     }
 
     @Override
@@ -623,11 +648,16 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return true;
         }
 
-        if (this.isAutoFocus && !this.searchField.isFocused() && isHovered()) {
+        if (shouldAutoFocus() && !this.searchField.isFocused() && isHovered()) {
             this.setInitialFocus(this.searchField);
         }
 
         return super.charTyped(character, modifiers);
+    }
+
+    private boolean shouldAutoFocus() {
+        return config.isAutoFocusSearch()
+                && !config.isUseExternalSearch();
     }
 
     @Override
@@ -707,22 +737,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.repo.updateView();
     }
 
-    private void toggleTerminalSearchMode(SettingToggleButton<SearchBoxMode> btn, boolean backwards) {
-        var currentMode = AEConfig.instance().getTerminalSearchMode();
-        SearchBoxMode next = btn.getNextValue(backwards);
-        AEConfig.instance().setTerminalSearchMode(next);
-        btn.set(next);
-        this.reinitalize();
-
-        var newMode = AEConfig.instance().getTerminalSearchMode();
-        if (!newMode.shouldUseExternalSearchBox()) {
-            setSearchText(searchField.getValue());
-        }
-    }
-
     private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> btn, boolean backwards) {
         appeng.api.config.TerminalStyle next = btn.getNextValue(backwards);
-        AEConfig.instance().setTerminalStyle(next);
+        config.setTerminalStyle(next);
         btn.set(next);
         this.reinitalize();
     }

@@ -40,9 +40,11 @@ import net.minecraft.network.chat.Component;
 import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
+import appeng.client.gui.widgets.AECheckbox;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.BackgroundPanel;
 import appeng.client.gui.widgets.IResizableWidget;
+import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
@@ -122,6 +124,19 @@ public class WidgetContainer {
 
     public Button addButton(String id, Component text, Runnable action) {
         return addButton(id, text, action, Button.NO_TOOLTIP);
+    }
+
+    public AECheckbox addCheckbox(String id, Component text, Runnable changeListener) {
+        var checkbox = new AECheckbox(0, 0, 0, 14, style, text);
+        add(id, checkbox);
+        checkbox.setChangeListener(changeListener);
+        return checkbox;
+    }
+
+    public NumberEntryWidget addNumberEntryWidget(String id, NumberEntryType type) {
+        var numberEntry = new NumberEntryWidget(style, type);
+        add(id, numberEntry);
+        return numberEntry;
     }
 
     /**
@@ -374,7 +389,7 @@ public class WidgetContainer {
     }
 
     public AETextField addTextField(String id) {
-        var searchField = new AETextField(Minecraft.getInstance().font,
+        var searchField = new AETextField(style, Minecraft.getInstance().font,
                 0, 0, 0, 0);
         searchField.setBordered(false);
         searchField.setMaxLength(25);

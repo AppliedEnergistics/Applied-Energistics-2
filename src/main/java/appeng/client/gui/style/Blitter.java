@@ -152,6 +152,16 @@ public final class Blitter {
         return this;
     }
 
+    public Blitter srcWidth(int w) {
+        this.srcRect = new Rect2i(srcRect.getX(), srcRect.getY(), w, srcRect.getHeight());
+        return this;
+    }
+
+    public Blitter srcHeight(int h) {
+        this.srcRect = new Rect2i(srcRect.getX(), srcRect.getY(), srcRect.getWidth(), h);
+        return this;
+    }
+
     /**
      * Use the given rectangle from the texture (in pixels assuming a 256x256 texture size).
      */

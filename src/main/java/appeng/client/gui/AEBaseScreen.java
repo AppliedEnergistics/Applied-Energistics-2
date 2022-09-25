@@ -59,6 +59,7 @@ import appeng.api.client.AEStackRendering;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
+import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -110,6 +111,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     private final Set<SlotSemantic> hiddenSlots = new HashSet<>();
     protected final WidgetContainer widgets;
     protected final ScreenStyle style;
+    protected final AEConfig config = AEConfig.instance();
 
     /**
      * The positions of all slots when a subscreen is opened.
@@ -128,7 +130,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.widgets = new WidgetContainer(style);
         this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
 
-        if (style.getBackground() != null) {
+        if (style.getGeneratedBackground() != null) {
+            this.imageWidth = style.getGeneratedBackground().getWidth();
+            this.imageHeight = style.getGeneratedBackground().getHeight();
+        } else if (style.getBackground() != null) {
             this.imageWidth = style.getBackground().getSrcWidth();
             this.imageHeight = style.getBackground().getSrcHeight();
         }
@@ -713,9 +718,23 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
-        if (style.getBackground() != null) {
-            style.getBackground().dest(offsetX, offsetY).blit(poseStack, getBlitOffset());
+
+        var generatedBackground = style.getGeneratedBackground();
+        if (generatedBackground != null) {
+            BackgroundGenerator.draw(
+                    generatedBackground.getWidth(),
+                    generatedBackground.getHeight(),
+                    poseStack,
+                    getBlitOffset(),
+                    offsetX,
+                    offsetY);
         }
+
+        var background = style.getBackground();
+        if (background != null) {
+            background.dest(offsetX, offsetY).blit(poseStack, getBlitOffset());
+        }
+
     }
 
     public void drawItem(int x, int y, ItemStack is) {
@@ -943,6 +962,12 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
             screen.savedSlotInfos.clear();
         }
+    }
+
+    /**
+     * Called when a sub-screen returns to this screen.
+     */
+    protected <P extends AEBaseScreen<T>> void onReturnFromSubScreen(AESubScreen<T, P> subScreen) {
     }
 
     record SavedSlotInfo(Slot slot, boolean active, int x, int y) {

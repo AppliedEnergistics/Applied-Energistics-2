@@ -39,7 +39,9 @@ public class AESubScreen<C extends AEBaseMenu, P extends AEBaseScreen<C>> extend
         clientSideSlots.clear();
 
         onReturnToParent();
-        switchToScreen(getParent());
+        var parent = getParent();
+        switchToScreen(parent);
+        parent.onReturnFromSubScreen(this);
     }
 
     protected void onReturnToParent() {
