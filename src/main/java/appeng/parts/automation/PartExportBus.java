@@ -132,10 +132,11 @@ public class PartExportBus extends PartSharedItemBus implements ICraftingRequest
                         continue;
                     }
 
-                    if (this.craftOnly()) {
-                        this.didSomething = this.craftingTracker.handleCrafting(slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc) || this.didSomething;
-
-                    }
+					if( this.craftOnly() )
+					{
+						this.didSomething = this.craftingTracker.handleCrafting( slotToExport, this.itemToSend, ais, destination, this.getTile().getWorld(), this.getProxy().getGrid(), cg, this.mySrc ) || this.didSomething;
+						continue;
+					}
 
                     final long before = this.itemToSend;
 
