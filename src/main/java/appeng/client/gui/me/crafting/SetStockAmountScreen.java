@@ -46,13 +46,12 @@ public class SetStockAmountScreen extends AEBaseScreen<SetStockAmountMenu> {
 
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        this.amount = new NumberEntryWidget(NumberEntryType.UNITLESS);
+        this.amount = widgets.addNumberEntryWidget("amountToStock", NumberEntryType.UNITLESS);
         this.amount.setLongValue(1);
         this.amount.setTextFieldStyle(style.getWidget("amountToStockInput"));
         this.amount.setMinValue(0);
         this.amount.setHideValidationIcon(true);
         this.amount.setOnConfirm(this::confirm);
-        widgets.add("amountToStock", this.amount);
     }
 
     @Override

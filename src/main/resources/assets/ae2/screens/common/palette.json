@@ -2,7 +2,12 @@
   "$schema": "../schema.json",
   "palette": {
     "DEFAULT_TEXT_COLOR": "#404040",
+    "MUTED_TEXT_COLOR": "#7E7E7E",
     "SELECTION_COLOR": "#00D5FF",
+    "TEXTFIELD_PLACEHOLDER": "#9E9E9E",
+    "TEXTFIELD_SELECTION": "#FF00FF00",
+    "TEXTFIELD_ERROR": "#FF1900",
+    "TEXTFIELD_TEXT": "#FFFFFF",
     "ERROR": "#CE2401"
   }
 }

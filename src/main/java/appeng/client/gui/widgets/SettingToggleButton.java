@@ -45,7 +45,6 @@ import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.RelativeDirection;
 import appeng.api.config.SchedulingMode;
-import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
@@ -157,36 +156,6 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.Ascending);
             registerApp(Icon.ARROW_DOWN, Settings.SORT_DIRECTION, SortDir.DESCENDING, ButtonToolTips.SortOrder,
                     ButtonToolTips.Descending);
-
-            registerApp(Icon.SEARCH_DEFAULT, Settings.SEARCH_MODE, SearchBoxMode.DEFAULT,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.Off),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.Off));
-            registerApp(Icon.SEARCH_REMEMBER, Settings.SEARCH_MODE, SearchBoxMode.REMEMBER_SEARCH,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.On),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.Off));
-            registerApp(Icon.SEARCH_AUTO_FOCUS, Settings.SEARCH_MODE, SearchBoxMode.AUTO_FOCUS,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.Off),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.On));
-            registerApp(Icon.SEARCH_AUTO_FOCUS_REMEMBER, Settings.SEARCH_MODE,
-                    SearchBoxMode.AUTO_FOCUS_AND_REMEMBER_SEARCH,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.On),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.On));
-            registerApp(Icon.SEARCH_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_JEI.text());
-            registerApp(Icon.SEARCH_JEI_AUTO_CLEAR, Settings.SEARCH_MODE, SearchBoxMode.JEI_AUTO_CLEAR,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_JEI_AutoClear.text());
-            registerApp(Icon.SEARCH_REI, Settings.SEARCH_MODE, SearchBoxMode.REI,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_REI.text());
-            registerApp(Icon.SEARCH_REI_AUTO_CLEAR, Settings.SEARCH_MODE, SearchBoxMode.REI_AUTO_CLEAR,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_REI_AutoClear.text());
 
             registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
                     ButtonToolTips.TerminalStyle,

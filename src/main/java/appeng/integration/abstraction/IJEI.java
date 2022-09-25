@@ -33,6 +33,10 @@ public interface IJEI {
     default void setSearchText(String text) {
     }
 
+    default boolean hasSearchFocus() {
+        return false;
+    }
+
     class Stub implements IJEI {
     }
 }

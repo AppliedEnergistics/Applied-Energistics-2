@@ -43,12 +43,11 @@ public class EnergyLevelEmitterScreen extends UpgradeableScreen<EnergyLevelEmitt
                 Settings.REDSTONE_EMITTER, RedstoneMode.LOW_SIGNAL);
         this.addToLeftToolbar(this.redstoneMode);
 
-        this.level = new NumberEntryWidget(NumberEntryType.ENERGY);
+        this.level = widgets.addNumberEntryWidget("level", NumberEntryType.ENERGY);
         this.level.setTextFieldStyle(style.getWidget("levelInput"));
         this.level.setLongValue(menu.getReportingValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
-        widgets.add("level", this.level);
     }
 
     @Override

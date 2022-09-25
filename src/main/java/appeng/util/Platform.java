@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
 import org.jetbrains.annotations.Nullable;
@@ -60,7 +59,6 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
@@ -78,8 +76,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.hooks.ticking.TickHandler;
-import appeng.integration.abstraction.JEIFacade;
-import appeng.integration.abstraction.REIFacade;
 import appeng.me.GridNode;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.prioritylist.IPartitionList;
@@ -492,33 +488,6 @@ public class Platform {
 
     public static boolean isSortOrderAvailable(SortOrder order) {
         return true;
-    }
-
-    public static boolean isSearchModeAvailable(SearchBoxMode mode) {
-        if (mode == SearchBoxMode.JEI || mode == SearchBoxMode.JEI_AUTO_CLEAR) {
-            return JEIFacade.instance().isEnabled();
-        } else if (mode == SearchBoxMode.REI || mode == SearchBoxMode.REI_AUTO_CLEAR) {
-            return REIFacade.instance().isEnabled();
-        }
-        return true;
-    }
-
-    public static String getExternalSearchText(SearchBoxMode mode) {
-        if (mode == SearchBoxMode.JEI || mode == SearchBoxMode.JEI_AUTO_CLEAR) {
-            return Strings.nullToEmpty(JEIFacade.instance().getSearchText());
-        } else if (mode == SearchBoxMode.REI || mode == SearchBoxMode.REI_AUTO_CLEAR) {
-            return Strings.nullToEmpty(REIFacade.instance().getSearchText());
-        } else {
-            return "";
-        }
-    }
-
-    public static void clearExternalSearchTextIfNeeded(SearchBoxMode mode) {
-        if (mode == SearchBoxMode.JEI_AUTO_CLEAR) {
-            JEIFacade.instance().setSearchText("");
-        } else if (mode == SearchBoxMode.REI_AUTO_CLEAR) {
-            REIFacade.instance().setSearchText("");
-        }
     }
 
     /**

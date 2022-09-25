@@ -22,12 +22,14 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.Font;
 
+import appeng.client.gui.style.ScreenStyle;
+
 public class ConfirmableTextField extends AETextField {
 
     private Runnable onConfirm;
 
-    public ConfirmableTextField(Font fontRenderer, int x, int y, int width, int height) {
-        super(fontRenderer, x, y, width, height);
+    public ConfirmableTextField(ScreenStyle style, Font fontRenderer, int x, int y, int width, int height) {
+        super(style, fontRenderer, x, y, width, height);
     }
 
     @Override

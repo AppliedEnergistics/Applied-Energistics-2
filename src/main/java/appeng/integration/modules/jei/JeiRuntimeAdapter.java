@@ -32,4 +32,9 @@ public class JeiRuntimeAdapter implements IJEI {
     public void setSearchText(String text) {
         this.runtime.getIngredientFilter().setFilterText(text);
     }
+
+    @Override
+    public boolean hasSearchFocus() {
+        return this.runtime.getIngredientListOverlay().hasKeyboardFocus();
+    }
 }

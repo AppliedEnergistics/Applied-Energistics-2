@@ -72,6 +72,12 @@ public class ScreenStyle {
     @Nullable
     private Blitter background;
 
+    /**
+     * If not-null, sets the dialog size. If background is also null, a default background is generated.
+     */
+    @Nullable
+    private GeneratedBackground generatedBackground;
+
     @Nullable
     private TerminalStyle terminalStyle;
 
@@ -95,8 +101,14 @@ public class ScreenStyle {
         return tooltips;
     }
 
+    @org.jetbrains.annotations.Nullable
     public Blitter getBackground() {
         return background != null ? background.copy() : null;
+    }
+
+    @org.jetbrains.annotations.Nullable
+    public GeneratedBackground getGeneratedBackground() {
+        return generatedBackground;
     }
 
     public WidgetStyle getWidget(String id) {

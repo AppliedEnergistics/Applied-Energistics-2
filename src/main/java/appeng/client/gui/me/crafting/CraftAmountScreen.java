@@ -49,14 +49,13 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        this.amountToCraft = new NumberEntryWidget(NumberEntryType.UNITLESS);
+        this.amountToCraft = widgets.addNumberEntryWidget("amountToCraft", NumberEntryType.UNITLESS);
         this.amountToCraft.setMinValue(1);
         this.amountToCraft.setMaxValue(Integer.MAX_VALUE);
         this.amountToCraft.setLongValue(1);
         this.amountToCraft.setTextFieldStyle(style.getWidget("amountToCraftInput"));
         this.amountToCraft.setHideValidationIcon(true);
         this.amountToCraft.setOnConfirm(this::confirm);
-        widgets.add("amountToCraft", this.amountToCraft);
     }
 
     @Override

@@ -33,6 +33,10 @@ public interface IREI {
     default void setSearchText(String text) {
     }
 
+    default boolean hasSearchFocus() {
+        return false;
+    }
+
     class Stub implements IREI {
     }
 }

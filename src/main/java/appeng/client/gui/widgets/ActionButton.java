@@ -21,6 +21,8 @@ package appeng.client.gui.widgets;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 
 import appeng.api.config.ActionItems;
@@ -30,6 +32,10 @@ import appeng.core.localization.ButtonToolTips;
 public class ActionButton extends IconButton {
     private static final Pattern PATTERN_NEW_LINE = Pattern.compile("\\n", Pattern.LITERAL);
     private final Icon icon;
+
+    public ActionButton(ActionItems action, Runnable onPress) {
+        this(action, a -> onPress.run());
+    }
 
     public ActionButton(ActionItems action, Consumer<ActionItems> onPress) {
         super(btn -> onPress.accept(action));
@@ -67,6 +73,11 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.CycleProcessingOutput;
                 displayValue = ButtonToolTips.CycleProcessingOutputTooltip;
             }
+            case SEARCH_SETTINGS -> {
+                icon = Icon.SEARCH_DEFAULT;
+                displayName = ButtonToolTips.SearchSettings;
+                displayValue = null;
+            }
             default -> throw new IllegalArgumentException("Unknown ActionItem: " + action);
         }
 
@@ -78,8 +89,11 @@ public class ActionButton extends IconButton {
         return icon;
     }
 
-    private Component buildMessage(ButtonToolTips displayName, ButtonToolTips displayValue) {
+    private Component buildMessage(ButtonToolTips displayName, @Nullable ButtonToolTips displayValue) {
         String name = displayName.text().getString();
+        if (displayValue == null) {
+            return Component.literal(name);
+        }
         String value = displayValue.text().getString();
 
         value = PATTERN_NEW_LINE.matcher(value).replaceAll("\n");

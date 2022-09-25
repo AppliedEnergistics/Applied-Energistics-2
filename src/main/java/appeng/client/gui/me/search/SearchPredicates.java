@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import appeng.api.config.YesNo;
 import appeng.core.AEConfig;
 import appeng.menu.me.common.GridInventoryEntry;
 
@@ -22,7 +21,7 @@ final class SearchPredicates {
         } else {
             var pattern = createPattern(searchString);
 
-            if (AEConfig.instance().getSearchTooltips() == YesNo.YES) {
+            if (AEConfig.instance().isSearchTooltips()) {
                 // The tooltip obviously includes the display name too
                 return createTooltipPredicate(pattern, repoSearch);
             } else {
