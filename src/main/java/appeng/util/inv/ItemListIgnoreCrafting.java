@@ -94,4 +94,9 @@ public class ItemListIgnoreCrafting<T extends IAEStack<T>> implements IItemList<
     public void resetStatus() {
         this.target.resetStatus();
     }
+
+    @Override
+    public ItemListIgnoreCrafting<T> clone() {
+        return new ItemListIgnoreCrafting<>(target);
+    }
 }

@@ -161,6 +161,13 @@ public final class FluidList implements IItemList<IAEFluidStack> {
         }
     }
 
+    @Override
+    public FluidList clone() {
+        FluidList list = new FluidList();
+        list.records.putAll(records);
+        return list;
+    }
+
     private IAEFluidStack getFluidRecord(final IAEFluidStack fluid) {
         return this.records.get(fluid);
     }
