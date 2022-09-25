@@ -24,10 +24,12 @@
 package appeng.api.storage.cells;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEKey;
@@ -120,5 +122,13 @@ public interface IBasicCellItem extends ICellWorkbenchItem {
     default void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
         Preconditions.checkArgument(is.getItem() == this);
         BasicCellHandler.INSTANCE.addCellInformationToTooltip(is, lines);
+    }
+
+    /**
+     * Helper to get the additional tooltip image line showing the content/filter/upgrades.
+     */
+    default Optional<TooltipComponent> getCellTooltipImage(ItemStack is) {
+        Preconditions.checkArgument(is.getItem() == this);
+        return BasicCellHandler.INSTANCE.getTooltipImage(is);
     }
 }
