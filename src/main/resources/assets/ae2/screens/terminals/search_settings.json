@@ -1,0 +1,60 @@
+{
+  "$schema": "../schema.json",
+  "includes": ["../common/common.json"],
+  "generatedBackground": {
+    "width": 200,
+    "height": 135
+  },
+  "text": {
+    "dialog_title": {
+      "position": {
+        "left": 8,
+        "top": 7
+      },
+      "text": {
+        "text": "Search Settings"
+      }
+    }
+  },
+  "widgets": {
+    "back": {
+      "right": 22,
+      "top": 0
+    },
+    "useInternalSearchRadio": {
+      "left": 10,
+      "top": 30,
+      "width": 75
+    },
+    "useExternalSearchRadio": {
+      "left": 95,
+      "top": 30,
+      "width": 75
+    },
+    "searchTooltipsCheckbox": {
+      "left": 10,
+      "top": 55,
+      "width": 150
+    },
+    "rememberCheckbox": {
+      "left": 10,
+      "top": 72,
+      "width": 150
+    },
+    "autoFocusCheckbox": {
+      "left": 10,
+      "top": 89,
+      "width": 150
+    },
+    "syncWithExternalCheckbox": {
+      "left": 10,
+      "top": 106,
+      "width": 150
+    },
+    "clearExternalCheckbox": {
+      "left": 10,
+      "top": 72,
+      "width": 150
+    }
+  }
+}

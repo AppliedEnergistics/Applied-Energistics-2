@@ -65,14 +65,13 @@ public class SetProcessingPatternAmountScreen<C extends PatternEncodingTermMenu>
         });
         widgets.add("back", button);
 
-        this.amount = new NumberEntryWidget(NumberEntryType.of(currentStack.what()));
+        this.amount = widgets.addNumberEntryWidget("amountToStock", NumberEntryType.of(currentStack.what()));
         this.amount.setLongValue(currentStack.amount());
         this.amount.setMaxValue(getMaxAmount());
         this.amount.setTextFieldStyle(style.getWidget("amountToStockInput"));
         this.amount.setMinValue(0);
         this.amount.setHideValidationIcon(true);
         this.amount.setOnConfirm(this::confirm);
-        widgets.add("amountToStock", this.amount);
 
         addClientSideSlot(new ClientDisplaySlot(currentStack), SlotSemantics.MACHINE_OUTPUT);
     }

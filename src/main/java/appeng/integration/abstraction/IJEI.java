@@ -18,17 +18,25 @@
 
 package appeng.integration.abstraction;
 
-import appeng.integration.IIntegrationModule;
-
 /**
  * Abstracts access to the JEI API functionality.
  */
-public interface IJEI extends IIntegrationModule {
+public interface IJEI {
+    default boolean isEnabled() {
+        return false;
+    }
 
     default String getSearchText() {
         return "";
     }
 
-    class Stub extends IIntegrationModule.Stub implements IJEI {
+    default void setSearchText(String text) {
+    }
+
+    default boolean hasSearchFocus() {
+        return false;
+    }
+
+    class Stub implements IJEI {
     }
 }

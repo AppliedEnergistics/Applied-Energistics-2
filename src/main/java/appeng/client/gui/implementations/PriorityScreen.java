@@ -38,7 +38,7 @@ public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
         super(menu, playerInventory, title, style);
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        this.priority = new NumberEntryWidget(NumberEntryType.UNITLESS);
+        this.priority = widgets.addNumberEntryWidget("priority", NumberEntryType.UNITLESS);
         this.priority.setTextFieldStyle(style.getWidget("priorityInput"));
         this.priority.setMinValue(Integer.MIN_VALUE);
         this.priority.setLongValue(this.menu.getPriorityValue());
@@ -47,7 +47,6 @@ public class PriorityScreen extends AEBaseScreen<PriorityMenu> {
             savePriority();
             AESubScreen.goBack();
         });
-        widgets.add("priority", priority);
     }
 
     private void savePriority() {

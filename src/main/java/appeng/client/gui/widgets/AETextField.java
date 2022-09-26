@@ -31,8 +31,10 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
@@ -43,6 +45,8 @@ import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.PaletteColor;
+import appeng.client.gui.style.ScreenStyle;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
@@ -56,8 +60,15 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     private static final int PADDING = 2;
 
     private final int fontPad;
-    private int selectionColor = 0xFF00FF00;
+    private final ScreenStyle style;
+    private int selectionColor;
     private List<Component> tooltipMessage = Collections.emptyList();
+
+    /**
+     * Displayed with a muted text color when the text box is unfocused and has no content.
+     */
+    @Nullable
+    private Component placeholder;
 
     /**
      * Uses the values to instantiate a padded version of a text field. Pays attention to the '_' caret.
@@ -68,13 +79,16 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
      * @param width        absolute width
      * @param height       absolute height
      */
-    public AETextField(Font fontRenderer, int xPos, int yPos, int width,
+    public AETextField(ScreenStyle style, Font fontRenderer, int xPos, int yPos, int width,
             int height) {
         super(fontRenderer, xPos + PADDING, yPos + PADDING,
                 width - 2 * PADDING - fontRenderer.width("_"), height - 2 * PADDING,
                 TextComponent.EMPTY);
 
+        this.style = style;
         this.fontPad = fontRenderer.width("_");
+        setSelectionColor(style.getColor(PaletteColor.TEXTFIELD_SELECTION).toARGB());
+        setTextColor(style.getColor(PaletteColor.TEXTFIELD_TEXT).toARGB());
     }
 
     // Extend the clickable area by the padding so we don't have a mouse deadzone that is still visually within
@@ -153,6 +167,12 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
                     .blit(poseStack, getBlitOffset());
 
             super.renderButton(poseStack, mouseX, mouseY, partial);
+
+            // Render a placeholder value if the text field isn't focused and is empty
+            if (placeholder != null && !isFocused() && getValue().isEmpty()) {
+                var font = Minecraft.getInstance().font;
+                font.draw(poseStack, placeholder, x, y, style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB());
+            }
         }
     }
 
@@ -236,6 +256,14 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
                 top,
                 right,
                 top + height + 2 * PADDING);
+    }
+
+    public void setPlaceholder(Component placeholder) {
+        this.placeholder = placeholder;
+    }
+
+    public Component getPlaceholder() {
+        return placeholder;
     }
 
     private record VisualBounds(int left, int top, int right, int bottom) {

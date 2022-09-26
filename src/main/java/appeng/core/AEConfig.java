@@ -40,10 +40,8 @@ import net.minecraft.world.level.material.Fluid;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.config.SearchBoxMode;
 import appeng.api.config.Settings;
 import appeng.api.config.TerminalStyle;
-import appeng.api.config.YesNo;
 import appeng.api.features.AEWorldGenInternal;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.config.BooleanOption;
@@ -236,8 +234,52 @@ public final class AEConfig {
                 + this.wirelessCostMultiplier * Math.pow(boosters, 1 + boosters / this.wirelessHighWirelessCount);
     }
 
-    public YesNo getSearchTooltips() {
+    public boolean isSearchTooltips() {
         return CLIENT.searchTooltips.get();
+    }
+
+    public void setSearchTooltips(boolean enable) {
+        CLIENT.searchTooltips.set(enable);
+    }
+
+    public boolean isUseExternalSearch() {
+        return CLIENT.useExternalSearch.get();
+    }
+
+    public void setUseExternalSearch(boolean enable) {
+        CLIENT.useExternalSearch.set(enable);
+    }
+
+    public boolean isClearExternalSearchOnOpen() {
+        return CLIENT.clearExternalSearchOnOpen.get();
+    }
+
+    public void setClearExternalSearchOnOpen(boolean enable) {
+        CLIENT.clearExternalSearchOnOpen.set(enable);
+    }
+
+    public boolean isRememberLastSearch() {
+        return CLIENT.rememberLastSearch.get();
+    }
+
+    public void setRememberLastSearch(boolean enable) {
+        CLIENT.rememberLastSearch.set(enable);
+    }
+
+    public boolean isAutoFocusSearch() {
+        return CLIENT.autoFocusSearch.get();
+    }
+
+    public void setAutoFocusSearch(boolean enable) {
+        CLIENT.autoFocusSearch.set(enable);
+    }
+
+    public boolean isSyncWithExternalSearch() {
+        return CLIENT.syncWithExternalSearch.get();
+    }
+
+    public void setSyncWithExternalSearch(boolean enable) {
+        CLIENT.syncWithExternalSearch.set(enable);
     }
 
     public TerminalStyle getTerminalStyle() {
@@ -246,14 +288,6 @@ public final class AEConfig {
 
     public void setTerminalStyle(TerminalStyle setting) {
         CLIENT.terminalStyle.set(setting);
-    }
-
-    public SearchBoxMode getTerminalSearchMode() {
-        return CLIENT.terminalSearchMode.get();
-    }
-
-    public void setTerminalSearchMode(SearchBoxMode setting) {
-        CLIENT.terminalSearchMode.set(setting);
     }
 
     public void save() {
@@ -490,9 +524,15 @@ public final class AEConfig {
         public final BooleanOption showPlacementPreview;
 
         // Terminal Settings
-        public final EnumOption<YesNo> searchTooltips;
         public final EnumOption<TerminalStyle> terminalStyle;
-        public final EnumOption<SearchBoxMode> terminalSearchMode;
+
+        // Search Settings
+        public final BooleanOption searchTooltips;
+        public final BooleanOption useExternalSearch;
+        public final BooleanOption clearExternalSearchOnOpen;
+        public final BooleanOption syncWithExternalSearch;
+        public final BooleanOption rememberLastSearch;
+        public final BooleanOption autoFocusSearch;
 
         // Tooltip settings
         public final BooleanOption tooltipShowCellUpgrades;
@@ -500,7 +540,7 @@ public final class AEConfig {
         public final IntegerOption tooltipMaxCellContentShown;
 
         public ClientConfig(ConfigSection root) {
-            ConfigSection client = root.subsection("client");
+            var client = root.subsection("client");
             this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI", true);
             this.enableFacadesInJEI = client.addBoolean("enableFacadesInJEI", false);
             this.enableEffects = client.addBoolean("enableEffects", true);
@@ -511,13 +551,25 @@ public final class AEConfig {
             this.showPlacementPreview = client.addBoolean("showPlacementPreview", true,
                     "Show a preview of part and facade placement");
 
-            ConfigSection terminals = root.subsection("terminals");
-            this.searchTooltips = terminals.addEnum("searchTooltips", YesNo.YES,
-                    "Should tooltips be searched. Performance impact");
+            var terminals = root.subsection("terminals");
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
-            this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.DEFAULT);
 
-            ConfigSection tooltips = root.subsection("tooltips");
+            // Search Settings
+            var search = root.subsection("search");
+            this.searchTooltips = search.addBoolean("searchTooltips", true,
+                    "Should tooltips be searched. Performance impact");
+            this.useExternalSearch = search.addBoolean("useExternalSearch", false,
+                    "Replaces AEs own search with the search of REI or JEI");
+            this.clearExternalSearchOnOpen = search.addBoolean("clearExternalSearchOnOpen", true,
+                    "When using useExternalSearch, clears the search when the terminal opens");
+            this.syncWithExternalSearch = search.addBoolean("syncWithExternalSearch", true,
+                    "When REI/JEI is installed, automatically set the AE or REI/JEI search text when either is changed while the terminal is open");
+            this.rememberLastSearch = search.addBoolean("rememberLastSearch", true,
+                    "Remembers the last search term and restores it when the terminal opens");
+            this.autoFocusSearch = search.addBoolean("autoFocusSearch", false,
+                    "Automatically focuses the search field when the terminal opens");
+
+            var tooltips = root.subsection("tooltips");
             this.tooltipShowCellUpgrades = tooltips.addBoolean("showCellUpgrades", true,
                     "Show installed upgrades in the tooltips of storage cells, color applicators and matter cannons");
             this.tooltipShowCellContent = tooltips.addBoolean("showCellContent", true,

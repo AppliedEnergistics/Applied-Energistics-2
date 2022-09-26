@@ -264,6 +264,18 @@
         }
       },
       "required": ["texture"]
+    },
+    "generatedBackground": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        }
+      },
+      "required": ["width", "height"]
     }
   },
   "properties": {
@@ -279,13 +291,37 @@
       "type": "object",
       "description": "Defines colors used through the UI screen",
       "properties": {
-        "TEXT_HEADLINE": {
+        "DEFAULT_TEXT_COLOR": {
+          "$ref": "#/definitions/color"
+        },
+        "MUTED_TEXT_COLOR": {
+          "$ref": "#/definitions/color"
+        },
+        "SELECTION_COLOR": {
+          "$ref": "#/definitions/color"
+        },
+        "TEXTFIELD_PLACEHOLDER": {
+          "$ref": "#/definitions/color"
+        },
+        "TEXTFIELD_SELECTION": {
+          "$ref": "#/definitions/color"
+        },
+        "TEXTFIELD_ERROR": {
+          "$ref": "#/definitions/color"
+        },
+        "TEXTFIELD_TEXT": {
+          "$ref": "#/definitions/color"
+        },
+        "ERROR": {
           "$ref": "#/definitions/color"
         }
       }
     },
     "background": {
       "$ref": "#/definitions/blitter"
+    },
+    "generatedBackground": {
+      "$ref": "#/definitions/generatedBackground"
     },
     "slots": {
       "type": "object",
@@ -353,7 +389,12 @@
           },
           "color": {
             "$comment": "See enum PaletteColor",
-            "enum": ["DEFAULT_TEXT_COLOR", "SELECTION_COLOR", "ERROR"],
+            "enum": [
+              "DEFAULT_TEXT_COLOR",
+              "MUTED_TEXT_COLOR",
+              "SELECTION_COLOR",
+              "ERROR"
+            ],
             "default": "DEFAULT_TEXT_COLOR"
           },
           "position": {

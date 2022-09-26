@@ -51,12 +51,11 @@ public class StorageLevelEmitterScreen extends UpgradeableScreen<StorageLevelEmi
         this.addToLeftToolbar(this.craftingMode);
         this.addToLeftToolbar(this.fuzzyMode);
 
-        this.level = new NumberEntryWidget(NumberEntryType.of(menu.getConfiguredFilter()));
+        this.level = widgets.addNumberEntryWidget("level", NumberEntryType.of(menu.getConfiguredFilter()));
         this.level.setTextFieldStyle(style.getWidget("levelInput"));
         this.level.setLongValue(this.menu.getCurrentValue());
         this.level.setOnChange(this::saveReportingValue);
         this.level.setOnConfirm(this::onClose);
-        widgets.add("level", this.level);
     }
 
     @Override

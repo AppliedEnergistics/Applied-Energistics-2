@@ -36,7 +36,26 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.config.*;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.CondenserOutput;
+import appeng.api.config.CpuSelectionMode;
+import appeng.api.config.FullnessMode;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.OperationMode;
+import appeng.api.config.PowerUnits;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.RelativeDirection;
+import appeng.api.config.SchedulingMode;
+import appeng.api.config.Setting;
+import appeng.api.config.Settings;
+import appeng.api.config.ShowPatternProviders;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.StorageFilter;
+import appeng.api.config.TerminalStyle;
+import appeng.api.config.TypeFilter;
+import appeng.api.config.ViewItems;
+import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEParts;
@@ -138,30 +157,6 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.Ascending);
             registerApp(Icon.ARROW_DOWN, Settings.SORT_DIRECTION, SortDir.DESCENDING, ButtonToolTips.SortOrder,
                     ButtonToolTips.Descending);
-
-            registerApp(Icon.SEARCH_DEFAULT, Settings.SEARCH_MODE, SearchBoxMode.DEFAULT,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.Off),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.Off));
-            registerApp(Icon.SEARCH_REMEMBER, Settings.SEARCH_MODE, SearchBoxMode.REMEMBER_SEARCH,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.On),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.Off));
-            registerApp(Icon.SEARCH_AUTO_FOCUS, Settings.SEARCH_MODE, SearchBoxMode.AUTO_FOCUS,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.Off),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.On));
-            registerApp(Icon.SEARCH_AUTO_FOCUS_REMEMBER, Settings.SEARCH_MODE,
-                    SearchBoxMode.AUTO_FOCUS_AND_REMEMBER_SEARCH,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_RememberSearch.text(ButtonToolTips.On),
-                    ButtonToolTips.SearchMode_AutoFocus.text(ButtonToolTips.On));
-            registerApp(Icon.SEARCH_JEI, Settings.SEARCH_MODE, SearchBoxMode.JEI,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_JEI.text());
-            registerApp(Icon.SEARCH_REI, Settings.SEARCH_MODE, SearchBoxMode.REI,
-                    ButtonToolTips.SearchMode,
-                    ButtonToolTips.SearchMode_REI.text());
 
             registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
                     ButtonToolTips.TerminalStyle,

@@ -47,6 +47,8 @@ import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 import appeng.client.gui.*;
+import appeng.client.gui.style.PaletteColor;
+import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.core.localization.GuiText;
 
@@ -59,8 +61,8 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
     private static final Component PLUS = new TextComponent("+");
     private static final Component MINUS = new TextComponent("-");
-    private static final int TEXT_COLOR_ERROR = 0xFF1900;
-    private static final int TEXT_COLOR_NORMAL = 0xFFFFFF;
+    private final int errorTextColor;
+    private final int normalTextColor;
 
     private final ConfirmableTextField textField;
     private final DecimalFormat decimalFormat;
@@ -82,7 +84,10 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
     private Rect2i textFieldBounds = Rects.ZERO;
 
-    public NumberEntryWidget(NumberEntryType type) {
+    public NumberEntryWidget(ScreenStyle style, NumberEntryType type) {
+        this.errorTextColor = style.getColor(PaletteColor.TEXTFIELD_ERROR).toARGB();
+        this.normalTextColor = style.getColor(PaletteColor.TEXTFIELD_TEXT).toARGB();
+
         this.type = Objects.requireNonNull(type, "type");
         this.decimalFormat = new DecimalFormat("#.######", new DecimalFormatSymbols());
         this.decimalFormat.setParseBigDecimal(true);
@@ -90,10 +95,10 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
         Font font = Minecraft.getInstance().font;
 
-        this.textField = new ConfirmableTextField(font, 0, 0, 0, font.lineHeight);
+        this.textField = new ConfirmableTextField(style, font, 0, 0, 0, font.lineHeight);
         this.textField.setBordered(false);
         this.textField.setMaxLength(16);
-        this.textField.setTextColor(TEXT_COLOR_NORMAL);
+        this.textField.setTextColor(normalTextColor);
         this.textField.setVisible(true);
         this.textField.setFocus(true);
         this.textField.setResponder(text -> {
@@ -329,7 +334,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
 
         boolean valid = validationErrors.isEmpty();
         var tooltip = valid ? infoMessages : validationErrors;
-        this.textField.setTextColor(valid ? TEXT_COLOR_NORMAL : TEXT_COLOR_ERROR);
+        this.textField.setTextColor(valid ? normalTextColor : errorTextColor);
         this.textField.setTooltipMessage(tooltip);
 
         if (this.validationIcon != null) {
