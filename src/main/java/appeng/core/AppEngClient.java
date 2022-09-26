@@ -21,7 +21,6 @@ package appeng.core;
 import java.util.Objects;
 import java.util.Random;
 
-import appeng.items.storage.StorageCellTooltipComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -73,6 +72,7 @@ import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
+import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -182,7 +182,8 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerClientTooltipComponents() {
-        MinecraftForgeClient.registerTooltipComponentFactory(StorageCellTooltipComponent.class, StorageCellClientTooltipComponent::new);
+        MinecraftForgeClient.registerTooltipComponentFactory(StorageCellTooltipComponent.class,
+                StorageCellClientTooltipComponent::new);
     }
 
     /**
