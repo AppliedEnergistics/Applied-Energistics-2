@@ -194,6 +194,7 @@ public enum GuiText implements LocalizationEnum {
     StorageCells("ME Storage Cells"),
     WirelessTerminals("Wireless Terminals"),
     PortableCells("Portable Cells"),
+    SearchPlaceholder("Search..."),
     SearchSettingsTitle("Search Settings"),
     SearchSettingsUseInternalSearch("Use AE"),
     SearchSettingsUseExternalSearch("Use %s"),
