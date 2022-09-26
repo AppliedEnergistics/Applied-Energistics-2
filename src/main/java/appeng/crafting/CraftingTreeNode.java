@@ -221,7 +221,10 @@ public class CraftingTreeNode {
                         return;
                     }
                 } else {
-                    throw new UnsupportedOperationException("Unexpected error in the crafting calculation.");
+                    throw new UnsupportedOperationException(
+                            "Unexpected error in the crafting calculation. Found none of "
+                                    + what + " in crafting storage. Remaining request: " + totalRequestedItems + " of "
+                                    + requestedAmount + "*" + this.amount);
                 }
             }
         } else if (this.nodes.size() > 1) {
