@@ -45,18 +45,20 @@ public final class ItemRendererHooks {
      * is held.
      */
     public static boolean onRenderGuiItemModel(ItemRenderer renderer, ItemStack stack, int x, int y) {
+        var minecraft = Minecraft.getInstance();
+
         if (stack.getItem() instanceof EncodedPatternItem) {
             if (OVERRIDING_FOR.get() == stack) {
                 return false; // Don't allow recursive model replacements
             }
 
             boolean shiftHeld = Screen.hasShiftDown();
-            var level = Minecraft.getInstance().level;
+            var level = minecraft.level;
             if (shiftHeld && level != null) {
                 var encodedPattern = (EncodedPatternItem) stack.getItem();
                 var output = encodedPattern.getOutput(stack);
                 if (!output.isEmpty()) {
-                    var realModel = renderer.getItemModelShaper().getItemModel(output);
+                    var realModel = renderer.getModel(output, level, minecraft.player, 0);
                     renderInstead(renderer, output, x, y, realModel);
                     return true;
                 }
@@ -68,7 +70,7 @@ public final class ItemRendererHooks {
         var unwrapped = GenericStack.unwrapItemStack(stack);
         if (unwrapped != null) {
             AEStackRendering.drawInGui(
-                    Minecraft.getInstance(),
+                    minecraft,
                     new PoseStack(),
                     x,
                     y,
@@ -77,7 +79,7 @@ public final class ItemRendererHooks {
 
             if (unwrapped.amount() > 0) {
                 String amtText = unwrapped.what().formatAmount(unwrapped.amount(), AmountFormat.SLOT);
-                Font font = Minecraft.getInstance().font;
+                Font font = minecraft.font;
                 StackSizeRenderer.renderSizeLabel(font, x, y, amtText, false);
             }
 
