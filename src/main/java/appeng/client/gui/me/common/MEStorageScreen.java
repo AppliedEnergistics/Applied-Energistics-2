@@ -126,7 +126,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         this.searchField = widgets.addTextField("search");
-        this.searchField.setPlaceholder(Component.literal("Search..."));
+        this.searchField.setPlaceholder(GuiText.SearchPlaceholder.text());
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
         this.repo = new Repo(scrollbar, this);

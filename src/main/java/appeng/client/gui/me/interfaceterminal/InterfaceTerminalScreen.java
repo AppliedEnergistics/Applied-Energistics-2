@@ -54,6 +54,7 @@ import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.AEConfig;
+import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
@@ -151,6 +152,7 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
 
         this.searchField = widgets.addTextField("search");
         this.searchField.setResponder(str -> this.refreshList());
+        this.searchField.setPlaceholder(GuiText.SearchPlaceholder.text());
     }
 
     @Override
