@@ -18,20 +18,18 @@
 
 package appeng.items.materials;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.hooks.AECustomEntityItem;
 import appeng.items.AEBaseItem;
 
 /**
  * Used for items that use a different entity for when they're dropped.
  */
-public class CustomEntityItem extends AEBaseItem implements AECustomEntityItem {
+public class CustomEntityItem extends AEBaseItem {
     private final EntityFactory factory;
 
     public CustomEntityItem(Item.Properties properties, EntityFactory factory) {
@@ -40,12 +38,20 @@ public class CustomEntityItem extends AEBaseItem implements AECustomEntityItem {
     }
 
     @Override
-    public Entity replaceItemEntity(ServerLevel level, ItemEntity location, ItemStack itemStack) {
+    public boolean hasCustomEntity(final ItemStack is) {
+        return true;
+    }
+
+    @Override
+    public Entity createEntity(final Level level, final Entity location, final ItemStack itemstack) {
         ItemEntity eqi = factory.create(level, location.getX(), location.getY(), location.getZ(),
-                itemStack);
+                itemstack);
 
         eqi.setDeltaMovement(location.getDeltaMovement());
-        eqi.setDefaultPickUpDelay();
+
+        if (location instanceof ItemEntity) {
+            eqi.setDefaultPickUpDelay();
+        }
 
         return eqi;
     }

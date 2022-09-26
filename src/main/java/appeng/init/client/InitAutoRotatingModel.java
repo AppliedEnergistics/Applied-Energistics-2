@@ -29,6 +29,8 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 import appeng.block.AEBaseBlock;
 import appeng.client.render.crafting.MonitorBakedModel;
@@ -36,7 +38,6 @@ import appeng.client.render.model.AutoRotatingBakedModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
-import appeng.hooks.ModelsReloadCallback;
 
 public final class InitAutoRotatingModel {
 
@@ -64,10 +65,10 @@ public final class InitAutoRotatingModel {
     private InitAutoRotatingModel() {
     }
 
-    public static void init() {
+    public static void init(IEventBus modEventBus) {
         register(AEBlocks.CRAFTING_MONITOR, InitAutoRotatingModel::customizeCraftingMonitorModel);
 
-        for (BlockDefinition<?> block : AEBlocks.getBlocks()) {
+        for (var block : AEBlocks.getBlocks()) {
             if (NO_AUTO_ROTATION.contains(block)) {
                 continue;
             }
@@ -79,7 +80,7 @@ public final class InitAutoRotatingModel {
             }
         }
 
-        ModelsReloadCallback.EVENT.register(InitAutoRotatingModel::onModelBake);
+        modEventBus.addListener(InitAutoRotatingModel::onModelBake);
     }
 
     private static void register(BlockDefinition<?> block, Function<BakedModel, BakedModel> customizer) {
@@ -95,7 +96,8 @@ public final class InitAutoRotatingModel {
         return new AutoRotatingBakedModel(model);
     }
 
-    private static void onModelBake(Map<ResourceLocation, BakedModel> modelRegistry) {
+    private static void onModelBake(ModelBakeEvent event) {
+        Map<ResourceLocation, BakedModel> modelRegistry = event.getModelRegistry();
         Set<ResourceLocation> keys = Sets.newHashSet(modelRegistry.keySet());
         BakedModel missingModel = modelRegistry.get(ModelBakery.MISSING_MODEL_LOCATION);
 
