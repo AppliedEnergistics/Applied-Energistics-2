@@ -5,16 +5,17 @@ import java.util.List;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.Identifiers;
-import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.IElement;
+import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
+import mcp.mobius.waila.api.ui.IElement;
 
 import appeng.api.integrations.igtooltip.providers.ModNameProvider;
 
-class ModNameProviderAdapter<T> extends BaseProvider implements IBlockComponentProvider {
+class ModNameProviderAdapter<T> extends BaseProvider implements IComponentProvider {
+    public static final ResourceLocation CORE_MOD_NAME = new ResourceLocation("waila", "mod_name");
+
     private final ModNameProvider<? super T> provider;
 
     private final Class<T> objectClass;
@@ -38,7 +39,7 @@ class ModNameProviderAdapter<T> extends BaseProvider implements IBlockComponentP
                     List<IElement> line = tooltip.get(i, align);
                     for (int j = 0; j < line.size(); j++) {
                         IElement el = line.get(j);
-                        if (Identifiers.CORE_MOD_NAME.equals(el.getTag())) {
+                        if (CORE_MOD_NAME.equals(el.getTag())) {
                             line.set(j, tooltip.getElementHelper().text(
                                     new TextComponent(
                                             String.format(config.getWailaConfig().getFormatting().getModName(),

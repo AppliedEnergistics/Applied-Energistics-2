@@ -80,7 +80,7 @@ public class WidgetContainer {
             resizableWidget.resize(width, height);
         } else {
             widget.setWidth(width);
-            widget.height = height;
+            widget.setHeight(height);
         }
 
         if (widget instanceof TabButton) {

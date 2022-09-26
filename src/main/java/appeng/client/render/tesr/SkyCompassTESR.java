@@ -21,8 +21,6 @@ package appeng.client.render.tesr;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -31,13 +29,15 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.blockentity.misc.SkyCompassBlockEntity;
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.SkyCompassBakedModel;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassBlockEntity> {
 
     private final BlockRenderDispatcher blockRenderer;
@@ -83,7 +83,6 @@ public class SkyCompassTESR implements BlockEntityRenderer<SkyCompassBlockEntity
         modelRenderer.renderModel(poseStack.last(), buffer, null, pointerModel, 1, 1, 1, combinedLightIn,
                 combinedOverlayIn);
         poseStack.popPose();
-
     }
 
     private static float getRotation(SkyCompassBlockEntity skyCompass) {

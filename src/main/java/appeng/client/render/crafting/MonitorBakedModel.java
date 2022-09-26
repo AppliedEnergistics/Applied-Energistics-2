@@ -21,12 +21,13 @@ package appeng.client.render.crafting;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
-import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.blockentity.crafting.CraftingMonitorModelData;
 import appeng.client.render.cablebus.CubeBuilder;
+import appeng.client.render.model.AEModelData;
 
 /**
  * The baked model for the crafting monitor. Please note that this model doesn't handle the item being displayed. That
@@ -57,9 +58,9 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
     }
 
     @Override
-    protected void addInnerCube(Direction side, BlockState state, CraftingCubeModelData modelData, CubeBuilder builder,
-            float x1, float y1, float z1, float x2, float y2, float z2) {
-        Direction forward = modelData.getForward();
+    protected void addInnerCube(Direction side, BlockState state, IModelData modelData, CubeBuilder builder, float x1,
+            float y1, float z1, float x2, float y2, float z2) {
+        Direction forward = getForward(modelData);
 
         // For sides other than the front, use the chassis texture
         if (side != forward) {
@@ -94,11 +95,17 @@ public class MonitorBakedModel extends CraftingCubeBakedModel {
         builder.setEmissiveMaterial(false);
     }
 
-    private static AEColor getColor(CraftingCubeModelData modelData) {
-        if (modelData instanceof CraftingMonitorModelData) {
-            return ((CraftingMonitorModelData) modelData).getColor();
+    private static AEColor getColor(IModelData modelData) {
+        if (modelData.hasProperty(CraftingMonitorModelData.COLOR)) {
+            return modelData.getData(CraftingMonitorModelData.COLOR);
         }
         return AEColor.TRANSPARENT;
     }
 
+    private static Direction getForward(IModelData modelData) {
+        if (modelData.hasProperty(AEModelData.FORWARD)) {
+            return modelData.getData(AEModelData.FORWARD);
+        }
+        return Direction.NORTH;
+    }
 }

@@ -22,10 +22,10 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.core.sync.BasePacket;
 import appeng.menu.AEBaseMenu;
@@ -39,7 +39,7 @@ public class SwitchGuisPacket extends BasePacket {
 
     public SwitchGuisPacket(FriendlyByteBuf stream) {
         if (stream.readBoolean()) {
-            this.newGui = Registry.MENU.get(stream.readResourceLocation());
+            this.newGui = ForgeRegistries.CONTAINERS.getValue(stream.readResourceLocation());
         } else {
             this.newGui = null;
         }
@@ -54,7 +54,7 @@ public class SwitchGuisPacket extends BasePacket {
         data.writeInt(this.getPacketID());
         if (newGui != null) {
             data.writeBoolean(true);
-            data.writeResourceLocation(Registry.MENU.getKey(newGui));
+            data.writeResourceLocation(newGui.getRegistryName());
         } else {
             data.writeBoolean(false);
         }

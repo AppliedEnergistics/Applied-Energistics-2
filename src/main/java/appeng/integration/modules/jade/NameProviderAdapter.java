@@ -3,15 +3,16 @@ package appeng.integration.modules.jade;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceLocation;
 
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.Identifiers;
-import snownee.jade.api.config.IPluginConfig;
+import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
 
 import appeng.api.integrations.igtooltip.providers.NameProvider;
 
-class NameProviderAdapter<T> extends BaseProvider implements IBlockComponentProvider {
+class NameProviderAdapter<T> extends BaseProvider implements IComponentProvider {
+    private static final ResourceLocation CORE_OBJECT_NAME = new ResourceLocation("waila", "object_name");
+
     private final NameProvider<? super T> provider;
 
     private final Class<T> objectClass;
@@ -32,7 +33,7 @@ class NameProviderAdapter<T> extends BaseProvider implements IBlockComponentProv
 
         // Replace the object name
         if (name != null) {
-            tooltip.remove(Identifiers.CORE_OBJECT_NAME);
+            tooltip.remove(CORE_OBJECT_NAME);
             tooltip.add(0, name.copy().withStyle(style -> {
                 // Don't overwrite a text color if one is present
                 if (style.getColor() == null) {
@@ -40,7 +41,7 @@ class NameProviderAdapter<T> extends BaseProvider implements IBlockComponentProv
                 } else {
                     return style;
                 }
-            }), Identifiers.CORE_OBJECT_NAME);
+            }), CORE_OBJECT_NAME);
         }
     }
 }

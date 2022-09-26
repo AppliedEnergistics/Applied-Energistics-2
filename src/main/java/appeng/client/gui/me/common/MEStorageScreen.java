@@ -79,6 +79,7 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
+import appeng.integration.abstraction.JEIFacade;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
@@ -358,6 +359,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void updateSearch() {
+        // Immediately blur our own search box if JEI currently has focus
+        if (JEIFacade.instance().hasSearchFocus() && this.searchField.isFocused()) {
+            this.searchField.changeFocus(false);
+        }
+
         if (config.isUseExternalSearch()) {
             this.searchField.setVisible(false);
             var externalSearchText = ExternalSearch.getExternalSearchText();
@@ -671,7 +677,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Special case to support the Item API of visual tooltip components
         if (entry.getWhat() instanceof AEItemKey itemKey) {
             var stack = itemKey.toStack();
-            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y);
+            // By using the overload of the renderTooltip method that takes an ItemStack, we support the Forge tooltip
+            // event system
+            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y, stack);
         } else {
             this.renderComponentTooltip(poseStack, currentToolTip, x, y);
         }
