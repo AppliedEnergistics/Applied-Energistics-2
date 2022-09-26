@@ -196,6 +196,7 @@ public enum GuiText implements LocalizationEnum {
     SearchTooltipModId("Use @ to search by mod (@ae2)"),
     SearchTooltipItemId("Use * to search by id (*cell)"),
     SearchTooltipTag("Use # to search by tag (#ores)"),
+    StorageCellTooltipUpgrades("Upgrades:"),
     Stored("Stored"),
     StoredEnergy("Stored Energy"),
     StoredFluids("Stored Fluids"),

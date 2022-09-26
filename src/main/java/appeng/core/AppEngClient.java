@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
@@ -54,6 +55,7 @@ import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.gui.style.StyleManager;
+import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.overlay.OverlayManager;
@@ -81,6 +83,7 @@ import appeng.init.client.InitParticleFactories;
 import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
+import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.SiteExporter;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -108,6 +111,7 @@ public class AppEngClient extends AppEngBase {
         this.registerItemColors();
         this.registerEntityRenderers();
         this.registerEntityLayerDefinitions();
+        this.registerClientTooltipComponents();
 
         ClientPickBlockGatherCallback.EVENT.register(this::onPickBlock);
         ClientTickEvents.START_CLIENT_TICK.register(this::updateCableRenderMode);
@@ -173,6 +177,15 @@ public class AppEngClient extends AppEngBase {
 
     public void registerItemColors() {
         InitItemColors.init(ColorProviderRegistry.ITEM::register);
+    }
+
+    private void registerClientTooltipComponents() {
+        TooltipComponentCallback.EVENT.register(data -> {
+            if (data instanceof StorageCellTooltipComponent cellTooltipComponent) {
+                return new StorageCellClientTooltipComponent(cellTooltipComponent);
+            }
+            return null;
+        });
     }
 
     private void clientSetup(Minecraft client) {

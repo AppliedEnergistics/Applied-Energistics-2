@@ -452,6 +452,29 @@ public final class AEConfig {
         return COMMON.portableCellDisassembly.get();
     }
 
+    // Tooltip settings
+
+    /**
+     * Show upgrade inventory in tooltips of storage cells and similar devices.
+     */
+    public boolean isTooltipShowCellUpgrades() {
+        return CLIENT.tooltipShowCellUpgrades.get();
+    }
+
+    /**
+     * Show part of the content in tooltips of storage cells and similar devices.
+     */
+    public boolean isTooltipShowCellContent() {
+        return CLIENT.tooltipShowCellContent.get();
+    }
+
+    /**
+     * How much of the content to show in storage cellls and similar devices.
+     */
+    public int getTooltipMaxCellContentShown() {
+        return CLIENT.tooltipMaxCellContentShown.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -471,6 +494,11 @@ public final class AEConfig {
         public final EnumOption<TerminalStyle> terminalStyle;
         public final EnumOption<SearchBoxMode> terminalSearchMode;
 
+        // Tooltip settings
+        public final BooleanOption tooltipShowCellUpgrades;
+        public final BooleanOption tooltipShowCellContent;
+        public final IntegerOption tooltipMaxCellContentShown;
+
         public ClientConfig(ConfigSection root) {
             ConfigSection client = root.subsection("client");
             this.disableColoredCableRecipesInJEI = client.addBoolean("disableColoredCableRecipesInJEI", true);
@@ -488,6 +516,14 @@ public final class AEConfig {
                     "Should tooltips be searched. Performance impact");
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
             this.terminalSearchMode = terminals.addEnum("terminalSearchMode", SearchBoxMode.DEFAULT);
+
+            ConfigSection tooltips = root.subsection("tooltips");
+            this.tooltipShowCellUpgrades = tooltips.addBoolean("showCellUpgrades", true,
+                    "Show installed upgrades in the tooltips of storage cells, color applicators and matter cannons");
+            this.tooltipShowCellContent = tooltips.addBoolean("showCellContent", true,
+                    "Show a preview of the content in the tooltips of storage cells, color applicators and matter cannons");
+            this.tooltipMaxCellContentShown = tooltips.addInt("maxCellContentShown", 5, 1, 32,
+                    "The maximum number of content entries to show in the tooltip of storage cells, color applicators and matter cannons");
         }
 
     }

@@ -19,7 +19,9 @@
 package appeng.client.gui.me.common;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
@@ -49,14 +51,35 @@ public class StackSizeRenderer {
                 // ItemRenderer.renderItemOverlayIntoGUI
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
 
+        renderSizeLabel(tm.getMatrix(), fontRenderer, xPos, yPos, text, false);
+    }
+
+    public static void renderSizeLabel(Matrix4f matrix, Font fontRenderer, float xPos, float yPos, String text,
+            boolean largeFonts) {
+        final float scaleFactor = largeFonts ? 0.85f : 0.5f;
+        final float inverseScaleFactor = 1.0f / scaleFactor;
+        final int offset = largeFonts ? 0 : -1;
+
         RenderSystem.disableBlend();
         final int X = (int) ((xPos + offset + 16.0f - fontRenderer.width(text) * scaleFactor)
                 * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
         BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, tm.getMatrix(), buffer, false, 0, 15728880);
+        fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, matrix, buffer, false, 0, 15728880);
         buffer.endBatch();
         RenderSystem.enableBlend();
+    }
+
+    public static void renderSizeLabel(PoseStack stack, Font fontRenderer, float xPos, float yPos, String text,
+            boolean largeFonts) {
+        final float scaleFactor = largeFonts ? 0.85f : 0.5f;
+
+        stack.pushPose();
+        stack.scale(scaleFactor, scaleFactor, scaleFactor);
+
+        renderSizeLabel(stack.last().pose(), fontRenderer, xPos, yPos, text, largeFonts);
+
+        stack.popPose();
     }
 
 }
