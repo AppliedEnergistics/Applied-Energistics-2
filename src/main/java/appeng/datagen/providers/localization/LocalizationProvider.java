@@ -14,6 +14,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.config.PowerUnits;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
@@ -54,6 +55,10 @@ public class LocalizationProvider implements IAE2DataProvider {
         addEnum(PlayerMessages.class);
         addEnum(InGameTooltip.class);
         addEnum(ItemModText.class);
+        // Can't implement LocalizationEnum since it's not in the API, but PowerUnits is
+        for (var powerUnit : PowerUnits.values()) {
+            add(powerUnit.unlocalizedName, powerUnit.symbolName);
+        }
 
         generateJadeLocalizations();
 
@@ -123,8 +128,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("gui.ae2.security.inject.tip", "User is allowed to store new items into storage.");
         add("gui.ae2.security.security.name", "Security");
         add("gui.ae2.security.security.tip", "User can access and modify the security terminal of the network.");
-        add("gui.ae2.units.appliedenergistics", "AE");
-        add("gui.ae2.units.tr", "E");
         add("itemGroup.ae2.facades", "Applied Energistics 2 - Facades");
         add("itemGroup.ae2.main", "Applied Energistics 2");
         add("key.ae2.category", "Applied Energistics 2");
