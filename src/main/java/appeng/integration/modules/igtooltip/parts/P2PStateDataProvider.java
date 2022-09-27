@@ -10,6 +10,7 @@ import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.core.localization.InGameTooltip;
+import appeng.parts.p2p.MEP2PTunnelPart;
 import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.Platform;
 
@@ -24,6 +25,8 @@ public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, 
     public static final String TAG_P2P_STATE = "p2pState";
     public static final String TAG_P2P_OUTPUTS = "p2pOutputs";
     public static final String TAG_P2P_FREQUENCY = "p2pFrequency";
+    public static final String TAG_P2P_FREQUENCY_NAME = "p2pFrequencyName";
+    public static final String TAG_P2P_ME_CARRIED_CHANNELS = "p2pCarriedChannels";
 
     @Override
     public void buildTooltip(P2PTunnelPart object, TooltipContext context, TooltipBuilder tooltip) {
@@ -40,8 +43,20 @@ public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, 
             }
 
             var freq = serverData.getShort(TAG_P2P_FREQUENCY);
+
+            // Show the frequency and name of the frequency if it exists
             var freqTooltip = Platform.p2p().toHexString(freq);
-            tooltip.addLine(Component.translatable("gui.tooltips.ae2.P2PFrequency", freqTooltip));
+            if (serverData.contains(TAG_P2P_FREQUENCY_NAME, Tag.TAG_STRING)) {
+                var freqName = serverData.getString(TAG_P2P_FREQUENCY_NAME);
+                freqTooltip = freqName + " (" + freqTooltip + ")";
+            }
+
+            tooltip.addLine(InGameTooltip.P2PFrequency.text(freqTooltip));
+
+            if (serverData.contains(TAG_P2P_ME_CARRIED_CHANNELS, Tag.TAG_INT)) {
+                var carriedChannels = serverData.getInt(TAG_P2P_ME_CARRIED_CHANNELS);
+                tooltip.addLine(InGameTooltip.P2PMECarriedChannels.text(carriedChannels));
+            }
         }
     }
 
@@ -63,13 +78,32 @@ public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, 
                 state = STATE_INPUT;
                 serverData.putInt(TAG_P2P_OUTPUTS, outputCount);
             }
+
+            // If this is the input, and it is named, show that name as the frequency name
+            if (part.hasCustomInventoryName()) {
+                serverData.putString(TAG_P2P_FREQUENCY_NAME, part.getCustomInventoryName().getString());
+            }
         } else {
-            if (part.getInput() != null) {
+            var input = part.getInput();
+            if (input != null) {
                 state = STATE_OUTPUT;
+                // If the input is named, show that name as the frequency name
+                if (input.hasCustomInventoryName()) {
+                    serverData.putString(TAG_P2P_FREQUENCY_NAME, input.getCustomInventoryName().getString());
+                }
             }
         }
 
         serverData.putByte(TAG_P2P_STATE, state);
+
+        // For ME P2P Tunnels, show the number of channels that are carried through the P2P
+        if (part instanceof MEP2PTunnelPart meTunnel) {
+            var externalNode = meTunnel.getExternalFacingNode();
+            if (externalNode != null) {
+                var channels = externalNode.getUsedChannels();
+                serverData.putInt(TAG_P2P_ME_CARRIED_CHANNELS, channels);
+            }
+        }
     }
 
     private static Component getOutputText(int outputs) {
