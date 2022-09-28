@@ -323,6 +323,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         SlotSemantic slotSemantic = semanticBySlot.get(slot);
         return slotSemantic == SlotSemantics.PLAYER_INVENTORY
                 || slotSemantic == SlotSemantics.PLAYER_HOTBAR
+                || slotSemantic == SlotSemantics.TOOLBOX
                 // The crafting grid in the crafting terminal also shift-clicks into the network
                 || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }
@@ -377,11 +378,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             if (selectedSlots.isEmpty() && playerSide && !tis.isEmpty()) {
                 // target slots in the menu...
                 for (Slot cs : this.slots) {
-                    final ItemStack destination = cs.getItem();
-
-                    if (!isPlayerSideSlot(cs) && cs instanceof FakeSlot) {
+                    if (cs instanceof FakeSlot && !isPlayerSideSlot(cs)) {
+                        var destination = cs.getItem();
                         if (ItemStack.isSameItemSameTags(destination, tis)) {
-                            break;
+                            break; // Item is already in the filter
                         } else if (destination.isEmpty()) {
                             cs.set(tis.copy());
                             // ???
