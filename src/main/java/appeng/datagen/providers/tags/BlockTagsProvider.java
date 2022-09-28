@@ -105,6 +105,9 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 AEBlocks.CHISELED_QUARTZ_WALL.block(),
                 AEBlocks.QUARTZ_PILLAR_WALL.block());
 
+        // Fixtures should cause walls to have posts
+        tag(BlockTags.WALL_POST_OVERRIDE).add(AEBlocks.QUARTZ_FIXTURE.block(), AEBlocks.LIGHT_DETECTOR.block());
+
         addEffectiveTools();
 
         addConventionTags();
