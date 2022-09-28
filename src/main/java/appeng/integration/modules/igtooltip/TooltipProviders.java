@@ -47,6 +47,7 @@ public final class TooltipProviders implements TooltipProvider {
         PartTooltips.addServerData(IUsedChannelProvider.class, new ChannelDataProvider());
         PartTooltips.addBody(AbstractMonitorPart.class, new StorageMonitorDataProvider());
         PartTooltips.addBody(AnnihilationPlanePart.class, new AnnihilationPlaneDataProvider());
+        PartTooltips.addServerData(AnnihilationPlanePart.class, new AnnihilationPlaneDataProvider());
         PartTooltips.addBody(IPart.class, new GridNodeStateProvider());
         PartTooltips.addServerData(IPart.class, new GridNodeStateProvider());
         PartTooltips.addBody(P2PTunnelPart.class, new P2PStateDataProvider());
