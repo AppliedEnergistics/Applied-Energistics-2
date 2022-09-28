@@ -147,9 +147,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     }
 
     private boolean canPlaceAt(LevelReader level, BlockPos pos, Direction dir) {
-        final BlockPos test = pos.relative(dir);
-        BlockState blockstate = level.getBlockState(test);
-        return blockstate.isFaceSturdy(level, test, dir.getOpposite());
+        return canSupportCenter(level, pos.relative(dir), dir.getOpposite());
     }
 
     @Override
