@@ -102,10 +102,8 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
         return this.canPlaceAt(level, pos, up.getOpposite());
     }
 
-    private boolean canPlaceAt(BlockGetter level, BlockPos pos, Direction dir) {
-        final BlockPos test = pos.relative(dir);
-        BlockState blockstate = level.getBlockState(test);
-        return blockstate.isFaceSturdy(level, test, dir.getOpposite());
+    private boolean canPlaceAt(LevelReader level, BlockPos pos, Direction dir) {
+        return canSupportCenter(level, pos.relative(dir), dir.getOpposite());
     }
 
     @Override
