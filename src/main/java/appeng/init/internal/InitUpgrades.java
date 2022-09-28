@@ -98,12 +98,12 @@ public final class InitUpgrades {
             Upgrades.add(AEItems.ENERGY_CARD, portableCell, 2, portableCellGroup);
         }
 
+        // Wireless Terminals
         Upgrades.add(AEItems.ENERGY_CARD, AEItems.WIRELESS_TERMINAL, 2, GuiText.WirelessTerminals.getTranslationKey());
         Upgrades.add(AEItems.ENERGY_CARD, AEItems.WIRELESS_CRAFTING_TERMINAL, 2,
                 GuiText.WirelessTerminals.getTranslationKey());
-        Upgrades.add(AEItems.ENERGY_CARD, AEItems.COLOR_APPLICATOR, 2);
-        Upgrades.add(AEItems.ENERGY_CARD, AEItems.MATTER_CANNON, 2);
 
+        // View Cell
         Upgrades.add(AEItems.FUZZY_CARD, AEItems.VIEW_CELL, 1);
         Upgrades.add(AEItems.INVERTER_CARD, AEItems.VIEW_CELL, 1);
 
@@ -117,9 +117,16 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.INVERTER_CARD, AEParts.FORMATION_PLANE, 1);
         Upgrades.add(AEItems.CAPACITY_CARD, AEParts.FORMATION_PLANE, 5);
 
+        // Color Applicator
+        Upgrades.add(AEItems.ENERGY_CARD, AEItems.COLOR_APPLICATOR, 2);
+        Upgrades.add(AEItems.EQUAL_DISTRIBUTION_CARD, AEItems.COLOR_APPLICATOR, 1);
+        Upgrades.add(AEItems.VOID_CARD, AEItems.COLOR_APPLICATOR, 1);
+
         // Matter Cannon
+        Upgrades.add(AEItems.ENERGY_CARD, AEItems.MATTER_CANNON, 2);
         Upgrades.add(AEItems.FUZZY_CARD, AEItems.MATTER_CANNON, 1);
         Upgrades.add(AEItems.INVERTER_CARD, AEItems.MATTER_CANNON, 1);
+        Upgrades.add(AEItems.VOID_CARD, AEItems.MATTER_CANNON, 1);
         Upgrades.add(AEItems.SPEED_CARD, AEItems.MATTER_CANNON, 4);
 
         // Molecular Assembler
