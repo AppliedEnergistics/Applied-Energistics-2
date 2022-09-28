@@ -100,11 +100,14 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     @Override
-    protected void setupConfig() {
+    protected void setupInventorySlots() {
         var cell = this.getHost().getSubInventory(ISegmentedInventory.CELLS);
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantics.STORAGE_CELL);
+    }
 
+    @Override
+    protected void setupConfig() {
         addConfigSlots(getConfigInventory(), 7, 9);
     }
 

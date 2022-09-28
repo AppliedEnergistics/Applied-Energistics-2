@@ -64,6 +64,11 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
 
         this.toolbox = new ToolboxMenu(this);
 
+        // The real inventory needs to be sent to the client before the upgrade slots
+        // since some blocks, such as the cell workbench, have a variable number of
+        // upgrades depending on the inserted cell
+        this.setupInventorySlots();
+
         // Upgrade slots MUST be added before the config slots that depend on them.
         // Otherwise, the client might reject the initial server-sent config slot content because it doesn't
         // know about the expanded capacity when it receives them.
@@ -71,6 +76,14 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         this.setupConfig();
 
         this.createPlayerInventorySlots(ip);
+    }
+
+    /**
+     * Set up slots that correspond to the real inventory of the host. Will be sent and initialized before upgrades and
+     * config to the client.
+     */
+    @ApiStatus.OverrideOnly
+    protected void setupInventorySlots() {
     }
 
     @ApiStatus.OverrideOnly
