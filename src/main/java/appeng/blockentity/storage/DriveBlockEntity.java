@@ -408,7 +408,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openMenu(player);
+        MenuOpener.returnTo(DriveMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 
     @Override

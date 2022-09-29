@@ -174,6 +174,11 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
         return this.currentScroll;
     }
 
+    public void setCurrentScroll(int currentScroll) {
+        this.currentScroll = currentScroll;
+        applyRange();
+    }
+
     @Override
     public boolean onMouseDown(Point mousePos, int button) {
         if (button != InputConstants.MOUSE_BUTTON_LEFT) {

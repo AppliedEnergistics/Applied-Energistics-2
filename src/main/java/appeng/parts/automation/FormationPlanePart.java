@@ -223,7 +223,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openConfigMenu(player);
+        MenuOpener.returnTo(getMenuType(), player, MenuLocators.forPart(this));
     }
 
     @Override

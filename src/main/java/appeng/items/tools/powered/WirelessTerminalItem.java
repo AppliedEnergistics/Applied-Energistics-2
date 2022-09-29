@@ -82,14 +82,26 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     /**
      * Open a wireless terminal from a slot in the player inventory, i.e. activated via hotkey.
-     * 
+     *
      * @return True if the menu was opened.
      */
     public boolean openFromInventory(Player player, int inventorySlot) {
+        return openFromInventory(player, inventorySlot, false);
+    }
+
+    /**
+     * Open a wireless terminal from a slot in the player inventory, i.e. activated via hotkey.
+     *
+     * @param returningFromSubmenu Pass true if returning from a submenu that was opened from this terminal. Will
+     *                             restore previous search, scrollbar, etc.
+     * @return True if the menu was opened.
+     */
+    protected boolean openFromInventory(Player player, int inventorySlot, boolean returningFromSubmenu) {
         var is = player.getInventory().getItem(inventorySlot);
 
         if (checkPreconditions(is, player)) {
-            return MenuOpener.open(getMenuType(), player, MenuLocators.forInventorySlot(inventorySlot));
+            return MenuOpener.open(getMenuType(), player, MenuLocators.forInventorySlot(inventorySlot),
+                    returningFromSubmenu);
         }
         return false;
     }
@@ -155,7 +167,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     @Override
     public ItemMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, @Nullable BlockPos pos) {
         return new WirelessTerminalMenuHost(player, inventorySlot, stack,
-                (p, subMenu) -> openFromInventory(p, inventorySlot));
+                (p, subMenu) -> openFromInventory(p, inventorySlot, true));
     }
 
     /**

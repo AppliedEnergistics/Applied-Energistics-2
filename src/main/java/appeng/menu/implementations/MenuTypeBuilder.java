@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -41,6 +41,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.IActionHost;
 import appeng.core.AppEng;
 import appeng.helpers.ICustomNameObject;
+import appeng.init.InitMenuTypes;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
@@ -138,13 +139,14 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
                     + " on client. Closing menu.");
         }
         M menu = factory.create(containerId, inv, host);
+        menu.setReturnedFromSubScreen(packetBuf.readBoolean());
         if (initialDataDeserializer != null) {
             initialDataDeserializer.deserializeInitialData(host, menu, packetBuf);
         }
         return menu;
     }
 
-    private boolean open(Player player, MenuLocator locator) {
+    private boolean open(Player player, MenuLocator locator, boolean fromSubMenu) {
         if (!(player instanceof ServerPlayer)) {
             // Cannot open menus on the client or for non-players
             // FIXME logging?
@@ -163,7 +165,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
         Component title = menuTitleStrategy.apply(accessInterface);
 
-        player.openMenu(new HandlerFactory(locator, title, accessInterface, initialDataSerializer));
+        player.openMenu(new HandlerFactory(locator, title, accessInterface, initialDataSerializer, fromSubMenu));
 
         return true;
     }
@@ -178,17 +180,21 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
         private final InitialDataSerializer<I> initialDataSerializer;
 
+        private final boolean fromSubMenu;
+
         public HandlerFactory(MenuLocator locator, Component title, I accessInterface,
-                InitialDataSerializer<I> initialDataSerializer) {
+                InitialDataSerializer<I> initialDataSerializer, boolean fromSubMenu) {
             this.locator = locator;
             this.title = title;
             this.accessInterface = accessInterface;
             this.initialDataSerializer = initialDataSerializer;
+            this.fromSubMenu = fromSubMenu;
         }
 
         @Override
         public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
             MenuLocators.writeToPacket(buf, locator);
+            buf.writeBoolean(fromSubMenu);
             if (initialDataSerializer != null) {
                 initialDataSerializer.serializeInitialData(accessInterface, buf);
             }
@@ -197,6 +203,11 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         @Override
         public Component getDisplayName() {
             return title;
+        }
+
+        @Override
+        public boolean shouldCloseCurrentScreen() {
+            return false; // Stops the cursor from re-centering
         }
 
         @Nullable
@@ -219,9 +230,8 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         Preconditions.checkState(this.id == null, "id should not be set");
 
         this.id = AppEng.makeId(id);
-        menuType = ScreenHandlerRegistry.registerExtended(
-                this.id,
-                this::fromNetwork);
+        menuType = new ExtendedScreenHandlerType<>(this::fromNetwork);
+        InitMenuTypes.queueRegistration(this.id, menuType);
         MenuOpener.addOpener(menuType, this::open);
         return menuType;
     }

@@ -287,7 +287,7 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openMenu(player);
+        MenuOpener.returnTo(SecurityStationMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 
     @Override
