@@ -762,7 +762,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.init();
     }
 
-    private void storeState() {
+    /**
+     * Store current terminal state, so it can be restored by the next constructor call of {@link MEStorageScreen}. Call
+     * this manually if you need to store state before switching screens without explicitly removing the previous
+     * screen.
+     */
+    public void storeState() {
         rememberedSearch = this.searchField.getValue();
     }
 }
