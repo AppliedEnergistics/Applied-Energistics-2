@@ -68,6 +68,6 @@ public interface PatternProviderLogicHost extends IConfigurableObject, IPriority
 
     @Override
     default void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openMenu(player, subMenu.getLocator());
+        MenuOpener.returnTo(PatternProviderMenu.TYPE, player, subMenu.getLocator());
     }
 }
