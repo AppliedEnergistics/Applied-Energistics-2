@@ -97,7 +97,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     private static final int MIN_ROWS = 3;
 
-    private static String memoryText = "";
+    private static String rememberedSearch = "";
     private final TerminalStyle style;
     protected final Repo repo;
     private final List<ItemStack> currentViewCells = new ArrayList<>();
@@ -113,7 +113,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private int currentMouseX = 0;
     private int currentMouseY = 0;
     private final Scrollbar scrollbar;
-    private boolean firstInit = true;
 
     public MEStorageScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -190,6 +189,19 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 menu.getHost()));
         if (menu.getToolbox().isPresent()) {
             this.widgets.add("toolbox", new ToolboxPanel(style, menu.getToolbox().getName()));
+        }
+
+        // Restore previous search term
+        if ((menu.isReturnedFromSubScreen() || config.isRememberLastSearch()) && rememberedSearch != null
+                && !rememberedSearch.isEmpty()) {
+            this.searchField.setValue(rememberedSearch);
+            this.searchField.selectAll();
+            setSearchText(rememberedSearch);
+        }
+
+        // Clear external search on open if configured, but not upon returning from a sub-screen
+        if (!menu.isReturnedFromSubScreen() && config.isUseExternalSearch() && config.isClearExternalSearchOnOpen()) {
+            ExternalSearch.clearExternalSearchText();
         }
     }
 
@@ -322,19 +334,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (shouldAutoFocus()) {
             setInitialFocus(this.searchField);
-        }
-
-        if (config.isRememberLastSearch() && memoryText != null && !memoryText.isEmpty()) {
-            this.searchField.setValue(memoryText);
-            this.searchField.selectAll();
-            setSearchText(memoryText);
-        }
-
-        if (firstInit) { // Avoid clearing again on resize, layout change, etc...
-            if (config.isUseExternalSearch() && config.isClearExternalSearchOnOpen()) {
-                ExternalSearch.clearExternalSearchText();
-            }
-            firstInit = false;
         }
 
         this.updateScrollbar();
@@ -480,7 +479,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     public void removed() {
         super.removed();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
-        memoryText = this.searchField.getValue();
+        storeState();
     }
 
     @Override
@@ -758,7 +757,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void reinitalize() {
+        storeState();
         new ArrayList<>(this.children()).forEach(this::removeWidget);
         this.init();
+    }
+
+    private void storeState() {
+        rememberedSearch = this.searchField.getValue();
     }
 }

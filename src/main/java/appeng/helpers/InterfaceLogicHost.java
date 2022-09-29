@@ -75,6 +75,6 @@ public interface InterfaceLogicHost extends IConfigurableObject, IUpgradeableObj
 
     @Override
     default void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openMenu(player, subMenu.getLocator());
+        MenuOpener.returnTo(InterfaceMenu.TYPE, player, subMenu.getLocator());
     }
 }

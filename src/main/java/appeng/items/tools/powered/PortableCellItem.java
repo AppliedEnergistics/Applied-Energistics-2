@@ -123,9 +123,14 @@ public class PortableCellItem extends AEBasePoweredItem
      * @return True if the menu was opened.
      */
     public boolean openFromInventory(Player player, int inventorySlot) {
+        return openFromInventory(player, inventorySlot, false);
+    }
+
+    protected boolean openFromInventory(Player player, int inventorySlot, boolean returningFromSubmenu) {
         var is = player.getInventory().getItem(inventorySlot);
         if (is.getItem() == this) {
-            return MenuOpener.open(getMenuType(), player, MenuLocators.forInventorySlot(inventorySlot));
+            return MenuOpener.open(getMenuType(), player, MenuLocators.forInventorySlot(inventorySlot),
+                    returningFromSubmenu);
         } else {
             return false;
         }
@@ -277,7 +282,7 @@ public class PortableCellItem extends AEBasePoweredItem
     @Override
     public PortableCellMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
         return new PortableCellMenuHost(player, inventorySlot, this, stack,
-                (p, sm) -> openFromInventory(p, inventorySlot));
+                (p, sm) -> openFromInventory(p, inventorySlot, true));
     }
 
     @Override

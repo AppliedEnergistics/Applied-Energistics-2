@@ -95,6 +95,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private int ticksSinceCheck = 900;
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
+    /**
+     * Indicates that the menu was created after returning from a {@link ISubMenu}. Previous screen state stored on the
+     * client should be restored.
+     */
+    private boolean returnedFromSubScreen;
 
     public AEBaseMenu(MenuType<?> menuType, int id, Inventory playerInventory,
             Object host) {
@@ -963,5 +968,13 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             slot.setNotDraggable();
             this.addSlot(slot, SlotSemantics.UPGRADE);
         }
+    }
+
+    public boolean isReturnedFromSubScreen() {
+        return returnedFromSubScreen;
+    }
+
+    public void setReturnedFromSubScreen(boolean returnedFromSubScreen) {
+        this.returnedFromSubScreen = returnedFromSubScreen;
     }
 }

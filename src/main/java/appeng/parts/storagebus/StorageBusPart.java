@@ -205,7 +205,7 @@ public class StorageBusPart extends UpgradeablePart
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openConfigMenu(player);
+        MenuOpener.returnTo(getMenuType(), player, MenuLocators.forPart(this));
     }
 
     @Override

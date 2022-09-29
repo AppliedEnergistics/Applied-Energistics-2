@@ -44,7 +44,15 @@ public final class MenuOpener {
         registry.put(type, opener);
     }
 
+    public static boolean returnTo(MenuType<?> type, Player player, MenuLocator locator) {
+        return open(type, player, locator, true);
+    }
+
     public static boolean open(MenuType<?> type, Player player, MenuLocator locator) {
+        return open(type, player, locator, false);
+    }
+
+    public static boolean open(MenuType<?> type, Player player, MenuLocator locator, boolean fromSubMenu) {
         Preconditions.checkArgument(!player.getLevel().isClientSide(), "Menus must be opened on the server.");
         Opener opener = registry.get(type);
         if (opener == null) {
@@ -52,13 +60,13 @@ public final class MenuOpener {
             return false;
         }
 
-        return opener.open(player, locator);
+        return opener.open(player, locator, fromSubMenu);
     }
 
     @FunctionalInterface
     public interface Opener {
 
-        boolean open(Player player, MenuLocator locator);
+        boolean open(Player player, MenuLocator locator, boolean fromSubMenu);
 
     }
 

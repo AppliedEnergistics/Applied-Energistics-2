@@ -18,7 +18,11 @@
 
 package appeng.init;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.menu.implementations.CellWorkbenchMenu;
@@ -56,6 +60,7 @@ import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 public final class InitMenuTypes {
+    private static final Map<ResourceLocation, MenuType<?>> REGISTRATION_QUEUE = new HashMap<>();
 
     private InitMenuTypes() {
     }
@@ -104,6 +109,13 @@ public final class InitMenuTypes {
     }
 
     private static void registerAll(Registry<MenuType<?>> registry, MenuType<?>... types) {
+        // Flush the registration queue. Calling the static ctor of each menu class will have
+        // filled it.
+        for (var entry : REGISTRATION_QUEUE.entrySet()) {
+            Registry.register(registry, entry.getKey(), entry.getValue());
+        }
+        REGISTRATION_QUEUE.clear();
+
         // Fabric registers the container types at creation time, we just do this
         // to ensure all static CTORs are called in a predictable manner
         for (var type : types) {
@@ -113,4 +125,9 @@ public final class InitMenuTypes {
         }
     }
 
+    public static void queueRegistration(ResourceLocation id, MenuType<?> menuType) {
+        if (REGISTRATION_QUEUE.put(id, menuType) != null) {
+            throw new IllegalStateException("Duplicate menu id: " + id);
+        }
+    }
 }

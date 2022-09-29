@@ -115,7 +115,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        MenuOpener.open(getMenuType(player), player, subMenu.getLocator());
+        MenuOpener.open(getMenuType(player), player, subMenu.getLocator(), true);
     }
 
     @Override

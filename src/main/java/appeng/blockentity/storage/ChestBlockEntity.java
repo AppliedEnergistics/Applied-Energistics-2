@@ -709,6 +709,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
-        openCellInventoryMenu(player);
+        MenuOpener.returnTo(ChestMenu.TYPE, player, MenuLocators.forBlockEntity(this));
     }
 }
