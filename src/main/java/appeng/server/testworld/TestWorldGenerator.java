@@ -27,6 +27,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import appeng.core.definitions.AEBlocks;
+import appeng.server.testplots.TestPlots;
 
 public class TestWorldGenerator {
     /**

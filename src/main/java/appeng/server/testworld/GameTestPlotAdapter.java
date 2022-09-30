@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.StructureBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import appeng.server.testplots.TestPlots;
 import appeng.util.Platform;
 
 public class GameTestPlotAdapter {
