@@ -18,23 +18,14 @@
 
 package appeng.items.tools;
 
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.util.AEColor;
-import appeng.api.util.IConfigurableObject;
-import appeng.core.AELog;
-import appeng.core.localization.GuiText;
-import appeng.core.localization.PlayerMessages;
-import appeng.core.localization.Tooltips;
-import appeng.helpers.IConfigInvHost;
-import appeng.helpers.IPriorityHost;
-import appeng.hooks.AEToolItem;
-import appeng.items.AEBaseItem;
-import appeng.util.InteractionUtil;
-import appeng.util.Platform;
-import appeng.util.inv.PlayerInternalInventory;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -55,19 +46,30 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Set;
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.util.AEColor;
+import appeng.api.util.IConfigurableObject;
+import appeng.core.AELog;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.PlayerMessages;
+import appeng.core.localization.Tooltips;
+import appeng.helpers.IConfigInvHost;
+import appeng.helpers.IPriorityHost;
+import appeng.hooks.AEToolItem;
+import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
+import appeng.util.Platform;
+import appeng.util.inv.PlayerInternalInventory;
 
 public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolItem {
 
-    private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[]{AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+    private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
-            AEColor.TRANSPARENT,};
+            AEColor.TRANSPARENT, };
 
     public MemoryCardItem(Item.Properties properties) {
         super(properties);
@@ -99,7 +101,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         return exported;
     }
 
-    public static Set<SettingsCategory> importGenericSettings(Object importTo, CompoundTag input, @Nullable Player player) {
+    public static Set<SettingsCategory> importGenericSettings(Object importTo, CompoundTag input,
+            @Nullable Player player) {
         var imported = EnumSet.noneOf(SettingsCategory.class);
 
         if (player != null && importTo instanceof IUpgradeableObject upgradeableObject) {
@@ -269,7 +272,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
     @Override
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
-                                TooltipFlag advancedTooltips) {
+            TooltipFlag advancedTooltips) {
 
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
@@ -340,9 +343,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
             var colorArray = AEColor.values();
 
             if (frequency.length == 8) {
-                return new AEColor[]{colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]],
+                return new AEColor[] { colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]],
                         colorArray[frequency[3]], colorArray[frequency[4]], colorArray[frequency[5]],
-                        colorArray[frequency[6]], colorArray[frequency[7]],};
+                        colorArray[frequency[6]], colorArray[frequency[7]], };
             }
         }
 
