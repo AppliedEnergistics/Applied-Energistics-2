@@ -121,7 +121,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
         var nodeHost = GridHelper.getNodeHost(level, pos);
 
         if (nodeHost != null) {
-            MenuOpener.open(NetworkStatusMenu.TYPE, p, MenuLocators.forItemUseContext(useContext));
+            MenuOpener.open(NetworkStatusMenu.NETWORK_TOOL_TYPE, p, MenuLocators.forItemUseContext(useContext));
         } else {
             MenuOpener.open(NetworkToolMenu.TYPE, p, MenuLocators.forHand(p, hand));
         }
