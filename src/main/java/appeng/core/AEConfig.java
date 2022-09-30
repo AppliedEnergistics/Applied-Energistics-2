@@ -242,6 +242,14 @@ public final class AEConfig {
         CLIENT.searchTooltips.set(enable);
     }
 
+    public boolean isSearchModNameInTooltips() {
+        return CLIENT.searchModNameInTooltips.get();
+    }
+
+    public void setSearchModNameInTooltips(boolean enable) {
+        CLIENT.searchModNameInTooltips.set(enable);
+    }
+
     public boolean isUseExternalSearch() {
         return CLIENT.useExternalSearch.get();
     }
@@ -545,6 +553,7 @@ public final class AEConfig {
 
         // Search Settings
         public final BooleanOption searchTooltips;
+        public final BooleanOption searchModNameInTooltips;
         public final BooleanOption useExternalSearch;
         public final BooleanOption clearExternalSearchOnOpen;
         public final BooleanOption syncWithExternalSearch;
@@ -580,6 +589,8 @@ public final class AEConfig {
             var search = root.subsection("search");
             this.searchTooltips = search.addBoolean("searchTooltips", true,
                     "Should tooltips be searched. Performance impact");
+            this.searchModNameInTooltips = search.addBoolean("searchModNameInTooltips", false,
+                    "Should the mod name be included when searching in tooltips.");
             this.useExternalSearch = search.addBoolean("useExternalSearch", false,
                     "Replaces AEs own search with the search of REI or JEI");
             this.clearExternalSearchOnOpen = search.addBoolean("clearExternalSearchOnOpen", true,
