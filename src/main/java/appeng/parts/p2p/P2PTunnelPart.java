@@ -262,8 +262,9 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends BasicSta
                     P2PService.get(grid).updateFreq(this, freq);
                 } else {
                     setFrequency(freq); // Remember it for when we actually join the grid
+                    onTunnelNetworkChange();
                 }
-                onTunnelNetworkChange();
+
             }
         }
     }
