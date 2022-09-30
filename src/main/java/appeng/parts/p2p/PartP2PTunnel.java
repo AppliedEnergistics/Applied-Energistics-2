@@ -23,6 +23,7 @@ import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.config.TunnelType;
 import appeng.api.definitions.IParts;
 import appeng.api.implementations.items.IMemoryCard;
@@ -189,6 +190,15 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
         // UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor( is.getItem() );
         // AELog.info( "ID:" + id.toString() + " : " + is.getItemDamage() );
 
+        try {
+            boolean hasPerms = this.getProxy().getSecurity().hasPermission(player, SecurityPermissions.BUILD);
+            if (!hasPerms) {
+                return false;
+            }
+        } catch (GridAccessException e) {
+            return false;
+        }
+
         final TunnelType tt = AEApi.instance().registries().p2pTunnel().getTunnelTypeByItem(is);
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             final IMemoryCard mc = (IMemoryCard) is.getItem();
@@ -327,6 +337,16 @@ public abstract class PartP2PTunnel<T extends PartP2PTunnel> extends PartBasicSt
 
     @Override
     public boolean onPartShiftActivate(final EntityPlayer player, final EnumHand hand, final Vec3d pos) {
+
+        try {
+            boolean hasPerms = this.getProxy().getSecurity().hasPermission(player, SecurityPermissions.BUILD);
+            if (!hasPerms) {
+                return false;
+            }
+        } catch (GridAccessException e) {
+            return false;
+        }
+
         final ItemStack is = player.inventory.getCurrentItem();
         if (!is.isEmpty() && is.getItem() instanceof IMemoryCard) {
             if (Platform.isClient()) {
