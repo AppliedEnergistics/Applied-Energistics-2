@@ -104,6 +104,12 @@ public class AECheckbox extends AbstractButton {
         var opacity = isActive() ? 1 : 0.5f;
 
         icon.dest(x, y).opacity(opacity).blit(poseStack, getBlitOffset());
-        font.draw(poseStack, getMessage(), x + SIZE + 2, y + 4, style.getColor(textColor).toARGB());
+        var lines = font.split(getMessage(), width - SIZE - 2);
+        // try to vertically center if it's just one line
+        var lineY = y + (lines.size() <= 1 ? 4 : 1);
+        for (var line : lines) {
+            font.draw(poseStack, line, x + SIZE + 2, lineY, style.getColor(textColor).toARGB());
+            lineY += font.lineHeight;
+        }
     }
 }

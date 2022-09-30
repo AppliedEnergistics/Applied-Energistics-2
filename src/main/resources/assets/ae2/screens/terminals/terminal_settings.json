@@ -3,7 +3,7 @@
   "includes": ["../common/common.json"],
   "generatedBackground": {
     "width": 200,
-    "height": 135
+    "height": 200
   },
   "text": {
     "dialog_title": {
@@ -12,7 +12,16 @@
         "top": 7
       },
       "text": {
-        "text": "Search Settings"
+        "translate": "gui.ae2.TerminalSettingsTitle"
+      }
+    },
+    "search_settings_title": {
+      "position": {
+        "left": 8,
+        "top": 83
+      },
+      "text": {
+        "translate": "gui.ae2.SearchSettingsTitle"
       }
     }
   },
@@ -21,39 +30,49 @@
       "right": 22,
       "top": 0
     },
+    "pinAutoCraftedItemsCheckbox": {
+      "left": 10,
+      "top": 25,
+      "width": 180
+    },
+    "notifyForFinishedCraftingJobsCheckbox": {
+      "left": 10,
+      "top": 50,
+      "width": 180
+    },
     "useInternalSearchRadio": {
       "left": 10,
-      "top": 30,
+      "top": 97,
       "width": 75
     },
     "useExternalSearchRadio": {
       "left": 95,
-      "top": 30,
+      "top": 97,
       "width": 75
     },
     "searchTooltipsCheckbox": {
       "left": 10,
-      "top": 55,
+      "top": 117,
       "width": 150
     },
     "rememberCheckbox": {
       "left": 10,
-      "top": 72,
+      "top": 133,
       "width": 150
     },
     "autoFocusCheckbox": {
       "left": 10,
-      "top": 89,
+      "top": 151,
       "width": 150
     },
     "syncWithExternalCheckbox": {
       "left": 10,
-      "top": 106,
+      "top": 169,
       "width": 150
     },
     "clearExternalCheckbox": {
       "left": 10,
-      "top": 72,
+      "top": 133,
       "width": 150
     }
   }

@@ -176,7 +176,7 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
             send = null;
         }
 
-        for (CraftingMonitorBlockEntity t : this.status) {
+        for (var t : this.status) {
             t.setJob(send);
         }
     }

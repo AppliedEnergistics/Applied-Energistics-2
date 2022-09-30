@@ -46,78 +46,78 @@ public final class ConventionTags {
     private ConventionTags() {
     }
 
-    public static TagKey<Item> DUSTS = tag("c:dusts");
-    public static TagKey<Item> GEMS = tag("c:gems");
+    public static final TagKey<Item> DUSTS = tag("c:dusts");
+    public static final TagKey<Item> GEMS = tag("c:gems");
 
-    public static TagKey<Item> SILICON = tag("c:silicon");
+    public static final TagKey<Item> SILICON = tag("c:silicon");
 
     // Includes purified versions of certus/nether and the natural ones
-    public static TagKey<Item> ALL_QUARTZ = tag("ae2:all_quartz");
+    public static final TagKey<Item> ALL_QUARTZ = tag("ae2:all_quartz");
     // Includes both certus/nether quartz dust
-    public static TagKey<Item> ALL_QUARTZ_DUST = tag("ae2:all_quartz_dust");
+    public static final TagKey<Item> ALL_QUARTZ_DUST = tag("ae2:all_quartz_dust");
 
     // Includes charged, synthetic/purified and natural certus quartz
-    public static TagKey<Item> ALL_CERTUS_QUARTZ = tag("ae2:all_certus_quartz");
-    public static TagKey<Item> CERTUS_QUARTZ = tag("c:certus_quartz");
-    public static TagKey<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("c:certus_quartz_blocks");
-    public static TagKey<Item> CERTUS_QUARTZ_DUST = tag("c:certus_quartz_dusts");
+    public static final TagKey<Item> ALL_CERTUS_QUARTZ = tag("ae2:all_certus_quartz");
+    public static final TagKey<Item> CERTUS_QUARTZ = tag("c:certus_quartz");
+    public static final TagKey<Block> CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK = blockTag("c:certus_quartz_blocks");
+    public static final TagKey<Item> CERTUS_QUARTZ_DUST = tag("c:certus_quartz_dusts");
 
     // Includes synthetic/purified
-    public static TagKey<Item> ALL_NETHER_QUARTZ = tag("ae2:all_nether_quartz");
-    public static TagKey<Item> NETHER_QUARTZ = tag("c:quartz");
-    public static TagKey<Item> NETHER_QUARTZ_ORE = tag("c:quartz_ores");
+    public static final TagKey<Item> ALL_NETHER_QUARTZ = tag("ae2:all_nether_quartz");
+    public static final TagKey<Item> NETHER_QUARTZ = tag("c:quartz");
+    public static final TagKey<Item> NETHER_QUARTZ_ORE = tag("c:quartz_ores");
 
     // Includes synthetic/purified
-    public static TagKey<Item> ALL_FLUIX = tag("ae2:all_fluix");
-    public static TagKey<Item> FLUIX_DUST = tag("c:fluix_dusts");
-    public static TagKey<Item> FLUIX_CRYSTAL = tag("c:fluix");
+    public static final TagKey<Item> ALL_FLUIX = tag("ae2:all_fluix");
+    public static final TagKey<Item> FLUIX_DUST = tag("c:fluix_dusts");
+    public static final TagKey<Item> FLUIX_CRYSTAL = tag("c:fluix");
 
-    public static TagKey<Item> COPPER_INGOT = tag("c:copper_ingots");
+    public static final TagKey<Item> COPPER_INGOT = tag("c:copper_ingots");
 
-    public static TagKey<Item> GOLD_NUGGET = tag("c:gold_nuggets");
-    public static TagKey<Item> GOLD_INGOT = tag("c:gold_ingots");
-    public static TagKey<Item> GOLD_ORE = tag("c:gold_ores");
+    public static final TagKey<Item> GOLD_NUGGET = tag("c:gold_nuggets");
+    public static final TagKey<Item> GOLD_INGOT = tag("c:gold_ingots");
+    public static final TagKey<Item> GOLD_ORE = tag("c:gold_ores");
 
-    public static TagKey<Item> IRON_NUGGET = tag("c:iron_nuggets");
-    public static TagKey<Item> IRON_INGOT = tag("c:iron_ingots");
-    public static TagKey<Item> IRON_ORE = tag("c:iron_ores");
+    public static final TagKey<Item> IRON_NUGGET = tag("c:iron_nuggets");
+    public static final TagKey<Item> IRON_INGOT = tag("c:iron_ingots");
+    public static final TagKey<Item> IRON_ORE = tag("c:iron_ores");
 
-    public static TagKey<Item> DIAMOND = tag("c:diamonds");
-    public static TagKey<Item> REDSTONE = tag("c:redstone_dusts");
-    public static TagKey<Item> GLOWSTONE = tag("c:glowstone_dusts");
+    public static final TagKey<Item> DIAMOND = tag("c:diamonds");
+    public static final TagKey<Item> REDSTONE = tag("c:redstone_dusts");
+    public static final TagKey<Item> GLOWSTONE = tag("c:glowstone_dusts");
 
-    public static TagKey<Item> ENDER_PEARL = tag("c:ender_pearls");
-    public static TagKey<Item> ENDER_PEARL_DUST = tag("c:ender_pearl_dusts");
+    public static final TagKey<Item> ENDER_PEARL = tag("c:ender_pearls");
+    public static final TagKey<Item> ENDER_PEARL_DUST = tag("c:ender_pearl_dusts");
 
-    public static TagKey<Item> WOOD_STICK = tag("c:wooden_rods");
-    public static TagKey<Item> CHEST = tag("c:wooden_chests");
+    public static final TagKey<Item> WOOD_STICK = tag("c:wooden_rods");
+    public static final TagKey<Item> CHEST = tag("c:wooden_chests");
 
-    public static TagKey<Item> STONE = tag("c:stone");
-    public static TagKey<Item> COBBLESTONE = tag("c:cobblestone");
-    public static TagKey<Item> GLASS = tag("c:glass");
+    public static final TagKey<Item> STONE = tag("c:stone");
+    public static final TagKey<Item> COBBLESTONE = tag("c:cobblestone");
+    public static final TagKey<Item> GLASS = tag("c:glass");
 
-    public static TagKey<Item> GLASS_CABLE = tag("ae2:glass_cable");
-    public static TagKey<Item> SMART_CABLE = tag("ae2:smart_cable");
-    public static TagKey<Item> COVERED_CABLE = tag("ae2:covered_cable");
-    public static TagKey<Item> COVERED_DENSE_CABLE = tag("ae2:covered_dense_cable");
-    public static TagKey<Item> SMART_DENSE_CABLE = tag("ae2:smart_dense_cable");
-    public static TagKey<Item> ILLUMINATED_PANEL = tag("ae2:illuminated_panel");
-    public static TagKey<Item> INTERFACE = tag("ae2:interface");
-    public static TagKey<Item> PATTERN_PROVIDER = tag("ae2:pattern_provider");
-    public static TagKey<Item> QUARTZ_AXE = tag("ae2:quartz_axe");
-    public static TagKey<Item> QUARTZ_HOE = tag("ae2:quartz_hoe");
-    public static TagKey<Item> QUARTZ_PICK = tag("ae2:quartz_pickaxe");
-    public static TagKey<Item> QUARTZ_SHOVEL = tag("ae2:quartz_shovel");
-    public static TagKey<Item> QUARTZ_SWORD = tag("ae2:quartz_sword");
-    public static TagKey<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
-    public static TagKey<Item> QUARTZ_KNIFE = tag("ae2:knife");
-    public static TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
-    public static TagKey<Item> MEMORY_CARDS = tag("ae2:memory_cards");
-    public static TagKey<Item> INSCRIBER_PRESSES = tag("ae2:inscriber_presses");
+    public static final TagKey<Item> GLASS_CABLE = tag("ae2:glass_cable");
+    public static final TagKey<Item> SMART_CABLE = tag("ae2:smart_cable");
+    public static final TagKey<Item> COVERED_CABLE = tag("ae2:covered_cable");
+    public static final TagKey<Item> COVERED_DENSE_CABLE = tag("ae2:covered_dense_cable");
+    public static final TagKey<Item> SMART_DENSE_CABLE = tag("ae2:smart_dense_cable");
+    public static final TagKey<Item> ILLUMINATED_PANEL = tag("ae2:illuminated_panel");
+    public static final TagKey<Item> INTERFACE = tag("ae2:interface");
+    public static final TagKey<Item> PATTERN_PROVIDER = tag("ae2:pattern_provider");
+    public static final TagKey<Item> QUARTZ_AXE = tag("ae2:quartz_axe");
+    public static final TagKey<Item> QUARTZ_HOE = tag("ae2:quartz_hoe");
+    public static final TagKey<Item> QUARTZ_PICK = tag("ae2:quartz_pickaxe");
+    public static final TagKey<Item> QUARTZ_SHOVEL = tag("ae2:quartz_shovel");
+    public static final TagKey<Item> QUARTZ_SWORD = tag("ae2:quartz_sword");
+    public static final TagKey<Item> QUARTZ_WRENCH = tag("ae2:quartz_wrench");
+    public static final TagKey<Item> QUARTZ_KNIFE = tag("ae2:knife");
+    public static final TagKey<Item> PAINT_BALLS = tag("ae2:paint_balls");
+    public static final TagKey<Item> MEMORY_CARDS = tag("ae2:memory_cards");
+    public static final TagKey<Item> INSCRIBER_PRESSES = tag("ae2:inscriber_presses");
     /**
      * Items that can be used in recipes to remove color from colored items.
      */
-    public static TagKey<Item> CAN_REMOVE_COLOR = tag("ae2:can_remove_color");
+    public static final TagKey<Item> CAN_REMOVE_COLOR = tag("ae2:can_remove_color");
 
     // Budding stuff
     public static final TagKey<Item> BUDDING_BLOCKS = tag("c:budding_blocks");
@@ -135,7 +135,7 @@ public final class ConventionTags {
     /**
      * For Worldgen Biomes
      */
-    public static TagKey<Biome> METEORITE_OCEAN = ConventionalBiomeTags.OCEAN;
+    public static final TagKey<Biome> METEORITE_OCEAN = ConventionalBiomeTags.OCEAN;
 
     /**
      * Used to identify items that act as wrenches.
@@ -151,7 +151,7 @@ public final class ConventionTags {
 
     public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
 
-    public static TagKey<Item> dye(DyeColor color) {
+    public static final TagKey<Item> dye(DyeColor color) {
         return DYES.get(color);
     }
 

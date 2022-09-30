@@ -21,8 +21,11 @@ package appeng.crafting.execution;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
@@ -38,9 +41,11 @@ import appeng.me.service.CraftingService;
 
 public class ExecutingCraftingJob {
     private static final String NBT_LINK = "link";
+    private static final String NBT_PLAYER_ID = "playerId";
     private static final String NBT_FINAL_OUTPUT = "finalOutput";
     private static final String NBT_WAITING_FOR = "waitingFor";
     private static final String NBT_TIME_TRACKER = "timeTracker";
+    private static final String NBT_REMAINING_AMOUNT = "remainingAmount";
     private static final String NBT_TASKS = "tasks";
     private static final String NBT_CRAFTING_PROGRESS = "#craftingProgress";
 
@@ -49,14 +54,19 @@ public class ExecutingCraftingJob {
     final Map<IPatternDetails, TaskProgress> tasks = new HashMap<>();
     final ElapsedTimeTracker timeTracker;
     GenericStack finalOutput;
+    long remainingAmount;
+    @Nullable
+    Integer playerId;
 
     @FunctionalInterface
     interface CraftingDifferenceListener {
         void onCraftingDifference(AEKey what);
     }
 
-    ExecutingCraftingJob(ICraftingPlan plan, CraftingDifferenceListener postCraftingDifference, CraftingLink link) {
+    ExecutingCraftingJob(ICraftingPlan plan, CraftingDifferenceListener postCraftingDifference, CraftingLink link,
+            @Nullable Integer playerId) {
         this.finalOutput = plan.finalOutput();
+        this.remainingAmount = this.finalOutput.amount();
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
 
         // Fill waiting for and tasks
@@ -73,6 +83,7 @@ public class ExecutingCraftingJob {
         }
         this.timeTracker = new ElapsedTimeTracker(totalPending);
         this.link = link;
+        this.playerId = playerId;
     }
 
     ExecutingCraftingJob(CompoundTag data, CraftingDifferenceListener postCraftingDifference, CraftingCpuLogic cpu) {
@@ -83,11 +94,22 @@ public class ExecutingCraftingJob {
         }
 
         this.finalOutput = GenericStack.readTag(data.getCompound(NBT_FINAL_OUTPUT));
+        // TODO 1.20: Remove
+        if (data.contains(NBT_REMAINING_AMOUNT)) {
+            this.remainingAmount = data.getLong(NBT_REMAINING_AMOUNT);
+        } else {
+            this.remainingAmount = this.finalOutput.amount();
+        }
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
-        this.waitingFor.readFromNBT(data.getList(NBT_WAITING_FOR, 10));
+        this.waitingFor.readFromNBT(data.getList(NBT_WAITING_FOR, Tag.TAG_COMPOUND));
         this.timeTracker = new ElapsedTimeTracker(data.getCompound(NBT_TIME_TRACKER));
+        if (data.contains(NBT_PLAYER_ID, Tag.TAG_INT)) {
+            this.playerId = data.getInt(NBT_PLAYER_ID);
+        } else {
+            this.playerId = null;
+        }
 
-        ListTag tasksTag = data.getList(NBT_TASKS, 10);
+        ListTag tasksTag = data.getList(NBT_TASKS, Tag.TAG_COMPOUND);
         for (int i = 0; i < tasksTag.size(); ++i) {
             final CompoundTag item = tasksTag.getCompound(i);
             var pattern = AEItemKey.fromTag(item);
@@ -119,6 +141,10 @@ public class ExecutingCraftingJob {
             list.add(item);
         }
         data.put(NBT_TASKS, list);
+
+        if (this.playerId != null) {
+            data.putInt(NBT_PLAYER_ID, this.playerId);
+        }
 
         return data;
     }

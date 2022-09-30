@@ -44,8 +44,6 @@ public class StackSizeRenderer {
 
     public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text, boolean largeFonts) {
         final float scaleFactor = largeFonts ? 0.85f : 0.5f;
-        final float inverseScaleFactor = 1.0f / scaleFactor;
-        final int offset = largeFonts ? 0 : -1;
 
         Transformation tm = new Transformation(new Vector3f(0, 0, 300), // Taken from
                 // ItemRenderer.renderItemOverlayIntoGUI

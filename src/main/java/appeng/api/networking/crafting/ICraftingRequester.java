@@ -43,16 +43,13 @@ public interface ICraftingRequester extends IActionHost, IGridNodeService {
     /**
      * items are injected into the requester as they are completed.
      *
-     * @param items item
-     * @param mode  action mode
-     *
      * @return the number of items inserted.
      */
     long insertCraftedItems(ICraftingLink link, AEKey what, long amount, Actionable mode);
 
     /**
      * called when the job changes from in progress, to either complete, or canceled.
-     *
+     * <p>
      * after this call the crafting link is "dead" and should be discarded.
      */
     void jobStateChange(ICraftingLink link);

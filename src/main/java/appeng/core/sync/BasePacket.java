@@ -47,7 +47,7 @@ public abstract class BasePacket {
                 "This packet ( " + this.getPacketID() + " does not implement a client side handler.");
     }
 
-    protected void configureWrite(FriendlyByteBuf data) {
+    protected final void configureWrite(FriendlyByteBuf data) {
         data.capacity(data.readableBytes());
         this.p = data;
     }

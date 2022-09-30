@@ -12,7 +12,10 @@ import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.abstraction.REIFacade;
 import appeng.menu.me.common.MEStorageMenu;
 
-public class SearchSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C, MEStorageScreen<C>> {
+public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C, MEStorageScreen<C>> {
+
+    private final AECheckbox pinAutoCraftedItemsCheckbox;
+    private final AECheckbox notifyForFinishedCraftingJobsCheckbox;
 
     private final AECheckbox useInternalSearchRadio;
     private final AECheckbox useExternalSearchRadio;
@@ -23,8 +26,8 @@ public class SearchSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C
     private final AECheckbox clearExternalCheckbox;
     private final AECheckbox searchTooltipsCheckbox;
 
-    public SearchSettingsScreen(MEStorageScreen<C> parent) {
-        super(parent, "/screens/terminals/search_settings.json");
+    public TerminalSettingsScreen(MEStorageScreen<C> parent) {
+        super(parent, "/screens/terminals/terminal_settings.json");
 
         addBackButton();
 
@@ -41,6 +44,11 @@ public class SearchSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C
             externalSearchMod = Component.literal("JEI/REI");
             hasExternalSearch = false;
         }
+
+        pinAutoCraftedItemsCheckbox = widgets.addCheckbox("pinAutoCraftedItemsCheckbox",
+                GuiText.TerminalSettingsPinAutoCraftedItems.text(), this::save);
+        notifyForFinishedCraftingJobsCheckbox = widgets.addCheckbox("notifyForFinishedCraftingJobsCheckbox",
+                GuiText.TerminalSettingsNotifyForFinishedJobs.text(), this::save);
 
         useInternalSearchRadio = widgets.addCheckbox("useInternalSearchRadio",
                 GuiText.SearchSettingsUseInternalSearch.text(), this::switchToAeSearch);
@@ -88,6 +96,9 @@ public class SearchSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C
     }
 
     private void updateState() {
+        pinAutoCraftedItemsCheckbox.setSelected(config.isPinAutoCraftedItems());
+        notifyForFinishedCraftingJobsCheckbox.setSelected(config.isNotifyForFinishedCraftingJobs());
+
         useInternalSearchRadio.setSelected(!config.isUseExternalSearch());
         useExternalSearchRadio.setSelected(config.isUseExternalSearch());
         rememberCheckbox.setSelected(config.isRememberLastSearch());
@@ -110,6 +121,8 @@ public class SearchSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C
         config.setSyncWithExternalSearch(syncWithExternalCheckbox.isSelected());
         config.setClearExternalSearchOnOpen(clearExternalCheckbox.isSelected());
         config.setSearchTooltips(searchTooltipsCheckbox.isSelected());
+        config.setPinAutoCraftedItems(pinAutoCraftedItemsCheckbox.isSelected());
+        config.setNotifyForFinishedCraftingJobs(notifyForFinishedCraftingJobsCheckbox.isSelected());
 
         updateState();
     }
