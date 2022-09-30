@@ -81,8 +81,6 @@ public class P2PService implements IGridService, IGridServiceProvider {
                 return;
             }
 
-            // AELog.info( "rmv-" + (t.output ? "output: " : "input: ") + t.freq );
-
             if (tunnel.isOutput()) {
                 this.outputs.remove(tunnel.getFrequency(), tunnel);
             } else {
@@ -113,19 +111,22 @@ public class P2PService implements IGridService, IGridServiceProvider {
     }
 
     private void updateTunnel(short freq, boolean updateOutputs, boolean configChange) {
-        for (P2PTunnelPart p : this.outputs.get(freq)) {
-            if (configChange) {
-                p.onTunnelConfigChange();
+        if (updateOutputs) {
+            for (P2PTunnelPart p : this.outputs.get(freq)) {
+                if (configChange) {
+                    p.onTunnelConfigChange();
+                }
+                p.onTunnelNetworkChange();
             }
-            p.onTunnelNetworkChange();
         }
-
-        final P2PTunnelPart in = this.inputs.get(freq);
-        if (in != null) {
-            if (configChange) {
-                in.onTunnelConfigChange();
+        if (!updateOutputs) {
+            final P2PTunnelPart in = this.inputs.get(freq);
+            if (in != null) {
+                if (configChange) {
+                    in.onTunnelConfigChange();
+                }
+                in.onTunnelNetworkChange();
             }
-            in.onTunnelNetworkChange();
         }
     }
 
@@ -138,6 +139,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
             this.inputs.remove(t.getFrequency());
         }
 
+        var oldFrequency = t.getFrequency();
         t.setFrequency(newFrequency);
 
         if (t.isOutput()) {
@@ -146,9 +148,12 @@ public class P2PService implements IGridService, IGridServiceProvider {
             this.inputs.put(t.getFrequency(), t);
         }
 
-        // AELog.info( "update-" + (t.output ? "output: " : "input: ") + t.freq );
-        this.updateTunnel(t.getFrequency(), t.isOutput(), true);
-        this.updateTunnel(t.getFrequency(), !t.isOutput(), true);
+        if (oldFrequency != newFrequency) {
+            this.updateTunnel(oldFrequency, true, true);
+            this.updateTunnel(oldFrequency, false, true);
+        }
+        this.updateTunnel(newFrequency, true, true);
+        this.updateTunnel(newFrequency, false, true);
     }
 
     public short newFrequency() {
