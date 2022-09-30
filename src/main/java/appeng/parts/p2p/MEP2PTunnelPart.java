@@ -19,7 +19,9 @@
 package appeng.parts.p2p;
 
 import java.util.EnumSet;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
+import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
@@ -43,8 +46,6 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
-import appeng.me.service.helpers.Connections;
-import appeng.me.service.helpers.TunnelConnection;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 
@@ -55,7 +56,16 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
         return MODELS.getModels();
     }
 
-    private final Connections connection = new Connections(this);
+    /**
+     * Updates to ME tunnel connections are always delayed until the end of the tick. This field stores which operation
+     * should be performed. Even if multiple updates are queued, only the most recently queued will be performed.
+     */
+    private ConnectionUpdate pendingUpdate = ConnectionUpdate.NONE;
+
+    // This maps outputs to the grid connection between the external node of this tunnel and the external node
+    // of the other tunnel. Generally only maintained for the input side. May still have content for output tunnels
+    // before cleanup.
+    private final Map<MEP2PTunnelPart, IGridConnection> connections = new IdentityHashMap<>();
 
     private final IManagedGridNode outerNode = GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
@@ -90,7 +100,9 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     @Override
     public void onTunnelNetworkChange() {
         super.onTunnelNetworkChange();
-        if (!this.isOutput()) {
+        // Trigger the delayed update of the tunnel connections. Usually this is only done for input
+        // tunnels, but if an input is converted to an output, we need to clean up the connections.
+        if (!this.isOutput() || !connections.isEmpty()) {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
             });
@@ -138,70 +150,78 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        // just move on...
-        if (node.hasGridBooted()) {
-            if (!node.isPowered() || !node.isActive()) {
-                this.connection.markDestroy();
-            } else {
-                this.connection.markCreate();
-            }
-            TickHandler.instance().addCallable(this.getBlockEntity().getLevel(), this.connection);
-
-            return TickRateModulation.SLEEP;
+        if (!node.isOnline()) {
+            pendingUpdate = ConnectionUpdate.DISCONNECT;
+        } else {
+            pendingUpdate = ConnectionUpdate.CONNECT;
         }
 
-        return TickRateModulation.IDLE;
+        TickHandler.instance().addCallable(getLevel(), this::updateConnections);
+        return TickRateModulation.SLEEP;
     }
 
-    public void updateConnections(Connections connections) {
-        if (this.isOutput()) {
+    private void updateConnections() {
+        var operation = pendingUpdate;
+        pendingUpdate = ConnectionUpdate.NONE;
+
+        var mainGrid = getMainNode().getGrid();
+
+        if (isOutput()) {
             // It's possible to be woken up while we're still an input, then be made an output,
-            // and THEN this method is called afterwards
-            return;
+            // and THEN this method is called afterwards. Disconnect any potentially remaining
+            // connections.
+            operation = ConnectionUpdate.DISCONNECT;
+        } else if (mainGrid == null) {
+            // We got disconnected completely (are we being destroyed?)
+            operation = ConnectionUpdate.DISCONNECT;
         }
 
-        if (connections.isDestroy()) {
-            for (TunnelConnection cw : this.connection.getConnections().values()) {
-                cw.getConnection().destroy();
+        if (operation == ConnectionUpdate.DISCONNECT) {
+            for (var cw : connections.values()) {
+                cw.destroy();
             }
+            connections.clear();
+        } else if (operation == ConnectionUpdate.CONNECT) {
+            var outputs = getOutputs();
 
-            this.connection.getConnections().clear();
-        } else if (connections.isCreate()) {
+            // Sever existing connections to tunnels that are no longer outputs of this input or
+            // that have become invalid for other reasons.
+            var it = connections.entrySet().iterator();
+            while (it.hasNext()) {
+                var entry = it.next();
+                var output = entry.getKey();
+                var connection = entry.getValue();
 
-            var grid = this.getMainNode().getGrid();
-
-            var i = this.connection.getConnections().values().iterator();
-            while (i.hasNext()) {
-                final TunnelConnection cw = i.next();
-                if (grid == null
-                        || cw.getTunnel().getMainNode().getGrid() != grid
-                        || !cw.getTunnel().getMainNode().isActive()) {
-                    cw.getConnection().destroy();
-                    i.remove();
+                // The previous tunnel could have moved to a different main grid (net-split), or lost his channel.
+                // Or it may have been relinked to a different input.
+                if (output.getMainNode().getGrid() != mainGrid
+                        || !output.getMainNode().isOnline()
+                        || !outputs.contains(output)) {
+                    connection.destroy();
+                    it.remove();
                 }
             }
 
-            var newSides = this.getOutputs();
-
-            for (var me : newSides) {
-                if (!me.getMainNode().isActive() || connections.getConnections().get(me.getGridNode()) != null) {
+            for (var output : outputs) {
+                // The other tunnel has no channel, or it's already connected
+                if (!output.getMainNode().isOnline() || connections.containsKey(output)) {
                     continue;
                 }
 
                 try {
-                    connections.getConnections().put(me.getGridNode(), new TunnelConnection(me,
-                            GridHelper.createGridConnection(this.outerNode.getNode(), me.outerNode.getNode())));
+                    var connection = GridHelper.createGridConnection(getExternalFacingNode(),
+                            output.getExternalFacingNode());
+                    connections.put(output, connection);
                 } catch (FailedConnectionException e) {
-                    final BlockEntity start = this.getBlockEntity();
-                    final BlockEntity end = me.getBlockEntity();
+                    var start = this.getBlockEntity();
+                    var end = output.getBlockEntity();
 
                     AELog.debug(e);
 
                     AELog.warn(
-                            "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]",
+                            "Failed to establish a ME P2P Tunnel between the tunnels at [x=%d, y=%d, z=%d] and [x=%d, y=%d, z=%d]: %s",
                             start.getBlockPos().getX(), start.getBlockPos().getY(), start.getBlockPos().getZ(),
-                            end.getBlockPos().getX(), end.getBlockPos().getY(), end.getBlockPos().getZ());
-                    // :(
+                            end.getBlockPos().getX(), end.getBlockPos().getY(), end.getBlockPos().getZ(), e);
                 }
             }
         }
@@ -212,4 +232,9 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
+    private enum ConnectionUpdate {
+        NONE,
+        DISCONNECT,
+        CONNECT
+    }
 }
