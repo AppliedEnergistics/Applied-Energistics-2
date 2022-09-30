@@ -15,7 +15,8 @@
   "entrypoints": {
     "client": ["appeng.core.AppEngClientStartup"],
     "server": ["appeng.core.AppEngServerStartup"],
-    "rei_plugins": ["appeng.integration.modules.jei.ReiPlugin"]
+    "rei_plugins": ["appeng.integration.modules.jei.ReiPlugin"],
+    "jade": ["appeng.integration.modules.jade.JadeModule"]
   },
   "mixins": ["ae2.mixins.json"],
   "depends": {

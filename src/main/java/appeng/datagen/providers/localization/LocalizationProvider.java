@@ -15,8 +15,10 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.config.PowerUnits;
+import appeng.api.integrations.waila.AEJadeIds;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
@@ -63,9 +65,23 @@ public class LocalizationProvider implements IAE2DataProvider {
             add(powerUnit.unlocalizedName, powerUnit.symbolName);
         }
 
+        generateJadeLocalizations();
+
         generateLocalizations();
 
         save(cache, localizations);
+    }
+
+    private void generateJadeLocalizations() {
+        addJadeProviderDisplayName(AEJadeIds.PART_PROVIDER, "Part");
+        addJadeProviderDisplayName(AEJadeIds.PART_NAME_PROVIDER, "Part Name");
+        addJadeProviderDisplayName(AEJadeIds.PART_ICON_PROVIDER, "Part Icon");
+        addJadeProviderDisplayName(AEJadeIds.CHARGER_PROVIDER, "Charger");
+        addJadeProviderDisplayName(AEJadeIds.BLOCK_ENTITIES_PROVIDER, "Block Entities");
+    }
+
+    private void addJadeProviderDisplayName(ResourceLocation providerId, String name) {
+        add("config.jade.plugin_ae2." + providerId.getPath(), name);
     }
 
     public <T extends Enum<T> & LocalizationEnum> void addEnum(Class<T> localizedEnum) {
