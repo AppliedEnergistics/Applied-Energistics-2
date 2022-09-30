@@ -1,8 +1,10 @@
-package appeng.server.testworld;
+package appeng.server.testplots;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import appeng.server.testplots.TestPlot;
+import appeng.server.testworld.PlotBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -30,6 +32,7 @@ public final class AutoCraftingTestPlot {
     private AutoCraftingTestPlot() {
     }
 
+    @TestPlot("autocrafting_testplot")
     public static void create(PlotBuilder plot) {
         plot.creativeEnergyCell("4 -1 4");
 

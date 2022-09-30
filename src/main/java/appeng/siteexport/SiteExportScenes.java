@@ -25,7 +25,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.BlockDefinition;
 import appeng.server.testworld.Plot;
 import appeng.server.testworld.PlotBuilder;
-import appeng.server.testworld.TestPlots;
+import appeng.server.testplots.TestPlots;
 
 final class SiteExportScenes {
     private SiteExportScenes() {

@@ -25,7 +25,7 @@ import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.server.ISubCommand;
-import appeng.server.testworld.TestPlots;
+import appeng.server.testplots.TestPlots;
 import appeng.server.testworld.TestWorldGenerator;
 
 /**

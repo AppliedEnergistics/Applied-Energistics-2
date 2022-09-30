@@ -1,7 +1,9 @@
-package appeng.server.testworld;
+package appeng.server.testplots;
 
 import java.util.Objects;
 
+import appeng.server.testplots.TestPlot;
+import appeng.server.testworld.PlotBuilder;
 import org.apache.commons.lang3.mutable.MutableDouble;
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -27,6 +29,7 @@ import appeng.parts.p2p.P2PTunnelPart;
 import appeng.util.SettingsFrom;
 
 public class P2PTestPlots {
+    @TestPlot("p2p_me")
     public static void me(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         placeTunnel(plot, AEParts.ME_P2P_TUNNEL);
@@ -64,6 +67,7 @@ public class P2PTestPlots {
         });
     }
 
+    @TestPlot("p2p_items")
     public static void item(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         placeTunnel(plot, AEParts.ITEM_P2P_TUNNEL);
@@ -84,6 +88,7 @@ public class P2PTestPlots {
     /**
      * Builds a system that uses an export bus to export fluids into a tank via a P2P fluid tunnel.
      */
+    @TestPlot("p2p_fluids")
     public static void fluid(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         placeTunnel(plot, AEParts.FLUID_P2P_TUNNEL);
@@ -112,6 +117,7 @@ public class P2PTestPlots {
         });
     }
 
+    @TestPlot("p2p_energy")
     public static void energy(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         placeTunnel(plot, AEParts.FE_P2P_TUNNEL);
@@ -139,6 +145,7 @@ public class P2PTestPlots {
         });
     }
 
+    @TestPlot("p2p_light")
     public static void light(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         placeTunnel(plot, AEParts.LIGHT_P2P_TUNNEL);

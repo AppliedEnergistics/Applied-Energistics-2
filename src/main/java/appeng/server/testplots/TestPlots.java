@@ -1,18 +1,39 @@
-package appeng.server.testworld;
+package appeng.server.testplots;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
-
-import com.google.common.collect.ImmutableMap;
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.config.RedstoneMode;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
+import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.networking.pathing.ChannelMode;
+import appeng.api.parts.PartHelper;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.StorageCells;
+import appeng.api.util.AEColor;
+import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
+import appeng.blockentity.misc.InterfaceBlockEntity;
+import appeng.blockentity.storage.DriveBlockEntity;
+import appeng.blockentity.storage.SkyStoneTankBlockEntity;
+import appeng.core.AELog;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.items.storage.CreativeCellItem;
+import appeng.items.tools.powered.MatterCannonItem;
+import appeng.me.cells.BasicCellInventory;
+import appeng.me.helpers.BaseActionSource;
+import appeng.me.service.PathingService;
+import appeng.menu.AutoCraftingMenu;
+import appeng.parts.crafting.PatternProviderPart;
+import appeng.server.testworld.Plot;
+import appeng.server.testworld.PlotBuilder;
+import appeng.server.testworld.TestCraftingJob;
+import appeng.util.CraftingRecipeUtil;
 import com.google.common.collect.Sets;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,82 +57,97 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.config.RedstoneMode;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
-import appeng.api.crafting.PatternDetailsHelper;
-import appeng.api.networking.pathing.ChannelMode;
-import appeng.api.parts.PartHelper;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.StorageCells;
-import appeng.api.util.AEColor;
-import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
-import appeng.blockentity.misc.InterfaceBlockEntity;
-import appeng.blockentity.storage.DriveBlockEntity;
-import appeng.blockentity.storage.SkyStoneTankBlockEntity;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.items.storage.CreativeCellItem;
-import appeng.items.tools.powered.MatterCannonItem;
-import appeng.me.cells.BasicCellInventory;
-import appeng.me.helpers.BaseActionSource;
-import appeng.me.service.PathingService;
-import appeng.menu.AutoCraftingMenu;
-import appeng.parts.crafting.PatternProviderPart;
-import appeng.util.CraftingRecipeUtil;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 public final class TestPlots {
-    public static final Map<ResourceLocation, Consumer<PlotBuilder>> PLOT_FACTORIES = ImmutableMap
-            .<ResourceLocation, Consumer<PlotBuilder>>builder()
-            .put(AppEng.makeId("all_terminals"), TestPlots::allTerminals)
-            .put(AppEng.makeId("item_chest"), TestPlots::itemChest)
-            .put(AppEng.makeId("fluid_chest"), TestPlots::fluidChest)
-            .put(AppEng.makeId("import_exportbus"), TestPlots::importExportBus)
-            .put(AppEng.makeId("inscriber"), TestPlots::inscriber)
-            .put(AppEng.makeId("autocrafting_testplot"), AutoCraftingTestPlot::create)
-            .put(AppEng.makeId("import_and_export_in_one_tick"), TestPlots::importAndExportInOneTick)
-            .put(AppEng.makeId("export_from_storagebus"), TestPlots::exportFromStorageBus)
-            .put(AppEng.makeId("import_into_storagebus"), TestPlots::importIntoStorageBus)
-            .put(AppEng.makeId("import_on_pulse"), TestPlots::importOnPulse)
-            .put(AppEng.makeId("import_on_pulse_transactioncrash"), TestPlots::importOnPulseTransactionCrash)
-            .put(AppEng.makeId("mattercannon_range"), TestPlots::matterCannonRange)
-            .put(AppEng.makeId("insert_fluid_into_mechest"), TestPlots::testInsertFluidIntoMEChest)
-            .put(AppEng.makeId("insert_item_into_mechest"), TestPlots::testInsertItemsIntoMEChest)
-            .put(AppEng.makeId("maxchannels_adhoctest"), TestPlots::maxChannelsAdHocTest)
-            .put(AppEng.makeId("blockingmode_subnetwork_chesttest"), TestPlots::blockingModeSubnetworkChestTest)
-            .put(AppEng.makeId("canceling_jobs_from_interfacecrash"), TestPlots::cancelingJobsFromInterfaceCrash)
-            .put(AppEng.makeId("terminal_fullof_enchanteditems"), TestPlots::terminalFullOfEnchantedItems)
-            .put(AppEng.makeId("p2p_me"), P2PTestPlots::me)
-            .put(AppEng.makeId("p2p_items"), P2PTestPlots::item)
-            .put(AppEng.makeId("p2p_fluids"), P2PTestPlots::fluid)
-            .put(AppEng.makeId("p2p_energy"), P2PTestPlots::energy)
-            .put(AppEng.makeId("p2p_light"), P2PTestPlots::light)
-            .put(AppEng.makeId("import_from_cauldron"), TestPlots::importLavaFromCauldron)
-            .put(AppEng.makeId("tool_repair_recipe"), TestPlots::toolRepairRecipe)
-            .put(AppEng.makeId("double_chest_storage_bus"), TestPlots::doubleChestStorageBus)
-            .put(AppEng.makeId("export_bus_dupe_regression"), TestPlots::exportBusDupeRegression)
-            .put(AppEng.makeId("interface_restock_dupe_test"), TestPlots::interfaceRestockDupeTest)
-            .build();
+    private static final Class<?>[] PLOT_CLASSES = {
+            TestPlots.class,
+            AutoCraftingTestPlot.class,
+            P2PTestPlots.class
+    };
+
+    @Nullable
+    private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
 
     private TestPlots() {
     }
 
+    private static synchronized Map<ResourceLocation, Consumer<PlotBuilder>> getPlots() {
+        if (plots == null) {
+            plots = scanForPlots();
+        }
+        return plots;
+    }
+
+    private static Map<ResourceLocation, Consumer<PlotBuilder>> scanForPlots() {
+        var plots = new HashMap<ResourceLocation, Consumer<PlotBuilder>>();
+
+        try {
+            for (var clazz : PLOT_CLASSES) {
+                AELog.info("Scanning %s for plots", clazz);
+
+                for (var method : clazz.getMethods()) {
+                    var annotation = method.getAnnotation(TestPlot.class);
+                    if (annotation == null) {
+                        continue;
+                    }
+
+                    var id = new ResourceLocation(annotation.value());
+                    if (plots.containsKey(id)) {
+                        throw new IllegalArgumentException("Duplicate plot ID " + id);
+                    }
+
+                    if (!Modifier.isPublic(method.getModifiers())) {
+                        throw new IllegalStateException("Method " + method + " must be public");
+                    }
+                    if (!Modifier.isStatic(method.getModifiers())) {
+                        throw new IllegalStateException("Method " + method + " must be static");
+                    }
+                    if (!void.class.equals(method.getReturnType())) {
+                        throw new IllegalStateException("Method " + method + " must return void");
+                    }
+                    if (!Arrays.asList(method.getParameterTypes()).equals(List.of(PlotBuilder.class))) {
+                        throw new IllegalStateException("Method " + method + " must take a single PlotBuilder argument");
+                    }
+
+                    plots.put(id, builder -> {
+                        try {
+                            method.invoke(null, builder);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+            AELog.warn("Failed to scan for plots: %s", e);
+        }
+
+        return plots;
+    }
+
     public static List<ResourceLocation> getPlotIds() {
-        return new ArrayList<>(PLOT_FACTORIES.keySet());
+        var list = new ArrayList<>(getPlots().keySet());
+        list.sort(Comparator.comparing(ResourceLocation::toString));
+        return list;
     }
 
     public static List<Plot> createPlots() {
         var plots = new ArrayList<Plot>();
-        for (var entry : PLOT_FACTORIES.entrySet()) {
+        for (var entry : getPlots().entrySet()) {
             var plot = new Plot(entry.getKey());
             entry.getValue().accept(plot);
             plots.add(plot);
@@ -121,7 +157,7 @@ public final class TestPlots {
 
     @Nullable
     public static Plot getById(ResourceLocation name) {
-        var factory = PLOT_FACTORIES.get(name);
+        var factory = getPlots().get(name);
         if (factory == null) {
             return null;
         }
@@ -133,6 +169,7 @@ public final class TestPlots {
     /**
      * A wall of all terminals/monitors in all color combinations.
      */
+    @TestPlot("all_terminals")
     public static void allTerminals(PlotBuilder plot) {
         var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
         enchantedPickaxe.enchant(Enchantments.BLOCK_FORTUNE, 3);
@@ -195,6 +232,7 @@ public final class TestPlots {
         return colors;
     }
 
+    @TestPlot("item_chest")
     public static void itemChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
@@ -211,6 +249,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("0 -1 0");
     }
 
+    @TestPlot("fluid_chest")
     public static void fluidChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
@@ -231,6 +270,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("0 -1 0");
     }
 
+    @TestPlot("import_exportbus")
     public static void importExportBus(PlotBuilder plot) {
         plot.chest("1 0 1", new ItemStack(Items.ACACIA_LOG, 16), new ItemStack(Items.ENDER_PEARL, 6));
         plot.block("1 1 1", Blocks.HOPPER);
@@ -248,6 +288,7 @@ public final class TestPlots {
         });
     }
 
+    @TestPlot("inscriber")
     public static void inscriber(PlotBuilder plot) {
         processorInscriber(plot.offset(0, 1, 2), AEItems.LOGIC_PROCESSOR_PRESS, Items.GOLD_INGOT);
         processorInscriber(plot.offset(5, 1, 2), AEItems.ENGINEERING_PROCESSOR_PRESS, Items.DIAMOND);
@@ -286,6 +327,7 @@ public final class TestPlots {
      * Reproduces an issue with Fabric Transactions found in
      * https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5798
      */
+    @TestPlot("import_and_export_in_one_tick")
     public static void importAndExportInOneTick(PlotBuilder plot) {
         plot.creativeEnergyCell("-1 0 0");
         plot.chest("0 0 1"); // Output Chest
@@ -316,6 +358,7 @@ public final class TestPlots {
     /**
      * Export from a chest->storagebus->exportbus->chest to test that it interacts correctly with Fabric transactions.
      */
+    @TestPlot("export_from_storagebus")
     public static void exportFromStorageBus(PlotBuilder plot) {
         plot.creativeEnergyCell("1 0 0");
         plot.cable("0 0 0")
@@ -337,6 +380,7 @@ public final class TestPlots {
     /**
      * Import into a storage bus, which tests that the external interaction is correct w.r.t. Fabric transactions.
      */
+    @TestPlot("import_into_storagebus")
     public static void importIntoStorageBus(PlotBuilder plot) {
         plot.creativeEnergyCell("1 0 0");
         plot.cable("0 0 0")
@@ -359,6 +403,7 @@ public final class TestPlots {
     /**
      * Import on Pulse (transition low->high)
      */
+    @TestPlot("import_on_pulse")
     public static void importOnPulse(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         var inputPos = origin.south();
@@ -415,6 +460,7 @@ public final class TestPlots {
      * from. This is a regression test for Fabric, where the Storage Bus has to open a Transaction for
      * getAvailableStacks, and the simulated extraction causes a neighbor update, triggering the import bus.
      */
+    @TestPlot("import_on_pulse_transactioncrash")
     public static void importOnPulseTransactionCrash(PlotBuilder plot) {
         plot.creativeEnergyCell("1 0 0");
         plot.chest("0 0 -1", new ItemStack(Items.OAK_PLANKS)); // Import Chest
@@ -448,6 +494,7 @@ public final class TestPlots {
         }).setupTicks(20).maxTicks(150);
     }
 
+    @TestPlot("mattercannon_range")
     public static void matterCannonRange(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
@@ -494,6 +541,7 @@ public final class TestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5821
      */
+    @TestPlot("insert_fluid_into_mechest")
     public static void testInsertFluidIntoMEChest(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
@@ -518,6 +566,7 @@ public final class TestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6582
      */
+    @TestPlot("insert_item_into_mechest")
     public static void testInsertItemsIntoMEChest(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
@@ -537,6 +586,7 @@ public final class TestPlots {
         }));
     }
 
+    @TestPlot("maxchannels_adhoctest")
     public static void maxChannelsAdHocTest(PlotBuilder plot) {
         plot.creativeEnergyCell("0 -1 0");
         plot.block("[-3,3] -2 [-3,3]", AEBlocks.DRIVE);
@@ -610,7 +660,8 @@ public final class TestPlots {
 
             // Add creative cells for anything that's not provided as a recipe result
             var keysToAdd = Sets.difference(neededIngredients, providedResults).iterator();
-            drives: for (var drive : grid.getMachines(DriveBlockEntity.class)) {
+            drives:
+            for (var drive : grid.getMachines(DriveBlockEntity.class)) {
 
                 var cellInv = drive.getInternalInventory();
                 for (int i = 0; i < cellInv.size(); i++) {
@@ -636,6 +687,7 @@ public final class TestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5860.
      */
+    @TestPlot("blockingmode_subnetwork_chesttest")
     public static void blockingModeSubnetworkChestTest(PlotBuilder plot) {
         // Network itself
         plot.creativeEnergyCell("0 -1 0");
@@ -647,8 +699,8 @@ public final class TestPlots {
                 .part(Direction.EAST, AEParts.PATTERN_PROVIDER, pp -> {
                     pp.getLogic().getPatternInv().addItems(
                             PatternDetailsHelper.encodeProcessingPattern(
-                                    new GenericStack[] { input },
-                                    new GenericStack[] { output }));
+                                    new GenericStack[]{input},
+                                    new GenericStack[]{output}));
                     pp.getLogic().getConfigManager().putSetting(Settings.BLOCKING_MODE, YesNo.YES);
                 });
         plot.drive(new BlockPos(2, 0, -1))
@@ -680,6 +732,7 @@ public final class TestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5919
      */
+    @TestPlot("canceling_jobs_from_interfacecrash")
     public static void cancelingJobsFromInterfaceCrash(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
@@ -724,6 +777,7 @@ public final class TestPlots {
     /**
      * Simple terminal full of enchanted items to test rendering performance.
      */
+    @TestPlot("terminal_fullof_enchanteditems")
     public static void terminalFullOfEnchantedItems(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
@@ -741,6 +795,7 @@ public final class TestPlots {
         }
     }
 
+    @TestPlot("import_from_cauldron")
     public static void importLavaFromCauldron(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
@@ -767,6 +822,7 @@ public final class TestPlots {
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6104. Ensures that
      * repairing tools properly checks for damage values.
      */
+    @TestPlot("tool_repair_recipe")
     public static void toolRepairRecipe(PlotBuilder plot) {
         var undamaged = AEItemKey.of(Items.DIAMOND_PICKAXE);
         var maxDamage = undamaged.getFuzzySearchMaxValue();
@@ -803,7 +859,7 @@ public final class TestPlots {
             var patternDetails = PatternDetailsHelper.decodePattern(encodedPattern, level);
 
             // Push it to the assembler
-            var table = new KeyCounter[] { new KeyCounter() };
+            var table = new KeyCounter[]{new KeyCounter()};
             table[0].add(damaged, 2);
             molecularAssembler.pushPattern(patternDetails, table, Direction.UP);
         });
@@ -824,6 +880,7 @@ public final class TestPlots {
     /**
      * Placing a storage bus on a double chest should report the content of both chests.
      */
+    @TestPlot("double_chest_storage_bus")
     private static void doubleChestStorageBus(PlotBuilder plot) {
         var o = BlockPos.ZERO;
         plot.chest(o.north(), new ItemStack(Items.STICK));
@@ -847,6 +904,7 @@ public final class TestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6294
      */
+    @TestPlot("export_bus_dupe_regression")
     private static void exportBusDupeRegression(PlotBuilder plot) {
         var o = BlockPos.ZERO;
         plot.chest(o.north(), new ItemStack(Items.STICK, 64));
@@ -886,6 +944,7 @@ public final class TestPlots {
      * Similar to {@link #exportBusDupeRegression(PlotBuilder)}, but tests that interface restocking will not make the
      * same mistake.
      */
+    @TestPlot("interface_restock_dupe_test")
     private static void interfaceRestockDupeTest(PlotBuilder plot) {
         var o = BlockPos.ZERO;
         // Set up a double chest with 64 sticks which will report as 128 sticks

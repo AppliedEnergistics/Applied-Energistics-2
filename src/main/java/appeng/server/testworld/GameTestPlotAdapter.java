@@ -3,6 +3,7 @@ package appeng.server.testworld;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.server.testplots.TestPlots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.TestFunction;
