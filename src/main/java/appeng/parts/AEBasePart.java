@@ -270,8 +270,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
                     importSettings(SettingsFrom.MEMORY_CARD, data, player);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
-                    MemoryCardItem.importGenericSettings(this, data, player);
-                    memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
+                    MemoryCardItem.importGenericSettingsAndNotify(this, data, player);
                 }
             }
             return true;
