@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import appeng.server.testplots.TestPlots;
 import com.google.common.collect.Iterables;
 
 import net.minecraft.core.BlockPos;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import appeng.core.definitions.AEBlocks;
+import appeng.server.testplots.TestPlots;
 
 public class TestWorldGenerator {
     /**

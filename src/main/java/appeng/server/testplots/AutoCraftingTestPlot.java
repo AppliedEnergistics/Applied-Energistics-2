@@ -3,8 +3,6 @@ package appeng.server.testplots;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import appeng.server.testplots.TestPlot;
-import appeng.server.testworld.PlotBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -27,6 +25,7 @@ import appeng.core.definitions.AEParts;
 import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
 import appeng.menu.AutoCraftingMenu;
+import appeng.server.testworld.PlotBuilder;
 
 public final class AutoCraftingTestPlot {
     private AutoCraftingTestPlot() {

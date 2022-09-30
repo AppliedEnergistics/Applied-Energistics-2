@@ -2,10 +2,10 @@ package appeng.server.testplots;
 
 import java.util.Objects;
 
-import appeng.server.testplots.TestPlot;
-import appeng.server.testworld.PlotBuilder;
 import org.apache.commons.lang3.mutable.MutableDouble;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.mutable.MutableObject;
+import org.apache.commons.lang3.mutable.MutableShort;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
@@ -17,6 +17,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
+import appeng.api.networking.IGrid;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.definitions.AEBlocks;
@@ -25,7 +26,11 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 import appeng.me.service.P2PService;
 import appeng.parts.AEBasePart;
+import appeng.parts.p2p.MEP2PTunnelPart;
 import appeng.parts.p2p.P2PTunnelPart;
+import appeng.parts.reporting.AbstractPanelPart;
+import appeng.parts.reporting.PanelPart;
+import appeng.server.testworld.PlotBuilder;
 import appeng.util.SettingsFrom;
 
 public class P2PTestPlots {
@@ -181,6 +186,106 @@ public class P2PTestPlots {
         });
     }
 
+    /**
+     * Tests that when a P2P tunnel is allocated/unallocated a channel, it connects/disconnects correctly.
+     */
+    @TestPlot("p2p_channel_reconnect_behavior")
+    public static void testOutOfChannelReconnectBehavior(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+
+        plot.creativeEnergyCell(origin.below());
+        plot.block(origin, AEBlocks.CONTROLLER);
+
+        // Build the west loop with a power connection into the P2P grid
+        plot.cable(origin.west()).part(Direction.WEST, AEParts.ME_P2P_TUNNEL);
+        plot.cable(origin.west().north());
+        plot.cable(origin.west().north().west());
+        plot.cable(origin.west().north().west().south())
+                .part(Direction.NORTH, AEParts.QUARTZ_FIBER);
+
+        // Build the east loop with the toggleable channel-sink
+        // first block uses 4 channels
+        plot.cable(origin.east())
+                .part(Direction.NORTH, AEParts.TERMINAL)
+                .part(Direction.SOUTH, AEParts.TERMINAL)
+                .part(Direction.UP, AEParts.TERMINAL)
+                .part(Direction.DOWN, AEParts.TERMINAL);
+        // next block uses 3 to leave 1 for the P2P
+        plot.cable(origin.east().east())
+                .part(Direction.NORTH, AEParts.TERMINAL)
+                .part(Direction.UP, AEParts.TERMINAL)
+                .part(Direction.DOWN, AEParts.TERMINAL)
+                .part(Direction.SOUTH, AEParts.TOGGLE_BUS);
+        // lever to toggle the toggle bus
+        var leverPos = origin.east().east().north();
+        plot.block(leverPos, Blocks.REDSTONE_LAMP);
+        plot.leverOn(leverPos.above().above(), Direction.DOWN);
+        // the toggle-bus-branch with another terminal on it to consume the full 8 channels
+        plot.cable(origin.east().east().south())
+                .part(Direction.UP, AEParts.TERMINAL);
+
+        // Make a somewhat winded cable to be long enough, so it's longer than the path via the toggle-bus node
+        // to the terminal
+        plot.cable(origin.east().east().east())
+                .part(Direction.EAST, AEParts.CABLE_ANCHOR);
+        plot.cable(origin.east().east().east().north());
+        plot.cable(origin.east().east().east().north().east())
+                .part(Direction.EAST, AEParts.CABLE_ANCHOR);
+        plot.cable(origin.east().east().east().north().east().south());
+        plot.cable(origin.east().east().east().north().east().south().east());
+        var p2pOutputPos = origin.east().east().east().north().east().south().east().north();
+        plot.cable(p2pOutputPos).part(Direction.EAST, AEParts.ME_P2P_TUNNEL);
+        // This monitor will only be lit if the connection exists since it would have no power otherwise
+        plot.cable(p2pOutputPos.east()).part(Direction.UP, AEParts.MONITOR);
+
+        plot.test(helper -> {
+            var freq = new MutableShort();
+            var lightPanel = new MutableObject<AbstractPanelPart>();
+            helper.startSequence()
+                    .thenWaitUntil(() -> helper.getGrid(origin))
+                    .thenExecute(() -> {
+                        lightPanel.setValue(helper.getPart(p2pOutputPos.east(), Direction.UP, PanelPart.class));
+
+                        var grid = helper.getGrid(origin);
+                        var inputPos = helper.absolutePos(origin.west());
+                        var outputPos = helper.absolutePos(p2pOutputPos);
+                        freq.setValue(linkTunnels(grid, MEP2PTunnelPart.class, inputPos, outputPos));
+                    })
+                    .thenWaitUntil(() -> {
+                        helper.check(
+                                lightPanel.getValue().getMainNode().isOnline(),
+                                "The panel should initially be on");
+                    })
+                    // This toggles the toggle bus and will make the P2P run out of channels
+                    .thenExecute(() -> helper.pullLever(leverPos.above()))
+                    .thenWaitUntil(() -> {
+                        var inputTunnel = helper.getPart(p2pOutputPos, Direction.EAST, MEP2PTunnelPart.class);
+                        if (inputTunnel.getMainNode().isOnline()) {
+                            helper.fail("should be offline", p2pOutputPos);
+                        }
+                    })
+                    .thenWaitUntil(() -> {
+                        if (lightPanel.getValue().getMainNode().isOnline()) {
+                            helper.fail("should be offline", p2pOutputPos.east());
+                        }
+                    })
+                    // This toggles the toggle bus and will make the P2P get its channel back
+                    .thenExecute(() -> helper.pullLever(leverPos.above()))
+                    .thenWaitUntil(() -> {
+                        var inputTunnel = helper.getPart(p2pOutputPos, Direction.EAST, MEP2PTunnelPart.class);
+                        if (!inputTunnel.getMainNode().isOnline()) {
+                            helper.fail("should be online", p2pOutputPos);
+                        }
+                    })
+                    .thenWaitUntil(() -> {
+                        if (!lightPanel.getValue().getMainNode().isOnline()) {
+                            helper.fail("should be online", p2pOutputPos.east());
+                        }
+                    })
+                    .thenSucceed();
+        });
+    }
+
     private static <T extends P2PTunnelPart<?>> void placeTunnel(PlotBuilder plot, ItemDefinition<PartItem<T>> tunnel) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
@@ -190,27 +295,34 @@ public class P2PTestPlots {
         plot.afterGridInitAt(origin, (grid, gridNode) -> {
             BlockPos absOrigin = ((AEBasePart) gridNode.getOwner()).getBlockEntity().getBlockPos();
 
-            var p2p = P2PService.get(grid);
-            T inputTunnel = null;
-            T outputTunnel = null;
-            for (T p2pPart : grid.getMachines(tunnel.asItem().getPartClass())) {
-                if (p2pPart.getBlockEntity().getBlockPos().equals(absOrigin.west())) {
-                    inputTunnel = p2pPart;
-                } else if (p2pPart.getBlockEntity().getBlockPos().equals(absOrigin.east())) {
-                    outputTunnel = p2pPart;
-                }
-            }
-
-            Objects.requireNonNull(inputTunnel, "inputTunnel");
-            Objects.requireNonNull(outputTunnel, "outputTunnel");
-
-            inputTunnel.setFrequency(p2p.newFrequency());
-            p2p.updateFreq(inputTunnel, inputTunnel.getFrequency());
-
-            // Link to output
-            var settings = new CompoundTag();
-            inputTunnel.exportSettings(SettingsFrom.MEMORY_CARD, settings);
-            outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings, null);
+            linkTunnels(grid, tunnel.asItem().getPartClass(), absOrigin.west(), absOrigin.east());
         });
+    }
+
+    private static <T extends P2PTunnelPart<?>> short linkTunnels(IGrid grid, Class<T> tunnelType, BlockPos inputPos,
+            BlockPos outputPos) {
+        var p2p = P2PService.get(grid);
+        T inputTunnel = null;
+        T outputTunnel = null;
+        for (T p2pPart : grid.getMachines(tunnelType)) {
+            if (p2pPart.getBlockEntity().getBlockPos().equals(inputPos)) {
+                inputTunnel = p2pPart;
+            } else if (p2pPart.getBlockEntity().getBlockPos().equals(outputPos)) {
+                outputTunnel = p2pPart;
+            }
+        }
+
+        Objects.requireNonNull(inputTunnel, "inputTunnel");
+        Objects.requireNonNull(outputTunnel, "outputTunnel");
+
+        inputTunnel.setFrequency(p2p.newFrequency());
+        p2p.updateFreq(inputTunnel, inputTunnel.getFrequency());
+
+        // Link to output
+        var settings = new CompoundTag();
+        inputTunnel.exportSettings(SettingsFrom.MEMORY_CARD, settings);
+        outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings, null);
+
+        return inputTunnel.getFrequency();
     }
 }

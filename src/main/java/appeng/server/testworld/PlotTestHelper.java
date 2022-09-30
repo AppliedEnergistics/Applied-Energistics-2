@@ -1,5 +1,7 @@
 package appeng.server.testworld;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
@@ -53,6 +55,25 @@ public class PlotTestHelper extends GameTestHelper {
                         plotTranslation.getX(),
                         plotTranslation.getY(),
                         plotTranslation.getZ());
+    }
+
+    public <T extends AEBasePart> T getPart(BlockPos pos, @Nullable Direction side, Class<T> partClass) {
+        var be = getBlockEntity(pos);
+        if (!(be instanceof IPartHost partHost)) {
+            fail("not a part host", pos);
+            return null;
+        }
+
+        var part = partHost.getPart(side);
+        if (part == null) {
+            fail("part missing", pos);
+        }
+
+        if (!partClass.isInstance(part)) {
+            fail("wrong part", pos);
+        }
+
+        return partClass.cast(part);
     }
 
     /**

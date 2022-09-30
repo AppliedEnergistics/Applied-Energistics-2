@@ -1,5 +1,46 @@
 package appeng.server.testplots;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import com.google.common.collect.Sets;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.state.properties.ChestType;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.Fluids;
+
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.RedstoneMode;
@@ -33,44 +74,6 @@ import appeng.server.testworld.Plot;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
-import com.google.common.collect.Sets;
-import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.state.properties.ChestType;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.material.Fluids;
-import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Consumer;
 
 public final class TestPlots {
     private static final Class<?>[] PLOT_CLASSES = {
@@ -120,7 +123,8 @@ public final class TestPlots {
                         throw new IllegalStateException("Method " + method + " must return void");
                     }
                     if (!Arrays.asList(method.getParameterTypes()).equals(List.of(PlotBuilder.class))) {
-                        throw new IllegalStateException("Method " + method + " must take a single PlotBuilder argument");
+                        throw new IllegalStateException(
+                                "Method " + method + " must take a single PlotBuilder argument");
                     }
 
                     plots.put(id, builder -> {
@@ -660,8 +664,7 @@ public final class TestPlots {
 
             // Add creative cells for anything that's not provided as a recipe result
             var keysToAdd = Sets.difference(neededIngredients, providedResults).iterator();
-            drives:
-            for (var drive : grid.getMachines(DriveBlockEntity.class)) {
+            drives: for (var drive : grid.getMachines(DriveBlockEntity.class)) {
 
                 var cellInv = drive.getInternalInventory();
                 for (int i = 0; i < cellInv.size(); i++) {
@@ -699,8 +702,8 @@ public final class TestPlots {
                 .part(Direction.EAST, AEParts.PATTERN_PROVIDER, pp -> {
                     pp.getLogic().getPatternInv().addItems(
                             PatternDetailsHelper.encodeProcessingPattern(
-                                    new GenericStack[]{input},
-                                    new GenericStack[]{output}));
+                                    new GenericStack[] { input },
+                                    new GenericStack[] { output }));
                     pp.getLogic().getConfigManager().putSetting(Settings.BLOCKING_MODE, YesNo.YES);
                 });
         plot.drive(new BlockPos(2, 0, -1))
@@ -859,7 +862,7 @@ public final class TestPlots {
             var patternDetails = PatternDetailsHelper.decodePattern(encodedPattern, level);
 
             // Push it to the assembler
-            var table = new KeyCounter[]{new KeyCounter()};
+            var table = new KeyCounter[] { new KeyCounter() };
             table[0].add(damaged, 2);
             molecularAssembler.pushPattern(patternDetails, table, Direction.UP);
         });

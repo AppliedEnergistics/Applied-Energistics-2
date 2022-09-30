@@ -3,7 +3,6 @@ package appeng.server.testworld;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.server.testplots.TestPlots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.TestFunction;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.block.entity.StructureBlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import appeng.server.testplots.TestPlots;
 import appeng.util.Platform;
 
 public class GameTestPlotAdapter {
