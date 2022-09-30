@@ -79,7 +79,8 @@ public final class TestPlots {
     private static final Class<?>[] PLOT_CLASSES = {
             TestPlots.class,
             AutoCraftingTestPlot.class,
-            P2PTestPlots.class
+            P2PTestPlots.class,
+            MemoryCardTestPlots.class
     };
 
     @Nullable

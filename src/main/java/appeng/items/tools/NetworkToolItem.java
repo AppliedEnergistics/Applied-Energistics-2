@@ -18,6 +18,8 @@
 
 package appeng.items.tools;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -125,6 +127,18 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
         }
 
         return true;
+    }
+
+    @Nullable
+    public static NetworkToolMenuHost findNetworkToolInv(Player player) {
+        var pi = player.getInventory();
+        for (int x = 0; x < pi.getContainerSize(); x++) {
+            var pii = pi.getItem(x);
+            if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem networkToolItem) {
+                return networkToolItem.getMenuHost(pi.player, x, pii, null);
+            }
+        }
+        return null;
     }
 
 }

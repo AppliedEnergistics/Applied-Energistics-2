@@ -53,11 +53,10 @@ import appeng.api.parts.IPartItem;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
-import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.ICustomNameObject;
-import appeng.helpers.IPriorityHost;
+import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -76,8 +75,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
 
     public AEBasePart(IPartItem<?> partItem) {
         this.partItem = Objects.requireNonNull(partItem, "partItem");
-        this.mainNode = createMainNode()
-                .setVisualRepresentation(AEItemKey.of(this.partItem))
+        this.mainNode = createMainNode().setVisualRepresentation(AEItemKey.of(this.partItem))
                 .setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
@@ -94,8 +92,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     }
 
     public final boolean isClientSide() {
-        return this.blockEntity == null
-                || this.blockEntity.getLevel() == null
+        return this.blockEntity == null || this.blockEntity.getLevel() == null
                 || this.blockEntity.getLevel().isClientSide();
     }
 
@@ -225,13 +222,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         this.customName = CustomNameUtil.getCustomName(input);
 
-        if (this instanceof IConfigurableObject configurableObject) {
-            configurableObject.getConfigManager().readFromNBT(input);
-        }
-
-        if (this instanceof IPriorityHost pHost) {
-            pHost.setPriority(input.getInt("priority"));
-        }
+        MemoryCardItem.importGenericSettings(this, input, player);
     }
 
     @OverridingMethodsMustInvokeSuper
@@ -239,13 +230,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         CustomNameUtil.setCustomName(output, this.customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            if (this instanceof IConfigurableObject configurableObject) {
-                configurableObject.getConfigManager().writeToNBT(output);
-            }
-
-            if (this instanceof IPriorityHost pHost) {
-                output.putInt("priority", pHost.getPriority());
-            }
+            MemoryCardItem.exportGenericSettings(this, output);
         }
     }
 
@@ -284,6 +269,7 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
                     importSettings(SettingsFrom.MEMORY_CARD, data, player);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
+                    MemoryCardItem.importGenericSettings(this, data, player);
                     memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
                 }
             }
