@@ -196,8 +196,6 @@ public class JEIPlugin implements IModPlugin {
     }
 
     private void registerDescriptions(IRecipeRegistration registry) {
-        this.addDescription(registry, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, GuiText.ChargedQuartz.text());
-
         this.addDescription(registry, AEItems.LOGIC_PROCESSOR_PRESS,
                 GuiText.inWorldCraftingPresses.text());
         this.addDescription(registry, AEItems.CALCULATION_PROCESSOR_PRESS,
