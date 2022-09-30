@@ -121,7 +121,8 @@ public final class InitScreens {
         register(SkyChestMenu.TYPE, SkyChestScreen::new, "/screens/sky_chest.json");
         register(ChestMenu.TYPE, ChestScreen::new, "/screens/chest.json");
         register(WirelessMenu.TYPE, WirelessScreen::new, "/screens/wireless.json");
-        register(NetworkStatusMenu.TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
+        register(NetworkStatusMenu.NETWORK_TOOL_TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
+        register(NetworkStatusMenu.CONTROLLER_TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
         InitScreens.<CraftingCPUMenu, CraftingCPUScreen<CraftingCPUMenu>>register(
                 CraftingCPUMenu.TYPE,
                 CraftingCPUScreen::new,

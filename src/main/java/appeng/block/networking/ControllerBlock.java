@@ -23,6 +23,10 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -31,9 +35,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.menu.MenuOpener;
+import appeng.menu.locator.MenuLocators;
+import appeng.menu.me.networktool.NetworkStatusMenu;
 
 public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
 
@@ -134,6 +142,19 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
         }
 
         return baseState.setValue(CONTROLLER_TYPE, type);
+    }
+
+    @Override
+    public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
+            @org.jetbrains.annotations.Nullable ItemStack heldItem, BlockHitResult hit) {
+        var controller = getBlockEntity(level, pos);
+        if (controller != null) {
+            if (!level.isClientSide) {
+                MenuOpener.open(NetworkStatusMenu.CONTROLLER_TYPE, player, MenuLocators.forBlockEntity(controller));
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
+        }
+        return InteractionResult.FAIL;
     }
 
     @Override
