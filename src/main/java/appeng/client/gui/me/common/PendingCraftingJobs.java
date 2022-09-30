@@ -35,7 +35,7 @@ public final class PendingCraftingJobs {
             long remainingAmount,
             CraftingJobStatusPacket.Status status) {
 
-        AELog.info("Crafting job " + id + " for " + requestedAmount
+        AELog.debug("Crafting job " + id + " for " + requestedAmount
                 + "x" + AEStackRendering.getDisplayName(what).getString() + ". State=" + status);
 
         var existing = jobs.get(id);
