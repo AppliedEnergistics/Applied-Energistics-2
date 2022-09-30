@@ -1,7 +1,8 @@
 package appeng.items.tools;
 
-import appeng.core.localization.GuiText;
 import net.minecraft.network.chat.Component;
+
+import appeng.core.localization.GuiText;
 
 /**
  * Settings that the memory card can copy generically from machine to machine.
