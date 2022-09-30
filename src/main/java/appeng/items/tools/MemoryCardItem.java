@@ -18,12 +18,23 @@
 
 package appeng.items.tools;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.implementations.items.IMemoryCard;
+import appeng.api.implementations.items.MemoryCardMessages;
+import appeng.api.inventories.InternalInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.util.AEColor;
+import appeng.api.util.IConfigurableObject;
+import appeng.core.AELog;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.PlayerMessages;
+import appeng.core.localization.Tooltips;
+import appeng.helpers.IConfigInvHost;
+import appeng.helpers.IPriorityHost;
+import appeng.hooks.AEToolItem;
+import appeng.items.AEBaseItem;
+import appeng.util.InteractionUtil;
+import appeng.util.Platform;
+import appeng.util.inv.PlayerInternalInventory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -44,68 +55,88 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.implementations.items.IMemoryCard;
-import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.inventories.InternalInventory;
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.api.util.AEColor;
-import appeng.api.util.IConfigurableObject;
-import appeng.core.AELog;
-import appeng.core.localization.GuiText;
-import appeng.core.localization.PlayerMessages;
-import appeng.core.localization.Tooltips;
-import appeng.helpers.IConfigInvHost;
-import appeng.helpers.IPriorityHost;
-import appeng.hooks.AEToolItem;
-import appeng.items.AEBaseItem;
-import appeng.util.InteractionUtil;
-import appeng.util.Platform;
-import appeng.util.inv.PlayerInternalInventory;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Set;
 
 public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolItem {
 
-    private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[] { AEColor.TRANSPARENT, AEColor.TRANSPARENT,
+    private static final AEColor[] DEFAULT_COLOR_CODE = new AEColor[]{AEColor.TRANSPARENT, AEColor.TRANSPARENT,
             AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT, AEColor.TRANSPARENT,
-            AEColor.TRANSPARENT, };
+            AEColor.TRANSPARENT,};
 
     public MemoryCardItem(Item.Properties properties) {
         super(properties);
     }
 
-    public static void exportGenericSettings(Object exportFrom, CompoundTag output) {
+    public static Set<SettingsCategory> exportGenericSettings(Object exportFrom, CompoundTag output) {
+        var exported = EnumSet.noneOf(SettingsCategory.class);
+
         if (exportFrom instanceof IUpgradeableObject upgradeableObject) {
             MemoryCardItem.storeUpgrades(upgradeableObject, output);
+            exported.add(SettingsCategory.UPGRADES);
         }
 
         if (exportFrom instanceof IConfigurableObject configurableObject) {
             configurableObject.getConfigManager().writeToNBT(output);
+            exported.add(SettingsCategory.SETTINGS);
         }
 
         if (exportFrom instanceof IPriorityHost pHost) {
             output.putInt("priority", pHost.getPriority());
+            exported.add(SettingsCategory.PRIORITY);
         }
 
         if (exportFrom instanceof IConfigInvHost configInvHost) {
             configInvHost.getConfig().writeToChildTag(output, "config");
+            exported.add(SettingsCategory.CONFIG_INV);
         }
+
+        return exported;
     }
 
-    public static void importGenericSettings(Object importTo, CompoundTag input, @Nullable Player player) {
+    public static Set<SettingsCategory> importGenericSettings(Object importTo, CompoundTag input, @Nullable Player player) {
+        var imported = EnumSet.noneOf(SettingsCategory.class);
+
         if (player != null && importTo instanceof IUpgradeableObject upgradeableObject) {
-            restoreUpgrades(player, input, upgradeableObject);
+            if (restoreUpgrades(player, input, upgradeableObject)) {
+                imported.add(SettingsCategory.UPGRADES);
+            }
         }
 
         if (importTo instanceof IConfigurableObject configurableObject) {
+            // TODO: 1.20 Make it return true if it read any config at all
             configurableObject.getConfigManager().readFromNBT(input);
+            imported.add(SettingsCategory.SETTINGS);
         }
 
-        if (importTo instanceof IPriorityHost pHost) {
+        if (importTo instanceof IPriorityHost pHost && input.contains("priority", Tag.TAG_INT)) {
             pHost.setPriority(input.getInt("priority"));
+            imported.add(SettingsCategory.PRIORITY);
         }
 
-        if (importTo instanceof IConfigInvHost configInvHost) {
+        if (importTo instanceof IConfigInvHost configInvHost && input.contains("config")) {
             configInvHost.getConfig().readFromChildTag(input, "config");
+            imported.add(SettingsCategory.CONFIG_INV);
+        }
+
+        return imported;
+    }
+
+    public static void importGenericSettingsAndNotify(Object importTo, CompoundTag input, @Nullable Player player) {
+        var imported = importGenericSettings(importTo, input, player);
+
+        if (player != null && !player.getCommandSenderWorld().isClientSide()) {
+            if (imported.isEmpty()) {
+                player.sendSystemMessage(PlayerMessages.InvalidMachine.text());
+            } else {
+                var restored = Tooltips.conjunction(imported.stream().map(SettingsCategory::getLabel).toList());
+                player.sendSystemMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored));
+            }
         }
     }
 
@@ -122,12 +153,14 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
             desiredUpgradesTag.putInt(key, desiredUpgradesTag.getInt(key) + upgrade.getCount());
         }
 
-        if (!desiredUpgradesTag.isEmpty()) {
-            output.put("upgrades", desiredUpgradesTag);
-        }
+        output.put("upgrades", desiredUpgradesTag);
     }
 
-    private static void restoreUpgrades(Player player, CompoundTag input, IUpgradeableObject upgradeableObject) {
+    private static boolean restoreUpgrades(Player player, CompoundTag input, IUpgradeableObject upgradeableObject) {
+        if (!input.contains("upgrades", Tag.TAG_COMPOUND)) {
+            return false;
+        }
+
         var desiredUpgradesTag = input.getCompound("upgrades");
         var desiredUpgrades = new IdentityHashMap<Item, Integer>();
         for (String itemIdStr : desiredUpgradesTag.getAllKeys()) {
@@ -162,7 +195,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
             for (var entry : desiredUpgrades.entrySet()) {
                 upgrades.addItems(new ItemStack(entry.getKey(), entry.getValue()));
             }
-            return;
+            return true;
         }
 
         var upgradeSources = new ArrayList<InternalInventory>();
@@ -230,12 +263,13 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
                 }
             }
         }
+        return true;
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
-            TooltipFlag advancedTooltips) {
+                                TooltipFlag advancedTooltips) {
 
         String firstLineKey = this.getFirstValidTranslationKey(this.getSettingsName(stack) + ".name",
                 this.getSettingsName(stack));
@@ -306,9 +340,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
             var colorArray = AEColor.values();
 
             if (frequency.length == 8) {
-                return new AEColor[] { colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]],
+                return new AEColor[]{colorArray[frequency[0]], colorArray[frequency[1]], colorArray[frequency[2]],
                         colorArray[frequency[3]], colorArray[frequency[4]], colorArray[frequency[5]],
-                        colorArray[frequency[6]], colorArray[frequency[7]], };
+                        colorArray[frequency[6]], colorArray[frequency[7]],};
             }
         }
 
@@ -368,4 +402,5 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         mem.notifyUser(player, MemoryCardMessages.SETTINGS_CLEARED);
         player.getItemInHand(hand).setTag(null);
     }
+
 }

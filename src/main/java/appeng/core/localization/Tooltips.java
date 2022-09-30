@@ -94,7 +94,9 @@ public final class Tooltips {
         if (components.size() == 2) {
             return components.get(0)
                     .copy()
+                    .append(" ")
                     .append(lastJoiner.text())
+                    .append(" ")
                     .append(components.get(1));
         }
 
