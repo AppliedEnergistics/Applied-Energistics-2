@@ -103,7 +103,7 @@ public class ItemRepo {
 
     public void updateView() {
         if (searchTask != null) {
-            searchTask.cancel(true);
+            return;
         }
 
         // Since sortSrc is final, so we can safely call it inside lambda
