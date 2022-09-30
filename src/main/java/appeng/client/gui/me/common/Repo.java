@@ -20,6 +20,7 @@ package appeng.client.gui.me.common;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -168,10 +169,13 @@ public class Repo implements IClientRepo {
         }
 
         // Any pinned entry that has not yet been added to the pinned row will be represented by a fake
-        // entry
+        // entry. Pinned crafting jobs are excluded from this because they *should* have a grid-entry
+        // with craftable=true if they're craftable on this grid.
         if (hasPinnedRow) {
             for (var pinnedKey : PinnedKeys.getPinnedKeys()) {
-                if (pinnedRow.stream().noneMatch(r -> pinnedKey.equals(r.getWhat()))) {
+                var info = PinnedKeys.getPinInfo(pinnedKey);
+                if (info.reason != PinnedKeys.PinReason.CRAFTING
+                        && pinnedRow.stream().noneMatch(r -> pinnedKey.equals(r.getWhat()))) {
                     this.pinnedRow.add(new GridInventoryEntry(
                             -1, pinnedKey, 0, 0, false));
                 }
@@ -197,6 +201,10 @@ public class Repo implements IClientRepo {
         }
 
         return Comparator.comparing(GridInventoryEntry::getWhat, getKeyComparator(sortOrder, sortDir));
+    }
+
+    public List<GridInventoryEntry> getPinnedEntries() {
+        return Collections.unmodifiableList(this.pinnedRow);
     }
 
     @Nullable

@@ -415,7 +415,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.currentMouseY = mouseY;
 
         // Render the pinned row decorations
-        if (!PinnedKeys.isEmpty()) {
+        if (repo.hasPinnedRow()) {
             renderPinnedRowDecorations(poseStack);
         }
 
@@ -507,10 +507,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // Mark any keys as pruneable that were pinned due to crafting, but are no longer pending
         // they will be removed the next time the screen is opened fresh
-        for (var pinnedKey : PinnedKeys.getPinnedKeys()) {
-            var info = PinnedKeys.getPinInfo(pinnedKey);
+        for (var entry : repo.getPinnedEntries()) {
+            var info = PinnedKeys.getPinInfo(entry.getWhat());
             if (info != null && info.reason == PinnedKeys.PinReason.CRAFTING
-                    && !PendingCraftingJobs.hasPendingJob(pinnedKey)) {
+                    && !PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
                 info.canPrune = true;
             }
         }
