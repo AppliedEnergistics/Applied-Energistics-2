@@ -50,8 +50,6 @@ import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
-import appeng.api.networking.crafting.ICraftingCPU;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
@@ -382,8 +380,7 @@ public class MEStorageMenu extends AEBaseMenu
         }
 
         int activeJobs = 0;
-        ICraftingService craftingGrid = grid.getCraftingService();
-        for (ICraftingCPU cpus : craftingGrid.getCpus()) {
+        for (var cpus : grid.getCraftingService().getCpus()) {
             if (cpus.isBusy()) {
                 activeJobs++;
             }

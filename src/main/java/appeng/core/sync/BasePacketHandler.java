@@ -33,6 +33,7 @@ import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.core.sync.packets.CraftingStatusPacket;
 import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
 import appeng.core.sync.packets.GuiDataSyncPacket;
@@ -108,7 +109,9 @@ public class BasePacketHandler {
 
         COLOR_APPLICATOR_SELECT_COLOR(ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::new),
 
-        HOTKEY(HotkeyPacket.class, HotkeyPacket::new);
+        HOTKEY(HotkeyPacket.class, HotkeyPacket::new),
+
+        CRAFTING_JOB_STATUS(CraftingJobStatusPacket.class, CraftingJobStatusPacket::new);
 
         private final Function<FriendlyByteBuf, BasePacket> factory;
 

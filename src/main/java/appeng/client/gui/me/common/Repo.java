@@ -18,6 +18,7 @@
 
 package appeng.client.gui.me.common;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -52,12 +53,18 @@ public class Repo implements IClientRepo {
 
     public static final Comparator<GridInventoryEntry> AMOUNT_DESC = AMOUNT_ASC.reversed();
 
+    private static final Comparator<GridInventoryEntry> PINNED_ROW_COMPARATOR = Comparator.comparing(entry -> {
+        var pinInfo = PinnedKeys.getPinInfo(entry.getWhat());
+        return pinInfo != null ? pinInfo.since : Instant.MAX;
+    });
+
     private int rowSize = 9;
 
     private boolean hasPower;
 
     private final BiMap<Long, GridInventoryEntry> entries = HashBiMap.create();
     private final ArrayList<GridInventoryEntry> view = new ArrayList<>();
+    private final ArrayList<GridInventoryEntry> pinnedRow = new ArrayList<>();
     private final RepoSearch search = new RepoSearch();
     private IPartitionList partitionList;
     private Runnable updateViewListener;
@@ -122,13 +129,23 @@ public class Repo implements IClientRepo {
 
     public final void updateView() {
         this.view.clear();
+        this.pinnedRow.clear();
 
         this.view.ensureCapacity(this.entries.size());
+        this.pinnedRow.ensureCapacity(rowSize);
 
         var viewMode = this.sortSrc.getSortDisplay();
         var typeFilter = this.sortSrc.getTypeFilter().getFilter();
 
+        var hasPinnedRow = !PinnedKeys.isEmpty();
+
         for (var entry : this.entries.values()) {
+            // Pinned keys ignore all filters & search
+            if (hasPinnedRow && pinnedRow.size() < rowSize && PinnedKeys.isPinned(entry.getWhat())) {
+                pinnedRow.add(entry);
+                continue;
+            }
+
             if (this.partitionList != null && !this.partitionList.isListed(entry.getWhat())) {
                 continue;
             }
@@ -148,6 +165,20 @@ public class Repo implements IClientRepo {
             if (search.matches(entry)) {
                 this.view.add(entry);
             }
+        }
+
+        // Any pinned entry that has not yet been added to the pinned row will be represented by a fake
+        // entry
+        if (hasPinnedRow) {
+            for (var pinnedKey : PinnedKeys.getPinnedKeys()) {
+                if (pinnedRow.stream().noneMatch(r -> pinnedKey.equals(r.getWhat()))) {
+                    this.pinnedRow.add(new GridInventoryEntry(
+                            -1, pinnedKey, 0, 0, false));
+                }
+            }
+
+            // Sort older entries first in the pinned row
+            pinnedRow.sort(PINNED_ROW_COMPARATOR);
         }
 
         SortOrder sortOrder = this.sortSrc.getSortBy();
@@ -170,6 +201,17 @@ public class Repo implements IClientRepo {
 
     @Nullable
     public final GridInventoryEntry get(int idx) {
+        if (!this.pinnedRow.isEmpty()) {
+            // First row of slots is reserved for pinned keys
+            if (idx < this.rowSize) {
+                if (idx < this.pinnedRow.size()) {
+                    return this.pinnedRow.get(idx);
+                }
+                return null;
+            }
+            idx -= this.rowSize;
+        }
+
         idx += this.src.getCurrentScroll() * this.rowSize;
 
         if (idx >= this.view.size()) {
@@ -179,12 +221,17 @@ public class Repo implements IClientRepo {
     }
 
     public final int size() {
-        return this.view.size();
+        return this.view.size() + this.pinnedRow.size();
     }
 
     public final void clear() {
         this.entries.clear();
         this.view.clear();
+        this.pinnedRow.clear();
+    }
+
+    public final boolean hasPinnedRow() {
+        return !this.pinnedRow.isEmpty();
     }
 
     public final boolean hasPower() {

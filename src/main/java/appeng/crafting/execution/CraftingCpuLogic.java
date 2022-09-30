@@ -27,10 +27,12 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingPlan;
@@ -42,6 +44,8 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.crafting.CraftingLink;
 import appeng.crafting.inv.ListCraftingInventory;
 import appeng.me.cluster.implementations.CraftingCPUCluster;
@@ -95,13 +99,18 @@ public class CraftingCpuLogic {
             return CraftingSubmitResult.missingIngredient(missingIngredient);
 
         // Set CPU link and job.
+        var playerId = src.player()
+                .map(p -> p instanceof ServerPlayer serverPlayer ? IPlayerRegistry.getPlayerId(serverPlayer) : null)
+                .orElse(null);
         var craftId = this.generateCraftId(plan.finalOutput());
         var linkCpu = new CraftingLink(CraftingCpuHelper.generateLinkData(craftId, requester == null, false), cluster);
-        this.job = new ExecutingCraftingJob(plan, this::postChange, linkCpu);
+        this.job = new ExecutingCraftingJob(plan, this::postChange, linkCpu, playerId);
         cluster.updateOutput(plan.finalOutput());
         cluster.markDirty();
 
         // TODO: post monitor difference?
+
+        notifyJobOwner(job, CraftingJobStatusPacket.Status.STARTED);
 
         // Non-standalone jobs need another link for the requester, and both links need to be submitted to the cache.
         if (requester != null) {
@@ -279,13 +288,13 @@ public class CraftingCpuLogic {
             if (type == Actionable.MODULATE) {
                 // Update count and displayed CPU stack, and finish the job if possible.
                 postChange(what);
-                job.finalOutput = new GenericStack(what, job.finalOutput.amount() - amount);
+                job.remainingAmount = Math.max(0, job.remainingAmount - amount);
 
-                if (job.finalOutput.amount() <= 0) {
+                if (job.remainingAmount <= 0) {
                     finishJob(true);
                     cluster.updateOutput(null);
                 } else {
-                    cluster.updateOutput(job.finalOutput);
+                    cluster.updateOutput(new GenericStack(job.finalOutput.what(), job.remainingAmount));
                 }
             }
         } else {
@@ -319,6 +328,10 @@ public class CraftingCpuLogic {
                 postChange(output.what());
             }
         }
+
+        notifyJobOwner(job,
+                success ? CraftingJobStatusPacket.Status.FINISHED : CraftingJobStatusPacket.Status.CANCELLED);
+
         // Finish job.
         this.job = null;
 
@@ -404,7 +417,7 @@ public class CraftingCpuLogic {
         this.inventory.readFromNBT(data.getList("inventory", 10));
         if (data.contains("job")) {
             this.job = new ExecutingCraftingJob(data.getCompound("job"), this::postChange, this);
-            cluster.updateOutput(this.job.finalOutput);
+            cluster.updateOutput(new GenericStack(job.finalOutput.what(), job.remainingAmount));
         } else {
             cluster.updateOutput(null);
         }
@@ -490,5 +503,26 @@ public class CraftingCpuLogic {
 
     public boolean isCantStoreItems() {
         return cantStoreItems;
+    }
+
+    private void notifyJobOwner(ExecutingCraftingJob job, CraftingJobStatusPacket.Status status) {
+        var playerId = job.playerId;
+        if (playerId == null) {
+            return;
+        }
+
+        var server = cluster.getLevel().getServer();
+        var connectedPlayer = IPlayerRegistry.getConnected(server, playerId);
+        if (connectedPlayer != null) {
+            var jobId = job.link.getCraftingID();
+            NetworkHandler.instance().sendTo(
+                    new CraftingJobStatusPacket(
+                            jobId,
+                            job.finalOutput.what(),
+                            job.finalOutput.amount(),
+                            job.remainingAmount,
+                            status),
+                    connectedPlayer);
+        }
     }
 }
