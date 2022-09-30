@@ -123,6 +123,13 @@ public class AppEngSlot extends Slot {
 
     @Override
     public void initialize(ItemStack stack) {
+        // In some cases like buses, slots have a backing inventory slot but are just visually disabled
+        // those slots should be initialized, so they are order-independent of the upgrade slots.
+        // But in other cases (cell workbench), the slots may not have a backing inventory when they are
+        // disabled. These cause exceptions when they are initialized with empty slots.
+        if (!this.isSlotEnabled() && this.invSlot >= this.inventory.size() && stack.isEmpty()) {
+            return;
+        }
         this.inventory.setItemDirect(this.invSlot, stack);
     }
 
