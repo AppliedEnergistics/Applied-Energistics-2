@@ -92,17 +92,25 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
-    modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
-        exclude group: "net.fabricmc.fabric-api"
+    if (project.runtime_tooltip_mod == "wthit") {
+        modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
+    }
+
+    if (project.runtime_tooltip_mod == "jade") {
+        modImplementation("curse.maven:jade-324717:${project.jade_file_id}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
+    } else {
+        modCompileOnly("curse.maven:jade-324717:${project.jade_file_id}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
     }
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
-        exclude group: "net.fabricmc.fabric-api"
-    }
-
-    modCompileOnly("curse.maven:jade-324717:3928578") {
         exclude group: "net.fabricmc.fabric-api"
     }
 

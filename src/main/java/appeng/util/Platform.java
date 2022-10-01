@@ -274,8 +274,12 @@ public class Platform {
     }
 
     public static String formatModName(String modId) {
-        return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC
-                + FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(null);
+        return "" + ChatFormatting.BLUE + ChatFormatting.ITALIC + getModName(modId);
+    }
+
+    @Nullable
+    public static String getModName(String modId) {
+        return FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(modId);
     }
 
     public static String getDescriptionId(Fluid fluid) {
