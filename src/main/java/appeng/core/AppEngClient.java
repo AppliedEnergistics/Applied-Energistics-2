@@ -54,6 +54,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
+import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
@@ -93,8 +94,6 @@ import appeng.util.Platform;
  */
 @Environment(EnvType.CLIENT)
 public class AppEngClient extends AppEngBase {
-    private final static String KEY_CATEGORY = "key.ae2.category";
-
     private static AppEngClient INSTANCE;
 
     /**
@@ -127,12 +126,21 @@ public class AppEngClient extends AppEngBase {
         HotkeyActions.init();
         ClientTickEvents.END_CLIENT_TICK.register(c -> Hotkeys.checkHotkeys());
 
+        ClientTickEvents.END_CLIENT_TICK.register(this::tickPinnedKeys);
+
         registerTests();
 
         // Only activate the site exporter when we're not running a release version, since it'll
         // replace blocks around spawn.
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             SiteExporter.initialize();
+        }
+    }
+
+    private void tickPinnedKeys(Minecraft minecraft) {
+        // Only prune pinned keys when no screen is currently open
+        if (minecraft.screen == null) {
+            PinnedKeys.prune();
         }
     }
 

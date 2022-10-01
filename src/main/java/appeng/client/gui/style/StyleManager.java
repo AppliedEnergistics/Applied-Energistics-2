@@ -66,7 +66,7 @@ public final class StyleManager {
         try {
             style = loadStyleDocInternal(path);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Failed to read Screen JSON file: " + path + ": " + e.getMessage());
+            throw new RuntimeException("Failed to find Screen JSON file: " + path + ": " + e.getMessage());
         } catch (Exception e) {
             throw new RuntimeException("Failed to read Screen JSON file: " + path, e);
         }

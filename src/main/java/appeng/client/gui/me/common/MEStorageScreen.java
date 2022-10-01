@@ -175,7 +175,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.addToLeftToolbar(this.sortDirToggle = new SettingToggleButton<>(
                 Settings.SORT_DIRECTION, getSortDir(), this::toggleServerSetting));
 
-        this.addToLeftToolbar(new ActionButton(ActionItems.SEARCH_SETTINGS, this::showSearchSettings));
+        this.addToLeftToolbar(new ActionButton(ActionItems.TERMINAL_SETTINGS, this::showSettings));
 
         // Show a button to toggle the terminal style if the style doesn't enforce a max number of rows
         if (this.style.getMaxRows() == null) {
@@ -205,8 +205,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
     }
 
-    private void showSearchSettings() {
-        switchToScreen(new SearchSettingsScreen<>(this));
+    private void showSettings() {
+        switchToScreen(new TerminalSettingsScreen<>(this));
     }
 
     @Nullable
@@ -297,6 +297,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private void updateScrollbar() {
         scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
         int totalRows = (this.repo.size() + getSlotsPerRow() - 1) / getSlotsPerRow();
+        if (repo.hasPinnedRow()) {
+            totalRows++;
+        }
         scrollbar.setRange(0, totalRows - this.rows, Math.max(1, this.rows / 6));
     }
 
@@ -398,7 +401,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     protected <P extends AEBaseScreen<C>> void onReturnFromSubScreen(AESubScreen<C, P> subScreen) {
-        if (subScreen instanceof SearchSettingsScreen<?>) {
+        if (subScreen instanceof TerminalSettingsScreen<?>) {
             this.reinitalize();
             if (!config.isUseExternalSearch()) {
                 setSearchText(searchField.getValue());
@@ -412,6 +415,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
+        // Render the pinned row decorations
+        if (!PinnedKeys.isEmpty()) {
+            renderPinnedRowDecorations(poseStack);
+        }
+
         // Show the number of active crafting jobs
         if (this.craftingStatusBtn != null && menu.activeCraftingJobs != -1) {
             // The stack size renderer expects a 16x16 slot, while the button is normally
@@ -421,6 +429,23 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
             StackSizeRenderer.renderSizeLabel(font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
+        }
+    }
+
+    private void renderPinnedRowDecorations(PoseStack poseStack) {
+        for (Slot slot : menu.slots) {
+            if (slot instanceof RepoSlot repoSlot) {
+                var entry = repoSlot.getEntry();
+                if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
+                    var frames = 192 / 16;
+                    var frame = (int) ((System.currentTimeMillis() / 100) % frames);
+
+                    Blitter.texture("block/molecular_assembler_lights.png", 16, 192)
+                            .src(2, 2 + frame * 16, 12, 12)
+                            .dest(slot.x - 1, slot.y - 1, 18, 18)
+                            .blit(poseStack, getBlitOffset());
+                }
+            }
         }
     }
 
@@ -478,8 +503,18 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public void removed() {
         super.removed();
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
+        minecraft.keyboardHandler.setSendRepeatsToGui(false);
         storeState();
+
+        // Mark any keys as pruneable that were pinned due to crafting, but are no longer pending
+        // they will be removed the next time the screen is opened fresh
+        for (var pinnedKey : PinnedKeys.getPinnedKeys()) {
+            var info = PinnedKeys.getPinInfo(pinnedKey);
+            if (info != null && info.reason == PinnedKeys.PinReason.CRAFTING
+                    && !PendingCraftingJobs.hasPendingJob(pinnedKey)) {
+                info.canPrune = true;
+            }
+        }
     }
 
     @Override
@@ -508,6 +543,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         style.getBottom().dest(offsetX, y).blit(poseStack, getBlitOffset());
+
+        // Draw the overlay for the pinned row
+        if (repo.hasPinnedRow()) {
+            Blitter.texture("guis/terminal.png")
+                    .src(0, 204, 162, 18)
+                    .dest(offsetX + 7, offsetY + style.getHeader().getSrcHeight())
+                    .blit(poseStack, getBlitOffset());
+        }
 
         if (this.searchField != null) {
             this.searchField.render(poseStack, mouseX, mouseY, partialTicks);

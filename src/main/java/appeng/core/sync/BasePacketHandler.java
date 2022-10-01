@@ -22,9 +22,36 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import appeng.core.sync.packets.InterfaceTerminalPacket;
 import net.minecraft.network.FriendlyByteBuf;
 
-import appeng.core.sync.packets.*;
+import appeng.core.sync.packets.AssemblerAnimationPacket;
+import appeng.core.sync.packets.BlockTransitionEffectPacket;
+import appeng.core.sync.packets.ColorApplicatorSelectColorPacket;
+import appeng.core.sync.packets.CompassRequestPacket;
+import appeng.core.sync.packets.CompassResponsePacket;
+import appeng.core.sync.packets.ConfigButtonPacket;
+import appeng.core.sync.packets.ConfigValuePacket;
+import appeng.core.sync.packets.ConfirmAutoCraftPacket;
+import appeng.core.sync.packets.CraftConfirmPlanPacket;
+import appeng.core.sync.packets.CraftingJobStatusPacket;
+import appeng.core.sync.packets.CraftingStatusPacket;
+import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
+import appeng.core.sync.packets.GuiDataSyncPacket;
+import appeng.core.sync.packets.HotkeyPacket;
+import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.core.sync.packets.ItemTransitionEffectPacket;
+import appeng.core.sync.packets.LightningPacket;
+import appeng.core.sync.packets.MEInteractionPacket;
+import appeng.core.sync.packets.MEInventoryUpdatePacket;
+import appeng.core.sync.packets.MatterCannonPacket;
+import appeng.core.sync.packets.MockExplosionPacket;
+import appeng.core.sync.packets.MouseWheelPacket;
+import appeng.core.sync.packets.NetworkStatusPacket;
+import appeng.core.sync.packets.PartLeftClickPacket;
+import appeng.core.sync.packets.SpawnEntityPacket;
+import appeng.core.sync.packets.SwapSlotsPacket;
+import appeng.core.sync.packets.SwitchGuisPacket;
 
 public class BasePacketHandler {
     private static final Map<Class<? extends BasePacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
@@ -82,7 +109,9 @@ public class BasePacketHandler {
 
         COLOR_APPLICATOR_SELECT_COLOR(ColorApplicatorSelectColorPacket.class, ColorApplicatorSelectColorPacket::new),
 
-        HOTKEY(HotkeyPacket.class, HotkeyPacket::new);
+        HOTKEY(HotkeyPacket.class, HotkeyPacket::new),
+
+        CRAFTING_JOB_STATUS(CraftingJobStatusPacket.class, CraftingJobStatusPacket::new);
 
         private final Function<FriendlyByteBuf, BasePacket> factory;
 

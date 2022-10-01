@@ -74,9 +74,9 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.CycleProcessingOutput;
                 displayValue = ButtonToolTips.CycleProcessingOutputTooltip;
             }
-            case SEARCH_SETTINGS -> {
-                icon = Icon.SEARCH_DEFAULT;
-                displayName = ButtonToolTips.SearchSettings;
+            case TERMINAL_SETTINGS -> {
+                icon = Icon.WRENCH;
+                displayName = ButtonToolTips.TerminalSettings;
                 displayValue = null;
             }
             default -> throw new IllegalArgumentException("Unknown ActionItem: " + action);

@@ -509,6 +509,22 @@ public final class AEConfig {
         return CLIENT.tooltipMaxCellContentShown.get();
     }
 
+    public boolean isPinAutoCraftedItems() {
+        return CLIENT.pinAutoCraftedItems.get();
+    }
+
+    public void setPinAutoCraftedItems(boolean enabled) {
+        CLIENT.pinAutoCraftedItems.set(enabled);
+    }
+
+    public boolean isNotifyForFinishedCraftingJobs() {
+        return CLIENT.notifyForFinishedCraftingJobs.get();
+    }
+
+    public void setNotifyForFinishedCraftingJobs(boolean enabled) {
+        CLIENT.notifyForFinishedCraftingJobs.set(enabled);
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -522,6 +538,7 @@ public final class AEConfig {
         public final EnumOption<PowerUnits> selectedPowerUnit;
         public final BooleanOption debugGuiOverlays;
         public final BooleanOption showPlacementPreview;
+        public final BooleanOption notifyForFinishedCraftingJobs;
 
         // Terminal Settings
         public final EnumOption<TerminalStyle> terminalStyle;
@@ -535,6 +552,7 @@ public final class AEConfig {
         public final BooleanOption autoFocusSearch;
 
         // Tooltip settings
+        public final BooleanOption pinAutoCraftedItems;
         public final BooleanOption tooltipShowCellUpgrades;
         public final BooleanOption tooltipShowCellContent;
         public final IntegerOption tooltipMaxCellContentShown;
@@ -550,9 +568,13 @@ public final class AEConfig {
             this.debugGuiOverlays = client.addBoolean("showDebugGuiOverlays", false, "Show debugging GUI overlays");
             this.showPlacementPreview = client.addBoolean("showPlacementPreview", true,
                     "Show a preview of part and facade placement");
+            this.notifyForFinishedCraftingJobs = client.addBoolean("notifyForFinishedCraftingJobs", true,
+                    "Show toast when long-running crafting jobs finish.");
 
             var terminals = root.subsection("terminals");
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
+            this.pinAutoCraftedItems = terminals.addBoolean("pinAutoCraftedItems", true,
+                    "Pin items that the player auto-crafts to the top of the terminal");
 
             // Search Settings
             var search = root.subsection("search");

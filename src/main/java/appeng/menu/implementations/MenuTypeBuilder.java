@@ -206,11 +206,6 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
             return title;
         }
 
-        @Override
-        public boolean shouldCloseCurrentScreen() {
-            return false; // Stops the cursor from re-centering
-        }
-
         @Nullable
         @Override
         public AbstractContainerMenu createMenu(int wnd, Inventory inv, Player p) {
