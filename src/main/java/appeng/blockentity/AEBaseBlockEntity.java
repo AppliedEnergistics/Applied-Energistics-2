@@ -56,16 +56,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
-import appeng.api.util.IConfigurableObject;
 import appeng.api.util.IOrientable;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
-import appeng.helpers.IConfigInvHost;
 import appeng.helpers.ICustomNameObject;
-import appeng.helpers.IPriorityHost;
 import appeng.hooks.ticking.TickHandler;
+import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -298,17 +296,7 @@ public class AEBaseBlockEntity extends BlockEntity
         CustomNameUtil.setCustomName(output, customName);
 
         if (mode == SettingsFrom.MEMORY_CARD) {
-            if (this instanceof IConfigurableObject configurableObject) {
-                configurableObject.getConfigManager().writeToNBT(output);
-            }
-
-            if (this instanceof IPriorityHost pHost) {
-                output.putInt("priority", pHost.getPriority());
-            }
-
-            if (this instanceof IConfigInvHost configInvHost) {
-                configInvHost.getConfig().writeToChildTag(output, "config");
-            }
+            MemoryCardItem.exportGenericSettings(this, output);
         }
     }
 
@@ -320,17 +308,12 @@ public class AEBaseBlockEntity extends BlockEntity
      */
     @OverridingMethodsMustInvokeSuper
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
-        if (this instanceof IConfigurableObject configurableObject) {
-            configurableObject.getConfigManager().readFromNBT(input);
+        var customName = CustomNameUtil.getCustomName(input);
+        if (customName != null) {
+            this.customName = customName.getString();
         }
 
-        if (this instanceof IPriorityHost pHost) {
-            pHost.setPriority(input.getInt("priority"));
-        }
-
-        if (this instanceof IConfigInvHost configInvHost) {
-            configInvHost.getConfig().readFromChildTag(input, "config");
-        }
+        MemoryCardItem.importGenericSettings(this, input, player);
     }
 
     /**

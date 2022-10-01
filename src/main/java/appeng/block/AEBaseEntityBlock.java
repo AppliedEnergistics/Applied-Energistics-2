@@ -51,6 +51,7 @@ import appeng.api.util.IOrientable;
 import appeng.block.networking.CableBusBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.AEBaseInvBlockEntity;
+import appeng.items.tools.MemoryCardItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -217,6 +218,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
                         blockEntity.importSettings(SettingsFrom.MEMORY_CARD, data, player);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                     } else {
+                        MemoryCardItem.importGenericSettings(blockEntity, data, player);
                         memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
                     }
                 }

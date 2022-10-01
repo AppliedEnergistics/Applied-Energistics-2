@@ -1,5 +1,7 @@
 package appeng.menu;
 
+import java.util.Objects;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
@@ -13,12 +15,19 @@ import appeng.menu.slot.RestrictedInputSlot;
  */
 public class ToolboxMenu {
     private final AEBaseMenu menu;
-    private int slot;
-    private NetworkToolMenuHost inv;
+    private final int slot;
+    private final NetworkToolMenuHost inv;
 
     public ToolboxMenu(AEBaseMenu menu) {
         this.menu = menu;
-        findToolbox(menu);
+
+        this.inv = NetworkToolItem.findNetworkToolInv(menu.getPlayer());
+        if (inv != null) {
+            this.slot = Objects.requireNonNullElse(inv.getSlot(), 0);
+            menu.lockPlayerInventorySlot(this.slot);
+        } else {
+            this.slot = 0;
+        }
 
         // Add quick access slots for the upgrade cards stored in the toolbox
         if (isPresent()) {
@@ -56,19 +65,6 @@ public class ToolboxMenu {
 
     public Component getName() {
         return this.inv != null ? this.inv.getItemStack().getHoverName() : TextComponent.EMPTY;
-    }
-
-    private void findToolbox(AEBaseMenu menu) {
-        var pi = menu.getPlayerInventory();
-        for (int x = 0; x < pi.getContainerSize(); x++) {
-            final ItemStack pii = pi.getItem(x);
-            if (!pii.isEmpty() && pii.getItem() instanceof NetworkToolItem networkToolItem) {
-                menu.lockPlayerInventorySlot(x);
-                this.slot = x;
-                this.inv = networkToolItem.getMenuHost(pi.player, x, pii, null);
-                break;
-            }
-        }
     }
 
 }
