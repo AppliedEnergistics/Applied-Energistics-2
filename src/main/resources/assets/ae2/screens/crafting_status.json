@@ -28,7 +28,7 @@
         "left": -86
       },
       "text": {
-        "text": "Crafting CPUs"
+        "translate": "gui.ae2.CraftingCPUs"
       }
     }
   },
