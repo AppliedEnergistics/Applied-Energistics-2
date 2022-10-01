@@ -21,7 +21,13 @@ public enum ItemModText implements LocalizationEnum {
     WITH_CRYSTAL_GROWTH_ACCELERATORS("With Crystal Growth Accelerators:"),
     P2P_API_ATTUNEMENT("Attune with any:"),
     P2P_TUNNEL_ATTUNEMENT("P2P Tunnel Attunement"),
-    P2P_TAG_ATTUNEMENT("Attune with any shown item");
+    P2P_TAG_ATTUNEMENT("Attune with any shown item"),
+    ENTROPY_MANIPULATOR_HEAT("Heat (%d AE)"),
+    ENTROPY_MANIPULATOR_COOL("Cool (%d AE)"),
+    RIGHT_CLICK("Right-Click"),
+    SHIFT_RIGHT_CLICK("Shift+Right-Click"),
+    CONSUMED("Consumed"),
+    FLOWING_FLUID_NAME("%s (flowing)"),;
 
     private final String englishText;
 
