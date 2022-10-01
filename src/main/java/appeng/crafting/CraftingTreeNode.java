@@ -84,14 +84,22 @@ public class CraftingTreeNode {
         var patterns = cc.getCraftingFor(wat);
 
         if (patterns.isEmpty() && parentInput != null) {
-            // No pattern: try to fuzzy match the primary output,
-            // in case one of the patterns used the wrong damage by mistake.
-            var fuzzy = cc.getFuzzyCraftable(wat, fuzzyCandidate -> {
-                return this.parentInput.isValid(fuzzyCandidate, level);
-            });
+            // No pattern for the exact encoded input. Try to find a pattern for a substitute ingredient. ;)
+            long acceptableAmount = parentInput.getPossibleInputs()[0].amount();
 
-            if (fuzzy != null) {
-                return fuzzy;
+            for (var possibleInput : parentInput.getPossibleInputs()) {
+                if (possibleInput.amount() != acceptableAmount) {
+                    // Skip if the amounts don't match (don't want to replace 1000 water by 1000 buckets for example).
+                    continue;
+                }
+
+                var fuzzy = cc.getFuzzyCraftable(possibleInput.what(), fuzzyCandidate -> {
+                    return this.parentInput.isValid(fuzzyCandidate, level);
+                });
+
+                if (fuzzy != null) {
+                    return fuzzy;
+                }
             }
         }
 
