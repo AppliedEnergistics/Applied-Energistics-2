@@ -575,4 +575,11 @@ public class Platform {
             }
         }
     }
+
+    /**
+     * @return True if AE2 is being run within a dev environment.
+     */
+    public static boolean isDevelopmentEnvironment() {
+        return !FMLEnvironment.production;
+    }
 }
