@@ -182,12 +182,6 @@ public class CraftingSimulationTest {
     }
 
     @Test
-    public void testDamagedOutput() {
-        testDamagedOutput(false);
-        testDamagedOutput(true);
-    }
-
-    @Test
     public void testNonsensicalRecursivePattern() {
         var env = new SimulationEnv();
 
@@ -201,6 +195,12 @@ public class CraftingSimulationTest {
 
         var plan = env.runSimulation(water1B, CalculationStrategy.REPORT_MISSING_ITEMS);
         assertThatPlan(plan).failed();
+    }
+
+    @Test
+    public void testDamagedOutput() {
+        testDamagedOutput(false);
+        testDamagedOutput(true);
     }
 
     public void testDamagedOutput(boolean branching) {
@@ -368,6 +368,33 @@ public class CraftingSimulationTest {
                 .succeeded()
                 .patternsMatch(targetPattern, 4, sourcePattern, 3)
                 .usedMatch(mult(sourceItem, 3));
+    }
+
+    /**
+     * Test that the crafting simulation will select an alternative target item if substitutions are enabled, and there
+     * is no pattern for the exact encoded item.
+     */
+    @Test
+    public void testAlternativeSubCraft() {
+        var env = new SimulationEnv();
+
+        var output = item(Items.DIAMOND);
+        var primaryInput = item(Items.GRASS);
+        var secondaryInput = item(Items.DIRT);
+        var secondaryInputSource = item(Items.PODZOL);
+
+        var mainPattern = env.addPattern(
+                new ProcessingPatternBuilder(output).addPreciseInput(1, primaryInput, secondaryInput).build());
+        var secondaryInputPattern = env.addPattern(
+                new ProcessingPatternBuilder(secondaryInput).addPreciseInput(1, secondaryInputSource).build());
+
+        env.addEmitable(secondaryInputSource.what());
+
+        var plan = env.runSimulation(mult(output, 10), CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(mainPattern, 10, secondaryInputPattern, 10)
+                .emittedMatch(mult(secondaryInputSource, 10));
     }
 
     private static GenericStack item(Item item) {
