@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 import appeng.api.client.AEStackRendering;
@@ -58,7 +57,7 @@ public class FinishedJobToast implements Toast {
             toastComponent.blit(poseStack, 0, 8 + middleY, 0, 32 + 8, this.width(), tileHeight);
         }
         toastComponent.blit(poseStack, 0, height - 8, 0, 32 + 32 - 8, this.width(), 8);
-        toastComponent.getMinecraft().font.draw(poseStack, Component.literal("Crafting Job Finished"), 30.0F, 7.0F,
+        toastComponent.getMinecraft().font.draw(poseStack, GuiText.ToastCraftingJobFinishedTitle.text(), 30.0F, 7.0F,
                 TITLE_COLOR);
         var lineY = 18;
         for (var line : lines) {
