@@ -22,7 +22,6 @@ import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
@@ -53,8 +52,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -94,7 +91,6 @@ public class Platform {
      * random source, use it for item drop locations...
      */
     private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
-    private static final WeakHashMap<Level, FakePlayer> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
@@ -343,14 +339,7 @@ public class Platform {
     public static Player getPlayer(ServerLevel level) {
         Objects.requireNonNull(level);
 
-        var wrp = FAKE_PLAYERS.get(level);
-        if (wrp != null) {
-            return wrp;
-        }
-
-        var p = FakePlayerFactory.getMinecraft(level);
-        FAKE_PLAYERS.put(level, p);
-        return p;
+        return FakePlayer.getOrCreate(level);
     }
 
     /**
