@@ -35,6 +35,8 @@ public enum InGameTooltip implements LocalizationEnum {
     ErrorNestedP2PTunnel("Error: Nested P2P Tunnel"),
     ErrorTooManyChannels("Error: Too Many Channels"),
     IdentityDeprecated("Deprecated. Convert with SHIFT + RIGHT-CLICK"),
+    P2PFrequency("Frequency: %s"),
+    P2PMECarriedChannels("Carried Channels: %d"),
     Locked("Locked"),
     NetworkBooting("Network Booting"),
     P2PInputManyOutputs("Linked (Input Side) - %d Outputs"),

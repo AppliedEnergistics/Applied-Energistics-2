@@ -99,7 +99,6 @@ public enum ButtonToolTips implements LocalizationEnum {
     OverlayMode("Overlay Mode"),
     OverlayModeNo("Loaded area is hidden."),
     OverlayModeYes("Shows the loaded area within the world."),
-    P2PFrequency("Frequency: %s"),
     PartitionStorage("Partition Storage"),
     PartitionStorageHint("Configures Partition based on currently stored items."),
     PowerUnits("Power Units"),
