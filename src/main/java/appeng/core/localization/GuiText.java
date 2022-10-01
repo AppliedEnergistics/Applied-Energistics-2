@@ -66,6 +66,7 @@ public enum GuiText implements LocalizationEnum {
     CraftErrorReplan("Replan"),
     CraftErrorRetry("Retry"),
     Crafting("Crafting: %s"),
+    CraftingCPUs("Crafting CPUs"),
     CraftingInterface("ME Pattern Provider"),
     CraftingPattern("Crafting Mode\nClick for Processing Mode."),
     CraftingPlan("Crafting Plan - %s"),
