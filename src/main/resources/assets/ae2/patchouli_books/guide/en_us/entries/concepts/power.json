@@ -1,0 +1,11 @@
+{
+  "name": "AE Power",
+  "icon": "ae2:energy_cell",
+  "category": "ae2:concepts",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(thing)ME System$() uses a unique form of power measured in $(thing)AE$().$(br2)Some $(item)External Power Systems$() can be converted into $(thing)AE$(), but this conversion only works 1-way. $(thing)AE2$() is not a power conversion mod.$(br2)What $(item)External Power Systems$() are available depends on your particular modpack setup."
+    }
+  ]
+}
