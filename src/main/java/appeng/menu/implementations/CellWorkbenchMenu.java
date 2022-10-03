@@ -149,7 +149,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     @Override
     public boolean isFilterSlotEnabled(int idx) {
         final ICellWorkbenchItem cwi = getHost().getCell();
-        if (cwi != null) {
+        if (cwi != null && getCopyMode() == CopyMode.CLEAR_ON_REMOVE) {
             return idx < cwi.getConfigInventory(getWorkbenchItem()).size();
         }
         return getCopyMode() == CopyMode.KEEP_ON_REMOVE;
