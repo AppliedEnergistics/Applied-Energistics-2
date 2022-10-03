@@ -95,10 +95,6 @@ public abstract class UpgradeableMenu<T extends IUpgradeableObject> extends AEBa
         setupUpgrades(this.getHost().getUpgrades());
     }
 
-    protected final void addConfigSlots(GenericStackInv config, int rows, int cols) {
-        addExpandableConfigSlots(config, rows, cols, 0);
-    }
-
     protected final void addExpandableConfigSlots(GenericStackInv config, int rows, int cols, int optionalRows) {
         var inv = config.createMenuWrapper();
 
