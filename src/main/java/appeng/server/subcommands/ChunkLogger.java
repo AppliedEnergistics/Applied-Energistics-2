@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -52,16 +53,30 @@ public class ChunkLogger implements ISubCommand {
 
     private void onChunkLoadEvent(ServerLevel level, LevelChunk chunk) {
         if (enabled) {
-            AELog.info("Chunk Loaded:   " + chunk.getPos().x + ", " + chunk.getPos().z);
+            var chunkPos = chunk.getPos();
+            var center = getCenter(chunk);
+            AELog.info("Loaded chunk " + chunkPos.x + "," + chunkPos.z + " [center: " + center + "] in "
+                    + level.dimension().location());
             this.displayStack();
         }
     }
 
     private void onChunkUnloadEvent(ServerLevel level, LevelChunk chunk) {
         if (enabled) {
-            AELog.info("Chunk Unloaded: " + chunk.getPos().x + ", " + chunk.getPos().z);
+            var chunkPos = chunk.getPos();
+            var center = getCenter(chunk);
+            AELog.info("Unloaded chunk " + chunkPos.x + "," + chunkPos.z + " [center: " + center + "] in "
+                    + level.dimension().location());
             this.displayStack();
         }
+    }
+
+    private static String getCenter(LevelChunk chunk) {
+        var chunkPos = chunk.getPos();
+        var x = chunkPos.getMiddleBlockX();
+        var z = chunkPos.getMiddleBlockZ();
+        var y = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + 1;
+        return x + " " + y + " " + z;
     }
 
     @Override
