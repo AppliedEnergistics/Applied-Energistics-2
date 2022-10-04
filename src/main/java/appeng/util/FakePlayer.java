@@ -17,7 +17,7 @@ public class FakePlayer extends ServerPlayer {
     private static final WeakHashMap<Level, FakePlayer> FAKE_PLAYERS = new WeakHashMap<>();
 
     private static final GameProfile PROFILE = new GameProfile(UUID.fromString("60C173A5-E1E6-4B87-85B1-272CE424521D"),
-            "[AppEng2]");
+            "[AE2]");
 
     private FakePlayer(ServerLevel level) {
         super(level.getServer(), level, PROFILE);
