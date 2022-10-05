@@ -437,7 +437,7 @@ theoneprobe.appliedenergistics2.stored_energy=%1$d / %2$d
 
 // Items
 item.appliedenergistics2.storage_cell_1k.name=§61k§r ME Storage Cell
-item.appliedenergistics2.storage_cell_4k.name=§a16k§r ME Storage Cell
+item.appliedenergistics2.storage_cell_4k.name=§e4k§r ME Storage Cell
 item.appliedenergistics2.storage_cell_16k.name=§a16k§r ME Storage Cell
 item.appliedenergistics2.storage_cell_64k.name=§b64k§r ME Storage Cell
 item.appliedenergistics2.fluid_storage_cell_1k.name=§61k§r ME Fluid Storage Cell
