@@ -21,6 +21,8 @@ package appeng.parts.crafting;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -44,6 +46,7 @@ import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
+import appeng.util.SettingsFrom;
 
 public class PatternProviderPart extends BasicStatePart implements PatternProviderLogicHost {
 
@@ -112,6 +115,20 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     @Override
     public float getCableConnectionLength(AECableType cable) {
         return 4;
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            logic.exportSettings(output);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            logic.importSettings(input, player);
+        }
     }
 
     @Override

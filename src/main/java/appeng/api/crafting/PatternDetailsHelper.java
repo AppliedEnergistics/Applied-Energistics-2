@@ -92,8 +92,8 @@ public final class PatternDetailsHelper {
      * using some process external to the ME system.
      *
      * @param out The first element is considered the primary output and must be present
-     * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      * @return A new encoded pattern.
+     * @throws IllegalArgumentException If either in or out contain only empty ItemStacks, or no primary output
      */
     public static ItemStack encodeProcessingPattern(GenericStack[] in, GenericStack[] out) {
         return AEItems.PROCESSING_PATTERN.asItem().encode(in, out);
