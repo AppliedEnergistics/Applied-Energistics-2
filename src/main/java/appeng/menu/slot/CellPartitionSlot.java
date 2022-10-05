@@ -5,12 +5,12 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.inventories.InternalInventory;
 import appeng.client.Point;
 
-public class CellFilterSlot extends FakeSlot implements IOptionalSlot {
+public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
 
-    private final IFilterSlotHost host;
+    private final IPartitionSlotHost host;
     private final int slot;
 
-    public CellFilterSlot(InternalInventory inv, IFilterSlotHost containerBus, int invSlot) {
+    public CellPartitionSlot(InternalInventory inv, IPartitionSlotHost containerBus, int invSlot) {
         super(inv, invSlot);
         this.host = containerBus;
         this.slot = invSlot;
@@ -31,7 +31,7 @@ public class CellFilterSlot extends FakeSlot implements IOptionalSlot {
             return false;
         }
 
-        return this.host.isFilterSlotEnabled(this.slot);
+        return this.host.isPartitionSlotEnabled(this.slot);
     }
 
     @Override
