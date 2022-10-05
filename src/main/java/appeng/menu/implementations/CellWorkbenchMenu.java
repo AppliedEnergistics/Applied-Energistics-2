@@ -148,7 +148,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
     @Override
     public boolean isPartitionSlotEnabled(int idx) {
-        final ICellWorkbenchItem cwi = getHost().getCell();
+        var cwi = getHost().getCell();
         if (cwi != null && getCopyMode() == CopyMode.CLEAR_ON_REMOVE) {
             return idx < cwi.getConfigInventory(getWorkbenchItem()).size();
         }
