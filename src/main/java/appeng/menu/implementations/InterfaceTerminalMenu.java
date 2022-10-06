@@ -233,7 +233,7 @@ public class InterfaceTerminalMenu extends AEBaseMenu {
 
                         setCarried(interfaceSlot.addItems(inHand.copy()));
 
-                        if (carried.isEmpty()) {
+                        if (getCarried().isEmpty()) {
                             setCarried(inSlot);
                         } else {
                             setCarried(inHand);
