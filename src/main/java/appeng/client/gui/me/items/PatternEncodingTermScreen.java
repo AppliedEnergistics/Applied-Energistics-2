@@ -43,6 +43,7 @@ import appeng.client.gui.widgets.IconButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToggleButton;
+import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
@@ -244,11 +245,9 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                     var screen = new SetProcessingPatternAmountScreen<>(
                             this,
                             currentStack,
-                            newStack -> {
-                                NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                                        InventoryAction.SET_FILTER, slot.index,
-                                        GenericStack.wrapInItemStack(newStack)));
-                            });
+                            newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
+                                    InventoryAction.SET_FILTER, slot.index,
+                                    GenericStack.wrapInItemStack(newStack))));
                     switchToScreen(screen);
                     return true;
                 }
@@ -304,5 +303,13 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             }
         }
         return super.mouseScrolled(x, y, wheelDelta);
+    }
+
+    @Override
+    public void onClose() {
+        if (AEConfig.instance().isClearGridOnClose()) {
+            this.getMenu().clear();
+        }
+        super.onClose();
     }
 }

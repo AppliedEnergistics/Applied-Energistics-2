@@ -25,6 +25,7 @@ import appeng.api.config.ActionItems;
 import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.core.AEConfig;
 import appeng.menu.me.items.CraftingTermMenu;
 
 /**
@@ -47,4 +48,11 @@ public class CraftingTermScreen<C extends CraftingTermMenu> extends MEStorageScr
         widgets.add("clearToPlayerInv", clearToPlayerInvBtn);
     }
 
+    @Override
+    public void onClose() {
+        if (AEConfig.instance().isClearGridOnClose()) {
+            this.getMenu().clearCraftingGrid();
+        }
+        super.onClose();
+    }
 }
