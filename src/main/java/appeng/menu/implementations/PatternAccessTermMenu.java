@@ -234,7 +234,7 @@ public class PatternAccessTermMenu extends AEBaseMenu {
 
                         setCarried(patternSlot.addItems(inHand.copy()));
 
-                        if (carried.isEmpty()) {
+                        if (getCarried().isEmpty()) {
                             setCarried(inSlot);
                         } else {
                             setCarried(inHand);
