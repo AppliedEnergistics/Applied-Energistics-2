@@ -16,18 +16,21 @@ import appeng.api.config.RedstoneMode;
 import appeng.api.config.SchedulingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
+import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.tools.NetworkToolItem;
 import appeng.parts.automation.ExportBusPart;
+import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.misc.InterfacePart;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
@@ -126,6 +129,65 @@ public final class MemoryCardTestPlots {
             }
             if (!Objects.equals(to.getConfig().getKey(1), AEFluidKey.of(Fluids.WATER))) {
                 helper.fail("missing water in filter", origin);
+            }
+
+            helper.succeed();
+        });
+    }
+
+    @TestPlot("memcard_pattern_provider")
+    public static void testPatternProvider(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.cable(origin).part(Direction.WEST, AEParts.PATTERN_PROVIDER);
+        plot.block(origin.east(), AEBlocks.PATTERN_PROVIDER);
+
+        plot.test(helper -> {
+
+            // Create arbitrary processing+crafting patterns
+            var processingPattern = PatternDetailsHelper.encodeProcessingPattern(
+                    new GenericStack[] { new GenericStack(AEFluidKey.of(Fluids.WATER), 1) },
+                    new GenericStack[] { new GenericStack(AEFluidKey.of(Fluids.LAVA), 1) });
+            var craftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
+                    helper.getLevel(), Items.OAK_LOG.getDefaultInstance());
+            var differentCraftingPattern = CraftingPatternHelper.encodeShapelessCraftingRecipe(
+                    helper.getLevel(), Items.SPRUCE_LOG.getDefaultInstance());
+
+            var from = (PatternProviderBlockEntity) helper.getBlockEntity(BlockPos.ZERO.east());
+            var to = helper.getPart(BlockPos.ZERO, Direction.WEST, PatternProviderPart.class);
+
+            var player = helper.makeMockPlayer();
+            player.getInventory().placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(64));
+
+            // This should be copied to the other pattern provider
+            var fromPatternInv = from.getLogic().getPatternInv();
+            fromPatternInv.addItems(processingPattern);
+            fromPatternInv.addItems(craftingPattern);
+            // This should be cleared into a blank pattern and moved to the player
+            var toPatternInv = to.getLogic().getPatternInv();
+            toPatternInv.addItems(differentCraftingPattern.copy());
+            toPatternInv.addItems(differentCraftingPattern.copy());
+            toPatternInv.addItems(differentCraftingPattern.copy());
+
+            var blankPatternsBefore = player.getInventory().countItem(AEItems.BLANK_PATTERN.asItem());
+
+            // Export&Import settings
+            var settings = new CompoundTag();
+            from.exportSettings(SettingsFrom.MEMORY_CARD, settings, null);
+            to.importSettings(SettingsFrom.MEMORY_CARD, settings, player);
+
+            var blankPatternsAfter = player.getInventory().countItem(AEItems.BLANK_PATTERN.asItem());
+
+            // There was one more pattern in "to" than requested, so the player should be given one blank pattern back
+            helper.check(blankPatternsAfter == blankPatternsBefore + 1,
+                    "Expected player to be given back one blank pattern");
+
+            // Compare the pattern inventories
+            for (int i = 0; i < fromPatternInv.size(); i++) {
+                var fromItem = fromPatternInv.getStackInSlot(i);
+                var toItem = toPatternInv.getStackInSlot(i);
+                if (!ItemStack.isSameItemSameTags(fromItem, toItem)) {
+                    helper.fail("Mismatch in slot " + i, origin.east());
+                }
             }
 
             helper.succeed();

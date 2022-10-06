@@ -33,6 +33,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -63,12 +64,16 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.util.IConfigManager;
+import appeng.core.AELog;
+import appeng.core.definitions.AEItems;
+import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
 import appeng.helpers.ICustomNameObject;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
+import appeng.util.inv.PlayerInternalInventory;
 
 /**
  * Shared code between the pattern provider block and part.
@@ -76,6 +81,7 @@ import appeng.util.inv.InternalInventoryHost;
 public class PatternProviderLogic implements InternalInventoryHost, ICraftingProvider {
 
     public static final int NUMBER_OF_PATTERN_SLOTS = 9;
+    public static final String NBT_MEMORY_CARD_PATTERNS = "patterns";
 
     private final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
@@ -128,7 +134,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public void writeToNBT(CompoundTag tag) {
         this.configManager.writeToNBT(tag);
-        this.patternInventory.writeToNBT(tag, "patterns");
+        this.patternInventory.writeToNBT(tag, NBT_MEMORY_CARD_PATTERNS);
         tag.putInt("priority", this.priority);
 
         ListTag sendListTag = new ListTag();
@@ -145,7 +151,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public void readFromNBT(CompoundTag tag) {
         this.configManager.readFromNBT(tag);
-        this.patternInventory.readFromNBT(tag, "patterns");
+        this.patternInventory.readFromNBT(tag, NBT_MEMORY_CARD_PATTERNS);
         this.priority = tag.getInt("priority");
 
         ListTag sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
@@ -391,6 +397,88 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     public PatternProviderReturnInventory getReturnInv() {
         return this.returnInv;
+    }
+
+    public void exportSettings(CompoundTag output) {
+        patternInventory.writeToNBT(output, NBT_MEMORY_CARD_PATTERNS);
+    }
+
+    public void importSettings(CompoundTag input, @org.jetbrains.annotations.Nullable Player player) {
+        if (player != null && input.contains(NBT_MEMORY_CARD_PATTERNS) && !player.level.isClientSide) {
+            clearPatternInventory(player);
+
+            var desiredPatterns = new AppEngInternalInventory(patternInventory.size());
+            desiredPatterns.readFromNBT(input, NBT_MEMORY_CARD_PATTERNS);
+
+            // Restore from blank patterns in the player inv
+            var playerInv = player.getInventory();
+            var blankPatternsAvailable = player.getAbilities().instabuild ? Integer.MAX_VALUE
+                    : playerInv.countItem(AEItems.BLANK_PATTERN.asItem());
+            var blankPatternsUsed = 0;
+            for (int i = 0; i < desiredPatterns.size(); i++) {
+                // Don't restore junk
+                var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
+                        host.getBlockEntity().getLevel(), true);
+                if (pattern == null) {
+                    continue; // Skip junk / broken recipes
+                }
+
+                // Keep track of how many blank patterns we need
+                ++blankPatternsUsed;
+                if (blankPatternsAvailable >= blankPatternsUsed) {
+                    if (!patternInventory.addItems(pattern.getDefinition().toStack()).isEmpty()) {
+                        AELog.warn("Failed to add pattern to pattern provider");
+                        blankPatternsUsed--;
+                    }
+                }
+            }
+
+            // Deduct the used blank patterns
+            if (blankPatternsUsed > 0 && !player.getAbilities().instabuild) {
+                new PlayerInternalInventory(playerInv)
+                        .removeItems(blankPatternsUsed, AEItems.BLANK_PATTERN.stack(), null);
+            }
+
+            // Warn about not being able to restore all patterns due to lack of blank patterns
+            if (blankPatternsUsed > blankPatternsAvailable) {
+                player.sendSystemMessage(
+                        PlayerMessages.MissingBlankPatterns.text(blankPatternsUsed - blankPatternsAvailable));
+            }
+        }
+    }
+
+    // Converts all patterns in this provider to blank patterns and give them to the player
+    private void clearPatternInventory(Player player) {
+        // Just clear it for creative mode players
+        if (player.getAbilities().instabuild) {
+            for (int i = 0; i < patternInventory.size(); i++) {
+                patternInventory.setItemDirect(i, ItemStack.EMPTY);
+            }
+            return;
+        }
+
+        var playerInv = player.getInventory();
+
+        // Clear out any existing patterns and give them to the player
+        var blankPatternCount = 0;
+        for (int i = 0; i < patternInventory.size(); i++) {
+            var pattern = patternInventory.getStackInSlot(i);
+            // Auto-Clear encoded patterns to allow them to stack
+            if (pattern.is(AEItems.CRAFTING_PATTERN.asItem())
+                    || pattern.is(AEItems.PROCESSING_PATTERN.asItem())
+                    || pattern.is(AEItems.BLANK_PATTERN.asItem())) {
+                blankPatternCount += pattern.getCount();
+            } else {
+                // Give back any non-blank-patterns individually
+                playerInv.placeItemBackInInventory(pattern);
+            }
+            patternInventory.setItemDirect(i, ItemStack.EMPTY);
+        }
+
+        // Place back the removed blank patterns all at once
+        if (blankPatternCount > 0) {
+            playerInv.placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(blankPatternCount), false);
+        }
     }
 
     private class Ticker implements IGridTickable {
