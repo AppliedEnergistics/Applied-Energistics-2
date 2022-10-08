@@ -17,7 +17,6 @@ public class ConfigPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
     }
 
-    @SuppressWarnings("ReturnOfNull")
     @Override
     public String getRefMapperConfig() {
         return null;
@@ -36,7 +35,6 @@ public class ConfigPlugin implements IMixinConfigPlugin {
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
     }
 
-    @SuppressWarnings("ReturnOfNull")
     @Override
     public List<String> getMixins() {
         return null;
