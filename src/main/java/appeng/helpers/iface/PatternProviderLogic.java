@@ -46,6 +46,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -562,12 +564,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                     // https://github.com/MinecraftForge/MinecraftForge/pull/6708
                     if (hit != null && !BAD_BLOCKS.contains(directedBlock)
                             && hit.getBlockPos().equals(directedBlockEntity.getBlockPos())) {
-                        // FIXME fabric
-                        // final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                        // directedBlockEntity.getBlockPos(), null);
-                        // if (!g.isEmpty()) {
-                        // what = g;
-                        // }
+                        final ItemStack g = directedBlock.getCloneItemStack(directedBlockState, hit, hostWorld,
+                                directedBlockEntity.getBlockPos(), null);
+                        if (!g.isEmpty()) {
+                            what = g;
+                        }
                     }
                 } catch (Throwable t) {
                     BAD_BLOCKS.add(directedBlock); // nope!
@@ -590,6 +591,10 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public long getSortValue() {
         final BlockEntity te = this.host.getBlockEntity();
         return te.getBlockPos().getZ() << 24 ^ te.getBlockPos().getX() << 8 ^ te.getBlockPos().getY();
+    }
+
+    public <T> LazyOptional<T> getCapability(Capability<T> capability) {
+        return this.returnInv.getCapability(capability);
     }
 
     @Nullable

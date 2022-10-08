@@ -18,9 +18,6 @@
 
 package appeng.client.render.tesr;
 
-import java.util.Random;
-
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -39,10 +36,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.TextureStitchEvent;
 
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AppEng;
+import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
 
@@ -55,8 +54,6 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
     private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
-
-    public static final ImmutableList<Material> SPRITES = ImmutableList.of(TEXTURE_INSIDE);
 
     public InscriberTESR(BlockEntityRendererProvider.Context context) {
     }
@@ -213,14 +210,8 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
             ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
-            // heuristic to scale items down much further than blocks,
-            // the assumption here is that the generated item models will return their faces
-            // for direction=null, while a block-model will have their faces for
-            // cull-faces, but not direction=null
-            var model = itemRenderer.getItemModelShaper().getItemModel(stack);
-            var quads = model.getQuads(null, null, new Random());
-            // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
-            if (quads != null && !quads.isEmpty()) {
+            // heuristic to scale items down much further than blocks
+            if (!stack.is(ConventionTags.STORAGE_BLOCKS)) {
                 ms.scale(0.5f, 0.5f, 0.5f);
             }
 
@@ -228,6 +219,12 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             itemRenderer.renderStatic(stack, TransformType.FIXED, combinedLight, combinedOverlay, ms,
                     buffers, 0);
             ms.popPose();
+        }
+    }
+
+    public static void registerTexture(TextureStitchEvent.Pre evt) {
+        if (evt.getAtlas().location().equals(TEXTURE_INSIDE.atlasLocation())) {
+            evt.addSprite(TEXTURE_INSIDE.texture());
         }
     }
 

@@ -21,10 +21,15 @@ package appeng.client.render.model;
 import java.util.Arrays;
 import java.util.Objects;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 public class DriveModelData extends AEModelData {
+
+    public final static ModelProperty<Item[]> STATE = new ModelProperty<>();
 
     private final Item[] cells;
 
@@ -34,12 +39,8 @@ public class DriveModelData extends AEModelData {
     }
 
     @Override
-    public boolean isCacheable() {
+    protected boolean isCacheable() {
         return false; // Too many combinations
-    }
-
-    public Item[] getCells() {
-        return cells;
     }
 
     @Override
@@ -60,6 +61,21 @@ public class DriveModelData extends AEModelData {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), Arrays.hashCode(cells));
+    }
+
+    @Override
+    public boolean hasProperty(ModelProperty<?> prop) {
+        return prop == STATE || super.hasProperty(prop);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> T getData(ModelProperty<T> prop) {
+        if (prop == STATE) {
+            return (T) this.cells;
+        }
+        return super.getData(prop);
     }
 
 }

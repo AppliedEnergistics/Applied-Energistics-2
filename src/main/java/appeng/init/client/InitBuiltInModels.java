@@ -20,11 +20,11 @@ package appeng.init.client;
 
 import java.util.function.Supplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
 
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingUnitType;
@@ -46,7 +46,7 @@ import appeng.client.render.spatial.SpatialPylonModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PlaneModel;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class InitBuiltInModels {
     private InitBuiltInModels() {
     }
@@ -103,8 +103,8 @@ public final class InitBuiltInModels {
         addBuiltInModel(planeName, () -> new PlaneModel(frontTextureId, sidesTextureId, backTextureId));
     }
 
-    private static <T extends UnbakedModel> void addBuiltInModel(String id, Supplier<T> modelFactory) {
-        ModelLoadingRegistry.INSTANCE
-                .registerResourceProvider(resourceManager -> new SimpleModelLoader<>(AppEng.makeId(id), modelFactory));
+    private static <T extends IModelGeometry<T>> void addBuiltInModel(String id, Supplier<T> modelFactory) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(AppEng.MOD_ID, id),
+                new SimpleModelLoader<>(modelFactory));
     }
 }

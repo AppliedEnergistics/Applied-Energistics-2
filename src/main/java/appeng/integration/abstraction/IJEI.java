@@ -18,12 +18,18 @@
 
 package appeng.integration.abstraction;
 
+import mezz.jei.api.runtime.IJeiRuntime;
+
 /**
  * Abstracts access to the JEI API functionality.
  */
 public interface IJEI {
     default boolean isEnabled() {
         return false;
+    }
+
+    default IJeiRuntime getRuntime() {
+        return null;
     }
 
     default String getSearchText() {

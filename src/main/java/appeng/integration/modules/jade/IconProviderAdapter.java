@@ -5,16 +5,16 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.config.IPluginConfig;
-import snownee.jade.api.ui.IElement;
-import snownee.jade.api.ui.IElementHelper;
+import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
+import mcp.mobius.waila.api.ui.IElement;
+import mcp.mobius.waila.api.ui.IElementHelper;
 
 import appeng.api.integrations.igtooltip.providers.IconProvider;
 
-class IconProviderAdapter<T extends BlockEntity> extends BaseProvider implements IBlockComponentProvider {
+class IconProviderAdapter<T extends BlockEntity> extends BaseProvider implements IComponentProvider {
     private final IElementHelper elementHelper;
 
     private final IconProvider<? super T> iconProvider;

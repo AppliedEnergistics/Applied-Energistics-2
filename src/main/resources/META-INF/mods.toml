@@ -1,0 +1,50 @@
+modLoader="javafml"
+loaderVersion="[32,)"
+#updateJSONURL=""
+issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
+displayURL="https://github.com/AppliedEnergistics/Applied-Energistics-2"
+logoFile="logo.png"
+#credits="Thanks for this example mod goes to Java"
+authors="TeamAppliedEnergistics"
+license="See GitHub repository for details"
+
+[[mods]]
+modId="ae2"
+version="0.0.0"
+displayName="Applied Energistics 2"
+description="A Mod about Matter, Energy and using them to conquer the world.."
+
+[[dependencies.ae2]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.ae2]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.ae2]]
+    modId="jei"
+    mandatory=false
+    versionRange="${jei_version}"
+    ordering="AFTER"
+    side="CLIENT"
+
+[[dependencies.ae2]]
+    modId="theoneprobe"
+    mandatory=false
+    versionRange="${top_version}"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.ae2]]
+    modId="jade"
+    mandatory=false
+    versionRange="${jade_version}"
+    ordering="AFTER"
+    side="BOTH"

@@ -29,6 +29,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
@@ -41,6 +44,9 @@ import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.util.iterators.ChainedIterator;
 
 public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAEMultiBlock<SpatialPylonCluster> {
+
+    // The lower 6 bits are used
+    public static final ModelProperty<Integer> STATE = new ModelProperty<>(value -> ((value & ~0x3F) == 0));
 
     public static final int DISPLAY_END_MIN = 0x01;
     public static final int DISPLAY_END_MAX = 0x02;
@@ -191,8 +197,10 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return getDisplayBits();
+    public IModelData getModelData() {
+        // FIXME: Must force model data update on changes, should potentially be moved
+        // to block state (?)
+        return new ModelDataMap.Builder().withInitial(STATE, getDisplayBits()).build();
     }
 
     private Iterator<IGridNode> getMultiblockNodes() {
