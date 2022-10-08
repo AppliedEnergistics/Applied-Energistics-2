@@ -89,7 +89,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     private final ToggleButton craftingFluidSubstitutionsBtn;
     private final ActionButton processingCycleOutputBtn;
     private final Scrollbar processingScrollbar;
-    private final StonecuttingEncoding stonecuttingEncoding;
+    private final StonecuttingEncodingPanel stonecuttingEncoding;
 
     public PatternEncodingTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -139,7 +139,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 btn -> getMenu().setMode(EncodingMode.CRAFTING));
         widgets.add("stonecuttingPatternMode", this.tabStonecuttingButton);
 
-        stonecuttingEncoding = new StonecuttingEncoding(menu, widgets);
+        stonecuttingEncoding = new StonecuttingEncodingPanel(this, widgets);
         widgets.add("stonecuttingEncoding", stonecuttingEncoding);
     }
 
@@ -327,17 +327,6 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         if (menu.getMode() == EncodingMode.PROCESSING
                 && (hoveredSlot == null || menu.isProcessingPatternSlot(hoveredSlot))) {
             var modeBg = getModeBlitter(EncodingMode.PROCESSING);
-            if (modeBg.getDestRect().contains((int) x, (int) y)
-                    && processingScrollbar.onMouseWheel(new Point((int) x, (int) y), wheelDelta)) {
-                return true;
-            }
-        }
-
-        // Forward the mouse-wheel to the stonecutting scrollbar when it is used on the stonecutting pattern overlay,
-        // but don't if a slot is hovered and that slot is not a stonecutting recipe slot
-        if (menu.getMode() == EncodingMode.STONECUTTING
-                && (hoveredSlot == null/* TODO || menu.isProcessingPatternSlot(hoveredSlot) */)) {
-            var modeBg = getModeBlitter(EncodingMode.STONECUTTING);
             if (modeBg.getDestRect().contains((int) x, (int) y)
                     && processingScrollbar.onMouseWheel(new Point((int) x, (int) y), wheelDelta)) {
                 return true;

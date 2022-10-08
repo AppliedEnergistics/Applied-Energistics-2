@@ -33,7 +33,6 @@ import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.crafting.pattern.AEStonecuttingPattern;
-import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
@@ -104,24 +103,44 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             return;
         }
 
-        var details = PatternDetailsHelper.decodePattern(pattern,
-                host.getLevel());
-        if (details instanceof AECraftingPattern) {
-            setMode(EncodingMode.CRAFTING);
-        } else if (details instanceof AEProcessingPattern) {
-            setMode(EncodingMode.PROCESSING);
+        var details = PatternDetailsHelper.decodePattern(pattern, host.getLevel());
+
+        if (details instanceof AECraftingPattern craftingPattern) {
+            loadCraftingPattern(craftingPattern);
+        } else if (details instanceof AEProcessingPattern processingPattern) {
+            loadProcessingPattern(processingPattern);
         } else if (details instanceof AEStonecuttingPattern stonecuttingPattern) {
-            setMode(EncodingMode.STONECUTTING);
-            stonecuttingRecipeId = stonecuttingPattern.getRecipeId();
+            loadStonecuttingPattern(stonecuttingPattern);
         }
 
-        if (details instanceof IAEPatternDetails aeDetails) {
-            this.setSubstitution(aeDetails.canSubstitute());
-            this.setFluidSubstitution(aeDetails.canSubstituteFluids());
+        saveChanges();
+    }
 
-            fillInventoryFromSparseStacks(encodedInputInv, aeDetails.getSparseInputs());
-            fillInventoryFromSparseStacks(encodedOutputInv, aeDetails.getSparseOutputs());
-        }
+    private void loadCraftingPattern(AECraftingPattern pattern) {
+        setMode(EncodingMode.CRAFTING);
+        this.substitute = pattern.canSubstitute();
+        this.substituteFluids = pattern.canSubstituteFluids();
+
+        fillInventoryFromSparseStacks(encodedInputInv, pattern.getSparseInputs());
+        fillInventoryFromSparseStacks(encodedOutputInv, pattern.getSparseOutputs());
+    }
+
+    private void loadProcessingPattern(AEProcessingPattern pattern) {
+        setMode(EncodingMode.PROCESSING);
+
+        fillInventoryFromSparseStacks(encodedInputInv, pattern.getSparseInputs());
+        fillInventoryFromSparseStacks(encodedOutputInv, pattern.getSparseOutputs());
+    }
+
+    private void loadStonecuttingPattern(AEStonecuttingPattern pattern) {
+        setMode(EncodingMode.STONECUTTING);
+        stonecuttingRecipeId = pattern.getRecipeId();
+
+        this.substitute = pattern.canSubstitute;
+
+        encodedInputInv.clear();
+        encodedInputInv.setStack(0, new GenericStack(pattern.getInput(), 1));
+        encodedOutputInv.clear();
     }
 
     private static void fillInventoryFromSparseStacks(ConfigInventory inv, GenericStack[] stacks) {
@@ -163,7 +182,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         this.saveChanges();
     }
 
-    public ResourceLocation getStonecuttingRecipeId() {
+    public @Nullable ResourceLocation getStonecuttingRecipeId() {
         return stonecuttingRecipeId;
     }
 

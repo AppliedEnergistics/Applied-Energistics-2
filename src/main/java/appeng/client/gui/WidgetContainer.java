@@ -299,9 +299,19 @@ public class WidgetContainer {
      * @see ICompositeWidget#onMouseWheel(Point, double)
      */
     boolean onMouseWheel(Point mousePos, double wheelDelta) {
+        // First pass: dispatch wheel event to widgets the mouse is over
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()
-                    && (widget.wantsAllMouseWheelEvents() || mousePos.isIn(widget.getBounds()))
+                    && mousePos.isIn(widget.getBounds())
+                    && widget.onMouseWheel(mousePos, wheelDelta)) {
+                return true;
+            }
+        }
+
+        // Second pass: send the event to capturing widgets
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()
+                    && widget.wantsAllMouseWheelEvents()
                     && widget.onMouseWheel(mousePos, wheelDelta)) {
                 return true;
             }

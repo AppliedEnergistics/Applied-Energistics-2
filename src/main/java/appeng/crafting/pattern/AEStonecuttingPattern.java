@@ -36,6 +36,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -45,7 +46,7 @@ import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
  */
-public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssemblerSupportedPattern {
+public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     // The slot index in the 3x3 crafting grid that we insert our item into (in the MAC)
     private static final int CRAFTING_GRID_SLOT = 4;
 
@@ -56,8 +57,7 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
     private final AEItemKey input;
     private final ItemStack output;
     private final IInput[] inputs;
-    private final GenericStack[] sparseInputs;
-    private final GenericStack[] sparseOutputs;
+    private final GenericStack[] outputs;
 
     /**
      * We cache results of isValid(...) calls for stacks that don't have NBT.
@@ -80,7 +80,7 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
         this.testFrame.setItem(0, input.toStack());
 
         if (!this.recipe.matches(testFrame, level)) {
-            throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
+            throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
         }
 
         this.output = this.recipe.assemble(testFrame);
@@ -91,10 +91,7 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
         this.inputs = new IInput[] {
                 new Input()
         };
-        this.sparseInputs = new GenericStack[] {
-                new GenericStack(input, 1)
-        };
-        this.sparseOutputs = new GenericStack[] {
+        this.outputs = new GenericStack[] {
                 GenericStack.fromItemStack(this.output)
         };
     }
@@ -126,7 +123,7 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
 
     @Override
     public GenericStack[] getOutputs() {
-        return sparseOutputs;
+        return outputs;
     }
 
     /**
@@ -184,17 +181,6 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
         }
     }
 
-    @Override
-    public GenericStack[] getSparseInputs() {
-        return sparseInputs;
-    }
-
-    @Override
-    public GenericStack[] getSparseOutputs() {
-        return sparseOutputs;
-    }
-
-    @Override
     public boolean canSubstitute() {
         return canSubstitute;
     }
@@ -232,6 +218,10 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
         return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
     }
 
+    public AEItemKey getInput() {
+        return input;
+    }
+
     private class Input implements IInput {
         private final GenericStack[] possibleInputs;
 
@@ -242,7 +232,7 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
                 ItemStack[] matchingStacks = getRecipeIngredient().getItems();
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];
                 // Ensure that the stack chosen by the user gets precedence.
-                this.possibleInputs[0] = sparseInputs[0];
+                this.possibleInputs[0] = new GenericStack(input, 1);
                 for (int i = 0; i < matchingStacks.length; ++i) {
                     this.possibleInputs[i + 1] = GenericStack.fromItemStack(matchingStacks[i]);
                 }

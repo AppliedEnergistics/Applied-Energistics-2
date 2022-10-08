@@ -2,20 +2,27 @@ package appeng.client.gui.me.items;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.Tooltip;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.encoding.EncodingMode;
 
-public final class StonecuttingEncoding implements ICompositeWidget {
+/**
+ * Implements the panel for encoding stonecutting recipes.
+ */
+public final class StonecuttingEncodingPanel implements ICompositeWidget {
     private static final Blitter BG_SLOT = PatternEncodingTermScreen.STONECUTTING_MODE_BG
             .copy()
             .src(126, 141, 16, 18);
@@ -31,12 +38,14 @@ public final class StonecuttingEncoding implements ICompositeWidget {
 
     private final PatternEncodingTermMenu menu;
     private final Scrollbar scrollbar;
+    private final PatternEncodingTermScreen<?> screen;
 
     private int x;
     private int y;
 
-    public StonecuttingEncoding(PatternEncodingTermMenu menu, WidgetContainer widgets) {
-        this.menu = menu;
+    public StonecuttingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
+        this.screen = screen;
+        this.menu = screen.getMenu();
         this.scrollbar = widgets.addScrollBar("stonecuttingPatternModeScrollbar", Scrollbar.SMALL);
         this.scrollbar.setRange(0, 0, COLS);
         this.scrollbar.setCaptureMouseWheel(false);
@@ -88,24 +97,44 @@ public final class StonecuttingEncoding implements ICompositeWidget {
 
     @Override
     public boolean onMouseDown(Point mousePos, int button) {
+        var recipe = getRecipeAt(mousePos);
+        if (recipe != null) {
+            menu.setStonecuttingRecipeId(recipe.getId());
+            Minecraft.getInstance().getSoundManager()
+                    .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
+            return true;
+        }
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public Tooltip getTooltip(int mouseX, int mouseY) {
+        var recipe = getRecipeAt(new Point(mouseX, mouseY));
+        if (recipe != null) {
+            var lines = screen.getTooltipFromItem(recipe.getResultItem());
+            return new Tooltip(lines);
+        }
+        return null;
+    }
+
+    @Nullable
+    private StonecutterRecipe getRecipeAt(Point point) {
         var recipes = menu.getStonecuttingRecipes();
 
-        if (!menu.getStonecuttingRecipes().isEmpty()) {
+        if (!recipes.isEmpty()) {
             var startIndex = scrollbar.getCurrentScroll() * COLS;
             var endIndex = startIndex + COLS * ROWS;
 
             for (int i = startIndex; i < endIndex && i < recipes.size(); ++i) {
                 var slotBounds = getRecipeBounds(i - startIndex);
-                if (mousePos.isIn(slotBounds)) {
-                    menu.setStonecuttingRecipeId(recipes.get(i).getId());
-                    Minecraft.getInstance().getSoundManager()
-                            .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
-                    return true;
+                if (point.isIn(slotBounds)) {
+                    return recipes.get(i);
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
     // Return bounds of a recipe slot relative to the screen

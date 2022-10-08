@@ -551,7 +551,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (isClientSide()) {
             sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, id);
         } else {
-            this.stonecuttingRecipeId = id;
+            this.encodingLogic.setStonecuttingRecipeId(id);
         }
     }
 

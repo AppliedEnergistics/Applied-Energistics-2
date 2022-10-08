@@ -38,6 +38,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -47,7 +48,7 @@ import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.helpers.FluidContainerHelper;
 import appeng.menu.AutoCraftingMenu;
 
-public class AECraftingPattern implements IAEPatternDetails, IMolecularAssemblerSupportedPattern {
+public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     public static final int CRAFTING_GRID_DIMENSION = 3;
     public static final int CRAFTING_GRID_SLOTS = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
 
@@ -310,22 +311,18 @@ public class AECraftingPattern implements IAEPatternDetails, IMolecularAssembler
         }
     }
 
-    @Override
     public GenericStack[] getSparseInputs() {
         return sparseInputs;
     }
 
-    @Override
     public GenericStack[] getSparseOutputs() {
         return outputsArray;
     }
 
-    @Override
     public boolean canSubstitute() {
         return canSubstitute;
     }
 
-    @Override
     public boolean canSubstituteFluids() {
         return canSubstituteFluids;
     }
