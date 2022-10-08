@@ -533,6 +533,14 @@ public final class AEConfig {
         CLIENT.notifyForFinishedCraftingJobs.set(enabled);
     }
 
+    public boolean isClearGridOnClose() {
+        return CLIENT.clearGridOnClose.get();
+    }
+
+    public void setClearGridOnClose(boolean enabled) {
+        CLIENT.clearGridOnClose.set(enabled);
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -550,6 +558,8 @@ public final class AEConfig {
 
         // Terminal Settings
         public final EnumOption<TerminalStyle> terminalStyle;
+        public final BooleanOption pinAutoCraftedItems;
+        public final BooleanOption clearGridOnClose;
 
         // Search Settings
         public final BooleanOption searchTooltips;
@@ -561,7 +571,6 @@ public final class AEConfig {
         public final BooleanOption autoFocusSearch;
 
         // Tooltip settings
-        public final BooleanOption pinAutoCraftedItems;
         public final BooleanOption tooltipShowCellUpgrades;
         public final BooleanOption tooltipShowCellContent;
         public final IntegerOption tooltipMaxCellContentShown;
@@ -584,6 +593,8 @@ public final class AEConfig {
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
             this.pinAutoCraftedItems = terminals.addBoolean("pinAutoCraftedItems", true,
                     "Pin items that the player auto-crafts to the top of the terminal");
+            this.clearGridOnClose = client.addBoolean("clearGridOnClose", false,
+                    "Automatically clear the crafting/encoding grid when closing the terminal");
 
             // Search Settings
             var search = root.subsection("search");

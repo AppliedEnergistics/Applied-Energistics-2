@@ -227,6 +227,7 @@ public enum GuiText implements LocalizationEnum {
     TerminalSettingsTitle("Terminal Settings"),
     TerminalSettingsPinAutoCraftedItems("Pin auto-crafted items to first row"),
     TerminalSettingsNotifyForFinishedJobs("Notify about finished crafting jobs (requires wireless terminal)"),
+    TerminalSettingsClearGridOnClose("Automatically clear terminal grid on close (if applicable)"),
     TerminalViewCellsTooltip("View Cells"),
     ToastCraftingJobFinishedTitle("Auto-Crafting Complete"),
     ToastCraftingJobFinishedText("%d %s"),
