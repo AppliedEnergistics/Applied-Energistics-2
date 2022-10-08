@@ -3,6 +3,7 @@
   "minVersion": "0.8.2",
   "package": "appeng.mixins",
   "compatibilityLevel": "JAVA_11",
+  "plugin": "appeng.mixins.ConfigPlugin",
   "mixins": [
     "spatial.DimensionTypeMixin",
     "spatial.WorldGenSettingsMixin",
