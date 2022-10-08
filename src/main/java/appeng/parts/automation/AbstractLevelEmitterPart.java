@@ -26,9 +26,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
@@ -42,11 +42,11 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
-    private static final int FLAG_ON = 4;
-
     private boolean prevState;
     protected long lastReportedValue;
     private long reportingValue;
+
+    private boolean clientSideOn;
 
     public AbstractLevelEmitterPart(IPartItem<?> partItem) {
         super(partItem);
@@ -65,16 +65,46 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
 
     @Override
     protected final void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
+
         if (getMainNode().hasGridBooted()) {
             updateState();
         }
     }
 
+    @Override
+    public void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeBoolean(prevState);
+    }
+
+    @Override
+    public boolean readFromStream(FriendlyByteBuf data) {
+        var changed = super.readFromStream(data);
+        var wasOn = this.clientSideOn;
+        this.clientSideOn = data.readBoolean();
+        return changed || wasOn != this.clientSideOn;
+    }
+
+    @Override
+    public void writeVisualStateToNBT(CompoundTag data) {
+        super.writeVisualStateToNBT(data);
+
+        data.putBoolean("on", isLevelEmitterOn());
+    }
+
+    @Override
+    public void readVisualStateFromNBT(CompoundTag data) {
+        super.readVisualStateFromNBT(data);
+
+        this.clientSideOn = data.getBoolean("on");
+    }
+
     protected void updateState() {
-        final boolean isOn = this.isLevelEmitterOn();
+        var isOn = this.isLevelEmitterOn();
         if (this.prevState != isOn) {
             this.getHost().markForUpdate();
-            final BlockEntity te = this.getHost().getBlockEntity();
+            var te = this.getHost().getBlockEntity();
             this.prevState = isOn;
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos());
             Platform.notifyBlocksOfNeighbors(te.getLevel(), te.getBlockPos().relative(this.getSide()));
@@ -120,7 +150,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
 
     protected boolean isLevelEmitterOn() {
         if (isClientSide()) {
-            return (this.getClientFlags() & FLAG_ON) == FLAG_ON;
+            return clientSideOn;
         }
 
         if (!this.getMainNode().isActive()) {
@@ -135,11 +165,6 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
                 .getSetting(Settings.REDSTONE_EMITTER) == RedstoneMode.LOW_SIGNAL;
         return flipState ? this.reportingValue >= this.lastReportedValue + 1
                 : this.reportingValue < this.lastReportedValue + 1;
-    }
-
-    @Override
-    protected final int calculateClientFlags() {
-        return super.calculateClientFlags() | (prevState ? FLAG_ON : 0);
     }
 
     @Override
@@ -175,8 +200,7 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
 
     @Override
     public final AECableType getDesiredConnectionType() {
-        return AECableType.SMART; // TODO: This was previously in an unused method getCableConnectionType intended for
-        // external connections, check if this visual change is desirable
+        return AECableType.SMART;
     }
 
     @Override
@@ -197,5 +221,15 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
         if (mode == SettingsFrom.MEMORY_CARD) {
             output.putLong("reportingValue", reportingValue);
         }
+    }
+
+    @Override
+    protected boolean shouldSendPowerStateToClient() {
+        return false; // We handle this completely in our enabled flag
+    }
+
+    @Override
+    protected boolean shouldSendMissingChannelStateToClient() {
+        return false; // We handle this completely in our enabled flag
     }
 }

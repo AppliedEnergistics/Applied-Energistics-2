@@ -44,15 +44,15 @@ public class InvertedToggleBusPart extends ToggleBusPart {
     }
 
     @Override
-    protected boolean getIntention() {
-        return !super.getIntention();
+    protected boolean isEnabled() {
+        return !super.isEnabled();
     }
 
     @Override
     public IPartModel getStaticModels() {
-        if (this.hasRedstoneFlag() && this.isActive() && this.isPowered()) {
+        if (isEnabled() && this.isActive() && this.isPowered()) {
             return MODELS_HAS_CHANNEL;
-        } else if (this.hasRedstoneFlag() && this.isPowered()) {
+        } else if (isEnabled() && this.isPowered()) {
             return MODELS_ON;
         } else {
             return MODELS_OFF;

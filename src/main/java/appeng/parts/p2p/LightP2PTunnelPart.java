@@ -72,20 +72,17 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeInt(this.isOutput() ? this.lastValue : 0);
-        data.writeInt(this.opacity);
     }
 
     @Override
     public boolean readFromStream(FriendlyByteBuf data) {
         boolean changed = super.readFromStream(data);
         final int oldValue = this.lastValue;
-        final int oldOpacity = this.opacity;
 
         this.lastValue = data.readInt();
-        this.opacity = data.readInt();
 
         this.setOutput(this.lastValue > 0);
-        return changed || this.lastValue != oldValue || oldOpacity != this.opacity;
+        return changed || this.lastValue != oldValue;
     }
 
     private boolean doWork() {
@@ -133,13 +130,14 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     private int blockLight(int emit) {
-        if (this.opacity < 0) {
-            final BlockEntity te = this.getBlockEntity();
-            this.opacity = 255
-                    - te.getLevel().getMaxLocalRawBrightness(te.getBlockPos().relative(this.getSide()));
+        if (this.opacity == -1) {
+            var be = getHost().getBlockEntity();
+            var level = be.getLevel();
+            var pos = be.getBlockPos();
+            this.opacity = level.getMaxLocalRawBrightness(pos.relative(getSide()));
         }
 
-        return (int) (emit * (this.opacity / 255.0f));
+        return Math.max(0, emit - opacity);
     }
 
     @Override

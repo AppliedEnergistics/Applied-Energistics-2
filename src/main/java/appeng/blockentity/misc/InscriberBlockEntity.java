@@ -133,7 +133,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
         if (oldSmash != newSmash && newSmash) {
             setSmash(true);
-            setClientStart(System.currentTimeMillis());
         }
 
         for (int i = 0; i < this.inv.size(); i++) {
@@ -152,6 +151,20 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         for (int i = 0; i < this.inv.size(); i++) {
             data.writeItem(inv.getStackInSlot(i));
         }
+    }
+
+    @Override
+    protected void saveVisualState(CompoundTag data) {
+        super.saveVisualState(data);
+
+        data.putBoolean("smash", isSmash());
+    }
+
+    @Override
+    protected void loadVisualState(CompoundTag data) {
+        super.loadVisualState(data);
+
+        setSmash(data.getBoolean("smash"));
     }
 
     @Override
@@ -340,6 +353,9 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     public void setSmash(boolean smash) {
+        if (smash && !this.smash) {
+            setClientStart(System.currentTimeMillis());
+        }
         this.smash = smash;
     }
 

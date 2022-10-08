@@ -19,6 +19,7 @@
 package appeng.parts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
@@ -27,7 +28,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -72,6 +72,7 @@ import appeng.client.render.cablebus.FacadeRenderState;
 import appeng.core.AELog;
 import appeng.facade.FacadeContainer;
 import appeng.helpers.AEMultiBlockEntity;
+import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.FacadeItem;
 import appeng.me.GridConnection;
@@ -81,6 +82,30 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
 public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer {
+
+    /**
+     * NBT property names used to store the parts for the given side. Index is 0-5 for normal directions and 6 for the
+     * null-direction.
+     */
+    private static final String[] NBT_KEY_SIDES = Arrays.stream(Platform.DIRECTIONS_WITH_NULL)
+            .map(d -> d == null ? "cable" : d.getSerializedName())
+            .toArray(String[]::new);
+
+    /**
+     * Old NBT property names used to store the item-ids for parts on the given side. Index is 0-5 for normal directions
+     * and 6 for the null-direction. TODO Remove in 1.20
+     */
+    private static final String[] NBT_KEY_OLD_PART_ID = Arrays.stream(Platform.DIRECTIONS_WITH_NULL)
+            .map(d -> d == null ? "item:center" : "item:" + d.name())
+            .toArray(String[]::new);
+
+    /**
+     * Old NBT property names used to store the item-ids for parts on the given side. Index is 0-5 for normal directions
+     * and 6 for the null-direction. TODO Remove in 1.20
+     */
+    private static final String[] NBT_KEY_OLD_PART_DATA = Arrays.stream(Platform.DIRECTIONS_WITH_NULL)
+            .map(d -> d == null ? "extra:center" : "extra:" + d.name())
+            .toArray(String[]::new);
 
     private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<>();
     private final CableBusStorage storage = new CableBusStorage();
@@ -759,43 +784,39 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return updateBlock;
     }
 
+    private static int getSideIndex(@org.jetbrains.annotations.Nullable Direction side) {
+        return side == null ? 6 : side.ordinal();
+    }
+
     public void writeToNBT(CompoundTag data) {
         data.putInt("hasRedstone", this.hasRedstone.ordinal());
 
-        final IFacadeContainer fc = this.getFacadeContainer();
-        for (Direction s : Platform.DIRECTIONS_WITH_NULL) {
-            fc.writeToNBT(data);
+        getFacadeContainer().writeToNBT(data);
 
-            var part = this.getPart(s);
+        var saveVisualState = VisualStateSaving.isEnabled(getBlockEntity().getLevel());
+
+        for (var side : Platform.DIRECTIONS_WITH_NULL) {
+            var part = this.getPart(side);
             if (part != null) {
-                var itemId = IPartItem.getId(part.getPartItem());
-
-                var side = this.getSide(part);
-                var id = side == null ? "center" : side.name();
-
                 var partData = new CompoundTag();
+
+                // Save visual state of the part if requested
+                if (saveVisualState) {
+                    var visualTag = new CompoundTag();
+                    part.writeVisualStateToNBT(visualTag);
+                    partData.put("visual", visualTag);
+                }
+
                 part.writeToNBT(partData);
-
-                data.putString("item:" + id, itemId.toString());
-                if (!partData.isEmpty()) {
-                    data.put("extra:" + id, partData);
+                if (partData.contains("id")) {
+                    throw new IllegalStateException("Part " + part + " used the reserved 'id' field to store its data");
                 }
+
+                partData.putString("id", IPartItem.getId(part.getPartItem()).toString());
+                var sideKey = NBT_KEY_SIDES[getSideIndex(side)];
+                data.put(sideKey, partData);
             }
         }
-    }
-
-    private Direction getSide(IPart part) {
-        if (this.storage.getCenter() == part) {
-            return null;
-        } else {
-            for (Direction side : Direction.values()) {
-                if (this.getPart(side) == part) {
-                    return side;
-                }
-            }
-        }
-
-        throw new IllegalStateException("Uhh Bad Part (" + part + ") on Side.");
     }
 
     public void readFromNBT(CompoundTag data) {
@@ -806,50 +827,51 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         }
 
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
-            var id = side == null ? "center" : side.name();
+            var sideIndex = getSideIndex(side);
 
-            // TODO 1.18: Remove in Beta
-            // Migrates from old format to new format
-            String defKey = "def:" + id;
-            if (data.contains(defKey, Tag.TAG_COMPOUND)) {
-                final CompoundTag def = data.getCompound(defKey);
-                final ItemStack iss = ItemStack.of(def);
-                if (iss.isEmpty()) {
-                    continue;
-                }
-                data.putString("item:" + id, Registry.ITEM.getKey(iss.getItem()).toString());
+            var sideKey = NBT_KEY_SIDES[sideIndex];
+            var sideTag = data.get(sideKey);
+            if (sideTag instanceof CompoundTag partData && loadPart(side, partData)) {
+                continue;
             }
 
-            String itemKey = "item:" + id;
-            String extraKey = "extra:" + id;
-            if (data.contains(itemKey, Tag.TAG_STRING)) {
-                var itemId = new ResourceLocation(data.getString(itemKey));
-                var partItem = IPartItem.byId(itemId);
-                if (partItem == null) {
-                    AELog.warn("Ignoring persisted part with non-part-item %s", itemId);
+            // Try to migrate old part data (TODO: Remove in 1.20)
+            if (data.contains(NBT_KEY_OLD_PART_ID[sideIndex], Tag.TAG_STRING)) {
+                var partData = data.getCompound(NBT_KEY_OLD_PART_DATA[sideIndex]).copy();
+                partData.putString("id", data.getString(NBT_KEY_OLD_PART_ID[sideIndex]));
+                if (loadPart(side, partData)) {
                     continue;
                 }
-
-                var partData = data.getCompound(extraKey);
-
-                var p = this.getPart(side);
-                if (p != null && p.getPartItem() == partItem) {
-                    p.readFromNBT(partData);
-                } else {
-                    p = this.replacePart(partItem, side, null, null);
-                    if (p != null) {
-                        p.readFromNBT(partData);
-                    } else {
-                        AELog.warn("Invalid NBT For CableBus Container: " + itemId
-                                + " is not a valid part; it was ignored.");
-                    }
-                }
-            } else {
-                this.removePart(side);
             }
+
+            // If nothing was loaded, the side is empty and has to be cleared
+            this.removePart(side);
         }
 
         this.getFacadeContainer().readFromNBT(data);
+    }
+
+    private boolean loadPart(Direction side, CompoundTag data) {
+        var itemId = new ResourceLocation(data.getString("id"));
+        var partItem = IPartItem.byId(itemId);
+        if (partItem == null) {
+            AELog.warn("Ignoring persisted part with non-part-item %s", itemId);
+            return false;
+        }
+
+        var p = this.getPart(side);
+        if (p != null && p.getPartItem() == partItem) {
+            p.readFromNBT(data);
+        } else {
+            p = this.replacePart(partItem, side, null, null);
+            if (p != null) {
+                p.readFromNBT(data);
+            } else {
+                AELog.warn("Invalid NBT For CableBus Container: " + itemId
+                        + " is not a valid part; it was ignored.");
+            }
+        }
+        return true;
     }
 
     public List<ItemStack> addPartDrops(List<ItemStack> drops) {

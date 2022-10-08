@@ -70,7 +70,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
-import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -184,8 +183,8 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     @Override
     public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter level, BlockPos pos,
             Player player) {
-        final Vec3 v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
-        final SelectedPart sp = this.cb(level, pos).selectPartLocal(v3);
+        var v3 = target.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+        var sp = this.cb(level, pos).selectPartLocal(v3);
 
         if (sp.part != null) {
             return new ItemStack(sp.part.getPartItem());

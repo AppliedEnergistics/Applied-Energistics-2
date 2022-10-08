@@ -127,6 +127,18 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
+    public void writeVisualStateToNBT(CompoundTag data) {
+        super.writeVisualStateToNBT(data);
+        data.putLong("amount", this.amount);
+    }
+
+    @Override
+    public void readVisualStateFromNBT(CompoundTag data) {
+        super.readVisualStateFromNBT(data);
+        this.amount = data.getLong("amount");
+    }
+
+    @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
         if (isClientSide()) {
             return true;
@@ -217,8 +229,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
-        if ((this.getClientFlags() & (PanelPart.POWERED_FLAG | PanelPart.CHANNEL_FLAG)) != (PanelPart.POWERED_FLAG
-                | PanelPart.CHANNEL_FLAG)) {
+        if (!isActive()) {
             return;
         }
 
