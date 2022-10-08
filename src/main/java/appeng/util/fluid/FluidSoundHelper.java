@@ -20,14 +20,11 @@ package appeng.util.fluid;
 
 import javax.annotation.Nullable;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.stacks.AEFluidKey;
 
@@ -44,7 +41,12 @@ public final class FluidSoundHelper {
             return;
         }
 
-        fluid.getFluid().getPickupSound().ifPresent(sound -> playSound(player, sound));
+        SoundEvent fillSound = fluid.getFluid().getAttributes().getFillSound();
+        if (fillSound == null) {
+            return;
+        }
+
+        playSound(player, fillSound);
     }
 
     public static void playEmptySound(Player player, @Nullable AEFluidKey fluid) {
@@ -52,20 +54,16 @@ public final class FluidSoundHelper {
             return;
         }
 
-// TODO: FABRIC 117 No equivalent available right now
-//        SoundEvent fillSound = fluid.getFluid().getAttributes().getEmptySound(fluid);
-//        if (fillSound == null) {
-//            return;
-//        }
-        if (fluid.getFluid() == Fluids.LAVA) {
-            playSound(player, SoundEvents.BUCKET_EMPTY_LAVA);
-        } else {
-            playSound(player, SoundEvents.BUCKET_EMPTY);
+        SoundEvent fillSound = fluid.getFluid().getAttributes().getEmptySound();
+        if (fillSound == null) {
+            return;
         }
+
+        playSound(player, fillSound);
     }
 
     /**
-     * @see net.minecraftforge.fluids.FluidUtil#tryFillContainer(ItemStack, Storage<FluidVariant>, int, Player, boolean)
+     * @see net.minecraftforge.fluids.FluidUtil#tryFillContainer(ItemStack, IFluidHandler, int, Player, boolean)
      */
     private static void playSound(Player player, SoundEvent fillSound) {
         // This should just play the sound for the player themselves

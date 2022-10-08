@@ -49,7 +49,6 @@ import appeng.core.sync.packets.MockExplosionPacket;
 import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PartLeftClickPacket;
-import appeng.core.sync.packets.SpawnEntityPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 
@@ -57,8 +56,6 @@ public class BasePacketHandler {
     private static final Map<Class<? extends BasePacket>, PacketTypes> REVERSE_LOOKUP = new HashMap<>();
 
     public enum PacketTypes {
-        SPAWN_ENTITY(SpawnEntityPacket.class, SpawnEntityPacket::new),
-
         COMPASS_REQUEST(CompassRequestPacket.class, CompassRequestPacket::new),
 
         COMPASS_RESPONSE(CompassResponsePacket.class, CompassResponsePacket::new),

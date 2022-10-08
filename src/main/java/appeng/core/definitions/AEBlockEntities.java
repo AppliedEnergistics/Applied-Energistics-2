@@ -189,6 +189,7 @@ public final class AEBlockEntities {
         BlockEntityType.BlockEntitySupplier<T> supplier = (blockPos, blockState) -> factory.create(typeHolder.get(),
                 blockPos, blockState);
         var type = Builder.of(supplier, blocks).build(null);
+        type.setRegistryName(id);
         typeHolder.set(type); // Makes it available to the supplier used above
         BLOCK_ENTITY_TYPES.put(id, type);
 
