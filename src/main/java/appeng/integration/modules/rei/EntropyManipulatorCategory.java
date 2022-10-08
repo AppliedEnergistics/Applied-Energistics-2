@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import com.google.common.collect.Streams;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidAttributes;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -91,7 +91,7 @@ public class EntropyManipulatorCategory implements DisplayCategory<EntropyManipu
     }
 
     private static void addFluidStack(Slot slot, Fluid fluid) {
-        slot.entry(EntryStacks.of(fluid, FluidConstants.BUCKET));
+        slot.entry(EntryStacks.of(fluid, FluidAttributes.BUCKET_VOLUME));
     }
 
     @Override

@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import snownee.jade.api.IServerDataProvider;
+import mcp.mobius.waila.api.IServerDataProvider;
 
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.core.AppEng;
@@ -23,7 +23,6 @@ class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockEntity> {
         this.objectClass = objectClass;
     }
 
-    @Override
     public ResourceLocation getUid() {
         return ID;
     }

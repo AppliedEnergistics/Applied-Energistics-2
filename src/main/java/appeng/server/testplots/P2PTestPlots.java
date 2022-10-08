@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.apache.commons.lang3.mutable.MutableDouble;
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +13,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
@@ -107,10 +107,10 @@ public class P2PTestPlots {
                 var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(outputPos);
                 var storage = tank.getStorage();
                 helper.check(
-                        FluidVariant.of(Fluids.WATER).equals(storage.variant),
+                        new FluidStack(Fluids.WATER, 1).isFluidEqual(storage.getFluid()),
                         "No water stored");
                 helper.check(
-                        storage.amount > 0,
+                        storage.getFluidAmount() > 0,
                         "No amount >0 stored");
             });
         });

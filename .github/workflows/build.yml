@@ -23,8 +23,6 @@ jobs:
         run: test -d ./src/generated -a -f ./src/generated/resources/.cache/cache
       - name: Build with Gradle
         run: ./gradlew build
-      - name: Run Game Tests
-        run: ./gradlew runGametest
       - name: Upload new Source Text Strings to Crowdin
         run: ./gradlew uploadToCrowdin
         env:

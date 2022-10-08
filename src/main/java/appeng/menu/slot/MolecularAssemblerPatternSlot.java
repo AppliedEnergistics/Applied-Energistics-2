@@ -36,7 +36,7 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot implements IOption
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return super.mayPlace(stack) && this.mac.isValidItemForSlot(this.slot, stack);
+        return super.mayPlace(stack) && this.mac.isValidItemForSlot(this.getSlotIndex(), stack);
     }
 
     @Override

@@ -4,10 +4,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import snownee.jade.api.IWailaClientRegistration;
-import snownee.jade.api.IWailaCommonRegistration;
-import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.WailaPlugin;
+import mcp.mobius.waila.api.IWailaClientRegistration;
+import mcp.mobius.waila.api.IWailaCommonRegistration;
+import mcp.mobius.waila.api.IWailaPlugin;
+import mcp.mobius.waila.api.TooltipPosition;
+import mcp.mobius.waila.api.WailaPlugin;
 
 import appeng.api.integrations.igtooltip.ClientRegistration;
 import appeng.api.integrations.igtooltip.CommonRegistration;
@@ -41,7 +42,7 @@ public class JadeModule implements IWailaPlugin {
                     Class<? extends Block> blockClass, ResourceLocation id, BodyProvider<? super T> provider,
                     int priority) {
                 var adapter = new BodyProviderAdapter<>(id, priority, provider, blockEntityClass);
-                registration.registerBlockComponent(adapter, blockClass);
+                registration.registerComponentProvider(adapter, TooltipPosition.BODY, blockClass);
             }
 
             @Override
@@ -50,7 +51,7 @@ public class JadeModule implements IWailaPlugin {
                     int priority) {
                 var adapter = new IconProviderAdapter<>(id, priority, registration.getElementHelper(), provider,
                         blockEntityClass);
-                registration.registerBlockIcon(adapter, blockClass);
+                registration.registerIconProvider(adapter, blockClass);
             }
 
             @Override
@@ -58,7 +59,7 @@ public class JadeModule implements IWailaPlugin {
                     Class<? extends Block> blockClass, ResourceLocation id, NameProvider<? super T> provider,
                     int priority) {
                 var adapter = new NameProviderAdapter<>(id, priority, provider, blockEntityClass);
-                registration.registerBlockComponent(adapter, blockClass);
+                registration.registerComponentProvider(adapter, TooltipPosition.HEAD, blockClass);
             }
 
             @Override
@@ -66,7 +67,7 @@ public class JadeModule implements IWailaPlugin {
                     Class<? extends Block> blockClass, ResourceLocation id, ModNameProvider<? super T> provider,
                     int priority) {
                 var adapter = new ModNameProviderAdapter<>(id, provider, blockEntityClass);
-                registration.registerBlockComponent(adapter, blockClass);
+                registration.registerComponentProvider(adapter, TooltipPosition.TAIL, blockClass);
             }
         });
     }
