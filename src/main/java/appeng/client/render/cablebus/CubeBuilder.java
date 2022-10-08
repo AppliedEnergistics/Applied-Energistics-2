@@ -107,10 +107,10 @@ public class CubeBuilder {
 
         switch (face) {
             case DOWN -> {
-                this.putVertexTR(face, x2, y1, z1, uv);
-                this.putVertexBR(face, x2, y1, z2, uv);
                 this.putVertexBL(face, x1, y1, z2, uv);
                 this.putVertexTL(face, x1, y1, z1, uv);
+                this.putVertexTR(face, x2, y1, z1, uv);
+                this.putVertexBR(face, x2, y1, z2, uv);
             }
             case UP -> {
                 this.putVertexTL(face, x1, y2, z1, uv);
@@ -131,16 +131,16 @@ public class CubeBuilder {
                 this.putVertexBR(face, x2, y2, z2, uv);
             }
             case WEST -> {
+                this.putVertexBL(face, x1, y2, z1, uv);
                 this.putVertexTL(face, x1, y1, z1, uv);
                 this.putVertexTR(face, x1, y1, z2, uv);
                 this.putVertexBR(face, x1, y2, z2, uv);
-                this.putVertexBL(face, x1, y2, z1, uv);
             }
             case EAST -> {
-                this.putVertexBR(face, x2, y2, z1, uv);
                 this.putVertexBL(face, x2, y2, z2, uv);
                 this.putVertexTL(face, x2, y1, z2, uv);
                 this.putVertexTR(face, x2, y1, z1, uv);
+                this.putVertexBR(face, x2, y2, z1, uv);
             }
         }
 
