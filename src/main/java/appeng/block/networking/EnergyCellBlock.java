@@ -20,10 +20,13 @@ package appeng.block.networking;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -66,4 +69,20 @@ public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
         builder.add(ENERGY_STORAGE);
     }
 
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        var cell = getBlockEntity(level, pos);
+        if (cell != null) {
+            var currentPower = cell.getAECurrentPower();
+            var maxPower = cell.getAEMaxPower();
+            var fillFactor = currentPower / maxPower;
+            return Mth.floor(fillFactor * 14.0F) + (currentPower > 0 ? 1 : 0);
+        }
+        return 0;
+    }
 }
