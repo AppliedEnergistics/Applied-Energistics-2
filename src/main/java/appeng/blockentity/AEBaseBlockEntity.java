@@ -20,12 +20,15 @@ package appeng.blockentity;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.collect.Lists;
+
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import io.netty.buffer.Unpooled;
 
@@ -65,6 +68,7 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.helpers.ICustomNameObject;
+import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
@@ -128,6 +132,11 @@ public class AEBaseBlockEntity extends BlockEntity
             return;
         }
 
+        // Load visual client-side data (used by PonderJS)
+        if (tag.contains("visual", Tag.TAG_COMPOUND)) {
+            loadVisualState(tag.getCompound("visual"));
+        }
+
         super.load(tag);
         loadTag(tag);
     }
@@ -141,8 +150,8 @@ public class AEBaseBlockEntity extends BlockEntity
 
         try {
             if (this.canBeRotated()) {
-                this.forward = Direction.valueOf(data.getString("forward"));
-                this.up = Direction.valueOf(data.getString("up"));
+                this.forward = Direction.valueOf(data.getString("forward").toUpperCase(Locale.ROOT));
+                this.up = Direction.valueOf(data.getString("up").toUpperCase(Locale.ROOT));
             }
         } catch (IllegalArgumentException ignored) {
         }
@@ -150,6 +159,13 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     public void saveAdditional(CompoundTag data) {
+        // Save visual state first, so that it can never overwrite normal state
+        if (VisualStateSaving.isEnabled(level)) {
+            var visualTag = new CompoundTag();
+            saveVisualState(visualTag);
+            data.put("visual", visualTag);
+        }
+
         super.saveAdditional(data);
 
         if (this.canBeRotated()) {
@@ -228,6 +244,25 @@ public class AEBaseBlockEntity extends BlockEntity
             final byte orientation = (byte) (this.up.ordinal() << 3 | this.forward.ordinal());
             data.writeByte(orientation);
         }
+    }
+
+    /**
+     * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
+     * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
+     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
+     * the NBT tag in {@link #saveAdditional(CompoundTag)} does not need to be saved here again.
+     * <p>
+     * The data saved should be equivalent to the data sent to the client in {@link #writeToStream}.
+     */
+    @MustBeInvokedByOverriders
+    protected void saveVisualState(CompoundTag data) {
+    }
+
+    /**
+     * @see #saveVisualState(CompoundTag)
+     */
+    @MustBeInvokedByOverriders
+    protected void loadVisualState(CompoundTag data) {
     }
 
     public void markForUpdate() {

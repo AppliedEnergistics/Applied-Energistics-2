@@ -27,14 +27,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.IModelData;
 
-import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.parts.IMonitorPart;
 import appeng.api.networking.GridFlags;
-import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -55,13 +52,9 @@ import appeng.util.InteractionUtil;
  * @version rv3
  * @since rv3
  */
-public abstract class AbstractReportingPart extends AEBasePart implements IMonitorPart, IPowerChannelState {
-
-    protected static final int POWERED_FLAG = 4;
-    protected static final int CHANNEL_FLAG = 16;
+public abstract class AbstractReportingPart extends AEBasePart implements IMonitorPart {
 
     private byte spin = 0; // 0-3
-    private int clientFlags = 0; // sent as byte.
     private int opacity = -1;
 
     protected AbstractReportingPart(IPartItem<?> partItem, boolean requireChannel) {
@@ -71,14 +64,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
             this.getMainNode().setIdlePowerUsage(1.0 / 2.0);
         } else {
-            this.getMainNode().setIdlePowerUsage(1.0 / 16.0); // lights drain a little bit.
-        }
-    }
-
-    @Override
-    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
-        if (reason != IGridNodeListener.State.GRID_BOOT) {
-            this.getHost().markForUpdate();
+            this.getMainNode().setIdlePowerUsage(1.0 / 16.0); // lights drain less
         }
     }
 
@@ -111,37 +97,18 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
-        this.clientFlags = this.getSpin() & 3;
 
-        var node = getMainNode().getNode();
-        if (node != null) {
-            if (node.isPowered()) {
-                this.clientFlags = this.getClientFlags() | AbstractReportingPart.POWERED_FLAG;
-            }
-
-            if (node.meetsChannelRequirements()) {
-                this.clientFlags = this.getClientFlags() | AbstractReportingPart.CHANNEL_FLAG;
-            }
-        }
-
-        data.writeByte((byte) this.getClientFlags());
-        data.writeInt(this.opacity);
+        data.writeByte(this.getSpin());
     }
 
     @Override
     public boolean readFromStream(FriendlyByteBuf data) {
-        super.readFromStream(data);
-        final int oldFlags = this.getClientFlags();
-        final int oldOpacity = this.opacity;
+        var changed = super.readFromStream(data);
+        var oldSpin = this.spin;
 
-        this.clientFlags = data.readByte();
-        this.opacity = data.readInt();
+        this.spin = data.readByte();
 
-        this.spin = (byte) (this.getClientFlags() & 3);
-        if (this.getClientFlags() == oldFlags && this.opacity == oldOpacity) {
-            return false;
-        }
-        return true;
+        return changed || oldSpin != spin;
     }
 
     @Override
@@ -174,35 +141,14 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     }
 
     private int blockLight(int emit) {
-        if (this.opacity < 0) {
-            final BlockEntity te = getHost().getBlockEntity();
+        if (this.opacity == -1) {
+            var te = getHost().getBlockEntity();
             Level level = te.getLevel();
-            BlockPos pos = te.getBlockPos().relative(this.getSide());
-            this.opacity = 255 - level.getBlockState(pos).getLightBlock(level, pos);
+            var pos = te.getBlockPos().relative(this.getSide());
+            this.opacity = level.getBlockState(pos).getLightBlock(level, pos);
         }
 
-        return (int) (emit * (this.opacity / 255.0f));
-    }
-
-    @Override
-    public final boolean isPowered() {
-        if (!isClientSide()) {
-            var node = getMainNode().getNode();
-            return node != null && node.isPowered();
-        } else {
-            return (this.getClientFlags() & PanelPart.POWERED_FLAG) == PanelPart.POWERED_FLAG;
-        }
-    }
-
-    @Override
-    public final boolean isActive() {
-        if (!this.isLightSource()) {
-            return (this.getClientFlags()
-                    & (PanelPart.CHANNEL_FLAG | PanelPart.POWERED_FLAG)) == (PanelPart.CHANNEL_FLAG
-                            | PanelPart.POWERED_FLAG);
-        } else {
-            return this.isPowered();
-        }
+        return Math.max(0, emit - opacity);
     }
 
     protected IPartModel selectModel(IPartModel offModels, IPartModel onModels, IPartModel hasChannelModels) {
@@ -218,10 +164,6 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
     @Override
     public IModelData getModelData() {
         return new ReportingModelData(getSpin());
-    }
-
-    public final int getClientFlags() {
-        return this.clientFlags;
     }
 
     public final byte getSpin() {

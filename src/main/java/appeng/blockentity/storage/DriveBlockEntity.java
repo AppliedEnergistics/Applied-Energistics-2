@@ -18,10 +18,9 @@
 
 package appeng.blockentity.storage;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -29,11 +28,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
@@ -50,6 +51,7 @@ import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
+import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
 import appeng.me.storage.DriveWatcher;
@@ -62,36 +64,15 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class DriveBlockEntity extends AENetworkInvBlockEntity
         implements IChestOrDrive, IPriorityHost, IStorageProvider {
 
-    private static final int SLOT_COUNT = 10;
-
-    private static final int BIT_POWER_MASK = Integer.MIN_VALUE;
-    private static final int BIT_STATE_MASK = 0b111111111111111111111111111111;
-
-    private static final int BIT_CELL_STATE_MASK = 0b111;
-    private static final int BIT_CELL_STATE_BITS = 3;
-
-    private final AppEngCellInventory inv = new AppEngCellInventory(this, SLOT_COUNT);
-    private final DriveWatcher[] invBySlot = new DriveWatcher[SLOT_COUNT];
+    private final AppEngCellInventory inv = new AppEngCellInventory(this, getCellCount());
+    private final DriveWatcher[] invBySlot = new DriveWatcher[getCellCount()];
     private boolean isCached = false;
     private int priority = 0;
     private boolean wasOnline = false;
     // This is only used on the client
-    private final Item[] cellItems = new Item[SLOT_COUNT];
-
-    /**
-     * The state of all cells inside a drive as bitset, using the following format.
-     * <p>
-     * - Bit 31: power state. 0 = off, 1 = on.
-     * <p>
-     * - Bit 30: reserved
-     * <p>
-     * - Bit 29-0: 3 bits for the state of each cell
-     * <p>
-     * Cell states:
-     * <p>
-     * - Bit 2-0: {@link CellState} ordinal
-     */
-    private int state = 0;
+    private final Item[] clientSideCellItems = new Item[getCellCount()];
+    private final CellState[] clientSideCellState = new CellState[getCellCount()];
+    private boolean clientSideOnline;
 
     public DriveBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -99,6 +80,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
                 .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
         this.inv.setFilter(new CellValidInventoryFilter());
+
+        Arrays.fill(clientSideCellState, CellState.ABSENT);
     }
 
     @Override
@@ -110,71 +93,72 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     @Override
     protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
-        this.state = calculateCurrentVisualState();
-        data.writeInt(this.state);
-        writeCellItemIds(data);
+        updateClientSideState();
+
+        // Pack the enums into an int of 3 bit per cell state, using 30 bits total
+        int packedState = 0;
+        for (int i = 0; i < getCellCount(); i++) {
+            packedState |= clientSideCellState[i].ordinal() << (i * 3);
+        }
+        // Then pack the online state into bit 31
+        if (clientSideOnline) {
+            packedState |= 1 << 31;
+        }
+        data.writeInt(packedState);
+
+        for (int i = 0; i < getCellCount(); i++) {
+            data.writeVarInt(Registry.ITEM.getId(getCellItem(i)));
+        }
     }
 
-    private void writeCellItemIds(FriendlyByteBuf data) {
-        List<ResourceLocation> cellItemIds = new ArrayList<>(getCellCount());
-        byte[] bm = new byte[getCellCount()];
-        for (int x = 0; x < this.getCellCount(); x++) {
-            Item item = getCellItem(x);
-            if (item != null && !Objects.equals(Registry.ITEM.getKey(item), Registry.ITEM.getDefaultKey())) {
-                ResourceLocation itemId = Registry.ITEM.getKey(item);
-                int idx = cellItemIds.indexOf(itemId);
-                if (idx == -1) {
-                    cellItemIds.add(itemId);
-                    bm[x] = (byte) cellItemIds.size(); // We use 1-based in bm[]
-                } else {
-                    bm[x] = (byte) (1 + idx); // 1-based indexing!!
-                }
-            }
-        }
+    @Override
+    protected void saveVisualState(CompoundTag data) {
+        super.saveVisualState(data);
 
-        // Write out the list of unique cell item ids
-        data.writeByte(cellItemIds.size());
-        for (ResourceLocation itemId : cellItemIds) {
-            data.writeResourceLocation(itemId);
-        }
-        // Then the lookup table for each slot
+        data.putBoolean("online", isPowered());
+
         for (int i = 0; i < getCellCount(); i++) {
-            data.writeByte(bm[i]);
+            var cellItem = getCellItem(i);
+            if (cellItem != null) {
+                var cellData = new CompoundTag();
+                cellData.putString("id", Registry.ITEM.getKey(cellItem).toString());
+
+                var cellState = getCellStatus(i);
+                cellData.putString("state", cellState.name().toLowerCase(Locale.ROOT));
+                data.put("cell" + i, cellData);
+            }
         }
     }
 
     @Override
     protected boolean readFromStream(FriendlyByteBuf data) {
-        boolean c = super.readFromStream(data);
-        final int oldState = this.state;
-        this.state = data.readInt();
+        var changed = super.readFromStream(data);
 
-        c |= this.readCellItemIDs(data);
-
-        return (this.state & BIT_STATE_MASK) != (oldState & BIT_STATE_MASK) || c;
-    }
-
-    private boolean readCellItemIDs(FriendlyByteBuf data) {
-        int uniqueStrCount = data.readByte();
-        String[] uniqueStrs = new String[uniqueStrCount];
-        for (int i = 0; i < uniqueStrCount; i++) {
-            uniqueStrs[i] = data.readUtf();
+        var packedState = data.readInt();
+        for (int i = 0; i < getCellCount(); i++) {
+            var cellStateOrdinal = (packedState >> (i * 3)) & 0b111;
+            var cellState = CellState.values()[cellStateOrdinal];
+            if (clientSideCellState[i] != cellState) {
+                clientSideCellState[i] = cellState;
+                changed = true;
+            }
         }
 
-        boolean changed = false;
-        for (int i = 0; i < getCellCount(); i++) {
-            byte idx = data.readByte();
+        var online = (packedState & (1 << 31)) != 0;
+        if (clientSideOnline != online) {
+            clientSideOnline = online;
+            changed = true;
+        }
 
-            // an index of 0 indicates the slot is empty
-            Item item = null;
-            if (idx > 0) {
-                --idx;
-                String itemId = uniqueStrs[idx];
-                item = Registry.ITEM.get(new ResourceLocation(itemId));
+        for (int i = 0; i < getCellCount(); i++) {
+            var itemId = data.readVarInt();
+            Item item = itemId == 0 ? null : Registry.ITEM.byId(itemId);
+            if (itemId != 0 && item == Items.AIR) {
+                AELog.warn("Received unknown item id from server for disk drive %s: %d", this, itemId);
             }
-            if (cellItems[i] != item) {
+            if (clientSideCellItems[i] != item) {
+                clientSideCellItems[i] = item;
                 changed = true;
-                cellItems[i] = item;
             }
         }
 
@@ -182,8 +166,34 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
+    protected void loadVisualState(CompoundTag data) {
+        super.loadVisualState(data);
+
+        clientSideOnline = data.getBoolean("online");
+
+        for (int i = 0; i < getCellCount(); i++) {
+            this.clientSideCellItems[i] = null;
+            this.clientSideCellState[i] = CellState.ABSENT;
+
+            var tagName = "cell" + i;
+            if (data.contains(tagName, Tag.TAG_COMPOUND)) {
+                var cellData = data.getCompound(tagName);
+                var id = new ResourceLocation(cellData.getString("id"));
+                var cellStateName = cellData.getString("state");
+
+                clientSideCellItems[i] = Registry.ITEM.getOptional(id).orElse(null);
+                try {
+                    clientSideCellState[i] = CellState.valueOf(cellStateName.toUpperCase(Locale.ROOT));
+                } catch (IllegalArgumentException e) {
+                    AELog.warn("Cannot parse cell state for cell %d: %s", i, cellStateName);
+                }
+            }
+        }
+    }
+
+    @Override
     public int getCellCount() {
-        return SLOT_COUNT;
+        return 10;
     }
 
     @Nullable
@@ -191,7 +201,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     public Item getCellItem(int slot) {
         // Client-side we'll need to actually use the synced state
         if (level == null || level.isClientSide) {
-            return cellItems[slot];
+            return clientSideCellItems[slot];
         }
 
         ItemStack stackInSlot = inv.getStackInSlot(slot);
@@ -204,8 +214,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     @Override
     public CellState getCellStatus(int slot) {
         if (isClientSide()) {
-            final int cellState = this.state >> slot * BIT_CELL_STATE_BITS & BIT_CELL_STATE_MASK;
-            return CellState.values()[cellState];
+            return this.clientSideCellState[slot];
         }
 
         var handler = this.invBySlot[slot];
@@ -219,7 +228,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     @Override
     public boolean isPowered() {
         if (isClientSide()) {
-            return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
+            return clientSideOnline;
         }
 
         return this.getMainNode().isOnline();
@@ -244,27 +253,39 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     private void updateVisualStateIfNeeded() {
-        int newState = calculateCurrentVisualState();
-
-        if (newState != this.state) {
-            this.state = newState;
+        if (updateClientSideState()) {
             this.markForUpdate();
         }
     }
 
-    private int calculateCurrentVisualState() {
+    private boolean updateClientSideState() {
+        if (isClientSide()) {
+            return false;
+        }
+
         updateState(); // refresh cells
 
-        int newState = 0;
-
-        if (getMainNode().isOnline()) {
-            newState |= BIT_POWER_MASK;
+        var changed = false;
+        var online = getMainNode().isOnline();
+        if (online != this.clientSideOnline) {
+            this.clientSideOnline = online;
+            changed = true;
         }
 
         for (int x = 0; x < this.getCellCount(); x++) {
-            newState |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
+            var cellItem = getCellItem(x);
+            if (cellItem != this.clientSideCellItems[x]) {
+                this.clientSideCellItems[x] = cellItem;
+                changed = true;
+            }
+
+            var cellState = this.getCellStatus(x);
+            if (cellState != this.clientSideCellState[x]) {
+                this.clientSideCellState[x] = cellState;
+                changed = true;
+            }
         }
-        return newState;
+        return changed;
     }
 
     @Override

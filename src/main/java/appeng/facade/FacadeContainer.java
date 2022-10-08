@@ -18,7 +18,10 @@
 
 package appeng.facade;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
+
+import org.codehaus.plexus.util.StringUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -35,6 +38,20 @@ import appeng.items.parts.FacadeItem;
 import appeng.parts.CableBusStorage;
 
 public class FacadeContainer implements IFacadeContainer {
+
+    /**
+     * Key names to store facades
+     */
+    private static final String[] NBT_KEY_NAMES = Arrays.stream(Direction.values())
+            .map(d -> "facade" + StringUtils.capitalise(d.getSerializedName()))
+            .toArray(String[]::new);
+
+    /**
+     * Key names to store facades (the old ones pre 1.20). TODO: Remove in 1.20
+     */
+    private static final String[] NBT_KEY_OLD_NAMES = Arrays.stream(Direction.values())
+            .map(d -> "facade:" + d.ordinal())
+            .toArray(String[]::new);
 
     private final CableBusStorage storage;
     private final Consumer<Direction> changeCallback;
@@ -75,18 +92,18 @@ public class FacadeContainer implements IFacadeContainer {
         return this.storage.getFacade(side);
     }
 
-    private String getNbtKey(Direction side) {
-        return "facade:" + side.ordinal();
-    }
-
     @Override
     public void readFromNBT(CompoundTag c) {
         for (var side : Direction.values()) {
             this.storage.removeFacade(side);
 
-            String key = getNbtKey(side);
-            if (c.contains(key, Tag.TAG_COMPOUND)) {
-                var is = ItemStack.of(c.getCompound(key));
+            Tag tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
+            if (tag == null) {
+                tag = c.get(NBT_KEY_OLD_NAMES[side.ordinal()]);
+            }
+
+            if (tag instanceof CompoundTag facadeTag) {
+                var is = ItemStack.of(facadeTag);
                 if (!is.isEmpty()) {
                     if (is.getItem() instanceof IFacadeItem facadeItem) {
                         this.storage.setFacade(side, facadeItem.createPartFromItemStack(is, side));
@@ -102,7 +119,7 @@ public class FacadeContainer implements IFacadeContainer {
             if (this.storage.getFacade(side) != null) {
                 var data = new CompoundTag();
                 this.storage.getFacade(side).getItemStack().save(data);
-                c.put(getNbtKey(side), data);
+                c.put(NBT_KEY_NAMES[side.ordinal()], data);
             }
         }
     }

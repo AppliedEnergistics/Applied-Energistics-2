@@ -31,6 +31,8 @@ import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.CrashReportCategory;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
@@ -176,11 +178,28 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * write data to bus packet.
+     * Write variable data that should be synchronized to clients to the synchronization packet.
      *
      * @param data to be written data
      */
     default void writeToStream(FriendlyByteBuf data) {
+    }
+
+    /**
+     * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
+     * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
+     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
+     * the NBT tag in {@link #writeToNBT(CompoundTag)} does not need to be saved here again.
+     * <p>
+     * The data saved should be equivalent to the data sent to the client in {@link #writeToStream}.
+     * <p>
+     * Please note that this may both be called on the client-side (i.e. when using Create Ponder) and on the
+     * server-side when saving structures with a structure block. To not lose the previously saved data in PonderJS, you
+     * need to write back the data you read in {@link #readVisualStateFromNBT} if the current level is a client-side
+     * level.
+     */
+    @ApiStatus.Experimental
+    default void writeVisualStateToNBT(CompoundTag data) {
     }
 
     /**
@@ -191,6 +210,16 @@ public interface IPart extends ICustomCableConnection {
      */
     default boolean readFromStream(FriendlyByteBuf data) {
         return false;
+    }
+
+    /**
+     * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
+     * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
+     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
+     * the NBT tag in {@link #writeToNBT(CompoundTag)} already does not need to be saved here again.
+     */
+    @ApiStatus.Experimental
+    default void readVisualStateFromNBT(CompoundTag data) {
     }
 
     /**
@@ -406,7 +435,7 @@ public interface IPart extends ICustomCableConnection {
     }
 
     /**
-     * add your collision information to the the list.
+     * add your collision information to the list.
      *
      * @param bch collision boxes
      */

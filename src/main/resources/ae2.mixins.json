@@ -11,7 +11,8 @@
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",
     "EnchantmentHelperMixin",
-    "tests.StructureUtilsMixin"
+    "tests.StructureUtilsMixin",
+    "StructureTemplateMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",
@@ -24,7 +25,8 @@
     "ItemRendererMixin",
     "WrappedGenericStackTooltipModIdMixin",
     "ResizableSlotHighlightMixin",
-    "PickColorMixin"
+    "PickColorMixin",
+    "PonderWorldMixin"
   ],
   "server": [],
   "injectors": {
