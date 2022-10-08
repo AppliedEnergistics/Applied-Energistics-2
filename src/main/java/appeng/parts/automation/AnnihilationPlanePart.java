@@ -31,6 +31,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
@@ -335,8 +336,8 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
+    public IModelData getModelData() {
+        return new PlaneModelData(getConnections());
     }
 
     private record ContinuousGeneration(

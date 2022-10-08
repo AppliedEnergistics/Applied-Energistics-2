@@ -1,9 +1,7 @@
 package appeng.integration.modules.jei.transfer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,15 +12,17 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
-import me.shedaniel.rei.api.common.display.Display;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
-import me.shedaniel.rei.api.common.util.EntryStacks;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.runtime.IIngredientVisibility;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -31,6 +31,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
+import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.GenericEntryStackHelper;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
@@ -42,7 +43,11 @@ import appeng.util.CraftingRecipeUtil;
  * Handles encoding patterns in the {@link PatternEncodingTermMenu} by clicking the + button on recipes shown in REI (or
  * JEI).
  */
-public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> extends AbstractTransferHandler<T> {
+public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
+        extends AbstractTransferHandler
+        implements IRecipeTransferHandler<T, Object> {
+    private static final int CRAFTING_GRID_WIDTH = 3;
+    private static final int CRAFTING_GRID_HEIGHT = 3;
 
     /**
      * Order of priority: - Craftable Items - Undamaged Items - Items the player has the most of
@@ -56,19 +61,31 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         return !(entry.getWhat() instanceof AEItemKey itemKey) || !itemKey.isDamaged();
     }
 
-    private final IngredientVisibility ingredientVisibility = new IngredientVisibility();
+    private final Class<T> containerClass;
+    private final IRecipeTransferHandlerHelper helper;
+    @Nullable
+    private IIngredientVisibility ingredientVisibility;
 
-    public EncodePatternTransferHandler(Class<T> containerClass) {
-        super(containerClass);
+    public EncodePatternTransferHandler(Class<T> containerClass, IRecipeTransferHandlerHelper helper) {
+        this.containerClass = containerClass;
+        this.helper = helper;
     }
 
+    @Nullable
     @Override
-    protected Result transferRecipe(T menu, Recipe<?> recipe, Display display, boolean doTransfer) {
+    public IRecipeTransferError transferRecipe(T menu, Object recipeBase, IRecipeLayout recipeLayout, Player player,
+            boolean maxTransfer, boolean doTransfer) {
+
+        // Recipe displays can be based on anything. Not just Recipe<?>
+        Recipe<?> recipe = null;
+        if (recipeBase instanceof Recipe<?>) {
+            recipe = (Recipe<?>) recipeBase;
+        }
 
         // Crafting recipe slots are not grouped, hence they must fit into the 3x3 grid.
-        boolean craftingRecipe = isCraftingRecipe(recipe, display);
-        if (craftingRecipe && !fitsIn3x3Grid(recipe, display)) {
-            return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
+        boolean craftingRecipe = isCraftingRecipe(recipe, recipeLayout);
+        if (craftingRecipe && !fitsIn3x3Grid(recipe, recipeLayout)) {
+            return helper.createUserErrorWithTooltip(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
         if (doTransfer) {
@@ -82,31 +99,30 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                     menu.setMode(EncodingMode.CRAFTING);
                 }
 
-                encodeCraftingRecipe(menu, recipe, getGuiIngredientsForCrafting(display));
+                encodeCraftingRecipe(menu, recipe, getGuiIngredientsForCrafting(recipeLayout));
             } else {
                 menu.setMode(EncodingMode.PROCESSING);
                 encodeProcessingRecipe(menu,
-                        GenericEntryStackHelper.ofInputs(display),
-                        GenericEntryStackHelper.ofOutputs(display));
+                        GenericEntryStackHelper.ofInputs(recipeLayout),
+                        GenericEntryStackHelper.ofOutputs(recipeLayout));
             }
         }
 
-        return Result.createSuccessful().blocksFurtherHandling();
+        return null;
     }
 
     /**
      * In case the recipe does not report inputs, we will use the inputs shown on the JEI GUI instead.
      */
-    private List<List<GenericStack>> getGuiIngredientsForCrafting(Display recipeLayout) {
+    private List<List<GenericStack>> getGuiIngredientsForCrafting(IRecipeLayout recipeLayout) {
         var result = new ArrayList<List<GenericStack>>(CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT);
         for (int i = 0; i < CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT; i++) {
             var stacks = new ArrayList<GenericStack>();
 
-            if (i < recipeLayout.getInputEntries().size()) {
-                for (EntryStack<?> entryStack : recipeLayout.getInputEntries().get(i)) {
-                    if (entryStack.getType() == VanillaEntryTypes.ITEM) {
-                        stacks.add(GenericStack.fromItemStack(entryStack.castValue()));
-                    }
+            var guiIngredient = recipeLayout.getItemStacks().getGuiIngredients().get(i);
+            if (guiIngredient != null) {
+                for (var stack : guiIngredient.getAllIngredients()) {
+                    stacks.add(GenericStack.fromItemStack(stack));
                 }
             }
 
@@ -160,6 +176,11 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         var encodedInputs = NonNullList.withSize(menu.getCraftingGridSlots().length, ItemStack.EMPTY);
 
         if (recipe != null) {
+            // Cache the ingredient visibility instance for checks for the best ingredient.
+            if (ingredientVisibility == null) {
+                ingredientVisibility = JEIFacade.instance().getRuntime().getIngredientVisibility();
+            }
+
             // When we have access to a crafting recipe, we'll switch modes and try to find suitable
             // ingredients based on the recipe ingredients, which allows for fuzzy-matching.
             var ingredients3x3 = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
@@ -183,7 +204,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                 // stack, otherwise we'll use the first entry.
                 var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
                     for (var stack : ingredient.getItems()) {
-                        if (ingredientVisibility.isVisible(stack)) {
+                        if (ingredientVisibility.isIngredientVisible(VanillaTypes.ITEM_STACK, stack)) {
                             return stack;
                         }
                     }
@@ -257,30 +278,14 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
         stacks.add(newStack);
     }
 
-    private class IngredientVisibility {
-
-        private final EntryRegistry registry;
-        private final Map<ItemStack, Boolean> cache = new HashMap<>();
-
-        private IngredientVisibility() {
-            this.registry = EntryRegistry.getInstance();
-        }
-
-        private boolean isVisible(ItemStack stack) {
-            if (cache.containsKey(stack)) {
-                return cache.get(stack);
-            }
-
-            var entryStack = EntryStacks.of(stack);
-            if (!registry.alreadyContain(entryStack)) {
-                cache.put(stack, false);
-                return false;
-            }
-
-            var entryStacks = registry.refilterNew(false, Collections.singleton(entryStack));
-            var visible = !entryStacks.isEmpty();
-            cache.put(stack, visible);
-            return visible;
-        }
+    @Override
+    public Class<T> getContainerClass() {
+        return containerClass;
     }
+
+    @Override
+    public Class<Object> getRecipeClass() {
+        return Object.class;
+    }
+
 }

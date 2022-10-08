@@ -7,7 +7,9 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.LoadingModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 
 /**
  * Disables the Create compatibility mixin if create isn't loaded.
@@ -25,8 +27,7 @@ public class ConfigPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if ("appeng.mixins.PonderWorldMixin".equals(mixinClassName)) {
-            var instance = FabricLoader.getInstance();
-            return instance.isModLoaded("create");
+            return isModLoaded("create");
         }
         return true;
     }
@@ -46,5 +47,12 @@ public class ConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+    }
+
+    private static boolean isModLoaded(String modId) {
+        if (ModList.get() == null) {
+            return LoadingModList.get().getMods().stream().map(ModInfo::getModId).anyMatch(modId::equals);
+        }
+        return ModList.get().isLoaded(modId);
     }
 }

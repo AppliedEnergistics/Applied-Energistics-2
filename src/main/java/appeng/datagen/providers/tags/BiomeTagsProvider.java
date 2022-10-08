@@ -20,14 +20,15 @@ package appeng.datagen.providers.tags;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.core.AppEng;
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 
 public class BiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvider implements IAE2DataProvider {
-    public BiomeTagsProvider(DataGenerator generator) {
-        super(generator);
+    public BiomeTagsProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+        super(generator, AppEng.MOD_ID, existingFileHelper);
     }
 
     @Override
