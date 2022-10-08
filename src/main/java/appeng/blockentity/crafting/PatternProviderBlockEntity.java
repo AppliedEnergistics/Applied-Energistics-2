@@ -27,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,6 +40,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
 import appeng.util.Platform;
+import appeng.util.SettingsFrom;
 
 public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {
     private final PatternProviderLogic logic = new PatternProviderLogic(this.getMainNode(), this);
@@ -155,6 +157,22 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             return EnumSet.allOf(Direction.class);
         }
         return EnumSet.of(this.getForward());
+    }
+
+    @Override
+    public void exportSettings(SettingsFrom mode, CompoundTag output,
+            @org.jetbrains.annotations.Nullable Player player) {
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            logic.exportSettings(output);
+        }
+    }
+
+    @Override
+    public void importSettings(SettingsFrom mode, CompoundTag input,
+            @org.jetbrains.annotations.Nullable Player player) {
+        if (mode == SettingsFrom.MEMORY_CARD) {
+            logic.importSettings(input, player);
+        }
     }
 
     public boolean isOmniDirectional() {
