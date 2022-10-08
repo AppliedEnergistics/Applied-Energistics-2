@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -62,8 +63,6 @@ public class ToggleBusPart extends BasicStatePart {
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
 
-    private static final int REDSTONE_FLAG = 4;
-
     private final IManagedGridNode outerNode = GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
@@ -74,6 +73,8 @@ public class ToggleBusPart extends BasicStatePart {
     private IGridConnection connection;
     private boolean hasRedstone = false;
 
+    private boolean clientSideEnabled;
+
     public ToggleBusPart(IPartItem<?> partItem) {
         super(partItem);
 
@@ -82,16 +83,37 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     @Override
-    protected int calculateClientFlags() {
-        return super.calculateClientFlags() | (this.getIntention() ? REDSTONE_FLAG : 0);
+    public void writeToStream(FriendlyByteBuf data) {
+        super.writeToStream(data);
+        data.writeBoolean(isEnabled());
     }
 
-    public boolean hasRedstoneFlag() {
-        return (this.getClientFlags() & REDSTONE_FLAG) == REDSTONE_FLAG;
+    @Override
+    public boolean readFromStream(FriendlyByteBuf data) {
+        var changed = super.readFromStream(data);
+        var wasEnabled = this.clientSideEnabled;
+        this.clientSideEnabled = data.readBoolean();
+        return changed || wasEnabled != clientSideEnabled;
     }
 
-    protected boolean getIntention() {
-        return this.getHost().hasRedstone();
+    @Override
+    public void writeVisualStateToNBT(CompoundTag data) {
+        super.writeVisualStateToNBT(data);
+        data.putBoolean("on", isEnabled());
+    }
+
+    @Override
+    public void readVisualStateFromNBT(CompoundTag data) {
+        super.readVisualStateFromNBT(data);
+        this.clientSideEnabled = data.getBoolean("on");
+    }
+
+    protected boolean isEnabled() {
+        if (isClientSide()) {
+            return clientSideEnabled;
+        } else {
+            return this.getHost().hasRedstone();
+        }
     }
 
     @Override
@@ -159,7 +181,7 @@ public class ToggleBusPart extends BasicStatePart {
     }
 
     private void updateInternalState() {
-        final boolean intention = this.getIntention();
+        final boolean intention = this.isEnabled();
         if (intention == (this.connection == null)
                 && this.getMainNode().getNode() != null && this.getOuterNode().getNode() != null) {
             if (intention) {
@@ -183,9 +205,9 @@ public class ToggleBusPart extends BasicStatePart {
 
     @Override
     public IPartModel getStaticModels() {
-        if (this.hasRedstoneFlag() && this.isActive() && this.isPowered()) {
+        if (isEnabled() && this.isActive() && this.isPowered()) {
             return MODELS_HAS_CHANNEL;
-        } else if (this.hasRedstoneFlag() && this.isPowered()) {
+        } else if (isEnabled() && this.isPowered()) {
             return MODELS_ON;
         } else {
             return MODELS_OFF;

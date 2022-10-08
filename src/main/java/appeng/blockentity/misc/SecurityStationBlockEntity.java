@@ -129,6 +129,20 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
+    protected void saveVisualState(CompoundTag data) {
+        super.saveVisualState(data);
+
+        data.putBoolean("active", this.isActive);
+    }
+
+    @Override
+    protected void loadVisualState(CompoundTag data) {
+        super.loadVisualState(data);
+
+        this.isActive = data.getBoolean("active");
+    }
+
+    @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         this.cm.writeToNBT(data);
@@ -207,10 +221,10 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     public boolean isActive() {
-        if (level != null && !level.isClientSide) {
-            return this.getMainNode().isOnline();
-        } else {
+        if (isClientSide()) {
             return this.isActive;
+        } else {
+            return this.getMainNode().isOnline();
         }
     }
 

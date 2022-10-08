@@ -14,7 +14,8 @@
     "ServerLevelCustomItemEntityMixin",
     "BreakSpeedMixin",
     "AnnihilationPlaneEnchantmentMixin",
-    "tests.StructureUtilsMixin"
+    "tests.StructureUtilsMixin",
+    "StructureTemplateMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",
@@ -29,7 +30,8 @@
     "ItemRendererMixin",
     "WrappedGenericStackTooltipModIdMixin",
     "ResizableSlotHighlightMixin",
-    "PickColorMixin"
+    "PickColorMixin",
+    "PonderWorldMixin"
   ],
   "server": [],
   "injectors": {

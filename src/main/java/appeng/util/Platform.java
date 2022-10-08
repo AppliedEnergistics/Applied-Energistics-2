@@ -75,6 +75,7 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridNode;
 import appeng.util.helpers.P2PHelper;
@@ -93,6 +94,23 @@ public class Platform {
 
     public static final Direction[] DIRECTIONS_WITH_NULL = new Direction[] { Direction.DOWN, Direction.UP,
             Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null };
+
+    /**
+     * Class of the Create Ponder Level. Enables {@link VisualStateSaving} if a block entity is attached to a Ponder
+     * level.
+     */
+    @org.jetbrains.annotations.Nullable
+    private static final Class<?> ponderLevelClass = findPonderLevelClass(
+            "com.simibubi.create.foundation.ponder.PonderWorld");
+
+    private static Class<?> findPonderLevelClass(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException ignored) {
+            AELog.warn("Unable to find class %s. Integration with PonderJS disabled.", className);
+            return null;
+        }
+    }
 
     public static P2PHelper p2p() {
         return P2P_HELPER;
@@ -566,6 +584,13 @@ public class Platform {
                 }
             }
         }
+    }
+
+    /**
+     * Checks if the given level is a "fake" level used by Ponder to render our BE.
+     */
+    public static boolean isPonderLevel(Level level) {
+        return ponderLevelClass != null && ponderLevelClass.isInstance(level);
     }
 
     /**
