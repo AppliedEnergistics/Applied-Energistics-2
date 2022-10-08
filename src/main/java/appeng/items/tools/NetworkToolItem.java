@@ -24,7 +24,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -139,6 +142,50 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
             }
         }
         return null;
+    }
+
+    /**
+     * Allows vacuuming up upgrade cards by right-clicking on them with the network tool in hand.
+     */
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+            return false;
+        }
+
+        var other = slot.getItem();
+        if (other.isEmpty()) {
+            return true;
+        }
+
+        var toolHost = new NetworkToolMenuHost(player, null, stack, null);
+        var amount = other.getCount();
+        var overflow = toolHost.getInventory().addItems(other);
+        other.shrink(amount - overflow.getCount());
+        toolHost.saveChanges();
+        return true;
+    }
+
+    /**
+     * Allows directly inserting upgrade cards into the network tool by right-clicking it with the item in hand.
+     */
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action,
+            Player player, SlotAccess access) {
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+            return false;
+        }
+
+        if (other.isEmpty()) {
+            return false;
+        }
+
+        var toolHost = new NetworkToolMenuHost(player, slot.slot, stack, null);
+        var amount = other.getCount();
+        var overflow = toolHost.getInventory().addItems(other);
+        other.shrink(amount - overflow.getCount());
+        toolHost.saveChanges();
+        return true;
     }
 
 }
