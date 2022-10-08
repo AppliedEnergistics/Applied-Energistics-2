@@ -20,7 +20,7 @@ package appeng.init.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -36,7 +36,6 @@ import appeng.items.tools.powered.ColorApplicatorItem;
 @Environment(EnvType.CLIENT)
 public final class InitItemModelsProperties {
 
-    public static final ResourceLocation GROWTH_PREDICATE_ID = AppEng.makeId("growth");
     public static final ResourceLocation COLORED_PREDICATE_ID = AppEng.makeId("colored");
     public static final ResourceLocation ENERGY_FILL_LEVEL_ID = AppEng.makeId("fill_level");
 
@@ -45,7 +44,7 @@ public final class InitItemModelsProperties {
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
-        FabricModelPredicateProviderRegistry.register(colorApplicatorItem,
+        ItemProperties.register(colorApplicatorItem,
                 COLORED_PREDICATE_ID,
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of
@@ -62,13 +61,13 @@ public final class InitItemModelsProperties {
                 return;
             }
 
-            FabricModelPredicateProviderRegistry.register(chargeable,
+            ItemProperties.register(chargeable,
                     ENERGY_FILL_LEVEL_ID,
                     (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);
 
-                        return (int) Math.round(100 * curPower / maxPower);
+                        return (float) (curPower / maxPower);
                     });
         });
     }
