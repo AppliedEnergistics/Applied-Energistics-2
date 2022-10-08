@@ -67,7 +67,7 @@ public class FacadePart implements IFacadePart {
 
     @Override
     public Item getItem() {
-        final ItemStack is = this.getTextureItem();
+        var is = this.getTextureItem();
         if (is.isEmpty()) {
             return Items.AIR;
         }

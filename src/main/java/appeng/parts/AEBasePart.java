@@ -25,9 +25,13 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -38,6 +42,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.inventories.ISegmentedInventory;
@@ -62,7 +67,8 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
-public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory {
+public abstract class AEBasePart
+        implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory, IPowerChannelState {
 
     private final IManagedGridNode mainNode;
     private IPartItem<?> partItem;
@@ -72,6 +78,11 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
     private Direction side;
     @Nullable
     private Component customName;
+
+    // On the client-side this is the state last sent by the server.
+    // On the server it's the state last sent to the client.
+    private boolean clientSidePowered;
+    private boolean clientSideMissingChannel;
 
     public AEBasePart(IPartItem<?> partItem) {
         this.partItem = Objects.requireNonNull(partItem, "partItem");
@@ -88,7 +99,12 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
      *
      * @param reason Indicates which of the properties has changed.
      */
+    @MustBeInvokedByOverriders
     protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        // Client flags shouldn't depend on grid boot, optimize!
+        if (reason != IGridNodeListener.State.GRID_BOOT) {
+            markForUpdateIfClientFlagsChanged();
+        }
     }
 
     public final boolean isClientSide() {
@@ -173,6 +189,10 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
             } catch (Exception ignored) {
             }
         }
+
+        if (data.contains("visual", Tag.TAG_COMPOUND)) {
+            readVisualStateFromNBT(data.getCompound("visual"));
+        }
     }
 
     @Override
@@ -182,6 +202,60 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         if (this.customName != null) {
             data.putString("customName", Component.Serializer.toJson(this.customName));
         }
+    }
+
+    @MustBeInvokedByOverriders
+    @Override
+    public void writeToStream(FriendlyByteBuf data) {
+        this.clientSidePowered = this.isPowered();
+        this.clientSideMissingChannel = this.isMissingChannel();
+
+        var flags = 0;
+        if (clientSidePowered) {
+            flags |= 1;
+        }
+        if (clientSideMissingChannel) {
+            flags |= 2;
+        }
+        data.writeByte(flags);
+    }
+
+    @MustBeInvokedByOverriders
+    @Override
+    public boolean readFromStream(FriendlyByteBuf data) {
+        var flags = data.readByte();
+
+        var wasPowered = this.clientSidePowered;
+        var wasMissingChannel = this.clientSideMissingChannel;
+
+        this.clientSidePowered = (flags & 1) != 0;
+        this.clientSideMissingChannel = (flags & 2) != 0;
+
+        return shouldSendPowerStateToClient() && clientSidePowered != wasPowered
+                || shouldSendMissingChannelStateToClient() && clientSideMissingChannel != wasMissingChannel;
+    }
+
+    /**
+     * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
+     * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
+     * {@link #writeToStream(FriendlyByteBuf)} and {@link #readFromStream(FriendlyByteBuf)}. Any data that is saved to
+     * the NBT tag in {@link #writeToNBT(CompoundTag)} already does not need to be saved here again.
+     */
+    @MustBeInvokedByOverriders
+    @Override
+    public void writeVisualStateToNBT(CompoundTag data) {
+        data.putBoolean("powered", this.isPowered());
+        data.putBoolean("missingChannel", this.isMissingChannel());
+    }
+
+    /**
+     * Loads data saved by {@link #writeVisualStateToNBT(CompoundTag)}.
+     */
+    @MustBeInvokedByOverriders
+    @Override
+    public void readVisualStateFromNBT(CompoundTag data) {
+        this.clientSidePowered = data.getBoolean("powered");
+        this.clientSideMissingChannel = data.getBoolean("missingChannel");
     }
 
     @Override
@@ -354,5 +428,67 @@ public abstract class AEBasePart implements IPart, IActionHost, ICustomNameObjec
         public void onStateChanged(T nodeOwner, IGridNode node, State state) {
             nodeOwner.onMainNodeStateChanged(state);
         }
+    }
+
+    public boolean isPowered() {
+        if (isClientSide()) {
+            return clientSidePowered;
+        } else {
+            var node = getGridNode();
+            return node != null && node.isPowered();
+        }
+    }
+
+    public boolean isMissingChannel() {
+        if (isClientSide()) {
+            return clientSideMissingChannel;
+        } else {
+            var node = getGridNode();
+            return node == null || !node.meetsChannelRequirements();
+        }
+    }
+
+    @Override
+    public boolean isActive() {
+        return isPowered() && !isMissingChannel();
+    }
+
+    /**
+     * Updates the entire part on the client-side if one of the flags relevant for its visual appearance has changed.
+     */
+    private void markForUpdateIfClientFlagsChanged() {
+        var changed = false;
+
+        if (shouldSendPowerStateToClient()) {
+            if (isPowered() != this.clientSidePowered) {
+                changed = true;
+            }
+        }
+
+        if (!changed && shouldSendMissingChannelStateToClient()) {
+            if (isMissingChannel() != this.clientSideMissingChannel) {
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            getHost().markForUpdate();
+        }
+    }
+
+    /**
+     * Override and return false if your part has no visual indicator for the power state and doesn't need this info on
+     * the client.
+     */
+    protected boolean shouldSendPowerStateToClient() {
+        return true;
+    }
+
+    /**
+     * Override and return false if your part has no visual indicator for the missing channel state and doesn't need
+     * this info on the client.
+     */
+    protected boolean shouldSendMissingChannelStateToClient() {
+        return true;
     }
 }
