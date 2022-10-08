@@ -42,10 +42,8 @@ import appeng.util.SettingsFrom;
 
 public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
 
-    private static final double MAX_STORED = 200000.0;
-
     private double internalCurrentPower = 0.0;
-    private double internalMaxPower = MAX_STORED;
+    private final double internalMaxPower;
 
     private byte currentMeta = -1;
 
@@ -56,6 +54,9 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .addService(IAEPowerStorage.class, this);
+
+        var cellBlock = (EnergyCellBlock) getBlockState().getBlock();
+        this.internalMaxPower = cellBlock.getMaxPower();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
             return;
         }
 
-        int storageLevel = getStorageLevelFromFillFactor(this.internalCurrentPower / this.getInternalMaxPower());
+        int storageLevel = getStorageLevelFromFillFactor(this.internalCurrentPower / this.internalMaxPower);
 
         if (this.currentMeta != storageLevel) {
             this.currentMeta = (byte) storageLevel;
@@ -144,7 +145,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
         if (from == SettingsFrom.DISMANTLE_ITEM && this.internalCurrentPower > 0.0001) {
             data.putDouble("internalCurrentPower", this.internalCurrentPower);
-            data.putDouble("internalMaxPower", this.getInternalMaxPower()); // used for tool tip.
+            data.putDouble("internalMaxPower", this.internalMaxPower); // used for tool tip.
         }
     }
 
@@ -152,8 +153,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     public final double injectAEPower(double amt, Actionable mode) {
         if (mode == Actionable.SIMULATE) {
             final double fakeBattery = this.internalCurrentPower + amt;
-            if (fakeBattery > this.getInternalMaxPower()) {
-                return fakeBattery - this.getInternalMaxPower();
+            if (fakeBattery > this.internalMaxPower) {
+                return fakeBattery - this.internalMaxPower;
             }
 
             return 0;
@@ -165,9 +166,9 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         }
 
         this.internalCurrentPower += amt;
-        if (this.internalCurrentPower > this.getInternalMaxPower()) {
-            amt = this.internalCurrentPower - this.getInternalMaxPower();
-            this.internalCurrentPower = this.getInternalMaxPower();
+        if (this.internalCurrentPower > this.internalMaxPower) {
+            amt = this.internalCurrentPower - this.internalMaxPower;
+            this.internalCurrentPower = this.internalMaxPower;
 
             this.onAmountChanged();
             return amt;
@@ -179,7 +180,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
     @Override
     public double getAEMaxPower() {
-        return this.getInternalMaxPower();
+        return this.internalMaxPower;
     }
 
     @Override
@@ -204,7 +205,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
     @Override
     public int getPriority() {
-        return 200;
+        return ((EnergyCellBlock) getBlockState().getBlock()).getPriority();
     }
 
     private double extractAEPower(double amt, Actionable mode) {
@@ -215,7 +216,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
             return this.internalCurrentPower;
         }
 
-        final boolean wasFull = this.internalCurrentPower >= this.getInternalMaxPower() - 0.001;
+        final boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
 
         if (wasFull && amt > 0.001) {
             getMainNode().ifPresent(
@@ -234,14 +235,6 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
         this.onAmountChanged();
         return amt;
-    }
-
-    private double getInternalMaxPower() {
-        return this.internalMaxPower;
-    }
-
-    public void setInternalMaxPower(double internalMaxPower) {
-        this.internalMaxPower = internalMaxPower;
     }
 
 }

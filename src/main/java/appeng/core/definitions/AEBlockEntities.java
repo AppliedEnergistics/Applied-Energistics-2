@@ -55,7 +55,6 @@ import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
-import appeng.blockentity.networking.DenseEnergyCellBlockEntity;
 import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.networking.WirelessBlockEntity;
@@ -120,8 +119,8 @@ public final class AEBlockEntities {
             QuartzGrowthAcceleratorBlockEntity::new, AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
     public static final BlockEntityType<EnergyCellBlockEntity> ENERGY_CELL = create("energy_cell",
             EnergyCellBlockEntity.class, EnergyCellBlockEntity::new, AEBlocks.ENERGY_CELL);
-    public static final BlockEntityType<DenseEnergyCellBlockEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
-            DenseEnergyCellBlockEntity.class, DenseEnergyCellBlockEntity::new, AEBlocks.DENSE_ENERGY_CELL);
+    public static final BlockEntityType<EnergyCellBlockEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
+            EnergyCellBlockEntity.class, EnergyCellBlockEntity::new, AEBlocks.DENSE_ENERGY_CELL);
     public static final BlockEntityType<CreativeEnergyCellBlockEntity> CREATIVE_ENERGY_CELL = create(
             "creative_energy_cell",
             CreativeEnergyCellBlockEntity.class, CreativeEnergyCellBlockEntity::new, AEBlocks.CREATIVE_ENERGY_CELL);
