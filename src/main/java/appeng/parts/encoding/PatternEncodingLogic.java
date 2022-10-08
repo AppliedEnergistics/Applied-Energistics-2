@@ -18,7 +18,10 @@
 
 package appeng.parts.encoding;
 
+import appeng.crafting.pattern.AEStonecuttingPattern;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -34,6 +37,7 @@ import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
+import org.jetbrains.annotations.Nullable;
 
 public class PatternEncodingLogic implements InternalInventoryHost {
 
@@ -54,6 +58,8 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     private boolean substitute = false;
     private boolean substituteFluids = true;
     private boolean isLoading = false;
+    @Nullable
+    private ResourceLocation stonecuttingRecipeId;
 
     public PatternEncodingLogic(IPatternTerminalLogicHost host) {
         this.host = host;
@@ -103,6 +109,9 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             setMode(EncodingMode.CRAFTING);
         } else if (details instanceof AEProcessingPattern) {
             setMode(EncodingMode.PROCESSING);
+        } else if (details instanceof AEStonecuttingPattern stonecuttingPattern) {
+            setMode(EncodingMode.STONECUTTING);
+            stonecuttingRecipeId = stonecuttingPattern.getRecipeId();
         }
 
         if (details instanceof IAEPatternDetails aeDetails) {
@@ -153,6 +162,15 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         this.saveChanges();
     }
 
+    public ResourceLocation getStonecuttingRecipeId() {
+        return stonecuttingRecipeId;
+    }
+
+    public void setStonecuttingRecipeId(ResourceLocation stonecuttingRecipeId) {
+        this.stonecuttingRecipeId = stonecuttingRecipeId;
+        this.saveChanges();
+    }
+
     /**
      * The inventory used to store the inputs for encoding them into a pattern. Does not contain real items.
      * <p/>
@@ -197,6 +215,12 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             this.setSubstitution(data.getBoolean("substitute"));
             this.setFluidSubstitution(data.getBoolean("substituteFluids"));
 
+            if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
+                this.stonecuttingRecipeId = new ResourceLocation(data.getString("stonecuttingRecipeId"));
+            } else {
+                this.stonecuttingRecipeId = null;
+            }
+
             blankPatternInv.readFromNBT(data, "blankPattern");
             encodedPatternInv.readFromNBT(data, "encodedPattern");
 
@@ -211,6 +235,9 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         data.putString("mode", this.mode.name());
         data.putBoolean("substitute", this.substitute);
         data.putBoolean("substituteFluids", this.substituteFluids);
+        if (this.stonecuttingRecipeId != null) {
+            data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.toString());
+        }
         blankPatternInv.writeToNBT(data, "blankPattern");
         encodedPatternInv.writeToNBT(data, "encodedPattern");
         encodedInputInv.writeToChildTag(data, "encodedInputs");
@@ -223,7 +250,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             return;
         }
 
-        if (getMode() == EncodingMode.CRAFTING) {
+        if (getMode() == EncodingMode.CRAFTING || getMode() == EncodingMode.STONECUTTING) {
             var craftingGrid = getEncodedInputInv();
             for (int slot = 0; slot < craftingGrid.size(); slot++) {
                 var stack = craftingGrid.getStack(slot);

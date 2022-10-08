@@ -3,7 +3,8 @@
   "includes": [
     "terminal.json",
     "encoding/crafting.json",
-    "encoding/processing.json"
+    "encoding/processing.json",
+    "encoding/stonecutting.json"
   ],
   "slots": {
     "BLANK_PATTERN": {
@@ -63,6 +64,10 @@
       "bottom": 177
     },
     "processingPatternMode": {
+      "left": 173,
+      "bottom": 177
+    },
+    "stonecuttingPatternMode": {
       "left": 173,
       "bottom": 177
     },

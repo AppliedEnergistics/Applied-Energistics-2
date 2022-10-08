@@ -1,0 +1,21 @@
+{
+  "__comment": "Describes the parts of the pattern encoding terminal that relate to encoding a stonecutting pattern",
+  "$schema": "../../schema.json",
+  "slots": {
+    "STONECUTTING_INPUT": {
+      "left": 21,
+      "bottom": 139
+    }
+  },
+  "widgets": {
+    "stonecuttingPatternModeScrollbar": {
+      "left": 119,
+      "bottom": 157,
+      "height": 54
+    },
+    "stonecuttingEncoding": {
+      "left": 9,
+      "bottom": 164
+    }
+  }
+}
