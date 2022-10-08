@@ -3,7 +3,7 @@
   "includes": ["../common/common.json"],
   "generatedBackground": {
     "width": 200,
-    "height": 200
+    "height": 216
   },
   "text": {
     "dialog_title": {
@@ -18,7 +18,7 @@
     "search_settings_title": {
       "position": {
         "left": 8,
-        "top": 83
+        "top": 110
       },
       "text": {
         "translate": "gui.ae2.SearchSettingsTitle"
@@ -40,39 +40,44 @@
       "top": 50,
       "width": 180
     },
+    "clearGridOnCloseCheckbox": {
+      "left": 10,
+      "top": 82,
+      "width": 180
+    },
     "useInternalSearchRadio": {
       "left": 10,
-      "top": 97,
+      "top": 124,
       "width": 75
     },
     "useExternalSearchRadio": {
       "left": 95,
-      "top": 97,
+      "top": 124,
       "width": 75
     },
     "searchTooltipsCheckbox": {
       "left": 10,
-      "top": 117,
+      "top": 144,
       "width": 150
     },
     "rememberCheckbox": {
       "left": 10,
-      "top": 133,
+      "top": 160,
       "width": 150
     },
     "autoFocusCheckbox": {
       "left": 10,
-      "top": 151,
+      "top": 176,
       "width": 150
     },
     "syncWithExternalCheckbox": {
       "left": 10,
-      "top": 169,
+      "top": 192,
       "width": 150
     },
     "clearExternalCheckbox": {
       "left": 10,
-      "top": 133,
+      "top": 160,
       "width": 150
     }
   }
