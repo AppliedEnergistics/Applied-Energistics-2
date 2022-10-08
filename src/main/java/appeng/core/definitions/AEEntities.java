@@ -50,21 +50,23 @@ public final class AEEntities {
             "Singularity",
             SingularityEntity::new,
             MobCategory.MISC,
-            builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
+            builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
+                    .setShouldReceiveVelocityUpdates(true));
 
     public static final EntityType<ChargedQuartzEntity> CHARGED_QUARTZ = create(
             "charged_quartz",
             "Charged Quartz",
             ChargedQuartzEntity::new,
             MobCategory.MISC,
-            builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
+            builder -> builder.sized(0.2f, 0.2f).setTrackingRange(16).setUpdateInterval(4)
+                    .setShouldReceiveVelocityUpdates(true));
 
     public static final EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
             "tiny_tnt_primed",
             "Tiny TNT Primed",
             TinyTNTPrimedEntity::new,
             MobCategory.MISC,
-            builder -> builder.clientTrackingRange(16).updateInterval(4));
+            builder -> builder.setTrackingRange(16).setUpdateInterval(4).setShouldReceiveVelocityUpdates(true));
 
     public static EntityType<GrowingCrystalEntity> GROWING_CRYSTAL = create(
             "growing_crystal",

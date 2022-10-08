@@ -32,7 +32,6 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -54,7 +53,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.IModelData;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -74,15 +77,7 @@ import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements IOrientable, ICustomNameObject, ISegmentedInventory,
-        RenderAttachmentBlockEntity {
-
-    static {
-        DeferredBlockEntityUnloader.register();
-    }
-
-    protected void onChunkUnloaded() {
-    }
+        implements IOrientable, ICustomNameObject, ISegmentedInventory {
 
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
@@ -130,6 +125,7 @@ public class AEBaseBlockEntity extends BlockEntity
             if (readUpdateData(new FriendlyByteBuf(Unpooled.wrappedBuffer(updateData)))) {
                 // Triggers a chunk re-render if the level is already loaded
                 if (level != null) {
+                    requestModelDataUpdate();
                     level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
                 }
             }
@@ -270,6 +266,9 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     public void markForUpdate() {
+        // Clearing the cached model-data is always harmless regardless of status
+        this.requestModelDataUpdate();
+
         // TODO: Optimize Network Load
         if (this.level != null && !this.isRemoved() && !notLoaded()) {
 
@@ -420,10 +419,19 @@ public class AEBaseBlockEntity extends BlockEntity
         return null;
     }
 
-    @Nullable
     @Override
-    public Object getRenderAttachmentData() {
+    public IModelData getModelData() {
         return new AEModelData(up, forward);
+    }
+
+    /**
+     * AE Block entities will generally confine themselves to rendering within the bounding block. Forge however would
+     * retrieve the collision box here, which is very expensive.
+     */
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
     /**

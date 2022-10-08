@@ -7,11 +7,10 @@ import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -33,7 +32,7 @@ public class BasicInventoryTest {
 
     @BeforeAll
     static void initCells() {
-        InitItems.init(Registry.ITEM);
+        InitItems.init(ForgeRegistries.ITEMS);
         InitStorageCells.init();
         InitUpgrades.init();
     }

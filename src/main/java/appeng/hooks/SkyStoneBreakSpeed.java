@@ -19,9 +19,8 @@
 package appeng.hooks;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 import appeng.core.definitions.AEBlocks;
 
@@ -36,13 +35,13 @@ public final class SkyStoneBreakSpeed {
     private SkyStoneBreakSpeed() {
     }
 
-    public static Float handleBreakFaster(Player player, BlockState blockState, float speed) {
+    public static void handleBreakFaster(PlayerEvent.BreakSpeed event) {
+        var blockState = event.getState();
         if (blockState.getBlock() == AEBlocks.SKY_STONE_BLOCK.block()) {
-            var tool = player.getItemBySlot(EquipmentSlot.MAINHAND);
+            var tool = event.getPlayer().getItemBySlot(EquipmentSlot.MAINHAND);
             if (tool.getDestroySpeed(blockState) > Tiers.IRON.getSpeed()) {
-                return speed * SPEEDUP_FACTOR;
+                event.setNewSpeed(event.getNewSpeed() * SPEEDUP_FACTOR);
             }
         }
-        return null;
     }
 }

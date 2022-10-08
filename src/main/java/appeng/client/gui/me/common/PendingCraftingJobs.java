@@ -3,10 +3,10 @@ package appeng.client.gui.me.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.stacks.AEKey;
@@ -18,7 +18,7 @@ import appeng.items.tools.powered.WirelessTerminalItem;
 /**
  * Tracks pending crafting jobs started by this player.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class PendingCraftingJobs {
     private static final Map<String, PendingJob> jobs = new HashMap<>();
 

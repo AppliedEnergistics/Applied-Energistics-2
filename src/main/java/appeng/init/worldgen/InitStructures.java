@@ -20,7 +20,6 @@ package appeng.init.worldgen;
 
 import java.util.List;
 
-import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.StructureFeatures;
 import net.minecraft.data.worldgen.StructureSets;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -41,7 +41,7 @@ public final class InitStructures {
     private InitStructures() {
     }
 
-    public static void init(Registry<StructureFeature<?>> registry) {
+    public static void init(IForgeRegistry<StructureFeature<?>> registry) {
         MeteoriteStructurePiece.register();
 
         registerStructure(registry, MeteoriteStructure.ID, MeteoriteStructure.INSTANCE,
@@ -66,12 +66,13 @@ public final class InitStructures {
     // This mirrors the Vanilla registration method for structures, but uses the
     // Forge registry instead
     private static <F extends StructureFeature<?>> void registerStructure(
-            Registry<StructureFeature<?>> registry,
+            IForgeRegistry<StructureFeature<?>> registry,
             ResourceLocation id,
             F structure,
             Decoration stage) {
         StructureFeature.STEP.put(structure, stage);
-        Registry.register(registry, id, structure);
+        structure.setRegistryName(id);
+        registry.register(structure);
     }
 
 }
