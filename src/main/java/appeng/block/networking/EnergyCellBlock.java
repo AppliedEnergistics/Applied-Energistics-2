@@ -39,8 +39,13 @@ public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
 
     public static final IntegerProperty ENERGY_STORAGE = IntegerProperty.create("fullness", 0, MAX_FULLNESS);
 
-    public EnergyCellBlock() {
+    private final double maxPower;
+    private final int priority;
+
+    public EnergyCellBlock(double maxPower, int priority) {
         super(defaultProps(AEMaterials.GLASS));
+        this.maxPower = maxPower;
+        this.priority = priority;
     }
 
     @Override
@@ -57,7 +62,11 @@ public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
     }
 
     public double getMaxPower() {
-        return 200000.0;
+        return this.maxPower;
+    }
+
+    public int getPriority() {
+        return this.priority;
     }
 
     @Override
