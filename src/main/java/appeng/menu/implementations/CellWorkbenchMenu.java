@@ -44,6 +44,8 @@ import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
+import appeng.menu.slot.CellPartitionSlot;
+import appeng.menu.slot.IPartitionSlotHost;
 import appeng.menu.slot.OptionalRestrictedInputSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.EnumCycler;
@@ -52,7 +54,7 @@ import appeng.util.inv.SupplierInternalInventory;
 /**
  * @see appeng.client.gui.implementations.CellWorkbenchScreen
  */
-public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity> {
+public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity> implements IPartitionSlotHost {
 
     public static final String ACTION_NEXT_COPYMODE = "nextCopyMode";
     public static final String ACTION_PARTITION = "partition";
@@ -105,7 +107,11 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.WORKBENCH_CELL, cell, 0),
                 SlotSemantics.STORAGE_CELL);
 
-        addConfigSlots(getConfigInventory(), 7, 9);
+        var inv = getConfigInventory().createMenuWrapper();
+
+        for (int slot = 0; slot < 63; slot++) {
+            this.addSlot(new CellPartitionSlot(inv, this, slot), SlotSemantics.CONFIG);
+        }
     }
 
     @Override
@@ -135,6 +141,15 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     @Override
     public boolean isSlotEnabled(int idx) {
         return idx < getUpgrades().size();
+    }
+
+    @Override
+    public boolean isPartitionSlotEnabled(int idx) {
+        var cwi = getHost().getCell();
+        if (cwi != null && getCopyMode() == CopyMode.CLEAR_ON_REMOVE) {
+            return idx < cwi.getConfigInventory(getWorkbenchItem()).size();
+        }
+        return getCopyMode() == CopyMode.KEEP_ON_REMOVE;
     }
 
     @Override
