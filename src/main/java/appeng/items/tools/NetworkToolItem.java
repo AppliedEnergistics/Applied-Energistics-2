@@ -18,6 +18,12 @@
 
 package appeng.items.tools;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -28,6 +34,7 @@ import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -36,11 +43,14 @@ import net.minecraft.world.level.Level;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.networking.GridHelper;
 import appeng.api.parts.IPartHost;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAware;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.NetworkToolMenuHost;
+import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.networktool.NetworkStatusMenu;
@@ -144,6 +154,29 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
         return null;
     }
 
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        var toolHost = new NetworkToolMenuHost(null, null, stack, null);
+
+        if (toolHost.getInventory().isEmpty()) {
+            return Optional.empty();
+        }
+
+        var upgradeCards = new LinkedHashMap<AEItemKey, Integer>();
+        for (var card : toolHost.getInventory()) {
+            upgradeCards.merge(AEItemKey.of(card), card.getCount(), Integer::sum);
+        }
+        var stacks = new ArrayList<GenericStack>(upgradeCards.size());
+        for (var entry : upgradeCards.entrySet()) {
+            stacks.add(new GenericStack(entry.getKey(), entry.getValue()));
+        }
+
+        // Sort ascending by amount
+        stacks.sort(Comparator.comparingLong(GenericStack::amount).reversed());
+
+        return Optional.of(new StorageCellTooltipComponent(List.of(), stacks, false));
+    }
+
     /**
      * Allows vacuuming up upgrade cards by right-clicking on them with the network tool in hand.
      */
@@ -158,11 +191,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
             return true;
         }
 
-        var toolHost = new NetworkToolMenuHost(player, null, stack, null);
-        var amount = other.getCount();
-        var overflow = toolHost.getInventory().addItems(other);
-        other.shrink(amount - overflow.getCount());
-        toolHost.saveChanges();
+        insertIntoTool(stack, other, player);
         return true;
     }
 
@@ -180,12 +209,16 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
             return false;
         }
 
-        var toolHost = new NetworkToolMenuHost(player, slot.slot, stack, null);
-        var amount = other.getCount();
-        var overflow = toolHost.getInventory().addItems(other);
-        other.shrink(amount - overflow.getCount());
-        toolHost.saveChanges();
+        insertIntoTool(stack, other, player);
         return true;
+    }
+
+    private void insertIntoTool(ItemStack tool, ItemStack upgrade, Player player) {
+        var toolHost = new NetworkToolMenuHost(player, null, tool, null);
+        var amount = upgrade.getCount();
+        var overflow = toolHost.getInventory().addItems(upgrade);
+        upgrade.shrink(amount - overflow.getCount());
+        toolHost.saveChanges();
     }
 
 }
