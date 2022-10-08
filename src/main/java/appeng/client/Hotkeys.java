@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraftforge.client.ClientRegistry;
 
 public class Hotkeys {
 
@@ -17,7 +17,7 @@ public class Hotkeys {
 
     private static void registerHotkey(Hotkey hotkey) {
         HOTKEYS.put(hotkey.name(), hotkey);
-        KeyBindingHelper.registerKeyBinding(hotkey.mapping());
+        ClientRegistry.registerKeyBinding(hotkey.mapping());
     }
 
     public static void registerHotkey(String id) {

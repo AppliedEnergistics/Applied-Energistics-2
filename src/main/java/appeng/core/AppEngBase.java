@@ -25,15 +25,12 @@ import javax.annotation.Nullable;
 
 import com.mojang.brigadier.CommandDispatcher;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -46,30 +43,40 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.NewRegistryEvent;
+import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
-import appeng.api.IAEAddonEntrypoint;
 import appeng.api.parts.CableRenderMode;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
+import appeng.api.stacks.AEKeyTypesInternal;
 import appeng.core.sync.BasePacket;
 import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.network.ServerNetworkHandler;
-import appeng.hooks.ToolItemHook;
+import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
-import appeng.init.InitApiLookup;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
+import appeng.init.InitCapabilities;
 import appeng.init.InitDispenserBehavior;
 import appeng.init.InitEntityTypes;
 import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
-import appeng.init.client.InitKeyTypes;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitP2PAttunements;
@@ -79,6 +86,7 @@ import appeng.init.worldgen.InitBiomeModifications;
 import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitFeatures;
 import appeng.init.worldgen.InitStructures;
+import appeng.integration.Integrations;
 import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
@@ -105,55 +113,55 @@ public abstract class AppEngBase implements AppEng {
 
     static AppEngBase INSTANCE;
 
-    private MinecraftServer currentServer;
-
     public AppEngBase() {
         if (INSTANCE != null) {
             throw new IllegalStateException();
         }
         INSTANCE = this;
 
-        AEConfig.load(FabricLoader.getInstance().getConfigDir());
-
-        InitKeyTypes.init();
-
-        CreativeTab.init();
-
-        // Initialize items in order
-        AEItems.init();
-        AEBlocks.init();
-        AEParts.init();
-
         // Now that item instances are available, we can initialize registries that need item instances
         InitGridLinkables.init();
         InitStorageCells.init();
 
-        FacadeCreativeTab.init(); // This call has a side-effect (adding it to the creative screen)
+        FacadeItemGroup.init();
 
-        registerDimension();
-        registerBiomes(BuiltinRegistries.BIOME);
-        registerBlocks(Registry.BLOCK);
-        registerItems(Registry.ITEM);
-        registerEntities(Registry.ENTITY_TYPE);
-        registerParticleTypes(Registry.PARTICLE_TYPE);
-        registerBlockEntities(Registry.BLOCK_ENTITY_TYPE);
-        registerMenuTypes(Registry.MENU);
-        registerRecipeSerializers(Registry.RECIPE_SERIALIZER);
-        registerStructures(Registry.STRUCTURE_FEATURE);
-        registerFeatures(Registry.FEATURE);
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::registerRegistries);
+        modEventBus.addGenericListener(Biome.class, this::registerBiomes);
+        modEventBus.addGenericListener(Block.class, this::registerBlocks);
+        modEventBus.addGenericListener(Item.class, this::registerItems);
+        modEventBus.addGenericListener(EntityType.class, this::registerEntities);
+        modEventBus.addGenericListener(ParticleType.class, this::registerParticleTypes);
+        modEventBus.addGenericListener(BlockEntityType.class, this::registerBlockEntities);
+        modEventBus.addGenericListener(MenuType.class, this::registerContainerTypes);
+        modEventBus.addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
+        modEventBus.addGenericListener(StructureFeature.class, this::registerStructures);
+        modEventBus.addGenericListener(Feature.class, this::registerFeatures);
+        modEventBus.addGenericListener(AEKeyType.class, this::registerKeyTypes);
 
-        postRegistrationInitialization();
+        modEventBus.addListener(InitCapabilities::init);
+        modEventBus.addListener(Integrations::enqueueIMC);
+        modEventBus.addListener(this::commonSetup);
 
         TickHandler.instance().init();
 
-        ServerLifecycleEvents.SERVER_STARTING.register(this::onServerAboutToStart);
-        ServerLifecycleEvents.SERVER_STOPPED.register(this::serverStopped);
-        ServerLifecycleEvents.SERVER_STOPPING.register(this::serverStopping);
-        ServerLifecycleEvents.SERVER_STARTING.register(this::registerCommands);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerAboutToStart);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
+        MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 
-        UseBlockCallback.EVENT.register(WrenchHook::onPlayerUseBlock);
-        UseBlockCallback.EVENT.register(ToolItemHook::onPlayerUseBlock);
-        InitBiomeModifications.init();
+        MinecraftForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
+        MinecraftForge.EVENT_BUS.addListener(InitBiomeModifications::init);
+        MinecraftForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
+        MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, InitCapabilities::registerGenericInvWrapper);
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(this::postRegistrationInitialization).whenComplete((res, err) -> {
+            if (err != null) {
+                AELog.warn(err);
+            }
+        });
     }
 
     /**
@@ -163,84 +171,86 @@ public abstract class AppEngBase implements AppEng {
         // This has to be here because it relies on caps and god knows when those are available...
         InitP2PAttunements.init();
 
-        InitApiLookup.init();
         InitDispenserBehavior.init();
 
         AEConfig.instance().save();
         InitUpgrades.init();
-        initNetworkHandler();
+        NetworkHandler.init(new ResourceLocation(MOD_ID, "main"));
 
         ChunkLoadingService.register();
     }
 
-    protected void initNetworkHandler() {
-        new ServerNetworkHandler();
+    public void registerBiomes(RegistryEvent.Register<Biome> event) {
+        InitBiomes.init(event.getRegistry());
     }
 
-    public void registerBiomes(Registry<Biome> registry) {
-        InitBiomes.init(registry);
+    public void registerBlocks(RegistryEvent.Register<Block> event) {
+        InitBlocks.init(event.getRegistry());
     }
 
-    public void registerBlocks(Registry<Block> registry) {
-        InitBlocks.init(registry);
+    public void registerItems(RegistryEvent.Register<Item> event) {
+        InitItems.init(event.getRegistry());
     }
 
-    public void registerItems(Registry<Item> registry) {
-        InitItems.init(registry);
+    public void registerBlockEntities(RegistryEvent.Register<BlockEntityType<?>> event) {
+        InitBlockEntities.init(event.getRegistry());
     }
 
-    public void registerBlockEntities(Registry<BlockEntityType<?>> registry) {
-        InitBlockEntities.init(registry);
+    public void registerContainerTypes(RegistryEvent.Register<MenuType<?>> event) {
+        InitMenuTypes.init(event.getRegistry());
     }
 
-    public void registerMenuTypes(Registry<MenuType<?>> registry) {
-        InitMenuTypes.init(registry);
+    public void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
+        InitRecipeSerializers.init(event.getRegistry());
     }
 
-    public void registerRecipeSerializers(Registry<RecipeSerializer<?>> registry) {
-        InitRecipeSerializers.init(registry);
+    public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+        InitEntityTypes.init(event.getRegistry());
     }
 
-    public void registerEntities(Registry<EntityType<?>> registry) {
-        InitEntityTypes.init(registry);
+    public void registerParticleTypes(RegistryEvent.Register<ParticleType<?>> event) {
+        InitParticleTypes.init(event.getRegistry());
     }
 
-    public void registerParticleTypes(Registry<ParticleType<?>> registry) {
-        InitParticleTypes.init(registry);
+    public void registerStructures(RegistryEvent.Register<StructureFeature<?>> event) {
+        InitStructures.init(event.getRegistry());
     }
 
-    public void registerStructures(Registry<StructureFeature<?>> registry) {
-        InitStructures.init(registry);
+    public void registerFeatures(RegistryEvent.Register<Feature<?>> event) {
+        InitFeatures.init(event.getRegistry());
     }
 
-    public void registerFeatures(Registry<Feature<?>> registry) {
-        InitFeatures.init(registry);
+    public void registerKeyTypes(RegistryEvent.Register<AEKeyType> event) {
+        AEKeyTypes.register(AEKeyType.items());
+        AEKeyTypes.register(AEKeyType.fluids());
     }
 
-    public void registerCommands(MinecraftServer server) {
-        CommandDispatcher<CommandSourceStack> dispatcher = server.getCommands().getDispatcher();
+    public void registerCommands(final ServerStartingEvent evt) {
+        CommandDispatcher<CommandSourceStack> dispatcher = evt.getServer().getCommands().getDispatcher();
         new AECommand().register(dispatcher);
     }
 
-    public void registerDimension() {
+    public void registerRegistries(NewRegistryEvent e) {
         Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
+
+        var supplier = e.create(new RegistryBuilder<AEKeyType>()
+                .setType(AEKeyType.class)
+                .setMaxID(127)
+                .setName(AppEng.makeId("keytypes")));
+        AEKeyTypesInternal.setRegistry(supplier);
     }
 
-    private void onServerAboutToStart(MinecraftServer server) {
-        this.currentServer = server;
-        ChunkLoadingService.getInstance().onServerAboutToStart();
+    private void onServerAboutToStart(final ServerAboutToStartEvent evt) {
+        ChunkLoadingService.getInstance().onServerAboutToStart(evt);
     }
 
-    private void serverStopping(MinecraftServer server) {
-        ChunkLoadingService.getInstance().onServerStopping();
+    private void serverStopping(final ServerStoppingEvent event) {
+        ChunkLoadingService.getInstance().onServerStopping(event);
     }
 
-    private void serverStopped(MinecraftServer server) {
+    private void serverStopped(final ServerStoppedEvent event) {
         TickHandler.instance().shutdown();
-        if (this.currentServer == server) {
-            this.currentServer = null;
-        }
     }
 
     @Override
@@ -285,7 +295,7 @@ public abstract class AppEngBase implements AppEng {
     @Nullable
     @Override
     public MinecraftServer getCurrentServer() {
-        return currentServer;
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
@@ -303,19 +313,6 @@ public abstract class AppEngBase implements AppEng {
         }
 
         return CableRenderMode.STANDARD;
-    }
-
-    protected final void notifyAddons(String sideSpecificEntrypoint) {
-        var entrypoints = FabricLoader.getInstance().getEntrypoints(AppEng.MOD_ID, IAEAddonEntrypoint.class);
-        for (var entrypoint : entrypoints) {
-            entrypoint.onAe2Initialized();
-        }
-
-        var sideSpecificEntrypoints = FabricLoader.getInstance()
-                .getEntrypoints(AppEng.MOD_ID + ":" + sideSpecificEntrypoint, IAEAddonEntrypoint.class);
-        for (var entrypoint : sideSpecificEntrypoints) {
-            entrypoint.onAe2Initialized();
-        }
     }
 
     protected static void registerTests() {

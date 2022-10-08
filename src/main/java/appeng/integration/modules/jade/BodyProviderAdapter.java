@@ -3,18 +3,17 @@ package appeng.integration.modules.jade;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.ITooltip;
-import snownee.jade.api.Identifiers;
-import snownee.jade.api.config.IPluginConfig;
+import mcp.mobius.waila.api.BlockAccessor;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.ITooltip;
+import mcp.mobius.waila.api.config.IPluginConfig;
 
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
 
 /**
- * Delegation provider for tiles through {@link snownee.jade.api.IBlockComponentProvider}
+ * Delegation provider for tiles through {@link mcp.mobius.waila.api.IComponentProvider}
  */
-class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements IBlockComponentProvider {
+class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements IComponentProvider {
     private final BodyProvider<? super T> provider;
 
     private final Class<T> objectClass;
@@ -29,10 +28,9 @@ class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         // Removes the built-in Forge-Energy progressbar
-        tooltip.remove(Identifiers.FORGE_ENERGY);
+        tooltip.remove(new ResourceLocation("minecraft:fe"));
         // Removes the built-in Forge fluid bars, because usually we have 6 tanks...
-        tooltip.remove(Identifiers.FORGE_FLUID);
-        tooltip.remove(Identifiers.FABRIC_FLUID);
+        tooltip.remove(new ResourceLocation("minecraft:fluid"));
 
         var context = ContextHelper.getContext(accessor);
         var tooltipBuilder = new JadeTooltipBuilder(tooltip);

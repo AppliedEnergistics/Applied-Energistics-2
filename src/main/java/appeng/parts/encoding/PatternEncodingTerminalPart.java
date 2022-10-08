@@ -25,6 +25,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.parts.IPartItem;
@@ -103,5 +106,13 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     @Override
     public void markForSave() {
         getHost().markForSave();
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return LazyOptional.of(() -> logic.getBlankPatternInv().toItemHandler()).cast();
+        }
+        return super.getCapability(cap);
     }
 }
