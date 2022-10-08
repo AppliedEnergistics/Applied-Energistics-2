@@ -1,5 +1,12 @@
 package appeng.client.gui.me.items;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvents;
+
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.WidgetContainer;
@@ -7,11 +14,6 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.encoding.EncodingMode;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.sounds.SoundEvents;
 
 public final class StonecuttingEncoding implements ICompositeWidget {
     private static final Blitter BG_SLOT = PatternEncodingTermScreen.STONECUTTING_MODE_BG
@@ -96,7 +98,8 @@ public final class StonecuttingEncoding implements ICompositeWidget {
                 var slotBounds = getRecipeBounds(i - startIndex);
                 if (mousePos.isIn(slotBounds)) {
                     menu.setStonecuttingRecipeId(recipes.get(i).getId());
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
+                    Minecraft.getInstance().getSoundManager()
+                            .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
                     return true;
                 }
             }

@@ -74,7 +74,7 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
         }
 
         encodedPatternSlot = this.addSlot(
-                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_AE_CRAFTING_PATTERN, mac, 10),
+                new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.MOLECULAR_ASSEMBLER_PATTERN, mac, 10),
                 SlotSemantics.ENCODED_PATTERN);
 
         this.addSlot(new OutputSlot(mac, 9, null), SlotSemantics.MACHINE_OUTPUT);

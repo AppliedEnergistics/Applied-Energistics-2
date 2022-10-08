@@ -18,7 +18,8 @@
 
 package appeng.parts.encoding;
 
-import appeng.crafting.pattern.AEStonecuttingPattern;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -31,13 +32,13 @@ import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
+import appeng.crafting.pattern.AEStonecuttingPattern;
 import appeng.crafting.pattern.IAEPatternDetails;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
-import org.jetbrains.annotations.Nullable;
 
 public class PatternEncodingLogic implements InternalInventoryHost {
 

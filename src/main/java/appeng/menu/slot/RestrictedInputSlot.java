@@ -35,6 +35,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.upgrades.Upgrades;
+import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.client.gui.Icon;
@@ -101,8 +102,9 @@ public class RestrictedInputSlot extends AppEngSlot {
 
         // TODO: might need to check for our own patterns in some cases
         switch (this.which) {
-            case ENCODED_AE_CRAFTING_PATTERN:
-                return AEItems.CRAFTING_PATTERN.isSameAs(stack);
+            case MOLECULAR_ASSEMBLER_PATTERN:
+                return PatternDetailsHelper.decodePattern(stack,
+                        getLevel()) instanceof IMolecularAssemblerSupportedPattern;
             case ENCODED_PATTERN:
                 return PatternDetailsHelper.isEncodedPattern(stack);
             case ENCODED_AE_PATTERN:
@@ -216,13 +218,14 @@ public class RestrictedInputSlot extends AppEngSlot {
         GRID_LINKABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
         TRASH(Icon.BACKGROUND_TRASH),
         /**
-         * Accepts {@link AEItems#CRAFTING_PATTERN}, {@link AEItems#PROCESSING_PATTERN} or {@link AEItems#STONECUTTING_PATTERN}.
+         * Accepts {@link AEItems#CRAFTING_PATTERN}, {@link AEItems#PROCESSING_PATTERN} or
+         * {@link AEItems#STONECUTTING_PATTERN}.
          */
         ENCODED_AE_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         /**
-         * Only accepts {@link AEItems#CRAFTING_PATTERN}.
+         * Only accepts {@link AEItems#CRAFTING_PATTERN} and {@link AEItems#STONECUTTING_PATTERN}.
          */
-        ENCODED_AE_CRAFTING_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
+        MOLECULAR_ASSEMBLER_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         /**
          * An encoded pattern from any mod (AE2 or otherwise). Delegates to AE2 API to identify such items.
          */

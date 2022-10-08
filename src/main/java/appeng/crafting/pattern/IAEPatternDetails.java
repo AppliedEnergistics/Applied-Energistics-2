@@ -26,15 +26,11 @@ public interface IAEPatternDetails extends IPatternDetails {
 
     GenericStack[] getSparseOutputs();
 
-    default boolean isCraftable() {
-        return this instanceof AECraftingPattern;
-    }
-
     default boolean canSubstitute() {
-        return isCraftable() && ((AECraftingPattern) this).canSubstitute;
+        return false;
     }
 
     default boolean canSubstituteFluids() {
-        return isCraftable() && ((AECraftingPattern) this).canSubstituteFluids;
+        return false;
     }
 }

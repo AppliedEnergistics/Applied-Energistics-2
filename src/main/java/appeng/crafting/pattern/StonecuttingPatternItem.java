@@ -1,8 +1,7 @@
 package appeng.crafting.pattern;
 
-import appeng.api.stacks.AEItemKey;
-import appeng.core.AELog;
-import appeng.menu.AutoCraftingMenu;
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +10,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
+import appeng.api.stacks.AEItemKey;
+import appeng.core.AELog;
+import appeng.menu.AutoCraftingMenu;
 
 /**
  * An item that contains an encoded {@link AEStonecuttingPattern}.

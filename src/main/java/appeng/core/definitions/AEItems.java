@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import appeng.crafting.pattern.StonecuttingPatternItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -41,6 +40,7 @@ import appeng.core.AppEng;
 import appeng.core.CreativeTab;
 import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
+import appeng.crafting.pattern.StonecuttingPatternItem;
 import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;

@@ -42,10 +42,12 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
+import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.helpers.FluidContainerHelper;
 import appeng.menu.AutoCraftingMenu;
 
-public class AECraftingPattern implements IAEPatternDetails {
+public class AECraftingPattern implements IAEPatternDetails, IMolecularAssemblerSupportedPattern {
     public static final int CRAFTING_GRID_DIMENSION = 3;
     public static final int CRAFTING_GRID_SLOTS = CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION;
 
@@ -230,6 +232,7 @@ public class AECraftingPattern implements IAEPatternDetails {
         return null;
     }
 
+    @Override
     public boolean isItemValid(int slot, AEItemKey key, Level level) {
         if (!canSubstitute) {
             return sparseInputs[slot] == null && key == null
@@ -312,11 +315,55 @@ public class AECraftingPattern implements IAEPatternDetails {
         return outputsArray;
     }
 
-    public int getCompressedIndexFromSparse(int sparse) {
+    @Override
+    public boolean canSubstitute() {
+        return canSubstitute;
+    }
+
+    @Override
+    public boolean canSubstituteFluids() {
+        return canSubstituteFluids;
+    }
+
+    private int getCompressedIndexFromSparse(int sparse) {
         return sparseToCompressed[sparse];
     }
 
-    public ItemStack getOutput(Container container, Level level) {
+    @Override
+    public void fillCraftingGrid(KeyCounter[] table, CraftingGridAccessor gridAccessor) {
+        for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
+            int inputId = getCompressedIndexFromSparse(sparseIndex);
+            if (inputId != -1) {
+                var list = table[inputId];
+
+                // Try substituting with a fluid, if allowed and available
+                var validFluid = getValidFluid(sparseIndex);
+                if (validFluid != null) {
+                    var validFluidKey = validFluid.what();
+                    var amount = list.get(validFluidKey);
+                    int requiredAmount = (int) validFluid.amount();
+                    if (amount >= requiredAmount) {
+                        gridAccessor.set(sparseIndex,
+                                GenericStack.wrapInItemStack(validFluidKey, requiredAmount));
+                        list.remove(validFluidKey, requiredAmount);
+                        continue;
+                    }
+                }
+
+                // Try falling back to whatever is available
+                for (var entry : list) {
+                    if (entry.getLongValue() > 0 && entry.getKey() instanceof AEItemKey itemKey) {
+                        gridAccessor.set(sparseIndex, itemKey.toStack());
+                        list.remove(itemKey, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public ItemStack assemble(Container container, Level level) {
         if (canSubstitute && recipe.isSpecial()) {
             // For special recipes, we need to test the recipe with assemble, unfortunately, since the output might
             // depend on the inputs in a way that can't be detected by changing one input at the time.
@@ -359,6 +406,7 @@ public class AECraftingPattern implements IAEPatternDetails {
         return output;
     }
 
+    @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
         return this.recipe.getRemainingItems(container);
     }

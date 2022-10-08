@@ -18,12 +18,13 @@
 
 package appeng.crafting.pattern;
 
-import appeng.api.stacks.AEItemKey;
+import java.util.Objects;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
-import java.util.Objects;
+import appeng.api.stacks.AEItemKey;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
@@ -57,7 +58,8 @@ class StonecuttingPatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
-    public static void encode(CompoundTag tag, StonecutterRecipe recipe, AEItemKey input, AEItemKey output, boolean allowSubstitution) {
+    public static void encode(CompoundTag tag, StonecutterRecipe recipe, AEItemKey input, AEItemKey output,
+            boolean allowSubstitution) {
         tag.put(NBT_INPUT, input.toTag());
         tag.put(NBT_OUTPUT, output.toTag());
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);

@@ -18,6 +18,29 @@
 
 package appeng.menu.me.items;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.mojang.datafixers.util.Pair;
+
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
+
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+
 import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
@@ -39,25 +62,6 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.encoding.EncodingMode;
 import appeng.parts.encoding.PatternEncodingLogic;
 import appeng.util.ConfigInventory;
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.ints.IntArraySet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Can only be used with a host that implements {@link PatternEncodingLogic}.
@@ -123,7 +127,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     }
 
     public PatternEncodingTermMenu(MenuType<?> menuType, int id, Inventory ip, IPatternTerminalMenuHost host,
-                                   boolean bindInventory) {
+            boolean bindInventory) {
         super(menuType, id, ip, host, bindInventory);
         this.encodingLogic = host.getLogic();
         this.encodedInputsInv = encodingLogic.getEncodedInputInv();
@@ -141,7 +145,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         }
         // Create the output slot used for crafting mode patterns
         this.addSlot(this.craftOutputSlot = new PatternTermSlot(ip.player, this.getActionSource(), this.powerSource,
-                        host.getInventory(), encodedInputs, this),
+                host.getInventory(), encodedInputs, this),
                 SlotSemantics.CRAFTING_RESULT);
         this.craftOutputSlot.setIcon(null);
 
@@ -171,7 +175,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         this.encodedPatternSlot.setStackLimit(1);
 
         registerClientAction(ACTION_ENCODE, this::encode);
-        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, encodingLogic::setStonecuttingRecipeId);
+        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class,
+                encodingLogic::setStonecuttingRecipeId);
         registerClientAction(ACTION_CLEAR, this::clear);
         registerClientAction(ACTION_SET_MODE, EncodingMode.class, encodingLogic::setMode);
         registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, encodingLogic::setSubstitution);
@@ -465,8 +470,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             var inventory = new SimpleContainer(1);
             inventory.setItem(0, itemKey.toStack());
             stonecuttingRecipes.addAll(
-                    recipeManager.getRecipesFor(RecipeType.STONECUTTING, inventory, level)
-            );
+                    recipeManager.getRecipesFor(RecipeType.STONECUTTING, inventory, level));
         }
 
         // Deselect a recipe that is now unavailable

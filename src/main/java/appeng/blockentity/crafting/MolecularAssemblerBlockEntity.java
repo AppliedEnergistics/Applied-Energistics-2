@@ -52,7 +52,6 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -68,8 +67,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
-import appeng.crafting.pattern.AECraftingPattern;
-import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.menu.AutoCraftingMenu;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
@@ -93,7 +90,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     private boolean isPowered = false;
     private Direction pushDirection = null;
     private ItemStack myPattern = ItemStack.EMPTY;
-    private AECraftingPattern myPlan = null;
+    private IMolecularAssemblerSupportedPattern myPlan = null;
     private double progress = 0;
     private boolean isAwake = false;
     private boolean forcePlan = false;
@@ -134,7 +131,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             boolean isEmpty = this.gridInv.isEmpty() && this.patternInv.isEmpty();
 
             // Only accept our own crafting patterns!
-            if (isEmpty && patternDetails instanceof AECraftingPattern pattern) {
+            if (isEmpty && patternDetails instanceof IMolecularAssemblerSupportedPattern pattern) {
                 // We only support fluid and item stacks
 
                 this.forcePlan = true;
@@ -151,39 +148,11 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return false;
     }
 
-    private void fillGrid(KeyCounter[] table, AECraftingPattern adapter) {
-        for (int sparseIndex = 0; sparseIndex < 9; ++sparseIndex) {
-            int inputId = adapter.getCompressedIndexFromSparse(sparseIndex);
-            if (inputId != -1) {
-                var list = table[inputId];
-
-                // Try substituting with a fluid, if allowed and available
-                var validFluid = myPlan.getValidFluid(sparseIndex);
-                if (validFluid != null) {
-                    var validFluidKey = validFluid.what();
-                    var amount = list.get(validFluidKey);
-                    int requiredAmount = (int) validFluid.amount();
-                    if (amount >= requiredAmount) {
-                        this.gridInv.setItemDirect(sparseIndex,
-                                GenericStack.wrapInItemStack(validFluidKey, requiredAmount));
-                        list.remove(validFluidKey, requiredAmount);
-                        continue;
-                    }
-                }
-
-                // Try falling back to whatever is available
-                for (var entry : list) {
-                    if (entry.getLongValue() > 0 && entry.getKey() instanceof AEItemKey itemKey) {
-                        this.gridInv.setItemDirect(sparseIndex, itemKey.toStack());
-                        list.remove(itemKey, 1);
-                        break;
-                    }
-                }
-            }
-        }
+    private void fillGrid(KeyCounter[] table, IMolecularAssemblerSupportedPattern adapter) {
+        adapter.fillCraftingGrid(table, this.gridInv::setItemDirect);
 
         // Sanity check
-        for (KeyCounter list : table) {
+        for (var list : table) {
             list.removeZeros();
             if (!list.isEmpty()) {
                 throw new RuntimeException("Could not fill grid with some items, including " + list.iterator().next());
@@ -218,7 +187,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             this.craftingInv.setItem(x, this.gridInv.getStackInSlot(x));
         }
 
-        return !this.myPlan.getOutput(this.craftingInv, this.getLevel()).isEmpty();
+        return !this.myPlan.assemble(this.craftingInv, this.getLevel()).isEmpty();
     }
 
     @Override
@@ -287,8 +256,11 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             // this indicates that we received an encoded pattern from NBT data, but
             // didn't have a chance to decode it yet
             if (getLevel() != null && myPlan == null) {
-                if (!myPattern.isEmpty() && myPattern.getItem() instanceof CraftingPatternItem patternItem) {
-                    this.myPlan = patternItem.decode(myPattern, getLevel(), false);
+                if (!myPattern.isEmpty()) {
+                    if (PatternDetailsHelper.decodePattern(myPattern, getLevel(),
+                            false) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
+                        this.myPlan = supportedPlan;
+                    }
                 }
 
                 // Reset myPattern, so it will accept another job once this one finishes
@@ -306,18 +278,21 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
         final ItemStack is = this.patternInv.getStackInSlot(0);
 
-        if (!is.isEmpty() && is.getItem() instanceof CraftingPatternItem patternItem) {
-            if (!ItemStack.isSame(is, this.myPattern)) {
-                final Level level = this.getLevel();
-                var details = patternItem.decode(is, level, false);
+        boolean reset = true;
 
-                if (details != null) {
-                    this.progress = 0;
-                    this.myPattern = is;
-                    this.myPlan = details;
-                }
+        if (!is.isEmpty()) {
+            if (ItemStack.isSame(is, this.myPattern)) {
+                reset = false;
+            } else if (PatternDetailsHelper.decodePattern(is, getLevel(),
+                    false) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+                reset = false;
+                this.progress = 0;
+                this.myPattern = is;
+                this.myPlan = supportedPattern;
             }
-        } else {
+        }
+
+        if (reset) {
             this.progress = 0;
             this.forcePlan = false;
             this.myPlan = null;
@@ -427,7 +402,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             }
 
             this.progress = 0;
-            final ItemStack output = this.myPlan.getOutput(this.craftingInv, this.getLevel());
+            final ItemStack output = this.myPlan.assemble(this.craftingInv, this.getLevel());
             if (!output.isEmpty()) {
                 CraftingEvent.fireAutoCraftingEvent(getLevel(), this.myPlan, output, this.craftingInv);
 
@@ -581,12 +556,12 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Nullable
-    public AECraftingPattern getCurrentPattern() {
+    public IMolecularAssemblerSupportedPattern getCurrentPattern() {
         if (isClientSide()) {
             var patternItem = patternInv.getStackInSlot(0);
             var pattern = PatternDetailsHelper.decodePattern(patternItem, level);
-            if (pattern instanceof AECraftingPattern craftingPattern) {
-                return craftingPattern;
+            if (pattern instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+                return supportedPattern;
             }
             return null;
         } else {

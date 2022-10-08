@@ -25,6 +25,19 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -57,17 +70,6 @@ import appeng.menu.me.interaction.EmptyingAction;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.encoding.EncodingMode;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extends MEStorageScreen<C> {
 
@@ -90,7 +92,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     private final StonecuttingEncoding stonecuttingEncoding;
 
     public PatternEncodingTermScreen(C menu, Inventory playerInventory,
-                                     Component title, ScreenStyle style) {
+            Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         // Add buttons for the crafting mode
@@ -334,7 +336,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         // Forward the mouse-wheel to the stonecutting scrollbar when it is used on the stonecutting pattern overlay,
         // but don't if a slot is hovered and that slot is not a stonecutting recipe slot
         if (menu.getMode() == EncodingMode.STONECUTTING
-                && (hoveredSlot == null/* TODO || menu.isProcessingPatternSlot(hoveredSlot)*/)) {
+                && (hoveredSlot == null/* TODO || menu.isProcessingPatternSlot(hoveredSlot) */)) {
             var modeBg = getModeBlitter(EncodingMode.STONECUTTING);
             if (modeBg.getDestRect().contains((int) x, (int) y)
                     && processingScrollbar.onMouseWheel(new Point((int) x, (int) y), wheelDelta)) {

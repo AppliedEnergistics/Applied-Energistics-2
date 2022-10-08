@@ -18,11 +18,16 @@
 
 package appeng.crafting.pattern;
 
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.GenericStack;
-import appeng.menu.AutoCraftingMenu;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,19 +36,20 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Objects;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
+import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 
 /**
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
  */
-public class AEStonecuttingPattern implements IAEPatternDetails {
+public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssemblerSupportedPattern {
     private final AEItemKey definition;
     public final boolean canSubstitute;
     private final StonecutterRecipe recipe;
-    private final CraftingContainer testFrame;
+    private final Container testFrame;
     private final AEItemKey input;
     private final ItemStack output;
     private final IInput[] inputs;
@@ -67,7 +73,7 @@ public class AEStonecuttingPattern implements IAEPatternDetails {
         this.recipe = level.getRecipeManager().byType(RecipeType.STONECUTTING).get(recipeId);
 
         // Build frame and find output
-        this.testFrame = new CraftingContainer(new AutoCraftingMenu(), 1, 1);
+        this.testFrame = new SimpleContainer(1);
         this.testFrame.setItem(0, input.toStack());
 
         if (!this.recipe.matches(testFrame, level)) {
@@ -79,13 +85,13 @@ public class AEStonecuttingPattern implements IAEPatternDetails {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
 
-        this.inputs = new IInput[]{
+        this.inputs = new IInput[] {
                 new Input()
         };
-        this.sparseInputs = new GenericStack[]{
+        this.sparseInputs = new GenericStack[] {
                 new GenericStack(input, 1)
         };
-        this.sparseOutputs = new GenericStack[]{
+        this.sparseOutputs = new GenericStack[] {
                 GenericStack.fromItemStack(this.output)
         };
     }
@@ -101,7 +107,8 @@ public class AEStonecuttingPattern implements IAEPatternDetails {
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null && obj.getClass() == getClass() && ((AEStonecuttingPattern) obj).definition.equals(definition);
+        return obj != null && obj.getClass() == getClass()
+                && ((AEStonecuttingPattern) obj).definition.equals(definition);
     }
 
     @Override
@@ -184,12 +191,45 @@ public class AEStonecuttingPattern implements IAEPatternDetails {
         return sparseOutputs;
     }
 
+    @Override
+    public boolean canSubstitute() {
+        return canSubstitute;
+    }
+
+    @Override
+    public ItemStack assemble(Container container, Level level) {
+        if (isItemValid(AEItemKey.of(container.getItem(0)), level)) {
+            return recipe.assemble(container);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean isItemValid(int slot, AEItemKey key, Level level) {
+        return slot == 0 && isItemValid(key, level);
+    }
+
+    @Override
+    public void fillCraftingGrid(KeyCounter[] table, CraftingGridAccessor gridAccessor) {
+        var entry = table[0].getFirstEntry();
+        if (entry != null && entry.getKey() instanceof AEItemKey itemKey) {
+            gridAccessor.set(0, itemKey.toStack());
+            table[0].remove(entry.getKey(), 1);
+        }
+    }
+
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
+        // Stonecutter does not support remainders
+        return NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
+    }
+
     private class Input implements IInput {
         private final GenericStack[] possibleInputs;
 
         private Input() {
             if (!canSubstitute) {
-                this.possibleInputs = new GenericStack[]{new GenericStack(input, 1)};
+                this.possibleInputs = new GenericStack[] { new GenericStack(input, 1) };
             } else {
                 ItemStack[] matchingStacks = getRecipeIngredient().getItems();
                 this.possibleInputs = new GenericStack[matchingStacks.length + 1];

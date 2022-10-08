@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.util.Platform;
 
@@ -39,13 +40,13 @@ public class CraftingEvent {
     public static void fireAutoCraftingEvent(Level level,
             AECraftingPattern pattern,
             Container container) {
-        var craftedItem = pattern.getOutput(container, level);
+        var craftedItem = pattern.assemble(container, level);
         fireAutoCraftingEvent(level, pattern, craftedItem, container);
     }
 
     public static void fireAutoCraftingEvent(Level level,
             // NOTE: We want to be able to include the recipe in the event later
-            @SuppressWarnings("unused") AECraftingPattern pattern,
+            @SuppressWarnings("unused") IPatternDetails pattern,
             ItemStack craftedItem,
             Container container) {
         var serverLevel = (ServerLevel) level;
