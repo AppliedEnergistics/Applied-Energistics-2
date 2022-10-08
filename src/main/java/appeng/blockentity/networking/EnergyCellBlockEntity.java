@@ -37,6 +37,7 @@ import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
+import appeng.hooks.ticking.TickHandler;
 import appeng.util.SettingsFrom;
 
 public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
@@ -47,6 +48,8 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     private double internalMaxPower = MAX_STORED;
 
     private byte currentMeta = -1;
+
+    private boolean neighborChangePending;
 
     public EnergyCellBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -80,7 +83,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
      * Updates the block state of this cell so that it matches the power level.
      */
     private void updateStateForPowerLevel() {
-        if (this.notLoaded() || this.isRemoved()) {
+        if (this.isRemoved()) {
             return;
         }
 
@@ -95,8 +98,18 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     private void onAmountChanged() {
-        setChanged();
-        updateStateForPowerLevel();
+        // Delay the notification since this happens while energy is being extracted/injected from the grid
+        // During injection/extraction, the grid should not be modified
+        if (!neighborChangePending) {
+            neighborChangePending = true;
+            TickHandler.instance().addCallable(level, () -> {
+                if (!isRemoved() && neighborChangePending) {
+                    neighborChangePending = false;
+                    updateStateForPowerLevel();
+                    setChanged();
+                }
+            });
+        }
     }
 
     @Override
