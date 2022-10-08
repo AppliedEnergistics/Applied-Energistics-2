@@ -319,11 +319,6 @@ public class InterfaceTerminalScreen<C extends InterfaceTerminalMenu> extends AE
         return super.charTyped(character, key);
     }
 
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
-    }
-
     public void postInventoryUpdate(boolean clearExistingData, long inventoryId, CompoundTag invData) {
         if (clearExistingData) {
             this.byId.clear();
