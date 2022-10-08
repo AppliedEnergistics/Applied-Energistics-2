@@ -262,6 +262,11 @@ public class AECraftingPattern implements IAEPatternDetails, IMolecularAssembler
         return newResult;
     }
 
+    @Override
+    public boolean isSlotEnabled(int slot) {
+        return sparseInputs[slot] != null;
+    }
+
     private ItemStack getRecipeRemainder(int slot, AEItemKey key) {
         // Note: no need to call assemble again since we can assume that the item is valid!
         // Consider making this more efficient in the future? (e.g. cache the produced remainders)

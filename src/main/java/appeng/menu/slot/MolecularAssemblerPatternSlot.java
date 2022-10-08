@@ -21,9 +21,10 @@ package appeng.menu.slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
+import appeng.client.Point;
 import appeng.menu.implementations.MolecularAssemblerMenu;
 
-public class MolecularAssemblerPatternSlot extends AppEngSlot {
+public class MolecularAssemblerPatternSlot extends AppEngSlot implements IOptionalSlot {
 
     private final MolecularAssemblerMenu mac;
 
@@ -44,4 +45,19 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot {
         return stack.isEmpty() || mayPlace(stack);
     }
 
+    @Override
+    public boolean isRenderDisabled() {
+        return true; // The background image does not include a slot background
+    }
+
+    @Override
+    public boolean isSlotEnabled() {
+        var pattern = mac.getHost().getCurrentPattern();
+        return slot >= 0 && slot < 9 && pattern != null && pattern.isSlotEnabled(slot);
+    }
+
+    @Override
+    public Point getBackgroundPos() {
+        return new Point(x - 1, y - 1);
+    }
 }

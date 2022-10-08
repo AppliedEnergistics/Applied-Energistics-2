@@ -46,6 +46,9 @@ import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
  * Encodes patterns for the {@link net.minecraft.world.level.block.StonecutterBlock}.
  */
 public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssemblerSupportedPattern {
+    // The slot index in the 3x3 crafting grid that we insert our item into (in the MAC)
+    private static final int CRAFTING_GRID_SLOT = 4;
+
     private final AEItemKey definition;
     public final boolean canSubstitute;
     private final StonecutterRecipe recipe;
@@ -206,14 +209,19 @@ public class AEStonecuttingPattern implements IAEPatternDetails, IMolecularAssem
 
     @Override
     public boolean isItemValid(int slot, AEItemKey key, Level level) {
-        return slot == 0 && isItemValid(key, level);
+        return slot == CRAFTING_GRID_SLOT && isItemValid(key, level);
+    }
+
+    @Override
+    public boolean isSlotEnabled(int slot) {
+        return slot == CRAFTING_GRID_SLOT;
     }
 
     @Override
     public void fillCraftingGrid(KeyCounter[] table, CraftingGridAccessor gridAccessor) {
         var entry = table[0].getFirstEntry();
         if (entry != null && entry.getKey() instanceof AEItemKey itemKey) {
-            gridAccessor.set(0, itemKey.toStack());
+            gridAccessor.set(CRAFTING_GRID_SLOT, itemKey.toStack());
             table[0].remove(entry.getKey(), 1);
         }
     }

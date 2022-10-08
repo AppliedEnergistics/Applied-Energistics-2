@@ -18,6 +18,8 @@ public interface IMolecularAssemblerSupportedPattern extends IPatternDetails {
 
     boolean isItemValid(int slot, AEItemKey key, Level level);
 
+    boolean isSlotEnabled(int slot);
+
     void fillCraftingGrid(KeyCounter[] table, CraftingGridAccessor gridAccessor);
 
     @FunctionalInterface
