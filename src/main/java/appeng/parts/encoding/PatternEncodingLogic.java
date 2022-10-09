@@ -32,6 +32,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
+import appeng.crafting.pattern.AESmithingTablePattern;
 import appeng.crafting.pattern.AEStonecuttingPattern;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.util.ConfigInventory;
@@ -109,6 +110,8 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             loadCraftingPattern(craftingPattern);
         } else if (details instanceof AEProcessingPattern processingPattern) {
             loadProcessingPattern(processingPattern);
+        } else if (details instanceof AESmithingTablePattern smithingTablePattern) {
+            loadSmithingTablePattern(smithingTablePattern);
         } else if (details instanceof AEStonecuttingPattern stonecuttingPattern) {
             loadStonecuttingPattern(stonecuttingPattern);
         }
@@ -130,6 +133,16 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
         fillInventoryFromSparseStacks(encodedInputInv, pattern.getSparseInputs());
         fillInventoryFromSparseStacks(encodedOutputInv, pattern.getSparseOutputs());
+    }
+
+    private void loadSmithingTablePattern(AESmithingTablePattern pattern) {
+        setMode(EncodingMode.SMITHING_TABLE);
+        this.substitute = pattern.canSubstitute();
+
+        encodedInputInv.clear();
+        encodedInputInv.setStack(0, new GenericStack(pattern.getBase(), 1));
+        encodedInputInv.setStack(1, new GenericStack(pattern.getAddition(), 1));
+        encodedOutputInv.clear();
     }
 
     private void loadStonecuttingPattern(AEStonecuttingPattern pattern) {
@@ -270,7 +283,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             return;
         }
 
-        if (getMode() == EncodingMode.CRAFTING || getMode() == EncodingMode.STONECUTTING) {
+        if (getMode() != EncodingMode.PROCESSING) {
             var craftingGrid = getEncodedInputInv();
             for (int slot = 0; slot < craftingGrid.size(); slot++) {
                 var stack = craftingGrid.getStack(slot);

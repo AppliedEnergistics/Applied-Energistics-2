@@ -113,6 +113,14 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         return definition;
     }
 
+    public AEItemKey getBase() {
+        return base;
+    }
+
+    public AEItemKey getAddition() {
+        return addition;
+    }
+
     @Override
     public IInput[] getInputs() {
         return inputs;
