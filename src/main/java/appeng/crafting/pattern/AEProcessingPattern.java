@@ -24,11 +24,12 @@ import javax.annotation.Nullable;
 
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 
-public class AEProcessingPattern implements IAEPatternDetails {
+public class AEProcessingPattern implements IPatternDetails {
     public static final int MAX_INPUT_SLOTS = 18;
     public static final int MAX_OUTPUT_SLOTS = 6;
 
@@ -78,12 +79,10 @@ public class AEProcessingPattern implements IAEPatternDetails {
         return condensedOutputs;
     }
 
-    @Override
     public GenericStack[] getSparseInputs() {
         return sparseInputs;
     }
 
-    @Override
     public GenericStack[] getSparseOutputs() {
         return sparseOutputs;
     }

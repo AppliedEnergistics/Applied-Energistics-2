@@ -42,6 +42,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
@@ -236,8 +237,8 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
     }
 
     @Nullable
-    public abstract IAEPatternDetails decode(ItemStack stack, Level level, boolean tryRecovery);
+    public abstract IPatternDetails decode(ItemStack stack, Level level, boolean tryRecovery);
 
     @Nullable
-    public abstract IAEPatternDetails decode(AEItemKey what, Level level);
+    public abstract IPatternDetails decode(AEItemKey what, Level level);
 }

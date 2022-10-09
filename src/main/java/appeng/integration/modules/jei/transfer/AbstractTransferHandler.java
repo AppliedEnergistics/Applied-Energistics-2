@@ -61,7 +61,8 @@ public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements T
     }
 
     protected final boolean isCraftingRecipe(Recipe<?> recipe, Display display) {
-        return recipe != null && recipe.getType() == RecipeType.CRAFTING
+        return recipe != null && (recipe.getType() == RecipeType.CRAFTING
+                || recipe.getType() == RecipeType.STONECUTTING)
                 || display.getCategoryIdentifier().equals(CRAFTING);
     }
 

@@ -373,6 +373,7 @@
           "CRAFTING_RESULT",
           "PROCESSING_INPUTS",
           "PROCESSING_OUTPUTS",
+          "STONECUTTING_INPUT",
           "BIOMETRIC_CARD",
           "MISSING_INGREDIENT"
         ]

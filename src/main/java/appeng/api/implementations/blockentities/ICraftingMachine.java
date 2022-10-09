@@ -66,6 +66,8 @@ public interface ICraftingMachine {
     /**
      * inserts a crafting plan, and the necessary items into the crafting machine.
      *
+     * @param inputs The crafting ingredients. The array layout corresponds to {@link IPatternDetails#getInputs()} of
+     *               <code>patternDetails</code>.
      * @return if it was accepted, all or nothing.
      */
     boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputs, Direction ejectionDirection);

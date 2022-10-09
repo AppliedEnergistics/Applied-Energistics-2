@@ -45,5 +45,4 @@ public class MolecularAssemblerScreen extends UpgradeableScreen<MolecularAssembl
 
         this.pb.setFullMsg(new TextComponent(this.menu.getCurrentProgress() + "%"));
     }
-
 }

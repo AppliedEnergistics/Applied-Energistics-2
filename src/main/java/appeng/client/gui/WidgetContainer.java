@@ -83,8 +83,10 @@ public class WidgetContainer {
             widget.height = height;
         }
 
-        if (widget instanceof TabButton) {
-            ((TabButton) widget).setHideEdge(widgetStyle.isHideEdge());
+        if (widget instanceof TabButton tabButton) {
+            if (widgetStyle.isHideEdge()) {
+                tabButton.setStyle(TabButton.Style.CORNER);
+            }
         }
 
         if (widgets.put(id, widget) != null) {
@@ -168,7 +170,7 @@ public class WidgetContainer {
 
     void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
         for (var entry : widgets.entrySet()) {
-            AbstractWidget widget = entry.getValue();
+            var widget = entry.getValue();
             if (widget.isFocused()) {
                 widget.changeFocus(false); // Minecraft already cleared focus on the screen
             }
@@ -299,9 +301,19 @@ public class WidgetContainer {
      * @see ICompositeWidget#onMouseWheel(Point, double)
      */
     boolean onMouseWheel(Point mousePos, double wheelDelta) {
+        // First pass: dispatch wheel event to widgets the mouse is over
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()
-                    && (widget.wantsAllMouseWheelEvents() || mousePos.isIn(widget.getBounds()))
+                    && mousePos.isIn(widget.getBounds())
+                    && widget.onMouseWheel(mousePos, wheelDelta)) {
+                return true;
+            }
+        }
+
+        // Second pass: send the event to capturing widgets
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()
+                    && widget.wantsAllMouseWheelEvents()
                     && widget.onMouseWheel(mousePos, wheelDelta)) {
                 return true;
             }

@@ -18,7 +18,11 @@
 
 package appeng.parts.encoding;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -28,7 +32,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
-import appeng.crafting.pattern.IAEPatternDetails;
+import appeng.crafting.pattern.AEStonecuttingPattern;
 import appeng.helpers.IPatternTerminalLogicHost;
 import appeng.util.ConfigInventory;
 import appeng.util.inv.AppEngInternalInventory;
@@ -54,6 +58,8 @@ public class PatternEncodingLogic implements InternalInventoryHost {
     private boolean substitute = false;
     private boolean substituteFluids = true;
     private boolean isLoading = false;
+    @Nullable
+    private ResourceLocation stonecuttingRecipeId;
 
     public PatternEncodingLogic(IPatternTerminalLogicHost host) {
         this.host = host;
@@ -97,21 +103,44 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             return;
         }
 
-        var details = PatternDetailsHelper.decodePattern(pattern,
-                host.getLevel());
-        if (details instanceof AECraftingPattern) {
-            setMode(EncodingMode.CRAFTING);
-        } else if (details instanceof AEProcessingPattern) {
-            setMode(EncodingMode.PROCESSING);
+        var details = PatternDetailsHelper.decodePattern(pattern, host.getLevel());
+
+        if (details instanceof AECraftingPattern craftingPattern) {
+            loadCraftingPattern(craftingPattern);
+        } else if (details instanceof AEProcessingPattern processingPattern) {
+            loadProcessingPattern(processingPattern);
+        } else if (details instanceof AEStonecuttingPattern stonecuttingPattern) {
+            loadStonecuttingPattern(stonecuttingPattern);
         }
 
-        if (details instanceof IAEPatternDetails aeDetails) {
-            this.setSubstitution(aeDetails.canSubstitute());
-            this.setFluidSubstitution(aeDetails.canSubstituteFluids());
+        saveChanges();
+    }
 
-            fillInventoryFromSparseStacks(encodedInputInv, aeDetails.getSparseInputs());
-            fillInventoryFromSparseStacks(encodedOutputInv, aeDetails.getSparseOutputs());
-        }
+    private void loadCraftingPattern(AECraftingPattern pattern) {
+        setMode(EncodingMode.CRAFTING);
+        this.substitute = pattern.canSubstitute();
+        this.substituteFluids = pattern.canSubstituteFluids();
+
+        fillInventoryFromSparseStacks(encodedInputInv, pattern.getSparseInputs());
+        fillInventoryFromSparseStacks(encodedOutputInv, pattern.getSparseOutputs());
+    }
+
+    private void loadProcessingPattern(AEProcessingPattern pattern) {
+        setMode(EncodingMode.PROCESSING);
+
+        fillInventoryFromSparseStacks(encodedInputInv, pattern.getSparseInputs());
+        fillInventoryFromSparseStacks(encodedOutputInv, pattern.getSparseOutputs());
+    }
+
+    private void loadStonecuttingPattern(AEStonecuttingPattern pattern) {
+        setMode(EncodingMode.STONECUTTING);
+        stonecuttingRecipeId = pattern.getRecipeId();
+
+        this.substitute = pattern.canSubstitute;
+
+        encodedInputInv.clear();
+        encodedInputInv.setStack(0, new GenericStack(pattern.getInput(), 1));
+        encodedOutputInv.clear();
     }
 
     private static void fillInventoryFromSparseStacks(ConfigInventory inv, GenericStack[] stacks) {
@@ -150,6 +179,15 @@ public class PatternEncodingLogic implements InternalInventoryHost {
 
     public void setFluidSubstitution(boolean canSubstitute) {
         this.substituteFluids = canSubstitute;
+        this.saveChanges();
+    }
+
+    public @Nullable ResourceLocation getStonecuttingRecipeId() {
+        return stonecuttingRecipeId;
+    }
+
+    public void setStonecuttingRecipeId(ResourceLocation stonecuttingRecipeId) {
+        this.stonecuttingRecipeId = stonecuttingRecipeId;
         this.saveChanges();
     }
 
@@ -197,14 +235,14 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             this.setSubstitution(data.getBoolean("substitute"));
             this.setFluidSubstitution(data.getBoolean("substituteFluids"));
 
-            // TODO: Remove in 1.19
-            if (data.contains("pattern")) {
-                var pattern = new AppEngInternalInventory(null, 2);
-                pattern.readFromNBT(data, "pattern");
+            if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
+                this.stonecuttingRecipeId = new ResourceLocation(data.getString("stonecuttingRecipeId"));
             } else {
-                blankPatternInv.readFromNBT(data, "blankPattern");
-                encodedPatternInv.readFromNBT(data, "encodedPattern");
+                this.stonecuttingRecipeId = null;
             }
+
+            blankPatternInv.readFromNBT(data, "blankPattern");
+            encodedPatternInv.readFromNBT(data, "encodedPattern");
 
             encodedInputInv.readFromChildTag(data, "encodedInputs");
             encodedOutputInv.readFromChildTag(data, "encodedOutputs");
@@ -217,6 +255,9 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         data.putString("mode", this.mode.name());
         data.putBoolean("substitute", this.substitute);
         data.putBoolean("substituteFluids", this.substituteFluids);
+        if (this.stonecuttingRecipeId != null) {
+            data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.toString());
+        }
         blankPatternInv.writeToNBT(data, "blankPattern");
         encodedPatternInv.writeToNBT(data, "encodedPattern");
         encodedInputInv.writeToChildTag(data, "encodedInputs");
@@ -229,7 +270,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             return;
         }
 
-        if (getMode() == EncodingMode.CRAFTING) {
+        if (getMode() == EncodingMode.CRAFTING || getMode() == EncodingMode.STONECUTTING) {
             var craftingGrid = getEncodedInputInv();
             for (int slot = 0; slot < craftingGrid.size(); slot++) {
                 var stack = craftingGrid.getStack(slot);

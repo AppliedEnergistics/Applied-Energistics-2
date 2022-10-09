@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import com.google.common.math.LongMath;
 
+import net.minecraft.world.item.crafting.RecipeType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +73,13 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
 
         if (doTransfer) {
             if (craftingRecipe) {
-                menu.setMode(EncodingMode.CRAFTING);
+                if (recipe != null && recipe.getType() == RecipeType.STONECUTTING) {
+                    menu.setMode(EncodingMode.STONECUTTING);
+                    menu.setStonecuttingRecipeId(recipe.getId());
+                } else {
+                    menu.setMode(EncodingMode.CRAFTING);
+                }
+
                 encodeCraftingRecipe(menu, recipe, getGuiIngredientsForCrafting(display));
             } else {
                 menu.setMode(EncodingMode.PROCESSING);

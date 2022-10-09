@@ -29,8 +29,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
@@ -114,5 +117,24 @@ public final class PatternDetailsHelper {
     public static ItemStack encodeCraftingPattern(CraftingRecipe recipe, ItemStack[] in,
             ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
         return AEItems.CRAFTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes, allowFluidSubstitutes);
+    }
+
+    /**
+     * Encodes a stonecutting pattern which represents a Vanilla Stonecutter recipe.
+     *
+     * @param recipe           The Vanilla stonecutter recipe to be encoded.
+     * @param in               The input item for the stonecutter, which is used to determine which item is supplied
+     *                         from the ME system to craft using this pattern.
+     * @param out              The selected output item from the stonecutter recipe. Used to restore the recipe if it is
+     *                         renamed later.
+     * @param allowSubstitutes Controls whether the ME system will allow the use of equivalent items to craft this
+     *                         recipe.
+     */
+    public static ItemStack encodeStonecuttingPattern(StonecutterRecipe recipe, AEItemKey in, AEItemKey out,
+            boolean allowSubstitutes) {
+        Preconditions.checkNotNull(recipe, "recipe");
+        Preconditions.checkNotNull(in, "in");
+        Preconditions.checkNotNull(out, "out");
+        return AEItems.STONECUTTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes);
     }
 }

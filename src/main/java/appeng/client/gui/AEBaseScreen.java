@@ -171,7 +171,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return pos;
     }
 
-    protected final void repositionSlots(SlotSemantic semantic) {
+    public final void repositionSlots(SlotSemantic semantic) {
         var position = style.getSlots().get(semantic.id());
 
         var slots = menu.getSlots(semantic);
@@ -840,7 +840,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     /**
      * Hides (or shows) a group of slots based on semantic.
      */
-    protected final void setSlotsHidden(SlotSemantic semantic, boolean hidden) {
+    public final void setSlotsHidden(SlotSemantic semantic, boolean hidden) {
         if (hidden) {
             if (hiddenSlots.add(semantic)) {
                 // This isn't the greatest tactic but allows us to do this for every slot-type.

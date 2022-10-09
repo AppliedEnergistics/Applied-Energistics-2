@@ -80,6 +80,7 @@ public final class AEItemIds {
     public static final ResourceLocation BLANK_PATTERN = id("blank_pattern");
     public static final ResourceLocation CRAFTING_PATTERN = id("crafting_pattern");
     public static final ResourceLocation PROCESSING_PATTERN = id("processing_pattern");
+    public static final ResourceLocation STONECUTTING_PATTERN = id("stonecutting_pattern");
     public static final ResourceLocation BIOMETRIC_CARD = id("biometric_card");
     public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
     public static final ResourceLocation MATTER_CANNON = id("matter_cannon");
