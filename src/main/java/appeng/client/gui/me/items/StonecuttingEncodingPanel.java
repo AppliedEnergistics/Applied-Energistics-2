@@ -7,54 +7,45 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.client.Point;
-import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.menu.me.items.PatternEncodingTermMenu;
-import appeng.parts.encoding.EncodingMode;
+import appeng.core.localization.GuiText;
+import appeng.menu.SlotSemantics;
 
 /**
  * Implements the panel for encoding stonecutting recipes.
  */
-public final class StonecuttingEncodingPanel implements ICompositeWidget {
-    private static final Blitter BG_SLOT = PatternEncodingTermScreen.STONECUTTING_MODE_BG
+public final class StonecuttingEncodingPanel extends EncodingModePanel {
+    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(0, 141, 126, 68);
+    private static final Blitter BG_SLOT = BG
             .copy()
             .src(126, 141, 16, 18);
-    private static final Blitter BG_SLOT_SELECTED = BG_SLOT
+    private static final Blitter BG_SLOT_SELECTED = BG
             .copy()
             .src(126, 159, 16, 18);
-    private static final Blitter BG_SLOT_HOVER = BG_SLOT
+    private static final Blitter BG_SLOT_HOVER = BG
             .copy()
             .src(126, 177, 16, 18);
 
     private static final int COLS = 4;
     private static final int ROWS = 3;
 
-    private final PatternEncodingTermMenu menu;
     private final Scrollbar scrollbar;
-    private final PatternEncodingTermScreen<?> screen;
-
-    private int x;
-    private int y;
 
     public StonecuttingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
-        this.screen = screen;
-        this.menu = screen.getMenu();
+        super(screen, widgets);
         this.scrollbar = widgets.addScrollBar("stonecuttingPatternModeScrollbar", Scrollbar.SMALL);
         this.scrollbar.setRange(0, 0, COLS);
         this.scrollbar.setCaptureMouseWheel(false);
-    }
-
-    @Override
-    public boolean isVisible() {
-        scrollbar.setVisible(menu.getMode() == EncodingMode.STONECUTTING);
-        return menu.getMode() == EncodingMode.STONECUTTING;
     }
 
     @Override
@@ -66,7 +57,13 @@ public final class StonecuttingEncodingPanel implements ICompositeWidget {
 
     @Override
     public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack, zIndex);
 
+        drawRecipes(poseStack, zIndex, bounds, mouse);
+
+    }
+
+    private void drawRecipes(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
         var recipes = menu.getStonecuttingRecipes();
         var startIndex = scrollbar.getCurrentScroll() * COLS;
         var endIndex = startIndex + ROWS * COLS;
@@ -92,7 +89,6 @@ public final class StonecuttingEncodingPanel implements ICompositeWidget {
             blitter.dest(renderX, renderY - 1).blit(poseStack, zIndex);
             minecraft.getItemRenderer().renderAndDecorateItem(recipe.getResultItem(), renderX, renderY);
         }
-
     }
 
     @Override
@@ -152,17 +148,19 @@ public final class StonecuttingEncodingPanel implements ICompositeWidget {
     }
 
     @Override
-    public void setPosition(Point position) {
-        x = position.getX();
-        y = position.getY();
+    public ItemStack getTabIconItem() {
+        return new ItemStack(Items.STONECUTTER);
     }
 
     @Override
-    public void setSize(int width, int height) {
+    public Component getTabTooltip() {
+        return GuiText.StonecuttingPattern.text();
     }
 
     @Override
-    public Rect2i getBounds() {
-        return new Rect2i(x, y, 126, 68);
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        scrollbar.setVisible(visible);
+        screen.setSlotsHidden(SlotSemantics.STONECUTTING_INPUT, !visible);
     }
 }

@@ -59,17 +59,53 @@
     }
   },
   "widgets": {
-    "craftingPatternMode": {
+    "modeTabButton0": {
       "left": 173,
-      "bottom": 177
+      "bottom": 170
     },
-    "processingPatternMode": {
+    "modeTabButton1": {
       "left": 173,
-      "bottom": 177
+      "bottom": 150
     },
-    "stonecuttingPatternMode": {
+    "modeTabButton2": {
       "left": 173,
-      "bottom": 177
+      "bottom": 130
+    },
+    "modeTabButton3": {
+      "left": 173,
+      "bottom": 110
+    },
+    "modeTabButton4": {
+      "left": 173,
+      "bottom": 90
+    },
+    "modeTabButton5": {
+      "left": 173,
+      "bottom": 70
+    },
+    "modePanel0": {
+      "left": 9,
+      "bottom": 164
+    },
+    "modePanel1": {
+      "left": 9,
+      "bottom": 164
+    },
+    "modePanel2": {
+      "left": 9,
+      "bottom": 164
+    },
+    "modePanel3": {
+      "left": 9,
+      "bottom": 164
+    },
+    "modePanel4": {
+      "left": 9,
+      "bottom": 164
+    },
+    "modePanel5": {
+      "left": 9,
+      "bottom": 164
     },
     "encodePattern": {
       "left": 147,

@@ -83,8 +83,10 @@ public class WidgetContainer {
             widget.height = height;
         }
 
-        if (widget instanceof TabButton) {
-            ((TabButton) widget).setHideEdge(widgetStyle.isHideEdge());
+        if (widget instanceof TabButton tabButton) {
+            if (widgetStyle.isHideEdge()) {
+                tabButton.setStyle(TabButton.Style.CORNER);
+            }
         }
 
         if (widgets.put(id, widget) != null) {
@@ -168,7 +170,7 @@ public class WidgetContainer {
 
     void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
         for (var entry : widgets.entrySet()) {
-            AbstractWidget widget = entry.getValue();
+            var widget = entry.getValue();
             if (widget.isFocused()) {
                 widget.changeFocus(false); // Minecraft already cleared focus on the screen
             }
