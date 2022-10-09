@@ -25,12 +25,15 @@ import java.util.function.Consumer;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.core.definitions.BlockDefinition;
+import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.tags.ConventionTags;
 
 public class DecorationBlockRecipes extends AE2RecipeProvider {
@@ -42,12 +45,11 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
     @Override
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
-        ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_BLOCK)
-                .pattern("aa")
-                .pattern("aa")
-                .define('a', ConventionTags.CERTUS_QUARTZ)
-                .unlockedBy("has_certus_crystal", has(ConventionTags.CERTUS_QUARTZ))
-                .save(consumer, AppEng.makeId("decorative/certus_quartz_block"));
+        crystalBlock(consumer, AEItems.CERTUS_QUARTZ_CRYSTAL, AEBlocks.QUARTZ_BLOCK);
+        crystalBlock(consumer, AEItems.FLUIX_CRYSTAL, AEBlocks.FLUIX_BLOCK);
+
+        skyStoneBlock(consumer, AEBlocks.SMOOTH_SKY_STONE_BLOCK, AEBlocks.SKY_STONE_BRICK);
+        skyStoneBlock(consumer, AEBlocks.SKY_STONE_BRICK, AEBlocks.SKY_STONE_SMALL_BRICK);
 
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_PILLAR, 2)
                 .pattern("a")
@@ -55,19 +57,19 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .define('a', AEBlocks.QUARTZ_BLOCK)
                 .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_pillar"));
-
         ShapedRecipeBuilder.shaped(AEBlocks.CHISELED_QUARTZ_BLOCK, 2)
-                .pattern("aa")
-                .define('a', AEBlocks.QUARTZ_BLOCK)
+                .pattern("a")
+                .pattern("a")
+                .define('a', AEBlocks.QUARTZ_SLAB)
                 .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/chiseled_quartz_block"));
 
-        ShapedRecipeBuilder.shaped(AEBlocks.FLUIX_BLOCK)
-                .pattern("aa")
-                .pattern("aa")
-                .define('a', AEItems.FLUIX_CRYSTAL)
-                .unlockedBy(criterionName(AEItems.FLUIX_CRYSTAL), has(AEItems.FLUIX_CRYSTAL))
-                .save(consumer, AppEng.makeId("decorative/fluix_block"));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.QUARTZ_BLOCK), AEBlocks.QUARTZ_PILLAR)
+                .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("decorative/certus_quartz_pillar_from_stonecutting"));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.QUARTZ_BLOCK), AEBlocks.CHISELED_QUARTZ_BLOCK)
+                .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("decorative/chiseled_quartz_block_from_stonecutting"));
 
         ShapedRecipeBuilder.shaped(AEBlocks.LIGHT_DETECTOR)
                 .pattern("ab")
@@ -100,23 +102,27 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .define('b', AEBlocks.QUARTZ_GLASS)
                 .unlockedBy(criterionName(AEBlocks.QUARTZ_GLASS), has(AEBlocks.QUARTZ_GLASS))
                 .save(consumer, AppEng.makeId("decorative/quartz_vibrant_glass"));
+    }
 
-        // Circular conversion recipes
-        ShapelessRecipeBuilder.shapeless(AEBlocks.SKY_STONE_BRICK)
-                .requires(AEBlocks.SMOOTH_SKY_STONE_BLOCK)
-                .unlockedBy(criterionName(AEBlocks.SMOOTH_SKY_STONE_BLOCK), has(AEBlocks.SMOOTH_SKY_STONE_BLOCK))
-                .save(consumer, AppEng.makeId("decorative/sky_stone_brick"));
+    private void crystalBlock(Consumer<FinishedRecipe> consumer, ItemDefinition<?> crystal, BlockDefinition<?> block) {
+        ShapedRecipeBuilder.shaped(block)
+                .pattern("aa")
+                .pattern("aa")
+                .define('a', crystal)
+                .unlockedBy(criterionName(crystal), has(crystal))
+                .save(consumer, AppEng.makeId("decorative/" + block.id().getPath()));
+    }
 
-        ShapelessRecipeBuilder.shapeless(AEBlocks.SKY_STONE_SMALL_BRICK)
-                .requires(AEBlocks.SKY_STONE_BRICK)
-                .unlockedBy(criterionName(AEBlocks.SKY_STONE_BRICK), has(AEBlocks.SKY_STONE_BRICK))
-                .save(consumer, AppEng.makeId("decorative/sky_stone_small_brick"));
-
-        ShapelessRecipeBuilder.shapeless(AEBlocks.SMOOTH_SKY_STONE_BLOCK)
-                .requires(AEBlocks.SKY_STONE_SMALL_BRICK)
-                .unlockedBy(criterionName(AEBlocks.SKY_STONE_SMALL_BRICK), has(AEBlocks.SKY_STONE_SMALL_BRICK))
-                .save(consumer, AppEng.makeId("decorative/sky_stone_smooth"));
-
+    private void skyStoneBlock(Consumer<FinishedRecipe> consumer, BlockDefinition<?> input, BlockDefinition<?> output) {
+        ShapedRecipeBuilder.shaped(output)
+                .pattern("aa")
+                .pattern("aa")
+                .define('a', input)
+                .unlockedBy(criterionName(input), has(input))
+                .save(consumer, AppEng.makeId("decorative/" + output.id().getPath()));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(input), output)
+                .unlockedBy(criterionName(input), has(input))
+                .save(consumer, AppEng.makeId("decorative/" + output.id().getPath() + "_from_stonecutting"));
     }
 
 }
