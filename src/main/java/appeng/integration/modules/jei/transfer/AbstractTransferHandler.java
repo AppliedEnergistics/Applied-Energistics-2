@@ -10,7 +10,8 @@ public abstract class AbstractTransferHandler {
     protected static final int CRAFTING_GRID_HEIGHT = 3;
 
     protected final boolean isCraftingRecipe(Recipe<?> recipe, IRecipeSlotsView display) {
-        return recipe != null && recipe.getType() == RecipeType.CRAFTING;
+        return recipe != null && (recipe.getType() == RecipeType.CRAFTING
+                || recipe.getType() == RecipeType.STONECUTTING);
     }
 
     protected final boolean fitsIn3x3Grid(Recipe<?> recipe, IRecipeSlotsView display) {

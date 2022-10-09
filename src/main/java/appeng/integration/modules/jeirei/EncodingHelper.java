@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -87,7 +88,12 @@ public final class EncodingHelper {
             @Nullable Recipe<?> recipe,
             List<List<GenericStack>> genericIngredients,
             Predicate<ItemStack> visiblePredicate) {
-        menu.setMode(EncodingMode.CRAFTING);
+        if (recipe instanceof StonecutterRecipe) {
+            menu.setMode(EncodingMode.STONECUTTING);
+            menu.setStonecuttingRecipeId(recipe.getId());
+        } else {
+            menu.setMode(EncodingMode.CRAFTING);
+        }
 
         // Note that this runs on the client and getClientRepo() is guaranteed to be available there.
         var prioritizedNetworkInv = getIngredientPriorities(menu, ENTRY_COMPARATOR);

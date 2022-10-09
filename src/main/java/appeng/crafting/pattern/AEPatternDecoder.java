@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.IPatternDetailsDecoder;
 import appeng.api.stacks.AEItemKey;
 
@@ -36,7 +37,7 @@ public class AEPatternDecoder implements IPatternDetailsDecoder {
 
     @Nullable
     @Override
-    public IAEPatternDetails decodePattern(AEItemKey what, Level level) {
+    public IPatternDetails decodePattern(AEItemKey what, Level level) {
         if (level == null || !(what.getItem() instanceof EncodedPatternItem encodedPatternItem)) {
             return null;
         }
@@ -46,7 +47,7 @@ public class AEPatternDecoder implements IPatternDetailsDecoder {
 
     @Nullable
     @Override
-    public IAEPatternDetails decodePattern(ItemStack what, Level level, boolean tryRecovery) {
+    public IPatternDetails decodePattern(ItemStack what, Level level, boolean tryRecovery) {
         if (level == null || !(what.getItem() instanceof EncodedPatternItem encodedPatternItem)) {
             return null;
         }

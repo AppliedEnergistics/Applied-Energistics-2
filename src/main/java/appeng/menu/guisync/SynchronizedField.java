@@ -31,6 +31,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * This class is responsible for synchronizing menu-fields from server to client.
@@ -94,6 +95,8 @@ public abstract class SynchronizedField<T> {
             return new CustomField(source, field);
         } else if (fieldType.isAssignableFrom(Component.class)) {
             return new TextComponentField(source, field);
+        } else if (fieldType.isAssignableFrom(ResourceLocation.class)) {
+            return new ResourceLocationField(source, field);
         } else if (fieldType == String.class) {
             return new StringField(source, field);
         } else if (fieldType == int.class || fieldType == Integer.class) {
@@ -224,6 +227,31 @@ public abstract class SynchronizedField<T> {
         protected Component readValue(FriendlyByteBuf data) {
             if (data.readBoolean()) {
                 return data.readComponent();
+            } else {
+                return null;
+            }
+        }
+    }
+
+    private static class ResourceLocationField extends SynchronizedField<ResourceLocation> {
+        private ResourceLocationField(Object source, Field field) {
+            super(source, field);
+        }
+
+        @Override
+        protected void writeValue(FriendlyByteBuf data, ResourceLocation value) {
+            if (value == null) {
+                data.writeBoolean(false);
+            } else {
+                data.writeBoolean(true);
+                data.writeResourceLocation(value);
+            }
+        }
+
+        @Override
+        protected ResourceLocation readValue(FriendlyByteBuf data) {
+            if (data.readBoolean()) {
+                return data.readResourceLocation();
             } else {
                 return null;
             }

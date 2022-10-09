@@ -150,7 +150,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (this.style.isSupportsAutoCrafting()) {
             this.craftingStatusBtn = new TabButton(Icon.PERMISSION_CRAFT,
                     GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus());
-            this.craftingStatusBtn.setHideEdge(true);
+            this.craftingStatusBtn.setStyle(TabButton.Style.CORNER);
             this.widgets.add("craftingStatus", this.craftingStatusBtn);
         }
 

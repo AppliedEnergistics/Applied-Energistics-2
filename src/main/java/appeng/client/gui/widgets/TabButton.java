@@ -33,9 +33,17 @@ import appeng.client.gui.Icon;
 
 public class TabButton extends Button implements ITooltip {
     private final ItemRenderer itemRenderer;
-    private boolean hideEdge;
+    private Style style;
     private Icon icon = null;
     private ItemStack item;
+
+    private boolean selected;
+
+    public enum Style {
+        CORNER,
+        BOX,
+        HORIZONTAL
+    }
 
     public TabButton(Icon ico, Component message, ItemRenderer ir,
             OnPress onPress) {
@@ -64,24 +72,36 @@ public class TabButton extends Button implements ITooltip {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
-            Icon backdrop;
-            if (this.hideEdge) {
-                backdrop = this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_BORDERLESS_FOCUS
+            var backdrop = switch (this.style) {
+                case CORNER -> this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_BORDERLESS_FOCUS
                         : Icon.TAB_BUTTON_BACKGROUND_BORDERLESS;
-            } else {
-                backdrop = this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_FOCUS : Icon.TAB_BUTTON_BACKGROUND;
-            }
+                case BOX -> this.isFocused() ? Icon.TAB_BUTTON_BACKGROUND_FOCUS : Icon.TAB_BUTTON_BACKGROUND;
+                case HORIZONTAL -> {
+                    if (this.isFocused()) {
+                        yield Icon.HORIZONTAL_TAB_FOCUS;
+                    } else if (this.selected) {
+                        yield Icon.HORIZONTAL_TAB_SELECTED;
+                    }
+                    yield Icon.HORIZONTAL_TAB;
+                }
+            };
 
             backdrop.getBlitter().dest(this.x, this.y).blit(poseStack, getBlitOffset());
 
-            final int offsetX = this.hideEdge ? 1 : 0;
+            var iconX = switch (this.style) {
+                case CORNER -> 4;
+                case BOX -> 3;
+                case HORIZONTAL -> 1;
+            };
+            var iconY = 3;
+
             if (this.icon != null) {
-                this.icon.getBlitter().dest(offsetX + this.x + 3, this.y + 3).blit(poseStack, getBlitOffset());
+                this.icon.getBlitter().dest(this.x + iconX, this.y + iconY).blit(poseStack, getBlitOffset());
             }
 
             if (this.item != null) {
                 this.itemRenderer.blitOffset = 100.0F;
-                this.itemRenderer.renderAndDecorateItem(this.item, offsetX + this.x + 3, this.y + 3);
+                this.itemRenderer.renderAndDecorateItem(this.item, this.x + iconX, this.y + iconY);
                 this.itemRenderer.blitOffset = 0.0F;
             }
         }
@@ -102,11 +122,19 @@ public class TabButton extends Button implements ITooltip {
         return this.visible;
     }
 
-    public boolean getHideEdge() {
-        return this.hideEdge;
+    public Style getStyle() {
+        return this.style;
     }
 
-    public void setHideEdge(boolean hideEdge) {
-        this.hideEdge = hideEdge;
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
