@@ -20,20 +20,9 @@ package appeng.client.gui.me.items;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
@@ -41,13 +30,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.config.ActionItems;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.me.common.StackSizeRenderer;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
@@ -57,6 +44,7 @@ import appeng.core.localization.Tooltips;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
+import appeng.menu.SlotSemantics;
 import appeng.menu.me.interaction.EmptyingAction;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.me.items.PatternEncodingTermMenu;
@@ -186,7 +174,9 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     private boolean shouldShowCraftableIndicatorForSlot(Slot s) {
         // Mark inputs for patterns for which the grid already has a pattern
         var semantic = menu.getSlotSemantic(s);
-        if (semantic == SlotSemantics.CRAFTING_GRID || semantic == SlotSemantics.PROCESSING_INPUTS) {
+        if (semantic == SlotSemantics.CRAFTING_GRID
+                || semantic == SlotSemantics.PROCESSING_INPUTS
+                || semantic == SlotSemantics.STONECUTTING_INPUT) {
             var slotContent = GenericStack.fromItemStack(s.getItem());
             if (slotContent == null) {
                 return false;
