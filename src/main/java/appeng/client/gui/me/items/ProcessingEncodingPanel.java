@@ -79,8 +79,8 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     }
 
     private void updateTooltipVisibility() {
-        widgets.setTooltipAreaEnabled("processing-primary-output", scrollbar.getCurrentScroll() == 0);
-        widgets.setTooltipAreaEnabled("processing-optional-output1", scrollbar.getCurrentScroll() > 0);
+        widgets.setTooltipAreaEnabled("processing-primary-output", visible && scrollbar.getCurrentScroll() == 0);
+        widgets.setTooltipAreaEnabled("processing-optional-output1", visible && scrollbar.getCurrentScroll() > 0);
         widgets.setTooltipAreaEnabled("processing-optional-output2", visible);
         widgets.setTooltipAreaEnabled("processing-optional-output3", visible);
     }

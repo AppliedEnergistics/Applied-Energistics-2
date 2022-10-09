@@ -87,7 +87,9 @@ public class CraftingEncodingPanel extends EncodingModePanel {
     public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
         BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack, zIndex);
 
-        if (menu.substituteFluids && fluidSubstitutionsBtn.isMouseOver(mouse.getX(), mouse.getY())) {
+        var absMouseX = bounds.getX() + mouse.getX();
+        var absMouseY = bounds.getY() + mouse.getY();
+        if (menu.substituteFluids && fluidSubstitutionsBtn.isMouseOver(absMouseX, absMouseY)) {
             for (var slotIndex : menu.slotsSupportingFluidSubstitution) {
                 drawSlotGreenBG(bounds, poseStack, menu.getCraftingGridSlots()[slotIndex]);
             }
