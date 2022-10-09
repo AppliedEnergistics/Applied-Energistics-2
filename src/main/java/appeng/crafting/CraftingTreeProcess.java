@@ -18,7 +18,7 @@
 
 package appeng.crafting;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import appeng.api.config.Actionable;
@@ -37,7 +37,8 @@ public class CraftingTreeProcess {
     private final CraftingTreeNode parent;
     final IPatternDetails details;
     private final CraftingCalculation job;
-    private final Map<CraftingTreeNode, Long> nodes = new HashMap<>();
+    // Use linked hashmap to ensure deterministic ordering of subcrafts
+    private final Map<CraftingTreeNode, Long> nodes = new LinkedHashMap<>();
     boolean possible = true;
     private boolean containerItems;
     /**
