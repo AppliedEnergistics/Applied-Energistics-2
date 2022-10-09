@@ -28,6 +28,7 @@ import com.google.common.collect.Iterables;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
@@ -104,6 +105,10 @@ public class Platform {
             "com.simibubi.create.foundation.ponder.PonderWorld");
 
     private static Class<?> findPonderLevelClass(String className) {
+        if (!hasClientClasses()) {
+            return null; // Don't attempt this on a dedicated server
+        }
+
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException ignored) {
@@ -186,6 +191,13 @@ public class Platform {
                 Direction.NORTH;
         };
 
+    }
+
+    /**
+     * @return True if client-side classes (such as Renderers) are available.
+     */
+    public static boolean hasClientClasses() {
+        return FABRIC.getEnvironmentType() == EnvType.CLIENT;
     }
 
     /*
