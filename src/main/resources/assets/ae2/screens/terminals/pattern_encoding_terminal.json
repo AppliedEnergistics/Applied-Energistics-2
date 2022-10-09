@@ -4,6 +4,7 @@
     "terminal.json",
     "encoding/crafting.json",
     "encoding/processing.json",
+    "encoding/smithing_table.json",
     "encoding/stonecutting.json"
   ],
   "slots": {

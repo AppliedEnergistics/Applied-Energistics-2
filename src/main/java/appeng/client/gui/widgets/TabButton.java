@@ -33,7 +33,7 @@ import appeng.client.gui.Icon;
 
 public class TabButton extends Button implements ITooltip {
     private final ItemRenderer itemRenderer;
-    private Style style;
+    private Style style = Style.BOX;
     private Icon icon = null;
     private ItemStack item;
 

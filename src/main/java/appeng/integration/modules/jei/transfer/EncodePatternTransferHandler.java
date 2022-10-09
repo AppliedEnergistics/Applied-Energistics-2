@@ -73,7 +73,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         }
 
         // Crafting recipe slots are not grouped, hence they must fit into the 3x3 grid.
-        boolean craftingRecipe = isCraftingRecipe(recipe, slotsView);
+        boolean craftingRecipe = EncodingHelper.isSupportedCraftingRecipe(recipe);
         if (craftingRecipe && !fitsIn3x3Grid(recipe, slotsView)) {
             return helper.createUserErrorWithTooltip(ItemModText.RECIPE_TOO_LARGE.text());
         }

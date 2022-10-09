@@ -110,6 +110,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case ENCODED_AE_PATTERN:
                 return AEItems.CRAFTING_PATTERN.isSameAs(stack)
                         || AEItems.PROCESSING_PATTERN.isSameAs(stack)
+                        || AEItems.SMITHING_TABLE_PATTERN.isSameAs(stack)
                         || AEItems.STONECUTTING_PATTERN.isSameAs(stack);
             case BLANK_PATTERN:
                 return AEItems.BLANK_PATTERN.isSameAs(stack);
@@ -218,8 +219,8 @@ public class RestrictedInputSlot extends AppEngSlot {
         GRID_LINKABLE_ITEM(Icon.BACKGROUND_WIRELESS_TERM),
         TRASH(Icon.BACKGROUND_TRASH),
         /**
-         * Accepts {@link AEItems#CRAFTING_PATTERN}, {@link AEItems#PROCESSING_PATTERN} or
-         * {@link AEItems#STONECUTTING_PATTERN}.
+         * Accepts {@link AEItems#CRAFTING_PATTERN}, {@link AEItems#PROCESSING_PATTERN},
+         * {@link AEItems#SMITHING_TABLE_PATTERN} or {@link AEItems#STONECUTTING_PATTERN}.
          */
         ENCODED_AE_PATTERN(Icon.BACKGROUND_ENCODED_PATTERN),
         /**

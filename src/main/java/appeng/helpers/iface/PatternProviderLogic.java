@@ -466,6 +466,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             // Auto-Clear encoded patterns to allow them to stack
             if (pattern.is(AEItems.CRAFTING_PATTERN.asItem())
                     || pattern.is(AEItems.PROCESSING_PATTERN.asItem())
+                    || pattern.is(AEItems.SMITHING_TABLE_PATTERN.asItem())
                     || pattern.is(AEItems.STONECUTTING_PATTERN.asItem())
                     || pattern.is(AEItems.BLANK_PATTERN.asItem())) {
                 blankPatternCount += pattern.getCount();

@@ -62,6 +62,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             var panel = switch (mode) {
                 case CRAFTING -> new CraftingEncodingPanel(this, widgets);
                 case PROCESSING -> new ProcessingEncodingPanel(this, widgets);
+                case SMITHING_TABLE -> new SmithingTableEncodingPanel(this, widgets);
                 case STONECUTTING -> new StonecuttingEncodingPanel(this, widgets);
             };
             var tabButton = new TabButton(

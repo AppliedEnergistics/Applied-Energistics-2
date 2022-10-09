@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -84,13 +84,26 @@ public final class EncodingHelper {
         }
     }
 
+    public static boolean isSupportedCraftingRecipe(@Nullable Recipe<?> recipe) {
+        if (recipe == null) {
+            return false;
+        }
+        var recipeType = recipe.getType();
+
+        return recipeType == RecipeType.CRAFTING
+                || recipeType == RecipeType.STONECUTTING
+                || recipeType == RecipeType.SMITHING;
+    }
+
     public static void encodeCraftingRecipe(PatternEncodingTermMenu menu,
             @Nullable Recipe<?> recipe,
             List<List<GenericStack>> genericIngredients,
             Predicate<ItemStack> visiblePredicate) {
-        if (recipe instanceof StonecutterRecipe) {
+        if (recipe != null && recipe.getType().equals(RecipeType.STONECUTTING)) {
             menu.setMode(EncodingMode.STONECUTTING);
             menu.setStonecuttingRecipeId(recipe.getId());
+        } else if (recipe != null && recipe.getType().equals(RecipeType.SMITHING)) {
+            menu.setMode(EncodingMode.SMITHING_TABLE);
         } else {
             menu.setMode(EncodingMode.CRAFTING);
         }
