@@ -16,6 +16,7 @@ jobs:
       API_NAME: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
 
     steps:
+      - uses: actions/checkout@v2
       - uses: ./.github/actions/gradle-setup
       - name: Validate no assets
         run: test ! -d ./src/generated
