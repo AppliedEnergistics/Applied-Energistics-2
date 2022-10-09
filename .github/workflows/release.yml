@@ -44,6 +44,7 @@ jobs:
           path: |
             build/libs
             build/publications
+          if-no-files-found: error
           retention-days: 3
 
   upload-release-artifacts:
@@ -55,6 +56,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
       - name: Upload Release Artifact
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -94,6 +96,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
+      - name: Validate artifacts exist
+        run: test -d ./build/libs
       - name: Publish to Github Packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -110,6 +115,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
+      - name: Validate artifacts exist
+        run: test -d ./build/libs
       - name: Upload to Curseforge
         env:
           CHANGELOG: ${{ github.event.release.body }}
@@ -127,6 +135,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
+      - name: Validate artifacts exist
+        run: test -d ./build/libs
       - name: Publish to Modmaven
         env:
           MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
@@ -144,6 +155,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
+          path: build
+      - name: Validate artifacts exist
+        run: test -d ./build/libs
       - name: Upload to Modrinth
         env:
           CHANGELOG: ${{ github.event.release.body }}
