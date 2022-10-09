@@ -25,6 +25,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -36,6 +37,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.Icon;
 import appeng.client.gui.me.common.MEStorageScreen;
+import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ActionButton;
@@ -303,6 +305,42 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             }
         }
         return super.mouseScrolled(x, y, wheelDelta);
+    }
+
+    @Override
+    public void renderSlot(PoseStack poseStack, Slot s) {
+        super.renderSlot(poseStack, s);
+
+        if (shouldShowCraftableIndicatorForSlot(s)) {
+            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", false);
+        }
+    }
+
+    @Override
+    public List<Component> getTooltipFromItem(ItemStack stack) {
+        var lines = super.getTooltipFromItem(stack);
+
+        // Append an indication to the tooltip that the item is craftable
+        if (hoveredSlot != null && shouldShowCraftableIndicatorForSlot(hoveredSlot)) {
+            lines = new ArrayList<>(lines); // Ensures we're not modifying a cached copy
+            lines.add(ButtonToolTips.Craftable.text().withStyle(ChatFormatting.DARK_GRAY));
+        }
+
+        return lines;
+    }
+
+    private boolean shouldShowCraftableIndicatorForSlot(Slot s) {
+        // Mark inputs for patterns for which the grid already has a pattern
+        var semantic = menu.getSlotSemantic(s);
+        if (semantic == SlotSemantics.CRAFTING_GRID || semantic == SlotSemantics.PROCESSING_INPUTS) {
+            var slotContent = GenericStack.fromItemStack(s.getItem());
+            if (slotContent == null) {
+                return false;
+            }
+
+            return repo.isCraftable(slotContent.what());
+        }
+        return false;
     }
 
     @Override

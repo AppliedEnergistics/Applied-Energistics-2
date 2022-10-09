@@ -333,6 +333,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }
 
+    @org.jetbrains.annotations.Nullable
+    public SlotSemantic getSlotSemantic(Slot s) {
+        return semanticBySlot.get(s);
+    }
+
     @Override
     public ItemStack quickMoveStack(Player player, int idx) {
         if (isClientSide()) {
