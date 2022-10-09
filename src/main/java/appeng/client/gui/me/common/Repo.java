@@ -20,6 +20,7 @@ package appeng.client.gui.me.common;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +30,9 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -72,6 +76,7 @@ public class Repo implements IClientRepo {
 
     private final IScrollSource src;
     private final ISortSource sortSrc;
+    private boolean paused;
 
     public Repo(IScrollSource src, ISortSource sortSrc) {
         this.src = src;
@@ -91,7 +96,7 @@ public class Repo implements IClientRepo {
             clear();
         }
 
-        for (GridInventoryEntry entry : entries) {
+        for (var entry : entries) {
             handleUpdate(entry);
         }
 
@@ -100,7 +105,7 @@ public class Repo implements IClientRepo {
 
     private void handleUpdate(GridInventoryEntry serverEntry) {
 
-        GridInventoryEntry localEntry = entries.get(serverEntry.getSerial());
+        var localEntry = entries.get(serverEntry.getSerial());
         if (localEntry == null) {
             // First time we're seeing this serial -> create new entry
             if (serverEntry.getWhat() == null) {
@@ -129,18 +134,67 @@ public class Repo implements IClientRepo {
     }
 
     public final void updateView() {
-        this.view.clear();
-        this.pinnedRow.clear();
+        // While the view is paused, we try to only append to the view list in order to avoid mis-clicks by the
+        // player due to items shifting under their mouse cursor.
+        if (isPaused()) {
+            // First pass -> detect and update
+            var visibleSerials = new LongOpenHashSet(this.view.size());
+            updateEntriesWhilePaused(pinnedRow, visibleSerials);
+            updateEntriesWhilePaused(view, visibleSerials);
 
-        this.view.ensureCapacity(this.entries.size());
-        this.pinnedRow.ensureCapacity(rowSize);
+            var entriesToAdd = new ArrayList<GridInventoryEntry>();
 
+            // Determine what to do with server entries that are not currently being shown
+            for (var serverEntry : entries.values()) {
+                if (visibleSerials.contains(serverEntry.getSerial())) {
+                    continue; // Entry is already visible
+                }
+
+                // First, try to find an empty/meaningless slot in the view that is visually indistinguishable
+                // and fill it
+                if (takeOverSlotOccupiedByRemovedItem(serverEntry, pinnedRow)
+                        || takeOverSlotOccupiedByRemovedItem(serverEntry, view)) {
+                    continue;
+                }
+
+                // if we couldn't take over an existing slot, just append it
+                entriesToAdd.add(serverEntry);
+            }
+
+            addEntriesToView(entriesToAdd);
+        } else {
+            this.view.clear();
+            this.pinnedRow.clear();
+
+            this.view.ensureCapacity(this.entries.size());
+            this.pinnedRow.ensureCapacity(rowSize);
+
+            addEntriesToView(this.entries.values());
+        }
+
+        // Don't re-sort while being paused
+        if (!isPaused()) {
+            // Sort older entries first in the pinned row
+            pinnedRow.sort(PINNED_ROW_COMPARATOR);
+
+            var sortOrder = this.sortSrc.getSortBy();
+            var sortDir = this.sortSrc.getSortDir();
+
+            this.view.sort(getComparator(sortOrder, sortDir));
+        }
+
+        if (this.updateViewListener != null) {
+            this.updateViewListener.run();
+        }
+    }
+
+    private void addEntriesToView(Collection<GridInventoryEntry> entries) {
         var viewMode = this.sortSrc.getSortDisplay();
         var typeFilter = this.sortSrc.getTypeFilter().getFilter();
 
         var hasPinnedRow = !PinnedKeys.isEmpty();
 
-        for (var entry : this.entries.values()) {
+        for (var entry : entries) {
             // Pinned keys ignore all filters & search
             if (hasPinnedRow && pinnedRow.size() < rowSize && PinnedKeys.isPinned(entry.getWhat())) {
                 pinnedRow.add(entry);
@@ -180,19 +234,42 @@ public class Repo implements IClientRepo {
                             -1, pinnedKey, 0, 0, false));
                 }
             }
-
-            // Sort older entries first in the pinned row
-            pinnedRow.sort(PINNED_ROW_COMPARATOR);
         }
+    }
 
-        SortOrder sortOrder = this.sortSrc.getSortBy();
-        SortDir sortDir = this.sortSrc.getSortDir();
+    private void updateEntriesWhilePaused(List<GridInventoryEntry> shownEntries, LongSet visibleSerials) {
+        for (int i = 0; i < shownEntries.size(); i++) {
+            var entry = shownEntries.get(i);
 
-        this.view.sort(getComparator(sortOrder, sortDir));
+            // Update entries with data from server, which doesn't move them
+            var serverEntry = entries.get(entry.getSerial());
+            if (serverEntry == null) {
+                // The server has removed the entry. Let's replace it with an entry that is not meaningful, but shows
+                // amount 0
+                entry = new GridInventoryEntry(
+                        entry.getSerial(),
+                        entry.getWhat(),
+                        0,
+                        0,
+                        false);
+            } else {
+                entry = serverEntry;
+            }
 
-        if (this.updateViewListener != null) {
-            this.updateViewListener.run();
+            visibleSerials.add(entry.getSerial());
+            shownEntries.set(i, entry);
         }
+    }
+
+    private boolean takeOverSlotOccupiedByRemovedItem(GridInventoryEntry serverEntry, List<GridInventoryEntry> slots) {
+        for (int i = 0; i < slots.size(); i++) {
+            var entry = slots.get(i);
+            if (!entries.containsKey(entry.getSerial()) && entry.getWhat().equals(serverEntry.getWhat())) {
+                slots.set(i, serverEntry);
+                return true;
+            }
+        }
+        return false;
     }
 
     private Comparator<? super GridInventoryEntry> getComparator(SortOrder sortOrder, SortDir sortDir) {
@@ -268,6 +345,20 @@ public class Repo implements IClientRepo {
 
     private Comparator<AEKey> getKeyComparator(SortOrder sortBy, SortDir sortDir) {
         return KeySorters.getComparator(sortBy, sortDir);
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        if (this.paused != paused) {
+            this.paused = paused;
+            AELog.debug("Toggling client-repo pause mode to %s", this.paused);
+            if (!paused) {
+                updateView(); // resort on unpause
+            }
+        }
     }
 
     @Override
