@@ -187,8 +187,12 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     @Override
     public ItemStack assemble(Container container, Level level) {
-        if (isItemValid(AEItemKey.of(container.getItem(0)), level)) {
-            return recipe.assemble(container);
+        // Jiggle the container around
+        var testContainer = new SimpleContainer(2);
+        testContainer.setItem(0, container.getItem(CRAFTING_GRID_SLOT));
+
+        if (recipe.matches(testContainer, level)) {
+            return recipe.assemble(testContainer);
         }
         return ItemStack.EMPTY;
     }
