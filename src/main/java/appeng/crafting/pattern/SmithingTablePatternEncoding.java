@@ -22,23 +22,29 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.item.crafting.UpgradeRecipe;
 
 import appeng.api.stacks.AEItemKey;
 
 /**
  * Helper functions to work with patterns, mostly related to (de)serialization.
  */
-class StonecuttingPatternEncoding {
-    private static final String NBT_INPUT = "in";
+class SmithingTablePatternEncoding {
+    private static final String NBT_BASE = "base";
+    private static final String NBT_ADDITION = "addition";
     // Only used to attempt to recover the recipe in case it's ID has changed
     private static final String NBT_OUTPUT = "out";
     private static final String NBT_SUBSITUTE = "substitute";
     private static final String NBT_RECIPE_ID = "recipe";
 
-    public static AEItemKey getInput(CompoundTag nbt) {
-        Objects.requireNonNull(nbt, "Pattern must have an in tag.");
-        return AEItemKey.fromTag(nbt.getCompound(NBT_INPUT));
+    public static AEItemKey getBase(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have an base tag.");
+        return AEItemKey.fromTag(nbt.getCompound(NBT_BASE));
+    }
+
+    public static AEItemKey getAddition(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have an addition tag.");
+        return AEItemKey.fromTag(nbt.getCompound(NBT_ADDITION));
     }
 
     public static AEItemKey getOutput(CompoundTag nbt) {
@@ -58,9 +64,10 @@ class StonecuttingPatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
-    public static void encode(CompoundTag tag, StonecutterRecipe recipe, AEItemKey input, AEItemKey output,
-            boolean allowSubstitution) {
-        tag.put(NBT_INPUT, input.toTag());
+    public static void encode(CompoundTag tag, UpgradeRecipe recipe, AEItemKey base, AEItemKey addition,
+            AEItemKey output, boolean allowSubstitution) {
+        tag.put(NBT_BASE, base.toTag());
+        tag.put(NBT_ADDITION, addition.toTag());
         tag.put(NBT_OUTPUT, output.toTag());
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
         tag.putString(NBT_RECIPE_ID, recipe.getId().toString());

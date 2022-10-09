@@ -90,6 +90,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private final FakeSlot[] processingInputSlots = new FakeSlot[18];
     private final FakeSlot[] processingOutputSlots = new FakeSlot[6];
     private final FakeSlot stonecuttingInputSlot;
+    private final FakeSlot smithingTableBaseSlot;
+    private final FakeSlot smithingTableAdditionSlot;
     private final PatternTermSlot craftOutputSlot;
     private final RestrictedInputSlot blankPatternSlot;
     private final RestrictedInputSlot encodedPatternSlot;
@@ -162,6 +164,14 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         this.addSlot(this.stonecuttingInputSlot = new FakeSlot(encodedInputs, 0),
                 SlotSemantics.STONECUTTING_INPUT);
         this.stonecuttingInputSlot.setHideAmount(true);
+
+        // Input for smithing table pattern encoding
+        this.addSlot(this.smithingTableBaseSlot = new FakeSlot(encodedInputs, 0),
+                SlotSemantics.SMITHING_TABLE_BASE);
+        this.smithingTableBaseSlot.setHideAmount(true);
+        this.addSlot(this.smithingTableAdditionSlot = new FakeSlot(encodedInputs, 1),
+                SlotSemantics.SMITHING_TABLE_ADDITION);
+        this.smithingTableAdditionSlot.setHideAmount(true);
 
         this.addSlot(this.blankPatternSlot = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.BLANK_PATTERN,
                 encodingLogic.getBlankPatternInv(), 0), SlotSemantics.BLANK_PATTERN);
@@ -298,6 +308,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         return switch (this.mode) {
             case CRAFTING -> encodeCraftingPattern();
             case PROCESSING -> encodeProcessingPattern();
+            case SMITHING_TABLE -> encodeSmithingTablePattern();
             case STONECUTTING -> encodeStonecuttingPattern();
         };
     }
@@ -353,6 +364,31 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         }
 
         return PatternDetailsHelper.encodeProcessingPattern(inputs, outputs);
+    }
+
+    @Nullable
+    private ItemStack encodeSmithingTablePattern() {
+        if (!(encodedInputsInv.getKey(0) instanceof AEItemKey base)
+                || !(encodedInputsInv.getKey(1) instanceof AEItemKey addition)) {
+            return null;
+        }
+
+        var container = new SimpleContainer(2);
+        container.setItem(0, base.toStack());
+        container.setItem(1, addition.toStack());
+
+        var level = getPlayer().level;
+        var recipe = level.getRecipeManager()
+                .getRecipeFor(RecipeType.SMITHING, container, level)
+                .orElse(null);
+        if (recipe == null) {
+            return null;
+        }
+
+        var output = AEItemKey.of(recipe.assemble(container));
+
+        return PatternDetailsHelper.encodeSmithingTablePattern(recipe, base, addition, output,
+                encodingLogic.isSubstitution());
     }
 
     @Nullable
@@ -608,6 +644,14 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
     public FakeSlot[] getProcessingOutputSlots() {
         return processingOutputSlots;
+    }
+
+    public FakeSlot getSmithingTableBaseSlot() {
+        return smithingTableBaseSlot;
+    }
+
+    public FakeSlot getSmithingTableAdditionSlot() {
+        return smithingTableAdditionSlot;
     }
 
     /**

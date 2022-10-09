@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.crafting.pattern.AECraftingPattern;
 import appeng.util.Platform;
 
 public class CraftingEvent {
@@ -35,13 +34,6 @@ public class CraftingEvent {
             Container container) {
         // TODO FABRIC 117 Expose an event for this in the API
 //        MinecraftForge.EVENT_BUS.post(new PlayerEvent.ItemCraftedEvent(player, craftedItem, container));
-    }
-
-    public static void fireAutoCraftingEvent(Level level,
-            AECraftingPattern pattern,
-            Container container) {
-        var craftedItem = pattern.assemble(container, level);
-        fireAutoCraftingEvent(level, pattern, craftedItem, container);
     }
 
     public static void fireAutoCraftingEvent(Level level,
