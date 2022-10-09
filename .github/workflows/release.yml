@@ -2,26 +2,23 @@ name: 'Release'
 
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
+    outputs:
+      ARTIFACT_PATH: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
+      ARTIFACT_NAME: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
+      JAVADOC_PATH: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_PATH }}
+      JAVADOC_NAME: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_NAME }}
+      API_PATH: ${{ steps.prepare_artifact_metadata.outputs.API_PATH }}
+      API_NAME: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
 
     steps:
-      - name: Export release tag as environment variable
-        env:
-          TAG: ${{ github.event.release.tag_name }}
-        run: |
-          echo "TAG=${TAG}" >> $GITHUB_ENV
       - uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - uses: ./.github/actions/gradle-setup
       - name: Validate no assets
         run: test ! -d ./src/generated
       - name: Generate assets
@@ -41,14 +38,36 @@ jobs:
           echo ::set-output name=JAVADOC_NAME::appliedenergistics2-fabric-${VERSION}-javadoc.jar
           echo ::set-output name=API_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}-api.jar
           echo ::set-output name=API_NAME::appliedenergistics2-fabric-${VERSION}-api.jar
+      - name: Archive build results
+        # It is important to  archive .gradle as well since gradle stores the incremental build state there
+        run: tar -I zstd -cf build.tar.zst .gradle build src/generated
+      - name: Upload build and gradle folders
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build.tar.zst
+          if-no-files-found: error
+          retention-days: 3
+
+  upload-release-artifacts:
+    name: Upload Release Artifacts
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: Unpack build artifact
+        run: tar axf build.tar.zst
       - name: Upload Release Artifact
         uses: actions/upload-release-asset@v1.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
-          asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
+          asset_path: ${{ needs.build.outputs.ARTIFACT_PATH }}
+          asset_name: ${{ needs.build.outputs.ARTIFACT_NAME }}
           asset_content_type: application/zip
       - name: Upload Javadocs Artifact
         uses: actions/upload-release-asset@v1.0.1
@@ -56,8 +75,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_PATH }}
-          asset_name: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_NAME }}
+          asset_path: ${{ needs.build.outputs.JAVADOC_PATH }}
+          asset_name: ${{ needs.build.outputs.JAVADOC_NAME }}
           asset_content_type: application/zip
       - name: Upload API
         uses: actions/upload-release-asset@v1.0.1
@@ -65,23 +84,87 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.prepare_artifact_metadata.outputs.API_PATH }}
-          asset_name: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
+          asset_path: ${{ needs.build.outputs.API_PATH }}
+          asset_name: ${{ needs.build.outputs.API_NAME }}
           asset_content_type: application/zip
+
+  deploy-github-packages:
+    name: Deploy to Github Packages
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/gradle-setup
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: Unpack build artifact
+        run: tar axf build.tar.zst
+      - name: Validate artifacts exist
+        run: test -d ./build && test -d ./.gradle
+      - name: Publish to Github Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon --max-workers 1
+
+  deploy-curseforge:
+    name: Deploy to Curseforge
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/gradle-setup
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: Unpack build artifact
+        run: tar axf build.tar.zst
+      - name: Validate artifacts exist
+        run: test -d ./build && test -d ./.gradle
       - name: Upload to Curseforge
         env:
           CHANGELOG: ${{ github.event.release.body }}
           CURSEFORGE: ${{ secrets.CURSEFORGE }}
         run: ./gradlew curseforge --no-daemon --max-workers 1
-      - name: Publish to Github Packages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon --max-workers 1
+
+  deploy-modmaven:
+    name: Deploy to Modmaven
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/gradle-setup
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: Unpack build artifact
+        run: tar axf build.tar.zst
+      - name: Validate artifacts exist
+        run: test -d ./build && test -d ./.gradle
       - name: Publish to Modmaven
         env:
           MODMAVEN_USER: ${{ secrets.MODMAVEN_USER }}
           MODMAVEN_PASSWORD: ${{ secrets.MODMAVEN_PASSWORD }}
         run: ./gradlew publishMavenPublicationToModmavenRepository --no-daemon --max-workers 1
+
+  deploy-modrinth:
+    name: Deploy to Modrinth
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/gradle-setup
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+      - name: Unpack build artifact
+        run: tar axf build.tar.zst
+      - name: Validate artifacts exist
+        run: test -d ./build && test -d ./.gradle
       - name: Upload to Modrinth
         env:
           CHANGELOG: ${{ github.event.release.body }}
