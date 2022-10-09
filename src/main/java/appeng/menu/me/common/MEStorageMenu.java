@@ -29,11 +29,13 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -53,6 +55,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -465,10 +468,9 @@ public class MEStorageMenu extends AEBaseMenu
         }
 
         if (action == InventoryAction.FILL_ITEM) {
-            handleFillingHeldItem(
-                    (amount, mode) -> StorageHelper.poweredExtraction(powerSource, storage, clickedKey, amount,
-                            getActionSource(), mode),
-                    clickedKey);
+            tryFillContainerItem(clickedKey, false);
+        } else if (action == InventoryAction.SHIFT_CLICK) {
+            tryFillContainerItem(clickedKey, true);
         } else if (action == InventoryAction.EMPTY_ITEM) {
             handleEmptyHeldItem((what, amount, mode) -> StorageHelper.poweredInsert(powerSource, storage, what, amount,
                     getActionSource(), mode));
@@ -599,6 +601,46 @@ public class MEStorageMenu extends AEBaseMenu
             default:
                 AELog.warn("Received unhandled inventory action %s from client in %s", action, getClass());
                 break;
+        }
+    }
+
+    private void tryFillContainerItem(@org.jetbrains.annotations.Nullable AEKey clickedKey, boolean moveToPlayer) {
+        // Special handling for fluids to facilitate filling water/lava buckets which are often
+        // needed for crafting and placement in-world.
+        boolean grabbedEmptyBucket = false;
+        if (getCarried().isEmpty() && clickedKey instanceof AEFluidKey fluidKey
+                && fluidKey.getFluid().getBucket() != Items.AIR) {
+            // This costs no energy, but who cares...
+            if (storage != null
+                    && storage.extract(AEItemKey.of(Items.BUCKET), 1, Actionable.MODULATE, getActionSource()) >= 1) {
+                var bucket = Items.BUCKET.getDefaultInstance();
+                setCarried(bucket);
+                grabbedEmptyBucket = true;
+            }
+        }
+
+        var carriedBefore = getCarried().getItem();
+
+        handleFillingHeldItem(
+                (amount, mode) -> StorageHelper.poweredExtraction(powerSource, storage, clickedKey, amount,
+                        getActionSource(), mode),
+                clickedKey);
+
+        // If we grabbed an empty bucket, and after trying to fill it, it's still empty, put it back!
+        if (grabbedEmptyBucket && getCarried().is(Items.BUCKET)) {
+            var inserted = storage.insert(AEItemKey.of(getCarried()), getCarried().getCount(), Actionable.MODULATE,
+                    getActionSource());
+            var newCarried = getCarried().copy();
+            newCarried.shrink(Ints.saturatedCast(inserted));
+            setCarried(newCarried);
+        }
+        // If the player was holding shift, whatever has been filled should be moved to the player inv
+        // To detect the fill operation actually filling, and not moving excess into the inv itself
+        // We just compare against the carried item from before the fill operation.
+        if (moveToPlayer && !getCarried().is(carriedBefore)) {
+            if (getPlayer().addItem(getCarried())) {
+                setCarried(ItemStack.EMPTY);
+            }
         }
     }
 
