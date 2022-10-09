@@ -6,6 +6,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.UpgradeRecipe;
 
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {
@@ -18,7 +19,7 @@ public final class CraftingRecipeUtil {
      * higher than 3. ingredients.
      */
     public static NonNullList<Ingredient> ensure3by3CraftingMatrix(Recipe<?> recipe) {
-        var ingredients = recipe.getIngredients();
+        var ingredients = getIngredients(recipe);
         var expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
 
         Preconditions.checkArgument(ingredients.size() <= 9);
@@ -47,5 +48,17 @@ public final class CraftingRecipeUtil {
         }
 
         return expandedIngredients;
+    }
+
+    private static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
+        // Special handling for upgrade recipes since those do not override getIngredients
+        if (recipe instanceof UpgradeRecipe upgradeRecipe) {
+            var ingredients = NonNullList.withSize(2, Ingredient.EMPTY);
+            ingredients.set(0, upgradeRecipe.base);
+            ingredients.set(1, upgradeRecipe.addition);
+            return ingredients;
+        }
+
+        return recipe.getIngredients();
     }
 }

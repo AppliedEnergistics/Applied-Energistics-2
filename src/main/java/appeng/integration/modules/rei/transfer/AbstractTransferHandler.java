@@ -3,7 +3,6 @@ package appeng.integration.modules.rei.transfer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
@@ -11,6 +10,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 
+import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.menu.AEBaseMenu;
 
 public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements TransferHandler {
@@ -53,8 +53,7 @@ public abstract class AbstractTransferHandler<T extends AEBaseMenu> implements T
     }
 
     protected final boolean isCraftingRecipe(Recipe<?> recipe, Display display) {
-        return recipe != null && (recipe.getType() == RecipeType.CRAFTING
-                || recipe.getType() == RecipeType.STONECUTTING)
+        return EncodingHelper.isSupportedCraftingRecipe(recipe)
                 || display.getCategoryIdentifier().equals(CRAFTING);
     }
 

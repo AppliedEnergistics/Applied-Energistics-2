@@ -100,6 +100,10 @@ public final class SlotSemantics {
 
     public static final SlotSemantic PROCESSING_OUTPUTS = register("PROCESSING_OUTPUTS", false);
 
+    public static final SlotSemantic SMITHING_TABLE_BASE = register("SMITHING_TABLE_BASE", false);
+    public static final SlotSemantic SMITHING_TABLE_ADDITION = register("SMITHING_TABLE_ADDITION", false);
+    public static final SlotSemantic SMITHING_TABLE_RESULT = register("SMITHING_TABLE_RESULT", false);
+
     public static final SlotSemantic STONECUTTING_INPUT = register("STONECUTTING_INPUT", false);
 
     public static final SlotSemantic CRAFTING_RESULT = register("CRAFTING_RESULT", false);

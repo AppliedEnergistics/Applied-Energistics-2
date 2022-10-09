@@ -3,7 +3,7 @@ package appeng.crafting.pattern;
 import javax.annotation.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
-import appeng.menu.AutoCraftingMenu;
 
 /**
  * An item that contains an encoded {@link AEStonecuttingPattern}.
@@ -73,7 +72,7 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
         var recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
 
         // Fill a crafting inventory with the ingredients to find suitable recipes
-        var testInventory = new CraftingContainer(new AutoCraftingMenu(), 1, 1);
+        var testInventory = new SimpleContainer(1);
         testInventory.setItem(0, input.toStack());
 
         // Multiple recipes can match for stonecutting

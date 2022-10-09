@@ -1,0 +1,28 @@
+{
+  "__comment": "Describes the parts of the pattern encoding terminal that relate to encoding a crafting pattern",
+  "$schema": "../../schema.json",
+  "slots": {
+    "SMITHING_TABLE_BASE": {
+      "left": 16,
+      "bottom": 138
+    },
+    "SMITHING_TABLE_ADDITION": {
+      "left": 57,
+      "bottom": 138
+    },
+    "SMITHING_TABLE_RESULT": {
+      "left": 111,
+      "bottom": 138
+    }
+  },
+  "widgets": {
+    "smithingTableSubstitutions": {
+      "left": 84,
+      "bottom": 163
+    },
+    "smithingTableClearPattern": {
+      "left": 74,
+      "bottom": 163
+    }
+  }
+}
