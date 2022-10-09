@@ -38,7 +38,7 @@ jobs:
           echo ::set-output name=API_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}-api.jar
           echo ::set-output name=API_NAME::appliedenergistics2-fabric-${VERSION}-api.jar
       - name: Archive build results
-        run: tar -I zstd -cv build.tar.zst .gradle build src/generated
+        run: tar -I zstd -cf build.tar.zst .gradle build src/generated
       - name: Upload build and gradle folders
         uses: actions/upload-artifact@v3
         with:
