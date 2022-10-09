@@ -16,12 +16,42 @@ public enum ItemModText implements LocalizationEnum {
     NO_ITEMS("Found no compatible items"),
     WILL_CRAFT("Will craft unavailable items"),
     CTRL_CLICK_TO_CRAFT("CTRL + click to craft unavailable items"),
+    HAS_ENCODED_INGREDIENTS("Highlighted elements are already craftable"),
+    MOVE_ITEMS("Move items"),
+    ENCODE_PATTERN("Encode pattern"),
     // Display of AE2-specific REI/JEI entries
     THROWING_IN_WATER_CATEGORY("Throwing In Water"),
     WITH_CRYSTAL_GROWTH_ACCELERATORS("With Crystal Growth Accelerators:"),
     P2P_API_ATTUNEMENT("Attune with any:"),
     P2P_TUNNEL_ATTUNEMENT("P2P Tunnel Attunement"),
-    P2P_TAG_ATTUNEMENT("Attune with any shown item");
+    P2P_TAG_ATTUNEMENT("Attune with any shown item"),
+    CRANK_DESCRIPTION("Attach the crank to a charger to power it manually."),
+    CHARGER_REQUIRED_POWER("%d turns or %d AE"),
+    CERTUS_QUARTZ_GROWTH("Certus Quartz Growth"),
+
+    QUARTZ_BUDS_GROW_ON_BUDDING_QUARTZ("Quartz buds grow on budding quartz."),
+    BUDS_DROP_DUST_WHEN_NOT_FULLY_GROWN("A quartz bud drops dust when not fully grown."),
+    FULLY_GROWN_BUDS_DROP_CRYSTALS("A fully grown quartz bud drops crystals."),
+    FORTUNE_APPLIES("Fortune enchantment applies"),
+    IMPERFECT_BUDDING_QUARTZ_DECAYS("Imperfect budding quartz has a chance to decay when buds grow."),
+    DECAY_CHANCE("%d%% chance"),
+    BUDDING_QUARTZ_DECAYS_WHEN_BROKEN("Budding quartz decays into quartz when broken."),
+    SILK_TOUCH_CAUSES_LESS_DECAY("Silk touch causes less decay"),
+    SPATIAL_IO_CAUSES_NONE("Spatial I/O causes none"),
+    BUDDING_QUARTZ_CREATION_AND_WORLDGEN(
+            "Budding quartz can be found in meteorites, or be regenerated using charged quartz in water."),
+    FLAWLESS_BUDDING_QUARTZ_DESCRIPTION(
+            "Flawless budding quartz never decays when growing buds. It may only be found in meteorites."),
+    CRYSTAL_GROWTH_ACCELERATORS_EFFECT(
+            "Powered crystal growth accelerators speed up the growth of adjacent budding quartz."),
+
+    ENTROPY_MANIPULATOR_HEAT("Heat (%d AE)"),
+    ENTROPY_MANIPULATOR_COOL("Cool (%d AE)"),
+    RIGHT_CLICK("Right-Click"),
+    SHIFT_RIGHT_CLICK("Shift+Right-Click"),
+    CONSUMED("Consumed"),
+    FLOWING_FLUID_NAME("%s (flowing)"),
+    ;
 
     private final String englishText;
 
