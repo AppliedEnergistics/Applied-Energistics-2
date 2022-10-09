@@ -15,13 +15,13 @@
   "entrypoints": {
     "client": ["appeng.core.AppEngClientStartup"],
     "server": ["appeng.core.AppEngServerStartup"],
-    "rei_plugins": ["appeng.integration.modules.jei.ReiPlugin"],
+    "rei_client": ["appeng.integration.modules.rei.ReiPlugin"],
     "jade": ["appeng.integration.modules.jade.JadeModule"]
   },
   "mixins": ["ae2.mixins.json"],
   "depends": {
-    "fabricloader": ">=0.12.5",
-    "fabric": ">=0.42.4",
+    "fabricloader": ">=0.14.8",
+    "fabric": ">=0.59.0",
     "minecraft": "1.18.x"
   },
   "conflicts": {
