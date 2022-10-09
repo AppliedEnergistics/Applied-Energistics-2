@@ -335,6 +335,11 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 || slotSemantic == SlotSemantics.CRAFTING_GRID;
     }
 
+    @org.jetbrains.annotations.Nullable
+    public SlotSemantic getSlotSemantic(Slot s) {
+        return semanticBySlot.get(s);
+    }
+
     public void hideSlot(String semantic) {
         if (isClientSide()) {
             sendClientAction(HIDE_SLOT, semantic);

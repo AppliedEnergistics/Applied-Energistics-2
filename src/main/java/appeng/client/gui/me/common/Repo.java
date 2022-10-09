@@ -369,4 +369,16 @@ public class Repo implements IClientRepo {
     public final void setUpdateViewListener(Runnable updateViewListener) {
         this.updateViewListener = updateViewListener;
     }
+
+    /**
+     * Checks if the repo knows that the given key can be crafted.
+     */
+    public boolean isCraftable(AEKey what) {
+        for (var entry : entries.values()) {
+            if (entry.isCraftable() && what.equals(entry.getWhat())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
