@@ -158,6 +158,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_quartz_block", has(AEBlocks.QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("misc/deconstruction_certus_quartz_block"));
         ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
+                .requires(AEBlocks.SMOOTH_QUARTZ_BLOCK)
+                .unlockedBy("has_smooth_quartz_block", has(AEBlocks.SMOOTH_QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("misc/deconstruction_smooth_certus_quartz_block"));
+        ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
+                .requires(AEBlocks.QUARTZ_BRICKS)
+                .unlockedBy("has_quartz_bricks", has(AEBlocks.QUARTZ_BRICKS))
+                .save(consumer, AppEng.makeId("misc/deconstruction_certus_quartz_bricks"));
+        ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
                 .requires(AEBlocks.QUARTZ_PILLAR)
                 .unlockedBy("has_quartz_pillar", has(AEBlocks.QUARTZ_PILLAR))
                 .save(consumer, AppEng.makeId("misc/deconstruction_certus_quartz_pillar"));
