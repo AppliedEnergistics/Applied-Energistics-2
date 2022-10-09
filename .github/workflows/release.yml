@@ -42,8 +42,8 @@ jobs:
         with:
           name: build-artifacts
           path: |
-            build/libs
-            build/publications
+            build
+            src/generated
           if-no-files-found: error
           retention-days: 3
 
@@ -56,7 +56,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
       - name: Upload Release Artifact
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -96,7 +95,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
       - name: Validate artifacts exist
         run: test -d ./build/libs
       - name: Publish to Github Packages
@@ -115,7 +113,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
       - name: Validate artifacts exist
         run: test -d ./build/libs
       - name: Upload to Curseforge
@@ -135,7 +132,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
       - name: Validate artifacts exist
         run: test -d ./build/libs
       - name: Publish to Modmaven
@@ -155,7 +151,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build-artifacts
-          path: build
       - name: Validate artifacts exist
         run: test -d ./build/libs
       - name: Upload to Modrinth
