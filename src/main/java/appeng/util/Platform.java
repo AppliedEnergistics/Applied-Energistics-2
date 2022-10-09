@@ -198,7 +198,8 @@ public class Platform {
      * @return True if client-side classes (such as Renderers) are available.
      */
     public static boolean hasClientClasses() {
-        return FMLEnvironment.dist.isClient();
+        // The null check is for tests
+        return FMLEnvironment.dist == null || FMLEnvironment.dist.isClient();
     }
 
     /*
