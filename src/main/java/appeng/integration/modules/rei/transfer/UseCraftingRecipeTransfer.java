@@ -1,16 +1,16 @@
-package appeng.integration.modules.jei.transfer;
+package appeng.integration.modules.rei.transfer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -24,16 +24,11 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
-import appeng.api.stacks.AEItemKey;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.ItemModText;
-import appeng.core.sync.network.NetworkHandler;
-import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
-import appeng.menu.me.common.GridInventoryEntry;
-import appeng.menu.me.common.MEStorageMenu;
+import appeng.integration.modules.jeirei.CraftingHelper;
+import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.util.CraftingRecipeUtil;
 
 /**
  * Recipe transfer implementation with the intended purpose of actually crafting an item. Most of the work is done
@@ -50,16 +45,6 @@ import appeng.util.CraftingRecipeUtil;
  * </ul>
  */
 public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends AbstractTransferHandler<T> {
-
-    // Colors for the slot highlights
-    private static final int BLUE_SLOT_HIGHLIGHT_COLOR = 0x400000ff;
-    private static final int RED_SLOT_HIGHLIGHT_COLOR = 0x66ff0000;
-    // Colors for the buttons
-    private static final int BLUE_PLUS_BUTTON_COLOR = 0x804545FF;
-    private static final int ORANGE_PLUS_BUTTON_COLOR = 0x80FFA500;
-
-    private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
-            .comparing(GridInventoryEntry::getStoredAmount);
 
     public UseCraftingRecipeTransfer(Class<T> containerClass) {
         super(containerClass);
@@ -95,30 +80,18 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         if (!doTransfer) {
             if (missingSlots.totalSize() != 0) {
                 // Highlight the slots with missing ingredients
+                int color = missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR;
                 var result = Result.createSuccessful()
-                        .color(missingSlots.anyMissing() ? ORANGE_PLUS_BUTTON_COLOR : BLUE_PLUS_BUTTON_COLOR)
+                        .color(color)
                         .renderer(createErrorRenderer(missingSlots));
 
-                // Redo this once REI allows appending below the tooltip instead of overriding it...
-                List<Component> extraTooltip = new ArrayList<>();
-                if (missingSlots.anyCraftable()) {
-                    if (craftMissing) {
-                        extraTooltip.add(ItemModText.WILL_CRAFT.text().withStyle(ChatFormatting.BLUE));
-                    } else {
-                        extraTooltip.add(ItemModText.CTRL_CLICK_TO_CRAFT.text().withStyle(ChatFormatting.BLUE));
-                    }
-                }
-                if (missingSlots.anyMissing()) {
-                    extraTooltip.add(ItemModText.MISSING_ITEMS.text().withStyle(ChatFormatting.RED));
-                }
-                if (!extraTooltip.isEmpty()) {
-                    result.overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(extraTooltip)));
-                }
+                var tooltip = TransferHelper.createCraftingTooltip(missingSlots, craftMissing);
+                result.overrideTooltipRenderer((point, sink) -> sink.accept(Tooltip.create(tooltip)));
 
                 return result;
             }
         } else {
-            performTransfer(menu, recipe, craftMissing);
+            CraftingHelper.performTransfer(menu, recipe, craftMissing);
         }
 
         // No error
@@ -138,46 +111,6 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
 
         return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT,
                 ingredients, ItemStack.EMPTY);
-    }
-
-    protected void performTransfer(T menu, Recipe<?> recipe, boolean craftMissing) {
-
-        // We send the items in the recipe in any case to serve as a fallback in case the recipe is transient
-        var templateItems = findGoodTemplateItems(recipe, menu);
-
-        var recipeId = recipe.getId();
-        // Don't transmit a recipe id to the server in case the recipe is not actually resolvable
-        // this is the case for recipes synthetically generated for JEI
-        if (menu.getPlayer().level.getRecipeManager().byKey(recipe.getId()).isEmpty()) {
-            AELog.debug("Cannot send recipe id %s to server because it's transient", recipeId);
-            recipeId = null;
-        }
-
-        NetworkHandler.instance()
-                .sendToServer(new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing));
-    }
-
-    private NonNullList<ItemStack> findGoodTemplateItems(Recipe<?> recipe, MEStorageMenu menu) {
-        var ingredientPriorities = getIngredientPriorities(menu, ENTRY_COMPARATOR);
-
-        var templateItems = NonNullList.withSize(9, ItemStack.EMPTY);
-        var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
-        for (int i = 0; i < ingredients.size(); i++) {
-            var ingredient = ingredients.get(i);
-            if (!ingredient.isEmpty()) {
-                // Try to find the best item. In case the ingredient is a tag, it might contain versions the
-                // player doesn't actually have
-                var stack = ingredientPriorities.entrySet()
-                        .stream()
-                        .filter(e -> e.getKey() instanceof AEItemKey itemKey && ingredient.test(itemKey.toStack()))
-                        .max(Comparator.comparingInt(Map.Entry::getValue))
-                        .map(e -> ((AEItemKey) e.getKey()).toStack())
-                        .orElse(ingredient.getItems()[0]);
-
-                templateItems.set(i, stack);
-            }
-        }
-        return templateItems;
     }
 
     private Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
@@ -210,14 +143,14 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
             int i = 0;
             for (Widget widget : widgets) {
-                if (widget instanceof Slot && ((Slot) widget).getNoticeMark() == Slot.INPUT) {
+                if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
                     boolean missing = indices.missingSlots().contains(i);
                     boolean craftable = indices.craftableSlots().contains(i);
                     i++;
                     if (missing || craftable) {
                         matrices.pushPose();
                         matrices.translate(0, 0, 400);
-                        Rectangle innerBounds = ((Slot) widget).getInnerBounds();
+                        Rectangle innerBounds = slot.getInnerBounds();
                         GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
                                 innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
                         matrices.popPose();

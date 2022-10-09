@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.throwinginwater;
+package appeng.integration.modules.rei.throwinginwater;
 
 import java.util.List;
 
