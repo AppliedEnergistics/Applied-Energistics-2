@@ -210,7 +210,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var item = itemModels().withExistingParent(modelPath(block), models.get(0).getLocation());
         for (var i = 1; i < models.size(); i++) {
             // The predicate matches "greater than", meaning for fill-level > 0 the first non-empty texture is used
-            float fillFactor = (i - 1) / (float) (models.size() - 1);
+            float fillFactor = i / (float) models.size();
             item.override()
                     .predicate(InitItemModelsProperties.ENERGY_FILL_LEVEL_ID, fillFactor)
                     .model(models.get(i));

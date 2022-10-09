@@ -20,7 +20,7 @@ package appeng.init.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,7 +47,7 @@ public final class InitItemModelsProperties {
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
-        FabricModelPredicateProviderRegistry.register(colorApplicatorItem,
+        ItemProperties.register(colorApplicatorItem,
                 COLORED_PREDICATE_ID,
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of
@@ -67,13 +67,13 @@ public final class InitItemModelsProperties {
                 return;
             }
 
-            FabricModelPredicateProviderRegistry.register(chargeable,
+            ItemProperties.register(chargeable,
                     ENERGY_FILL_LEVEL_ID,
                     (is, level, entity, seed) -> {
                         double curPower = chargeable.getAECurrentPower(is);
                         double maxPower = chargeable.getAEMaxPower(is);
 
-                        return (int) Math.round(100 * curPower / maxPower);
+                        return (float) (curPower / maxPower);
                     });
         });
     }
@@ -83,7 +83,7 @@ public final class InitItemModelsProperties {
      */
     private static void registerSeedGrowth(ItemDefinition<?> definition) {
         // Expose the growth of the seed to the model system
-        FabricModelPredicateProviderRegistry.register(definition.asItem(),
+        ItemProperties.register(definition.asItem(),
                 GROWTH_PREDICATE_ID,
                 (is, level, p, s) -> CrystalSeedItem.getGrowthTicks(is)
                         / (float) CrystalSeedItem.GROWTH_TICKS_REQUIRED);
