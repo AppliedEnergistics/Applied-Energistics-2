@@ -243,16 +243,26 @@ public class ReiPlugin implements REIClientPlugin {
         var all = EntryRegistry.getInstance().getEntryStacks().collect(EntryIngredient.collector());
 
         for (var entry : P2PTunnelAttunementInternal.getApiTunnels()) {
+            var inputs = List.of(all.filter(
+                    stack -> stack.getValue() instanceof ItemStack s && entry.stackPredicate().test(s)));
+            if (inputs.isEmpty()) {
+                continue;
+            }
+
             registry.add(new AttunementDisplay(
-                    List.of(all.filter(
-                            stack -> stack.getValue() instanceof ItemStack s && entry.stackPredicate().test(s))),
+                    inputs,
                     List.of(EntryIngredient.of(EntryStacks.of(entry.tunnelType()))),
                     ItemModText.P2P_API_ATTUNEMENT.text(),
                     entry.description()));
         }
 
         for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {
-            registry.add(new AttunementDisplay(List.of(EntryIngredients.ofIngredient(Ingredient.of(entry.getKey()))),
+            var ingredient = Ingredient.of(entry.getKey());
+            if (ingredient.isEmpty()) {
+                continue;
+            }
+
+            registry.add(new AttunementDisplay(List.of(EntryIngredients.ofIngredient(ingredient)),
                     List.of(EntryIngredient.of(EntryStacks.of(entry.getValue()))),
                     ItemModText.P2P_TAG_ATTUNEMENT.text()));
         }
