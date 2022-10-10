@@ -170,6 +170,9 @@ public class JEIPlugin implements IModPlugin {
                     ItemModText.P2P_TAG_ATTUNEMENT.text()));
         }
 
+        // Remove attunements with empty ingredients
+        attunementRecipes.removeIf(a -> a.inputs().isEmpty());
+
         registration.addRecipes(AttunementCategory.TYPE, attunementRecipes);
 
     }
