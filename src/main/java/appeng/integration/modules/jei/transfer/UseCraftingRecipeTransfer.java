@@ -185,7 +185,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
     }
 
     private record ErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices, boolean craftMissing,
-                                 int color) implements IRecipeTransferError {
+            int color) implements IRecipeTransferError {
         @Override
         public Type getType() {
             return Type.COSMETIC;

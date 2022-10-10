@@ -1,6 +1,5 @@
 package appeng.integration.modules.jei;
 
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;

@@ -3,13 +3,13 @@ package appeng.integration.modules.jei;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -24,7 +24,6 @@ import appeng.integration.modules.jei.widgets.View;
 import appeng.integration.modules.jei.widgets.Widget;
 import appeng.integration.modules.jei.widgets.WidgetFactory;
 import appeng.util.Platform;
-import net.minecraft.resources.ResourceLocation;
 
 public abstract class ViewBasedCategory<T> implements IRecipeCategory<T> {
     private final WidgetFactory widgetFactory;

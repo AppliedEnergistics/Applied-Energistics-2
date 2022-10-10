@@ -3,11 +3,6 @@ package appeng.integration.modules.jei;
 import java.util.Collections;
 import java.util.List;
 
-import mezz.jei.api.ingredients.IIngredientHelper;
-import mezz.jei.api.ingredients.ITypedIngredient;
-import mezz.jei.api.ingredients.subtypes.UidContext;
-import mezz.jei.common.focus.Focus;
-import mezz.jei.common.recipes.collect.RecipeMap;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;

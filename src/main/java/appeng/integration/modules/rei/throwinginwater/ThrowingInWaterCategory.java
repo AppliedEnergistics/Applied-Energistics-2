@@ -3,7 +3,10 @@ package appeng.integration.modules.rei.throwinginwater;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
+
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -19,8 +22,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
 import appeng.entity.GrowingCrystalEntity;
 import appeng.items.misc.CrystalSeedItem;
-import net.minecraft.network.chat.TextComponent;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 
 public class ThrowingInWaterCategory implements DisplayCategory<ThrowingInWaterDisplay> {
     public static final CategoryIdentifier<ThrowingInWaterDisplay> ID = CategoryIdentifier

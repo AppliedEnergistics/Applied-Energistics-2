@@ -6,7 +6,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 

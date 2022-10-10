@@ -119,14 +119,14 @@ public class JEIPlugin implements IModPlugin {
         registration.addRecipes(InscriberRecipeCategory.RECIPE_TYPE,
                 recipeManager.byType(InscriberRecipe.TYPE).values()
                         .stream()
-                        .map(r -> (InscriberRecipe)r)
+                        .map(r -> (InscriberRecipe) r)
                         .toList());
         registration.addRecipes(CondenserCategory.RECIPE_TYPE,
                 ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY));
         registration.addRecipes(EntropyManipulatorCategory.TYPE,
                 recipeManager.byType(EntropyRecipe.TYPE).values()
                         .stream()
-                        .map(r -> (EntropyRecipe)r)
+                        .map(r -> (EntropyRecipe) r)
                         .toList());
 
         registerP2PAttunement(registration);

@@ -1,17 +1,21 @@
 package appeng.integration.modules.jei.throwinginwater;
 
-import appeng.core.definitions.AEBlocks;
-import appeng.entity.GrowingCrystalEntity;
-import appeng.items.misc.CrystalSeedItem;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import mezz.jei.api.gui.drawable.IDrawableAnimated;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -20,17 +24,12 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
+import appeng.entity.GrowingCrystalEntity;
 import appeng.integration.modules.jei.JEIPlugin;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.compress.archivers.dump.DumpArchiveEntry;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import appeng.items.misc.CrystalSeedItem;
 
 public class ThrowingInWaterCategory implements IRecipeCategory<ThrowingInWaterDisplay> {
 
@@ -160,7 +159,8 @@ public class ThrowingInWaterCategory implements IRecipeCategory<ThrowingInWaterD
     }
 
     @Override
-    public List<Component> getTooltipStrings(ThrowingInWaterDisplay recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(ThrowingInWaterDisplay recipe, IRecipeSlotsView recipeSlotsView,
+            double mouseX, double mouseY) {
         var yOffset = getYOffset(recipe);
 
         if (recipe.isSupportsAccelerators() && mouseY >= yOffset + 18 && mouseY <= yOffset + 31) {
