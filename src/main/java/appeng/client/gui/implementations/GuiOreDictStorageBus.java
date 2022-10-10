@@ -20,6 +20,7 @@ import appeng.parts.misc.PartOreDicStorageBus;
 import appeng.util.item.OreDictFilterMatcher;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.InventoryPlayer;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -113,6 +114,10 @@ public class GuiOreDictStorageBus extends AEBaseGui {
     @Override
     protected void keyTyped(final char character, final int key) throws IOException {
         if (!this.checkHotbarKeys(key)) {
+            if (key == Keyboard.KEY_RETURN || key == Keyboard.KEY_NUMPADENTER) {
+                searchFieldInputs.setText(OreDictFilterMatcher.validateExp(searchFieldInputs.getText()));
+                NetworkHandler.instance().sendToServer(new PacketValueConfig("OreDictStorageBus.save", searchFieldInputs.getText()));
+            }
             if (!this.searchFieldInputs.textboxKeyTyped(character, key)) {
                 super.keyTyped(character, key);
             }
