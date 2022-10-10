@@ -127,9 +127,9 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
     public void slotClicked(ItemStack clickStack, final int mouseButton) {
 
         if (getFluidStack() != null) {
-            NetworkHandler.instance().sendToServer(new PacketInventoryAction(InventoryAction.FILL_ITEM, slot, 0));
+            NetworkHandler.instance().sendToServer(new PacketInventoryAction(InventoryAction.FILL_ITEM, slot, id));
         } else {
-            NetworkHandler.instance().sendToServer(new PacketInventoryAction(InventoryAction.EMPTY_ITEM, slot, 0));
+            NetworkHandler.instance().sendToServer(new PacketInventoryAction(InventoryAction.EMPTY_ITEM, slot, id));
         }
 
     }
