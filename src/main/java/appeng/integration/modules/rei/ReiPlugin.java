@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.integration.modules.jei;
+package appeng.integration.modules.rei;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +39,7 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.ButtonArea;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.client.registry.entry.CollapsibleEntryRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
@@ -58,6 +59,7 @@ import appeng.api.util.AEColor;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.FacadeCreativeTab;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -66,10 +68,11 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.REIFacade;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
-import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
-import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
+import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterCategory;
+import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterDisplay;
+import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
+import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
+import appeng.items.parts.FacadeItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.recipes.handlers.InscriberRecipe;
@@ -98,12 +101,7 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new ThrowingInWaterCategory());
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
-        registry.add(new FacadeRecipeCategory());
         registry.add(new AttunementCategory());
-
-        registry.removePlusButton(ThrowingInWaterCategory.ID);
-        registry.removePlusButton(InscriberRecipeCategory.ID);
-        registry.removePlusButton(CondenserCategory.ID);
 
         registerWorkingStations(registry);
     }
@@ -117,7 +115,9 @@ public class ReiPlugin implements REIClientPlugin {
 
         registerDescriptions(registry);
 
-        registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
+        if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
+            registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
+        }
 
         // Add displays for crystal growth
         if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
@@ -211,9 +211,16 @@ public class ReiPlugin implements REIClientPlugin {
         registry.removeEntryIf(this::shouldEntryBeHidden);
 
         if (AEConfig.instance().isEnableFacadesInJEI()) {
-            for (ItemStack stack : FacadeCreativeTab.getSubTypes()) {
-                registry.addEntry(EntryStacks.of(stack));
-            }
+            registry.addEntries(EntryIngredients.ofItemStacks(FacadeCreativeTab.getSubTypes()));
+        }
+    }
+
+    @Override
+    public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
+        if (AEConfig.instance().isEnableFacadesInJEI()) {
+            FacadeItem facadeItem = AEItems.FACADE.asItem();
+            registry.group(AppEng.makeId("facades"), new TranslatableComponent("itemGroup.ae2.facades"),
+                    stack -> stack.getType() == VanillaEntryTypes.ITEM && stack.<ItemStack>castValue().is(facadeItem));
         }
     }
 

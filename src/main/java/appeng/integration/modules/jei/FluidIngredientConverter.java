@@ -1,30 +1,31 @@
 package appeng.integration.modules.jei;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
-import dev.architectury.fluid.FluidStack;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.EntryType;
-import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.Fluid;
 
-import appeng.api.integrations.rei.IngredientConverter;
+import mezz.jei.api.fabric.constants.FabricTypes;
+import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
+import mezz.jei.api.ingredients.IIngredientType;
+
+import appeng.api.integrations.jei.IngredientConverter;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 
-public class FluidIngredientConverter implements IngredientConverter<FluidStack> {
+public class FluidIngredientConverter implements IngredientConverter<IJeiFluidIngredient> {
     @Override
-    public EntryType<FluidStack> getIngredientType() {
-        return VanillaEntryTypes.FLUID;
+    public IIngredientType<IJeiFluidIngredient> getIngredientType() {
+        return FabricTypes.FLUID_STACK;
     }
 
     @Nullable
     @Override
-    public EntryStack<FluidStack> getIngredientFromStack(GenericStack stack) {
+    public IJeiFluidIngredient getIngredientFromStack(GenericStack stack) {
         if (stack.what() instanceof AEFluidKey fluidKey) {
-            return EntryStack.of(getIngredientType(), FluidStack.create(
-                    fluidKey.getFluid(),
-                    Math.max(1, stack.amount()),
-                    fluidKey.copyTag()));
+            return new Ingredient(fluidKey, Math.max(1, stack.amount()));
         } else {
             return null;
         }
@@ -32,13 +33,25 @@ public class FluidIngredientConverter implements IngredientConverter<FluidStack>
 
     @Nullable
     @Override
-    public GenericStack getStackFromIngredient(EntryStack<FluidStack> ingredient) {
-        if (ingredient.getType() == getIngredientType()) {
-            FluidStack fluidStack = ingredient.castValue();
-            return new GenericStack(
-                    AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag()),
-                    fluidStack.getAmount());
+    public GenericStack getStackFromIngredient(IJeiFluidIngredient ingredient) {
+        var key = AEFluidKey.of(ingredient.getFluid(), ingredient.getTag().orElse(null));
+        return new GenericStack(key, ingredient.getAmount());
+    }
+
+    record Ingredient(AEFluidKey key, long amount) implements IJeiFluidIngredient {
+        @Override
+        public Fluid getFluid() {
+            return key.getFluid();
         }
-        return null;
+
+        @Override
+        public long getAmount() {
+            return amount;
+        }
+
+        @Override
+        public Optional<CompoundTag> getTag() {
+            return Optional.ofNullable(key.getTag());
+        }
     }
 }

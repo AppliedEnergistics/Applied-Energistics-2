@@ -1,25 +1,33 @@
-package appeng.integration.modules.jei.throwinginwater;
+package appeng.integration.modules.jei;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.Util;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 
 /**
- * A renderer that cycles through a list of item stacks representing the growth stages of crystals.
+ * A renderer that cycles through a list of item stacks.
  */
-public class GrowingSeedIconRenderer implements IDrawable {
+public class CyclingDrawable implements IDrawable {
     private final List<IDrawable> stages;
     private long nextFrame;
     private int currentStage;
 
-    public GrowingSeedIconRenderer(IGuiHelper guiHelper, List<ItemStack> stages) {
-        this.stages = stages.stream().map(guiHelper::createDrawableIngredient).toList();
+    public CyclingDrawable(List<IDrawable> stages) {
+        this.stages = stages;
+    }
+
+    public static CyclingDrawable forItems(IGuiHelper guiHelper, ItemLike... items) {
+        return new CyclingDrawable(Arrays.stream(items)
+                .map(i -> i.asItem().getDefaultInstance())
+                .map(guiHelper::createDrawableItemStack)
+                .toList());
     }
 
     @Override

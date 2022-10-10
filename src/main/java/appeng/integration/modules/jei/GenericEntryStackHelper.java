@@ -1,17 +1,17 @@
 package appeng.integration.modules.jei;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import me.shedaniel.rei.api.common.display.Display;
-import me.shedaniel.rei.api.common.entry.EntryIngredient;
-import me.shedaniel.rei.api.common.entry.EntryStack;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.ingredients.ITypedIngredient;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
-import appeng.api.integrations.rei.IngredientConverter;
-import appeng.api.integrations.rei.IngredientConverters;
+import appeng.api.integrations.jei.IngredientConverter;
+import appeng.api.integrations.jei.IngredientConverters;
 import appeng.api.stacks.GenericStack;
 
 public final class GenericEntryStackHelper {
@@ -19,9 +19,9 @@ public final class GenericEntryStackHelper {
     }
 
     @Nullable
-    public static GenericStack ingredientToStack(EntryStack<?> entryStack) {
+    public static GenericStack ingredientToStack(Object ingredient) {
         for (var converter : IngredientConverters.getConverters()) {
-            var stack = tryConvertToStack(converter, entryStack);
+            var stack = tryConvertToStack(converter, ingredient);
             if (stack != null) {
                 return stack;
             }
@@ -31,35 +31,53 @@ public final class GenericEntryStackHelper {
     }
 
     @Nullable
-    private static <T> GenericStack tryConvertToStack(IngredientConverter<T> converter, EntryStack<?> ingredient) {
-        if (ingredient.getType() == converter.getIngredientType()) {
-            return converter.getStackFromIngredient(ingredient.cast());
+    public static <T> GenericStack ingredientToStack(ITypedIngredient<T> ingredient) {
+        var converter = IngredientConverters.getConverter(ingredient.getType());
+        if (converter != null) {
+            return converter.getStackFromIngredient(ingredient.getIngredient());
         }
         return null;
     }
 
-    public static List<List<GenericStack>> ofInputs(Display display) {
-        return display.getInputEntries().stream().map(GenericEntryStackHelper::of).toList();
-    }
-
-    public static List<GenericStack> ofOutputs(Display display) {
-        return display.getOutputEntries().stream().map(entryIngredient -> entryIngredient.stream()
-                .map(GenericEntryStackHelper::ingredientToStack)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null))
-                .filter(Objects::nonNull)
-                .toList();
-    }
-
-    private static List<GenericStack> of(EntryIngredient entryIngredient) {
-        if (entryIngredient.isEmpty()) {
-            return Collections.emptyList();
+    @Nullable
+    public static Object stackToIngredient(GenericStack stack) {
+        for (var converter : IngredientConverters.getConverters()) {
+            var ingredient = converter.getIngredientFromStack(stack);
+            if (ingredient != null) {
+                return ingredient;
+            }
         }
 
-        return entryIngredient.stream()
+        return null;
+    }
+
+    public static List<List<GenericStack>> ofInputs(IRecipeSlotsView recipeLayout) {
+        return recipeLayout.getSlotViews(RecipeIngredientRole.INPUT)
+                .stream()
+                .map(GenericEntryStackHelper::ofSlot)
+                .toList();
+    }
+
+    public static List<GenericStack> ofOutputs(IRecipeSlotsView recipeLayout) {
+        return recipeLayout.getSlotViews(RecipeIngredientRole.OUTPUT)
+                .stream()
+                .flatMap(slot -> ofSlot(slot).stream().limit(1))
+                .toList();
+    }
+
+    private static List<GenericStack> ofSlot(IRecipeSlotView slot) {
+        return slot.getAllIngredients()
                 .map(GenericEntryStackHelper::ingredientToStack)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Nullable
+    private static <T> GenericStack tryConvertToStack(IngredientConverter<T> converter, Object ingredient) {
+        var ingredientClass = converter.getIngredientType().getIngredientClass();
+        if (ingredientClass.isInstance(ingredient)) {
+            return converter.getStackFromIngredient(ingredientClass.cast(ingredient));
+        }
+        return null;
     }
 }

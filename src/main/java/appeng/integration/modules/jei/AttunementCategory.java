@@ -1,32 +1,44 @@
 package appeng.integration.modules.jei;
 
+import java.util.Collections;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
-import me.shedaniel.math.Point;
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.Renderer;
-import me.shedaniel.rei.api.client.gui.widgets.Widget;
-import me.shedaniel.rei.api.client.gui.widgets.Widgets;
-import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.util.EntryStacks;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.helpers.IJeiHelpers;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.jei.widgets.View;
+import appeng.integration.modules.jei.widgets.Widget;
+import appeng.integration.modules.jei.widgets.WidgetFactory;
 
-public class AttunementCategory implements DisplayCategory<AttunementDisplay> {
+public class AttunementCategory extends ViewBasedCategory<AttunementDisplay> {
 
-    public static final CategoryIdentifier<AttunementDisplay> ID = CategoryIdentifier
-            .of(AppEng.makeId("attunement"));
+    public static final RecipeType<AttunementDisplay> TYPE = RecipeType.create(AppEng.MOD_ID, "attunement",
+            AttunementDisplay.class);
+
+    private final IDrawable background;
+    private final IDrawable icon;
+    private final IDrawable slotBackground;
+
+    public AttunementCategory(IJeiHelpers helpers) {
+        super(helpers);
+        var guiHelpers = helpers.getGuiHelper();
+        this.background = guiHelpers.createBlankDrawable(130, 36);
+        this.icon = guiHelpers.createDrawableItemStack(AEParts.ME_P2P_TUNNEL.stack());
+        this.slotBackground = guiHelpers.getSlotDrawable();
+    }
 
     @Override
-    public Renderer getIcon() {
-        return EntryStacks.of(AEParts.ME_P2P_TUNNEL);
+    public IDrawable getIcon() {
+        return icon;
     }
 
     @Override
@@ -35,26 +47,38 @@ public class AttunementCategory implements DisplayCategory<AttunementDisplay> {
     }
 
     @Override
-    public CategoryIdentifier<? extends AttunementDisplay> getCategoryIdentifier() {
-        return ID;
+    public RecipeType<AttunementDisplay> getRecipeType() {
+        return TYPE;
     }
 
     @Override
-    public List<Widget> setupDisplay(AttunementDisplay display, Rectangle bounds) {
-        Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
-        List<Widget> widgets = Lists.newArrayList();
-        widgets.add(Widgets.createRecipeBase(bounds));
-        widgets.add(Widgets.createArrow(new Point(startPoint.x + 27, startPoint.y + 4)));
-        widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 61, startPoint.y + 5)));
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5))
-                .entries(display.getInputEntries().get(0)).markInput());
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5))
-                .entries(display.getOutputEntries().get(0)).disableBackground().markOutput());
-        return widgets;
+    public IDrawable getBackground() {
+        return background;
     }
 
     @Override
-    public int getDisplayHeight() {
-        return 36;
+    protected View getView(AttunementDisplay recipe) {
+        var x = background.getWidth() / 2 - 41;
+        var y = background.getHeight() / 2 - 13;
+
+        return new View() {
+            @Override
+            public void buildSlots(IRecipeLayoutBuilder builder) {
+                builder.addSlot(RecipeIngredientRole.INPUT, x + 4, y + 5)
+                        .setBackground(slotBackground, -1, -1)
+                        .addIngredients(recipe.inputs())
+                        .addTooltipCallback((recipeSlotView, tooltip) -> {
+                            Collections.addAll(tooltip, recipe.description());
+                        });
+                builder.addSlot(RecipeIngredientRole.OUTPUT, x + 61, y + 5)
+                        .setBackground(slotBackground, -1, -1)
+                        .addItemStack(new ItemStack(recipe.tunnel()));
+            }
+
+            @Override
+            public void createWidgets(WidgetFactory factory, List<Widget> widgets) {
+                widgets.add(factory.unfilledArrow(x + 27, y + 4));
+            }
+        };
     }
 }

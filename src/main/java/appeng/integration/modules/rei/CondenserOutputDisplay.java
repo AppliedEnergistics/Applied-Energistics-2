@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei;
+package appeng.integration.modules.rei;
 
 import java.util.ArrayList;
 import java.util.Collections;
