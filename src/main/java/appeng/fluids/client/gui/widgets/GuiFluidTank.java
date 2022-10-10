@@ -96,12 +96,12 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
 
     @Override
     public int xPos() {
-        return this.x - 1;
+        return this.x;
     }
 
     @Override
     public int yPos() {
-        return this.y - 4;
+        return this.y;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
 
     @Override
     public int getHeight() {
-        return this.height + 4;
+        return this.height;
     }
 
     @Override
@@ -125,13 +125,11 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
 
     @Override
     public void slotClicked(ItemStack clickStack, final int mouseButton) {
-
         if (getFluidStack() != null) {
             NetworkHandler.instance().sendToServer(new PacketInventoryAction(InventoryAction.FILL_ITEM, slot, id));
         } else {
             NetworkHandler.instance().sendToServer(new PacketInventoryAction(InventoryAction.EMPTY_ITEM, slot, id));
         }
-
     }
 
 }

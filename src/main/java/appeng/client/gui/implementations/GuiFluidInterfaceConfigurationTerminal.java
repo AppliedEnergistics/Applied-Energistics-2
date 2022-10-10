@@ -203,7 +203,6 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
             if (slot instanceof GuiFluidTank) {
                 if (this.isPointInRegion(slot.xPos(), slot.yPos(), slot.getWidth(), slot.getHeight(), xCoord, yCoord) && slot.canClick(this.mc.player)) {
                     NetworkHandler.instance().sendToServer(new PacketInventoryAction(InventoryAction.PICKUP_OR_SET_DOWN, slot.getId(), guiFluidTankClientDCInternalFluidInvMap.get(slot).getId()));
-
                     return;
                 }
             }
