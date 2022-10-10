@@ -61,7 +61,7 @@ import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
-import appeng.block.AEBaseBlockItemChargeable;
+import appeng.block.EnergyCellBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -190,8 +190,8 @@ public class PortableCellItem extends AEBasePoweredItem
                 var ingredientStack = ingredient.getItems()[0].copy();
 
                 // Dump remaining energy into whatever can accept it
-                if (remainingEnergy > 0 && ingredientStack.getItem() instanceof AEBaseBlockItemChargeable chargeable) {
-                    remainingEnergy = chargeable.injectAEPower(ingredientStack, remainingEnergy, Actionable.MODULATE);
+                if (remainingEnergy > 0 && ingredientStack.getItem() instanceof EnergyCellBlockItem energyCell) {
+                    remainingEnergy = energyCell.injectAEPower(ingredientStack, remainingEnergy, Actionable.MODULATE);
                 }
 
                 playerInventory.placeItemBackInInventory(ingredientStack);
