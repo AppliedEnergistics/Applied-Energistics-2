@@ -35,9 +35,9 @@ import net.minecraft.util.math.Vec3d;
 public class PartFluidInterfaceConfigurationTerminal extends AbstractPartDisplay {
 
     @PartModels
-    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/interface_configuration_terminal_off");
+    public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_configuration_terminal_off");
     @PartModels
-    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/interface_configuration_terminal_on");
+    public static final ResourceLocation MODEL_ON = new ResourceLocation(AppEng.MOD_ID, "part/fluid_interface_configuration_terminal_on");
 
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);

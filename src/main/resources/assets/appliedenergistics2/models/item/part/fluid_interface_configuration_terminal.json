@@ -1,0 +1,9 @@
+{
+    "parent": "appliedenergistics2:item/part/display",
+    "textures": {
+        "front": "appliedenergistics2:items/part/interface_terminal",
+        "front_bright": "appliedenergistics2:parts/fluid_interface_configuration_terminal_bright",
+        "front_medium": "appliedenergistics2:parts/fluid_interface_configuration_terminal_medium",
+        "front_dark": "appliedenergistics2:parts/fluid_interface_configuration_terminal_dark"
+    }
+}

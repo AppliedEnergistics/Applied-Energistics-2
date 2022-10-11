@@ -230,7 +230,7 @@ public enum PartType {
 
     FLUID_TERMINAL(520, "fluid_terminal", EnumSet.of(AEFeature.FLUID_TERMINAL), EnumSet.noneOf(IntegrationType.class), PartFluidTerminal.class),
     INTERFACE_CONFIGURATION_TERMINAL(521, "interface_configuration_terminal", EnumSet.of(AEFeature.INTERFACE_TERMINAL), EnumSet.noneOf(IntegrationType.class), PartInterfaceConfigurationTerminal.class),
-    FLUID_INTERFACE_CONFIGURATION_TERMINAL(522, "interface_configuration_terminal", EnumSet.of(AEFeature.INTERFACE_TERMINAL), EnumSet.noneOf(IntegrationType.class), PartFluidInterfaceConfigurationTerminal.class);
+    FLUID_INTERFACE_CONFIGURATION_TERMINAL(522, "fluid_interface_configuration_terminal", EnumSet.of(AEFeature.INTERFACE_TERMINAL), EnumSet.noneOf(IntegrationType.class), PartFluidInterfaceConfigurationTerminal.class);
 
 
     private final int baseDamage;

@@ -36,9 +36,7 @@ import appeng.container.interfaces.IJEIGhostIngredients;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
-import appeng.fluids.client.gui.widgets.GuiFluidSlot;
 import appeng.fluids.client.gui.widgets.GuiFluidTank;
-import appeng.fluids.container.IFluidSyncContainer;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
 import appeng.parts.reporting.PartFluidInterfaceConfigurationTerminal;
@@ -138,7 +136,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
     public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         this.buttonList.clear();
 
-        this.fontRenderer.drawString(this.getGuiDisplayName(GuiText.InterfaceConfigurationTerminal.getLocal()), 8, 6, 4210752);
+        this.fontRenderer.drawString(this.getGuiDisplayName(GuiText.FluidInterfaceConfigurationTerminal.getLocal()), 8, 6, 4210752);
         this.fontRenderer.drawString(GuiText.inventory.getLocal(), this.offsetX + 2, this.ySize - 96 + 3, 4210752);
 
         final int currentScroll = this.getScrollBar().getCurrentScroll();
@@ -244,7 +242,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
             final Object lineObj = this.lines.get(ex + x);
             if (lineObj instanceof ClientDCInternalFluidInv) {
                 GlStateManager.color(1, 1, 1, 1);
-                final int width = 9 * 18;
+                final int width = 5 * 18;
 
                 int extraLines = numUpgradesMap.get(lineObj);
 

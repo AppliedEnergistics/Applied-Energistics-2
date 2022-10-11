@@ -174,6 +174,7 @@ public enum GuiText {
 
     InterfaceTerminal,
     InterfaceConfigurationTerminal,
+    FluidInterfaceConfigurationTerminal,
     NoCraftingCPUs,
     Clean,
     InvalidPattern,
