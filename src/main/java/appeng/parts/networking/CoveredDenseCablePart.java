@@ -18,8 +18,9 @@
 
 package appeng.parts.networking;
 
-import appeng.api.util.AECableType;
 import appeng.items.parts.ColoredPartItem;
+import appeng.parts.networking.cableshapes.DenseCableShape;
+import appeng.parts.networking.cableshapes.ICableShape;
 
 public class CoveredDenseCablePart extends DenseCablePart {
 
@@ -28,8 +29,8 @@ public class CoveredDenseCablePart extends DenseCablePart {
     }
 
     @Override
-    public AECableType getCableConnectionType() {
-        return AECableType.DENSE_COVERED;
+    protected ICableShape getCableShape() {
+        return DenseCableShape.COVERED;
     }
 
 }

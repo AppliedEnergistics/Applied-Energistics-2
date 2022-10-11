@@ -426,6 +426,18 @@ public interface IPart extends ICustomCableConnection {
     void getBoxes(IPartCollisionHelper bch);
 
     /**
+     * Add the boxes to show for previewing how a part would be placed in-world. This is called client-side and allows
+     * cables to apply a client-side heuristic to determine which connections the cable might make after placement,
+     * without having access to the server-side grids.
+     *
+     * @param bch boxes to render
+     */
+    default void getPlacementPreviewBoxes(IPartCollisionHelper bch, Level level, BlockPos pos,
+            @org.jetbrains.annotations.Nullable Direction side) {
+        getBoxes(bch);
+    }
+
+    /**
      * This will be used by the core to add information about this part to a crash report if it is attached to a host
      * that caused a crash during tick processing.
      *

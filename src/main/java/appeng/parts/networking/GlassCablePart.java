@@ -19,9 +19,16 @@
 package appeng.parts.networking;
 
 import appeng.items.parts.ColoredPartItem;
+import appeng.parts.networking.cableshapes.GlassCableShape;
+import appeng.parts.networking.cableshapes.ICableShape;
 
 public class GlassCablePart extends CablePart {
     public GlassCablePart(ColoredPartItem<?> partItem) {
         super(partItem);
+    }
+
+    @Override
+    protected ICableShape getCableShape() {
+        return GlassCableShape.INSTANCE;
     }
 }

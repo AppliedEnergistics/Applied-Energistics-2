@@ -24,7 +24,9 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -33,6 +35,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
@@ -52,8 +55,9 @@ import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.parts.AEBasePart;
+import appeng.parts.networking.cableshapes.ICableShape;
 
-public class CablePart extends AEBasePart implements ICablePart {
+public abstract class CablePart extends AEBasePart implements ICablePart {
 
     private static final IGridNodeListener<CablePart> NODE_LISTENER = new NodeListener<>() {
         @Override
@@ -62,6 +66,8 @@ public class CablePart extends AEBasePart implements ICablePart {
             nodeOwner.markForUpdate();
         }
     };
+
+    private final ICableShape cableShape;
 
     private final int[] channelsOnSide = { 0, 0, 0, 0, 0, 0 };
 
@@ -75,6 +81,8 @@ public class CablePart extends AEBasePart implements ICablePart {
                 .setInWorldNode(true)
                 .setExposedOnSides(EnumSet.allOf(Direction.class));
         this.getMainNode().setGridColor(partItem.getColor());
+
+        cableShape = getCableShape();
     }
 
     @Override
@@ -95,9 +103,11 @@ public class CablePart extends AEBasePart implements ICablePart {
         return AEColor.TRANSPARENT;
     }
 
+    protected abstract ICableShape getCableShape();
+
     @Override
-    public AECableType getCableConnectionType() {
-        return AECableType.GLASS;
+    public final AECableType getCableConnectionType() {
+        return cableShape.getCableConnectionType();
     }
 
     @Override
@@ -182,69 +192,30 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void getBoxes(IPartCollisionHelper bch) {
+    public final void getBoxes(IPartCollisionHelper bch) {
         updateConnections();
 
-        bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
-
-        final IPartHost ph = this.getHost();
-        if (ph != null) {
-            for (Direction dir : Direction.values()) {
-                var p = ph.getPart(dir);
-                if (p != null) {
-                    var dist = p.getCableConnectionLength(this.getCableConnectionType());
-
-                    if (dist > 8) {
-                        continue;
-                    }
-
-                    switch (dir) {
-                        case DOWN:
-                            bch.addBox(6.0, dist, 6.0, 10.0, 6.0, 10.0);
-                            break;
-                        case EAST:
-                            bch.addBox(10.0, 6.0, 6.0, 16.0 - dist, 10.0, 10.0);
-                            break;
-                        case NORTH:
-                            bch.addBox(6.0, 6.0, dist, 10.0, 10.0, 6.0);
-                            break;
-                        case SOUTH:
-                            bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0 - dist);
-                            break;
-                        case UP:
-                            bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0 - dist, 10.0);
-                            break;
-                        case WEST:
-                            bch.addBox(dist, 6.0, 6.0, 6.0, 10.0, 10.0);
-                            break;
-                        default:
-                    }
-                }
-            }
+        var host = getHost();
+        Level level;
+        BlockPos pos;
+        if (host != null) {
+            level = host.getBlockEntity().getLevel();
+            pos = host.getBlockEntity().getBlockPos();
+        } else {
+            level = null;
+            pos = BlockPos.ZERO;
         }
 
-        for (Direction of : this.getConnections()) {
-            switch (of) {
-                case DOWN:
-                    bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
-                    break;
-                case EAST:
-                    bch.addBox(10.0, 6.0, 6.0, 16.0, 10.0, 10.0);
-                    break;
-                case NORTH:
-                    bch.addBox(6.0, 6.0, 0.0, 10.0, 10.0, 6.0);
-                    break;
-                case SOUTH:
-                    bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0);
-                    break;
-                case UP:
-                    bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0, 10.0);
-                    break;
-                case WEST:
-                    bch.addBox(0.0, 6.0, 6.0, 6.0, 10.0, 10.0);
-                    break;
-                default:
-            }
+        cableShape.addCableBoxes(getConnections(), getHost(), level, pos, bch);
+    }
+
+    @Override
+    public final void getPlacementPreviewBoxes(IPartCollisionHelper bch, Level level, BlockPos pos,
+            @Nullable Direction side) {
+        if (level.getBlockEntity(pos) instanceof IPartHost partHost) {
+            cableShape.addCableBoxes(getConnections(), partHost, level, pos, bch);
+        } else {
+            cableShape.addCableBoxes(getConnections(), null, level, pos, bch);
         }
     }
 

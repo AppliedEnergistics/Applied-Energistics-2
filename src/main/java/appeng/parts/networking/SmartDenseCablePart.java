@@ -19,8 +19,9 @@
 package appeng.parts.networking;
 
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.util.AECableType;
 import appeng.items.parts.ColoredPartItem;
+import appeng.parts.networking.cableshapes.DenseCableShape;
+import appeng.parts.networking.cableshapes.ICableShape;
 
 public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelProvider {
 
@@ -29,8 +30,8 @@ public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelP
     }
 
     @Override
-    public AECableType getCableConnectionType() {
-        return AECableType.DENSE_SMART;
+    protected ICableShape getCableShape() {
+        return DenseCableShape.SMART;
     }
 
     /**

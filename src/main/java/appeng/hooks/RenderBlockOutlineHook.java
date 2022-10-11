@@ -20,6 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -95,7 +96,7 @@ public class RenderBlockOutlineHook {
                 return true;
             }
             if (selectedPart.part != null) {
-                renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false);
+                renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side);
                 return true;
             }
         }
@@ -119,7 +120,8 @@ public class RenderBlockOutlineHook {
                 // We would render a cable anchor implicitly
                 if (partHost.getPart(side) == null) {
                     var cableAnchor = AEParts.CABLE_ANCHOR.asItem().createPart();
-                    renderPart(poseStack, buffers, camera, pos, cableAnchor, side, true);
+                    var level = partHost.getBlockEntity().getLevel();
+                    renderPartPreview(poseStack, buffers, camera, level, pos, cableAnchor, side);
                 }
 
                 renderFacade(poseStack, buffers, camera, pos, facade, side, true);
@@ -137,15 +139,17 @@ public class RenderBlockOutlineHook {
             BlockHitResult blockHitResult,
             ItemStack itemInHand) {
         if (itemInHand.getItem() instanceof IPartItem<?>partItem) {
+            var level = player.level;
+
             var placement = PartPlacement.getPartPlacement(player,
-                    player.level,
+                    level,
                     itemInHand,
                     blockHitResult.getBlockPos(),
                     blockHitResult.getDirection());
 
             if (placement != null) {
                 var part = partItem.createPart();
-                renderPart(poseStack, buffers, camera, placement.pos(), part, placement.side(), true);
+                renderPartPreview(poseStack, buffers, camera, level, placement.pos(), part, placement.side());
             }
         }
     }
@@ -155,12 +159,24 @@ public class RenderBlockOutlineHook {
             Camera camera,
             BlockPos pos,
             IPart part,
-            Direction side,
-            boolean preview) {
+            Direction side) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         part.getBoxes(helper);
-        renderBoxes(poseStack, buffers, camera, pos, boxes, preview);
+        renderBoxes(poseStack, buffers, camera, pos, boxes, false);
+    }
+
+    private static void renderPartPreview(PoseStack poseStack,
+            MultiBufferSource buffers,
+            Camera camera,
+            Level level,
+            BlockPos pos,
+            IPart part,
+            Direction side) {
+        var boxes = new ArrayList<AABB>();
+        var helper = new BusCollisionHelper(boxes, side, true);
+        part.getPlacementPreviewBoxes(helper, level, pos, side);
+        renderBoxes(poseStack, buffers, camera, pos, boxes, true);
     }
 
     private static void renderFacade(PoseStack poseStack,
