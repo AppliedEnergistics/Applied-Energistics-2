@@ -43,9 +43,11 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.BusSupport;
+import appeng.api.parts.IPart;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -55,7 +57,9 @@ import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.parts.AEBasePart;
+import appeng.parts.misc.ToggleBusPart;
 import appeng.parts.networking.cableshapes.ICableShape;
+import appeng.parts.p2p.MEP2PTunnelPart;
 
 public abstract class CablePart extends AEBasePart implements ICablePart {
 
@@ -103,7 +107,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
         return AEColor.TRANSPARENT;
     }
 
-    protected abstract ICableShape getCableShape();
+    public abstract ICableShape getCableShape();
 
     @Override
     public final AECableType getCableConnectionType() {
@@ -212,11 +216,65 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
     @Override
     public final void getPlacementPreviewBoxes(IPartCollisionHelper bch, Level level, BlockPos pos,
             @Nullable Direction side) {
-        if (level.getBlockEntity(pos) instanceof IPartHost partHost) {
-            cableShape.addCableBoxes(getConnections(), partHost, level, pos, bch);
+
+        IPartHost partHost;
+        if (level.getBlockEntity(pos) instanceof IPartHost existingHost) {
+            partHost = existingHost;
         } else {
-            cableShape.addCableBoxes(getConnections(), null, level, pos, bch);
+            partHost = null;
         }
+
+        var connections = EnumSet.noneOf(Direction.class);
+        for (var connectionSide : Direction.values()) {
+            if (couldConnectOnClient(level, pos, connectionSide, partHost)) {
+                connections.add(connectionSide);
+            }
+        }
+
+        cableShape.addCableBoxes(connections, partHost, level, pos, bch);
+    }
+
+    /**
+     * Tries to heuristically determine which sides this cable would connect to at the given position in the level.
+     */
+    public boolean couldConnectOnClient(Level level, BlockPos pos, Direction side, @Nullable IPartHost partHost) {
+        // Skip sides blocked by parts, will do this separately
+        if (partHost != null && partHost.getPart(side) != null) {
+            return false;
+        }
+
+        var neighborPos = pos.relative(side);
+        var neighborSide = side.getOpposite();
+        var neighbor = level.getBlockEntity(neighborPos);
+        if (neighbor instanceof IPartHost neighborPartHost) {
+            // Check if there's a part blocking the connection on that side
+            var neighborPart = neighborPartHost.getPart(neighborSide);
+            if (neighborPart != null) {
+                return couldConnectToPartOnClient(neighborPart);
+            }
+
+            // If no part is blocking, check if there's a cable of suitable color
+            if (neighborPartHost.getPart(null) instanceof ICablePart neighborCable) {
+                return couldConnectToPartOnClient(neighborCable);
+            }
+        }
+
+        return neighbor instanceof IInWorldGridNodeHost inWorldGridNodeHost
+                && inWorldGridNodeHost.getCableConnectionType(neighborSide) != AECableType.NONE;
+    }
+
+    public boolean couldConnectToPartOnClient(IPart otherPart) {
+        if (otherPart instanceof ICablePart otherCable) {
+            return getCableColor() == AEColor.TRANSPARENT
+                    || otherCable.getCableColor() == AEColor.TRANSPARENT
+                    || getCableColor() == otherCable.getCableColor();
+        }
+
+        // Determining whether a part allows an external cable connection usually requires a grid
+        // node, so we use a heuristic based on class here. See what overrides
+        // appeng.api.parts.IPart.getExternalFacingNode
+        return otherPart instanceof MEP2PTunnelPart || otherPart instanceof QuartzFiberPart
+                || otherPart instanceof ToggleBusPart;
     }
 
     protected void updateConnections() {
@@ -398,7 +456,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
         this.channelsOnSide[i] = channels;
     }
 
-    Set<Direction> getConnections() {
+    public Set<Direction> getConnections() {
         return this.connections;
     }
 

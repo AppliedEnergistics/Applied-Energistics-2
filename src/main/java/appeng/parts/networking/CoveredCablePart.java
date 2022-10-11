@@ -28,7 +28,7 @@ public class CoveredCablePart extends CablePart {
     }
 
     @Override
-    protected ICableShape getCableShape() {
+    public ICableShape getCableShape() {
         return CoveredCableShape.COVERED;
     }
 }

@@ -13,7 +13,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.util.AECableType;
 
 public interface ICableShape {
-
     AECableType getCableConnectionType();
 
     void addCableBoxes(
@@ -23,4 +22,10 @@ public interface ICableShape {
             BlockPos pos,
             IPartCollisionHelper bch);
 
+    void addConnectionBoxes(
+            Direction side,
+            @Nullable IPartHost host,
+            @Nullable Level level,
+            BlockPos pos,
+            IPartCollisionHelper bch);
 }

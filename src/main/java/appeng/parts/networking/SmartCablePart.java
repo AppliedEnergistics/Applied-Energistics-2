@@ -39,7 +39,7 @@ public class SmartCablePart extends CablePart implements IUsedChannelProvider {
     }
 
     @Override
-    protected ICableShape getCableShape() {
+    public ICableShape getCableShape() {
         return CoveredCableShape.SMART;
     }
 

@@ -28,7 +28,7 @@ public class GlassCablePart extends CablePart {
     }
 
     @Override
-    protected ICableShape getCableShape() {
+    public ICableShape getCableShape() {
         return GlassCableShape.INSTANCE;
     }
 }

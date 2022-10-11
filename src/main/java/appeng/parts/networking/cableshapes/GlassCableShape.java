@@ -30,8 +30,8 @@ public class GlassCableShape implements ICableShape {
         bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
 
         if (host != null) {
-            for (var dir : Direction.values()) {
-                var p = host.getPart(dir);
+            for (var side : Direction.values()) {
+                var p = host.getPart(side);
                 if (p != null) {
                     var dist = p.getCableConnectionLength(this.getCableConnectionType());
 
@@ -39,7 +39,7 @@ public class GlassCableShape implements ICableShape {
                         continue;
                     }
 
-                    switch (dir) {
+                    switch (side) {
                         case DOWN -> bch.addBox(6.0, dist, 6.0, 10.0, 6.0, 10.0);
                         case EAST -> bch.addBox(10.0, 6.0, 6.0, 16.0 - dist, 10.0, 10.0);
                         case NORTH -> bch.addBox(6.0, 6.0, dist, 10.0, 10.0, 6.0);
@@ -49,20 +49,24 @@ public class GlassCableShape implements ICableShape {
                         default -> {
                         }
                     }
+                } else if (connections.contains(side)) {
+                    addConnectionBoxes(side, host, level, pos, bch);
                 }
             }
         }
+    }
 
-        for (var of : connections) {
-            switch (of) {
-                case DOWN -> bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
-                case EAST -> bch.addBox(10.0, 6.0, 6.0, 16.0, 10.0, 10.0);
-                case NORTH -> bch.addBox(6.0, 6.0, 0.0, 10.0, 10.0, 6.0);
-                case SOUTH -> bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0);
-                case UP -> bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0, 10.0);
-                case WEST -> bch.addBox(0.0, 6.0, 6.0, 6.0, 10.0, 10.0);
-                default -> {
-                }
+    @Override
+    public void addConnectionBoxes(Direction side, @Nullable IPartHost host, @Nullable Level level, BlockPos pos,
+            IPartCollisionHelper bch) {
+        switch (side) {
+            case DOWN -> bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
+            case EAST -> bch.addBox(10.0, 6.0, 6.0, 16.0, 10.0, 10.0);
+            case NORTH -> bch.addBox(6.0, 6.0, 0.0, 10.0, 10.0, 6.0);
+            case SOUTH -> bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0);
+            case UP -> bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0, 10.0);
+            case WEST -> bch.addBox(0.0, 6.0, 6.0, 6.0, 10.0, 10.0);
+            default -> {
             }
         }
     }

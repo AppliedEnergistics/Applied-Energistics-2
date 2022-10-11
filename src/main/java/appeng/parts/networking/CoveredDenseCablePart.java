@@ -29,7 +29,7 @@ public class CoveredDenseCablePart extends DenseCablePart {
     }
 
     @Override
-    protected ICableShape getCableShape() {
+    public ICableShape getCableShape() {
         return DenseCableShape.COVERED;
     }
 

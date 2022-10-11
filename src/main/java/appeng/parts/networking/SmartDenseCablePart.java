@@ -30,7 +30,7 @@ public class SmartDenseCablePart extends DenseCablePart implements IUsedChannelP
     }
 
     @Override
-    protected ICableShape getCableShape() {
+    public ICableShape getCableShape() {
         return DenseCableShape.SMART;
     }
 
