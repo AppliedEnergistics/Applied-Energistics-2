@@ -283,12 +283,11 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
             this.refreshList = true;
         }
 
-        for (final Object oKey : in.getKeySet()) {
-            final String key = (String) oKey;
-            if (key.startsWith("=")) {
+        for (final String oKey : in.getKeySet()) {
+            if (oKey.startsWith("=")) {
                 try {
-                    final long id = Long.parseLong(key.substring(1), Character.MAX_RADIX);
-                    final NBTTagCompound invData = in.getCompoundTag(key);
+                    final long id = Long.parseLong(oKey.substring(1), Character.MAX_RADIX);
+                    final NBTTagCompound invData = in.getCompoundTag(oKey);
                     final ClientDCInternalFluidInv current = this.getById(id, invData.getLong("sortBy"), invData.getString("un"));
                     blockPosHashMap.put(current, NBTUtil.getPosFromTag(invData.getCompoundTag("pos")));
                     dimHashMap.put(current, invData.getInteger("dim"));

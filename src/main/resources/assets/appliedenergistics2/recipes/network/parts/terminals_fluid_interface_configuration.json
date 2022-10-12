@@ -1,0 +1,22 @@
+{
+    "conditions": [
+        {
+            "type": "minecraft:item_exists",
+            "item": "appliedenergistics2:interface"
+        }
+    ],
+    "result": {
+        "type": "appliedenergistics2:part",
+        "part": "part.fluid_interface_configuration_terminal"
+    },
+    "type": "appliedenergistics2:part_shapeless",
+    "ingredients": [
+        {
+            "type": "appliedenergistics2:part",
+            "part": "part.interface_terminal"
+        },
+        {
+            "item": "minecraft:bucket"
+        }
+    ]
+}
