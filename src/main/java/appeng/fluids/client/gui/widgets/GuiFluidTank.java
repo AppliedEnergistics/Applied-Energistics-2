@@ -69,7 +69,8 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
                 GlStateManager.color(red, green, blue);
 
                 TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(fluid.getFluid().getStill().toString());
-                final int scaledHeight = (int) (this.height * ((float) fluid.getStackSize() / this.tank.getTankProperties()[this.slot].getCapacity()));
+                int scaledHeight = (int) (this.height * ((float) fluid.getStackSize() / this.tank.getTankProperties()[this.slot].getCapacity()));
+                scaledHeight = Math.min(this.height, scaledHeight);
 
                 int iconHeightRemainder = scaledHeight % 16;
                 if (iconHeightRemainder > 0) {

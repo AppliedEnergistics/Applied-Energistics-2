@@ -441,7 +441,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
         ClientDCInternalFluidInv o = this.byId.get(id);
 
         if (o == null) {
-            this.byId.put(id, o = new ClientDCInternalFluidInv(5, id, sortBy, string, 64));
+            this.byId.put(id, o = new ClientDCInternalFluidInv(5, id, sortBy, string, 1000));
             this.refreshList = true;
         }
 
