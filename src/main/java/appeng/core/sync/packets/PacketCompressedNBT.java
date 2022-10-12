@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 
+import appeng.client.gui.implementations.GuiFluidInterfaceConfigurationTerminal;
 import appeng.client.gui.implementations.GuiInterfaceConfigurationTerminal;
 import appeng.client.gui.implementations.GuiInterfaceTerminal;
 import appeng.core.sync.AppEngPacket;
@@ -99,6 +100,8 @@ public class PacketCompressedNBT extends AppEngPacket {
             ((GuiInterfaceTerminal) gs).postUpdate(this.in);
         } else if (gs instanceof GuiInterfaceConfigurationTerminal) {
             ((GuiInterfaceConfigurationTerminal) gs).postUpdate(this.in);
+        } else if (gs instanceof GuiFluidInterfaceConfigurationTerminal) {
+            ((GuiFluidInterfaceConfigurationTerminal) gs).postUpdate(this.in);
         }
     }
 }

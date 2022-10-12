@@ -30,103 +30,106 @@ import appeng.api.util.AEColoredItemDefinition;
 /**
  * A list of all parts in AE
  */
-public interface IParts
-{
-	AEColoredItemDefinition cableSmart();
+public interface IParts {
+    AEColoredItemDefinition cableSmart();
 
-	AEColoredItemDefinition cableCovered();
+    AEColoredItemDefinition cableCovered();
 
-	AEColoredItemDefinition cableGlass();
+    AEColoredItemDefinition cableGlass();
 
-	AEColoredItemDefinition cableDenseCovered();
+    AEColoredItemDefinition cableDenseCovered();
 
-	AEColoredItemDefinition cableDenseSmart();
+    AEColoredItemDefinition cableDenseSmart();
 
-	AEColoredItemDefinition lumenCableSmart();
+    AEColoredItemDefinition lumenCableSmart();
 
-	AEColoredItemDefinition lumenCableCovered();
+    AEColoredItemDefinition lumenCableCovered();
 
-	AEColoredItemDefinition lumenCableGlass();
+    AEColoredItemDefinition lumenCableGlass();
 
-	AEColoredItemDefinition lumenDenseCableSmart();
+    AEColoredItemDefinition lumenDenseCableSmart();
 
-	IItemDefinition quartzFiber();
+    IItemDefinition quartzFiber();
 
-	IItemDefinition toggleBus();
+    IItemDefinition toggleBus();
 
-	IItemDefinition invertedToggleBus();
+    IItemDefinition invertedToggleBus();
 
-	IItemDefinition storageBus();
+    IItemDefinition storageBus();
 
-	IItemDefinition oreDictStorageBus();
+    IItemDefinition oreDictStorageBus();
 
-	IItemDefinition importBus();
+    IItemDefinition importBus();
 
-	IItemDefinition exportBus();
+    IItemDefinition exportBus();
 
-	IItemDefinition iface();
+    IItemDefinition iface();
 
-	IItemDefinition fluidIface();
+    IItemDefinition fluidIface();
 
-	IItemDefinition levelEmitter();
+    IItemDefinition levelEmitter();
 
-	IItemDefinition annihilationPlane();
+    IItemDefinition annihilationPlane();
 
-	IItemDefinition identityAnnihilationPlane();
+    IItemDefinition identityAnnihilationPlane();
 
-	IItemDefinition formationPlane();
+    IItemDefinition formationPlane();
 
-	IItemDefinition p2PTunnelME();
+    IItemDefinition p2PTunnelME();
 
-	IItemDefinition p2PTunnelRedstone();
+    IItemDefinition p2PTunnelRedstone();
 
-	IItemDefinition p2PTunnelItems();
+    IItemDefinition p2PTunnelItems();
 
-	IItemDefinition p2PTunnelFluids();
+    IItemDefinition p2PTunnelFluids();
 
-	IItemDefinition p2PTunnelEU();
+    IItemDefinition p2PTunnelEU();
 
-	IItemDefinition p2PTunnelFE();
+    IItemDefinition p2PTunnelFE();
 
-	IItemDefinition p2PTunnelGTEU();
+    IItemDefinition p2PTunnelGTEU();
 
-	IItemDefinition p2PTunnelLight();
+    IItemDefinition p2PTunnelLight();
 
-	// IItemDefinition p2PTunnelOpenComputers();
+    // IItemDefinition p2PTunnelOpenComputers();
 
-	IItemDefinition cableAnchor();
+    IItemDefinition cableAnchor();
 
-	IItemDefinition monitor();
+    IItemDefinition monitor();
 
-	IItemDefinition semiDarkMonitor();
+    IItemDefinition semiDarkMonitor();
 
-	IItemDefinition darkMonitor();
+    IItemDefinition darkMonitor();
 
-	IItemDefinition interfaceTerminal();
+    IItemDefinition interfaceTerminal();
 
-	IItemDefinition patternTerminal();
+    IItemDefinition patternTerminal();
 
-	IItemDefinition expandedProcessingPatternTerminal();
+    IItemDefinition expandedProcessingPatternTerminal();
 
-	IItemDefinition craftingTerminal();
+    IItemDefinition interfaceConfigurationTerminal();
 
-	IItemDefinition terminal();
+    IItemDefinition fluidInterfaceConfigurationTerminal();
 
-	IItemDefinition storageMonitor();
+    IItemDefinition craftingTerminal();
 
-	IItemDefinition conversionMonitor();
+    IItemDefinition terminal();
 
-	IItemDefinition fluidTerminal();
+    IItemDefinition storageMonitor();
 
-	IItemDefinition fluidImportBus();
+    IItemDefinition conversionMonitor();
 
-	IItemDefinition fluidExportBus();
+    IItemDefinition fluidTerminal();
 
-	IItemDefinition fluidStorageBus();
+    IItemDefinition fluidImportBus();
 
-	IItemDefinition fluidLevelEmitter();
+    IItemDefinition fluidExportBus();
 
-	IItemDefinition fluidAnnihilationPlane();
+    IItemDefinition fluidStorageBus();
 
-	IItemDefinition fluidFormationnPlane();
+    IItemDefinition fluidLevelEmitter();
+
+    IItemDefinition fluidAnnihilationPlane();
+
+    IItemDefinition fluidFormationnPlane();
 }

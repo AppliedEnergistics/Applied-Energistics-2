@@ -80,6 +80,7 @@ public final class ApiParts implements IParts {
     private final IItemDefinition patternTerminal;
     private final IItemDefinition expandedProcessingPatternTerminal;
     private final IItemDefinition interfaceConfigurationTerminal;
+    private final IItemDefinition fluidInterfaceConfigurationTerminal;
     private final IItemDefinition craftingTerminal;
     private final IItemDefinition terminal;
     private final IItemDefinition storageMonitor;
@@ -141,6 +142,7 @@ public final class ApiParts implements IParts {
         this.patternTerminal = new DamagedItemDefinition("part.terminal.pattern", itemPart.createPart(PartType.PATTERN_TERMINAL));
         this.expandedProcessingPatternTerminal = new DamagedItemDefinition("part.terminal.expanded_processing_pattern", itemPart.createPart(PartType.EXPANDED_PROCESSING_PATTERN_TERMINAL));
         this.interfaceConfigurationTerminal = new DamagedItemDefinition("part.terminal.interface_configuration_terminal", itemPart.createPart(PartType.INTERFACE_CONFIGURATION_TERMINAL));
+        this.fluidInterfaceConfigurationTerminal = new DamagedItemDefinition("part.terminal.fluid_interface_configuration_terminal", itemPart.createPart(PartType.FLUID_INTERFACE_CONFIGURATION_TERMINAL));
         this.craftingTerminal = new DamagedItemDefinition("part.terminal.crafting", itemPart.createPart(PartType.CRAFTING_TERMINAL));
         this.terminal = new DamagedItemDefinition("part.terminal", itemPart.createPart(PartType.TERMINAL));
         this.storageMonitor = new DamagedItemDefinition("part.monitor.storage", itemPart.createPart(PartType.STORAGE_MONITOR));
@@ -357,6 +359,16 @@ public final class ApiParts implements IParts {
     @Override
     public IItemDefinition expandedProcessingPatternTerminal() {
         return this.expandedProcessingPatternTerminal;
+    }
+
+    @Override
+    public IItemDefinition interfaceConfigurationTerminal() {
+        return this.interfaceConfigurationTerminal;
+    }
+
+    @Override
+    public IItemDefinition fluidInterfaceConfigurationTerminal() {
+        return this.fluidInterfaceConfigurationTerminal;
     }
 
     @Override

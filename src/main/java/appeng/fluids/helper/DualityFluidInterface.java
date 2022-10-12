@@ -21,9 +21,13 @@ package appeng.fluids.helper;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
 import appeng.api.config.Upgrades;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.IUpgradeableHost;
+import appeng.api.implementations.tiles.ICraftingMachine;
 import appeng.api.networking.GridFlags;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionHost;
@@ -46,7 +50,10 @@ import appeng.core.settings.TickRates;
 import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
+import appeng.helpers.ICustomNameObject;
+import appeng.helpers.IInterfaceHost;
 import appeng.me.GridAccessException;
+import appeng.me.GridNodeCollection;
 import appeng.me.helpers.AENetworkProxy;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIFluidHandler;
@@ -54,24 +61,40 @@ import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
+import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import gregtech.api.block.machines.BlockMachine;
+import gregtech.api.metatileentity.MetaTileEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Optional;
 
 
 public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost, IConfigurableFluidInventory {
     public static final int NUMBER_OF_TANKS = 6;
     public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
-
+    private static final Collection<Block> BAD_BLOCKS = new HashSet<>(100);
     private final ConfigManager cm = new ConfigManager(this);
     private final AENetworkProxy gridProxy;
     private final IFluidInterfaceHost iHost;
@@ -93,6 +116,9 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
     public DualityFluidInterface(final AENetworkProxy networkProxy, final IFluidInterfaceHost ih) {
         this.gridProxy = networkProxy;
         this.gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
+
+        this.cm.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
+
         this.iHost = ih;
 
         this.mySource = new MachineSource(this.iHost);
@@ -190,6 +216,90 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
     public DimensionalCoord getLocation() {
         return new DimensionalCoord(this.iHost.getTileEntity());
+    }
+
+    private boolean sameGrid(final IGrid grid) throws GridAccessException {
+        return grid == this.gridProxy.getGrid();
+    }
+
+    public String getTermName() {
+        final TileEntity hostTile = this.iHost.getTileEntity();
+        final World hostWorld = hostTile.getWorld();
+
+        if (((ICustomNameObject) this.iHost).hasCustomInventoryName()) {
+            return ((ICustomNameObject) this.iHost).getCustomInventoryName();
+        }
+
+        final EnumSet<EnumFacing> possibleDirections = this.iHost.getTargets();
+        for (final EnumFacing direction : possibleDirections) {
+            final BlockPos targ = hostTile.getPos().offset(direction);
+            final TileEntity directedTile = hostWorld.getTileEntity(targ);
+
+            if (directedTile == null) {
+                continue;
+            }
+
+            if (directedTile instanceof IFluidInterfaceHost) {
+                try {
+                    if (((IFluidInterfaceHost) directedTile).getDualityFluidInterface().sameGrid(this.gridProxy.getGrid())) {
+                        continue;
+                    }
+                } catch (final GridAccessException e) {
+                    continue;
+                }
+            }
+
+            final InventoryAdaptor adaptor = InventoryAdaptor.getAdaptor(directedTile, direction.getOpposite());
+            if (directedTile instanceof ICraftingMachine || adaptor != null) {
+                if (adaptor != null && !adaptor.hasSlots()) {
+                    continue;
+                }
+
+                final IBlockState directedBlockState = hostWorld.getBlockState(targ);
+                final Block directedBlock = directedBlockState.getBlock();
+                ItemStack what = new ItemStack(directedBlock, 1, directedBlock.getMetaFromState(directedBlockState));
+
+                if (Loader.isModLoaded("gregtech") && directedBlock instanceof BlockMachine) {
+                    MetaTileEntity metaTileEntity = Platform.getMetaTileEntity(directedTile.getWorld(), directedTile.getPos());
+                    if (metaTileEntity != null) {
+                        return metaTileEntity.getMetaFullName();
+                    }
+                }
+
+                try {
+                    Vec3d from = new Vec3d(hostTile.getPos().getX() + 0.5, hostTile.getPos().getY() + 0.5, hostTile.getPos().getZ() + 0.5);
+                    from = from.addVector(direction.getFrontOffsetX() * 0.501, direction.getFrontOffsetY() * 0.501, direction.getFrontOffsetZ() * 0.501);
+                    final Vec3d to = from.addVector(direction.getFrontOffsetX(), direction.getFrontOffsetY(), direction.getFrontOffsetZ());
+                    final RayTraceResult mop = hostWorld.rayTraceBlocks(from, to, true);
+                    if (mop != null && !BAD_BLOCKS.contains(directedBlock)) {
+                        if (mop.getBlockPos().equals(directedTile.getPos())) {
+                            final ItemStack g = directedBlock.getPickBlock(directedBlockState, mop, hostWorld, directedTile.getPos(), null);
+                            if (!g.isEmpty()) {
+                                what = g;
+                            }
+                        }
+                    }
+                } catch (final Throwable t) {
+                    BAD_BLOCKS.add(directedBlock); // nope!
+                }
+
+                if (what.getItem() != Items.AIR) {
+                    return what.getItem().getItemStackDisplayName(what);
+                }
+
+                final Item item = Item.getItemFromBlock(directedBlock);
+                if (item == Items.AIR) {
+                    return directedBlock.getUnlocalizedName();
+                }
+            }
+        }
+
+        return "Nothing";
+    }
+
+    public long getSortValue() {
+        final TileEntity te = this.iHost.getTileEntity();
+        return (te.getPos().getZ() << 24) ^ (te.getPos().getX() << 8) ^ te.getPos().getY();
     }
 
     public boolean hasCapability(Capability<?> capabilityClass, EnumFacing facing) {

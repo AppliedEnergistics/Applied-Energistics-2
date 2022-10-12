@@ -19,6 +19,7 @@
 package appeng.core.sync.packets;
 
 
+import appeng.container.implementations.ContainerFluidInterfaceConfigurationTerminal;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -75,6 +76,8 @@ public class PacketTargetFluidStack extends AppEngPacket {
             ((ContainerFluidTerminal) player.openContainer).setTargetStack(this.stack);
         } else if (player.openContainer instanceof ContainerFluidInterface) {
             ((ContainerFluidInterface) player.openContainer).setTargetStack(this.stack);
+        } else if (player.openContainer instanceof ContainerFluidInterfaceConfigurationTerminal) {
+            ((ContainerFluidInterfaceConfigurationTerminal) player.openContainer).setTargetStack(this.stack);
         }
     }
 }
