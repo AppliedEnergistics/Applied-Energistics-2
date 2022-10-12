@@ -87,9 +87,8 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
         final IAEFluidStack fluid = this.tank.getFluidInSlot(this.slot);
         if (fluid != null && fluid.getStackSize() > 0) {
             String desc = fluid.getFluid().getLocalizedName(fluid.getFluidStack());
-            String amountToText = fluid.getStackSize() + "mB";
 
-            return desc + "\n" + amountToText;
+            return desc + "\n" + fluid.getStackSize() + "/" + this.tank.getTankProperties()[this.slot].getCapacity() + "mB";
         }
         return null;
     }

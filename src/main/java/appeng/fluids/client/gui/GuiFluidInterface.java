@@ -63,8 +63,8 @@ public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerH
         final IAEFluidTank fluidTank = this.host.getDualityFluidInterface().getTanks();
 
         for (int i = 0; i < DualityFluidInterface.NUMBER_OF_TANKS; ++i) {
-            this.guiSlots.add(new GuiFluidTank(fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, 35 + 18 * i, 53, 16, 68));
-            this.guiSlots.add(new GuiFluidSlot(configFluids, i, i, 35 + 18 * i, 35));
+            this.guiSlots.add(new GuiFluidTank(fluidTank, i, DualityFluidInterface.NUMBER_OF_TANKS + i, 8 + 18 * i, 53, 16, 68));
+            this.guiSlots.add(new GuiFluidSlot(configFluids, i, i, 8 + 18 * i, 35));
         }
 
         this.priority = new GuiTabButton(this.getGuiLeft() + 154, this.getGuiTop(), 2 + 4 * 16, GuiText.Priority.getLocal(), this.itemRender);
@@ -78,8 +78,8 @@ public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerH
     @Override
     public void drawFG(int offsetX, int offsetY, int mouseX, int mouseY) {
         this.fontRenderer.drawString(this.getGuiDisplayName(GuiText.FluidInterface.getLocal()), 8, 6, 4210752);
-        this.fontRenderer.drawString(GuiText.Config.getLocal(), 35, 6 + 11 + 7, 4210752);
-        this.fontRenderer.drawString(GuiText.StoredFluids.getLocal(), 35, 6 + 112 + 7, 4210752);
+        this.fontRenderer.drawString(GuiText.Config.getLocal(), 8, 6 + 11 + 7, 4210752);
+        this.fontRenderer.drawString(GuiText.StoredFluids.getLocal(), 8, 6 + 112 + 7, 4210752);
         this.fontRenderer.drawString(GuiText.inventory.getLocal(), 8, this.ySize - 96 + 3, 4210752);
     }
 

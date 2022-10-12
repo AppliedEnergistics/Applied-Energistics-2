@@ -59,10 +59,14 @@ import appeng.me.helpers.MachineSource;
 import appeng.me.storage.MEMonitorIFluidHandler;
 import appeng.me.storage.MEMonitorPassThrough;
 import appeng.me.storage.NullInventory;
+import appeng.parts.automation.StackUpgradeInventory;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.metatileentity.MetaTileEntity;
 import net.minecraft.block.Block;
@@ -88,11 +92,12 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 
-public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IUpgradeableHost, IConfigManagerHost, IConfigurableFluidInventory {
-    public static final int NUMBER_OF_TANKS = 6;
+public class DualityFluidInterface implements IGridTickable, IStorageMonitorable, IAEFluidInventory, IAEAppEngInventory, IUpgradeableHost, IConfigManagerHost, IConfigurableFluidInventory {
+    public static final int NUMBER_OF_TANKS = 9;
     public static final int TANK_CAPACITY = Fluid.BUCKET_VOLUME * 4;
     private static final Collection<Block> BAD_BLOCKS = new HashSet<>(100);
     private final ConfigManager cm = new ConfigManager(this);
@@ -100,6 +105,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
     private final IFluidInterfaceHost iHost;
     private final IActionSource mySource;
     private final IActionSource interfaceRequestSource;
+    private final UpgradeInventory upgrades;
     private boolean hasConfig = false;
     private final IStorageMonitorableAccessor accessor = this::getMonitorable;
     private final AEFluidInventory tanks = new AEFluidInventory(this, NUMBER_OF_TANKS, TANK_CAPACITY);
@@ -117,6 +123,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
         this.gridProxy = networkProxy;
         this.gridProxy.setFlags(GridFlags.REQUIRE_CHANNEL);
 
+        this.upgrades = new StackUpgradeInventory(this.gridProxy.getMachineRepresentation(), this, 2);
         this.cm.registerSetting(Settings.INTERFACE_TERMINAL, YesNo.YES);
 
         this.iHost = ih;
@@ -382,16 +389,17 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
             this.requireWork[slot] = work.setStackSize(-work.getStackSize());
             return;
         } else if (req != null) {
+            int tankSize = (int) (Math.pow(4, this.getInstalledUpgrades(Upgrades.CAPACITY) + 1) * Fluid.BUCKET_VOLUME);
             if (stored == null || stored.getStackSize() == 0) // need to add stuff!
             {
                 this.requireWork[slot] = req.copy();
-                this.requireWork[slot].setStackSize(TANK_CAPACITY);
+                this.requireWork[slot].setStackSize(tankSize);
                 return;
             } else if (req.equals(stored)) // same type ( qty different? )!
             {
-                if (stored.getStackSize() < TANK_CAPACITY) {
+                if (stored.getStackSize() != tankSize) {
                     this.requireWork[slot] = req.copy();
-                    this.requireWork[slot].setStackSize(TANK_CAPACITY - stored.getStackSize());
+                    this.requireWork[slot].setStackSize(tankSize - stored.getStackSize());
                     return;
                 }
             } else
@@ -512,12 +520,14 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
         data.setInteger("priority", this.priority);
         this.tanks.writeToNBT(data, "storage");
         this.config.writeToNBT(data, "config");
+        this.upgrades.writeToNBT(data, "upgrades");
     }
 
     public void readFromNBT(final NBTTagCompound data) {
         this.config.readFromNBT(data, "config");
         this.tanks.readFromNBT(data, "storage");
         this.priority = data.getInteger("priority");
+        this.upgrades.readFromNBT(data, "upgrades");
         this.readConfig();
     }
 
@@ -590,12 +600,29 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
     }
 
     @Override
+    public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
+        if (inv == this.upgrades) {
+            this.tanks.setCapacity((int) (Math.pow(4, this.getInstalledUpgrades(Upgrades.CAPACITY) + 1) * Fluid.BUCKET_VOLUME));
+            try {
+                this.gridProxy.getTick().alertDevice(this.gridProxy.getNode());
+            } catch (GridAccessException ignored) {
+            }
+            for (int x = 0; x < NUMBER_OF_TANKS; x++) {
+                this.updatePlan(x);
+            }
+        }
+    }
+
+    @Override
     public IConfigManager getConfigManager() {
         return this.cm;
     }
 
     @Override
     public IItemHandler getInventoryByName(String name) {
+        if (name.equals("upgrades")) {
+            return this.upgrades;
+        }
         return null;
     }
 
@@ -609,7 +636,18 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
 
     @Override
     public int getInstalledUpgrades(Upgrades u) {
-        return 0;
+        if (this.upgrades == null) {
+            return 0;
+        }
+        return this.upgrades.getInstalledUpgrades(u);
+    }
+
+    public void addDrops(final List<ItemStack> drops) {
+        for (final ItemStack is : this.upgrades) {
+            if (!is.isEmpty()) {
+                drops.add(is);
+            }
+        }
     }
 
     @Override

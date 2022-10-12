@@ -20,14 +20,18 @@ package appeng.fluids.container;
 
 
 import appeng.api.config.SecurityPermissions;
+import appeng.api.config.Upgrades;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.api.util.IConfigManager;
+import appeng.container.guisync.GuiSync;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketTargetFluidStack;
 import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.helper.FluidSyncHelper;
 import appeng.fluids.helper.IFluidInterfaceHost;
+import appeng.fluids.util.AEFluidInventory;
 import appeng.fluids.util.AEFluidStack;
+import appeng.fluids.util.IAEFluidInventory;
 import appeng.fluids.util.IAEFluidTank;
 import appeng.helpers.InventoryAction;
 import appeng.util.IConfigManagerHost;
@@ -35,10 +39,13 @@ import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -51,6 +58,9 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable implemen
     private IConfigManagerHost gui;
     // Holds the fluid the client wishes to extract, or null for insert
     private IAEFluidStack clientRequestedTargetFluid = null;
+
+    @GuiSync(7)
+    public int capacityUpgrades = 0;
 
     public ContainerFluidInterface(final InventoryPlayer ip, final IFluidInterfaceHost te) {
         super(ip, te.getDualityFluidInterface().getHost());
@@ -82,13 +92,26 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable implemen
 
         if (Platform.isServer()) {
             this.tankSync.sendDiff(this.listeners);
+            if (capacityUpgrades != getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY)) {
+                capacityUpgrades = getUpgradeable().getInstalledUpgrades(Upgrades.CAPACITY);
+            }
         }
 
         super.detectAndSendChanges();
     }
 
     @Override
+    public void onUpdate(final String field, final Object oldValue, final Object newValue) {
+        super.onUpdate(field, oldValue, newValue);
+        if (Platform.isClient() && field.equals("capacityUpgrades")) {
+            this.capacityUpgrades = (int) newValue;
+            ((AEFluidInventory) this.myDuality.getTanks()).setCapacity((int) (Math.pow(4, this.capacityUpgrades + 1) * Fluid.BUCKET_VOLUME));
+        }
+    }
+
+    @Override
     protected void setupConfig() {
+        this.setupUpgrades();
     }
 
     @Override
@@ -209,7 +232,7 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable implemen
 
     @Override
     public int availableUpgrades() {
-        return 0;
+        return 2;
     }
 
     @Override
