@@ -93,6 +93,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
             NBTTagCompound ingredient = inTag.getCompoundTagAt(x);
             final ItemStack gs = new ItemStack(ingredient);
 
+            if (ingredient.hasKey("stackSize")) {
+                gs.setCount(ingredient.getInteger("stackSize"));
+            }
+
             if (!ingredient.hasNoTags() && gs.isEmpty()) {
                 throw new IllegalArgumentException("No pattern here!");
             }
@@ -123,6 +127,10 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
             for (int x = 0; x < outTag.tagCount(); x++) {
                 NBTTagCompound resultItemTag = outTag.getCompoundTagAt(x);
                 final ItemStack gs = new ItemStack(resultItemTag);
+
+                if (resultItemTag.hasKey("stackSize")) {
+                    gs.setCount(resultItemTag.getInteger("stackSize"));
+                }
 
                 if (!resultItemTag.hasNoTags() && gs.isEmpty()) {
                     throw new IllegalArgumentException("No pattern here!");

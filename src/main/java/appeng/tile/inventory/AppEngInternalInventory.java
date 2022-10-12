@@ -25,6 +25,8 @@ import appeng.util.inv.InvOperation;
 import appeng.util.inv.filter.IAEItemFilter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -152,6 +154,27 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         data.setTag(name, this.serializeNBT());
     }
 
+    @Override
+    public NBTTagCompound serializeNBT() {
+        NBTTagList nbtTagList = new NBTTagList();
+        for (int i = 0; i < stacks.size(); i++) {
+            ItemStack is = stacks.get(i);
+            if (!is.isEmpty()) {
+                NBTTagCompound itemTag = new NBTTagCompound();
+                itemTag.setInteger("Slot", i);
+                if (is.getCount() > is.getMaxStackSize()) {
+                    itemTag.setInteger("stackSize", stacks.get(i).getCount());
+                }
+                stacks.get(i).writeToNBT(itemTag);
+                nbtTagList.appendTag(itemTag);
+            }
+        }
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setTag("Items", nbtTagList);
+        nbt.setInteger("Size", stacks.size());
+        return nbt;
+    }
+
     public void readFromNBT(final NBTTagCompound data, final String name) {
         final NBTTagCompound c = data.getCompoundTag(name);
         if (c != null) {
@@ -161,6 +184,24 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
 
     public void readFromNBT(final NBTTagCompound data) {
         this.deserializeNBT(data);
+    }
+
+    @Override
+    public void deserializeNBT(NBTTagCompound nbt) {
+        setSize(nbt.hasKey("Size", Constants.NBT.TAG_INT) ? nbt.getInteger("Size") : stacks.size());
+        NBTTagList tagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < tagList.tagCount(); i++) {
+            NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
+            int slot = itemTags.getInteger("Slot");
+            if (slot >= 0 && slot < stacks.size()) {
+                stacks.set(slot, new ItemStack(itemTags));
+                if (itemTags.hasKey("stackSize")) {
+                    int stackSize = itemTags.getInteger("stackSize");
+                    stacks.get(slot).setCount(stackSize);
+                }
+            }
+        }
+        onLoad();
     }
 
     @Override
