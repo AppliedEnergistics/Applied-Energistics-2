@@ -73,9 +73,11 @@ repositories {
         }
     }
     
-    // For Patchouli
-    maven { 
-    	url 'https://maven.blamejared.com' 
+    maven {
+    	url "https://maven.blamejared.com"
+        content {
+            includeGroup "vazkii.patchouli"
+        }
     }
 }
 

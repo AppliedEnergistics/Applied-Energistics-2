@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "name": "patchouli.ae2.guidebook_name",
   "landing_text": "patchouli.ae2.guidebook_landingtext",
   "use_resource_pack": true, 
@@ -9,11 +10,11 @@
   "nameplate_color": "8A5BA4",
   "link_color": "8A5BA4",
   "link_hover_color": "D7BBEC",
-  "version": 1,
-  "creative_tab": "ae2.main",
   "macros": {
     "$(item)": "$(#582E70)",
     "$(thing)": "$(#582E70)",
     "$(todo)": "$(#FF0000)"
-  }
+  },
+  "dont_generate_book": true,
+  "custom_book_item": "ae2:tablet"
 }

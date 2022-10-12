@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import appeng.items.tools.TabletItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -262,6 +263,8 @@ public final class AEItems {
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL2 = item("2³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_2, p -> new SpatialStorageCellItem(p.stacksTo(1), 2));
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL16 = item("16³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_16, p -> new SpatialStorageCellItem(p.stacksTo(1), 16));
     public static final ItemDefinition<SpatialStorageCellItem> SPATIAL_CELL128 = item("128³ Spatial Storage Cell", AEItemIds.SPATIAL_CELL_128, p -> new SpatialStorageCellItem(p.stacksTo(1), 128));
+
+    public static final ItemDefinition<Item> TABLET = item("Mysterious Tablet", AEItemIds.TABLET, p -> new TabletItem(p.stacksTo(1)));
 
     ///
     /// UNSUPPORTED DEV TOOLS
