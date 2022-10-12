@@ -749,7 +749,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 // make sure strange things didn't happen...
                 // TODO: check if OK
                 final ItemStack canExtract = adaptor.simulateRemove((int) diff, toStore.getDefinition(), null);
-                if (canExtract.isEmpty() || canExtract.getCount() != diff) {
+                if (canExtract.isEmpty()) {
                     changed = true;
                     throw new GridAccessException();
                 }
@@ -765,8 +765,6 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     changed = true;
                     final ItemStack removed = adaptor.removeItems((int) diff, ItemStack.EMPTY, null);
                     if (removed.isEmpty()) {
-                        throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
-                    } else if (removed.getCount() != diff) {
                         throw new IllegalStateException("bad attempt at managing inventory. ( removeItems )");
                     }
                 }

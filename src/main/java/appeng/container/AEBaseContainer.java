@@ -48,6 +48,7 @@ import appeng.helpers.InventoryAction;
 import appeng.me.helpers.PlayerSource;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
+import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
@@ -387,10 +388,7 @@ public abstract class AEBaseContainer extends Container {
 
                             if (Platform.itemComparisons().isSameItem(tis, t)) // t.isItemEqual(tis))
                             {
-                                int maxSize = t.getMaxStackSize();
-                                if (maxSize > d.getSlotStackLimit()) {
-                                    maxSize = d.getSlotStackLimit();
-                                }
+                                int maxSize = d.getSlotStackLimit();
 
                                 int placeAble = maxSize - t.getCount();
 
@@ -406,9 +404,7 @@ public abstract class AEBaseContainer extends Container {
                                 if (tis.getCount() <= 0) {
                                     clickSlot.putStack(ItemStack.EMPTY);
                                     d.onSlotChanged();
-
-                                    // if ( hasMETiles ) updateClient();
-
+                                    
                                     this.updateSlot(clickSlot);
                                     this.updateSlot(d);
                                     return ItemStack.EMPTY;
@@ -587,6 +583,20 @@ public abstract class AEBaseContainer extends Container {
                             is = hand.copy();
                             is.setCount(1);
                             s.putStack(is);
+                        }
+                        break;
+                    case HALVE:
+                        if (s.getStack().getCount() > 1) {
+                            ItemStack halved = s.getStack().copy();
+                            halved.setCount(s.getStack().getCount() / 2);
+                            s.putStack(halved);
+                        }
+                        break;
+                    case DOUBLE:
+                        ItemStack doubled = s.getStack().copy();
+                        if (s.getStack().getCount() * 2 > 0) {
+                            doubled.setCount(Math.min(s.getSlotStackLimit(), s.getStack().getCount() * 2));
+                            s.putStack(doubled);
                         }
                         break;
                     case CREATIVE_DUPLICATE:

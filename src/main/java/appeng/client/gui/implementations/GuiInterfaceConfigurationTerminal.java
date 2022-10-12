@@ -52,6 +52,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.DimensionManager;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
@@ -213,8 +214,14 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
         if (slot instanceof SlotDisconnected) {
             final ItemStack stack = slot.getStack();
             if (stack != ItemStack.EMPTY) {
-                InventoryAction direction = wheel > 0 ? InventoryAction.PLACE_SINGLE : InventoryAction.PICKUP_SINGLE;
-                final PacketInventoryAction p = new PacketInventoryAction(direction, slot.getSlotIndex(), ((SlotDisconnected) slot).getSlot().getId());
+                final PacketInventoryAction p;
+                if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+                    InventoryAction direction = wheel > 0 ? InventoryAction.DOUBLE : InventoryAction.HALVE;
+                    p = new PacketInventoryAction(direction, slot.getSlotIndex(), ((SlotDisconnected) slot).getSlot().getId());
+                } else {
+                    InventoryAction direction = wheel > 0 ? InventoryAction.PLACE_SINGLE : InventoryAction.PICKUP_SINGLE;
+                    p = new PacketInventoryAction(direction, slot.getSlotIndex(), ((SlotDisconnected) slot).getSlot().getId());
+                }
                 NetworkHandler.instance().sendToServer(p);
             }
         } else {

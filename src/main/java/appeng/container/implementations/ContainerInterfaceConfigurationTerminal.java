@@ -223,6 +223,18 @@ public final class ContainerInterfaceConfigurationTerminal extends AEBaseContain
                     }
 
                     break;
+                case HALVE:
+                    if (inSlot.getCount() > 1) {
+                        ItemStack halved = inSlot.copy();
+                        halved.setCount(inSlot.getCount() / 2);
+                        ItemHandlerUtil.setStackInSlot(theSlot, 0, halved);
+                    }
+                    break;
+                case DOUBLE:
+                    ItemStack doubled = inSlot.copy();
+                    doubled.setCount(Math.min(512, inSlot.getCount() * 2));
+                    ItemHandlerUtil.setStackInSlot(theSlot, 0, doubled);
+                    break;
                 default:
                     return;
             }

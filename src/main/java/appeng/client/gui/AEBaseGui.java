@@ -191,6 +191,14 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
         GlStateManager.disableDepth();
     }
 
+    @Nonnull
+    @Override
+    public List<String> getItemToolTip(@Nonnull ItemStack itemStack) {
+        List<String> l = super.getItemToolTip(itemStack);
+        l.add(1, TextFormatting.GRAY + String.valueOf(itemStack.getCount()));
+        return l;
+    }
+
     public List<Rectangle> getJEIExclusionArea() {
         return Collections.emptyList();
     }
@@ -723,8 +731,14 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
         if (slot instanceof SlotFake) {
             final ItemStack stack = slot.getStack();
             if (stack != ItemStack.EMPTY) {
-                InventoryAction direction = wheel > 0 ? InventoryAction.PLACE_SINGLE : InventoryAction.PICKUP_SINGLE;
-                final PacketInventoryAction p = new PacketInventoryAction(direction, slot.slotNumber, 0);
+                final PacketInventoryAction p;
+                if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+                    InventoryAction direction = wheel > 0 ? InventoryAction.DOUBLE : InventoryAction.HALVE;
+                    p = new PacketInventoryAction(direction, slot.slotNumber, 0);
+                } else {
+                    InventoryAction direction = wheel > 0 ? InventoryAction.PLACE_SINGLE : InventoryAction.PICKUP_SINGLE;
+                    p = new PacketInventoryAction(direction, slot.slotNumber, 0);
+                }
                 NetworkHandler.instance().sendToServer(p);
             }
         }

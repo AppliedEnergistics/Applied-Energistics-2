@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -86,7 +87,38 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         if (!simulate) {
             this.previousStack = this.getStackInSlot(slot).copy();
         }
-        return super.insertItem(slot, stack, simulate);
+
+        if (stack.isEmpty())
+            return ItemStack.EMPTY;
+
+        validateSlotIndex(slot);
+
+        ItemStack existing = this.stacks.get(slot);
+
+        int limit = maxStack[slot];
+
+        if (!existing.isEmpty()) {
+            if (!ItemHandlerHelper.canItemStacksStack(stack, existing))
+                return stack;
+
+            limit -= existing.getCount();
+        }
+
+        if (limit <= 0)
+            return stack;
+
+        boolean reachedLimit = stack.getCount() > limit;
+
+        if (!simulate) {
+            if (existing.isEmpty()) {
+                this.stacks.set(slot, reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, limit) : stack);
+            } else {
+                existing.grow(reachedLimit ? limit : stack.getCount());
+            }
+            onContentsChanged(slot);
+        }
+
+        return reachedLimit ? ItemHandlerHelper.copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
     @Override
@@ -99,7 +131,30 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         if (!simulate) {
             this.previousStack = this.getStackInSlot(slot).copy();
         }
-        return super.extractItem(slot, amount, simulate);
+        if (amount == 0)
+            return ItemStack.EMPTY;
+
+        validateSlotIndex(slot);
+
+        ItemStack existing = this.stacks.get(slot);
+
+        if (existing.isEmpty())
+            return ItemStack.EMPTY;
+
+        if (existing.getCount() <= amount) {
+            if (!simulate) {
+                this.stacks.set(slot, ItemStack.EMPTY);
+                onContentsChanged(slot);
+            }
+            return existing;
+        } else {
+            if (!simulate) {
+                this.stacks.set(slot, ItemHandlerHelper.copyStackWithSize(existing, existing.getCount() - amount));
+                onContentsChanged(slot);
+            }
+
+            return ItemHandlerHelper.copyStackWithSize(existing, amount);
+        }
     }
 
     @Override

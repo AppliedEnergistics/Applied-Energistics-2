@@ -63,6 +63,11 @@ public class OptionalSlotFake extends SlotFake implements IOptionalSlot {
     }
 
     @Override
+    public int getSlotStackLimit() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
     public boolean isRenderDisabled() {
         return this.renderDisabled;
     }
