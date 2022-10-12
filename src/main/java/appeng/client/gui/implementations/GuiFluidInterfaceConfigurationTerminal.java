@@ -390,9 +390,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
 
         boolean foundMatchingItemStack = false;
 
-        final String displayName = Platform
-                .getItemDisplayName(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createStack(iaeFluidStack))
-                .toLowerCase();
+        final String displayName = Platform.getFluidDisplayName(iaeFluidStack).toLowerCase();
 
         for (String term : searchTerm.split(" ")) {
             if (term.length() > 1 && (term.startsWith("-") || term.startsWith("!"))) {
