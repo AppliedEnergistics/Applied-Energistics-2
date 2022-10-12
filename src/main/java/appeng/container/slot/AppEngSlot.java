@@ -96,7 +96,9 @@ public class AppEngSlot extends Slot {
 
         if (this.isDisplay()) {
             this.setDisplay(false);
-            return this.getDisplayStack();
+            ItemStack retStack = this.getDisplayStack().copy();
+            retStack.setCount(1);
+            return retStack;
         }
 
         return this.itemHandler.getStackInSlot(this.index);

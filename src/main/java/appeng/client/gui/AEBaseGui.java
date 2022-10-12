@@ -29,17 +29,8 @@ import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.AppEngCraftingSlot;
-import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.*;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
-import appeng.container.slot.IOptionalSlot;
-import appeng.container.slot.SlotCraftingTerm;
-import appeng.container.slot.SlotDisabled;
-import appeng.container.slot.SlotFake;
-import appeng.container.slot.SlotInaccessible;
-import appeng.container.slot.SlotOutput;
-import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -82,18 +73,13 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import yalter.mousetweaks.api.IMTModGuiContainer2;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static appeng.integration.modules.jei.JEIPlugin.aeGuiHandler;
@@ -905,8 +891,8 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                     }
                 }
 
-                if (s instanceof SlotFake) {
-                    ((SlotFake) s).setDisplay(true);
+                if (s instanceof AppEngSlot) {
+                    ((AppEngSlot) s).setDisplay(true);
                     this.zLevel = 100.0F;
                     this.itemRender.zLevel = 100.0F;
 
@@ -918,15 +904,10 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                     this.itemRender.zLevel = 0.0F;
 
                     // Annoying but easier than trying to splice into render item
-                    super.drawSlot(new Size1Slot(new SlotItemHandler(((SlotFake) s).getItemHandler(), s.getSlotIndex(), s.xPos, s.yPos)));
-
-                    this.stackSizeRenderer.renderStackSize(this.fontRenderer, AEItemStack.fromItemStack(s.getStack()), s.xPos, s.yPos);
-                    return;
-                }
-
-                if (s instanceof AppEngSlot) {
-                    ((AppEngSlot) s).setDisplay(true);
                     super.drawSlot(s);
+
+                    this.stackSizeRenderer.renderStackSize(this.fontRenderer, AEItemStack.fromItemStack(((AppEngSlot) s).getDisplayStack()), s.xPos, s.yPos);
+                    return;
                 } else {
                     super.drawSlot(s);
                 }
