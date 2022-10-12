@@ -31,6 +31,7 @@ import appeng.block.networking.BlockEnergyCell;
 import appeng.me.GridAccessException;
 import appeng.tile.grid.AENetworkTile;
 import appeng.util.SettingsFrom;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -106,7 +107,7 @@ public class TileEnergyCell extends AENetworkTile implements IAEPowerStorage {
     }
 
     @Override
-    public void uploadSettings(final SettingsFrom from, final NBTTagCompound compound) {
+    public void uploadSettings(final SettingsFrom from, final NBTTagCompound compound, EntityPlayer player) {
         if (from == SettingsFrom.DISMANTLE_ITEM) {
             this.internalCurrentPower = compound.getDouble("internalCurrentPower");
         }

@@ -41,7 +41,7 @@ public enum PlayerMessages {
     DeviceNotLinked,
     StationCanNotBeLocated,
     SettingCleared,
-    ;
+    MissingPatternsToEncode;
 
     public ITextComponent get() {
         return new TextComponentTranslation(this.getName());

@@ -38,6 +38,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -301,7 +302,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
 
     public void onPlacement(final ItemStack stack, final EntityPlayer player, final EnumFacing side) {
         if (stack.hasTagCompound()) {
-            this.uploadSettings(SettingsFrom.DISMANTLE_ITEM, stack.getTagCompound());
+            this.uploadSettings(SettingsFrom.DISMANTLE_ITEM, stack.getTagCompound(), player);
         }
     }
 
@@ -311,7 +312,7 @@ public class AEBaseTile extends TileEntity implements IOrientable, ICommonTile, 
      * @param from     source of settings
      * @param compound compound of source
      */
-    public void uploadSettings(final SettingsFrom from, final NBTTagCompound compound) {
+    public void uploadSettings(final SettingsFrom from, final NBTTagCompound compound, EntityPlayer player) {
         if (compound != null && this instanceof IConfigurableObject) {
             final IConfigManager cm = ((IConfigurableObject) this).getConfigManager();
             if (cm != null) {

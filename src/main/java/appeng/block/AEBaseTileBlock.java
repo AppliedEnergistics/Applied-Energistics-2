@@ -301,7 +301,7 @@ public abstract class AEBaseTileBlock extends AEBaseBlock implements ITileEntity
                     final NBTTagCompound data = memoryCard.getData(heldItem);
 
                     if (this.getUnlocalizedName().equals(savedName)) {
-                        tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                        tileEntity.uploadSettings(SettingsFrom.MEMORY_CARD, data, player);
                         memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                     } else {
                         memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);

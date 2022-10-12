@@ -75,6 +75,7 @@ tile.appliedenergistics2.sky_stone_slab.name=Sky Stone Slabs
 // Chat Messages
 chat.appliedenergistics2.ChestCannotReadStorageCell=ME Chest cannot read storage cell.
 chat.appliedenergistics2.SettingCleared=Memory card cleared.
+chat.appliedenergistics2.MissingPatternsToEncode=Not enough patterns to finish copying
 chat.appliedenergistics2.OutOfRange=Wireless Out Of Range.
 chat.appliedenergistics2.InvalidMachine=Invalid Machine.
 chat.appliedenergistics2.LoadedSettings=Loaded device configuration from memory card.
