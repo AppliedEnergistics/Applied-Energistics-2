@@ -14,13 +14,17 @@ import java.util.Objects;
 public class AEFluidInventory implements IAEFluidTank {
     private final IAEFluidStack[] fluids;
     private final IAEFluidInventory handler;
-    private final int capacity;
+    private int capacity;
     private IFluidTankProperties[] props = null;
 
     public AEFluidInventory(final IAEFluidInventory handler, final int slots, final int capcity) {
         this.fluids = new IAEFluidStack[slots];
         this.handler = handler;
         this.capacity = capcity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     public AEFluidInventory(final IAEFluidInventory handler, final int slots) {
@@ -32,7 +36,7 @@ public class AEFluidInventory implements IAEFluidTank {
         if (slot >= 0 && slot < this.getSlots()) {
             if (Objects.equals(this.fluids[slot], fluid)) {
                 if (fluid != null && fluid.getStackSize() != this.fluids[slot].getStackSize()) {
-                    this.fluids[slot].setStackSize(Math.min(fluid.getStackSize(), this.capacity));
+                    this.fluids[slot].setStackSize(fluid.getStackSize());
                     this.onContentChanged(slot);
                 }
             } else {
@@ -40,7 +44,7 @@ public class AEFluidInventory implements IAEFluidTank {
                     this.fluids[slot] = null;
                 } else {
                     this.fluids[slot] = fluid.copy();
-                    this.fluids[slot].setStackSize(Math.min(fluid.getStackSize(), this.capacity));
+                    this.fluids[slot].setStackSize(fluid.getStackSize());
                 }
 
                 this.onContentChanged(slot);

@@ -60,6 +60,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.EnumSet;
+import java.util.List;
 
 
 public class PartFluidInterface extends PartBasicState implements IGridTickable, IStorageMonitorable, IFluidInterfaceHost, IPriorityHost, IConfigurableFluidInventory {
@@ -119,6 +120,11 @@ public class PartFluidInterface extends PartBasicState implements IGridTickable,
     public void writeToNBT(final NBTTagCompound data) {
         super.writeToNBT(data);
         this.duality.writeToNBT(data);
+    }
+
+    @Override
+    public void getDrops(final List<ItemStack> drops, final boolean wrenched) {
+        this.duality.addDrops(drops);
     }
 
     @Override
