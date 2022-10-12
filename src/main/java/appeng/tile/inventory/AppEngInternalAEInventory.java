@@ -52,6 +52,13 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
         this.inv = new IAEItemStack[s];
     }
 
+    public AppEngInternalAEInventory(final IAEAppEngInventory te, final int s, int stackSize) {
+        this.te = te;
+        this.size = s;
+        this.maxStack = stackSize;
+        this.inv = new IAEItemStack[s];
+    }
+
     public void setMaxStackSize(final int s) {
         this.maxStack = s;
     }
@@ -216,7 +223,7 @@ public class AppEngInternalAEInventory implements IItemHandlerModifiable, Iterab
 
     @Override
     public int getSlotLimit(int slot) {
-        return this.maxStack > 64 ? 64 : this.maxStack;
+        return this.maxStack;
     }
 
     @Override

@@ -289,7 +289,11 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.hasKey(which)) {
-                            current.getInventory().setStackInSlot(x, new ItemStack(invData.getCompoundTag(which)));
+                            NBTTagCompound tag = invData.getCompoundTag(which);
+                            current.getInventory().setStackInSlot(x, new ItemStack(tag));
+                            if (tag.hasKey("stackSize")) {
+                                current.getInventory().getStackInSlot(x).setCount(tag.getInteger("stackSize"));
+                            }
                         }
                     }
                 } catch (final NumberFormatException ignored) {
@@ -435,7 +439,7 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
         ClientDCInternalInv o = this.byId.get(id);
 
         if (o == null) {
-            this.byId.put(id, o = new ClientDCInternalInv(DualityInterface.NUMBER_OF_CONFIG_SLOTS, id, sortBy, string, 64));
+            this.byId.put(id, o = new ClientDCInternalInv(DualityInterface.NUMBER_OF_CONFIG_SLOTS, id, sortBy, string, 512));
             this.refreshList = true;
         }
 

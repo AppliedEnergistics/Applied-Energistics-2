@@ -184,7 +184,7 @@ public final class ContainerInterfaceConfigurationTerminal extends AEBaseContain
                     }
                     break;
                 case PLACE_SINGLE:
-                    if (inSlot.getMaxStackSize() > inSlot.getCount()) {
+                    if (inSlot.getCount() < inSlot.getMaxStackSize() * 8) {
                         inSlot.grow(1);
                         ItemHandlerUtil.setStackInSlot(theSlot, 0, inSlot);
                     }
@@ -299,6 +299,9 @@ public final class ContainerInterfaceConfigurationTerminal extends AEBaseContain
 
             if (!is.isEmpty()) {
                 is.writeToNBT(itemNBT);
+                if (is.getCount() > is.getMaxStackSize()) {
+                    itemNBT.setInteger("stackSize", is.getCount());
+                }
             }
 
             tag.setTag(Integer.toString(x + offset), itemNBT);

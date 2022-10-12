@@ -545,23 +545,20 @@ public abstract class AEBaseContainer extends Container {
 
                 switch (action) {
                     case PICKUP_OR_SET_DOWN:
-
                         if (hand.isEmpty()) {
                             s.putStack(ItemStack.EMPTY);
                         } else {
                             s.putStack(hand.copy());
                         }
-
                         break;
                     case PLACE_SINGLE:
-
                         if (!hand.isEmpty()) {
                             final ItemStack is = hand.copy();
                             is.setCount(1);
                             s.putStack(is);
                         } else {
                             final ItemStack is = s.getStack().copy();
-                            if (is.getCount() < is.getMaxStackSize())
+                            if (is.getCount() < is.getMaxStackSize() * 8)
                                 is.grow(1);
                             s.putStack(is);
                         }
@@ -575,7 +572,6 @@ public abstract class AEBaseContainer extends Container {
                         }
                         break;
                     case SPLIT_OR_PLACE_SINGLE:
-
                         ItemStack is = s.getStack();
                         if (!is.isEmpty()) {
                             if (hand.isEmpty()) {
@@ -586,14 +582,12 @@ public abstract class AEBaseContainer extends Container {
                                 is = hand.copy();
                                 is.setCount(1);
                             }
-
                             s.putStack(is);
                         } else if (!hand.isEmpty()) {
                             is = hand.copy();
                             is.setCount(1);
                             s.putStack(is);
                         }
-
                         break;
                     case CREATIVE_DUPLICATE:
                     case MOVE_REGION:
@@ -606,9 +600,9 @@ public abstract class AEBaseContainer extends Container {
             if (action == InventoryAction.MOVE_REGION) {
                 final List<Slot> from = new ArrayList<>();
 
-                for (final Object j : this.inventorySlots) {
-                    if (j instanceof Slot && j.getClass() == s.getClass() && !(j instanceof SlotCraftingTerm)) {
-                        from.add((Slot) j);
+                for (final Slot j : this.inventorySlots) {
+                    if (j != null && j.getClass() == s.getClass() && !(j instanceof SlotCraftingTerm)) {
+                        from.add(j);
                     }
                 }
 
