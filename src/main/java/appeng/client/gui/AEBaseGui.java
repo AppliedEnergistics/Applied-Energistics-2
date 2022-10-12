@@ -29,8 +29,17 @@ import appeng.client.me.SlotDisconnected;
 import appeng.client.me.SlotME;
 import appeng.client.render.StackSizeRenderer;
 import appeng.container.AEBaseContainer;
-import appeng.container.slot.*;
+import appeng.container.slot.AppEngCraftingSlot;
+import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.AppEngSlot.hasCalculatedValidness;
+import appeng.container.slot.IOptionalSlot;
+import appeng.container.slot.SlotCraftingTerm;
+import appeng.container.slot.SlotDisabled;
+import appeng.container.slot.SlotFake;
+import appeng.container.slot.SlotInaccessible;
+import appeng.container.slot.SlotOutput;
+import appeng.container.slot.SlotPatternTerm;
+import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
@@ -40,6 +49,7 @@ import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
+import appeng.util.item.AEItemStack;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
@@ -66,6 +76,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.items.SlotItemHandler;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -75,8 +86,14 @@ import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.*;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static appeng.integration.modules.jei.JEIPlugin.aeGuiHandler;
@@ -886,6 +903,25 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                         this.zLevel = 0.0F;
                         this.itemRender.zLevel = 0.0F;
                     }
+                }
+
+                if (s instanceof SlotFake) {
+                    ((SlotFake) s).setDisplay(true);
+                    this.zLevel = 100.0F;
+                    this.itemRender.zLevel = 100.0F;
+
+                    if (!this.isPowered()) {
+                        drawRect(s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                    }
+
+                    this.zLevel = 0.0F;
+                    this.itemRender.zLevel = 0.0F;
+
+                    // Annoying but easier than trying to splice into render item
+                    super.drawSlot(new Size1Slot(new SlotItemHandler(((SlotFake) s).getItemHandler(), s.getSlotIndex(), s.xPos, s.yPos)));
+
+                    this.stackSizeRenderer.renderStackSize(this.fontRenderer, AEItemStack.fromItemStack(s.getStack()), s.xPos, s.yPos);
+                    return;
                 }
 
                 if (s instanceof AppEngSlot) {
