@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.Block;
 
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
+import appeng.items.materials.EnergyCardItem;
 import appeng.items.materials.UpgradeCardItem;
 
 /**
@@ -91,16 +92,6 @@ public final class Upgrades {
     }
 
     /**
-     * Sets an upgrade card's "power multiplier" for use in powered tools with an internal AE battery. Useful for
-     * add-ons wishing to implement a custom card with its own power multiplier for use in base AE2 tools.
-     */
-    public static synchronized void setPowerMultiplierForCard(ItemLike card, @Nonnegative int multiplier) {
-        if (isUpgradeCardItem(card)) {
-            ((UpgradeCardItem) card.asItem()).setPowerMultiplier(multiplier);
-        }
-    }
-
-    /**
      * Returns a cumulative power multiplier based on the amount of "energy cards" fitted onto a tool. Returns 0 if no
      * such cards exist within the upgrade inventory.
      */
@@ -108,8 +99,8 @@ public final class Upgrades {
     public static synchronized int getMaxPowerMultiplier(IUpgradeInventory upgrades) {
         int multiplier = 0;
         for (var card : upgrades) {
-            if (isUpgradeCardItem(card)) {
-                multiplier += ((UpgradeCardItem) card.getItem()).getPowerMultiplier();
+            if (card.getItem() instanceof EnergyCardItem ec) {
+                multiplier += ec.getEnergyMultiplier();
             }
         }
         return multiplier;

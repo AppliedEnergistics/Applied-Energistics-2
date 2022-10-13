@@ -46,18 +46,8 @@ import appeng.util.InteractionUtil;
 
 public class UpgradeCardItem extends AEBaseItem implements AEToolItem {
 
-    private int powerMultiplier = 0;
-
     public UpgradeCardItem(Item.Properties properties) {
         super(properties);
-    }
-
-    public int getPowerMultiplier() {
-        return this.powerMultiplier;
-    }
-
-    public void setPowerMultiplier(int multiplier) {
-        this.powerMultiplier = multiplier;
     }
 
     @Environment(EnvType.CLIENT)
