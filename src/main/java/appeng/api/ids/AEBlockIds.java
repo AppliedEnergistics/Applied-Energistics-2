@@ -106,6 +106,7 @@ public final class AEBlockIds {
     /// DECORATIVE BLOCKS
     ///
     public static final ResourceLocation QUARTZ_BLOCK = id("quartz_block");
+    public static final ResourceLocation CUT_QUARTZ_BLOCK = id("cut_quartz_block");
     public static final ResourceLocation SMOOTH_QUARTZ_BLOCK = id("smooth_quartz_block");
     public static final ResourceLocation QUARTZ_BRICKS = id("quartz_bricks");
     public static final ResourceLocation QUARTZ_PILLAR = id("quartz_pillar");
@@ -127,6 +128,7 @@ public final class AEBlockIds {
     public static final ResourceLocation SKY_STONE_SMALL_BRICK_STAIRS = id("sky_stone_small_brick_stairs");
     public static final ResourceLocation FLUIX_STAIRS = id("fluix_stairs");
     public static final ResourceLocation QUARTZ_STAIRS = id("quartz_stairs");
+    public static final ResourceLocation CUT_QUARTZ_STAIRS = id("cut_quartz_stairs");
     public static final ResourceLocation SMOOTH_QUARTZ_STAIRS = id("smooth_quartz_stairs");
     public static final ResourceLocation QUARTZ_BRICK_STAIRS = id("quartz_brick_stairs");
     public static final ResourceLocation CHISELED_QUARTZ_STAIRS = id("chiseled_quartz_stairs");
@@ -141,6 +143,7 @@ public final class AEBlockIds {
     public static final ResourceLocation SKY_STONE_SMALL_BRICK_WALL = id("sky_stone_small_brick_wall");
     public static final ResourceLocation FLUIX_WALL = id("fluix_wall");
     public static final ResourceLocation QUARTZ_WALL = id("quartz_wall");
+    public static final ResourceLocation CUT_QUARTZ_WALL = id("cut_quartz_wall");
     public static final ResourceLocation SMOOTH_QUARTZ_WALL = id("smooth_quartz_wall");
     public static final ResourceLocation QUARTZ_BRICK_WALL = id("quartz_brick_wall");
     public static final ResourceLocation CHISELED_QUARTZ_WALL = id("chiseled_quartz_wall");
@@ -155,6 +158,7 @@ public final class AEBlockIds {
     public static final ResourceLocation SKY_STONE_SMALL_BRICK_SLAB = id("sky_stone_small_brick_slab");
     public static final ResourceLocation FLUIX_SLAB = id("fluix_slab");
     public static final ResourceLocation QUARTZ_SLAB = id("quartz_slab");
+    public static final ResourceLocation CUT_QUARTZ_SLAB = id("cut_quartz_slab");
     public static final ResourceLocation SMOOTH_QUARTZ_SLAB = id("smooth_quartz_slab");
     public static final ResourceLocation QUARTZ_BRICK_SLAB = id("quartz_brick_slab");
     public static final ResourceLocation CHISELED_QUARTZ_SLAB = id("chiseled_quartz_slab");

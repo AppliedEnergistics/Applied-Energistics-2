@@ -54,6 +54,11 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
         slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
         wall(AEBlocks.QUARTZ_WALL, "block/quartz_block");
 
+        simpleBlockAndItem(AEBlocks.CUT_QUARTZ_BLOCK);
+        stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
+        slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
+        wall(AEBlocks.CUT_QUARTZ_WALL, "block/cut_quartz_block");
+
         simpleBlockAndItem(AEBlocks.SMOOTH_QUARTZ_BLOCK);
         stairsBlock(AEBlocks.SMOOTH_QUARTZ_STAIRS, AEBlocks.SMOOTH_QUARTZ_BLOCK);
         slabBlock(AEBlocks.SMOOTH_QUARTZ_SLAB, AEBlocks.SMOOTH_QUARTZ_BLOCK);

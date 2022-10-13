@@ -52,38 +52,47 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
         skyStoneBlock(consumer, AEBlocks.SMOOTH_SKY_STONE_BLOCK, AEBlocks.SKY_STONE_BRICK);
         skyStoneBlock(consumer, AEBlocks.SKY_STONE_BRICK, AEBlocks.SKY_STONE_SMALL_BRICK);
 
-        ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_BRICKS, 4)
+        ShapedRecipeBuilder.shaped(AEBlocks.CUT_QUARTZ_BLOCK, 4)
                 .pattern("aa")
                 .pattern("aa")
                 .define('a', AEBlocks.QUARTZ_BLOCK)
                 .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("decorative/cut_quartz_block"));
+        ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_BRICKS, 4)
+                .pattern("aa")
+                .pattern("aa")
+                .define('a', AEBlocks.CUT_QUARTZ_BLOCK)
+                .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_bricks"));
         ShapedRecipeBuilder.shaped(AEBlocks.QUARTZ_PILLAR, 2)
                 .pattern("a")
                 .pattern("a")
-                .define('a', AEBlocks.QUARTZ_BLOCK)
-                .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+                .define('a', AEBlocks.CUT_QUARTZ_BLOCK)
+                .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_pillar"));
         ShapedRecipeBuilder.shaped(AEBlocks.CHISELED_QUARTZ_BLOCK, 2)
                 .pattern("a")
                 .pattern("a")
-                .define('a', AEBlocks.QUARTZ_SLAB)
-                .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+                .define('a', AEBlocks.CUT_QUARTZ_SLAB)
+                .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_SLAB), has(AEBlocks.CUT_QUARTZ_SLAB))
                 .save(consumer, AppEng.makeId("decorative/chiseled_quartz_block"));
 
         SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(AEBlocks.QUARTZ_BLOCK), AEBlocks.SMOOTH_QUARTZ_BLOCK, .1f, 200)
-                .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+                .smelting(Ingredient.of(AEBlocks.CUT_QUARTZ_BLOCK), AEBlocks.SMOOTH_QUARTZ_BLOCK, .1f, 200)
+                .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/smooth_quartz_block"));
 
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.QUARTZ_BLOCK), AEBlocks.QUARTZ_BRICKS)
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.QUARTZ_BLOCK), AEBlocks.CUT_QUARTZ_BLOCK)
                 .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("decorative/cut_quartz_block_from_stonecutting"));
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.CUT_QUARTZ_BLOCK), AEBlocks.QUARTZ_BRICKS)
+                .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_bricks_from_stonecutting"));
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.QUARTZ_BLOCK), AEBlocks.QUARTZ_PILLAR)
-                .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.CUT_QUARTZ_BLOCK), AEBlocks.QUARTZ_PILLAR)
+                .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_pillar_from_stonecutting"));
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.QUARTZ_BLOCK), AEBlocks.CHISELED_QUARTZ_BLOCK)
-                .unlockedBy(criterionName(AEBlocks.QUARTZ_BLOCK), has(AEBlocks.QUARTZ_BLOCK))
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(AEBlocks.CUT_QUARTZ_BLOCK), AEBlocks.CHISELED_QUARTZ_BLOCK)
+                .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/chiseled_quartz_block_from_stonecutting"));
 
         ShapedRecipeBuilder.shaped(AEBlocks.LIGHT_DETECTOR)

@@ -50,6 +50,8 @@ public class DecorationRecipes extends AE2RecipeProvider {
                     AEBlocks.SKY_STONE_SMALL_BRICK_WALL },
             { AEBlocks.FLUIX_BLOCK, AEBlocks.FLUIX_SLAB, AEBlocks.FLUIX_STAIRS, AEBlocks.FLUIX_WALL },
             { AEBlocks.QUARTZ_BLOCK, AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_WALL },
+            { AEBlocks.CUT_QUARTZ_BLOCK, AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_STAIRS,
+                    AEBlocks.CUT_QUARTZ_WALL },
             { AEBlocks.SMOOTH_QUARTZ_BLOCK, AEBlocks.SMOOTH_QUARTZ_SLAB, AEBlocks.SMOOTH_QUARTZ_STAIRS,
                     AEBlocks.SMOOTH_QUARTZ_WALL },
             { AEBlocks.QUARTZ_BRICKS, AEBlocks.QUARTZ_BRICK_SLAB, AEBlocks.QUARTZ_BRICK_STAIRS,
