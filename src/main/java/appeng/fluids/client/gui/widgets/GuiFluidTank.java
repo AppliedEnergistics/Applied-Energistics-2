@@ -41,6 +41,7 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
     private final int slot;
     private final int width;
     private final int height;
+    private boolean darkened = false;
 
     public GuiFluidTank(IAEFluidTank tank, int slot, int id, int x, int y, int w, int h) {
         super(id, x, y);
@@ -48,6 +49,15 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
         this.slot = slot;
         this.width = w;
         this.height = h;
+    }
+
+    public GuiFluidTank(IAEFluidTank tank, int slot, int id, int x, int y, int w, int h, boolean darkened) {
+        super(id, x, y);
+        this.tank = tank;
+        this.slot = slot;
+        this.width = w;
+        this.height = h;
+        this.darkened = darkened;
     }
 
     @Override
@@ -66,6 +76,11 @@ public class GuiFluidTank extends GuiCustomSlot implements ITooltip {
                 float red = (fluid.getFluid().getColor() >> 16 & 255) / 255.0F;
                 float green = (fluid.getFluid().getColor() >> 8 & 255) / 255.0F;
                 float blue = (fluid.getFluid().getColor() & 255) / 255.0F;
+                if (darkened) {
+                    red = red * 0.4F;
+                    green = green * 0.4F;
+                    blue = blue * 0.4F;
+                }
                 GlStateManager.color(red, green, blue);
 
                 TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(fluid.getFluid().getStill().toString());
