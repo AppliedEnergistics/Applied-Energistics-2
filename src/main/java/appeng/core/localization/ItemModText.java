@@ -20,7 +20,7 @@ public enum ItemModText implements LocalizationEnum {
     MOVE_ITEMS("Move items"),
     ENCODE_PATTERN("Encode pattern"),
     // Display of AE2-specific REI/JEI entries
-    THROWING_IN_WATER_CATEGORY("Throwing In Water"),
+    TRANSFORM_CATEGORY("Item Transformation"),
     P2P_API_ATTUNEMENT("Attune with any:"),
     P2P_TUNNEL_ATTUNEMENT("P2P Tunnel Attunement"),
     P2P_TAG_ATTUNEMENT("Attune with any shown item"),

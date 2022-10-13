@@ -1,4 +1,4 @@
-package appeng.integration.modules.rei.throwinginwater;
+package appeng.integration.modules.rei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -26,26 +26,27 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
+import dev.architectury.fluid.FluidStack;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.plugin.client.entry.FluidEntryDefinition;
 
-public class WaterBlockRenderer implements Renderer {
-    private int z;
-    private final FakeWorld fakeWorld = new FakeWorld();
-    private final BlockState waterBlock = Fluids.WATER.defaultFluidState().createLegacyBlock();
-
+public class FluidBlockRenderer extends FluidEntryDefinition.FluidEntryRenderer {
     @Override
-    public void render(PoseStack poseStack, Rectangle rectangle, int mouseX, int mouseY, float delta) {
+    public void render(EntryStack<FluidStack> entry, PoseStack matrices, Rectangle rectangle, int mouseX, int mouseY,
+            float delta) {
+        var fluidState = entry.getValue().getFluid().defaultFluidState();
+
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
-        var renderType = ItemBlockRenderTypes.getRenderLayer(waterBlock.getFluidState());
+        var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
 
         renderType.setupRenderState();
         RenderSystem.disableDepthTest();
 
         var worldMatStack = RenderSystem.getModelViewStack();
         worldMatStack.pushPose();
-        worldMatStack.translate(rectangle.x, rectangle.y, z);
+        worldMatStack.translate(rectangle.x, rectangle.y, entry.getZ());
 
         FogRenderer.setupNoFog();
 
@@ -61,10 +62,10 @@ public class WaterBlockRenderer implements Renderer {
         builder.begin(renderType.mode(), renderType.format());
         blockRenderer.renderLiquid(
                 BlockPos.ZERO,
-                fakeWorld,
+                new FakeWorld(fluidState),
                 builder,
-                waterBlock,
-                waterBlock.getFluidState());
+                fluidState.createLegacyBlock(),
+                fluidState);
         if (builder.building()) {
             tesselator.end();
         }
@@ -96,17 +97,13 @@ public class WaterBlockRenderer implements Renderer {
         RenderSystem.applyModelViewMatrix();
     }
 
-    @Override
-    public int getZ() {
-        return z;
-    }
-
-    @Override
-    public void setZ(int z) {
-        this.z = z;
-    }
-
     private class FakeWorld implements BlockAndTintGetter {
+        private final FluidState fluidState;
+
+        public FakeWorld(FluidState fluidState) {
+            this.fluidState = fluidState;
+        }
+
         @Override
         public float getShade(Direction direction, boolean bl) {
             return 1.0f;
@@ -141,7 +138,7 @@ public class WaterBlockRenderer implements Renderer {
         @Override
         public BlockState getBlockState(BlockPos blockPos) {
             if (blockPos.equals(BlockPos.ZERO)) {
-                return waterBlock;
+                return fluidState.createLegacyBlock();
             } else {
                 return Blocks.AIR.defaultBlockState();
             }
@@ -150,9 +147,9 @@ public class WaterBlockRenderer implements Renderer {
         @Override
         public FluidState getFluidState(BlockPos blockPos) {
             if (blockPos.equals(BlockPos.ZERO)) {
-                return waterBlock.getFluidState();
+                return fluidState;
             } else {
-                return Fluids.LAVA.defaultFluidState();
+                return Fluids.EMPTY.defaultFluidState();
             }
         }
 

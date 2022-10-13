@@ -1,4 +1,6 @@
-package appeng.integration.modules.jei.throwinginwater;
+package appeng.integration.modules.jei;
+
+import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -7,14 +9,16 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 
-import org.jetbrains.annotations.Nullable;
-
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.LightLayer;
@@ -26,27 +30,20 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
-import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
+import mezz.jei.api.ingredients.IIngredientRenderer;
 
-public class WaterBlockRenderer implements IDrawable {
-    private final FakeWorld fakeWorld = new FakeWorld();
-    private final BlockState waterBlock = Fluids.WATER.defaultFluidState().createLegacyBlock();
-
+public class FluidBlockRenderer implements IIngredientRenderer<IJeiFluidIngredient> {
     @Override
-    public int getWidth() {
-        return 14;
-    }
+    public void render(PoseStack stack, IJeiFluidIngredient ingredient) {
+        int xOffset = 0;
+        int yOffset = 0;
 
-    @Override
-    public int getHeight() {
-        return 14;
-    }
+        var fluidState = ingredient.getFluid().defaultFluidState();
 
-    @Override
-    public void draw(PoseStack stack, int xOffset, int yOffset) {
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
-        var renderType = ItemBlockRenderTypes.getRenderLayer(waterBlock.getFluidState());
+        var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
 
         renderType.setupRenderState();
         RenderSystem.disableDepthTest();
@@ -70,10 +67,10 @@ public class WaterBlockRenderer implements IDrawable {
         builder.begin(renderType.mode(), renderType.format());
         blockRenderer.renderLiquid(
                 BlockPos.ZERO,
-                fakeWorld,
+                new FakeWorld(fluidState),
                 builder,
-                waterBlock,
-                waterBlock.getFluidState());
+                fluidState.createLegacyBlock(),
+                fluidState);
         if (builder.building()) {
             tesselator.end();
         }
@@ -106,6 +103,12 @@ public class WaterBlockRenderer implements IDrawable {
     }
 
     private class FakeWorld implements BlockAndTintGetter {
+        private final FluidState fluidState;
+
+        public FakeWorld(FluidState fluidState) {
+            this.fluidState = fluidState;
+        }
+
         @Override
         public float getShade(Direction direction, boolean bl) {
             return 1.0f;
@@ -131,7 +134,6 @@ public class WaterBlockRenderer implements IDrawable {
             return colorResolver.getColor(BuiltinRegistries.BIOME.getOrThrow(Biomes.THE_VOID), 0, 0);
         }
 
-        @Nullable
         @Override
         public BlockEntity getBlockEntity(BlockPos blockPos) {
             return null;
@@ -140,7 +142,7 @@ public class WaterBlockRenderer implements IDrawable {
         @Override
         public BlockState getBlockState(BlockPos blockPos) {
             if (blockPos.equals(BlockPos.ZERO)) {
-                return waterBlock;
+                return fluidState.createLegacyBlock();
             } else {
                 return Blocks.AIR.defaultBlockState();
             }
@@ -149,9 +151,9 @@ public class WaterBlockRenderer implements IDrawable {
         @Override
         public FluidState getFluidState(BlockPos blockPos) {
             if (blockPos.equals(BlockPos.ZERO)) {
-                return waterBlock.getFluidState();
+                return fluidState;
             } else {
-                return Fluids.LAVA.defaultFluidState();
+                return Fluids.EMPTY.defaultFluidState();
             }
         }
 
@@ -164,5 +166,11 @@ public class WaterBlockRenderer implements IDrawable {
         public int getMinBuildHeight() {
             return 0;
         }
+    }
+
+    @Override
+    public List<Component> getTooltip(IJeiFluidIngredient ingredient, TooltipFlag tooltipFlag) {
+        FluidVariant fluidVariant = FluidVariant.of(ingredient.getFluid());
+        return FluidVariantRendering.getTooltip(fluidVariant, tooltipFlag);
     }
 }

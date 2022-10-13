@@ -12,7 +12,6 @@
     "DynamicLadderMixin",
     "ItemEntityMixin",
     "OnNeighborUpdateMixin",
-    "ServerLevelCustomItemEntityMixin",
     "BreakSpeedMixin",
     "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin",

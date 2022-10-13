@@ -401,10 +401,6 @@ public final class AEConfig {
         return COMMON.tinyTntBlockDamage.get();
     }
 
-    public boolean isInWorldSingularityEnabled() {
-        return COMMON.inWorldSingularity.get();
-    }
-
     public boolean isDisassemblyCraftingEnabled() {
         return COMMON.disassemblyCrafting.get();
     }
@@ -604,8 +600,6 @@ public final class AEConfig {
         public final EnumOption<ChannelMode> channels;
         public final IntegerOption pathfindingStepsPerTick;
 
-        // Crafting
-        public final BooleanOption inWorldSingularity;
         public final BooleanOption disassemblyCrafting;
         public final IntegerOption growthAcceleratorSpeed;
 
@@ -688,8 +682,6 @@ public final class AEConfig {
                     "When true: simulate extraction of all the network's contents when starting a crafting job calculation. When false: use the cached available content list (same as terminals). Enabling might work a bit better, but it will significantly reduce performance.");
 
             var crafting = root.subsection("crafting");
-            inWorldSingularity = crafting.addBoolean("inWorldSingularity", true,
-                    "Enable the in-world crafting of singularities.");
             disassemblyCrafting = crafting.addBoolean("disassemblyCrafting", true,
                     "Enable shift-clicking with the crafting units in hand to disassemble them.");
             growthAcceleratorSpeed = crafting.addInt("growthAccelerator", 10, 1, 100,

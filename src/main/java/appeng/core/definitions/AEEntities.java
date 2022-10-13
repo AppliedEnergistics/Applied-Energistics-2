@@ -31,7 +31,6 @@ import net.minecraft.world.entity.EntityType.Builder;
 import net.minecraft.world.entity.EntityType.EntityFactory;
 import net.minecraft.world.entity.MobCategory;
 
-import appeng.entity.SingularityEntity;
 import appeng.entity.TinyTNTPrimedEntity;
 
 public final class AEEntities {
@@ -42,13 +41,6 @@ public final class AEEntities {
     public static Map<ResourceLocation, EntityType<?>> getEntityTypes() {
         return Collections.unmodifiableMap(ENTITY_TYPES);
     }
-
-    public static final EntityType<SingularityEntity> SINGULARITY = create(
-            "singularity",
-            "Singularity",
-            SingularityEntity::new,
-            MobCategory.MISC,
-            builder -> builder.sized(0.2f, 0.2f).clientTrackingRange(16).updateInterval(4));
 
     public static final EntityType<TinyTNTPrimedEntity> TINY_TNT_PRIMED = create(
             "tiny_tnt_primed",
