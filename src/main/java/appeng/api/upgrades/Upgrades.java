@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -33,6 +34,7 @@ public final class Upgrades {
     private static final Map<Item, List<Association>> ASSOCIATIONS = new IdentityHashMap<>();
     // Key is the upgrade cards item
     private static final Map<Item, List<Component>> UPGRADE_CARD_TOOLTIP_LINES = new IdentityHashMap<>();
+    private static final Map<Item, Integer> ENERGY_CARD_MULTIPLIERS = new IdentityHashMap<>();
 
     private Upgrades() {
     }
@@ -87,6 +89,31 @@ public final class Upgrades {
         }
 
         return 0;
+    }
+
+    /**
+     * Sets an upgrade card's "power multiplier" for use in powered tools with an internal AE battery. Useful for
+     * add-ons wishing to implement a custom card with its own power multiplier for use in base AE2 tools.
+     */
+    public static synchronized void setPowerMultiplierForCard(ItemLike card, @Nonnegative int multiplier) {
+        if (isUpgradeCardItem(card)) {
+            ((UpgradeCardItem) card.asItem()).setPowerMultiplier(multiplier);
+        }
+    }
+
+    /**
+     * Returns a cumulative power multiplier based on the amount of "energy cards" fitted onto a tool. Returns 0 if no
+     * such cards exist within the upgrade inventory.
+     */
+    @Nonnegative
+    public static synchronized int getMaxPowerMultiplier(IUpgradeInventory upgrades) {
+        int multiplier = 0;
+        for (var card : upgrades) {
+            if (isUpgradeCardItem(card)) {
+                multiplier += ((UpgradeCardItem) card.getItem()).getPowerMultiplier();
+            }
+        }
+        return multiplier;
     }
 
     /**

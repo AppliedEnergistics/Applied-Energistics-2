@@ -53,8 +53,8 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.api.upgrades.Upgrades;
 import appeng.api.util.IConfigManager;
-import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
@@ -77,7 +77,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        return 800d + 800d * getUpgrades(stack).getInstalledUpgrades(AEItems.ENERGY_CARD);
+        return 800d + 800d * Upgrades.getMaxPowerMultiplier(getUpgrades(stack));
     }
 
     /**
@@ -249,7 +249,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     }
 
     private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
-        setAEMaxPowerMultiplier(stack, 1 + upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD));
+        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getMaxPowerMultiplier(upgrades));
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {

@@ -61,11 +61,11 @@ import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.api.upgrades.Upgrades;
 import appeng.block.EnergyCellBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.FluidContainerHelper;
 import appeng.hooks.AEToolItem;
@@ -113,7 +113,7 @@ public class PortableCellItem extends AEBasePoweredItem
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        return 80d + 80d * getUpgrades(stack).getInstalledUpgrades(AEItems.ENERGY_CARD);
+        return 80d + 80d * Upgrades.getMaxPowerMultiplier(getUpgrades(stack));
     }
 
     /**
@@ -252,10 +252,9 @@ public class PortableCellItem extends AEBasePoweredItem
     }
 
     private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
-        var energyCards = upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD);
         // The energy card is crafted with a dense energy cell, while the portable cell just uses a normal energy cell
         // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
-        setAEMaxPowerMultiplier(stack, 1 + energyCards * 8);
+        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getMaxPowerMultiplier(upgrades) * 8);
     }
 
     @Override

@@ -39,6 +39,8 @@ public final class InitUpgrades {
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
         String portableCellGroup = GuiText.PortableCells.getTranslationKey();
 
+        Upgrades.setPowerMultiplierForCard(AEItems.ENERGY_CARD, 1);
+
         // Interface
         Upgrades.add(AEItems.CRAFTING_CARD, AEParts.INTERFACE, 1, interfaceGroup);
         Upgrades.add(AEItems.CRAFTING_CARD, AEBlocks.INTERFACE, 1, interfaceGroup);
