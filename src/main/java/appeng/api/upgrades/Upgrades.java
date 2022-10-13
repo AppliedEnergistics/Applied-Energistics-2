@@ -34,7 +34,6 @@ public final class Upgrades {
     private static final Map<Item, List<Association>> ASSOCIATIONS = new IdentityHashMap<>();
     // Key is the upgrade cards item
     private static final Map<Item, List<Component>> UPGRADE_CARD_TOOLTIP_LINES = new IdentityHashMap<>();
-    private static final Map<Item, Integer> ENERGY_CARD_MULTIPLIERS = new IdentityHashMap<>();
 
     private Upgrades() {
     }
