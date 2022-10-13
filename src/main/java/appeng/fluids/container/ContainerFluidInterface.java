@@ -234,9 +234,4 @@ public class ContainerFluidInterface extends ContainerFluidConfigurable implemen
     public int availableUpgrades() {
         return 2;
     }
-
-    @Override
-    public boolean hasToolbox() {
-        return false;
-    }
 }
