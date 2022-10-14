@@ -85,7 +85,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     if (project.runtime_itemlist_mod == "jei") {
-        modImplementation("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
+        modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
         }
 
@@ -98,8 +98,8 @@ dependencies {
         }
 
         // Manually override architectury TODO remove once REI's dependency is fixed
-        modRuntimeOnly "dev.architectury:architectury-fabric:6.2.43"
-        modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+        modLocalRuntime "dev.architectury:architectury-fabric:6.2.43"
+        modLocalRuntime modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     } else {
@@ -111,13 +111,13 @@ dependencies {
     }
 
     if (project.runtime_tooltip_mod == "wthit") {
-        modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+        modLocalRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     }
 
     if (project.runtime_tooltip_mod == "jade") {
-        modImplementation("curse.maven:jade-324717:${project.jade_file_id}") {
+        modLocalRuntime("curse.maven:jade-324717:${project.jade_file_id}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     } else {
