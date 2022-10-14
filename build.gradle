@@ -116,12 +116,12 @@ dependencies {
         }
     }
 
+    modCompileOnly("curse.maven:jade-324717:${project.jade_file_id}") {
+        exclude group: "net.fabricmc.fabric-api"
+    }
+
     if (project.runtime_tooltip_mod == "jade") {
         modLocalRuntime("curse.maven:jade-324717:${project.jade_file_id}") {
-            exclude group: "net.fabricmc.fabric-api"
-        }
-    } else {
-        modCompileOnly("curse.maven:jade-324717:${project.jade_file_id}") {
             exclude group: "net.fabricmc.fabric-api"
         }
     }
