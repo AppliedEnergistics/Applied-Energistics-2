@@ -19,7 +19,6 @@
 package appeng.init.client;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 
@@ -36,7 +35,6 @@ public final class InitEntityRendering {
 
     public static void init(RendererConsumer consumer) {
         consumer.register(AEEntities.TINY_TNT_PRIMED, TinyTNTPrimedRenderer::new);
-        consumer.register(AEEntities.SINGULARITY, ItemEntityRenderer::new);
     }
 
     @FunctionalInterface

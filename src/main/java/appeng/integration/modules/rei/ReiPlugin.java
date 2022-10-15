@@ -67,8 +67,6 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.REIFacade;
-import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterCategory;
-import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterDisplay;
 import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
 import appeng.items.parts.FacadeItem;
@@ -99,7 +97,7 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        registry.add(new ThrowingInWaterCategory());
+        registry.add(new TransformCategory());
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new AttunementCategory());
@@ -112,6 +110,7 @@ public class ReiPlugin implements REIClientPlugin {
     public void registerDisplays(DisplayRegistry registry) {
         registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeWrapper::new);
         registry.registerRecipeFiller(ChargerRecipe.class, ChargerRecipe.TYPE, ChargerDisplay::new);
+        registry.registerRecipeFiller(TransformRecipe.class, TransformRecipe.TYPE, TransformRecipeWrapper::new);
 
         registry.add(new CondenserOutputDisplay(CondenserOutput.MATTER_BALLS));
         registry.add(new CondenserOutputDisplay(CondenserOutput.SINGULARITY));
@@ -120,12 +119,6 @@ public class ReiPlugin implements REIClientPlugin {
 
         if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
             registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
-        }
-
-        // Add displays for charged quartz transformation
-        for (var recipe : registry.getRecipeManager().byType(TransformRecipe.TYPE).values()) {
-            registry.add(
-                    new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
         }
     }
 
@@ -276,11 +269,6 @@ public class ReiPlugin implements REIClientPlugin {
             addDescription(registry, AEItems.ENGINEERING_PROCESSOR_PRESS,
                     GuiText.inWorldCraftingPresses.getTranslationKey());
             addDescription(registry, AEItems.SILICON_PRESS, GuiText.inWorldCraftingPresses.getTranslationKey());
-        }
-
-        if (AEConfig.instance().isInWorldSingularityEnabled()) {
-            addDescription(registry, AEItems.QUANTUM_ENTANGLED_SINGULARITY,
-                    GuiText.inWorldSingularity.getTranslationKey());
         }
 
         addDescription(registry, AEBlocks.CRANK, ItemModText.CRANK_DESCRIPTION.getTranslationKey());

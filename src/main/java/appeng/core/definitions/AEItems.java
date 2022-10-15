@@ -46,8 +46,6 @@ import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
-import appeng.entity.SingularityEntity;
-import appeng.items.materials.CustomEntityItem;
 import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
 import appeng.items.materials.StorageComponentItem;
@@ -235,9 +233,9 @@ public final class AEItems {
     public static final ItemDefinition<MaterialItem> FORMATION_CORE = item("Formation Core", AEItemIds.FORMATION_CORE, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> ANNIHILATION_CORE = item("Annihilation Core", AEItemIds.ANNIHILATION_CORE, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SKY_DUST = item("Sky Stone Dust", AEItemIds.SKY_DUST, MaterialItem::new);
-    public static final ItemDefinition<CustomEntityItem> ENDER_DUST = item("Ender Dust", AEItemIds.ENDER_DUST, p -> new CustomEntityItem(p, SingularityEntity::new));
-    public static final ItemDefinition<CustomEntityItem> SINGULARITY = item("Singularity", AEItemIds.SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
-    public static final ItemDefinition<CustomEntityItem> QUANTUM_ENTANGLED_SINGULARITY = item("Quantum Entangled Singularity", AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
+    public static final ItemDefinition<MaterialItem> ENDER_DUST = item("Ender Dust", AEItemIds.ENDER_DUST, MaterialItem::new);
+    public static final ItemDefinition<MaterialItem> SINGULARITY = item("Singularity", AEItemIds.SINGULARITY, MaterialItem::new);
+    public static final ItemDefinition<MaterialItem> QUANTUM_ENTANGLED_SINGULARITY = item("Quantum Entangled Singularity", AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, MaterialItem::new);
 
     ///
     /// CELLS

@@ -50,8 +50,6 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.JEIFacade;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterCategory;
-import appeng.integration.modules.jei.throwinginwater.ThrowingInWaterDisplay;
 import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
 import appeng.items.parts.FacadeItem;
@@ -88,7 +86,7 @@ public class JEIPlugin implements IModPlugin {
     public void registerCategories(IRecipeCategoryRegistration registry) {
         var jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(
-                new ThrowingInWaterCategory(jeiHelpers.getGuiHelper()),
+                new TransformCategory(jeiHelpers),
                 new CondenserCategory(jeiHelpers.getGuiHelper()),
                 new InscriberRecipeCategory(jeiHelpers.getGuiHelper()),
                 new ChargerCategory(jeiHelpers),
@@ -127,19 +125,11 @@ public class JEIPlugin implements IModPlugin {
                 ImmutableList.of(CondenserOutput.MATTER_BALLS, CondenserOutput.SINGULARITY));
         registration.addRecipes(EntropyManipulatorCategory.TYPE,
                 List.copyOf(recipeManager.byType(EntropyRecipe.TYPE).values()));
+        registration.addRecipes(TransformCategory.RECIPE_TYPE,
+                List.copyOf(recipeManager.byType(TransformRecipe.TYPE).values()));
 
         registerP2PAttunement(registration);
         registerDescriptions(registration);
-
-        // Add displays for crystal growth
-        var inWater = new ArrayList<ThrowingInWaterDisplay>();
-
-        // Add displays for charged quartz transformation
-        for (var recipe : recipeManager.byType(TransformRecipe.TYPE).values()) {
-            inWater.add(
-                    new ThrowingInWaterDisplay(recipe.ingredients, new ItemStack(recipe.output(), recipe.count())));
-        }
-        registration.addRecipes(ThrowingInWaterCategory.RECIPE_TYPE, inWater);
 
         registration.addItemStackInfo(
                 AEBlocks.CRANK.stack(),
@@ -207,10 +197,6 @@ public class JEIPlugin implements IModPlugin {
                 GuiText.inWorldCraftingPresses.text());
         this.addDescription(registry, AEItems.SILICON_PRESS,
                 GuiText.inWorldCraftingPresses.text());
-
-        if (AEConfig.instance().isInWorldSingularityEnabled()) {
-            this.addDescription(registry, AEItems.QUANTUM_ENTANGLED_SINGULARITY, GuiText.inWorldSingularity.text());
-        }
     }
 
     private void addDescription(IRecipeRegistration registry, ItemDefinition<?> itemDefinition,
@@ -307,5 +293,4 @@ public class JEIPlugin implements IModPlugin {
 
         screen.renderTooltip(poseStack, textLines, Optional.empty(), x, y);
     }
-
 }

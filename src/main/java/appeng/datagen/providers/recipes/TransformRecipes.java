@@ -30,6 +30,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -40,6 +41,8 @@ import net.minecraft.world.level.ItemLike;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.datagen.providers.tags.ConventionTags;
+import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeSerializer;
 
 public class TransformRecipes extends AE2RecipeProvider {
@@ -49,30 +52,50 @@ public class TransformRecipes extends AE2RecipeProvider {
 
     @Override
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
-
+        TransformCircumstance water = TransformCircumstance.fluid(FluidTags.WATER);
         // Fluix crystals
-        transform(AEItems.FLUIX_CRYSTAL.asItem(), 2, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, Items.REDSTONE,
-                Items.QUARTZ).save(consumer, "fluix_crystals");
-
+        transform(AEItems.FLUIX_CRYSTAL.asItem(), 2, water,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, Items.REDSTONE, Items.QUARTZ)
+                        .save(consumer, "fluix_crystals");
         // Recycle dust back into crystals
-        transform(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
-                AEItems.CERTUS_QUARTZ_DUST).save(consumer, "certus_quartz_crystals");
-        transform(AEItems.FLUIX_CRYSTAL.asItem(), 1, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEItems.FLUIX_DUST)
-                .save(consumer, "fluix_crystal");
+        transform(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2, water,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEItems.CERTUS_QUARTZ_DUST)
+                        .save(consumer, "certus_quartz_crystals");
+        transform(AEItems.FLUIX_CRYSTAL.asItem(), 1, water,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEItems.FLUIX_DUST)
+                        .save(consumer, "fluix_crystal");
         // Restore budding quartz
-        transform(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
-                AEBlocks.QUARTZ_BLOCK).save(consumer, "damaged_budding_quartz");
-        transform(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
-                AEBlocks.DAMAGED_BUDDING_QUARTZ).save(consumer, "chipped_budding_quartz");
-        transform(AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
-                AEBlocks.CHIPPED_BUDDING_QUARTZ).save(consumer, "flawed_budding_quartz");
+        transform(AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1, water,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEBlocks.QUARTZ_BLOCK)
+                        .save(consumer, "damaged_budding_quartz");
+        transform(AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1, water,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEBlocks.DAMAGED_BUDDING_QUARTZ)
+                        .save(consumer, "chipped_budding_quartz");
+        transform(AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1, water,
+                AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEBlocks.CHIPPED_BUDDING_QUARTZ)
+                        .save(consumer, "flawed_budding_quartz");
+        // Entangled Singularities
+        transform(AEItems.QUANTUM_ENTANGLED_SINGULARITY.asItem(), 2, TransformCircumstance.EXPLOSION,
+                Ingredient.of(AEItems.SINGULARITY), Ingredient.of(ConventionTags.ENDER_PEARL_DUST))
+                        .save(consumer, "entangled_singularity");
+        transform(AEItems.QUANTUM_ENTANGLED_SINGULARITY.asItem(), 2, TransformCircumstance.EXPLOSION,
+                Ingredient.of(AEItems.SINGULARITY), Ingredient.of(ConventionTags.ENDER_PEARL))
+                        .save(consumer, "entangled_singularity_from_pearl");
+
     }
 
-    private TransformRecipeBuilder transform(Item output, int count, ItemLike... inputs) {
-        return new TransformRecipeBuilder(Stream.of(inputs).map(Ingredient::of).toList(), output, count);
+    private TransformRecipeBuilder transform(Item output, int count, TransformCircumstance circumstance,
+            ItemLike... inputs) {
+        return new TransformRecipeBuilder(Stream.of(inputs).map(Ingredient::of).toList(), output, count, circumstance);
     }
 
-    public record TransformRecipeBuilder(List<Ingredient> ingredients, Item output, int count) {
+    private TransformRecipeBuilder transform(Item output, int count, TransformCircumstance circumstance,
+            Ingredient... inputs) {
+        return new TransformRecipeBuilder(List.of(inputs), output, count, circumstance);
+    }
+
+    public record TransformRecipeBuilder(List<Ingredient> ingredients, Item output, int count,
+            TransformCircumstance circumstance) {
 
         public void save(Consumer<FinishedRecipe> consumer, String name) {
             consumer.accept(new Result(name));
@@ -92,6 +115,7 @@ public class TransformRecipes extends AE2RecipeProvider {
                 JsonArray inputs = new JsonArray();
                 ingredients.forEach(ingredient -> inputs.add(ingredient.toJson()));
                 json.add("ingredients", inputs);
+                json.add("circumstance", circumstance.toJson());
             }
 
             @Override

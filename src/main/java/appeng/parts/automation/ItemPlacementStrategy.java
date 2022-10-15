@@ -22,7 +22,6 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
-import appeng.hooks.AECustomEntityItem;
 import appeng.util.Platform;
 
 public class ItemPlacementStrategy implements PlacementStrategy {
@@ -119,17 +118,6 @@ public class ItemPlacementStrategy implements PlacementStrategy {
         // Create an ItemEntity already at the position of the plane.
         // We don't know the final position, but need it for its size.
         Entity entity = new ItemEntity(level, centerX, centerY, centerZ, is.copy());
-
-        // Replace it if there is a custom entity
-        if (is.getItem() instanceof AECustomEntityItem customEntityItem) {
-            var result = customEntityItem.replaceItemEntity((ServerLevel) level, (ItemEntity) entity, is);
-            // Destroy the old one, in case it's spawned somehow and replace with the new
-            // one.
-            if (result != null) {
-                entity.discard();
-                entity = result;
-            }
-        }
 
         // When spawning downwards, we have to take into account that it spawns it at
         // their "feet" and not center like x or z. So we move it up to be flush with
