@@ -24,14 +24,15 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
@@ -44,6 +45,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.parts.PartHelper;
 import appeng.api.util.AEAxisAlignedBB;
@@ -175,7 +177,7 @@ public class FacadeBuilder {
     }
 
     public Mesh getFacadeMesh(CableBusRenderState renderState, Supplier<RandomSource> rand,
-            Function<ResourceLocation, BakedModel> modelLookup) {
+            @Nullable RenderType renderType, EnumMap<Direction, ModelData> facadeModelData) {
         boolean transparent = PartHelper.getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();
@@ -212,10 +214,14 @@ public class FacadeBuilder {
             }
 
             BlockState blockState = facadeRenderState.getSourceBlock();
-            // If we aren't forcing transparency let the block decide if it should render.
-// FIXME FABRIC          if (layer != null && !RenderTypeLookup.canRenderInLayer(blockState, layer)) {
-// FIXME FABRIC              continue;
-// FIXME FABRIC          }
+            var dispatcher = Minecraft.getInstance().getBlockRenderer();
+            var model = dispatcher.getBlockModel(blockState);
+            var modelData = Objects.requireNonNullElse(facadeModelData.get(side), ModelData.EMPTY);
+
+            // If we aren't forcing transparency let the model decide if it should render.
+            if (renderType != null && !model.getRenderTypes(blockState, rand.get(), modelData).contains(renderType)) {
+                continue;
+            }
 
             AABB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
             AABB facadeBox = fullBounds;
@@ -264,9 +270,6 @@ public class FacadeBuilder {
             List<AABB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
             var facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
-            var dispatcher = Minecraft.getInstance().getBlockRenderer();
-            var model = dispatcher.getBlockModel(blockState);
-
             QuadFaceStripper faceStripper = new QuadFaceStripper(fullBounds, facadeMask);
             // Setup the kicker.
             QuadCornerKicker kicker = new QuadCornerKicker();
@@ -279,7 +282,7 @@ public class FacadeBuilder {
 
             for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
                 Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-                List<BakedQuad> quads = model.getQuads(blockState, cullFace, rand.get());
+                List<BakedQuad> quads = model.getQuads(blockState, cullFace, rand.get(), modelData, renderType);
 
                 for (BakedQuad quad : quads) {
                     QuadTinter quadTinter = null;

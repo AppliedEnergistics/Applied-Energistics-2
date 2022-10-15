@@ -33,6 +33,9 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.Weigher;
 
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -40,12 +43,15 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
@@ -71,6 +77,14 @@ public class CableBusBakedModel implements IDynamicBakedModel {
             Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH, // WEST
             Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
     };
+
+    /**
+     * Used to hold the ModelData for the block states of the facades.
+     * <p>
+     * We can't directly query it in {@link #getQuads(BlockState, Direction, RandomSource, ModelData, RenderType)} as we
+     * need a {@link BlockAndTintGetter}, so we query it in {@link #getModelData} and store it in a model property.
+     */
+    private static ModelProperty<EnumMap<Direction, ModelData>> FACADE_MODEL_DATA = new ModelProperty<>();
 
     private final LoadingCache<CableBusRenderState, List<BakedQuad>> cableModelCache;
 
@@ -99,6 +113,26 @@ public class CableBusBakedModel implements IDynamicBakedModel {
                         return model;
                     }
                 });
+    }
+
+    @Override
+    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos,
+            @NotNull BlockState state, @NotNull ModelData data) {
+        CableBusRenderState renderState = data.get(CableBusRenderState.PROPERTY);
+        if (renderState == null || renderState.getFacades().isEmpty()) {
+            return data;
+        }
+
+        var dispatcher = Minecraft.getInstance().getBlockRenderer();
+
+        EnumMap<Direction, ModelData> facadeModelData = new EnumMap<>(Direction.class);
+        for (var entry : renderState.getFacades().entrySet()) {
+            var side = entry.getKey();
+            var blockState = entry.getValue().getSourceBlock();
+            var model = dispatcher.getBlockModel(blockState);
+            facadeModelData.put(side, model.getModelData(level, pos, blockState, data));
+        }
+        return data.derive().with(FACADE_MODEL_DATA, facadeModelData).build();
     }
 
     @Override
@@ -159,8 +193,11 @@ public class CableBusBakedModel implements IDynamicBakedModel {
             }
         }
 
-        this.facadeBuilder.getFacadeMesh(renderState, () -> rand, this.partModels::get)
-                .forEach(qv -> quads.add(qv.toBlockBakedQuad()));
+        EnumMap<Direction, ModelData> facadeModelData = data.get(FACADE_MODEL_DATA);
+        if (facadeModelData != null) {
+            this.facadeBuilder.getFacadeMesh(renderState, () -> rand, renderType, facadeModelData)
+                    .forEach(qv -> quads.add(qv.toBlockBakedQuad()));
+        }
 
         return quads;
     }
