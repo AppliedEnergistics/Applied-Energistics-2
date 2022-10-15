@@ -46,7 +46,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
-import appeng.block.AEBaseBlockItemChargeable;
+import appeng.block.EnergyCellBlockItem;
 import appeng.block.crafting.CraftingBlockItem;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.block.crafting.CraftingUnitBlock;
@@ -179,8 +179,8 @@ public final class AEBlocks {
     public static final BlockDefinition<EnergyAcceptorBlock> ENERGY_ACCEPTOR = block("Energy Acceptor", AEBlockIds.ENERGY_ACCEPTOR, EnergyAcceptorBlock::new);
     public static final BlockDefinition<VibrationChamberBlock> VIBRATION_CHAMBER = block("Vibration Chamber", AEBlockIds.VIBRATION_CHAMBER, VibrationChamberBlock::new);
     public static final BlockDefinition<QuartzGrowthAcceleratorBlock> QUARTZ_GROWTH_ACCELERATOR = block("Crystal Growth Accelerator", AEBlockIds.QUARTZ_GROWTH_ACCELERATOR, QuartzGrowthAcceleratorBlock::new);
-    public static final BlockDefinition<EnergyCellBlock> ENERGY_CELL = block("Energy Cell", AEBlockIds.ENERGY_CELL, () -> new EnergyCellBlock(200000.0, 200), AEBaseBlockItemChargeable::new);
-    public static final BlockDefinition<EnergyCellBlock> DENSE_ENERGY_CELL = block("Dense Energy Cell", AEBlockIds.DENSE_ENERGY_CELL, () -> new EnergyCellBlock(1600000.0, 1600), AEBaseBlockItemChargeable::new);
+    public static final BlockDefinition<EnergyCellBlock> ENERGY_CELL = block("Energy Cell", AEBlockIds.ENERGY_CELL, () -> new EnergyCellBlock(200000, 800, 200), EnergyCellBlockItem::new);
+    public static final BlockDefinition<EnergyCellBlock> DENSE_ENERGY_CELL = block("Dense Energy Cell", AEBlockIds.DENSE_ENERGY_CELL, () -> new EnergyCellBlock(1600000, 1600, 1600), EnergyCellBlockItem::new);
     public static final BlockDefinition<CreativeEnergyCellBlock> CREATIVE_ENERGY_CELL = block("Creative Energy Cell", AEBlockIds.CREATIVE_ENERGY_CELL, CreativeEnergyCellBlock::new);
 
     public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block("Crafting Unit", AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.UNIT));
