@@ -46,8 +46,6 @@ import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
-import appeng.entity.SingularityEntity;
-import appeng.items.materials.CustomEntityItem;
 import appeng.items.materials.EnergyCardItem;
 import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
