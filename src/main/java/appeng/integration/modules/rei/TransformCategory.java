@@ -17,7 +17,6 @@ import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.client.entry.FluidEntryDefinition;
@@ -68,7 +67,7 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
             // so ingredients lists with less than two rows get centered vertically
             y += 9 * (3 - nInputs);
         }
-        for (EntryIngredient input : display.getInputEntries()) {
+        for (var input : display.getInputEntries()) {
             var slot = Widgets.createSlot(new Point(x, y))
                     .entries(input)
                     .markInput();
@@ -98,10 +97,6 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
                 .backgroundEnabled(false);
         widgets.add(catalystSlot);
 
-        /*
-         * widgets.add(Widgets.wrapRenderer( new Rectangle( col3, yOffset, 14, 14), new WaterBlockRenderer()));
-         */
-
         // Fourth column is arrow pointing to results
         final int col4 = col3 + 16 + 5;
         var arrow2 = Widgets.createArrow(new Point(col4, yOffset));
@@ -113,6 +108,17 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
                 .entries(display.getOutputEntries().get(0))
                 .markOutput();
         widgets.add(slot);
+
+        Component circumstance;
+        if (display.getTransformCircumstance().isExplosion()) {
+            circumstance = ItemModText.EXPLOSION.text();
+        } else {
+            circumstance = ItemModText.SUBMERGE_IN.text();
+        }
+
+        widgets.add(Widgets.createLabel(new Point(bounds.getCenterX(), bounds.y + 15), circumstance)
+                .color(0x7E7E7E)
+                .noShadow());
 
         return widgets;
     }

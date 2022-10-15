@@ -1,33 +1,31 @@
 package appeng.integration.modules.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.fabric.constants.FabricTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
-import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.ItemModText;
+import appeng.integration.modules.jei.widgets.View;
+import appeng.integration.modules.jei.widgets.Widget;
+import appeng.integration.modules.jei.widgets.WidgetFactory;
 import appeng.recipes.transform.TransformRecipe;
 
-public class TransformCategory implements IRecipeCategory<TransformRecipe> {
+public class TransformCategory extends ViewBasedCategory<TransformRecipe> {
 
     public static final RecipeType<TransformRecipe> RECIPE_TYPE = RecipeType.create(AppEng.MOD_ID,
             "item_transformation", TransformRecipe.class);
@@ -45,6 +43,7 @@ public class TransformCategory implements IRecipeCategory<TransformRecipe> {
     private final FluidBlockRenderer fluidRenderer;
 
     public TransformCategory(IJeiHelpers helpers) {
+        super(helpers);
         IGuiHelper guiHelper = helpers.getGuiHelper();
         background = guiHelper.createBlankDrawable(130, 62);
         slotBackground = guiHelper.createDrawable(JEIPlugin.TEXTURE, 0, 34, 18, 18);
@@ -71,90 +70,77 @@ public class TransformCategory implements IRecipeCategory<TransformRecipe> {
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, TransformRecipe recipe, IFocusGroup focuses) {
-        var slotIndex = 0;
+    protected View getView(TransformRecipe recipe) {
+        int yOffset = 23;
 
-        var y = 5;
-        var x = 5;
-        if (recipe.getIngredients().size() < 3) {
-            // so ingredients lists with less than two rows get centered vertically
-            y += (3 - recipe.getIngredients().size()) * 18 / 2;
-        }
-        for (var input : recipe.getIngredients()) {
-            builder.addSlot(RecipeIngredientRole.INPUT, x + 1, y + 1)
-                    .setSlotName("input" + (slotIndex++))
-                    .addIngredients(input);
-            y += 18;
-            if (y >= 54) {
-                // we don't actually have room to make multiple columns of ingredients look nice,
-                // but this is better than just overflowing downwards.
-                y -= 54;
-                x += 18;
-            }
-        }
+        return new View() {
+            @Override
+            public void createWidgets(WidgetFactory factory, List<Widget> widgets) {
+                // Second column is arrow pointing into water
+                widgets.add(factory.unfilledArrow(25, yOffset));
+                // Fourth column is arrow pointing to results
+                widgets.add(factory.unfilledArrow(76, yOffset));
 
-        // To center everything but the ingredients vertically
-        int yOffset = getYOffset(recipe);
+                Component circumstance;
+                if (recipe.circumstance.isExplosion()) {
+                    circumstance = ItemModText.EXPLOSION.text();
+                } else {
+                    circumstance = ItemModText.SUBMERGE_IN.text();
+                }
 
-        if (recipe.circumstance.isFluid()) {
-            IRecipeSlotBuilder slot = builder.addSlot(RecipeIngredientRole.CATALYST, 55 + 1, yOffset + 1)
-                    .setSlotName("fluid");
-
-            for (Fluid fluid : recipe.circumstance.getFluidsForRendering()) {
-                if (!fluid.isSource(fluid.defaultFluidState()))
-                    continue;
-                slot.addFluidStack(fluid, fluidHelper.bucketVolume());
+                // Text label describing the transform circumstances
+                widgets.add(factory.label(background.getWidth() / 2f, 10, circumstance)
+                        .bodyText());
             }
 
-            slot.setCustomRenderer(FabricTypes.FLUID_STACK, fluidRenderer);
-        } else if (recipe.circumstance.isExplosion()) {
-            builder.addSlot(RecipeIngredientRole.CATALYST, 55 + 1, yOffset + 1)
-                    .setSlotName("explosion")
-                    .addItemStack(new ItemStack(Blocks.TNT))
-                    .addItemStack(AEBlocks.TINY_TNT.stack());
-        }
+            @Override
+            public void buildSlots(IRecipeLayoutBuilder builder) {
+                var slotIndex = 0;
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 105 + 1, yOffset + 1)
-                .setSlotName("output")
-                .addItemStack(recipe.getResultItem());
+                var y = 5;
+                var x = 5;
+                if (recipe.getIngredients().size() < 3) {
+                    // so ingredients lists with less than two rows get centered vertically
+                    y += (3 - recipe.getIngredients().size()) * 18 / 2;
+                }
+                for (var input : recipe.getIngredients()) {
+                    builder.addSlot(RecipeIngredientRole.INPUT, x + 1, y + 1)
+                            .setSlotName("input" + (slotIndex++))
+                            .setBackground(slotBackground, -1, -1)
+                            .addIngredients(input);
+                    y += 18;
+                    if (y >= 54) {
+                        // we don't actually have room to make multiple columns of ingredients look nice,
+                        // but this is better than just overflowing downwards.
+                        y -= 54;
+                        x += 18;
+                    }
+                }
 
-    }
+                if (recipe.circumstance.isFluid()) {
+                    var slot = builder.addSlot(RecipeIngredientRole.CATALYST, 55 + 1, yOffset + 1)
+                            .setSlotName("fluid");
 
-    @Override
-    public void draw(TransformRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
-            double mouseY) {
-        // First column contains ingredients
-        var y = 5;
-        var x = 5;
-        if (recipe.getIngredients().size() < 3) {
-            // so ingredients lists with less than two rows get centered vertically
-            y += (3 - recipe.getIngredients().size()) * 18 / 2;
-        }
-        for (var input : recipe.getIngredients()) {
-            slotBackground.draw(stack, 5, y);
-            y += 18;
-            if (y >= 54) {
-                y -= 54;
-                x += 18;
+                    for (var fluid : recipe.circumstance.getFluidsForRendering()) {
+                        if (!fluid.isSource(fluid.defaultFluidState()))
+                            continue;
+                        slot.addFluidStack(fluid, fluidHelper.bucketVolume());
+                    }
+
+                    slot.setCustomRenderer(FabricTypes.FLUID_STACK, fluidRenderer);
+                } else if (recipe.circumstance.isExplosion()) {
+                    builder.addSlot(RecipeIngredientRole.CATALYST, 55 + 1, yOffset + 1)
+                            .setSlotName("explosion")
+                            .addItemStack(new ItemStack(Blocks.TNT))
+                            .addItemStack(AEBlocks.TINY_TNT.stack());
+                }
+
+                builder.addSlot(RecipeIngredientRole.OUTPUT, 105 + 1, yOffset + 1)
+                        .setSlotName("output")
+                        .setBackground(slotBackground, -1, -1)
+                        .addItemStack(recipe.getResultItem());
             }
-        }
-
-        // To center everything but the ingredients vertically
-        int yOffset = getYOffset(recipe);
-
-        // Second column is arrow pointing into water
-        arrow.draw(stack, 25, yOffset);
-
-        // Fourth column is arrow pointing to results
-        arrow.draw(stack, 76, yOffset);
-
-        // Fifth column is the result
-        slotBackground.draw(stack, 105, yOffset);
-    }
-
-    private int getYOffset(TransformRecipe recipe) {
-        // return (recipe.getIngredients().size() - 1) / 2 * 18 + 5;
-        return 23;
+        };
     }
 
     @Override
