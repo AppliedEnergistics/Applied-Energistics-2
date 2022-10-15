@@ -144,6 +144,7 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
                 ItemStack itemStack = entryStack.castValue();
                 NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
                         slot.index, itemStack));
+                return true;
             } else if (entryStack.getType() == VanillaEntryTypes.FLUID) {
                 FluidStack fluidStack = entryStack.castValue();
 
@@ -152,6 +153,7 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
                         new GenericStack(AEFluidKey.of(fluidStack.getFluid()), fluidStack.getAmount()));
                 NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
                         slot.index, wrappedFluid));
+                return true;
             }
             return false;
         }
