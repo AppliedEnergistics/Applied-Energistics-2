@@ -132,7 +132,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        return 80d + 80d * Upgrades.getMaxPowerMultiplier(getUpgrades(stack));
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
     @Override
@@ -518,7 +518,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
         // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getMaxPowerMultiplier(upgrades) * 8);
+        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
     }
 
     @Override

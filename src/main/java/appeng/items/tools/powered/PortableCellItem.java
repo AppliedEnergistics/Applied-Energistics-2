@@ -113,7 +113,7 @@ public class PortableCellItem extends AEBasePoweredItem
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        return 80d + 80d * Upgrades.getMaxPowerMultiplier(getUpgrades(stack));
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
     /**
@@ -254,7 +254,7 @@ public class PortableCellItem extends AEBasePoweredItem
     private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
         // The energy card is crafted with a dense energy cell, while the portable cell just uses a normal energy cell
         // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getMaxPowerMultiplier(upgrades) * 8);
+        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
     }
 
     @Override

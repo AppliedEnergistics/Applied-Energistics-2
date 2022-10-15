@@ -98,7 +98,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        return 800d + 800d * Upgrades.getMaxPowerMultiplier(getUpgrades(stack));
+        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
     @Environment(EnvType.CLIENT)
@@ -394,7 +394,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
         // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getMaxPowerMultiplier(upgrades) * 8);
+        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
     }
 
     @Override

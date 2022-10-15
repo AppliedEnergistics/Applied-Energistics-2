@@ -77,7 +77,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        return 800d + 800d * Upgrades.getMaxPowerMultiplier(getUpgrades(stack));
+        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
     /**
@@ -249,7 +249,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     }
 
     private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getMaxPowerMultiplier(upgrades));
+        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades));
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {
