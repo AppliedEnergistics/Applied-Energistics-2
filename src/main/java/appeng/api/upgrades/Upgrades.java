@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Block;
 
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
+import appeng.items.materials.EnergyCardItem;
 import appeng.items.materials.UpgradeCardItem;
 
 /**
@@ -87,6 +88,20 @@ public final class Upgrades {
         }
 
         return 0;
+    }
+
+    /**
+     * Returns a cumulative energy multiplier based on the amount of "energy cards" fitted onto a tool. Returns 0 if no
+     * such cards exist within the tool's upgrade inventory.
+     */
+    public static int getEnergyCardMultiplier(IUpgradeInventory upgrades) {
+        int multiplier = 0;
+        for (var card : upgrades) {
+            if (card.getItem() instanceof EnergyCardItem ec) {
+                multiplier += ec.getEnergyMultiplier();
+            }
+        }
+        return multiplier;
     }
 
     /**

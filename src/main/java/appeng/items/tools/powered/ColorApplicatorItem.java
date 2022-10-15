@@ -72,6 +72,7 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.api.upgrades.Upgrades;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.networking.CableBusBlock;
@@ -131,7 +132,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        return 80d + 80d * getUpgrades(stack).getInstalledUpgrades(AEItems.ENERGY_CARD);
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
     @Override
@@ -516,9 +517,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
-        var energyCards = upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD);
-        // Item is crafted with a normal cell, card contains a dense cell (x8)
-        setAEMaxPowerMultiplier(stack, 1 + energyCards * 8);
+        // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
+        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
     }
 
     @Override
