@@ -18,6 +18,8 @@
 # include sourcecode except generated
 !src/
 src/generated
+out
+!/libs/
 
 # include git important files
 !.gitmodules
