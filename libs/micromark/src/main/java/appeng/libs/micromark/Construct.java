@@ -137,14 +137,28 @@ public class Construct {
                                                    List<Tokenizer.Event> events,
                                                    Tokenizer.TokenizeContext context) {
         var called = new HashSet<Resolver>();
-        var index = -1;
 
-        while (++index < constructs.size()) {
-            var resolve = constructs.get(index).resolveAll;
+        for (var construct : constructs) {
+            var resolver = construct.resolveAll;
+            if (resolver != null && called.add(resolver)) {
+                events = resolver.resolve(events, context);
+            }
+        }
 
-            if (resolve != null && !called.contains(resolve)) {
-                events = resolve.resolve(events, context);
-                called.add(resolve);
+        return events;
+    }
+
+    /**
+     * Call all `resolveAll`s.
+     */
+    public static List<Tokenizer.Event> resolveAll(Iterable<Resolver> resolvers,
+                                                   List<Tokenizer.Event> events,
+                                                   Tokenizer.TokenizeContext context) {
+        var called = new HashSet<Resolver>();
+
+        for (var resolver : resolvers) {
+            if (resolver != null && called.add(resolver)) {
+                events = resolver.resolve(events, context);
             }
         }
 

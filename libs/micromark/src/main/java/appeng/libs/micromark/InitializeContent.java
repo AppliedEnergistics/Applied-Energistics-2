@@ -46,7 +46,7 @@ public final class InitializeContent {
             effects.enter(Types.lineEnding);
             effects.consume(code);
             effects.exit(Types.lineEnding);
-            return FactorySpace.factorySpace(effects, contentStart, Types.linePrefix);
+            return FactorySpace.create(effects, contentStart, Types.linePrefix);
         }
 
         private State paragraphInitial(int code) {

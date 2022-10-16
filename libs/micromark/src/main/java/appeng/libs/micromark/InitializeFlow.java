@@ -33,7 +33,7 @@ public final class InitializeFlow {
                     effects.attempt.hook(
                             context.parser.constructs.flowInitial,
                             this::afterConstruct,
-                            FactorySpace.factorySpace(
+                            FactorySpace.create(
                                     effects,
                                     effects.attempt.hook(
                                             context.parser.constructs.flow,

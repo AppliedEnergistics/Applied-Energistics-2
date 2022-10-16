@@ -8,12 +8,14 @@ public final class FactorySpace {
     private FactorySpace() {
     }
 
-    public static State factorySpace(Tokenizer.Effects effects, State ok, String type) {
-        return factorySpace(effects, ok, type, Integer.MAX_VALUE);
+    public static State create(Tokenizer.Effects effects, State ok, String type) {
+        return create(effects, ok, type, null);
     }
 
-    public static State factorySpace(Tokenizer.Effects effects, State ok, String type, int max) {
-        return new StateMachine(effects, ok, type, max - 1)::start;
+    public static State create(Tokenizer.Effects effects, State ok, String type, Integer max) {
+        var limit = max != null ? max - 1 :  Integer.MAX_VALUE;
+
+        return new StateMachine(effects, ok, type, limit)::start;
     }
 
     private static class StateMachine {

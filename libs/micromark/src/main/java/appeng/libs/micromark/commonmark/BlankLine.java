@@ -33,7 +33,7 @@ public final class BlankLine {
             this.effects = effects;
             this.ok = ok;
             this.nok = nok;
-            this.initial = FactorySpace.factorySpace(effects, this::afterWhitespace, Types.linePrefix);
+            this.initial = FactorySpace.create(effects, this::afterWhitespace, Types.linePrefix);
         }
 
         /**

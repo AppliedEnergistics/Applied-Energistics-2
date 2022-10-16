@@ -102,32 +102,27 @@ public class Token {
      * A boolean used internally to figure out if a token is in the first content
      * of a list item construct.
      */
-    @Nullable
-    public Boolean _isInFirstContentOfListItem;
+    public boolean _isInFirstContentOfListItem;
 
     /**
      * A boolean used internally to figure out if a token is a container token.
      */
-    @Nullable
-    public Boolean _container;
+    public boolean _container;
 
     /**
      * A boolean used internally to figure out if a list is loose or not.
      */
-    @Nullable
-    public Boolean _loose;
+    public boolean _loose;
 
     /**
      * A boolean used internally to figure out if a link opening can’t be used
      * (because links in links are incorrect).
      */
-    @Nullable
-    public Boolean _inactive;
+    public boolean _inactive;
 
     /**
      * A boolean used internally to figure out if a link opening is balanced: it’s
      * not a link opening but has a balanced closing.
      */
-    @Nullable
-    public Boolean _balanced;
+    public boolean _balanced;
 }

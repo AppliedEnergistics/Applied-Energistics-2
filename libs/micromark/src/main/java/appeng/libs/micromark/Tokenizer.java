@@ -187,17 +187,17 @@ public class Tokenizer {
         /**
          * Try to tokenize a construct.
          */
-        Hook attempt = constructFactory(Tokenizer.this::onsuccessfulconstruct, null);
+        public Hook attempt = constructFactory(Tokenizer.this::onsuccessfulconstruct, null);
 
         /**
          * Attempt, then revert.
          */
-        Hook check = constructFactory(Tokenizer.this::onsuccessfulcheck, null);
+        public Hook check = constructFactory(Tokenizer.this::onsuccessfulcheck, null);
 
         /**
          * Interrupt is used for stuff right after a line of content.
          */
-        Hook interrupt = constructFactory(Tokenizer.this::onsuccessfulcheck, Map.of("interrupt", true));
+        public Hook interrupt = constructFactory(Tokenizer.this::onsuccessfulcheck, Map.of("interrupt", true));
     }
 
     /**
@@ -283,7 +283,7 @@ public class Tokenizer {
         info.restore().run();
     }
 
-    interface Hook {
+    public interface Hook {
         default State hook(Construct construct, State returnState, State bogusState) {
             return hook(List.of(construct), returnState, bogusState);
         }
@@ -482,11 +482,11 @@ public class Tokenizer {
         /**
          * The previous code.
          */
-        int previous;
+        public int previous;
         /**
          * Current code.
          */
-        int code;
+        public int code;
         /**
          * Whether we’re currently interrupting.<br>
          * Take for example:
@@ -500,7 +500,7 @@ public class Tokenizer {
          * <p>
          * At 2:1, we’re “interrupting”.
          */
-        boolean interrupt;
+        public boolean interrupt;
 
         /**
          * The current construct.
@@ -508,7 +508,7 @@ public class Tokenizer {
          * Constructs that are not <code>partial</code> are set here.
          */
         @Nullable
-        Construct currentConstruct;
+        public Construct currentConstruct;
 
         /**
          * Info set when parsing containers.
@@ -517,17 +517,24 @@ public class Tokenizer {
          * continued lines (`continuation.tokenize`), and finally `exit`.
          * This record can be used to store some information between these hooks.
          */
-        ContainerState containerState = new ContainerState();
+        public ContainerState containerState = new ContainerState();
 
         /**
          * Current list of events.
          */
-        List<Event> events = new ArrayList<>();
+        public List<Event> events = new ArrayList<>();
+
+        public boolean _gfmTasklistFirstContentOfListItem;
+
+        @Nullable
+        public Event getLastEvent() {
+            return !events.isEmpty() ? events.get(events.size() - 1) : null;
+        }
 
         /**
          * The relevant parsing context.
          */
-        ParseContext parser;
+        public ParseContext parser;
 
         final InitialConstruct initialize;
 
@@ -538,14 +545,14 @@ public class Tokenizer {
         /**
          * Get the chunks that span a token.
          */
-        List<Object> sliceStream(Token token) {
+        public List<Object> sliceStream(Token token) {
             return sliceStream(token.start, token.end);
         }
 
         /**
          * Get the chunks that span a location.
          */
-        List<Object> sliceStream(Point start, Point end) {
+        public List<Object> sliceStream(Point start, Point end) {
             return sliceChunks(chunks, start, end);
         }
 
@@ -583,7 +590,7 @@ public class Tokenizer {
             return view;
         }
 
-        List<Event> write(List<Object> slice) {
+        public List<Event> write(List<Object> slice) {
             chunks = ChunkUtils.push(chunks, slice);
 
             main();
@@ -601,11 +608,22 @@ public class Tokenizer {
             return context.events;
         }
 
-        String sliceSerialize(Token token, boolean expandTabs) {
+        public String sliceSerialize(Point start, Point end) {
+            var t = new Token();
+            t.start = start;
+            t.end = end;
+            return sliceSerialize(t, false);
+        }
+
+        public String sliceSerialize(Token token) {
+            return sliceSerialize(token, false);
+        }
+
+        public String sliceSerialize(Token token, boolean expandTabs) {
             return serializeChunks(sliceStream(token), expandTabs);
         }
 
-        void defineSkip(Point value) {
+        public void defineSkip(Point value) {
             columnStart.put(value.line(), value.column());
             accountForPotentialSkip();
             LOGGER.debug("position: define skip: {}", now());
@@ -616,12 +634,25 @@ public class Tokenizer {
         }
     }
 
-    static class ContainerState extends HashMap<String, Object> {
+    public static class ContainerState extends HashMap<String, Object> {
         boolean _closeFlow;
     }
 
     public record Event(EventType type, Token token, TokenizeContext context) {
+        public static Event enter(Token token, TokenizeContext context) {
+            return new Event(EventType.ENTER, token, context);
+        }
+        public static Event exit(Token token, TokenizeContext context) {
+            return new Event(EventType.EXIT, token, context);
+        }
 
+        public boolean isEnter() {
+            return type() == EventType.ENTER;
+        }
+
+        public boolean isExit() {
+            return type() == EventType.EXIT;
+        }
     }
 
     public enum EventType {

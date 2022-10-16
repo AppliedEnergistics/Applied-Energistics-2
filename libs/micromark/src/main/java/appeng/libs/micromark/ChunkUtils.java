@@ -2,7 +2,7 @@ package appeng.libs.micromark;
 
 import java.util.List;
 
-final class ChunkUtils {
+public final class ChunkUtils {
     private  ChunkUtils() {
     }
 

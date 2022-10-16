@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class ParseContext {
 
-    Extension constructs;
+    public Extension constructs;
     Create content;
     Create document;
     Create flow;
@@ -21,7 +21,7 @@ public class ParseContext {
     /**
      * List of defined identifiers
      */
-    java.util.List<String> defined = new ArrayList<>();
+    public java.util.List<String> defined = new ArrayList<>();
 
     /**
      * Map of line numbers to whether they are lazy (as opposed to the line before
@@ -36,7 +36,17 @@ public class ParseContext {
      * <p>
      * L1 here is not lazy, L2 is.
      */
-    Map<Integer, Boolean> lazy = new HashMap<>();
+    public Map<Integer, Boolean> lazy = new HashMap<>();
+
+    public Create get(ContentType contentType) {
+        return switch (contentType) {
+            case DOCUMENT -> document;
+            case FLOW -> flow;
+            case CONTENT -> content;
+            case TEXT -> text;
+            case STRING -> string;
+        };
+    }
 
     @FunctionalInterface
     public interface Create {

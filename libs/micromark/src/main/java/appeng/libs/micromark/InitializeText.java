@@ -88,6 +88,7 @@ final class InitializeText {
             var constructs = switch (field) {
                 case "text" -> context.parser.constructs.text;
                 case "string" -> context.parser.constructs.string;
+                default -> throw new IllegalArgumentException(field);
             };
             return new TextTokenizer(context, constructs, effects)::start;
         };

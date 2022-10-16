@@ -393,7 +393,7 @@ public final class InitializeDocument {
     }
 
     private static State tokenizeContainer(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
-        return FactorySpace.factorySpace(
+        return FactorySpace.create(
                 effects,
                 effects.attempt.hook(context.parser.constructs.document, ok, nok),
                 Types.linePrefix,
