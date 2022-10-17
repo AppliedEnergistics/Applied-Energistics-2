@@ -22,7 +22,7 @@ public final class BlockQuote {
         blockQuote.name = "blockQuote";
         blockQuote.tokenize = (context, effects, ok, nok) -> new StateMachine(context, effects, ok, nok)::start;
         blockQuote.continuation = new Construct();
-        blockQuote.tokenize = (context, effects, ok, nok) -> {
+        blockQuote.continuation.tokenize = (context, effects, ok, nok) -> {
             return FactorySpace.create(
                     effects,
                     effects.attempt.hook(blockQuote, ok, nok),
