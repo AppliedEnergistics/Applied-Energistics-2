@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Micromark {
+    private Micromark() {
 
-    public ParseContext parse(List<Extension> extensions) {
+    }
+
+    public static ParseContext parse(List<Extension> extensions) {
 
         var actualExtensions = new ArrayList<Extension>();
         actualExtensions.add(DefaultExtension.create());
@@ -23,7 +26,11 @@ public final class Micromark {
         return parser;
     }
 
-    ParseContext.Create create(ParseContext parser, InitialConstruct initial) {
+    public static ParseContext.Create create(ParseContext parser, InitialConstruct initial) {
         return from -> Tokenizer.create(parser, initial, from);
+    }
+
+    public static List<Tokenizer.Event> parse(String text) {
+        return parse(List.of()).document.create().write(Preprocessor.preprocess(text, true));
     }
 }

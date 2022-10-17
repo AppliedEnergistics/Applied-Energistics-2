@@ -33,10 +33,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class Token {
     public Token() {
+        this.stackTrace = Thread.currentThread().getStackTrace();
     }
 
     public Token(Token other) {
         other.copyTo(this);
+        this.stackTrace = Thread.currentThread().getStackTrace();
     }
 
     void copyTo(Token other) {
@@ -125,4 +127,23 @@ public class Token {
      * not a link opening but has a balanced closing.
      */
     public boolean _balanced;
+
+    public StackTraceElement[] stackTrace;
+
+    @Override
+    public String toString() {
+        var builder = new StringBuilder();
+        builder.append("Token{").append(type);
+
+        if (start != null) {
+            builder.append(",start=").append(start.line())
+                    .append(":").append(start.column());
+        }
+        if (end != null) {
+            builder.append(",end=").append(end.line())
+                    .append(":").append(end.column());
+        }
+        builder.append("}");
+        return builder.toString();
+    }
 }

@@ -2,6 +2,7 @@ package appeng.libs.micromark;
 
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.unist.UnistPoint;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,8 @@ public class Tokenizer {
         context.code = Codes.eof;
         context.parser = parser;
 
+        effects = new Effects();
+
         state = initialize.tokenize(context, effects);
 
         if (initialize.resolveAll != null) {
@@ -92,13 +95,20 @@ public class Tokenizer {
 
             LOGGER.debug("consume: `{}`", code);
 
-            if (!consumed) {
-                throw new IllegalStateException("expected code to not have been consumed: this might be because `return x(code)` instead of `return x` was used");
-            }
-
-            if (code == Codes.eof && !context.events.isEmpty() && context.events.get(context.events.size() - 1).type != EventType.EXIT
-                    || code != Codes.eof && context.events.get(context.events.size() - 1).type != EventType.ENTER) {
-                throw new IllegalStateException("expected last token to be open");
+            Assert.check(
+                    !consumed,
+                    "expected code to not have been consumed: this might be because `return x(code)` instead of `return x` was used"
+            );
+            if (code == Codes.eof) {
+                Assert.check(
+                        context.events.size() == 0 || context.getLastEvent().isExit(),
+                        "expected last token to be open"
+                );
+            } else {
+                Assert.check(
+                        context.getLastEvent().isEnter(),
+                        "expected last token to be open"
+                );
             }
 
             if (CharUtil.markdownLineEnding(code)) {
@@ -157,29 +167,25 @@ public class Tokenizer {
          * End a started token.
          */
         public Token exit(String type) {
-            if (type.isEmpty()) {
-                throw new IllegalArgumentException("expected non-empty string");
-            }
+            Assert.check(type != null, "expected string type");
+            Assert.check(!type.isEmpty(), "expected non-empty string");
 
-            if (stack.isEmpty()) {
-                throw new IllegalStateException("cannot close w/o open tokens");
-            }
+            Assert.check(!stack.isEmpty(), "cannot close w/o open tokens");
             var token = stack.pop();
             token.end = now();
 
-            if (!token.type.equals(type)) {
-                throw new IllegalStateException("expected exit token to match current token");
-            }
+            Assert.check(type.equals(token.type), "expected exit token to match current token");
 
-            if (
-                    token.start._index() == token.end._index()
-                            && token.start._bufferIndex() == token.end._bufferIndex()
-            ) {
-                throw new IllegalStateException("expected non-empty token ('" + type + "')");
-            }
+            Assert.check(
+                    !(
+                            token.start._index() == token.end._index() &&
+                                    token.start._bufferIndex() == token.end._bufferIndex()
+                    ),
+            "expected non-empty token (`" + type + "`)"
+            );
 
             LOGGER.debug("exit: '{}'", token.type);
-            context.events.add(new Event(EventType.EXIT, token, context));
+            context.events.add(Event.exit(token, context));
 
             return token;
         }
@@ -284,13 +290,23 @@ public class Tokenizer {
     }
 
     public interface Hook {
+        State hook(List<Construct> constructs, State returnState, State bogusState);
+
         default State hook(Construct construct, State returnState, State bogusState) {
             return hook(List.of(construct), returnState, bogusState);
         }
 
-        State hook(List<Construct> construct, State returnState, State bogusState);
+        default State hook(Map<Integer, List<Construct>> map, State returnState, State bogusState) {
+            return code -> {
+                List<Construct> def = code != Codes.eof ? map.getOrDefault(code, List.of()) : List.of();
+                List<Construct> all = code != Codes.eof ? map.getOrDefault(Codes.eof, List.of()) : List.of();
+                var list = new ArrayList<Construct>();
+                list.addAll(def);
+                list.addAll(all);
 
-        State hook(Map<Integer, List<Construct>> map, State returnState, State bogusState);
+                return hook(list, returnState, bogusState).step(code);
+            };
+        }
     }
 
     /**
@@ -307,101 +323,89 @@ public class Tokenizer {
     /**
      * Factory to attempt/check/interrupt.
      */
-    Hook constructFactory(ReturnHandle onreturn, @Nullable Map<String, Object> fields) {
-        return new Hook() {
-            List<Construct> listOfConstructs;
-            int constructIndex;
-            Construct currentConstruct;
-            Info info;
-            State returnState;
-            State bogusState;
+    private Hook constructFactory(ReturnHandle onreturn, @Nullable Map<String, Object> fields) {
+        return (constructs, returnState, bogusState) -> {
+            return new HookStateMachineFactory(onreturn, constructs, returnState, bogusState).createFirst();
+        };
+    }
 
-            @Override
-            public State hook(List<Construct> constructs, State returnState, State bogusState) {
-                listOfConstructs = constructs;
-                constructIndex = 0;
-                this.returnState = returnState;
-                this.bogusState = bogusState;
+    private class HookStateMachineFactory {
+        private final List<Construct> constructs;
+        private int constructIndex;
+        private Construct currentConstruct;
+        private Info info;
+        private final State returnState;
+        private final State bogusState;
+        private final ReturnHandle onreturn;
 
-                if (constructs.isEmpty()) {
-                    if (bogusState == null) {
-                        throw new IllegalArgumentException("expected `bogusState` to be given");
-                    }
-                    return bogusState;
-                }
+        public HookStateMachineFactory(ReturnHandle onreturn, List<Construct> constructs, State returnState, State bogusState) {
+            this.constructs = constructs;
+            this.constructIndex = 0;
+            this.returnState = returnState;
+            this.bogusState = bogusState;
+            this.onreturn = onreturn;
+        }
 
-                return handleConstruct(constructs.get(constructIndex));
-            }
-
-            @Override
-            public State hook(Map<Integer, List<Construct>> map, State returnState, State bogusState) {
-                return code -> {
-                    List<Construct> def = code != Codes.eof ? map.getOrDefault(code, List.of()) : List.of();
-                    List<Construct> all = code != Codes.eof ? map.getOrDefault(Codes.eof, List.of()) : List.of();
-                    var list = new ArrayList<Construct>();
-                    list.addAll(def);
-                    list.addAll(all);
-
-                    return hook(list, returnState, bogusState).step(code);
-                };
-            }
-
-            /**
-             * Handle a single construct.
-             */
-            private State handleConstruct(Construct construct) {
-                return code -> {
-                    // To do: not needed to store if there is no bogus state, probably?
-                    // Currently doesn’t work because `inspect` in document does a check
-                    // w/o a bogus, which doesn’t make sense. But it does seem to help perf
-                    // by not storing.
-                    info = store();
-                    currentConstruct = construct;
-
-                    if (!construct.partial) {
-                        context.currentConstruct = construct;
-                    }
-
-                    if (construct.name != null && context.parser.constructs.nullDisable.contains(construct.name)) {
-                        return nok(code);
-                    }
-
-                    return construct.tokenize.tokenize(
-                            // If we do have fields, create an object w/ `context` as its
-                            // prototype.
-                            // This allows a “live binding”, which is needed for `interrupt`.
-                            // TODO fields != null ? Object.assign(Object.create(context), fields) : context,
-                            context,
-                            effects,
-                            this::ok,
-                            this::nok
-                    ).step(code);
-                };
-            }
-
-            private State ok(int code) {
-                if (code != expectedCode) {
-                    throw new IllegalStateException("expected code");
-                }
-                consumed = true;
-                onreturn.handle(currentConstruct, info);
-                return returnState;
-            }
-
-            private State nok(int code) {
-                if (code != expectedCode) {
-                    throw new IllegalStateException("expected code");
-                }
-                consumed = true;
-                info.restore().run();
-
-                if (++constructIndex < listOfConstructs.size()) {
-                    return handleConstruct(listOfConstructs.get(constructIndex));
-                }
-
+        public State createFirst() {
+            if (constructs.isEmpty()) {
+                Assert.check(bogusState != null, "expected `bogusState` to be given");
                 return bogusState;
             }
-        };
+
+            return create(constructs.get(constructIndex));
+        }
+
+        public State create(Construct construct) {
+            return code -> {
+                // To do: not needed to store if there is no bogus state, probably?
+                // Currently doesn’t work because `inspect` in document does a check
+                // w/o a bogus, which doesn’t make sense. But it does seem to help perf
+                // by not storing.
+                info = store();
+                currentConstruct = construct;
+
+                if (!currentConstruct.partial) {
+                    context.currentConstruct = construct;
+                }
+
+                if (currentConstruct.name != null && context.parser.constructs.nullDisable.contains(currentConstruct.name)) {
+                    return nok(code);
+                }
+
+                return currentConstruct.tokenize.tokenize(
+                        // If we do have fields, create an object w/ `context` as its
+                        // prototype.
+                        // This allows a “live binding”, which is needed for `interrupt`.
+                        // TODO fields != null ? Object.assign(Object.create(context), fields) : context,
+                        context,
+                        effects,
+                        this::ok,
+                        this::nok
+                ).step(code);
+            };
+        }
+
+        private State ok(int code) {
+            if (code != expectedCode) {
+                throw new IllegalStateException("expected code");
+            }
+            consumed = true;
+            onreturn.handle(currentConstruct, info);
+            return returnState;
+        }
+
+        private State nok(int code) {
+            Assert.check(code == expectedCode, "expected code");
+            consumed = true;
+            info.restore().run();
+
+            if (++constructIndex < constructs.size()) {
+                return create(constructs.get(constructIndex));
+            }
+
+            return bogusState;
+        }
+
     }
 
     void addResult(Construct construct, int from) {
@@ -451,9 +455,7 @@ public class Tokenizer {
                     pointBufferIndex = startPoint._bufferIndex();
                     context.previous = startPrevious;
                     context.currentConstruct = startCurrentConstruct;
-                    if (startEventsIndex > context.events.size()) {
-                        context.events.subList(startEventsIndex, context.events.size()).clear();
-                    }
+                    context.events.subList(startEventsIndex, context.events.size()).clear();
                     stack = startStack;
                     accountForPotentialSkip();
                     LOGGER.debug("position: restore: '{}'", now());
@@ -623,7 +625,7 @@ public class Tokenizer {
             return serializeChunks(sliceStream(token), expandTabs);
         }
 
-        public void defineSkip(Point value) {
+        public void defineSkip(@NotNull Point value) {
             columnStart.put(value.line(), value.column());
             accountForPotentialSkip();
             LOGGER.debug("position: define skip: {}", now());
@@ -642,6 +644,7 @@ public class Tokenizer {
         public static Event enter(Token token, TokenizeContext context) {
             return new Event(EventType.ENTER, token, context);
         }
+
         public static Event exit(Token token, TokenizeContext context) {
             return new Event(EventType.EXIT, token, context);
         }

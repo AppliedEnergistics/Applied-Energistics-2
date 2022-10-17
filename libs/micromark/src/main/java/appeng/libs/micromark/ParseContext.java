@@ -1,6 +1,7 @@
 package appeng.libs.micromark;
 
 import appeng.libs.unist.UnistPoint;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +51,10 @@ public class ParseContext {
 
     @FunctionalInterface
     public interface Create {
-        Tokenizer.TokenizeContext create(UnistPoint from);
+        default Tokenizer.TokenizeContext create() {
+            return create(null);
+        }
+
+        Tokenizer.TokenizeContext create(@Nullable UnistPoint from);
     }
 }

@@ -208,6 +208,7 @@ public final class Subtokenize {
         }
 
         // Help GC.
+        childEvents = new ArrayList<>(childEvents);
         tokenizer.events.clear();
 
         // If there’s one more token (which is the cases for lines that end in an
@@ -227,7 +228,13 @@ public final class Subtokenize {
         index = breaks.size();
 
         while (index-- != 0) {
-            var slice = new ArrayList<>(childEvents.subList(breaks.get(index), breaks.get(index + 1)));
+            List< Tokenizer.Event> slice;
+            if (index + 1 < breaks.size()) {
+                slice = new ArrayList<>(childEvents.subList(breaks.get(index), breaks.get(index + 1)));
+            } else {
+                slice = new ArrayList<>(childEvents.subList(breaks.get(index), childEvents.size()));
+            }
+
             var start = startPositions.remove(startPositions.size() - 1);
             Assert.check(start != null, "expected a start position when splicing");
             jumps.add(0, new Jump(start, start + slice.size() - 1));

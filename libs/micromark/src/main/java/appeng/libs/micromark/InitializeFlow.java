@@ -1,6 +1,7 @@
 package appeng.libs.micromark;
 
 import appeng.libs.micromark.commonmark.BlankLine;
+import appeng.libs.micromark.commonmark.Content;
 import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 
@@ -38,7 +39,7 @@ public final class InitializeFlow {
                                     effects.attempt.hook(
                                             context.parser.constructs.flow,
                                             this::afterConstruct,
-                                            effects.attempt.hook(InitializeContent.content, this::afterConstruct, null)
+                                            effects.attempt.hook(Content.content, this::afterConstruct, null)
                                     ),
                                     Types.linePrefix
                             )

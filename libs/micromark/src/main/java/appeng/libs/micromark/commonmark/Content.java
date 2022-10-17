@@ -20,6 +20,7 @@ public final class Content {
 
     public static final Construct content;
     public static final Construct continuationConstruct;
+
     static {
         content = new Construct();
         content.tokenize = (context, effects, ok, nok) -> new StateMachine(context, effects, ok, nok)::start;
@@ -45,6 +46,7 @@ public final class Content {
         private final State ok;
         private final State nok;
         Token previous;
+
         public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
@@ -54,21 +56,20 @@ public final class Content {
         }
 
 
-        
         private State start(int code) {
             Assert.check(
                     code != Codes.eof && !CharUtil.markdownLineEnding(code),
-            "expected no eof or eol"
-    );
+                    "expected no eof or eol"
+            );
 
             effects.enter(Types.content);
-                    var tokenFields = new Token();
+            var tokenFields = new Token();
             tokenFields.contentType = ContentType.CONTENT;
             previous = effects.enter(Types.chunkContent, tokenFields);
             return data(code);
         }
 
-        
+
         private State data(int code) {
             if (code == Codes.eof) {
                 return contentEnd(code);
@@ -87,19 +88,20 @@ public final class Content {
             return this::data;
         }
 
-        
+
         private State contentEnd(int code) {
             effects.exit(Types.chunkContent);
             effects.exit(Types.content);
             return ok.step(code);
         }
 
-        
+
         private State contentContinue(int code) {
             Assert.check(CharUtil.markdownLineEnding(code), "expected eol");
             effects.consume(code);
             effects.exit(Types.chunkContent);
-                    var tokenFields = new Token();
+
+            var tokenFields = new Token();
             tokenFields.contentType = ContentType.CONTENT;
             tokenFields.previous = previous;
             previous.next = effects.enter(Types.chunkContent, tokenFields);
@@ -125,7 +127,6 @@ public final class Content {
         }
 
 
-        
         private State startLookahead(int code) {
             Assert.check(CharUtil.markdownLineEnding(code), "expected a line ending");
             effects.exit(Types.chunkContent);
@@ -135,20 +136,20 @@ public final class Content {
             return FactorySpace.create(effects, this::prefixed, Types.linePrefix);
         }
 
-        
+
         private State prefixed(int code) {
             if (code == Codes.eof || CharUtil.markdownLineEnding(code)) {
                 return nok.step(code);
             }
 
-    var tail = context.getLastEvent();
+            var tail = context.getLastEvent();
 
             if (
                     !context.parser.constructs.nullDisable.contains("codeIndented") &&
-                    tail != null &&
-                    tail.token().type == Types.linePrefix &&
-                    tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
-    ) {
+                            tail != null &&
+                            tail.token().type == Types.linePrefix &&
+                            tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
+            ) {
                 return ok.step(code);
             }
 

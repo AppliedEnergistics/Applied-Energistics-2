@@ -17,7 +17,7 @@ public final class InitializeDocument {
 
     static {
         document = new InitialConstruct();
-        document.tokenize = (context, effects, ok, nok) -> new DocumentTokenizer(context, effects)::start;
+        document.tokenize = (context, effects, ok, nok) -> new StateMachine(context, effects)::start;
 
         containerConstruct = new Construct();
         containerConstruct.tokenize = InitializeDocument::tokenizeContainer;
@@ -26,7 +26,7 @@ public final class InitializeDocument {
     record StackItem(Construct construct, Tokenizer.ContainerState stackState) {
     }
 
-    private static class DocumentTokenizer {
+    private static class StateMachine {
         private final Tokenizer.TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final List<StackItem> stack = new ArrayList<>();
@@ -37,12 +37,12 @@ public final class InitializeDocument {
         private Token childToken;
         private int lineStartOffset;
 
-        public DocumentTokenizer(Tokenizer.TokenizeContext context, Tokenizer.Effects effects) {
+        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects) {
             this.context = context;
             this.effects = effects;
         }
 
-        State start(int code) {
+        public State start(int code) {
             // First we iterate through the open blocks, starting with the root
             // document, and descending through last children down to the last open
             // block.

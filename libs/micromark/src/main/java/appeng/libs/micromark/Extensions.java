@@ -1,7 +1,9 @@
 package appeng.libs.micromark;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class Extensions {
     private Extensions() {
@@ -28,8 +30,21 @@ public final class Extensions {
      * Merge `extension` into `all`.
      */
     public static void syntaxExtension(Extension all, Extension extension) {
-        var left = all.document;
-        var right = extension.document;
+        all.document = mergeMap(all.document, extension.document);
+        all.contentInitial = mergeMap(all.contentInitial, extension.contentInitial);
+        all.flowInitial = mergeMap(all.flowInitial, extension.flowInitial);
+        all.flow = mergeMap(all.flow, extension.flow);
+        all.string = mergeMap(all.string, extension.string);
+        all.text = mergeMap(all.text, extension.text);
+
+        // TODO
+        // nullDisable
+        // nullInsideSpan
+        // nullAttentionMarkers
+    }
+
+    private static Map<Integer, List<Construct>> mergeMap(Map<Integer, List<Construct>> left, Map<Integer, List<Construct>> right) {
+        left = new HashMap<>(left);
 
         for (var code : right.keySet()) {
             if (!left.containsKey(code)) {
@@ -41,6 +56,8 @@ public final class Extensions {
                     right.get(code)
             ));
         }
+
+        return left;
     }
 
     /**

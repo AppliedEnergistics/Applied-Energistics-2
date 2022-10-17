@@ -10,12 +10,16 @@ import java.util.regex.Pattern;
 final class Preprocessor {
     private static final Pattern SEARCH = Pattern.compile("[\0\t\n\r]");
 
-    private int column = 1;
-    private String buffer = "";
-    private boolean start = true;
-    private boolean atCarriageReturn;
+    private Preprocessor() {
+    }
 
-    public List<Object> preprocess(String value, boolean end) {
+    public static List<Object> preprocess(String value, boolean end) {
+
+        int column = 1;
+        String buffer = "";
+        boolean start = true;
+        boolean atCarriageReturn = false;
+
         List<Object> chunks = new ArrayList<>();
         int startPosition;
         int endPosition;
