@@ -1,4 +1,6 @@
 import appeng.libs.micromark.Micromark;
+import appeng.libs.micromark.html.CompileOptions;
+import appeng.libs.micromark.html.HtmlCompiler;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.junit.jupiter.api.DynamicContainer;
@@ -10,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Uses the Commonmark Testcases from https://spec.commonmark.org/0.30/spec.json.
@@ -44,9 +48,12 @@ public class CommonmarkTest {
                                 LOGGER.info("Markdown: {}", markdown);
                                 var events = Micromark.parse(markdown);
                                 System.out.println(events);
-                                // const options = {allowDangerousHtml: true, allowDangerousProtocol: true}
-                                // micromark(markdown),
-                                // sections[key][index].output
+
+                                var options = new CompileOptions();
+                                options.setAllowDangerousHtml(true);
+                                options.setAllowDangerousProtocol(true);
+                                var compiler = new HtmlCompiler(options);
+                                assertEquals(html, compiler.compile(events));
                             });
                         }))
                 )

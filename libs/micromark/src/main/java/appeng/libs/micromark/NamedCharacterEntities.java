@@ -11,6 +11,10 @@ public final class NamedCharacterEntities {
         return ENTITIES.containsKey(refName);
     }
 
+    public static String decodeNamedCharacterReference(String ref) {
+        return ENTITIES.get(ref);
+    }
+
     static {
         ENTITIES.put("AElig", "Æ");
         ENTITIES.put("AMP", "&");
