@@ -191,14 +191,6 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
         GlStateManager.disableDepth();
     }
 
-    @Nonnull
-    @Override
-    public List<String> getItemToolTip(@Nonnull ItemStack itemStack) {
-        List<String> l = super.getItemToolTip(itemStack);
-        l.add(1, TextFormatting.GRAY + String.valueOf(itemStack.getCount()));
-        return l;
-    }
-
     public List<Rectangle> getJEIExclusionArea() {
         return Collections.emptyList();
     }
@@ -904,8 +896,9 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                         this.itemRender.zLevel = 0.0F;
                     }
                 }
-
-                if (s instanceof AppEngSlot) {
+                if (s instanceof SlotPlayerInv || s instanceof SlotPlayerHotBar) {
+                    super.drawSlot(s);
+                } else if (s instanceof AppEngSlot) {
                     ((AppEngSlot) s).setDisplay(true);
                     this.zLevel = 100.0F;
                     this.itemRender.zLevel = 100.0F;

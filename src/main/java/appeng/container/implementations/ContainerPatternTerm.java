@@ -328,13 +328,13 @@ public class ContainerPatternTerm extends ContainerMEMonitorable implements IAEA
 
         for (int x = 0; x < this.craftingSlots.length; x++) {
             input[x] = this.craftingSlots[x].getStack();
-            if (!input[x].isEmpty() && input[x].getCount() + increase > input[x].getMaxStackSize()) {
+            if (!input[x].isEmpty() && input[x].getCount() + increase < 0) {
                 canIncreaseInputs = false;
             }
         }
         for (final OptionalSlotFake outputSlot : this.outputSlots) {
             final ItemStack out = outputSlot.getStack();
-            if (!out.isEmpty() && out.getCount() + increase > out.getMaxStackSize()) {
+            if (!out.isEmpty() && out.getCount() + increase < 0) {
                 canIncreaseOutputs = false;
             }
         }

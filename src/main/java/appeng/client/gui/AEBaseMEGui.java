@@ -21,6 +21,9 @@ package appeng.client.gui;
 
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.SlotPlayerHotBar;
+import appeng.container.slot.SlotPlayerInv;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import net.minecraft.inventory.Container;
@@ -43,11 +46,12 @@ public abstract class AEBaseMEGui extends AEBaseGui {
     protected void renderToolTip(final ItemStack stack, final int x, final int y) {
         final Slot s = this.getSlot(x, y);
 
+        final int bigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
+        final List<String> currentToolTip = this.getItemToolTip(stack);
+
         if (s instanceof SlotME && !stack.isEmpty()) {
-            final int bigNumber = AEConfig.instance().useTerminalUseLargeFont() ? 999 : 9999;
 
             IAEItemStack myStack = null;
-            final List<String> currentToolTip = this.getItemToolTip(stack);
 
             try {
                 final SlotME theSlotField = (SlotME) s;
@@ -56,7 +60,7 @@ public abstract class AEBaseMEGui extends AEBaseGui {
             }
 
             if (myStack != null) {
-                if (myStack.getStackSize() > bigNumber || (myStack.getStackSize() > 1 && stack.isItemDamaged())) {
+                if (myStack.getStackSize() > 1) {
                     final String local = ButtonToolTips.ItemsStored.getLocal();
                     final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(myStack.getStackSize());
                     final String format = String.format(local, formattedAmount);
@@ -85,6 +89,15 @@ public abstract class AEBaseMEGui extends AEBaseGui {
                 this.drawHoveringText(currentToolTip, x, y, this.fontRenderer);
 
                 return;
+            }
+        } else if (s instanceof AppEngSlot) {
+            if (!(s instanceof SlotPlayerInv) && !(s instanceof SlotPlayerHotBar)) {
+                if (!s.getStack().isEmpty()) {
+                    final String formattedAmount = NumberFormat.getNumberInstance(Locale.US).format(s.getStack().getCount());
+                    currentToolTip.add(TextFormatting.GRAY + formattedAmount);
+                    this.drawHoveringText(currentToolTip, x, y, this.fontRenderer);
+                    return;
+                }
             }
         }
 
