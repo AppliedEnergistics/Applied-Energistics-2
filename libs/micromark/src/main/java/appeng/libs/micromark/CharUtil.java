@@ -169,7 +169,7 @@ public final class CharUtil {
      * Unicode Consortium.
      */
     public static boolean unicodeWhitespace(int code) {
-        return Character.isWhitespace((char) code);
+        return Character.isSpaceChar((char) code);
     }
 
     /**

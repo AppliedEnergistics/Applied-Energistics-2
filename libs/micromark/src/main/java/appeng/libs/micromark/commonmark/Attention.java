@@ -19,6 +19,7 @@ public final class Attention {
     }
 
     public static final Construct attention;
+
     static {
         attention = new Construct();
         attention.name = "attention";
@@ -46,7 +47,7 @@ public final class Attention {
         // a bottleneck for malicious stuff.
         while (++index < events.size()) {
             var event = events.get(index);
-            
+
             // Find a token that can close.
             if (
                     event.type() == Tokenizer.EventType.ENTER &&
@@ -66,7 +67,7 @@ public final class Attention {
                                     openEvent.token()._open &&
                                     // If the markers are the same:
                                     context.sliceSerialize(openEvent.token()).charAt(0) ==
-                                    context.sliceSerialize(event.token()).charAt(0)
+                                            context.sliceSerialize(event.token()).charAt(0)
                     ) {
                         // If the opening can close or the closing can open,
                         // and the close size *is not* a multiple of three,
@@ -93,23 +94,23 @@ public final class Attention {
                                         ? 2
                                         : 1;
 
-          var start = openEvent.token().end;
-          var end = event.token().start;
-        start = movePoint(start, -use);
-        end = movePoint(end, use);
+                        var start = openEvent.token().end;
+                        var end = event.token().start;
+                        start = movePoint(start, -use);
+                        end = movePoint(end, use);
 
                         openingSequence = new Token();
                         openingSequence.type = use > 1 ? Types.strongSequence : Types.emphasisSequence;
                         openingSequence.start = start;
                         openingSequence.end = openEvent.token().end;
-                        
+
                         closingSequence = new Token();
                         closingSequence.type = use > 1 ? Types.strongSequence : Types.emphasisSequence;
                         closingSequence.start = event.token().start;
                         closingSequence.end = end;
 
                         text = new Token();
-                        text.type =  use > 1 ? Types.strongText : Types.emphasisText;
+                        text.type = use > 1 ? Types.strongText : Types.emphasisText;
                         text.start = openEvent.token().end;
                         text.end = event.token().start;
 
@@ -151,18 +152,18 @@ public final class Attention {
 
                         // Closing.
                         nextEvents = ChunkUtils.push(nextEvents, List.of(
-                            Tokenizer.Event.exit(text, context),
-                            Tokenizer.Event.enter(closingSequence, context),
-                            Tokenizer.Event.exit(closingSequence, context),
-                            Tokenizer.Event.exit(group, context)
+                                Tokenizer.Event.exit(text, context),
+                                Tokenizer.Event.enter(closingSequence, context),
+                                Tokenizer.Event.exit(closingSequence, context),
+                                Tokenizer.Event.exit(group, context)
                         ));
 
                         // If there are more markers in the closing, add them after.
                         if (event.token().end.offset() - event.token().start.offset() != 0) {
                             offset = 2;
                             nextEvents = ChunkUtils.push(nextEvents, List.of(
-                              Tokenizer.Event.enter(event.token(), context),
-                              Tokenizer.Event.exit(event.token(), context)
+                                    Tokenizer.Event.enter(event.token(), context),
+                                    Tokenizer.Event.exit(event.token(), context)
                             ));
                         } else {
                             offset = 0;
@@ -257,14 +258,14 @@ public final class Attention {
                 return this::sequence;
             }
 
-    var token = effects.exit("attentionSequence");
-    var after = ClassifyCharacter.classifyCharacter(code);
+            var token = effects.exit("attentionSequence");
+            var after = ClassifyCharacter.classifyCharacter(code);
 
-    var open =
+            var open =
                     after == 0 ||
                             (after == Constants.characterGroupPunctuation && before != 0) ||
                             attentionMarkers.contains(code);
-    var close =
+            var close =
                     before == 0 ||
                             (before == Constants.characterGroupPunctuation && after != 0) ||
                             attentionMarkers.contains(previous);

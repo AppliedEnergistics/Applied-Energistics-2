@@ -36,10 +36,10 @@ public final class NumericCharacterReference {
                         // Out of range
                         code > 1114111
         ) {
-            return String.valueOf(Codes.replacementCharacter);
+            return String.valueOf((char) Codes.replacementCharacter);
         }
 
-        return String.valueOf(code);
+        return String.valueOf((char) code);
     }
 
 }

@@ -17,6 +17,7 @@ import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class LabelEnd {
@@ -128,10 +129,9 @@ public final class LabelEnd {
         text.start = events.get(open + offset + 2).token().end;
         text.end = events.get(close - 2).token().start;
 
-        media = List.of(
-                Tokenizer.Event.enter(group, context),
-                Tokenizer.Event.enter(label, context)
-        );
+        media = new ArrayList<>();
+        media.add(Tokenizer.Event.enter(group, context));
+        media.add(Tokenizer.Event.enter(label, context));
 
         // Opening marker.
         media = ChunkUtils.push(media, events.subList(open + 1, open + offset + 3));
@@ -144,7 +144,7 @@ public final class LabelEnd {
                 media,
                 Construct.resolveAll(
                         context.parser.constructs.nullInsideSpan,
-                        events.subList(open + offset + 4, close - 3),
+                        new ArrayList<>(events.subList(open + offset + 4, close - 3)),
                         context
                 )
         );

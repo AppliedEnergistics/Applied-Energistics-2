@@ -106,7 +106,7 @@ final class InitializeText {
             // A rather boring computation (to merge adjacent `data` events) which
             // improves mm performance by 29%.
             while (++index <= events.size()) {
-                var event = events.get(index);
+                var event = index < events.size() ? events.get(index) : null;
 
                 if (enter == -1) {
                     if (event != null && event.token().type.equals(Types.data)) {
@@ -161,7 +161,7 @@ final class InitializeText {
                     if (chunk instanceof String textChunk) {
                         bufferIndex = textChunk.length();
 
-                        while (textChunk.charAt(bufferIndex - 1) == Codes.space) {
+                        while (bufferIndex > 0 && textChunk.charAt(bufferIndex - 1) == Codes.space) {
                             size++;
                             bufferIndex--;
                         }

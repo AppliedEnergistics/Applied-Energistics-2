@@ -11,21 +11,10 @@ public final class ChunkUtils {
      * array instead of rest parameters.
      */
     public static <T> void splice(List<T> list, int start, int remove, List<T> items) {
-        var end = list.size();
-
-        // Make start between zero and `end` (included).
-        if (start < 0) {
-            start = -start > end ? 0 : end + start;
-        } else {
-            start = Math.min(start, end);
-        }
-
-        remove = Math.max(remove, 0);
-
-        if (remove > 0) {
-            list.subList(start, start + remove).clear();
-        }
-        list.addAll(start, items);
+        var removeEnd = Math.min(list.size(), start + remove);
+        var sublist = list.subList(start, removeEnd);
+        sublist.clear();
+        sublist.addAll(items);
     }
 
     /**

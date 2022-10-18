@@ -37,10 +37,9 @@ public final class Extensions {
         all.string = mergeMap(all.string, extension.string);
         all.text = mergeMap(all.text, extension.text);
 
-        // TODO
-        // nullDisable
-        // nullInsideSpan
-        // nullAttentionMarkers
+        all.nullDisable.addAll(extension.nullDisable);
+        all.nullInsideSpan.addAll(extension.nullInsideSpan);
+        all.nullAttentionMarkers.addAll(extension.nullAttentionMarkers);
     }
 
     private static Map<Integer, List<Construct>> mergeMap(Map<Integer, List<Construct>> left, Map<Integer, List<Construct>> right) {

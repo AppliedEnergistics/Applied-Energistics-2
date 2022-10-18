@@ -105,7 +105,7 @@ public final class HtmlFlow {
 
             if (CharUtil.asciiAlpha(code)) {
                 effects.consume(code);
-                buffer = String.valueOf(code);
+                buffer = String.valueOf((char) code);
                 startTag = true;
                 return this::tagName;
             }
@@ -166,7 +166,7 @@ public final class HtmlFlow {
         private State tagCloseStart(int code) {
             if (CharUtil.asciiAlpha(code)) {
                 effects.consume(code);
-                buffer = String.valueOf(code);
+                buffer = String.valueOf((char) code);
                 return this::tagName;
             }
 
@@ -212,7 +212,7 @@ public final class HtmlFlow {
 
             if (code == Codes.dash || CharUtil.asciiAlphanumeric(code)) {
                 effects.consume(code);
-                buffer += String.valueOf(code);
+                buffer += String.valueOf((char) code);
                 return this::tagName;
             }
 
@@ -505,7 +505,7 @@ public final class HtmlFlow {
 
             if (CharUtil.asciiAlpha(code) && buffer.length() < Constants.htmlRawSizeMax) {
                 effects.consume(code);
-                buffer += String.valueOf(code);
+                buffer += String.valueOf((char) code);
                 return this::continuationRawEndTag;
             }
 

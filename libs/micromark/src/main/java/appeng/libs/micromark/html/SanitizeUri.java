@@ -104,7 +104,7 @@ public final class SanitizeUri {
                 }
                 // Lone surrogate.
                 else {
-                    replace = String.valueOf(Codes.replacementCharacter);
+                    replace = String.valueOf((char) Codes.replacementCharacter);
                 }
             }
             // Unicode.
