@@ -70,6 +70,9 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
         }
 
         if (!doTransfer) {
+            if (recipeType.equals(VanillaRecipeCategoryUid.CRAFTING)) {
+                return new JEIMissingItem();
+            }
             return null;
         }
 
