@@ -20,6 +20,15 @@ repositories {
     mavenLocal()
 
     maven {
+        url "https://cursemaven.com"
+    }
+
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+
+    maven {
         name "Mobius"
         url "http://mobiusstrip.eu/maven"
     }
@@ -68,11 +77,6 @@ repositories {
     //    name 'modmaven'
     //    url "https://modmaven.k-4u.nl/"
     //}
-
-    maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
-    }
 }
 
 configurations {
@@ -80,15 +84,22 @@ configurations {
 }
 
 dependencies {
-    deobfCompile "gregtechce:gregtech:1.12.2:1.15.1.735"
+    // deobfCompile "gregtechce:gregtech:1.12.2:1.15.1.735"
     // installable runtime dependencies
-    mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    deobfCompile "curse.maven:gregtechceu-557242:3949406"
+
+    //mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    mods "curse.maven:hwyla-253449:2568751"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
     mods "mcjty.theoneprobe:TheOneProbe-${minecraft_version}:${top_version}"
-
+    
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
-    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    //compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"
+    compileOnly "curse.maven:hwyla-253449:2568751"
+    //Code chicken lib, GTCE dependency
+    deobfCompile "curse.maven:CCL-242818:2779848"
+
     compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
