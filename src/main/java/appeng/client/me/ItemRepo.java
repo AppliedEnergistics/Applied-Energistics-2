@@ -227,8 +227,10 @@ public class ItemRepo {
     }
 
     public void clear() {
-        searchTask.cancel(true);
-        searchTask = null;
+        if (searchTask != null) {
+            searchTask.cancel(true);
+            searchTask = null;
+        }
         this.list.resetStatus();
     }
 
