@@ -78,6 +78,7 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<Object> lines = new ArrayList<>();
     private final Set<Object> matchedStacks = new HashSet<>();
+    private final Set<ClientDCInternalInv> matchedInterfaces = new HashSet<>();
 
     private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
 
@@ -148,7 +149,9 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
                     for (int z = 0; z < 9; z++) {
                         this.inventorySlots.inventorySlots.add(new SlotDisconnected(inv, z + (row * 9), (z * 18 + 22), offset));
                         if (this.matchedStacks.contains(inv.getInventory().getStackInSlot(z + (row * 9)))) {
-                            drawRect(z * 18 + 22, offset, z * 18 + 22 + 16, offset + 16, 0x2A00FF00);
+                            drawRect(z * 18 + 22, offset, z * 18 + 22 + 16, offset + 16, 0x8A00FF00);
+                        } else if (!matchedInterfaces.contains(inv)) {
+                            drawRect(z * 18 + 22, offset, z * 18 + 22 + 16, offset + 16, 0x6A000000);
                         }
                     }
                     linesDraw++;
@@ -325,6 +328,7 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
         this.byName.clear();
         this.buttonList.clear();
         this.matchedStacks.clear();
+        this.matchedInterfaces.clear();
 
         final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
 
@@ -356,7 +360,11 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
                 }
             }
             // if found, filter skipped or machine name matching the search term, add it
-            if (found || entry.getName().toLowerCase().contains(searchFieldInputs)) {
+            if (searchFieldInputs.isEmpty() || entry.getName().toLowerCase().contains(searchFieldInputs)) {
+                this.matchedInterfaces.add(entry);
+                found = true;
+            }
+            if (found) {
                 this.byName.put(entry.getName(), entry);
                 cachedSearch.add(entry);
             } else {

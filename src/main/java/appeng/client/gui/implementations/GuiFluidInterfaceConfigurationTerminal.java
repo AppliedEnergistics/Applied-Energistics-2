@@ -19,10 +19,8 @@
 package appeng.client.gui.implementations;
 
 
-import appeng.api.AEApi;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
-import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEFluidStack;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiCustomSlot;
@@ -89,6 +87,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
     private final ArrayList<String> names = new ArrayList<>();
     private final ArrayList<Object> lines = new ArrayList<>();
     private final Set<Object> matchedStacks = new HashSet<>();
+    private final Set<ClientDCInternalFluidInv> matchedInterfaces = new HashSet<ClientDCInternalFluidInv>();
 
     private final Map<String, Set<Object>> cachedSearches = new WeakHashMap<>();
 
@@ -157,12 +156,14 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
 
                 for (int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row) {
                     for (int z = 0; z < 5; z++) {
-                        GuiFluidTank tankSlot = new GuiFluidTank(inv.getInventory(), z + (row * 5), z + (row * 5), (z * 18 + 22), offset, 16, 16);
+                        GuiFluidTank tankSlot;
+                        if (!matchedInterfaces.contains(inv) && !this.matchedStacks.contains(inv.getInventory().getFluidInSlot(z + (row * 5)))) {
+                            tankSlot = new GuiFluidTank(inv.getInventory(), z + (row * 5), z + (row * 5), (z * 18 + 22), offset, 16, 16, true);
+                        } else {
+                            tankSlot = new GuiFluidTank(inv.getInventory(), z + (row * 5), z + (row * 5), (z * 18 + 22), offset, 16, 16);
+                        }
                         this.guiSlots.add(tankSlot);
                         guiFluidTankClientDCInternalFluidInvMap.put(tankSlot, inv);
-                        if (this.matchedStacks.contains(inv.getInventory().getFluidInSlot(z + (row * 5)))) {
-                            drawRect(z * 18 + 22, offset, z * 18 + 22 + 16, offset + 16, 0x2A00FF00);
-                        }
                     }
                     linesDraw++;
                     offset += 18;
@@ -321,6 +322,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
         this.byName.clear();
         this.buttonList.clear();
         this.matchedStacks.clear();
+        this.matchedInterfaces.clear();
 
         final String searchFieldInputs = this.searchFieldInputs.getText().toLowerCase();
 
@@ -352,8 +354,12 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
                     slot++;
                 }
             }
+            if (searchFieldInputs.isEmpty() || entry.getName().toLowerCase().contains(searchFieldInputs)) {
+                this.matchedInterfaces.add(entry);
+                found = true;
+            }
             // if found, filter skipped or machine name matching the search term, add it
-            if (found || entry.getName().toLowerCase().contains(searchFieldInputs)) {
+            if (found) {
                 this.byName.put(entry.getName(), entry);
                 cachedSearch.add(entry);
             } else {
