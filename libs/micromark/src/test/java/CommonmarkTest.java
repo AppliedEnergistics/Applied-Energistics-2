@@ -46,14 +46,17 @@ public class CommonmarkTest {
 
                             return DynamicTest.dynamicTest(name, () -> {
                                 LOGGER.info("Markdown: {}", markdown);
-                                var events = Micromark.parse(markdown);
-                                System.out.println(events);
+                                LOGGER.info("Expected HTML: {}", html);
 
+                                var events = Micromark.parseAndPostprocess(markdown);
                                 var options = new CompileOptions();
                                 options.setAllowDangerousHtml(true);
                                 options.setAllowDangerousProtocol(true);
                                 var compiler = new HtmlCompiler(options);
-                                assertEquals(html, compiler.compile(events));
+                                var actualHtml = compiler.compile(events);
+                                LOGGER.info("Actual HTML: {}", actualHtml);
+
+                                assertEquals(html, actualHtml);
                             });
                         }))
                 )

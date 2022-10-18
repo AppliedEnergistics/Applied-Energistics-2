@@ -5,7 +5,6 @@ import appeng.libs.micromark.NamedCharacterEntities;
 import appeng.libs.micromark.NormalizeIdentifier;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.Tokenizer;
-import appeng.libs.micromark.commonmark.Definition;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -190,7 +189,6 @@ public class HtmlCompiler {
         public int headingRank;
         public boolean inCodeText;
         public String characterReferenceType;
-        public Map<String, Object> custom = new HashMap<>();
     }
 
     /**
@@ -276,7 +274,6 @@ public class HtmlCompiler {
         }
         head = ChunkUtils.push(head, body);
         head = ChunkUtils.push(head, new ArrayList<>(events.subList(start, events.size())));
-        index = -1;
         var result = head;
 
         var context = new Context();
@@ -287,7 +284,7 @@ public class HtmlCompiler {
         }
 
         // Handle all events.
-        for (var event : events) {
+        for (var event : result) {
             var token = event.token();
 
             var typeHandlers = event.isEnter() ? handlers.enter : handlers.exit;
@@ -409,14 +406,6 @@ public class HtmlCompiler {
         slice.get(0).token()._loose = loose;
     }
 
-    private void setData(String key, Object value) {
-        data.custom.put(key, value);
-    }
-
-    private Object getData(String key) {
-        return data.custom.get(key);
-    }
-
     private void buffer() {
         buffers.add(new ArrayList<>());
     }
@@ -428,12 +417,12 @@ public class HtmlCompiler {
 
     private void tag(String value) {
         if (!tags) return;
-        setData("lastWasTag", true);
+        data.lastWasTag = true;
         buffers.get(buffers.size() - 1).add(value);
     }
 
     private void raw(String value) {
-        setData("lastWasTag", false);
+        data.lastWasTag = false;
         buffers.get(buffers.size() - 1).add(value);
     }
 
@@ -443,9 +432,9 @@ public class HtmlCompiler {
 
     private void lineEndingIfNeeded() {
         var buffer = buffers.get(buffers.size() - 1);
-        var slice = buffer.get(buffer.size() - 1);
+        var slice = !buffer.isEmpty() ? buffer.get(buffer.size() - 1) : null;
         var previous = slice != null ? slice.charAt(slice.length() - 1) : null;
-        if (previous == 10 || previous == 13 || previous == null) {
+        if (previous == null || previous == 10 || previous == 13) {
             return;
         }
         lineEnding();
@@ -463,14 +452,14 @@ public class HtmlCompiler {
         tightStack.add(!token._loose);
         lineEndingIfNeeded();
         tag("<ol");
-        setData("expectFirstItem", true);
+        data.expectFirstItem = true;
     }
 
     private void onenterlistunordered(CompileContext context, Token token) {
         tightStack.add(!token._loose);
         lineEndingIfNeeded();
         tag("<ul");
-        setData("expectFirstItem", true);
+        data.expectFirstItem = true;
     }
 
     private void onenterlistitemvalue(CompileContext context, Token token) {
@@ -531,7 +520,7 @@ public class HtmlCompiler {
     }
 
     private void onenterparagraph() {
-        if (!tightStack.get(tightStack.size() - 1)) {
+        if (tightStack.isEmpty() || !tightStack.get(tightStack.size() - 1)) {
             lineEndingIfNeeded();
             tag("<p>");
         }
@@ -539,8 +528,8 @@ public class HtmlCompiler {
     }
 
     private void onexitparagraph() {
-        if (tightStack.get(tightStack.size() - 1)) {
-            setData("slurpAllLineEndings", true);
+        if (!tightStack.isEmpty() && tightStack.get(tightStack.size() - 1)) {
+            data.slurpAllLineEndings = true;
         } else {
             tag("</p>");
         }
@@ -549,7 +538,7 @@ public class HtmlCompiler {
     private void onentercodefenced() {
         lineEndingIfNeeded();
         tag("<pre><code");
-        setData("fencesCount", 0);
+        data.fencesCount = 0;
     }
 
     private void onexitcodefencedfenceinfo() {
@@ -561,9 +550,9 @@ public class HtmlCompiler {
         int count = Objects.requireNonNullElse(data.fencesCount, 0);
         if (count == 0) {
             tag(">");
-            setData("slurpOneLineEnding", true);
+            data.slurpOneLineEnding = true;
         }
-        setData("fencesCount", count + 1);
+        data.fencesCount = count + 1;
     }
 
     private void onentercodeindented() {
@@ -628,7 +617,7 @@ public class HtmlCompiler {
         buffer();
         // Ignore encoding the result, as we’ll first percent encode the url and
         // encode manually after.
-        setData("ignoreEncode", true);
+        data.ignoreEncode = true;
     }
 
     private void onexitresourcedestinationstring() {
@@ -683,7 +672,7 @@ public class HtmlCompiler {
 
     private void onenterdefinitiondestinationstring() {
         buffer();
-        setData("ignoreEncode", true);
+        data.ignoreEncode = true;
     }
 
     private void onexitdefinitiondestinationstring() {
@@ -706,7 +695,7 @@ public class HtmlCompiler {
     }
 
     private void onentercontent() {
-        setData("slurpAllLineEndings", true);
+        data.slurpAllLineEndings = true;
     }
 
     private void onexitatxheadingsequence(CompileContext context, Token token) {
@@ -723,7 +712,7 @@ public class HtmlCompiler {
     }
 
     private void onexitsetextheadingtext() {
-        setData("slurpAllLineEndings", true);
+        data.slurpAllLineEndings = true;
     }
 
     private void onexitatxheading() {
@@ -732,7 +721,7 @@ public class HtmlCompiler {
     }
 
     private void onexitsetextheadinglinesequence(CompileContext context, Token token) {
-        setData("headingRank", context.sliceSerialize(token).charAt(0) == 61 ? 1 : 2);
+        data.headingRank = context.sliceSerialize(token).charAt(0) == 61 ? 1 : 2;
     }
 
     private void onexitsetextheading() {
@@ -766,7 +755,7 @@ public class HtmlCompiler {
 
     private void onexitcodeflowvalue(CompileContext context, Token token) {
         raw(encode(context.sliceSerialize(token)));
-        setData("flowCodeSeenData", true);
+        data.flowCodeSeenData = true;
     }
 
     private void onexithardbreak() {
@@ -784,7 +773,7 @@ public class HtmlCompiler {
 
     private void onenterhtml() {
         if (options.isAllowDangerousHtml()) {
-            setData("ignoreEncode", true);
+            data.ignoreEncode = true;
         }
     }
 
@@ -797,7 +786,7 @@ public class HtmlCompiler {
     }
 
     private void onentercodetext() {
-        setData("inCodeText", true);
+        data.inCodeText = true;
         tag("<code>");
     }
 
@@ -820,7 +809,7 @@ public class HtmlCompiler {
     }
 
     private void onexitcharacterreferencemarker(CompileContext context, Token token) {
-        setData("characterReferenceType", token.type);
+        data.characterReferenceType = token.type;
     }
 
     private void onexitcharacterreferencevalue(CompileContext context, Token token) {

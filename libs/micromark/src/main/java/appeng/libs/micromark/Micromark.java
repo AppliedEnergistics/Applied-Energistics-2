@@ -1,5 +1,7 @@
 package appeng.libs.micromark;
 
+import appeng.libs.micromark.commonmark.Subtokenize;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,5 +34,13 @@ public final class Micromark {
 
     public static List<Tokenizer.Event> parse(String text) {
         return parse(List.of()).document.create().write(Preprocessor.preprocess(text, true));
+    }
+
+    public static List<Tokenizer.Event> parseAndPostprocess(String text) {
+        var events = parse(text);
+        while (!Subtokenize.subtokenize(events)) {
+            // Empty
+        }
+        return events;
     }
 }

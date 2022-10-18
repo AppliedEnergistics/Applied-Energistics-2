@@ -3,7 +3,7 @@ package appeng.libs.micromark;
 import java.util.List;
 
 public final class ChunkUtils {
-    private  ChunkUtils() {
+    private ChunkUtils() {
     }
 
     /**
@@ -11,7 +11,7 @@ public final class ChunkUtils {
      * array instead of rest parameters.
      */
     public static <T> void splice(List<T> list, int start, int remove, List<T> items) {
-       var end = list.size();
+        var end = list.size();
 
         // Make start between zero and `end` (included).
         if (start < 0) {
@@ -36,12 +36,8 @@ public final class ChunkUtils {
      * and adds items in batches to prevent V8 from hanging.
      */
     public static <T> List<T> push(List<T> list, List<T> items) {
-        if (!list.isEmpty()) {
-            list.addAll(items);
-            return list;
-        }
-
-        return items;
+        list.addAll(items);
+        return list;
     }
 
 }
