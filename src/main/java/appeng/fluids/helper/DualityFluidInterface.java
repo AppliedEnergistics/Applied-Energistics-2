@@ -528,6 +528,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
         this.tanks.readFromNBT(data, "storage");
         this.priority = data.getInteger("priority");
         this.upgrades.readFromNBT(data, "upgrades");
+        this.tanks.setCapacity((int) (Math.pow(4, this.getInstalledUpgrades(Upgrades.CAPACITY) + 1) * Fluid.BUCKET_VOLUME));
         this.readConfig();
     }
 
