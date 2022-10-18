@@ -70,7 +70,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
     private final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
     private final IMEMonitor<IAEItemStack> monitor;
-    private final IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+    public final IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
     private final IConfigManager clientCM;
     private final ITerminalHost host;
     @GuiSync(99)
@@ -357,7 +357,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
         this.hasPower = isPowered;
     }
 
-    private IConfigManagerHost getGui() {
+    protected IConfigManagerHost getGui() {
         return this.gui;
     }
 

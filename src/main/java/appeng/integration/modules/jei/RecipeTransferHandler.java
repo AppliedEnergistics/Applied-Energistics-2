@@ -19,6 +19,7 @@
 package appeng.integration.modules.jei;
 
 
+import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotFakeCraftingMatrix;
@@ -70,8 +71,10 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
         }
 
         if (!doTransfer) {
-            if (recipeType.equals(VanillaRecipeCategoryUid.CRAFTING)) {
-                return new JEIMissingItem();
+            if (container instanceof ContainerCraftingTerm && recipeType.equals(VanillaRecipeCategoryUid.CRAFTING)) {
+                JEIMissingItem error = new JEIMissingItem(container, recipeLayout);
+                if (error.errored())
+                    return error;
             }
             return null;
         }

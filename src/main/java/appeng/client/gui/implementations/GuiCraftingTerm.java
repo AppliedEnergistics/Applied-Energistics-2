@@ -23,6 +23,7 @@ import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
 import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.me.ItemRepo;
 import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.core.localization.GuiText;
@@ -80,5 +81,9 @@ public class GuiCraftingTerm extends GuiMEMonitorable {
     @Override
     protected String getBackground() {
         return "guis/crafting.png";
+    }
+
+    public ItemRepo getRepo() {
+        return this.repo;
     }
 }

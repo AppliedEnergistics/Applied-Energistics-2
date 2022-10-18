@@ -73,7 +73,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
     private static int craftingGridOffsetY;
 
     private static String memoryText = "";
-    private final ItemRepo repo;
+    protected final ItemRepo repo;
     private final int offsetX = 9;
     private final int lowerTextureOffset = 0;
     private final IConfigManager configSrc;
