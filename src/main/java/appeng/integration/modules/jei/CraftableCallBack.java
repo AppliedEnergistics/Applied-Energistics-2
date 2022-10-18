@@ -29,12 +29,15 @@ public class CraftableCallBack implements ITooltipCallback<ItemStack> {
         if (list != null) {
             AEItemStack stack = AEItemStack.fromItemStack(ingredient);
             if (list.findPrecise(stack) != null) {
+                tooltip.add(I18n.translateToLocalFormatted("gui.appliedenergistics2.Missing"));
                 tooltip.add(I18n.translateToLocalFormatted("gui.tooltips.appliedenergistics2.Craftable"));
                 if (Mouse.isButtonDown(2)) {
                     ((AEBaseContainer) container).setTargetStack(stack);
                     final PacketInventoryAction p = new PacketInventoryAction(InventoryAction.AUTO_CRAFT, container.getInventory().size(), 0);
                     NetworkHandler.instance().sendToServer(p);
                 }
+            } else {
+                tooltip.add(I18n.translateToLocalFormatted("gui.appliedenergistics2.Missing"));
             }
         }
     }

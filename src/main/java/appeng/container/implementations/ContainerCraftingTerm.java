@@ -24,6 +24,7 @@ import appeng.container.ContainerNull;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotCraftingTerm;
 import appeng.helpers.IContainerCraftingPacket;
+import appeng.parts.reporting.AbstractPartTerminal;
 import appeng.parts.reporting.PartCraftingTerminal;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.IConfigManagerHost;
@@ -119,9 +120,5 @@ public class ContainerCraftingTerm extends ContainerMEMonitorable implements IAE
 
     public IRecipe getCurrentRecipe() {
         return this.currentRecipe;
-    }
-
-    public IConfigManagerHost getGui() {
-        return super.getGui();
     }
 }

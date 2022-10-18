@@ -30,6 +30,8 @@ import appeng.api.storage.IMEMonitorHandlerReceiver;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.client.gui.implementations.GuiCraftConfirm;
+import appeng.client.gui.implementations.GuiCraftingCPU;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
@@ -47,6 +49,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorHandlerReceiver<IAEItemStack>, ICustomNameObject {
@@ -58,6 +61,7 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
     @GuiSync(0)
     public long eta = -1;
+    private GuiCraftingCPU guiCraftingCPU;
 
     public ContainerCraftingCPU(final InventoryPlayer ip, final Object te) {
         super(ip, te);
@@ -231,5 +235,13 @@ public class ContainerCraftingCPU extends AEBaseContainer implements IMEMonitorH
 
     private void setNetwork(final IGrid network) {
         this.network = network;
+    }
+
+    public void postUpdate(final List<IAEItemStack> list, final byte ref) {
+        this.guiCraftingCPU.postUpdate(list, ref);
+    }
+
+    public void setGui(GuiCraftingCPU guiCraftingCPU) {
+        this.guiCraftingCPU = guiCraftingCPU;
     }
 }

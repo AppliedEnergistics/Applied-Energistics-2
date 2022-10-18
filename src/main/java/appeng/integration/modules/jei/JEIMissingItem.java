@@ -4,14 +4,13 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.implementations.GuiCraftingTerm;
-import appeng.client.gui.implementations.GuiPatternTerm;
 import appeng.container.implementations.ContainerCraftingTerm;
-import appeng.container.implementations.ContainerPatternTerm;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.gui.recipes.RecipeLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
@@ -49,7 +48,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                                     if (fuzzy.size() > 0) {
                                         for (IAEItemStack itemStack : fuzzy) {
                                             if (itemStack.getStackSize() > 0) {
-                                                if (itemStack.isSameType(stack)) {
+                                                if (itemStack.fuzzyComparison(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL)) {
                                                     found = true;
                                                     break;
                                                 }
@@ -87,8 +86,8 @@ public class JEIMissingItem implements IRecipeTransferError {
         Container c = minecraft.player.openContainer;
         if (c instanceof ContainerCraftingTerm) {
             ContainerCraftingTerm craftingTerm = (ContainerCraftingTerm) c;
-            GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
 
+            GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
             IItemList<IAEItemStack> ir = g.getRepo().getList();
             boolean found;
             boolean craftable;
@@ -144,6 +143,9 @@ public class JEIMissingItem implements IRecipeTransferError {
                         }
                     }
                 }
+            }
+            if (!this.errored) {
+                ((RecipeLayout) recipeLayout).getRecipeTransferButton().init(Minecraft.getMinecraft().player.openContainer, Minecraft.getMinecraft().player);
             }
         }
     }

@@ -20,19 +20,18 @@ package appeng.core.sync.packets;
 
 
 import appeng.api.storage.data.IAEItemStack;
-import appeng.client.gui.implementations.GuiCraftConfirm;
-import appeng.client.gui.implementations.GuiCraftingCPU;
-import appeng.client.gui.implementations.GuiMEMonitorable;
-import appeng.client.gui.implementations.GuiNetworkStatus;
+import appeng.container.implementations.ContainerCraftConfirm;
+import appeng.container.implementations.ContainerCraftingCPU;
+import appeng.container.implementations.ContainerMEMonitorable;
+import appeng.container.implementations.ContainerNetworkStatus;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.util.item.AEItemStack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -132,22 +131,22 @@ public class PacketMEInventoryUpdate extends AppEngPacket {
     @Override
     @SideOnly(Side.CLIENT)
     public void clientPacketData(final INetworkInfo network, final AppEngPacket packet, final EntityPlayer player) {
-        final GuiScreen gs = Minecraft.getMinecraft().currentScreen;
+        final Container c = player.openContainer;
 
-        if (gs instanceof GuiCraftConfirm) {
-            ((GuiCraftConfirm) gs).postUpdate(this.list, this.ref);
+        if (c instanceof ContainerCraftConfirm) {
+            ((ContainerCraftConfirm) c).postUpdate(this.list, this.ref);
         }
 
-        if (gs instanceof GuiCraftingCPU) {
-            ((GuiCraftingCPU) gs).postUpdate(this.list, this.ref);
+        if (c instanceof ContainerCraftingCPU) {
+            ((ContainerCraftingCPU) c).postUpdate(this.list, this.ref);
         }
 
-        if (gs instanceof GuiMEMonitorable) {
-            ((GuiMEMonitorable) gs).postUpdate(this.list);
+        if (c instanceof ContainerMEMonitorable) {
+            ((ContainerMEMonitorable) c).postUpdate(this.list);
         }
 
-        if (gs instanceof GuiNetworkStatus) {
-            ((GuiNetworkStatus) gs).postUpdate(this.list);
+        if (c instanceof ContainerNetworkStatus) {
+            ((ContainerNetworkStatus) c).postUpdate(this.list);
         }
     }
 

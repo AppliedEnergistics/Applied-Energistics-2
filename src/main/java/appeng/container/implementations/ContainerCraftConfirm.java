@@ -35,6 +35,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
+import appeng.client.gui.implementations.GuiCraftConfirm;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.AELog;
@@ -61,6 +62,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Future;
 
 
@@ -85,6 +87,7 @@ public class ContainerCraftConfirm extends AEBaseContainer {
     public boolean noCPU = true;
     @GuiSync(7)
     public String myName = "";
+    private GuiCraftConfirm guiCraftConfirm;
 
     public ContainerCraftConfirm(final InventoryPlayer ip, final ITerminalHost te) {
         super(ip, te);
@@ -402,5 +405,13 @@ public class ContainerCraftConfirm extends AEBaseContainer {
 
     public void setJob(final Future<ICraftingJob> job) {
         this.job = job;
+    }
+
+    public void postUpdate(final List<IAEItemStack> list, final byte ref) {
+        this.guiCraftConfirm.postUpdate(list, ref);
+    }
+
+    public void setGui(GuiCraftConfirm guiCraftConfirm) {
+        this.guiCraftConfirm = guiCraftConfirm;
     }
 }
