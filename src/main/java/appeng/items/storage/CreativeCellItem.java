@@ -46,11 +46,6 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public boolean isEditable(ItemStack is) {
-        return true;
-    }
-
-    @Override
     public ConfigInventory getConfigInventory(ItemStack is) {
         return CellConfig.create(is);
     }
