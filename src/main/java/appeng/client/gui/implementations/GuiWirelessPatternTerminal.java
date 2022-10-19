@@ -19,18 +19,18 @@
 package appeng.client.gui.implementations;
 
 
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.container.implementations.ContainerWirelessCraftingTerminal;
+import appeng.container.implementations.ContainerWirelessPatternTerminal;
+import appeng.helpers.WirelessTerminalGuiObject;
 import net.minecraft.entity.player.InventoryPlayer;
 
 
-public class GuiWirelessPatternTerminal extends GuiMEPortableCell {
+public class GuiWirelessPatternTerminal extends GuiPatternTerm {
 
-    public GuiWirelessPatternTerminal(final InventoryPlayer inventoryPlayer, final IPortableCell te) {
-        super(inventoryPlayer, te);
-    }
-
-    @Override
-    int getMaxRows() {
-        return this.defaultGetMaxRows();
+    public GuiWirelessPatternTerminal(final InventoryPlayer inventoryPlayer, final WirelessTerminalGuiObject te) {
+        super(inventoryPlayer, te, new ContainerWirelessPatternTerminal(inventoryPlayer, te));
+        this.setReservedSpace(81);
     }
 }

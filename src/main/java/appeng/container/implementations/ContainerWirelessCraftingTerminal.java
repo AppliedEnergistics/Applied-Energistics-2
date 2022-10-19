@@ -19,8 +19,6 @@
 package appeng.container.implementations;
 
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.container.ContainerNull;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotCraftingTerm;

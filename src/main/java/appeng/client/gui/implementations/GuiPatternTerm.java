@@ -25,7 +25,9 @@ import appeng.api.config.Settings;
 import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.widgets.GuiImgButton;
 import appeng.client.gui.widgets.GuiTabButton;
+import appeng.container.implementations.ContainerPatternEncoder;
 import appeng.container.implementations.ContainerPatternTerm;
+import appeng.container.implementations.ContainerWirelessPatternTerminal;
 import appeng.container.interfaces.IJEIGhostIngredients;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotFake;
@@ -35,6 +37,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.helpers.InventoryAction;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.item.AEItemStack;
 import mezz.jei.api.gui.IGhostIngredientHandler.Target;
 import net.minecraft.client.gui.GuiButton;
@@ -60,7 +63,7 @@ public class GuiPatternTerm extends GuiMEMonitorable implements IJEIGhostIngredi
     private static final String CRAFTMODE_CRFTING = "1";
     private static final String CRAFTMODE_PROCESSING = "0";
 
-    private final ContainerPatternTerm container;
+    private final ContainerPatternEncoder container;
 
     private GuiTabButton tabCraftButton;
     private GuiTabButton tabProcessButton;
@@ -80,6 +83,12 @@ public class GuiPatternTerm extends GuiMEMonitorable implements IJEIGhostIngredi
     public GuiPatternTerm(final InventoryPlayer inventoryPlayer, final ITerminalHost te) {
         super(inventoryPlayer, te, new ContainerPatternTerm(inventoryPlayer, te));
         this.container = (ContainerPatternTerm) this.inventorySlots;
+        this.setReservedSpace(81);
+    }
+
+    public GuiPatternTerm(final InventoryPlayer inventoryPlayer, WirelessTerminalGuiObject te, final ContainerWirelessPatternTerminal wpt) {
+        super(inventoryPlayer, te, wpt);
+        this.container = (ContainerWirelessPatternTerminal) this.inventorySlots;
         this.setReservedSpace(81);
     }
 

@@ -2,6 +2,7 @@ package appeng.container.implementations;
 
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.storage.ITerminalHost;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.AppEngSlot;
@@ -42,7 +43,9 @@ import static appeng.helpers.ItemStackHelper.stackWriteToNBT;
 
 public abstract class ContainerPatternEncoder extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket {
 
-    private final AbstractPartEncoder patternTerminal;
+    protected AbstractPartEncoder patternTerminal = null;
+
+    protected IGuiItemObject iGuiItemObject = null;
 
     final AppEngInternalInventory cOut = new AppEngInternalInventory(null, 1);
 
@@ -68,6 +71,14 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
     protected ContainerPatternEncoder(InventoryPlayer ip, ITerminalHost monitorable, boolean bindInventory) {
         super(ip, monitorable, bindInventory);
         patternTerminal = (AbstractPartEncoder) monitorable;
+    }
+
+    protected ContainerPatternEncoder(InventoryPlayer ip, ITerminalHost monitorable, IGuiItemObject iGuiItemObject, boolean bindInventory) {
+        super(ip, monitorable, iGuiItemObject, bindInventory);
+        if (monitorable instanceof AbstractPartEncoder) {
+            patternTerminal = (AbstractPartEncoder) monitorable;
+        }
+        this.iGuiItemObject = iGuiItemObject;
     }
 
     @Override
@@ -99,7 +110,10 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getInventoryPlayer());
         }
-        return this.getPart().getInventoryByName(name);
+        if (this.getPart() != null) {
+            return this.getPart().getInventoryByName(name);
+        }
+        return null;
     }
 
     @Override
@@ -492,12 +506,50 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         if (Platform.isServer()) {
-            if (this.isCraftingMode() != this.getPart().isCraftingRecipe()) {
-                this.setCraftingMode(this.getPart().isCraftingRecipe());
-                this.updateOrderOfOutputSlots();
+            if (getPart() != null) {
+                if (this.isCraftingMode() != this.getPart().isCraftingRecipe()) {
+                    this.setCraftingMode(this.getPart().isCraftingRecipe());
+                    this.updateOrderOfOutputSlots();
+                }
             }
-
-            this.substitute = this.getPart().isSubstitution();
+            if (iGuiItemObject != null) {
+                NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
+                if (nbtTagCompound != null) {
+                    if (nbtTagCompound.hasKey("isCraftingMode")) {
+                        boolean crafting = nbtTagCompound.getBoolean("isCraftingMode");
+                        if (this.isCraftingMode() != crafting) {
+                            this.setCraftingMode(crafting);
+                            this.updateOrderOfOutputSlots();
+                        }
+                    } else {
+                        nbtTagCompound.setBoolean("isCraftingMode", false);
+                    }
+                } else {
+                    nbtTagCompound = new NBTTagCompound();
+                    nbtTagCompound.setBoolean("isCraftingMode", false);
+                    iGuiItemObject.getItemStack().setTagCompound(nbtTagCompound);
+                }
+            }
+            if (getPart() != null) {
+                this.substitute = this.getPart().isSubstitution();
+            } else if (iGuiItemObject != null) {
+                NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
+                if (nbtTagCompound != null) {
+                    if (nbtTagCompound.hasKey("isSubstitute")) {
+                        boolean crafting = nbtTagCompound.getBoolean("isSubstitute");
+                        if (this.isCraftingMode() != crafting) {
+                            this.setCraftingMode(crafting);
+                            this.updateOrderOfOutputSlots();
+                        }
+                    } else {
+                        nbtTagCompound.setBoolean("isSubstitute", false);
+                    }
+                } else {
+                    nbtTagCompound = new NBTTagCompound();
+                    nbtTagCompound.setBoolean("isSubstitute", false);
+                    iGuiItemObject.getItemStack().setTagCompound(nbtTagCompound);
+                }
+            }
         }
     }
 

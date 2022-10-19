@@ -90,7 +90,7 @@ public class ToolWirelessPatternTerminal extends AEBasePoweredItem implements IW
 
     @Override
     public boolean canHandle(final ItemStack is) {
-        return AEApi.instance().definitions().items().wirelessFluidTerminal().isSameAs(is);
+        return AEApi.instance().definitions().items().wirelessPatternTerminal().isSameAs(is);
     }
 
     @Override
