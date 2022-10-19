@@ -438,7 +438,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
             }
 
             if (hasValue) {
-                return list.toArray(new ItemStack[outputSlots.length]);
+                return list.toArray(new ItemStack[0]);
             }
         }
 
