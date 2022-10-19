@@ -39,11 +39,6 @@ repositories {
     }
 
     maven {
-        name = "Tesla repo"
-        url "https://maven.mcmoddev.com"
-    }
-
-    maven {
         name "Ellpeck"
         url "https://maven.ellpeck.de"
     }
