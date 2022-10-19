@@ -113,4 +113,5 @@ public abstract class PartBasicState extends AEBasePart implements IPowerChannel
     private void setClientFlags(final int clientFlags) {
         this.clientFlags = clientFlags;
     }
+
 }

@@ -309,7 +309,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param from     source of settings
      * @param compound compound of source
      */
-    private void uploadSettings(final SettingsFrom from, final NBTTagCompound compound) {
+    public void uploadSettings(final SettingsFrom from, final NBTTagCompound compound, EntityPlayer player) {
         if (compound != null) {
             final IConfigManager cm = this.getConfigManager();
             if (cm != null) {
@@ -359,7 +359,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
      * @param from source of settings
      * @return compound of source
      */
-    private NBTTagCompound downloadSettings(final SettingsFrom from) {
+    protected NBTTagCompound downloadSettings(final SettingsFrom from) {
         final NBTTagCompound output = new NBTTagCompound();
 
         final IConfigManager cm = this.getConfigManager();
@@ -428,7 +428,7 @@ public abstract class AEBasePart implements IPart, IGridProxyable, IActionHost, 
                 final String storedName = memoryCard.getSettingsName(memCardIS);
                 final NBTTagCompound data = memoryCard.getData(memCardIS);
                 if (name.equals(storedName)) {
-                    this.uploadSettings(SettingsFrom.MEMORY_CARD, data);
+                    this.uploadSettings(SettingsFrom.MEMORY_CARD, data, player);
                     memoryCard.notifyUser(player, MemoryCardMessages.SETTINGS_LOADED);
                 } else {
                     memoryCard.notifyUser(player, MemoryCardMessages.INVALID_MACHINE);
