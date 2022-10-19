@@ -21,50 +21,35 @@ package appeng.container.implementations;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
-import appeng.api.definitions.IDefinitions;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
-import appeng.container.guisync.GuiSync;
-import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotPatternOutputs;
 import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotPlayerHotBar;
-import appeng.container.slot.SlotPlayerInv;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.items.storage.ItemViewCell;
 import appeng.me.helpers.MachineSource;
-import appeng.parts.reporting.PartPatternTerminal;
-import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.item.AEItemStack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.InventoryCraftResult;
+import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.PlayerInvWrapper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 
 public class ContainerPatternTerm extends ContainerPatternEncoder {
@@ -91,7 +76,7 @@ public class ContainerPatternTerm extends ContainerPatternEncoder {
                 .getPowerSource(), monitorable, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this));
         this.craftSlot.setIIcon(-1);
 
-        for (int y = 0; y < 3; y++) {
+        for (int y = 0; y < this.outputSlots.length; y++) {
             this.addSlotToContainer(this.outputSlots[y] = new SlotPatternOutputs(output, this, y, 110, -76 + y * 18, 0, 0, 1));
             this.outputSlots[y].setRenderDisabled(false);
             this.outputSlots[y].setIIcon(-1);

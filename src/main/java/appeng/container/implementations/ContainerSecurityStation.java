@@ -61,7 +61,7 @@ public class ContainerSecurityStation extends ContainerMEMonitorable implements 
         this.securityBox = (TileSecurityStation) monitorable;
 
         this.addSlotToContainer(this.configSlot = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.BIOMETRIC_CARD, this.securityBox
-                .getConfigSlot(), 0, 37, -33 + jeiOffset, ip));
+                .getConfigSlot(), 0, 37, -33, ip));
 
         this.addSlotToContainer(
                 this.wirelessIn = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.ENCODABLE_ITEM, this.wirelessEncoder, 0, 212, 10 + jeiOffset, ip));

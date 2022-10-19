@@ -899,7 +899,10 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                 if (s instanceof SlotPlayerInv || s instanceof SlotPlayerHotBar) {
                     super.drawSlot(s);
                 } else if (s instanceof AppEngSlot) {
-                    ((AppEngSlot) s).setDisplay(true);
+                    AppEngSlot appEngSlot = ((AppEngSlot) s);
+                    appEngSlot.setDisplay(true);
+                    appEngSlot.setReturnAsSingleStack(true);
+
                     this.zLevel = 100.0F;
                     this.itemRender.zLevel = 100.0F;
 
@@ -913,7 +916,7 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                     // Annoying but easier than trying to splice into render item
                     super.drawSlot(s);
 
-                    this.stackSizeRenderer.renderStackSize(this.fontRenderer, AEItemStack.fromItemStack(((AppEngSlot) s).getDisplayStack()), s.xPos, s.yPos);
+                    this.stackSizeRenderer.renderStackSize(this.fontRenderer, AEItemStack.fromItemStack(appEngSlot.getDisplayStack()), s.xPos, s.yPos);
                     return;
                 } else {
                     super.drawSlot(s);

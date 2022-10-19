@@ -46,6 +46,7 @@ public class AppEngSlot extends Slot {
     private int IIcon = -1;
     private hasCalculatedValidness isValid;
     private boolean isDisplay = false;
+    private boolean returnAsSingleStack;
 
     public AppEngSlot(final IItemHandler inv, final int idx, final int x, final int y) {
         super(emptyInventory, idx, x, y);
@@ -94,14 +95,27 @@ public class AppEngSlot extends Slot {
             return ItemStack.EMPTY;
         }
 
+
         if (this.isDisplay()) {
             this.setDisplay(false);
-            ItemStack retStack = this.getDisplayStack().copy();
-            retStack.setCount(1);
-            return retStack;
+            if (this.returnAsSingleStack()) {
+                setReturnAsSingleStack(false);
+                ItemStack ret = this.getDisplayStack().copy();
+                ret.setCount(1);
+                return ret;
+            }
+            return this.getDisplayStack();
         }
 
         return this.itemHandler.getStackInSlot(this.index);
+    }
+
+    private boolean returnAsSingleStack() {
+        return this.returnAsSingleStack;
+    }
+
+    public void setReturnAsSingleStack(boolean returnAsSingleStack) {
+        this.returnAsSingleStack = returnAsSingleStack;
     }
 
     @Override

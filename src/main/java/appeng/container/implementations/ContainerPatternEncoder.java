@@ -425,7 +425,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
                 return new ItemStack[]{out};
             }
         } else {
-            final List<ItemStack> list = new ArrayList<>();
+            final List<ItemStack> list = new ArrayList<>(outputSlots.length);
             boolean hasValue = false;
 
             for (final OptionalSlotFake outputSlot : this.outputSlots) {
@@ -438,7 +438,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
             }
 
             if (hasValue) {
-                return list.toArray(new ItemStack[0]);
+                return list.toArray(new ItemStack[outputSlots.length]);
             }
         }
 

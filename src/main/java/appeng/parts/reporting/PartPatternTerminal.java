@@ -51,7 +51,7 @@ public class PartPatternTerminal extends AbstractPartEncoder {
     public PartPatternTerminal(final ItemStack is) {
         super(is);
         this.crafting = new AppEngInternalInventory(this, CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION);
-        this.output = new AppEngInternalInventory(this, CRAFTING_OUTPUT_LIMIT);
+        this.output = new AppEngInternalInventory(this, 3);
         this.pattern = new AppEngInternalInventory(this, 2);
     }
 
