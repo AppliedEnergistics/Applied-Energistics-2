@@ -130,10 +130,10 @@ public class PacketValueConfig extends AppEngPacket {
             final ContainerFluidLevelEmitter lvc = (ContainerFluidLevelEmitter) c;
             lvc.setLevel(Long.parseLong(this.Value), player);
         } else if (this.Name.startsWith("PatternTerminal.")) {
-            if (c instanceof ContainerPatternTerm) {
-                final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
+            if (c instanceof ContainerPatternEncoder) {
+                final ContainerPatternEncoder cpt = (ContainerPatternEncoder) c;
                 if (this.Name.equals("PatternTerminal.CraftMode")) {
-                    cpt.getPart().setCraftingRecipe(this.Value.equals("1"));
+                    cpt.setCraftingMode(this.Value.equals("1"));
                 } else if (this.Name.equals("PatternTerminal.Encode")) {
                     if (this.Value.equals("2")) {
                         cpt.encodeAndMoveToInventory();
@@ -158,31 +158,6 @@ public class PacketValueConfig extends AppEngPacket {
                     cpt.maximizeCount();
                 } else if (this.Name.equals("PatternTerminal.Substitute")) {
                     cpt.getPart().setSubstitution(this.Value.equals("1"));
-                }
-            } else if (c instanceof ContainerExpandedProcessingPatternTerm) {
-                final ContainerExpandedProcessingPatternTerm cept = (ContainerExpandedProcessingPatternTerm) c;
-                if (this.Name.equals("PatternTerminal.Encode")) {
-                    if (this.Value.equals("2")) {
-                        cept.encodeAndMoveToInventory();
-                    } else {
-                        cept.encode();
-                    }
-                } else if (this.Name.equals("PatternTerminal.Clear")) {
-                    cept.clear();
-                } else if (this.Name.equals("PatternTerminal.MultiplyByTwo")) {
-                    cept.multiply(2);
-                } else if (this.Name.equals("PatternTerminal.MultiplyByThree")) {
-                    cept.multiply(3);
-                } else if (this.Name.equals("PatternTerminal.DivideByTwo")) {
-                    cept.divide(2);
-                } else if (this.Name.equals("PatternTerminal.DivideByThree")) {
-                    cept.divide(3);
-                } else if (this.Name.equals("PatternTerminal.IncreaseByOne")) {
-                    cept.increase(1);
-                } else if (this.Name.equals("PatternTerminal.DecreaseByOne")) {
-                    cept.decrease(1);
-                } else if (this.Name.equals("PatternTerminal.MaximizeCount")) {
-                    cept.maximizeCount();
                 }
             }
         } else if (this.Name.startsWith("StorageBus.")) {

@@ -35,26 +35,35 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+
+import static appeng.helpers.PatternHelper.CRAFTING_GRID_DIMENSION;
 
 
 public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
-
     private double powerMultiplier = 0.5;
     protected final IPortableCell civ;
     private int ticks = 0;
     private final int slot;
-    private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
     protected AppEngInternalInventory output;
     protected AppEngInternalInventory pattern;
 
     public ContainerWirelessPatternTerminal(final InventoryPlayer ip, final WirelessTerminalGuiObject gui) {
         super(ip, gui, gui, false);
+
+        this.crafting = new AppEngInternalInventory(this, CRAFTING_GRID_DIMENSION * CRAFTING_GRID_DIMENSION);
+        this.output = new AppEngInternalInventory(this, 3);
+        this.pattern = new AppEngInternalInventory(this, 2);
 
         this.craftingSlots = new SlotFakeCraftingMatrix[9];
         this.outputSlots = new OptionalSlotFake[3];
@@ -68,6 +77,9 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
             this.lockPlayerInventorySlot(ip.currentItem);
         }
         this.civ = gui;
+        this.wirelessTerminalGUIObject = gui;
+
+        this.loadFromNBT();
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -76,7 +88,7 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
         }
 
         this.addSlotToContainer(this.craftSlot = new SlotPatternTerm(ip.player, this.getActionSource(), this
-                .getPowerSource(), gui, this.crafting, patternInv, this.cOut, 110, -76 + 18, this, 2, this));
+                .getPowerSource(), gui, this.crafting, pattern, this.cOut, 110, -76 + 18, this, 2, this));
         this.craftSlot.setIIcon(-1);
 
         for (int y = 0; y < this.outputSlots.length; y++) {
@@ -86,20 +98,17 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
         }
 
         this.addSlotToContainer(
-                this.patternSlotIN = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.BLANK_PATTERN, patternInv, 0, 147, -72 - 9, this
+                this.patternSlotIN = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.BLANK_PATTERN, pattern, 0, 147, -72 - 9, this
                         .getInventoryPlayer()));
         this.addSlotToContainer(
-                this.patternSlotOUT = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, patternInv, 1, 147, -72 + 34, this
+                this.patternSlotOUT = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.ENCODED_PATTERN, pattern, 1, 147, -72 + 34, this
                         .getInventoryPlayer()));
 
         this.patternSlotOUT.setStackLimit(1);
 
-        this.bindPlayerInventory(ip, 0, 0);
         this.updateOrderOfOutputSlots();
 
         this.bindPlayerInventory(ip, 0, 0);
-        this.wirelessTerminalGUIObject = gui;
-        this.loadFromNBT();
     }
 
     @Override
@@ -146,10 +155,19 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
 
     @Override
     public boolean isSlotEnabled(final int idx) {
+        boolean crafting = false;
+        if (Platform.isServer()) {
+            NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
+            if (nbtTagCompound != null) {
+                if (nbtTagCompound.hasKey("isCraftingMode")) {
+                    crafting = nbtTagCompound.getBoolean("isCraftingMode");
+                }
+            }
+        }
         if (idx == 1) {
-            return Platform.isServer() ? !this.getPart().isCraftingRecipe() : !this.isCraftingMode();
+            return Platform.isServer() ? !crafting : !this.isCraftingMode();
         } else if (idx == 2) {
-            return Platform.isServer() ? this.getPart().isCraftingRecipe() : this.isCraftingMode();
+            return Platform.isServer() ? crafting : this.isCraftingMode();
         } else {
             return false;
         }
@@ -159,7 +177,10 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
     public void saveChanges() {
         if (Platform.isServer()) {
             NBTTagCompound tag = new NBTTagCompound();
-            this.craftingGrid.writeToNBT(tag, "craftingGrid");
+            ((AppEngInternalInventory) crafting).writeToNBT(tag, "craftingGrid");
+
+            this.output.writeToNBT(tag, "output");
+            this.pattern.writeToNBT(tag, "patterns");
             this.wirelessTerminalGUIObject.saveChanges(tag);
         }
     }
@@ -167,15 +188,15 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
     private void loadFromNBT() {
         NBTTagCompound data = wirelessTerminalGUIObject.getItemStack().getTagCompound();
         if (data != null) {
-            this.craftingGrid.readFromNBT(data, "craftingGrid");
+            ((AppEngInternalInventory) crafting).readFromNBT(data, "craftingGrid");
+            this.output.readFromNBT(data, "output");
+            this.pattern.readFromNBT(data, "patterns");
         }
     }
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack) {
-        if (inv == craftingGrid) {
-            saveChanges();
-        }
+        super.onChangeInventory(inv, slot, mc, removedStack, newStack);
     }
 
     @Override
