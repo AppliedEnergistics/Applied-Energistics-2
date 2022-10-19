@@ -16,19 +16,21 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.util.inv;
+package appeng.client.gui.implementations;
 
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.items.IItemHandler;
+import appeng.api.implementations.guiobjects.IPortableCell;
+import net.minecraft.entity.player.InventoryPlayer;
 
 
-public interface IAEAppEngInventory {
-    void saveChanges();
+public class GuiWirelessPatternTerminal extends GuiMEPortableCell {
 
-    default void saveChanges(NBTTagCompound data) {
+    public GuiWirelessPatternTerminal(final InventoryPlayer inventoryPlayer, final IPortableCell te) {
+        super(inventoryPlayer, te);
     }
 
-    void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack);
+    @Override
+    int getMaxRows() {
+        return this.defaultGetMaxRows();
+    }
 }

@@ -101,6 +101,10 @@ public enum GuiBridge implements IGuiHandler {
     GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, GuiHostType.ITEM, null),
 
     GUI_WIRELESS_TERM(ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+    GUI_WIRELESS_CRAFTING_TERMINAL(ContainerWirelessCraftingTerminal.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+    GUI_WIRELESS_PATTERN_TERMINAL(ContainerWirelessPatternTerminal.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+    GUI_WIRELESS_FLUID_TERMINAL(ContainerWirelessFluidTerminal.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+
 
     GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, GuiHostType.ITEM, null),
 

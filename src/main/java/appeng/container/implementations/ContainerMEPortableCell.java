@@ -21,8 +21,10 @@ package appeng.container.implementations;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.container.interfaces.IInventorySlotAware;
+import appeng.helpers.WirelessTerminalGuiObject;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -31,12 +33,20 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable {
 
     private double powerMultiplier = 0.5;
 
-    private final IPortableCell civ;
+    protected final IPortableCell civ;
     private int ticks = 0;
     private final int slot;
 
     public ContainerMEPortableCell(final InventoryPlayer ip, final IPortableCell monitorable) {
-        super(ip, monitorable, false);
+        this(ip, monitorable, null, true);
+    }
+
+    public ContainerMEPortableCell(final InventoryPlayer ip, final IPortableCell monitorable, IGuiItemObject iGuiItemObject) {
+        this(ip, monitorable, iGuiItemObject, true);
+    }
+
+    public ContainerMEPortableCell(InventoryPlayer ip, IPortableCell monitorable, IGuiItemObject iGuiItemObject, boolean bindInventory) {
+        super(ip, monitorable, iGuiItemObject, bindInventory);
         if (monitorable instanceof IInventorySlotAware) {
             final int slotIndex = ((IInventorySlotAware) monitorable).getInventorySlot();
             this.lockPlayerInventorySlot(slotIndex);
@@ -46,7 +56,9 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable {
             this.lockPlayerInventorySlot(ip.currentItem);
         }
         this.civ = monitorable;
-        this.bindPlayerInventory(ip, 0, 0);
+        if (bindInventory) {
+            this.bindPlayerInventory(ip, 0, 0);
+        }
     }
 
     @Override

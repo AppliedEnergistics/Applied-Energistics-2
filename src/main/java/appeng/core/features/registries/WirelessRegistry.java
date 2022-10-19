@@ -94,7 +94,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         if (handler.hasPower(player, 0.5, item)) {
-            Platform.openGUI(player, null, null, GuiBridge.GUI_WIRELESS_TERM);
+            Platform.openGUI(player, null, null, (GuiBridge) handler.getGuiHandler(item));
         } else {
             player.sendMessage(PlayerMessages.DeviceNotPowered.get());
         }

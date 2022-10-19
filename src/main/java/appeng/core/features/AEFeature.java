@@ -64,6 +64,10 @@ public enum AEFeature {
     ENTROPY_MANIPULATOR("EntropyManipulator", Constants.CATEGORY_TOOLS),
     MATTER_CANNON("MatterCannon", Constants.CATEGORY_TOOLS),
     WIRELESS_ACCESS_TERMINAL("WirelessAccessTerminal", Constants.CATEGORY_TOOLS),
+    WIRELESS_CRAFTING_TERMINAL("WirelessCraftingTerminal", Constants.CATEGORY_TOOLS),
+    WIRELESS_PATTERN_TERMINAL("WirelessPatternTerminal", Constants.CATEGORY_TOOLS),
+    WIRELESS_FLUID_TERMINAL("WirelessFluidTerminal", Constants.CATEGORY_TOOLS),
+
     COLOR_APPLICATOR("ColorApplicator", Constants.CATEGORY_TOOLS),
     METEORITE_COMPASS("MeteoriteCompass", Constants.CATEGORY_TOOLS),
 

@@ -21,6 +21,7 @@ package appeng.container.implementations;
 
 import appeng.api.AEApi;
 import appeng.api.config.*;
+import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IMEChest;
 import appeng.api.implementations.tiles.IViewCellStorage;
@@ -70,7 +71,7 @@ import java.util.List;
 
 public class ContainerMEMonitorable extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack> {
 
-    private final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
+    protected final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
     private final IMEMonitor<IAEItemStack> monitor;
     public final IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
     private final IConfigManager clientCM;
@@ -90,7 +91,11 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
     }
 
     protected ContainerMEMonitorable(final InventoryPlayer ip, final ITerminalHost monitorable, final boolean bindInventory) {
-        super(ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null);
+        this(ip, monitorable, null, bindInventory);
+    }
+
+    protected ContainerMEMonitorable(final InventoryPlayer ip, final ITerminalHost monitorable, final IGuiItemObject iGuiItemObject, final boolean bindInventory) {
+        super(ip, monitorable instanceof TileEntity ? (TileEntity) monitorable : null, monitorable instanceof IPart ? (IPart) monitorable : null, iGuiItemObject);
 
         this.host = monitorable;
         this.clientCM = new ConfigManager(this);

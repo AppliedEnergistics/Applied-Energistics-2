@@ -404,6 +404,10 @@ final class Registration {
 
         // Wireless Terminal Handler
         items.wirelessTerminal().maybeItem().ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
+        items.wirelessCraftingTerminal().maybeItem().ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
+        items.wirelessPatternTerminal().maybeItem().ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
+        items.wirelessFluidTerminal().maybeItem().ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
+
 
         // Charge Rates
         items.chargedStaff().maybeItem().ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 320d));

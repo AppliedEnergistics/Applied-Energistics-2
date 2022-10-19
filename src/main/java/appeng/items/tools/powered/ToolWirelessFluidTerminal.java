@@ -20,7 +20,11 @@ package appeng.items.tools.powered;
 
 
 import appeng.api.AEApi;
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
@@ -45,9 +49,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 
-public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler {
+public class ToolWirelessFluidTerminal extends AEBasePoweredItem implements IWirelessTermHandler {
 
-    public ToolWirelessTerminal() {
+    public ToolWirelessFluidTerminal() {
         super(AEConfig.instance().getWirelessTerminalBattery());
     }
 
@@ -86,7 +90,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
     @Override
     public boolean canHandle(final ItemStack is) {
-        return AEApi.instance().definitions().items().wirelessTerminal().isSameAs(is);
+        return AEApi.instance().definitions().items().wirelessFluidTerminal().isSameAs(is);
     }
 
     @Override
@@ -135,6 +139,6 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
 
     @Override
     public IGuiHandler getGuiHandler(ItemStack is) {
-        return GuiBridge.GUI_WIRELESS_TERM;
+        return GuiBridge.GUI_WIRELESS_FLUID_TERMINAL;
     }
 }
