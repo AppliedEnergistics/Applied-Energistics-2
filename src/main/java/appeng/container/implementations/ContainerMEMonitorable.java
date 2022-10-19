@@ -42,6 +42,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.gui.implementations.GuiMEMonitorable;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.container.slot.SlotRestrictedInput;
@@ -64,13 +65,14 @@ import net.minecraftforge.fml.common.Loader;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
+import java.util.List;
 
 
 public class ContainerMEMonitorable extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEItemStack> {
 
     private final SlotRestrictedInput[] cellView = new SlotRestrictedInput[5];
     private final IMEMonitor<IAEItemStack> monitor;
-    private final IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+    public final IItemList<IAEItemStack> items = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
     private final IConfigManager clientCM;
     private final ITerminalHost host;
     @GuiSync(99)
@@ -357,11 +359,19 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
         this.hasPower = isPowered;
     }
 
-    private IConfigManagerHost getGui() {
+    public IConfigManagerHost getGui() {
         return this.gui;
     }
 
     public void setGui(@Nonnull final IConfigManagerHost gui) {
         this.gui = gui;
+    }
+
+    public IItemList<IAEItemStack> getItems() {
+        return items;
+    }
+
+    public void postUpdate(final List<IAEItemStack> list) {
+        ((GuiMEMonitorable) this.gui).postUpdate(list);
     }
 }

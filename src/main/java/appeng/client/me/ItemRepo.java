@@ -268,4 +268,8 @@ public class ItemRepo {
             this.updateJEI(this.searchString);
         }
     }
+
+    public IItemList<IAEItemStack> getList() {
+        return list;
+    }
 }

@@ -19,6 +19,7 @@
 package appeng.integration.modules.jei;
 
 
+import appeng.container.implementations.ContainerCraftingTerm;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotFakeCraftingMatrix;
@@ -40,6 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(T container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
+    public IRecipeTransferError transferRecipe(@Nonnull T container, IRecipeLayout recipeLayout, @Nonnull EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
         final String recipeType = recipeLayout.getRecipeCategory().getUid();
 
         if (recipeType.equals(VanillaRecipeCategoryUid.INFORMATION) || recipeType.equals(VanillaRecipeCategoryUid.FUEL)) {
@@ -70,6 +72,11 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
         }
 
         if (!doTransfer) {
+            if (container instanceof ContainerCraftingTerm && recipeType.equals(VanillaRecipeCategoryUid.CRAFTING)) {
+                JEIMissingItem error = new JEIMissingItem(container, recipeLayout);
+                if (error.errored())
+                    return error;
+            }
             return null;
         }
 

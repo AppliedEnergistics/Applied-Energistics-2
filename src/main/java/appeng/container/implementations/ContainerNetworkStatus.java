@@ -30,6 +30,7 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEPartLocation;
+import appeng.client.gui.implementations.GuiNetworkStatus;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
 import appeng.core.sync.network.NetworkHandler;
@@ -42,6 +43,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public class ContainerNetworkStatus extends AEBaseContainer {
@@ -56,6 +58,7 @@ public class ContainerNetworkStatus extends AEBaseContainer {
     public long maxPower;
     private IGrid network;
     private int delay = 40;
+    private GuiNetworkStatus guiNetworkStatus;
 
     public ContainerNetworkStatus(final InventoryPlayer ip, final INetworkTool te) {
         super(ip, null, null);
@@ -159,5 +162,13 @@ public class ContainerNetworkStatus extends AEBaseContainer {
 
     private void setPowerUsage(final long powerUsage) {
         this.powerUsage = powerUsage;
+    }
+
+    public void postUpdate(final List<IAEItemStack> list) {
+        this.guiNetworkStatus.postUpdate(list);
+    }
+
+    public void setGui(GuiNetworkStatus guiNetworkStatus) {
+        this.guiNetworkStatus = guiNetworkStatus;
     }
 }

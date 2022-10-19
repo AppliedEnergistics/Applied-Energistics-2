@@ -51,6 +51,7 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource {
 
     private final ItemRepo repo;
     private final int rows = 4;
+    private final ContainerNetworkStatus cns;
     private GuiImgButton units;
     private int tooltip = -1;
 
@@ -65,6 +66,9 @@ public class GuiNetworkStatus extends AEBaseGui implements ISortSource {
         this.ySize = 153;
         this.xSize = 195;
         this.repo.setRowSize(5);
+
+        this.cns = (ContainerNetworkStatus) this.inventorySlots;
+        this.cns.setGui(this);
     }
 
     @Override

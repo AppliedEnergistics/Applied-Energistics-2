@@ -31,7 +31,11 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.ActionKey;
 import appeng.client.gui.AEBaseMEGui;
-import appeng.client.gui.widgets.*;
+import appeng.client.gui.widgets.GuiImgButton;
+import appeng.client.gui.widgets.GuiScrollbar;
+import appeng.client.gui.widgets.GuiTabButton;
+import appeng.client.gui.widgets.ISortSource;
+import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.InternalSlotME;
 import appeng.client.me.ItemRepo;
 import appeng.client.me.SlotME;
@@ -73,7 +77,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
     private static int craftingGridOffsetY;
 
     private static String memoryText = "";
-    private final ItemRepo repo;
+    protected final ItemRepo repo;
     private final int offsetX = 9;
     private final int lowerTextureOffset = 0;
     private final IConfigManager configSrc;

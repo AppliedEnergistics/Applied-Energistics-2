@@ -81,6 +81,7 @@ public class GuiCraftConfirm extends AEBaseGui {
         this.setScrollBar(scrollbar);
 
         this.ccc = (ContainerCraftConfirm) this.inventorySlots;
+        this.ccc.setGui(this);
 
         if (te instanceof WirelessTerminalGuiObject) {
             this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;

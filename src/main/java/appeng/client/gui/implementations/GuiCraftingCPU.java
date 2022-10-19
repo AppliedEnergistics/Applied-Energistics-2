@@ -95,6 +95,7 @@ public class GuiCraftingCPU extends AEBaseGui implements ISortSource {
     protected GuiCraftingCPU(final ContainerCraftingCPU container) {
         super(container);
         this.craftingCpu = container;
+        this.craftingCpu.setGui(this);
         this.ySize = GUI_HEIGHT;
         this.xSize = GUI_WIDTH;
 
