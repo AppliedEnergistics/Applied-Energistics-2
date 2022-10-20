@@ -32,6 +32,17 @@ public class PartExpandedProcessingPatternTerminal extends AbstractPartEncoder {
         this.crafting = new AppEngInternalInventory(this, PROCESSING_INPUT_LIMIT);
         this.output = new AppEngInternalInventory(this, PROCESSING_OUTPUT_LIMIT);
         this.pattern = new AppEngInternalInventory(this, 2);
+        this.craftingMode = false;
+    }
+
+    @Override
+    public boolean isCraftingRecipe() {
+        return false;
+    }
+
+    @Override
+    public void setCraftingRecipe(final boolean craftingMode) {
+        // NO-OP
     }
 
     @Override
