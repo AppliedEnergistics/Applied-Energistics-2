@@ -38,7 +38,6 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.AEConfig;
-import appeng.tile.grindstone.CrankBlockEntity;
 
 public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity implements IPowerChannelState {
 
