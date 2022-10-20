@@ -60,8 +60,16 @@ task sourceJar(type: Jar, overwrite: true) {
 	classifier = 'sources'
 }
 
+task devJar(type: Jar, overwrite: true) {
+	from sourceSets.api.output
+	from sourceSets.main.output
+
+	classifier = 'dev'
+}
+
 artifacts {
 	archives apiJar
 	archives javadocJar
 	archives sourceJar
+	archives devJar
 }
