@@ -36,6 +36,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
@@ -43,7 +44,7 @@ import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable {
-    public static final double POWER_PER_TICK = 5;
+    public static final double POWER_PER_TICK = 5 * AEConfig.instance().getVibrationChamberPowerMultiplier();
     public static final int MIN_BURN_SPEED = 20;
     public static final int MAX_BURN_SPEED = 200;
     public static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max

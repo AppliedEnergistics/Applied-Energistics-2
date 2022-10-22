@@ -128,6 +128,7 @@ public final class AEConfig {
     private boolean isEnableFacadeRecipesInJEI;
     private int craftingCalculationTimePerTick;
     private boolean craftingSimulatedExtraction;
+    private double vibrationChamberPowerMultiplier;
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -199,6 +200,8 @@ public final class AEConfig {
 
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
         this.craftingSimulatedExtraction = COMMON.craftingSimulatedExtraction.get();
+
+        this.vibrationChamberPowerMultiplier = COMMON.vibrationChamberPowerMultiplier.get();
 
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
         AELog.setDebugLogEnabled(COMMON.debugLog.get());
@@ -343,6 +346,10 @@ public final class AEConfig {
 
     public boolean isCraftingSimulatedExtraction() {
         return this.craftingSimulatedExtraction;
+    }
+
+    public double getVibrationChamberPowerMultiplier() {
+        return this.vibrationChamberPowerMultiplier;
     }
 
     public double getSpatialPowerExponent() {
@@ -644,6 +651,7 @@ public final class AEConfig {
 
         // Power Ratios
         public final DoubleOption powerRatioTechReborn;
+        public final DoubleOption vibrationChamberPowerMultiplier;
         public final DoubleOption powerUsageMultiplier;
 
         // Condenser Power Requirement
@@ -733,6 +741,7 @@ public final class AEConfig {
 
             ConfigSection PowerRatios = root.subsection("PowerRatios");
             powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
+            vibrationChamberPowerMultiplier = PowerRatios.addDouble("VibrationChamber", 1.0, 0.01, 10.0);
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
 
             ConfigSection Condenser = root.subsection("Condenser");
