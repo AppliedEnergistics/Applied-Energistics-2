@@ -94,11 +94,6 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public boolean isEditable(ItemStack is) {
-        return true;
-    }
-
-    @Override
     public IUpgradeInventory getUpgrades(ItemStack is) {
         return UpgradeInventories.forItem(is, 2);
     }

@@ -507,11 +507,6 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public boolean isEditable(ItemStack is) {
-        return true;
-    }
-
-    @Override
     public IUpgradeInventory getUpgrades(ItemStack is) {
         return UpgradeInventories.forItem(is, 2, this::onUpgradesChanged);
     }
@@ -583,24 +578,22 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         return applicator;
     }
 
-    public boolean setActiveColor(ItemStack applicator, @Nullable AEColor color) {
+    public void setActiveColor(ItemStack applicator, @Nullable AEColor color) {
         if (color == null) {
             setColor(applicator, ItemStack.EMPTY);
-            return true;
+            return;
         }
 
         var inv = StorageCells.getCellInventory(applicator, null);
         if (inv == null) {
-            return false;
+            return;
         }
 
         for (var entry : inv.getAvailableStacks()) {
             if (entry.getKey() instanceof AEItemKey itemKey && getColorFromItem(itemKey.getItem()) == color) {
                 setColor(applicator, itemKey.toStack());
-                return true;
+                return;
             }
         }
-
-        return false;
     }
 }
