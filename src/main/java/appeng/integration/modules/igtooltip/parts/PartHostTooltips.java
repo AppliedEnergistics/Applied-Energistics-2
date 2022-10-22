@@ -3,7 +3,7 @@ package appeng.integration.modules.igtooltip.parts;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,7 +63,7 @@ public final class PartHostTooltips {
             return null;
         }
 
-        return Platform.getModName(Registry.ITEM.getKey(item).getNamespace());
+        return Platform.getModName(BuiltInRegistries.ITEM.getKey(item).getNamespace());
     }
 
     public static @Nullable ItemStack getIcon(BlockEntity object, TooltipContext context) {

@@ -18,19 +18,22 @@
 
 package appeng.datagen.providers.tags;
 
-import net.minecraft.data.DataGenerator;
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 
 import appeng.api.ids.AETags;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider implements IAE2DataProvider {
 
-    public FluidTagsProvider(DataGenerator generator) {
-        super(generator);
+    public FluidTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         // Provide an empty fluid blacklist
         tag(AETags.ANNIHILATION_PLANE_FLUID_BLACKLIST);
     }

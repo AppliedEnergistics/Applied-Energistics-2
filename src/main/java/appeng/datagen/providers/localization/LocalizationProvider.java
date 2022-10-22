@@ -1,9 +1,9 @@
 package appeng.datagen.providers.localization;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -39,7 +39,7 @@ public class LocalizationProvider implements IAE2DataProvider {
     }
 
     @Override
-    public final void run(CachedOutput cache) {
+    public final CompletableFuture<?> run(CachedOutput cache) {
         for (var block : AEBlocks.getBlocks()) {
             add("block.ae2." + block.id().getPath(), block.getEnglishName());
         }
@@ -64,7 +64,7 @@ public class LocalizationProvider implements IAE2DataProvider {
 
         generateLocalizations();
 
-        save(cache, localizations);
+        return save(cache, localizations);
     }
 
     private void generateJadeLocalizations() {
@@ -157,23 +157,19 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("theoneprobe.ae2.unlocked", "Unlocked");
     }
 
-    private void save(CachedOutput cache, Map<String, String> localizations) {
+    private CompletableFuture<?> save(CachedOutput cache, Map<String, String> localizations) {
         wasSaved = true;
 
-        try {
-            var path = this.generator.getOutputFolder().resolve("assets/ae2/lang/en_us.json");
+        var path = this.generator.vanillaPackOutput.getOutputFolder().resolve("assets/ae2/lang/en_us.json");
 
-            // Dump the translation in ascending order
-            var sorted = new TreeMap<>(localizations);
-            var jsonLocalization = new JsonObject();
-            for (var entry : sorted.entrySet()) {
-                jsonLocalization.addProperty(entry.getKey(), entry.getValue());
-            }
-
-            DataProvider.saveStable(cache, jsonLocalization, path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        // Dump the translation in ascending order
+        var sorted = new TreeMap<>(localizations);
+        var jsonLocalization = new JsonObject();
+        for (var entry : sorted.entrySet()) {
+            jsonLocalization.addProperty(entry.getKey(), entry.getValue());
         }
+
+        return DataProvider.saveStable(cache, jsonLocalization, path);
     }
 
     @Override

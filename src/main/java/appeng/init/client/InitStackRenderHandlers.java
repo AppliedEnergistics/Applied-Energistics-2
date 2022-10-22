@@ -22,8 +22,8 @@ import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+
+import org.joml.Matrix4f;
 
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -83,9 +84,9 @@ public class InitStackRenderHandlers {
             // The Z-scaling by 0.001 causes the model to be visually "flattened"
             // This cannot replace a proper projection, but it's cheap and gives the desired effect.
             // We don't scale the normal matrix to avoid lighting issues.
-            poseStack.mulPoseMatrix(Matrix4f.createScaleMatrix(scale, scale, 0.001f));
+            poseStack.mulPoseMatrix(new Matrix4f().scale(scale, scale, 0.001f));
             // Rotate the normal matrix a little for nicer lighting.
-            poseStack.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
+            poseStack.last().normal().rotateX(Mth.DEG_TO_RAD * -45f);
 
             Minecraft.getInstance().getItemRenderer().renderStatic(what.toStack(), ItemTransforms.TransformType.GUI,
                     combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, 0);

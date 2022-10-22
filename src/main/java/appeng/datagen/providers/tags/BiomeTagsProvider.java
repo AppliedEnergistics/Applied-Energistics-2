@@ -18,19 +18,22 @@
 
 package appeng.datagen.providers.tags;
 
+import java.util.concurrent.CompletableFuture;
+
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 
 public class BiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvider implements IAE2DataProvider {
-    public BiomeTagsProvider(DataGenerator generator) {
-        super(generator);
+    public BiomeTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+        super(packOutput, registries);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         tag(MeteoriteStructure.BIOME_TAG_KEY).addOptionalTag(ConventionalBiomeTags.IN_OVERWORLD.location());
     }
 }

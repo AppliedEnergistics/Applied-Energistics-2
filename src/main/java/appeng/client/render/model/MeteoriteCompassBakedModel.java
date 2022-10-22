@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -94,12 +94,12 @@ public class MeteoriteCompassBakedModel implements BakedModel, FabricBakedModel 
         // held in hand
         // Set up the rotation around the Y-axis for the pointer
         context.pushTransform(quad -> {
-            Quaternion quaternion = new Quaternion(0, this.fallbackRotation, 0, false);
+            Quaternionf quaternion = new Quaternionf().rotationY(this.fallbackRotation);
             Vector3f pos = new Vector3f();
             for (int i = 0; i < 4; i++) {
                 quad.copyPos(i, pos);
                 pos.add(-0.5f, -0.5f, -0.5f);
-                pos.transform(quaternion);
+                pos.rotate(quaternion);
                 pos.add(0.5f, 0.5f, 0.5f);
                 quad.pos(i, pos);
             }

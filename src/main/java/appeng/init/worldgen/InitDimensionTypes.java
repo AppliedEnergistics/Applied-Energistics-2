@@ -2,7 +2,7 @@ package appeng.init.worldgen;
 
 import java.util.OptionalLong;
 
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -14,7 +14,7 @@ public final class InitDimensionTypes {
     private InitDimensionTypes() {
     }
 
-    public static void init() {
+    public static void init(BootstapContext<DimensionType> context) {
         var dimensionType = new DimensionType(
                 OptionalLong.of(12000), // fixedTime
                 false, // hasSkylight
@@ -32,8 +32,7 @@ public final class InitDimensionTypes {
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0));
 
-        BuiltinRegistries.register(BuiltinRegistries.DIMENSION_TYPE,
-                SpatialStorageDimensionIds.DIMENSION_TYPE_ID,
+        context.register(SpatialStorageDimensionIds.DIMENSION_TYPE_ID,
                 dimensionType);
     }
 }

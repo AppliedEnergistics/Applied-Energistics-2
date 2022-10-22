@@ -20,6 +20,7 @@ package appeng.init.client;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AppEng;
@@ -39,7 +40,7 @@ public final class InitParticleTypes {
     }
 
     private static void register(Registry<ParticleType<?>> registry, ParticleType<?> type, String name) {
-        Registry.register(Registry.PARTICLE_TYPE, AppEng.makeId(name), type);
+        Registry.register(BuiltInRegistries.PARTICLE_TYPE, AppEng.makeId(name), type);
     }
 
 }

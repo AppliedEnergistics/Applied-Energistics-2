@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -63,8 +63,8 @@ public interface IPartItem<P extends IPart> extends ItemLike {
      * @return The registry id for this item.
      */
     static ResourceLocation getId(IPartItem<?> item) {
-        var id = Registry.ITEM.getKey(item.asItem());
-        if (id == Registry.ITEM.getDefaultKey()) {
+        var id = BuiltInRegistries.ITEM.getKey(item.asItem());
+        if (id == BuiltInRegistries.ITEM.getDefaultKey()) {
             throw new IllegalStateException("Part item " + item + " is not registered");
         }
         return id;
@@ -74,7 +74,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
      * @return The registry id for this item, suitable for network serialization.
      */
     static int getNetworkId(IPartItem<?> item) {
-        var id = Registry.ITEM.getId(item.asItem());
+        var id = BuiltInRegistries.ITEM.getId(item.asItem());
         if (id == 0) {
             throw new IllegalStateException("Part item " + item + " is not registered");
         }
@@ -86,7 +86,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
      */
     @Nullable
     static IPartItem<?> byId(ResourceLocation id) {
-        var item = Registry.ITEM.get(id);
+        var item = BuiltInRegistries.ITEM.get(id);
         if (item instanceof IPartItem<?>partItem) {
             return partItem;
         }
@@ -98,7 +98,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
      */
     @Nullable
     static IPartItem<?> byNetworkId(int id) {
-        var item = Registry.ITEM.byId(id);
+        var item = BuiltInRegistries.ITEM.byId(id);
         if (item instanceof IPartItem<?>partItem) {
             return partItem;
         }

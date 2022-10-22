@@ -19,16 +19,13 @@
 package appeng.client.render.model;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -41,17 +38,9 @@ public class GlassModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter,
+    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
             ModelState rotationContainer, ResourceLocation modelId) {
         return new GlassBakedModel(textureGetter);
-    }
-
-    @Override
-    public Stream<Material> getAdditionalTextures() {
-        return ImmutableSet
-                .<Material>builder().add(GlassBakedModel.TEXTURE_A, GlassBakedModel.TEXTURE_B,
-                        GlassBakedModel.TEXTURE_C, GlassBakedModel.TEXTURE_D)
-                .add(GlassBakedModel.TEXTURES_FRAME).build().stream();
     }
 
 }

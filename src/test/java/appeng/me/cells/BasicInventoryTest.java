@@ -7,7 +7,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -33,7 +33,7 @@ public class BasicInventoryTest {
 
     @BeforeAll
     static void initCells() {
-        InitItems.init(Registry.ITEM);
+        InitItems.init(BuiltInRegistries.ITEM);
         InitStorageCells.init();
         InitUpgrades.init();
     }

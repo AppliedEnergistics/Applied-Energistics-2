@@ -26,9 +26,12 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
 import appeng.api.ids.AEItemIds;
@@ -37,7 +40,7 @@ import appeng.api.upgrades.Upgrades;
 import appeng.api.util.AEColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import appeng.core.CreativeTab;
+import appeng.core.MainCreativeTab;
 import appeng.crafting.pattern.CraftingPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.crafting.pattern.SmithingTablePatternItem;
@@ -98,35 +101,35 @@ public final class AEItems {
     /// CERTUS QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item("Certus Quartz Axe", AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item("Certus Quartz Hoe", AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item("Certus Quartz Shovel", AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item("Certus Quartz Pickaxe", AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item("Certus Quartz Sword", AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), CreativeModeTab.TAB_COMBAT);
-    public static final ItemDefinition<QuartzWrenchItem> CERTUS_QUARTZ_WRENCH = item("Certus Quartz Wrench", AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item("Certus Quartz Cutting Knife", AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50), QuartzToolType.CERTUS), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<QuartzAxeItem> CERTUS_QUARTZ_AXE = item("Certus Quartz Axe", AEItemIds.CERTUS_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzHoeItem> CERTUS_QUARTZ_HOE = item("Certus Quartz Hoe", AEItemIds.CERTUS_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSpadeItem> CERTUS_QUARTZ_SHOVEL = item("Certus Quartz Shovel", AEItemIds.CERTUS_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzPickaxeItem> CERTUS_QUARTZ_PICK = item("Certus Quartz Pickaxe", AEItemIds.CERTUS_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSwordItem> CERTUS_QUARTZ_SWORD = item("Certus Quartz Sword", AEItemIds.CERTUS_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.CERTUS), CreativeModeTabs.COMBAT);
+    public static final ItemDefinition<QuartzWrenchItem> CERTUS_QUARTZ_WRENCH = item("Certus Quartz Wrench", AEItemIds.CERTUS_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> CERTUS_QUARTZ_KNIFE = item("Certus Quartz Cutting Knife", AEItemIds.CERTUS_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.durability(50), QuartzToolType.CERTUS), CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     ///
     /// NETHER QUARTZ TOOLS
     ///
 
-    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item("Nether Quartz Axe", AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item("Nether Quartz Hoe", AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item("Nether Quartz Shovel", AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item("Nether Quartz Pickaxe", AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item("Nether Quartz Sword", AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), CreativeModeTab.TAB_COMBAT);
-    public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item("Nether Quartz Wrench", AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item("Nether Quartz Cutting Knife", AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50), QuartzToolType.NETHER), CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<QuartzAxeItem> NETHER_QUARTZ_AXE = item("Nether Quartz Axe", AEItemIds.NETHER_QUARTZ_AXE, p -> new QuartzAxeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzHoeItem> NETHER_QUARTZ_HOE = item("Nether Quartz Hoe", AEItemIds.NETHER_QUARTZ_HOE, p -> new QuartzHoeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSpadeItem> NETHER_QUARTZ_SHOVEL = item("Nether Quartz Shovel", AEItemIds.NETHER_QUARTZ_SHOVEL, p -> new QuartzSpadeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzPickaxeItem> NETHER_QUARTZ_PICK = item("Nether Quartz Pickaxe", AEItemIds.NETHER_QUARTZ_PICK, p -> new QuartzPickaxeItem(p, QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzSwordItem> NETHER_QUARTZ_SWORD = item("Nether Quartz Sword", AEItemIds.NETHER_QUARTZ_SWORD, p -> new QuartzSwordItem(p, QuartzToolType.NETHER), CreativeModeTabs.COMBAT);
+    public static final ItemDefinition<QuartzWrenchItem> NETHER_QUARTZ_WRENCH = item("Nether Quartz Wrench", AEItemIds.NETHER_QUARTZ_WRENCH, p -> new QuartzWrenchItem(p.stacksTo(1)), CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<QuartzCuttingKnifeItem> NETHER_QUARTZ_KNIFE = item("Nether Quartz Cutting Knife", AEItemIds.NETHER_QUARTZ_KNIFE, p -> new QuartzCuttingKnifeItem(p.stacksTo(1).durability(50), QuartzToolType.NETHER), CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     ///
     /// FLUIX TOOLS
     ///
 
-    public static final ItemDefinition<FluixAxeItem> FLUIX_AXE = item("Fluix Axe", AEItemIds.FLUIX_AXE, FluixAxeItem::new, CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<FluixHoeItem> FLUIX_HOE = item("Fluix Hoe", AEItemIds.FLUIX_HOE, FluixHoeItem::new, CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<FluixSpadeItem> FLUIX_SHOVEL = item("Fluix Shovel", AEItemIds.FLUIX_SHOVEL, FluixSpadeItem::new, CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<FluixPickaxeItem> FLUIX_PICK = item("Fluix Pickaxe", AEItemIds.FLUIX_PICK, FluixPickaxeItem::new, CreativeModeTab.TAB_TOOLS);
-    public static final ItemDefinition<FluixSwordItem> FLUIX_SWORD = item("Fluix Sword", AEItemIds.FLUIX_SWORD, FluixSwordItem::new, CreativeModeTab.TAB_TOOLS);
+    public static final ItemDefinition<FluixAxeItem> FLUIX_AXE = item("Fluix Axe", AEItemIds.FLUIX_AXE, FluixAxeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<FluixHoeItem> FLUIX_HOE = item("Fluix Hoe", AEItemIds.FLUIX_HOE, FluixHoeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<FluixSpadeItem> FLUIX_SHOVEL = item("Fluix Shovel", AEItemIds.FLUIX_SHOVEL, FluixSpadeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<FluixPickaxeItem> FLUIX_PICK = item("Fluix Pickaxe", AEItemIds.FLUIX_PICK, FluixPickaxeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<FluixSwordItem> FLUIX_SWORD = item("Fluix Sword", AEItemIds.FLUIX_SWORD, FluixSwordItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
 
     ///
     /// VARIOUS POWERED TOOLS
@@ -300,21 +303,25 @@ public final class AEItems {
 
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
             Function<FabricItemSettings, T> factory) {
-        return item(name, id, factory, CreativeTab.INSTANCE);
+        return item(name, id, factory, MainCreativeTab.INSTANCE);
     }
 
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
             Function<FabricItemSettings, T> factory,
             CreativeModeTab group) {
 
-        FabricItemSettings p = new FabricItemSettings().group(group);
+        FabricItemSettings p = new FabricItemSettings();
 
         T item = factory.apply(p);
 
         ItemDefinition<T> definition = new ItemDefinition<>(name, id, item);
 
-        if (group == CreativeTab.INSTANCE) {
-            CreativeTab.add(definition);
+        if (group == MainCreativeTab.INSTANCE) {
+            MainCreativeTab.add(definition);
+        } else if (group != null) {
+            ItemGroupEvents.modifyEntriesEvent(group).register((entries) -> {
+                entries.addAfter(ItemStack.EMPTY, item);
+            });
         }
 
         ITEMS.add(definition);

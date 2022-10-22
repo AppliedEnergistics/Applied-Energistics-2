@@ -18,7 +18,7 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;

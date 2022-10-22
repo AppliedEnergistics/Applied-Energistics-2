@@ -21,9 +21,12 @@ package appeng.datagen.providers.tags;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -36,13 +39,13 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
-public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider implements IAE2DataProvider {
-    public BlockTagsProvider(DataGenerator generator) {
-        super(generator);
+public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implements IAE2DataProvider {
+    public BlockTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+        super(packOutput, Registries.BLOCK, registries, block -> block.builtInRegistryHolder().key());
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         // Black- and whitelist tags
         tag(AETags.SPATIAL_BLACKLIST)
                 .add(Blocks.BEDROCK)
@@ -180,6 +183,6 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
     }
 
     private TagsProvider.TagAppender<Block> tag(String name) {
-        return tag(TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name)));
+        return tag(TagKey.create(Registries.BLOCK, new ResourceLocation(name)));
     }
 }

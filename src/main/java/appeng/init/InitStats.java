@@ -19,6 +19,7 @@
 package appeng.init;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
@@ -34,7 +35,7 @@ public final class InitStats {
         for (AeStats stat : AeStats.values()) {
             // Compare with net.minecraft.stats.Stats#registerCustom
             ResourceLocation registryName = stat.getRegistryName();
-            Registry.register(Registry.CUSTOM_STAT, registryName.getPath(), registryName);
+            Registry.register(BuiltInRegistries.CUSTOM_STAT, registryName.getPath(), registryName);
             Stats.CUSTOM.get(registryName, StatFormatter.DEFAULT);
         }
     }

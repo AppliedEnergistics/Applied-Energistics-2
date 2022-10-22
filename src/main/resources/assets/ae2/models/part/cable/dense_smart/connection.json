@@ -1,7 +1,7 @@
 {
   "textures": {
-    "base": "ae2:part/cable/dense_smart/${color}",
-    "channels": "ae2:part/cable/dense_smart/${channels}"
+    "base": "ae2:part/cable/dense_smart/_color_",
+    "channels": "ae2:part/cable/dense_smart/_channels_"
   },
   "elements": [
     {

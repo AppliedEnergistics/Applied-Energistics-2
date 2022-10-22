@@ -18,12 +18,8 @@
 
 package appeng.block.paint;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -69,8 +65,7 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         // do nothing
     }
 

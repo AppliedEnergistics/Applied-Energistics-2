@@ -18,20 +18,26 @@
 
 package appeng.datagen.providers.loot;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 
-import net.minecraft.core.Registry;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.loot.BlockLoot;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -55,45 +61,65 @@ import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.datagen.providers.tags.ConventionTags;
 
-public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
-    private final Map<Block, Function<Block, LootTable.Builder>> overrides = ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
-            .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
-            .put(AEBlocks.MYSTERIOUS_CUBE.block(), BlockDropProvider::mysteriousCube)
-            // Budding quartz degrades by 1 with silk touch, and degrades entirely without silk touch.
-            .put(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.FLAWED_BUDDING_QUARTZ))
-            .put(AEBlocks.FLAWED_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.CHIPPED_BUDDING_QUARTZ))
-            .put(AEBlocks.CHIPPED_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.DAMAGED_BUDDING_QUARTZ))
-            .put(AEBlocks.DAMAGED_BUDDING_QUARTZ.block(), b -> createSingleItemTable(AEBlocks.QUARTZ_BLOCK))
-            // Quartz buds drop themselves with silk touch, and 1 dust without silk touch.
-            .put(AEBlocks.SMALL_QUARTZ_BUD.block(), BlockDropProvider::quartzBud)
-            .put(AEBlocks.MEDIUM_QUARTZ_BUD.block(), BlockDropProvider::quartzBud)
-            .put(AEBlocks.LARGE_QUARTZ_BUD.block(), BlockDropProvider::quartzBud)
-            // Quartz clusters drop themselves with silk touch, and some crystals without silk touch.
-            .put(AEBlocks.QUARTZ_CLUSTER.block(), BlockDropProvider::quartzCluster)
-            .build();
+public class BlockDropProvider extends BlockLootSubProvider implements IAE2DataProvider {
+    private final Map<Block, Function<Block, LootTable.Builder>> overrides = createOverrides();
+
+    @NotNull
+    private ImmutableMap<Block, Function<Block, LootTable.Builder>> createOverrides() {
+        return ImmutableMap.<Block, Function<Block, LootTable.Builder>>builder()
+                .put(AEBlocks.MATRIX_FRAME.block(), $ -> LootTable.lootTable())
+                .put(AEBlocks.MYSTERIOUS_CUBE.block(), BlockDropProvider::mysteriousCube)
+                // Budding quartz degrades by 1 with silk touch, and degrades entirely without silk touch.
+                .put(AEBlocks.FLAWLESS_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.FLAWED_BUDDING_QUARTZ))
+                .put(AEBlocks.FLAWED_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.CHIPPED_BUDDING_QUARTZ))
+                .put(AEBlocks.CHIPPED_BUDDING_QUARTZ.block(), b -> buddingQuartz(AEBlocks.DAMAGED_BUDDING_QUARTZ))
+                .put(AEBlocks.DAMAGED_BUDDING_QUARTZ.block(), b -> createSingleItemTable(AEBlocks.QUARTZ_BLOCK))
+                // Quartz buds drop themselves with silk touch, and 1 dust without silk touch.
+                .put(AEBlocks.SMALL_QUARTZ_BUD.block(), this::quartzBud)
+                .put(AEBlocks.MEDIUM_QUARTZ_BUD.block(), this::quartzBud)
+                .put(AEBlocks.LARGE_QUARTZ_BUD.block(), this::quartzBud)
+                // Quartz clusters drop themselves with silk touch, and some crystals without silk touch.
+                .put(AEBlocks.QUARTZ_CLUSTER.block(), BlockDropProvider::quartzCluster)
+                .build();
+    }
 
     private final Path outputFolder;
 
-    public BlockDropProvider(Path outputFolder) {
-        this.outputFolder = outputFolder;
+    public BlockDropProvider(PackOutput output) {
+        super(Set.of(), FeatureFlagSet.of());
+        this.outputFolder = output.getOutputFolder();
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
-        for (Map.Entry<ResourceKey<Block>, Block> entry : Registry.BLOCK.entrySet()) {
+    public void generate() {
+    }
+
+    @Override
+    public void generate(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
+        super.generate(biConsumer);
+    }
+
+    @Override
+    public CompletableFuture<?> run(CachedOutput cache) {
+        var futures = new ArrayList<CompletableFuture<?>>();
+
+        for (var entry : BuiltInRegistries.BLOCK.entrySet()) {
             LootTable.Builder builder;
             if (entry.getKey().location().getNamespace().equals(AppEng.MOD_ID)) {
                 builder = overrides.getOrDefault(entry.getValue(), this::defaultBuilder).apply(entry.getValue());
 
-                DataProvider.saveStable(cache, toJson(builder), getPath(outputFolder, entry.getKey().location()));
+                futures.add(DataProvider.saveStable(cache, toJson(builder),
+                        getPath(outputFolder, entry.getKey().location())));
             }
         }
 
-        DataProvider.saveStable(cache, toJson(LootTable.lootTable()
+        futures.add(DataProvider.saveStable(cache, toJson(LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(1, 3))
                         .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK)))),
-                getPath(outputFolder, AppEng.makeId("chests/meteorite")));
+                getPath(outputFolder, AppEng.makeId("chests/meteorite"))));
+
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     private LootTable.Builder defaultBuilder(Block block) {
@@ -104,11 +130,11 @@ public class BlockDropProvider extends BlockLoot implements IAE2DataProvider {
         return LootTable.lootTable().withPool(pool);
     }
 
-    private static LootTable.Builder buddingQuartz(BlockDefinition<?> degradedVersion) {
+    private LootTable.Builder buddingQuartz(BlockDefinition<?> degradedVersion) {
         return createSingleItemTableWithSilkTouch(degradedVersion.block(), AEBlocks.QUARTZ_BLOCK.block());
     }
 
-    private static LootTable.Builder quartzBud(Block bud) {
+    private LootTable.Builder quartzBud(Block bud) {
         return createSingleItemTableWithSilkTouch(bud, AEItems.CERTUS_QUARTZ_DUST);
     }
 

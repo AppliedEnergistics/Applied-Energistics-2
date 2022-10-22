@@ -24,8 +24,7 @@ import java.util.Queue;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -59,7 +58,7 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
 
     private synchronized static void initGlobalPossibleItems() {
         if (SHARED_POSSIBLE_ITEMS.isEmpty()) {
-            for (Item item : Registry.ITEM) {
+            for (Item item : BuiltInRegistries.ITEM) {
                 addPossibleItem(item, SHARED_POSSIBLE_ITEMS);
             }
         }
@@ -68,13 +67,13 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.putString("filter", Registry.ITEM.getKey(filter).toString());
+        data.putString("filter", BuiltInRegistries.ITEM.getKey(filter).toString());
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         if (data.contains("filter")) {
-            Item item = Registry.ITEM.get(new ResourceLocation(data.getString("filter")));
+            Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(data.getString("filter")));
             this.setItem(item);
         }
         super.loadTag(data);
@@ -109,10 +108,8 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
                 is.setDamageValue(dmg);
                 queue.add(is);
             }
-        } else if (item.getItemCategory() != null) {
-            final NonNullList<ItemStack> list = NonNullList.create();
-            item.fillItemCategory(item.getItemCategory(), list);
-            queue.addAll(list);
+        } else {
+            queue.add(item.getDefaultInstance());
         }
     }
 

@@ -16,7 +16,7 @@ import com.google.gson.GsonBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.DetectedVersion;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -66,7 +66,7 @@ public class SiteExportWriter {
             json.height = shapedRecipe.getHeight();
         }
 
-        json.resultItem = Registry.ITEM.getKey(recipe.getResultItem().getItem()).toString();
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem().getItem()).toString();
         json.resultCount = recipe.getResultItem().getCount();
 
         var ingredients = recipe.getIngredients();
@@ -85,7 +85,7 @@ public class SiteExportWriter {
         json.top = convertIngredient(recipe.getTopOptional());
         json.middle = convertIngredient(recipe.getMiddleInput());
         json.bottom = convertIngredient(recipe.getBottomOptional());
-        json.resultItem = Registry.ITEM.getKey(recipe.getResultItem().getItem()).toString();
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem().getItem()).toString();
         json.resultCount = recipe.getResultItem().getCount();
         json.consumesTopAndBottom = recipe.getProcessType() == InscriberProcessType.PRESS;
 
@@ -96,7 +96,7 @@ public class SiteExportWriter {
         var json = new SmeltingRecipeJson();
         json.id = recipe.getId().toString();
 
-        json.resultItem = Registry.ITEM.getKey(recipe.getResultItem().getItem()).toString();
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem().getItem()).toString();
 
         var ingredients = recipe.getIngredients();
         json.ingredient = convertIngredient(ingredients.get(0));
@@ -107,7 +107,7 @@ public class SiteExportWriter {
     @NotNull
     private String[] convertIngredient(Ingredient ingredient) {
         return Arrays.stream(ingredient.getItems())
-                .map(is -> Registry.ITEM.getKey(is.getItem()))
+                .map(is -> BuiltInRegistries.ITEM.getKey(is.getItem()))
                 .filter(k -> k.getNamespace().equals(AppEng.MOD_ID) || k.getNamespace().equals("minecraft"))
                 .map(ResourceLocation::toString)
                 .toArray(String[]::new);
@@ -128,8 +128,8 @@ public class SiteExportWriter {
     }
 
     public void addColoredVersion(Item baseItem, DyeColor color, Item coloredItem) {
-        var baseItemId = Registry.ITEM.getKey(baseItem).toString();
-        var coloredItemId = Registry.ITEM.getKey(coloredItem).toString();
+        var baseItemId = BuiltInRegistries.ITEM.getKey(baseItem).toString();
+        var coloredItemId = BuiltInRegistries.ITEM.getKey(coloredItem).toString();
         var coloredVersions = siteExport.coloredVersions.computeIfAbsent(baseItemId, key -> new HashMap<>());
         coloredVersions.put(color, coloredItemId);
     }

@@ -21,7 +21,7 @@ package appeng.init.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.util.AEColor;
@@ -56,7 +56,7 @@ public final class InitItemModelsProperties {
                 });
 
         // Register the client-only item model property for energy cells
-        Registry.ITEM.forEach(item -> {
+        BuiltInRegistries.ITEM.forEach(item -> {
             if (!(item instanceof EnergyCellBlockItem energyCell)) {
                 return;
             }

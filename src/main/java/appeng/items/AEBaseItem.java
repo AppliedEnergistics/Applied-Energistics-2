@@ -21,8 +21,9 @@ package appeng.items;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.item.v1.FabricItem;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 
 public abstract class AEBaseItem extends Item implements FabricItem {
@@ -33,8 +34,12 @@ public abstract class AEBaseItem extends Item implements FabricItem {
 
     @Nullable
     public ResourceLocation getRegistryName() {
-        var id = Registry.ITEM.getKey(this);
-        return id != Registry.ITEM.getDefaultKey() ? id : null;
+        var id = BuiltInRegistries.ITEM.getKey(this);
+        return id != BuiltInRegistries.ITEM.getDefaultKey() ? id : null;
+    }
+
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        output.accept(this);
     }
 
     @Override

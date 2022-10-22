@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "source": "part",
+      "prefix": "part/"
+    }
+  ]
+}

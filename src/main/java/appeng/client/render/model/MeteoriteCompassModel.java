@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,7 +47,7 @@ public class MeteoriteCompassModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter,
+    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
             ModelState rotationContainer, ResourceLocation modelId) {
         BakedModel baseModel = loader.bake(MODEL_BASE, rotationContainer);
         BakedModel pointerModel = loader.bake(MODEL_POINTER, rotationContainer);

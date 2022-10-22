@@ -19,22 +19,20 @@
 
 package net.minecraftforge.client.model.generators;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -49,7 +47,7 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
     protected static final ResourceType MODEL = new ResourceType(PackType.CLIENT_RESOURCES, ".json", "models");
     protected static final ResourceType MODEL_WITH_EXTENSION = new ResourceType(PackType.CLIENT_RESOURCES, "", "models");
 
-    protected final DataGenerator generator;
+    protected final PackOutput output;
     protected final String modid;
     protected final String folder;
     protected final Function<ResourceLocation, T> factory;
@@ -60,9 +58,9 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
 
     protected abstract void registerModels();
 
-    public ModelProvider(DataGenerator generator, String modid, String folder, Function<ResourceLocation, T> factory, ExistingFileHelper existingFileHelper) {
-        Preconditions.checkNotNull(generator);
-        this.generator = generator;
+    public ModelProvider(PackOutput output, String modid, String folder, Function<ResourceLocation, T> factory, ExistingFileHelper existingFileHelper) {
+        Preconditions.checkNotNull(output);
+        this.output = output;
         Preconditions.checkNotNull(modid);
         this.modid = modid;
         Preconditions.checkNotNull(folder);
@@ -73,8 +71,8 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
         this.existingFileHelper = existingFileHelper;
     }
 
-    public ModelProvider(DataGenerator generator, String modid, String folder, BiFunction<ResourceLocation, ExistingFileHelper, T> builderFromModId, ExistingFileHelper existingFileHelper) {
-        this(generator, modid, folder, loc->builderFromModId.apply(loc, existingFileHelper), existingFileHelper);
+    public ModelProvider(PackOutput output, String modid, String folder, BiFunction<ResourceLocation, ExistingFileHelper, T> builderFromModId, ExistingFileHelper existingFileHelper) {
+        this(output, modid, folder, loc->builderFromModId.apply(loc, existingFileHelper), existingFileHelper);
     }
 
     public T getBuilder(String path) {
@@ -362,26 +360,28 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
         generatedModels.clear();
     }
 
+
     @Override
-    public void run(CachedOutput cache) throws IOException {
+    public CompletableFuture<?> run(CachedOutput cache) {
         clear();
         registerModels();
-        generateAll(cache);
+        return generateAll(cache);
     }
 
-    protected void generateAll(CachedOutput cache) {
-        for (T model : generatedModels.values()) {
+    protected CompletableFuture<?> generateAll(CachedOutput cache) {
+        CompletableFuture<?>[] futures = new CompletableFuture<?>[this.generatedModels.size()];
+        int i = 0;
+
+        for (T model : this.generatedModels.values()) {
             Path target = getPath(model);
-            try {
-                DataProvider.saveStable(cache, model.toJson(), target);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            futures[i++] = DataProvider.saveStable(cache, model.toJson(), target);
         }
+
+        return CompletableFuture.allOf(futures);
     }
 
-    private Path getPath(T model) {
+    protected Path getPath(T model) {
         ResourceLocation loc = model.getLocation();
-        return generator.getOutputFolder().resolve("assets/" + loc.getNamespace() + "/models/" + loc.getPath() + ".json");
+        return this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK).resolve(loc.getNamespace()).resolve("models").resolve(loc.getPath() + ".json");
     }
 }

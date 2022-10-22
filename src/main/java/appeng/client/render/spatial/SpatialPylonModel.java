@@ -18,18 +18,16 @@
 
 package appeng.client.render.spatial;
 
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -39,7 +37,7 @@ import appeng.core.AppEng;
 public class SpatialPylonModel implements BasicUnbakedModel {
 
     @Override
-    public BakedModel bake(ModelBakery bakery,
+    public BakedModel bake(ModelBaker bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
             ResourceLocation modelLocation) {
         Map<SpatialPylonTextureType, TextureAtlasSprite> textures = new EnumMap<>(SpatialPylonTextureType.class);
@@ -49,11 +47,6 @@ public class SpatialPylonModel implements BasicUnbakedModel {
         }
 
         return new SpatialPylonBakedModel(textures);
-    }
-
-    @Override
-    public Stream<Material> getAdditionalTextures() {
-        return Arrays.stream(SpatialPylonTextureType.values()).map(SpatialPylonModel::getTexturePath);
     }
 
     private static Material getTexturePath(SpatialPylonTextureType type) {

@@ -87,8 +87,8 @@ public class VerticalButtonBar implements ICompositeWidget {
             }
 
             // Vanilla widgets need to be in window space
-            button.x = screenOrigin.getX() + position.getX() - MARGIN - button.getWidth();
-            button.y = screenOrigin.getY() + currentY;
+            button.setX(screenOrigin.getX() + position.getX() - MARGIN - button.getWidth());
+            button.setY(screenOrigin.getY() + currentY);
 
             currentY += button.getHeight() + VERTICAL_SPACING;
             maxWidth = Math.max(button.getWidth(), maxWidth);

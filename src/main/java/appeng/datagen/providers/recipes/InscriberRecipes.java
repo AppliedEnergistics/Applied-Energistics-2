@@ -20,7 +20,7 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -34,12 +34,12 @@ import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 
 public class InscriberRecipes extends AE2RecipeProvider {
-    public InscriberRecipes(DataGenerator generator) {
-        super(generator);
+    public InscriberRecipes(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
 
         // Silicon Press Copying & Printing
         InscriberRecipeBuilder.inscribe(Items.IRON_BLOCK, AEItems.SILICON_PRESS, 1)
@@ -108,5 +108,10 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 .setTop(Ingredient.of(press))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/" + name + "_press"));
+    }
+
+    @Override
+    public String getName() {
+        return "AE2 Inscriber Recipes";
     }
 }

@@ -23,7 +23,7 @@
 
 package appeng.api.ids;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -84,15 +84,15 @@ public final class AETags {
     public static final TagKey<Block> GROWTH_ACCELERATABLE = blockTag("ae2:growth_acceleratable");
 
     private static TagKey<Item> itemTag(String name) {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(name));
+        return TagKey.create(Registries.ITEM, new ResourceLocation(name));
     }
 
     private static TagKey<Fluid> fluidTag(String name) {
-        return TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(name));
+        return TagKey.create(Registries.FLUID, new ResourceLocation(name));
     }
 
     private static TagKey<Block> blockTag(String name) {
-        return TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name));
+        return TagKey.create(Registries.BLOCK, new ResourceLocation(name));
     }
 
 }

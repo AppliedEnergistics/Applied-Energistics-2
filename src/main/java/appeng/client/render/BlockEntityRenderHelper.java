@@ -19,12 +19,14 @@
 package appeng.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+
+import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.stacks.AEKey;
@@ -62,16 +64,16 @@ public class BlockEntityRenderHelper {
      */
     public static void rotateToFace(PoseStack mStack, Direction face, byte spin) {
         switch (face) {
-            case UP -> mStack.mulPose(Vector3f.XP.rotationDegrees(270));
-            case DOWN -> mStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-            case EAST -> mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-            case WEST -> mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
-            case NORTH -> mStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+            case UP -> mStack.mulPose(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 270));
+            case DOWN -> mStack.mulPose(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90.0F));
+            case EAST -> mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
+            case WEST -> mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
+            case NORTH -> mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 180.0F));
             case SOUTH -> {
             }
         }
 
-        mStack.last().pose().multiply(Vector3f.ZP.rotationDegrees(-spin * 90.0F));
+        mStack.last().pose().rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -spin * 90.0F));
     }
 
     /**

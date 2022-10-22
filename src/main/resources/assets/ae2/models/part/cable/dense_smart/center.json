@@ -1,6 +1,6 @@
 {
   "textures": {
-    "base": "ae2:part/cable/dense_smart/${color}"
+    "base": "ae2:part/cable/dense_smart/_color_"
   },
   "elements": [
     {

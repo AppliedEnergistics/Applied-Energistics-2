@@ -4,19 +4,18 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+
+import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -78,12 +77,12 @@ public final class FluidBlockRendering {
         float rotation = 45;
 
         worldMatStack.scale(1, 1, -1);
-        worldMatStack.mulPose(Vector3f.YP.rotationDegrees(-180));
+        worldMatStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180));
 
-        Quaternion flip = Vector3f.ZP.rotationDegrees(180);
-        flip.mul(Vector3f.XP.rotationDegrees(angle));
+        Quaternionf flip = new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 180);
+        flip.mul(new Quaternionf().rotationX(Mth.DEG_TO_RAD * angle));
 
-        Quaternion rotate = Vector3f.YP.rotationDegrees(rotation);
+        Quaternionf rotate = new Quaternionf().rotationY(Mth.DEG_TO_RAD * rotation);
         worldMatStack.mulPose(flip);
         worldMatStack.mulPose(rotate);
 
@@ -122,7 +121,13 @@ public final class FluidBlockRendering {
 
         @Override
         public int getBlockTint(BlockPos blockPos, ColorResolver colorResolver) {
-            return colorResolver.getColor(BuiltinRegistries.BIOME.getOrThrow(Biomes.THE_VOID), 0, 0);
+            var level = Minecraft.getInstance().level;
+            if (level != null) {
+                var biome = Minecraft.getInstance().level.getBiome(blockPos);
+                return colorResolver.getColor(biome.value(), 0, 0);
+            } else {
+                return -1;
+            }
         }
 
         @Override

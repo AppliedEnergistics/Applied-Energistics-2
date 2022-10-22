@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

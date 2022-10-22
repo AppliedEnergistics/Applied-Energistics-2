@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -131,7 +131,7 @@ public final class SiteExporter {
 
         // Iterate over all Applied Energistics items
         var stacks = new ArrayList<ItemStack>();
-        for (Item item : Registry.ITEM) {
+        for (Item item : BuiltInRegistries.ITEM) {
             if (getItemId(item).getNamespace().equals(AppEng.MOD_ID)) {
                 stacks.add(new ItemStack(item));
             }
@@ -175,7 +175,7 @@ public final class SiteExporter {
             Set<Item> items = new HashSet<>();
             for (var entry : P2PTunnelAttunementInternal.getTagTunnels().entrySet()) {
                 if (entry.getValue() == tunnelItem.asItem()) {
-                    Registry.ITEM.getTagOrEmpty(entry.getKey()).forEach(h -> items.add(h.value()));
+                    BuiltInRegistries.ITEM.getTagOrEmpty(entry.getKey()).forEach(h -> items.add(h.value()));
                 }
             }
             items.stream().map(i -> getItemId(i).toString()).forEach(typeInfo.attunementItemIds::add);
@@ -245,7 +245,7 @@ public final class SiteExporter {
     }
 
     private static ResourceLocation getItemId(Item item) {
-        return Registry.ITEM.getKey(item);
+        return BuiltInRegistries.ITEM.getKey(item);
     }
 
     private static void addVanillaItem(Set<Item> items, ItemStack stack) {
@@ -254,7 +254,7 @@ public final class SiteExporter {
         }
 
         var item = stack.getItem();
-        if ("minecraft".equals(Registry.ITEM.getKey(item).getNamespace())) {
+        if ("minecraft".equals(BuiltInRegistries.ITEM.getKey(item).getNamespace())) {
             items.add(item);
         }
     }

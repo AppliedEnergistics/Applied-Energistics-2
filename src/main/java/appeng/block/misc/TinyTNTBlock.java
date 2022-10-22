@@ -135,7 +135,7 @@ public class TinyTNTBlock extends AEBaseBlock {
         super.wasExploded(level, pos, exp);
         if (!level.isClientSide) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
-                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getSourceMob());
+                    pos.getY() + 0.5F, pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
             primedTinyTNTEntity
                     .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
                             + primedTinyTNTEntity.getFuse() / 8);

@@ -18,11 +18,11 @@
 
 package appeng.client.render.tesr;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
+
+import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -54,8 +55,6 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
 
     private static final Material TEXTURE_INSIDE = new Material(InventoryMenu.BLOCK_ATLAS,
             new ResourceLocation(AppEng.MOD_ID, "block/inscriber_inside"));
-
-    public static final ImmutableList<Material> SPRITES = ImmutableList.of(TEXTURE_INSIDE);
 
     public InscriberTESR(BlockEntityRendererProvider.Context context) {
     }
@@ -206,7 +205,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             ms.pushPose();
             // move to center
             ms.translate(0.5f, 0.5f + o, 0.5f);
-            ms.mulPose(new Quaternion(90, 0, 0, true));
+            ms.mulPose(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90));
             // set scale
             ms.scale(ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE);
 

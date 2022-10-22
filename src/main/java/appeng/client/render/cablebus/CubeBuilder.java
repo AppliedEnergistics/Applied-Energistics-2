@@ -22,7 +22,8 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 
 import com.google.common.base.Preconditions;
-import com.mojang.math.Vector4f;
+
+import org.joml.Vector4f;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

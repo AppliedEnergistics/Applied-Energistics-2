@@ -32,7 +32,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
-import net.minecraft.client.gui.components.Button.OnTooltip;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
@@ -110,22 +109,14 @@ public class WidgetContainer {
      * Convenient way to add Vanilla buttons without having to specify x,y,width and height. The actual
      * position/rectangle is instead sourced from the screen style.
      */
-    public Button addButton(String id, Component text, OnPress action, OnTooltip tooltip) {
-        Button button = new Button(0, 0, 0, 0, text, action, tooltip);
+    public Button addButton(String id, Component text, OnPress action) {
+        var button = Button.builder(text, action).build();
         add(id, button);
         return button;
     }
 
-    public Button addButton(String id, Component text, OnPress action) {
-        return addButton(id, text, action, Button.NO_TOOLTIP);
-    }
-
-    public Button addButton(String id, Component text, Runnable action, OnTooltip tooltip) {
-        return addButton(id, text, btn -> action.run(), tooltip);
-    }
-
     public Button addButton(String id, Component text, Runnable action) {
-        return addButton(id, text, action, Button.NO_TOOLTIP);
+        return addButton(id, text, btn -> action.run());
     }
 
     public AECheckbox addCheckbox(String id, Component text, Runnable changeListener) {
@@ -181,8 +172,8 @@ public class WidgetContainer {
             if (widget instanceof IResizableWidget resizableWidget) {
                 resizableWidget.move(pos);
             } else {
-                widget.x = pos.getX();
-                widget.y = pos.getY();
+                widget.setX(pos.getX());
+                widget.setY(pos.getY());
             }
 
             addWidget.accept(widget);

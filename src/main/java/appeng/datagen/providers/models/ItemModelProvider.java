@@ -2,7 +2,7 @@ package appeng.datagen.providers.models;
 
 import static appeng.core.AppEng.makeId;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
@@ -21,8 +21,8 @@ import appeng.init.client.InitItemModelsProperties;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider
         implements IAE2DataProvider {
-    public ItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, AppEng.MOD_ID, existingFileHelper);
+    public ItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, AppEng.MOD_ID, existingFileHelper);
     }
 
     @Override

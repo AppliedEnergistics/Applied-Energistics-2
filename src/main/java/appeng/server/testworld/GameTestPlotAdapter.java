@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.nbt.CompoundTag;
@@ -69,7 +70,7 @@ public class GameTestPlotAdapter {
             sizeList.add(IntTag.valueOf(bounds.getYSpan()));
             sizeList.add(IntTag.valueOf(bounds.getZSpan()));
             tag.put(StructureTemplate.SIZE_TAG, sizeList);
-            template.load(tag);
+            template.load(BuiltInRegistries.BLOCK.asLookup(), tag);
             return template;
         }
 

@@ -364,7 +364,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     }
 
     private boolean isMissingTexture(TextureAtlasSprite particleTexture) {
-        return particleTexture instanceof MissingTextureAtlasSprite;
+        return particleTexture.atlasLocation().equals(MissingTextureAtlasSprite.getLocation());
     }
 
     @Override

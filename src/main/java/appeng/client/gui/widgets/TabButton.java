@@ -47,7 +47,7 @@ public class TabButton extends Button implements ITooltip {
 
     public TabButton(Icon ico, Component message, ItemRenderer ir,
             OnPress onPress) {
-        super(0, 0, 22, 22, message, onPress);
+        super(0, 0, 22, 22, message, onPress, Button.DEFAULT_NARRATION);
 
         this.icon = ico;
         this.itemRenderer = ir;
@@ -62,7 +62,7 @@ public class TabButton extends Button implements ITooltip {
      */
     public TabButton(ItemStack ico, Component message, ItemRenderer ir,
             OnPress onPress) {
-        super(0, 0, 22, 22, message, onPress);
+        super(0, 0, 22, 22, message, onPress, Button.DEFAULT_NARRATION);
         this.item = ico;
         this.itemRenderer = ir;
     }
@@ -86,7 +86,7 @@ public class TabButton extends Button implements ITooltip {
                 }
             };
 
-            backdrop.getBlitter().dest(this.x, this.y).blit(poseStack, getBlitOffset());
+            backdrop.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
 
             var iconX = switch (this.style) {
                 case CORNER -> 4;
@@ -96,12 +96,12 @@ public class TabButton extends Button implements ITooltip {
             var iconY = 3;
 
             if (this.icon != null) {
-                this.icon.getBlitter().dest(this.x + iconX, this.y + iconY).blit(poseStack, getBlitOffset());
+                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY).blit(poseStack, getBlitOffset());
             }
 
             if (this.item != null) {
                 this.itemRenderer.blitOffset = 100.0F;
-                this.itemRenderer.renderAndDecorateItem(this.item, this.x + iconX, this.y + iconY);
+                this.itemRenderer.renderAndDecorateItem(this.item, getX() + iconX, getY() + iconY);
                 this.itemRenderer.blitOffset = 0.0F;
             }
         }
@@ -114,7 +114,7 @@ public class TabButton extends Button implements ITooltip {
 
     @Override
     public Rect2i getTooltipArea() {
-        return new Rect2i(x, y, 22, 22);
+        return new Rect2i(getX(), getY(), 22, 22);
     }
 
     @Override

@@ -4,9 +4,10 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -89,7 +90,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
 
     private ShapedRecipe make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
         // This id should only be used within JEI and not really matter
-        var itemId = Registry.ITEM.getKey(textureItem.getItem());
+        var itemId = BuiltInRegistries.ITEM.getKey(textureItem.getItem());
         ResourceLocation id = new ResourceLocation(AppEng.MOD_ID,
                 "facade/" + itemId.getNamespace() + "/" + itemId.getPath());
 
@@ -103,7 +104,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         var output = result.copy();
         output.setCount(4);
 
-        return new ShapedRecipe(id, "", 3, 3, ingredients, output);
+        return new ShapedRecipe(id, "", CraftingBookCategory.MISC, 3, 3, ingredients, output);
     }
 
     @Override

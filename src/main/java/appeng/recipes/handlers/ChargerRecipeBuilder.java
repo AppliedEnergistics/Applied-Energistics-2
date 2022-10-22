@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -36,7 +36,7 @@ public class ChargerRecipeBuilder {
         public void serializeRecipeData(JsonObject json) {
             json.add("ingredient", input.toJson());
             var stackObj = new JsonObject();
-            stackObj.addProperty("item", Registry.ITEM.getKey(output.asItem()).toString());
+            stackObj.addProperty("item", BuiltInRegistries.ITEM.getKey(output.asItem()).toString());
             json.add("result", stackObj);
         }
 

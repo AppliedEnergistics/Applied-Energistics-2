@@ -19,7 +19,8 @@
 package appeng.client.render.tesr;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
+
+import org.joml.Quaternionf;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,6 +31,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 import appeng.blockentity.misc.CrankBlockEntity;
@@ -92,7 +94,7 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
                 packedOverlay);
 
         stack.translate(0.5, 0.5, 0.5);
-        stack.mulPose(new Quaternion(0, crank.getVisibleRotation(), 0, true));
+        stack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * crank.getVisibleRotation()));
         stack.translate(-0.5, -0.5, -0.5);
 
         blockRenderer.getModelRenderer().tesselateWithAO(

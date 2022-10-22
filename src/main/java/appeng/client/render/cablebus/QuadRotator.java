@@ -21,8 +21,9 @@ package appeng.client.render.cablebus;
 import java.util.EnumMap;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -54,7 +55,7 @@ public class QuadRotator implements RenderContext.QuadTransform {
 
     private final FacingToRotation rotation;
 
-    private final Quaternion quaternion;
+    private final Quaternionf quaternion;
 
     private QuadRotator(FacingToRotation rotation) {
         this.rotation = rotation;
@@ -80,14 +81,14 @@ public class QuadRotator implements RenderContext.QuadTransform {
             // Transform the position (center of rotation is 0.5, 0.5, 0.5)
             quad.copyPos(i, tmp);
             tmp.add(-0.5f, -0.5f, -0.5f);
-            tmp.transform(quaternion);
+            tmp.rotate(quaternion);
             tmp.add(0.5f, 0.5f, 0.5f);
             quad.pos(i, tmp);
 
             // Transform the normal
             if (quad.hasNormal(i)) {
                 quad.copyNormal(i, tmp);
-                tmp.transform(quaternion);
+                tmp.rotate(quaternion);
                 quad.normal(i, tmp);
             }
         }

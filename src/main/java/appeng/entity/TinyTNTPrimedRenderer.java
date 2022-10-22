@@ -19,7 +19,8 @@
 package appeng.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+
+import org.joml.Quaternionf;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,6 +31,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 
 @Environment(EnvType.CLIENT)
@@ -68,9 +70,9 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity> {
 
         mStack.scale(0.5f, 0.5f, 0.5f);
         f2 = (1.0F - (tnt.getFuse() - partialTicks + 1.0F) / 100.0F) * 0.8F;
-        mStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+        mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
         mStack.translate(-0.5D, -0.5D, 0.5D);
-        mStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+        mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
         TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, Blocks.TNT.defaultBlockState(), mStack, buffers,
                 packedLight,
                 tnt.getFuse() / 5 % 2 == 0);

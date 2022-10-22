@@ -19,13 +19,12 @@
 package appeng.parts.automation;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,7 +46,7 @@ public class PlaneModel implements BasicUnbakedModel {
     }
 
     @Override
-    public BakedModel bake(ModelBakery bakery,
+    public BakedModel bake(ModelBaker bakery,
             Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
             ResourceLocation modelLocation) {
         TextureAtlasSprite frontSprite = spriteGetter.apply(this.frontTexture);
@@ -55,11 +54,6 @@ public class PlaneModel implements BasicUnbakedModel {
         TextureAtlasSprite backSprite = spriteGetter.apply(this.backTexture);
 
         return new PlaneBakedModel(frontSprite, sidesSprite, backSprite);
-    }
-
-    @Override
-    public Stream<Material> getAdditionalTextures() {
-        return Stream.of(frontTexture, sidesTexture, backTexture);
     }
 
 }

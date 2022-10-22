@@ -21,7 +21,6 @@ package appeng.client.render.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -29,7 +28,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -51,14 +50,9 @@ public class BiometricCardModel implements BasicUnbakedModel {
         return Collections.singleton(MODEL_BASE);
     }
 
-    @Override
-    public Stream<Material> getAdditionalTextures() {
-        return Stream.of(TEXTURE);
-    }
-
     @Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter,
+    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
             ModelState rotationContainer, ResourceLocation modelId) {
         TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
 

@@ -12,10 +12,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.LayeredRegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.world.level.Level;
@@ -51,19 +52,20 @@ public abstract class MinecraftServerMixin {
     protected LevelStorageSource.LevelStorageAccess storageSource;
 
     @Shadow
-    private RegistryAccess.Frozen registryHolder;
+    protected LayeredRegistryAccess<RegistryLayer> registries;
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "createLevels", at = @At(value = "TAIL"))
     public void injectSpatialLevel(ChunkProgressListener chunkProgressListener, CallbackInfo ci) {
+        var registryHolder = registries.compositeAccess();
+
         var levelStem = new LevelStem(
-                registryHolder.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY)
+                registryHolder.registryOrThrow(Registries.DIMENSION_TYPE)
                         .getHolderOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
                 new SpatialStorageChunkGenerator(
-                        registryHolder.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY),
-                        registryHolder.registryOrThrow(Registry.BIOME_REGISTRY)));
+                        registryHolder.lookupOrThrow(Registries.BIOME)));
 
-        long seed = BiomeManager.obfuscateSeed(this.worldData.worldGenSettings().seed());
+        long seed = BiomeManager.obfuscateSeed(this.worldData.worldGenOptions().seed());
 
         var serverLevelData = this.worldData.overworldData();
         var derivedLevelData = new DerivedLevelData(this.worldData, serverLevelData);

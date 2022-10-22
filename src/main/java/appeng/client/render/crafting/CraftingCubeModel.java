@@ -19,13 +19,13 @@
 package appeng.client.render.crafting;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.render.BasicUnbakedModel;
@@ -41,13 +41,12 @@ public class CraftingCubeModel implements BasicUnbakedModel {
     }
 
     @Override
-    public Stream<Material> getAdditionalTextures() {
-        return this.provider.getMaterials().stream();
+    public void resolveParents(Function<ResourceLocation, UnbakedModel> function) {
     }
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> spriteGetter,
+    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> spriteGetter,
             ModelState modelState, ResourceLocation modelId) {
         return this.provider.getBakedModel(spriteGetter);
     }

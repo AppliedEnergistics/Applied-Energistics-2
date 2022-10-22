@@ -20,7 +20,7 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
@@ -34,12 +34,12 @@ import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformRecipeBuilder;
 
 public class TransformRecipes extends AE2RecipeProvider {
-    public TransformRecipes(DataGenerator generator) {
-        super(generator);
+    public TransformRecipes(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         TransformCircumstance water = TransformCircumstance.fluid(FluidTags.WATER);
 
         // Fluix crystals
@@ -72,5 +72,10 @@ public class TransformRecipes extends AE2RecipeProvider {
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/entangled_singularity_from_pearl"),
                 AEItems.QUANTUM_ENTANGLED_SINGULARITY, 2, TransformCircumstance.EXPLOSION,
                 Ingredient.of(AEItems.SINGULARITY), Ingredient.of(ConventionTags.ENDER_PEARL));
+    }
+
+    @Override
+    public String getName() {
+        return "AE2 Transform Recipes";
     }
 }

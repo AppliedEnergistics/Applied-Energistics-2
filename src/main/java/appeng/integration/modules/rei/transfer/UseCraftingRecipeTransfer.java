@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -109,7 +110,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
             ingredients.set(i, ingredient);
         }
 
-        return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT,
+        return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CraftingBookCategory.MISC, CRAFTING_GRID_WIDTH,
+                CRAFTING_GRID_HEIGHT,
                 ingredients, ItemStack.EMPTY);
     }
 

@@ -20,14 +20,8 @@ package appeng.client.render;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import com.mojang.datafixers.util.Pair;
-
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 
@@ -35,23 +29,15 @@ import net.minecraft.resources.ResourceLocation;
  * An unbaked model that has standard models as a dependency and produces a custom baked model as a result.
  */
 public interface BasicUnbakedModel extends UnbakedModel {
-
     @Override
     default Collection<ResourceLocation> getDependencies() {
         return Collections.emptyList();
     }
 
-    default Stream<Material> getAdditionalTextures() {
-        return Stream.empty();
-    }
-
     @Override
-    default Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        return Stream.concat(
-                getDependencies().stream().map(unbakedModelGetter).flatMap(
-                        ubm -> ubm.getMaterials(unbakedModelGetter, unresolvedTextureReferences).stream()),
-                getAdditionalTextures()).collect(Collectors.toList());
+    default void resolveParents(Function<ResourceLocation, UnbakedModel> function) {
+        for (ResourceLocation dependency : getDependencies()) {
+            function.apply(dependency).resolveParents(function);
+        }
     }
-
 }

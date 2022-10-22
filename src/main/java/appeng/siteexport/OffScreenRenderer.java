@@ -10,13 +10,14 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 
 import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.util.Mth;
 
 public class OffScreenRenderer implements AutoCloseable {
     private final NativeImage nativeImage;
@@ -57,7 +58,7 @@ public class OffScreenRenderer implements AutoCloseable {
     public void setupItemRendering() {
         // Set up GL state for GUI rendering where the 16x16 item will fill the entire framebuffer
         RenderSystem.setProjectionMatrix(
-                Matrix4f.orthographic(0, 16, 0, 16, 1000, 3000));
+                new Matrix4f().ortho(0, 16, 0, 16, 1000, 3000));
 
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.setIdentity();
@@ -76,7 +77,7 @@ public class OffScreenRenderer implements AutoCloseable {
 
         // Set up GL state for GUI rendering where the 16x16 item will fill the entire framebuffer
         RenderSystem.setProjectionMatrix(
-                Matrix4f.orthographic(-1, 1, 1, -1, 1000, 3000));
+                new Matrix4f().ortho(-1, 1, 1, -1, 1000, 3000));
 
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.setIdentity();
@@ -85,15 +86,15 @@ public class OffScreenRenderer implements AutoCloseable {
         FogRenderer.setupNoFog();
 
         poseStack.scale(1, -1, -1);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-180));
+        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180));
 
-        Quaternion flip = Vector3f.ZP.rotationDegrees(180);
-        flip.mul(Vector3f.XP.rotationDegrees(angle));
+        Quaternionf flip = new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 180);
+        flip.mul(new Quaternionf().rotationX(Mth.DEG_TO_RAD * angle));
 
         poseStack.translate(0, (renderHeight / -300d), 0);
         poseStack.scale(renderScale * 0.004f, renderScale * 0.004f, 1f);
 
-        Quaternion rotate = Vector3f.YP.rotationDegrees(rotation);
+        Quaternionf rotate = new Quaternionf().rotationY(Mth.DEG_TO_RAD * rotation);
         poseStack.mulPose(flip);
         poseStack.mulPose(rotate);
 
@@ -109,7 +110,7 @@ public class OffScreenRenderer implements AutoCloseable {
             projMat.scale(zoom, zoom, 1.0F);
         }
 
-        projMat.mulPoseMatrix(Matrix4f.perspective(fov, aspectRatio, 0.05F, 16));
+        projMat.mulPoseMatrix(new Matrix4f().perspective(fov, aspectRatio, 0.05F, 16));
         RenderSystem.setProjectionMatrix(projMat.last().pose());
 
         var poseStack = RenderSystem.getModelViewStack();
@@ -126,22 +127,22 @@ public class OffScreenRenderer implements AutoCloseable {
      * applying it to the deprecated OpenGL transformation stack.
      */
     private static Matrix4f createViewMatrix(Vector3f eyePos, Vector3f lookAt) {
-        Vector3f dir = lookAt.copy();
+        Vector3f dir = new Vector3f(lookAt);
         dir.sub(eyePos);
 
         Vector3f up = new Vector3f(0, 1f, 0);
         dir.normalize();
 
-        var right = dir.copy();
+        var right = new Vector3f(dir);
         right.cross(up);
         right.normalize();
 
-        up = right.copy();
+        up = new Vector3f(right);
         up.cross(dir);
         up.normalize();
 
         var viewMatrix = new Matrix4f();
-        viewMatrix.loadTransposed(FloatBuffer.wrap(new float[] {
+        viewMatrix.setTransposed(FloatBuffer.wrap(new float[] {
                 right.x(),
                 right.y(),
                 right.z(),
@@ -163,7 +164,7 @@ public class OffScreenRenderer implements AutoCloseable {
                 1.0f,
         }));
 
-        viewMatrix.multiplyWithTranslation(-eyePos.x(), -eyePos.y(), -eyePos.z());
+        viewMatrix.translate(-eyePos.x(), -eyePos.y(), -eyePos.z());
         return viewMatrix;
     }
 

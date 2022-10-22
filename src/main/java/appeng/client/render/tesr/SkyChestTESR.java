@@ -21,7 +21,8 @@ package appeng.client.render.tesr;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+
+import org.joml.Quaternionf;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,11 +35,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 
 import appeng.block.storage.SkyChestBlock;
@@ -52,10 +54,11 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
-    public static final Material TEXTURE_STONE = new Material(Sheets.CHEST_SHEET,
-            new ResourceLocation(AppEng.MOD_ID, "models/skychest"));
-    public static final Material TEXTURE_BLOCK = new Material(Sheets.CHEST_SHEET,
-            new ResourceLocation(AppEng.MOD_ID, "models/skyblockchest"));
+    // The textures are in the block sheet due to the item model requiring them there
+    public static final Material TEXTURE_STONE = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new ResourceLocation(AppEng.MOD_ID, "block/skychest"));
+    public static final Material TEXTURE_BLOCK = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new ResourceLocation(AppEng.MOD_ID, "block/skyblockchest"));
 
     public static final ImmutableList<Material> SPRITES = ImmutableList.of(TEXTURE_STONE, TEXTURE_BLOCK);
 
@@ -90,7 +93,7 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
         matrixStackIn.pushPose();
         float f = blockEntity.getForward().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-f));
+        matrixStackIn.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
         float f1 = blockEntity.getOpenNess(partialTicks);

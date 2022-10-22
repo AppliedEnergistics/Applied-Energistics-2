@@ -18,10 +18,7 @@
 
 package appeng.block.networking;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
@@ -54,16 +51,15 @@ public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> itemStacks) {
-        super.fillItemCategory(group, itemStacks);
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        super.addToMainCreativeTab(output);
 
         final ItemStack charged = new ItemStack(this, 1);
         final CompoundTag tag = charged.getOrCreateTag();
         tag.putDouble("internalCurrentPower", this.getMaxPower());
         tag.putDouble("internalMaxPower", this.getMaxPower());
 
-        itemStacks.add(charged);
+        output.accept(charged);
     }
 
     public double getMaxPower() {

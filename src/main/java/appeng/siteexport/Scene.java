@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -33,7 +33,7 @@ class Scene {
     Consumer<ServerLevel> postSetup;
     Consumer<ClientLevel> beforeRender;
     int waitTicks = 1;
-    Vector3f centerOn = Vector3f.ZERO;
+    Vector3f centerOn = new Vector3f();
     int rotationY;
 
     public Scene(SceneRenderSettings settings, String filename) {

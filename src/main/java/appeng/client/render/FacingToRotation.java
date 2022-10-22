@@ -21,13 +21,15 @@ package appeng.client.render;
 import java.util.Locale;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 
 /**
@@ -76,27 +78,33 @@ public enum FacingToRotation implements StringRepresentable {
     // @formatter:on
 
     private final Vector3f rot;
-    private final Quaternion xRot;
-    private final Quaternion yRot;
-    private final Quaternion zRot;
-    private final Quaternion combinedRotation;
+    private final Quaternionf xRot;
+    private final Quaternionf yRot;
+    private final Quaternionf zRot;
+    private final Quaternionf combinedRotation;
     private final Matrix4f mat;
 
     FacingToRotation(Vector3f rot) {
         this.rot = rot;
-        this.mat = new Matrix4f();
-        this.mat.setIdentity();
-        this.mat.multiply(xRot = Vector3f.XP.rotationDegrees(rot.x()));
-        this.mat.multiply(yRot = Vector3f.YP.rotationDegrees(rot.y()));
-        this.mat.multiply(zRot = Vector3f.ZP.rotationDegrees(rot.z()));
-        this.combinedRotation = new Quaternion(rot.x(), rot.y(), rot.z(), true);
+        this.xRot = new Quaternionf().rotateX(rot.x() * Mth.DEG_TO_RAD);
+        this.yRot = new Quaternionf().rotateY(rot.y() * Mth.DEG_TO_RAD);
+        this.zRot = new Quaternionf().rotateZ(rot.z() * Mth.DEG_TO_RAD);
+        this.mat = new Matrix4f()
+                .rotationXYZ(
+                        rot.x() * Mth.DEG_TO_RAD,
+                        rot.y() * Mth.DEG_TO_RAD,
+                        rot.z() * Mth.DEG_TO_RAD);
+        this.combinedRotation = new Quaternionf().rotateXYZ(
+                rot.x() * Mth.DEG_TO_RAD,
+                rot.y() * Mth.DEG_TO_RAD,
+                rot.z() * Mth.DEG_TO_RAD);
     }
 
     public boolean isRedundant() {
         return rot.x() == 0 && rot.y() == 0 && rot.z() == 0;
     }
 
-    public Quaternion getRot() {
+    public Quaternionf getRot() {
         return this.combinedRotation;
     }
 
@@ -113,7 +121,7 @@ public enum FacingToRotation implements StringRepresentable {
     public Direction rotate(Direction facing) {
         Vec3i dir = facing.getNormal();
         Vector4f vec = new Vector4f(dir.getX(), dir.getY(), dir.getZ(), 1);
-        vec.transform(mat);
+        mat.transform(vec);
         return Direction.getNearest(vec.x(), vec.y(), vec.z());
     }
 

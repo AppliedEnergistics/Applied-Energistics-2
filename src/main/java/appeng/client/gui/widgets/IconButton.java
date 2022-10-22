@@ -46,7 +46,7 @@ public abstract class IconButton extends Button implements ITooltip {
     private boolean disableBackground = false;
 
     public IconButton(OnPress onPress) {
-        super(0, 0, 16, 16, Component.empty(), onPress);
+        super(0, 0, 16, 16, Component.empty(), onPress, Button.DEFAULT_NARRATION);
     }
 
     public void setVisibility(boolean vis) {
@@ -81,12 +81,12 @@ public abstract class IconButton extends Button implements ITooltip {
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
 
             if (isFocused()) {
-                fill(poseStack, this.x - 1, this.y - 1, this.x + width + 1, this.y + height + 1, 0xFFFFFFFF);
+                fill(poseStack, getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
             }
 
             if (this.halfSize) {
                 poseStack.pushPose();
-                poseStack.translate(this.x, this.y, 0.0F);
+                poseStack.translate(getX(), getY(), 0.0F);
                 poseStack.scale(0.5f, 0.5f, 1.f);
 
                 if (!disableBackground) {
@@ -96,15 +96,15 @@ public abstract class IconButton extends Button implements ITooltip {
                 poseStack.popPose();
             } else {
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(x, y).blit(poseStack, getBlitOffset());
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
                 }
-                icon.getBlitter().dest(x, y).blit(poseStack, getBlitOffset());
+                icon.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
             }
             RenderSystem.enableDepthTest();
 
             var item = this.getItemOverlay();
             if (item != null) {
-                Minecraft.getInstance().getItemRenderer().renderGuiItem(new ItemStack(item), x, y);
+                Minecraft.getInstance().getItemRenderer().renderGuiItem(new ItemStack(item), getX(), getY());
             }
         }
     }
@@ -127,8 +127,8 @@ public abstract class IconButton extends Button implements ITooltip {
     @Override
     public Rect2i getTooltipArea() {
         return new Rect2i(
-                x,
-                y,
+                getX(),
+                getY(),
                 this.halfSize ? 8 : 16,
                 this.halfSize ? 8 : 16);
     }

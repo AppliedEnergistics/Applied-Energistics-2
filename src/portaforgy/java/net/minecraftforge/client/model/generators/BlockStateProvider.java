@@ -19,18 +19,18 @@
 
 package net.minecraftforge.client.model.generators;
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,8 +39,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -60,7 +58,6 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.properties.WallSide;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -86,33 +83,37 @@ public abstract class BlockStateProvider implements DataProvider {
     @VisibleForTesting
     protected final Map<Block, IGeneratedBlockstate> registeredBlocks = new LinkedHashMap<>();
 
-    private final DataGenerator generator;
+    private final PackOutput output;
     private final String modid;
     private final BlockModelProvider blockModels;
     private final ItemModelProvider itemModels;
 
-    public BlockStateProvider(DataGenerator gen, String modid, ExistingFileHelper exFileHelper) {
-        this.generator = gen;
+    public BlockStateProvider(PackOutput output, String modid, ExistingFileHelper exFileHelper) {
+        this.output = output;
         this.modid = modid;
-        this.blockModels = new BlockModelProvider(gen, modid, exFileHelper) {
+        this.blockModels = new BlockModelProvider(output, modid, exFileHelper) {
             @Override protected void registerModels() {}
         };
-        this.itemModels = new ItemModelProvider(gen, modid, this.blockModels.existingFileHelper) {
+        this.itemModels = new ItemModelProvider(output, modid, this.blockModels.existingFileHelper) {
             @Override protected void registerModels() {}
         };
     }
 
     @Override
-    public void run(CachedOutput cache) throws IOException {
+    public CompletableFuture<?> run(CachedOutput cache) {
         models().clear();
         itemModels().clear();
         registeredBlocks.clear();
         registerStatesAndModels();
-        models().generateAll(cache);
-        itemModels().generateAll(cache);
-        for (Map.Entry<Block, IGeneratedBlockstate> entry : registeredBlocks.entrySet()) {
-            saveBlockState(cache, entry.getValue().toJson(), entry.getKey());
+
+        var futures = new ArrayList<CompletableFuture<?>>();
+        futures.add(models().generateAll(cache));
+        futures.add(itemModels().generateAll(cache));
+
+        for (var entry : registeredBlocks.entrySet()) {
+            futures.add(saveBlockState(cache, entry.getValue().toJson(), entry.getKey()));
         }
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     protected abstract void registerStatesAndModels();
@@ -141,6 +142,7 @@ public abstract class BlockStateProvider implements DataProvider {
         }
     }
 
+
     public BlockModelProvider models() {
         return blockModels;
     }
@@ -157,8 +159,12 @@ public abstract class BlockStateProvider implements DataProvider {
         return new ResourceLocation(name);
     }
 
+    private ResourceLocation key(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block);
+    }
+
     private String name(Block block) {
-        return getRegistryName(block).getPath();
+        return key(block).getPath();
     }
 
     public ResourceLocation blockTexture(Block block) {
@@ -556,18 +562,12 @@ public abstract class BlockStateProvider implements DataProvider {
         }, TrapDoorBlock.POWERED, TrapDoorBlock.WATERLOGGED);
     }
 
-    private void saveBlockState(CachedOutput cache, JsonObject stateJson, Block owner) {
-        ResourceLocation blockName = Preconditions.checkNotNull(getRegistryName(owner));
-        Path mainOutput = generator.getOutputFolder();
-        String pathSuffix = "assets/" + blockName.getNamespace() + "/blockstates/" + blockName.getPath() + ".json";
-        Path outputPath = mainOutput.resolve(pathSuffix);
-        try {
-            DataProvider.saveStable(cache, stateJson, outputPath);
-        } catch (IOException e) {
-            LOGGER.error("Couldn't save blockstate to {}", outputPath, e);
-        }
+    private CompletableFuture<?> saveBlockState(CachedOutput cache, JsonObject stateJson, Block owner) {
+        ResourceLocation blockName = Preconditions.checkNotNull(key(owner));
+        Path outputPath = this.output.getOutputFolder(PackOutput.Target.RESOURCE_PACK)
+                .resolve(blockName.getNamespace()).resolve("blockstates").resolve(blockName.getPath() + ".json");
+        return DataProvider.saveStable(cache, stateJson, outputPath);
     }
-
 
     @Override
     public String getName() {
@@ -608,6 +608,6 @@ public abstract class BlockStateProvider implements DataProvider {
     }
 
     private static ResourceLocation getRegistryName(Block block) {
-        return Registry.BLOCK.getResourceKey(block).map(ResourceKey::location).orElse(null);
+        return BuiltInRegistries.BLOCK.getResourceKey(block).map(ResourceKey::location).orElse(null);
     }
 }

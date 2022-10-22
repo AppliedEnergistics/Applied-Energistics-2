@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.ResourceLocationException;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.guidebook.PageAnchor;
@@ -51,7 +51,7 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
                     continue;
                 }
 
-                if (Registry.ITEM.containsKey(itemId)) {
+                if (BuiltInRegistries.ITEM.containsKey(itemId)) {
                     // add a link to the top of the page
                     itemAnchors.add(Pair.of(
                             itemId, new PageAnchor(page.getId(), null)));

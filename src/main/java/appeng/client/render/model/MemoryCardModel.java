@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -31,7 +30,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -72,7 +71,7 @@ public class MemoryCardModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter,
+    public BakedModel bake(ModelBaker loader, Function<Material, TextureAtlasSprite> textureGetter,
             ModelState rotationContainer, ResourceLocation modelId) {
         TextureAtlasSprite texture = textureGetter.apply(TEXTURE);
 
@@ -81,8 +80,4 @@ public class MemoryCardModel implements BasicUnbakedModel {
         return new MemoryCardBakedModel(baseModel, texture);
     }
 
-    @Override
-    public Stream<Material> getAdditionalTextures() {
-        return Stream.of(TEXTURE);
-    }
 }

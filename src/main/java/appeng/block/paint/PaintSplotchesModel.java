@@ -20,15 +20,12 @@ package appeng.block.paint;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 import java.util.function.Function;
-
-import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -37,15 +34,9 @@ public class PaintSplotchesModel implements UnbakedModel {
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBakery modelBakery, Function<Material, TextureAtlasSprite> textureGetter,
+    public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter,
             ModelState modelState, ResourceLocation resourceLocation) {
         return new PaintSplotchesBakedModel(textureGetter);
-    }
-
-    @Override
-    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> function,
-            Set<Pair<String, String>> set) {
-        return PaintSplotchesBakedModel.getRequiredTextures();
     }
 
     @Override
@@ -53,4 +44,7 @@ public class PaintSplotchesModel implements UnbakedModel {
         return Collections.emptyList();
     }
 
+    @Override
+    public void resolveParents(Function<ResourceLocation, UnbakedModel> function) {
+    }
 }

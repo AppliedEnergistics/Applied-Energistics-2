@@ -385,10 +385,6 @@ public final class AEConfig {
         return COMMON.spawnPressesInMeteorites.get();
     }
 
-    public boolean isGenerateMeteorites() {
-        return COMMON.generateMeteorites.get();
-    }
-
     public boolean isMatterCanonBlockDamageEnabled() {
         return COMMON.matterCannonBlockDamage.get();
     }
@@ -640,8 +636,6 @@ public final class AEConfig {
         public final IntegerOption colorApplicatorBattery;
         public final IntegerOption chargedStaffBattery;
 
-        public final BooleanOption generateMeteorites;
-
         // Meteors
         public final BooleanOption spawnPressesInMeteorites;
 
@@ -735,8 +729,6 @@ public final class AEConfig {
             ConfigSection worldGen = root.subsection("worldGen");
 
             this.spawnPressesInMeteorites = worldGen.addBoolean("spawnPressesInMeteorites", true);
-
-            this.generateMeteorites = worldGen.addBoolean("generateMeteorites", true);
 
             ConfigSection wireless = root.subsection("wireless");
             this.wirelessBaseCost = wireless.addDouble("wirelessBaseCost", 8.0);

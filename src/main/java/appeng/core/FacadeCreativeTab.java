@@ -18,37 +18,31 @@
 
 package appeng.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.Items;
 
+import appeng.api.ids.AECreativeTabIds;
 import appeng.core.definitions.AEItems;
-import appeng.items.parts.FacadeItem;
 
 public final class FacadeCreativeTab {
-
-    private static List<ItemStack> subTypes = null;
 
     private static CreativeModeTab group;
 
     public static void init() {
         Preconditions.checkState(group == null);
-        group = FabricItemGroupBuilder.create(AppEng.makeId("facades")).icon(() -> {
-            calculateSubTypes();
-            if (subTypes.isEmpty()) {
-                return new ItemStack(Items.CAKE);
-            }
-            return subTypes.get(0);
-        }).appendItems(FacadeCreativeTab::fill).build();
+        group = FabricItemGroup.builder(AECreativeTabIds.FACADES)
+                .icon(() -> {
+                    var items = group.getDisplayItems();
+                    return items.stream().findFirst().orElse(Items.CAKE.getDefaultInstance());
+                })
+                .displayItems(FacadeCreativeTab::buildDisplayItems)
+                .build();
     }
 
     public static CreativeModeTab getGroup() {
@@ -58,44 +52,29 @@ public final class FacadeCreativeTab {
         return group;
     }
 
-    private static void fill(List<ItemStack> items) {
-        calculateSubTypes();
-        items.addAll(subTypes);
-    }
+    private static void buildDisplayItems(FeatureFlagSet featureFlagSet, CreativeModeTab.Output output,
+            boolean opItems) {
+        // We need to create our own set since vanilla doesn't allow duplicates, but we cannot guarantee
+        // uniqueness
+        var facades = ItemStackLinkedSet.createTypeAndTagSet();
 
-    private static void calculateSubTypes() {
-        if (subTypes != null) {
-            return;
-        }
-        subTypes = new ArrayList<>(1000);
-
-        FacadeItem itemFacade = AEItems.FACADE.asItem();
-        for (var b : Registry.BLOCK) {
-            try {
-                var item = Item.byBlock(b);
-                if (item == Items.AIR) {
-                    continue;
+        var itemFacade = AEItems.FACADE.asItem();// Collect all variants of this item from creative tabs
+        try {
+            for (var tab : CreativeModeTabs.allTabs()) {
+                if (tab == group) {
+                    continue; // Don't recurse
                 }
-
-                Item blockItem = b.asItem();
-                if (blockItem != Items.AIR && blockItem.getItemCategory() != null) {
-                    final NonNullList<ItemStack> tmpList = NonNullList.create();
-                    b.fillItemCategory(blockItem.getItemCategory(), tmpList);
-                    for (ItemStack l : tmpList) {
-                        final ItemStack facade = itemFacade.createFacadeForItem(l, false);
-                        if (!facade.isEmpty()) {
-                            subTypes.add(facade);
-                        }
+                for (var displayItem : tab.getDisplayItems()) {
+                    var facade = itemFacade.createFacadeForItem(displayItem, false);
+                    if (!facade.isEmpty()) {
+                        facades.add(facade);
                     }
                 }
-            } catch (Throwable t) {
-                // just absorb..
             }
+        } catch (Throwable t) {
+            // just absorb..
         }
-    }
 
-    public static List<ItemStack> getSubTypes() {
-        calculateSubTypes();
-        return subTypes;
+        output.acceptAll(facades);
     }
 }

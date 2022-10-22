@@ -35,7 +35,8 @@ import javax.annotation.concurrent.ThreadSafe;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -93,11 +94,11 @@ public final class P2PTunnelAttunement {
 
     public static TagKey<Item> getAttunementTag(ItemLike tunnel) {
         Objects.requireNonNull(tunnel.asItem(), "tunnel.asItem()");
-        var itemKey = Registry.ITEM.getKey(tunnel.asItem());
-        if (itemKey.equals(Registry.ITEM.getDefaultKey())) {
+        var itemKey = BuiltInRegistries.ITEM.getKey(tunnel.asItem());
+        if (itemKey.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
             throw new IllegalArgumentException("Tunnel item must be registered first.");
         }
-        return TagKey.create(Registry.ITEM_REGISTRY,
+        return TagKey.create(Registries.ITEM,
                 new ResourceLocation(itemKey.getNamespace(), "p2p_attunements/" + itemKey.getPath()));
     }
 

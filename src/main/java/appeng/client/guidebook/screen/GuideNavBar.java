@@ -47,7 +47,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
     }
 
     @Override
@@ -99,7 +99,8 @@ public class GuideNavBar extends AbstractWidget {
         var viewport = new LytRect(0, scrollOffset, width, height);
         var renderContext = new SimpleRenderContext(viewport, poseStack, LightDarkMode.LIGHT_MODE);
 
-        boolean containsMouse = (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY <= y + height);
+        boolean containsMouse = (mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width
+                && mouseY <= getY() + height);
         switch (state) {
             case CLOSED -> {
                 if (containsMouse) {
@@ -136,7 +137,7 @@ public class GuideNavBar extends AbstractWidget {
         }
 
         if (state == State.CLOSED) {
-            renderContext.fillGradientHorizontal(x, y, width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
+            renderContext.fillGradientHorizontal(getX(), getY(), width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
                     SymbolicColor.NAVBAR_BG_BOTTOM.ref());
 
             var p1 = new Vec2(width - 4, height / 2f);
@@ -145,15 +146,15 @@ public class GuideNavBar extends AbstractWidget {
 
             renderContext.fillTriangle(p1, p2, p3, SymbolicColor.NAVBAR_EXPAND_ARROW.ref());
         } else {
-            renderContext.fillGradientVertical(x, y, width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
+            renderContext.fillGradientVertical(getX(), getY(), width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
                     SymbolicColor.NAVBAR_BG_BOTTOM.ref());
         }
 
         if (state != State.CLOSED) {
-            enableScissor(x, y, width, height);
+            enableScissor(getX(), getY(), width, height);
 
             poseStack.pushPose();
-            poseStack.translate(x, y - scrollOffset, 0);
+            poseStack.translate(getX(), getY() - scrollOffset, 0);
 
             // Draw a backdrop on the hovered row before starting batch rendering
             var hoveredRow = pickRow(mouseX, mouseY);
@@ -302,10 +303,10 @@ public class GuideNavBar extends AbstractWidget {
             return null;
         }
 
-        if (screenX >= x && screenX < x + width
-                && screenY >= y && screenY < y + height) {
-            var vpX = (int) Math.round(screenX - x);
-            var vpY = (int) Math.round(screenY + scrollOffset - y);
+        if (screenX >= getX() && screenX < getX() + width
+                && screenY >= getY() && screenY < getY() + height) {
+            var vpX = (int) Math.round(screenX - getX());
+            var vpY = (int) Math.round(screenY + scrollOffset - getY());
             return new Point(vpX, vpY);
         }
 
