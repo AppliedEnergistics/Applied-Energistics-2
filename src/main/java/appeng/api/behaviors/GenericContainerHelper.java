@@ -19,7 +19,7 @@ import appeng.api.stacks.GenericStack;
 import appeng.util.IVariantConversion;
 
 /**
- * Allows custom key types to more easily define and implement custom container item strategies.
+ * Allows generalized extraction from item-based containers such as buckets or tanks.
  */
 @ApiStatus.Experimental
 public final class GenericContainerHelper {
@@ -44,7 +44,7 @@ public final class GenericContainerHelper {
         }
     }
 
-    public static <V extends TransferVariant<?>> Storage<V> getReadOnlyStorage(ItemStack stack,
+    private static <V extends TransferVariant<?>> Storage<V> getReadOnlyStorage(ItemStack stack,
             ItemApiLookup<Storage<V>, ContainerItemContext> apiLookup) {
         if (stack.isEmpty()) {
             return null;

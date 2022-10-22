@@ -394,7 +394,7 @@ public class PortableCellItem extends AEBasePoweredItem
                 if (insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.SIMULATE) == fluidStack
                         .amount()) {
                     var extracted = GenericContainerHelper.extractFromCarried(player, (AEFluidKey) fluidStack.what(),
-                            fluidStack.amount(), stack, FluidStorage.ITEM, IVariantConversion.FLUID);
+                            fluidStack.amount(), other, FluidStorage.ITEM, IVariantConversion.FLUID);
                     if (extracted > 0) {
                         insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
                         FluidSoundHelper.playEmptySound(player, (AEFluidKey) fluidStack.what());
