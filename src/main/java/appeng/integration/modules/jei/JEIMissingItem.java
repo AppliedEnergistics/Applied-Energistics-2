@@ -1,6 +1,8 @@
 package appeng.integration.modules.jei;
 
+import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
+import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.implementations.GuiCraftingTerm;
@@ -17,7 +19,10 @@ import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static mezz.jei.api.recipe.transfer.IRecipeTransferError.Type.USER_FACING;
 
@@ -33,15 +38,16 @@ public class JEIMissingItem implements IRecipeTransferError {
             IItemList<IAEItemStack> ir = g.getRepo().getList();
             boolean found;
             this.errored = false;
-
             recipeLayout.getItemStacks().addTooltipCallback(new CraftableCallBack(container, ir));
 
+            IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
             for (IGuiIngredient<?> i : recipeLayout.getItemStacks().getGuiIngredients().values()) {
                 found = false;
                 if (i.isInput() && i.getAllIngredients().size() > 0) {
-                    for (Object o : i.getAllIngredients()) {
-                        if (o instanceof ItemStack) {
-                            ItemStack stack = (ItemStack) o;
+                    List<?> allIngredients = i.getAllIngredients();
+                    for (Object allIngredient : allIngredients) {
+                        if (allIngredient instanceof ItemStack) {
+                            ItemStack stack = (ItemStack) allIngredient;
                             if (!stack.isEmpty()) {
                                 if (stack.getItem().isDamageable() || Platform.isGTDamageableItem(stack.getItem())) {
                                     Collection<IAEItemStack> fuzzy = ir.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
@@ -58,9 +64,12 @@ public class JEIMissingItem implements IRecipeTransferError {
                                 } else {
                                     IAEItemStack ext = ir.findPrecise(AEItemStack.fromItemStack(stack));
                                     if (ext != null) {
-                                        if (ext.getStackSize() > 0) {
+                                        IAEItemStack usedStack = used.findPrecise(ext);
+                                        if (ext.getStackSize() > 0 && (usedStack == null || ext.getStackSize() > usedStack.getStackSize())) {
+                                            used.add(ext.copy().setStackSize(1));
                                             found = true;
-                                            break;
+                                        } else {
+                                            found = false;
                                         }
                                     }
                                 }
@@ -69,6 +78,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                     }
                     if (!found) {
                         this.errored = true;
+                        break;
                     }
                 }
             }
@@ -91,15 +101,19 @@ public class JEIMissingItem implements IRecipeTransferError {
             IItemList<IAEItemStack> ir = g.getRepo().getList();
             boolean found;
             boolean craftable;
+            int currentSlot = 0;
             this.errored = false;
+            IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
 
             for (IGuiIngredient<?> i : recipeLayout.getItemStacks().getGuiIngredients().values()) {
                 found = false;
                 craftable = false;
+                List<ItemStack> valid = new ArrayList<>();
                 if (i.isInput() && i.getAllIngredients().size() > 0) {
-                    for (Object o : i.getAllIngredients()) {
-                        if (o instanceof ItemStack) {
-                            ItemStack stack = (ItemStack) o;
+                    List<?> allIngredients = i.getAllIngredients();
+                    for (Object allIngredient : allIngredients) {
+                        if (allIngredient instanceof ItemStack) {
+                            ItemStack stack = (ItemStack) allIngredient;
                             if (!stack.isEmpty()) {
                                 if (stack.getItem().isDamageable() || Platform.isGTDamageableItem(stack.getItem())) {
                                     Collection<IAEItemStack> fuzzy = ir.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
@@ -108,6 +122,8 @@ public class JEIMissingItem implements IRecipeTransferError {
                                             if (itemStack.getStackSize() > 0) {
                                                 if (itemStack.fuzzyComparison(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL)) {
                                                     found = true;
+                                                    used.add(itemStack.copy().setStackSize(1));
+                                                    valid.addAll(fuzzy.stream().map(IAEItemStack::createItemStack).collect(Collectors.toList()));
                                                     break;
                                                 }
                                             } else {
@@ -120,29 +136,38 @@ public class JEIMissingItem implements IRecipeTransferError {
                                 } else {
                                     IAEItemStack ext = ir.findPrecise(AEItemStack.fromItemStack(stack));
                                     if (ext != null) {
-                                        if (ext.getStackSize() > 0) {
-                                            break;
-                                        } else {
-                                            if (ext.isCraftable()) {
-                                                craftable = true;
+                                        IAEItemStack usedStack = used.findPrecise(ext);
+                                        if (ext.getStackSize() > 0 && (usedStack == null || usedStack.getStackSize() < ext.getStackSize())) {
+                                            used.add(ext.copy().setStackSize(1));
+                                            if (craftable) {
+                                                valid.clear();
                                             }
+                                            valid.add(ext.copy().setStackSize(1).createItemStack());
+                                            found = true;
+                                            break;
+                                        } else if (ext.isCraftable()) {
+                                            valid.add(ext.copy().setStackSize(1).createItemStack());
+                                            craftable = true;
                                         }
                                     }
                                 }
                             }
                         }
-                        if (!found) {
-                            if (craftable) {
-                                i.drawHighlight(minecraft, new Color(0.0f, 0.0f, 1.0f, 0.4f), recipeX, recipeY);
-                            } else {
-                                i.drawHighlight(minecraft, new Color(1.0f, 0.0f, 0.0f, 0.4f), recipeX, recipeY);
-                            }
-                            this.errored = true;
+                    }
+                    if (!found) {
+                        if (craftable) {
+                            i.drawHighlight(minecraft, new Color(0.0f, 0.0f, 1.0f, 0.4f), recipeX, recipeY);
+                            recipeLayout.getItemStacks().set(currentSlot, valid);
                         } else {
-                            this.errored = false;
+                            i.drawHighlight(minecraft, new Color(1.0f, 0.0f, 0.0f, 0.4f), recipeX, recipeY);
                         }
+                        this.errored = true;
+                    } else {
+                        recipeLayout.getItemStacks().set(currentSlot, valid);
+                        this.errored = false;
                     }
                 }
+                currentSlot++;
             }
             if (!this.errored) {
                 ((RecipeLayout) recipeLayout).getRecipeTransferButton().init(Minecraft.getMinecraft().player.openContainer, Minecraft.getMinecraft().player);
