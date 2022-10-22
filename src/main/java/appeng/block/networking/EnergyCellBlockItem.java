@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block;
+package appeng.block.networking;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.Block;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.block.networking.EnergyCellBlock;
+import appeng.block.AEBaseBlockItem;
 import appeng.core.localization.Tooltips;
 
 public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPowerStorage {

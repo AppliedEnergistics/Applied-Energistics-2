@@ -25,7 +25,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.util.AEColor;
-import appeng.block.EnergyCellBlockItem;
+import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.powered.ColorApplicatorItem;
