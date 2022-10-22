@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -45,6 +46,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.behaviors.GenericContainerHelper;
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEItemIds;
@@ -67,7 +69,6 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.localization.PlayerMessages;
-import appeng.helpers.FluidContainerHelper;
 import appeng.hooks.AEToolItem;
 import appeng.items.contents.CellConfig;
 import appeng.items.contents.PortableCellMenuHost;
@@ -76,6 +77,7 @@ import appeng.me.helpers.PlayerSource;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigInventory;
+import appeng.util.IVariantConversion;
 import appeng.util.InteractionUtil;
 import appeng.util.fluid.FluidSoundHelper;
 
@@ -347,14 +349,14 @@ public class PortableCellItem extends AEBasePoweredItem
             other.shrink(inserted);
 
         } else if (keyType == AEKeyType.fluids()) {
-            GenericStack fluidStack = FluidContainerHelper.getContainedStack(other);
+            GenericStack fluidStack = GenericContainerHelper.getContainedStack(other, FluidStorage.ITEM,
+                    IVariantConversion.FLUID);
             if (fluidStack != null) {
                 if (insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.SIMULATE) == fluidStack
                         .amount()) {
-                    var extracted = FluidContainerHelper.extractFromPlayerInventory(player,
-                            (AEFluidKey) fluidStack.what(),
-                            fluidStack.amount(),
-                            other);
+                    var extracted = GenericContainerHelper.extractFromPlayerInventory(player,
+                            (AEFluidKey) fluidStack.what(), fluidStack.amount(), other, FluidStorage.ITEM,
+                            IVariantConversion.FLUID);
                     if (extracted > 0) {
                         insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
                         FluidSoundHelper.playEmptySound(player, (AEFluidKey) fluidStack.what());
@@ -386,12 +388,13 @@ public class PortableCellItem extends AEBasePoweredItem
             other.shrink(inserted);
 
         } else if (keyType == AEKeyType.fluids()) {
-            GenericStack fluidStack = FluidContainerHelper.getContainedStack(other);
+            GenericStack fluidStack = GenericContainerHelper.getContainedStack(other, FluidStorage.ITEM,
+                    IVariantConversion.FLUID);
             if (fluidStack != null) {
                 if (insert(player, stack, fluidStack.what(), fluidStack.amount(), Actionable.SIMULATE) == fluidStack
                         .amount()) {
-                    var extracted = FluidContainerHelper.extractFromCarried(player, (AEFluidKey) fluidStack.what(),
-                            fluidStack.amount(), stack);
+                    var extracted = GenericContainerHelper.extractFromCarried(player, (AEFluidKey) fluidStack.what(),
+                            fluidStack.amount(), stack, FluidStorage.ITEM, IVariantConversion.FLUID);
                     if (extracted > 0) {
                         insert(player, stack, fluidStack.what(), extracted, Actionable.MODULATE);
                         FluidSoundHelper.playEmptySound(player, (AEFluidKey) fluidStack.what());

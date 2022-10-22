@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.behaviors.GenericContainerHelper;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -45,8 +47,8 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.helpers.FluidContainerHelper;
 import appeng.menu.AutoCraftingMenu;
+import appeng.util.IVariantConversion;
 
 public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     public static final int CRAFTING_GRID_DIMENSION = 3;
@@ -418,7 +420,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return item;
         }
 
-        var containedFluid = FluidContainerHelper.getContainedStack(itemKey.toStack());
+        var containedFluid = GenericContainerHelper.getContainedStack(itemKey.toStack(), FluidStorage.ITEM,
+                IVariantConversion.FLUID);
         // Milk is not natively a fluid container, but it might be made one by other mods
         var isBucket = itemKey.getItem() instanceof BucketItem || itemKey.getItem() instanceof MilkBucketItem;
 

@@ -13,16 +13,17 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategy;
+import appeng.api.behaviors.GenericContainerHelper;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
-import appeng.helpers.FluidContainerHelper;
+import appeng.util.IVariantConversion;
 import appeng.util.fluid.FluidSoundHelper;
 
 public class FluidContainerItemStrategy implements ContainerItemStrategy<AEFluidKey, Storage<FluidVariant>> {
     @Override
     public @Nullable GenericStack getContainedStack(ItemStack stack) {
-        return FluidContainerHelper.getContainedStack(stack);
+        return GenericContainerHelper.getContainedStack(stack, FluidStorage.ITEM, IVariantConversion.FLUID);
     }
 
     @Override
