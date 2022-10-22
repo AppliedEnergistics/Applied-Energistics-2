@@ -32,10 +32,10 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
+import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.client.render.FacingToRotation;
 import appeng.core.AELog;
 import appeng.core.AppEng;
-import appeng.tile.grindstone.CrankBlockEntity;
 
 @Environment(EnvType.CLIENT)
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {

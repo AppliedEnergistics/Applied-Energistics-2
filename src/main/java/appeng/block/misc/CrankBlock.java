@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.grindstone;
+package appeng.block.misc;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +43,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseEntityBlock;
-import appeng.tile.grindstone.CrankBlockEntity;
+import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.util.FakePlayer;
 
 public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> implements IOrientableBlock {

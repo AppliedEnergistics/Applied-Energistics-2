@@ -62,7 +62,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.upgrades.Upgrades;
-import appeng.block.EnergyCellBlockItem;
+import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
