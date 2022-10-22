@@ -19,7 +19,8 @@
 package appeng.client.render.effects;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+
+import org.joml.Vector3f;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -88,7 +89,7 @@ public class CraftingFx extends TextureSheetParticle {
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
-            vector3f.transform(renderInfo.rotation());
+            vector3f.rotate(renderInfo.rotation());
             vector3f.mul(scale);
             vector3f.add(offX, offY, offZ);
         }

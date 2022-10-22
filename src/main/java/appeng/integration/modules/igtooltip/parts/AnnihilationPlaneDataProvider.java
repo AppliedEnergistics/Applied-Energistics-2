@@ -1,6 +1,6 @@
 package appeng.integration.modules.igtooltip.parts;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ public class AnnihilationPlaneDataProvider
 
             var enchantments = serverData.getCompound(TAG_ENCHANTMENTS);
             for (var enchantmentId : enchantments.getAllKeys()) {
-                var enchantment = Registry.ENCHANTMENT.get(new ResourceLocation(enchantmentId));
+                var enchantment = BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(enchantmentId));
                 var level = enchantments.getInt(enchantmentId);
                 if (enchantment != null) {
                     tooltip.addLine(enchantment.getFullname(level));
@@ -40,7 +40,7 @@ public class AnnihilationPlaneDataProvider
         if (enchantments != null && !enchantments.isEmpty()) {
             var enchantmentsTag = new CompoundTag();
             for (var entry : enchantments.entrySet()) {
-                var id = Registry.ENCHANTMENT.getKey(entry.getKey());
+                var id = BuiltInRegistries.ENCHANTMENT.getKey(entry.getKey());
                 if (id != null) {
                     enchantmentsTag.putInt(id.toString(), entry.getValue());
                 }

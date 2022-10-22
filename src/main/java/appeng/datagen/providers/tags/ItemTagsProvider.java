@@ -18,14 +18,18 @@
 
 package appeng.datagen.providers.tags;
 
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import java.util.concurrent.CompletableFuture;
+
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AETags;
@@ -37,12 +41,13 @@ import appeng.datagen.providers.IAE2DataProvider;
 
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 
-    public ItemTagsProvider(DataGenerator dataGenerator, BlockTagsProvider blockTagsProvider) {
-        super(dataGenerator, blockTagsProvider);
+    public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
+            TagsProvider<Block> blockTagsProvider) {
+        super(packOutput, registries, blockTagsProvider);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         copyBlockTags();
 
         // Provide empty blacklist tags
@@ -297,7 +302,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     }
 
     private void mirrorBlockTag(ResourceLocation tagName) {
-        copy(TagKey.create(Registry.BLOCK_REGISTRY, tagName), TagKey.create(Registry.ITEM_REGISTRY, tagName));
+        copy(TagKey.create(Registries.BLOCK, tagName), TagKey.create(Registries.ITEM, tagName));
     }
 
     private void addP2pAttunementTags() {

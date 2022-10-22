@@ -18,12 +18,7 @@
 
 package appeng.core;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -42,11 +37,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -72,8 +65,6 @@ import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.client.render.overlay.OverlayManager;
-import appeng.client.render.tesr.InscriberTESR;
-import appeng.client.render.tesr.SkyChestTESR;
 import appeng.core.sync.network.ClientNetworkHandler;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;
@@ -120,7 +111,6 @@ public class AppEngClient extends AppEngBase {
 
     public AppEngClient() {
         this.registerParticleFactories();
-        this.registerTextures();
         this.modelRegistryEvent();
         this.registerBlockColors();
         this.registerItemColors();
@@ -194,23 +184,6 @@ public class AppEngClient extends AppEngBase {
 
     public void registerParticleFactories() {
         InitParticleFactories.init();
-    }
-
-    public void registerTextures() {
-        Stream<Collection<Material>> sprites = Stream.of(SkyChestTESR.SPRITES, InscriberTESR.SPRITES);
-
-        // Group every needed sprite by atlas, since every atlas has their own event
-        Map<ResourceLocation, List<Material>> groupedByAtlas = sprites.flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(Material::atlasLocation));
-
-        // Register to the stitch event for each atlas
-        for (Map.Entry<ResourceLocation, List<Material>> entry : groupedByAtlas.entrySet()) {
-            ClientSpriteRegistryCallback.event(entry.getKey()).register((spriteAtlasTexture, registry) -> {
-                for (Material spriteIdentifier : entry.getValue()) {
-                    registry.register(spriteIdentifier.texture());
-                }
-            });
-        }
     }
 
     public void registerBlockColors() {

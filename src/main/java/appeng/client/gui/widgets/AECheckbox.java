@@ -66,7 +66,7 @@ public class AECheckbox extends AbstractButton {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         narrationElementOutput.add(NarratedElementType.TITLE, this.createNarrationMessage());
         if (this.active) {
             if (this.isFocused()) {
@@ -103,12 +103,12 @@ public class AECheckbox extends AbstractButton {
         var textColor = isActive() ? PaletteColor.DEFAULT_TEXT_COLOR : PaletteColor.MUTED_TEXT_COLOR;
         var opacity = isActive() ? 1 : 0.5f;
 
-        icon.dest(x, y).opacity(opacity).blit(poseStack, getBlitOffset());
+        icon.dest(getX(), getY()).opacity(opacity).blit(poseStack, getBlitOffset());
         var lines = font.split(getMessage(), width - SIZE - 2);
         // try to vertically center if it's just one line
-        var lineY = y + (lines.size() <= 1 ? 4 : 1);
+        var lineY = getY() + (lines.size() <= 1 ? 4 : 1);
         for (var line : lines) {
-            font.draw(poseStack, line, x + SIZE + 2, lineY, style.getColor(textColor).toARGB());
+            font.draw(poseStack, line, getX() + SIZE + 2, lineY, style.getColor(textColor).toARGB());
             lineY += font.lineHeight;
         }
     }

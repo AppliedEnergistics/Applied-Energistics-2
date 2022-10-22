@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -37,7 +39,7 @@ class CraftingPatternItemTest {
 
     private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
 
-    private final ShapedRecipe TEST_RECIPE = buildRecipe(ShapedRecipeBuilder.shaped(Items.STICK)
+    private final ShapedRecipe TEST_RECIPE = buildRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK)
             .pattern("xy")
             .define('x', Items.TORCH)
             .define('y', Items.DIAMOND));
@@ -109,6 +111,11 @@ class CraftingPatternItemTest {
         @Override
         public RecipeType<?> getType() {
             return RecipeType.CRAFTING;
+        }
+
+        @Override
+        public CraftingBookCategory category() {
+            return CraftingBookCategory.MISC;
         }
 
         @Override

@@ -25,7 +25,7 @@ import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -143,9 +143,12 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
             COMMON_BLOCKS.add(Blocks.WATER);
             COMMON_BLOCKS.add(Blocks.LAVA);
 
-            COMMON_BLOCKS.addAll(Registry.BLOCK.getOrCreateTag(BlockTags.LEAVES).stream().map(Holder::value).toList());
-            COMMON_BLOCKS.addAll(Registry.BLOCK.getOrCreateTag(BlockTags.SAND).stream().map(Holder::value).toList());
-            COMMON_BLOCKS.addAll(Registry.BLOCK.getOrCreateTag(BlockTags.LOGS).stream().map(Holder::value).toList());
+            COMMON_BLOCKS.addAll(
+                    BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.LEAVES).stream().map(Holder::value).toList());
+            COMMON_BLOCKS.addAll(
+                    BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.SAND).stream().map(Holder::value).toList());
+            COMMON_BLOCKS.addAll(
+                    BuiltInRegistries.BLOCK.getOrCreateTag(BlockTags.LOGS).stream().map(Holder::value).toList());
         }
 
         return COMMON_BLOCKS;

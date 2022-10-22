@@ -27,7 +27,6 @@ import javax.annotation.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -62,7 +61,7 @@ public abstract class EncodedPatternItem extends AEBaseItem implements AEToolIte
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> nonNullList) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         // Don't show in creative mode, since it's not useful without NBT
     }
 

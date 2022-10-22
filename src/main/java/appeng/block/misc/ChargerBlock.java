@@ -20,7 +20,7 @@ package appeng.block.misc;
 
 import javax.annotation.Nullable;
 
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -106,10 +106,10 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                 // Account for the rotation while doing this.
                 var center = new Vector3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
                 var origin = new Vector3f(xOff, -0.3f, zOff);
-                origin.transform(rotation.getRot());
+                origin.rotate(rotation.getRot());
                 origin.add(center);
                 var target = new Vector3f(xOff, 0.3f, zOff);
-                target.transform(rotation.getRot());
+                target.rotate(rotation.getRot());
                 target.add(center);
 
                 // Split the arcs between arc coming from the top/bottom of the charger since it's symmetrical

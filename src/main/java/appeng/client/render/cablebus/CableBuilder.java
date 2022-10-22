@@ -18,11 +18,8 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -604,27 +601,6 @@ class CableBuilder {
             case UP -> cubeBuilder.addCube(5, 12, 5, 11, 16, 11);
             case WEST -> cubeBuilder.addCube(0, 5, 5, 4, 11, 11);
         }
-    }
-
-    // Get all textures needed for building the actual cable quads
-    public static List<Material> getTextures() {
-        List<Material> locations = new ArrayList<>();
-
-        for (CableCoreType coreType : CableCoreType.values()) {
-            for (AEColor color : AEColor.values()) {
-                locations.add(coreType.getTexture(color));
-            }
-        }
-
-        for (AECableType cableType : AECableType.VALIDCABLES) {
-            for (AEColor color : AEColor.values()) {
-                locations.add(getConnectionTexture(cableType, color));
-            }
-        }
-
-        Collections.addAll(locations, SmartCableTextures.SMART_CHANNELS_TEXTURES);
-
-        return locations;
     }
 
     public TextureAtlasSprite getCoreTexture(CableCoreType coreType, AEColor color) {

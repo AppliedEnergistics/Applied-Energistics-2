@@ -103,11 +103,11 @@ public class GuideScreen extends Screen {
         GuideNavBar navbar = new GuideNavBar(this);
         addRenderableWidget(navbar);
 
-        backButton = new Button(docRect.right() - 40, docRect.y() - 15, 20, 15, Component.literal("<"),
-                button -> navigateBack());
+        backButton = Button.builder(Component.literal("<"),
+                button -> navigateBack()).bounds(docRect.right() - 40, docRect.y() - 15, 20, 15).build();
         addRenderableWidget(backButton);
-        forwardButton = new Button(docRect.right() - 20, docRect.y() - 15, 20, 15, Component.literal(">"),
-                button -> navigateForward());
+        forwardButton = Button.builder(Component.literal(">"),
+                button -> navigateForward()).bounds(docRect.right() - 20, docRect.y() - 15, 20, 15).build();
         addRenderableWidget(forwardButton);
         updateNavigationButtons();
     }

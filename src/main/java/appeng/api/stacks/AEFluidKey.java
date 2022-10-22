@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -98,7 +98,7 @@ public final class AEFluidKey extends AEKey {
 
     public static AEFluidKey fromTag(CompoundTag tag) {
         try {
-            var fluid = Registry.FLUID.getOptional(new ResourceLocation(tag.getString("id")))
+            var fluid = BuiltInRegistries.FLUID.getOptional(new ResourceLocation(tag.getString("id")))
                     .orElseThrow(() -> new IllegalArgumentException("Unknown fluid id."));
             var extraTag = tag.contains("tag") ? tag.getCompound("tag") : null;
             return of(fluid, extraTag);
@@ -111,7 +111,7 @@ public final class AEFluidKey extends AEKey {
     @Override
     public CompoundTag toTag() {
         CompoundTag result = new CompoundTag();
-        result.putString("id", Registry.FLUID.getKey(fluid).toString());
+        result.putString("id", BuiltInRegistries.FLUID.getKey(fluid).toString());
 
         if (tag != null) {
             result.put("tag", tag.copy());
@@ -127,7 +127,7 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public ResourceLocation getId() {
-        return Registry.FLUID.getKey(fluid);
+        return BuiltInRegistries.FLUID.getKey(fluid);
     }
 
     @Override
@@ -169,12 +169,12 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public void writeToPacket(FriendlyByteBuf data) {
-        data.writeVarInt(Registry.FLUID.getId(fluid));
+        data.writeVarInt(BuiltInRegistries.FLUID.getId(fluid));
         data.writeNbt(tag);
     }
 
     public static AEFluidKey fromPacket(FriendlyByteBuf data) {
-        var fluid = Registry.FLUID.byId(data.readVarInt());
+        var fluid = BuiltInRegistries.FLUID.byId(data.readVarInt());
         var tag = data.readNbt();
         return new AEFluidKey(fluid, tag);
     }
@@ -185,8 +185,8 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public String toString() {
-        var id = Registry.FLUID.getKey(fluid);
-        String idString = id != Registry.FLUID.getDefaultKey() ? id.toString()
+        var id = BuiltInRegistries.FLUID.getKey(fluid);
+        String idString = id != BuiltInRegistries.FLUID.getDefaultKey() ? id.toString()
                 : fluid.getClass().getName() + "(unregistered)";
         return tag == null ? idString : idString + " (+tag)";
     }

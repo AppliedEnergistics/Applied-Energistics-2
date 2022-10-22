@@ -8,9 +8,7 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MessageSignature;
-import net.minecraft.network.chat.OutgoingPlayerChatMessage;
-import net.minecraft.network.chat.SignedMessageHeader;
+import net.minecraft.network.chat.OutgoingChatMessage;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +21,7 @@ public class FakePlayer extends ServerPlayer {
             "[AE2]");
 
     private FakePlayer(ServerLevel level) {
-        super(level.getServer(), level, PROFILE, null);
+        super(level.getServer(), level, PROFILE);
     }
 
     /**
@@ -59,10 +57,6 @@ public class FakePlayer extends ServerPlayer {
     }
 
     @Override
-    public void sendChatMessage(OutgoingPlayerChatMessage outgoingPlayerChatMessage, boolean bl, ChatType.Bound bound) {
-    }
-
-    @Override
-    public void sendChatHeader(SignedMessageHeader signedMessageHeader, MessageSignature messageSignature, byte[] bs) {
+    public void sendChatMessage(OutgoingChatMessage outgoingChatMessage, boolean bl, ChatType.Bound bound) {
     }
 }

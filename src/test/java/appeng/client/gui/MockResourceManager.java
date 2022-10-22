@@ -18,20 +18,18 @@
 
 package appeng.client.gui;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Optional;
+import org.mockito.Mockito;
 
-import com.google.common.collect.ImmutableSet;
-
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.VanillaPackResourcesBuilder;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.util.Unit;
 
 import appeng.core.AppEng;
 
@@ -43,44 +41,30 @@ public final class MockResourceManager {
     }
 
     public static ReloadableResourceManager create() {
-        ReloadableResourceManager resourceManager = mock(ReloadableResourceManager.class, withSettings().lenient());
 
-        // Delegate default methods to real impls
+        var testResourceBasePath = AppEng.class.getResource("/fabric.mod.json");
+        if (testResourceBasePath == null) {
+            throw new IllegalStateException("Couldn't find root of assets");
+        }
+
+        Path assetRootPath;
         try {
-            when(resourceManager.openAsReader(any())).thenCallRealMethod();
-            when(resourceManager.open(any())).thenCallRealMethod();
-            when(resourceManager.getResourceOrThrow(any())).thenCallRealMethod();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            assetRootPath = Paths.get(testResourceBasePath.toURI()).getParent();
+        } catch (Exception e) {
+            throw new IllegalStateException(
+                    "Failed to convert asset root to a path on disk. (" + testResourceBasePath + ")");
         }
 
-        when(resourceManager.getResource(any())).thenAnswer(invoc -> {
-            net.minecraft.resources.ResourceLocation loc = invoc.getArgument(0);
-            return getResource(loc);
-        });
-        when(resourceManager.getResourceStack(any())).thenAnswer(invoc -> {
-            ResourceLocation loc = invoc.getArgument(0);
-            return getResource(loc)
-                    .map(Collections::singletonList)
-                    .orElse(Collections.emptyList());
-        });
+        var packResources = new PathPackResources("ae2", assetRootPath, true);
 
-        when(resourceManager.getNamespaces()).thenReturn(
-                ImmutableSet.of("minecraft", AppEng.MOD_ID));
-
-        return resourceManager;
-    }
-
-    private static Optional<Resource> getResource(net.minecraft.resources.ResourceLocation loc) {
-        var resourceLocation = "/assets/" + loc.getNamespace() + "/" + loc.getPath();
-        if (MockResourceManager.class.getResource(resourceLocation) == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(new Resource(
-                "ae2",
-                () -> {
-                    return MockResourceManager.class.getResourceAsStream(resourceLocation);
-                }));
+        ReloadableResourceManager resourceManager = new ReloadableResourceManager(PackType.CLIENT_RESOURCES);
+        resourceManager.createReload(Runnable::run, Runnable::run, CompletableFuture.supplyAsync(() -> Unit.INSTANCE),
+                List.of(
+                        new VanillaPackResourcesBuilder()
+                                .exposeNamespace("minecraft")
+                                .pushJarResources()
+                                .build(),
+                        packResources));
+        return Mockito.spy(resourceManager);
     }
 }

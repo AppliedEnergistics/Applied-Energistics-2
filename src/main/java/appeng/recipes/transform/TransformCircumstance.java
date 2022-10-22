@@ -9,7 +9,8 @@ import com.google.gson.JsonParseException;
 import io.netty.handler.codec.DecoderException;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -29,7 +30,7 @@ public class TransformCircumstance {
         if (type.equals("explosion"))
             return explosion();
         else if (type.equals("fluid")) {
-            return fluid(TagKey.create(Registry.FLUID_REGISTRY, new ResourceLocation(obj.get("tag").getAsString())));
+            return fluid(TagKey.create(Registries.FLUID, new ResourceLocation(obj.get("tag").getAsString())));
         } else
             throw new JsonParseException("Invalid transform recipe type " + type);
     }
@@ -39,7 +40,7 @@ public class TransformCircumstance {
         if (type.equals("explosion"))
             return explosion();
         else if (type.equals("fluid")) {
-            return fluid(TagKey.create(Registry.FLUID_REGISTRY, buf.readResourceLocation()));
+            return fluid(TagKey.create(Registries.FLUID, buf.readResourceLocation()));
         } else
             throw new DecoderException("Invalid transform recipe type " + type);
     }
@@ -140,7 +141,8 @@ public class TransformCircumstance {
 
         @Override
         public List<Fluid> getFluidsForRendering() {
-            return Registry.FLUID.getTag(fluidTag).map(t -> t.stream().map(Holder::value).toList()).orElse(List.of());
+            return BuiltInRegistries.FLUID.getTag(fluidTag).map(t -> t.stream().map(Holder::value).toList())
+                    .orElse(List.of());
         }
     }
 }

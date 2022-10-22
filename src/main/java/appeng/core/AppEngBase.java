@@ -31,7 +31,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -44,7 +44,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -75,8 +74,6 @@ import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitP2PAttunements;
 import appeng.init.internal.InitStorageCells;
 import appeng.init.internal.InitUpgrades;
-import appeng.init.worldgen.InitBiomes;
-import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
@@ -116,7 +113,7 @@ public abstract class AppEngBase implements AppEng {
 
         InitKeyTypes.init();
 
-        CreativeTab.init();
+        MainCreativeTab.init();
 
         // Initialize items in order
         AEItems.init();
@@ -131,15 +128,14 @@ public abstract class AppEngBase implements AppEng {
         FacadeCreativeTab.init(); // This call has a side-effect (adding it to the creative screen)
 
         registerDimension();
-        registerBiomes(BuiltinRegistries.BIOME);
-        registerBlocks(Registry.BLOCK);
-        registerItems(Registry.ITEM);
-        registerEntities(Registry.ENTITY_TYPE);
-        registerParticleTypes(Registry.PARTICLE_TYPE);
-        registerBlockEntities(Registry.BLOCK_ENTITY_TYPE);
-        registerMenuTypes(Registry.MENU);
-        registerRecipeSerializers(Registry.RECIPE_SERIALIZER);
-        registerStructures(Registry.STRUCTURE_TYPES);
+        registerBlocks(BuiltInRegistries.BLOCK);
+        registerItems(BuiltInRegistries.ITEM);
+        registerEntities(BuiltInRegistries.ENTITY_TYPE);
+        registerParticleTypes(BuiltInRegistries.PARTICLE_TYPE);
+        registerBlockEntities(BuiltInRegistries.BLOCK_ENTITY_TYPE);
+        registerMenuTypes(BuiltInRegistries.MENU);
+        registerRecipeSerializers(BuiltInRegistries.RECIPE_SERIALIZER);
+        registerStructures(BuiltInRegistries.STRUCTURE_TYPE);
 
         postRegistrationInitialization();
 
@@ -175,10 +171,6 @@ public abstract class AppEngBase implements AppEng {
         new ServerNetworkHandler();
     }
 
-    public void registerBiomes(Registry<Biome> registry) {
-        InitBiomes.init(registry);
-    }
-
     public void registerBlocks(Registry<Block> registry) {
         InitBlocks.init(registry);
     }
@@ -207,10 +199,6 @@ public abstract class AppEngBase implements AppEng {
         InitParticleTypes.init(registry);
     }
 
-    public void registerDimensionType() {
-        InitDimensionTypes.init();
-    }
-
     public void registerStructures(Registry<StructureType<?>> registry) {
         InitStructures.init();
     }
@@ -221,8 +209,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerDimension() {
-        InitDimensionTypes.init();
-        Registry.register(Registry.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
+        Registry.register(BuiltInRegistries.CHUNK_GENERATOR, SpatialStorageDimensionIds.CHUNK_GENERATOR_ID,
                 SpatialStorageChunkGenerator.CODEC);
     }
 

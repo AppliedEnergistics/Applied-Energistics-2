@@ -25,10 +25,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
+
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
 public class SpatialSkyRender {
@@ -47,9 +49,11 @@ public class SpatialSkyRender {
         return INSTANCE;
     }
 
-    private static final Quaternion[] SKYBOX_SIDE_ROTATIONS = { Quaternion.ONE, new Quaternion(90.0F, 0.0F, 0.0F, true),
-            new Quaternion(-90.0F, 0.0F, 0.0F, true), new Quaternion(180.0F, 0.0F, 0.0F, true),
-            new Quaternion(0.0F, 0.0F, 90.0F, true), new Quaternion(0.0F, 0.0F, -90.0F, true), };
+    private static final Quaternionf[] SKYBOX_SIDE_ROTATIONS = { new Quaternionf(),
+            new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90.0F),
+            new Quaternionf().rotationX(Mth.DEG_TO_RAD * -90.0F), new Quaternionf().rotationX(Mth.DEG_TO_RAD * 180.0F),
+            new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 90.0F),
+            new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
     public void render(PoseStack poseStack, Matrix4f projectionMatrix) {
         final long now = System.currentTimeMillis();
@@ -66,7 +70,7 @@ public class SpatialSkyRender {
 
         // This renders a skybox around the player at a far, fixed distance from them.
         // The skybox is pitch black and untextured
-        for (Quaternion rotation : SKYBOX_SIDE_ROTATIONS) {
+        for (Quaternionf rotation : SKYBOX_SIDE_ROTATIONS) {
             poseStack.pushPose();
             poseStack.mulPose(rotation);
 

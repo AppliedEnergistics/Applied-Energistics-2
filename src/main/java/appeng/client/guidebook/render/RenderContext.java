@@ -2,7 +2,9 @@ package appeng.client.guidebook.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Vector3f;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -63,7 +65,8 @@ public interface RenderContext {
     }
 
     default void fillTexturedRect(LytRect rect, TextureAtlasSprite sprite, ColorRef color) {
-        fillTexturedRect(rect, sprite.atlas(), color, color, color, color,
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
+        fillTexturedRect(rect, texture, color, color, color, color,
                 sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
     }
 
@@ -120,9 +123,9 @@ public interface RenderContext {
 
         var matrix = poseStack().last().pose();
         if (style.fontScale() != 1) {
-            matrix = matrix.copy();
+            matrix = new Matrix4f(matrix);
 
-            matrix.multiplyWithTranslation(style.fontScale(), style.fontScale(), 1);
+            matrix.translate(style.fontScale(), style.fontScale(), 1);
             matrix.translate(new Vector3f(x, y, 0));
             x = 0;
             y = 0;

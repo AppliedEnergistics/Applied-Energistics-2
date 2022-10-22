@@ -309,8 +309,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public void init() {
-        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(true);
-
         var availableHeight = height - 2 * AEConfig.instance().getTerminalMargin();
         this.rows = Math.max(MIN_ROWS, config.getTerminalStyle().getRows(style.getPossibleRows(availableHeight)));
 
@@ -422,8 +420,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (this.craftingStatusBtn != null && menu.activeCraftingJobs != -1) {
             // The stack size renderer expects a 16x16 slot, while the button is normally
             // bigger
-            int x = this.craftingStatusBtn.x + (this.craftingStatusBtn.getWidth() - 16) / 2;
-            int y = this.craftingStatusBtn.y + (this.craftingStatusBtn.getHeight() - 16) / 2;
+            int x = this.craftingStatusBtn.getX() + (this.craftingStatusBtn.getWidth() - 16) / 2;
+            int y = this.craftingStatusBtn.getY() + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
             StackSizeRenderer.renderSizeLabel(font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
@@ -501,7 +499,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public void removed() {
         super.removed();
-        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(false);
         storeState();
 
         // Mark any keys as pruneable that were pinned due to crafting, but are no longer pending

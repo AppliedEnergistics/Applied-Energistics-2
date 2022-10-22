@@ -25,7 +25,7 @@ import java.util.function.Function;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 
@@ -42,11 +42,11 @@ public class FacadeItemModel implements BasicUnbakedModel {
     private static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "item/facade_base");
 
     @Override
-    public BakedModel bake(ModelBakery bakery,
+    public BakedModel bake(ModelBaker baker,
             Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
             ResourceLocation modelLocation) {
-        BakedModel bakedBaseModel = bakery.bake(MODEL_BASE, modelTransform);
-        FacadeBuilder facadeBuilder = new FacadeBuilder(bakery, null);
+        BakedModel bakedBaseModel = baker.bake(MODEL_BASE, modelTransform);
+        FacadeBuilder facadeBuilder = new FacadeBuilder(baker, null);
 
         return new FacadeBakedItemModel(bakedBaseModel, facadeBuilder);
     }

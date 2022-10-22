@@ -26,6 +26,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -101,7 +102,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
 
         result.setCount(4);
 
-        return new DefaultShapedDisplay(new ShapedRecipe(id, "", 3, 3, ingredients, result));
+        return new DefaultShapedDisplay(new ShapedRecipe(id, "", CraftingBookCategory.MISC, 3, 3, ingredients, result));
     }
 
 }

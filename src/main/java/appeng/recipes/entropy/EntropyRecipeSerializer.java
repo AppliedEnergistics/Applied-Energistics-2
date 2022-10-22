@@ -31,6 +31,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -63,7 +64,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject inputBlockObject = GsonHelper.getAsJsonObject(inputJson, "block", new JsonObject());
         String inputBlockId = GsonHelper.getAsString(inputBlockObject, "id", null);
         if (inputBlockId != null) {
-            Block block = getRequiredEntry(Registry.BLOCK, inputBlockId);
+            Block block = getRequiredEntry(BuiltInRegistries.BLOCK, inputBlockId);
             builder.setInputBlock(block);
             parseStateMatchers(block.getStateDefinition(), inputBlockObject, builder::addBlockStateMatcher);
         }
@@ -72,7 +73,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject inputFluidObject = GsonHelper.getAsJsonObject(inputJson, "fluid", new JsonObject());
         String inputFluidId = GsonHelper.getAsString(inputFluidObject, "id", null);
         if (inputFluidId != null) {
-            Fluid fluid = getRequiredEntry(Registry.FLUID, inputFluidId);
+            Fluid fluid = getRequiredEntry(BuiltInRegistries.FLUID, inputFluidId);
             builder.setInputFluid(fluid);
             parseStateMatchers(fluid.getStateDefinition(), inputFluidObject, builder::addFluidStateMatcher);
         }
@@ -84,7 +85,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject outputBlockObject = GsonHelper.getAsJsonObject(outputJson, "block", new JsonObject());
         String outputBlockId = GsonHelper.getAsString(outputBlockObject, "id", null);
         if (outputBlockId != null) {
-            Block block = getRequiredEntry(Registry.BLOCK, outputBlockId);
+            Block block = getRequiredEntry(BuiltInRegistries.BLOCK, outputBlockId);
             builder.setOutputBlock(block);
 
             boolean outputBlockKeep = GsonHelper.getAsBoolean(outputBlockObject, "keep", false);
@@ -97,7 +98,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         JsonObject outputFluidObject = GsonHelper.getAsJsonObject(outputJson, "fluid", new JsonObject());
         String outputFluidId = GsonHelper.getAsString(outputFluidObject, "id", null);
         if (outputFluidId != null) {
-            Fluid fluid = getRequiredEntry(Registry.FLUID, outputFluidId);
+            Fluid fluid = getRequiredEntry(BuiltInRegistries.FLUID, outputFluidId);
             builder.setOutputFluid(fluid);
 
             boolean outputFluidKeep = GsonHelper.getAsBoolean(outputFluidObject, "keep", false);
@@ -114,7 +115,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
             for (JsonElement jsonElement : dropList) {
                 JsonObject object = jsonElement.getAsJsonObject();
                 String itemid = GsonHelper.getAsString(object, "item");
-                Item item = Registry.ITEM.get(new ResourceLocation(itemid));
+                Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(itemid));
                 int count = GsonHelper.getAsInt(object, "count", 1);
                 drops.add(new ItemStack(item, count));
             }
@@ -142,7 +143,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         builder.setMode(buffer.readEnum(EntropyMode.class));
 
         if (buffer.readBoolean()) {
-            Block inputBlock = Registry.BLOCK.byId(buffer.readVarInt());
+            Block inputBlock = BuiltInRegistries.BLOCK.byId(buffer.readVarInt());
             builder.setInputBlock(inputBlock);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
@@ -151,7 +152,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         }
 
         if (buffer.readBoolean()) {
-            Fluid fluid = Registry.FLUID.byId(buffer.readVarInt());
+            Fluid fluid = BuiltInRegistries.FLUID.byId(buffer.readVarInt());
             builder.setInputFluid(fluid);
             int matcherSize = buffer.readInt();
             for (int i = 0; i < matcherSize; i++) {
@@ -160,7 +161,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         }
 
         if (buffer.readBoolean()) {
-            Block block = Registry.BLOCK.byId(buffer.readVarInt());
+            Block block = BuiltInRegistries.BLOCK.byId(buffer.readVarInt());
             builder.setOutputBlock(block);
             builder.setOutputBlockKeep(buffer.readBoolean());
             int appliersSize = buffer.readInt();
@@ -170,7 +171,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         }
 
         if (buffer.readBoolean()) {
-            Fluid fluid = Registry.FLUID.byId(buffer.readVarInt());
+            Fluid fluid = BuiltInRegistries.FLUID.byId(buffer.readVarInt());
             ;
             builder.setOutputFluid(fluid);
             builder.setOutputFluidKeep(buffer.readBoolean());
@@ -199,7 +200,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getInputBlock() != null);
         if (recipe.getInputBlock() != null) {
-            buffer.writeVarInt(Registry.BLOCK.getId(recipe.getInputBlock()));
+            buffer.writeVarInt(BuiltInRegistries.BLOCK.getId(recipe.getInputBlock()));
 
             List<StateMatcher> inputBlockMatchers = recipe.getInputBlockMatchers();
             buffer.writeInt(inputBlockMatchers.size());
@@ -210,7 +211,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getInputFluid() != null);
         if (recipe.getInputFluid() != null) {
-            buffer.writeVarInt(Registry.FLUID.getId(recipe.getInputFluid()));
+            buffer.writeVarInt(BuiltInRegistries.FLUID.getId(recipe.getInputFluid()));
 
             List<StateMatcher> inputFluidMatchers = recipe.getInputFluidMatchers();
             buffer.writeInt(inputFluidMatchers.size());
@@ -221,7 +222,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getOutputBlock() != null);
         if (recipe.getOutputBlock() != null) {
-            buffer.writeVarInt(Registry.BLOCK.getId(recipe.getOutputBlock()));
+            buffer.writeVarInt(BuiltInRegistries.BLOCK.getId(recipe.getOutputBlock()));
             buffer.writeBoolean(recipe.getOutputBlockKeep());
 
             List<StateApplier<?>> appliers = recipe.getOutputBlockStateAppliers();
@@ -233,7 +234,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         buffer.writeBoolean(recipe.getOutputFluid() != null);
         if (recipe.getOutputFluid() != null) {
-            buffer.writeVarInt(Registry.FLUID.getId(recipe.getOutputFluid()));
+            buffer.writeVarInt(BuiltInRegistries.FLUID.getId(recipe.getOutputFluid()));
             buffer.writeBoolean(recipe.getOutputFluidKeep());
 
             List<StateApplier<?>> appliers = recipe.getOutputFluidStateAppliers();
@@ -304,14 +305,14 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         var input = new JsonObject();
         if (recipe.getInputBlock() != null) {
             var jsonBlock = new JsonObject();
-            jsonBlock.addProperty("id", Registry.BLOCK.getKey(recipe.getInputBlock()).toString());
+            jsonBlock.addProperty("id", BuiltInRegistries.BLOCK.getKey(recipe.getInputBlock()).toString());
             serializeStateMatchers(recipe.getInputBlockMatchers(), jsonBlock);
             input.add("block", jsonBlock);
         }
 
         if (recipe.getInputFluid() != null) {
             var jsonFluid = new JsonObject();
-            jsonFluid.addProperty("id", Registry.FLUID.getKey(recipe.getInputFluid()).toString());
+            jsonFluid.addProperty("id", BuiltInRegistries.FLUID.getKey(recipe.getInputFluid()).toString());
             serializeStateMatchers(recipe.getInputFluidMatchers(), jsonFluid);
             input.add("fluid", jsonFluid);
         }
@@ -322,7 +323,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         var output = new JsonObject();
         if (recipe.getOutputBlock() != null) {
             var jsonBlock = new JsonObject();
-            jsonBlock.addProperty("id", Registry.BLOCK.getKey(recipe.getOutputBlock()).toString());
+            jsonBlock.addProperty("id", BuiltInRegistries.BLOCK.getKey(recipe.getOutputBlock()).toString());
             if (recipe.getOutputBlockKeep()) {
                 jsonBlock.addProperty("keep", true);
             }
@@ -332,7 +333,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
         if (recipe.getOutputFluid() != null) {
             var jsonFluid = new JsonObject();
-            jsonFluid.addProperty("id", Registry.FLUID.getKey(recipe.getOutputFluid()).toString());
+            jsonFluid.addProperty("id", BuiltInRegistries.FLUID.getKey(recipe.getOutputFluid()).toString());
             if (recipe.getOutputFluidKeep()) {
                 jsonFluid.addProperty("keep", true);
             }
@@ -345,7 +346,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
             for (var drop : recipe.getDrops()) {
                 var jsonDrop = new JsonObject();
-                jsonDrop.addProperty("item", Registry.ITEM.getKey(drop.getItem()).toString());
+                jsonDrop.addProperty("item", BuiltInRegistries.ITEM.getKey(drop.getItem()).toString());
                 if (drop.getCount() > 1) {
                     jsonDrop.addProperty("count", drop.getCount());
                 }

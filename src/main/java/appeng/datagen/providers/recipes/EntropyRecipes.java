@@ -20,7 +20,7 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -31,12 +31,12 @@ import appeng.core.AppEng;
 import appeng.recipes.entropy.EntropyRecipeBuilder;
 
 public class EntropyRecipes extends AE2RecipeProvider {
-    public EntropyRecipes(DataGenerator generator) {
-        super(generator);
+    public EntropyRecipes(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         buildCoolRecipes(consumer);
         buildHeatRecipes(consumer);
     }
@@ -97,5 +97,10 @@ public class EntropyRecipes extends AE2RecipeProvider {
                 .setOutputBlock(Blocks.AIR)
                 .save(consumer);
 
+    }
+
+    @Override
+    public String getName() {
+        return "AE2 Entropy Manipualator Recipes";
     }
 }

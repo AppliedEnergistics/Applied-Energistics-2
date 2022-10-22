@@ -22,8 +22,9 @@ import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
 import java.util.function.Consumer;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -61,19 +62,19 @@ public class DecorationRecipes extends AE2RecipeProvider {
             { AEBlocks.QUARTZ_PILLAR, AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR_STAIRS,
                     AEBlocks.QUARTZ_PILLAR_WALL }, };
 
-    public DecorationRecipes(DataGenerator generatorIn) {
-        super(generatorIn);
+    public DecorationRecipes(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         for (var block : blocks) {
             slabRecipe(consumer, block[0], block[1]);
             stairRecipe(consumer, block[0], block[2]);
             wallRecipe(consumer, block[0], block[3]);
         }
 
-        ShapedRecipeBuilder.shaped(AEBlocks.NOT_SO_MYSTERIOUS_CUBE, 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.NOT_SO_MYSTERIOUS_CUBE, 4)
                 .pattern("ScS")
                 .pattern("eCl")
                 .pattern("SsS")
@@ -91,11 +92,11 @@ public class DecorationRecipes extends AE2RecipeProvider {
         Block inputBlock = block.block();
         Block outputBlock = slabs.block();
 
-        ShapedRecipeBuilder.shaped(outputBlock, 6).pattern("###").define('#', inputBlock)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").define('#', inputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("shaped/slabs/", block.id()));
 
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock, 2)
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock, 2)
                 .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/slabs/", slabs.id()));
     }
@@ -104,11 +105,11 @@ public class DecorationRecipes extends AE2RecipeProvider {
         Block inputBlock = block.block();
         Block outputBlock = stairs.block();
 
-        ShapedRecipeBuilder.shaped(outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 4).pattern("#  ").pattern("## ").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("shaped/stairs/", block.id()));
 
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/stairs/", stairs.id()));
 
@@ -118,11 +119,11 @@ public class DecorationRecipes extends AE2RecipeProvider {
         Block inputBlock = block.block();
         Block outputBlock = wall.block();
 
-        ShapedRecipeBuilder.shaped(outputBlock, 6).pattern("###").pattern("###")
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputBlock, 6).pattern("###").pattern("###")
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("shaped/walls/", block.id()));
 
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), outputBlock)
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
                 .unlockedBy(criterionName(block), has(inputBlock))
                 .save(consumer, prefix("block_cutter/walls/", wall.id()));
 

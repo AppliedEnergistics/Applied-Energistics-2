@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -160,7 +159,7 @@ public class WrappedGenericStack extends AEBaseItem {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
         // Don't show this item in CreativeTabs
     }
 }

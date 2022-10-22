@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -42,9 +42,9 @@ public class ItemPickupStrategy implements PickupStrategy {
     public static final ResourceLocation TAG_BLACKLIST = new ResourceLocation(AppEng.MOD_ID,
             "blacklisted/annihilation_plane");
 
-    private static final TagKey<Block> BLOCK_BLACKLIST = TagKey.create(Registry.BLOCK_REGISTRY, TAG_BLACKLIST);
+    private static final TagKey<Block> BLOCK_BLACKLIST = TagKey.create(Registries.BLOCK, TAG_BLACKLIST);
 
-    private static final TagKey<Item> ITEM_BLACKLIST = TagKey.create(Registry.ITEM_REGISTRY, TAG_BLACKLIST);
+    private static final TagKey<Item> ITEM_BLACKLIST = TagKey.create(Registries.ITEM, TAG_BLACKLIST);
 
     private final ServerLevel level;
     private final BlockPos pos;

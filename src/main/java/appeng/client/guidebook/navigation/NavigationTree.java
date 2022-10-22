@@ -14,7 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -114,7 +114,7 @@ public class NavigationTree {
         // Construct the icon if set
         var icon = ItemStack.EMPTY;
         if (navigationEntry.iconItemId() != null) {
-            var iconItem = Registry.ITEM.get(navigationEntry.iconItemId());
+            var iconItem = BuiltInRegistries.ITEM.get(navigationEntry.iconItemId());
             icon = new ItemStack(iconItem);
             icon.setTag(navigationEntry.iconNbt());
             if (icon.isEmpty()) {

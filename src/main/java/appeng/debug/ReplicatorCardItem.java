@@ -20,7 +20,7 @@ package appeng.debug;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -118,7 +118,7 @@ public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
                 final int src_side = ish.getInt("side");
                 final String worldId = ish.getString("w");
                 final Level src_w = level.getServer()
-                        .getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(worldId)));
+                        .getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(worldId)));
                 final int replications = ish.getInt("r") + 1;
 
                 var gh = GridHelper.getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));

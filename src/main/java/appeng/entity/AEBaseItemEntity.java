@@ -21,6 +21,7 @@ package appeng.entity;
 import java.util.List;
 
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -54,7 +55,7 @@ public abstract class AEBaseItemEntity extends ItemEntity implements ICustomEnti
         return this.level.getEntities(this, region);
     }
 
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return SpawnEntityPacket.create(this);
     }
 

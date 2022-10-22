@@ -4,7 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ResourceLocationException;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -40,7 +40,7 @@ public final class MdxAttrs {
             return null;
         }
 
-        var resultItem = Registry.ITEM.getOptional(itemId).orElse(null);
+        var resultItem = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
         if (resultItem == null) {
             errorSink.appendError(compiler, "Missing item: " + itemId, el);
             return null;

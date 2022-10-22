@@ -3,7 +3,6 @@ package appeng.datagen;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,10 +18,9 @@ public class DatagenEntrypoint {
     public static void dump(Path outputPath, List<Path> existingDataPaths) throws Exception {
         LOGGER.info("Writing generated resources to {}", outputPath.toAbsolutePath());
 
-        DataGenerator generator = new DataGenerator(outputPath, Collections.emptyList(),
-                SharedConstants.getCurrentVersion(), true);
-        var existingFileHelper = new ExistingFileHelper(existingDataPaths, Collections.emptySet(),
-                true, null, null);
+        DataGenerator generator = new DataGenerator(outputPath, SharedConstants.getCurrentVersion(), true);
+        var existingFileHelper = new ExistingFileHelper(existingDataPaths,
+                true);
         AE2DataGenerators.onGatherData(generator, existingFileHelper);
         generator.run();
     }

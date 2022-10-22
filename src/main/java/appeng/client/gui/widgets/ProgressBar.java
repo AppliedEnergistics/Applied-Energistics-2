@@ -70,8 +70,8 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
             int srcY = sourceRect.getY();
             int srcW = sourceRect.getWidth();
             int srcH = sourceRect.getHeight();
-            int destX = x;
-            int destY = y;
+            int destX = getX();
+            int destY = getY();
 
             if (this.layout == Direction.VERTICAL) {
                 int diff = this.height - (max > 0 ? this.height * current / max : 0);
@@ -107,7 +107,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
 
     @Override
     public Rect2i getTooltipArea() {
-        return new Rect2i(x - 2, y - 2, width + 4, height + 4);
+        return new Rect2i(getX() - 2, getY() - 2, width + 4, height + 4);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput output) {
+    public void updateWidgetNarration(NarrationElementOutput output) {
     }
 
     public enum Direction {

@@ -20,8 +20,8 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -32,12 +32,12 @@ import appeng.datagen.providers.tags.ConventionTags;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 
 public class MatterCannonAmmoProvider extends AE2RecipeProvider {
-    public MatterCannonAmmoProvider(DataGenerator generator) {
-        super(generator);
+    public MatterCannonAmmoProvider(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
         tag(consumer, "nuggets/meatraw", "c:meatraw_nuggets", 32);
         tag(consumer, "nuggets/meatcooked", "c:meatcooked_nuggets", 32);
         tag(consumer, "nuggets/meat", "c:meat_nuggets", 32);
@@ -117,6 +117,6 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
 
     private static void tag(Consumer<FinishedRecipe> consumer, String recipeId, String tagId, float weight) {
         MatterCannonAmmo.ammo(consumer, AppEng.makeId("matter_cannon/" + recipeId),
-                TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(tagId)), weight);
+                TagKey.create(Registries.ITEM, new ResourceLocation(tagId)), weight);
     }
 }

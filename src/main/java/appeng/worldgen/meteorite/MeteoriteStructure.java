@@ -25,7 +25,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -46,19 +46,17 @@ public class MeteoriteStructure extends Structure {
 
     public static final ResourceLocation ID = AppEng.makeId("meteorite");
     public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey
-            .create(Registry.STRUCTURE_SET_REGISTRY, ID);
+            .create(Registries.STRUCTURE_SET, ID);
 
     public static final Codec<MeteoriteStructure> CODEC = simpleCodec(MeteoriteStructure::new);
 
     public static final ResourceKey<Structure> KEY = ResourceKey
-            .create(Registry.STRUCTURE_REGISTRY, ID);
+            .create(Registries.STRUCTURE, ID);
 
-    public static final TagKey<Biome> BIOME_TAG_KEY = TagKey.create(Registry.BIOME_REGISTRY,
+    public static final TagKey<Biome> BIOME_TAG_KEY = TagKey.create(Registries.BIOME,
             AppEng.makeId("has_meteorites"));
 
     public static StructureType<MeteoriteStructure> TYPE;
-    public static Holder<Structure> INSTANCE;
-    public static Holder<StructureSet> STRUCTURE_SET;
 
     public MeteoriteStructure(StructureSettings settings) {
         super(settings);

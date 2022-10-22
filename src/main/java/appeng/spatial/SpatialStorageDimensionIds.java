@@ -19,7 +19,7 @@
 package appeng.spatial;
 
 import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -41,7 +41,7 @@ public final class SpatialStorageDimensionIds {
      * This is defined in {@link appeng.init.worldgen.InitDimensionTypes}.
      */
     public static final ResourceKey<DimensionType> DIMENSION_TYPE_ID = ResourceKey
-            .create(Registry.DIMENSION_TYPE_REGISTRY, AppEng.makeId("spatial_storage"));
+            .create(Registries.DIMENSION_TYPE, AppEng.makeId("spatial_storage"));
 
     /**
      * ID of the {@link ChunkGenerator} used for the spatial storage level.
@@ -51,7 +51,7 @@ public final class SpatialStorageDimensionIds {
     /**
      * ID of the {@link Biome} used for the spatial storage level.
      */
-    public static final ResourceKey<Biome> BIOME_KEY = ResourceKey.create(Registry.BIOME_REGISTRY,
+    public static final ResourceKey<Biome> BIOME_KEY = ResourceKey.create(Registries.BIOME,
             AppEng.makeId("spatial_storage"));
 
     /**
@@ -59,13 +59,13 @@ public final class SpatialStorageDimensionIds {
      * <p>
      * This is defined in {@link appeng.init.worldgen.InitDimensionTypes}.
      */
-    public static final ResourceKey<LevelStem> DIMENSION_ID = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY,
+    public static final ResourceKey<LevelStem> DIMENSION_ID = ResourceKey.create(Registries.LEVEL_STEM,
             AppEng.makeId("spatial_storage"));
 
     /**
      * ID of the {@link Level} that is instantiated from the dimension/dimension type.
      */
-    public static final ResourceKey<Level> WORLD_ID = ResourceKey.create(Registry.DIMENSION_REGISTRY,
+    public static final ResourceKey<Level> WORLD_ID = ResourceKey.create(Registries.DIMENSION,
             AppEng.makeId("spatial_storage"));
 
     /**

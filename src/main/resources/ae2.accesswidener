@@ -1,5 +1,8 @@
 accessWidener	v1	named
 
+accessible class net/minecraft/world/item/CreativeModeTab$Output
+accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
+
 # GUI rendering
 extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen renderSlot (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/inventory/Slot;)V
 extendable method net/minecraft/client/gui/components/EditBox renderHighlight (IIII)V
@@ -20,9 +23,7 @@ accessible method net/minecraft/world/item/crafting/RecipeManager byType (Lnet/m
 # To disable water-bobbing of item entities (for growing crystals)
 extendable method net/minecraft/world/entity/item/ItemEntity setUnderwaterMovement ()V
 
-# For structure registration
-accessible method net/minecraft/data/worldgen/Structures structure (Lnet/minecraft/tags/TagKey;Ljava/util/Map;Lnet/minecraft/world/level/levelgen/GenerationStep$Decoration;Lnet/minecraft/world/level/levelgen/structure/TerrainAdjustment;)Lnet/minecraft/world/level/levelgen/structure/Structure$StructureSettings;
-accessible method net/minecraft/data/worldgen/Structures register (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/level/levelgen/structure/Structure;)Lnet/minecraft/core/Holder;
+# structures
 accessible method net/minecraft/world/level/levelgen/structure/StructureType register (Ljava/lang/String;Lcom/mojang/serialization/Codec;)Lnet/minecraft/world/level/levelgen/structure/StructureType;
 accessible method net/minecraft/world/level/levelgen/structure/pieces/StructurePieceType setPieceId (Lnet/minecraft/world/level/levelgen/structure/pieces/StructurePieceType$ContextlessType;Ljava/lang/String;)Lnet/minecraft/world/level/levelgen/structure/pieces/StructurePieceType;
 
@@ -84,16 +85,17 @@ accessible field net/minecraft/gametest/framework/GameTestHelper testInfo Lnet/m
 
 ### Datagens
 accessible class net/minecraft/client/renderer/block/model/ItemTransform$Deserializer
-accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_ROTATION Lcom/mojang/math/Vector3f;
-accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_TRANSLATION Lcom/mojang/math/Vector3f;
-accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_SCALE Lcom/mojang/math/Vector3f;
+accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_ROTATION Lorg/joml/Vector3f;
+accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_TRANSLATION Lorg/joml/Vector3f;
+accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_SCALE Lorg/joml/Vector3f;
 accessible field net/minecraft/client/renderer/block/model/BlockModel$GuiLight name Ljava/lang/String;
-accessible field net/minecraft/client/resources/ClientPackSource BUILT_IN Lnet/minecraft/server/packs/metadata/pack/PackMetadataSection;
 accessible method net/minecraft/client/renderer/block/model/BlockElement uvsByFace (Lnet/minecraft/core/Direction;)[F
-accessible field net/minecraft/data/loot/BlockLoot HAS_NO_SILK_TOUCH Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition$Builder;
 
 accessible field net/minecraft/world/item/crafting/UpgradeRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
 accessible field net/minecraft/world/item/crafting/UpgradeRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
 
 accessible method net/minecraft/client/gui/Font getFontSet (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/gui/font/FontSet;
 accessible field net/minecraft/client/gui/screens/LoadingOverlay reload Lnet/minecraft/server/packs/resources/ReloadInstance;
+
+accessible field net/minecraft/data/DataGenerator vanillaPackOutput Lnet/minecraft/data/PackOutput;
+extendable method net/minecraft/data/recipes/RecipeProvider getName ()Ljava/lang/String;

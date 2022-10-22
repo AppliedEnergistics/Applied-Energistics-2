@@ -42,7 +42,7 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -96,7 +96,7 @@ public class FacadeBuilder {
 
     private final Map<Direction, Mesh> cableAnchorStilts;
 
-    public FacadeBuilder(ModelBakery modelLoader, @Nullable BakedModel transparentFacadeModel) {
+    public FacadeBuilder(ModelBaker modelLoader, @Nullable BakedModel transparentFacadeModel) {
         cableAnchorStilts = buildCableAnchorStems(modelLoader);
 
         // Pre-rotate the transparent facade model to all possible sides so that we can
@@ -138,7 +138,7 @@ public class FacadeBuilder {
      * Build a map of pre-rotated cable anchor stilts, which are the shortened cable anchors that will still be visible
      * for facades attached to a cable.
      */
-    private Map<Direction, Mesh> buildCableAnchorStems(ModelBakery modelLoader) {
+    private Map<Direction, Mesh> buildCableAnchorStems(ModelBaker modelLoader) {
         Map<Direction, Mesh> stems = new EnumMap<>(Direction.class);
 
         List<BakedModel> cableAnchorParts = new ArrayList<>();

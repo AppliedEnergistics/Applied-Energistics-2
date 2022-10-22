@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -131,7 +131,7 @@ public final class AEItemKey extends AEKey {
     @Nullable
     public static AEItemKey fromTag(CompoundTag tag) {
         try {
-            var item = Registry.ITEM.getOptional(new ResourceLocation(tag.getString("id")))
+            var item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(tag.getString("id")))
                     .orElseThrow(() -> new IllegalArgumentException("Unknown item id."));
             var extraTag = tag.contains("tag") ? tag.getCompound("tag") : null;
             return of(item, extraTag);
@@ -144,7 +144,7 @@ public final class AEItemKey extends AEKey {
     @Override
     public CompoundTag toTag() {
         CompoundTag result = new CompoundTag();
-        result.putString("id", Registry.ITEM.getKey(item).toString());
+        result.putString("id", BuiltInRegistries.ITEM.getKey(item).toString());
 
         if (tag != null) {
             result.put("tag", tag.copy());
@@ -176,7 +176,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public ResourceLocation getId() {
-        return Registry.ITEM.getKey(item);
+        return BuiltInRegistries.ITEM.getKey(item);
     }
 
     public ItemVariant toVariant() {
@@ -252,8 +252,8 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public String toString() {
-        var id = Registry.ITEM.getKey(item);
-        String idString = id != Registry.ITEM.getDefaultKey() ? id.toString()
+        var id = BuiltInRegistries.ITEM.getKey(item);
+        String idString = id != BuiltInRegistries.ITEM.getDefaultKey() ? id.toString()
                 : item.getClass().getName() + "(unregistered)";
         return tag == null ? idString : idString + " (+tag)";
     }

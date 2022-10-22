@@ -28,7 +28,8 @@ import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Strings;
-import com.mojang.math.Vector3f;
+
+import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;

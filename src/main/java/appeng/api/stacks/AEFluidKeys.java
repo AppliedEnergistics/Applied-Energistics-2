@@ -21,7 +21,7 @@ package appeng.api.stacks;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -69,7 +69,7 @@ final class AEFluidKeys extends AEKeyType {
 
     @Override
     public Stream<TagKey<?>> getTagNames() {
-        return Registry.FLUID.getTagNames().map(t -> t);
+        return BuiltInRegistries.FLUID.getTagNames().map(t -> t);
     }
 
     @Override

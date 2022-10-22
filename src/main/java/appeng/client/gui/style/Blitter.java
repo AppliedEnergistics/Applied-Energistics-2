@@ -25,15 +25,14 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -107,9 +106,8 @@ public final class Blitter {
         // We use this convoluted method to convert from UV in the range of [0,1] back to pixel values with a
         // fictitious reference size of Integer.MAX_VALUE. This is converted back to UV later when we actually blit.
         final int refSize = Integer.MAX_VALUE;
-        TextureAtlas atlas = sprite.atlas();
 
-        return new Blitter(atlas.location(), refSize, refSize)
+        return new Blitter(sprite.atlasLocation(), refSize, refSize)
                 .src(
                         (int) (sprite.getU0() * refSize),
                         (int) (sprite.getV0() * refSize),

@@ -24,7 +24,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Vector3f;
+
+import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -118,7 +119,7 @@ class CellLedRenderer {
             long t = System.currentTimeMillis() % 200;
             float f = (t - 100) / 200.0f + 0.5f;
             f = easeInOutCubic(f);
-            col = col.copy();
+            col = new Vector3f(col);
             col.lerp(BLINK_COLOR, f);
         }
 

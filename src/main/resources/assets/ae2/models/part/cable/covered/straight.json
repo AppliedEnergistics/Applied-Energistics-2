@@ -1,6 +1,6 @@
 {
   "textures": {
-    "base": "ae2:part/cable/covered/${color}"
+    "base": "ae2:part/cable/covered/_color_"
   },
   "elements": [
     {

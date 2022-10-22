@@ -19,41 +19,28 @@
 
 package net.minecraftforge.common.data;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import net.minecraft.client.resources.ClientPackSource;
+import net.minecraft.client.resources.IndexedAssetSource;
+import net.minecraft.data.DataProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.BuiltInMetadata;
+import net.minecraft.server.packs.FilePackResources;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.VanillaPackResources;
+import net.minecraft.server.packs.VanillaPackResourcesBuilder;
+import net.minecraft.server.packs.resources.MultiPackResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraftforge.client.model.generators.ModelBuilder;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import net.fabricmc.fabric.impl.resource.loader.FabricModResourcePack;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.resources.ClientPackSource;
-import net.minecraft.client.resources.AssetIndex;
-import net.minecraft.client.resources.DefaultClientPackResources;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
-import net.minecraft.server.packs.FilePackResources;
-import net.minecraft.server.packs.FolderPackResources;
-import net.minecraft.server.packs.repository.ServerPacksSource;
-import net.minecraft.server.packs.resources.MultiPackResourceManager;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.VanillaPackResources;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-
-import javax.annotation.Nullable;
-
-import static net.fabricmc.loader.api.FabricLoader.getInstance;
 
 /**
  * Enables data providers to check if other data files currently exist. The
@@ -77,6 +64,7 @@ public class ExistingFileHelper {
 
         final PackType packType;
         final String suffix, prefix;
+
         public ResourceType(PackType type, String suffix, String prefix) {
             this.packType = type;
             this.suffix = suffix;
@@ -84,13 +72,19 @@ public class ExistingFileHelper {
         }
 
         @Override
-        public PackType getPackType() { return packType; }
+        public PackType getPackType() {
+            return packType;
+        }
 
         @Override
-        public String getSuffix() { return suffix; }
+        public String getSuffix() {
+            return suffix;
+        }
 
         @Override
-        public String getPrefix() { return prefix; }
+        public String getPrefix() {
+            return prefix;
+        }
     }
 
     private final MultiPackResourceManager clientResources, serverData;
@@ -104,26 +98,26 @@ public class ExistingFileHelper {
      * <p>
      * Only create a new helper if you intentionally want to ignore the existence of
      * other generated files.
-     * 
+     *
      * @param existingPacks
-     * @param existingMods
      * @param enable
-     * @param assetIndex
-     * @param assetsDir
      */
-    public ExistingFileHelper(Collection<Path> existingPacks, Set<String> existingMods, boolean enable, @Nullable String assetIndex, @Nullable File assetsDir) {
+    public ExistingFileHelper(Collection<Path> existingPacks, boolean enable) {
         List<PackResources> candidateClientResources = new ArrayList<>();
         List<PackResources> candidateServerResources = new ArrayList<>();
 
-        candidateClientResources.add(new VanillaPackResources(ClientPackSource.BUILT_IN, "minecraft", "realms"));
-        if (assetIndex != null && assetsDir != null)
-        {
-            candidateClientResources.add(new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(assetsDir, assetIndex)));
-        }
-        candidateServerResources.add(new VanillaPackResources(ServerPacksSource.BUILT_IN_METADATA, "minecraft"));
+         var resources = new VanillaPackResourcesBuilder()
+                .setMetadata(BuiltInMetadata.of())
+                .exposeNamespace("minecraft")
+                .pushJarResources()
+                .build();
+        candidateClientResources.add(resources);
+        candidateServerResources.add(resources);
+
         for (Path existing : existingPacks) {
             File file = existing.toFile();
-            PackResources pack = file.isDirectory() ? new FolderPackResources(file) : new FilePackResources(file);
+            var packid = file.getName();
+            PackResources pack = file.isDirectory() ? new PathPackResources(file.getName(), file.toPath(), false) : new FilePackResources(file.getName(), file, false);
             candidateClientResources.add(pack);
             candidateServerResources.add(pack);
         }
@@ -149,7 +143,7 @@ public class ExistingFileHelper {
      *                 {@code "minecraft:textures/block/stone.png"}
      * @param packType the type of resources to check
      * @return {@code true} if the resource exists in any pack, {@code false}
-     *         otherwise
+     * otherwise
      */
     public boolean exists(ResourceLocation loc, PackType packType) {
         if (!enable) {
@@ -163,13 +157,13 @@ public class ExistingFileHelper {
      * convenience method to avoid repeating type/prefix/suffix and instead use the
      * common definitions in {@link ResourceType}, or a custom {@link IResourceType}
      * definition.
-     * 
+     *
      * @param loc  the base location of the resource, e.g.
      *             {@code "minecraft:block/stone"}
      * @param type a {@link IResourceType} describing how to form the path to the
      *             resource
      * @return {@code true} if the resource exists in any pack, {@code false}
-     *         otherwise
+     * otherwise
      */
     public boolean exists(ResourceLocation loc, IResourceType type) {
         return exists(getLocation(loc, type.getSuffix(), type.getPrefix()), type.getPackType());
@@ -177,7 +171,7 @@ public class ExistingFileHelper {
 
     /**
      * Check if a given resource exists in the known resource packs.
-     * 
+     *
      * @param loc        the base location of the resource, e.g.
      *                   {@code "minecraft:block/stone"}
      * @param packType   the type of resources to check
@@ -185,7 +179,7 @@ public class ExistingFileHelper {
      * @param pathPrefix a string to append before the path, before a slash, e.g.
      *                   {@code "models"}
      * @return {@code true} if the resource exists in any pack, {@code false}
-     *         otherwise
+     * otherwise
      */
     public boolean exists(ResourceLocation loc, PackType packType, String pathSuffix, String pathPrefix) {
         return exists(getLocation(loc, pathSuffix, pathPrefix), packType);
@@ -204,7 +198,7 @@ public class ExistingFileHelper {
      * <p>
      * This represents a <em>promise</em> to generate the file later, since other
      * datagen may rely on this file existing.
-     * 
+     *
      * @param loc  the base location of the resource, e.g.
      *             {@code "minecraft:block/stone"}
      * @param type a {@link IResourceType} describing how to form the path to the
@@ -225,7 +219,7 @@ public class ExistingFileHelper {
      * <p>
      * This represents a <em>promise</em> to generate the file later, since other
      * datagen may rely on this file existing.
-     * 
+     *
      * @param loc        the base location of the resource, e.g.
      *                   {@code "minecraft:block/stone"}
      * @param packType   the type of resources to check

@@ -9,9 +9,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -40,7 +41,7 @@ public class SpawnEntityPacket extends BasePacket {
     public SpawnEntityPacket(FriendlyByteBuf friendlyByteBuf) {
         this.id = friendlyByteBuf.readVarInt();
         this.uuid = friendlyByteBuf.readUUID();
-        this.type = Registry.ENTITY_TYPE.byId(friendlyByteBuf.readVarInt());
+        this.type = BuiltInRegistries.ENTITY_TYPE.byId(friendlyByteBuf.readVarInt());
         this.x = friendlyByteBuf.readDouble();
         this.y = friendlyByteBuf.readDouble();
         this.z = friendlyByteBuf.readDouble();
@@ -70,7 +71,7 @@ public class SpawnEntityPacket extends BasePacket {
         data.writeInt(this.getPacketID());
         data.writeVarInt(this.id);
         data.writeUUID(this.uuid);
-        data.writeVarInt(Registry.ENTITY_TYPE.getId(this.type));
+        data.writeVarInt(BuiltInRegistries.ENTITY_TYPE.getId(this.type));
         data.writeDouble(this.x);
         data.writeDouble(this.y);
         data.writeDouble(this.z);
@@ -113,14 +114,16 @@ public class SpawnEntityPacket extends BasePacket {
         }
     }
 
-    public static <T extends Entity & ICustomEntity> Packet<?> create(T entity) {
+    @SuppressWarnings("unchecked")
+    public static <T extends Entity & ICustomEntity> Packet<ClientGamePacketListener> create(T entity) {
         // Not having this typed local variable will lead to a JVM bug because
         // the method reference will have a target type of "Entity" and not
         // "ICustomEntity"
         @SuppressWarnings("UnnecessaryLocalVariable")
         ICustomEntity customEntity = entity;
         SpawnEntityPacket packet = new SpawnEntityPacket(entity, customEntity::writeAdditionalSpawnData);
-        return ServerPlayNetworking.createS2CPacket(BasePacket.CHANNEL, packet.getPayload());
+        return (Packet<ClientGamePacketListener>) ServerPlayNetworking.createS2CPacket(BasePacket.CHANNEL,
+                packet.getPayload());
     }
 
 }

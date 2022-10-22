@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -49,19 +49,19 @@ public class DriveModel implements BasicUnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+    public BakedModel bake(ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter,
             ModelState modelTransform, ResourceLocation modelLocation) {
         final Map<Item, BakedModel> cellModels = new IdentityHashMap<>();
 
         // Load the base model and the model for each cell model.
         for (var entry : StorageCellModels.models().entrySet()) {
-            BakedModel cellModel = bakery.bake(entry.getValue(), modelTransform);
+            BakedModel cellModel = baker.bake(entry.getValue(), modelTransform);
             cellModels.put(entry.getKey(), cellModel);
         }
 
-        final BakedModel baseModel = bakery.bake(MODEL_BASE, modelTransform);
-        final BakedModel defaultCell = bakery.bake(StorageCellModels.getDefaultModel(), modelTransform);
-        cellModels.put(Items.AIR, bakery.bake(MODEL_CELL_EMPTY, modelTransform));
+        final BakedModel baseModel = baker.bake(MODEL_BASE, modelTransform);
+        final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelTransform);
+        cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelTransform));
 
         return new DriveBakedModel(baseModel, cellModels, defaultCell);
     }

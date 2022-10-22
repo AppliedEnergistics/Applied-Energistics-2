@@ -42,14 +42,13 @@ import net.minecraft.client.renderer.block.model.BlockModel.GuiLight;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
 import net.minecraft.client.renderer.block.model.BlockElementRotation;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 /**
@@ -64,7 +63,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
  */
 @SuppressWarnings("deprecation")
 public class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile {
-
     @Nullable
     protected ModelFile parent;
     protected final Map<String, String> textures = new LinkedHashMap<>();
@@ -277,11 +275,11 @@ public class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile {
 
                 if (part.rotation != null) {
                     JsonObject rotation = new JsonObject();
-                    rotation.add("origin", serializeVector3f(part.rotation.origin));
-                    rotation.addProperty("axis", part.rotation.axis.getSerializedName());
-                    rotation.addProperty("angle", part.rotation.angle);
-                    if (part.rotation.rescale) {
-                        rotation.addProperty("rescale", part.rotation.rescale);
+                    rotation.add("origin", serializeVector3f(part.rotation.origin()));
+                    rotation.addProperty("axis", part.rotation.axis().getSerializedName());
+                    rotation.addProperty("angle", part.rotation.angle());
+                    if (part.rotation.rescale()) {
+                        rotation.addProperty("rescale", part.rotation.rescale());
                     }
                     partObj.add("rotation", rotation);
                 }
@@ -670,9 +668,9 @@ public class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile {
 
         public class TransformVecBuilder {
 
-            private Vector3f rotation = ItemTransform.Deserializer.DEFAULT_ROTATION.copy();
-            private Vector3f translation = ItemTransform.Deserializer.DEFAULT_TRANSLATION.copy();
-            private Vector3f scale = ItemTransform.Deserializer.DEFAULT_SCALE.copy();
+            private Vector3f rotation = new Vector3f(ItemTransform.Deserializer.DEFAULT_ROTATION);
+            private Vector3f translation = new Vector3f(ItemTransform.Deserializer.DEFAULT_TRANSLATION);
+            private Vector3f scale = new Vector3f(ItemTransform.Deserializer.DEFAULT_SCALE);
 
             TransformVecBuilder(Perspective type) {
                 // param unused for functional match

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -156,15 +156,15 @@ public final class ConventionTags {
     }
 
     private static TagKey<Item> tag(String name) {
-        return TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(name));
+        return TagKey.create(Registries.ITEM, new ResourceLocation(name));
     }
 
     private static TagKey<Biome> biomeTag(String name) {
-        return TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(name));
+        return TagKey.create(Registries.BIOME, new ResourceLocation(name));
     }
 
     private static TagKey<Block> blockTag(String name) {
-        return TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(name));
+        return TagKey.create(Registries.BLOCK, new ResourceLocation(name));
     }
 
 }

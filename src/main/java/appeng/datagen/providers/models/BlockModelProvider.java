@@ -4,7 +4,7 @@ import static appeng.core.AppEng.makeId;
 
 import java.util.ArrayList;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
@@ -23,8 +23,8 @@ import appeng.core.definitions.BlockDefinition;
 import appeng.init.client.InitItemModelsProperties;
 
 public class BlockModelProvider extends AE2BlockStateProvider {
-    public BlockModelProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
-        super(gen, AppEng.MOD_ID, exFileHelper);
+    public BlockModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+        super(output, AppEng.MOD_ID, exFileHelper);
     }
 
     @Override

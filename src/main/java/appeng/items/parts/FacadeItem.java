@@ -20,8 +20,7 @@ package appeng.items.parts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -134,7 +133,8 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        // Don't show in creative mode, since it's not useful without NBT
     }
 
     public ItemStack createFacadeForItem(ItemStack itemStack, boolean returnItem) {
@@ -174,7 +174,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
     public ItemStack createFacadeForItemUnchecked(ItemStack itemStack) {
         final ItemStack is = new ItemStack(this);
         final CompoundTag data = new CompoundTag();
-        data.putString(NBT_ITEM_ID, Registry.ITEM.getKey(itemStack.getItem()).toString());
+        data.putString(NBT_ITEM_ID, BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
         is.setTag(data);
         return is;
     }
@@ -197,7 +197,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         }
 
         ResourceLocation itemId = new ResourceLocation(nbt.getString(NBT_ITEM_ID));
-        Item baseItem = Registry.ITEM.get(itemId);
+        Item baseItem = BuiltInRegistries.ITEM.get(itemId);
 
         return new ItemStack(baseItem, 1);
     }
@@ -224,13 +224,13 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem, AEToolItem {
         ItemStack facadeStack = AEItems.FACADE.stack();
 
         // Convert back to a registry name...
-        Item item = Registry.ITEM.byId(id);
+        Item item = BuiltInRegistries.ITEM.byId(id);
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
 
         final CompoundTag facadeTag = new CompoundTag();
-        facadeTag.putString(NBT_ITEM_ID, Registry.ITEM.getKey(item).toString());
+        facadeTag.putString(NBT_ITEM_ID, BuiltInRegistries.ITEM.getKey(item).toString());
         facadeStack.setTag(facadeTag);
 
         return facadeStack;

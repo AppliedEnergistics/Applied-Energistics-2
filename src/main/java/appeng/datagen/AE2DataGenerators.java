@@ -18,9 +18,18 @@
 
 package appeng.datagen;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+
+import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import appeng.datagen.providers.WorldGenProvider;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.datagen.providers.loot.BlockDropProvider;
@@ -48,43 +57,55 @@ import appeng.datagen.providers.tags.PoiTypeTagsProvider;
 public class AE2DataGenerators {
 
     public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+        var registries = CompletableFuture.supplyAsync(VanillaRegistries::createLookup, Util.backgroundExecutor());
+
         var localization = new LocalizationProvider(generator);
 
+        var mainPack = generator.getVanillaPack(true);
+
+        // Worldgen et al
+        mainPack.addProvider(bindRegistries(WorldGenProvider::new, registries));
+
         // Loot
-        generator.addProvider(true, new BlockDropProvider(generator.getOutputFolder()));
+        mainPack.addProvider(BlockDropProvider::new);
 
         // Tags
-        BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator);
-        generator.addProvider(true, blockTagsProvider);
-        generator.addProvider(true, new ItemTagsProvider(generator, blockTagsProvider));
-        generator.addProvider(true, new FluidTagsProvider(generator));
-        generator.addProvider(true, new BiomeTagsProvider(generator));
-        generator.addProvider(true, new PoiTypeTagsProvider(generator));
+        var blockTagsProvider = mainPack.addProvider(bindRegistries(BlockTagsProvider::new, registries));
+        mainPack.addProvider(packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider));
+        mainPack.addProvider(bindRegistries(FluidTagsProvider::new, registries));
+        mainPack.addProvider(bindRegistries(BiomeTagsProvider::new, registries));
+        mainPack.addProvider(bindRegistries(PoiTypeTagsProvider::new, registries));
 
         // Models
-        generator.addProvider(true, new BlockModelProvider(generator, existingFileHelper));
-        generator.addProvider(true, new DecorationModelProvider(generator, existingFileHelper));
-        generator.addProvider(true, new ItemModelProvider(generator, existingFileHelper));
-        generator.addProvider(true, new CableModelProvider(generator, existingFileHelper));
-        generator.addProvider(true, new PartModelProvider(generator, existingFileHelper));
+        mainPack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));
+        mainPack.addProvider(packOutput -> new DecorationModelProvider(packOutput, existingFileHelper));
+        mainPack.addProvider(packOutput -> new ItemModelProvider(packOutput, existingFileHelper));
+        mainPack.addProvider(packOutput -> new CableModelProvider(packOutput, existingFileHelper));
+        mainPack.addProvider(packOutput -> new PartModelProvider(packOutput, existingFileHelper));
 
         // Misc
-        generator.addProvider(true, new AdvancementGenerator(generator, localization));
+        mainPack.addProvider(packOutput -> new AdvancementGenerator(packOutput, localization));
 
         // Recipes
-        generator.addProvider(true, new DecorationRecipes(generator));
-        generator.addProvider(true, new DecorationBlockRecipes(generator));
-        generator.addProvider(true, new MatterCannonAmmoProvider(generator));
-        generator.addProvider(true, new EntropyRecipes(generator));
-        generator.addProvider(true, new InscriberRecipes(generator));
-        generator.addProvider(true, new SmeltingRecipes(generator));
-        generator.addProvider(true, new CraftingRecipes(generator));
-        generator.addProvider(true, new SmithingRecipes(generator));
-        generator.addProvider(true, new TransformRecipes(generator));
-        generator.addProvider(true, new ChargerRecipes(generator));
+        mainPack.addProvider(DecorationRecipes::new);
+        mainPack.addProvider(DecorationBlockRecipes::new);
+        mainPack.addProvider(MatterCannonAmmoProvider::new);
+        mainPack.addProvider(EntropyRecipes::new);
+        mainPack.addProvider(InscriberRecipes::new);
+        mainPack.addProvider(SmeltingRecipes::new);
+        mainPack.addProvider(CraftingRecipes::new);
+        mainPack.addProvider(SmithingRecipes::new);
+        mainPack.addProvider(TransformRecipes::new);
+        mainPack.addProvider(ChargerRecipes::new);
 
         // Must run last
-        generator.addProvider(true, localization);
+        mainPack.addProvider(packOutput -> localization);
+    }
+
+    private static <T extends DataProvider> DataProvider.Factory<T> bindRegistries(
+            BiFunction<PackOutput, CompletableFuture<HolderLookup.Provider>, T> factory,
+            CompletableFuture<HolderLookup.Provider> factories) {
+        return packOutput -> factory.apply(packOutput, factories);
     }
 
 }

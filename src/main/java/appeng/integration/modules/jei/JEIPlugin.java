@@ -13,7 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -144,7 +144,7 @@ public class JEIPlugin implements IModPlugin {
         for (var entry : P2PTunnelAttunementInternal.getApiTunnels()) {
             attunementRecipes.add(
                     new AttunementDisplay(
-                            Ingredient.of(Registry.ITEM.stream()
+                            Ingredient.of(BuiltInRegistries.ITEM.stream()
                                     .map(ItemStack::new)
                                     .filter(entry.stackPredicate())
                                     .toArray(ItemStack[]::new)),
@@ -257,7 +257,7 @@ public class JEIPlugin implements IModPlugin {
 
         if (!AEConfig.instance().isEnableFacadesInJEI()) {
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
-                    FacadeCreativeTab.getSubTypes());
+                    FacadeCreativeTab.getGroup().getDisplayItems());
         }
     }
 

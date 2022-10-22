@@ -29,6 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.PackType;
@@ -38,6 +39,7 @@ import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.flag.FeatureFlagSet;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
@@ -121,20 +123,20 @@ public final class Guide implements PageCollection {
     // Only used when we try to compile pages before entering a world (validation, show on startup)
     private static void runDatapackReload() {
         try {
-            var access = RegistryAccess.BUILTIN.get();
+            var access = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 
             PackRepository packRepository = new PackRepository(
-                    PackType.SERVER_DATA,
                     new ServerPacksSource(),
                     new ModResourcePackCreator(PackType.SERVER_DATA));
             packRepository.reload();
-            packRepository.setSelected(ModResourcePackUtil.createDefaultDataPackSettings().getEnabled());
+            packRepository.setSelected(ModResourcePackUtil.createDefaultDataConfiguration().dataPacks().getEnabled());
 
             var closeableResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
                     packRepository.openAllSelected());
             var stuff = ReloadableServerResources.loadResources(
                     closeableResourceManager,
                     access,
+                    FeatureFlagSet.of(),
                     Commands.CommandSelection.ALL,
                     0,
                     Util.backgroundExecutor(),

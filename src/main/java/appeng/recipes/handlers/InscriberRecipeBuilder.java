@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -73,7 +73,7 @@ public class InscriberRecipeBuilder {
             json.addProperty("mode", mode.name().toLowerCase(Locale.ROOT));
 
             var result = new JsonObject();
-            result.addProperty("item", Registry.ITEM.getKey(output.asItem()).toString());
+            result.addProperty("item", BuiltInRegistries.ITEM.getKey(output.asItem()).toString());
             if (count > 1) {
                 result.addProperty("count", count);
             }

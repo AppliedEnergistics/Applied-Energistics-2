@@ -35,7 +35,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -545,11 +544,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
-        if (allowedIn(group)) {
-            items.add(createFullColorApplicator());
-        }
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        super.addToMainCreativeTab(output);
+
+        output.accept(createFullColorApplicator());
     }
 
     /**

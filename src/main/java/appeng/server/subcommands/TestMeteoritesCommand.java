@@ -33,7 +33,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
@@ -93,10 +93,12 @@ public class TestMeteoritesCommand implements ISubCommand {
 
         ChunkPos center = new ChunkPos(centerBlock);
 
-        var generator = level.getChunkSource().getGenerator();
+        var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
+        var structure = structures.get(MeteoriteStructure.KEY);
+        var structureSets = level.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
+        var structureSet = structureSets.getHolderOrThrow(MeteoriteStructure.STRUCTURE_SET_KEY);
 
-        var structure = level.registryAccess().ownedRegistryOrThrow(
-                Registry.STRUCTURE_REGISTRY).get(MeteoriteStructure.KEY);
+        var generatorState = level.getChunkSource().getGeneratorState();
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
@@ -104,9 +106,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         for (int cx = center.x - radius; cx <= center.x + radius; cx++) {
             for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
                 chunksChecked++;
-                if (!generator.hasStructureChunkInRange(MeteoriteStructure.STRUCTURE_SET,
-                        level.getChunkSource().randomState(), level.getSeed(), cx, cz,
-                        0)) {
+                if (!generatorState.hasStructureChunkInRange(structureSet, cx, cz, 0)) {
                     continue;
                 }
 

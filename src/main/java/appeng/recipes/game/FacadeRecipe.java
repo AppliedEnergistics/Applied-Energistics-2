@@ -22,9 +22,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import appeng.core.definitions.AEParts;
@@ -32,13 +33,13 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends CustomRecipe {
-    public static SimpleRecipeSerializer<FacadeRecipe> SERIALIZER = null;
+    public static SimpleCraftingRecipeSerializer<FacadeRecipe> SERIALIZER = null;
 
     private final ItemDefinition<?> anchor = AEParts.CABLE_ANCHOR;
     private final FacadeItem facade;
 
-    public FacadeRecipe(ResourceLocation id, FacadeItem facade) {
-        super(id);
+    public FacadeRecipe(ResourceLocation id, CraftingBookCategory category, FacadeItem facade) {
+        super(id, category);
         this.facade = facade;
     }
 
@@ -80,7 +81,7 @@ public final class FacadeRecipe extends CustomRecipe {
 
     public static RecipeSerializer<FacadeRecipe> getSerializer(FacadeItem facade) {
         if (SERIALIZER == null) {
-            SERIALIZER = new SimpleRecipeSerializer<>(id -> new FacadeRecipe(id, facade));
+            SERIALIZER = new SimpleCraftingRecipeSerializer<>((id, category) -> new FacadeRecipe(id, category, facade));
         }
         return SERIALIZER;
     }

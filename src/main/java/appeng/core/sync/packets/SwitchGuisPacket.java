@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
@@ -39,7 +39,7 @@ public class SwitchGuisPacket extends BasePacket {
 
     public SwitchGuisPacket(FriendlyByteBuf stream) {
         if (stream.readBoolean()) {
-            this.newGui = Registry.MENU.get(stream.readResourceLocation());
+            this.newGui = BuiltInRegistries.MENU.get(stream.readResourceLocation());
         } else {
             this.newGui = null;
         }
@@ -54,7 +54,7 @@ public class SwitchGuisPacket extends BasePacket {
         data.writeInt(this.getPacketID());
         if (newGui != null) {
             data.writeBoolean(true);
-            data.writeResourceLocation(Registry.MENU.getKey(newGui));
+            data.writeResourceLocation(BuiltInRegistries.MENU.getKey(newGui));
         } else {
             data.writeBoolean(false);
         }

@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -106,7 +106,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         data.writeInt(packedState);
 
         for (int i = 0; i < getCellCount(); i++) {
-            data.writeVarInt(Registry.ITEM.getId(getCellItem(i)));
+            data.writeVarInt(BuiltInRegistries.ITEM.getId(getCellItem(i)));
         }
     }
 
@@ -120,7 +120,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
             var cellItem = getCellItem(i);
             if (cellItem != null) {
                 var cellData = new CompoundTag();
-                cellData.putString("id", Registry.ITEM.getKey(cellItem).toString());
+                cellData.putString("id", BuiltInRegistries.ITEM.getKey(cellItem).toString());
 
                 var cellState = getCellStatus(i);
                 cellData.putString("state", cellState.name().toLowerCase(Locale.ROOT));
@@ -151,7 +151,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
         for (int i = 0; i < getCellCount(); i++) {
             var itemId = data.readVarInt();
-            Item item = itemId == 0 ? null : Registry.ITEM.byId(itemId);
+            Item item = itemId == 0 ? null : BuiltInRegistries.ITEM.byId(itemId);
             if (itemId != 0 && item == Items.AIR) {
                 AELog.warn("Received unknown item id from server for disk drive %s: %d", this, itemId);
             }
@@ -180,7 +180,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
                 var id = new ResourceLocation(cellData.getString("id"));
                 var cellStateName = cellData.getString("state");
 
-                clientSideCellItems[i] = Registry.ITEM.getOptional(id).orElse(null);
+                clientSideCellItems[i] = BuiltInRegistries.ITEM.getOptional(id).orElse(null);
                 try {
                     clientSideCellState[i] = CellState.valueOf(cellStateName.toUpperCase(Locale.ROOT));
                 } catch (IllegalArgumentException e) {

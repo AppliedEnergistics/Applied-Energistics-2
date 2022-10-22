@@ -104,8 +104,8 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
         // This hack is used to allow the standard mouse-click logic to recognize our clicks
         // that are on the padding, but not really inside the edit box.
         if (isMouseOver(mouseX, mouseY)) {
-            mouseX = Mth.clamp(mouseX, x, x + width - 1);
-            mouseY = Mth.clamp(mouseY, y, y + height - 1);
+            mouseX = Mth.clamp(mouseX, getX(), getX() + width - 1);
+            mouseY = Mth.clamp(mouseY, getY(), getY() + height - 1);
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
@@ -124,7 +124,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     @Override
     public void move(Point pos) {
         super.setX(pos.getX() + PADDING);
-        this.y = pos.getY() + PADDING;
+        setY(pos.getY() + PADDING);
     }
 
     @Override
@@ -170,7 +170,8 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
             // Render a placeholder value if the text field isn't focused and is empty
             if (placeholder != null && !isFocused() && getValue().isEmpty()) {
                 var font = Minecraft.getInstance().font;
-                font.draw(poseStack, placeholder, x, y, style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB());
+                font.draw(poseStack, placeholder, getX(), getY(),
+                        style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB());
             }
         }
     }
@@ -198,8 +199,8 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
         startY -= PADDING;
 
-        endX = Mth.clamp(endX, this.x, this.x + this.width);
-        startX = Mth.clamp(startX, this.x, this.x + this.width);
+        endX = Mth.clamp(endX, getX(), getY() + this.width);
+        startX = Mth.clamp(startX, getX(), getX() + this.width);
 
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
@@ -224,8 +225,8 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     @Override
     public Rect2i getTooltipArea() {
         return new Rect2i(
-                x - PADDING,
-                y - PADDING,
+                getX() - PADDING,
+                getY() - PADDING,
                 width + 2 * PADDING + fontPad,
                 height + 2 * PADDING);
     }
@@ -247,8 +248,8 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
     private VisualBounds getVisualBounds() {
         // Render background
-        int left = x - PADDING;
-        int top = y - PADDING;
+        int left = getX() - PADDING;
+        int top = getY() - PADDING;
         int right = left + width + 2 * PADDING + fontPad;
         return new VisualBounds(
                 left,

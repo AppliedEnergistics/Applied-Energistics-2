@@ -23,7 +23,6 @@ import java.util.function.DoubleSupplier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -70,14 +69,12 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        super.addToMainCreativeTab(output);
 
-        if (this.allowedIn(group)) {
-            final ItemStack charged = new ItemStack(this, 1);
-            injectAEPower(charged, getAEMaxPower(charged), Actionable.MODULATE);
-            items.add(charged);
-        }
+        var charged = new ItemStack(this, 1);
+        injectAEPower(charged, getAEMaxPower(charged), Actionable.MODULATE);
+        output.accept(charged);
     }
 
     @Override

@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -36,7 +36,7 @@ public class TransformRecipeBuilder {
         @Override
         public void serializeRecipeData(@NotNull JsonObject json) {
             JsonObject stackObj = new JsonObject();
-            stackObj.addProperty("item", Registry.ITEM.getKey(output.asItem()).toString());
+            stackObj.addProperty("item", BuiltInRegistries.ITEM.getKey(output.asItem()).toString());
             if (count > 1) {
                 stackObj.addProperty("count", count);
             }

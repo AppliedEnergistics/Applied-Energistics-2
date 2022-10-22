@@ -24,7 +24,7 @@ public class GuideScrollbar extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput output) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
     }
 
     protected int getMaxScrollAmount() {
@@ -43,9 +43,9 @@ public class GuideScrollbar extends AbstractWidget {
         }
 
         int thumbHeight = getThumbHeight();
-        int left = x;
-        int right = x + 8;
-        int top = y + getThumbTop();
+        int left = getX();
+        int right = left + 8;
+        int top = getY() + getThumbTop();
         int bottom = top + thumbHeight;
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
@@ -85,11 +85,11 @@ public class GuideScrollbar extends AbstractWidget {
             return false;
         }
 
-        var thumbTop = y + getThumbTop();
+        var thumbTop = getY() + getThumbTop();
         var thumbBottom = thumbTop + getThumbHeight();
 
-        boolean thumbHit = mouseX >= x
-                && mouseX <= x + WIDTH
+        boolean thumbHit = mouseX >= getX()
+                && mouseX <= getX() + WIDTH
                 && mouseY >= thumbTop
                 && mouseY < thumbBottom;
         if (thumbHit) {
@@ -115,7 +115,7 @@ public class GuideScrollbar extends AbstractWidget {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (this.visible && this.thumbHeldAt != null) {
 
-            var thumbY = (int) Math.round(mouseY - y - thumbHeldAt);
+            var thumbY = (int) Math.round(mouseY - getY() - thumbHeldAt);
             var maxThumbY = height - getThumbHeight();
             var scrollAmount = (int) Math.round(thumbY / (double) maxThumbY * getMaxScrollAmount());
             setScrollAmount(scrollAmount);
@@ -137,8 +137,8 @@ public class GuideScrollbar extends AbstractWidget {
     }
 
     public void move(int x, int y, int height) {
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
         this.width = WIDTH;
         this.height = height;
     }

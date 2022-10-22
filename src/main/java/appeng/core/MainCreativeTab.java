@@ -21,24 +21,27 @@ package appeng.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.minecraft.core.NonNullList;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 
+import appeng.api.ids.AECreativeTabIds;
+import appeng.block.AEBaseBlock;
+import appeng.block.AEBaseBlockItem;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.ItemDefinition;
+import appeng.items.AEBaseItem;
 
-public final class CreativeTab {
+public final class MainCreativeTab {
 
     private static final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
 
     public static CreativeModeTab INSTANCE;
 
     public static void init() {
-        INSTANCE = FabricItemGroupBuilder.create(AppEng.makeId("main"))
+        INSTANCE = FabricItemGroup.builder(AECreativeTabIds.MAIN)
                 .icon(() -> AEBlocks.CONTROLLER.stack(1))
-                .appendItems(CreativeTab::fill)
+                .displayItems(MainCreativeTab::buildDisplayItems)
                 .build();
     }
 
@@ -46,17 +49,20 @@ public final class CreativeTab {
         itemDefs.add(itemDef);
     }
 
-    private static void fill(List<ItemStack> items) {
-        for (ItemDefinition<?> itemDef : itemDefs) {
-            itemDef.asItem().fillItemCategory(INSTANCE, new ListWrapper(items));
+    private static void buildDisplayItems(FeatureFlagSet featureFlagSet, CreativeModeTab.Output output,
+            boolean opItems) {
+        for (var itemDef : itemDefs) {
+            var item = itemDef.asItem();
+
+            // For block items, the block controls the creative tab
+            if (item instanceof AEBaseBlockItem baseItem
+                    && baseItem.getBlock() instanceof AEBaseBlock baseBlock) {
+                baseBlock.addToMainCreativeTab(output);
+            } else if (item instanceof AEBaseItem baseItem) {
+                baseItem.addToMainCreativeTab(output);
+            } else {
+                output.accept(itemDef);
+            }
         }
     }
-
-    private static class ListWrapper extends NonNullList<ItemStack> {
-
-        public ListWrapper(List<ItemStack> items) {
-            super(items, ItemStack.EMPTY);
-        }
-    }
-
 }

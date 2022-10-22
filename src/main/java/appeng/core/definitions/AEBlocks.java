@@ -85,7 +85,7 @@ import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyStoneTankBlock;
 import appeng.core.AppEng;
-import appeng.core.CreativeTab;
+import appeng.core.MainCreativeTab;
 import appeng.debug.ChunkLoaderBlock;
 import appeng.debug.CubeGeneratorBlock;
 import appeng.debug.EnergyGeneratorBlock;
@@ -275,7 +275,6 @@ public final class AEBlocks {
         T block = blockSupplier.get();
 
         Item.Properties itemProperties = new Item.Properties();
-        itemProperties.tab(CreativeTab.INSTANCE);
 
         BlockItem item;
         if (itemFactory != null) {
@@ -290,7 +289,7 @@ public final class AEBlocks {
         }
 
         BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, item);
-        CreativeTab.add(definition);
+        MainCreativeTab.add(definition);
 
         BLOCKS.add(definition);
 

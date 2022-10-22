@@ -36,9 +36,10 @@ package appeng.datagen.providers.advancements;
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
@@ -49,8 +50,8 @@ import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -67,35 +68,33 @@ import appeng.datagen.providers.tags.ConventionTags;
 
 public class AdvancementGenerator implements IAE2DataProvider {
 
-    private final DataGenerator generator;
+    private final PackOutput output;
 
     private final LocalizationProvider localization;
 
-    public AdvancementGenerator(DataGenerator generator, LocalizationProvider localization) {
-        this.generator = generator;
+    public AdvancementGenerator(PackOutput output, LocalizationProvider localization) {
+        this.output = output;
         this.localization = localization;
     }
 
     @Override
-    public void run(CachedOutput cache) {
-        Path path = this.generator.getOutputFolder();
+    public CompletableFuture<?> run(CachedOutput cache) {
+        Path path = this.output.getOutputFolder();
         Set<ResourceLocation> set = Sets.newHashSet();
+        var futures = new ArrayList<CompletableFuture<?>>();
         Consumer<Advancement> consumer = (advancement) -> {
             if (!set.add(advancement.getId())) {
                 throw new IllegalStateException("Duplicate advancement " + advancement.getId());
             } else {
                 Path path1 = createPath(path, advancement);
 
-                try {
-                    DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path1);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
+                futures.add(DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path1));
             }
         };
 
         generateAdvancements(consumer);
+
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     private void generateAdvancements(Consumer<Advancement> consumer) {

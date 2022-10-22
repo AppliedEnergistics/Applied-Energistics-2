@@ -20,15 +20,15 @@ package appeng.block.qnb;
 
 import java.util.Collection;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.render.BasicUnbakedModel;
@@ -40,9 +40,9 @@ public class QnbFormedModel implements BasicUnbakedModel {
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public BakedModel bake(ModelBakery modelBakery, Function<Material, TextureAtlasSprite> textureGetter,
+    public BakedModel bake(ModelBaker modelBaker, Function<Material, TextureAtlasSprite> textureGetter,
             ModelState modelState, ResourceLocation resourceLocation) {
-        BakedModel ringModel = modelBakery.bake(MODEL_RING, modelState);
+        BakedModel ringModel = modelBaker.bake(MODEL_RING, modelState);
         return new QnbFormedBakedModel(ringModel, textureGetter);
     }
 
@@ -52,8 +52,7 @@ public class QnbFormedModel implements BasicUnbakedModel {
     }
 
     @Override
-    public Stream<Material> getAdditionalTextures() {
-        return QnbFormedBakedModel.getRequiredTextures().stream();
+    public void resolveParents(Function<ResourceLocation, UnbakedModel> function) {
     }
 
 }

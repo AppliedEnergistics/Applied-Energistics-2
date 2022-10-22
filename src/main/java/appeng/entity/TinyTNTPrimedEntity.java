@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -141,7 +142,8 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
         }
 
         final Explosion ex = new Explosion(this.level, this, null, null, this.getX(), this.getY(), this.getZ(),
-                0.2f, false, BlockInteraction.BREAK);
+                0.2f, false, AEConfig.instance().isTinyTntBlockDamageEnabled() ? BlockInteraction.DESTROY_WITH_DECAY
+                        : BlockInteraction.KEEP);
         final AABB area = new AABB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
         final List<Entity> list = this.level.getEntities(this, area);
@@ -192,7 +194,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return SpawnEntityPacket.create(this);
     }
 

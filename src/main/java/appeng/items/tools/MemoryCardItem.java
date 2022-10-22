@@ -31,7 +31,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -147,8 +147,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         // Accumulate upgrades as itemId->count NBT
         var desiredUpgradesTag = new CompoundTag();
         for (var upgrade : upgradeableObject.getUpgrades()) {
-            var itemId = Registry.ITEM.getKey(upgrade.getItem());
-            if (itemId.equals(Registry.ITEM.getDefaultKey())) {
+            var itemId = BuiltInRegistries.ITEM.getKey(upgrade.getItem());
+            if (itemId.equals(BuiltInRegistries.ITEM.getDefaultKey())) {
                 AELog.warn("Cannot save unregistered upgrade to memory card %s", upgrade.getItem());
                 continue;
             }
@@ -175,7 +175,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
                 continue;
             }
 
-            var item = Registry.ITEM.getOptional(itemId).orElse(null);
+            var item = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
             if (item == null) {
                 AELog.warn("Memory card contains unknown item id %s", itemId);
                 continue;
