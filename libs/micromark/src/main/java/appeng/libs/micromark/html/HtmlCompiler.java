@@ -177,7 +177,7 @@ public class HtmlCompiler {
      */
     CompileData data = new CompileData();
 
-    static class CompileData {
+    public static class CompileData {
         public boolean lastWasTag;
         public boolean expectFirstItem;
         public boolean slurpOneLineEnding;
@@ -313,7 +313,10 @@ public class HtmlCompiler {
 
         @Override
         public void setData(String key, Object value) {
-            throw new UnsupportedOperationException();
+            switch (key) {
+                case "slurpOneLineEnding" -> data.slurpOneLineEnding = (boolean) value;
+                default -> throw new UnsupportedOperationException();
+            }
         }
 
         @Override

@@ -1,5 +1,6 @@
 package appeng.libs.micromark.html;
 
+import appeng.libs.micromark.Extension;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -45,5 +46,20 @@ public class CompileOptions {
 
     public void setAllowDangerousProtocol(boolean allowDangerousProtocol) {
         this.allowDangerousProtocol = allowDangerousProtocol;
+    }
+
+    public CompileOptions allowDangerousHtml() {
+        this.allowDangerousHtml = true;
+        return this;
+    }
+
+    public CompileOptions allowDangerousProtocol() {
+        this.allowDangerousProtocol = true;
+        return this;
+    }
+
+    public CompileOptions withExtension(HtmlExtension extension) {
+        extensions.add(extension);
+        return this;
     }
 }
