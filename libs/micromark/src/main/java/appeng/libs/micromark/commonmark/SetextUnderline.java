@@ -127,7 +127,7 @@ public final class SetextUnderline {
                     "expected `=` or `-`"
             );
 
-            if (!context.parser.lazy.containsKey(context.now().line()) && (context.interrupt || paragraph)) {
+            if (!context.isOnLazyLine() && (context.interrupt || paragraph)) {
                 effects.enter(Types.setextHeadingLine);
                 effects.enter(Types.setextHeadingLineSequence);
                 marker = code;

@@ -145,7 +145,7 @@ public final class Attention {
                                 nextEvents,
                                 Construct.resolveAll(
                                         context.parser.constructs.nullInsideSpan,
-                                        events.subList(open + 1, index),
+                                        new ArrayList<>(events.subList(open + 1, index)),
                                         context
                                 )
                         );

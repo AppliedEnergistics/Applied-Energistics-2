@@ -298,7 +298,7 @@ public final class InitializeDocument {
             // We’ve now parsed the non-lazy and the lazy line, and can figure out
             // whether the lazy line started a new flow block.
             // If it did, we exit the current containers between the two flow blocks.
-            if (context.parser.lazy.getOrDefault(token.start.line(), false)) {
+            if (context.parser.isLazyLine(token.start.line())) {
                 var index = childFlow.events.size();
 
                 while (index-- > 0) {

@@ -211,7 +211,7 @@ public final class CodeFenced {
             }
 
             private State lineStart(int code) {
-                return context.parser.lazy.containsKey(context.now().line()) ? nok.step(code) : ok.step(code);
+                return context.isOnLazyLine() ? nok.step(code) : ok.step(code);
             }
         }
 

@@ -114,7 +114,7 @@ public final class CodeIndented {
         
         private State start(int code) {
             // If this is a lazy line, it can’t be code.
-            if (context.parser.lazy.containsKey(context.now().line())) {
+            if (context.isOnLazyLine()) {
                 return nok.step(code);
             }
 

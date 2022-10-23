@@ -39,6 +39,10 @@ public class ParseContext {
      */
     public Map<Integer, Boolean> lazy = new HashMap<>();
 
+    public boolean isLazyLine(int line) {
+        return lazy.getOrDefault(line, false);
+    }
+
     public Create get(ContentType contentType) {
         return switch (contentType) {
             case DOCUMENT -> document;

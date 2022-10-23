@@ -634,6 +634,10 @@ public class Tokenizer {
         public Point now() {
             return Tokenizer.this.now();
         }
+
+        public boolean isOnLazyLine() {
+            return parser.isLazyLine(pointLine);
+        }
     }
 
     public static class ContainerState extends HashMap<String, Object> {

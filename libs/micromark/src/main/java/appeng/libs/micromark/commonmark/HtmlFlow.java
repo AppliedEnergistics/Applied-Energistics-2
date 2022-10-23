@@ -203,7 +203,7 @@ public final class HtmlFlow {
 
                 kind = Constants.htmlComplete;
                 // Do not support complete HTML when interrupting
-                return context.interrupt && !context.parser.lazy.containsKey(context.now().line())
+                return context.interrupt && !context.isOnLazyLine()
                         ? nok.step(code)
                         : startTag
                         ? completeAttributeNameBefore(code)
@@ -461,7 +461,7 @@ public final class HtmlFlow {
 
         private State htmlLineEnd(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
             State lineStart= (int code) -> {
-                return context.parser.lazy.containsKey(context.now().line()) ? nok.step(code) : ok.step(code);
+                return context.isOnLazyLine() ? nok.step(code) : ok.step(code);
             };
 
             return (int code) -> {
