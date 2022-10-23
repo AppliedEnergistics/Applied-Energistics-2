@@ -79,6 +79,14 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     @Override
     public int getMaxProgress() {
-        return VibrationChamberBlockEntity.MAX_BURN_SPEED;
+        return vibrationChamber.getMaxBurnSpeed();
+    }
+
+    /**
+     * Current amount of power being generated.
+     */
+    public double getPowerPerTick() {
+        var fuelTicksPerTick = burnSpeed / 100.0;
+        return fuelTicksPerTick * vibrationChamber.getEnergyPerFuelTick();
     }
 }
