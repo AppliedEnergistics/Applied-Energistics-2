@@ -107,7 +107,7 @@ public class Construct {
          * @param events  List of events.
          * @param context Context.
          */
-        List<Tokenizer.Event> resolve(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context);
+        List<Tokenizer.Event> resolve(List<Tokenizer.Event> events, TokenizeContext context);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Construct {
      */
     @FunctionalInterface
     public interface Exiter {
-        void exit(Tokenizer.TokenizeContext context, Tokenizer.Effects effects);
+        void exit(TokenizeContext context, Tokenizer.Effects effects);
     }
 
     /**
@@ -127,7 +127,7 @@ public class Construct {
      */
     @FunctionalInterface
     public interface Previous {
-        boolean previous(Tokenizer.TokenizeContext context, int code);
+        boolean previous(TokenizeContext context, int code);
     }
 
     /**
@@ -135,7 +135,7 @@ public class Construct {
      */
     public static List<Tokenizer.Event> resolveAll(List<Construct> constructs,
                                                    List<Tokenizer.Event> events,
-                                                   Tokenizer.TokenizeContext context) {
+                                                   TokenizeContext context) {
         var called = new HashSet<Resolver>();
 
         for (var construct : constructs) {
@@ -153,7 +153,7 @@ public class Construct {
      */
     public static List<Tokenizer.Event> resolveAll(Iterable<Resolver> resolvers,
                                                    List<Tokenizer.Event> events,
-                                                   Tokenizer.TokenizeContext context) {
+                                                   TokenizeContext context) {
         var called = new HashSet<Resolver>();
 
         for (var resolver : resolvers) {
@@ -167,7 +167,7 @@ public class Construct {
 
     @FunctionalInterface
     public interface TokenizerFunction {
-        State tokenize(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok);
+        State tokenize(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok);
     }
 
     public TokenizerFunction tokenize;

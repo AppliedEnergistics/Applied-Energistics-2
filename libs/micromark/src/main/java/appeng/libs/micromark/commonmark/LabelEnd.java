@@ -7,6 +7,7 @@ import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.NormalizeIdentifier;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactoryDestination;
@@ -46,7 +47,7 @@ public final class LabelEnd {
         collapsedReferenceConstruct.tokenize = (context, effects, ok, nok) -> new CollapsedReferenceStateMachine(context, effects, ok, nok)::start;
     }
 
-    public static List<Tokenizer.Event> resolveAll(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    public static List<Tokenizer.Event> resolveAll(List<Tokenizer.Event> events, TokenizeContext context) {
         var index = -1;
 
         while (++index < events.size()) {
@@ -67,7 +68,7 @@ public final class LabelEnd {
         return events;
     }
 
-    private static List<Tokenizer.Event> resolveToLabelEnd(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    private static List<Tokenizer.Event> resolveToLabelEnd(List<Tokenizer.Event> events, TokenizeContext context) {
         var index = events.size();
         var offset = 0;
         Token token;
@@ -143,7 +144,7 @@ public final class LabelEnd {
         media = ListUtils.push(
                 media,
                 Construct.resolveAll(
-                        context.parser.constructs.nullInsideSpan,
+                        context.getParser().constructs.nullInsideSpan,
                         ListUtils.slice(events, open + offset + 4, close - 3),
                         context
                 )
@@ -169,7 +170,7 @@ public final class LabelEnd {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
@@ -179,22 +180,22 @@ public final class LabelEnd {
         Token labelStart;
         boolean defined = false;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
             this.ok = ok;
             this.nok = nok;
-            this.index = context.events.size();
+            this.index = context.getEvents().size();
 
             // Find an opening.
             while (index-- > 0) {
                 if (
-                        (context.events.get(index).token().type.equals(Types.labelImage) ||
-                                context.events.get(index).token().type.equals(Types.labelLink)) &&
-                                !context.events.get(index).token()._balanced
+                        (context.getEvents().get(index).token().type.equals(Types.labelImage) ||
+                                context.getEvents().get(index).token().type.equals(Types.labelLink)) &&
+                                !context.getEvents().get(index).token()._balanced
                 ) {
-                    labelStart = context.events.get(index).token();
+                    labelStart = context.getEvents().get(index).token();
                     break;
                 }
             }
@@ -224,7 +225,7 @@ public final class LabelEnd {
             // It’s a balanced bracket, but contains a link.
             if (labelStart._inactive) return balanced(code);
 
-            defined = context.parser.defined.contains(
+            defined = context.getParser().defined.contains(
                     NormalizeIdentifier.normalizeIdentifier(
                             context.sliceSerialize(labelStart.end, context.now())
                     )
@@ -297,12 +298,12 @@ public final class LabelEnd {
     }
 
     private static class ResourceStateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
 
-        public ResourceStateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public ResourceStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -417,12 +418,12 @@ public final class LabelEnd {
     }
 
     private static class FullReferenceStateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
 
-        public FullReferenceStateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public FullReferenceStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -461,7 +462,7 @@ public final class LabelEnd {
          */
         private State afterLabel(int code) {
             var lastTokenText = context.sliceSerialize(context.getLastEvent().token());
-            return context.parser.defined.contains(
+            return context.getParser().defined.contains(
                     NormalizeIdentifier.normalizeIdentifier(
                             lastTokenText.substring(1, lastTokenText.length() - 1)
                     )
@@ -472,12 +473,12 @@ public final class LabelEnd {
     }
 
     private static class CollapsedReferenceStateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
 
-        public CollapsedReferenceStateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public CollapsedReferenceStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;

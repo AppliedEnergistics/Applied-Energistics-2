@@ -6,6 +6,7 @@ import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.Point;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
@@ -30,7 +31,7 @@ public final class Attention {
     /**
      * Take all events and resolve attention to emphasis or strong.
      */
-    private static List<Tokenizer.Event> resolveAllAttention(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    private static List<Tokenizer.Event> resolveAllAttention(List<Tokenizer.Event> events, TokenizeContext context) {
         int index = -1;
         int open;
         Token group;
@@ -144,7 +145,7 @@ public final class Attention {
                         nextEvents = ListUtils.push(
                                 nextEvents,
                                 Construct.resolveAll(
-                                        context.parser.constructs.nullInsideSpan,
+                                        context.getParser().constructs.nullInsideSpan,
                                         ListUtils.slice(events, open + 1, index),
                                         context
                                 )
@@ -208,7 +209,7 @@ public final class Attention {
     }
 
     static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final int previous;
@@ -217,13 +218,13 @@ public final class Attention {
 
         int marker;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok) {
             this.context = context;
             this.effects = effects;
             this.ok = ok;
 
-            attentionMarkers = context.parser.constructs.nullAttentionMarkers;
-            previous = context.previous;
+            attentionMarkers = context.getParser().constructs.nullAttentionMarkers;
+            previous = context.getPrevious();
             before = ClassifyCharacter.classifyCharacter(previous);
 
         }

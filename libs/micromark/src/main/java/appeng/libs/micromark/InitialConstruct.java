@@ -5,7 +5,7 @@ package appeng.libs.micromark;
  */
 public class InitialConstruct extends Construct {
 
-    public State tokenize(Tokenizer.TokenizeContext context, Tokenizer.Effects effects) {
+    public State tokenize(TokenizeContext context, Tokenizer.Effects effects) {
         return this.tokenize.tokenize(context, effects, null, null);
     }
 

@@ -27,17 +27,17 @@ public final class InitializeDocument {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final List<StackItem> stack = new ArrayList<>();
         private int continued = 0;
         @Nullable
-        private Tokenizer.TokenizeContext childFlow;
+        private TokenizeContext childFlow;
         @Nullable
         private Token childToken;
         private int lineStartOffset;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects) {
             this.context = context;
             this.effects = effects;
         }
@@ -55,7 +55,7 @@ public final class InitializeDocument {
             // continuation line.
             if (continued < stack.size()) {
                 var item = stack.get(continued);
-                context.containerState = item.stackState();
+                context.setContainerState(item.stackState());
                 if (item.construct.continuation == null) {
                     throw new IllegalStateException("expected 'continuation' to be defined on container construct");
                 }
@@ -71,7 +71,7 @@ public final class InitializeDocument {
         }
 
         private State documentContinue(int code) {
-            if (context.containerState == null) {
+            if (context.getContainerState() == null) {
                 throw new IllegalStateException("expected 'containerState' to be defined after continuation");
             }
 
@@ -80,8 +80,8 @@ public final class InitializeDocument {
             // Note: this field is called `_closeFlow` but it also closes containers.
             // Perhaps a good idea to rename it but it’s already used in the wild by
             // extensions.
-            if (context.containerState._closeFlow) {
-                context.containerState._closeFlow = false;
+            if (context.getContainerState()._closeFlow) {
+                context.getContainerState()._closeFlow = false;
 
                 if (childFlow != null) {
                     closeFlow();
@@ -89,13 +89,13 @@ public final class InitializeDocument {
 
                 // Note: this algorithm for moving events around is similar to the
                 // algorithm when dealing with lazy lines in `writeToChild`.
-                var indexBeforeExits = context.events.size();
+                var indexBeforeExits = context.getEvents().size();
                 var indexBeforeFlow = indexBeforeExits;
                 Point point = null;
 
                 // Find the flow chunk.
                 while (indexBeforeFlow-- > 0) {
-                    var event = context.events.get(indexBeforeFlow);
+                    var event = context.getEvents().get(indexBeforeFlow);
                     if (
                             event.type() == Tokenizer.EventType.EXIT &&
                                     event.token().type.equals(Types.chunkFlow)
@@ -114,20 +114,20 @@ public final class InitializeDocument {
                 // Fix positions.
                 var index = indexBeforeExits;
 
-                while (index < context.events.size()) {
-                    context.events.get(index).token().end = point;
+                while (index < context.getEvents().size()) {
+                    context.getEvents().get(index).token().end = point;
                     index++;
                 }
 
                 // Inject the exits earlier (they’re still also at the end).
-                var eventsToMove = ListUtils.slice(context.events, indexBeforeExits);
-                context.events.addAll(
+                var eventsToMove = ListUtils.slice(context.getEvents(), indexBeforeExits);
+                context.getEvents().addAll(
                         indexBeforeFlow + 1,
                         eventsToMove
                 );
 
                 // Discard the duplicate exits.
-                ListUtils.setLength(context.events, index);
+                ListUtils.setLength(context.getEvents(), index);
 
                 return checkNewContainers(code);
             }
@@ -152,18 +152,18 @@ public final class InitializeDocument {
                 // If we have concrete content, such as block HTML or fenced code,
                 // we can’t have containers “pierce” into them, so we can immediately
                 // start.
-                if (childFlow.currentConstruct != null && childFlow.currentConstruct.concrete) {
+                if (childFlow.getCurrentConstruct() != null && childFlow.getCurrentConstruct().concrete) {
                     return flowStart(code);
                 }
 
                 // If we do have flow, it could still be a blank line,
                 // but we’d be interrupting it w/ a new container if there’s a current
                 // construct.
-                context.interrupt = childFlow.currentConstruct != null && !childFlow._gfmTableDynamicInterruptHack;
+                context.setInterrupt(childFlow.getCurrentConstruct() != null && !childFlow.isGfmTableDynamicInterruptHack());
             }
 
             // Check if there is a new container.
-            context.containerState = new Tokenizer.ContainerState();
+            context.setContainerState(new Tokenizer.ContainerState());
             return effects.check.hook(
                     containerConstruct,
                     this::thereIsANewContainer,
@@ -178,14 +178,14 @@ public final class InitializeDocument {
         }
 
         private State thereIsNoNewContainer(int code) {
-            context.parser.lazy.put(context.now().line(), continued != stack.size());
+            context.getParser().lazy.put(context.now().line(), continued != stack.size());
             lineStartOffset = context.now().offset();
             return flowStart(code);
         }
 
         private State documentContinued(int code) {
             // Try new containers.
-            context.containerState = new Tokenizer.ContainerState();
+            context.setContainerState(new Tokenizer.ContainerState());
             return effects.attempt.hook(
                     containerConstruct,
                     this::containerContinue,
@@ -194,14 +194,14 @@ public final class InitializeDocument {
         }
 
         private State containerContinue(int code) {
-            if (context.currentConstruct == null) {
+            if (context.getCurrentConstruct() == null) {
                 throw new IllegalStateException("expected 'currentConstruct' to be defined on tokenizer");
             }
-            if (context.containerState == null) {
+            if (context.getContainerState() == null) {
                 throw new IllegalStateException("expected 'containerState' to be defined on tokenizer");
             }
             continued++;
-            stack.add(new StackItem(context.currentConstruct, context.containerState));
+            stack.add(new StackItem(context.getCurrentConstruct(), context.getContainerState()));
             // Try another.
             return documentContinued(code);
         }
@@ -215,7 +215,7 @@ public final class InitializeDocument {
             }
 
             if (childFlow == null) {
-                childFlow = context.parser.flow.create(context.now());
+                childFlow = context.getParser().flow.create(context.now());
             }
 
             var token = new Token();
@@ -241,7 +241,7 @@ public final class InitializeDocument {
                 writeToChild(effects.exit(Types.chunkFlow), false);
                 // Get ready for the next line.
                 continued = 0;
-                context.interrupt = false;
+                context.setInterrupt(false);
                 return this::start;
             }
 
@@ -298,11 +298,11 @@ public final class InitializeDocument {
             // We’ve now parsed the non-lazy and the lazy line, and can figure out
             // whether the lazy line started a new flow block.
             // If it did, we exit the current containers between the two flow blocks.
-            if (context.parser.isLazyLine(token.start.line())) {
-                var index = childFlow.events.size();
+            if (context.getParser().isLazyLine(token.start.line())) {
+                var index = childFlow.getEvents().size();
 
                 while (index-- > 0) {
-                    var childFlowToken = childFlow.events.get(index).token();
+                    var childFlowToken = childFlow.getEvents().get(index).token();
                     if (
                         // The token starts before the line ending…
                             childFlowToken.start.offset() < lineStartOffset &&
@@ -319,14 +319,14 @@ public final class InitializeDocument {
 
                 // Note: this algorithm for moving events around is similar to the
                 // algorithm when closing flow in `documentContinue`.
-                var indexBeforeExits = context.events.size();
+                var indexBeforeExits = context.getEvents().size();
                 var indexBeforeFlow = indexBeforeExits;
                 boolean seen = false;
                 Point point = null;
 
                 // Find the previous chunk (the one before the lazy line).
                 while (indexBeforeFlow-- > 0) {
-                    var event = context.events.get(indexBeforeFlow);
+                    var event = context.getEvents().get(indexBeforeFlow);
                     if (
                             event.type() == Tokenizer.EventType.EXIT &&
                                     event.token().type.equals(Types.chunkFlow)
@@ -349,16 +349,16 @@ public final class InitializeDocument {
                 // Fix positions.
                 index = indexBeforeExits;
 
-                while (index < context.events.size()) {
-                    context.events.get(index).token().end = point;
+                while (index < context.getEvents().size()) {
+                    context.getEvents().get(index).token().end = point;
                     index++;
                 }
 
                 // Inject the exits earlier (they’re still also at the end).
-                var eventsToMove = ListUtils.slice(context.events, indexBeforeExits);
-                context.events.addAll(indexBeforeFlow + 1, eventsToMove);
+                var eventsToMove = ListUtils.slice(context.getEvents(), indexBeforeExits);
+                context.getEvents().addAll(indexBeforeFlow + 1, eventsToMove);
                 // Discard the duplicate exits.
-                ListUtils.setLength(context.events, index);
+                ListUtils.setLength(context.getEvents(), index);
             }
         }
 
@@ -368,7 +368,7 @@ public final class InitializeDocument {
             // Exit open containers.
             while (index-- > size) {
                 var entry = stack.get(index);
-                context.containerState = entry.stackState();
+                context.setContainerState(entry.stackState());
                 if (entry.construct.exit == null) {
                     throw new IllegalStateException("expected 'exit' to be defined on container construct");
                 }
@@ -379,7 +379,7 @@ public final class InitializeDocument {
         }
 
         private void closeFlow() {
-            if (context.containerState == null) {
+            if (context.getContainerState() == null) {
                 throw new IllegalStateException("expected 'containerState' to be defined when closing flow");
             }
             if (childFlow == null) {
@@ -388,16 +388,16 @@ public final class InitializeDocument {
             childFlow.write(List.of(Codes.eof));
             childToken = null;
             childFlow = null;
-            context.containerState._closeFlow = false;
+            context.getContainerState()._closeFlow = false;
         }
     }
 
-    private static State tokenizeContainer(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+    private static State tokenizeContainer(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
         return FactorySpace.create(
                 effects,
-                effects.attempt.hook(context.parser.constructs.document, ok, nok),
+                effects.attempt.hook(context.getParser().constructs.document, ok, nok),
                 Types.linePrefix,
-                context.parser.constructs.nullDisable.contains(Types.codeIndented)
+                context.getParser().constructs.nullDisable.contains(Types.codeIndented)
                         ? Integer.MAX_VALUE
                         : Constants.tabSize
         );

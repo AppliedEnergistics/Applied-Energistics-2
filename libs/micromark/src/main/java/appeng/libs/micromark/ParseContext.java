@@ -55,10 +55,10 @@ public class ParseContext {
 
     @FunctionalInterface
     public interface Create {
-        default Tokenizer.TokenizeContext create() {
+        default TokenizeContext create() {
             return create(null);
         }
 
-        Tokenizer.TokenizeContext create(@Nullable UnistPoint from);
+        TokenizeContext create(@Nullable UnistPoint from);
     }
 }

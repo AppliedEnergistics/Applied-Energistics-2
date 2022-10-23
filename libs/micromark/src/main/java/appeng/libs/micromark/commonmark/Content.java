@@ -6,6 +6,7 @@ import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.ContentType;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
@@ -35,19 +36,19 @@ public final class Content {
      * Content is transparent: it’s parsed right now. That way, definitions are also
      * parsed right now: before text in paragraphs (specifically, media) are parsed.
      */
-    private static List<Tokenizer.Event> resolveContent(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    private static List<Tokenizer.Event> resolveContent(List<Tokenizer.Event> events, TokenizeContext context) {
         Subtokenize.subtokenize(events);
         return events;
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
         Token previous;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -113,12 +114,12 @@ public final class Content {
 
 
     private static class ContinuationStateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
 
-        public ContinuationStateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public ContinuationStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -145,7 +146,7 @@ public final class Content {
             var tail = context.getLastEvent();
 
             if (
-                    !context.parser.constructs.nullDisable.contains("codeIndented") &&
+                    !context.getParser().constructs.nullDisable.contains("codeIndented") &&
                             tail != null &&
                             tail.token().type == Types.linePrefix &&
                             tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
@@ -153,7 +154,7 @@ public final class Content {
                 return ok.step(code);
             }
 
-            return effects.interrupt.hook(context.parser.constructs.flow, nok, ok).step(code);
+            return effects.interrupt.hook(context.getParser().constructs.flow, nok, ok).step(code);
         }
     }
 }

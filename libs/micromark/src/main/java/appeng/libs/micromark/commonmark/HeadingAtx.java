@@ -7,6 +7,7 @@ import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.ContentType;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
@@ -27,7 +28,7 @@ public final class HeadingAtx {
         headingAtx.resolve = HeadingAtx::resolveHeadingAtx;
     }
 
-    private static List<Tokenizer.Event> resolveHeadingAtx(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    private static List<Tokenizer.Event> resolveHeadingAtx(List<Tokenizer.Event> events, TokenizeContext context) {
         var contentEnd = events.size() - 2;
         var contentStart = 3;
 
@@ -77,13 +78,13 @@ public final class HeadingAtx {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
         private int size;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -111,7 +112,7 @@ public final class HeadingAtx {
 
             if (code == Codes.eof || CharUtil.markdownLineEndingOrSpace(code)) {
                 effects.exit(Types.atxHeadingSequence);
-                return context.interrupt ? ok.step(code) : headingBreak(code);
+                return context.isInterrupt() ? ok.step(code) : headingBreak(code);
             }
 
             return nok.step(code);

@@ -5,6 +5,7 @@ import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.ContentType;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
@@ -14,12 +15,12 @@ public final class FactoryLabel {
     private FactoryLabel() {
     }
 
-    public static State create(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
+    public static State create(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
         return new StateMachine(context, effects, ok, nok, type, markerType, stringType)::start;
     }
 
     private static class StateMachine {
-        private Tokenizer.TokenizeContext context;
+        private TokenizeContext context;
         private Tokenizer.Effects effects;
         private State ok;
         private State nok;
@@ -30,7 +31,7 @@ public final class FactoryLabel {
         private int size = 0;
         private boolean data;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
             this.context = context;
             this.effects = effects;
             this.ok = ok;
@@ -62,7 +63,7 @@ public final class FactoryLabel {
                             /* c8 ignore next 3 */
                             (code == Codes.caret &&
                                     size == 0 &&
-                                    context.parser.constructs._hiddenFootnoteSupport) ||
+                                    context.getParser().constructs._hiddenFootnoteSupport) ||
             size > Constants.linkReferenceSizeMax
     ) {
                 return nok.step(code);

@@ -86,7 +86,7 @@ public class Token {
      * tokens.
      */
     @Nullable
-    public Tokenizer.TokenizeContext _tokenizer;
+    public TokenizeContext _tokenizer;
 
     /**
      * A marker used to parse attention, depending on the characters before

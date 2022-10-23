@@ -43,7 +43,7 @@ public final class Subtokenize {
                             events.get(index - 1).token().type.equals(Types.listItemPrefix)
             ) {
                 Assert.check(event.token()._tokenizer != null, "expected '_tokenizer' on subtokens");
-                subevents = event.token()._tokenizer.events;
+                subevents = event.token()._tokenizer.getEvents();
                 otherIndex = 0;
 
                 if (
@@ -131,8 +131,8 @@ public final class Subtokenize {
         var startPosition = eventIndex - 1;
         List<Integer> startPositions = new ArrayList<>();
         Assert.check(token.contentType != null, "expected 'contentType' on subtokens");
-        var tokenizer = Objects.requireNonNullElse(token._tokenizer, context.parser.get(token.contentType).create(token.start));
-        var childEvents = tokenizer.events;
+        var tokenizer = Objects.requireNonNullElse(token._tokenizer, context.getParser().get(token.contentType).create(token.start));
+        var childEvents = tokenizer.getEvents();
         List<Jump> jumps = new ArrayList<>();
         Map<Integer, Integer> gaps = new HashMap<>();
         List<Object> stream;
@@ -171,13 +171,13 @@ public final class Subtokenize {
                 }
 
                 if (current._isInFirstContentOfListItem) {
-                    tokenizer._gfmTasklistFirstContentOfListItem = true;
+                    tokenizer.setGfmTasklistFirstContentOfListItem(true);
                 }
 
                 tokenizer.write(stream);
 
                 if (current._isInFirstContentOfListItem) {
-                    tokenizer._gfmTasklistFirstContentOfListItem = false;
+                    tokenizer.setGfmTasklistFirstContentOfListItem(false);
                 }
             }
 
@@ -210,7 +210,7 @@ public final class Subtokenize {
 
         // Help GC.
         childEvents = new ArrayList<>(childEvents);
-        tokenizer.events.clear();
+        tokenizer.getEvents().clear();
 
         // If there’s one more token (which is the cases for lines that end in an
         // EOF), that’s perfect: the last point we found starts it.

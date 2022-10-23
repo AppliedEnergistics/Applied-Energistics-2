@@ -2,13 +2,11 @@ package appeng.libs.micromark;
 
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.unist.UnistPoint;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +25,10 @@ import java.util.Stack;
 public class Tokenizer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Tokenizer.class);
 
-    private int pointLine;
+    private final ParseContext parser;
+    final InitialConstruct initialize;
+
+    int pointLine;
     private int pointColumn;
     private int pointOffset;
     private int pointIndex = 0;
@@ -37,13 +38,13 @@ public class Tokenizer {
 
     List<Construct> resolveAllConstructs = new ArrayList<>();
 
-    private List<Object> chunks = new ArrayList<>();
+    final List<Object> chunks = new ArrayList<>();
     private Stack<Token> stack = new Stack<>();
     private boolean consumed = true;
 
-    private TokenizeContext context;
+    final TokenizeContext context;
 
-    private Effects effects;
+    private final Effects effects;
 
     /**
      * The state function.
@@ -62,10 +63,9 @@ public class Tokenizer {
         }
 
         // TODO: Closure (?)
-        context = new TokenizeContext(initialize);
-        context.previous = Codes.eof; // to CTOR?
-        context.code = Codes.eof;
-        context.parser = parser;
+        this.parser = parser;
+        this.initialize = initialize;
+        context = new RootTokenizeContext(this);
 
         effects = new Effects();
 
@@ -78,6 +78,10 @@ public class Tokenizer {
 
     public static TokenizeContext create(ParseContext parser, InitialConstruct initialize, @Nullable UnistPoint from) {
         return new Tokenizer(parser, initialize, from).context;
+    }
+
+    public ParseContext getParser() {
+        return parser;
     }
 
     /**
@@ -101,7 +105,7 @@ public class Tokenizer {
             );
             if (code == Codes.eof) {
                 Assert.check(
-                        context.events.size() == 0 || context.getLastEvent().isExit(),
+                        context.getEvents().size() == 0 || context.getLastEvent().isExit(),
                         "expected last token to be open"
                 );
             } else {
@@ -136,7 +140,7 @@ public class Tokenizer {
             }
 
             // Expose the previous character.
-            context.previous = code;
+            context.setPrevious(code);
 
             // Mark as consumed.
             consumed = true;
@@ -156,7 +160,7 @@ public class Tokenizer {
 
             LOGGER.debug("enter: '{}'", type);
 
-            context.events.add(new Event(EventType.ENTER, token, context));
+            context.getEvents().add(new Event(EventType.ENTER, token, context));
 
             stack.add(token);
 
@@ -181,11 +185,11 @@ public class Tokenizer {
                             token.start._index() == token.end._index() &&
                                     token.start._bufferIndex() == token.end._bufferIndex()
                     ),
-            "expected non-empty token (`" + type + "`)"
+                    "expected non-empty token (`" + type + "`)"
             );
 
             LOGGER.debug("exit: '{}'", token.type);
-            context.events.add(Event.exit(token, context));
+            context.getEvents().add(Event.exit(token, context));
 
             return token;
         }
@@ -325,12 +329,14 @@ public class Tokenizer {
      */
     private Hook constructFactory(ReturnHandle onreturn, @Nullable Map<String, Object> fields) {
         return (constructs, returnState, bogusState) -> {
-            return new HookStateMachineFactory(onreturn, constructs, returnState, bogusState).createFirst();
+            return new HookStateMachineFactory(onreturn, constructs, returnState, bogusState, fields).createFirst();
         };
     }
 
     private class HookStateMachineFactory {
         private final List<Construct> constructs;
+        @Nullable
+        private final Map<String, Object> fields;
         private int constructIndex;
         private Construct currentConstruct;
         private Info info;
@@ -338,8 +344,9 @@ public class Tokenizer {
         private final State bogusState;
         private final ReturnHandle onreturn;
 
-        public HookStateMachineFactory(ReturnHandle onreturn, List<Construct> constructs, State returnState, State bogusState) {
+        public HookStateMachineFactory(ReturnHandle onreturn, List<Construct> constructs, State returnState, State bogusState, @Nullable Map<String, Object> fields) {
             this.constructs = constructs;
+            this.fields = fields;
             this.constructIndex = 0;
             this.returnState = returnState;
             this.bogusState = bogusState;
@@ -365,19 +372,23 @@ public class Tokenizer {
                 currentConstruct = construct;
 
                 if (!currentConstruct.partial) {
-                    context.currentConstruct = construct;
+                    context.setCurrentConstruct(construct);
                 }
 
-                if (currentConstruct.name != null && context.parser.constructs.nullDisable.contains(currentConstruct.name)) {
+                if (currentConstruct.name != null && context.getParser().constructs.nullDisable.contains(currentConstruct.name)) {
                     return nok(code);
                 }
 
+                // If we do have fields, create an object w/ `context` as its
+                // prototype.
+                // This allows a “live binding”, which is needed for `interrupt`.
+                var useContext = context;
+                if (fields != null && Boolean.TRUE.equals(fields.get("interrupt"))) {
+                    useContext = new InterruptedTokenizeContext(context);
+                }
+
                 return currentConstruct.tokenize.tokenize(
-                        // If we do have fields, create an object w/ `context` as its
-                        // prototype.
-                        // This allows a “live binding”, which is needed for `interrupt`.
-                        // TODO fields != null ? Object.assign(Object.create(context), fields) : context,
-                        context,
+                        useContext,
                         effects,
                         this::ok,
                         this::nok
@@ -415,21 +426,21 @@ public class Tokenizer {
 
         if (construct.resolve != null) {
             ListUtils.splice(
-                    context.events,
+                    context.getEvents(),
                     from,
-                    context.events.size() - from,
-                    construct.resolve.resolve(ListUtils.slice(context.events, from), context)
+                    context.getEvents().size() - from,
+                    construct.resolve.resolve(ListUtils.slice(context.getEvents(), from), context)
             );
         }
 
         if (construct.resolveTo != null) {
-            context.events = construct.resolveTo.resolve(context.events, context);
+            context.setEvents(construct.resolveTo.resolve(context.getEvents(), context));
         }
 
         if (
                 !construct.partial &&
-                        !context.events.isEmpty() &&
-                        context.events.get(context.events.size() - 1).type() != EventType.EXIT
+                        !context.getEvents().isEmpty() &&
+                        context.getEvents().get(context.getEvents().size() - 1).type() != EventType.EXIT
         ) {
             throw new IllegalStateException("expected last token to end");
         }
@@ -440,9 +451,9 @@ public class Tokenizer {
      */
     Info store() {
         var startPoint = now();
-        var startPrevious = context.previous;
-        var startCurrentConstruct = context.currentConstruct;
-        var startEventsIndex = context.events.size();
+        var startPrevious = context.getPrevious();
+        var startCurrentConstruct = context.getCurrentConstruct();
+        var startEventsIndex = context.getEvents().size();
         var startStack = new Stack<Token>();
         startStack.addAll(stack);
 
@@ -453,9 +464,9 @@ public class Tokenizer {
                     pointOffset = startPoint.offset();
                     pointIndex = startPoint._index();
                     pointBufferIndex = startPoint._bufferIndex();
-                    context.previous = startPrevious;
-                    context.currentConstruct = startCurrentConstruct;
-                    ListUtils.setLength(context.events, startEventsIndex);
+                    context.setPrevious(startPrevious);
+                    context.setCurrentConstruct(startCurrentConstruct);
+                    ListUtils.setLength(context.getEvents(), startEventsIndex);
                     stack = startStack;
                     accountForPotentialSkip();
                     LOGGER.debug("position: restore: '{}'", now());
@@ -472,171 +483,6 @@ public class Tokenizer {
         if (columnStart.containsKey(pointLine) && pointColumn < 2) {
             pointColumn = columnStart.get(pointLine);
             pointOffset += columnStart.get(pointLine) - 1;
-        }
-    }
-
-    /**
-     * A context object that helps w/ tokenizing markdown constructs.
-     */
-    public class TokenizeContext {
-        public boolean _gfmTableDynamicInterruptHack;
-
-        /**
-         * The previous code.
-         */
-        public int previous;
-        /**
-         * Current code.
-         */
-        public int code;
-        /**
-         * Whether we’re currently interrupting.<br>
-         * Take for example:
-         * <p>
-         * <pre>
-         *   ```markdown
-         *   a
-         *   # b
-         *   ```
-         *   </pre>
-         * <p>
-         * At 2:1, we’re “interrupting”.
-         */
-        public boolean interrupt;
-
-        /**
-         * The current construct.
-         * <p>
-         * Constructs that are not <code>partial</code> are set here.
-         */
-        @Nullable
-        public Construct currentConstruct;
-
-        /**
-         * Info set when parsing containers.
-         * <p>
-         * Containers are parsed in separate phases: their first line (`tokenize`),
-         * continued lines (`continuation.tokenize`), and finally `exit`.
-         * This record can be used to store some information between these hooks.
-         */
-        public ContainerState containerState = new ContainerState();
-
-        /**
-         * Current list of events.
-         */
-        public List<Event> events = new ArrayList<>();
-
-        public boolean _gfmTasklistFirstContentOfListItem;
-
-        @Nullable
-        public Event getLastEvent() {
-            return !events.isEmpty() ? events.get(events.size() - 1) : null;
-        }
-
-        /**
-         * The relevant parsing context.
-         */
-        public ParseContext parser;
-
-        final InitialConstruct initialize;
-
-        public TokenizeContext(InitialConstruct initialize) {
-            this.initialize = initialize;
-        }
-
-        /**
-         * Get the chunks that span a token.
-         */
-        public List<Object> sliceStream(Token token) {
-            return sliceStream(token.start, token.end);
-        }
-
-        /**
-         * Get the chunks that span a location.
-         */
-        public List<Object> sliceStream(Point start, Point end) {
-            return sliceChunks(chunks, start, end);
-        }
-
-        /**
-         * Get the chunks from a slice of chunks in the range of a token.
-         */
-        private List<Object> sliceChunks(List<Object> chunks, Point start, Point end) {
-            var startIndex = start._index();
-            var startBufferIndex = start._bufferIndex();
-            var endIndex = end._index();
-            var endBufferIndex = end._bufferIndex();
-            List<Object> view = new ArrayList<>();
-
-            if (startIndex == endIndex) {
-                if (endBufferIndex < 0) {
-                    throw new IllegalArgumentException("expected non-negative end buffer index");
-                }
-                if (startBufferIndex < 0) {
-                    throw new IllegalArgumentException("expected non-negative start buffer index");
-                }
-
-                view.add(((String) chunks.get(startIndex)).substring(startBufferIndex, endBufferIndex));
-            } else {
-                view.addAll(chunks.subList(startIndex, endIndex));
-
-                if (startBufferIndex > -1) {
-                    view.set(0, ((String) view.get(0)).substring(startBufferIndex));
-                }
-
-                if (endBufferIndex > 0) {
-                    view.add(((String) chunks.get(endIndex)).substring(0, endBufferIndex));
-                }
-            }
-
-            return view;
-        }
-
-        public List<Event> write(List<Object> slice) {
-            chunks = ListUtils.push(chunks, slice);
-
-            main();
-
-            // Exit if we’re not done, resolve might change stuff.
-            if (!Objects.equals(chunks.get(chunks.size() - 1), Codes.eof)) {
-                return Collections.emptyList();
-            }
-
-            addResult(initialize, 0);
-
-            // Otherwise, resolve, and exit.
-            context.events = Construct.resolveAll(resolveAllConstructs, context.events, context);
-
-            return context.events;
-        }
-
-        public String sliceSerialize(Point start, Point end) {
-            var t = new Token();
-            t.start = start;
-            t.end = end;
-            return sliceSerialize(t, false);
-        }
-
-        public String sliceSerialize(Token token) {
-            return sliceSerialize(token, false);
-        }
-
-        public String sliceSerialize(Token token, boolean expandTabs) {
-            return serializeChunks(sliceStream(token), expandTabs);
-        }
-
-        public void defineSkip(@NotNull Point value) {
-            columnStart.put(value.line(), value.column());
-            accountForPotentialSkip();
-            LOGGER.debug("position: define skip: {}", now());
-        }
-
-        public Point now() {
-            return Tokenizer.this.now();
-        }
-
-        public boolean isOnLazyLine() {
-            return parser.isLazyLine(pointLine);
         }
     }
 
@@ -703,6 +549,10 @@ public class Tokenizer {
         }
 
         return result.toString();
+    }
+
+    public boolean isOnLazyLine() {
+        return parser.isLazyLine(pointLine);
     }
 
 }

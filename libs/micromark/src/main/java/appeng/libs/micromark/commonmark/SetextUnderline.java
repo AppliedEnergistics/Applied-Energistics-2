@@ -5,6 +5,7 @@ import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
@@ -25,7 +26,7 @@ public final class SetextUnderline {
         setextUnderline.resolveTo = SetextUnderline::resolveToSetextUnderline;
     }
 
-    private static List<Tokenizer.Event> resolveToSetextUnderline(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    private static List<Tokenizer.Event> resolveToSetextUnderline(List<Tokenizer.Event> events, TokenizeContext context) {
         var index = events.size();
         Integer content = null;
         Integer text = null;
@@ -90,31 +91,31 @@ public final class SetextUnderline {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
         int marker;
         boolean paragraph;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
             this.ok = ok;
             this.nok = nok;
 
-            var index = context.events.size();
+            var index = context.getEvents().size();
             // Find an opening.
             while (index-- > 0) {
                 // Skip enter/exit of line ending, line prefix, and content.
                 // We can now either have a definition or a paragraph.
                 if (
-                        !context.events.get(index).token().type.equals(Types.lineEnding) &&
-                                !context.events.get(index).token().type.equals(Types.linePrefix) &&
-                                !context.events.get(index).token().type.equals(Types.content)
+                        !context.getEvents().get(index).token().type.equals(Types.lineEnding) &&
+                                !context.getEvents().get(index).token().type.equals(Types.linePrefix) &&
+                                !context.getEvents().get(index).token().type.equals(Types.content)
                 ) {
-                    paragraph = context.events.get(index).token().type.equals(Types.paragraph);
+                    paragraph = context.getEvents().get(index).token().type.equals(Types.paragraph);
                     break;
                 }
             }
@@ -127,7 +128,7 @@ public final class SetextUnderline {
                     "expected `=` or `-`"
             );
 
-            if (!context.isOnLazyLine() && (context.interrupt || paragraph)) {
+            if (!context.isOnLazyLine() && (context.isInterrupt() || paragraph)) {
                 effects.enter(Types.setextHeadingLine);
                 effects.enter(Types.setextHeadingLineSequence);
                 marker = code;

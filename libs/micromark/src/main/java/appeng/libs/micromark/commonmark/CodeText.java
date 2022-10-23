@@ -5,6 +5,7 @@ import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
@@ -24,7 +25,7 @@ public final class CodeText {
         codeText.previous = CodeText::previous;
     }
 
-    private static List<Tokenizer.Event> resolveCodeText(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    private static List<Tokenizer.Event> resolveCodeText(List<Tokenizer.Event> events, TokenizeContext context) {
         var tailExitIndex = events.size() - 4;
         var headEnterIndex = 3;
         int index;
@@ -84,7 +85,7 @@ public final class CodeText {
         return events;
     }
 
-    private static boolean previous(Tokenizer.TokenizeContext context, int code) {
+    private static boolean previous(TokenizeContext context, int code) {
         // If there is a previous code, there will always be a tail.
         return (
                 code != Codes.graveAccent ||
@@ -93,7 +94,7 @@ public final class CodeText {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
@@ -101,7 +102,7 @@ public final class CodeText {
         private int size;
         private Token token;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -124,7 +125,7 @@ public final class CodeText {
          */
         private State start(int code) {
             Assert.check(code == Codes.graveAccent, "expected `` ` ``");
-            Assert.check(previous(context, context.previous), "expected correct previous");
+            Assert.check(previous(context, context.getPrevious()), "expected correct previous");
             effects.enter(Types.codeText);
             effects.enter(Types.codeTextSequence);
             return sequenceOpen(code);

@@ -6,6 +6,7 @@ import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.ContentType;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
@@ -26,7 +27,7 @@ public final class CodeFenced {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
@@ -49,7 +50,7 @@ public final class CodeFenced {
         int sizeOpen;
         int marker;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -141,7 +142,7 @@ public final class CodeFenced {
 
         private State openAfter(int code) {
             effects.exit(Types.codeFencedFence);
-            return context.interrupt ? ok.step(code) : contentStart(code);
+            return context.isInterrupt() ? ok.step(code) : contentStart(code);
         }
 
         private State contentStart(int code) {
@@ -190,12 +191,12 @@ public final class CodeFenced {
 
         class NonLazyLineStateMachine {
 
-            private final Tokenizer.TokenizeContext context;
+            private final TokenizeContext context;
             private final Tokenizer.Effects effects;
             private final State ok;
             private final State nok;
 
-            public NonLazyLineStateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+            public NonLazyLineStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
                 this.context = context;
                 this.effects = effects;
                 this.ok = ok;
@@ -216,14 +217,14 @@ public final class CodeFenced {
         }
 
         class ClosingFenceStateMachine {
-            private final Tokenizer.TokenizeContext context;
+            private final TokenizeContext context;
             private final Tokenizer.Effects effects;
             private final State ok;
             private final State nok;
             private int size;
             public final State start;
 
-            public ClosingFenceStateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+            public ClosingFenceStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
                 this.context = context;
                 this.effects = effects;
                 this.ok = ok;
@@ -232,7 +233,7 @@ public final class CodeFenced {
                         effects,
                         this::closingSequenceStart,
                         Types.linePrefix,
-                        context.parser.constructs.nullDisable.contains("codeIndented") ? Integer.MAX_VALUE : Constants.tabSize
+                        context.getParser().constructs.nullDisable.contains("codeIndented") ? Integer.MAX_VALUE : Constants.tabSize
                 );
             }
 

@@ -18,11 +18,11 @@ public final class InitializeFlow {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         public final State initial;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects) {
             this.context = context;
             this.effects = effects;
 
@@ -32,12 +32,12 @@ public final class InitializeFlow {
                     this::atBlankEnding,
                     // Try to parse initial flow (essentially, only code).
                     effects.attempt.hook(
-                            context.parser.constructs.flowInitial,
+                            context.getParser().constructs.flowInitial,
                             this::afterConstruct,
                             FactorySpace.create(
                                     effects,
                                     effects.attempt.hook(
-                                            context.parser.constructs.flow,
+                                            context.getParser().constructs.flow,
                                             this::afterConstruct,
                                             effects.attempt.hook(Content.content, this::afterConstruct, null)
                                     ),
@@ -60,7 +60,7 @@ public final class InitializeFlow {
             effects.enter(Types.lineEndingBlank);
             effects.consume(code);
             effects.exit(Types.lineEndingBlank);
-            context.currentConstruct = null;
+            context.setCurrentConstruct(null);
             return initial;
         }
 
@@ -77,7 +77,7 @@ public final class InitializeFlow {
             effects.enter(Types.lineEnding);
             effects.consume(code);
             effects.exit(Types.lineEnding);
-            context.currentConstruct = null;
+            context.setCurrentConstruct(null);
             return initial;
         }
     }

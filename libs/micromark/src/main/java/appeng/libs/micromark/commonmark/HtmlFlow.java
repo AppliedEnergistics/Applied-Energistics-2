@@ -5,6 +5,7 @@ import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.HtmlTagName;
 import appeng.libs.micromark.State;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
@@ -31,7 +32,7 @@ public final class HtmlFlow {
         nextBlankConstruct.partial = true;
     }
 
-    private static List<Tokenizer.Event> resolveToHtmlFlow(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    private static List<Tokenizer.Event> resolveToHtmlFlow(List<Tokenizer.Event> events, TokenizeContext context) {
         var index = events.size();
 
         while (index-- > 0) {
@@ -56,7 +57,7 @@ public final class HtmlFlow {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
@@ -66,7 +67,7 @@ public final class HtmlFlow {
         private int index;
         Integer marker;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -100,7 +101,7 @@ public final class HtmlFlow {
                 kind = Constants.htmlInstruction;
                 // While we’re in an instruction instead of a declaration, we’re on a `?`
                 // right now, so we do need to search for `>`, similar to declarations.
-                return context.interrupt ? ok : this::continuationDeclarationInside;
+                return context.isInterrupt() ? ok : this::continuationDeclarationInside;
             }
 
             if (CharUtil.asciiAlpha(code)) {
@@ -132,7 +133,7 @@ public final class HtmlFlow {
             if (CharUtil.asciiAlpha(code)) {
                 effects.consume(code);
                 kind = Constants.htmlDeclaration;
-                return context.interrupt ? ok : this::continuationDeclarationInside;
+                return context.isInterrupt() ? ok : this::continuationDeclarationInside;
             }
 
             return nok.step(code);
@@ -142,7 +143,7 @@ public final class HtmlFlow {
         private State commentOpenInside(int code) {
             if (code == Codes.dash) {
                 effects.consume(code);
-                return context.interrupt ? ok : this::continuationDeclarationInside;
+                return context.isInterrupt() ? ok : this::continuationDeclarationInside;
             }
 
             return nok.step(code);
@@ -153,7 +154,7 @@ public final class HtmlFlow {
             if (code == buffer.charAt(index++)) {
                 effects.consume(code);
                 return index == buffer.length()
-                        ? context.interrupt
+                        ? context.isInterrupt()
                         ? ok
                         : this::continuation
                         : this::cdataOpenInside;
@@ -187,7 +188,7 @@ public final class HtmlFlow {
                                 HtmlTagName.htmlRawNames.contains(buffer.toLowerCase())
                 ) {
                     kind = Constants.htmlRaw;
-                    return context.interrupt ? ok.step(code) : continuation(code);
+                    return context.isInterrupt() ? ok.step(code) : continuation(code);
                 }
 
                 if (HtmlTagName.htmlBlockNames.contains(buffer.toLowerCase())) {
@@ -198,12 +199,12 @@ public final class HtmlFlow {
                         return this::basicSelfClosing;
                     }
 
-                    return context.interrupt ? ok.step(code) : continuation(code);
+                    return context.isInterrupt() ? ok.step(code) : continuation(code);
                 }
 
                 kind = Constants.htmlComplete;
                 // Do not support complete HTML when interrupting
-                return context.interrupt && !context.isOnLazyLine()
+                return context.isInterrupt() && !context.isOnLazyLine()
                         ? nok.step(code)
                         : startTag
                         ? completeAttributeNameBefore(code)
@@ -223,7 +224,7 @@ public final class HtmlFlow {
         private State basicSelfClosing(int code) {
             if (code == Codes.greaterThan) {
                 effects.consume(code);
-                return context.interrupt ? ok : this::continuation;
+                return context.isInterrupt() ? ok : this::continuation;
             }
 
             return nok.step(code);
@@ -459,7 +460,7 @@ public final class HtmlFlow {
             return continuation(code);
         }
 
-        private State htmlLineEnd(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        private State htmlLineEnd(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
             State lineStart= (int code) -> {
                 return context.isOnLazyLine() ? nok.step(code) : ok.step(code);
             };
@@ -557,12 +558,12 @@ public final class HtmlFlow {
     }
 
     private static class NextBlankStateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
 
-        public NextBlankStateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public NextBlankStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;

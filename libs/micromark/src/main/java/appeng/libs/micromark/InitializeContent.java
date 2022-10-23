@@ -16,18 +16,18 @@ public final class InitializeContent {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private Token previous;
 
         public final State contentStart;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects) {
             this.context = context;
             this.effects = effects;
 
             contentStart = effects.attempt.hook(
-                    context.parser.constructs.contentInitial,
+                    context.getParser().constructs.contentInitial,
                     this::afterContentStartConstruct,
                     this::paragraphInitial
             );

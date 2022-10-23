@@ -16,12 +16,12 @@ final class InitializeText {
     public static final InitialConstruct text = initializeFactory("text");
 
     static class TextTokenizer {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Map<Integer, List<Construct>> constructs;
         private final Tokenizer.Effects effects;
         private final State text;
 
-        public TextTokenizer(Tokenizer.TokenizeContext context,
+        public TextTokenizer(TokenizeContext context,
                              Map<Integer, List<Construct>> constructs,
                              Tokenizer.Effects effects) {
             this.context = context;
@@ -71,7 +71,7 @@ final class InitializeText {
             if (list != null) {
                 while (++index < list.size()) {
                     var item = list.get(index);
-                    if (item.previous == null || item.previous.previous(context, context.previous)) {
+                    if (item.previous == null || item.previous.previous(context, context.getPrevious())) {
                         return true;
                     }
                 }
@@ -86,8 +86,8 @@ final class InitializeText {
         var construct = new InitialConstruct();
         construct.tokenize = (context, effects, ok, nok) -> {
             var constructs = switch (field) {
-                case "text" -> context.parser.constructs.text;
-                case "string" -> context.parser.constructs.string;
+                case "text" -> context.getParser().constructs.text;
+                case "string" -> context.getParser().constructs.string;
                 default -> throw new IllegalArgumentException(field);
             };
             return new TextTokenizer(context, constructs, effects)::start;
@@ -139,7 +139,7 @@ final class InitializeText {
      * As it will be useful for GFMs literal autolink extension (and maybe even
      * tables?)
      */
-    static List<Tokenizer.Event> resolveAllLineSuffixes(List<Tokenizer.Event> events, Tokenizer.TokenizeContext context) {
+    static List<Tokenizer.Event> resolveAllLineSuffixes(List<Tokenizer.Event> events, TokenizeContext context) {
         var eventIndex = 0; // Skip first.
 
         while (++eventIndex <= events.size()) {

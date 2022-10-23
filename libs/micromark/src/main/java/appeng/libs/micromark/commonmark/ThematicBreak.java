@@ -4,6 +4,7 @@ import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.State;
+import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
@@ -23,14 +24,14 @@ public final class ThematicBreak {
     }
 
     private static class StateMachine {
-        private final Tokenizer.TokenizeContext context;
+        private final TokenizeContext context;
         private final Tokenizer.Effects effects;
         private final State ok;
         private final State nok;
         private int size;
         int marker;
 
-        public StateMachine(Tokenizer.TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
 
             this.context = context;
             this.effects = effects;
