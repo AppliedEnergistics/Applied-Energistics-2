@@ -11,7 +11,7 @@ public class EventsTest {
 
     @Test
     public void test() {
-        var markdown = "[Foo bar]:\n<my url>\n'title'\n\n[Foo bar]\n";
+        var markdown = "- foo\n- bar\n+ baz\n";
 
         var events = Micromark.parse(markdown);
         printEvents(events);

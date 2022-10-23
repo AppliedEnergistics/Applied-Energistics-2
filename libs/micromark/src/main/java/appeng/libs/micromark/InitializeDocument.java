@@ -80,8 +80,8 @@ public final class InitializeDocument {
             // Note: this field is called `_closeFlow` but it also closes containers.
             // Perhaps a good idea to rename it but it’s already used in the wild by
             // extensions.
-            if (context.getContainerState()._closeFlow) {
-                context.getContainerState()._closeFlow = false;
+            if (Boolean.TRUE.equals(context.getContainerState().get("_closeFlow"))) {
+                context.getContainerState().remove("_closeFlow");
 
                 if (childFlow != null) {
                     closeFlow();
@@ -388,7 +388,7 @@ public final class InitializeDocument {
             childFlow.write(List.of(Codes.eof));
             childToken = null;
             childFlow = null;
-            context.getContainerState()._closeFlow = false;
+            context.getContainerState().remove("_closeFlow");
         }
     }
 
