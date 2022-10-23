@@ -14,6 +14,7 @@ import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
 
 import java.util.List;
+import java.util.Objects;
 
 public final class Content {
     private Content() {
@@ -148,7 +149,7 @@ public final class Content {
             if (
                     !context.getParser().constructs.nullDisable.contains("codeIndented") &&
                             tail != null &&
-                            tail.token().type == Types.linePrefix &&
+                            Objects.equals(tail.token().type, Types.linePrefix) &&
                             tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
             ) {
                 return ok.step(code);

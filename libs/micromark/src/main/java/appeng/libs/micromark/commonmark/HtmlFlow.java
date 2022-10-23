@@ -24,7 +24,7 @@ public final class HtmlFlow {
         htmlFlow = new Construct();
         htmlFlow.name = "htmlFlow";
         htmlFlow.tokenize = (context, effects, ok, nok) -> new StateMachine(context, effects, ok, nok)::start;
-        htmlFlow.resolve = HtmlFlow::resolveToHtmlFlow;
+        htmlFlow.resolveTo = HtmlFlow::resolveToHtmlFlow;
         htmlFlow.concrete = true;
 
         nextBlankConstruct = new Construct();
@@ -38,13 +38,13 @@ public final class HtmlFlow {
         while (index-- > 0) {
             if (
                     events.get(index).isEnter() &&
-                            events.get(index).token().type == Types.htmlFlow
+                            Objects.equals(events.get(index).token().type, Types.htmlFlow)
             ) {
                 break;
             }
         }
 
-        if (index > 1 && events.get(index - 2).token().type == Types.linePrefix) {
+        if (index > 1 && Objects.equals(events.get(index - 2).token().type, Types.linePrefix)) {
             // Add the prefix start to the HTML token.
             events.get(index).token().start = events.get(index - 2).token().start;
             // Add the prefix start to the HTML line token.

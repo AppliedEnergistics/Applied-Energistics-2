@@ -11,7 +11,7 @@ public class EventsTest {
 
     @Test
     public void test() {
-        var markdown = "- foo\n- bar\n+ baz\n";
+        var markdown = " <div>\n  *hello*\n         <foo><a>\n";
 
         var events = Micromark.parse(markdown);
         printEvents(events);
