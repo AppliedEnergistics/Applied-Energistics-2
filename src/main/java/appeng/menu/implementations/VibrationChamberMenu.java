@@ -39,7 +39,7 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     private final VibrationChamberBlockEntity vibrationChamber;
     @GuiSync(0)
-    public int currentFuelTicksPerTick = 0;
+    public double currentFuelTicksPerTick = 0;
     @GuiSync(1)
     public int remainingBurnTime = 0;
 
@@ -69,7 +69,7 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     @Override
     public int getCurrentProgress() {
-        return this.currentFuelTicksPerTick;
+        return (int) (this.currentFuelTicksPerTick * 100);
     }
 
     /**
@@ -81,14 +81,13 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     @Override
     public int getMaxProgress() {
-        return vibrationChamber.getMaxFuelTicksPerTick();
+        return (int) (vibrationChamber.getMaxFuelTicksPerTick() * 100);
     }
 
     /**
      * Current amount of power being generated.
      */
     public double getPowerPerTick() {
-        var fuelTicksPerTick = currentFuelTicksPerTick / 100.0;
-        return fuelTicksPerTick * vibrationChamber.getEnergyPerFuelTick();
+        return currentFuelTicksPerTick * vibrationChamber.getEnergyPerFuelTick();
     }
 }
