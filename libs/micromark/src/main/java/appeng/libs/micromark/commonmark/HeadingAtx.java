@@ -2,7 +2,7 @@ package appeng.libs.micromark.commonmark;
 
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
-import appeng.libs.micromark.ChunkUtils;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.ContentType;
 import appeng.libs.micromark.State;
@@ -65,7 +65,7 @@ public final class HeadingAtx {
                     text.end = events.get(contentEnd).token().end;
                     text.contentType = ContentType.TEXT;
 
-            ChunkUtils.splice(events, contentStart, contentEnd - contentStart + 1, List.of(
+            ListUtils.splice(events, contentStart, contentEnd - contentStart + 1, List.of(
               Tokenizer.Event.enter(content, context),
               Tokenizer.Event.enter(text, context),
               Tokenizer.Event.exit(text, context),

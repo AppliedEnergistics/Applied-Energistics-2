@@ -1,13 +1,11 @@
 package appeng.libs.micromark.commonmark;
 
 import appeng.libs.micromark.Assert;
-import appeng.libs.micromark.ChunkUtils;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,9 +108,9 @@ public final class Subtokenize {
                     event.token().end = events.get(lineIndex).token().start;
 
                     // Switch container exit w/ line endings.
-                    var parameters = new ArrayList<>(events.subList(lineIndex, index));
+                    var parameters = ListUtils.slice(events, lineIndex, index);
                     parameters.add(0, event);
-                    ChunkUtils.splice(events, lineIndex, index - lineIndex + 1, parameters);
+                    ListUtils.splice(events, lineIndex, index - lineIndex + 1, parameters);
                     System.out.printf("Evt %d: Splicing @ %d, remove=%d, add=%s\n", index, lineIndex, index - lineIndex + 1, parameters);
                 }
             }
@@ -231,17 +229,17 @@ public final class Subtokenize {
         index = breaks.size();
 
         while (index-- != 0) {
-            List< Tokenizer.Event> slice;
+            List<Tokenizer.Event> slice;
             if (index + 1 < breaks.size()) {
-                slice = new ArrayList<>(childEvents.subList(breaks.get(index), breaks.get(index + 1)));
+                slice = ListUtils.slice(childEvents, breaks.get(index), breaks.get(index + 1));
             } else {
-                slice = new ArrayList<>(childEvents.subList(breaks.get(index), childEvents.size()));
+                slice = ListUtils.slice(childEvents, breaks.get(index));
             }
 
             var start = startPositions.remove(startPositions.size() - 1);
             Assert.check(start != null, "expected a start position when splicing");
             jumps.add(0, new Jump(start, start + slice.size() - 1));
-            ChunkUtils.splice(events, start, 2, slice);
+            ListUtils.splice(events, start, 2, slice);
             System.out.printf("Evt %d: Splicing @ %d, remove=%d, add=%s\n", eventIndex, start, 2, slice);
         }
 

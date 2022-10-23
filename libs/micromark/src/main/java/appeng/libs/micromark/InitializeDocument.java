@@ -120,14 +120,14 @@ public final class InitializeDocument {
                 }
 
                 // Inject the exits earlier (they’re still also at the end).
-                var eventsToMove = new ArrayList<>(context.events.subList(indexBeforeExits, context.events.size()));
+                var eventsToMove = ListUtils.slice(context.events, indexBeforeExits);
                 context.events.addAll(
                         indexBeforeFlow + 1,
                         eventsToMove
                 );
 
                 // Discard the duplicate exits.
-                context.events.subList(index, context.events.size()).clear();
+                ListUtils.setLength(context.events, index);
 
                 return checkNewContainers(code);
             }
@@ -355,10 +355,10 @@ public final class InitializeDocument {
                 }
 
                 // Inject the exits earlier (they’re still also at the end).
-                var eventsToMove = new ArrayList<>(context.events.subList(indexBeforeExits, context.events.size()));
+                var eventsToMove = ListUtils.slice(context.events, indexBeforeExits);
                 context.events.addAll(indexBeforeFlow + 1, eventsToMove);
                 // Discard the duplicate exits.
-                context.events.subList(index, context.events.size()).clear();
+                ListUtils.setLength(context.events, index);
             }
         }
 
@@ -375,7 +375,7 @@ public final class InitializeDocument {
                 entry.construct.exit.exit(context, effects);
             }
 
-            stack.subList(size, stack.size()).clear();
+            ListUtils.setLength(stack, size);
         }
 
         private void closeFlow() {

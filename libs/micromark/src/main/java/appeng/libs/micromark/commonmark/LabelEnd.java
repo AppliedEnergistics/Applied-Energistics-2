@@ -2,7 +2,7 @@ package appeng.libs.micromark.commonmark;
 
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
-import appeng.libs.micromark.ChunkUtils;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.NormalizeIdentifier;
 import appeng.libs.micromark.State;
@@ -58,7 +58,7 @@ public final class LabelEnd {
                             token.type.equals(Types.labelEnd)
             ) {
                 // Remove the marker.
-                events.subList(index + 1, index + 1 + (token.type.equals(Types.labelImage) ? 4 : 2)).clear();
+                ListUtils.splice(events, index + 1, token.type.equals(Types.labelImage) ? 4 : 2);
                 token.type = Types.data;
                 index++;
             }
@@ -134,23 +134,23 @@ public final class LabelEnd {
         media.add(Tokenizer.Event.enter(label, context));
 
         // Opening marker.
-        media = ChunkUtils.push(media, events.subList(open + 1, open + offset + 3));
+        media = ListUtils.push(media, events.subList(open + 1, open + offset + 3));
 
         // Text open.
-        media = ChunkUtils.push(media, List.of(Tokenizer.Event.enter(text, context)));
+        media = ListUtils.push(media, List.of(Tokenizer.Event.enter(text, context)));
 
         // Between.
-        media = ChunkUtils.push(
+        media = ListUtils.push(
                 media,
                 Construct.resolveAll(
                         context.parser.constructs.nullInsideSpan,
-                        new ArrayList<>(events.subList(open + offset + 4, close - 3)),
+                        ListUtils.slice(events, open + offset + 4, close - 3),
                         context
                 )
         );
 
         // Text close, marker close, label close.
-        media = ChunkUtils.push(media, List.of(
+        media = ListUtils.push(media, List.of(
                 Tokenizer.Event.exit(text, context),
                 events.get(close - 2),
                 events.get(close - 1),
@@ -158,12 +158,12 @@ public final class LabelEnd {
         ));
 
         // Reference, resource, or so.
-        media = ChunkUtils.push(media, events.subList(close + 1, events.size()));
+        media = ListUtils.push(media, events.subList(close + 1, events.size()));
 
         // Media close.
-        media = ChunkUtils.push(media, List.of(Tokenizer.Event.exit(group, context)));
+        media = ListUtils.push(media, List.of(Tokenizer.Event.exit(group, context)));
 
-        ChunkUtils.splice(events, open, events.size(), media);
+        ListUtils.splice(events, open, events.size(), media);
 
         return events;
     }

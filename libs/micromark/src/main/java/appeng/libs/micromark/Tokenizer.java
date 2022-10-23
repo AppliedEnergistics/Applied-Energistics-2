@@ -414,11 +414,11 @@ public class Tokenizer {
         }
 
         if (construct.resolve != null) {
-            ChunkUtils.splice(
+            ListUtils.splice(
                     context.events,
                     from,
                     context.events.size() - from,
-                    construct.resolve.resolve(new ArrayList<>(context.events.subList(from, context.events.size())), context)
+                    construct.resolve.resolve(ListUtils.slice(context.events, from), context)
             );
         }
 
@@ -455,7 +455,7 @@ public class Tokenizer {
                     pointBufferIndex = startPoint._bufferIndex();
                     context.previous = startPrevious;
                     context.currentConstruct = startCurrentConstruct;
-                    context.events.subList(startEventsIndex, context.events.size()).clear();
+                    ListUtils.setLength(context.events, startEventsIndex);
                     stack = startStack;
                     accountForPotentialSkip();
                     LOGGER.debug("position: restore: '{}'", now());
@@ -593,7 +593,7 @@ public class Tokenizer {
         }
 
         public List<Event> write(List<Object> slice) {
-            chunks = ChunkUtils.push(chunks, slice);
+            chunks = ListUtils.push(chunks, slice);
 
             main();
 

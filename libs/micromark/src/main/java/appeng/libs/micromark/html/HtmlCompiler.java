@@ -1,6 +1,6 @@
 package appeng.libs.micromark.html;
 
-import appeng.libs.micromark.ChunkUtils;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.NamedCharacterEntities;
 import appeng.libs.micromark.NormalizeIdentifier;
 import appeng.libs.micromark.Token;
@@ -257,23 +257,23 @@ public class HtmlCompiler {
                 if (event.isEnter()) {
                     listStack.add(index);
                 } else {
-                    prepareList(new ArrayList<>(events.subList(listStack.remove(listStack.size() - 1), index)));
+                    prepareList(ListUtils.slice(events, listStack.remove(listStack.size() - 1), index));
                 }
             }
 
             // Move definitions to the front.
             if (token.type.equals("definition")) {
                 if (event.isEnter()) {
-                    body = ChunkUtils.push(body, new ArrayList<>(events.subList(start, index)));
+                    body = ListUtils.push(body, ListUtils.slice(events, start, index));
                     start = index;
                 } else {
-                    head = ChunkUtils.push(head, new ArrayList<>(events.subList(start, index + 1)));
+                    head = ListUtils.push(head, ListUtils.slice(events, start, index + 1));
                     start = index + 1;
                 }
             }
         }
-        head = ChunkUtils.push(head, body);
-        head = ChunkUtils.push(head, new ArrayList<>(events.subList(start, events.size())));
+        head = ListUtils.push(head, body);
+        head = ListUtils.push(head, ListUtils.slice(events, start, events.size()));
         var result = head;
 
         var context = new Context();

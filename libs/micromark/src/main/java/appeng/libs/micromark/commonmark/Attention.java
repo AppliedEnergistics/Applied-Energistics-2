@@ -1,6 +1,6 @@
 package appeng.libs.micromark.commonmark;
 
-import appeng.libs.micromark.ChunkUtils;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.ClassifyCharacter;
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.Point;
@@ -126,14 +126,14 @@ public final class Attention {
 
                         // If there are more markers in the opening, add them before.
                         if (openEvent.token().end.offset() - openEvent.token().start.offset() != 0) {
-                            nextEvents = ChunkUtils.push(nextEvents, List.of(
+                            nextEvents = ListUtils.push(nextEvents, List.of(
                                     Tokenizer.Event.enter(openEvent.token(), context),
                                     Tokenizer.Event.exit(openEvent.token(), context)
                             ));
                         }
 
                         // Opening.
-                        nextEvents = ChunkUtils.push(nextEvents, List.of(
+                        nextEvents = ListUtils.push(nextEvents, List.of(
                                 Tokenizer.Event.enter(group, context),
                                 Tokenizer.Event.enter(openingSequence, context),
                                 Tokenizer.Event.exit(openingSequence, context),
@@ -141,17 +141,17 @@ public final class Attention {
                         ));
 
                         // Between.
-                        nextEvents = ChunkUtils.push(
+                        nextEvents = ListUtils.push(
                                 nextEvents,
                                 Construct.resolveAll(
                                         context.parser.constructs.nullInsideSpan,
-                                        new ArrayList<>(events.subList(open + 1, index)),
+                                        ListUtils.slice(events, open + 1, index),
                                         context
                                 )
                         );
 
                         // Closing.
-                        nextEvents = ChunkUtils.push(nextEvents, List.of(
+                        nextEvents = ListUtils.push(nextEvents, List.of(
                                 Tokenizer.Event.exit(text, context),
                                 Tokenizer.Event.enter(closingSequence, context),
                                 Tokenizer.Event.exit(closingSequence, context),
@@ -161,7 +161,7 @@ public final class Attention {
                         // If there are more markers in the closing, add them after.
                         if (event.token().end.offset() - event.token().start.offset() != 0) {
                             offset = 2;
-                            nextEvents = ChunkUtils.push(nextEvents, List.of(
+                            nextEvents = ListUtils.push(nextEvents, List.of(
                                     Tokenizer.Event.enter(event.token(), context),
                                     Tokenizer.Event.exit(event.token(), context)
                             ));
@@ -169,7 +169,7 @@ public final class Attention {
                             offset = 0;
                         }
 
-                        ChunkUtils.splice(events, open - 1, index - open + 3, nextEvents);
+                        ListUtils.splice(events, open - 1, index - open + 3, nextEvents);
 
                         index = open + nextEvents.size() - offset - 2;
                         break;
