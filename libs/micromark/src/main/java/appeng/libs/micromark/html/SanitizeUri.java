@@ -114,7 +114,7 @@ public final class SanitizeUri {
 
             if (replace != null) {
                 result.append(value, start, index);
-                result.append(URLEncoder.encode(replace, StandardCharsets.UTF_8));
+                result.append(URLEncoder.encode(replace, StandardCharsets.UTF_8).replace("+", "%20"));
                 start = index + skip + 1;
                 replace = null;
             }
