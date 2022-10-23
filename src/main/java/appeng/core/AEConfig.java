@@ -499,6 +499,22 @@ public final class AEConfig {
         CLIENT.clearGridOnClose.set(enabled);
     }
 
+    public double getVibrationChamberEnergyPerFuelTick() {
+        return COMMON.vibrationChamberEnergyPerFuelTick.get();
+    }
+
+    public int getVibrationChamberMinEnergyPerGameTick() {
+        return COMMON.vibrationChamberMinEnergyPerTick.get();
+    }
+
+    public int getVibrationChamberMaxEnergyPerGameTick() {
+        return COMMON.vibrationChamberMaxEnergyPerTick.get();
+    }
+
+    public int getVibrationChamberInitialEnergyPerGameTick() {
+        return COMMON.vibrationChamberInitialEnergyPerTick.get();
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -646,6 +662,12 @@ public final class AEConfig {
         public final DoubleOption powerRatioTechReborn;
         public final DoubleOption powerUsageMultiplier;
 
+        // Vibration Chamber
+        public final DoubleOption vibrationChamberEnergyPerFuelTick;
+        public final IntegerOption vibrationChamberMinEnergyPerTick;
+        public final IntegerOption vibrationChamberMaxEnergyPerTick;
+        public final IntegerOption vibrationChamberInitialEnergyPerTick;
+
         // Condenser Power Requirement
         public final IntegerOption condenserMatterBallsPower;
         public final IntegerOption condenserSingularityPower;
@@ -745,6 +767,17 @@ public final class AEConfig {
                 tickRateMin.put(tickRate, tickrates.addInt(tickRate.name() + "Min", tickRate.getDefaultMin()));
                 tickRateMax.put(tickRate, tickrates.addInt(tickRate.name() + "Max", tickRate.getDefaultMax()));
             }
+
+            ConfigSection vibrationChamber = root.subsection("vibrationChamber",
+                    "Settings for the Vibration Chamber");
+            vibrationChamberEnergyPerFuelTick = vibrationChamber.addDouble("energyPerFuelTick", 5, 0.1, 1000,
+                    "AE energy produced per fuel burn tick (reminder: coal = 1600, block of coal = 16000, lava bucket = 20000 burn ticks)");
+            vibrationChamberMinEnergyPerTick = vibrationChamber.addInt("minEnergyPerGameTick", 4, 0, 1000,
+                    "Minimum amount of AE/t the vibration chamber can slow down to when energy is being wasted.");
+            vibrationChamberMaxEnergyPerTick = vibrationChamber.addInt("maxEnergyPerGameTick", 40, 1, 1000,
+                    "Maximum amount of AE/t the vibration chamber can speed up to when generated energy is being fully consumed.");
+            vibrationChamberInitialEnergyPerTick = vibrationChamber.addInt("initialEnergyPerGameTick", 20, 0, 1000,
+                    "An amount of AE/t between minEnergyPerGameTick and maxEnergyPerGameTick that the vibration chamber starts at initially.");
         }
 
     }

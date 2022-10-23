@@ -39,7 +39,7 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     private final VibrationChamberBlockEntity vibrationChamber;
     @GuiSync(0)
-    public int burnSpeed = 0;
+    public double currentFuelTicksPerTick = 0;
     @GuiSync(1)
     public int remainingBurnTime = 0;
 
@@ -57,9 +57,11 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
     @Override
     public void broadcastChanges() {
         if (isServerSide()) {
-            this.remainingBurnTime = this.vibrationChamber.getMaxBurnTime() <= 0 ? 0
-                    : (int) (100.0 * this.vibrationChamber.getBurnTime() / this.vibrationChamber.getMaxBurnTime());
-            this.burnSpeed = this.remainingBurnTime <= 0 ? 0 : this.vibrationChamber.getBurnSpeed();
+            this.remainingBurnTime = this.vibrationChamber.getFuelItemFuelTicks() <= 0 ? 0
+                    : (int) (100.0 * this.vibrationChamber.getRemainingFuelTicks()
+                            / this.vibrationChamber.getFuelItemFuelTicks());
+            this.currentFuelTicksPerTick = this.remainingBurnTime <= 0 ? 0
+                    : this.vibrationChamber.getCurrentFuelTicksPerTick();
 
         }
         super.broadcastChanges();
@@ -67,7 +69,7 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     @Override
     public int getCurrentProgress() {
-        return this.burnSpeed;
+        return (int) (this.currentFuelTicksPerTick * 100);
     }
 
     /**
@@ -79,6 +81,13 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     @Override
     public int getMaxProgress() {
-        return VibrationChamberBlockEntity.MAX_BURN_SPEED;
+        return (int) (vibrationChamber.getMaxFuelTicksPerTick() * 100);
+    }
+
+    /**
+     * Current amount of power being generated.
+     */
+    public double getPowerPerTick() {
+        return currentFuelTicksPerTick * vibrationChamber.getEnergyPerFuelTick();
     }
 }
