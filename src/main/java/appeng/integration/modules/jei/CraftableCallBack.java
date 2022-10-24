@@ -1,6 +1,5 @@
 package appeng.integration.modules.jei;
 
-import appeng.api.AEApi;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
@@ -12,7 +11,6 @@ import com.google.common.base.Stopwatch;
 import mezz.jei.api.gui.ITooltipCallback;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.input.Mouse;
 

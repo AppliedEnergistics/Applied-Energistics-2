@@ -14,8 +14,10 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.gui.recipes.RecipeLayout;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -36,9 +38,18 @@ public class JEIMissingItem implements IRecipeTransferError {
             GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
 
             IItemList<IAEItemStack> ir = g.getRepo().getList();
+            IItemList<IAEItemStack> playerInv = wrapPlayerInv(((ContainerCraftingTerm) container).getPlayerInv());
+
+            IItemList<IAEItemStack> available = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+            for (IAEItemStack i : ir) {
+                available.addStorage(i);
+            }
+            for (IAEItemStack i : playerInv) {
+                available.addStorage(i);
+            }
             boolean found;
             this.errored = false;
-            recipeLayout.getItemStacks().addTooltipCallback(new CraftableCallBack(container, ir));
+            recipeLayout.getItemStacks().addTooltipCallback(new CraftableCallBack(container, available));
 
             IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
             for (IGuiIngredient<?> i : recipeLayout.getItemStacks().getGuiIngredients().values()) {
@@ -50,7 +61,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                             ItemStack stack = (ItemStack) allIngredient;
                             if (!stack.isEmpty()) {
                                 if (stack.getItem().isDamageable() || Platform.isGTDamageableItem(stack.getItem())) {
-                                    Collection<IAEItemStack> fuzzy = ir.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
+                                    Collection<IAEItemStack> fuzzy = available.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
                                     if (fuzzy.size() > 0) {
                                         for (IAEItemStack itemStack : fuzzy) {
                                             if (itemStack.getStackSize() > 0) {
@@ -62,7 +73,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                                         }
                                     }
                                 } else {
-                                    IAEItemStack ext = ir.findPrecise(AEItemStack.fromItemStack(stack));
+                                    IAEItemStack ext = available.findPrecise(AEItemStack.fromItemStack(stack));
                                     if (ext != null) {
                                         IAEItemStack usedStack = used.findPrecise(ext);
                                         if (ext.getStackSize() > 0 && (usedStack == null || ext.getStackSize() > usedStack.getStackSize())) {
@@ -99,10 +110,18 @@ public class JEIMissingItem implements IRecipeTransferError {
 
             GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
             IItemList<IAEItemStack> ir = g.getRepo().getList();
+            IItemList<IAEItemStack> playerInv = wrapPlayerInv(minecraft.player.inventory);
             boolean found;
             boolean craftable;
             int currentSlot = 0;
             this.errored = false;
+            IItemList<IAEItemStack> available = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+            for (IAEItemStack i : ir) {
+                available.addStorage(i);
+            }
+            for (IAEItemStack i : playerInv) {
+                available.addStorage(i);
+            }
             IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
 
             for (IGuiIngredient<?> i : recipeLayout.getItemStacks().getGuiIngredients().values()) {
@@ -116,7 +135,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                             ItemStack stack = (ItemStack) allIngredient;
                             if (!stack.isEmpty()) {
                                 if (stack.getItem().isDamageable() || Platform.isGTDamageableItem(stack.getItem())) {
-                                    Collection<IAEItemStack> fuzzy = ir.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
+                                    Collection<IAEItemStack> fuzzy = available.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
                                     if (fuzzy.size() > 0) {
                                         for (IAEItemStack itemStack : fuzzy) {
                                             if (itemStack.getStackSize() > 0) {
@@ -134,7 +153,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                                         }
                                     }
                                 } else {
-                                    IAEItemStack ext = ir.findPrecise(AEItemStack.fromItemStack(stack));
+                                    IAEItemStack ext = available.findPrecise(AEItemStack.fromItemStack(stack));
                                     if (ext != null) {
                                         IAEItemStack usedStack = used.findPrecise(ext);
                                         if (ext.getStackSize() > 0 && (usedStack == null || usedStack.getStackSize() < ext.getStackSize())) {
@@ -144,7 +163,6 @@ public class JEIMissingItem implements IRecipeTransferError {
                                             }
                                             valid.add(ext.copy().setStackSize(1).createItemStack());
                                             found = true;
-                                            break;
                                         } else if (ext.isCraftable()) {
                                             valid.add(ext.copy().setStackSize(1).createItemStack());
                                             craftable = true;
@@ -177,5 +195,17 @@ public class JEIMissingItem implements IRecipeTransferError {
 
     public boolean errored() {
         return this.errored;
+    }
+
+
+    IItemList<IAEItemStack> wrapPlayerInv(InventoryPlayer inventory) {
+        IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+
+        PlayerMainInvWrapper invWrapper = new PlayerMainInvWrapper(inventory);
+        for (int i = 0; i < invWrapper.getSlots(); i++) {
+            used.addStorage(AEItemStack.fromItemStack(invWrapper.getStackInSlot(i)));
+        }
+
+        return used;
     }
 }
