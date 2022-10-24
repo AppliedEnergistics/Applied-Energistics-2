@@ -143,18 +143,6 @@ public class ExtensionTest {
                 "+-",
                 "should support html extensions for empty documents"
         );
-
-//        t.test("stream", function (t) {
-//            t.plan(1)
-//
-//            slowStream("// a\r\nb")
-//                    .pipe(stream({extensions: [syntax], htmlExtensions: [html]}))
-//      .pipe(
-//                    concat(function (result) {
-//                t.equal(result, "<p>b</p>", "pass")
-//            })
-//      )
-//        })
     }
 
     private Construct createFunkyThematicBreak(int marker) {

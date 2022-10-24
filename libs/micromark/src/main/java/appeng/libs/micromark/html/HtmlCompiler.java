@@ -202,6 +202,10 @@ public class HtmlCompiler {
      */
     String lineEndingStyle;
 
+    public HtmlCompiler() {
+        this(new CompileOptions());
+    }
+
     public HtmlCompiler(CompileOptions options) {
         this.options = options;
 

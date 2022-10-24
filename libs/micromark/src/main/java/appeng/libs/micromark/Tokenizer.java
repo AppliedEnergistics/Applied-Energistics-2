@@ -276,7 +276,7 @@ public class Tokenizer {
         if (state == null) {
             throw new IllegalStateException("expected state");
         }
-        System.out.printf("Passing %d to %s\n", code, state);
+//        System.out.printf("Passing %d to %s\n", code, state);
         state = state.step(code);
     }
 
@@ -460,8 +460,8 @@ public class Tokenizer {
 
         return new Info(
                 () -> {
-                    System.out.printf("       restore from %d:%d to %d:%d\n", pointLine, pointColumn,
-                            startPoint.line(), startPoint.column());
+//                    System.out.printf("       restore from %d:%d to %d:%d\n", pointLine, pointColumn,
+//                            startPoint.line(), startPoint.column());
                     pointLine = startPoint.line();
                     pointColumn = startPoint.column();
                     pointOffset = startPoint.offset();

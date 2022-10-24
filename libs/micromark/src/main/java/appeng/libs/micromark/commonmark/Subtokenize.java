@@ -111,7 +111,7 @@ public final class Subtokenize {
                     var parameters = ListUtils.slice(events, lineIndex, index);
                     parameters.add(0, event);
                     ListUtils.splice(events, lineIndex, index - lineIndex + 1, parameters);
-                    System.out.printf("Evt %d: Splicing @ %d, remove=%d, add=%s\n", index, lineIndex, index - lineIndex + 1, parameters);
+//                    System.out.printf("Evt %d: Splicing @ %d, remove=%d, add=%s\n", index, lineIndex, index - lineIndex + 1, parameters);
                 }
             }
         }
@@ -240,7 +240,7 @@ public final class Subtokenize {
             Assert.check(start != null, "expected a start position when splicing");
             jumps.add(0, new Jump(start, start + slice.size() - 1));
             ListUtils.splice(events, start, 2, slice);
-            System.out.printf("Evt %d: Splicing @ %d, remove=%d, add=%s\n", eventIndex, start, 2, slice);
+//            System.out.printf("Evt %d: Splicing @ %d, remove=%d, add=%s\n", eventIndex, start, 2, slice);
         }
 
         index = -1;
