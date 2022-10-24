@@ -50,6 +50,7 @@ public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerH
     public GuiFluidInterface(final InventoryPlayer ip, final IFluidInterfaceHost te) {
         super(new ContainerFluidInterface(ip, te));
         this.ySize = 231;
+        this.xSize = 245;
         this.host = te;
         (this.container = (ContainerFluidInterface) this.inventorySlots).setGui(this);
 

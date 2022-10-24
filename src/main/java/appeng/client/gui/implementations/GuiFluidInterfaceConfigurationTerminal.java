@@ -35,6 +35,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
 import appeng.fluids.client.gui.widgets.GuiFluidTank;
+import appeng.fluids.helper.DualityFluidInterface;
 import appeng.fluids.util.AEFluidStack;
 import appeng.helpers.InventoryAction;
 import appeng.parts.reporting.PartFluidInterfaceConfigurationTerminal;
@@ -155,7 +156,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
                 int extraLines = numUpgradesMap.get(inv);
 
                 for (int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row) {
-                    for (int z = 0; z < 5; z++) {
+                    for (int z = 0; z < DualityFluidInterface.NUMBER_OF_TANKS; z++) {
                         GuiFluidTank tankSlot;
                         if (!matchedInterfaces.contains(inv) && !this.matchedStacks.contains(inv.getInventory().getFluidInSlot(z + (row * 5)))) {
                             tankSlot = new GuiFluidTank(inv.getInventory(), z + (row * 5), z + (row * 5), (z * 18 + 22), offset, 16, 16, true);
@@ -243,7 +244,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
             final Object lineObj = this.lines.get(ex + x);
             if (lineObj instanceof ClientDCInternalFluidInv) {
                 GlStateManager.color(1, 1, 1, 1);
-                final int width = 5 * 18;
+                final int width = DualityFluidInterface.NUMBER_OF_TANKS * 18;
 
                 int extraLines = numUpgradesMap.get(lineObj);
 
@@ -447,7 +448,7 @@ public class GuiFluidInterfaceConfigurationTerminal extends AEBaseGui implements
         ClientDCInternalFluidInv o = this.byId.get(id);
 
         if (o == null) {
-            this.byId.put(id, o = new ClientDCInternalFluidInv(5, id, sortBy, string, 1000));
+            this.byId.put(id, o = new ClientDCInternalFluidInv(DualityFluidInterface.NUMBER_OF_TANKS, id, sortBy, string, 1000));
             this.refreshList = true;
         }
 
