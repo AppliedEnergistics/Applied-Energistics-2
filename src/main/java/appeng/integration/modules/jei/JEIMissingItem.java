@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 
 import javax.annotation.Nonnull;
@@ -38,15 +39,9 @@ public class JEIMissingItem implements IRecipeTransferError {
             GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
 
             IItemList<IAEItemStack> ir = g.getRepo().getList();
-            IItemList<IAEItemStack> playerInv = wrapPlayerInv(((ContainerCraftingTerm) container).getPlayerInv());
 
-            IItemList<IAEItemStack> available = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-            for (IAEItemStack i : ir) {
-                available.addStorage(i);
-            }
-            for (IAEItemStack i : playerInv) {
-                available.addStorage(i);
-            }
+            IItemList<IAEItemStack> available = mergeInventories(ir, (ContainerCraftingTerm) container);
+
             boolean found;
             this.errored = false;
             recipeLayout.getItemStacks().addTooltipCallback(new CraftableCallBack(container, available));
@@ -110,18 +105,13 @@ public class JEIMissingItem implements IRecipeTransferError {
 
             GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
             IItemList<IAEItemStack> ir = g.getRepo().getList();
-            IItemList<IAEItemStack> playerInv = wrapPlayerInv(minecraft.player.inventory);
             boolean found;
             boolean craftable;
             int currentSlot = 0;
             this.errored = false;
-            IItemList<IAEItemStack> available = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-            for (IAEItemStack i : ir) {
-                available.addStorage(i);
-            }
-            for (IAEItemStack i : playerInv) {
-                available.addStorage(i);
-            }
+
+            IItemList<IAEItemStack> available = mergeInventories(ir, (ContainerCraftingTerm) minecraft.player.openContainer);
+
             IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
 
             for (IGuiIngredient<?> i : recipeLayout.getItemStacks().getGuiIngredients().values()) {
@@ -197,15 +187,21 @@ public class JEIMissingItem implements IRecipeTransferError {
         return this.errored;
     }
 
-
-    IItemList<IAEItemStack> wrapPlayerInv(InventoryPlayer inventory) {
-        IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-
-        PlayerMainInvWrapper invWrapper = new PlayerMainInvWrapper(inventory);
-        for (int i = 0; i < invWrapper.getSlots(); i++) {
-            used.addStorage(AEItemStack.fromItemStack(invWrapper.getStackInSlot(i)));
+    IItemList<IAEItemStack> mergeInventories(IItemList<IAEItemStack> repo, ContainerCraftingTerm containerCraftingTerm) {
+        IItemList<IAEItemStack> itemList = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+        for (IAEItemStack i : repo) {
+            itemList.addStorage(i);
         }
 
-        return used;
+        PlayerMainInvWrapper invWrapper = new PlayerMainInvWrapper(containerCraftingTerm.getPlayerInv());
+        for (int i = 0; i < invWrapper.getSlots(); i++) {
+            itemList.addStorage(AEItemStack.fromItemStack(invWrapper.getStackInSlot(i)));
+        }
+
+        IItemHandler itemHandler = containerCraftingTerm.getInventoryByName("crafting");
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            itemList.addStorage(AEItemStack.fromItemStack(itemHandler.getStackInSlot(i)));
+        }
+        return itemList;
     }
 }
