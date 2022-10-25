@@ -1,5 +1,22 @@
 package appeng.items.tools.powered;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.level.Level;
+
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.stacks.AEItemKey;
@@ -24,21 +41,6 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.InteractionUtil;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractPortableCell extends AEBasePoweredItem
         implements ICellWorkbenchItem, IMenuItem, AEToolItem {
@@ -86,7 +88,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
     @Override
     public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
-                                           ItemStack newStack) {
+            ItemStack newStack) {
         return false;
     }
 
@@ -94,8 +96,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return context.isSecondaryUseActive()
                 && this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
-                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
-                : InteractionResult.PASS;
+                        ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                        : InteractionResult.PASS;
     }
 
     @Override
@@ -179,7 +181,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
      *
      * @return Amount inserted.
      */
-    public long insert(Player player, ItemStack stack, AEKey what, @Nullable AEKeyType allowed, long amount, Actionable mode) {
+    public long insert(Player player, ItemStack stack, AEKey what, @Nullable AEKeyType allowed, long amount,
+            Actionable mode) {
         if (allowed != null && allowed.tryCast(what) == null) {
             return 0;
         }
@@ -221,7 +224,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
      */
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action,
-                                            Player player, SlotAccess access) {
+            Player player, SlotAccess access) {
         if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
             return false;
         }
@@ -235,9 +238,9 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
     }
 
     protected boolean tryInsertFromPlayerOwnedItem(Player player,
-                                                   ItemStack cellStack,
-                                                   ItemStack otherStack,
-                                                   @Nullable AEKeyType keyType) {
+            ItemStack cellStack,
+            ItemStack otherStack,
+            @Nullable AEKeyType keyType) {
         if (keyType == null || keyType == AEKeyType.items()) {
             AEKey key = AEItemKey.of(otherStack);
             int inserted = (int) insert(player, cellStack, key, keyType, otherStack.getCount(), Actionable.MODULATE);

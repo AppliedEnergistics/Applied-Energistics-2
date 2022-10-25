@@ -26,20 +26,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -48,7 +41,6 @@ import appeng.api.upgrades.Upgrades;
 import appeng.core.AppEng;
 import appeng.items.contents.CellConfig;
 import appeng.items.storage.StorageTier;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.ConfigInventory;
 
 public class PortableCellItem extends AbstractPortableCell implements IBasicCellItem {
