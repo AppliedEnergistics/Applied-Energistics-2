@@ -1,26 +1,8 @@
 package appeng.items.tools.powered;
 
-import appeng.api.stacks.AEItemKey;
-import appeng.menu.me.interaction.StackInteractions;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.SlotAccess;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickAction;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.level.Level;
-
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.IMenuItem;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
@@ -40,7 +22,23 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
+import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.InteractionUtil;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractPortableCell extends AEBasePoweredItem
         implements ICellWorkbenchItem, IMenuItem, AEToolItem {
@@ -88,7 +86,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
     @Override
     public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
-            ItemStack newStack) {
+                                           ItemStack newStack) {
         return false;
     }
 
@@ -96,8 +94,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         return context.isSecondaryUseActive()
                 && this.disassembleDrive(stack, context.getLevel(), context.getPlayer())
-                        ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
-                        : InteractionResult.PASS;
+                ? InteractionResult.sidedSuccess(context.getLevel().isClientSide())
+                : InteractionResult.PASS;
     }
 
     @Override
@@ -196,7 +194,9 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return StorageHelper.poweredInsert(host, inv, what, amount, new PlayerSource(player), mode);
         }
         return 0;
-    };
+    }
+
+    ;
 
     // Allow "hovering" up the content of container items in the inventory by right-clicking them
     // with a compatible portable cell.
@@ -235,9 +235,9 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
         return true;
     }
 
-    protected final void tryInsertFromPlayerOwnedItem(Player player,
-                                                      ItemStack cellStack,
-                                                      ItemStack otherStack) {
+    protected void tryInsertFromPlayerOwnedItem(Player player,
+                                                ItemStack cellStack,
+                                                ItemStack otherStack) {
         var keyType = getKeyType();
 
         if (keyType == null || keyType == AEKeyType.items()) {
