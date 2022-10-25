@@ -211,7 +211,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return true;
         }
 
-        tryInsertFromPlayerOwnedItem(player, stack, other);
+        tryInsertFromPlayerOwnedItem(player, stack, other, getKeyType());
         return true;
     }
 
@@ -230,20 +230,20 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return false;
         }
 
-        tryInsertFromPlayerOwnedItem(player, stack, other);
+        tryInsertFromPlayerOwnedItem(player, stack, other, getKeyType());
 
         return true;
     }
 
-    protected void tryInsertFromPlayerOwnedItem(Player player,
-                                                ItemStack cellStack,
-                                                ItemStack otherStack) {
-        var keyType = getKeyType();
-
+    protected boolean tryInsertFromPlayerOwnedItem(Player player,
+                                                   ItemStack cellStack,
+                                                   ItemStack otherStack,
+                                                   @Nullable AEKeyType keyType) {
         if (keyType == null || keyType == AEKeyType.items()) {
             AEKey key = AEItemKey.of(otherStack);
             int inserted = (int) insert(player, cellStack, key, keyType, otherStack.getCount(), Actionable.MODULATE);
             otherStack.shrink(inserted);
+            return inserted > 0;
         } else {
             var context = StackInteractions.findOwnedItemContext(keyType, player, otherStack);
             if (context != null) {
@@ -256,11 +256,14 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
                         if (extracted > 0) {
                             insert(player, cellStack, containedStack.what(), keyType, extracted, Actionable.MODULATE);
                             context.playEmptySound(player, containedStack.what());
+                            return true;
                         }
                     }
                 }
             }
         }
+
+        return false;
     }
 
     /**
