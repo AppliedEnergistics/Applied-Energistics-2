@@ -1,5 +1,7 @@
 package appeng.items.tools.powered;
 
+import appeng.api.stacks.AEItemKey;
+import appeng.menu.me.interaction.StackInteractions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -179,8 +181,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
      *
      * @return Amount inserted.
      */
-    public long insert(Player player, ItemStack stack, AEKey what, AEKeyType allowed, long amount, Actionable mode) {
-        if (allowed.tryCast(what) == null) {
+    public long insert(Player player, ItemStack stack, AEKey what, @Nullable AEKeyType allowed, long amount, Actionable mode) {
+        if (allowed != null && allowed.tryCast(what) == null) {
             return 0;
         }
 
@@ -196,12 +198,76 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
         return 0;
     };
 
+    // Allow "hovering" up the content of container items in the inventory by right-clicking them
+    // with a compatible portable cell.
     @Override
-    public abstract boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player);
+    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+            return false;
+        }
 
+        var other = slot.getItem();
+        if (other.isEmpty()) {
+            return true;
+        }
+
+        tryInsertFromPlayerOwnedItem(player, stack, other);
+        return true;
+    }
+
+    /**
+     * Allows directly inserting items and fluids into portable cells by right-clicking the cell with the item or bucket
+     * in hand.
+     */
     @Override
-    public abstract boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action,
-            Player player, SlotAccess access);
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action,
+                                            Player player, SlotAccess access) {
+        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+            return false;
+        }
+
+        if (other.isEmpty()) {
+            return false;
+        }
+
+        tryInsertFromPlayerOwnedItem(player, stack, other);
+
+        return true;
+    }
+
+    protected final void tryInsertFromPlayerOwnedItem(Player player,
+                                                      ItemStack cellStack,
+                                                      ItemStack otherStack) {
+        var keyType = getKeyType();
+
+        if (keyType == null || keyType == AEKeyType.items()) {
+            AEKey key = AEItemKey.of(otherStack);
+            int inserted = (int) insert(player, cellStack, key, keyType, otherStack.getCount(), Actionable.MODULATE);
+            otherStack.shrink(inserted);
+        } else {
+            var context = StackInteractions.findOwnedItemContext(keyType, player, otherStack);
+            if (context != null) {
+                var containedStack = context.getExtractableContent();
+                if (containedStack != null) {
+                    if (insert(player, cellStack, containedStack.what(), keyType, containedStack.amount(),
+                            Actionable.SIMULATE) == containedStack.amount()) {
+                        var extracted = context.extract(containedStack.what(), containedStack.amount(),
+                                Actionable.MODULATE);
+                        if (extracted > 0) {
+                            insert(player, cellStack, containedStack.what(), keyType, extracted, Actionable.MODULATE);
+                            context.playEmptySound(player, containedStack.what());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @return The key-type allowed in this cell. Can be null to allow any.
+     */
+    @Nullable
+    protected abstract AEKeyType getKeyType();
 
     public static int getColor(ItemStack stack, int tintIndex) {
         if (tintIndex == 1 && stack.getItem() instanceof AbstractPortableCell portableCell) {

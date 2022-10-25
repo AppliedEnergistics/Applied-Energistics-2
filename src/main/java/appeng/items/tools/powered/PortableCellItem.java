@@ -135,67 +135,6 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
         return keyType;
     }
 
-    // Allow "hovering" up the content of container items in the inventory by right-clicking them
-    // with a compatible portable cell.
-    @Override
-    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
-        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
-            return false;
-        }
-
-        var other = slot.getItem();
-        if (other.isEmpty()) {
-            return true;
-        }
-
-        tryInsertFromPlayerOwnedItem(player, stack, other);
-        return true;
-    }
-
-    /**
-     * Allows directly inserting items and fluids into portable cells by right-clicking the cell with the item or bucket
-     * in hand.
-     */
-    @Override
-    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action,
-            Player player, SlotAccess access) {
-        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
-            return false;
-        }
-
-        if (other.isEmpty()) {
-            return false;
-        }
-
-        tryInsertFromPlayerOwnedItem(player, stack, other);
-
-        return true;
-    }
-
-    private void tryInsertFromPlayerOwnedItem(Player player, ItemStack cellStack, ItemStack otherStack) {
-        if (keyType == AEKeyType.items()) {
-            AEKey key = AEItemKey.of(otherStack);
-            int inserted = (int) insert(player, cellStack, key, keyType, otherStack.getCount(), Actionable.MODULATE);
-            otherStack.shrink(inserted);
-        } else {
-            var context = StackInteractions.findOwnedItemContext(keyType, player, otherStack);
-            if (context != null) {
-                var containedStack = context.getExtractableContent();
-                if (containedStack != null) {
-                    if (insert(player, cellStack, containedStack.what(), keyType, containedStack.amount(),
-                            Actionable.SIMULATE) == containedStack.amount()) {
-                        var extracted = context.extract(containedStack.what(), containedStack.amount(),
-                                Actionable.MODULATE);
-                        if (extracted > 0) {
-                            insert(player, cellStack, containedStack.what(), keyType, extracted, Actionable.MODULATE);
-                            context.playEmptySound(player, containedStack.what());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public StorageTier getTier() {
         return tier;
     }
