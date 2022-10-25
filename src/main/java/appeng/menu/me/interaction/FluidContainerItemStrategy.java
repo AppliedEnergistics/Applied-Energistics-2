@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -13,10 +14,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategy;
-import appeng.api.behaviors.GenericContainerHelper;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
+import appeng.util.GenericContainerHelper;
 import appeng.util.IVariantConversion;
 import appeng.util.fluid.FluidSoundHelper;
 
@@ -29,6 +30,12 @@ public class FluidContainerItemStrategy implements ContainerItemStrategy<AEFluid
     @Override
     public @Nullable Storage<FluidVariant> findCarriedContext(Player player, AbstractContainerMenu menu) {
         return ContainerItemContext.ofPlayerCursor(player, menu).find(FluidStorage.ITEM);
+    }
+
+    @Override
+    public @Nullable Storage<FluidVariant> findPlayerSlotContext(Player player, int slot) {
+        var playerInv = PlayerInventoryStorage.of(player.getInventory());
+        return ContainerItemContext.ofPlayerSlot(player, playerInv.getSlots().get(slot)).find(FluidStorage.ITEM);
     }
 
     @Override
