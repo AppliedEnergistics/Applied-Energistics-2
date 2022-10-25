@@ -231,7 +231,6 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
         }
 
         tryInsertFromPlayerOwnedItem(player, stack, other, getKeyType());
-
         return true;
     }
 
