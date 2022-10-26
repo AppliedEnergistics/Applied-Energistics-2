@@ -197,9 +197,12 @@ public class PacketJEIRecipe extends AppEngPacket {
                                         if (request.getItem().isDamageable() || Platform.isGTDamageableItem(request.getItem())) {
                                             Collection<IAEItemStack> outList = inv.getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class)).getStorageList().findFuzzy(request, FuzzyMode.IGNORE_ALL);
                                             for (IAEItemStack is : outList) {
-                                                if (is.getDefinition().getMetadata() == request.getDefinition().getMetadata()) {
-                                                    out = Platform.poweredExtraction(energy, storage, is.copy().setStackSize(1), cct.getActionSource());
+                                                if (Platform.isGTDamageableItem(request.getItem())) {
+                                                    if (!(is.getDefinition().getMetadata() == request.getDefinition().getMetadata())) {
+                                                        continue;
+                                                    }
                                                 }
+                                                out = Platform.poweredExtraction(energy, storage, is.copy().setStackSize(1), cct.getActionSource());
                                                 if (out != null) {
                                                     break;
                                                 }

@@ -60,20 +60,24 @@ public class JEIMissingItem implements IRecipeTransferError {
                         if (allIngredient instanceof ItemStack) {
                             ItemStack stack = (ItemStack) allIngredient;
                             if (!stack.isEmpty()) {
+                                IAEItemStack search = AEItemStack.fromItemStack(stack);
                                 if (stack.getItem().isDamageable() || Platform.isGTDamageableItem(stack.getItem())) {
-                                    Collection<IAEItemStack> fuzzy = available.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
+                                    Collection<IAEItemStack> fuzzy = available.findFuzzy(search, FuzzyMode.IGNORE_ALL);
                                     if (fuzzy.size() > 0) {
                                         for (IAEItemStack itemStack : fuzzy) {
                                             if (itemStack.getStackSize() > 0) {
-                                                if (itemStack.fuzzyComparison(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL)) {
-                                                    found = true;
-                                                    break;
+                                                if (Platform.isGTDamageableItem(stack.getItem())) {
+                                                    if (!(stack.getMetadata() == itemStack.getDefinition().getMetadata())) {
+                                                        continue;
+                                                    }
                                                 }
+                                                found = true;
+                                                break;
                                             }
                                         }
                                     }
                                 } else {
-                                    IAEItemStack ext = available.findPrecise(AEItemStack.fromItemStack(stack));
+                                    IAEItemStack ext = available.findPrecise(search);
                                     if (ext != null) {
                                         IAEItemStack usedStack = used.findPrecise(ext);
                                         if (ext.getStackSize() > 0 && (usedStack == null || ext.getStackSize() > usedStack.getStackSize())) {
@@ -153,6 +157,11 @@ public class JEIMissingItem implements IRecipeTransferError {
                                     if (fuzzy.size() > 0) {
                                         for (IAEItemStack itemStack : fuzzy) {
                                             if (itemStack.getStackSize() > 0) {
+                                                if (Platform.isGTDamageableItem(stack.getItem())) {
+                                                    if (!(stack.getMetadata() == itemStack.getDefinition().getMetadata())) {
+                                                        continue;
+                                                    }
+                                                }
                                                 found = true;
                                                 used.add(itemStack.copy().setStackSize(1));
                                                 valid.add(itemStack.copy().setStackSize(1).createItemStack());
