@@ -42,7 +42,7 @@ public class NonBlockingItems {
                             continue;
                         }
 
-                        if (ModItemMeta[0].equals("gregtech") && Platform.isModLoaded("gregtech")) {
+                        if (ModItemMeta[0].equals("gregtech") && Platform.GTLoaded) {
                             boolean found = false;
                             for (MetaItem<?> metaItem : MetaItem.getMetaItems()) {
                                 MetaItem<?>.MetaValueItem metaItem2 = metaItem.getItem(ModItemMeta[1]);

@@ -266,7 +266,7 @@ public class DualityFluidInterface implements IGridTickable, IStorageMonitorable
                 final Block directedBlock = directedBlockState.getBlock();
                 ItemStack what = new ItemStack(directedBlock, 1, directedBlock.getMetaFromState(directedBlockState));
 
-                if (Loader.isModLoaded("gregtech") && directedBlock instanceof BlockMachine) {
+                if (Platform.GTLoaded && directedBlock instanceof BlockMachine) {
                     MetaTileEntity metaTileEntity = Platform.getMetaTileEntity(directedTile.getWorld(), directedTile.getPos());
                     if (metaTileEntity != null) {
                         return metaTileEntity.getMetaFullName();

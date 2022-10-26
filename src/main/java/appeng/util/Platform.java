@@ -146,6 +146,7 @@ public class Platform {
     private static final ItemComparisonHelper ITEM_COMPARISON_HELPER = new ItemComparisonHelper();
     private static final P2PHelper P2P_HELPER = new P2PHelper();
     private static Method reflectGTgetMTE;
+    public static final boolean GTLoaded = isModLoaded("gregtech");
 
     public static ItemComparisonHelper itemComparisons() {
         return ITEM_COMPARISON_HELPER;
@@ -1416,7 +1417,7 @@ public class Platform {
 
     //consider methods below moving to a compability class
     public static boolean isGTDamageableItem(Item item) {
-        return (isModLoaded("gregtech") && item instanceof IToolItem);
+        return ((GTLoaded) && item instanceof IToolItem);
     }
 
     public static MetaTileEntity getMetaTileEntity(IBlockAccess world, BlockPos pos) {

@@ -14,7 +14,6 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.gui.recipes.RecipeLayout;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -25,13 +24,19 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static mezz.jei.api.recipe.transfer.IRecipeTransferError.Type.USER_FACING;
 
 public class JEIMissingItem implements IRecipeTransferError {
 
     private boolean errored;
+    public long lastUpdate;
+    private final List<Integer> craftableSlots = new ArrayList<>();
+    private final List<Integer> foundSlots = new ArrayList<>();
+
+    IItemList<IAEItemStack> available = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+
+    IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
 
     JEIMissingItem(Container container, @Nonnull IRecipeLayout recipeLayout) {
         if (container instanceof ContainerCraftingTerm) {
@@ -110,31 +115,47 @@ public class JEIMissingItem implements IRecipeTransferError {
             int currentSlot = 0;
             this.errored = false;
 
-            IItemList<IAEItemStack> available = mergeInventories(ir, (ContainerCraftingTerm) minecraft.player.openContainer);
-
-            IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
+            if (System.currentTimeMillis() - lastUpdate > 1000) {
+                lastUpdate = System.currentTimeMillis();
+                available = mergeInventories(ir, (ContainerCraftingTerm) minecraft.player.openContainer);
+                this.foundSlots.clear();
+                this.craftableSlots.clear();
+            } else {
+                for (IGuiIngredient<?> i : recipeLayout.getItemStacks().getGuiIngredients().values()) {
+                    if (i.isInput()) {
+                        if (!foundSlots.contains(currentSlot)) {
+                            if (craftableSlots.contains(currentSlot)) {
+                                i.drawHighlight(minecraft, new Color(0.0f, 0.0f, 1.0f, 0.4f), recipeX, recipeY);
+                            } else {
+                                i.drawHighlight(minecraft, new Color(1.0f, 0.0f, 0.0f, 0.4f), recipeX, recipeY);
+                            }
+                        }
+                    }
+                    currentSlot++;
+                }
+                return;
+            }
+            this.used.resetStatus();
 
             for (IGuiIngredient<?> i : recipeLayout.getItemStacks().getGuiIngredients().values()) {
                 found = false;
                 craftable = false;
-                List<ItemStack> valid = new ArrayList<>();
-                if (i.isInput() && i.getAllIngredients().size() > 0) {
+                ArrayList<ItemStack> valid = new ArrayList<>();
+                if (i.isInput()) {
                     List<?> allIngredients = i.getAllIngredients();
                     for (Object allIngredient : allIngredients) {
                         if (allIngredient instanceof ItemStack) {
                             ItemStack stack = (ItemStack) allIngredient;
                             if (!stack.isEmpty()) {
+                                IAEItemStack search = AEItemStack.fromItemStack(stack);
                                 if (stack.getItem().isDamageable() || Platform.isGTDamageableItem(stack.getItem())) {
-                                    Collection<IAEItemStack> fuzzy = available.findFuzzy(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL);
+                                    Collection<IAEItemStack> fuzzy = available.findFuzzy(search, FuzzyMode.IGNORE_ALL);
                                     if (fuzzy.size() > 0) {
                                         for (IAEItemStack itemStack : fuzzy) {
                                             if (itemStack.getStackSize() > 0) {
-                                                if (itemStack.fuzzyComparison(AEItemStack.fromItemStack(stack), FuzzyMode.IGNORE_ALL)) {
-                                                    found = true;
-                                                    used.add(itemStack.copy().setStackSize(1));
-                                                    valid.addAll(fuzzy.stream().map(IAEItemStack::createItemStack).collect(Collectors.toList()));
-                                                    break;
-                                                }
+                                                found = true;
+                                                used.add(itemStack.copy().setStackSize(1));
+                                                valid.add(itemStack.copy().setStackSize(1).createItemStack());
                                             } else {
                                                 if (itemStack.isCraftable()) {
                                                     craftable = true;
@@ -143,7 +164,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                                         }
                                     }
                                 } else {
-                                    IAEItemStack ext = available.findPrecise(AEItemStack.fromItemStack(stack));
+                                    IAEItemStack ext = available.findPrecise(search);
                                     if (ext != null) {
                                         IAEItemStack usedStack = used.findPrecise(ext);
                                         if (ext.getStackSize() > 0 && (usedStack == null || usedStack.getStackSize() < ext.getStackSize())) {
@@ -159,20 +180,26 @@ public class JEIMissingItem implements IRecipeTransferError {
                                         }
                                     }
                                 }
+                            } else {
+                                found = true;
                             }
                         }
+                    }
+                    if (i.getAllIngredients().size() == 0) {
+                        found = true;
                     }
                     if (!found) {
                         if (craftable) {
                             i.drawHighlight(minecraft, new Color(0.0f, 0.0f, 1.0f, 0.4f), recipeX, recipeY);
+                            this.craftableSlots.add(currentSlot);
                             recipeLayout.getItemStacks().set(currentSlot, valid);
                         } else {
                             i.drawHighlight(minecraft, new Color(1.0f, 0.0f, 0.0f, 0.4f), recipeX, recipeY);
                         }
                         this.errored = true;
                     } else {
+                        this.foundSlots.add(currentSlot);
                         recipeLayout.getItemStacks().set(currentSlot, valid);
-                        this.errored = false;
                     }
                 }
                 currentSlot++;
@@ -181,10 +208,6 @@ public class JEIMissingItem implements IRecipeTransferError {
                 ((RecipeLayout) recipeLayout).getRecipeTransferButton().init(Minecraft.getMinecraft().player.openContainer, Minecraft.getMinecraft().player);
             }
         }
-    }
-
-    public boolean errored() {
-        return this.errored;
     }
 
     IItemList<IAEItemStack> mergeInventories(IItemList<IAEItemStack> repo, ContainerCraftingTerm containerCraftingTerm) {
@@ -203,5 +226,9 @@ public class JEIMissingItem implements IRecipeTransferError {
             itemList.addStorage(AEItemStack.fromItemStack(itemHandler.getStackInSlot(i)));
         }
         return itemList;
+    }
+
+    public boolean errored() {
+        return errored;
     }
 }

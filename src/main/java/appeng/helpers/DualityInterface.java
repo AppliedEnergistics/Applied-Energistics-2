@@ -1105,7 +1105,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
 
                 final InventoryAdaptor ad = InventoryAdaptor.getAdaptor(te, s.getOpposite());
                 if (ad != null) {
-                    if (Loader.isModLoaded("actuallyadditions") && Loader.isModLoaded("gregtech") && te instanceof IPhantomTile) {
+                    if (Loader.isModLoaded("actuallyadditions") && Platform.GTLoaded && te instanceof IPhantomTile) {
                         IPhantomTile phantomTE = ((IPhantomTile) te);
                         if (phantomTE.hasBoundPosition()) {
                             TileEntity phantom = w.getTileEntity(phantomTE.getBoundPosition());
@@ -1287,7 +1287,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 final Block directedBlock = directedBlockState.getBlock();
                 ItemStack what = new ItemStack(directedBlock, 1, directedBlock.getMetaFromState(directedBlockState));
 
-                if (Loader.isModLoaded("gregtech") && directedBlock instanceof BlockMachine) {
+                if (Platform.GTLoaded && directedBlock instanceof BlockMachine) {
                     MetaTileEntity metaTileEntity = Platform.getMetaTileEntity(directedTile.getWorld(), directedTile.getPos());
                     if (metaTileEntity != null) {
                         return metaTileEntity.getMetaFullName();
