@@ -21,9 +21,10 @@
                 "up": {
                     "texture": "#lights_bright",
                     "tintindex": 3,
+                    "unlit": true,
                     "uvlightmap": {
-                        "block": 0.007,
-                        "sky": 0.007
+                        "block": 15,
+                        "sky": 15
                     }
                 }
             }
@@ -43,9 +44,10 @@
                 "up": {
                     "texture": "#lights_medium",
                     "tintindex": 2,
+                    "unlit": true,
                     "uvlightmap": {
-                        "block": 0.007,
-                        "sky": 0.007
+                        "block": 15,
+                        "sky": 15
                     }
                 }
             }
@@ -65,9 +67,10 @@
                 "up": {
                     "texture": "#lights_dark",
                     "tintindex": 1,
+                    "unlit": true,
                     "uvlightmap": {
-                        "block": 0.007,
-                        "sky": 0.007
+                        "block": 15,
+                        "sky": 15
                     }
                 }
             }

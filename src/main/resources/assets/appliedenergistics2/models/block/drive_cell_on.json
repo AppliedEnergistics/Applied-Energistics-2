@@ -1,60 +1,29 @@
 {
-    "ae2_uvl_marker": true,
-    "textures": {
-        "front": "appliedenergistics2:blocks/drive_cell_states"
-    },
-    "elements": [
-        {
-            "name": "Cell Backdrop",
-            "from": [
-                9.0,
-                13.0,
-                0.0
-            ],
-            "to": [
-                14.0,
-                15.0,
-                1.0
-            ],
-            "faces": {
-                "north": {
-                    "texture": "#front",
-                    "uv": [
-                        0,
-                        8,
-                        5,
-                        10
-                    ]
-                }
-            }
-        },
-        {
-            "name": "Cell Light",
-            "from": [
-                9.0,
-                13.0,
-                0.0
-            ],
-            "to": [
-                14.0,
-                15.0,
-                1.0
-            ],
-            "faces": {
-                "north": {
-                    "texture": "#front",
-                    "uv": [
-                        0,
-                        2,
-                        5,
-                        4
-                    ],
-                    "uvlightmap": {
-                        "sky": 0.007,
-                        "block": 0.007
-                    }
-                }
-            }
-        }
-    ]
+	"textures": {
+		"front": "appliedenergistics2:blocks/drive_cell_states",
+		"top_front": "appliedenergistics2:blocks/drive_cell_states_emissive"
+	},
+	"elements": [
+		{
+			"name": "Cell Backdrop",
+			"from": [9, 13, 1],
+			"to": [14, 15, 2],
+			"shade": false,
+			"faces": {
+				"north": {"uv": [0, 8, 5, 10], "texture": "#front"},
+				"up": {"uv": [0, 8, 5, 9], "texture": "#front"},
+				"down": {"uv": [5, 10, 0, 9], "texture": "#front"}
+			}
+		},
+		{
+			"name": "Cell Light",
+			"from": [9, 13, 1],
+			"to": [14, 15, 2],
+			"shade": false,
+			"faces": {
+				"north": {"uv": [0, 2, 5, 4], "texture": "#top_front"},
+				"down": {"uv": [5, 4, 0, 3], "texture": "#top_front"}
+			}
+		}
+	]
 }

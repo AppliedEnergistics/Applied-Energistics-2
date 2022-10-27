@@ -1,24 +1,4 @@
 {
-    "textures": {
-        "state": "appliedenergistics2:blocks/chest/cell_state_empty"
-    },
-    "elements": [
-        {
-            "from": [
-                0,
-                0,
-                0
-            ],
-            "to": [
-                16,
-                16,
-                16
-            ],
-            "faces": {
-                "north": {
-                    "texture": "#state"
-                }
-            }
-        }
-    ]
+    "textures": {},
+    "elements": []
 }
