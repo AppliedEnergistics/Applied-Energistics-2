@@ -49,7 +49,6 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
-import appeng.tile.grindstone.CrankBlockEntity;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;

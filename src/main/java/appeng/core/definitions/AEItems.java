@@ -47,8 +47,7 @@ import appeng.debug.DebugCardItem;
 import appeng.debug.EraserItem;
 import appeng.debug.MeteoritePlacerItem;
 import appeng.debug.ReplicatorCardItem;
-import appeng.entity.SingularityEntity;
-import appeng.items.materials.CustomEntityItem;
+import appeng.items.materials.EnergyCardItem;
 import appeng.items.materials.MaterialItem;
 import appeng.items.materials.NamePressItem;
 import appeng.items.materials.StorageComponentItem;
@@ -59,6 +58,7 @@ import appeng.items.parts.FacadeItem;
 import appeng.items.storage.BasicStorageCell;
 import appeng.items.storage.CreativeCellItem;
 import appeng.items.storage.SpatialStorageCellItem;
+import appeng.items.storage.StorageTier;
 import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
@@ -73,7 +73,6 @@ import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.items.tools.powered.PortableCellItem;
-import appeng.items.tools.powered.PortableCellItem.StorageTier;
 import appeng.items.tools.powered.WirelessCraftingTerminalItem;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.items.tools.quartz.QuartzAxeItem;
@@ -153,17 +152,17 @@ public final class AEItems {
         return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1)));
     }
 
-    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, PortableCellItem.SIZE_1K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL4K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL4K, PortableCellItem.SIZE_4K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL16K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL16K, PortableCellItem.SIZE_16K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL64K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL64K, PortableCellItem.SIZE_64K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL256K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL256K, PortableCellItem.SIZE_256K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, StorageTier.SIZE_1K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL4K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL4K, StorageTier.SIZE_4K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL16K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL16K, StorageTier.SIZE_16K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL64K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL64K, StorageTier.SIZE_64K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL256K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL256K, StorageTier.SIZE_256K);
 
-    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL1K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL1K, PortableCellItem.SIZE_1K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL4K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL4K, PortableCellItem.SIZE_4K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL16K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL16K, PortableCellItem.SIZE_16K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL64K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL64K, PortableCellItem.SIZE_64K);
-    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL256K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL256K, PortableCellItem.SIZE_256K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL1K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL1K, StorageTier.SIZE_1K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL4K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL4K, StorageTier.SIZE_4K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL16K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL16K, StorageTier.SIZE_16K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL64K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL64K, StorageTier.SIZE_64K);
+    public static final ItemDefinition<PortableCellItem> PORTABLE_FLUID_CELL256K = makePortableFluidCell(AEItemIds.PORTABLE_FLUID_CELL256K, StorageTier.SIZE_256K);
 
     ///
     /// NETWORK RELATED TOOLS
@@ -219,8 +218,8 @@ public final class AEItems {
     public static final ItemDefinition<Item> SPEED_CARD = item("Acceleration Card", AEItemIds.SPEED_CARD, Upgrades::createUpgradeCardItem);
     public static final ItemDefinition<Item> INVERTER_CARD = item("Inverter Card", AEItemIds.INVERTER_CARD, Upgrades::createUpgradeCardItem);
     public static final ItemDefinition<Item> CRAFTING_CARD = item("Crafting Card", AEItemIds.CRAFTING_CARD, Upgrades::createUpgradeCardItem);
-    public static final ItemDefinition<Item> ENERGY_CARD = item("Energy Card", AEItemIds.ENERGY_CARD, Upgrades::createUpgradeCardItem);
     public static final ItemDefinition<Item> EQUAL_DISTRIBUTION_CARD = item("Equal Distribution Card", AEItemIds.EQUAL_DISTRIBUTION_CARD, Upgrades::createUpgradeCardItem);
+    public static final ItemDefinition<EnergyCardItem> ENERGY_CARD = item("Energy Card", AEItemIds.ENERGY_CARD, p -> new EnergyCardItem(p, 1));
     public static final ItemDefinition<MaterialItem> SPATIAL_2_CELL_COMPONENT = item("2³ Spatial Component", AEItemIds.SPATIAL_2_CELL_COMPONENT, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SPATIAL_16_CELL_COMPONENT = item("16³ Spatial Component", AEItemIds.SPATIAL_16_CELL_COMPONENT, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SPATIAL_128_CELL_COMPONENT = item("128³ Spatial Component", AEItemIds.SPATIAL_128_CELL_COMPONENT, MaterialItem::new);
@@ -236,9 +235,9 @@ public final class AEItems {
     public static final ItemDefinition<MaterialItem> FORMATION_CORE = item("Formation Core", AEItemIds.FORMATION_CORE, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> ANNIHILATION_CORE = item("Annihilation Core", AEItemIds.ANNIHILATION_CORE, MaterialItem::new);
     public static final ItemDefinition<MaterialItem> SKY_DUST = item("Sky Stone Dust", AEItemIds.SKY_DUST, MaterialItem::new);
-    public static final ItemDefinition<CustomEntityItem> ENDER_DUST = item("Ender Dust", AEItemIds.ENDER_DUST, p -> new CustomEntityItem(p, SingularityEntity::new));
-    public static final ItemDefinition<CustomEntityItem> SINGULARITY = item("Singularity", AEItemIds.SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
-    public static final ItemDefinition<CustomEntityItem> QUANTUM_ENTANGLED_SINGULARITY = item("Quantum Entangled Singularity", AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, p -> new CustomEntityItem(p, SingularityEntity::new));
+    public static final ItemDefinition<MaterialItem> ENDER_DUST = item("Ender Dust", AEItemIds.ENDER_DUST, MaterialItem::new);
+    public static final ItemDefinition<MaterialItem> SINGULARITY = item("Singularity", AEItemIds.SINGULARITY, MaterialItem::new);
+    public static final ItemDefinition<MaterialItem> QUANTUM_ENTANGLED_SINGULARITY = item("Quantum Entangled Singularity", AEItemIds.QUANTUM_ENTANGLED_SINGULARITY, MaterialItem::new);
 
     ///
     /// CELLS

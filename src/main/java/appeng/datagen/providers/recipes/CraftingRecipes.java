@@ -150,17 +150,29 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("misc/tank_sky_stone"));
 
         ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
-                .requires(AEBlocks.CHISELED_QUARTZ_BLOCK)
-                .unlockedBy("has_chiseled_quartz_block", has(AEBlocks.CHISELED_QUARTZ_BLOCK))
-                .save(consumer, AppEng.makeId("misc/deconstruction_certus_chiseled_quartz"));
-        ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
                 .requires(AEBlocks.QUARTZ_BLOCK)
                 .unlockedBy("has_quartz_block", has(AEBlocks.QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("misc/deconstruction_certus_quartz_block"));
         ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
+                .requires(AEBlocks.CUT_QUARTZ_BLOCK)
+                .unlockedBy("has_cut_quartz_block", has(AEBlocks.CUT_QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("misc/deconstruction_cut_certus_quartz_block"));
+        ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
+                .requires(AEBlocks.SMOOTH_QUARTZ_BLOCK)
+                .unlockedBy("has_smooth_quartz_block", has(AEBlocks.SMOOTH_QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("misc/deconstruction_smooth_certus_quartz_block"));
+        ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
+                .requires(AEBlocks.QUARTZ_BRICKS)
+                .unlockedBy("has_quartz_bricks", has(AEBlocks.QUARTZ_BRICKS))
+                .save(consumer, AppEng.makeId("misc/deconstruction_certus_quartz_bricks"));
+        ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
                 .requires(AEBlocks.QUARTZ_PILLAR)
                 .unlockedBy("has_quartz_pillar", has(AEBlocks.QUARTZ_PILLAR))
                 .save(consumer, AppEng.makeId("misc/deconstruction_certus_quartz_pillar"));
+        ShapelessRecipeBuilder.shapeless(AEItems.CERTUS_QUARTZ_CRYSTAL, 4)
+                .requires(AEBlocks.CHISELED_QUARTZ_BLOCK)
+                .unlockedBy("has_chiseled_quartz_block", has(AEBlocks.CHISELED_QUARTZ_BLOCK))
+                .save(consumer, AppEng.makeId("misc/deconstruction_chiseled_certus_quartz"));
         ShapelessRecipeBuilder.shapeless(AEItems.FLUIX_CRYSTAL, 4)
                 .requires(AEBlocks.FLUIX_BLOCK)
                 .unlockedBy("has_fluix_block", has(AEBlocks.FLUIX_BLOCK))

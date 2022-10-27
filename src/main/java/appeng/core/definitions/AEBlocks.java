@@ -46,17 +46,16 @@ import net.minecraft.world.level.material.MaterialColor;
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
-import appeng.block.AEBaseBlockItemChargeable;
 import appeng.block.crafting.CraftingBlockItem;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.block.crafting.CraftingUnitBlock;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.block.crafting.MolecularAssemblerBlock;
 import appeng.block.crafting.PatternProviderBlock;
-import appeng.block.grindstone.CrankBlock;
 import appeng.block.misc.CellWorkbenchBlock;
 import appeng.block.misc.ChargerBlock;
 import appeng.block.misc.CondenserBlock;
+import appeng.block.misc.CrankBlock;
 import appeng.block.misc.InscriberBlock;
 import appeng.block.misc.InterfaceBlock;
 import appeng.block.misc.LightDetectorBlock;
@@ -71,6 +70,7 @@ import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.CreativeEnergyCellBlock;
 import appeng.block.networking.EnergyAcceptorBlock;
 import appeng.block.networking.EnergyCellBlock;
+import appeng.block.networking.EnergyCellBlockItem;
 import appeng.block.networking.WirelessBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.block.qnb.QuantumLinkChamberBlock;
@@ -132,6 +132,9 @@ public final class AEBlocks {
     public static final BlockDefinition<MatrixFrameBlock> MATRIX_FRAME = block("Matrix Frame", AEBlockIds.MATRIX_FRAME, MatrixFrameBlock::new);
 
     public static final BlockDefinition<AEDecorativeBlock> QUARTZ_BLOCK = block("Certus Quartz Block", AEBlockIds.QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> CUT_QUARTZ_BLOCK = block("Cut Certus Quartz Block", AEBlockIds.CUT_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> SMOOTH_QUARTZ_BLOCK = block("Smooth Certus Quartz Block", AEBlockIds.SMOOTH_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<AEDecorativeBlock> QUARTZ_BRICKS = block("Certus Quartz Bricks", AEBlockIds.QUARTZ_BRICKS, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<QuartzPillarBlock> QUARTZ_PILLAR = block("Certus Quartz Pillar", AEBlockIds.QUARTZ_PILLAR, () -> new QuartzPillarBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<AEDecorativeBlock> CHISELED_QUARTZ_BLOCK = block("Chiseled Certus Quartz Block", AEBlockIds.CHISELED_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
 
@@ -176,8 +179,8 @@ public final class AEBlocks {
     public static final BlockDefinition<EnergyAcceptorBlock> ENERGY_ACCEPTOR = block("Energy Acceptor", AEBlockIds.ENERGY_ACCEPTOR, EnergyAcceptorBlock::new);
     public static final BlockDefinition<VibrationChamberBlock> VIBRATION_CHAMBER = block("Vibration Chamber", AEBlockIds.VIBRATION_CHAMBER, VibrationChamberBlock::new);
     public static final BlockDefinition<QuartzGrowthAcceleratorBlock> QUARTZ_GROWTH_ACCELERATOR = block("Crystal Growth Accelerator", AEBlockIds.QUARTZ_GROWTH_ACCELERATOR, QuartzGrowthAcceleratorBlock::new);
-    public static final BlockDefinition<EnergyCellBlock> ENERGY_CELL = block("Energy Cell", AEBlockIds.ENERGY_CELL, () -> new EnergyCellBlock(200000.0, 200), AEBaseBlockItemChargeable::new);
-    public static final BlockDefinition<EnergyCellBlock> DENSE_ENERGY_CELL = block("Dense Energy Cell", AEBlockIds.DENSE_ENERGY_CELL, () -> new EnergyCellBlock(1600000.0, 1600), AEBaseBlockItemChargeable::new);
+    public static final BlockDefinition<EnergyCellBlock> ENERGY_CELL = block("Energy Cell", AEBlockIds.ENERGY_CELL, () -> new EnergyCellBlock(200000, 800, 200), EnergyCellBlockItem::new);
+    public static final BlockDefinition<EnergyCellBlock> DENSE_ENERGY_CELL = block("Dense Energy Cell", AEBlockIds.DENSE_ENERGY_CELL, () -> new EnergyCellBlock(1600000, 1600, 1600), EnergyCellBlockItem::new);
     public static final BlockDefinition<CreativeEnergyCellBlock> CREATIVE_ENERGY_CELL = block("Creative Energy Cell", AEBlockIds.CREATIVE_ENERGY_CELL, CreativeEnergyCellBlock::new);
 
     public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block("Crafting Unit", AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.UNIT));
@@ -205,6 +208,9 @@ public final class AEBlocks {
     public static final BlockDefinition<StairBlock> SKY_STONE_SMALL_BRICK_STAIRS = block("Sky Stone Small Brick Stairs", AEBlockIds.SKY_STONE_SMALL_BRICK_STAIRS, () -> new StairBlock(SKY_STONE_SMALL_BRICK.block().defaultBlockState(), SKYSTONE_PROPERTIES));
     public static final BlockDefinition<StairBlock> FLUIX_STAIRS = block("Fluix Stairs", AEBlockIds.FLUIX_STAIRS, () -> new StairBlock(FLUIX_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
     public static final BlockDefinition<StairBlock> QUARTZ_STAIRS = block("Certus Quartz Stairs", AEBlockIds.QUARTZ_STAIRS, () -> new StairBlock(QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> CUT_QUARTZ_STAIRS = block("Cut Certus Quartz Stairs", AEBlockIds.CUT_QUARTZ_STAIRS, () -> new StairBlock(CUT_QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> SMOOTH_QUARTZ_STAIRS = block("Smooth Certus Quartz Stairs", AEBlockIds.SMOOTH_QUARTZ_STAIRS, () -> new StairBlock(SMOOTH_QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
+    public static final BlockDefinition<StairBlock> QUARTZ_BRICK_STAIRS = block("Certus Quartz Brick Stairs", AEBlockIds.QUARTZ_BRICK_STAIRS, () -> new StairBlock(QUARTZ_BRICKS.block().defaultBlockState(), QUARTZ_PROPERTIES));
     public static final BlockDefinition<StairBlock> CHISELED_QUARTZ_STAIRS = block("Chiseled Certus Quartz Stairs", AEBlockIds.CHISELED_QUARTZ_STAIRS, () -> new StairBlock(CHISELED_QUARTZ_BLOCK.block().defaultBlockState(), QUARTZ_PROPERTIES));
     public static final BlockDefinition<StairBlock> QUARTZ_PILLAR_STAIRS = block("Certus Quartz Pillar Stairs", AEBlockIds.QUARTZ_PILLAR_STAIRS, () -> new StairBlock(QUARTZ_PILLAR.block().defaultBlockState(), QUARTZ_PROPERTIES));
 
@@ -214,20 +220,26 @@ public final class AEBlocks {
     public static final BlockDefinition<WallBlock> SKY_STONE_SMALL_BRICK_WALL = block("Sky Stone Small Brick Wall", AEBlockIds.SKY_STONE_SMALL_BRICK_WALL, () -> new WallBlock(SKYSTONE_PROPERTIES));
     public static final BlockDefinition<WallBlock> FLUIX_WALL = block("Fluix Wall", AEBlockIds.FLUIX_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<WallBlock> QUARTZ_WALL = block("Certus Quartz Wall", AEBlockIds.QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<WallBlock> CUT_QUARTZ_WALL = block("Cut Certus Quartz Wall", AEBlockIds.CUT_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<WallBlock> SMOOTH_QUARTZ_WALL = block("Smooth Certus Quartz Wall", AEBlockIds.SMOOTH_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<WallBlock> QUARTZ_BRICK_WALL = block("Certus Quartz Brick Wall", AEBlockIds.QUARTZ_BRICK_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<WallBlock> CHISELED_QUARTZ_WALL = block("Chiseled Certus Quartz Wall", AEBlockIds.CHISELED_QUARTZ_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<WallBlock> QUARTZ_PILLAR_WALL = block("Certus Quartz Pillar Wall", AEBlockIds.QUARTZ_PILLAR_WALL, () -> new WallBlock(QUARTZ_PROPERTIES));
 
     public static final BlockDefinition<CableBusBlock> CABLE_BUS = block("AE2 Cable and/or Bus", AEBlockIds.CABLE_BUS, CableBusBlock::new);
 
-    public static final BlockDefinition<SlabBlock> SKY_STONE_SLAB = block("Sky Stone Slabs", AEBlockIds.SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<SlabBlock> SMOOTH_SKY_STONE_SLAB = block("Sky Stone Block Slabs", AEBlockIds.SMOOTH_SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<SlabBlock> SKY_STONE_BRICK_SLAB = block("Sky Stone Brick Slabs", AEBlockIds.SKY_STONE_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
-    public static final BlockDefinition<SlabBlock> SKY_STONE_SMALL_BRICK_SLAB = block("Sky Stone Small Brick Slabs", AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SKY_STONE_SLAB = block("Sky Stone Slab", AEBlockIds.SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SMOOTH_SKY_STONE_SLAB = block("Sky Stone Block Slab", AEBlockIds.SMOOTH_SKY_STONE_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SKY_STONE_BRICK_SLAB = block("Sky Stone Brick Slab", AEBlockIds.SKY_STONE_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SKY_STONE_SMALL_BRICK_SLAB = block("Sky Stone Small Brick Slab", AEBlockIds.SKY_STONE_SMALL_BRICK_SLAB, () -> new SlabBlock(SKYSTONE_PROPERTIES));
 
-    public static final BlockDefinition<SlabBlock> FLUIX_SLAB = block("Fluix Slabs", AEBlockIds.FLUIX_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
-    public static final BlockDefinition<SlabBlock> QUARTZ_SLAB = block("Certus Quartz Slabs", AEBlockIds.QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
-    public static final BlockDefinition<SlabBlock> CHISELED_QUARTZ_SLAB = block("Chiseled Certus Quartz Slabs", AEBlockIds.CHISELED_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
-    public static final BlockDefinition<SlabBlock> QUARTZ_PILLAR_SLAB = block("Certus Quartz Pillar Slabs", AEBlockIds.QUARTZ_PILLAR_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> FLUIX_SLAB = block("Fluix Slab", AEBlockIds.FLUIX_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> QUARTZ_SLAB = block("Certus Quartz Slab", AEBlockIds.QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> CUT_QUARTZ_SLAB = block("Cut Certus Quartz Slab", AEBlockIds.CUT_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> SMOOTH_QUARTZ_SLAB = block("Smooth Certus Quartz Slab", AEBlockIds.SMOOTH_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> QUARTZ_BRICK_SLAB = block("Certus Quartz Brick Slab", AEBlockIds.QUARTZ_BRICK_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> CHISELED_QUARTZ_SLAB = block("Chiseled Certus Quartz Slab", AEBlockIds.CHISELED_QUARTZ_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<SlabBlock> QUARTZ_PILLAR_SLAB = block("Certus Quartz Pillar Slab", AEBlockIds.QUARTZ_PILLAR_SLAB, () -> new SlabBlock(QUARTZ_PROPERTIES));
 
     public static final BlockDefinition<SpatialAnchorBlock> SPATIAL_ANCHOR = block("Spatial Anchor", AEBlockIds.SPATIAL_ANCHOR, SpatialAnchorBlock::new);
 

@@ -103,6 +103,8 @@ public abstract class SynchronizedField<T> {
             return new IntegerField(source, field);
         } else if (fieldType == long.class || fieldType == Long.class) {
             return new LongField(source, field);
+        } else if (fieldType == double.class) {
+            return new DoubleField(source, field);
         } else if (fieldType == boolean.class || fieldType == Boolean.class) {
             return new BooleanField(source, field);
         } else if (fieldType.isEnum()) {
@@ -161,6 +163,22 @@ public abstract class SynchronizedField<T> {
         @Override
         protected Long readValue(FriendlyByteBuf data) {
             return data.readLong();
+        }
+    }
+
+    private static class DoubleField extends SynchronizedField<Double> {
+        private DoubleField(Object source, Field field) {
+            super(source, field);
+        }
+
+        @Override
+        protected void writeValue(FriendlyByteBuf data, Double value) {
+            data.writeDouble(value);
+        }
+
+        @Override
+        protected Double readValue(FriendlyByteBuf data) {
+            return data.readDouble();
         }
     }
 

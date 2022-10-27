@@ -12,7 +12,7 @@ import appeng.api.features.HotkeyAction;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
-import appeng.items.tools.powered.PortableCellItem;
+import appeng.items.tools.powered.AbstractPortableCell;
 
 /**
  * registers {@link HotkeyAction}
@@ -50,7 +50,7 @@ public class HotkeyActions {
     /**
      * a convenience helper for registering hotkeys for portable cells
      */
-    public static void registerPortableCell(ItemDefinition<PortableCellItem> cell, String id) {
+    public static void registerPortableCell(ItemDefinition<? extends AbstractPortableCell> cell, String id) {
         register(new InventoryHotkeyAction(cell.asItem(), cell.asItem()::openFromInventory), id);
     }
 

@@ -44,6 +44,7 @@ import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.CondenserBlockEntity;
+import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
@@ -72,7 +73,6 @@ import appeng.debug.CubeGeneratorBlockEntity;
 import appeng.debug.EnergyGeneratorBlockEntity;
 import appeng.debug.ItemGenBlockEntity;
 import appeng.debug.PhantomNodeBlockEntity;
-import appeng.tile.grindstone.CrankBlockEntity;
 
 @SuppressWarnings("unused")
 public final class AEBlockEntities {

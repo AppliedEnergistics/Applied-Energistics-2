@@ -31,21 +31,26 @@ import appeng.util.ConfigInventory;
 
 public interface ICellWorkbenchItem extends IUpgradeableItem {
     /**
-     * if this return false, the item will not be treated as a cell, and cannot be inserted into the work bench.
+     * Determines whether or not the item should be treated as a cell and allow for configuration via a cell workbench.
+     * By default, any such item with either a filtering or upgrade inventory is thus assumed to be editable.
      *
      * @param is item
      * @return true if the item should be editable in the cell workbench.
      */
-    boolean isEditable(ItemStack is);
+    default boolean isEditable(ItemStack is) {
+        return getConfigInventory(is).size() > 0 || getUpgrades(is).size() > 0;
+    }
 
     /**
      * Used to extract, or mirror the contents of the work bench onto the cell.
      * <p>
-     * - This should have exactly 63 slots, any more, or less might cause issues.
+     * This should not exceed 63 slots. Any more than that might cause issues.
      * <p>
      * onInventoryChange will be called when saving is needed.
      */
-    ConfigInventory getConfigInventory(ItemStack is);
+    default ConfigInventory getConfigInventory(ItemStack is) {
+        return ConfigInventory.EMPTY_TYPES;
+    }
 
     /**
      * @return the current fuzzy status.

@@ -40,19 +40,19 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.util.IConfigManager;
-import appeng.items.tools.powered.PortableCellItem;
+import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.menu.ISubMenu;
 import appeng.util.ConfigManager;
 
 /**
- * Hosts the terminal interface for a {@link appeng.items.tools.powered.PortableCellItem}.
+ * Hosts the terminal interface for a {@link appeng.items.tools.powered.AbstractPortableCell}.
  */
 public class PortableCellMenuHost extends ItemMenuHost implements IPortableTerminal {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
     private final MEStorage cellStorage;
-    private final PortableCellItem item;
+    private final AbstractPortableCell item;
 
-    public PortableCellMenuHost(Player player, @Nullable Integer slot, PortableCellItem item, ItemStack itemStack,
+    public PortableCellMenuHost(Player player, @Nullable Integer slot, AbstractPortableCell item, ItemStack itemStack,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(player, slot, itemStack);
         Preconditions.checkArgument(itemStack.getItem() == item, "Stack doesn't match item");
