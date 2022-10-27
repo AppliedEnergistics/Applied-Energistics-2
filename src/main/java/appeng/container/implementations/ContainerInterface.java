@@ -28,8 +28,13 @@ import appeng.container.guisync.GuiSync;
 import appeng.container.slot.*;
 import appeng.helpers.DualityInterface;
 import appeng.helpers.IInterfaceHost;
+import appeng.tile.inventory.AppEngInternalInventory;
+import appeng.tile.inventory.AppEngInternalOversizedInventory;
 import appeng.util.Platform;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.item.ItemStack;
 
 
 public class ContainerInterface extends ContainerUpgradeable implements IOptionalSlotHost {
@@ -62,8 +67,21 @@ public class ContainerInterface extends ContainerUpgradeable implements IOptiona
         }
 
         for (int x = 0; x < DualityInterface.NUMBER_OF_STORAGE_SLOTS; x++) {
-            this.addSlotToContainer(new SlotNormal(this.myDuality.getStorage(), x, 8 + 18 * x, 35 + 18));
+            this.addSlotToContainer(new SlotOversized(this.myDuality.getStorage(), x, 8 + 18 * x, 35 + 18));
         }
+    }
+
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+        if (slotId >= 0 && slotId < this.inventorySlots.size()) {
+            if (this.inventorySlots.get(slotId) instanceof SlotOversized) {
+                ((AppEngInternalOversizedInventory) ((SlotOversized) this.inventorySlots.get(slotId)).getItemHandler()).limitExtraction(true);
+                ItemStack ret = super.slotClick(slotId, dragType, clickTypeIn, player);
+                ((AppEngInternalOversizedInventory) ((SlotOversized) this.inventorySlots.get(slotId)).getItemHandler()).limitExtraction(false);
+                return ret;
+            }
+        }
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

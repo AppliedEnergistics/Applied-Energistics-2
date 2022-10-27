@@ -404,7 +404,7 @@ public abstract class AEBaseContainer extends Container {
                                 if (tis.getCount() <= 0) {
                                     clickSlot.putStack(ItemStack.EMPTY);
                                     d.onSlotChanged();
-                                    
+
                                     this.updateSlot(clickSlot);
                                     this.updateSlot(d);
                                     return ItemStack.EMPTY;
@@ -423,42 +423,7 @@ public abstract class AEBaseContainer extends Container {
                     }
 
                     if (d.isItemValid(tis)) {
-                        if (d.getHasStack()) {
-                            final ItemStack t = d.getStack().copy();
-
-                            if (Platform.itemComparisons().isSameItem(t, tis)) {
-                                int maxSize = t.getMaxStackSize();
-                                if (d.getSlotStackLimit() < maxSize) {
-                                    maxSize = d.getSlotStackLimit();
-                                }
-
-                                int placeAble = maxSize - t.getCount();
-
-                                if (tis.getCount() < placeAble) {
-                                    placeAble = tis.getCount();
-                                }
-
-                                t.setCount(t.getCount() + placeAble);
-                                tis.setCount(tis.getCount() - placeAble);
-
-                                d.putStack(t);
-
-                                if (tis.getCount() <= 0) {
-                                    clickSlot.putStack(ItemStack.EMPTY);
-                                    d.onSlotChanged();
-
-                                    // if ( worldEntity != null )
-                                    // worldEntity.markDirty();
-                                    // if ( hasMETiles ) updateClient();
-
-                                    this.updateSlot(clickSlot);
-                                    this.updateSlot(d);
-                                    return ItemStack.EMPTY;
-                                } else {
-                                    this.updateSlot(d);
-                                }
-                            }
-                        } else {
+                        if (!d.getHasStack()) {
                             int maxSize = tis.getMaxStackSize();
                             if (maxSize > d.getSlotStackLimit()) {
                                 maxSize = d.getSlotStackLimit();
@@ -475,10 +440,6 @@ public abstract class AEBaseContainer extends Container {
                             if (tis.getCount() <= 0) {
                                 clickSlot.putStack(ItemStack.EMPTY);
                                 d.onSlotChanged();
-
-                                // if ( worldEntity != null )
-                                // worldEntity.markDirty();
-                                // if ( hasMETiles ) updateClient();
 
                                 this.updateSlot(clickSlot);
                                 this.updateSlot(d);
