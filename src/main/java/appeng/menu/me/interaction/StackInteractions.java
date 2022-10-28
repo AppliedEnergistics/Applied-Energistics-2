@@ -1,6 +1,7 @@
 package appeng.menu.me.interaction;
 
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
@@ -107,6 +108,10 @@ public class StackInteractions {
             }
         }
         return null;
+    }
+
+    public static Set<AEKeyType> getSupportedKeyTypes() {
+        return strategies.getMap().keySet();
     }
 
     /**

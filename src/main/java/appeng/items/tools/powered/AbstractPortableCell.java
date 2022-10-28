@@ -214,7 +214,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return true;
         }
 
-        tryInsertFromPlayerOwnedItem(player, stack, other, getKeyType());
+        tryInsertFromPlayerOwnedItem(player, stack, other);
         return true;
     }
 
@@ -233,33 +233,51 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             return false;
         }
 
-        tryInsertFromPlayerOwnedItem(player, stack, other, getKeyType());
+        tryInsertFromPlayerOwnedItem(player, stack, other);
         return true;
     }
 
     protected boolean tryInsertFromPlayerOwnedItem(Player player,
             ItemStack cellStack,
-            ItemStack otherStack,
-            @Nullable AEKeyType keyType) {
-        if (keyType == null || keyType == AEKeyType.items()) {
-            AEKey key = AEItemKey.of(otherStack);
-            int inserted = (int) insert(player, cellStack, key, keyType, otherStack.getCount(), Actionable.MODULATE);
+            ItemStack otherStack) {
+        // Try all available strategies
+        for (var keyType : StackInteractions.getSupportedKeyTypes()) {
+            if (tryInsertFromPlayerOwnedItem(player, cellStack, otherStack, keyType)) {
+                return true;
+            }
+        }
+
+        // Fall back to inserting as item
+        var key = AEItemKey.of(otherStack);
+        var inserted = (int) insert(player,
+                cellStack,
+                key,
+                AEKeyType.items(),
+                otherStack.getCount(),
+                Actionable.MODULATE);
+        if (inserted > 0) {
             otherStack.shrink(inserted);
-            return inserted > 0;
-        } else {
-            var context = StackInteractions.findOwnedItemContext(keyType, player, otherStack);
-            if (context != null) {
-                var containedStack = context.getExtractableContent();
-                if (containedStack != null) {
-                    if (insert(player, cellStack, containedStack.what(), keyType, containedStack.amount(),
-                            Actionable.SIMULATE) == containedStack.amount()) {
-                        var extracted = context.extract(containedStack.what(), containedStack.amount(),
-                                Actionable.MODULATE);
-                        if (extracted > 0) {
-                            insert(player, cellStack, containedStack.what(), keyType, extracted, Actionable.MODULATE);
-                            context.playEmptySound(player, containedStack.what());
-                            return true;
-                        }
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean tryInsertFromPlayerOwnedItem(Player player,
+            ItemStack cellStack,
+            ItemStack otherStack,
+            AEKeyType keyType) {
+        var context = StackInteractions.findOwnedItemContext(keyType, player, otherStack);
+        if (context != null) {
+            var containedStack = context.getExtractableContent();
+            if (containedStack != null) {
+                if (insert(player, cellStack, containedStack.what(), keyType, containedStack.amount(),
+                        Actionable.SIMULATE) == containedStack.amount()) {
+                    var extracted = context.extract(containedStack.what(), containedStack.amount(),
+                            Actionable.MODULATE);
+                    if (extracted > 0) {
+                        insert(player, cellStack, containedStack.what(), keyType, extracted, Actionable.MODULATE);
+                        context.playEmptySound(player, containedStack.what());
+                        return true;
                     }
                 }
             }
@@ -267,12 +285,6 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
         return false;
     }
-
-    /**
-     * @return The key-type allowed in this cell. Can be null to allow any.
-     */
-    @Nullable
-    protected abstract AEKeyType getKeyType();
 
     public static int getColor(ItemStack stack, int tintIndex) {
         if (tintIndex == 1 && stack.getItem() instanceof AbstractPortableCell portableCell) {
