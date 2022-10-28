@@ -27,6 +27,11 @@ public interface ContainerItemStrategy<T extends AEKey, C> {
     @Nullable
     C findCarriedContext(Player player, AbstractContainerMenu menu);
 
+    @Nullable
+    default C findPlayerSlotContext(Player player, int slot) {
+        return null;
+    }
+
     long extract(C context, T what, long amount, Actionable mode);
 
     long insert(C context, T what, long amount, Actionable mode);
@@ -41,4 +46,5 @@ public interface ContainerItemStrategy<T extends AEKey, C> {
     static <T extends AEKey> void register(AEKeyType keyType, Class<T> keyClass, ContainerItemStrategy<T, ?> strategy) {
         StackInteractions.register(keyType, keyClass, strategy);
     }
+
 }
