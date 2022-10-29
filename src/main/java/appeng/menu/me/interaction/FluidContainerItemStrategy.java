@@ -18,13 +18,12 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.util.GenericContainerHelper;
-import appeng.util.IVariantConversion;
 import appeng.util.fluid.FluidSoundHelper;
 
 public class FluidContainerItemStrategy implements ContainerItemStrategy<AEFluidKey, Storage<FluidVariant>> {
     @Override
     public @Nullable GenericStack getContainedStack(ItemStack stack) {
-        return GenericContainerHelper.getContainedStack(stack, FluidStorage.ITEM, IVariantConversion.FLUID);
+        return GenericContainerHelper.getContainedFluidStack(stack);
     }
 
     @Override

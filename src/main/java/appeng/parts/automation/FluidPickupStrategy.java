@@ -2,7 +2,6 @@ package appeng.parts.automation;
 
 import java.util.Map;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -21,7 +20,6 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.util.GenericContainerHelper;
-import appeng.util.IVariantConversion;
 
 public class FluidPickupStrategy implements PickupStrategy {
     private final ServerLevel level;
@@ -74,8 +72,7 @@ public class FluidPickupStrategy implements PickupStrategy {
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
                     var fluidContainer = bucketPickup.pickupBlock(level, pos, blockstate);
-                    var pickedUpStack = GenericContainerHelper.getContainedStack(fluidContainer, FluidStorage.ITEM,
-                            IVariantConversion.FLUID);
+                    var pickedUpStack = GenericContainerHelper.getContainedFluidStack(fluidContainer);
                     if (pickedUpStack != null && pickedUpStack.what() instanceof AEFluidKey fluidKey) {
                         this.storeFluid(sink, fluidKey, pickedUpStack.amount(), true);
                     }

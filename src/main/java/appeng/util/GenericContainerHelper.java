@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -16,6 +17,11 @@ import appeng.api.stacks.GenericStack;
  */
 public final class GenericContainerHelper {
     private GenericContainerHelper() {
+    }
+
+    @Nullable
+    public static GenericStack getContainedFluidStack(ItemStack stack) {
+        return getContainedStack(stack, FluidStorage.ITEM, IVariantConversion.FLUID);
     }
 
     @Nullable
