@@ -1,7 +1,9 @@
 package appeng.libs.micromark;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class NamedCharacterEntities {
 
@@ -13,6 +15,10 @@ public final class NamedCharacterEntities {
 
     public static String decodeNamedCharacterReference(String ref) {
         return ENTITIES.get(ref);
+    }
+
+    public static Set<String> getNames() {
+        return Collections.unmodifiableSet(ENTITIES.keySet());
     }
 
     static {
