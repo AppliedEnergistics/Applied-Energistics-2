@@ -10,13 +10,9 @@ public class DefaultLineEndingTest {
     @ParameterizedTest(name = "[{index}] {2}")
     @CsvSource(delimiterString = "||", ignoreLeadingAndTrailingWhitespace = false, value = {
             "> a||<blockquote>^n<p>a</p>^n</blockquote>||should use `\\n` default",
-
             "> a^n||<blockquote>^n<p>a</p>^n</blockquote>^n||should infer the first line ending (1)",
-
             "> a\r||<blockquote>\r<p>a</p>\r</blockquote>\r||should infer the first line ending (2)",
-
             "> a\r^n||<blockquote>\r^n<p>a</p>\r^n</blockquote>\r^n||should infer the first line ending (3)",
-
     })
     public void testGeneratedHtml(String markdown, String expectedHtml, String message) {
         TestUtil.assertGeneratedHtml(markdown, expectedHtml);

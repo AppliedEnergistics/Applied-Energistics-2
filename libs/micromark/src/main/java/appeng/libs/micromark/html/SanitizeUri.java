@@ -82,6 +82,7 @@ public final class SanitizeUri {
             // A correct percent encoded value.
             if (
                     code == Codes.percentSign &&
+                            index + 2 < value.length() &&
                             CharUtil.asciiAlphanumeric(value.charAt(index + 1)) &&
                             CharUtil.asciiAlphanumeric(value.charAt(index + 2))
             ) {
@@ -95,7 +96,7 @@ public final class SanitizeUri {
             }
             // Astral.
             else if (code > 55295 && code < 57344) {
-                var next = value.charAt(index + 1);
+                var next = (index + 1 < value.length()) ? value.charAt(index + 1) : 0;
 
                 // A correct surrogate pair.
                 if (code < 56320 && next > 56319 && next < 57344) {
