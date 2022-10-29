@@ -2,6 +2,7 @@ package appeng.libs.micromark.content;
 
 import appeng.libs.micromark.Extension;
 import appeng.libs.micromark.Micromark;
+import appeng.libs.micromark.TestUtil;
 import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DefinitionTest {
     @ParameterizedTest(name = "[{index}] {2}")
-    @CsvSource(value = {
+    @CsvSource(delimiterString = "||", ignoreLeadingAndTrailingWhitespace = false, value = {
             "[foo]: /url \"title\"^n^n[foo]||<p><a href=\"/url\" title=\"title\">foo</a></p>||should support link definitions",
             "[foo]:^n^n/url^n^n[foo]||<p>[foo]:</p>^n<p>/url</p>^n<p>[foo]</p>||should not support blank lines before destination",
             "   [foo]: ^n      /url  ^n           'the title'  ^n^n[foo]||<p><a href=\"/url\" title=\"the title\">foo</a></p>||should support whitespace and line endings in definitions",
@@ -78,33 +79,23 @@ public class DefinitionTest {
             "[a]: )^n^n[a]||<p>[a]: )</p>^n<p>[a]</p>||should not support definitions w/ only a closing paren as a raw destination",
             "[a]: )b^n^n[a]||<p>[a]: )b</p>^n<p>[a]</p>||should not support definitions w/ closing paren + more text as a raw destination",
             "[a]: b)^n^n[a]||<p>[a]: b)</p>^n<p>[a]</p>||should not support definitions w/ text + a closing paren as a raw destination",
-    }, delimiterString = "||", ignoreLeadingAndTrailingWhitespace = false)
+    })
     public void testDefinition(String markdown, String expectedHtml, String message) {
-        markdown = markdown != null ? markdown : "";
-        markdown = markdown.replace("^n", "\n");
-        expectedHtml = expectedHtml != null ? expectedHtml : "";
-        expectedHtml = expectedHtml.replace("^n", "\n");
-
-        var html = new HtmlCompiler().compile(Micromark.parseAndPostprocess(markdown));
-        assertEquals(expectedHtml, html);
+        TestUtil.assertGeneratedHtml(markdown, expectedHtml);
     }
 
     @Test
     public void testDangerousHtmlDefinition() {
-        var dangerousHtmlOptions = new CompileOptions().allowDangerousHtml();
-
-        assertEquals(
+        TestUtil.assertGeneratedDangerousHtml(
+                "[foo]: <bar>(baz)\n\n[foo]",
                 "<p>[foo]: <bar>(baz)</p>\n<p>[foo]</p>",
-                new HtmlCompiler(dangerousHtmlOptions).compile(Micromark.parseAndPostprocess("[foo]: <bar>(baz)\n\n[foo]")),
                 "should not support definitions w/ no whitespace between destination and title"
         );
-
-        assertEquals(
+        TestUtil.assertGeneratedDangerousHtml(
+                "[a]\n\n[a]: <b<c>",
                 "<p>[a]</p>\n<p>[a]: &lt;b<c></p>",
-                new HtmlCompiler(dangerousHtmlOptions).compile(Micromark.parseAndPostprocess("[a]\n\n[a]: <b<c>")),
                 "should not support a less than in an enclosed destination"
         );
-
     }
 
     @Test

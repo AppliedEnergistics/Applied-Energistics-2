@@ -2,6 +2,7 @@ package appeng.libs.micromark.document;
 
 import appeng.libs.micromark.Extension;
 import appeng.libs.micromark.Micromark;
+import appeng.libs.micromark.TestUtil;
 import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ListItemTest {
     @ParameterizedTest(name = "[{index}] {2}")
-    @CsvSource(value = {
+    @CsvSource(delimiterString = "||", ignoreLeadingAndTrailingWhitespace = false, value = {
             "A paragraph^nwith two lines.^n^n    indented code^n^n> A block quote.||<p>A paragraph^nwith two lines.</p>^n<pre><code>indented code^n</code></pre>^n<blockquote>^n<p>A block quote.</p>^n</blockquote>||should support documents",
             "1.  a^n    b.^n^n        c^n^n    > d.||<ol>^n<li>^n<p>a^nb.</p>^n<pre><code>c^n</code></pre>^n<blockquote>^n<p>d.</p>^n</blockquote>^n</li>^n</ol>||should support documents in list items",
             "- one^n^n two||<ul>^n<li>one</li>^n</ul>^n<p>two</p>||should not support 1 space for a two-character list prefix",
@@ -101,36 +102,30 @@ public class ListItemTest {
             "- +^n-||<ul>^n<li>^n<ul>^n<li></li>^n</ul>^n</li>^n<li></li>^n</ul>||should support complex nested and empty lists (1)",
             "- 1.^n-||<ul>^n<li>^n<ol>^n<li></li>^n</ol>^n</li>^n<li></li>^n</ul>||should support complex nested and empty lists (2)",
             "* - +^n* -||<ul>^n<li>^n<ul>^n<li>^n<ul>^n<li></li>^n</ul>^n</li>^n</ul>^n</li>^n<li>^n<ul>^n<li></li>^n</ul>^n</li>^n</ul>||should support complex nested and empty lists (3)",
-    }, delimiterString = "||", ignoreLeadingAndTrailingWhitespace = false)
+    })
     public void testListItem(String markdown, String expectedHtml, String message) {
-        markdown = markdown != null ? markdown : "";
-        markdown = markdown.replace("^n", "\n");
-        expectedHtml = expectedHtml != null ? expectedHtml : "";
-        expectedHtml = expectedHtml.replace("^n", "\n");
-
-        var html = new HtmlCompiler().compile(Micromark.parseAndPostprocess(markdown));
-        assertEquals(expectedHtml, html);
+        TestUtil.assertGeneratedHtml(markdown, expectedHtml);
     }
 
     @Test
     public void testDangerousHtmlListItems() {
         var dangerousHtmlOptions = new CompileOptions().allowDangerousHtml();
 
-        assertEquals(
+        TestUtil.assertGeneratedDangerousHtml(
+                "- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim",
                 "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<!-- -->\n<ul>\n<li>baz</li>\n<li>bim</li>\n</ul>",
-                new HtmlCompiler(dangerousHtmlOptions).compile(Micromark.parseAndPostprocess("- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim")),
                 "should support HTML comments between lists"
         );
 
-        assertEquals(
+        TestUtil.assertGeneratedDangerousHtml(
+                "-   foo\n\n    notcode\n\n-   foo\n\n<!-- -->\n\n    code",
                 "<ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<!-- -->\n<pre><code>code\n</code></pre>",
-                new HtmlCompiler(dangerousHtmlOptions).compile(Micromark.parseAndPostprocess("-   foo\n\n    notcode\n\n-   foo\n\n<!-- -->\n\n    code")),
                 "should support HTML comments between lists and indented code"
         );
 
-        assertEquals(
+        TestUtil.assertGeneratedDangerousHtml(
+                "* a\n\n<!---->\n\n* b",
                 "<ul>\n<li>a</li>\n</ul>\n<!---->\n<ul>\n<li>b</li>\n</ul>",
-                new HtmlCompiler(dangerousHtmlOptions).compile(Micromark.parseAndPostprocess("* a\n\n<!---->\n\n* b")),
                 "should support the common list breaking comment method"
         );
 

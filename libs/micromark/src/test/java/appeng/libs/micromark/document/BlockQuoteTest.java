@@ -2,6 +2,7 @@ package appeng.libs.micromark.document;
 
 import appeng.libs.micromark.Extension;
 import appeng.libs.micromark.Micromark;
+import appeng.libs.micromark.TestUtil;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BlockQuoteTest {
     @ParameterizedTest(name = "[{index}] {2}")
-    @CsvSource(value = {
+    @CsvSource(delimiterString = "||", ignoreLeadingAndTrailingWhitespace = false, value = {
             "> # a^n> b^n> c||<blockquote>^n<h1>a</h1>^n<p>b^nc</p>^n</blockquote>||should support block quotes",
             "># a^n>b^n> c||<blockquote>^n<h1>a</h1>^n<p>b^nc</p>^n</blockquote>||should support block quotes w/o space",
             "   > # a^n   > b^n > c||<blockquote>^n<h1>a</h1>^n<p>b^nc</p>^n</blockquote>||should support prefixing block quotes w/ spaces",
@@ -40,15 +41,9 @@ public class BlockQuoteTest {
             "> > > a^nb||<blockquote>^n<blockquote>^n<blockquote>^n<p>a^nb</p>^n</blockquote>^n</blockquote>^n</blockquote>||should not support interrupting many block quotes w/ paragraphs (1)",
             ">>> a^n> b^n>>c||<blockquote>^n<blockquote>^n<blockquote>^n<p>a^nb^nc</p>^n</blockquote>^n</blockquote>^n</blockquote>||should not support interrupting many block quotes w/ paragraphs (2)",
             ">     a^n^n>    b||<blockquote>^n<pre><code>a^n</code></pre>^n</blockquote>^n<blockquote>^n<p>b</p>^n</blockquote>||should support 5 spaces for indented code, not 4",
-    }, delimiterString = "||", ignoreLeadingAndTrailingWhitespace = false)
+    })
     public void testBlockquote(String markdown, String expectedHtml, String message) {
-        markdown = markdown != null ? markdown : "";
-        markdown = markdown.replace("^n", "\n");
-        expectedHtml = expectedHtml != null ? expectedHtml : "";
-        expectedHtml = expectedHtml.replace("^n", "\n");
-
-        var html = new HtmlCompiler().compile(Micromark.parseAndPostprocess(markdown));
-        assertEquals(expectedHtml, html);
+        TestUtil.assertGeneratedHtml(markdown, expectedHtml);
     }
 
     @Test
