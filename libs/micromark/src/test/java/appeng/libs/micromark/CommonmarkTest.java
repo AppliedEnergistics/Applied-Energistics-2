@@ -1,4 +1,5 @@
-import appeng.libs.micromark.Micromark;
+package appeng.libs.micromark;
+
 import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
 import com.fasterxml.jackson.databind.JsonNode;

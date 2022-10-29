@@ -1,3 +1,5 @@
+package appeng.libs.micromark;
+
 import appeng.libs.micromark.Construct;
 import appeng.libs.micromark.ConstructPrecedence;
 import appeng.libs.micromark.ContentType;

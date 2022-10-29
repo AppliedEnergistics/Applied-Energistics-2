@@ -1,3 +1,5 @@
+package appeng.libs.micromark;
+
 import appeng.libs.micromark.Micromark;
 import appeng.libs.micromark.html.HtmlCompiler;
 
