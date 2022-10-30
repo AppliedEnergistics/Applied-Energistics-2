@@ -8,13 +8,19 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
  * A context object that helps w/ tokenizing markdown constructs.
  */
 class RootTokenizeContext implements TokenizeContext {
+    // Data attached to this context by extensions
+    @Nullable
+    private Map<ContextProperty<?>, Object> data;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RootTokenizeContext.class);
 
     private final Tokenizer tokenizer;
@@ -32,6 +38,33 @@ class RootTokenizeContext implements TokenizeContext {
     private Tokenizer.ContainerState containerState = new Tokenizer.ContainerState();
 
     private List<Tokenizer.Event> events = new ArrayList<>();
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T get(ContextProperty<T> property) {
+        if (data != null) {
+            return (T) data.get(property);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> void set(ContextProperty<T> property, T value) {
+        if (data == null) {
+            data = new IdentityHashMap<>();
+        }
+        data.put(property, value);
+    }
+
+    @Override
+    public void remove(ContextProperty<?> property) {
+        if (data != null) {
+            data.remove(property);
+            if (data.isEmpty()) {
+                data = null;
+            }
+        }
+    }
 
     @Override
     @Nullable
@@ -202,6 +235,11 @@ class RootTokenizeContext implements TokenizeContext {
     @Override
     public boolean isGfmTableDynamicInterruptHack() {
         return _gfmTableDynamicInterruptHack;
+    }
+
+    @Override
+    public void setGfmTableDynamicInterruptHack(boolean value) {
+        _gfmTableDynamicInterruptHack = value;
     }
 
     @Override

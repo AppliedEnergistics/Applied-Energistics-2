@@ -2,6 +2,9 @@ package appeng.libs.micromark;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 /**
  * A token: a span of chunks.
  * Tokens are what the core of micromark produces: the built-in HTML compiler
@@ -32,31 +35,10 @@ import org.jetbrains.annotations.Nullable;
  * The chunks they span are then passed through the flow tokenizer.
  */
 public class Token {
-    public Token() {
-        this.stackTrace = Thread.currentThread().getStackTrace();
-    }
+    private static final boolean DEBUG_TOKEN_CREATION = false;
 
-    public Token(Token other) {
-        other.copyTo(this);
-        this.stackTrace = Thread.currentThread().getStackTrace();
-    }
-
-    void copyTo(Token other) {
-        other.type = type;
-        other.start = start;
-        other.end = end;
-        other.previous = previous;
-        other.next = next;
-        other.contentType = contentType;
-        other._tokenizer = _tokenizer;
-        other._open = _open;
-        other._close = _close;
-        other._isInFirstContentOfListItem = _isInFirstContentOfListItem;
-        other._container = _container;
-        other._loose = _loose;
-        other._inactive = _inactive;
-        other._balanced = _balanced;
-    }
+    @Nullable
+    private Map<TokenProperty<?>, Object> tokenData;
 
     public String type;
     public Point start;
@@ -129,6 +111,62 @@ public class Token {
     public boolean _balanced;
 
     public StackTraceElement[] stackTrace;
+
+    public Token() {
+        if (DEBUG_TOKEN_CREATION) {
+            this.stackTrace = Thread.currentThread().getStackTrace();
+        }
+    }
+
+    public Token(Token other) {
+        other.copyTo(this);
+        if (DEBUG_TOKEN_CREATION) {
+            this.stackTrace = Thread.currentThread().getStackTrace();
+        }
+    }
+
+    void copyTo(Token other) {
+        other.type = type;
+        other.start = start;
+        other.end = end;
+        other.previous = previous;
+        other.next = next;
+        other.contentType = contentType;
+        other._tokenizer = _tokenizer;
+        other._open = _open;
+        other._close = _close;
+        other._isInFirstContentOfListItem = _isInFirstContentOfListItem;
+        other._container = _container;
+        other._loose = _loose;
+        other._inactive = _inactive;
+        other._balanced = _balanced;
+        other.tokenData = tokenData;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <T> T get(TokenProperty<T> property) {
+        if (tokenData == null) {
+            return null;
+        }
+        return (T) tokenData.get(property);
+    }
+
+    public <T> void set(TokenProperty<T> property, T value) {
+        if (tokenData == null) {
+            tokenData = new IdentityHashMap<>();
+        }
+        tokenData.put(property, value);
+    }
+
+    public <T> void remove(TokenProperty<T> property) {
+        if (tokenData != null) {
+            tokenData.remove(property);
+            if (tokenData.isEmpty()) {
+                tokenData = null;
+            }
+        }
+    }
 
     @Override
     public String toString() {

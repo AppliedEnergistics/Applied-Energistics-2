@@ -5,9 +5,11 @@ import appeng.libs.micromark.NamedCharacterEntities;
 import appeng.libs.micromark.NormalizeIdentifier;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.Tokenizer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -177,6 +179,8 @@ public class HtmlCompiler {
      */
     CompileData data = new CompileData();
 
+    Map<HtmlContextProperty<?>, Object> extensionData;
+
     public static class CompileData {
         public boolean lastWasTag;
         public boolean expectFirstItem;
@@ -315,17 +319,29 @@ public class HtmlCompiler {
             return options;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public void setData(String key, Object value) {
-            switch (key) {
-                case "slurpOneLineEnding" -> data.slurpOneLineEnding = (boolean) value;
-                default -> throw new UnsupportedOperationException();
+        public <T> @Nullable T get(HtmlContextProperty<T> property) {
+            if (extensionData == null) {
+                return null;
             }
+            return (T) extensionData.get(property);
         }
 
         @Override
-        public Object getData(String key) {
-            throw new UnsupportedOperationException();
+        public <T> void set(HtmlContextProperty<T> property, T value) {
+            if ( extensionData == null) {
+                extensionData = new IdentityHashMap<>();
+            }
+            extensionData.put(property, value);
+        }
+
+        @Override
+        public void remove(HtmlContextProperty<?> property) {
+            if (extensionData != null) {
+                extensionData.remove(property);
+                extensionData = null;
+            }
         }
 
         @Override
@@ -361,6 +377,16 @@ public class HtmlCompiler {
         @Override
         public String sliceSerialize(Token token) {
             return event.context().sliceSerialize(token);
+        }
+
+        @Override
+        public void setSlurpOneLineEnding(boolean enable) {
+            data.slurpOneLineEnding = enable;
+        }
+
+        @Override
+        public void setSlurpAllLineEndings(boolean enable) {
+            data.slurpAllLineEndings = enable;
         }
     }
 

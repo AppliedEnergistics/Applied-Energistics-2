@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TokenizeContext {
+    @Nullable
+    <T> T get(ContextProperty<T> property);
+    <T> void set(ContextProperty<T> property, T value);
+    void remove(ContextProperty<?> property);
+
     @Nullable Tokenizer.Event getLastEvent();
 
     List<Object> sliceStream(Token token);
@@ -84,6 +89,8 @@ public interface TokenizeContext {
     Tokenizer getTokenizer();
 
     boolean isGfmTableDynamicInterruptHack();
+
+    void setGfmTableDynamicInterruptHack(boolean value);
 
     boolean isGfmTasklistFirstContentOfListItem();
 

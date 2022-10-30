@@ -1,6 +1,7 @@
 package appeng.libs.micromark.html;
 
 import appeng.libs.micromark.Token;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * HTML compiler context
@@ -11,15 +12,25 @@ public interface CompileContext {
      */
     CompileOptions getOptions();
 
-    /**
-     * Set data into the key-value store.
-     */
-    void setData(String key, Object value);
+    default boolean has(HtmlContextProperty<?> property) {
+        return get(property) != null;
+    }
 
     /**
      * Get data from the key-value store.
      */
-    Object getData(String key);
+    @Nullable
+    <T> T get(HtmlContextProperty<T> property);
+
+    /**
+     * Set data in the extension data.
+     */
+    <T> void set(HtmlContextProperty<T> property, T value);
+
+    /**
+     * Remove data from the extension data.
+     */
+    void remove(HtmlContextProperty<?> property);
 
     /**
      * Output an extra line ending if the previous value wasn’t EOF/EOL.
@@ -55,4 +66,8 @@ public interface CompileContext {
      * Get the string value of a token
      */
     String sliceSerialize(Token token);
+
+    void setSlurpOneLineEnding(boolean enable);
+
+    void setSlurpAllLineEndings(boolean enable);
 }

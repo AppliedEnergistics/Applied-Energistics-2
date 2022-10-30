@@ -290,7 +290,7 @@ public class ExtensionTest {
 
     private void exitComment(CompileContext context, Token token) {
         context.resume();
-        context.setData("slurpOneLineEnding", true);
+        context.setSlurpOneLineEnding(true);
     }
 
     private void enterDocument(CompileContext context) {

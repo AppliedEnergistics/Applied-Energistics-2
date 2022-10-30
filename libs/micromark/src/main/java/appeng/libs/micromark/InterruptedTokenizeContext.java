@@ -78,6 +78,9 @@ class InterruptedTokenizeContext implements TokenizeContext {
 
     @Override
     public void setInterrupt(boolean interrupt) {
+        if (interrupt) {
+            return;
+        }
         throw new IllegalStateException("An interrupted context shouldn't be modified.");
     }
 
@@ -132,6 +135,11 @@ class InterruptedTokenizeContext implements TokenizeContext {
     }
 
     @Override
+    public void setGfmTableDynamicInterruptHack(boolean value) {
+        parent.setGfmTableDynamicInterruptHack(value);
+    }
+
+    @Override
     public boolean isGfmTasklistFirstContentOfListItem() {
         return parent.isGfmTasklistFirstContentOfListItem();
     }
@@ -144,5 +152,20 @@ class InterruptedTokenizeContext implements TokenizeContext {
     @Override
     public ParseContext getParser() {
         return parent.getParser();
+    }
+
+    @Override
+    public <T> @Nullable T get(ContextProperty<T> property) {
+        return parent.get(property);
+    }
+
+    @Override
+    public <T> void set(ContextProperty<T> property, T value) {
+        parent.set(property, value);
+    }
+
+    @Override
+    public void remove(ContextProperty<?> property) {
+        parent.remove(property);
     }
 }
