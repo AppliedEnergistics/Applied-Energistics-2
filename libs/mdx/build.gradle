@@ -10,6 +10,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(':libs:micromark')
+
     compileOnly 'org.jetbrains:annotations:23.0.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
