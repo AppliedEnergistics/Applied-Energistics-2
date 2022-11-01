@@ -1,5 +1,8 @@
 package appeng.libs.mdast.model;
 
+import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,5 +39,11 @@ public class MdAstListItem extends MdAstParent<MdAstFlowContent> implements MdAs
     @Override
     protected Class<MdAstFlowContent> childClass() {
         return MdAstFlowContent.class;
+    }
+
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        writer.name("spread").value(spread);
+        super.writeJson(writer);
     }
 }

@@ -1,6 +1,9 @@
 package appeng.libs.mdast.model;
 
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 /**
  * ImageReference (Node) represents an image through association, or its original source if there is no association.
@@ -57,5 +60,17 @@ public class MdAstImageReference extends MdAstNode implements MdAstReference, Md
     @Override
     public MdAstReferenceType referenceType() {
         return referenceType;
+    }
+
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        if (alt != null) {
+            writer.name("alt").value(alt);
+        }
+        writer.name("identifier").value(identifier);
+        writer.name("label").value(label);
+        writer.name("referenceType").value(referenceType.getSerializedName());
+
+        super.writeJson(writer);
     }
 }

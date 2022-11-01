@@ -1,7 +1,10 @@
 package appeng.libs.mdast.model;
 
 import appeng.libs.unist.UnistNode;
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 /**
  * Represents a resource.
@@ -57,5 +60,23 @@ public class MdAstDefinition extends MdAstNode implements MdAstAssociation, MdAs
     @Override
     public void toText(StringBuilder buffer) {
         buffer.append(label);
+    }
+
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        if (identifier != null) {
+            writer.name("identifier").value(identifier);
+        }
+        if (label != null) {
+            writer.name("label").value(label);
+        }
+        if (title != null) {
+            writer.name("title").value(title);
+        }
+        if (url != null) {
+            writer.name("url").value(url);
+        }
+
+        super.writeJson(writer);
     }
 }

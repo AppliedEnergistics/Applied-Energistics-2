@@ -1,6 +1,9 @@
 package appeng.libs.mdast.model;
 
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 /**
  * Image (Node) represents an image.
@@ -60,5 +63,17 @@ public class MdAstImage extends MdAstNode implements MdAstResource, MdAstAlterna
 
     @Override
     public void toText(StringBuilder buffer) {
+    }
+
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        if (title != null) {
+            writer.name("title").value(title);
+        }
+        writer.name("url").value(url);
+        if (alt != null) {
+            writer.name("alt").value(alt);
+        }
+        super.writeJson(writer);
     }
 }

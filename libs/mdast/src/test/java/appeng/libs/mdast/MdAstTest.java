@@ -11,13 +11,23 @@ import appeng.libs.micromark.Token;
 import appeng.libs.micromark.Types;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.bind.JsonTreeWriter;
 import org.intellij.lang.annotations.Language;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -45,31 +55,27 @@ public class MdAstTest {
     private static String toJson(String markdown, MdastOptions options) {
         var tree = MdAst.fromMarkdown(markdown, options);
 
-        var jsonOut = new StringWriter();
         try {
-            var jsonWriter = new JsonWriter(jsonOut);
+            var jsonWriter = new JsonTreeWriter();
             jsonWriter.setHtmlSafe(false);
             jsonWriter.setIndent("  ");
             tree.toJson(jsonWriter);
+            return GSON.toJson(normalizeTree(jsonWriter.get()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return jsonOut.toString();
     }
 
     private static String toJsonFirstNode(String markdown, MdastOptions options) {
         var tree = (MdAstNode) MdAst.fromMarkdown(markdown, options).children().get(0);
 
-        var jsonOut = new StringWriter();
         try {
-            var jsonWriter = new JsonWriter(jsonOut);
-            jsonWriter.setHtmlSafe(false);
-            jsonWriter.setIndent("  ");
+            var jsonWriter = new JsonTreeWriter();
             tree.toJson(jsonWriter);
+            return GSON.toJson(normalizeTree(jsonWriter.get()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return jsonOut.toString();
     }
 
     private static void assertJsonEquals(String markdown, @Language("json") String astJson) {
@@ -78,8 +84,10 @@ public class MdAstTest {
         assertEquals(expectedJson, actualJson);
     }
 
-    private static String normalizeJson(@Language("json") String astJson) {
-        return GSON.toJson(GSON.fromJson(astJson, JsonElement.class));
+    private static void assertJsonEqualsOnFirstNode(String markdown, @Language("json") String astJson) {
+        var actualJson = toJsonFirstNode(markdown);
+        var expectedJson = normalizeJson(astJson);
+        assertEquals(expectedJson, actualJson);
     }
 
     @Test
@@ -293,10 +301,10 @@ public class MdAstTest {
                 })
                 .build();
 
-        var e = assertThrows(ParseException.class, () -> {
+        var e = assertThrows(RuntimeException.class, () -> {
             toJson("a", new MdastOptions().withMdastExtension(extension));
         });
-        assertEquals(e.getMessage(), "Cannot close document, a token (`paragraph`,1:1 - 1:2)is still open");
+        assertEquals("Cannot close document, a token (`paragraph`, 1:1-1:2) is still open", e.getMessage());
 
     }
 
@@ -307,7 +315,7 @@ public class MdAstTest {
                 .enter(Types.paragraph, MdastContext::exit)
                 .build();
 
-        var e = assertThrows(ParseException.class, () -> {
+        var e = assertThrows(RuntimeException.class, () -> {
             toJson("a", new MdastOptions().withMdastExtension(extension));
         });
         assertEquals(e.getMessage(), "Cannot close `paragraph` (1:1-1:2): it’s not open");
@@ -325,10 +333,10 @@ public class MdAstTest {
                 })
                 .build();
 
-        var e = assertThrows(ParseException.class, () -> {
+        var e = assertThrows(RuntimeException.class, () -> {
             toJson("a", new MdastOptions().withMdastExtension(extension));
         });
-        assertEquals(e.getMessage(), "Cannot close `lol` (1:1-1:2): a different token (`paragraph`, 1:1-1:2) is open");
+        assertEquals("Cannot close `lol` (1:1-1:2): a different token (`paragraph`, 1:1-1:2) is open", e.getMessage());
 
     }
 
@@ -356,7 +364,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAnAutolinkProtocol() {
-        assertJsonEquals("<tel:123>", """
+        assertJsonEqualsOnFirstNode("<tel:123>", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -391,7 +399,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAnAutolinkEmail() {
-        assertJsonEquals("<aa@bb.cc>", """
+        assertJsonEqualsOnFirstNode("<aa@bb.cc>", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -426,7 +434,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseABlockQuote() {
-        assertJsonEquals("> a", """
+        assertJsonEqualsOnFirstNode("> a", """
                 {
                                         "type": "blockquote",
                                 "children": [
@@ -459,7 +467,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseACharacterEscape() {
-        assertJsonEquals("a\\*b", """
+        assertJsonEqualsOnFirstNode("a\\*b", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -483,7 +491,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseACharacterReference() {
-        assertJsonEquals("a&amp;b", """
+        assertJsonEqualsOnFirstNode("a&amp;b", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -507,7 +515,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseCodeFenced() {
-        assertJsonEquals("```a b\nc\n```", """
+        assertJsonEqualsOnFirstNode("```a b\nc\n```", """
                 {
                                         "type": "code",
                                 "lang": "a",
@@ -524,7 +532,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseCodeIndented() {
-        assertJsonEquals("    a", """
+        assertJsonEqualsOnFirstNode("    a", """
                 {
                                         "type": "code",
                                 "lang": null,
@@ -541,7 +549,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseCodeText() {
-        assertJsonEquals("`a`", """
+        assertJsonEqualsOnFirstNode("`a`", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -565,7 +573,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseADefinition() {
-        assertJsonEquals("[a]: b \"c\"", """
+        assertJsonEqualsOnFirstNode("[a]: b \"c\"", """
                 {
                                         "type": "definition",
                                 "identifier": "a",
@@ -583,7 +591,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseEmphasis() {
-        assertJsonEquals("*a*", """
+        assertJsonEqualsOnFirstNode("*a*", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -616,7 +624,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAHardBreakEscape() {
-        assertJsonEquals("a\\\nb", """
+        assertJsonEqualsOnFirstNode("a\\\nb", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -655,7 +663,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAHardBreakPrefix() {
-        assertJsonEquals("a  \nb", """
+        assertJsonEqualsOnFirstNode("a  \nb", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -694,7 +702,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAHeadingAtx() {
-        assertJsonEquals("## a", """
+        assertJsonEqualsOnFirstNode("## a", """
                 {
                                         "type": "heading",
                                 "depth": 2,
@@ -719,7 +727,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAHeadingSetext() {
-        assertJsonEquals("a\n=", """
+        assertJsonEqualsOnFirstNode("a\n=", """
                 {
                                         "type": "heading",
                                 "depth": 1,
@@ -744,7 +752,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseHtmlFlow() {
-        assertJsonEquals("<a>\nb\n</a>", """
+        assertJsonEqualsOnFirstNode("<a>\nb\n</a>", """
                 {
                                         "type": "html",
                                 "value": "<a>\\nb\\n</a>",
@@ -759,7 +767,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseHtmlText() {
-        assertJsonEquals("<a>b</a>", """
+        assertJsonEqualsOnFirstNode("<a>b</a>", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -799,7 +807,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAnImageShortcutReference() {
-        assertJsonEquals("![a]\n\n[a]: b", """
+        assertJsonEqualsOnFirstNode("![a]\n\n[a]: b", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -826,7 +834,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAnImageCollapsedReference() {
-        assertJsonEquals("![a][]\n\n[a]: b", """
+        assertJsonEqualsOnFirstNode("![a][]\n\n[a]: b", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -853,7 +861,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAnImageFullReference() {
-        assertJsonEquals("![a][b]\n\n[b]: c", """
+        assertJsonEqualsOnFirstNode("![a][b]\n\n[b]: c", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -880,7 +888,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAnImageResource() {
-        assertJsonEquals("![a](b \"c\")", """
+        assertJsonEqualsOnFirstNode("![a](b \"c\")", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -906,7 +914,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseALinkShortcutReference() {
-        assertJsonEquals("[a]\n\n[a]: b", """
+        assertJsonEqualsOnFirstNode("[a]\n\n[a]: b", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -942,7 +950,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseALinkCollapsedReference() {
-        assertJsonEquals("[a][]\n\n[a]: b", """
+        assertJsonEqualsOnFirstNode("[a][]\n\n[a]: b", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -978,7 +986,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseALinkCollapsedReferenceWithInlineCodeInTheLabel() {
-        assertJsonEquals("[`a`][]\n\n[`a`]: b", """
+        assertJsonEqualsOnFirstNode("[`a`][]\n\n[`a`]: b", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -1014,7 +1022,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseALinkFullReference() {
-        assertJsonEquals("[a][b]\n\n[b]: c", """
+        assertJsonEqualsOnFirstNode("[a][b]\n\n[b]: c", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -1050,7 +1058,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseALinkResource() {
-        assertJsonEquals("[a](b \"c\")", """
+        assertJsonEqualsOnFirstNode("[a](b \"c\")", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -1087,7 +1095,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseStrong() {
-        assertJsonEquals("**a**", """
+        assertJsonEqualsOnFirstNode("**a**", """
                 {
                                         "type": "paragraph",
                                 "children": [
@@ -1120,7 +1128,7 @@ public class MdAstTest {
 
     @Test
     void shouldParseAThematicBreak() {
-        assertJsonEquals("***", """
+        assertJsonEqualsOnFirstNode("***", """
                 {
                                         "type": "thematicBreak",
                                 "position": {
@@ -1131,5 +1139,62 @@ public class MdAstTest {
                 """);
     }
 
+    @TestFactory
+    public Stream<DynamicTest> textFixtures() throws Exception {
+        var anchor = MdAstTest.class.getResource("fixtures/attention.md");
+        var fixtureFolder = Paths.get(anchor.toURI()).getParent();
+
+        return Files.walk(fixtureFolder, 1)
+                .filter(f -> f.getFileName().toString().endsWith(".md"))
+                .map(mdFile -> {
+                    String baseName = mdFile.getFileName().toString().replaceAll("\\.md$", "");
+                    var refJsonPath = mdFile.resolveSibling(baseName + ".json");
+
+                    return DynamicTest.dynamicTest(baseName, mdFile.toUri(), () -> {
+                        runFixtureTest(mdFile, refJsonPath);
+                    });
+                });
+    }
+
+    private void runFixtureTest(Path markdownPath, Path jsonPath) throws Exception {
+        var markdown = Files.readString(markdownPath);
+        markdown = markdown.replace("\r\n", "\n");
+        @Language("json") var expectedJson = Files.readString(jsonPath);
+
+        assertJsonEquals(markdown, expectedJson);
+    }
+
+    private static String normalizeJson(@Language("json") String json) {
+        var el = GSON.fromJson(json, JsonElement.class);
+        el = normalizeTree(el);
+        return GSON.toJson(el);
+    }
+
+    private static JsonElement normalizeTree(JsonElement element) {
+        if (element.isJsonArray()) {
+            var normalizedArray = new JsonArray();
+            for (var jsonElement : element.getAsJsonArray()) {
+                normalizedArray.add(normalizeTree(jsonElement));
+            }
+            return normalizedArray;
+        } else if (element.isJsonObject()) {
+            var props = new ArrayList<>(element.getAsJsonObject().entrySet());
+            props.sort(
+                    // Sort type always first
+                    Comparator.<Map.Entry<String, JsonElement>, Boolean>comparing(e -> e.getKey().equals("type")).reversed()
+                            // Children always last
+                            .thenComparing(e -> e.getKey().equals("children"))
+                            // The rest alphabetically in-between
+                            .thenComparing(Map.Entry::getKey, Comparator.naturalOrder())
+            );
+            var sortedObj = new JsonObject();
+            for (var prop : props) {
+                sortedObj.add(prop.getKey(), normalizeTree(prop.getValue()));
+            }
+            return sortedObj;
+        } else {
+            return element;
+        }
+    }
 
 }

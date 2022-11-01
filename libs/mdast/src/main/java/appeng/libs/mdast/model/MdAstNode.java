@@ -41,8 +41,10 @@ public abstract class MdAstNode implements UnistNode {
         writer.beginObject();
         writer.name("type").value(type());
         writeJson(writer);
-        writer.name("position");
-        position.writeJson(writer);
+        if (position != null) {
+            writer.name("position");
+            position.writeJson(writer);
+        }
         writer.endObject();
     }
 

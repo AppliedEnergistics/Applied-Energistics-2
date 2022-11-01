@@ -1,5 +1,9 @@
 package appeng.libs.mdast.model;
 
+import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
+
 /**
  * Heading (Parent) represents a heading of a section.
  * <p>
@@ -28,6 +32,11 @@ public class MdAstHeading extends MdAstParent<MdAstPhrasingContent> implements M
         super("heading");
     }
 
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        writer.name("depth").value(depth);
+        super.writeJson(writer);
+    }
 
     @Override
     protected Class<MdAstPhrasingContent> childClass() {

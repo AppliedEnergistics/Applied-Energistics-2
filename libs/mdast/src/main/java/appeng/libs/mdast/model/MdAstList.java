@@ -1,5 +1,9 @@
 package appeng.libs.mdast.model;
 
+import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
+
 /**
  * List (Parent) represents a list of items.
  * <p>
@@ -50,5 +54,16 @@ public class MdAstList extends MdAstParent<MdAstListContent> implements MdAstFlo
 
     public MdAstList() {
         super("list");
+    }
+
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        writer.name("ordered").value(ordered);
+        if (ordered) {
+            writer.name("start").value(start);
+        }
+        writer.name("spread").value(spread);
+
+        super.writeJson(writer);
     }
 }

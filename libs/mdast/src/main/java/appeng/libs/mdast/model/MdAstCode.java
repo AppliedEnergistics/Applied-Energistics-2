@@ -1,6 +1,9 @@
 package appeng.libs.mdast.model;
 
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 /**
  * Code (Literal) represents a block of preformatted text, such as ASCII art or computer code.
@@ -55,4 +58,15 @@ public class MdAstCode extends MdAstLiteral implements MdAstFlowContent {
      */
     @Nullable
     public String meta;
+
+    @Override
+    public void writeJson(JsonWriter writer) throws IOException {
+        if (lang != null) {
+            writer.name("lang").value(lang);
+        }
+        if (meta != null) {
+            writer.name("meta").value(meta);
+        }
+        super.writeJson(writer);
+    }
 }

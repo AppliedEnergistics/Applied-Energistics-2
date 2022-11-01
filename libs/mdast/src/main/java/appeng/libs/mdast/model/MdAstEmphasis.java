@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class MdAstEmphasis extends MdAstParent<MdAstPhrasingContent> implements MdAstStaticPhrasingContent {
     public MdAstEmphasis() {
-        super("emhpasis");
+        super("emphasis");
     }
 
     @Override

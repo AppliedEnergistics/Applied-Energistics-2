@@ -22,6 +22,7 @@ import appeng.libs.mdast.model.MdAstPhrasingContent;
 import appeng.libs.mdast.model.MdAstPosition;
 import appeng.libs.mdast.model.MdAstReferenceType;
 import appeng.libs.mdast.model.MdAstRoot;
+import appeng.libs.mdast.model.MdAstStaticPhrasingContent;
 import appeng.libs.mdast.model.MdAstStrong;
 import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
@@ -480,7 +481,7 @@ final class MdastCompiler implements MdastContext {
         var open = ListUtils.pop(this.tokenStack);
 
         if (open == null) {
-            throw new Error(
+            throw new RuntimeException(
                     "Cannot close `" +
                             token.type +
                             "` (" +
@@ -706,7 +707,7 @@ final class MdastCompiler implements MdastContext {
     private void onexitlink() {
         var context = (LinkOrLinkReference) stack.get(stack.size() - 1);
 
-        MdAstNode replacement;
+        MdAstParent<?> replacement;
         if (inReference) {
             var ref = new MdAstLinkReference();
             ref.referenceType = Objects.requireNonNullElse(referenceType, MdAstReferenceType.SHORTCUT);
@@ -722,6 +723,9 @@ final class MdastCompiler implements MdastContext {
         }
         replacement.position = context.position;
         replacement.data = context.data;
+        for (var child : context.children()) {
+            replacement.addChild((MdAstNode) child);
+        }
         ((MdAstParent<?>) stack.get(stack.size() - 2)).replaceChild(context, replacement);
         stack.set(stack.size() - 1, replacement);
 
@@ -761,12 +765,14 @@ final class MdastCompiler implements MdastContext {
         var ancestor = stack.get(stack.size() - 2);
         var string = this.sliceSerialize(token);
 
-        if (ancestor instanceof MdAstLinkReference link) {
+        if (ancestor instanceof LinkOrLinkReference link) {
             link.label = DecodeString.decodeString(string);
             link.identifier = NormalizeIdentifier.normalizeIdentifier(string).toLowerCase();
         } else if (ancestor instanceof ImageOrImageReference image) {
             image.label = DecodeString.decodeString(string);
             image.identifier = NormalizeIdentifier.normalizeIdentifier(string).toLowerCase();
+        } else {
+            throw new IllegalStateException("Expected reference but found: " + ancestor);
         }
 
     }
@@ -840,18 +846,18 @@ final class MdastCompiler implements MdastContext {
         var label = this.resume();
         var node = stack.get(stack.size() - 1);
 
-        if (node instanceof MdAstLinkReference ref) {
+        if (node instanceof LinkOrLinkReference ref) {
             ref.label = label;
             ref.identifier = NormalizeIdentifier.normalizeIdentifier(
                     this.sliceSerialize(token)
             ).toLowerCase();
-        } else if (node instanceof MdAstImageReference ref) {
+        } else if (node instanceof ImageOrImageReference ref) {
             ref.label = label;
             ref.identifier = NormalizeIdentifier.normalizeIdentifier(
                     this.sliceSerialize(token)
             ).toLowerCase();
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Expected a link or image reference, but found: " + node);
         }
         referenceType = MdAstReferenceType.FULL;
     }
@@ -945,11 +951,11 @@ final class MdastCompiler implements MdastContext {
     }
 
     MdAstImage image() {
-        return new MdAstImage();
+        return new ImageOrImageReference();
     }
 
     MdAstLink link() {
-        return new MdAstLink();
+        return new LinkOrLinkReference();
     }
 
     MdAstList list(Token token) {
@@ -983,7 +989,7 @@ final class MdastCompiler implements MdastContext {
 
     private void defaultOnError(MdastContext context, @Nullable Token left, Token right) {
         if (left != null) {
-            throw new Error(
+            throw new RuntimeException(
                     "Cannot close `" +
                             left.type +
                             "` (" +
@@ -995,7 +1001,7 @@ final class MdastCompiler implements MdastContext {
                             ") is open"
             );
         } else {
-            throw new Error(
+            throw new RuntimeException(
                     "Cannot close document, a token (`" +
                             right.type +
                             "`, " +

@@ -14,8 +14,14 @@ public class MdAstPosition implements UnistPosition {
     int @Nullable [] indent; // number >= 1
 
     public static String stringify(Point start, Point end) {
-        return start.line() + ":" + start.column() + "-"
-                + end.line() + ":" + end.column();
+        var result = new StringBuilder();
+        if (start != null ) {
+            result.append(start.line()).append(":").append(start.column());
+        }
+        if (end != null) {
+            result.append("-").append(end.line()).append(":").append(end.column());
+        }
+        return result.toString();
     }
 
     @Override

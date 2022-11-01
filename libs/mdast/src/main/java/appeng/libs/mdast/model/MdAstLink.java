@@ -1,7 +1,9 @@
 package appeng.libs.mdast.model;
 
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -47,5 +49,14 @@ public class MdAstLink extends MdAstParent<MdAstStaticPhrasingContent> implement
     @Override
     public @Nullable String title() {
         return title;
+    }
+
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        if (title != null) {
+            writer.name("title").value(title);
+        }
+        writer.name("url").value(url);
+        super.writeJson(writer);
     }
 }
