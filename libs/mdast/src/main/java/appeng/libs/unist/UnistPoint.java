@@ -1,5 +1,9 @@
 package appeng.libs.unist;
 
+import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
+
 /**
  * Represents one point in the source file.
  */
@@ -18,4 +22,15 @@ public interface UnistPoint {
      * The 0-based offset to the character in the source-file.
      */
     int offset();
+
+    default void writeJson(JsonWriter writer) throws IOException {
+        writer.beginObject();
+        writer.name("line");
+        writer.value(line());
+        writer.name("column");
+        writer.value(column());
+        writer.name("offset");
+        writer.value(offset());
+        writer.endObject();
+    }
 }

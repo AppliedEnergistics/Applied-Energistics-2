@@ -1,0 +1,218 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "An autolink ",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 13,
+              "offset": 12
+            }
+          }
+        },
+        {
+          "type": "link",
+          "title": null,
+          "url": "http://example.com",
+          "children": [
+            {
+              "type": "text",
+              "value": "http://example.com",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 14,
+                  "offset": 13
+                },
+                "end": {
+                  "line": 1,
+                  "column": 32,
+                  "offset": 31
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 13,
+              "offset": 12
+            },
+            "end": {
+              "line": 1,
+              "column": 33,
+              "offset": 32
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": ".",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 33,
+              "offset": 32
+            },
+            "end": {
+              "line": 1,
+              "column": 34,
+              "offset": 33
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 34,
+          "offset": 33
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "Another autolink ",
+          "position": {
+            "start": {
+              "line": 3,
+              "column": 1,
+              "offset": 35
+            },
+            "end": {
+              "line": 3,
+              "column": 18,
+              "offset": 52
+            }
+          }
+        },
+        {
+          "type": "link",
+          "title": null,
+          "url": "mailto:alpha@bravo.charlie",
+          "children": [
+            {
+              "type": "text",
+              "value": "alpha@bravo.charlie",
+              "position": {
+                "start": {
+                  "line": 3,
+                  "column": 19,
+                  "offset": 53
+                },
+                "end": {
+                  "line": 3,
+                  "column": 38,
+                  "offset": 72
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 3,
+              "column": 18,
+              "offset": 52
+            },
+            "end": {
+              "line": 3,
+              "column": 39,
+              "offset": 73
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": ".",
+          "position": {
+            "start": {
+              "line": 3,
+              "column": 39,
+              "offset": 73
+            },
+            "end": {
+              "line": 3,
+              "column": 40,
+              "offset": 74
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 3,
+          "column": 1,
+          "offset": 35
+        },
+        "end": {
+          "line": 3,
+          "column": 40,
+          "offset": 74
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "Not an autolink <alpha.bravo.charlie>.",
+          "position": {
+            "start": {
+              "line": 5,
+              "column": 1,
+              "offset": 76
+            },
+            "end": {
+              "line": 5,
+              "column": 39,
+              "offset": 114
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 5,
+          "column": 1,
+          "offset": 76
+        },
+        "end": {
+          "line": 5,
+          "column": 39,
+          "offset": 114
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 6,
+      "column": 1,
+      "offset": 115
+    }
+  }
+}

@@ -1,5 +1,7 @@
 package appeng.libs.micromark;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,4 +62,11 @@ public final class ListUtils {
         }
     }
 
+    @Nullable
+    public static <T> T pop(List<T> listStack) {
+        if (listStack.isEmpty()) {
+            return null;
+        }
+        return listStack.remove(listStack.size() - 1);
+    }
 }

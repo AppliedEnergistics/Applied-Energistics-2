@@ -1,0 +1,149 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "A short paragraph.",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 19,
+              "offset": 18
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 19,
+          "offset": 18
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "A\nlonger paragraph.",
+          "position": {
+            "start": {
+              "line": 3,
+              "column": 1,
+              "offset": 20
+            },
+            "end": {
+              "line": 4,
+              "column": 18,
+              "offset": 39
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 3,
+          "column": 1,
+          "offset": 20
+        },
+        "end": {
+          "line": 4,
+          "column": 18,
+          "offset": 39
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "A couple blank lines.",
+          "position": {
+            "start": {
+              "line": 7,
+              "column": 1,
+              "offset": 42
+            },
+            "end": {
+              "line": 7,
+              "column": 22,
+              "offset": 63
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 7,
+          "column": 1,
+          "offset": 42
+        },
+        "end": {
+          "line": 7,
+          "column": 22,
+          "offset": 63
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "Lots of blank lines.",
+          "position": {
+            "start": {
+              "line": 11,
+              "column": 1,
+              "offset": 67
+            },
+            "end": {
+              "line": 11,
+              "column": 21,
+              "offset": 87
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 11,
+          "column": 1,
+          "offset": 67
+        },
+        "end": {
+          "line": 11,
+          "column": 21,
+          "offset": 87
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 12,
+      "column": 1,
+      "offset": 88
+    }
+  }
+}

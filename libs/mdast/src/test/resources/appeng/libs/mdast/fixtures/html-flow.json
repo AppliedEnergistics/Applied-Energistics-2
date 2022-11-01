@@ -1,0 +1,129 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "html",
+      "value": "<script>\na\n</script>",
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 3,
+          "column": 10,
+          "offset": 20
+        }
+      }
+    },
+    {
+      "type": "html",
+      "value": "<!--b-->",
+      "position": {
+        "start": {
+          "line": 5,
+          "column": 1,
+          "offset": 22
+        },
+        "end": {
+          "line": 5,
+          "column": 9,
+          "offset": 30
+        }
+      }
+    },
+    {
+      "type": "html",
+      "value": "<?c?>",
+      "position": {
+        "start": {
+          "line": 7,
+          "column": 1,
+          "offset": 32
+        },
+        "end": {
+          "line": 7,
+          "column": 6,
+          "offset": 37
+        }
+      }
+    },
+    {
+      "type": "html",
+      "value": "<!d>",
+      "position": {
+        "start": {
+          "line": 9,
+          "column": 1,
+          "offset": 39
+        },
+        "end": {
+          "line": 9,
+          "column": 5,
+          "offset": 43
+        }
+      }
+    },
+    {
+      "type": "html",
+      "value": "<![CDATA[e]]>",
+      "position": {
+        "start": {
+          "line": 11,
+          "column": 1,
+          "offset": 45
+        },
+        "end": {
+          "line": 11,
+          "column": 14,
+          "offset": 58
+        }
+      }
+    },
+    {
+      "type": "html",
+      "value": "<div\nf",
+      "position": {
+        "start": {
+          "line": 13,
+          "column": 1,
+          "offset": 60
+        },
+        "end": {
+          "line": 14,
+          "column": 2,
+          "offset": 66
+        }
+      }
+    },
+    {
+      "type": "html",
+      "value": "<g>",
+      "position": {
+        "start": {
+          "line": 16,
+          "column": 1,
+          "offset": 68
+        },
+        "end": {
+          "line": 16,
+          "column": 4,
+          "offset": 71
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 17,
+      "column": 1,
+      "offset": 72
+    }
+  }
+}

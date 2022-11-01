@@ -1,0 +1,242 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "a",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 2,
+              "offset": 1
+            }
+          }
+        },
+        {
+          "type": "break",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 2,
+              "offset": 1
+            },
+            "end": {
+              "line": 2,
+              "column": 1,
+              "offset": 4
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": "b",
+          "position": {
+            "start": {
+              "line": 2,
+              "column": 1,
+              "offset": 4
+            },
+            "end": {
+              "line": 2,
+              "column": 2,
+              "offset": 5
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 2,
+          "offset": 5
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "c",
+          "position": {
+            "start": {
+              "line": 4,
+              "column": 1,
+              "offset": 7
+            },
+            "end": {
+              "line": 4,
+              "column": 2,
+              "offset": 8
+            }
+          }
+        },
+        {
+          "type": "break",
+          "position": {
+            "start": {
+              "line": 4,
+              "column": 2,
+              "offset": 8
+            },
+            "end": {
+              "line": 5,
+              "column": 1,
+              "offset": 11
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": "d",
+          "position": {
+            "start": {
+              "line": 5,
+              "column": 3,
+              "offset": 13
+            },
+            "end": {
+              "line": 5,
+              "column": 4,
+              "offset": 14
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 4,
+          "column": 1,
+          "offset": 7
+        },
+        "end": {
+          "line": 5,
+          "column": 4,
+          "offset": 14
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "e",
+          "position": {
+            "start": {
+              "line": 7,
+              "column": 1,
+              "offset": 16
+            },
+            "end": {
+              "line": 7,
+              "column": 2,
+              "offset": 17
+            }
+          }
+        },
+        {
+          "type": "break",
+          "position": {
+            "start": {
+              "line": 7,
+              "column": 2,
+              "offset": 17
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "offset": 22
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": "f",
+          "position": {
+            "start": {
+              "line": 8,
+              "column": 1,
+              "offset": 22
+            },
+            "end": {
+              "line": 8,
+              "column": 2,
+              "offset": 23
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 7,
+          "column": 1,
+          "offset": 16
+        },
+        "end": {
+          "line": 8,
+          "column": 2,
+          "offset": 23
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "g\nh",
+          "position": {
+            "start": {
+              "line": 10,
+              "column": 1,
+              "offset": 25
+            },
+            "end": {
+              "line": 11,
+              "column": 2,
+              "offset": 29
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 10,
+          "column": 1,
+          "offset": 25
+        },
+        "end": {
+          "line": 11,
+          "column": 2,
+          "offset": 29
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 11,
+      "column": 2,
+      "offset": 29
+    }
+  }
+}

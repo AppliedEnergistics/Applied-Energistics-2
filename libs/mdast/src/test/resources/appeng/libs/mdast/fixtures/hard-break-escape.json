@@ -1,0 +1,209 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "a",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 2,
+              "offset": 1
+            }
+          }
+        },
+        {
+          "type": "break",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 2,
+              "offset": 1
+            },
+            "end": {
+              "line": 2,
+              "column": 1,
+              "offset": 3
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": "b",
+          "position": {
+            "start": {
+              "line": 2,
+              "column": 1,
+              "offset": 3
+            },
+            "end": {
+              "line": 2,
+              "column": 2,
+              "offset": 4
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 2,
+          "offset": 4
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "c",
+          "position": {
+            "start": {
+              "line": 4,
+              "column": 1,
+              "offset": 6
+            },
+            "end": {
+              "line": 4,
+              "column": 2,
+              "offset": 7
+            }
+          }
+        },
+        {
+          "type": "break",
+          "position": {
+            "start": {
+              "line": 4,
+              "column": 2,
+              "offset": 7
+            },
+            "end": {
+              "line": 5,
+              "column": 1,
+              "offset": 9
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": "d",
+          "position": {
+            "start": {
+              "line": 5,
+              "column": 3,
+              "offset": 11
+            },
+            "end": {
+              "line": 5,
+              "column": 4,
+              "offset": 12
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 4,
+          "column": 1,
+          "offset": 6
+        },
+        "end": {
+          "line": 5,
+          "column": 4,
+          "offset": 12
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "e  ",
+          "position": {
+            "start": {
+              "line": 7,
+              "column": 1,
+              "offset": 14
+            },
+            "end": {
+              "line": 7,
+              "column": 4,
+              "offset": 17
+            }
+          }
+        },
+        {
+          "type": "break",
+          "position": {
+            "start": {
+              "line": 7,
+              "column": 4,
+              "offset": 17
+            },
+            "end": {
+              "line": 8,
+              "column": 1,
+              "offset": 19
+            }
+          }
+        },
+        {
+          "type": "text",
+          "value": "f",
+          "position": {
+            "start": {
+              "line": 8,
+              "column": 1,
+              "offset": 19
+            },
+            "end": {
+              "line": 8,
+              "column": 2,
+              "offset": 20
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 7,
+          "column": 1,
+          "offset": 14
+        },
+        "end": {
+          "line": 8,
+          "column": 2,
+          "offset": 20
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 9,
+      "column": 1,
+      "offset": 21
+    }
+  }
+}

@@ -1,0 +1,319 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "blockquote",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "a block quote",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 3,
+                  "offset": 2
+                },
+                "end": {
+                  "line": 1,
+                  "column": 16,
+                  "offset": 15
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 3,
+              "offset": 2
+            },
+            "end": {
+              "line": 1,
+              "column": 16,
+              "offset": 15
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 16,
+          "offset": 15
+        }
+      }
+    },
+    {
+      "type": "blockquote",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Another block quote\nwith two lazy\nlines.",
+              "position": {
+                "start": {
+                  "line": 3,
+                  "column": 3,
+                  "offset": 19
+                },
+                "end": {
+                  "line": 5,
+                  "column": 7,
+                  "offset": 59
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 3,
+              "column": 3,
+              "offset": 19
+            },
+            "end": {
+              "line": 5,
+              "column": 7,
+              "offset": 59
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 3,
+          "column": 1,
+          "offset": 17
+        },
+        "end": {
+          "line": 5,
+          "column": 7,
+          "offset": 59
+        }
+      }
+    },
+    {
+      "type": "blockquote",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Block quote",
+              "position": {
+                "start": {
+                  "line": 7,
+                  "column": 3,
+                  "offset": 63
+                },
+                "end": {
+                  "line": 7,
+                  "column": 14,
+                  "offset": 74
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 7,
+              "column": 3,
+              "offset": 63
+            },
+            "end": {
+              "line": 7,
+              "column": 14,
+              "offset": 74
+            }
+          }
+        },
+        {
+          "type": "heading",
+          "depth": 1,
+          "children": [
+            {
+              "type": "text",
+              "value": "with a heading",
+              "position": {
+                "start": {
+                  "line": 8,
+                  "column": 5,
+                  "offset": 79
+                },
+                "end": {
+                  "line": 8,
+                  "column": 19,
+                  "offset": 93
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 8,
+              "column": 3,
+              "offset": 77
+            },
+            "end": {
+              "line": 8,
+              "column": 19,
+              "offset": 93
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 7,
+          "column": 1,
+          "offset": 61
+        },
+        "end": {
+          "line": 8,
+          "column": 19,
+          "offset": 93
+        }
+      }
+    },
+    {
+      "type": "blockquote",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Block quote",
+              "position": {
+                "start": {
+                  "line": 10,
+                  "column": 3,
+                  "offset": 97
+                },
+                "end": {
+                  "line": 10,
+                  "column": 14,
+                  "offset": 108
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 10,
+              "column": 3,
+              "offset": 97
+            },
+            "end": {
+              "line": 10,
+              "column": 14,
+              "offset": 108
+            }
+          }
+        },
+        {
+          "type": "code",
+          "lang": null,
+          "meta": null,
+          "value": "with unclosed fenced code.",
+          "position": {
+            "start": {
+              "line": 11,
+              "column": 3,
+              "offset": 111
+            },
+            "end": {
+              "line": 12,
+              "column": 29,
+              "offset": 143
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 10,
+          "column": 1,
+          "offset": 95
+        },
+        "end": {
+          "line": 12,
+          "column": 29,
+          "offset": 143
+        }
+      }
+    },
+    {
+      "type": "blockquote",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Block\nquote\nwith and without\nspace.",
+              "position": {
+                "start": {
+                  "line": 14,
+                  "column": 2,
+                  "offset": 146
+                },
+                "end": {
+                  "line": 17,
+                  "column": 7,
+                  "offset": 184
+                }
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 14,
+              "column": 2,
+              "offset": 146
+            },
+            "end": {
+              "line": 17,
+              "column": 7,
+              "offset": 184
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 14,
+          "column": 1,
+          "offset": 145
+        },
+        "end": {
+          "line": 17,
+          "column": 7,
+          "offset": 184
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 18,
+      "column": 1,
+      "offset": 185
+    }
+  }
+}
