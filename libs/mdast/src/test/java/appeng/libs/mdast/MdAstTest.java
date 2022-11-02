@@ -4,9 +4,7 @@ import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstEmphasis;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.mdast.model.MdAstParagraph;
-import appeng.libs.mdast.model.MdAstRoot;
 import appeng.libs.mdast.model.MdAstStrong;
-import appeng.libs.micromark.ParseException;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.Types;
 import com.google.gson.Gson;
@@ -27,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,10 +38,6 @@ public class MdAstTest {
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .create();
-
-    private static MdAstRoot fromMarkdown(String markdown) {
-        return MdAst.fromMarkdown(markdown, new MdastOptions());
-    }
 
     private static String toJson(String markdown) {
         return toJson(markdown, new MdastOptions());
@@ -252,6 +247,7 @@ public class MdAstTest {
                     for (var child : firstTextNode.children()) {
                         replacement.addChild((MdAstNode) child);
                     }
+                    replacement.position = firstTextNode.position;
                     firstChild.replaceChild(firstTextNode, replacement);
                     return tree;
                 })
@@ -327,7 +323,7 @@ public class MdAstTest {
 
         var extension = MdastExtension.builder()
                 .exit(Types.paragraph, (context, token) -> {
-                    var t = new Token();
+                    var t = new Token(token);
                     t.type = "lol";
                     context.exit(t);
                 })

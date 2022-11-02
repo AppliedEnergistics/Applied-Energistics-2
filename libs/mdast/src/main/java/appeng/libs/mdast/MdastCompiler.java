@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 final class MdastCompiler implements MdastContext {
 
@@ -553,11 +554,13 @@ final class MdastCompiler implements MdastContext {
         flowCodeInside = true;
     }
 
+    private static final Pattern START_END_NEWLINE = Pattern.compile("^(\r?\n|\r)|(\r?\n|\r)\\z");
+
     private void onexitcodefenced() {
         var data = this.resume();
         var node = (MdAstCode) (stack.get(stack.size() - 1));
 
-        node.value = data.replaceAll("^(\\r?\\n|\\r)|(\\r?\\n|\\r)$", "");
+        node.value = START_END_NEWLINE.matcher(data).replaceAll("");
 
         flowCodeInside = false;
     }
