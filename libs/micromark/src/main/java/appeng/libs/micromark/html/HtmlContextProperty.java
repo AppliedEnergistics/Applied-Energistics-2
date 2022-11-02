@@ -1,7 +1,7 @@
 package appeng.libs.micromark.html;
 
 /**
- * Attach arbitrary data to {@link CompileContext}. For use by {@linkplain HtmlExtension extensions}.
+ * Attach arbitrary data to {@link HtmlContext}. For use by {@linkplain HtmlExtension extensions}.
  *
  * @param <T> The type of data associated with this property.
  */

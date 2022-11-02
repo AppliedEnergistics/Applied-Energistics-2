@@ -1,6 +1,5 @@
 package appeng.libs.mdast;
 
-import appeng.libs.mdast.model.MdAstAnyContent;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.micromark.Token;
 import org.jetbrains.annotations.Nullable;
@@ -10,8 +9,9 @@ import java.util.List;
 /**
  * mdast compiler context
  */
-interface MdastContext {
-    record TokenStackEntry(Token token, @Nullable OnEnterError onError) {}
+public interface MdastContext {
+    record TokenStackEntry(Token token, @Nullable OnEnterError onError) {
+    }
 
     @FunctionalInterface
     interface OnEnterError {
@@ -62,4 +62,24 @@ interface MdastContext {
      * Get the string value of a token
      */
     String sliceSerialize(Token token);
+
+
+    default boolean has(MdastContextProperty<?> property) {
+        return get(property) != null;
+    }
+
+    /**
+     * Get data from the key-value store.
+     */
+    @Nullable <T> T get(MdastContextProperty<T> property);
+
+    /**
+     * Set data in the extension data.
+     */
+    <T> void set(MdastContextProperty<T> property, T value);
+
+    /**
+     * Remove data from the extension data.
+     */
+    void remove(MdastContextProperty<?> property);
 }

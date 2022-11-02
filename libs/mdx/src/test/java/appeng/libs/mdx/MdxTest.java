@@ -3,7 +3,7 @@ package appeng.libs.mdx;
 import appeng.libs.micromark.Micromark;
 import appeng.libs.micromark.ParseException;
 import appeng.libs.micromark.Token;
-import appeng.libs.micromark.html.CompileContext;
+import appeng.libs.micromark.html.HtmlContext;
 import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.HtmlExtension;
@@ -31,11 +31,11 @@ public class MdxTest {
             .exit("mdxJsxFlowTag", this::end)
             .build();
 
-    private void start(CompileContext context, Token token) {
+    private void start(HtmlContext context, Token token) {
         context.buffer();
     }
 
-    private void end(CompileContext context, Token token) {
+    private void end(HtmlContext context, Token token) {
         context.resume();
         context.setSlurpOneLineEnding(true);
     }

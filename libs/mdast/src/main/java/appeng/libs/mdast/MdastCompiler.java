@@ -560,6 +560,7 @@ final class MdastCompiler implements MdastContext {
         var data = this.resume();
         var node = (MdAstCode) (stack.get(stack.size() - 1));
 
+        // Removes the first and last newline in the string
         node.value = START_END_NEWLINE.matcher(data).replaceAll("");
 
         flowCodeInside = false;

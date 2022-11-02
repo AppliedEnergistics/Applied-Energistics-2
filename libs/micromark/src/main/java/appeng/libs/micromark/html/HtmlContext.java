@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * HTML compiler context
  */
-public interface CompileContext {
+public interface HtmlContext {
     /**
      * Configuration passed by the user.
      */

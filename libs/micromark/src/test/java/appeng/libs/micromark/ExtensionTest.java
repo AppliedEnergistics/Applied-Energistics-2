@@ -1,15 +1,6 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.Construct;
-import appeng.libs.micromark.ConstructPrecedence;
-import appeng.libs.micromark.ContentType;
-import appeng.libs.micromark.Extension;
-import appeng.libs.micromark.Micromark;
-import appeng.libs.micromark.State;
-import appeng.libs.micromark.Token;
-import appeng.libs.micromark.TokenizeContext;
-import appeng.libs.micromark.Tokenizer;
-import appeng.libs.micromark.html.CompileContext;
+import appeng.libs.micromark.html.HtmlContext;
 import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.HtmlExtension;
@@ -284,20 +275,20 @@ public class ExtensionTest {
         };
     }
 
-    private void enterComment(CompileContext context, Token token) {
+    private void enterComment(HtmlContext context, Token token) {
         context.buffer();
     }
 
-    private void exitComment(CompileContext context, Token token) {
+    private void exitComment(HtmlContext context, Token token) {
         context.resume();
         context.setSlurpOneLineEnding(true);
     }
 
-    private void enterDocument(CompileContext context) {
+    private void enterDocument(HtmlContext context) {
         context.raw("+");
     }
 
-    private void exitDocument(CompileContext context) {
+    private void exitDocument(HtmlContext context) {
         context.raw("-");
     }
 

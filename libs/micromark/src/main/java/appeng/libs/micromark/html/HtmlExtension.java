@@ -9,12 +9,12 @@ import java.util.Map;
 public class HtmlExtension {
     @FunctionalInterface
     public interface Handler {
-        void handle(CompileContext context, Token token);
+        void handle(HtmlContext context, Token token);
     }
 
     @FunctionalInterface
     public interface DocumentHandler {
-        void handle(CompileContext context);
+        void handle(HtmlContext context);
     }
 
     @Nullable

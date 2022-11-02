@@ -311,7 +311,7 @@ public class HtmlCompiler {
         return String.join("", buffers.get(0));
     }
 
-    class Context implements CompileContext {
+    class Context implements HtmlContext {
         Tokenizer.Event event;
 
         @Override
@@ -481,21 +481,21 @@ public class HtmlCompiler {
     // Handlers.
     //
 
-    private void onenterlistordered(CompileContext context, Token token) {
+    private void onenterlistordered(HtmlContext context, Token token) {
         tightStack.add(!token._loose);
         lineEndingIfNeeded();
         tag("<ol");
         data.expectFirstItem = true;
     }
 
-    private void onenterlistunordered(CompileContext context, Token token) {
+    private void onenterlistunordered(HtmlContext context, Token token) {
         tightStack.add(!token._loose);
         lineEndingIfNeeded();
         tag("<ul");
         data.expectFirstItem = true;
     }
 
-    private void onenterlistitemvalue(CompileContext context, Token token) {
+    private void onenterlistitemvalue(HtmlContext context, Token token) {
         if (data.expectFirstItem) {
             var value = Integer.parseInt(context.sliceSerialize(token), 10);
             if (value != 1) {
@@ -629,7 +629,7 @@ public class HtmlCompiler {
         mediaStack.add(new Media());
     }
 
-    private void onexitlabeltext(CompileContext context, Token token) {
+    private void onexitlabeltext(HtmlContext context, Token token) {
         mediaStack.get(mediaStack.size() - 1).labelId = context.sliceSerialize(token);
     }
 
@@ -637,7 +637,7 @@ public class HtmlCompiler {
         mediaStack.get(mediaStack.size() - 1).label = resume();
     }
 
-    private void onexitreferencestring(CompileContext context, Token token) {
+    private void onexitreferencestring(HtmlContext context, Token token) {
         mediaStack.get(mediaStack.size() - 1).referenceId = context.sliceSerialize(token);
     }
 
@@ -697,7 +697,7 @@ public class HtmlCompiler {
         mediaStack.add(new Media());
     }
 
-    private void onexitdefinitionlabelstring(CompileContext context, Token token) {
+    private void onexitdefinitionlabelstring(HtmlContext context, Token token) {
         // Discard label, use the source content instead.
         resume();
         mediaStack.get(mediaStack.size() - 1).labelId = context.sliceSerialize(token);
@@ -731,7 +731,7 @@ public class HtmlCompiler {
         data.slurpAllLineEndings = true;
     }
 
-    private void onexitatxheadingsequence(CompileContext context, Token token) {
+    private void onexitatxheadingsequence(HtmlContext context, Token token) {
         // Exit for further sequences.
         if (data.headingRank != 0) return;
         data.headingRank = context.sliceSerialize(token).length();
@@ -753,7 +753,7 @@ public class HtmlCompiler {
         data.headingRank = 0;
     }
 
-    private void onexitsetextheadinglinesequence(CompileContext context, Token token) {
+    private void onexitsetextheadinglinesequence(HtmlContext context, Token token) {
         data.headingRank = context.sliceSerialize(token).charAt(0) == 61 ? 1 : 2;
     }
 
@@ -767,11 +767,11 @@ public class HtmlCompiler {
         data.headingRank = 0;
     }
 
-    private void onexitdata(CompileContext context, Token token) {
+    private void onexitdata(HtmlContext context, Token token) {
         raw(encode(context.sliceSerialize(token)));
     }
 
-    private void onexitlineending(CompileContext context, Token token) {
+    private void onexitlineending(HtmlContext context, Token token) {
         if (data.slurpAllLineEndings) {
             return;
         }
@@ -786,7 +786,7 @@ public class HtmlCompiler {
         raw(encode(context.sliceSerialize(token)));
     }
 
-    private void onexitcodeflowvalue(CompileContext context, Token token) {
+    private void onexitcodeflowvalue(HtmlContext context, Token token) {
         raw(encode(context.sliceSerialize(token)));
         data.flowCodeSeenData = true;
     }
@@ -841,11 +841,11 @@ public class HtmlCompiler {
         tag("<hr />");
     }
 
-    private void onexitcharacterreferencemarker(CompileContext context, Token token) {
+    private void onexitcharacterreferencemarker(HtmlContext context, Token token) {
         data.characterReferenceType = token.type;
     }
 
-    private void onexitcharacterreferencevalue(CompileContext context, Token token) {
+    private void onexitcharacterreferencevalue(HtmlContext context, Token token) {
         var value = context.sliceSerialize(token);
 
         // @ts-expect-error `decodeNamedCharacterReference` can return false for
@@ -856,14 +856,14 @@ public class HtmlCompiler {
         data.characterReferenceType = null;
     }
 
-    private void onexitautolinkprotocol(CompileContext context, Token token) {
+    private void onexitautolinkprotocol(HtmlContext context, Token token) {
         var uri = context.sliceSerialize(token);
         tag("<a href=\"" + SanitizeUri.sanitizeUri(uri, options.isAllowDangerousProtocol() ? null : protocolHref) + "\">");
         raw(encode(uri));
         tag("</a>");
     }
 
-    private void onexitautolinkemail(CompileContext context, Token token) {
+    private void onexitautolinkemail(HtmlContext context, Token token) {
         var uri = context.sliceSerialize(token);
         tag("<a href=\"" + SanitizeUri.sanitizeUri("mailto:" + uri, null) + "\">");
         raw(encode(uri));

@@ -2,10 +2,8 @@ package appeng.libs.mdast;
 
 import appeng.libs.mdast.model.MdAstRoot;
 import appeng.libs.micromark.Token;
-import appeng.libs.micromark.html.CompileContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,14 +12,14 @@ import java.util.Map;
 /**
  * An mdast extension changes how markdown tokens are turned into mdast.
  */
-class MdastExtension {
+public class MdastExtension {
     @FunctionalInterface
-    interface Transform {
+    public interface Transform {
         MdAstRoot transform(MdAstRoot tree);
     }
 
     @FunctionalInterface
-    interface Handler {
+    public interface Handler {
         void handle(MdastContext context, Token token);
     }
 

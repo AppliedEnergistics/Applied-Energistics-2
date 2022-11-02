@@ -10,7 +10,7 @@ import java.io.IOException;
  * <p>
  * Its value field is a string.
  */
-public class MdAstLiteral extends MdAstNode implements UnistLiteral {
+public abstract class MdAstLiteral extends MdAstNode implements UnistLiteral {
     public String value = "";
 
     public MdAstLiteral(String type) {
