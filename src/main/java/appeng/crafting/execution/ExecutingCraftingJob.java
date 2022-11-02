@@ -142,6 +142,7 @@ public class ExecutingCraftingJob {
         }
         data.put(NBT_TASKS, list);
 
+        data.putLong(NBT_REMAINING_AMOUNT, remainingAmount);
         if (this.playerId != null) {
             data.putInt(NBT_PLAYER_ID, this.playerId);
         }
