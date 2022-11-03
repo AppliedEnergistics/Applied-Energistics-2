@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -44,6 +45,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -412,5 +414,18 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         }
 
         return true;
+    }
+
+    @Override
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
+            @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+        if (((RenderAttachedBlockView) renderView)
+                .getBlockEntityRenderAttachment(pos) instanceof CableBusRenderState cableBusRenderState) {
+            var facadeState = cableBusRenderState.getFacades().get(side);
+            if (facadeState != null) {
+                return facadeState.getSourceBlock();
+            }
+        }
+        return state;
     }
 }

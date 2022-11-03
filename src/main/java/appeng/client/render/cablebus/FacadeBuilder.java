@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -35,6 +34,7 @@ import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.Minecraft;
@@ -49,6 +49,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
@@ -175,12 +176,12 @@ public class FacadeBuilder {
     }
 
     public Mesh getFacadeMesh(CableBusRenderState renderState, Supplier<RandomSource> rand,
-            Function<ResourceLocation, BakedModel> modelLookup) {
+            BlockAndTintGetter level, RenderContext context) {
         boolean transparent = PartHelper.getCableRenderMode().transparentFacades;
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
-        var parentWorld = renderState.getLevel();
+        var parentWorld = level;
         BlockPos pos = renderState.getPos();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
@@ -212,10 +213,6 @@ public class FacadeBuilder {
             }
 
             BlockState blockState = facadeRenderState.getSourceBlock();
-            // If we aren't forcing transparency let the block decide if it should render.
-// FIXME FABRIC          if (layer != null && !RenderTypeLookup.canRenderInLayer(blockState, layer)) {
-// FIXME FABRIC              continue;
-// FIXME FABRIC          }
 
             AABB fullBounds = thinFacades ? THIN_FACADE_BOXES[sideIndex] : THICK_FACADE_BOXES[sideIndex];
             AABB facadeBox = fullBounds;
@@ -265,7 +262,7 @@ public class FacadeBuilder {
             var facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
 
             var dispatcher = Minecraft.getInstance().getBlockRenderer();
-            var model = dispatcher.getBlockModel(blockState);
+            var model = (FabricBakedModel) dispatcher.getBlockModel(blockState);
 
             QuadFaceStripper faceStripper = new QuadFaceStripper(fullBounds, facadeMask);
             // Setup the kicker.
@@ -277,53 +274,54 @@ public class FacadeBuilder {
 
             QuadReInterpolator interpolator = new QuadReInterpolator();
 
-            for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-                Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-                List<BakedQuad> quads = model.getQuads(blockState, cullFace, rand.get());
+            context.pushTransform(quad -> {
+                Direction cullFace = quad.cullFace();
+                QuadTinter quadTinter = null;
 
-                for (BakedQuad quad : quads) {
-                    QuadTinter quadTinter = null;
-
-                    // Prebake the color tint into the quad
-                    if (quad.getTintIndex() != -1) {
-                        quadTinter = new QuadTinter(
-                                blockColors.getColor(blockState, facadeAccess, pos, quad.getTintIndex()));
-                    }
-
-                    for (AABB box : holeStrips) {
-                        emitter.fromVanilla(quad.getVertices(), 0, false);
-                        // Keep the cull-face for faces that are flush with the outer block-face on the
-                        // side the facade is attached to, but clear it for anything that faces inwards
-                        emitter.cullFace(cullFace == side ? side : null);
-                        emitter.nominalFace(quad.getDirection());
-                        interpolator.setInputQuad(emitter);
-
-                        QuadClamper clamper = new QuadClamper(box);
-                        if (!clamper.transform(emitter)) {
-                            continue;
-                        }
-
-                        // Strips faces if they match a mask.
-                        if (!faceStripper.transform(emitter)) {
-                            continue;
-                        }
-
-                        // Kicks the edge inner corners in, solves Z fighting
-                        if (!kicker.transform(emitter)) {
-                            continue;
-                        }
-
-                        interpolator.transform(emitter);
-
-                        // Tints the quad if we need it to. Disabled by default.
-                        if (quadTinter != null) {
-                            quadTinter.transform(emitter);
-                        }
-
-                        emitter.emit();
-                    }
+                // Prebake the color tint into the quad
+                if (quad.colorIndex() != -1) {
+                    quadTinter = new QuadTinter(blockColors.getColor(blockState, facadeAccess, pos, quad.colorIndex()));
                 }
-            }
+
+                for (AABB box : holeStrips) {
+                    quad.copyTo(emitter);
+                    // Keep the cull-face for faces that are flush with the outer block-face on the
+                    // side the facade is attached to, but clear it for anything that faces inwards
+                    emitter.cullFace(cullFace == side ? side : null);
+                    // manually set nominal face as the transformers below assume it's not null
+                    emitter.nominalFace(quad.lightFace());
+                    interpolator.setInputQuad(emitter);
+
+                    QuadClamper clamper = new QuadClamper(box);
+                    if (!clamper.transform(emitter)) {
+                        continue;
+                    }
+
+                    // Strips faces if they match a mask.
+                    if (!faceStripper.transform(emitter)) {
+                        continue;
+                    }
+
+                    // Kicks the edge inner corners in, solves Z fighting
+                    if (!kicker.transform(emitter)) {
+                        continue;
+                    }
+
+                    interpolator.transform(emitter);
+
+                    // Tints the quad if we need it to. Disabled by default.
+                    if (quadTinter != null) {
+                        quadTinter.transform(emitter);
+                    }
+
+                    emitter.emit();
+                }
+
+                // Cancel rendering, we only render to inspect the quads, but we don't want to output them.
+                return false;
+            });
+            model.emitBlockQuads(parentWorld, blockState, pos, rand, context);
+            context.popTransform();
         }
 
         return meshBuilder.build();

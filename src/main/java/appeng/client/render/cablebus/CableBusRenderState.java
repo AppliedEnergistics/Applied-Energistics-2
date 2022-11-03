@@ -18,7 +18,6 @@
 
 package appeng.client.render.cablebus;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -27,7 +26,6 @@ import java.util.Objects;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.AABB;
 
 import appeng.api.parts.IPartModel;
@@ -76,7 +74,6 @@ public class CableBusRenderState {
     private EnumMap<Direction, FacadeRenderState> facades = new EnumMap<>(Direction.class);
 
     // Used for Facades.
-    private WeakReference<BlockAndTintGetter> level;
     private BlockPos pos;
 
     // Contains the bounding boxes of all parts on the cable bus to allow facades to
@@ -146,14 +143,6 @@ public class CableBusRenderState {
 
     public EnumMap<Direction, FacadeRenderState> getFacades() {
         return this.facades;
-    }
-
-    public BlockAndTintGetter getLevel() {
-        return this.level.get();
-    }
-
-    public void setLevel(BlockAndTintGetter level) {
-        this.level = new WeakReference<>(level);
     }
 
     public BlockPos getPos() {

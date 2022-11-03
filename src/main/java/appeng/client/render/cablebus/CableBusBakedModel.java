@@ -178,7 +178,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
             }
         }
 
-        Mesh mesh = this.facadeBuilder.getFacadeMesh(renderState, randomSupplier, this.partModels::get);
+        Mesh mesh = this.facadeBuilder.getFacadeMesh(renderState, randomSupplier, blockView, context);
         context.meshConsumer().accept(mesh);
     }
 
