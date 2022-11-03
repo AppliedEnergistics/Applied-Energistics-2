@@ -84,12 +84,12 @@ public class TransformRecipes extends AE2RecipeProvider {
 
     }
 
-    private TransformRecipeBuilder transform(Item output, int count, TransformCircumstance circumstance,
+    public static TransformRecipeBuilder transform(Item output, int count, TransformCircumstance circumstance,
             ItemLike... inputs) {
         return new TransformRecipeBuilder(Stream.of(inputs).map(Ingredient::of).toList(), output, count, circumstance);
     }
 
-    private TransformRecipeBuilder transform(Item output, int count, TransformCircumstance circumstance,
+    public static TransformRecipeBuilder transform(Item output, int count, TransformCircumstance circumstance,
             Ingredient... inputs) {
         return new TransformRecipeBuilder(List.of(inputs), output, count, circumstance);
     }

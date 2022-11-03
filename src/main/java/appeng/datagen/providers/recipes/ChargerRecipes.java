@@ -32,7 +32,7 @@ public class ChargerRecipes extends AE2RecipeProvider {
         charge(consumer, "meteorite_compass", Items.COMPASS, AEItems.METEORITE_COMPASS.asItem());
     }
 
-    private void charge(Consumer<FinishedRecipe> consumer, String name, Item input, Item output) {
+    public static void charge(Consumer<FinishedRecipe> consumer, String name, Item input, Item output) {
         consumer.accept(new ChargerRecipeBuilder(name, Ingredient.of(input), new ItemStack(output)));
     }
 

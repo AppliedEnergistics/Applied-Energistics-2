@@ -100,13 +100,13 @@ public class EntropyRecipes extends AE2RecipeProvider {
 
     }
 
-    private static EntropyRecipeBuilder cool(String id) {
+    public static EntropyRecipeBuilder cool(String id) {
         return new EntropyRecipeBuilder()
                 .setId(AppEng.makeId("entropy/cool/" + id))
                 .setMode(EntropyMode.COOL);
     }
 
-    private static EntropyRecipeBuilder heat(String id) {
+    public static EntropyRecipeBuilder heat(String id) {
         return new EntropyRecipeBuilder()
                 .setId(AppEng.makeId("entropy/heat/" + id))
                 .setMode(EntropyMode.HEAT);

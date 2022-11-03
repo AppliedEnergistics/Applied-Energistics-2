@@ -115,7 +115,7 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
         registerAmmoItem(consumer, "matter_ball", AEItems.MATTER_BALL, 32.0f);
     }
 
-    private void registerAmmoItem(Consumer<FinishedRecipe> consumer, String id, ItemLike item, float weight) {
+    public static void registerAmmoItem(Consumer<FinishedRecipe> consumer, String id, ItemLike item, float weight) {
         consumer.accept(new MatterCannonAmmo(
                 AppEng.makeId("matter_cannon/" + id),
                 null,
@@ -123,7 +123,8 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
                 weight));
     }
 
-    private void registerAmmoTag(Consumer<FinishedRecipe> consumer, String id, ResourceLocation tag, float weight) {
+    public static void registerAmmoTag(Consumer<FinishedRecipe> consumer, String id, ResourceLocation tag,
+            float weight) {
         consumer.accept(new MatterCannonAmmo(
                 AppEng.makeId("matter_cannon/" + id),
                 TagKey.create(Registry.ITEM_REGISTRY, tag),
