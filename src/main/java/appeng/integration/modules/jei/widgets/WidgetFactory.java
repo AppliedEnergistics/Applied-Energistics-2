@@ -7,6 +7,7 @@ import com.google.common.cache.LoadingCache;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -45,7 +46,7 @@ public final class WidgetFactory {
     }
 
     public DrawableWidget item(int x, int y, ItemStack stack) {
-        return new DrawableWidget(guiHelper.createDrawableItemStack(stack), x, y);
+        return new DrawableWidget(guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, stack), x, y);
     }
 
     /**

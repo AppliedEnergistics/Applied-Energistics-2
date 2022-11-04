@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
@@ -32,7 +33,7 @@ public class AttunementCategory extends ViewBasedCategory<AttunementDisplay> {
         super(helpers);
         var guiHelpers = helpers.getGuiHelper();
         this.background = guiHelpers.createBlankDrawable(130, 36);
-        this.icon = guiHelpers.createDrawableItemStack(AEParts.ME_P2P_TUNNEL.stack());
+        this.icon = guiHelpers.createDrawableIngredient(VanillaTypes.ITEM_STACK, AEParts.ME_P2P_TUNNEL.stack());
         this.slotBackground = guiHelpers.getSlotDrawable();
     }
 
