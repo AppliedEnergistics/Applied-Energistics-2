@@ -9,12 +9,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidStack;
 
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IJeiHelpers;
-import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 
@@ -35,7 +37,6 @@ public class EntropyManipulatorCategory extends ViewBasedCategory<EntropyRecipe>
     private final IDrawable slotBackground;
     private final IDrawable background;
     private final IDrawable icon;
-    private final IPlatformFluidHelper<?> fluidHelper;
     private final IDrawable blockDestroyOverlay;
     private final IDrawable iconHeat;
     private final IDrawable iconCool;
@@ -46,7 +47,6 @@ public class EntropyManipulatorCategory extends ViewBasedCategory<EntropyRecipe>
         var guiHelper = helpers.getGuiHelper();
         this.slotBackground = guiHelper.getSlotDrawable();
         this.background = guiHelper.createBlankDrawable(130, 50);
-        this.fluidHelper = helpers.getPlatformFluidHelper();
         // We don't use an item drawable here because it would show the charge bar
         this.icon = guiHelper.drawableBuilder(
                 AppEng.makeId("textures/item/entropy_manipulator.png"),
@@ -131,10 +131,10 @@ public class EntropyManipulatorCategory extends ViewBasedCategory<EntropyRecipe>
             // anyway, so this if-block would be needed in any case.
             if (!fluid.isSource(fluid.defaultFluidState())) {
                 if (fluid instanceof FlowingFluid flowingFluid) {
-                    slot.addFluidStack(flowingFluid.getSource(), fluidHelper.bucketVolume());
+                    addFluidStack(slot, flowingFluid.getSource());
                 } else {
                     // Don't really know how to get the source :-(
-                    slot.addFluidStack(fluid, fluidHelper.bucketVolume());
+                    addFluidStack(slot, fluid);
                     AELog.warn("Don't know how to get the source fluid for %s", fluid);
                 }
                 slot.addTooltipCallback((recipeSlotView, tooltip) -> {
@@ -142,11 +142,15 @@ public class EntropyManipulatorCategory extends ViewBasedCategory<EntropyRecipe>
                     tooltip.set(0, ItemModText.FLOWING_FLUID_NAME.text(firstLine));
                 });
             } else {
-                slot.addFluidStack(fluid, fluidHelper.bucketVolume());
+                addFluidStack(slot, fluid);
             }
         } else if (block != null) {
             slot.addItemStack(block.asItem().getDefaultInstance());
         }
+    }
+
+    private static void addFluidStack(IRecipeSlotBuilder slot, Fluid fluid) {
+        slot.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
     }
 
     @Override

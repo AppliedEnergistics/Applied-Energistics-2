@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.world.level.ItemLike;
 
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 
@@ -26,7 +27,7 @@ public class CyclingDrawable implements IDrawable {
     public static CyclingDrawable forItems(IGuiHelper guiHelper, ItemLike... items) {
         return new CyclingDrawable(Arrays.stream(items)
                 .map(i -> i.asItem().getDefaultInstance())
-                .map(guiHelper::createDrawableItemStack)
+                .map(s -> guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, s))
                 .toList());
     }
 
