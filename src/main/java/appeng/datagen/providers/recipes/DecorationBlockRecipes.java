@@ -138,7 +138,7 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
     }
 
     private void skyStoneBlock(Consumer<FinishedRecipe> consumer, BlockDefinition<?> input, BlockDefinition<?> output) {
-        ShapedRecipeBuilder.shaped(output)
+        ShapedRecipeBuilder.shaped(output, 4)
                 .pattern("aa")
                 .pattern("aa")
                 .define('a', input)
