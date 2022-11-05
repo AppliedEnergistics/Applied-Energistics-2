@@ -31,59 +31,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MdAstTest {
-
-    private static final Gson GSON = new GsonBuilder()
-            .setLenient()
-            .setPrettyPrinting()
-            .disableHtmlEscaping()
-            .create();
-
-    private static String toJson(String markdown) {
-        return toJson(markdown, new MdastOptions());
-    }
-
-    private static String toJsonFirstNode(String markdown) {
-        return toJsonFirstNode(markdown, new MdastOptions());
-    }
-
-    private static String toJson(String markdown, MdastOptions options) {
-        var tree = MdAst.fromMarkdown(markdown, options);
-
-        try {
-            var jsonWriter = new JsonTreeWriter();
-            jsonWriter.setHtmlSafe(false);
-            jsonWriter.setIndent("  ");
-            tree.toJson(jsonWriter);
-            return GSON.toJson(normalizeTree(jsonWriter.get()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String toJsonFirstNode(String markdown, MdastOptions options) {
-        var tree = (MdAstNode) MdAst.fromMarkdown(markdown, options).children().get(0);
-
-        try {
-            var jsonWriter = new JsonTreeWriter();
-            tree.toJson(jsonWriter);
-            return GSON.toJson(normalizeTree(jsonWriter.get()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void assertJsonEquals(String markdown, @Language("json") String astJson) {
-        var actualJson = toJson(markdown);
-        var expectedJson = normalizeJson(astJson);
-        assertEquals(expectedJson, actualJson);
-    }
-
-    private static void assertJsonEqualsOnFirstNode(String markdown, @Language("json") String astJson) {
-        var actualJson = toJsonFirstNode(markdown);
-        var expectedJson = normalizeJson(astJson);
-        assertEquals(expectedJson, actualJson);
-    }
+public class MdAstTest extends AbstractMdAstTest {
 
     @Test
     public void shouldParseAnEmptyDocument() {
@@ -1158,39 +1106,6 @@ public class MdAstTest {
         @Language("json") var expectedJson = Files.readString(jsonPath);
 
         assertJsonEquals(markdown, expectedJson);
-    }
-
-    private static String normalizeJson(@Language("json") String json) {
-        var el = GSON.fromJson(json, JsonElement.class);
-        el = normalizeTree(el);
-        return GSON.toJson(el);
-    }
-
-    private static JsonElement normalizeTree(JsonElement element) {
-        if (element.isJsonArray()) {
-            var normalizedArray = new JsonArray();
-            for (var jsonElement : element.getAsJsonArray()) {
-                normalizedArray.add(normalizeTree(jsonElement));
-            }
-            return normalizedArray;
-        } else if (element.isJsonObject()) {
-            var props = new ArrayList<>(element.getAsJsonObject().entrySet());
-            props.sort(
-                    // Sort type always first
-                    Comparator.<Map.Entry<String, JsonElement>, Boolean>comparing(e -> e.getKey().equals("type")).reversed()
-                            // Children always last
-                            .thenComparing(e -> e.getKey().equals("children"))
-                            // The rest alphabetically in-between
-                            .thenComparing(Map.Entry::getKey, Comparator.naturalOrder())
-            );
-            var sortedObj = new JsonObject();
-            for (var prop : props) {
-                sortedObj.add(prop.getKey(), normalizeTree(prop.getValue()));
-            }
-            return sortedObj;
-        } else {
-            return element;
-        }
     }
 
 }

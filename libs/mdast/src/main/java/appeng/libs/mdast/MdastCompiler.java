@@ -22,7 +22,6 @@ import appeng.libs.mdast.model.MdAstPhrasingContent;
 import appeng.libs.mdast.model.MdAstPosition;
 import appeng.libs.mdast.model.MdAstReferenceType;
 import appeng.libs.mdast.model.MdAstRoot;
-import appeng.libs.mdast.model.MdAstStaticPhrasingContent;
 import appeng.libs.mdast.model.MdAstStrong;
 import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
@@ -37,6 +36,7 @@ import appeng.libs.micromark.TokenProperty;
 import appeng.libs.micromark.TokenizeContext;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
+import appeng.libs.micromark.html.HtmlContextProperty;
 import appeng.libs.micromark.html.NumericCharacterReference;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
@@ -44,6 +44,7 @@ import appeng.libs.unist.UnistPoint;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,15 +66,12 @@ final class MdastCompiler implements MdastContext {
     boolean inReference;
     CharacterReferenceType characterReferenceType;
 
-    Map<String, Object> extra;
+    private final Map<MdastContextProperty<?>, Object> extensionData = new IdentityHashMap<>();
 
-    MdAstRoot tree;
-    List<MdAstNode> stack;
-    List<TokenStackEntry> tokenStack;
-    List<Integer> listStack;
-    int index;
+    private List<MdAstNode> stack;
+    private List<TokenStackEntry> tokenStack;
     @Nullable
-    TokenizeContext currentTokenContext;
+    private TokenizeContext currentTokenContext;
     private final StringBuilder stringBuffer = new StringBuilder();
 
     MdastCompiler(MdastOptions options) {
@@ -188,12 +186,12 @@ final class MdastCompiler implements MdastContext {
     }
 
     MdAstRoot compile(List<Tokenizer.Event> events) {
-        tree = new MdAstRoot();
+        MdAstRoot tree = new MdAstRoot();
         stack = new ArrayList<>();
         stack.add(tree);
         tokenStack = new ArrayList<>();
-        listStack = new ArrayList<>();
-        index = -1;
+        List<Integer> listStack = new ArrayList<>();
+        int index = -1;
 
         while (++index < events.size()) {
             var event = events.get(index);
@@ -441,6 +439,22 @@ final class MdastCompiler implements MdastContext {
         this.stack.add(new Fragment());
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> @Nullable T get(MdastContextProperty<T> property) {
+        return (T) extensionData.get(property);
+    }
+
+    @Override
+    public <T> void set(MdastContextProperty<T> property, T value) {
+        extensionData.put(property, value);
+    }
+
+    @Override
+    public void remove(MdastContextProperty<?> property) {
+        extensionData.remove(property);
+    }
+
     @Override
     public <N extends MdAstNode> N enter(N node, Token token, OnEnterError errorHandler) {
         var parent = (MdAstParent<?>) this.stack.get(this.stack.size() - 1);
@@ -508,6 +522,11 @@ final class MdastCompiler implements MdastContext {
     public String sliceSerialize(Token token) {
         Assert.check(currentTokenContext != null, "missing current token context");
         return currentTokenContext.sliceSerialize(token);
+    }
+
+    @Override
+    public MdastExtension getExtension() {
+        return extension;
     }
 
     public String resume() {

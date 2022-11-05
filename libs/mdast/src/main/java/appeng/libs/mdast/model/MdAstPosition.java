@@ -13,7 +13,23 @@ public class MdAstPosition implements UnistPosition {
     public UnistPoint end;
     int @Nullable [] indent; // number >= 1
 
-    public static String stringify(Point start, Point end) {
+    public MdAstPosition() {
+    }
+
+    public MdAstPosition(UnistPoint start, UnistPoint end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    public static String stringify(UnistPoint point) {
+        return point.line() + ":" + point.column();
+    }
+
+    public static String stringify(UnistPosition position) {
+        return stringify(position.start(), position.end());
+    }
+
+    public static String stringify(UnistPoint start, UnistPoint end) {
         var result = new StringBuilder();
         if (start != null ) {
             result.append(start.line()).append(":").append(start.column());

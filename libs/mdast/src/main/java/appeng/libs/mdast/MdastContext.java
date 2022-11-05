@@ -82,4 +82,6 @@ public interface MdastContext {
      * Remove data from the extension data.
      */
     void remove(MdastContextProperty<?> property);
+
+    MdastExtension getExtension();
 }

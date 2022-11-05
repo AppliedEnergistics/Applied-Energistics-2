@@ -4,7 +4,7 @@ import appeng.libs.mdast.model.MdAstNode;
 import org.jetbrains.annotations.Nullable;
 
 public class MdxJsxAttribute extends MdAstNode {
-    public String name;
+    public String name = "";
     @Nullable
     public Object value;
 
