@@ -33,6 +33,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -512,8 +513,9 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         final BlockEntity host = this.host.getBlockEntity();
         final Level hostWorld = host.getLevel();
 
-        if (((ICustomNameObject) this.host).hasCustomInventoryName()) {
-            return ((ICustomNameObject) this.host).getCustomInventoryName();
+        // Prefer own custom name
+        if (this.host instanceof ICustomNameObject customNameObject && customNameObject.hasCustomInventoryName()) {
+            return customNameObject.getCustomInventoryName();
         }
 
         for (var direction : this.host.getTargets()) {
@@ -528,6 +530,10 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 if (interfaceHost.getLogic().sameGrid(this.mainNode.getGrid())) {
                     continue;
                 }
+            }
+
+            if (directedBlockEntity instanceof Nameable nameable && nameable.hasCustomName()) {
+                return nameable.getCustomName();
             }
 
             var craftingMachine = ICraftingMachine.of(directedBlockEntity, direction.getOpposite());
