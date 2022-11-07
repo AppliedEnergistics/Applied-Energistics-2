@@ -265,15 +265,17 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
         @Override
         public int fill(FluidStack resource, FluidAction action) {
+            int amount = resource.isEmpty() ? 0 : Math.min(resource.getAmount(), AEFluidKey.AMOUNT_BUCKET);
+
             if (action == FluidAction.EXECUTE) {
                 var what = AEFluidKey.of(resource);
                 if (what != null) {
                     var transferFactor = (double) what.getAmountPerOperation();
-                    CondenserBlockEntity.this.addPower(resource.getAmount() / transferFactor);
+                    CondenserBlockEntity.this.addPower(amount / transferFactor);
                 }
             }
 
-            return resource.isEmpty() ? 0 : resource.getAmount();
+            return amount;
         }
 
         @Override
