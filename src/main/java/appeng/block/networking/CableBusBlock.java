@@ -416,14 +416,38 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         return true;
     }
 
+    /**
+     * WTF does this do you ask?
+     * <p>
+     * Well, this is needed to properly handle adjacent facades, as we need to know on which side the source facade is.
+     * The cases to handle are:
+     * <ul>
+     * <li>Not rendering a facade: then we just look at the facade on the requested side.</li>
+     * <li>Rendering a facade and the requested side is the opposite: then this is likely an interior quad of the
+     * facade, so we actually check the rendering side instead of the requested side.</li>
+     * <li>Rendering a facade in other cases: check requested side first, otherwise check rendering side since we might
+     * also connect to a facade in another direction due to the 2 extra pixels on the side of a facade.</li>
+     * </ul>
+     */
+    public static ThreadLocal<Direction> RENDERING_FACADE_DIRECTION = new ThreadLocal<>();
+
     @Override
     public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
             @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         if (((RenderAttachedBlockView) renderView)
                 .getBlockEntityRenderAttachment(pos) instanceof CableBusRenderState cableBusRenderState) {
-            var facadeState = cableBusRenderState.getFacades().get(side);
-            if (facadeState != null) {
-                return facadeState.getSourceBlock();
+            var renderingFacadeDir = RENDERING_FACADE_DIRECTION.get();
+            var facades = cableBusRenderState.getFacades();
+
+            if (side.getOpposite() != renderingFacadeDir) {
+                var facadeState = facades.get(side);
+                if (facadeState != null) {
+                    return facadeState.getSourceBlock();
+                }
+            }
+
+            if (renderingFacadeDir != null && facades.containsKey(renderingFacadeDir)) {
+                return facades.get(renderingFacadeDir).getSourceBlock();
             }
         }
         return state;

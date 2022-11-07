@@ -131,6 +131,10 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
 
         // Render the glass side
         for (Direction side : Direction.values()) {
+            if (glassState.hasAdjacentGlassBlock(side)) { // Skip sides that are connected to another glass block
+                continue;
+            }
+
             final List<Vector3f> corners = RenderHelper.getFaceCorners(side);
             this.emitQuad(emitter, side, corners, glassTexture, u, v);
 
@@ -284,7 +288,12 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
         for (Direction facing : Direction.values()) {
             masks[facing.get3DDataValue()] = makeBitmask(level, state, pos, facing);
         }
-        return new GlassState(pos.getX(), pos.getY(), pos.getZ(), masks);
+        boolean[] adjacentGlassBlocks = new boolean[6];
+        for (Direction facing : Direction.values()) {
+            adjacentGlassBlocks[facing.get3DDataValue()] = isGlassBlock(level, state, pos, facing.getOpposite(),
+                    facing);
+        }
+        return new GlassState(pos.getX(), pos.getY(), pos.getZ(), masks, adjacentGlassBlocks);
     }
 
     /**

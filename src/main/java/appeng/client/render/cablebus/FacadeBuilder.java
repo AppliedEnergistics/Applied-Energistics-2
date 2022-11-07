@@ -55,6 +55,7 @@ import net.minecraft.world.phys.AABB;
 
 import appeng.api.parts.PartHelper;
 import appeng.api.util.AEAxisAlignedBB;
+import appeng.block.networking.CableBusBlock;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
@@ -181,7 +182,6 @@ public class FacadeBuilder {
         Map<Direction, FacadeRenderState> facadeStates = renderState.getFacades();
         List<AABB> partBoxes = renderState.getBoundingBoxes();
         Set<Direction> sidesWithParts = renderState.getAttachments().keySet();
-        var parentWorld = level;
         BlockPos pos = renderState.getPos();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         boolean thinFacades = isUseThinFacades(partBoxes);
@@ -259,7 +259,7 @@ public class FacadeBuilder {
 
             AEAxisAlignedBB cutOutBox = getCutOutBox(facadeBox, partBoxes);
             List<AABB> holeStrips = getBoxes(facadeBox, cutOutBox, side.getAxis());
-            var facadeAccess = new FacadeBlockAccess(parentWorld, pos, side, blockState);
+            var facadeAccess = new FacadeBlockAccess(level, pos, side, blockState);
 
             var dispatcher = Minecraft.getInstance().getBlockRenderer();
             var model = (FabricBakedModel) dispatcher.getBlockModel(blockState);
@@ -274,54 +274,71 @@ public class FacadeBuilder {
 
             QuadReInterpolator interpolator = new QuadReInterpolator();
 
-            context.pushTransform(quad -> {
-                Direction cullFace = quad.cullFace();
-                QuadTinter quadTinter = null;
+            CableBusBlock.RENDERING_FACADE_DIRECTION.set(side);
+            try {
+                context.pushTransform(quad -> {
+                    Direction cullFace = quad.cullFace();
+                    QuadTinter quadTinter = null;
 
-                // Prebake the color tint into the quad
-                if (quad.colorIndex() != -1) {
-                    quadTinter = new QuadTinter(blockColors.getColor(blockState, facadeAccess, pos, quad.colorIndex()));
-                }
+                    // Ignore quad if it's not supposed to connect to the adjacent block.
+                    if (cullFace != null) {
+                        BlockPos adjPos = pos.relative(cullFace);
+                        BlockState adjState = level.getBlockState(adjPos).getAppearance(level, adjPos,
+                                cullFace.getOpposite(), blockState, pos);
 
-                for (AABB box : holeStrips) {
-                    quad.copyTo(emitter);
-                    // Keep the cull-face for faces that are flush with the outer block-face on the
-                    // side the facade is attached to, but clear it for anything that faces inwards
-                    emitter.cullFace(cullFace == side ? side : null);
-                    // manually set nominal face as the transformers below assume it's not null
-                    emitter.nominalFace(quad.lightFace());
-                    interpolator.setInputQuad(emitter);
-
-                    QuadClamper clamper = new QuadClamper(box);
-                    if (!clamper.transform(emitter)) {
-                        continue;
+                        if (blockState.skipRendering(adjState, cullFace)) {
+                            return false;
+                        }
                     }
 
-                    // Strips faces if they match a mask.
-                    if (!faceStripper.transform(emitter)) {
-                        continue;
+                    // Prebake the color tint into the quad
+                    if (quad.colorIndex() != -1) {
+                        quadTinter = new QuadTinter(
+                                blockColors.getColor(blockState, facadeAccess, pos, quad.colorIndex()));
                     }
 
-                    // Kicks the edge inner corners in, solves Z fighting
-                    if (!kicker.transform(emitter)) {
-                        continue;
+                    for (AABB box : holeStrips) {
+                        quad.copyTo(emitter);
+                        // Keep the cull-face for faces that are flush with the outer block-face on the
+                        // side the facade is attached to, but clear it for anything that faces inwards
+                        emitter.cullFace(cullFace == side ? side : null);
+                        // manually set nominal face as the transformers below assume it's not null
+                        emitter.nominalFace(quad.lightFace());
+                        interpolator.setInputQuad(emitter);
+
+                        QuadClamper clamper = new QuadClamper(box);
+                        if (!clamper.transform(emitter)) {
+                            continue;
+                        }
+
+                        // Strips faces if they match a mask.
+                        if (!faceStripper.transform(emitter)) {
+                            continue;
+                        }
+
+                        // Kicks the edge inner corners in, solves Z fighting
+                        if (!kicker.transform(emitter)) {
+                            continue;
+                        }
+
+                        interpolator.transform(emitter);
+
+                        // Tints the quad if we need it to. Disabled by default.
+                        if (quadTinter != null) {
+                            quadTinter.transform(emitter);
+                        }
+
+                        emitter.emit();
                     }
 
-                    interpolator.transform(emitter);
-
-                    // Tints the quad if we need it to. Disabled by default.
-                    if (quadTinter != null) {
-                        quadTinter.transform(emitter);
-                    }
-
-                    emitter.emit();
-                }
-
-                // Cancel rendering, we only render to inspect the quads, but we don't want to output them.
-                return false;
-            });
-            model.emitBlockQuads(parentWorld, blockState, pos, rand, context);
-            context.popTransform();
+                    // Cancel rendering, we only render to inspect the quads, but we don't want to output them.
+                    return false;
+                });
+                model.emitBlockQuads(level, blockState, pos, rand, context);
+                context.popTransform();
+            } finally {
+                CableBusBlock.RENDERING_FACADE_DIRECTION.set(null);
+            }
         }
 
         return meshBuilder.build();

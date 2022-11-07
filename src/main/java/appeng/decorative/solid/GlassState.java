@@ -31,12 +31,14 @@ public final class GlassState {
     private final int z;
 
     private final int[] masks;
+    private final boolean[] adjacentGlassBlocks;
 
-    public GlassState(int x, int y, int z, int[] masks) {
+    public GlassState(int x, int y, int z, int[] masks, boolean[] adjacentGlassBlocks) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.masks = masks.clone();
+        this.adjacentGlassBlocks = adjacentGlassBlocks.clone();
     }
 
     public int getX() {
@@ -55,4 +57,7 @@ public final class GlassState {
         return masks[side.get3DDataValue()];
     }
 
+    public boolean hasAdjacentGlassBlock(Direction side) {
+        return adjacentGlassBlocks[side.get3DDataValue()];
+    }
 }
