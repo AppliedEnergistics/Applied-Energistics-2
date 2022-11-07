@@ -172,4 +172,38 @@ class AEItemKeyTest {
         stack.setDamageValue(1);
         assertTrue(AEItemKey.of(stack).isDamaged());
     }
+
+    /**
+     * Regression test for {@link FuzzySearch#COMPARATOR} wrongly using AEKey identity comparison as a last resort.
+     */
+    @Test
+    void testDifferentInstances() {
+        int testCount = 100;
+        while (testCount-- > 0) {
+
+            final int COUNT = 5;
+            AEKey[] keys = new AEKey[COUNT];
+            AEKey[] keyCopies = new AEKey[COUNT];
+
+            for (int i = 0; i < COUNT; i++) {
+                var stack = new ItemStack(Items.DIAMOND_SWORD);
+                stack.enchant(Enchantments.SHARPNESS, i + 1);
+                keys[i] = AEItemKey.of(stack);
+                keyCopies[i] = AEItemKey.of(stack);
+
+                // If we ever intern AEKeys, remember to update this test...
+                assertThat(keys[i]).isNotSameAs(keyCopies[i]);
+            }
+
+            var counter = new KeyCounter();
+            for (int i = 0; i < COUNT; i++) {
+                counter.set(keys[i], 1);
+            }
+
+            for (int i = 0; i < COUNT; i++) {
+                assertThat(counter.get(keyCopies[i])).isEqualTo(1);
+            }
+
+        }
+    }
 }
