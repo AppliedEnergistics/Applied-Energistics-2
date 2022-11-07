@@ -313,7 +313,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     @Override
     public boolean removePart(IPart part) {
         if (getPart(null) == part) {
-            removePart(null);
+            removePartFromSide(null);
             return true;
         }
         for (var side : Direction.values()) {
