@@ -20,6 +20,8 @@ package appeng.client.gui.me.common;
 
 import java.util.Comparator;
 
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.stacks.AEKey;
@@ -32,7 +34,11 @@ final class KeySorters {
     // FIXME: Calling .getString() to compare two untranslated strings is a problem, we need to investigate how to do
     // this better
     public static final Comparator<AEKey> NAME_ASC = Comparator.comparing(
-            is -> is.getDisplayName().getString(),
+            key -> {
+                final ItemStack stack = key.wrapForDisplayOrFilter();
+                return stack.getDisplayName().getString()
+                        + (stack.getTag() != null ? stack.getTag().getAsString() : null);
+            },
             String::compareToIgnoreCase);
 
     public static final Comparator<AEKey> NAME_DESC = NAME_ASC.reversed();

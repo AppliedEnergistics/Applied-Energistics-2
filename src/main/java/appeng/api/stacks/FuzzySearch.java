@@ -6,6 +6,7 @@ import java.util.SortedMap;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
@@ -100,7 +101,18 @@ final class FuzzySearch {
                 return fuzzyOrder;
             }
 
-            // As a final tie breaker, order by the object identity of the item stack
+            // Compare ItemStack Tags
+            final CompoundTag stackATag = stackA.wrapForDisplayOrFilter().getTag();
+            final CompoundTag stackBTag = stackB.wrapForDisplayOrFilter().getTag();
+            if (stackATag != null && stackBTag != null) {
+                return stackATag.getAsString().compareTo(stackBTag.getAsString());
+            } else if (stackATag != null) {
+                return -1;
+            } else if (stackBTag != null) {
+                return 1;
+            }
+
+            // As a final tiebreaker, order by the object identity of the item stack
             // While this will order seemingly at random, we only need the order of
             // damage values to be predictable, while still having to satisfy the
             // complete order requirements of the sorted map
