@@ -117,6 +117,8 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
 
     @Override
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
+        super.exportSettings(mode, output);
+
         if (mode == SettingsFrom.MEMORY_CARD) {
             logic.exportSettings(output);
         }
@@ -124,6 +126,8 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
 
     @Override
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
+        super.importSettings(mode, input, player);
+
         if (mode == SettingsFrom.MEMORY_CARD) {
             logic.importSettings(input, player);
         }
