@@ -119,11 +119,11 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 .save(consumer, name + "_press");
     }
 
-    private InscriberRecipeBuilder inscribe(ItemLike middle, ItemStack output) {
+    public static InscriberRecipeBuilder inscribe(ItemLike middle, ItemStack output) {
         return new InscriberRecipeBuilder(Ingredient.of(middle), output);
     }
 
-    private InscriberRecipeBuilder inscribe(Ingredient middle, ItemStack output) {
+    public static InscriberRecipeBuilder inscribe(Ingredient middle, ItemStack output) {
         return new InscriberRecipeBuilder(middle, output);
     }
 
