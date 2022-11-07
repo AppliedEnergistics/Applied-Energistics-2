@@ -100,11 +100,12 @@ final class FuzzySearch {
                 return fuzzyOrder;
             }
 
-            // As a final tie breaker, order by the object identity of the item stack
+            // As a final tie breaker, order by the hash code of the key
             // While this will order seemingly at random, we only need the order of
             // damage values to be predictable, while still having to satisfy the
             // complete order requirements of the sorted map
-            return Long.compare(System.identityHashCode(stackA), System.identityHashCode(stackB));
+            // (We hope there won't be hash collisions... the probability is very low anyway)
+            return Long.compare(stackA.hashCode(), stackB.hashCode());
         }
     }
 
