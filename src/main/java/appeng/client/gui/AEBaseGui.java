@@ -39,6 +39,7 @@ import appeng.core.sync.packets.PacketSwapSlots;
 import appeng.fluids.client.render.FluidStackSizeRenderer;
 import appeng.fluids.container.slots.IMEFluidSlot;
 import appeng.helpers.InventoryAction;
+import appeng.items.misc.ItemEncodedPattern;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import com.google.common.base.Joiner;
@@ -897,7 +898,37 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                     }
                 }
                 if (s instanceof SlotPlayerInv || s instanceof SlotPlayerHotBar) {
-                    super.drawSlot(s);
+                    if (!is.isEmpty() && is.getItem() instanceof ItemEncodedPattern) {
+                        final ItemEncodedPattern iep = (ItemEncodedPattern) is.getItem();
+                        final ItemStack out = iep.getOutput(is);
+                        if (!out.isEmpty()) {
+                            AppEngSlot appEngSlot = ((AppEngSlot) s);
+                            appEngSlot.setDisplay(true);
+                            appEngSlot.setReturnAsSingleStack(true);
+
+                            this.zLevel = 100.0F;
+                            this.itemRender.zLevel = 100.0F;
+
+                            if (!this.isPowered()) {
+                                drawRect(s.xPos, s.yPos, 16 + s.xPos, 16 + s.yPos, 0x66111111);
+                            }
+
+                            this.zLevel = 0.0F;
+                            this.itemRender.zLevel = 0.0F;
+
+                            // Annoying but easier than trying to splice into render item
+                            super.drawSlot(s);
+
+                            if (isShiftKeyDown()) {
+                                this.stackSizeRenderer.renderStackSize(this.fontRenderer, AEItemStack.fromItemStack(out), s.xPos, s.yPos);
+                            } else {
+                                super.drawSlot(s);
+                            }
+                            return;
+                        }
+                    } else {
+                        super.drawSlot(s);
+                    }
                 } else if (s instanceof AppEngSlot) {
                     AppEngSlot appEngSlot = ((AppEngSlot) s);
                     appEngSlot.setDisplay(true);
