@@ -627,7 +627,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     if (result.isEmpty()) {
                         whatToSend = ItemStack.EMPTY;
                     } else {
-                        whatToSend.setCount(whatToSend.getCount() - (whatToSend.getCount() - result.getCount()));
+                        whatToSend.setCount(result.getCount());
+                        whatToSend.setTagCompound(result.getTagCompound());
                     }
 
                     if (whatToSend.isEmpty()) {
@@ -681,6 +682,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                                     final IAEItemStack result = inv.injectItems(AEItemStack.fromItemStack(whatToSend), Actionable.MODULATE, this.mySource);
                                     if (result != null) {
                                         whatToSend.setCount((int) result.getStackSize());
+                                        whatToSend.setTagCompound(result.getDefinition().getTagCompound());
                                     } else {
                                         i.remove();
                                     }
@@ -709,6 +711,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 final ItemStack result = ad.addItems(whatToSend);
                 if (!result.isEmpty()) {
                     whatToSend.setCount(result.getCount());
+                    whatToSend.setTagCompound(result.getTagCompound());
                 } else {
                     i.remove();
                 }
