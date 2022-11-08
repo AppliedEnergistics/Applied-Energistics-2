@@ -4,6 +4,7 @@ import appeng.libs.mdast.MdastContext;
 import appeng.libs.mdast.MdastContextProperty;
 import appeng.libs.mdast.MdastExtension;
 import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
+import appeng.libs.mdast.mdx.model.MdxJsxAttributeNode;
 import appeng.libs.mdast.mdx.model.MdxJsxAttributeValueExpression;
 import appeng.libs.mdast.mdx.model.MdxJsxExpressionAttribute;
 import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
@@ -14,14 +15,11 @@ import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.ParseException;
 import appeng.libs.micromark.Point;
 import appeng.libs.micromark.Token;
-import appeng.libs.unist.UnistPosition;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Stack;
 
 public final class MdxMdastExtension {
     private static final MdastContextProperty<List<Tag>> TAG_STACK = new MdastContextProperty<>();
@@ -95,99 +93,99 @@ public final class MdxMdastExtension {
     }
 
     private static void enterMdxJsxTagClosingMarker(MdastContext context, Token token) {
-        var stack =  context.get(TAG_STACK);
+        var stack = getStack(context);
 
         if (stack.isEmpty()) {
             throw new ParseException(
                     "Unexpected closing slash `/` in tag, expected an open tag first",
                     token.start, token.end,
                     "mdast-util-mdx-jsx:unexpected-closing-slash"
-      );
+            );
         }
     }
 
     private static void enterMdxJsxTagAnyAttribute(MdastContext context, Token token) {
-        var tag = context.get(TAG);
+        var tag = getTag(context);
 
         if (tag.close) {
             throw new ParseException(
                     "Unexpected attribute in closing tag, expected the end of the tag",
                     token.start, token.end,
                     "mdast-util-mdx-jsx:unexpected-attribute"
-      );
+            );
         }
     }
 
     private static void enterMdxJsxTagSelfClosingMarker(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
 
         if (tag.close) {
             throw new ParseException(
                     "Unexpected self-closing slash `/` in closing tag, expected the end of the tag",
                     token.start, token.end,
                     "mdast-util-mdx-jsx:unexpected-self-closing-slash"
-      );
+            );
         }
     }
 
     private static void exitMdxJsxTagClosingMarker(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
         tag.close = true;
     }
 
     private static void exitMdxJsxTagNamePrimary(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
         tag.name = context.sliceSerialize(token);
     }
 
     private static void exitMdxJsxTagNameMember(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
         tag.name += '.' + context.sliceSerialize(token);
     }
 
     private static void exitMdxJsxTagNameLocal(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
         tag.name += ':' + context.sliceSerialize(token);
     }
 
     private static void enterMdxJsxTagAttribute(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
         enterMdxJsxTagAnyAttribute(context, token);
         tag.attributes.add(new MdxJsxAttribute());
     }
 
     private static void enterMdxJsxTagExpressionAttribute(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
         enterMdxJsxTagAnyAttribute(context, token);
         tag.attributes.add(new MdxJsxExpressionAttribute());
         context.buffer();
     }
 
     private static void exitMdxJsxTagExpressionAttribute(MdastContext context, Token token) {
-        var tag = context.get(TAG);
-        var tail = (MdxJsxExpressionAttribute)tag.attributes.get(tag.attributes.size() - 1);
+        var tag = getTag(context);
+        var tail = (MdxJsxExpressionAttribute) tag.attributes.get(tag.attributes.size() - 1);
         tail.value = context.resume();
     }
 
     private static void exitMdxJsxTagAttributeNamePrimary(MdastContext context, Token token) {
-        var tag = context.get(TAG);
+        var tag = getTag(context);
         var node = (MdxJsxAttribute) tag.attributes.get(tag.attributes.size() - 1);
         node.name = context.sliceSerialize(token);
     }
 
     private static void exitMdxJsxTagAttributeNameLocal(MdastContext context, Token token) {
-        var tag = context.get(TAG);
+        var tag = getTag(context);
         var node = (MdxJsxAttribute) tag.attributes.get(tag.attributes.size() - 1);
         node.name += ':' + context.sliceSerialize(token);
     }
 
     private static void exitMdxJsxTagAttributeValueLiteral(MdastContext context, Token token) {
-            var tag = context.get(TAG);
-            var value = ParseEntities.parseEntities(context.resume());
+        var tag = getTag(context);
+        var value = ParseEntities.parseEntities(context.resume());
 
         var lastAttr = tag.attributes.get(tag.attributes.size() - 1);
         if (lastAttr instanceof MdxJsxAttribute attribute) {
-            attribute.value = value;
+            attribute.setValue(value);
         } else if (lastAttr instanceof MdxJsxExpressionAttribute attribute) {
             attribute.value = value;
         } else {
@@ -196,23 +194,21 @@ public final class MdxMdastExtension {
     }
 
     private static void exitMdxJsxTagAttributeValueExpression(MdastContext context, Token token) {
-    var tag = context.get(TAG);
-    var tail = (MdxJsxAttribute) tag.attributes.get(tag.attributes.size() - 1);
-    var node = new MdxJsxAttributeValueExpression();
-        node.value = context.resume();
-        tail.value = node;
+        var tag = getTag(context);
+        var tail = (MdxJsxAttribute) tag.attributes.get(tag.attributes.size() - 1);
+        tail.setExpression(context.resume());
     }
 
     private static void exitMdxJsxTagSelfClosingMarker(MdastContext context, Token token) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
 
         tag.selfClosing = true;
     }
 
     private static void exitMdxJsxTag(MdastContext context, Token token) {
-    var tag = context.get(TAG);
-    var stack =  (context.get(TAG_STACK));
-    var tail = stack.get(stack.size() - 1);
+        var tag = getTag(context);
+        var stack = getStack(context);
+        var tail = stack.isEmpty() ? null : stack.get(stack.size() - 1);
 
         if (tag.close && !Objects.equals(tail.name, tag.name)) {
             throw new ParseException(
@@ -225,7 +221,7 @@ public final class MdxMdastExtension {
                             ')',
                     token.start, token.end,
                     "mdast-util-mdx-jsx:end-tag-mismatch"
-      );
+            );
         }
 
         // End of a tag, so drop the buffer.
@@ -256,7 +252,7 @@ public final class MdxMdastExtension {
     }
 
     private static void onErrorRightIsTag(MdastContext context, @Nullable Token closing, Token open) {
-        var tag = context.get(TAG);
+        var tag = getTag(context);
         var place = closing != null ? " before the end of `" + closing.type + '`' : "";
         MdAstPosition position = null;
         if (closing != null) {
@@ -268,15 +264,15 @@ public final class MdxMdastExtension {
                         serializeAbbreviatedTag(tag) +
                         "` (" +
                         MdAstPosition.stringify(open.start, open.end) +
-                ')' +
-                place,
+                        ')' +
+                        place,
                 position,
                 "mdast-util-mdx-jsx:end-tag-mismatch"
-            );
+        );
     }
 
     private static void onErrorLeftIsTag(MdastContext context, @Nullable Token a, Token b) {
-    var tag = context.get(TAG);
+        var tag = getTag(context);
         throw new ParseException(
                 "Expected the closing tag `" +
                         serializeAbbreviatedTag(tag) +
@@ -289,9 +285,9 @@ public final class MdxMdastExtension {
                         "` (" +
                         MdAstPosition.stringify(b.start) +
                         ')',
-                         a.start, a.end,
+                a != null ? a.start : null, a != null ? a.end : null,
                 "mdast-util-mdx-jsx:end-tag-mismatch"
-    );
+        );
     }
 
     /**
@@ -305,8 +301,7 @@ public final class MdxMdastExtension {
     private static class Tag {
         @Nullable
         String name;
-        // Union type MdxJsxAttribute | MdxJsxExpressionAttribute
-        List<Object> attributes = new ArrayList<>();
+        List<MdxJsxAttributeNode> attributes = new ArrayList<>();
         boolean close;
         boolean selfClosing;
         Point start;
@@ -320,5 +315,13 @@ public final class MdxMdastExtension {
         public MdAstPosition position() {
             return new MdAstPosition(start, end);
         }
+    }
+
+    private static List<Tag> getStack(MdastContext context) {
+        return Objects.requireNonNull(context.get(TAG_STACK), "stack is missing from context");
+    }
+
+    private static Tag getTag(MdastContext context) {
+        return Objects.requireNonNull(context.get(TAG), "tag is missing from context");
     }
 }

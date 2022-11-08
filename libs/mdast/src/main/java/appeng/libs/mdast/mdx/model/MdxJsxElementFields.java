@@ -8,6 +8,5 @@ public interface MdxJsxElementFields {
     @Nullable
     String name();
 
-    // Union type: MdxJsxAttribute | MdxJsxExpressionAttribute
-    List<Object> attributes();
+    List<MdxJsxAttributeNode> attributes();
 }

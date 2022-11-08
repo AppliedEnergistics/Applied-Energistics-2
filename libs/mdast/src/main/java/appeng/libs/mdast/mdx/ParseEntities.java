@@ -1,5 +1,6 @@
 package appeng.libs.mdast.mdx;
 
+import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.NamedCharacterEntities;
 
 import java.util.HashMap;
@@ -16,25 +17,18 @@ final class ParseEntities {
      * Parse HTML character references.
      */
     public static String parseEntities(String value) {
-        var queue = new StringBuilder();
         var result = new StringBuilder();
-        var index = 0;
-
-        // Cache the current point.
-        int character = -1;
 
         // Ensure the algorithm walks over the first character (inclusive).
-        index--;
+        for (var index = 0; index < value.length(); ++index) {
+            var character = value.charAt(index);
 
-        while (++index <= value.length()) {
-            character = value.charAt(index);
-
-            if (character != '&') {
-                queue.append((char) character);
+            if (character != '&' || index + 1 >= value.length()) {
+                result.append(character);
                 continue;
             }
 
-            int following = index + 1 < value.length() ? value.charAt(index + 1) : -1;
+            int following = value.charAt(index + 1);
 
             // The behavior depends on the identity of the next character.
             if (
@@ -43,13 +37,12 @@ final class ParseEntities {
                             following == '\f' ||
                             following == ' ' ||
                             following == '&' ||
-                            following == '<' ||
-                            following == -1
+                            following == '<'
             ) {
                 // Not a character reference.
                 // No characters are consumed, and nothing is returned.
                 // This is not an error, either.
-                queue.append((char) character);
+                result.append(character);
                 continue;
             }
 
@@ -78,16 +71,13 @@ final class ParseEntities {
                 type = CharRefType.named;
             }
 
-            String characterReferenceCharacters = "";
-            String characterReference = "";
-            String characters = "";
             end--;
 
             // Each type of character reference accepts different characters.
             // This test is used to detect whether a reference has ended (as the semicolon
             // is not strictly needed).
             var charBuffer = new StringBuilder();
-            while (++end <= value.length()) {
+            while (++end < value.length()) {
                 following = value.charAt(end);
 
                 if (!type.test((char) following)) {
@@ -96,96 +86,56 @@ final class ParseEntities {
 
                 charBuffer.append((char) following);
             }
-            characters = charBuffer.toString();
 
             var terminated = end < value.length() && value.charAt(end) == ';';
+
+            boolean consumeRef = terminated;
 
             if (terminated) {
                 end++;
 
                 if (type == CharRefType.named) {
-                    var namedReference = NamedCharacterEntities.decodeNamedCharacterReference(characters);
+                    var namedReference = NamedCharacterEntities.decodeNamedCharacterReference(charBuffer.toString());
                     if (namedReference != null) {
-                        characterReferenceCharacters = characters;
-                        characterReference = namedReference;
+                        result.append(namedReference);
+                    } else {
+                        consumeRef = false; // Unknown named references stay untouched
                     }
-                }
-            }
-
-            var reference = "";
-
-            if (!terminated) {
-                // Empty.
-            } else if (characters.isEmpty()) {
-                // An empty (possible) reference is valid, unless it’s numeric (thus an
-                // ampersand followed by an octothorp).
-            } else if (type == CharRefType.named) {
-                // An ampersand followed by anything unknown, and not terminated, is
-                // invalid.
-                if (terminated && characterReference.isEmpty()) {
                 } else {
-                    // If there’s something after an named reference which is not known,
-                    // cap the reference.
-                    if (!characterReferenceCharacters.equals(characters)) {
-                        end = begin + characterReferenceCharacters.length();
-                        terminated = false;
+                    // When terminated and numerical, parse as either hexadecimal or
+                    // decimal.
+                    var referenceCode = Integer.parseInt(
+                            charBuffer,
+                            0,
+                            charBuffer.length(),
+                            type == CharRefType.hexadecimal ? 16 : 10
+                    );
+
+                    // Emit a warning when the parsed number is prohibited, and replace with
+                    // replacement character.
+                    if (prohibited(referenceCode)) {
+                        result.append((char) 65533 /* `�` */);
+                    } else if (characterReferenceInvalid.containsKey(referenceCode)) {
+                        // Emit a warning when the parsed number is disallowed, and replace by
+                        // an alternative.
+                        result.append(characterReferenceInvalid.get(referenceCode));
+                    } else {
+                        result.appendCodePoint(referenceCode);
                     }
-                }
-
-                reference = characterReference;
-            } else {
-                // When terminated and numerical, parse as either hexadecimal or
-                // decimal.
-                var referenceCode = Integer.parseInt(
-                        characters,
-                        0,
-                        characters.length(),
-                        type == CharRefType.hexadecimal ? 16 : 10
-                );
-
-                // Emit a warning when the parsed number is prohibited, and replace with
-                // replacement character.
-                if (prohibited(referenceCode)) {
-                    reference = String.valueOf((char) 65533 /* `�` */);
-                } else if (characterReferenceInvalid.containsKey(referenceCode)) {
-                    // Emit a warning when the parsed number is disallowed, and replace by
-                    // an alternative.
-                    reference = characterReferenceInvalid.get(referenceCode);
-                } else {
-                    // Parse the number.
-                    var output = "";
-
-                    // Serialize the number.
-                    if (referenceCode > 0xffff) {
-                        referenceCode -= 0x10000;
-                        output += String.valueOf((char) (referenceCode >>> (10 & 0x3ff)) | 0xd800);
-                        referenceCode = 0xdc00 | (referenceCode & 0x3ff);
-                    }
-
-                    reference = output + (char) referenceCode;
                 }
             }
 
             // Found it!
             // First eat the queued characters as normal text, then eat a reference.
-            if (!reference.isEmpty()) {
-                result.append(queue);
-                queue.setLength(0);
-
-                index = end - 1;
-                result.append(reference);
-            } else {
+            if (!consumeRef) {
                 // If we could not find a reference, queue the checked characters (as
                 // normal characters), and move the pointer to their end.
                 // This is possible because we can be certain neither newlines nor
                 // ampersands are included.
-                characters = value.substring(start - 1, end);
-                queue.append(characters);
-                index = end - 1;
+                result.append(value, start - 1, end);
             }
+            index = end - 1;
         }
-
-        result.append(queue);
 
         // Return the reduced nodes.
         return result.toString();
@@ -202,19 +152,19 @@ final class ParseEntities {
         named {
             @Override
             boolean test(char ch) {
-                return false;
+                return CharUtil.asciiAlphanumeric(ch);
             }
         },
         decimal {
             @Override
             boolean test(char ch) {
-                return false;
+                return CharUtil.asciiDigit(ch);
             }
         },
         hexadecimal {
             @Override
             boolean test(char ch) {
-                return false;
+                return CharUtil.asciiHexDigit(ch);
             }
         };
 

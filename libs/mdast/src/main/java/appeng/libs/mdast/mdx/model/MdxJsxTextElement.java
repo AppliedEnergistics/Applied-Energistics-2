@@ -3,20 +3,22 @@ package appeng.libs.mdast.mdx.model;
 import appeng.libs.mdast.model.MdAstParent;
 import appeng.libs.mdast.model.MdAstPhrasingContent;
 import appeng.libs.mdast.model.MdAstStaticPhrasingContent;
+import com.google.gson.stream.JsonWriter;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MdxJsxTextElement extends MdAstParent<MdAstPhrasingContent> implements MdxJsxElementFields, MdAstStaticPhrasingContent {
     private String name;
-    private List<Object> attributes;
+    private List<MdxJsxAttributeNode> attributes;
 
     public MdxJsxTextElement() {
         this("", new ArrayList<>());
     }
 
-    public MdxJsxTextElement(String name, List<Object> attributes) {
+    public MdxJsxTextElement(String name, List<MdxJsxAttributeNode> attributes) {
         super("mdxJsxTextElement");
         this.name = name;
         this.attributes = attributes;
@@ -28,12 +30,24 @@ public class MdxJsxTextElement extends MdAstParent<MdAstPhrasingContent> impleme
     }
 
     @Override
-    public List<Object> attributes() {
+    public List<MdxJsxAttributeNode> attributes() {
         return attributes;
     }
 
     @Override
     protected Class<MdAstPhrasingContent> childClass() {
         return MdAstPhrasingContent.class;
+    }
+
+    @Override
+    protected void writeJson(JsonWriter writer) throws IOException {
+        super.writeJson(writer);
+        writer.name("name").value(name);
+        writer.name("attributes");
+        writer.beginArray();
+        for (var attribute : attributes) {
+            attribute.toJson(writer);
+        }
+        writer.endArray();
     }
 }
