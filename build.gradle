@@ -75,9 +75,6 @@ repositories {
 }
 
 dependencies {
-    // TODO: remove before merge, this will be in fabric soon
-    modImplementation "net.fabricmc.fabric-api:fabric-block-api-v1:1.0.0+a2d00f8790"
-
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
