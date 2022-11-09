@@ -44,6 +44,7 @@ import appeng.tile.networking.TileCableBusTESR;
 import appeng.util.Platform;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -411,6 +412,30 @@ public class BlockCableBus extends AEBaseTileBlock implements IAEFacade {
             }
         }
         return world.getBlockState(pos);
+    }
+
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing side) {
+        IFacadeContainer container = this.fc(world, pos);
+        if (container != null) {
+            IFacadePart facade = container.getFacade(AEPartLocation.fromFacing(side));
+            if (facade != null) {
+                return BlockFaceShape.SOLID;
+            }
+        }
+        return BlockFaceShape.UNDEFINED;
+    }
+
+    @Override
+    public void onEntityWalk(World world, BlockPos pos, Entity entityIn) {
+        IFacadeContainer container = this.fc(world, pos);
+        if (container != null) {
+            IFacadePart facade = container.getFacade(AEPartLocation.fromFacing(EnumFacing.UP));
+            if (facade != null) {
+                facade.getBlockState().getBlock().onEntityWalk(world, pos, entityIn);
+            }
+        }
+        super.onEntityWalk(world, pos, entityIn);
     }
 
     public static Class<? extends AEBaseTile> getNoTesrTile() {

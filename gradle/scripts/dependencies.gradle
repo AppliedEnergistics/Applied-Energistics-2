@@ -83,6 +83,8 @@ dependencies {
     // installable runtime dependencies
     deobfCompile "curse.maven:gregtechceu-557242:3949406"
 
+    compileOnly "curse.maven:chisel-235279:2915375"
+
     //mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
     mods "curse.maven:hwyla-253449:2568751"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
