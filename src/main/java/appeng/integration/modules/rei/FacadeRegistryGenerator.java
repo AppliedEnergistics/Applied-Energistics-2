@@ -63,7 +63,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         ItemStack itemStack = entry.castValue();
         if (itemStack.getItem() instanceof FacadeItem facadeItem) {
             ItemStack textureItem = facadeItem.getTextureItem(itemStack);
-            return Optional.of(Collections.singletonList(make(textureItem, this.cableAnchor, itemStack)));
+            return Optional.of(Collections.singletonList(make(textureItem, this.cableAnchor, itemStack.copy())));
         }
 
         return Optional.empty();
