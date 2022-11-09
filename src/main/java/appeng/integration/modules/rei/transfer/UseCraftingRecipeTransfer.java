@@ -113,7 +113,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                 ingredients, ItemStack.EMPTY);
     }
 
-    private Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
         var ingredients = recipe.getIngredients();
 
         // JEI will align non-shaped recipes smaller than 3x3 in the grid. It'll center them horizontally, and
