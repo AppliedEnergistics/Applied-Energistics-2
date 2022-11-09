@@ -39,7 +39,7 @@ import appeng.api.storage.IStorageChannel;
  * - For fluids: AEApi.instance().storage().getStorageChannel( IFluidStorageChannel.class).createList()
  * - Replace with the corresponding {@link IStorageChannel} type for non native channels
  */
-public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Iterable<T>, Cloneable
+public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Iterable<T>
 {
 
 	/**
@@ -85,9 +85,4 @@ public interface IItemList<T extends IAEStack<T>> extends IItemContainer<T>, Ite
 	 * resets stack sizes to 0.
 	 */
 	void resetStatus();
-
-	/**
-	 * create a copy of this list.
-	 */
-	IItemList<T> clone();
 }
