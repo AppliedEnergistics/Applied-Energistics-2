@@ -728,7 +728,10 @@ final class MdastCompiler implements MdastContext {
     }
 
     private void onexitlink() {
-        var context = (LinkOrLinkReference) stack.get(stack.size() - 1);
+        if (!(stack.get(stack.size() - 1) instanceof LinkOrLinkReference context)) {
+            // This indicates unbalanced tags and will crash later
+            return;
+        }
 
         MdAstParent<?> replacement;
         if (inReference) {
@@ -757,21 +760,24 @@ final class MdastCompiler implements MdastContext {
 
 
     private void onexitimage() {
-        var context = (ImageOrImageReference) stack.get(stack.size() - 1);
+        var context = stack.get(stack.size() - 1);
+        if (!(context instanceof ImageOrImageReference closedImageOrRef)) {
+            return;
+        }
 
         MdAstNode replacement;
         if (inReference) {
             var imgRef = new MdAstImageReference();
             imgRef.referenceType = Objects.requireNonNullElse(referenceType, MdAstReferenceType.SHORTCUT);
-            imgRef.identifier = context.identifier;
-            imgRef.label = context.label;
-            imgRef.alt = context.alt;
+            imgRef.identifier = closedImageOrRef.identifier;
+            imgRef.label = closedImageOrRef.label;
+            imgRef.alt = closedImageOrRef.alt;
             replacement = imgRef;
         } else {
             var img = new MdAstImage();
-            img.url = context.url;
-            img.title = context.title;
-            img.alt = context.alt;
+            img.url = closedImageOrRef.url;
+            img.title = closedImageOrRef.title;
+            img.alt = closedImageOrRef.alt;
             replacement = img;
         }
         replacement.position = context.position;
@@ -785,19 +791,25 @@ final class MdastCompiler implements MdastContext {
     }
 
     private void onexitlabeltext(MdastContext context, Token token) {
-        var ancestor = stack.get(stack.size() - 2);
+        // Search up through the ancestors to find the reference
+        // Fixes issues where unclosed tags/constructs are reported as an error here
+        // instead of where the tag is then really closed.
         var string = this.sliceSerialize(token);
+        for (int i = stack.size() - 2; i >= 0; i--) {
+            var ancestor = stack.get(i);
 
-        if (ancestor instanceof LinkOrLinkReference link) {
-            link.label = DecodeString.decodeString(string);
-            link.identifier = NormalizeIdentifier.normalizeIdentifier(string).toLowerCase();
-        } else if (ancestor instanceof ImageOrImageReference image) {
-            image.label = DecodeString.decodeString(string);
-            image.identifier = NormalizeIdentifier.normalizeIdentifier(string).toLowerCase();
-        } else {
-            throw new IllegalStateException("Expected reference but found: " + ancestor);
+            if (ancestor instanceof LinkOrLinkReference link) {
+                link.label = DecodeString.decodeString(string);
+                link.identifier = NormalizeIdentifier.normalizeIdentifier(string).toLowerCase();
+                return;
+            } else if (ancestor instanceof ImageOrImageReference image) {
+                image.label = DecodeString.decodeString(string);
+                image.identifier = NormalizeIdentifier.normalizeIdentifier(string).toLowerCase();
+                return;
+            }
         }
 
+        throw new IllegalStateException("Couldn't find reference on the stack to close");
     }
 
     // While it's undecided whether an image ends up being a reference or not
@@ -813,22 +825,21 @@ final class MdastCompiler implements MdastContext {
     }
 
     private void onexitlabel() {
-        var fragment = (Fragment) (stack.get(stack.size() - 1));
+        var fragment = stack.get(stack.size() - 1);
         var value = this.resume();
         var node = stack.get(stack.size() - 1);
 
         // Assume a reference.
         inReference = true;
 
-        if (node instanceof MdAstLink link) {
-            for (var child : fragment.children()) {
+        if (node instanceof MdAstLink link && fragment instanceof MdAstParent<?> container) {
+            for (var child : container.children()) {
                 link.addChild((MdAstNode) child);
             }
         } else if (node instanceof MdAstImage image) {
             image.alt = value;
-        } else {
-            throw new IllegalStateException();
         }
+        // The else case will crash later
     }
 
     private void onexitresourcedestinationstring() {
@@ -838,8 +849,6 @@ final class MdastCompiler implements MdastContext {
             link.url = data;
         } else if (node instanceof MdAstImage image) {
             image.url = data;
-        } else {
-            throw new IllegalArgumentException();
         }
 
     }
