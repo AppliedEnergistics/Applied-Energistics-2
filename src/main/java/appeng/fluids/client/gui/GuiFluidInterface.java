@@ -86,7 +86,7 @@ public class GuiFluidInterface extends GuiUpgradeable implements IConfigManagerH
 
     @Override
     public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY) {
-        this.bindTexture("guis/interfacefluid.png");
+        this.bindTexture("guis/interfacefluidextendedlife.png");
         this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 
