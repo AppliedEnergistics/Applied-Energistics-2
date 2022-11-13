@@ -18,44 +18,14 @@
 
 package appeng.core;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
+import appeng.client.guidebook.GuidebookManager;
+import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -88,6 +58,40 @@ import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.SiteExporter;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.LoadingOverlay;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ReloadInstance;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Client-specific functionality.
@@ -118,6 +122,7 @@ public class AppEngClient extends AppEngBase {
         InitAutoRotatingModel.init();
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
+        GuidebookManager.init();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
 
@@ -201,6 +206,26 @@ public class AppEngClient extends AppEngBase {
 
         MouseWheelScrolled.EVENT.register(this::wheelEvent);
         WorldRenderEvents.LAST.register(OverlayManager.getInstance()::renderWorldLastEvent);
+
+        if (client.getOverlay() instanceof LoadingOverlay loadingOverlay) {
+            ReloadInstance reloadInstance;
+            try {
+                reloadInstance = (ReloadInstance) FieldUtils.readField(loadingOverlay, "reload", true);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            reloadInstance.done().thenRunAsync(() -> {
+                var page = GuidebookManager.INSTANCE.getPage(AppEng.makeId("index.md"));
+                client.setScreen(new GuideScreen(page));
+            }, client)
+                    .exceptionally(throwable -> {
+                        AELog.error(throwable);
+                        return null;
+                    });
+        } else {
+            var page = GuidebookManager.INSTANCE.getPage(AppEng.makeId("index.md"));
+            client.setScreen(new GuideScreen(page));
+        }
     }
 
     private void registerEntityRenderers() {
@@ -269,7 +294,7 @@ public class AppEngClient extends AppEngBase {
     // vanilla particle system
     @Override
     public void spawnEffect(EffectType effect, Level level, double posX, double posY,
-            double posZ, Object o) {
+                            double posZ, Object o) {
         if (AEConfig.instance().isEnableEffects()) {
             switch (effect) {
                 case Vibrant:

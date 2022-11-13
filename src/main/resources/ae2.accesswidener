@@ -93,3 +93,5 @@ accessible field net/minecraft/data/loot/BlockLoot HAS_NO_SILK_TOUCH Lnet/minecr
 
 accessible field net/minecraft/world/item/crafting/UpgradeRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
 accessible field net/minecraft/world/item/crafting/UpgradeRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
+
+accessible method net/minecraft/client/gui/Font getFontSet (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/gui/font/FontSet;
