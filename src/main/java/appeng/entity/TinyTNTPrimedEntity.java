@@ -182,7 +182,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityAddit
                                 }
 
                                 level.setBlock(point, Blocks.AIR.defaultBlockState(), 3);
-                                block.onBlockExploded(null, this.level, point, ex);
+                                state.onBlockExploded(this.level, point, ex);
                             }
                         }
                     }
