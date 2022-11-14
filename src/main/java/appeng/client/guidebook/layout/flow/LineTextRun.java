@@ -1,10 +1,7 @@
 package appeng.client.guidebook.layout.flow;
 
 import appeng.client.guidebook.render.RenderContext;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 

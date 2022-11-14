@@ -27,10 +27,11 @@ public class GuideScreen extends Screen {
     protected void init() {
         super.init();
 
+        var docViewport = getDocumentViewport();
         var context = new SimpleLayoutContext(
                 minecraft.font,
-                getDocumentViewport(),
-                new LytRect(0, 0, width, Integer.MAX_VALUE)
+                docViewport,
+                new LytRect(0, 0, docViewport.width(), Integer.MAX_VALUE)
         );
 
         // Build layout if needed

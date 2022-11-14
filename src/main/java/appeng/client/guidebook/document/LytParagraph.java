@@ -16,6 +16,8 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
 
     @Override
     public LytRect computeLayout(LayoutContext context) {
+        // Apply padding to paragraph content
+        context = context.withAvailable(context.available().shrink(5, 0, 5, 0));
         return content.computeLayout(context);
     }
 

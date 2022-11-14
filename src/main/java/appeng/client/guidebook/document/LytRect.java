@@ -19,6 +19,15 @@ public record LytRect(int x, int y, int width, int height) {
         return width == 0 || height == 0;
     }
 
+    public LytRect shrink(int left, int top, int right, int bottom) {
+        return new LytRect(
+                x + left,
+                y + top,
+                Math.max(width - left - right, 0),
+                Math.max(height - top - bottom, 0)
+        );
+    }
+
     public LytRect withWidth(int width) {
         return new LytRect(x, y, width, height);
     }
