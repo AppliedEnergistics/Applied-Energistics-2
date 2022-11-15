@@ -75,7 +75,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     private void iterateRuns(CharSequence text, ResolvedTextStyle style, char lastChar, float currentLineMaxWidth, float maxWidth, LineConsumer consumer) {
-        int lastBreakOpportunity = 0;
+        int lastBreakOpportunity = -1;
         float widthAtBreakOpportunity = 0;
         float remainingSpace = currentLineMaxWidth;
         float curLineWidth = 0;
@@ -83,6 +83,10 @@ class LineBuilder implements Consumer<LytFlowContent> {
         var lineBuffer = new StringBuilder();
 
         boolean lastCharWasWhitespace = Character.isWhitespace(lastChar);
+        // When starting after a whitespace on an existing line, we have a break opportunity at the start
+        if (lastCharWasWhitespace) {
+            lastBreakOpportunity = 0;
+        }
 
         for (var i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
@@ -131,10 +135,13 @@ class LineBuilder implements Consumer<LytFlowContent> {
             if (curLineWidth + advance > remainingSpace) {
                 // If we had a break opportunity, use it
                 // In this scenario, the space itself is discarded
-                if (lastBreakOpportunity > 0) {
+                if (lastBreakOpportunity != -1) {
                     consumer.visitRun(lineBuffer.subSequence(0, lastBreakOpportunity), widthAtBreakOpportunity, true);
                     curLineWidth -= widthAtBreakOpportunity;
-                    lineBuffer.delete(0, lastBreakOpportunity + 1);
+                    lineBuffer.delete(0, lastBreakOpportunity);
+                    if (!lineBuffer.isEmpty() && Character.isWhitespace(lineBuffer.charAt(0))) {
+                        lineBuffer.deleteCharAt(0);
+                    }
                 } else {
                     // We exceeded the line length, but did not find a break opportunity
                     // this causes a forced break mid-word

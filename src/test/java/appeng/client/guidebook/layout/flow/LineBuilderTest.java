@@ -13,12 +13,36 @@ import java.util.ArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class LineBuilderTest {
+
+    @Test
+    void breakAtStartOfChunkAfterWhitespaceInPreviousChunk() {
+        var lines = getLines(3, "A ", "BC");
+
+        assertThat(lines).extracting(this::getTextContent).containsExactly(
+                "A ",
+                "BC"
+        );
+    }
+
+    /**
+     * When not necessary, don't break in the middle of a word.
+     */
+    @Test
+    void dontBreakInWords() {
+        var lines = getLines(3, "A BC");
+
+        assertThat(lines).extracting(this::getTextContent).containsExactly(
+                "A",
+                "BC"
+        );
+    }
+
     /**
      * When a white-space character causes a line-break, it is removed.
      */
     @Test
     void testWhitespaceCausingLineBreakGetsRemoved() {
-        var lines = getLines("A B", 1);
+        var lines = getLines(1, "A B");
 
         assertThat(lines).extracting(this::getTextContent).containsExactly(
                 "A",
@@ -31,7 +55,7 @@ class LineBuilderTest {
      */
     @Test
     void testWhitespaceCollapsing() {
-        var lines = getLines("A  B", 3);
+        var lines = getLines(3, "A  B");
 
         assertThat(lines).extracting(this::getTextContent).containsExactly(
                 "A B"
@@ -39,14 +63,18 @@ class LineBuilderTest {
     }
 
     @NotNull
-    private static ArrayList<Line> getLines(String text, int charsPerLine) {
+    private static ArrayList<Line> getLines(int charsPerLine, String... textChunks) {
         var lines = new ArrayList<Line>();
         var context = new MockLayoutContext();
         var lineBuilder = new LineBuilder(context, 0, 0, charsPerLine * 5, lines);
-        var flowContent = new LytFlowText();
-        flowContent.setText(text);
-        flowContent.setParentSpan(new LytFlowSpan());
-        lineBuilder.accept(flowContent);
+
+        for (String textChunk : textChunks) {
+            var flowContent = new LytFlowText();
+            flowContent.setText(textChunk);
+            flowContent.setParentSpan(new LytFlowSpan());
+            lineBuilder.accept(flowContent);
+        }
+
         lineBuilder.end();
         return lines;
     }
