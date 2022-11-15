@@ -1,11 +1,14 @@
 package appeng.client.guidebook.document;
 
 import appeng.client.guidebook.document.flow.LytFlowContainer;
-import appeng.client.guidebook.document.flow.LytFlowContent;
-import appeng.client.guidebook.layout.LayoutContext;
-import appeng.client.guidebook.render.SimpleRenderContext;
+import net.minecraft.client.Minecraft;
 
-public class LytHeading extends LytBlock implements LytFlowContainer {
+public class LytHeading extends LytParagraph implements LytFlowContainer {
+    public LytHeading() {
+        setMarginTop(5);
+        setMarginBottom(5);
+    }
+
     private int depth;
 
     public int getDepth() {
@@ -14,21 +17,7 @@ public class LytHeading extends LytBlock implements LytFlowContainer {
 
     public void setDepth(int depth) {
         this.depth = depth;
-    }
-
-    @Override
-    public void append(LytFlowContent child) {
-
-    }
-
-    @Override
-    protected LytRect computeLayout(LayoutContext context) {
-        // TODO: Compute actual height
-        return context.available().withHeight(20);
-    }
-
-    @Override
-    public void render(SimpleRenderContext context) {
-
+        var fontScale = Math.max(1, 1.75f - depth * 0.25f);
+        content.getRootSpan().modifyStyle(builder -> builder.fontScale(fontScale).font(Minecraft.DEFAULT_FONT));
     }
 }

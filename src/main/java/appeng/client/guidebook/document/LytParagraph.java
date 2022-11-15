@@ -7,7 +7,12 @@ import appeng.client.guidebook.layout.flow.FlowBuilder;
 import appeng.client.guidebook.render.SimpleRenderContext;
 
 public class LytParagraph extends LytBlock implements LytFlowContainer {
-    private final FlowBuilder content = new FlowBuilder();
+    protected final FlowBuilder content = new FlowBuilder();
+
+    protected int paddingLeft = 5;
+    protected int paddingTop;
+    protected int paddingRight = 5;
+    protected int paddingBottom;
 
     @Override
     public void append(LytFlowContent child) {
@@ -15,10 +20,14 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     }
 
     @Override
-    public LytRect computeLayout(LayoutContext context) {
+    public LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
         // Apply padding to paragraph content
-        context = context.withAvailable(context.available().shrink(5, 0, 5, 0));
-        return content.computeLayout(context);
+
+        var bounds = content.computeLayout(context, x, y, availableWidth);
+        if (paddingBottom != 0) {
+            return bounds.withHeight(bounds.height() + paddingBottom);
+        }
+        return bounds;
     }
 
     @Override

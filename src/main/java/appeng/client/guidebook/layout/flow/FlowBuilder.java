@@ -14,14 +14,18 @@ public class FlowBuilder {
     private final List<Line> lines = new ArrayList<>();
     private final LytFlowSpan rootSpan = new LytFlowSpan();
 
+    public LytFlowSpan getRootSpan() {
+        return rootSpan;
+    }
+
     public void append(LytFlowContent content) {
         rootSpan.append(content);
     }
 
-    public LytRect computeLayout(LayoutContext context) {
+    public LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
 
         lines.clear();
-        var lineBuilder = new LineBuilder(context, lines);
+        var lineBuilder = new LineBuilder(context, x, y, availableWidth, lines);
         visitInDocumentOrder(rootSpan, lineBuilder);
         lineBuilder.end();
 

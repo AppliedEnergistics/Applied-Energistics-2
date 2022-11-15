@@ -18,8 +18,12 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     @Nullable
     private Layout layout;
 
-    public LytRect getBounds() {
-        return layout != null ? layout.bounds() : LytRect.empty();
+    public int getAvailableWidth() {
+        return layout != null ? layout.availableWidth() : 0;
+    }
+
+    public int getContentHeight() {
+        return layout != null ? layout.contentHeight() : 0;
     }
 
     public List<LytBlock> getBlocks() {
@@ -47,33 +51,27 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         blocks.add(block);
     }
 
-    public void updateLayout(LayoutContext context) {
-        if (layout != null && layout.context.equals(context)) {
+    public void updateLayout(LayoutContext context, int availableWidth) {
+        if (layout != null && layout.availableWidth == availableWidth) {
             return;
         }
 
-        layout = createLayout(context);
+        layout = createLayout(context, availableWidth);
     }
 
-    private Layout createLayout(LayoutContext context) {
-        var contentY = context.available().y();
+    private Layout createLayout(LayoutContext context, int availableWidth) {
+        var contentY = 0;
         var contentHeight = 0;
 
-        var currentContext = context;
         for (var block : blocks) {
-            block.layout(currentContext);
-            contentY += block.bounds.height();
-            currentContext = currentContext.withAvailable(new LytRect(
-                    context.available().x(),
-                    contentY,
-                    context.available().width(),
-                    context.available().height() - block.bounds.height()
-            ));
-            contentHeight += block.bounds.height();
+            contentY += block.getMarginTop();
+            var blockWidth = Math.max(1, availableWidth - block.getMarginLeft() - block.getMarginRight());
+            var bounds = block.layout(context, block.getMarginLeft(), contentY, blockWidth);
+            contentY += bounds.height() + block.getMarginBottom();
+            contentHeight += bounds.height();
         }
 
-        var bounds = context.available().withHeight(contentHeight);
-        return new Layout(context, bounds);
+        return new Layout(availableWidth, contentHeight);
     }
 
     public void render(SimpleRenderContext context) {
@@ -82,6 +80,6 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         }
     }
 
-    public record Layout(LayoutContext context, LytRect bounds) {
+    public record Layout(int availableWidth, int contentHeight) {
     }
 }

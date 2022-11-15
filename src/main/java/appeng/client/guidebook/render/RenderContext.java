@@ -19,6 +19,8 @@ public interface RenderContext {
 
     void fillRect(LytRect rect, ColorRef color);
 
+    int resolveColor(ColorRef ref);
+
     default Font font() {
         return Minecraft.getInstance().font;
     }

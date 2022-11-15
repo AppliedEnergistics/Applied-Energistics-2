@@ -1,18 +1,16 @@
 package appeng.client.guidebook.layout;
 
 import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextStyle;
 import net.minecraft.network.chat.Style;
 
 public interface LayoutContext {
-    LytRect available();
-
     LytRect viewport();
 
-    LayoutContext withAvailable(LytRect available);
+    float getAdvance(int codePoint, ResolvedTextStyle style);
 
-    float getAdvance(int codePoint, Style style);
-
-    int getLineHeight(Style style);
+    int getLineHeight(ResolvedTextStyle style);
 
     default int viewportWidth() {
         return viewport().width();

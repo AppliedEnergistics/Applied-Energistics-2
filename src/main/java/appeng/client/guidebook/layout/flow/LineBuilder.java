@@ -5,7 +5,7 @@ import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.LayoutContext;
-import net.minecraft.network.chat.Style;
+import appeng.client.guidebook.style.ResolvedTextStyle;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 class LineBuilder implements Consumer<LytFlowContent> {
     private final LayoutContext context;
     private final List<Line> lines;
+    private final int leftEdge;
     private int innerX;
     private int innerY;
     private final int lineWidth;
@@ -22,11 +23,12 @@ class LineBuilder implements Consumer<LytFlowContent> {
     private LineElement openLineElement;
     private WhiteSpaceMode whiteSpaceMode = WhiteSpaceMode.NORMAL;
 
-    public LineBuilder(LayoutContext context, List<Line> lines) {
+    public LineBuilder(LayoutContext context, int x, int y, int availableWidth, List<Line> lines) {
         this.context = context;
-        innerX = context.available().x();
-        innerY = context.available().y();
-        lineWidth = context.available().width();
+        leftEdge = x;
+        innerX = leftEdge;
+        innerY = y;
+        lineWidth = availableWidth;
         remainingLineWidth = lineWidth;
         this.lines = lines;
     }
@@ -50,7 +52,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     private void appendText(String text, LytFlowSpan parentSpan) {
-        var style = parentSpan.getEffectiveTextStyle();
+        var style = parentSpan.resolveStyle();
 
         char lastChar = '\0';
         if (getEndOfOpenLine() instanceof LineTextRun textRun && !textRun.text.isEmpty()) {
@@ -72,7 +74,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
         });
     }
 
-    private void iterateRuns(CharSequence text, Style style, char lastChar, float currentLineMaxWidth, float maxWidth, LineConsumer consumer) {
+    private void iterateRuns(CharSequence text, ResolvedTextStyle style, char lastChar, float currentLineMaxWidth, float maxWidth, LineConsumer consumer) {
         int lastBreakOpportunity = 0;
         float widthAtBreakOpportunity = 0;
         float remainingSpace = currentLineMaxWidth;
@@ -97,7 +99,6 @@ class LineBuilder implements Consumer<LytFlowContent> {
             }
 
             // Handle explicit line breaks
-            // TODO: Fishy? Because HTML formatting ignores these
             if (codePoint == '\n') {
                 if (whiteSpaceMode.isCollapseSegmentBreaks()) {
                     codePoint = ' ';
@@ -175,7 +176,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
 
         openLineElement = null;
         remainingLineWidth = lineWidth;
-        innerX = context.available().x();
+        innerX = leftEdge;
         innerY += line.bounds().height();
     }
 

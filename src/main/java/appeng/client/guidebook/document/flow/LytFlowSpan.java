@@ -1,10 +1,12 @@
 package appeng.client.guidebook.document.flow;
 
 import appeng.client.guidebook.document.DefaultStyles;
-import net.minecraft.network.chat.Style;
+import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextStyle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Attaches properties to a span of {@link LytFlowContent}, such as links
@@ -12,7 +14,7 @@ import java.util.List;
  */
 public class LytFlowSpan extends LytFlowContent implements LytFlowContainer {
 
-    private Style style = DefaultStyles.BODY_TEXT;
+    private TextStyle style = TextStyle.EMPTY;
 
     private final List<LytFlowContent> children = new ArrayList<>();
 
@@ -29,7 +31,17 @@ public class LytFlowSpan extends LytFlowContent implements LytFlowContainer {
         children.add(child);
     }
 
-    public Style getEffectiveTextStyle() {
-        return style;
+    public void modifyStyle(Consumer<TextStyle.Builder> customizer) {
+        var builder = style.toBuilder();
+        customizer.accept(builder);
+        this.style = builder.build();
+    }
+
+    public ResolvedTextStyle resolveStyle() {
+        if (getParentSpan() != null) {
+            return style.mergeWith(getParentSpan().resolveStyle());
+        }
+
+        return style.mergeWith(DefaultStyles.BASE_STYLE);
     }
 }

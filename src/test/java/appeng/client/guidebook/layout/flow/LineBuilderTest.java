@@ -4,7 +4,7 @@ import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.LayoutContext;
-import net.minecraft.network.chat.Style;
+import appeng.client.guidebook.style.ResolvedTextStyle;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
@@ -41,9 +41,8 @@ class LineBuilderTest {
     @NotNull
     private static ArrayList<Line> getLines(String text, int charsPerLine) {
         var lines = new ArrayList<Line>();
-        var available = new LytRect(0, 0, charsPerLine * 5, 50);
-        var context = new MockLayoutContext(available);
-        var lineBuilder = new LineBuilder(context, lines);
+        var context = new MockLayoutContext();
+        var lineBuilder = new LineBuilder(context, 0, 0, charsPerLine * 5, lines);
         var flowContent = new LytFlowText();
         flowContent.setText(text);
         flowContent.setParentSpan(new LytFlowSpan());
@@ -63,29 +62,19 @@ class LineBuilderTest {
     }
 
     // Every character is 5 pixels wide
-    record MockLayoutContext(LytRect available) implements LayoutContext {
-        @Override
-        public LytRect available() {
-            return available;
-        }
-
+    record MockLayoutContext() implements LayoutContext {
         @Override
         public LytRect viewport() {
-            return available;
+            return LytRect.empty();
         }
 
         @Override
-        public LayoutContext withAvailable(LytRect available) {
-            return new MockLayoutContext(available);
-        }
-
-        @Override
-        public float getAdvance(int codePoint, Style style) {
+        public float getAdvance(int codePoint, ResolvedTextStyle style) {
             return 5;
         }
 
         @Override
-        public int getLineHeight(Style style) {
+        public int getLineHeight(ResolvedTextStyle style) {
             return 10;
         }
     }

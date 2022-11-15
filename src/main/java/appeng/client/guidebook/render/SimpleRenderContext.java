@@ -12,7 +12,8 @@ public record SimpleRenderContext(@Override GuideScreen screen,
                                   MultiBufferSource multiBufferSource,
                                   LightDarkMode lightDarkMode) implements RenderContext {
 
-    private int resolveColor(ColorRef ref) {
+    @Override
+    public int resolveColor(ColorRef ref) {
         if (ref.symbolic != null) {
             return ref.symbolic.resolve(lightDarkMode);
         } else {
