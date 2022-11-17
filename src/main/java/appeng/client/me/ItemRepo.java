@@ -47,6 +47,8 @@ public class ItemRepo {
 
     private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
     private final List<IAEItemStack> view;
+    private List<IAEItemStack> asyncUpdatedView;
+    private boolean updated;
     private final IScrollSource src;
     private final ISortSource sortSrc;
 
@@ -62,17 +64,16 @@ public class ItemRepo {
         this.sortSrc = sortSrc;
 
         this.view = Collections.synchronizedList(new ArrayList<>());
+        this.asyncUpdatedView = Collections.synchronizedList(new ArrayList<>());
         list.forEach(this.view::add);
     }
 
     public IAEItemStack getReferenceItem(int idx) {
         idx += this.src.getCurrentScroll() * this.rowSize;
-        synchronized (this.view) {
-            if (idx >= this.view.size()) {
-                return null;
-            }
-            return this.view.get(idx);
+        if (idx >= this.view.size()) {
+            return null;
         }
+        return this.view.get(idx);
     }
 
     void setSearch(final String search) {
@@ -105,6 +106,13 @@ public class ItemRepo {
     public void updateView() {
         if (searchTask != null) {
             return;
+        }
+
+        if (updated) {
+            this.view.clear();
+            this.view.addAll(asyncUpdatedView);
+            this.asyncUpdatedView.clear();
+            this.updated = false;
         }
 
         // Since sortSrc is final, so we can safely call it inside lambda
@@ -210,15 +218,11 @@ public class ItemRepo {
 
             return view;
         }).thenAcceptAsync(view -> {
-            synchronized (this.view) {
-                this.view.clear();
-            }
-            this.view.addAll(view);
+            this.updated = true;
+            this.asyncUpdatedView.addAll(view);
         }).thenRunAsync(() -> {
             this.searchTask = null; // Prevent redundant cancellation
         });
-
-
     }
 
     private void updateJEI(String filter) {
