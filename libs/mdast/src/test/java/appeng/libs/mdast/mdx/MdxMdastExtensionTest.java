@@ -1151,16 +1151,4 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
         return MdAst.fromMarkdown(markdown, options);
     }
 
-    private static MdAstNode removePosition(MdAstNode node) {
-        node.position = null;
-        if (node instanceof MdAstParent<?> parent) {
-            for (var child : parent.children()) {
-                if (child instanceof MdAstNode childNode) {
-                    removePosition(childNode);
-                }
-            }
-        }
-        return node;
-    }
-
 }

@@ -1,6 +1,7 @@
 package appeng.libs.mdast;
 
 import appeng.libs.mdast.model.MdAstNode;
+import appeng.libs.mdast.model.MdAstParent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -109,5 +110,17 @@ public class AbstractMdAstTest {
         } else {
             return element;
         }
+    }
+
+    protected static MdAstNode removePosition(MdAstNode node) {
+        node.position = null;
+        if (node instanceof MdAstParent<?> parent) {
+            for (var child : parent.children()) {
+                if (child instanceof MdAstNode childNode) {
+                    removePosition(childNode);
+                }
+            }
+        }
+        return node;
     }
 }
