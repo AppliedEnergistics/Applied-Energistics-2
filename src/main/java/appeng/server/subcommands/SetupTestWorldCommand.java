@@ -13,7 +13,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +22,7 @@ import net.minecraft.world.level.levelgen.FlatLevelSource;
 
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.server.ISubCommand;
 import appeng.server.testplots.TestPlots;
@@ -53,14 +53,13 @@ public class SetupTestWorldCommand implements ISubCommand {
         try {
             var player = sender.getPlayerOrException();
             if (!player.isCreative()) {
-                sender.sendFailure(Component.literal("Command can only be used in creative mode."));
+                sender.sendFailure(PlayerMessages.TestWorldNotInCreativeMode.text());
                 return;
             }
 
             var level = srv.overworld();
             if (!isVoidWorld(level)) {
-                sender.sendFailure(Component.literal(
-                        "A test world can only be set up in a Superflat world with the Void preset!"));
+                sender.sendFailure(PlayerMessages.TestWorldNotInSuperflatVoid.text());
                 return;
             }
 
@@ -81,10 +80,10 @@ public class SetupTestWorldCommand implements ISubCommand {
                 player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
             }
 
-            sender.sendSuccess(Component.literal("Test world setup completed in " + sw), true);
+            sender.sendSuccess(PlayerMessages.TestWorldSetupComplete.text(sw), true);
         } catch (RuntimeException | CommandSyntaxException e) {
             AELog.error(e);
-            sender.sendFailure(Component.literal("Setting up the test world failed: " + e));
+            sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e));
         }
     }
 

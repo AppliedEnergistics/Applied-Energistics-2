@@ -67,6 +67,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.api.util.IConfigManager;
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
 import appeng.helpers.ICustomNameObject;
@@ -586,7 +587,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             }
         }
 
-        return Component.literal("Nothing");
+        return GuiText.Nothing.text();
     }
 
     public long getSortValue() {

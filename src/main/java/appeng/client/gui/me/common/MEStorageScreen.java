@@ -665,7 +665,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (Minecraft.getInstance().options.advancedItemTooltips) {
             currentToolTip
-                    .add(Component.literal("Serial: " + entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
+                    .add(ButtonToolTips.Serial.text(entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
         }
 
         // Special case to support the Item API of visual tooltip components

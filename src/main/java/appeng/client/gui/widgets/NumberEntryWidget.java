@@ -320,7 +320,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         if (possibleValue.isPresent()) {
             // Reject decimal values if the unit is integral
             if (type.amountPerUnit() == 1 && possibleValue.get().scale() > 0) {
-                validationErrors.add(Component.literal("Must be whole number"));
+                validationErrors.add(GuiText.NumberNonInteger.text());
             } else {
                 var value = convertToExternalValue(possibleValue.get());
                 if (value < minValue) {
