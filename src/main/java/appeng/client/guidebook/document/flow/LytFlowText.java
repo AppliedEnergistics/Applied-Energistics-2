@@ -10,4 +10,10 @@ public class LytFlowText extends LytFlowContent {
     public void setText(String text) {
         this.text = text;
     }
+
+    public static LytFlowText of(String text) {
+        var node = new LytFlowText();
+        node.setText(text);
+        return node;
+    }
 }

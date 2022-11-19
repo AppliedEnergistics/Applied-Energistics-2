@@ -68,7 +68,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
             var blockWidth = Math.max(1, availableWidth - block.getMarginLeft() - block.getMarginRight());
             var bounds = block.layout(context, block.getMarginLeft(), contentY, blockWidth);
             contentY += bounds.height() + block.getMarginBottom();
-            contentHeight += bounds.height();
+            contentHeight = Math.max(contentHeight, bounds.bottom());
         }
 
         return new Layout(availableWidth, contentHeight);

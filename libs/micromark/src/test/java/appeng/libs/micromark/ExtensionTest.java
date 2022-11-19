@@ -42,13 +42,13 @@ public class ExtensionTest {
         assertEquals(micromark("<<<"), "<p>&lt;&lt;&lt;</p>", "baseline (less than)");
 
         assertEquals(
-                micromark("///", new ParseOptions().withExtension(syntax)),
+                micromark("///", new ParseOptions().withSyntaxExtension(syntax)),
                 "<hr />",
                 "should support syntax extensions (slash)"
         );
 
         assertEquals(
-                micromark("<<<", new ParseOptions().withExtension(syntax)),
+                micromark("<<<", new ParseOptions().withSyntaxExtension(syntax)),
                 "<hr />",
                 "should support syntax extensions for an existing hook (less than)"
         );
@@ -69,7 +69,7 @@ public class ExtensionTest {
         assertEquals(
                 micromark("a <i> b, 1 < 3",
                         new CompileOptions().allowDangerousHtml(),
-                        new ParseOptions().withExtension(tokenizeLessThanExtension)
+                        new ParseOptions().withSyntaxExtension(tokenizeLessThanExtension)
                 ),
                 "<p>a i&gt; b, 1  3</p>",
                 "should precede over previously attached constructs by default"
@@ -83,7 +83,7 @@ public class ExtensionTest {
         assertEquals(
                 micromark("a <i> b, 1 < 3",
                         new CompileOptions().allowDangerousHtml(),
-                        new ParseOptions().withExtension(tokenizeLessThanExtensionAfter)),
+                        new ParseOptions().withSyntaxExtension(tokenizeLessThanExtensionAfter)),
                 "<p>a <i> b, 1  3</p>",
                 "should go after previously attached constructs w/ `add: after`"
         );
@@ -106,7 +106,7 @@ public class ExtensionTest {
         assertEquals(
                 micromark("// a\n//\rb",
                         new CompileOptions().withExtension(html),
-                        new ParseOptions().withExtension(syntax)
+                        new ParseOptions().withSyntaxExtension(syntax)
                 ),
                 "<p>b</p>",
                 "should support html extensions"

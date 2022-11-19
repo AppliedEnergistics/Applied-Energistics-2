@@ -3,8 +3,6 @@ package appeng.libs.mdast.mdx;
 import appeng.libs.mdast.AbstractMdAstTest;
 import appeng.libs.mdast.MdAst;
 import appeng.libs.mdast.MdastOptions;
-import appeng.libs.mdast.model.MdAstNode;
-import appeng.libs.mdast.model.MdAstParent;
 import appeng.libs.mdast.model.MdAstRoot;
 import appeng.libs.mdx.MdxSyntax;
 import org.junit.jupiter.api.Test;
@@ -1146,7 +1144,7 @@ public class MdxMdastExtensionTest extends AbstractMdAstTest {
 
     private static MdAstRoot fromMdx(String markdown) {
         var options = new MdastOptions();
-        options.withExtension(MdxSyntax.EXTENSION);
+        options.withSyntaxExtension(MdxSyntax.INSTANCE);
         options.withMdastExtension(MdxMdastExtension.INSTANCE);
         return MdAst.fromMarkdown(markdown, options);
     }

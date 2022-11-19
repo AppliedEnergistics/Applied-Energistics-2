@@ -1,16 +1,12 @@
 package appeng.libs.micromark.flow;
 
 import appeng.libs.micromark.Extension;
-import appeng.libs.micromark.Micromark;
 import appeng.libs.micromark.TestUtil;
 import appeng.libs.micromark.html.CompileOptions;
-import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.nio.Buffer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -58,7 +54,7 @@ public class CodeIndentedTest {
     TestUtil.assertGeneratedHtmlWithDisabled("```^na^n    ```", "<pre><code>a^n</code></pre>", "should support turning off code (indented, 6)", "codeIndented");
 
     var opts = new ParseOptions();
-    opts.withExtension(new Extension() {
+    opts.withSyntaxExtension(new Extension() {
       {nullDisable.add("codeIndented");}
     });
     TestUtil.assertGeneratedHtml(

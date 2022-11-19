@@ -3,6 +3,7 @@ package appeng.client.guidebook.document;
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 import appeng.client.guidebook.style.TextStyle;
+import appeng.client.guidebook.style.WhiteSpaceMode;
 import net.minecraft.client.Minecraft;
 
 public class DefaultStyles {
@@ -15,7 +16,8 @@ public class DefaultStyles {
             false,
             false,
             Minecraft.UNIFORM_FONT,
-            SymbolicColor.BODY_TEXT.ref()
+            SymbolicColor.BODY_TEXT.ref(),
+            WhiteSpaceMode.NORMAL
     );
 
     public static final TextStyle BODY_TEXT = TextStyle.builder()

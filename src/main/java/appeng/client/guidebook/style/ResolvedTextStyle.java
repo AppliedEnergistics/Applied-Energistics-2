@@ -11,5 +11,6 @@ public record ResolvedTextStyle(
         boolean strikethrough,
         boolean obfuscated,
         ResourceLocation font,
-        ColorRef color) {
+        ColorRef color,
+        WhiteSpaceMode whiteSpace) {
 }

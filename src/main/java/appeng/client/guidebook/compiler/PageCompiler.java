@@ -7,13 +7,22 @@ import appeng.client.guidebook.document.LytDocument;
 import appeng.client.guidebook.document.LytHeading;
 import appeng.client.guidebook.document.LytParagraph;
 import appeng.client.guidebook.document.LytThematicBreak;
+import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowLink;
+import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
+import appeng.client.guidebook.render.ColorRef;
+import appeng.client.guidebook.style.WhiteSpaceMode;
 import appeng.libs.mdast.MdAst;
+import appeng.libs.mdast.MdAstYamlFrontmatter;
 import appeng.libs.mdast.MdastOptions;
+import appeng.libs.mdast.YamlFrontmatterExtension;
 import appeng.libs.mdast.mdx.MdxMdastExtension;
+import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
+import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
+import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstHeading;
 import appeng.libs.mdast.model.MdAstLink;
 import appeng.libs.mdast.model.MdAstNode;
@@ -21,9 +30,11 @@ import appeng.libs.mdast.model.MdAstParagraph;
 import appeng.libs.mdast.model.MdAstParent;
 import appeng.libs.mdast.model.MdAstPosition;
 import appeng.libs.mdast.model.MdAstRoot;
+import appeng.libs.mdast.model.MdAstStrong;
 import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
+import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,29 +46,58 @@ import java.nio.charset.StandardCharsets;
 public final class PageCompiler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageCompiler.class);
 
+    private final String sourcePack;
+    private final ResourceLocation id;
+    private final String pageContent;
+
+    public PageCompiler(String sourcePack, ResourceLocation id, String pageContent) {
+        this.sourcePack = sourcePack;
+        this.id = id;
+        this.pageContent = pageContent;
+    }
+
     public static GuidePage compile(String sourcePack, ResourceLocation id, InputStream in) throws IOException {
         String pageContent = new String(in.readAllBytes(), StandardCharsets.UTF_8);
 
-        var options = new MdastOptions().withExtension(MdxSyntax.EXTENSION)
-                .withMdastExtension(MdxMdastExtension.INSTANCE);
+        var options = new MdastOptions()
+                .withSyntaxExtension(MdxSyntax.INSTANCE)
+                .withSyntaxExtension(YamlFrontmatterSyntax.INSTANCE)
+                .withMdastExtension(MdxMdastExtension.INSTANCE)
+                .withMdastExtension(YamlFrontmatterExtension.INSTANCE);
         var pageTree = MdAst.fromMarkdown(pageContent, options);
 
         // Translate page tree over to layout pages
-        var document = new PageCompiler().compile(pageTree);
+        var document = new PageCompiler(sourcePack, id, pageContent).compile(pageTree);
 
         return new GuidePage(sourcePack, document);
     }
 
     private LytDocument compile(MdAstRoot root) {
+        // Find front-matter
+        parseFrontmatter(root);
+
         var document = new LytDocument();
         compileBlockContext(root, document);
         return document;
     }
 
-    private void compileBlockContext(MdAstParent<?> markdownParent, LytBlockContainer layoutParent) {
+    private void parseFrontmatter(MdAstRoot root) {
+        Object result = null;
+
+        for (var child : root.children()) {
+            if (child instanceof MdAstYamlFrontmatter frontmatter) {
+                if (result != null) {
+                    LOGGER.warn("Found more than one frontmatter!");
+                }
+                result = frontmatter;
+            }
+        }
+    }
+
+    public void compileBlockContext(MdAstParent<?> markdownParent, LytBlockContainer layoutParent) {
         for (var child : markdownParent.children()) {
             LytBlock layoutChild;
-            if (child instanceof MdAstThematicBreak astThematicBreak) {
+            if (child instanceof MdAstThematicBreak) {
                 layoutChild = new LytThematicBreak();
             } else if (child instanceof MdAstHeading astHeading) {
                 var heading = new LytHeading();
@@ -68,44 +108,101 @@ public final class PageCompiler {
                 var paragraph = new LytParagraph();
                 compileFlowContext(astParagraph, paragraph);
                 layoutChild = paragraph;
+            } else if (child instanceof MdAstYamlFrontmatter) {
+                // This is handled by compile directly
+                layoutChild = null;
+            } else if (child instanceof MdxJsxFlowElement el) {
+                var compiler = TagCompilers.get(el.name());
+                if (compiler == null) {
+                    layoutChild = createErrorBlock("Unhandled MDX element in block context", (MdAstNode) child);
+                } else {
+                    layoutChild = null;
+                    compiler.compileBlockContext(this, layoutParent, el);
+                }
             } else {
-                var paragraph = new LytParagraph();
-                var unhandledNode = new LytFlowText();
-                unhandledNode.setText("Unhandled Markdown node in flow context: " + debugNode((MdAstNode) child));
-                paragraph.append(unhandledNode);
-                layoutChild = paragraph;
-                LOGGER.warn("{}", unhandledNode.getText());
+                layoutChild = createErrorBlock("Unhandled Markdown node in block context", (MdAstNode) child);
             }
 
-            layoutParent.append(layoutChild);
+            if (layoutChild != null) {
+                layoutParent.append(layoutChild);
+            }
         }
     }
 
-    private void compileFlowContext(MdAstParent<?> markdownParent, LytFlowContainer layoutParent) {
+    public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowContainer layoutParent) {
         for (var child : markdownParent.children()) {
             LytFlowContent layoutChild;
             if (child instanceof MdAstText astText) {
                 var text = new LytFlowText();
                 text.setText(astText.value);
                 layoutChild = text;
+            } else if (child instanceof MdAstStrong astStrong) {
+                var span = new LytFlowSpan();
+                span.modifyStyle(style -> style.bold(true));
+                compileFlowContext(astStrong, span);
+                layoutChild = span;
+            } else if (child instanceof MdAstBreak) {
+                layoutChild = new LytFlowBreak();
             } else if (child instanceof MdAstLink astLink) {
                 var link = new LytFlowLink();
                 link.setUrl(astLink.url);
                 link.setTitle(astLink.title);
                 compileFlowContext(astLink, link);
                 layoutChild = link;
+            } else if (child instanceof MdxJsxTextElement el) {
+                var compiler = TagCompilers.get(el.name());
+                if (compiler == null) {
+                    layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", (MdAstNode) child);
+                } else {
+                    layoutChild = null;
+                    compiler.compileFlowContext(this, layoutParent, el);
+                }
             } else {
-                var unhandledNode = new LytFlowText();
-                unhandledNode.setText("Unhandled Markdown node in flow context: " + debugNode((MdAstNode) child));
-                layoutChild = unhandledNode;
-                LOGGER.warn("{}", unhandledNode.getText());
+                layoutChild = createErrorFlowContent("Unhandled Markdown node in flow context", (MdAstNode) child);
             }
 
-            layoutParent.append(layoutChild);
+            if (layoutChild != null) {
+                layoutParent.append(layoutChild);
+            }
         }
     }
 
-    private String debugNode(MdAstNode child) {
-        return child.type() + " (" + MdAstPosition.stringify(child.position().start()) + ")";
+    public LytBlock createErrorBlock(String text, MdAstNode child) {
+        var paragraph = new LytParagraph();
+        paragraph.append(createErrorFlowContent(text, child));
+        return paragraph;
     }
+
+    public LytFlowContent createErrorFlowContent(String text, MdAstNode child) {
+        LytFlowSpan span = new LytFlowSpan();
+        span.modifyStyle(style -> {
+            style.color(new ColorRef(0xFFFF0000))
+                    .whiteSpace(WhiteSpaceMode.PRE);
+        });
+
+        // Find the position in the source
+        var pos = child.position().start();
+        var startOfLine = pageContent.lastIndexOf('\n', pos.offset()) + 1;
+        var endOfLine = pageContent.indexOf('\n', pos.offset() + 1);
+        if (endOfLine == -1) {
+            endOfLine = pageContent.length();
+        }
+        var line = pageContent.substring(startOfLine, endOfLine);
+
+        text += " " + child.type() + " (" + MdAstPosition.stringify(pos) + ")";
+
+        span.appendText(text);
+        span.appendBreak();
+
+        span.appendText(line);
+        span.appendBreak();
+
+        span.appendText("~".repeat(pos.column() - 1) + "^");
+        span.appendBreak();
+
+        LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
+
+        return span;
+    }
+
 }

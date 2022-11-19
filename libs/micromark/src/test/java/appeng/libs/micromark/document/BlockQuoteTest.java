@@ -49,7 +49,7 @@ public class BlockQuoteTest {
     @Test
     public void testDisableBlockQuotes() {
         var parseOptions = new ParseOptions();
-        parseOptions.withExtension(new Extension() {
+        parseOptions.withSyntaxExtension(new Extension() {
             {
                 nullDisable.add("blockQuote");
             }

@@ -3,7 +3,6 @@ package appeng.libs.micromark.content;
 import appeng.libs.micromark.Extension;
 import appeng.libs.micromark.Micromark;
 import appeng.libs.micromark.TestUtil;
-import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
 import appeng.libs.micromark.html.ParseOptions;
 import org.junit.jupiter.api.Test;
@@ -101,7 +100,7 @@ public class DefinitionTest {
     @Test
     public void testDisableDefinitions() {
         var parseOptions = new ParseOptions();
-        parseOptions.withExtension(new Extension() {
+        parseOptions.withSyntaxExtension(new Extension() {
             {
                 nullDisable.add("definition");
             }

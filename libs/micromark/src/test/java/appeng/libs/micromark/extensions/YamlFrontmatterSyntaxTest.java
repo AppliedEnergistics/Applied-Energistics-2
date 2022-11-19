@@ -111,7 +111,7 @@ public class YamlFrontmatterSyntaxTest {
     }
 
     private static List<Tokenizer.Event> parse(String markdown) {
-        var options = new ParseOptions().withExtension(YamlFrontmatterSyntax.INSTANCE);
+        var options = new ParseOptions().withSyntaxExtension(YamlFrontmatterSyntax.INSTANCE);
         return Micromark.parseAndPostprocess(markdown, options);
     }
 

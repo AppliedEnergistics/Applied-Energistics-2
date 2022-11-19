@@ -11,14 +11,14 @@ public class MdastOptions extends ParseOptions {
     public final List<MdastExtension> mdastExtensions = new ArrayList<>();
 
     @Override
-    public MdastOptions withExtension(Extension extension) {
-        super.withExtension(extension);
+    public MdastOptions withSyntaxExtension(Extension extension) {
+        super.withSyntaxExtension(extension);
         return this;
     }
 
     @Override
-    public MdastOptions withExtension(Consumer<Extension> customizer) {
-        super.withExtension(customizer);
+    public MdastOptions withSyntaxExtension(Consumer<Extension> customizer) {
+        super.withSyntaxExtension(customizer);
         return this;
     }
 

@@ -147,7 +147,7 @@ public class GfmTableTest {
                 "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n</table>",
                 "should form a table if the delimiter row is indented w/ 4 spaces and indented code is turned off",
                 (parseOptions, compileOptions) -> {
-                    parseOptions.withExtension(new Extension() {
+                    parseOptions.withSyntaxExtension(new Extension() {
                         {
                             nullDisable.add("codeIndented");
                         }
@@ -281,7 +281,7 @@ public class GfmTableTest {
 
     private String toHtmlWithGfm(String markdown, BiConsumer<ParseOptions, CompileOptions> options) {
         var parseOptions = new ParseOptions();
-        parseOptions.withExtension(GfmTable.INSTANCE);
+        parseOptions.withSyntaxExtension(GfmTable.INSTANCE);
 
         var compileOptions = new CompileOptions();
         compileOptions.withExtension(GfmTableHtml.EXTENSION);

@@ -16,7 +16,7 @@ public class TestUtil {
 
     public static void assertGeneratedHtmlWithDisabled(String markdown, String expectedHtml, String message, String disabledConstruct) {
         var options = new ParseOptions();
-        options.withExtension(new Extension() {
+        options.withSyntaxExtension(new Extension() {
             {
                 nullDisable.add(disabledConstruct);
             }

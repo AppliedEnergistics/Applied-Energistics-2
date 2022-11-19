@@ -473,7 +473,7 @@ public class MdxTest {
 
         protected final String compile(String markdown) {
             return new HtmlCompiler(new CompileOptions().withExtension(HTML)).compile(
-                    Micromark.parseAndPostprocess(markdown, new ParseOptions().withExtension(MdxSyntax.EXTENSION))
+                    Micromark.parseAndPostprocess(markdown, new ParseOptions().withSyntaxExtension(MdxSyntax.INSTANCE))
             );
         }
     }

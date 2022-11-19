@@ -1,6 +1,8 @@
 package appeng.client.guidebook.layout.flow;
 
+import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
@@ -21,7 +23,6 @@ class LineBuilder implements Consumer<LytFlowContent> {
     private int remainingLineWidth;
     @Nullable
     private LineElement openLineElement;
-    private WhiteSpaceMode whiteSpaceMode = WhiteSpaceMode.NORMAL;
 
     public LineBuilder(LayoutContext context, int x, int y, int availableWidth, List<Line> lines) {
         this.context = context;
@@ -37,7 +38,19 @@ class LineBuilder implements Consumer<LytFlowContent> {
     public void accept(LytFlowContent content) {
         if (content instanceof LytFlowText text) {
             appendText(text.getText(), text.getParentSpan());
+        } else if (content instanceof LytFlowBreak) {
+            appendBreak();
+        } else {
+            throw new IllegalArgumentException("Don't know how to layout flow content: " + content);
         }
+    }
+
+    private void appendBreak() {
+        // Append an empty line with the default style
+        if (openLineElement == null) {
+            openLineElement = new LineTextRun("", DefaultStyles.BASE_STYLE);
+        }
+        closeLine();
     }
 
     @Nullable
@@ -104,7 +117,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
 
             // Handle explicit line breaks
             if (codePoint == '\n') {
-                if (whiteSpaceMode.isCollapseSegmentBreaks()) {
+                if (style.whiteSpace().isCollapseSegmentBreaks()) {
                     codePoint = ' ';
                 } else {
                     consumer.visitRun(lineBuffer, curLineWidth, true);
@@ -119,7 +132,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
 
             // Treat spaces as a safe-point for going back to when needing to line-break later
             if (Character.isWhitespace(codePoint)) {
-                if (lastCharWasWhitespace && whiteSpaceMode.isCollapseWhitespace()) {
+                if (lastCharWasWhitespace && style.whiteSpace().isCollapseWhitespace()) {
                     continue; // White space collapsing
                 }
                 // Skip if the last one was a space already

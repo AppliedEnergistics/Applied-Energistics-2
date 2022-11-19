@@ -13,12 +13,12 @@ public class ParseOptions {
         return extensions;
     }
 
-    public ParseOptions withExtension(Extension extension) {
+    public ParseOptions withSyntaxExtension(Extension extension) {
         this.extensions.add(extension);
         return this;
     }
 
-    public ParseOptions withExtension(Consumer<Extension> customizer) {
+    public ParseOptions withSyntaxExtension(Consumer<Extension> customizer) {
         var extension = new Extension();
         customizer.accept(extension);
         this.extensions.add(extension);

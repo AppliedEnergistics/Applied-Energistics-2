@@ -1,9 +1,9 @@
-package appeng.client.guidebook.layout.flow;
+package appeng.client.guidebook.style;
 
 /**
  * See https://developer.mozilla.org/en-US/docs/Web/CSS/white-space
  */
-enum WhiteSpaceMode {
+public enum WhiteSpaceMode {
     NORMAL(true, true),
     NOWRAP(true, true),
     PRE(false, false),

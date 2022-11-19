@@ -1,8 +1,6 @@
 package appeng.libs.mdast;
 
-import appeng.libs.mdast.mdx.MdxMdastExtension;
 import appeng.libs.mdast.model.MdAstRoot;
-import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import org.junit.jupiter.api.Test;
 
@@ -152,7 +150,7 @@ class YamlFrontmatterExtensionTest extends AbstractMdAstTest {
 
     private MdAstRoot fromMarkdown(String markdown) {
         var options = new MdastOptions();
-        options.withExtension(YamlFrontmatterSyntax.INSTANCE);
+        options.withSyntaxExtension(YamlFrontmatterSyntax.INSTANCE);
         options.withMdastExtension(YamlFrontmatterExtension.INSTANCE);
 
         return (MdAstRoot) removePosition(MdAst.fromMarkdown(markdown, options));

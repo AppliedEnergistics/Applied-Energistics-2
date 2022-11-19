@@ -8,15 +8,15 @@ import java.util.List;
 
 public class MdxSyntax {
 
-    public static final Extension EXTENSION = new Extension();
+    public static final Extension INSTANCE = new Extension();
 
     static {
-        EXTENSION.flow.put(Codes.lessThan, List.of(JsxFlow.INSTANCE));
-        EXTENSION.text.put(Codes.lessThan, List.of(JsxText.INSTANCE));
+        INSTANCE.flow.put(Codes.lessThan, List.of(JsxFlow.INSTANCE));
+        INSTANCE.text.put(Codes.lessThan, List.of(JsxText.INSTANCE));
 
         // See https://github.com/micromark/micromark-extension-mdx-md/blob/main/index.js
         Collections.addAll(
-                EXTENSION.nullDisable,
+                INSTANCE.nullDisable,
                 "autolink", "codeIndented", "htmlFlow", "htmlText"
         );
     }

@@ -20,9 +20,11 @@ public record TextStyle(
         @Nullable
         ResourceLocation font,
         @Nullable
-        ColorRef color) {
+        ColorRef color,
+        @Nullable
+        WhiteSpaceMode whiteSpace) {
 
-    public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null);
+    public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null, null);
 
     public ResolvedTextStyle mergeWith(ResolvedTextStyle base) {
         var fontScale = this.fontScale != null ? this.fontScale : base.fontScale();
@@ -33,6 +35,7 @@ public record TextStyle(
         var obfuscated = this.obfuscated != null ? this.obfuscated : base.obfuscated();
         var font = this.font != null ? this.font : base.font();
         var color = this.color != null ? this.color : base.color();
+        var whiteSpace = this.whiteSpace != null ? this.whiteSpace : base.whiteSpace();
         return new ResolvedTextStyle(
                 fontScale,
                 bold,
@@ -41,7 +44,8 @@ public record TextStyle(
                 strikethrough,
                 obfuscated,
                 font,
-                color
+                color,
+                whiteSpace
         );
     }
 
@@ -55,6 +59,7 @@ public record TextStyle(
         builder.obfuscated = obfuscated;
         builder.font = font;
         builder.color = color;
+        builder.whiteSpace = whiteSpace;
         return builder;
     }
 
@@ -71,6 +76,7 @@ public record TextStyle(
         private Boolean obfuscated;
         private ResourceLocation font;
         private ColorRef color;
+        private WhiteSpaceMode whiteSpace;
 
         public Builder fontScale(Float fontScale) {
             this.fontScale = fontScale;
@@ -112,6 +118,12 @@ public record TextStyle(
             return this;
         }
 
+
+        public Builder whiteSpace(WhiteSpaceMode whiteSpace) {
+            this.whiteSpace = whiteSpace;
+            return this;
+        }
+
         public TextStyle build() {
             return new TextStyle(fontScale,
                     bold,
@@ -120,7 +132,8 @@ public record TextStyle(
                     strikethrough,
                     obfuscated,
                     font,
-                    color);
+                    color,
+                    whiteSpace);
         }
     }
 }

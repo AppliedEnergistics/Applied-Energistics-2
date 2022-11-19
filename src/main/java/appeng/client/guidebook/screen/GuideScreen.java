@@ -14,13 +14,13 @@ import net.minecraft.network.chat.Component;
 import java.util.Objects;
 
 public class GuideScreen extends Screen {
-    private GuidePage currentPage;
-    private int scrollX;
-    private int scrollY;
+    private final GuidePage currentPage;
+    private final GuideScrollbar scrollbar;
 
     public GuideScreen(GuidePage currentPage) {
         super(Component.literal("AE2 Guidebook"));
         this.currentPage = Objects.requireNonNull(currentPage);
+        this.scrollbar = new GuideScrollbar();
     }
 
     @Override
@@ -36,6 +36,16 @@ public class GuideScreen extends Screen {
         // Build layout if needed
         var document = currentPage.getDocument();
         document.updateLayout(context, docViewport.width());
+
+        // Add and re-position scrollbar
+        var docRect = getDocumentRect();
+        addRenderableWidget(scrollbar);
+        scrollbar.move(
+                docRect.right(),
+                docRect.y(),
+                docRect.height()
+        );
+        scrollbar.setContentHeight(document.getContentHeight());
     }
 
     @Override
@@ -50,14 +60,15 @@ public class GuideScreen extends Screen {
         enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
 
         // Move rendering to anchor @ 0,0 in the document rect
+        var documentViewport = getDocumentViewport();
         poseStack.pushPose();
-        poseStack.translate(documentRect.x(), documentRect.y(), 0);
+        poseStack.translate(documentRect.x() - documentViewport.x(), documentRect.y() - documentViewport.y(), 0);
 
         var bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
         var document = currentPage.getDocument();
         var context = new SimpleRenderContext(this,
-                getDocumentViewport(),
+                documentViewport,
                 poseStack,
                 bufferSource,
                 LightDarkMode.LIGHT_MODE);
@@ -80,6 +91,14 @@ public class GuideScreen extends Screen {
 
     private LytRect getDocumentViewport() {
         var documentRect = getDocumentRect();
-        return new LytRect(scrollX, scrollY, documentRect.width(), documentRect.height());
+        return new LytRect(0, scrollbar.getScrollAmount(), documentRect.width(), documentRect.height());
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (!super.mouseScrolled(mouseX, mouseY, delta)) {
+            return scrollbar.mouseScrolled(mouseX, mouseY, delta);
+        }
+        return true;
     }
 }
