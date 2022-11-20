@@ -136,7 +136,7 @@ public class AppEngSlot extends Slot {
     @Override
     public void onSlotChanged() {
         this.setIsValid(hasCalculatedValidness.NotAvailable);
-        if (this.isSlotEnabled()) {
+        if (this.isSlotEnabled() && this.itemHandler != null) {
             ItemHandlerUtil.setStackInSlot(this.itemHandler, this.index, this.getStack().copy());
 
             if (this.getContainer() != null) {

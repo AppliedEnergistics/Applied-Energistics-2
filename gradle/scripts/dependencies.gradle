@@ -23,10 +23,12 @@ repositories {
         url "https://cursemaven.com"
     }
 
+    /*
     maven {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
+    */
 
     maven {
         name "Mobius"
@@ -102,12 +104,11 @@ dependencies {
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"
     compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
-    compileOnly "inventory-tweaks:InventoryTweaks:${inventorytweaks_version}:api"
-    compileOnly "inventory-bogo-sorter:bogosorter:${bogosorter_version}"
+    compileOnly "curse.maven:inventory-tweaks-223094:2482482"
+    compileOnly "curse.maven:inventory-bogo-sorter-632327:3975184"
     compileOnly "team.chisel.ctm:CTM:${ctm_version}"
     compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2-r152.16:api"
     deobfCompile "net.sengir.forestry:forestry_${minecraft_version}:$forestry_version"
-
 
     // at runtime, use the full JEI jar
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
