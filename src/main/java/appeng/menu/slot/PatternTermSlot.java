@@ -38,11 +38,7 @@ public class PatternTermSlot extends CraftingTermSlot {
     }
 
     @Override
-    public ItemStack getItem() {
-        if (!this.isActive()) {
-            this.clearStack();
-        }
-
-        return super.getItem();
+    public void initialize(ItemStack stack) {
+        // The result is computed on the client-side, don't let the server override it with an empty stack.
     }
 }
