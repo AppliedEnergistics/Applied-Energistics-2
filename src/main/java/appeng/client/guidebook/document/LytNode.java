@@ -1,5 +1,6 @@
 package appeng.client.guidebook.document;
 
+import appeng.client.guidebook.document.flow.LytFlowContent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -19,5 +20,29 @@ public abstract class LytNode {
     @Nullable
     public final LytNode getParent() {
         return parent;
+    }
+
+    public abstract LytRect getBounds();
+
+    public void onMouseEnter(@Nullable LytFlowContent hoveredContent) {
+    }
+
+    public void onMouseLeave() {
+    }
+
+    @Nullable
+    public LytNode hitTestNode(int x, int y) {
+        if (!getBounds().contains(x, y)) {
+            return null;
+        }
+
+        for (var child : getChildren()) {
+            var node = child.hitTestNode(x, y);
+            if (node != null) {
+                return node;
+            }
+        }
+
+        return this;
     }
 }

@@ -1,5 +1,7 @@
 package appeng.client.guidebook.document;
 
+import appeng.client.guidebook.document.flow.LytFlowContainer;
+import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +20,9 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     @Nullable
     private Layout layout;
 
+    @Nullable
+    private HitTestResult hoveredElement;
+
     public int getAvailableWidth() {
         return layout != null ? layout.availableWidth() : 0;
     }
@@ -33,6 +38,11 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     @Override
     public List<LytBlock> getChildren() {
         return blocks;
+    }
+
+    @Override
+    public LytRect getBounds() {
+        return layout != null ? new LytRect(0, 0, layout.availableWidth, layout.contentHeight) : null;
     }
 
     @Override
@@ -76,10 +86,49 @@ public class LytDocument extends LytNode implements LytBlockContainer {
 
     public void render(SimpleRenderContext context) {
         for (var block : blocks) {
+            if (!block.getBounds().intersects(context.viewport())) {
+                continue;
+            }
             block.render(context);
         }
     }
 
+    public HitTestResult getHoveredElement() {
+        return hoveredElement;
+    }
+
+    public void setHoveredElement(HitTestResult hoveredElement) {
+        if (hoveredElement != this.hoveredElement) {
+            if (this.hoveredElement != null) {
+                this.hoveredElement.node.onMouseLeave();
+            }
+            this.hoveredElement = hoveredElement;
+            if (this.hoveredElement != null) {
+                this.hoveredElement.node.onMouseEnter(hoveredElement.content());
+            }
+        }
+    }
+
+    public HitTestResult hitTest(int x, int y) {
+        var node = hitTestNode(x, y);
+        if (node != null) {
+            LytFlowContent content = null;
+            if (node instanceof LytFlowContainer container) {
+                content = container.pickContent(x, y);
+            }
+            return new HitTestResult(node, content);
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onMouseEnter(@Nullable LytFlowContent hoveredContent) {
+    }
+
     public record Layout(int availableWidth, int contentHeight) {
+    }
+
+    public record HitTestResult(LytNode node, @Nullable LytFlowContent content) {
     }
 }

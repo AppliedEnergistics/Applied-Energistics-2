@@ -28,6 +28,19 @@ public record LytRect(int x, int y, int width, int height) {
         );
     }
 
+    public LytRect expand(int amount) {
+        return expand(amount, amount, amount, amount);
+    }
+
+    public LytRect expand(int left, int top, int right, int bottom) {
+        return new LytRect(
+                x - left,
+                y - top,
+                Math.max(width + left + right, 0),
+                Math.max(height + top + bottom, 0)
+        );
+    }
+
     public LytRect withWidth(int width) {
         return new LytRect(x, y, width, height);
     }
@@ -59,4 +72,14 @@ public record LytRect(int x, int y, int width, int height) {
                 bottom - y
         );
     }
+
+    public boolean contains(int x, int y) {
+        return x >= this.x && x < right() &&
+                y >= this.y && y < bottom();
+    }
+
+    public boolean intersects(LytRect other) {
+        return right() > other.x() && x < other.right() && bottom() > other.y && y < other.bottom();
+    }
+
 }

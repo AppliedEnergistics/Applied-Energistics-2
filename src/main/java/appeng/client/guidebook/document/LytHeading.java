@@ -3,7 +3,7 @@ package appeng.client.guidebook.document;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import net.minecraft.client.Minecraft;
 
-public class LytHeading extends LytParagraph implements LytFlowContainer {
+public class LytHeading extends LytParagraph {
     public LytHeading() {
         setMarginTop(5);
         setMarginBottom(5);

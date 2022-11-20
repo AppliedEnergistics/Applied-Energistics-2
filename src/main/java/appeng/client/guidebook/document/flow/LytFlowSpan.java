@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * Attaches properties to a span of {@link LytFlowContent}, such as links
  * or formatting.
  */
-public class LytFlowSpan extends LytFlowContent implements LytFlowContainer {
+public class LytFlowSpan extends LytFlowContent implements LytFlowParent {
 
     private TextStyle style = TextStyle.EMPTY;
 
@@ -22,7 +22,6 @@ public class LytFlowSpan extends LytFlowContent implements LytFlowContainer {
         return children;
     }
 
-    @Override
     public void append(LytFlowContent child) {
         if (child.getParentSpan() != null) {
             throw new IllegalStateException("Child is already owned by other span");

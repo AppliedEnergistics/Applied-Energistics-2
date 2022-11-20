@@ -11,6 +11,7 @@ import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowLink;
+import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.render.ColorRef;
@@ -129,7 +130,7 @@ public final class PageCompiler {
         }
     }
 
-    public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowContainer layoutParent) {
+    public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {
         for (var child : markdownParent.children()) {
             LytFlowContent layoutChild;
             if (child instanceof MdAstText astText) {

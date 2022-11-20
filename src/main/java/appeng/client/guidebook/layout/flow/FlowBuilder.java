@@ -5,10 +5,12 @@ import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class FlowBuilder {
     private final List<Line> lines = new ArrayList<>();
@@ -35,9 +37,10 @@ public class FlowBuilder {
                 .reduce(LytRect.empty(), LytRect::union);
     }
 
-    public void render(RenderContext context) {
+    public void render(RenderContext context, @Nullable LytFlowContent hoveredContent) {
         for (var line : lines) {
             for (var el = line.firstElement(); el != null; el = el.next) {
+                el.containsMouse = el.getFlowContent() == hoveredContent;
                 el.render(context);
             }
         }
@@ -53,4 +56,25 @@ public class FlowBuilder {
         }
     }
 
+    @Nullable
+    public LineElement hitTest(int x, int y) {
+        for (var line : lines) {
+            if (line.bounds().contains(x, y)) {
+                for (var el = line.firstElement(); el != null; el = el.next) {
+                    if (el.bounds.contains(x, y)) {
+                        return el;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Stream<LytRect> enumerateContentBounds(LytFlowContent content) {
+        return lines.stream()
+                .flatMap(Line::elements)
+                .filter(el -> el.getFlowContent() == content)
+                .map(el -> el.bounds);
+    }
 }

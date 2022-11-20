@@ -1,7 +1,10 @@
 package appeng.client.guidebook.screen;
 
+import appeng.client.gui.DashPattern;
+import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.layout.SimpleLayoutContext;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
@@ -14,6 +17,9 @@ import net.minecraft.network.chat.Component;
 import java.util.Objects;
 
 public class GuideScreen extends Screen {
+    private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
+    private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
+
     private final GuidePage currentPage;
     private final GuideScrollbar scrollbar;
 
@@ -57,8 +63,6 @@ public class GuideScreen extends Screen {
 
         fill(poseStack, documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom(), 0x80333333);
 
-        enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
-
         // Move rendering to anchor @ 0,0 in the document rect
         var documentViewport = getDocumentViewport();
         poseStack.pushPose();
@@ -72,14 +76,53 @@ public class GuideScreen extends Screen {
                 poseStack,
                 bufferSource,
                 LightDarkMode.LIGHT_MODE);
-        document.render(context);
 
+        enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
+
+        document.render(context);
         bufferSource.endBatch();
 
-        poseStack.popPose();
         disableScissor();
 
+        var hoveredElement = document.getHoveredElement();
+        if (hoveredElement != null) {
+            DashedRectangle.render(context.poseStack(), hoveredElement.node().getBounds(), DEBUG_NODE_OUTLINE, 0);
+            if (hoveredElement.content() != null) {
+                if (hoveredElement.node() instanceof LytFlowContainer flowContainer) {
+                    flowContainer.enumerateContentBounds(hoveredElement.content())
+                            .forEach(bound -> {
+                                DashedRectangle.render(context.poseStack(), bound, DEBUG_CONTENT_OUTLINE, 0);
+                            });
+                }
+            }
+        }
+
+        poseStack.popPose();
+
         super.render(poseStack, mouseX, mouseY, partialTick);
+    }
+
+    @Override
+    public void afterMouseMove() {
+        super.afterMouseMove();
+
+        var document = currentPage.getDocument();
+
+        var documentRect = getDocumentRect();
+        var mouseHandler = minecraft.mouseHandler;
+        var scale = (double) minecraft.getWindow().getGuiScaledWidth() / (double) minecraft.getWindow().getScreenWidth();
+        var x = mouseHandler.xpos() * scale - documentRect.x();
+        var y = mouseHandler.ypos() * scale - documentRect.y();
+
+        if (x >= 0 && x < documentRect.width() && y >= 0 && y < documentRect.height()) {
+            var docX = (int) Math.round(x);
+            var docY = (int) Math.round(y + scrollbar.getScrollAmount());
+
+            var hoveredEl = document.hitTest(docX, docY);
+            document.setHoveredElement(hoveredEl);
+        } else {
+            document.setHoveredElement(null);
+        }
     }
 
     private LytRect getDocumentRect() {

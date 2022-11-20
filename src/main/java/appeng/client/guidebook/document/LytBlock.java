@@ -2,6 +2,7 @@ package appeng.client.guidebook.document;
 
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class LytBlock extends LytNode {
     protected LytRect bounds;
@@ -10,6 +11,11 @@ public abstract class LytBlock extends LytNode {
     private int marginLeft;
     private int marginRight;
     private int marginBottom;
+
+    @Override
+    public LytRect getBounds() {
+        return bounds;
+    }
 
     public final LytRect layout(LayoutContext context, int x, int y, int availableWidth) {
         bounds = computeLayout(context, x, y, availableWidth);
