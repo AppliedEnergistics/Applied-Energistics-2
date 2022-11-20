@@ -208,9 +208,9 @@ public class ItemRepo {
                 view.sort(ItemSorters.CONFIG_BASED_SORT_BY_SIZE);
             } else if (SortBy == SortOrder.INVTWEAKS) {
                 if (InventoryBogoSortModule.isLoaded()) {
-                    Collections.sort(this.view, InventoryBogoSortModule.COMPARATOR);
+                    view.sort(InventoryBogoSortModule.COMPARATOR);
                 } else {
-                    Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS);
+                    view.sort(ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS);
                 }
             } else {
                 view.sort(ItemSorters.CONFIG_BASED_SORT_BY_NAME);
