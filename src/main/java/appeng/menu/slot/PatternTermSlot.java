@@ -19,7 +19,6 @@
 package appeng.menu.slot;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
@@ -35,10 +34,5 @@ public class PatternTermSlot extends CraftingTermSlot {
             MEStorage storage, InternalInventory cMatrix,
             IMenuCraftingPacket c) {
         super(player, mySrc, energySrc, storage, cMatrix, InternalInventory.empty(), c);
-    }
-
-    @Override
-    public void initialize(ItemStack stack) {
-        // The result is computed on the client-side, don't let the server override it with an empty stack.
     }
 }
