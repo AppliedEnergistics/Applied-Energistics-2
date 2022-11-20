@@ -70,8 +70,8 @@ public class FacadeBuilder {
 
     private final Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 
-    public static final double THICK_THICKNESS = 2D / 16D;
     public static final double THIN_THICKNESS = 1D / 16D;
+    public static final double THICK_THICKNESS = 2D / 16D;
 
     public static final AABB[] THICK_FACADE_BOXES = new AABB[] {
             new AABB(0.0, 0.0, 0.0, 1.0, THICK_THICKNESS, 1.0),
