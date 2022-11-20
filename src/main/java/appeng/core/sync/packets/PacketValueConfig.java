@@ -133,7 +133,7 @@ public class PacketValueConfig extends AppEngPacket {
             if (c instanceof ContainerPatternTerm) {
                 final ContainerPatternTerm cpt = (ContainerPatternTerm) c;
                 if (this.Name.equals("PatternTerminal.CraftMode")) {
-                    cpt.getPart().setCraftingRecipe(this.Value.equals("1"));
+                    cpt.getPatternTerminal().setCraftingRecipe(this.Value.equals("1"));
                 } else if (this.Name.equals("PatternTerminal.Encode")) {
                     if (this.Value.equals("2")) {
                         cpt.encodeAndMoveToInventory();
@@ -157,7 +157,7 @@ public class PacketValueConfig extends AppEngPacket {
                 } else if (this.Name.equals("PatternTerminal.MaximizeCount")) {
                     cpt.maximizeCount();
                 } else if (this.Name.equals("PatternTerminal.Substitute")) {
-                    cpt.getPart().setSubstitution(this.Value.equals("1"));
+                    cpt.getPatternTerminal().setSubstitution(this.Value.equals("1"));
                 }
             } else if (c instanceof ContainerExpandedProcessingPatternTerm) {
                 final ContainerExpandedProcessingPatternTerm cept = (ContainerExpandedProcessingPatternTerm) c;
