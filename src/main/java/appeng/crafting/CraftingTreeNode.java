@@ -20,6 +20,8 @@ package appeng.crafting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -29,6 +31,7 @@ import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.execution.InputTemplate;
@@ -229,10 +232,20 @@ public class CraftingTreeNode {
                         return;
                     }
                 } else {
-                    throw new UnsupportedOperationException(
-                            "Unexpected error in the crafting calculation. Found none of "
-                                    + what + " in crafting storage. Remaining request: " + totalRequestedItems + " of "
-                                    + requestedAmount + "*" + this.amount);
+                    var pattern = pro.details.getDefinition();
+                    String outputs = Stream.of(pro.details.getOutputs())
+                            .map(GenericStack::toString)
+                            .collect(Collectors.joining(", "));
+                    String errorMessage = """
+                            Unexpected error in the crafting calculation: can't find created items.
+                            This is an AE2 bug, please report it, with the following important information:
+
+                            - Found none of %s. Remaining request: %d of %d*%d.
+                            - Tried crafting %d times the pattern %s with tag %s.
+                            - Pattern outputs: %s.
+                            """.formatted(what, totalRequestedItems, requestedAmount, amount, times, pattern,
+                            pattern.getTag(), outputs);
+                    throw new UnsupportedOperationException(errorMessage);
                 }
             }
         } else if (this.nodes.size() > 1) {
