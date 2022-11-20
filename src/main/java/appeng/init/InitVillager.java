@@ -33,7 +33,6 @@ public class InitVillager {
     public static void init() {
         Registry.register(Registry.VILLAGER_PROFESSION, ID, PROFESSION);
 
-        sellItems(1, AEItems.CERTUS_QUARTZ_CRYSTAL, 5, 10, 12);
         buyItems(1, AEItems.CERTUS_QUARTZ_CRYSTAL, 3, 4, 10);
         buyItems(1, AEItems.METEORITE_COMPASS, 2, 1, 5);
 
@@ -41,7 +40,6 @@ public class InitVillager {
         sellItems(2, AEItems.SILICON, 5, 8, 13);
         buyItems(2, AEBlocks.SKY_STONE_BLOCK, 5, 8, 20);
 
-        sellItems(3, AEItems.FLUIX_CRYSTAL, 3, 6, 20);
         sellItems(3, AEBlocks.QUARTZ_GLASS, 2, 10, 10);
         buyItems(3, AEItems.FLUIX_CRYSTAL, 5, 4, 14);
 
