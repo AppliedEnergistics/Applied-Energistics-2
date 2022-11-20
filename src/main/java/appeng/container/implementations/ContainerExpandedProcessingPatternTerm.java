@@ -20,10 +20,10 @@ public class ContainerExpandedProcessingPatternTerm extends ContainerPatternEnco
         this.craftingSlots = new SlotFakeCraftingMatrix[PROCESSING_INPUT_LIMIT];
         this.outputSlots = new OptionalSlotFake[PROCESSING_OUTPUT_LIMIT];
 
-        final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName("pattern");
-        final IItemHandler output = this.getPatternTerminal().getInventoryByName("output");
+        final IItemHandler patternInv = this.getPart().getInventoryByName("pattern");
+        final IItemHandler output = this.getPart().getInventoryByName("output");
 
-        this.crafting = this.getPatternTerminal().getInventoryByName("crafting");
+        this.crafting = this.getPart().getInventoryByName("crafting");
 
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {

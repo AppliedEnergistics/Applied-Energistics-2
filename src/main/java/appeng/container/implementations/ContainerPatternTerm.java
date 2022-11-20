@@ -27,16 +27,19 @@ import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.ContainerNull;
+import appeng.container.guisync.GuiSync;
+import appeng.container.slot.AppEngSlot;
+import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotPatternOutputs;
 import appeng.container.slot.SlotPatternTerm;
+import appeng.container.slot.SlotPlayerHotBar;
+import appeng.container.slot.SlotPlayerInv;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.sync.packets.PacketPatternSlot;
 import appeng.items.storage.ItemViewCell;
 import appeng.me.helpers.MachineSource;
-import appeng.parts.reporting.AbstractPartEncoder;
-import appeng.parts.reporting.PartPatternTerminal;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
@@ -45,8 +48,10 @@ import appeng.util.item.AEItemStack;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -63,10 +68,10 @@ public class ContainerPatternTerm extends ContainerPatternEncoder {
         this.craftingSlots = new SlotFakeCraftingMatrix[9];
         this.outputSlots = new OptionalSlotFake[3];
 
-        final IItemHandler patternInv = this.getPatternTerminal().getInventoryByName("pattern");
-        final IItemHandler output = this.getPatternTerminal().getInventoryByName("output");
+        final IItemHandler patternInv = this.getPart().getInventoryByName("pattern");
+        final IItemHandler output = this.getPart().getInventoryByName("output");
 
-        this.crafting = this.getPatternTerminal().getInventoryByName("crafting");
+        this.crafting = this.getPart().getInventoryByName("crafting");
 
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
@@ -101,9 +106,9 @@ public class ContainerPatternTerm extends ContainerPatternEncoder {
     @Override
     public boolean isSlotEnabled(final int idx) {
         if (idx == 1) {
-            return Platform.isServer() ? !this.getPatternTerminal().isCraftingRecipe() : !this.isCraftingMode();
+            return Platform.isServer() ? !this.getPart().isCraftingRecipe() : !this.isCraftingMode();
         } else if (idx == 2) {
-            return Platform.isServer() ? this.getPatternTerminal().isCraftingRecipe() : this.isCraftingMode();
+            return Platform.isServer() ? this.getPart().isCraftingRecipe() : this.isCraftingMode();
         } else {
             return false;
         }
@@ -148,7 +153,7 @@ public class ContainerPatternTerm extends ContainerPatternEncoder {
                 return;
             }
 
-            final IMEMonitor<IAEItemStack> storage = this.getPatternTerminal()
+            final IMEMonitor<IAEItemStack> storage = this.getPart()
                     .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
             final IItemList<IAEItemStack> all = storage.getStorageList();
 
@@ -190,15 +195,10 @@ public class ContainerPatternTerm extends ContainerPatternEncoder {
                     if (!failed.isEmpty()) {
                         this.getCellInventory()
                                 .injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
-                                        new MachineSource(this.getPatternTerminal()));
+                                        new MachineSource(this.getPart()));
                     }
                 }
             }
         }
-    }
-
-    @Override
-    public PartPatternTerminal getPatternTerminal() {
-        return (PartPatternTerminal) super.getPatternTerminal();
     }
 }

@@ -77,7 +77,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
             final AppEngSlot clickSlot = (AppEngSlot) this.inventorySlots.get(idx); // require AE SLots!
             ItemStack itemStack = clickSlot.getStack();
             if (AEApi.instance().definitions().materials().blankPattern().isSameAs(itemStack)) {
-                IItemHandler patternInv = this.getPatternTerminal().getInventoryByName("pattern");
+                IItemHandler patternInv = this.getPart().getInventoryByName("pattern");
                 ItemStack remainder = patternInv.insertItem(0, itemStack, false);
                 clickSlot.putStack(remainder);
             }
@@ -85,7 +85,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
         return super.transferStackInSlot(p, idx);
     }
 
-    public AbstractPartEncoder getPatternTerminal() {
+    public AbstractPartEncoder getPart() {
         return this.patternTerminal;
     }
 
@@ -97,7 +97,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getInventoryPlayer());
         }
-        return this.getPatternTerminal().getInventoryByName(name);
+        return this.getPart().getInventoryByName(name);
     }
 
     @Override
@@ -490,12 +490,12 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         if (Platform.isServer()) {
-            if (this.isCraftingMode() != this.getPatternTerminal().isCraftingRecipe()) {
-                this.setCraftingMode(this.getPatternTerminal().isCraftingRecipe());
+            if (this.isCraftingMode() != this.getPart().isCraftingRecipe()) {
+                this.setCraftingMode(this.getPart().isCraftingRecipe());
                 this.updateOrderOfOutputSlots();
             }
 
-            this.substitute = this.getPatternTerminal().isSubstitution();
+            this.substitute = this.getPart().isSubstitution();
         }
     }
 
