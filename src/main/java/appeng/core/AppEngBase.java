@@ -38,10 +38,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterGameTestsEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -79,6 +82,7 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
+import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
@@ -156,6 +160,13 @@ public abstract class AppEngBase implements AppEng {
         MinecraftForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         MinecraftForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
         MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, InitCapabilities::registerGenericInvWrapper);
+        // Workaround for https://github.com/MinecraftForge/MinecraftForge/issues/9158.
+        // Can be removed once it's fixed in Forge.
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, (PlayerInteractEvent.RightClickBlock event) -> {
+            if (event.getItemStack().getItem() instanceof MemoryCardItem && event.getEntity().isSecondaryUseActive()) {
+                event.setUseBlock(Event.Result.ALLOW);
+            }
+        });
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
