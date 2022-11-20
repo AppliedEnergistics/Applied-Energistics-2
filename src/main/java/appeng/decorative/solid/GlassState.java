@@ -18,8 +18,6 @@
 
 package appeng.decorative.solid;
 
-import java.util.EnumSet;
-
 import net.minecraft.core.Direction;
 
 /**
@@ -32,13 +30,15 @@ public final class GlassState {
     private final int y;
     private final int z;
 
-    private final EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
+    private final int[] masks;
+    private final boolean[] adjacentGlassBlocks;
 
-    public GlassState(int x, int y, int z, EnumSet<Direction> flushWith) {
+    public GlassState(int x, int y, int z, int[] masks, boolean[] adjacentGlassBlocks) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.flushWith.addAll(flushWith);
+        this.masks = masks.clone();
+        this.adjacentGlassBlocks = adjacentGlassBlocks.clone();
     }
 
     public int getX() {
@@ -53,8 +53,11 @@ public final class GlassState {
         return this.z;
     }
 
-    public boolean isFlushWith(Direction side) {
-        return this.flushWith.contains(side);
+    public int getMask(Direction side) {
+        return masks[side.get3DDataValue()];
     }
 
+    public boolean hasAdjacentGlassBlock(Direction side) {
+        return adjacentGlassBlocks[side.get3DDataValue()];
+    }
 }

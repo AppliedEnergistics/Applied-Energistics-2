@@ -298,7 +298,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
         }
 
         CableBusRenderState renderState = this.cb.getRenderState();
-        renderState.setLevel(level);
         renderState.setPos(getBlockPos());
         return renderState;
 

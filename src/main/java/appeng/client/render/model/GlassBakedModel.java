@@ -19,7 +19,6 @@
 package appeng.client.render.model;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
@@ -51,7 +50,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.decorative.solid.GlassState;
@@ -110,7 +108,7 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
             Supplier<RandomSource> randomSupplier, RenderContext context) {
-        final GlassState glassState = getGlassState(blockView, pos);
+        final GlassState glassState = getGlassState(blockView, state, pos);
 
         // TODO: This could just use the Random instance we're given...
         final int cx = Math.abs(glassState.getX() % 10);
@@ -133,18 +131,14 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
 
         // Render the glass side
         for (Direction side : Direction.values()) {
+            if (glassState.hasAdjacentGlassBlock(side)) { // Skip sides that are connected to another glass block
+                continue;
+            }
+
             final List<Vector3f> corners = RenderHelper.getFaceCorners(side);
             this.emitQuad(emitter, side, corners, glassTexture, u, v);
 
-            /*
-             * This needs some explanation: The bit-field contains 4-bits, one for each direction that a frame may be
-             * drawn. Converted to a number, the bit-field is then used as an index into the list of frame textures,
-             * which have been created in such a way that their filenames indicate, in which directions they contain
-             * borders. i.e. bitmask = 0101 means a border should be drawn up and down (in terms of u,v space).
-             * Converted to a number, this bitmask is 5. So the texture at index 5 is used. That texture had "0101" in
-             * its filename to indicate this.
-             */
-            final int edgeBitmask = makeBitmask(glassState, side);
+            final int edgeBitmask = glassState.getMask(side);
             final TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
 
             if (sideSprite != null) {
@@ -178,32 +172,38 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     /**
      * Creates the bitmask that indicates, in which directions (in terms of u,v space) a border should be drawn.
      */
-    private static int makeBitmask(GlassState state, Direction side) {
+    private static int makeBitmask(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction side) {
         return switch (side) {
-            case DOWN -> makeBitmask(state, Direction.SOUTH, Direction.EAST, Direction.NORTH, Direction.WEST);
-            case UP -> makeBitmask(state, Direction.SOUTH, Direction.WEST, Direction.NORTH, Direction.EAST);
-            case NORTH -> makeBitmask(state, Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST);
-            case SOUTH -> makeBitmask(state, Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST);
-            case WEST -> makeBitmask(state, Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH);
-            case EAST -> makeBitmask(state, Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH);
-            default -> throw new IllegalArgumentException("Unsupported side!");
+            case DOWN -> makeBitmask(level, state, pos, side, Direction.SOUTH, Direction.EAST, Direction.NORTH,
+                    Direction.WEST);
+            case UP -> makeBitmask(level, state, pos, side, Direction.SOUTH, Direction.WEST, Direction.NORTH,
+                    Direction.EAST);
+            case NORTH -> makeBitmask(level, state, pos, side, Direction.UP, Direction.WEST, Direction.DOWN,
+                    Direction.EAST);
+            case SOUTH -> makeBitmask(level, state, pos, side, Direction.UP, Direction.EAST, Direction.DOWN,
+                    Direction.WEST);
+            case WEST -> makeBitmask(level, state, pos, side, Direction.UP, Direction.SOUTH, Direction.DOWN,
+                    Direction.NORTH);
+            case EAST -> makeBitmask(level, state, pos, side, Direction.UP, Direction.NORTH, Direction.DOWN,
+                    Direction.SOUTH);
         };
     }
 
-    private static int makeBitmask(GlassState state, Direction up, Direction right, Direction down, Direction left) {
+    private static int makeBitmask(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction face,
+            Direction up, Direction right, Direction down, Direction left) {
 
         int bitmask = 0;
 
-        if (!state.isFlushWith(up)) {
+        if (!isGlassBlock(level, state, pos, face, up)) {
             bitmask |= 1;
         }
-        if (!state.isFlushWith(right)) {
+        if (!isGlassBlock(level, state, pos, face, right)) {
             bitmask |= 2;
         }
-        if (!state.isFlushWith(down)) {
+        if (!isGlassBlock(level, state, pos, face, down)) {
             bitmask |= 4;
         }
-        if (!state.isFlushWith(left)) {
+        if (!isGlassBlock(level, state, pos, face, left)) {
             bitmask |= 8;
         }
         return bitmask;
@@ -275,20 +275,38 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
         return offset;
     }
 
-    private static GlassState getGlassState(BlockAndTintGetter level, BlockPos pos) {
-        EnumSet<Direction> flushWith = EnumSet.noneOf(Direction.class);
-        // Test every direction for another glass block
+    private static GlassState getGlassState(BlockAndTintGetter level, BlockState state, BlockPos pos) {
+        /*
+         * This needs some explanation: The bit-field contains 4-bits, one for each direction that a frame may be drawn.
+         * Converted to a number, the bit-field is then used as an index into the list of frame textures, which have
+         * been created in such a way that their filenames indicate, in which directions they contain borders. i.e.
+         * bitmask = 0101 means a border should be drawn up and down (in terms of u,v space). Converted to a number,
+         * this bitmask is 5. So the texture at index 5 is used. That texture had "0101" in its filename to indicate
+         * this.
+         */
+        int[] masks = new int[6];
         for (Direction facing : Direction.values()) {
-            if (isGlassBlock(level, pos, facing)) {
-                flushWith.add(facing);
-            }
+            masks[facing.get3DDataValue()] = makeBitmask(level, state, pos, facing);
         }
-
-        return new GlassState(pos.getX(), pos.getY(), pos.getZ(), flushWith);
+        boolean[] adjacentGlassBlocks = new boolean[6];
+        for (Direction facing : Direction.values()) {
+            adjacentGlassBlocks[facing.get3DDataValue()] = isGlassBlock(level, state, pos, facing.getOpposite(),
+                    facing);
+        }
+        return new GlassState(pos.getX(), pos.getY(), pos.getZ(), masks, adjacentGlassBlocks);
     }
 
-    private static boolean isGlassBlock(BlockGetter level, BlockPos pos, Direction facing) {
-        return level.getBlockState(pos.relative(facing)).getBlock() instanceof QuartzGlassBlock;
+    /**
+     * Checks if the given block is a glass block.
+     * 
+     * @param face   Face of the glass that we are currently checking for.
+     * @param adjDir Direction in which to check.
+     */
+    private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction face,
+            Direction adjDir) {
+        var adjacentPos = pos.relative(adjDir);
+        return level.getBlockState(adjacentPos).getAppearance(level, adjacentPos, face, state, pos)
+                .getBlock() instanceof QuartzGlassBlock;
     }
 
 }
