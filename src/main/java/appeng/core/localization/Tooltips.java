@@ -133,7 +133,7 @@ public final class Tooltips {
             case InputConstants.MOUSE_BUTTON_LEFT -> ButtonToolTips.LeftClick.text();
             case InputConstants.MOUSE_BUTTON_RIGHT -> ButtonToolTips.RightClick.text();
             case InputConstants.MOUSE_BUTTON_MIDDLE -> ButtonToolTips.MiddleClick.text();
-            default -> Component.literal("Mouse " + button);
+            default -> ButtonToolTips.MouseButton.text(button);
         };
     }
 

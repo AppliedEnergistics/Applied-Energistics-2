@@ -369,7 +369,7 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
 
         var buttonAppearance = appearances.get(new EnumPair<>(this.buttonSetting, this.currentValue));
         if (buttonAppearance == null) {
-            return Collections.singletonList(Component.literal("No Such Message"));
+            return Collections.singletonList(ButtonToolTips.NoSuchMessage.text());
         }
 
         return buttonAppearance.tooltipLines;

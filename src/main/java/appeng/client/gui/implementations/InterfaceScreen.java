@@ -33,6 +33,7 @@ import appeng.client.gui.widgets.IconButton;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.ButtonToolTips;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.InterfaceMenu;
 
@@ -58,7 +59,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
                 menu.openSetAmountMenu(configSlot.slot);
             });
             button.setDisableBackground(true);
-            button.setMessage(Component.literal("Set amount to stock"));
+            button.setMessage(ButtonToolTips.InterfaceSetStockAmount.text());
             widgets.add("amtButton" + (1 + i), button);
             amountButtons.add(button);
         }

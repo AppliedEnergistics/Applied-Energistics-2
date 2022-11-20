@@ -26,6 +26,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
+import appeng.core.localization.GuiText;
 import appeng.me.service.CraftingService;
 
 /**
@@ -51,7 +52,7 @@ public class CraftingServiceStorage implements IStorageProvider {
 
         @Override
         public Component getDescription() {
-            return Component.literal("Auto-Crafting");
+            return GuiText.AutoCrafting.text();
         }
     };
 

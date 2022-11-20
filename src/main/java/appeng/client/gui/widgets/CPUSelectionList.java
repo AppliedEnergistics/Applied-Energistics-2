@@ -25,6 +25,7 @@ import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.ButtonToolTips;
+import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 
@@ -254,6 +255,6 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
     }
 
     private Component getCpuName(CraftingStatusMenu.CraftingCpuListEntry cpu) {
-        return cpu.name() != null ? cpu.name() : Component.literal("CPU #" + cpu.serial());
+        return cpu.name() != null ? cpu.name() : GuiText.CPUs.text().append(String.format(" #%d", cpu.serial()));
     }
 }
