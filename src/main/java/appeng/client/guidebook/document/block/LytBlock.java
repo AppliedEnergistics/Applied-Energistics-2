@@ -3,6 +3,7 @@ package appeng.client.guidebook.document.block;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 public abstract class LytBlock extends LytNode {
     protected LytRect bounds;
@@ -55,6 +56,8 @@ public abstract class LytBlock extends LytNode {
     }
 
     protected abstract LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth);
+
+    public abstract void renderBatch(SimpleRenderContext context, MultiBufferSource buffers);
 
     public abstract void render(SimpleRenderContext context);
 }

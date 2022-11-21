@@ -8,6 +8,7 @@ import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -94,6 +95,15 @@ public class LytDocument extends LytNode implements LytBlockContainer {
                 continue;
             }
             block.render(context);
+        }
+    }
+
+    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+        for (var block : blocks) {
+            if (!block.getBounds().intersects(context.viewport())) {
+                continue;
+            }
+            block.renderBatch(context, buffers);
         }
     }
 

@@ -77,19 +77,20 @@ public class GuideScreen extends Screen {
         poseStack.pushPose();
         poseStack.translate(documentRect.x() - documentViewport.x(), documentRect.y() - documentViewport.y(), 0);
 
-        var bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
         var document = currentPage.getDocument();
         var context = new SimpleRenderContext(this,
                 documentViewport,
                 poseStack,
-                bufferSource,
                 LightDarkMode.LIGHT_MODE);
 
         enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
 
+        // Render all text content in one large batch to improve performance
+        var buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        document.renderBatch(context, buffers);
+        buffers.endBatch();
+
         document.render(context);
-        bufferSource.endBatch();
 
         disableScissor();
 

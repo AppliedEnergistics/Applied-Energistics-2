@@ -3,6 +3,7 @@ package appeng.client.guidebook.layout.flow;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.render.RenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class LineElement {
@@ -27,5 +28,15 @@ public abstract class LineElement {
         return flowContent;
     }
 
-    public abstract void render(RenderContext context);
+    /**
+     * Render text content as part of batch rendering.
+     */
+    public void renderBatch(RenderContext context, MultiBufferSource buffers) {
+    }
+
+    /**
+     * Render any other content individually.
+     */
+    public void render(RenderContext context) {
+    }
 }

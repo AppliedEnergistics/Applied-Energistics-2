@@ -5,6 +5,7 @@ import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -35,6 +36,15 @@ public class FlowBuilder {
         return lines.stream()
                 .map(Line::bounds)
                 .reduce(LytRect.empty(), LytRect::union);
+    }
+
+    public void renderBatch(RenderContext context, MultiBufferSource buffers, @Nullable LytFlowContent hoveredContent) {
+        for (var line : lines) {
+            for (var el = line.firstElement(); el != null; el = el.next) {
+                el.containsMouse = el.getFlowContent() == hoveredContent;
+                el.renderBatch(context, buffers);
+            }
+        }
     }
 
     public void render(RenderContext context, @Nullable LytFlowContent hoveredContent) {

@@ -8,9 +8,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 
 public record SimpleRenderContext(@Override GuideScreen screen,
                                   @Override LytRect viewport,
-                                  PoseStack poseStack,
-                                  MultiBufferSource multiBufferSource,
-                                  LightDarkMode lightDarkMode) implements RenderContext {
+                                  @Override PoseStack poseStack,
+                                  @Override LightDarkMode lightDarkMode) implements RenderContext {
 
     @Override
     public int resolveColor(ColorRef ref) {

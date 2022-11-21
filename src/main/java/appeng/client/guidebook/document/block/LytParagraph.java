@@ -6,6 +6,7 @@ import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.flow.FlowBuilder;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
@@ -50,6 +51,11 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     public void onMouseLeave() {
         super.onMouseLeave();
         this.hoveredContent = null;
+    }
+
+    @Override
+    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+        content.renderBatch(context, buffers, hoveredContent);
     }
 
     @Override

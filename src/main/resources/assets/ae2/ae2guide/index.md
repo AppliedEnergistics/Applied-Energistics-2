@@ -23,11 +23,11 @@ modding platforms. Please see the [downloads page](/download) for details.
 #### Applied Energistics 2 - [ME Networks](features/me-network.md) provide:
 
 - Modular Robust automation tools and great support for working with other automation mods.
-  - <ItemLink id="import_bus" />
-  - <ItemLink id="export_bus" />
-  - <ItemLink id="level_emitter" />
-  - <ItemLink id="interface" />
-  - Unique storage system using <ItemLink id="drive" />, Storage Cells and <ItemLink id="storage_bus"></ItemLink>es.
+  1. <ItemLink id="import_bus" />
+  1. <ItemLink id="export_bus" />
+  1. <ItemLink id="level_emitter" />
+  1. <ItemLink id="interface" />
+  1. Unique storage system using <ItemLink id="drive" />, Storage Cells and <ItemLink id="storage_bus"></ItemLink>es.
 - <ItemLink id="me_p2p_tunnel"></ItemLink> to transmit signals, items, fluids and
   other concepts over common cables.
 - Less time wasted walking back to your chests when working in your base with the <ItemLink id="wireless_terminal"></ItemLink>.
