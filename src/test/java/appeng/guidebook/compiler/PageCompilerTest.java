@@ -27,7 +27,8 @@ class PageCompilerTest {
     private GuidePage compilePage(String id) throws Exception {
         var path = guidebookFolder.resolve(id + ".md");
         try (var in = Files.newInputStream(path)) {
-            return PageCompiler.compile("ae2", AppEng.makeId(id), in);
+            var parsed = PageCompiler.parse("ae2", AppEng.makeId(id), in);
+            return PageCompiler.compile(parsed);
         }
     }
 

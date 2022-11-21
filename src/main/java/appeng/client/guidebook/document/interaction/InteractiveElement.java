@@ -1,9 +1,19 @@
 package appeng.client.guidebook.document.interaction;
 
-import appeng.client.guidebook.document.LytBlock;
+import appeng.client.guidebook.screen.GuideScreen;
+
+import java.util.Optional;
 
 public interface InteractiveElement {
-    LytBlock getParentBlock();
+    default boolean mouseClicked(GuideScreen screen, int x, int y, int button) {
+        return false;
+    }
 
-    InteractiveElement hitTest(int x, int y);
+    default boolean mouseReleased(GuideScreen screen, int x, int y, int button) {
+        return false;
+    }
+
+    default Optional<GuideTooltip> getTooltip() {
+        return Optional.empty();
+    }
 }

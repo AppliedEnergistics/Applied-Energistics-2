@@ -47,7 +47,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
     private void appendBreak(@Nullable LytFlowContent flowContent) {
         // Append an empty line with the default style
         if (openLineElement == null) {
-            openLineElement = new LineTextRun("", DefaultStyles.BASE_STYLE);
+            openLineElement = new LineTextRun("", DefaultStyles.BASE_STYLE, DefaultStyles.BASE_STYLE);
             openLineElement.flowContent = flowContent;
         }
         closeLine();
@@ -66,6 +66,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
 
     private void appendText(String text, LytFlowContent flowContent) {
         var style = flowContent.getParentSpan().resolveStyle();
+        var hoverStyle = flowContent.getParentSpan().resolveHoverStyle(style);
 
         char lastChar = '\0';
         if (getEndOfOpenLine() instanceof LineTextRun textRun && !textRun.text.isEmpty()) {
@@ -73,7 +74,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
         }
 
         iterateRuns(text, style, lastChar, remainingLineWidth, lineWidth, (run, width, endLine) -> {
-            var el = new LineTextRun(run.toString(), style);
+            var el = new LineTextRun(run.toString(), style, hoverStyle);
             el.flowContent = flowContent;
             el.bounds = new LytRect(
                     innerX,

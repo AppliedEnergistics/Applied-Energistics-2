@@ -1,6 +1,6 @@
 package appeng.client.guidebook;
 
-import appeng.client.guidebook.document.LytDocument;
+import appeng.client.guidebook.document.block.LytDocument;
 
 public class GuidePage {
     private final String sourcePack;

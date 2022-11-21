@@ -1,7 +1,6 @@
 package appeng.client.guidebook.compiler;
 
-import appeng.client.guidebook.document.LytBlockContainer;
-import appeng.client.guidebook.document.flow.LytFlowContainer;
+import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;

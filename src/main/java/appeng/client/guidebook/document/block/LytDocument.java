@@ -1,5 +1,9 @@
-package appeng.client.guidebook.document;
+package appeng.client.guidebook.document.block;
 
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.block.LytBlock;
+import appeng.client.guidebook.document.block.LytBlockContainer;
+import appeng.client.guidebook.document.block.LytNode;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.layout.LayoutContext;
@@ -109,7 +113,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         }
     }
 
-    public HitTestResult hitTest(int x, int y) {
+    public HitTestResult pick(int x, int y) {
         var node = hitTestNode(x, y);
         if (node != null) {
             LytFlowContent content = null;

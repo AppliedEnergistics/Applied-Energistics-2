@@ -1,6 +1,8 @@
 package appeng.client.guidebook.compiler;
 
+import appeng.client.guidebook.compiler.tags.ATagCompiler;
 import appeng.client.guidebook.compiler.tags.DivTagCompiler;
+import appeng.client.guidebook.compiler.tags.ItemLinkCompiler;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -14,6 +16,8 @@ public final class TagCompilers {
 
     static {
         register("div", new DivTagCompiler());
+        register("a", new ATagCompiler());
+        register("ItemLink", new ItemLinkCompiler());
     }
 
     public static void register(String tagName, TagCompiler handler) {

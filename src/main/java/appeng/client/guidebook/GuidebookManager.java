@@ -1,6 +1,7 @@
 package appeng.client.guidebook;
 
 import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.core.AppEng;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -21,7 +22,7 @@ public final class GuidebookManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuidebookManager.class);
 
     public static final GuidebookManager INSTANCE = new GuidebookManager();
-    private Map<ResourceLocation, GuidePage> pages;
+    private Map<ResourceLocation, ParsedGuidePage> pages;
 
     private GuidebookManager() {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
@@ -32,24 +33,25 @@ public final class GuidebookManager {
     }
 
     @Nullable
-    public GuidePage getPage(ResourceLocation id) {
+    public ParsedGuidePage getPage(ResourceLocation id) {
         if (pages == null) {
             LOGGER.warn("Can't get page {}. Pages not loaded yet.", id);
             return null;
         }
+
         return pages.get(id);
     }
 
-    class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, GuidePage>> implements IdentifiableResourceReloadListener {
+    class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>> implements IdentifiableResourceReloadListener {
         @Override
         public ResourceLocation getFabricId() {
             return AppEng.makeId("guidebook");
         }
 
         @Override
-        protected Map<ResourceLocation, GuidePage> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+        protected Map<ResourceLocation, ParsedGuidePage> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
             profiler.startTick();
-            Map<ResourceLocation, GuidePage> pages = new HashMap<>();
+            Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
             var resources = resourceManager.listResources("ae2guide", location -> location.getPath().endsWith(".md"));
 
@@ -61,7 +63,7 @@ public final class GuidebookManager {
 
                 String sourcePackId = entry.getValue().sourcePackId();
                 try {
-                    var page = PageCompiler.compile(sourcePackId, pageId, entry.getValue().open());
+                    var page = PageCompiler.parse(sourcePackId, pageId, entry.getValue().open());
                     pages.put(pageId, page);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -73,7 +75,7 @@ public final class GuidebookManager {
         }
 
         @Override
-        protected void apply(Map<ResourceLocation, GuidePage> pages, ResourceManager resourceManager, ProfilerFiller profiler) {
+        protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager, ProfilerFiller profiler) {
             profiler.startTick();
             GuidebookManager.this.pages = pages;
             profiler.endTick();

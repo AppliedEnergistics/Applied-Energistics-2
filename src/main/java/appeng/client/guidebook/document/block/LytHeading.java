@@ -1,6 +1,5 @@
-package appeng.client.guidebook.document;
+package appeng.client.guidebook.document.block;
 
-import appeng.client.guidebook.document.flow.LytFlowContainer;
 import net.minecraft.client.Minecraft;
 
 public class LytHeading extends LytParagraph {

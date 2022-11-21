@@ -1,5 +1,6 @@
-package appeng.client.guidebook.document;
+package appeng.client.guidebook.document.block;
 
+import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.layout.LayoutContext;

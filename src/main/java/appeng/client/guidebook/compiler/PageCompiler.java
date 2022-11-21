@@ -1,14 +1,15 @@
 package appeng.client.guidebook.compiler;
 
 import appeng.client.guidebook.GuidePage;
-import appeng.client.guidebook.document.LytBlock;
-import appeng.client.guidebook.document.LytBlockContainer;
-import appeng.client.guidebook.document.LytDocument;
-import appeng.client.guidebook.document.LytHeading;
-import appeng.client.guidebook.document.LytParagraph;
-import appeng.client.guidebook.document.LytThematicBreak;
+import appeng.client.guidebook.document.block.LytBlock;
+import appeng.client.guidebook.document.block.LytBlockContainer;
+import appeng.client.guidebook.document.block.LytDocument;
+import appeng.client.guidebook.document.block.LytHeading;
+import appeng.client.guidebook.document.block.LytList;
+import appeng.client.guidebook.document.block.LytListItem;
+import appeng.client.guidebook.document.block.LytParagraph;
+import appeng.client.guidebook.document.block.LytThematicBreak;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
-import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowLink;
 import appeng.client.guidebook.document.flow.LytFlowParent;
@@ -26,6 +27,8 @@ import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
 import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstHeading;
 import appeng.libs.mdast.model.MdAstLink;
+import appeng.libs.mdast.model.MdAstList;
+import appeng.libs.mdast.model.MdAstListItem;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.mdast.model.MdAstParagraph;
 import appeng.libs.mdast.model.MdAstParent;
@@ -36,6 +39,8 @@ import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 public final class PageCompiler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageCompiler.class);
@@ -57,7 +63,7 @@ public final class PageCompiler {
         this.pageContent = pageContent;
     }
 
-    public static GuidePage compile(String sourcePack, ResourceLocation id, InputStream in) throws IOException {
+    public static ParsedGuidePage parse(String sourcePack, ResourceLocation id, InputStream in) throws IOException {
         String pageContent = new String(in.readAllBytes(), StandardCharsets.UTF_8);
 
         var options = new MdastOptions()
@@ -65,12 +71,18 @@ public final class PageCompiler {
                 .withSyntaxExtension(YamlFrontmatterSyntax.INSTANCE)
                 .withMdastExtension(MdxMdastExtension.INSTANCE)
                 .withMdastExtension(YamlFrontmatterExtension.INSTANCE);
-        var pageTree = MdAst.fromMarkdown(pageContent, options);
 
+        var astRoot = MdAst.fromMarkdown(pageContent, options);
+
+        return new ParsedGuidePage(sourcePack, id, pageContent, astRoot);
+    }
+
+    public static GuidePage compile(ParsedGuidePage parsedPage) {
         // Translate page tree over to layout pages
-        var document = new PageCompiler(sourcePack, id, pageContent).compile(pageTree);
+        var document = new PageCompiler(parsedPage.sourcePack, parsedPage.id, parsedPage.source)
+                .compile(parsedPage.astRoot);
 
-        return new GuidePage(sourcePack, document);
+        return new GuidePage(parsedPage.sourcePack, document);
     }
 
     private LytDocument compile(MdAstRoot root) {
@@ -100,6 +112,18 @@ public final class PageCompiler {
             LytBlock layoutChild;
             if (child instanceof MdAstThematicBreak) {
                 layoutChild = new LytThematicBreak();
+            } else if (child instanceof MdAstList astList) {
+                var list = new LytList(astList.ordered, astList.start);
+                for (var listContent : astList.children()) {
+                    if (listContent instanceof MdAstListItem astListItem) {
+                        var listItem = new LytListItem();
+                        compileBlockContext(astListItem, listItem);
+                        list.append(listItem);
+                    } else {
+                        list.append(createErrorBlock("Cannot handle list content", (MdAstNode) listContent));
+                    }
+                }
+                layoutChild = list;
             } else if (child instanceof MdAstHeading astHeading) {
                 var heading = new LytHeading();
                 heading.setDepth(astHeading.depth);
@@ -128,6 +152,23 @@ public final class PageCompiler {
                 layoutParent.append(layoutChild);
             }
         }
+    }
+
+    /**
+     * Converts formatted Minecraft text into our flow content.
+     */
+    public void compileComponentToFlow(FormattedText formattedText, LytFlowParent layoutParent) {
+        formattedText.visit((style, text) -> {
+            if (style.isEmpty()) {
+                layoutParent.appendText(text);
+            } else {
+                var span = new LytFlowSpan();
+                // TODO: Convert style
+                span.appendText(text);
+                layoutParent.append(span);
+            }
+            return Optional.empty();
+        }, Style.EMPTY);
     }
 
     public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {

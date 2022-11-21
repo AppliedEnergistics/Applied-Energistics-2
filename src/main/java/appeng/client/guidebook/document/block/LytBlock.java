@@ -1,8 +1,8 @@
-package appeng.client.guidebook.document;
+package appeng.client.guidebook.document.block;
 
+import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.SimpleRenderContext;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class LytBlock extends LytNode {
     protected LytRect bounds;

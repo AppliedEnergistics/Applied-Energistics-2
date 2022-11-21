@@ -25,6 +25,10 @@ public class MdxJsxAttribute extends MdAstNode implements MdxJsxAttributeNode {
         this.value = node;
     }
 
+    public String getStringValue() {
+        return (String) value;
+    }
+
     public void setValue(String value) {
         this.value = value;
     }
