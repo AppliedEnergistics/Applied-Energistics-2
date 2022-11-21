@@ -50,7 +50,6 @@ import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.parts.PartHelper;
 import appeng.api.util.AEAxisAlignedBB;
-import appeng.block.networking.CableBusBlock;
 import appeng.parts.misc.CableAnchorPart;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadClamper;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerKicker;
@@ -288,7 +287,7 @@ public class FacadeBuilder {
                 // Ignore quad if it's not supposed to connect to the adjacent block.
                 if (cullFace != null) {
                     BlockPos adjPos = pos.relative(cullFace);
-                    BlockState adjState = CableBusBlock.getAppearanceTemp(level.getBlockState(adjPos), level, adjPos,
+                    BlockState adjState = level.getBlockState(adjPos).getAppearance(level, adjPos,
                             cullFace.getOpposite(), blockState, pos);
 
                     if (blockState.skipRendering(adjState, cullFace)) {

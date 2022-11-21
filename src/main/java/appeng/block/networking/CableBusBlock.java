@@ -432,20 +432,15 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
      */
     public static ThreadLocal<Direction> RENDERING_FACADE_DIRECTION = new ThreadLocal<>();
 
-    // TODO: fix ugliness when forge finally merges #9066
-    // @Override
+    @Override
     public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
             @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
-        // Just for access to the model data from the BE's level (waiting for #9066 to get it from renderView directly)
-        var be = renderView.getBlockEntity(pos);
-        if (be == null) {
-            return state;
-        }
         ModelData modelData;
-        var modelDataManager = be.getLevel().getModelDataManager();
+        var modelDataManager = renderView.getModelDataManager();
         if (modelDataManager == null) {
             // We're on the server, use BE directly
-            modelData = be.getModelData();
+            BlockEntity be = renderView.getBlockEntity(pos);
+            modelData = be != null ? be.getModelData() : ModelData.EMPTY;
         } else {
             modelData = Objects.requireNonNullElse(modelDataManager.getAt(pos), ModelData.EMPTY);
         }
@@ -467,15 +462,5 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
             }
         }
         return state;
-    }
-
-    // Just for query until #9066 is merged
-    public static BlockState getAppearanceTemp(BlockState state, BlockAndTintGetter renderView, BlockPos pos,
-            Direction side, @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
-        if (state.getBlock() instanceof CableBusBlock cableBus) {
-            return cableBus.getAppearance(state, renderView, pos, side, sourceState, sourcePos);
-        } else {
-            return state;
-        }
     }
 }

@@ -52,7 +52,6 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 
-import appeng.block.networking.CableBusBlock;
 import appeng.decorative.solid.GlassState;
 import appeng.decorative.solid.QuartzGlassBlock;
 
@@ -316,7 +315,7 @@ class GlassBakedModel implements IDynamicBakedModel {
     private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction face,
             Direction adjDir) {
         var adjacentPos = pos.relative(adjDir);
-        return CableBusBlock.getAppearanceTemp(level.getBlockState(adjacentPos), level, adjacentPos, face, state, pos)
+        return level.getBlockState(adjacentPos).getAppearance(level, adjacentPos, face, state, pos)
                 .getBlock() instanceof QuartzGlassBlock;
     }
 
