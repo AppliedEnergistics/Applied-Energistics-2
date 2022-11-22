@@ -31,6 +31,7 @@ public class GuideScreen extends Screen {
 
     private final GuidePage currentPage;
     private final GuideScrollbar scrollbar;
+    private GuideNavBar navbar;
 
     public GuideScreen(ParsedGuidePage currentPage) {
         super(Component.literal("AE2 Guidebook"));
@@ -61,6 +62,9 @@ public class GuideScreen extends Screen {
                 docRect.height()
         );
         scrollbar.setContentHeight(document.getContentHeight());
+
+        this.navbar = new GuideNavBar(0, 0, 150, height);
+        addRenderableWidget(this.navbar);
     }
 
     @Override
@@ -218,6 +222,12 @@ public class GuideScreen extends Screen {
         var scale = (double) minecraft.getWindow().getGuiScaledWidth() / (double) minecraft.getWindow().getScreenWidth();
         var x = mouseHandler.xpos() * scale;
         var y = mouseHandler.ypos() * scale;
+
+        // If there's a widget under the cursor, ignore document hit-testing
+        if (getChildAt(x, y).isPresent()) {
+            document.setHoveredElement(null);
+            return;
+        }
 
         var docPoint = getDocumentPoint(x, y);
         if (docPoint != null) {

@@ -21,11 +21,11 @@ public class NavigationTree {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigationTree.class);
 
-    private final Map<ResourceLocation, Node> nodeIndex;
+    private final Map<ResourceLocation, NavigationNode> nodeIndex;
 
-    private final List<Node> rootNodes;
+    private final List<NavigationNode> rootNodes;
 
-    public NavigationTree(Map<ResourceLocation, Node> nodeIndex, List<Node> rootNodes) {
+    public NavigationTree(Map<ResourceLocation, NavigationNode> nodeIndex, List<NavigationNode> rootNodes) {
         this.nodeIndex = nodeIndex;
         this.rootNodes = rootNodes;
     }
@@ -35,12 +35,12 @@ public class NavigationTree {
         this.rootNodes = List.of();
     }
 
-    public List<Node> getRootNodes() {
+    public List<NavigationNode> getRootNodes() {
         return rootNodes;
     }
 
     @Nullable
-    public Node getNodeById(ResourceLocation pageId) {
+    public NavigationNode getNodeById(ResourceLocation pageId) {
         return nodeIndex.get(pageId);
     }
 
@@ -82,8 +82,8 @@ public class NavigationTree {
             }
         }
 
-        var nodeIndex = new HashMap<ResourceLocation, Node>(pages.size());
-        var rootNodes = new ArrayList<Node>();
+        var nodeIndex = new HashMap<ResourceLocation, NavigationNode>(pages.size());
+        var rootNodes = new ArrayList<NavigationNode>();
 
         for (var entry : pagesWithChildren.entrySet()) {
             createNode(nodeIndex, rootNodes, pagesWithChildren, entry.getKey(), entry.getValue());
@@ -95,11 +95,11 @@ public class NavigationTree {
         return new NavigationTree(Map.copyOf(nodeIndex), List.copyOf(rootNodes));
     }
 
-    private static Node createNode(HashMap<ResourceLocation, Node> nodeIndex,
-                                   ArrayList<Node> rootNodes,
-                                   Map<ResourceLocation, Pair<ParsedGuidePage, List<ParsedGuidePage>>> pagesWithChildren,
-                                   ResourceLocation pageId,
-                                   Pair<ParsedGuidePage, List<ParsedGuidePage>> entry) {
+    private static NavigationNode createNode(HashMap<ResourceLocation, NavigationNode> nodeIndex,
+                                             ArrayList<NavigationNode> rootNodes,
+                                             Map<ResourceLocation, Pair<ParsedGuidePage, List<ParsedGuidePage>>> pagesWithChildren,
+                                             ResourceLocation pageId,
+                                             Pair<ParsedGuidePage, List<ParsedGuidePage>> entry) {
         var page = entry.getKey();
         var children = entry.getRight();
 
@@ -122,7 +122,7 @@ public class NavigationTree {
             }
         }
 
-        var childNodes = new ArrayList<Node>(children.size());
+        var childNodes = new ArrayList<NavigationNode>(children.size());
         for (var childPage : children) {
             var childPageEntry = pagesWithChildren.get(childPage.getId());
 
@@ -130,7 +130,7 @@ public class NavigationTree {
         }
         childNodes.sort(NODE_COMPARATOR);
 
-        var node = new Node(
+        var node = new NavigationNode(
                 page.getId(),
                 navigationEntry.title(),
                 icon,
@@ -145,11 +145,7 @@ public class NavigationTree {
         return node;
     }
 
-    private static final Comparator<Node> NODE_COMPARATOR = Comparator.comparingInt(Node::position)
-            .thenComparing(Node::title);
-
-    record Node(ResourceLocation pageId, String title, ItemStack icon, List<Node> children, int position,
-                boolean hasPage) {
-    }
+    private static final Comparator<NavigationNode> NODE_COMPARATOR = Comparator.comparingInt(NavigationNode::position)
+            .thenComparing(NavigationNode::title);
 
 }
