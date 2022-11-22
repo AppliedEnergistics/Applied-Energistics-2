@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:redstone_card
-title: Redstone Card
+navigation:
+  title: Redstone Card
 ---
 
 Basic upgrade which adds the ability to be controlled by redstone signal to

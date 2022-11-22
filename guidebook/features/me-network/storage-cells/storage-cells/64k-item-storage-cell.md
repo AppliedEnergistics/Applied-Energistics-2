@@ -7,7 +7,8 @@ related:
   - Storage Cell Parts
   - Storage Cells
   - Possible Upgrades
-title: 64k ME Storage Cell
+navigation:
+  title: 64k ME Storage Cell
 ---
 
 Highest Tier Storage Cell, which can contain 65,536 bytes of storage.

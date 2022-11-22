@@ -1,7 +1,8 @@
 ---
 item_ids:
   - ae2:controller
-title: ME Controller
+navigation:
+  title: ME Controller
 ---
 
 ![A picture of a controller.](../../../public/assets/large/controller.png)

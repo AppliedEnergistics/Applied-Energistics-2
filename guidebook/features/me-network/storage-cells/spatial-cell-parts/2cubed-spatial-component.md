@@ -6,7 +6,8 @@ item_ids:
 related:
   - Spatial Cell Parts
   - Spatial Cells
-title: 2Cubed Spatial Component
+navigation:
+  title: 2Cubed Spatial Component
 ---
 
 Smallets spatial storage component, used to make <ItemLink

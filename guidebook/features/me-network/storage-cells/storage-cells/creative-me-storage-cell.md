@@ -3,7 +3,8 @@ categories:
   - Storage Cells/Storage Cells
 item_ids:
   - ae2:creative_item_cell
-title: Creative ME Storage Cell
+navigation:
+  title: Creative ME Storage Cell
 ---
 
 Creative storage cells store and provide infinite quantities of the items you

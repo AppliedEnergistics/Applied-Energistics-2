@@ -3,7 +3,8 @@ categories:
   - Advanced Tools/Utilities
 item_ids:
   - ae2:cell_workbench
-title: Cell Workbench
+navigation:
+  title: Cell Workbench
 ---
 
 ### ![A picture of a cell work bench.](../../../../public/assets/large/cell_workbench.png)

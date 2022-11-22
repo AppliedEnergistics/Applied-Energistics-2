@@ -1,5 +1,6 @@
 ---
-title: Advanced Tools
+navigation:
+  title: Advanced Tools
 ---
 
 # Advanced Tools

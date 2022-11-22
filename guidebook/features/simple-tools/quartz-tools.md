@@ -1,5 +1,6 @@
 ---
-title: Quartz Tools
+navigation:
+  title: Quartz Tools
 item_ids:
   - ae2:certus_quartz_pickaxe
   - ae2:certus_quartz_axe

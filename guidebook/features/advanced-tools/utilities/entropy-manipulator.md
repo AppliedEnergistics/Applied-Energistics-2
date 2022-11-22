@@ -3,7 +3,8 @@ categories:
   - Advanced Tools/Utilities
 item_ids:
   - ae2:entropy_manipulator
-title: Entropy Manipulator
+navigation:
+  title: Entropy Manipulator
 ---
 
 A Powered Multi-purpose tool which can alter the quantity of energy in the

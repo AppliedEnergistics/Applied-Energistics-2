@@ -5,7 +5,8 @@ item_ids:
   - ae2:level_emitter
 related:
   - Possible Upgrades
-title: ME Level Emitter
+navigation:
+  title: ME Level Emitter
 ---
 
 ![An active Level Emitter](../../../../public/assets/large/emitter2.png)The <ItemLink

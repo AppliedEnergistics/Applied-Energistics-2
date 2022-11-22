@@ -7,7 +7,8 @@ related:
   - Other Networked Storage
   - Storage Cells
   - Possible Upgrades
-title: ME Storage Bus
+navigation:
+  title: ME Storage Bus
 ---
 
 The <ItemLink id="storage_bus"/>, when attached

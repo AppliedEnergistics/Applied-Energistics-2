@@ -5,7 +5,8 @@ categories:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Calculation Processor
+navigation:
+  title: Calculation Processor
 ---
 
 Medium tier processor.

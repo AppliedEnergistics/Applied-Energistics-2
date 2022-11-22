@@ -7,7 +7,8 @@ related:
   - Storage Cell Parts
   - Storage Cells
   - Possible Upgrades
-title: 4k ME Storage Cell
+navigation:
+  title: 4k ME Storage Cell
 ---
 
 Low Tier Storage Cell, which can contain 4,096 bytes of storage.

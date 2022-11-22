@@ -3,7 +3,8 @@ categories:
   - Decorative Blocks/Other Features
 item_ids:
   - ae2:cable_anchor
-title: Cable Anchor
+navigation:
+  title: Cable Anchor
 ---
 
 ![A picture of cable anchors on glass cable.](../../../public/assets/large/cable_anchor.png)

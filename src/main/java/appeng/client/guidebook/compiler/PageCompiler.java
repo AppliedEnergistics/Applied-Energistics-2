@@ -48,6 +48,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class PageCompiler {
@@ -74,7 +76,10 @@ public final class PageCompiler {
 
         var astRoot = MdAst.fromMarkdown(pageContent, options);
 
-        return new ParsedGuidePage(sourcePack, id, pageContent, astRoot);
+        // Find front-matter
+        var frontmatter = parseFrontmatter(id, astRoot);
+
+        return new ParsedGuidePage(sourcePack, id, pageContent, astRoot, frontmatter);
     }
 
     public static GuidePage compile(ParsedGuidePage parsedPage) {
@@ -86,25 +91,30 @@ public final class PageCompiler {
     }
 
     private LytDocument compile(MdAstRoot root) {
-        // Find front-matter
-        parseFrontmatter(root);
-
         var document = new LytDocument();
         compileBlockContext(root, document);
         return document;
     }
 
-    private void parseFrontmatter(MdAstRoot root) {
-        Object result = null;
+    private static Frontmatter parseFrontmatter(ResourceLocation pageId, MdAstRoot root) {
+        Frontmatter result = null;
 
         for (var child : root.children()) {
             if (child instanceof MdAstYamlFrontmatter frontmatter) {
                 if (result != null) {
-                    LOGGER.warn("Found more than one frontmatter!");
+                    LOGGER.error("Found more than one frontmatter!"); // TODO: proper debugging
+                    continue;
                 }
-                result = frontmatter;
+                try {
+                    result = Frontmatter.parse(pageId, frontmatter.value);
+                } catch (Exception e) {
+                    LOGGER.error("Failed to parse frontmatter for page {}", pageId, e);
+                    break;
+                }
             }
         }
+
+        return Objects.requireNonNullElse(result, new Frontmatter(null, Map.of()));
     }
 
     public void compileBlockContext(MdAstParent<?> markdownParent, LytBlockContainer layoutParent) {

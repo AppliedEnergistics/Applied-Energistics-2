@@ -3,7 +3,8 @@ categories:
   - Advanced Tools/Network Tools
 item_ids:
   - ae2:network_tool
-title: Network Tool
+navigation:
+  title: Network Tool
 ---
 
 Tool that can be used to remove parts from cables ( like any other BC

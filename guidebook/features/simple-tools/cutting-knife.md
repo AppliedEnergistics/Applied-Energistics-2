@@ -1,5 +1,6 @@
 ---
-title: Cutting Knife
+navigation:
+  title: Cutting Knife
 item_ids:
   - ae2:certus_quartz_cutting_knife
   - ae2:nether_quartz_cutting_knife

@@ -1,5 +1,6 @@
 ---
-title: Storage Monitors
+navigation:
+  title: Storage Monitors
 item_ids:
   - ae2:conversion_monitor
   - ae2:storage_monitor

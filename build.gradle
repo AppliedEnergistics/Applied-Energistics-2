@@ -148,6 +148,8 @@ dependencies {
     include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'org.yaml:snakeyaml:1.33'
+    implementation 'io.methvin:directory-watcher:0.17.1'
 
     // unit test dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
@@ -252,6 +254,7 @@ loom {
         client {
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
+            property "appeng.guide.sources", file("guidebook").absolutePath
         }
         datagen {
             client()

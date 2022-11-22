@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:inverter_card
-title: Inverter Card
+navigation:
+  title: Inverter Card
 ---
 
 In non spatial [storage cells](../me-network/storage-cells.md) such as <ItemLink

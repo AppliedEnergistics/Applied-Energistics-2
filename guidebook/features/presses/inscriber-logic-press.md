@@ -8,7 +8,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Inscriber Logic Press
+navigation:
+  title: Inscriber Logic Press
 ---
 
 Required to make <ItemLink

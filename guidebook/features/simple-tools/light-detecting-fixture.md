@@ -3,7 +3,8 @@ categories:
   - Simple Tools/Misc
 item_ids:
   - ae2:light_detector
-title: Light Detector
+navigation:
+  title: Light Detector
 ---
 
 Just like a daylight sensor uses nether quartz to detect daylight, this nether

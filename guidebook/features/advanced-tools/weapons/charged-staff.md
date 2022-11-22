@@ -3,7 +3,8 @@ categories:
   - Advanced Tools/Weapons
 item_ids:
   - ae2:charged_staff
-title: Charged Staff
+navigation:
+  title: Charged Staff
 ---
 
 An powered melee weapon based on the power of <ItemLink

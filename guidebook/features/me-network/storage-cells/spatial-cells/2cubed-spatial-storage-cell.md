@@ -3,7 +3,8 @@ categories:
   - Storage Cells/Spatial Cells
 item_ids:
   - ae2:spatial_storage_cell_2
-title: 2Cubed Spatial Storage Cell
+navigation:
+  title: 2Cubed Spatial Storage Cell
 ---
 
 Used with <ItemLink id="spatial_io_port"/> to

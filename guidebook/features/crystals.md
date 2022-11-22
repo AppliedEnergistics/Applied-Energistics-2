@@ -1,5 +1,6 @@
 ---
-title: Crystals
+navigation:
+  title: Crystals
 sidenav_icon: ae2:certus_quartz_crystal
 item_ids:
   - ae2:quartz_ore

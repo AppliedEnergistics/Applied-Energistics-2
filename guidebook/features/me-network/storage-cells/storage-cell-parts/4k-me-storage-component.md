@@ -6,7 +6,8 @@ item_ids:
 related:
   - Storage Cell Parts
   - Storage Cells
-title: 4k ME Storage Component
+navigation:
+  title: 4k ME Storage Component
 ---
 
 Second smallest storage component, used to make <ItemLink

@@ -3,7 +3,8 @@ categories:
   - ME Network/Powered Machines
 item_ids:
   - ae2:quartz_growth_accelerator
-title: Crystal Growth Accelerator
+navigation:
+  title: Crystal Growth Accelerator
 ---
 
 Used to accelerate [crystal growth](../../crystals.md), which allows you to create <ItemLink

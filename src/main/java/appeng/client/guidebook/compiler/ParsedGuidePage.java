@@ -8,12 +8,14 @@ public class ParsedGuidePage {
     final ResourceLocation id;
     final String source;
     final MdAstRoot astRoot;
+    final Frontmatter frontmatter;
 
-    public ParsedGuidePage(String sourcePack, ResourceLocation id, String source, MdAstRoot astRoot) {
+    public ParsedGuidePage(String sourcePack, ResourceLocation id, String source, MdAstRoot astRoot, Frontmatter frontmatter) {
         this.sourcePack = sourcePack;
         this.id = id;
         this.source = source;
         this.astRoot = astRoot;
+        this.frontmatter = frontmatter;
     }
 
     public String getSourcePack() {
@@ -22,5 +24,9 @@ public class ParsedGuidePage {
 
     public ResourceLocation getId() {
         return id;
+    }
+
+    public Frontmatter getFrontmatter() {
+        return frontmatter;
     }
 }

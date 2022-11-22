@@ -12,7 +12,8 @@ item_ids:
   - ae2:portable_fluid_cell_64k
 related:
   - Possible Upgrades
-title: Portable Cell
+navigation:
+  title: Portable Cell
 ---
 
 The <ItemLink id="portable_item_cell_1k"/> is a portable

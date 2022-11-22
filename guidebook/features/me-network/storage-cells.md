@@ -1,5 +1,6 @@
 ---
-title: Storage Cells
+navigation:
+  title: Storage Cells
 sidenav_icon: ae2:item_storage_cell_64k
 item_ids:
   - ae2:fluid_storage_cell_1k

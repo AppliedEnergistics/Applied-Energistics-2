@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:view_cell
-title: View Cell
+navigation:
+  title: View Cell
 ---
 
 A item which contains a configuration similar to a Storage Cell, that allows

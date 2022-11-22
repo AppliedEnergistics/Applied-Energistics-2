@@ -8,7 +8,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Inscriber Calculation Press
+navigation:
+  title: Inscriber Calculation Press
 ---
 
 Required to make <ItemLink

@@ -5,7 +5,8 @@ item_ids:
   - ae2:io_port
 related:
   - Possible Upgrades
-title: ME IO Port
+navigation:
+  title: ME IO Port
 ---
 
 ![A picture of a IO port.](../../../../public/assets/large/io_port.png)

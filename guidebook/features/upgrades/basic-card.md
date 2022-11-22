@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:basic_card
-title: Basic Card
+navigation:
+  title: Basic Card
 ---
 
 Used to craft <ItemLink id="capacity_card"/> and

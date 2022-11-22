@@ -3,7 +3,8 @@ categories:
   - Presses
 item_ids:
   - ae2:name_press
-title: Inscriber Name Press
+navigation:
+  title: Inscriber Name Press
 ---
 
 To craft right click the <ItemLink

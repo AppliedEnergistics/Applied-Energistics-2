@@ -6,7 +6,8 @@ item_ids:
 related:
   - Possible Projectiles
   - Possible Upgrades
-title: Matter Cannon
+navigation:
+  title: Matter Cannon
 ---
 
 The <ItemLink id="matter_cannon"/> is a portable

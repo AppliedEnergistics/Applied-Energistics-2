@@ -1,5 +1,6 @@
 ---
-title: Frequently Asked Questions
+navigation:
+  title: Frequently Asked Questions
 ---
 
 Below are a number of commonly asked questions.

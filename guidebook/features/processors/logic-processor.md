@@ -5,7 +5,8 @@ categories:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Logic Processor
+navigation:
+  title: Logic Processor
 ---
 
 Most basic processor.

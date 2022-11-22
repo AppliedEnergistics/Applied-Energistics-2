@@ -4,7 +4,8 @@ item_ids:
   - ae2:terminal
   - ae2:pattern_access_terminal
   - ae2:pattern_encoding_terminal
-title: Terminals
+navigation:
+  title: Terminals
 ---
 
 ## Item Terminal

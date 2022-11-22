@@ -1,5 +1,6 @@
 ---
-title: Ad Hoc Networks
+navigation:
+  title: Ad Hoc Networks
 ---
 
 # Ad Hoc Networks

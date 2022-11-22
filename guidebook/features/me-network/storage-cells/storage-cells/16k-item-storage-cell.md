@@ -7,7 +7,8 @@ related:
   - Storage Cell Parts
   - Storage Cells
   - Possible Upgrades
-title: 16k ME Storage Cell
+navigation:
+  title: 16k ME Storage Cell
 ---
 
 Middle Tier Storage Cell, which can contain 16,384 bytes of storage.

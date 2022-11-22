@@ -1,5 +1,6 @@
 ---
-title: About Applied Energistics
+navigation:
+  title: About Applied Energistics
 path: /
 ---
 

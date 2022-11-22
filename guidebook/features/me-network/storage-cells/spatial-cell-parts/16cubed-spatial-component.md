@@ -6,7 +6,8 @@ item_ids:
 related:
   - Spatial Cell Parts
   - Spatial Cells
-title: 16Cubed Spatial Component
+navigation:
+  title: 16Cubed Spatial Component
 ---
 
 Medium spatial storage component, used to make <ItemLink

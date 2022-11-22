@@ -3,7 +3,8 @@ categories:
   - Advanced Tools/Utilities
 item_ids:
   - ae2:condenser
-title: Matter Condenser
+navigation:
+  title: Matter Condenser
 ---
 
 ![A picture of a Matter Condenser.](../../../../public/assets/large/matter_condenser.png)Has

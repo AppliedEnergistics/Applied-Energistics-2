@@ -5,7 +5,8 @@ item_ids:
   - ae2:export_bus
 related:
   - Possible Upgrades
-title: ME Export Bus
+navigation:
+  title: ME Export Bus
 ---
 
 ![A Image of an Export Bus](../../../../public/assets/large/export_bus.png)

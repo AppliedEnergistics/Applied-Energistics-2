@@ -3,7 +3,8 @@ categories:
   - ME Network/Spatial
 item_ids:
   - ae2:spatial_pylon
-title: Spatial Pylon
+navigation:
+  title: Spatial Pylon
 ---
 
 ![A Picture of a Spatial Pylon.](../../../../public/assets/large/spatial_pylon.png)The main

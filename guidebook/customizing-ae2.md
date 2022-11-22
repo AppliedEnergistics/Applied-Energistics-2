@@ -1,5 +1,6 @@
 ---
-title: Customizing AE2
+navigation:
+  title: Customizing AE2
 sidenav_icon: certus_quartz_wrench
 ---
 

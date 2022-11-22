@@ -1,5 +1,6 @@
 ---
-title: Quantum Bridge
+navigation:
+  title: Quantum Bridge
 sidenav_icon: ae2:singularity
 item_ids:
   - ae2:quantum_link

@@ -3,7 +3,8 @@ categories:
   - ME Network/Misc
 item_ids:
   - ae2:me_p2p_tunnel
-title: P2P Tunnel
+navigation:
+  title: P2P Tunnel
 ---
 
 The <ItemLink id="me_p2p_tunnel" /> or "Point to Point Tunnel" is

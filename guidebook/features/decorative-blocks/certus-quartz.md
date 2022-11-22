@@ -1,5 +1,6 @@
 ---
-title: Certus Quartz
+navigation:
+  title: Certus Quartz
 item_ids:
   - ae2:quartz_block
   - ae2:quartz_pillar

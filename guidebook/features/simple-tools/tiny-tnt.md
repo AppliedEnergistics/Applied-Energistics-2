@@ -3,7 +3,8 @@ categories:
   - Simple Tools/Misc
 item_ids:
   - ae2:tiny_tnt
-title: Tiny TNT
+navigation:
+  title: Tiny TNT
 ---
 
 ![A picture of Tiny TNT, next to regular TNT](../../../public/assets/large/tiny_tnt2.png)

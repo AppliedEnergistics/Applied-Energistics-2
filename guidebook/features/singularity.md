@@ -1,7 +1,8 @@
 ---
 item_ids:
   - ae2:singularity
-title: Singularity
+navigation:
+  title: Singularity
 ---
 
 Is used to craft <ItemLink

@@ -8,7 +8,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Inscriber Engineering Press
+navigation:
+  title: Inscriber Engineering Press
 ---
 
 Required to make <ItemLink

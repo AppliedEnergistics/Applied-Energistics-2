@@ -4,7 +4,8 @@ categories:
 item_ids:
   - ae2:quartz_glass
   - ae2:quartz_vibrant_glass
-title: Quartz Glass
+navigation:
+  title: Quartz Glass
 ---
 
 ### Quartz Glass

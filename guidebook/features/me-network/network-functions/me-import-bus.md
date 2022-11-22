@@ -5,7 +5,8 @@ item_ids:
   - ae2:import_bus
 related:
   - Possible Upgrades
-title: ME Import Bus
+navigation:
+  title: ME Import Bus
 ---
 
 ![A picture of an Import Bus.](../../../../public/assets/large/import_bus.png)Pulls items from

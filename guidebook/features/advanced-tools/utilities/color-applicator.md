@@ -3,7 +3,8 @@ categories:
   - Advanced Tools/Utilities
 item_ids:
   - ae2:color_applicator
-title: Color Applicator
+navigation:
+  title: Color Applicator
 ---
 
 Tool which allows you to paint in world objects with <ItemLink

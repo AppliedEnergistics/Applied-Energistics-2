@@ -6,7 +6,8 @@ item_ids:
 related:
   - Other Networked Storage
   - Storage Cells
-title: ME Drive
+navigation:
+  title: ME Drive
 ---
 
 ![A picture of an ME Drive.](../../../../public/assets/large/me_drive.png)A block designed to

@@ -6,7 +6,8 @@ item_ids:
   - ae2:cable_interface
 related:
   - Possible Upgrades
-title: ME Interface
+navigation:
+  title: ME Interface
 ---
 
 ![A picture of a Interface Block.](../../../../public/assets/large/interface.png)![A picture

@@ -19,7 +19,8 @@ item_ids:
   - ae2:memory_card_green
   - ae2:memory_card_red
   - ae2:memory_card_black
-title: Memory Card
+navigation:
+  title: Memory Card
 ---
 
 A small item, that can be used to store, copy, and paste settings. Shift +

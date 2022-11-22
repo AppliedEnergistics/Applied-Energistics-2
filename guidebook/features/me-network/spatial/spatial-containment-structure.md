@@ -1,5 +1,6 @@
 ---
-title: Spatial Containment Structure
+navigation:
+  title: Spatial Containment Structure
 ---
 
 # Spatial Containment Structure

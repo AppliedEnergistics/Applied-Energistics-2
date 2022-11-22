@@ -1,5 +1,6 @@
 ---
-title: Quartz Fixtures
+navigation:
+  title: Quartz Fixtures
 item_ids:
   - ae2:quartz_fixture
 ---

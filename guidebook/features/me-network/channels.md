@@ -1,5 +1,6 @@
 ---
-title: Channels
+navigation:
+  title: Channels
 sidenav_icon: ae2:controller
 ---
 

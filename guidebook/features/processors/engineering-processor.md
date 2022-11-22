@@ -5,7 +5,8 @@ categories:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Engineering Processor
+navigation:
+  title: Engineering Processor
 ---
 
 Most Advanced Processor.

@@ -8,7 +8,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Inscriber Silicon Press
+navigation:
+  title: Inscriber Silicon Press
 ---
 
 Required to make the various processors with the <ItemLink

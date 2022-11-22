@@ -3,7 +3,8 @@ categories:
   - ME Network/Powered Machines
 item_ids:
   - ae2:molecular_assembler
-title: Molecular Assembler
+navigation:
+  title: Molecular Assembler
 ---
 
 The assembler is a powered machine which crafts items, it can be upgraded by

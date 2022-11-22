@@ -1,5 +1,6 @@
 ---
-title: Miscellaneous Tips
+navigation:
+  title: Miscellaneous Tips
 ---
 
 ### How Items are Placed

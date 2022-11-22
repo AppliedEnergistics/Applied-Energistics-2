@@ -1,5 +1,6 @@
 ---
-title: Auto-Crafting
+navigation:
+  title: Auto-Crafting
 sidenav_icon: ae2:molecular_assembler
 item_ids:
   - ae2:blank_pattern

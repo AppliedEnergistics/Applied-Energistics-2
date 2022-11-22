@@ -5,7 +5,8 @@ item_ids:
   - ae2:smooth_sky_stone_block
   - ae2:sky_stone_brick
   - ae2:sky_stone_small_brick
-title: Sky Stone
+navigation:
+  title: Sky Stone
 ---
 
 ### Sky Stone Block

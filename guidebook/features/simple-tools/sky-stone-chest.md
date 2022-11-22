@@ -6,7 +6,8 @@ categories:
 item_ids:
   - ae2:sky_stone_chest
   - ae2:smooth_sky_stone_chest
-title: Sky Stone Chest
+navigation:
+  title: Sky Stone Chest
 ---
 
 Chests can be crafted from <ItemLink id="sky_stone_block" /> found in meteorites.

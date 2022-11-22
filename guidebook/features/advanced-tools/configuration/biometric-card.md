@@ -3,7 +3,8 @@ categories:
   - Advanced Tools/Configuration Tools
 item_ids:
   - ae2:biometric_card
-title: Biometric Card
+navigation:
+  title: Biometric Card
 ---
 
 Encodes a players identity on the card, right click another player, or shift

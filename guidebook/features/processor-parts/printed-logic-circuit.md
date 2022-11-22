@@ -7,7 +7,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Printed Logic Circuit
+navigation:
+  title: Printed Logic Circuit
 ---
 
 Required to make <ItemLink

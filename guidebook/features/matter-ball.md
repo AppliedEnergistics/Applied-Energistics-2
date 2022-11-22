@@ -1,7 +1,8 @@
 ---
 item_ids:
   - ae2:matter_ball
-title: Matter Ball
+navigation:
+  title: Matter Ball
 ---
 
 A cheap ammunition for the <ItemLink

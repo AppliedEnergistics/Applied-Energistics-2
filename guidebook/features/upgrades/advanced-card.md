@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:advanced_card
-title: Advanced Card
+navigation:
+  title: Advanced Card
 ---
 
 Used to craft <ItemLink id="fuzzy_card"/>,

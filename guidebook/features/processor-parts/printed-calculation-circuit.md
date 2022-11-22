@@ -7,7 +7,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Printed Calculation Circuit
+navigation:
+  title: Printed Calculation Circuit
 ---
 
 Required to make <ItemLink

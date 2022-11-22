@@ -6,7 +6,8 @@ item_ids:
 related:
   - Other Networked Storage
   - Storage Cells
-title: ME Chest
+navigation:
+  title: ME Chest
 ---
 
 ![A picture of an ME Chest](../../../../public/assets/large/me_chest.png)The <ItemLink

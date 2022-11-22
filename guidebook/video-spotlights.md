@@ -1,5 +1,6 @@
 ---
-title: Video Spotlights
+navigation:
+  title: Video Spotlights
 ---
 
 Below are a set of various spotlights about the mod.

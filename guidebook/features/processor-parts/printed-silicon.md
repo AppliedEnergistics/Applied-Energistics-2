@@ -7,7 +7,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Printed Silicon
+navigation:
+  title: Printed Silicon
 ---
 
 <RecipeFor id="printed_silicon" />

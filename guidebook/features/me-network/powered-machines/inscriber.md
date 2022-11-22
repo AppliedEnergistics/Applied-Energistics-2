@@ -5,7 +5,8 @@ item_ids:
   - ae2:inscriber
 related:
   - Presses
-title: Inscriber
+navigation:
+  title: Inscriber
 ---
 
 ![A Picture of an Inscriber with a press pattern in it.](../../../../public/large/inscriber.png)

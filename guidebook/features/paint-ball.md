@@ -1,7 +1,8 @@
 ---
 item_ids:
   - ae2:white_paint_ball
-title: Paint Ball
+navigation:
+  title: Paint Ball
 ---
 
 Crafted by putting 8 <ItemLink

@@ -1,5 +1,6 @@
 ---
-title: Fluix
+navigation:
+  title: Fluix
 item_ids:
   - ae2:fluix_block
 ---

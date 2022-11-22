@@ -1,7 +1,8 @@
 ---
 item_ids:
   - ae2:silicon
-title: Silicon
+navigation:
+  title: Silicon
 ---
 
 <RecipeFor id="silicon" />

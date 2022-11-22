@@ -1,5 +1,6 @@
 ---
-title: Wrench
+navigation:
+  title: Wrench
 item_ids:
   - ae2:certus_quartz_wrench
   - ae2:nether_quartz_wrench

@@ -3,7 +3,8 @@ categories:
   - ME Network/Spatial
 item_ids:
   - ae2:spatial_io_port
-title: Spatial IO Port
+navigation:
+  title: Spatial IO Port
 ---
 
 ![A picture of a Spatial IO

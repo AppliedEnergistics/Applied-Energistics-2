@@ -3,7 +3,8 @@ categories:
   - ME Network/Misc
 item_ids:
   - ae2:security_station
-title: ME Security Terminal
+navigation:
+  title: ME Security Terminal
 ---
 
 ![A picture of a security terminal.](../../../../public/assets/large/security_terminal.png)

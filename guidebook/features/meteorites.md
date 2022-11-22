@@ -1,5 +1,6 @@
 ---
-title: Meteorites
+navigation:
+  title: Meteorites
 item_ids:
   - ae2:sky_compass
   - ae2:sky_stone_block

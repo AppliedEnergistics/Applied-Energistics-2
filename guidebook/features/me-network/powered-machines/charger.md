@@ -6,7 +6,8 @@ item_ids:
   - ae2:crank
 related:
   - Supported Tools
-title: Charger
+navigation:
+  title: Charger
 ---
 
 ![A picture of a charger.](../../../../public/assets/large/charger_with_crank.jpg)

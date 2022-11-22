@@ -1,5 +1,6 @@
 ---
-title: Debug Card
+navigation:
+  title: Debug Card
 sidenav_icon: debug_card
 item_ids:
   - ae2:debug_card

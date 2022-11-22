@@ -5,7 +5,8 @@ item_ids:
   - ae2:formation_plane
 related:
   - Possible Upgrades
-title: ME Formation Plane
+navigation:
+  title: ME Formation Plane
 ---
 
 The <ItemLink id="formation_plane"/> is a part

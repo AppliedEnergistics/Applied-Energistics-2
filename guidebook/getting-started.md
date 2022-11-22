@@ -1,5 +1,6 @@
 ---
-title: Getting Started  (1.19+)
+navigation:
+  title: Getting Started  (1.19+)
 ---
 
 <div class="notification is-info">

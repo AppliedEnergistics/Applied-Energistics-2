@@ -6,7 +6,8 @@ item_ids:
 related:
   - Storage Cell Parts
   - Storage Cells
-title: 64k ME Storage Component
+navigation:
+  title: 64k ME Storage Component
 ---
 
 Largest storage component, used to make <ItemLink

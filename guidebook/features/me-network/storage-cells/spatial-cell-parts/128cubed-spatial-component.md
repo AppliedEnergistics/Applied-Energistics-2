@@ -6,10 +6,11 @@ item_ids:
 related:
   - Spatial Cell Parts
   - Spatial Cells
-title: 128Cubed Spatial Component
+navigation:
+  title: 128Cubed Spatial Component
 ---
 
-Largest spatial storage component, used to make <ItemLink
+Largest spatial storage component, used to make <ItemLink 
 id="spatial_storage_cell_128"/>.
 
 <RecipeFor id="spatial_cell_component_128" />

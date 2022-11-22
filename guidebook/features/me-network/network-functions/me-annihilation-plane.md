@@ -3,7 +3,8 @@ categories:
   - ME Network/Network Functions
 item_ids:
   - ae2:annihilation_plane
-title: ME Annihilation Plane
+navigation:
+  title: ME Annihilation Plane
 ---
 
 The <ItemLink id="annihilation_plane"/> is a

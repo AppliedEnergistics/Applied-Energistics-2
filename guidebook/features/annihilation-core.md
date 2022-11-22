@@ -1,7 +1,8 @@
 ---
 item_ids:
   - ae2:annihilation_core
-title: Annihilation Core
+navigation:
+  title: Annihilation Core
 ---
 
 A component which can convert matter into energy.

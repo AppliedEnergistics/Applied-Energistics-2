@@ -7,7 +7,8 @@ related:
   - Storage Cells
   - Spatial Cell Parts
   - Spatial Cells
-title: ME Storage Housing
+navigation:
+  title: ME Storage Housing
 ---
 
 An empty storage container, you can insert any of the various storage cell

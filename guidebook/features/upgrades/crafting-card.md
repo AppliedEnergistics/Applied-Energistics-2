@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:crafting_card
-title: Crafting Card
+navigation:
+  title: Crafting Card
 ---
 
 Can be used with the <ItemLink id="interface"/>

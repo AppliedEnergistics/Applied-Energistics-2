@@ -7,7 +7,8 @@ related:
   - Storage Cell Parts
   - Storage Cells
   - Possible Upgrades
-title: 1k ME Item Fluid Storage Cell
+navigation:
+  title: 1k ME Item Fluid Storage Cell
 ---
 
 Lowest Tier Storage Cell, which can contain 1,024 bytes of storage.

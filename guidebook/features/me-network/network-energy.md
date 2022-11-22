@@ -1,5 +1,6 @@
 ---
-title: Network Energy
+navigation:
+  title: Network Energy
 sidenav_icon: ae2:energy_cell
 item_ids:
   - ae2:energy_acceptor

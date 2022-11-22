@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:capacity_card
-title: Capacity Card
+navigation:
+  title: Capacity Card
 ---
 
 Upgrades the number of configuration slots available in <ItemLink

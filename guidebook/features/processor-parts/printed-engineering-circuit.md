@@ -7,7 +7,8 @@ related:
   - Processors
   - Processor Press Plates
   - Processor Parts
-title: Printed Engineering Circuit
+navigation:
+  title: Printed Engineering Circuit
 ---
 
 Required to make <ItemLink

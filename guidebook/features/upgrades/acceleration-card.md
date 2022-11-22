@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:speed_card
-title: Acceleration Card
+navigation:
+  title: Acceleration Card
 ---
 
 Can be installed into <ItemLink id="io_port"/>,

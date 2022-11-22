@@ -1,5 +1,6 @@
 ---
-title: ME Network
+navigation:
+  title: ME Network
 ---
 
 # ME Network

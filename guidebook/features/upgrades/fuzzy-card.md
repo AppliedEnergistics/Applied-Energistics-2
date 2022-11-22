@@ -3,7 +3,8 @@ categories:
   - Upgrades
 item_ids:
   - ae2:fuzzy_card
-title: Fuzzy Card
+navigation:
+  title: Fuzzy Card
 ---
 
 Used to add fuzzy behavior to <ItemLink

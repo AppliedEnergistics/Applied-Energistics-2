@@ -1,5 +1,6 @@
 ---
-title: Ender Dust
+navigation:
+  title: Ender Dust
 item_ids:
   - ae2:ender_dust
 ---

@@ -1,5 +1,6 @@
 ---
-title: Wireless Access
+navigation:
+  title: Wireless Access
 item_ids:
   - ae2:wireless_receiver
   - ae2:wireless_booster

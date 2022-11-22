@@ -1,5 +1,6 @@
 ---
-title: ME Quantum Network Bridge
+navigation:
+  title: ME Quantum Network Bridge
 ---
 
 # Quantum Network Bridge
