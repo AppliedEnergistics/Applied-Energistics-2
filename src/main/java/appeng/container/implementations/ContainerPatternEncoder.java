@@ -527,7 +527,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
 
         if (!i.isEmpty()) {
             i.writeToNBT(c);
-            if (i.getCount() > i.getMaxStackSize()) {
+            if (i.getCount() > Byte.MAX_VALUE) {
                 c.setInteger("stackSize", i.getCount());
             }
         }

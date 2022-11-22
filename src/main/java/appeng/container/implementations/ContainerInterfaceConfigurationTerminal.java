@@ -311,7 +311,7 @@ public final class ContainerInterfaceConfigurationTerminal extends AEBaseContain
 
             if (!is.isEmpty()) {
                 is.writeToNBT(itemNBT);
-                if (is.getCount() > is.getMaxStackSize()) {
+                if (is.getCount() > Byte.MAX_VALUE) {
                     itemNBT.setInteger("stackSize", is.getCount());
                 }
             }

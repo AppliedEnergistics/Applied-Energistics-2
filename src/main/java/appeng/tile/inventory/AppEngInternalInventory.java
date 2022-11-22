@@ -164,7 +164,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
             if (!is.isEmpty()) {
                 NBTTagCompound itemTag = new NBTTagCompound();
                 itemTag.setInteger("Slot", i);
-                if (is.getCount() > is.getMaxStackSize()) {
+                if (is.getCount() > Byte.MAX_VALUE) {
                     itemTag.setInteger("stackSize", stacks.get(i).getCount());
                 }
                 stacks.get(i).writeToNBT(itemTag);

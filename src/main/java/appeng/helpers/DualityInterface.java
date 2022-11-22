@@ -210,6 +210,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             for (final ItemStack is : this.waitingToSend) {
                 final NBTTagCompound item = new NBTTagCompound();
                 is.writeToNBT(item);
+                if (is.getCount() > Byte.MAX_VALUE) {
+                    item.setInteger("stackSize", is.getCount());
+                }
                 waitingToSend.appendTag(item);
             }
         }
@@ -224,6 +227,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     for (final ItemStack is : this.waitingToSendFacing.get(s)) {
                         final NBTTagCompound item = new NBTTagCompound();
                         is.writeToNBT(item);
+                        if (is.getCount() > Byte.MAX_VALUE) {
+                            item.setInteger("stackSize", is.getCount());
+                        }
                         waitingListSided.appendTag(item);
                     }
                     sidedWaitList.setTag(s.name(), waitingListSided);
@@ -241,6 +247,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 final NBTTagCompound c = waitingList.getCompoundTagAt(x);
                 if (c != null) {
                     final ItemStack is = new ItemStack(c);
+                    if (c.hasKey("stackSize")) {
+                        is.setCount(c.getInteger("stackSize"));
+                    }
                     this.addToSendList(is);
                 }
             }
@@ -256,6 +265,9 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                     final NBTTagCompound c = w.getCompoundTagAt(x);
                     if (c != null) {
                         final ItemStack is = new ItemStack(c);
+                        if (c.hasKey("stackSize")) {
+                            is.setCount(c.getInteger("stackSize"));
+                        }
                         this.addToSendListFacing(is, EnumFacing.getFront(s.getIndex()));
                     }
                 }
