@@ -88,8 +88,14 @@ public class ItemPlacementStrategy implements PlacementStrategy {
                     var context = new PlaneDirectionalPlaceContext(level, player, placePos,
                             lookDirection, is, lookDirection.getOpposite());
 
-                    i.useOn(context);
-                    maxStorage -= is.getCount();
+                    // In case the item does not look at the use context for the stack to use
+                    player.setItemInHand(InteractionHand.MAIN_HAND, is);
+                    try {
+                        i.useOn(context);
+                    } finally {
+                        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                    }
+                    maxStorage = Math.max(0, maxStorage - is.getCount());
 
                 } else {
                     maxStorage = 1;
