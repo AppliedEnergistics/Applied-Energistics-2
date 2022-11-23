@@ -1,8 +1,11 @@
 package appeng.client.guidebook.screen;
 
 import appeng.client.guidebook.GuidebookManager;
+import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.navigation.NavigationNode;
 import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.render.LightDarkMode;
+import appeng.client.guidebook.render.SimpleRenderContext;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -18,8 +21,11 @@ public class GuideNavBar extends AbstractWidget {
 
     private final List<Row> rows = new ArrayList<>();
 
-    public GuideNavBar(int x, int y, int width, int height) {
+    private final GuideScreen screen;
+
+    public GuideNavBar(GuideScreen screen, int x, int y, int width, int height) {
         super(x, y, width, height, Component.literal("Navigation Tree"));
+        this.screen = screen;
     }
 
     @Override
@@ -45,14 +51,24 @@ public class GuideNavBar extends AbstractWidget {
 
         var font = Minecraft.getInstance().font;
 
+        var renderContext = new SimpleRenderContext(screen, LytRect.empty(), poseStack, LightDarkMode.LIGHT_MODE);
+
         fillGradient(poseStack, x, y, x + width, y + height, 0xFF000000, 0x7F000000);
 
         enableScissor(x, y, width, height);
-        var currentY = y;
         for (var row : rows) {
-            for (var line : row.textLines) {
-                font.draw(poseStack, line, x, currentY, -1);
-                currentY += font.lineHeight;
+            var bounds = row.bounds;
+            boolean containsMouse = bounds.contains(mouseX, mouseY);
+
+            var textLines = row.textLines;
+            for (int i = 0; i < textLines.size(); i++) {
+                font.draw(
+                        poseStack,
+                        textLines.get(i),
+                        bounds.x(),
+                        bounds.y() + i * font.lineHeight,
+                        -1
+                );
             }
         }
         disableScissor();
@@ -62,12 +78,28 @@ public class GuideNavBar extends AbstractWidget {
         this.navTree = GuidebookManager.INSTANCE.getNavigationTree();
         // Save Freeze expanded / scroll position
         this.rows.clear();
-        var font = Minecraft.getInstance().font;
 
         for (var rootNode : this.navTree.getRootNodes()) {
-            var label = Component.literal(rootNode.title());
-            var lines = font.split(label, width);
-            rows.add(new Row(lines, rootNode));
+            rows.add(new Row(rootNode));
+        }
+
+        updateLayout();
+    }
+
+    private void updateLayout() {
+        var font = Minecraft.getInstance().font;
+
+        var currentY = 0;
+        for (var row : this.rows) {
+            row.textLines = font.split(row.text, width);
+            var height = row.textLines.size() * font.lineHeight;
+            row.bounds = new LytRect(
+                    this.x,
+                    currentY,
+                    width,
+                    height
+            );
+            currentY += height;
         }
     }
 
@@ -77,13 +109,16 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     private class Row {
-        private final List<FormattedCharSequence> textLines;
+        private final Component text;
         private final NavigationNode node;
+        private List<FormattedCharSequence> textLines = List.of();
         private boolean expanded;
+        private LytRect bounds = LytRect.empty();
 
-        public Row(List<FormattedCharSequence> textLines, NavigationNode node) {
-            this.textLines = textLines;
+        public Row(NavigationNode node) {
             this.node = node;
+            this.text = Component.literal(node.title())
+                    .withStyle(s -> s.withFont(Minecraft.UNIFORM_FONT));
         }
     }
 }
