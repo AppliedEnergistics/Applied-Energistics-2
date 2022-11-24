@@ -1,6 +1,7 @@
 ---
 navigation:
   title: Ender Dust
+  parent: getting-started.md
 item_ids:
   - ae2:ender_dust
 ---

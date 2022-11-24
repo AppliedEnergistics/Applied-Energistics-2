@@ -95,12 +95,18 @@ public class GuideScreen extends Screen {
 
         poseStack.popPose();
 
+        poseStack.pushPose();
+        poseStack.translate(0, 0, 100);
+
         super.render(poseStack, mouseX, mouseY, partialTick);
+
+        poseStack.popPose();
 
         // Render tooltip
         if (document.getHoveredElement() != null) {
             renderTooltip(poseStack, mouseX, mouseY);
         }
+
     }
 
     private void renderTooltip(PoseStack poseStack, int x, int y) {
