@@ -41,7 +41,7 @@ public class FlowBuilder {
     public void renderBatch(RenderContext context, MultiBufferSource buffers, @Nullable LytFlowContent hoveredContent) {
         for (var line : lines) {
             for (var el = line.firstElement(); el != null; el = el.next) {
-                el.containsMouse = el.getFlowContent() == hoveredContent;
+                el.containsMouse = hoveredContent != null && hoveredContent.isInclusiveAncestor(el.getFlowContent());
                 el.renderBatch(context, buffers);
             }
         }
@@ -50,7 +50,7 @@ public class FlowBuilder {
     public void render(RenderContext context, @Nullable LytFlowContent hoveredContent) {
         for (var line : lines) {
             for (var el = line.firstElement(); el != null; el = el.next) {
-                el.containsMouse = el.getFlowContent() == hoveredContent;
+                el.containsMouse = hoveredContent != null && hoveredContent.isInclusiveAncestor(el.getFlowContent());
                 el.render(context);
             }
         }

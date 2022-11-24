@@ -46,18 +46,19 @@ public final class GuidebookManager {
     }
 
     @Nullable
-    public ParsedGuidePage getPage(ResourceLocation id) {
+    public GuidePage getPage(ResourceLocation id) {
         if (pages == null) {
             LOGGER.warn("Can't get page {}. Pages not loaded yet.", id);
             return null;
         }
 
-        var devPage = developmentPages.get(id);
-        if (devPage != null) {
-            return devPage;
+        var page = developmentPages.getOrDefault(id, pages.get(id));
+
+        if (page != null) {
+            return PageCompiler.compile(page);
         }
 
-        return pages.get(id);
+        return null;
     }
 
     public NavigationTree getNavigationTree() {

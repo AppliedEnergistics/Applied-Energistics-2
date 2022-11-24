@@ -8,6 +8,7 @@ accessible method net/minecraft/client/gui/components/EditBox isEditable ()Z
 accessible field net/minecraft/client/gui/components/AbstractWidget height I
 extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen isHovering (Lnet/minecraft/world/inventory/Slot;DD)Z
 accessible method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen findSlot (DD)Lnet/minecraft/world/inventory/Slot;
+accessible method net/minecraft/client/gui/GuiComponent fillGradient (Lcom/mojang/blaze3d/vertex/PoseStack;IIIIIII)V
 
 # We need to change yPos of existing slots to resize the container
 mutable field net/minecraft/world/inventory/Slot x I

@@ -10,4 +10,13 @@ public class LytFlowContent {
     public void setParentSpan(LytFlowSpan parentSpan) {
         this.parentSpan = parentSpan;
     }
+
+    public boolean isInclusiveAncestor(LytFlowContent flowContent) {
+        for (var content = flowContent; content != null; content = content.getParentSpan()) {
+            if (content == this) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

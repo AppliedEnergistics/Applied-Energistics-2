@@ -4,6 +4,7 @@ import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
+import appeng.client.guidebook.GuidebookManager;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.LytRect;
@@ -20,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -29,13 +31,13 @@ public class GuideScreen extends Screen {
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
 
-    private final GuidePage currentPage;
+    private GuidePage currentPage;
     private final GuideScrollbar scrollbar;
     private GuideNavBar navbar;
 
-    public GuideScreen(ParsedGuidePage currentPage) {
+    public GuideScreen(GuidePage currentPage) {
         super(Component.literal("AE2 Guidebook"));
-        this.currentPage = PageCompiler.compile(currentPage);
+        this.currentPage = currentPage;
         this.scrollbar = new GuideScrollbar();
     }
 
@@ -43,15 +45,7 @@ public class GuideScreen extends Screen {
     protected void init() {
         super.init();
 
-        var docViewport = getDocumentViewport();
-        var context = new SimpleLayoutContext(
-                minecraft.font,
-                docViewport
-        );
-
-        // Build layout if needed
-        var document = currentPage.getDocument();
-        document.updateLayout(context, docViewport.width());
+        updatePageLayout();
 
         // Add and re-position scrollbar
         var docRect = getDocumentRect();
@@ -61,9 +55,8 @@ public class GuideScreen extends Screen {
                 docRect.y(),
                 docRect.height()
         );
-        scrollbar.setContentHeight(document.getContentHeight());
 
-        this.navbar = new GuideNavBar(0, 0, 150, height);
+        this.navbar = new GuideNavBar(this);
         addRenderableWidget(this.navbar);
     }
 
@@ -90,9 +83,9 @@ public class GuideScreen extends Screen {
         enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
 
         // Render all text content in one large batch to improve performance
-        var buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        var buffers = context.beginBatch();
         document.renderBatch(context, buffers);
-        buffers.endBatch();
+        context.endBatch(buffers);
 
         document.render(context);
 
@@ -168,6 +161,12 @@ public class GuideScreen extends Screen {
         } else {
             return false;
         }
+    }
+
+    public void navigateTo(ResourceLocation pageId) {
+        currentPage = GuidebookManager.INSTANCE.getPage(pageId);
+        scrollbar.setScrollAmount(0);
+        updatePageLayout();
     }
 
     @FunctionalInterface
@@ -341,5 +340,18 @@ public class GuideScreen extends Screen {
             currentY += line.getHeight() + (i == 0 ? 2 : 0);
         }
         this.itemRenderer.blitOffset = prevZOffset;
+    }
+
+    private void updatePageLayout() {
+        var docViewport = getDocumentViewport();
+        var context = new SimpleLayoutContext(
+                minecraft.font,
+                docViewport
+        );
+
+        // Build layout if needed
+        var document = currentPage.getDocument();
+        document.updateLayout(context, docViewport.width());
+        scrollbar.setContentHeight(document.getContentHeight());
     }
 }
