@@ -257,4 +257,7 @@ public final class PageCompiler {
         return span;
     }
 
+    public ResourceLocation resolveId(String idText) {
+        return IdUtils.resolve(idText, id);
+    }
 }

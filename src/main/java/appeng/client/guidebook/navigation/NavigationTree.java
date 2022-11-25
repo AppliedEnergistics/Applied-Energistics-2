@@ -64,7 +64,7 @@ public class NavigationTree {
                     }
             );
 
-            // Add this page to the colleted children of the parent page (if any)
+            // Add this page to the collected children of the parent page (if any)
             var parentId = navigationEntry.parent();
             if (parentId != null) {
                 pagesWithChildren.compute(

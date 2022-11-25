@@ -46,6 +46,8 @@ public record SimpleRenderContext(@Override GuideScreen screen,
 
     @Override
     public void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorRef color) {
+        var resolvedColor = resolveColor(color);
+
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -55,9 +57,9 @@ public record SimpleRenderContext(@Override GuideScreen screen,
         builder.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
         var matrix = poseStack.last().pose();
         final int z = 0;
-        builder.vertex(matrix, p1.x, p1.y, z).color(0xFFEEEEEE).endVertex();
-        builder.vertex(matrix, p2.x, p2.y, z).color(0xFFEEEEEE).endVertex();
-        builder.vertex(matrix, p3.x, p3.y, z).color(0xFFEEEEEE).endVertex();
+        builder.vertex(matrix, p1.x, p1.y, z).color(resolvedColor).endVertex();
+        builder.vertex(matrix, p2.x, p2.y, z).color(resolvedColor).endVertex();
+        builder.vertex(matrix, p3.x, p3.y, z).color(resolvedColor).endVertex();
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();

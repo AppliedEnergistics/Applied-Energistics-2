@@ -42,6 +42,8 @@ public final class IdUtils {
                             anchor.getPath().substring(0, lastSlashInAnchor + 1) + relativeId
                     );
                 }
+            } else {
+                return new ResourceLocation(anchor.getNamespace(), idText);
             }
         }
 

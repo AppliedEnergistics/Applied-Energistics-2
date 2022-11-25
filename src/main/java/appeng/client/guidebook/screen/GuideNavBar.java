@@ -26,6 +26,8 @@ import java.util.List;
 public class GuideNavBar extends AbstractWidget {
     private static final int WIDTH_CLOSED = 15;
     private static final int WIDTH_OPEN = 150;
+    private static final int CHILD_ROW_INDENT = 10;
+    private static final int PARENT_ROW_INDENT = 7;
 
     private NavigationTree navTree;
 
@@ -54,6 +56,9 @@ public class GuideNavBar extends AbstractWidget {
 
         var row = pickRow(mouseX, mouseY);
         if (row != null) {
+            row.expanded = !row.expanded;
+            updateLayout();
+
             screen.navigateTo(row.node.pageId());
         }
     }
@@ -155,12 +160,40 @@ public class GuideNavBar extends AbstractWidget {
             // Render Text in batch
             var buffers = renderContext.beginBatch();
             for (var row : rows) {
-                if (row.bottom < viewport.y() || row.top >= viewport.bottom()) {
+                if (!row.isVisible(viewport)) {
                     continue; // Cull this row, it's not in the viewport
                 }
                 row.paragraph.renderBatch(renderContext, buffers);
             }
             renderContext.endBatch(buffers);
+
+            // Render decorations, icons, etc.
+            for (var row : rows) {
+                if (!row.isVisible(viewport)) {
+                    continue; // Cull this row, it's not in the viewport
+                }
+                if (row.hasChildren) {
+                    float x = row.getBounds().x();
+                    x += 5;
+                    float y = row.getBounds().y();
+                    y += 2f;
+                    Vec2 p1, p2, p3;
+                    if (row.expanded) {
+                        // Triangle points down
+                        p1 = new Vec2(x + 5, y);
+                        p2 = new Vec2(x, y);
+                        p3 = new Vec2(x + 2.5f, y + 5);
+                    } else {
+                        // Triangle points right
+                        p1 = new Vec2(x + 5, y + 2.5f);
+                        p2 = new Vec2(x, y);
+                        p3 = new Vec2(x, y + 5);
+                    }
+
+                    var color = row == hoveredRow ? SymbolicColor.LINK : SymbolicColor.BODY_TEXT;
+                    renderContext.fillTriangle(p1, p2, p3, color.ref());
+                }
+            }
 
             poseStack.popPose();
 
@@ -173,7 +206,7 @@ public class GuideNavBar extends AbstractWidget {
         var vpPos = getViewportPoint(x, y);
         if (vpPos != null) {
             for (var row : rows) {
-                if (vpPos.getY() >= row.top && vpPos.getY() < row.bottom) {
+                if (row.isVisible() && vpPos.getY() >= row.top && vpPos.getY() < row.bottom) {
                     return row;
                 }
             }
@@ -184,6 +217,10 @@ public class GuideNavBar extends AbstractWidget {
     private void updateMousePos(double x, double y) {
         var vpPos = getViewportPoint(x, y);
         for (Row row : rows) {
+            if (!row.isVisible()) {
+                continue;
+            }
+
             if (vpPos != null && row.contains(vpPos.getX(), vpPos.getY())) {
                 row.paragraph.onMouseEnter(row.span);
             } else {
@@ -198,7 +235,15 @@ public class GuideNavBar extends AbstractWidget {
         this.rows.clear();
 
         for (var rootNode : this.navTree.getRootNodes()) {
-            rows.add(new Row(rootNode));
+            var row = new Row(rootNode, null);
+            rows.add(row);
+
+            // Add second level
+            for (var child : row.node.children()) {
+                row.hasChildren = true;
+                var childRow = new Row(child, row);
+                rows.add(childRow);
+            }
         }
 
         updateLayout();
@@ -212,16 +257,28 @@ public class GuideNavBar extends AbstractWidget {
 
         var currentY = 0;
         for (var row : this.rows) {
-            var bounds = row.paragraph.layout(context, 0, currentY, WIDTH_OPEN);
+            if (!row.isVisible()) {
+                continue;
+            }
+
+            // Child-Rows should be indented and their parents
+            // need an indent too for the expand/collapse indicator
+            int indent;
+            if (row.hasChildren) {
+                indent = PARENT_ROW_INDENT;
+            } else if (row.parent != null) {
+                indent = CHILD_ROW_INDENT;
+            } else {
+                indent = 0;
+            }
+
+            var x = indent;
+            var width = WIDTH_OPEN - indent;
+            var bounds = row.paragraph.layout(context, x, currentY, width);
             row.top = bounds.y();
             row.bottom = bounds.bottom();
             currentY = bounds.bottom();
         }
-    }
-
-    @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY) {
-        super.renderBg(poseStack, minecraft, mouseX, mouseY);
     }
 
     /**
@@ -248,11 +305,14 @@ public class GuideNavBar extends AbstractWidget {
         private final LytParagraph paragraph = new LytParagraph();
         public final LytFlowSpan span;
         private boolean expanded;
+        private final Row parent;
+        private boolean hasChildren;
         public int top;
         public int bottom;
 
-        public Row(NavigationNode node) {
+        public Row(NavigationNode node, Row parent) {
             this.node = node;
+            this.parent = parent;
 
             span = new LytFlowSpan();
             span.appendText(node.title());
@@ -266,6 +326,15 @@ public class GuideNavBar extends AbstractWidget {
 
         public boolean contains(int x, int y) {
             return x >= 0 && x < width && y >= top && y < bottom;
+        }
+
+        public boolean isVisible() {
+            return parent == null || parent.expanded;
+        }
+
+        // Is this row visible in the given viewport?
+        public boolean isVisible(LytRect viewport) {
+            return isVisible() && bottom > viewport.y() && top < viewport.bottom();
         }
     }
 

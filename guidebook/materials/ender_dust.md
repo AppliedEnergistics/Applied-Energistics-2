@@ -8,3 +8,4 @@ item_ids:
 
 <ItemLink id="ender_dust" /> is created by shattering an <ItemLink id="minecraft:ender_pearl" /> in
 a normal blast furnace.
+
