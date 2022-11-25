@@ -19,7 +19,7 @@ The <ItemLink id="debug_card" /> item is reasonably safe to use, and you should 
 Also make sure that have installed WTHIT (Fabric) or Jade (Forge).
 
 When looking at an AE2 block or part, you should seem something that looks like this:
-![A picture of debug card display.](../public/assets/large/debug-card-display.png)
+![A picture of debug card display.](assets/large/debug-card-display.png)
 
 ### Node connectivity
 

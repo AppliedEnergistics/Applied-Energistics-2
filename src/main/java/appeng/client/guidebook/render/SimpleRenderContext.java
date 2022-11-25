@@ -93,7 +93,7 @@ public record SimpleRenderContext(@Override GuideScreen screen,
         poseStack.translate(width / 2, height /2, 0.0);
         poseStack.scale(1.0F, -1.0F, 1.0F);
         poseStack.scale(width, height, 1f);
-        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        var buffers = Minecraft.getInstance().renderBuffers().bufferSource();
         boolean flatLighting = !model.usesBlockLight();
         if (flatLighting) {
             Lighting.setupForFlatItems();
@@ -103,12 +103,12 @@ public record SimpleRenderContext(@Override GuideScreen screen,
                 ItemTransforms.TransformType.GUI,
                 false,
                 poseStack,
-                bufferSource,
+                buffers,
                 LightTexture.FULL_BRIGHT,
                 OverlayTexture.NO_OVERLAY,
                 model
         );
-        bufferSource.endBatch();
+        buffers.endBatch();
         RenderSystem.enableDepthTest();
         if (flatLighting) {
             Lighting.setupFor3DItems();
