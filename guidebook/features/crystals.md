@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Crystals
-sidenav_icon: ae2:certus_quartz_crystal
+  icon: certus_quartz_crystal
 item_ids:
   - ae2:quartz_ore
   - ae2:certus_quartz_crystal

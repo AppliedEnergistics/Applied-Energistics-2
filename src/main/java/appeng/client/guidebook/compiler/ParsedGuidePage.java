@@ -29,4 +29,13 @@ public class ParsedGuidePage {
     public Frontmatter getFrontmatter() {
         return frontmatter;
     }
+
+    @Override
+    public String toString() {
+        if (id.getNamespace().equals(sourcePack)) {
+            return id.toString();
+        } else {
+            return id + " (from " + sourcePack + ")";
+        }
+    }
 }

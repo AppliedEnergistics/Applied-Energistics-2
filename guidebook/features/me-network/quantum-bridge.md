@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Quantum Bridge
-sidenav_icon: ae2:singularity
+  icon: singularity
 item_ids:
   - ae2:quantum_link
   - ae2:quantum_ring

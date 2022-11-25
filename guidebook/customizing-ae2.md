@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Customizing AE2
-sidenav_icon: certus_quartz_wrench
+  icon: certus_quartz_wrench
 ---
 
 This page describes how AE2 can be tweaked by modpack authors or players to their own play-style.

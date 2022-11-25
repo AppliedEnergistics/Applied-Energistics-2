@@ -2,12 +2,21 @@ package appeng.client.guidebook.render;
 
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.screen.GuideScreen;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
 public record SimpleRenderContext(@Override GuideScreen screen,
@@ -63,6 +72,49 @@ public record SimpleRenderContext(@Override GuideScreen screen,
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
+    }
+
+    @Override
+    public void renderItem(ItemStack stack, int x, int y, int z, float width, float height) {
+        var itemRenderer = Minecraft.getInstance().getItemRenderer();
+        var textureManager = Minecraft.getInstance().getTextureManager();
+
+        var model = itemRenderer.getModel(stack, null, null, 0);
+
+        // Essentially the same code as in itemrenderer renderInGui, but we're passing our own posestack
+        textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).setFilter(false, false);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+        poseStack.pushPose();
+        poseStack.translate(x, y, z);
+        poseStack.translate(width / 2, height /2, 0.0);
+        poseStack.scale(1.0F, -1.0F, 1.0F);
+        poseStack.scale(width, height, 1f);
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        boolean flatLighting = !model.usesBlockLight();
+        if (flatLighting) {
+            Lighting.setupForFlatItems();
+        }
+
+        itemRenderer.render(stack,
+                ItemTransforms.TransformType.GUI,
+                false,
+                poseStack,
+                bufferSource,
+                LightTexture.FULL_BRIGHT,
+                OverlayTexture.NO_OVERLAY,
+                model
+        );
+        bufferSource.endBatch();
+        RenderSystem.enableDepthTest();
+        if (flatLighting) {
+            Lighting.setupFor3DItems();
+        }
+
+        poseStack.popPose();
     }
 
     private enum GradientDirection {

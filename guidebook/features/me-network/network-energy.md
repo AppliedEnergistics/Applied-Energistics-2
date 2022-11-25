@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Network Energy
-sidenav_icon: ae2:energy_cell
+  icon: energy_cell
 item_ids:
   - ae2:energy_acceptor
   - ae2:cable_energy_acceptor

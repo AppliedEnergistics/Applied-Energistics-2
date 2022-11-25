@@ -1,6 +1,5 @@
 package appeng.client.guidebook.render;
 
-import appeng.client.Point;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.guidebook.style.ResolvedTextStyle;
@@ -13,6 +12,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
 public interface RenderContext {
@@ -103,4 +103,10 @@ public interface RenderContext {
     default void endBatch(MultiBufferSource.BufferSource batch) {
         batch.endBatch();
     }
+
+    default void renderItem(ItemStack stack, int x, int y, float width, float height) {
+        renderItem(stack, x, y, 0, width, height);
+    }
+
+    void renderItem(ItemStack stack, int x, int y, int z, float width, float height);
 }

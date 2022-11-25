@@ -1,6 +1,7 @@
 ---
 navigation:
   title: Illuminated Panel
+  icon: monitor
 item_ids:
   - ae2:monitor
   - ae2:dark_monitor

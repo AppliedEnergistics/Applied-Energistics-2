@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Cables
-sidenav_icon: ae2:fluix_glass_cable
+  icon: fluix_glass_cable
 item_ids:
   - ae2:white_glass_cable
   - ae2:orange_glass_cable

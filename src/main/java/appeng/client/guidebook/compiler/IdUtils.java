@@ -15,7 +15,7 @@ public final class IdUtils {
 
     public static ResourceLocation resolve(String idText) {
         if (!idText.contains(":")) {
-            idText = AppEng.MOD_ID + ":";
+            return new ResourceLocation(AppEng.MOD_ID, idText);
         }
         return new ResourceLocation(idText);
     }

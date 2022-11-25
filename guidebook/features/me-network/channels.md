@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Channels
-sidenav_icon: ae2:controller
+  icon: controller
 ---
 
 Applied Energistics 2's [ME Networks](../me-network.md) require

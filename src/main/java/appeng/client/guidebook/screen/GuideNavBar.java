@@ -193,6 +193,11 @@ public class GuideNavBar extends AbstractWidget {
                     var color = row == hoveredRow ? SymbolicColor.LINK : SymbolicColor.BODY_TEXT;
                     renderContext.fillTriangle(p1, p2, p3, color.ref());
                 }
+
+                var icon = row.node.icon();
+                if (!icon.isEmpty()) {
+                    renderContext.renderItem(icon, row.paragraph.getBounds().x() - 9, row.paragraph.getBounds().y(), 8, 8);
+                }
             }
 
             poseStack.popPose();
@@ -270,6 +275,10 @@ public class GuideNavBar extends AbstractWidget {
                 indent = CHILD_ROW_INDENT;
             } else {
                 indent = 0;
+            }
+
+            if (!row.node.icon().isEmpty()) {
+                indent += 8; // Indent for icon;
             }
 
             var x = indent;

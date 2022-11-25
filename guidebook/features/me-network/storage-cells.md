@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Storage Cells
-sidenav_icon: ae2:item_storage_cell_64k
+  icon: item_storage_cell_64k
 item_ids:
   - ae2:fluid_storage_cell_1k
   - ae2:fluid_storage_cell_4k
