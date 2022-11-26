@@ -11,9 +11,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
@@ -34,6 +36,24 @@ public class BasicInventoryTest {
         InitItems.init(Registry.ITEM);
         InitStorageCells.init();
         InitUpgrades.init();
+    }
+
+    /**
+     * Check that we can extract more than MAX_INT fluid at once from a cell. Regression test for
+     * https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6794
+     */
+    @Test
+    void testFluidExtract() {
+        var item = AEItems.FLUID_CELL_256K.asItem();
+        var stack = new ItemStack(item);
+        var cell = StorageCells.getCellInventory(stack, null);
+        Objects.requireNonNull(cell);
+        // Values are more than Integer.MAX_VALUE
+        long testAmount = 40_000L * AEFluidKey.AMOUNT_BUCKET;
+        assertThat(cell.insert(AEFluidKey.of(Fluids.LAVA), testAmount, Actionable.MODULATE, SRC))
+                .isEqualTo(testAmount);
+        assertThat(cell.extract(AEFluidKey.of(Fluids.LAVA), testAmount, Actionable.MODULATE, SRC))
+                .isEqualTo(testAmount);
     }
 
     @Test
