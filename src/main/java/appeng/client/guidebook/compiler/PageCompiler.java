@@ -1,5 +1,6 @@
 package appeng.client.guidebook.compiler;
 
+import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBlockContainer;
@@ -55,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
@@ -210,20 +212,7 @@ public final class PageCompiler {
             } else if (child instanceof MdAstBreak) {
                 layoutChild = new LytFlowBreak();
             } else if (child instanceof MdAstLink astLink) {
-                var link = new LytFlowLink();
-                link.setTitle(astLink.title);
-                link.setClickCallback(screen -> {
-                    var mc = Minecraft.getInstance();
-                    mc.setScreen(new ConfirmLinkScreen(yes -> {
-                        if (yes) {
-                            Util.getPlatform().openUri(astLink.url);
-                        }
-
-                        mc.setScreen(screen);
-                    }, astLink.url, false));
-                });
-                compileFlowContext(astLink, link);
-                layoutChild = link;
+                layoutChild = compileLink(astLink);
             } else if (child instanceof MdAstImage astImage) {
                 var inlineBlock = new LytFlowInlineBlock();
                 inlineBlock.setBlock(compileImage(astImage));
@@ -244,6 +233,39 @@ public final class PageCompiler {
                 layoutParent.append(layoutChild);
             }
         }
+    }
+
+    private LytFlowLink compileLink(MdAstLink astLink) {
+        var link = new LytFlowLink();
+        link.setTitle(astLink.title);
+
+        // Internal vs. external links
+        var uri = URI.create(astLink.url);
+        if (uri.isAbsolute()) {
+            link.setClickCallback(screen -> {
+                var mc = Minecraft.getInstance();
+                mc.setScreen(new ConfirmLinkScreen(yes -> {
+                    if (yes) {
+                        Util.getPlatform().openUri(uri);
+                    }
+
+                    mc.setScreen(screen);
+                }, astLink.url, false));
+            });
+        } else {
+            // Determine the page id, account for relative paths
+            var pageId = IdUtils.resolve(astLink.url, id);
+            if (!GuideManager.INSTANCE.pageExists(pageId)) {
+                LOGGER.error("Broken link to page '{}' in page {}", astLink.url, id);
+            } else {
+                link.setClickCallback(screen -> {
+                    screen.navigateTo(pageId);
+                });
+            }
+        }
+
+        compileFlowContext(astLink, link);
+        return link;
     }
 
     @NotNull

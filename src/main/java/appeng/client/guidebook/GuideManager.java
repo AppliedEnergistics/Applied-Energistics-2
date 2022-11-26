@@ -117,6 +117,10 @@ public final class GuideManager {
         return navigationTree;
     }
 
+    public boolean pageExists(ResourceLocation pageId) {
+        return developmentPages.containsKey(pageId) || pages.containsKey(pageId);
+    }
+
     class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>> implements IdentifiableResourceReloadListener {
         @Override
         public ResourceLocation getFabricId() {

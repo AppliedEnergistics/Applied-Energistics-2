@@ -174,6 +174,11 @@ public class GuideScreen extends Screen {
     }
 
     public void navigateTo(ResourceLocation pageId) {
+        if (currentPage.getId().equals(pageId)) {
+            // TODO -> scroll up (?)
+            return;
+        }
+
         GuidePageTexture.releaseUsedTextures();
         currentPage = GuideManager.INSTANCE.getPage(pageId);
         scrollbar.setScrollAmount(0);
