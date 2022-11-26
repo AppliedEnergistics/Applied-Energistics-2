@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,6 +37,7 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
+import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
@@ -43,19 +45,19 @@ import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable {
-    public static final double POWER_PER_TICK = 5;
-    public static final int MIN_BURN_SPEED = 20;
-    public static final int MAX_BURN_SPEED = 200;
-    public static final double DILATION_SCALING = 25.0; // x4 ~ 40 AE/t at max
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
 
-    private int burnSpeed = 100;
-    private double burnTime = 0;
-    private double maxBurnTime = 0;
+    private double currentFuelTicksPerTick;
+    private double remainingFuelTicks = 0;
+    private double fuelItemFuelTicks = 0;
 
-    // client side..
+    // client side.. (caches last sent state on server)
     public boolean isOn;
+
+    private final double minFuelTicksPerTick;
+    private final double maxFuelTicksPerTick;
+    private final double initialFuelTicksPerTick;
 
     public VibrationChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -63,6 +65,19 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 .setIdlePowerUsage(0)
                 .setFlags()
                 .addService(IGridTickable.class, this);
+
+        // Compute the original burn rate parameters from the config
+        var minEnergyRate = AEConfig.instance().getVibrationChamberMinEnergyPerGameTick();
+        var maxEnergyRate = AEConfig.instance().getVibrationChamberMaxEnergyPerGameTick();
+        var initialEnergyRate = Mth.clamp(
+                AEConfig.instance().getVibrationChamberEnergyPerFuelTick(),
+                minEnergyRate,
+                maxEnergyRate);
+
+        minFuelTicksPerTick = minEnergyRate / getEnergyPerFuelTick();
+        maxFuelTicksPerTick = maxEnergyRate / getEnergyPerFuelTick();
+        initialFuelTicksPerTick = initialEnergyRate / getEnergyPerFuelTick();
+        currentFuelTicksPerTick = initialFuelTicksPerTick;
     }
 
     @Override
@@ -83,23 +98,26 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     @Override
     protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
-        data.writeBoolean(this.getBurnTime() > 0);
+        this.isOn = this.getRemainingFuelTicks() > 0;
+        data.writeBoolean(this.isOn);
     }
 
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.putDouble("burnTime", this.getBurnTime());
-        data.putDouble("maxBurnTime", this.getMaxBurnTime());
-        data.putInt("burnSpeed", this.getBurnSpeed());
+        data.putDouble("burnTime", this.getRemainingFuelTicks());
+        data.putDouble("maxBurnTime", this.getFuelItemFuelTicks());
+        // Save as percentage of max-speed
+        var speed = (int) (currentFuelTicksPerTick * 100 / maxFuelTicksPerTick);
+        data.putInt("burnSpeed", speed);
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
-        this.setBurnTime(data.getDouble("burnTime"));
-        this.setMaxBurnTime(data.getDouble("maxBurnTime"));
-        this.setBurnSpeed(data.getInt("burnSpeed"));
+        this.setRemainingFuelTicks(data.getDouble("burnTime"));
+        this.setFuelItemFuelTicks(data.getDouble("maxBurnTime"));
+        this.setCurrentFuelTicksPerTick(data.getInt("burnSpeed") * maxFuelTicksPerTick / 100.0);
     }
 
     @Override
@@ -114,7 +132,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
 
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
-        if (this.getBurnTime() <= 0 && this.canEatFuel()) {
+        if (this.getRemainingFuelTicks() <= 0 && this.canEatFuel()) {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
             });
@@ -134,52 +152,61 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
 
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        if (this.getBurnTime() <= 0) {
+        if (this.getRemainingFuelTicks() <= 0) {
             this.eatFuel();
         }
 
         return new TickingRequest(TickRates.VibrationChamber,
-                this.getBurnTime() <= 0, false);
+                this.getRemainingFuelTicks() <= 0, false);
     }
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
-        if (this.getBurnTime() <= 0) {
+        if (this.getRemainingFuelTicks() <= 0) {
             this.eatFuel();
 
-            if (this.getBurnTime() > 0) {
+            if (this.getRemainingFuelTicks() > 0) {
                 return TickRateModulation.URGENT;
             }
 
-            this.setBurnSpeed(100);
+            this.setCurrentFuelTicksPerTick(initialFuelTicksPerTick);
             return TickRateModulation.SLEEP;
         }
 
-        this.setBurnSpeed(Math.max(MIN_BURN_SPEED, Math.min(this.getBurnSpeed(), MAX_BURN_SPEED)));
-        final double dilation = this.getBurnSpeed() / DILATION_SCALING;
-
-        double timePassed = ticksSinceLastCall * dilation;
-        this.setBurnTime(this.getBurnTime() - timePassed);
-        if (this.getBurnTime() < 0) {
-            timePassed += this.getBurnTime();
-            this.setBurnTime(0);
+        double fuelTicksConsumed = ticksSinceLastCall * currentFuelTicksPerTick;
+        this.setRemainingFuelTicks(this.getRemainingFuelTicks() - fuelTicksConsumed);
+        if (this.getRemainingFuelTicks() < 0) {
+            fuelTicksConsumed += this.getRemainingFuelTicks();
+            this.setRemainingFuelTicks(0);
         }
+
+        // The full range should scale in 5 seconds (=100 ticks)
+        var speedScalingPerTick = (maxFuelTicksPerTick - minFuelTicksPerTick) / 100;
+        int speedStep = (int) Math.max(1, ticksSinceLastCall * speedScalingPerTick);
 
         var grid = node.getGrid();
         var energy = grid.getEnergyService();
-        final double newPower = timePassed * POWER_PER_TICK;
-        final double overFlow = energy.injectPower(newPower, Actionable.SIMULATE);
 
-        // burn the over flow.
-        energy.injectPower(Math.max(0.0, newPower - overFlow), Actionable.MODULATE);
-
-        if (overFlow > 0) {
-            this.setBurnSpeed(this.getBurnSpeed() - ticksSinceLastCall);
-        } else {
-            this.setBurnSpeed(this.getBurnSpeed() + ticksSinceLastCall);
+        // If our burn rate is zero, check if the network would now accept any power
+        // And if it does, increase burn rate and tick faster
+        if (Math.abs(fuelTicksConsumed - 0) < 0.01) {
+            if (energy.injectPower(1, Actionable.SIMULATE) == 0) {
+                this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() + speedStep);
+                return TickRateModulation.FASTER;
+            }
+            return TickRateModulation.IDLE;
         }
 
-        this.setBurnSpeed(Math.max(MIN_BURN_SPEED, Math.min(this.getBurnSpeed(), MAX_BURN_SPEED)));
+        final double newPower = fuelTicksConsumed * getEnergyPerFuelTick();
+        final double overFlow = energy.injectPower(newPower, Actionable.MODULATE);
+
+        // Speed up or slow down the burn rate, the overflow is voided
+        if (overFlow > 0) {
+            this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() - speedStep);
+        } else {
+            this.setCurrentFuelTicksPerTick(this.getCurrentFuelTicksPerTick() + speedStep);
+        }
+
         return overFlow > 0 ? TickRateModulation.SLOWER : TickRateModulation.FASTER;
     }
 
@@ -188,8 +215,8 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         if (!is.isEmpty()) {
             final int newBurnTime = getBurnTime(is);
             if (newBurnTime > 0 && is.getCount() > 0) {
-                this.setBurnTime(this.getBurnTime() + newBurnTime);
-                this.setMaxBurnTime(this.getBurnTime());
+                this.setRemainingFuelTicks(this.getRemainingFuelTicks() + newBurnTime);
+                this.setFuelItemFuelTicks(this.getRemainingFuelTicks());
 
                 final Item fuelItem = is.getItem();
                 is.shrink(1);
@@ -203,15 +230,15 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
             }
         }
 
-        if (this.getBurnTime() > 0) {
+        if (this.getRemainingFuelTicks() > 0) {
             getMainNode().ifPresent((grid, node) -> {
                 grid.getTickManager().wakeDevice(node);
             });
         }
 
         // state change
-        if (!this.isOn && this.getBurnTime() > 0 || this.isOn && this.getBurnTime() <= 0) {
-            this.isOn = this.getBurnTime() > 0;
+        if (!this.isOn && this.getRemainingFuelTicks() > 0 || this.isOn && this.getRemainingFuelTicks() <= 0) {
+            this.isOn = this.getRemainingFuelTicks() > 0;
             this.markForUpdate();
 
             if (this.hasLevel()) {
@@ -229,28 +256,49 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         return getBurnTime(is) > 0;
     }
 
-    public int getBurnSpeed() {
-        return this.burnSpeed;
+    public double getCurrentFuelTicksPerTick() {
+        return this.currentFuelTicksPerTick;
     }
 
-    private void setBurnSpeed(int burnSpeed) {
-        this.burnSpeed = burnSpeed;
+    private void setCurrentFuelTicksPerTick(double currentFuelTicksPerTick) {
+        this.currentFuelTicksPerTick = Mth.clamp(currentFuelTicksPerTick, minFuelTicksPerTick, maxFuelTicksPerTick);
     }
 
-    public double getMaxBurnTime() {
-        return this.maxBurnTime;
+    public double getFuelItemFuelTicks() {
+        return this.fuelItemFuelTicks;
     }
 
-    private void setMaxBurnTime(double maxBurnTime) {
-        this.maxBurnTime = maxBurnTime;
+    private void setFuelItemFuelTicks(double fuelItemFuelTicks) {
+        this.fuelItemFuelTicks = fuelItemFuelTicks;
     }
 
-    public double getBurnTime() {
-        return this.burnTime;
+    public double getRemainingFuelTicks() {
+        return this.remainingFuelTicks;
     }
 
-    private void setBurnTime(double burnTime) {
-        this.burnTime = burnTime;
+    private void setRemainingFuelTicks(double remainingFuelTicks) {
+        this.remainingFuelTicks = remainingFuelTicks;
+    }
+
+    /**
+     * AE Power generated per consumed fuel-tick.
+     */
+    public double getEnergyPerFuelTick() {
+        return AEConfig.instance().getVibrationChamberEnergyPerFuelTick();
+    }
+
+    /**
+     * Lowest fuel-ticks per game-tick when power is not being consumed fast enough.
+     */
+    public double getMinFuelTicksPerTick() {
+        return minFuelTicksPerTick;
+    }
+
+    /**
+     * Highest fuel-ticks per game-tick when all power is being consumed.
+     */
+    public double getMaxFuelTicksPerTick() {
+        return maxFuelTicksPerTick;
     }
 
     private static class FuelSlotFilter implements IAEItemFilter {

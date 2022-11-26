@@ -1,4 +1,4 @@
-package appeng.integration.modules.jei.throwinginwater;
+package appeng.integration.modules.jeirei;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -6,8 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.FogRenderer;
@@ -23,30 +21,20 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LevelLightEngine;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
-import mezz.jei.api.gui.drawable.IDrawable;
-
-public class WaterBlockRenderer implements IDrawable {
-    private final FakeWorld fakeWorld = new FakeWorld();
-    private final BlockState waterBlock = Fluids.WATER.defaultFluidState().createLegacyBlock();
-
-    @Override
-    public int getWidth() {
-        return 14;
+public final class FluidBlockRendering {
+    private FluidBlockRendering() {
     }
 
-    @Override
-    public int getHeight() {
-        return 14;
-    }
+    public static void render(PoseStack stack, Fluid fluid, int x, int y, int width, int height) {
+        var fluidState = fluid.defaultFluidState();
 
-    @Override
-    public void draw(PoseStack stack, int xOffset, int yOffset) {
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
-        var renderType = ItemBlockRenderTypes.getRenderLayer(waterBlock.getFluidState());
+        var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
 
         renderType.setupRenderState();
         RenderSystem.disableDepthTest();
@@ -54,14 +42,14 @@ public class WaterBlockRenderer implements IDrawable {
         var worldMatStack = RenderSystem.getModelViewStack();
         worldMatStack.pushPose();
         worldMatStack.mulPoseMatrix(stack.last().pose());
-        worldMatStack.translate(xOffset, yOffset, 0);
+        worldMatStack.translate(x, y, 0);
 
         FogRenderer.setupNoFog();
 
         // The fluid block will render [-0.5,0.5] since it's intended for world-rendering
         // we need to scale it to the rectangle's size, and then move it to the center
-        worldMatStack.translate(getWidth() / 2.f, getHeight() / 2.f, 0);
-        worldMatStack.scale(getWidth(), getHeight(), 1);
+        worldMatStack.translate(width / 2.f, height / 2.f, 0);
+        worldMatStack.scale(width, height, 1);
 
         setupOrtographicProjection(worldMatStack);
 
@@ -70,10 +58,10 @@ public class WaterBlockRenderer implements IDrawable {
         builder.begin(renderType.mode(), renderType.format());
         blockRenderer.renderLiquid(
                 BlockPos.ZERO,
-                fakeWorld,
+                new FakeWorld(fluidState),
                 builder,
-                waterBlock,
-                waterBlock.getFluidState());
+                fluidState.createLegacyBlock(),
+                fluidState);
         if (builder.building()) {
             tesselator.end();
         }
@@ -84,7 +72,7 @@ public class WaterBlockRenderer implements IDrawable {
         RenderSystem.applyModelViewMatrix();
     }
 
-    private void setupOrtographicProjection(PoseStack worldMatStack) {
+    private static void setupOrtographicProjection(PoseStack worldMatStack) {
         // Set up ortographic rendering for the block
         float angle = 36;
         float rotation = 45;
@@ -105,7 +93,13 @@ public class WaterBlockRenderer implements IDrawable {
         RenderSystem.applyModelViewMatrix();
     }
 
-    private class FakeWorld implements BlockAndTintGetter {
+    private static class FakeWorld implements BlockAndTintGetter {
+        private final FluidState fluidState;
+
+        public FakeWorld(FluidState fluidState) {
+            this.fluidState = fluidState;
+        }
+
         @Override
         public float getShade(Direction direction, boolean bl) {
             return 1.0f;
@@ -131,7 +125,6 @@ public class WaterBlockRenderer implements IDrawable {
             return colorResolver.getColor(BuiltinRegistries.BIOME.getOrThrow(Biomes.THE_VOID), 0, 0);
         }
 
-        @Nullable
         @Override
         public BlockEntity getBlockEntity(BlockPos blockPos) {
             return null;
@@ -140,7 +133,7 @@ public class WaterBlockRenderer implements IDrawable {
         @Override
         public BlockState getBlockState(BlockPos blockPos) {
             if (blockPos.equals(BlockPos.ZERO)) {
-                return waterBlock;
+                return fluidState.createLegacyBlock();
             } else {
                 return Blocks.AIR.defaultBlockState();
             }
@@ -149,9 +142,9 @@ public class WaterBlockRenderer implements IDrawable {
         @Override
         public FluidState getFluidState(BlockPos blockPos) {
             if (blockPos.equals(BlockPos.ZERO)) {
-                return waterBlock.getFluidState();
+                return fluidState;
             } else {
-                return Fluids.LAVA.defaultFluidState();
+                return Fluids.EMPTY.defaultFluidState();
             }
         }
 
@@ -165,4 +158,5 @@ public class WaterBlockRenderer implements IDrawable {
             return 0;
         }
     }
+
 }

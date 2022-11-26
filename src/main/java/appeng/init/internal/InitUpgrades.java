@@ -38,6 +38,7 @@ public final class InitUpgrades {
         String itemIoBusGroup = GuiText.IOBuses.getTranslationKey();
         String storageCellGroup = GuiText.StorageCells.getTranslationKey();
         String portableCellGroup = GuiText.PortableCells.getTranslationKey();
+        String wirelessTerminalGroup = GuiText.WirelessTerminals.getTranslationKey();
 
         // Interface
         Upgrades.add(AEItems.CRAFTING_CARD, AEParts.INTERFACE, 1, interfaceGroup);
@@ -89,19 +90,28 @@ public final class InitUpgrades {
 
         var portableCells = List.of(
                 AEItems.PORTABLE_ITEM_CELL1K, AEItems.PORTABLE_ITEM_CELL4K, AEItems.PORTABLE_ITEM_CELL16K,
-                AEItems.PORTABLE_ITEM_CELL64K, AEItems.PORTABLE_ITEM_CELL256K,
-                AEItems.PORTABLE_FLUID_CELL1K, AEItems.PORTABLE_FLUID_CELL4K, AEItems.PORTABLE_FLUID_CELL16K,
-                AEItems.PORTABLE_FLUID_CELL64K, AEItems.PORTABLE_FLUID_CELL256K);
+                AEItems.PORTABLE_ITEM_CELL64K, AEItems.PORTABLE_ITEM_CELL256K);
         for (var portableCell : portableCells) {
             Upgrades.add(AEItems.FUZZY_CARD, portableCell, 1, portableCellGroup);
             Upgrades.add(AEItems.INVERTER_CARD, portableCell, 1, portableCellGroup);
+            Upgrades.add(AEItems.EQUAL_DISTRIBUTION_CARD, portableCell, 1, portableCellGroup);
+            Upgrades.add(AEItems.VOID_CARD, portableCell, 1, portableCellGroup);
             Upgrades.add(AEItems.ENERGY_CARD, portableCell, 2, portableCellGroup);
         }
 
+        var portableFluidCells = List.of(
+                AEItems.PORTABLE_FLUID_CELL1K, AEItems.PORTABLE_FLUID_CELL4K, AEItems.PORTABLE_FLUID_CELL16K,
+                AEItems.PORTABLE_FLUID_CELL64K, AEItems.PORTABLE_FLUID_CELL256K);
+        for (var portableFluidCell : portableFluidCells) {
+            Upgrades.add(AEItems.INVERTER_CARD, portableFluidCell, 1, portableCellGroup);
+            Upgrades.add(AEItems.EQUAL_DISTRIBUTION_CARD, portableFluidCell, 1, portableCellGroup);
+            Upgrades.add(AEItems.VOID_CARD, portableFluidCell, 1, portableCellGroup);
+            Upgrades.add(AEItems.ENERGY_CARD, portableFluidCell, 2, portableCellGroup);
+        }
+
         // Wireless Terminals
-        Upgrades.add(AEItems.ENERGY_CARD, AEItems.WIRELESS_TERMINAL, 2, GuiText.WirelessTerminals.getTranslationKey());
-        Upgrades.add(AEItems.ENERGY_CARD, AEItems.WIRELESS_CRAFTING_TERMINAL, 2,
-                GuiText.WirelessTerminals.getTranslationKey());
+        Upgrades.add(AEItems.ENERGY_CARD, AEItems.WIRELESS_TERMINAL, 2, wirelessTerminalGroup);
+        Upgrades.add(AEItems.ENERGY_CARD, AEItems.WIRELESS_CRAFTING_TERMINAL, 2, wirelessTerminalGroup);
 
         // View Cell
         Upgrades.add(AEItems.FUZZY_CARD, AEItems.VIEW_CELL, 1);

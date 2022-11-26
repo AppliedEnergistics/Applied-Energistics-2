@@ -16,9 +16,9 @@ import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
 import appeng.blockentity.misc.ChargerBlockEntity;
+import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.localization.ItemModText;
-import appeng.tile.grindstone.CrankBlockEntity;
 
 public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
     private final Renderer icon;

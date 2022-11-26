@@ -1,7 +1,9 @@
 package appeng.recipes.transform;
 
-import java.util.List;
+import java.util.Date;
 
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -13,21 +15,31 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 
 public final class TransformRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
     public static final RecipeType<TransformRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
-    public final List<Ingredient> ingredients;
+    public final NonNullList<Ingredient> ingredients;
     public final Item output;
     public final int count;
+    public final TransformCircumstance circumstance;
+    private static int singularitySeed = 0;
 
-    public TransformRecipe(ResourceLocation id, List<Ingredient> ingredients, Item output, int count) {
+    public TransformRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, Item output, int count,
+            TransformCircumstance circumstance) {
         this.id = id;
         this.ingredients = ingredients;
         this.output = output;
         this.count = count;
+        this.circumstance = circumstance;
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return ingredients;
     }
 
     @Override
@@ -37,7 +49,13 @@ public final class TransformRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack assemble(Container container) {
-        return null;
+        ItemStack result = getResultItem().copy();
+        if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(result) && result.getCount() > 1) {
+            final CompoundTag cmp = result.getOrCreateTag();
+            cmp.putLong("freq", new Date().getTime() * 100 + singularitySeed % 100);
+            singularitySeed++;
+        }
+        return result;
     }
 
     @Override

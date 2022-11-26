@@ -12,13 +12,13 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 
 import appeng.blockentity.misc.ChargerBlockEntity;
+import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.integration.modules.jei.widgets.View;
 import appeng.integration.modules.jei.widgets.Widget;
 import appeng.integration.modules.jei.widgets.WidgetFactory;
 import appeng.recipes.handlers.ChargerRecipe;
-import appeng.tile.grindstone.CrankBlockEntity;
 
 public class ChargerCategory extends ViewBasedCategory<ChargerRecipe> {
 

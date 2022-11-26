@@ -102,6 +102,9 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 AEBlocks.SKY_STONE_SMALL_BRICK_WALL.block(),
                 AEBlocks.FLUIX_WALL.block(),
                 AEBlocks.QUARTZ_WALL.block(),
+                AEBlocks.CUT_QUARTZ_WALL.block(),
+                AEBlocks.SMOOTH_QUARTZ_WALL.block(),
+                AEBlocks.QUARTZ_BRICK_WALL.block(),
                 AEBlocks.CHISELED_QUARTZ_WALL.block(),
                 AEBlocks.QUARTZ_PILLAR_WALL.block());
 

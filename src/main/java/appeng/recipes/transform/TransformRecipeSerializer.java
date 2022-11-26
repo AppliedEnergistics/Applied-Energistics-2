@@ -18,15 +18,14 @@
 
 package appeng.recipes.transform;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -42,13 +41,15 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
 
     @Override
     public TransformRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-        List<Ingredient> ingredients = new ArrayList<>();
+        NonNullList<Ingredient> ingredients = NonNullList.create();
         GsonHelper.getAsJsonArray(json, "ingredients")
                 .forEach(ingredient -> ingredients.add(Ingredient.fromJson(ingredient)));
 
         ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-
-        return new TransformRecipe(recipeId, ingredients, result.getItem(), result.getCount());
+        TransformCircumstance circumstance = json.has("circumstance")
+                ? TransformCircumstance.fromJson(GsonHelper.getAsJsonObject(json, "circumstance"))
+                : TransformCircumstance.fluid(FluidTags.WATER);
+        return new TransformRecipe(recipeId, ingredients, result.getItem(), result.getCount(), circumstance);
     }
 
     @Nullable
@@ -57,12 +58,13 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
         ItemStack output = buffer.readItem();
 
         int size = buffer.readByte();
-        List<Ingredient> ingredients = new ArrayList<>(size);
+        NonNullList<Ingredient> ingredients = NonNullList.create();
         for (int i = 0; i < size; i++) {
             ingredients.add(Ingredient.fromNetwork(buffer));
         }
+        TransformCircumstance circumstance = TransformCircumstance.fromNetwork(buffer);
 
-        return new TransformRecipe(recipeId, ingredients, output.getItem(), output.getCount());
+        return new TransformRecipe(recipeId, ingredients, output.getItem(), output.getCount(), circumstance);
     }
 
     @Override
@@ -71,6 +73,7 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
 
         buffer.writeByte(recipe.ingredients.size());
         recipe.ingredients.forEach(ingredient -> ingredient.toNetwork(buffer));
+        recipe.circumstance.toNetwork(buffer);
     }
 
 }

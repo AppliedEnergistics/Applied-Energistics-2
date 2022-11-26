@@ -120,11 +120,6 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public boolean isEditable(ItemStack is) {
-        return true;
-    }
-
-    @Override
     public IUpgradeInventory getUpgrades(ItemStack is) {
         return UpgradeInventories.forItem(is, keyType == AEKeyType.items() ? 4 : 3);
     }

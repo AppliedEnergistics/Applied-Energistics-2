@@ -25,7 +25,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.api.util.AEColor;
-import appeng.block.AEBaseBlockItemChargeable;
+import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.powered.ColorApplicatorItem;
@@ -55,17 +55,17 @@ public final class InitItemModelsProperties {
                     return col != null ? 1 : 0;
                 });
 
-        // Register the client-only item model property for chargeable items
+        // Register the client-only item model property for energy cells
         Registry.ITEM.forEach(item -> {
-            if (!(item instanceof AEBaseBlockItemChargeable chargeable)) {
+            if (!(item instanceof EnergyCellBlockItem energyCell)) {
                 return;
             }
 
-            ItemProperties.register(chargeable,
+            ItemProperties.register(energyCell,
                     ENERGY_FILL_LEVEL_ID,
                     (is, level, entity, seed) -> {
-                        double curPower = chargeable.getAECurrentPower(is);
-                        double maxPower = chargeable.getAEMaxPower(is);
+                        double curPower = energyCell.getAECurrentPower(is);
+                        double maxPower = energyCell.getAEMaxPower(is);
 
                         return (float) (curPower / maxPower);
                     });

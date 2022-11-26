@@ -35,7 +35,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.me.cells.BasicCellHandler;
-import appeng.util.ConfigInventory;
 
 /**
  * Implement this on any item to register a "basic cell", which is a cell that works similarly to AE2's own item and
@@ -113,8 +112,6 @@ public interface IBasicCellItem extends ICellWorkbenchItem {
      * @return drain in ae/t this storage cell will use.
      */
     double getIdleDrain();
-
-    ConfigInventory getConfigInventory(ItemStack is);
 
     /**
      * Convenient helper to append useful tooltip information.

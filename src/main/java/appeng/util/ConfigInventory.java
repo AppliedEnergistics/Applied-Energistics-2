@@ -32,6 +32,11 @@ import appeng.me.helpers.BaseActionSource;
 public class ConfigInventory extends GenericStackInv {
     private final boolean allowOverstacking;
 
+    /**
+     * An empty config-type inventory.
+     */
+    public static final ConfigInventory EMPTY_TYPES = ConfigInventory.configTypes(null, 0, null);
+
     protected ConfigInventory(@Nullable AEKeyFilter filter, Mode mode, int size, @Nullable Runnable listener,
             boolean allowOverstacking) {
         super(listener, mode, size);

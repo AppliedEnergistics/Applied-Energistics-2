@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block;
+package appeng.block.networking;
 
 import java.util.List;
 
@@ -33,12 +33,12 @@ import net.minecraft.world.level.block.Block;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.core.definitions.AEBlocks;
+import appeng.block.AEBaseBlockItem;
 import appeng.core.localization.Tooltips;
 
-public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEItemPowerStorage {
+public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPowerStorage {
 
-    public AEBaseBlockItemChargeable(Block block, Item.Properties props) {
+    public EnergyCellBlockItem(Block block, Item.Properties props) {
         super(block, props);
     }
 
@@ -108,19 +108,11 @@ public class AEBaseBlockItemChargeable extends AEBaseBlockItem implements IAEIte
 
     @Override
     public double getChargeRate(ItemStack stack) {
-        if (getBlock() == AEBlocks.ENERGY_CELL.block()) {
-            return 800d;
-        } else {
-            return 1600d;
-        }
+        return ((EnergyCellBlock) getBlock()).getChargeRate();
     }
 
     private double getMaxEnergyCapacity() {
-        if (getBlock() == AEBlocks.ENERGY_CELL.block()) {
-            return 200000;
-        } else {
-            return 8 * 200000;
-        }
+        return ((EnergyCellBlock) getBlock()).getMaxPower();
     }
 
     private double getInternal(ItemStack is) {
