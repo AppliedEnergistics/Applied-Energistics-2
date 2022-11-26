@@ -1,7 +1,7 @@
 package appeng.client.guidebook.screen;
 
 import appeng.client.Point;
-import appeng.client.guidebook.GuidebookManager;
+import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
@@ -128,7 +128,7 @@ public class GuideNavBar extends AbstractWidget {
         updateMousePos(mouseX, mouseY);
 
         // Check if we need to re-layout
-        var currentNavTree = GuidebookManager.INSTANCE.getNavigationTree();
+        var currentNavTree = GuideManager.INSTANCE.getNavigationTree();
         if (currentNavTree != this.navTree) {
             recreateRows();
         }
@@ -235,7 +235,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     private void recreateRows() {
-        this.navTree = GuidebookManager.INSTANCE.getNavigationTree();
+        this.navTree = GuideManager.INSTANCE.getNavigationTree();
         // Save Freeze expanded / scroll position
         this.rows.clear();
 

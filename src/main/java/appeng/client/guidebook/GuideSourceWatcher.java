@@ -2,14 +2,12 @@ package appeng.client.guidebook;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AppEng;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.methvin.watcher.DirectoryChangeEvent;
 import io.methvin.watcher.DirectoryChangeListener;
 import io.methvin.watcher.DirectoryWatcher;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -20,10 +18,11 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -31,14 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 class GuideSourceWatcher {
-    public static void main(String[] args) {
-        var sourceDirectory = Paths.get(args[0]);
-        new GuideSourceWatcher(new HashMap<>(), AppEng.MOD_ID, sourceDirectory).close();
-    }
-
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideSourceWatcher.class);
-
-    private final Map<ResourceLocation, ParsedGuidePage> pages;
 
     /**
      * The {@link ResourceLocation} namespace to use for files in the watched folder.
@@ -57,8 +49,7 @@ class GuideSourceWatcher {
 
     private final ExecutorService watchExecutor;
 
-    public GuideSourceWatcher(Map<ResourceLocation, ParsedGuidePage> pages, String namespace, Path sourceFolder) {
-        this.pages = pages;
+    public GuideSourceWatcher(String namespace, Path sourceFolder) {
         this.namespace = namespace;
         this.sourceFolder = sourceFolder;
         if (!Files.isDirectory(sourceFolder)) {
@@ -91,12 +82,9 @@ class GuideSourceWatcher {
         if (sourceWatcher != null) {
             sourceWatcher.watchAsync(watchExecutor);
         }
-
-        // After starting to watch, now load the initial set of pages
-        reloadAll(sourceFolder);
     }
 
-    private synchronized void reloadAll(Path sourceFolder) {
+    public List<ParsedGuidePage> loadAll() {
         var stopwatch = Stopwatch.createStarted();
 
         // Find all potential pages
@@ -151,47 +139,30 @@ class GuideSourceWatcher {
                 .filter(Objects::nonNull)
                 .toList();
 
-        for (var page : loadedPages) {
-            pages.put(page.getId(), page);
-        }
+        LOGGER.info("Loaded {} pages from {} in {}", loadedPages.size(), sourceFolder, stopwatch);
 
-        LOGGER.info("Loaded {} pages from {} in {}", pages.size(), sourceFolder, stopwatch);
+        return loadedPages;
     }
 
-    public synchronized boolean applyChanges() {
-        boolean hadChanges = false;
+    public synchronized List<GuidePageChange> takeChanges() {
 
-        var reloadScreen = false;
-        if (Minecraft.getInstance().screen instanceof GuideScreen guideScreen) {
-            var currentPageId = guideScreen.getCurrentPageId();
-            if (deletedPages.contains(currentPageId) || changedPages.containsKey(currentPageId)) {
-                reloadScreen = true;
-            }
+        if (deletedPages.isEmpty() && changedPages.isEmpty()) {
+            return List.of();
         }
 
-        if (!deletedPages.isEmpty()) {
-            LOGGER.info("Deleted {} guidebook pages", deletedPages.size());
-            for (var pageId : deletedPages) {
-                pages.remove(pageId);
-            }
-            deletedPages.clear();
-            hadChanges = true;
-        }
+        var changes = new ArrayList<GuidePageChange>();
 
-        if (!changedPages.isEmpty()) {
-            LOGGER.info("Reloaded {} guidebook pages", changedPages.size());
-            pages.putAll(changedPages);
-            changedPages.clear();
-            hadChanges = true;
+        for (var deletedPage : deletedPages) {
+            changes.add(new GuidePageChange(deletedPage, null, null));
         }
+        deletedPages.clear();
 
-        if (reloadScreen) {
-            if (Minecraft.getInstance().screen instanceof GuideScreen guideScreen) {
-                guideScreen.navigateTo(guideScreen.getCurrentPageId());
-            }
+        for (var changedPage : changedPages.values()) {
+            changes.add(new GuidePageChange(changedPage.getId(), null, changedPage));
         }
+        changedPages.clear();
 
-        return hadChanges;
+        return changes;
     }
 
     public synchronized void close() {

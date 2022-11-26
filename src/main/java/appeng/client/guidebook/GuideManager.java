@@ -2,7 +2,10 @@ package appeng.client.guidebook;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.indices.PageIndex;
 import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AppEng;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -23,14 +26,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public final class GuidebookManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuidebookManager.class);
+public final class GuideManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuideManager.class);
 
-    public static final GuidebookManager INSTANCE = new GuidebookManager();
+    public static final GuideManager INSTANCE = new GuideManager();
     private final Map<ResourceLocation, ParsedGuidePage> developmentPages = new HashMap<>();
+    private final List<PageIndex> indices = new ArrayList<>();
     private NavigationTree navigationTree = new NavigationTree();
     private Map<ResourceLocation, ParsedGuidePage> pages;
 
@@ -39,7 +45,9 @@ public final class GuidebookManager {
     @Nullable
     private final String developmentSourceNamespace;
 
-    private GuidebookManager() {
+    private GuideManager() {
+        addIndex(ItemIndex.INSTANCE);
+
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
 
         var sourceFolder = System.getProperty("appeng.guide.sources");
@@ -51,6 +59,12 @@ public final class GuidebookManager {
         } else {
             developmentSourceFolder = null;
             developmentSourceNamespace = null;
+        }
+    }
+
+    public void addIndex(PageIndex index) {
+        if (!indices.contains(index)) {
+            indices.add(index);
         }
     }
 
@@ -137,7 +151,15 @@ public final class GuidebookManager {
         @Override
         protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager, ProfilerFiller profiler) {
             profiler.startTick();
-            GuidebookManager.this.pages = pages;
+            GuideManager.this.pages = pages;
+            profiler.push("indices");
+            var allPages = new ArrayList<ParsedGuidePage>();
+            allPages.addAll(pages.values());
+            allPages.addAll(developmentPages.values());
+            for (PageIndex index : indices) {
+                index.rebuild(allPages);
+            }
+            profiler.pop();
             profiler.push("navigation");
             navigationTree = buildNavigation();
             profiler.pop();
@@ -151,13 +173,43 @@ public final class GuidebookManager {
     }
 
     private void watchDevelopmentSources(Path developmentSources, String namespace) {
-        var watcher = new GuideSourceWatcher(developmentPages, namespace, developmentSources);
+        var watcher = new GuideSourceWatcher(namespace, developmentSources);
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (watcher.applyChanges()) {
-                this.navigationTree = buildNavigation();
+            var changes = watcher.takeChanges();
+            if (!changes.isEmpty()) {
+                applyChanges(changes);
             }
         });
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> watcher.close());
+        for (var page : watcher.loadAll()) {
+            developmentPages.put(page.getId(), page);
+        }
+    }
+
+    private void applyChanges(List<GuidePageChange> changes) {
+        // Enrich each change with the previous page data while we process them
+        for (int i = 0; i < changes.size(); i++) {
+            var change = changes.get(i);
+            var pageId = change.pageId();
+
+            var oldPage = change.newPage() != null ? developmentPages.put(pageId, change.newPage())
+                    : developmentPages.remove(pageId);
+            changes.set(i, new GuidePageChange(pageId, oldPage, change.newPage()));
+        }
+
+        // Allow indices to rebuild
+
+
+        // Rebuild navigation
+        this.navigationTree = buildNavigation();
+
+        // Reload the current page if it has been changed
+        if (Minecraft.getInstance().screen instanceof GuideScreen guideScreen) {
+            var currentPageId = guideScreen.getCurrentPageId();
+            if (changes.stream().anyMatch(c -> c.pageId().equals(currentPageId))) {
+                guideScreen.reloadPage();
+            }
+        }
     }
 
     private NavigationTree buildNavigation() {

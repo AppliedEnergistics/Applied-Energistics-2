@@ -4,6 +4,7 @@ import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.flow.LytFlowLink;
 import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.client.guidebook.document.interaction.ItemTooltip;
+import appeng.client.guidebook.indices.ItemIndex;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
 import net.minecraft.core.Registry;
@@ -28,12 +29,17 @@ public class ItemLinkCompiler extends FlowTagCompiler {
             return;
         }
 
+        var linksTo = ItemIndex.INSTANCE.get(id);
+
         var stack = item.getDefaultInstance();
 
         var link = new LytFlowLink();
         compiler.compileComponentToFlow(stack.getHoverName(), link);
 
         link.setTooltip(new ItemTooltip(stack));
+        link.setClickCallback(screen -> {
+            screen.navigateTo(linksTo);
+        });
         parent.append(link);
     }
 

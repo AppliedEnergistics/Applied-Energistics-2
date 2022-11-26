@@ -24,9 +24,7 @@ import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.guidebook.GuidebookManager;
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
@@ -124,7 +122,7 @@ public class AppEngClient extends AppEngBase {
         InitAutoRotatingModel.init();
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        GuidebookManager.init();
+        GuideManager.init();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
 
@@ -217,7 +215,7 @@ public class AppEngClient extends AppEngBase {
                 throw new RuntimeException(e);
             }
             reloadInstance.done().thenRunAsync(() -> {
-                var page = GuidebookManager.INSTANCE.getPage(AppEng.makeId("index.md"));
+                var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
                 client.setScreen(new GuideScreen(page));
             }, client)
                     .exceptionally(throwable -> {
@@ -225,7 +223,7 @@ public class AppEngClient extends AppEngBase {
                         return null;
                     });
         } else {
-            var page = GuidebookManager.INSTANCE.getPage(AppEng.makeId("index.md"));
+            var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
             client.setScreen(new GuideScreen(page));
         }
     }

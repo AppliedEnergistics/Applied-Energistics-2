@@ -7,13 +7,16 @@ import appeng.client.guidebook.screen.GuideScreen;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class LytFlowLink extends LytFlowSpan implements InteractiveElement {
     private String title;
-    private String url;
 
     @Nullable
     private GuideTooltip tooltip;
+
+    @Nullable
+    private Consumer<GuideScreen> clickCallback;
 
     public LytFlowLink() {
         modifyStyle(style -> style.color(SymbolicColor.LINK.ref()));
@@ -28,16 +31,16 @@ public class LytFlowLink extends LytFlowSpan implements InteractiveElement {
         this.title = title;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setClickCallback(@Nullable Consumer<GuideScreen> clickCallback) {
+        this.clickCallback = clickCallback;
     }
 
     @Override
     public boolean mouseClicked(GuideScreen screen, int x, int y, int button) {
+        if (button == 0 && clickCallback != null) {
+            clickCallback.accept(screen);
+            return true;
+        }
         return false;
     }
 

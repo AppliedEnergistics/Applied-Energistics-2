@@ -43,6 +43,9 @@ import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import net.minecraft.ResourceLocationException;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -208,8 +211,17 @@ public final class PageCompiler {
                 layoutChild = new LytFlowBreak();
             } else if (child instanceof MdAstLink astLink) {
                 var link = new LytFlowLink();
-                link.setUrl(astLink.url);
                 link.setTitle(astLink.title);
+                link.setClickCallback(screen -> {
+                    var mc = Minecraft.getInstance();
+                    mc.setScreen(new ConfirmLinkScreen(yes -> {
+                        if (yes) {
+                            Util.getPlatform().openUri(astLink.url);
+                        }
+
+                        mc.setScreen(screen);
+                    }, astLink.url, false));
+                });
                 compileFlowContext(astLink, link);
                 layoutChild = link;
             } else if (child instanceof MdAstImage astImage) {

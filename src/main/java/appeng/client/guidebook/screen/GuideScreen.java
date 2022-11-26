@@ -3,8 +3,9 @@ package appeng.client.guidebook.screen;
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
+import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.GuidePage;
-import appeng.client.guidebook.GuidebookManager;
+import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
@@ -168,9 +169,13 @@ public class GuideScreen extends Screen {
         }
     }
 
+    public void navigateTo(PageAnchor anchor) {
+        navigateTo(anchor.pageId()); // TODO
+    }
+
     public void navigateTo(ResourceLocation pageId) {
         GuidePageTexture.releaseUsedTextures();
-        currentPage = GuidebookManager.INSTANCE.getPage(pageId);
+        currentPage = GuideManager.INSTANCE.getPage(pageId);
         scrollbar.setScrollAmount(0);
         updatePageLayout();
     }
@@ -179,6 +184,10 @@ public class GuideScreen extends Screen {
     public void removed() {
         super.removed();
         GuidePageTexture.releaseUsedTextures();
+    }
+
+    public void reloadPage() {
+        navigateTo(getCurrentPageId());
     }
 
     @FunctionalInterface
