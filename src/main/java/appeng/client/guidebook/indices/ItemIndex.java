@@ -32,9 +32,9 @@ public class ItemIndex extends UniquePageIndex<ResourceLocation, PageAnchor> {
 
             for (var listEntry : itemIdList) {
                 if (listEntry instanceof String itemIdStr) {
-                    ResourceLocation itemId = null;
+                    ResourceLocation itemId;
                     try {
-                        itemId = IdUtils.resolve(itemIdStr);
+                        itemId = IdUtils.resolveId(itemIdStr, page.getId().getNamespace());
                     } catch (ResourceLocationException e) {
                         LOGGER.warn("Page {} contains a malformed item_ids frontmatter entry: {}", page.getId(), listEntry);
                         continue;

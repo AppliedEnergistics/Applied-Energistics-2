@@ -254,13 +254,14 @@ public final class PageCompiler {
             });
         } else {
             // Determine the page id, account for relative paths
-            var pageId = IdUtils.resolve(astLink.url, id);
+            var pageId = IdUtils.resolveLink(astLink.url, id);
             if (!GuideManager.INSTANCE.pageExists(pageId)) {
                 LOGGER.error("Broken link to page '{}' in page {}", astLink.url, id);
             } else {
                 link.setClickCallback(screen -> {
                     screen.navigateTo(pageId);
                 });
+                link.setTitle(pageId.toString());
             }
         }
 
@@ -272,7 +273,7 @@ public final class PageCompiler {
     private LytImage compileImage(MdAstImage astImage) {
         var image = new LytImage();
         try {
-            var imageId = IdUtils.resolve(astImage.url, id);
+            var imageId = IdUtils.resolveLink(astImage.url, id);
             var imageContent = assetLoader.apply(imageId);
             if (imageContent == null) {
                 LOGGER.error("Couldn't find image {}", astImage.url);
@@ -325,6 +326,6 @@ public final class PageCompiler {
     }
 
     public ResourceLocation resolveId(String idText) {
-        return IdUtils.resolve(idText, id);
+        return IdUtils.resolveId(idText, id.getNamespace());
     }
 }

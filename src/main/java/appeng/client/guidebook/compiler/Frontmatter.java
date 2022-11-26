@@ -38,12 +38,12 @@ public record Frontmatter(
 
             ResourceLocation parentId = null;
             if (parentIdStr != null) {
-                parentId = IdUtils.resolve(parentIdStr, pageId);
+                parentId = IdUtils.resolveId(parentIdStr, pageId.getNamespace());
             }
 
             ResourceLocation iconId = null;
             if (iconIdStr != null) {
-                iconId = IdUtils.resolve(iconIdStr);
+                iconId = IdUtils.resolveId(iconIdStr, pageId.getNamespace());
             }
 
             navigation = new FrontmatterNavigation(title, parentId, position, iconId, iconNbt);
