@@ -44,32 +44,32 @@ or <ItemLink id="level_emitter"/>.
 
 #### Crafting Unit
 
-![A picture of several crafting units in a crafting CPU.](../../public/assets/large/craftingunit.png)
+![A picture of several crafting units in a crafting CPU.](../assets/large/craftingunit.png)
 
 This particular block provides the CPU with no additional features, but can be used as a "filler" block.
 It is the base for crafting the other functional components of a crafting CPU.
 
 #### Crafting Storage
 
-![A picture of a 1k crafting storage unit.](../../public/assets/large/crafting1k.png)
+![A picture of a 1k crafting storage unit.](../assets/large/crafting1k.png)
 
 Provides 1024 bytes of storage for crafting.
 
 <RecipeFor id="1k_crafting_storage" />
 
-![A picture of a 4k crafting storage unit.](../../public/assets/large/crafting4k.png)
+![A picture of a 4k crafting storage unit.](../assets/large/crafting4k.png)
 
 Provides 4,096 bytes of storage for crafting.
 
 <RecipeFor id="4k_crafting_storage" />
 
-![A 16k Crafting Storage Unit.](../../public/assets/large/crafting16k.png)
+![A 16k Crafting Storage Unit.](../assets/large/crafting16k.png)
 
 Provides 16,384 bytes of storage for crafting.
 
 <RecipeFor id="16k_crafting_storage" />
 
-![A picture of a 64k Crafting Storage Unit](../../public/assets/large/crafting64k.png)
+![A picture of a 64k Crafting Storage Unit](../assets/large/crafting64k.png)
 
 Provides 65,536 bytes of storage for crafting.
 
@@ -77,7 +77,7 @@ Provides 65,536 bytes of storage for crafting.
 
 #### Co-Processor
 
-![A picture of several Co Processors in a Crafting CPU](../../public/assets/large/craftingco.png)
+![A picture of several Co Processors in a Crafting CPU](../assets/large/craftingco.png)
 
 Provides additional item delivery from the CPU to the <ItemLink id="pattern_provider"/> for
 crafting.
@@ -91,7 +91,7 @@ split the same pattern across multiple interfaces.
 
 #### Crafting Monitor
 
-![A picture of a crafting monitor inside a Crafting CPU.](../../public/assets/large/craftingmonitor.png)
+![A picture of a crafting monitor inside a Crafting CPU.](../assets/large/craftingmonitor.png)
 
 Displays the top level job and its current progress so you can see what a particular Crafting CPU is currently
 working on.

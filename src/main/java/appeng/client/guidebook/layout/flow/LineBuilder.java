@@ -4,6 +4,7 @@ import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContent;
+import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
@@ -39,6 +40,8 @@ class LineBuilder implements Consumer<LytFlowContent> {
             appendText(text.getText(), content);
         } else if (content instanceof LytFlowBreak) {
             appendBreak(content);
+        } else if (content instanceof LytFlowInlineBlock inlineBlock) {
+            appendInlineBlock(inlineBlock);
         } else {
             throw new IllegalArgumentException("Don't know how to layout flow content: " + content);
         }
@@ -50,6 +53,16 @@ class LineBuilder implements Consumer<LytFlowContent> {
             openLineElement = new LineTextRun("", DefaultStyles.BASE_STYLE, DefaultStyles.BASE_STYLE);
             openLineElement.flowContent = flowContent;
         }
+        closeLine();
+    }
+
+    private void appendInlineBlock(LytFlowInlineBlock inlineBlock) {
+        closeLine();
+
+        var size = inlineBlock.getPreferredSize(lineWidth);
+        var inlineBlockElement = new LineBlock(inlineBlock.getBlock());
+        inlineBlockElement.bounds = new LytRect(innerX, innerY, size.width(), size.height());
+        openLineElement = inlineBlockElement;
         closeLine();
     }
 

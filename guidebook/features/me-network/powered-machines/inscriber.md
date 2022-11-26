@@ -9,7 +9,7 @@ navigation:
   title: Inscriber
 ---
 
-![A Picture of an Inscriber with a press pattern in it.](../../../../public/large/inscriber.png)
+![A Picture of an Inscriber with a press pattern in it.](../../../large/inscriber.png)
 
 The inscriber is used to press items using various Inscriber Plates. Each operation requires 1k AE charged up.
 
@@ -21,7 +21,7 @@ The inscriber is used to press items using various Inscriber Plates. Each operat
 
 ### The GUI
 
-![Inscriber GUI](../../../../public/assets/content/inscriberGUI.png)
+![Inscriber GUI](../../../assets/content/inscriberGUI.png)
 
 A. **Top Input** automated from side with top press
 
@@ -46,4 +46,4 @@ An early alternative to fully automating inscribers is using hoppers for semi-au
 Note in the following picture, the inscribers have been rotated 90° clock-wise by using
 a <ItemLink id="certus_quartz_wrench" />.
 
-![Hopper Automation](../../../../public/large/inscriber_hoppers.png)
+![Hopper Automation](../../../large/inscriber_hoppers.png)

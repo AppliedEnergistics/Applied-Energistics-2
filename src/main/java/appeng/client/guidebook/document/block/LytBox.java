@@ -1,6 +1,6 @@
 package appeng.client.guidebook.document.block;
 
-import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.client.guidebook.render.RenderContext;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import java.util.ArrayList;
@@ -32,14 +32,14 @@ public abstract class LytBox extends LytBlock implements LytBlockContainer {
     }
 
     @Override
-    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+    public void renderBatch(RenderContext context, MultiBufferSource buffers) {
         for (var child : children) {
             child.renderBatch(context, buffers);
         }
     }
 
     @Override
-    public void render(SimpleRenderContext context) {
+    public void render(RenderContext context) {
         for (var child : children) {
             child.render(context);
         }

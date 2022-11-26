@@ -3,6 +3,8 @@ package appeng.client.guidebook.compiler;
 import appeng.core.AppEng;
 import net.minecraft.resources.ResourceLocation;
 
+import java.net.URI;
+
 /**
  * Helper to resolve shorthand and relative IDs found in markdown pages.
  */
@@ -28,20 +30,13 @@ public final class IdUtils {
      */
     public static ResourceLocation resolve(String idText, ResourceLocation anchor) {
         if (!idText.contains(":")) {
-            if (idText.startsWith(RELATIVE_PREFIX)) {
-                var relativeId = idText.substring(RELATIVE_PREFIX.length());
-                var anchorPath = anchor.getPath();
-                // If the anchor has no separator, assume relative to the root
-                var lastSlashInAnchor = anchorPath.lastIndexOf('/');
-                if (lastSlashInAnchor == -1) {
-                    return new ResourceLocation(anchor.getNamespace(), relativeId);
-                } else {
-                    // Otherwise strip everything past the last /
-                    return new ResourceLocation(
-                            anchor.getNamespace(),
-                            anchor.getPath().substring(0, lastSlashInAnchor + 1) + relativeId
-                    );
-                }
+            if (idText.startsWith(RELATIVE_PREFIX) || idText.contains("../")) {
+                URI uri = URI.create(anchor.getPath());
+                uri = uri.resolve(idText);
+
+                var relativeId = uri.toString();
+
+                return new ResourceLocation(anchor.getNamespace(), relativeId);
             } else {
                 return new ResourceLocation(anchor.getNamespace(), idText);
             }

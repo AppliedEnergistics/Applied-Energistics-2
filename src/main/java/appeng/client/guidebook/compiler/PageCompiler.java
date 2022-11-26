@@ -5,12 +5,14 @@ import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.block.LytHeading;
+import appeng.client.guidebook.document.block.LytImage;
 import appeng.client.guidebook.document.block.LytList;
 import appeng.client.guidebook.document.block.LytListItem;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.block.LytThematicBreak;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContent;
+import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.document.flow.LytFlowLink;
 import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
@@ -26,6 +28,7 @@ import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
 import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstHeading;
+import appeng.libs.mdast.model.MdAstImage;
 import appeng.libs.mdast.model.MdAstLink;
 import appeng.libs.mdast.model.MdAstList;
 import appeng.libs.mdast.model.MdAstListItem;
@@ -39,9 +42,11 @@ import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,15 +56,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 public final class PageCompiler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageCompiler.class);
 
+    private final Function<ResourceLocation, byte[]> assetLoader;
     private final String sourcePack;
     private final ResourceLocation id;
     private final String pageContent;
 
-    public PageCompiler(String sourcePack, ResourceLocation id, String pageContent) {
+    public PageCompiler(Function<ResourceLocation, byte[]> assetLoader,
+                        String sourcePack,
+                        ResourceLocation id,
+                        String pageContent) {
+        this.assetLoader = assetLoader;
         this.sourcePack = sourcePack;
         this.id = id;
         this.pageContent = pageContent;
@@ -82,12 +93,12 @@ public final class PageCompiler {
         return new ParsedGuidePage(sourcePack, id, pageContent, astRoot, frontmatter);
     }
 
-    public static GuidePage compile(ParsedGuidePage parsedPage) {
+    public static GuidePage compile(Function<ResourceLocation, byte[]> resourceLookup, ParsedGuidePage parsedPage) {
         // Translate page tree over to layout pages
-        var document = new PageCompiler(parsedPage.sourcePack, parsedPage.id, parsedPage.source)
+        var document = new PageCompiler(resourceLookup, parsedPage.sourcePack, parsedPage.id, parsedPage.source)
                 .compile(parsedPage.astRoot);
 
-        return new GuidePage(parsedPage.sourcePack, document);
+        return new GuidePage(parsedPage.sourcePack, parsedPage.id, document);
     }
 
     private LytDocument compile(MdAstRoot root) {
@@ -201,6 +212,10 @@ public final class PageCompiler {
                 link.setTitle(astLink.title);
                 compileFlowContext(astLink, link);
                 layoutChild = link;
+            } else if (child instanceof MdAstImage astImage) {
+                var inlineBlock = new LytFlowInlineBlock();
+                inlineBlock.setBlock(compileImage(astImage));
+                layoutChild = inlineBlock;
             } else if (child instanceof MdxJsxTextElement el) {
                 var compiler = TagCompilers.get(el.name());
                 if (compiler == null) {
@@ -217,6 +232,24 @@ public final class PageCompiler {
                 layoutParent.append(layoutChild);
             }
         }
+    }
+
+    @NotNull
+    private LytImage compileImage(MdAstImage astImage) {
+        var image = new LytImage();
+        try {
+            var imageId = IdUtils.resolve(astImage.url, id);
+            var imageContent = assetLoader.apply(imageId);
+            if (imageContent == null) {
+                LOGGER.error("Couldn't find image {}", astImage.url);
+            }
+            image.setImage(imageId, imageContent);
+        } catch (ResourceLocationException e) {
+            LOGGER.error("Invalid image id: {}", astImage.url);
+        }
+        image.setTitle(astImage.title);
+        image.setAlt(astImage.alt);
+        return image;
     }
 
     public LytBlock createErrorBlock(String text, MdAstNode child) {

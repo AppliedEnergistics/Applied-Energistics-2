@@ -3,7 +3,7 @@ package appeng.client.guidebook.document.block;
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
-import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -32,7 +32,7 @@ public class LytListItem extends LytVBox {
     }
 
     @Override
-    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+    public void renderBatch(RenderContext context, MultiBufferSource buffers) {
         if (isOrdered()) {
             int number = getOrderedItemNumber();
             String label = number + ".";
@@ -67,7 +67,7 @@ public class LytListItem extends LytVBox {
     }
 
     @Override
-    public void render(SimpleRenderContext context) {
+    public void render(RenderContext context) {
         if (!isOrdered()) {
             var bounds = getBounds();
 

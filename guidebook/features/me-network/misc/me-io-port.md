@@ -9,7 +9,7 @@ navigation:
   title: ME IO Port
 ---
 
-![A picture of a IO port.](../../../../public/assets/large/io_port.png)
+![A picture of a IO port.](../../../assets/large/io_port.png)
 
 This block lets transfer items between your [ME Network](../../me-network.md) and your <ItemLink id="item_storage_cell_1k" /> or other storage cells,
 unlike other forms of automation the <ItemLink id="io_port" /> can send items without any configuration of which items to send.

@@ -7,7 +7,7 @@ navigation:
   title: Cell Workbench
 ---
 
-### ![A picture of a cell work bench.](../../../../public/assets/large/cell_workbench.png)
+### ![A picture of a cell work bench.](../../../assets/large/cell_workbench.png)
 
 The <ItemLink id="cell_workbench"/> lets you
 configure how <ItemLink id="view_cell"/> and

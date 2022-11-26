@@ -11,7 +11,7 @@ navigation:
 
 ### Sky Stone Block
 
-![A Picture of a Sky Stone Block.](../../../../public/assets/large/skystone_block.png)
+![A Picture of a Sky Stone Block.](../../../assets/large/skystone_block.png)
 
 Block form of <ItemLink id="sky_stone_block"/>.
 
@@ -19,7 +19,7 @@ Block form of <ItemLink id="sky_stone_block"/>.
 
 ### Sky Stone Brick
 
-![A picture of Sky Stone Brick.](../../../../public/assets/large/sky_stone_brick.png)
+![A picture of Sky Stone Brick.](../../../assets/large/sky_stone_brick.png)
 
 Brick form of <ItemLink id="sky_stone_block"/>.
 
@@ -27,7 +27,7 @@ Brick form of <ItemLink id="sky_stone_block"/>.
 
 ### Sky Stone Small Brick
 
-![A picture of Sky Stone Small Brick](../../../../public/assets/large/sky_stone_small_brick.png)
+![A picture of Sky Stone Small Brick](../../../assets/large/sky_stone_small_brick.png)
 
 Small brick form of <ItemLink id="sky_stone_block"/>.
 

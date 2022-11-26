@@ -9,7 +9,7 @@ navigation:
   title: ME Import Bus
 ---
 
-![A picture of an Import Bus.](../../../../public/assets/large/import_bus.png)Pulls items from
+![A picture of an Import Bus.](../../../assets/large/import_bus.png)Pulls items from
 the inventory it is pointed at and places them into the [ME Network](../../me-network.md)'s Networked Storage.
 You can specify which items it will pull out via the UI, else it tries to pull out any item in the adjacent
 inventory. The <ItemLink id="import_bus"/> will

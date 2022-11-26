@@ -7,7 +7,7 @@ navigation:
   title: Matter Condenser
 ---
 
-![A picture of a Matter Condenser.](../../../../public/assets/large/matter_condenser.png)Has
+![A picture of a Matter Condenser.](../../../assets/large/matter_condenser.png)Has
 two key functions, ellimination of excess materials in a cheap manor, and the
 production of <ItemLink id="singularity"/> and
 

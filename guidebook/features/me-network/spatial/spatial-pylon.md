@@ -7,7 +7,7 @@ navigation:
   title: Spatial Pylon
 ---
 
-![A Picture of a Spatial Pylon.](../../../../public/assets/large/spatial_pylon.png)The main
+![A Picture of a Spatial Pylon.](../../../assets/large/spatial_pylon.png)The main
 block used to construct a [Spatial Containment Structure](spatial-containment-structure.md),
 they must be built in straight lines, with
 a minium length of 2. When powered and on a network they will either glow a

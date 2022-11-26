@@ -12,12 +12,16 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public record SimpleRenderContext(@Override GuideScreen screen,
                                   @Override LytRect viewport,
@@ -51,6 +55,25 @@ public record SimpleRenderContext(@Override GuideScreen screen,
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
+    }
+
+    @Override
+    public void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShaderTexture(0, texture.getId());
+        var tesselator = Tesselator.getInstance();
+        var builder = tesselator.getBuilder();
+        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        var matrix = poseStack.last().pose();
+        final int z = 0;
+        builder.vertex(matrix, rect.right(), rect.y(), z).uv(1, 0).color(resolveColor(topRight)).endVertex();
+        builder.vertex(matrix, rect.x(), rect.y(), z).uv(0, 0).color(resolveColor(topLeft)).endVertex();
+        builder.vertex(matrix, rect.x(), rect.bottom(), z).uv(0, 1).color(resolveColor(bottomLeft)).endVertex();
+        builder.vertex(matrix, rect.right(), rect.bottom(), z).uv(1, 1).color(resolveColor(bottomRight)).endVertex();
+        tesselator.end();
+        RenderSystem.disableBlend();
     }
 
     @Override
@@ -90,7 +113,7 @@ public record SimpleRenderContext(@Override GuideScreen screen,
 
         poseStack.pushPose();
         poseStack.translate(x, y, z);
-        poseStack.translate(width / 2, height /2, 0.0);
+        poseStack.translate(width / 2, height / 2, 0.0);
         poseStack.scale(1.0F, -1.0F, 1.0F);
         poseStack.scale(width, height, 1f);
         var buffers = Minecraft.getInstance().renderBuffers().bufferSource();

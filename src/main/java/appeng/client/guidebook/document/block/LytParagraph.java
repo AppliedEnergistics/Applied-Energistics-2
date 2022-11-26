@@ -5,7 +5,7 @@ import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.flow.FlowBuilder;
-import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.client.guidebook.render.RenderContext;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,12 +54,12 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     }
 
     @Override
-    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+    public void renderBatch(RenderContext context, MultiBufferSource buffers) {
         content.renderBatch(context, buffers, hoveredContent);
     }
 
     @Override
-    public void render(SimpleRenderContext context) {
+    public void render(RenderContext context) {
         content.render(context, hoveredContent);
     }
 

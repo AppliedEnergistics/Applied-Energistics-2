@@ -7,7 +7,7 @@ navigation:
   title: ME Security Terminal
 ---
 
-![A picture of a security terminal.](../../../../public/assets/large/security_terminal.png)
+![A picture of a security terminal.](../../../assets/large/security_terminal.png)
 
 Allows you to configure which users, and what permissions the users have with
 the ME System. By existing it enforces permissions on the usage of the system.
@@ -31,7 +31,7 @@ access it wirelessly.
 
 ### The GUI
 
-![Security Terminal GUI](../../../../public/assets/content/securityTerminalGUI.png) |
+![Security Terminal GUI](../../../assets/content/securityTerminalGUI.png) |
 
 A. **Sort Order**: Toggle sorting direction
 

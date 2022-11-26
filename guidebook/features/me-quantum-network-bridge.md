@@ -5,7 +5,7 @@ navigation:
 
 # Quantum Network Bridge
 
-![A Quantum Network Bridge](../../public/assets/large/quantum_network_bridge.png)
+![A Quantum Network Bridge](../assets/large/quantum_network_bridge.png)
 
 A multiblock structure that connects 2 potentially distant network fragments
 together. Created by crafting 8 <ItemLink

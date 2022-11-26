@@ -10,7 +10,7 @@ navigation:
   title: ME Chest
 ---
 
-![A picture of an ME Chest](../../../../public/assets/large/me_chest.png)The <ItemLink
+![A picture of an ME Chest](../../../assets/large/me_chest.png)The <ItemLink
 id="chest"/> is the simplest way to use a
 Storage cell, it will give you direct access to the contents of the cell
 placed inside.

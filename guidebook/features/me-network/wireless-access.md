@@ -22,7 +22,7 @@ from the nearest <ItemLink id="wireless_access_point"/>.
 
 ## Wireless Access Point
 
-![A picture of a wireless access point.](../../../public/assets/large/wireless_access_point.png)
+![A picture of a wireless access point.](../../assets/large/wireless_access_point.png)
 
 Allows wireless access via a <ItemLink id="wireless_terminal" />.
 Range and power usage is determined based on the number of <ItemLink id="wireless_booster" /> installed

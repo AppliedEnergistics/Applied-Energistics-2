@@ -9,7 +9,7 @@ navigation:
   title: ME Level Emitter
 ---
 
-![An active Level Emitter](../../../../public/assets/large/emitter2.png)The <ItemLink
+![An active Level Emitter](../../../assets/large/emitter2.png)The <ItemLink
 id="level_emitter"/> can indicate either the
 level of a specified item or the [ME Network](../../me-network.md) energy
 level. You can set the threshold and if the <ItemLink

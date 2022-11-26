@@ -167,4 +167,4 @@ where you want them is kind of a nusance. Its time to start using <ItemLink id="
 When configured for ME, they allow you to move [channels](features/me-network/channels.md) from point to point. this allows you to
 move up to 32 [channels](features/me-network/channels.md) per pair of <ItemLink id="me_p2p_tunnel"/>.
 
-![A example of using P2P Tunnels to move channels.](../public/assets/large/tunnelchannels.png)
+![A example of using P2P Tunnels to move channels.](assets/large/tunnelchannels.png)

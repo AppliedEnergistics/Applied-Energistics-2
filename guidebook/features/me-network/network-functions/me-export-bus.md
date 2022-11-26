@@ -9,7 +9,7 @@ navigation:
   title: ME Export Bus
 ---
 
-![A Image of an Export Bus](../../../../public/assets/large/export_bus.png)
+![A Image of an Export Bus](../../../assets/large/export_bus.png)
 
 The <ItemLink id="export_bus"/> extracts items from the
 [ME Network](../../me-network.md)'s Networked Storage and places them into the inventory it faces.

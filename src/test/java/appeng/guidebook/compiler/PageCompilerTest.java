@@ -28,7 +28,7 @@ class PageCompilerTest {
         var path = guidebookFolder.resolve(id + ".md");
         try (var in = Files.newInputStream(path)) {
             var parsed = PageCompiler.parse("ae2", AppEng.makeId(id), in);
-            return PageCompiler.compile(parsed);
+            return PageCompiler.compile(resourceLocation -> null, parsed);
         }
     }
 

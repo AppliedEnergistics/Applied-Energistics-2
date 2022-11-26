@@ -10,10 +10,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+
+import java.util.function.Supplier;
 
 public interface RenderContext {
 
@@ -26,6 +30,26 @@ public interface RenderContext {
     int resolveColor(ColorRef ref);
 
     void fillRect(LytRect rect, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft);
+
+    void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft);
+
+    default void fillTexturedRect(LytRect rect, GuidePageTexture texture) {
+        var color = new ColorRef(-1);
+        fillTexturedRect(rect, texture.use(), color);
+    }
+
+    default void fillTexturedRect(LytRect rect, AbstractTexture texture) {
+        var color = new ColorRef(-1);
+        fillTexturedRect(rect, texture, color);
+    }
+
+    default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef color) {
+        fillTexturedRect(rect, texture, color, color, color, color);
+    }
+
+    default void fillTexturedRect(LytRect rect, GuidePageTexture texture, ColorRef color) {
+        fillTexturedRect(rect, texture.use(), color, color, color, color);
+    }
 
     void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorRef color);
 

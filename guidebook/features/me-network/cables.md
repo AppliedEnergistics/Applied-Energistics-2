@@ -100,7 +100,7 @@ allowing [channels](channels.md) to be distributed more efficiently.
 
 ## Glass Cable
 
-![A Picture of Glass Cable](../../../public/assets/large/glass_cable.png)
+![A Picture of Glass Cable](../../assets/large/glass_cable.png)
 
 <ItemLink id="fluix_glass_cable" /> is the simplest cable to make, transfers power
 and up to 8 [Channels](channels.md). It comes in 17 diffrent colors, the default
@@ -121,7 +121,7 @@ your [Channels](channels.md).
 
 ## Covered Cable
 
-![A picture of covered cables.](../../../public/assets/large/covered_cable.png)
+![A picture of covered cables.](../../assets/large/covered_cable.png)
 
 The covered cable variant offers no gameplay benefits over its <ItemLink
 id="fluix_glass_cable"/> counterpart. It can however be used
@@ -137,7 +137,7 @@ id="fluix_covered_dense_cable"/>.
 
 ## Dense Cable
 
-![A picture of dense cable.](../../../public/assets/large/dense_cable.png)Higher Capacity
+![A picture of dense cable.](../../assets/large/dense_cable.png)Higher Capacity
 cable, can carry 32 channels unlike standard cable which can only carry 8,
 however it doesn't support buses so you must first step down from dense to a
 smaller cable (such as <ItemLink
@@ -151,7 +151,7 @@ representing four channels in use.
 
 ## Smart Cable
 
-![A picture of smart cable.](../../../public/assets/large/smart_cable.png)
+![A picture of smart cable.](../../assets/large/smart_cable.png)
 
 While bearing some similarity to <ItemLink id="fluix_covered_cable"/> in appearance, they
 provide diagnostic function by visualizing the channel usage on the cables,

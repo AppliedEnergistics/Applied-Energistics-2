@@ -5,7 +5,7 @@ navigation:
   title: ME Controller
 ---
 
-![A picture of a controller.](../../../public/assets/large/controller.png)
+![A picture of a controller.](../../assets/large/controller.png)
 
 The <ItemLink id="controller"/> is the routing hub of a [ME Network](../me-network.md).
 Without it, only up to 8 devices can interact, any more and everything stops working.

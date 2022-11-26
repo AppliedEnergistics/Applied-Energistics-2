@@ -61,7 +61,7 @@ route nature, if any specific spot in your system has two possible routes, you
 may find yourself returning home from a mining trip to see half your devices
 offline. Take a look at the following example:
 
-![Diagram showing that two equal length paths are bad.](../../../public/assets/channels/badLength.png)
+![Diagram showing that two equal length paths are bad.](../../assets/channels/badLength.png)
 
 ---
 
@@ -76,19 +76,19 @@ understand that basic issue and diagram look at these other diagrams.
 
 <div className="tile"><div className="tile">
 
-![An example of a good layout](../../../public/assets/channels/good_split.png)
+![An example of a good layout](../../assets/channels/good_split.png)
 
 </div><div className="tile">
 
-![An example of a bad layout](../../../public/assets/channels/bad_split3.png)
+![An example of a bad layout](../../assets/channels/bad_split3.png)
 
 </div><div className="tile">
 
-![An example of a bad layout](../../../public/assets/channels/bad_split.png)
+![An example of a bad layout](../../assets/channels/bad_split.png)
 
 </div><div className="tile">
 
-![An example of a bad layout](../../../public/assets/channels/bad_split2.png)
+![An example of a bad layout](../../assets/channels/bad_split2.png)
 
 </div></div>
 
@@ -112,7 +112,7 @@ controller, and your design is imbalanced, consider using p2p tunnels, since a
 tunnel connection is considered a single "hop" you can get the system to have
 a different outcome.
 
-![Diagram showing how to fix a previous setup with a p2p tunnel.](../../../public/assets/channels/p2psplit.png)
+![Diagram showing how to fix a previous setup with a p2p tunnel.](../../assets/channels/p2psplit.png)
 
 ## Using P2P-Tunnels to adjust route lengths
 

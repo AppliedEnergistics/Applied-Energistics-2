@@ -2,12 +2,14 @@ package appeng.client.guidebook;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AppEng;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.methvin.watcher.DirectoryChangeEvent;
 import io.methvin.watcher.DirectoryChangeListener;
 import io.methvin.watcher.DirectoryWatcher;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -159,6 +161,14 @@ class GuideSourceWatcher {
     public synchronized boolean applyChanges() {
         boolean hadChanges = false;
 
+        var reloadScreen = false;
+        if (Minecraft.getInstance().screen instanceof GuideScreen guideScreen) {
+            var currentPageId = guideScreen.getCurrentPageId();
+            if (deletedPages.contains(currentPageId) || changedPages.containsKey(currentPageId)) {
+                reloadScreen = true;
+            }
+        }
+
         if (!deletedPages.isEmpty()) {
             LOGGER.info("Deleted {} guidebook pages", deletedPages.size());
             for (var pageId : deletedPages) {
@@ -173,6 +183,12 @@ class GuideSourceWatcher {
             pages.putAll(changedPages);
             changedPages.clear();
             hadChanges = true;
+        }
+
+        if (reloadScreen) {
+            if (Minecraft.getInstance().screen instanceof GuideScreen guideScreen) {
+                guideScreen.navigateTo(guideScreen.getCurrentPageId());
+            }
         }
 
         return hadChanges;

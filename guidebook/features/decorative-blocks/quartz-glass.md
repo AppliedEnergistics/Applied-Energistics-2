@@ -10,7 +10,7 @@ navigation:
 
 ### Quartz Glass
 
-![A picture of Quartz Glass](../../../public/assets/large/quartz_glass.png)
+![A picture of Quartz Glass](../../assets/large/quartz_glass.png)
 
 Mostly clear glass made with <ItemLink id="certus_quartz_dust"/>.
 Can be used to make vibrant quartz glass and other items.
@@ -19,7 +19,7 @@ Can be used to make vibrant quartz glass and other items.
 
 ### Vibrant Quartz Glass
 
-![A picture of Vibrant Quartz Glass](../../../public/assets/large/VibrantQuartzGlassAni.gif)
+![A picture of Vibrant Quartz Glass](../../assets/large/VibrantQuartzGlassAni.gif)
 
 A variant of quartz glass that glows like glowstone.
 

@@ -2,7 +2,7 @@ package appeng.client.guidebook.document.block;
 
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
-import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
 import net.minecraft.client.renderer.MultiBufferSource;
 
@@ -13,11 +13,11 @@ public class LytThematicBreak extends LytBlock {
     }
 
     @Override
-    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+    public void renderBatch(RenderContext context, MultiBufferSource buffers) {
     }
 
     @Override
-    public void render(SimpleRenderContext context) {
+    public void render(RenderContext context) {
         var line = bounds.withHeight(2).centerVerticallyIn(bounds);
 
         context.fillRect(line, SymbolicColor.THEMATIC_BREAK.ref());

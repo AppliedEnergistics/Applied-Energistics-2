@@ -10,7 +10,7 @@ navigation:
 
 ## Item Terminal
 
-![A picture of 3 terminals.](../../../public/assets/large/terminal.png)
+![A picture of 3 terminals.](../../assets/large/terminal.png)
 
 The <ItemLink id="terminal"/> is a HID which gives you access
 to items stored in your [ME Network](../me-network.md). This will also include
@@ -25,7 +25,7 @@ Can be upgraded into a <ItemLink id="crafting_terminal"/>.
 
 ## Item Crafting Terminal
 
-![A picture of 3 crafting terminals.](../../../public/assets/large/crafting_terminal.png)
+![A picture of 3 crafting terminals.](../../assets/large/crafting_terminal.png)
 
 The <ItemLink id="crafting_terminal"/> is the upgraded version of the <ItemLink
 id="terminal"/> which has an integrated crafting grid with access to

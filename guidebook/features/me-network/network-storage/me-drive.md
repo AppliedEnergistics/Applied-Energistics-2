@@ -10,7 +10,7 @@ navigation:
   title: ME Drive
 ---
 
-![A picture of an ME Drive.](../../../../public/assets/large/me_drive.png)A block designed to
+![A picture of an ME Drive.](../../../assets/large/me_drive.png)A block designed to
 do one thing, store Storage Cells. This block holds 10 storage cells so you
 can tightly pack your storage into a very small space.
 

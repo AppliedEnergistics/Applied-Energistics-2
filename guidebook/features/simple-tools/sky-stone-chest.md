@@ -19,7 +19,7 @@ They are blast resistant and hold up to 36 stacks of items.
 
 </div><div className="level-right">
 
-![A picture of a sky stone chest](../../../public/assets/large/sky_stone_chest.png)
+![A picture of a sky stone chest](../../assets/large/sky_stone_chest.png)
 
 </div></div>
 <div className="level"><div className="level-left">
@@ -28,6 +28,6 @@ They are blast resistant and hold up to 36 stacks of items.
 
 </div><div className="level-right">
 
-![A picture of a sky stone block chest](../../../public/assets/large/sky_stone_block_chest.png)
+![A picture of a sky stone block chest](../../assets/large/sky_stone_block_chest.png)
 
 </div></div>

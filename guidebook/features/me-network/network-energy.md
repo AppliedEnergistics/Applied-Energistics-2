@@ -24,7 +24,7 @@ To see the current energy statistics for your network, right-click any part of i
 
 ## Energy Acceptor
 
-![Picture of a Energy Accepter.](../../../public/assets/large/energy_accepter.png)
+![Picture of a Energy Accepter.](../../assets/large/energy_accepter.png)
 
 The <ItemLink id="energy_acceptor" /> converts energy from external
 systems into AE and stores it in the network.
@@ -40,14 +40,14 @@ The following energy systems are supported:
 
 ## Energy Storage
 
-![A picture of a uncharged, and charged energy cell.](../../../public/assets/large/energy_cell.png)
+![A picture of a uncharged, and charged energy cell.](../../assets/large/energy_cell.png)
 
 Stores up to 200,000 AE. They do not accept power directly, but are used to add
 additional power storage to an already existing [ME Network](../me-network.md).
 
 <RecipeFor id="energy_cell" />
 
-![A picture of a uncharged, and charged energy cell.](../../../public/assets/large/dense_energy_cell.png)
+![A picture of a uncharged, and charged energy cell.](../../assets/large/dense_energy_cell.png)
 
 store AE energy up to 1.6 million units. They do not accept power directly but
 are used to add additional power storage to an already existing [ME Network](../me-network.md).
@@ -61,7 +61,7 @@ They can only be spawned in **Creative Mode**.
 
 ### Vibration Chamber
 
-![A picture of a Vibration Chamber.](../../../public/assets/large/vibration_chamber.png)
+![A picture of a Vibration Chamber.](../../assets/large/vibration_chamber.png)
 
 A modified furnace capable of generating AE Power instead of smelting ores. When
 placed on an [ME Network](../me-network.md) it will charge <ItemLink id="energy_cell"/> or

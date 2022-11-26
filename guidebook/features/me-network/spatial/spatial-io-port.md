@@ -8,7 +8,7 @@ navigation:
 ---
 
 ![A picture of a Spatial IO
-Port](../../../../public/assets/large/spatial_io_port.png)<ItemLink
+Port](../../../assets/large/spatial_io_port.png)<ItemLink
 id="spatial_io_port"/> are used to capture and
 deploy regions of space that are defiend by <ItemLink
 id="spatial_pylon"/>.

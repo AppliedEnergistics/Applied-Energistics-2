@@ -10,8 +10,8 @@ navigation:
   title: ME Interface
 ---
 
-![A picture of a Interface Block.](../../../../public/assets/large/interface.png)![A picture
-of a Interface Part.](../../../../public/assets/large/interface_module.png)The <ItemLink
+![A picture of a Interface Block.](../../../assets/large/interface.png)![A picture
+of a Interface Part.](../../../assets/large/interface_module.png)The <ItemLink
 id="interface"/> is the only component which can
 be used as a part, or as a Block. Crafting an ME interface in either form by
 itself produces the other form. The thin form is useful if you want to provide

@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -17,7 +18,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +34,23 @@ public final class GuidebookManager {
     private NavigationTree navigationTree = new NavigationTree();
     private Map<ResourceLocation, ParsedGuidePage> pages;
 
+    @Nullable
+    private final Path developmentSourceFolder;
+    @Nullable
+    private final String developmentSourceNamespace;
+
     private GuidebookManager() {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
 
         var sourceFolder = System.getProperty("appeng.guide.sources");
         if (sourceFolder != null) {
+            developmentSourceFolder = Paths.get(sourceFolder);
             // Allow overriding which Mod-ID is used for the sources in the given folder
-            var namespace = System.getProperty("appeng.guide.sources.namespace", AppEng.MOD_ID);
-            watchDevelopmentSources(sourceFolder, namespace);
+            developmentSourceNamespace = System.getProperty("appeng.guide.sources.namespace", AppEng.MOD_ID);
+            watchDevelopmentSources(developmentSourceFolder, developmentSourceNamespace);
+        } else {
+            developmentSourceFolder = null;
+            developmentSourceNamespace = null;
         }
     }
 
@@ -55,10 +68,35 @@ public final class GuidebookManager {
         var page = developmentPages.getOrDefault(id, pages.get(id));
 
         if (page != null) {
-            return PageCompiler.compile(page);
+            return PageCompiler.compile(this::getAsset, page);
         }
 
         return null;
+    }
+
+    private byte[] getAsset(ResourceLocation id) {
+        // Also load images from the development sources folder, if it exists and contains the asset namespace
+        if (developmentSourceFolder != null && id.getNamespace().equals(developmentSourceNamespace)) {
+            var path = developmentSourceFolder.resolve(id.getPath());
+            try (var in = Files.newInputStream(path)) {
+                return in.readAllBytes();
+            } catch (FileNotFoundException ignored) {
+            } catch (IOException e) {
+                LOGGER.error("Failed to open guidebook asset {}", path);
+                return null;
+            }
+        }
+
+        var resource = Minecraft.getInstance().getResourceManager().getResource(id).orElse(null);
+        if (resource == null) {
+            return null;
+        }
+        try (var input = resource.open()) {
+            return input.readAllBytes();
+        } catch (IOException e) {
+            LOGGER.error("Failed to open guidebook asset {}", id);
+            return null;
+        }
     }
 
     public NavigationTree getNavigationTree() {
@@ -92,7 +130,6 @@ public final class GuidebookManager {
                 }
             }
 
-
             profiler.endTick();
             return pages;
         }
@@ -113,8 +150,8 @@ public final class GuidebookManager {
         }
     }
 
-    private void watchDevelopmentSources(String developmentSources, String namespace) {
-        var watcher = new GuideSourceWatcher(developmentPages, namespace, Paths.get(developmentSources));
+    private void watchDevelopmentSources(Path developmentSources, String namespace) {
+        var watcher = new GuideSourceWatcher(developmentPages, namespace, developmentSources);
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (watcher.applyChanges()) {
                 this.navigationTree = buildNavigation();

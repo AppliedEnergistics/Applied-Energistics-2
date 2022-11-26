@@ -5,14 +5,13 @@ import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.GuidebookManager;
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.layout.SimpleLayoutContext;
+import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -170,9 +169,16 @@ public class GuideScreen extends Screen {
     }
 
     public void navigateTo(ResourceLocation pageId) {
+        GuidePageTexture.releaseUsedTextures();
         currentPage = GuidebookManager.INSTANCE.getPage(pageId);
         scrollbar.setScrollAmount(0);
         updatePageLayout();
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        GuidePageTexture.releaseUsedTextures();
     }
 
     @FunctionalInterface
@@ -359,5 +365,9 @@ public class GuideScreen extends Screen {
         var document = currentPage.getDocument();
         document.updateLayout(context, docViewport.width());
         scrollbar.setContentHeight(document.getContentHeight());
+    }
+
+    public ResourceLocation getCurrentPageId() {
+        return currentPage.getId();
     }
 }
