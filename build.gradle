@@ -82,10 +82,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':libs:mdast')
-    implementation project(':libs:mdx')
-    implementation project(':libs:micromark')
-    implementation project(':libs:gfm-table')
+    implementation project(':libs:markdown')
 
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"

@@ -9,7 +9,4 @@ pluginManagement {
     }
 }
 
-include 'libs:mdx'
-include 'libs:mdast'
-include 'libs:micromark'
-include 'libs:gfm-table'
+include 'libs:markdown'

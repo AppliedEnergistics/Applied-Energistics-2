@@ -15,6 +15,7 @@ import appeng.client.guidebook.layout.SimpleLayoutContext;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.core.AppEng;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import vazkii.patchouli.api.PatchouliAPI;
+import vazkii.patchouli.client.book.ClientBookRegistry;
+import vazkii.patchouli.common.book.BookRegistry;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -39,6 +43,9 @@ public class GuideScreen extends Screen {
         super(Component.literal("AE2 Guidebook"));
         this.currentPage = currentPage;
         this.scrollbar = new GuideScrollbar();
+
+        var aebook = BookRegistry.INSTANCE.books.values().iterator().next();
+        System.out.println();
     }
 
     @Override
