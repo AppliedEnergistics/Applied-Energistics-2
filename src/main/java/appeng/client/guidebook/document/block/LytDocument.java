@@ -3,6 +3,7 @@ package appeng.client.guidebook.document.block;
 import java.util.ArrayList;
 import java.util.List;
 
+import appeng.client.guidebook.layout.Layouts;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -73,25 +74,17 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     }
 
     private Layout createLayout(LayoutContext context, int availableWidth) {
-        var contentY = 0;
-        var contentHeight = 0;
+        var bounds = Layouts.verticalLayout(context,
+                blocks,
+                0,
+                0,
+                availableWidth,
+                5,
+                5,
+                5,
+                5);
 
-        LytBlock previousBlock = null;
-        for (var block : blocks) {
-            // Margin-collapsing of adjacent paragraphs
-            if (previousBlock != null && previousBlock.getMarginBottom() > 0) {
-                contentY += Math.max(previousBlock.getMarginBottom(), block.getMarginTop()) - previousBlock.getMarginBottom();
-            } else {
-                contentY += block.getMarginTop();
-            }
-            var blockWidth = Math.max(1, availableWidth - block.getMarginLeft() - block.getMarginRight());
-            var bounds = block.layout(context, block.getMarginLeft(), contentY, blockWidth);
-            contentY += bounds.height() + block.getMarginBottom();
-            contentHeight = Math.max(contentHeight, bounds.bottom());
-            previousBlock = block;
-        }
-
-        return new Layout(availableWidth, contentHeight);
+        return new Layout(availableWidth, bounds.height());
     }
 
     public void render(SimpleRenderContext context) {
@@ -129,7 +122,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     }
 
     public HitTestResult pick(int x, int y) {
-        var node = hitTestNode(x, y);
+        var node = pickNode(x, y);
         if (node != null) {
             LytFlowContent content = null;
             if (node instanceof LytFlowContainer container) {

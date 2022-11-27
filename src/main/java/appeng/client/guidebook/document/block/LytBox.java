@@ -10,6 +10,11 @@ import appeng.client.guidebook.render.RenderContext;
 public abstract class LytBox extends LytBlock implements LytBlockContainer {
     protected final List<LytBlock> children = new ArrayList<>();
 
+    protected int paddingLeft;
+    protected int paddingTop;
+    protected int paddingRight;
+    protected int paddingBottom;
+
     @Override
     public void removeChild(LytNode node) {
         if (node instanceof LytBlock block && block.parent == this) {

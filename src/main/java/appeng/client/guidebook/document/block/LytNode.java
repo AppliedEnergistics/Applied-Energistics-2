@@ -1,16 +1,20 @@
 package appeng.client.guidebook.document.block;
 
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.flow.LytFlowContent;
+import appeng.client.guidebook.style.Styleable;
+import appeng.client.guidebook.style.TextStyle;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.document.flow.LytFlowContent;
-
-public abstract class LytNode {
+public abstract class LytNode implements Styleable {
     @Nullable
-    LytNode parent;
+    protected LytNode parent;
+
+    private TextStyle style = TextStyle.EMPTY;
+    private TextStyle hoverStyle = TextStyle.EMPTY;
 
     public void removeChild(LytNode node) {
     }
@@ -33,18 +37,43 @@ public abstract class LytNode {
     }
 
     @Nullable
-    public LytNode hitTestNode(int x, int y) {
+    public LytNode pickNode(int x, int y) {
         if (!getBounds().contains(x, y)) {
             return null;
         }
 
         for (var child : getChildren()) {
-            var node = child.hitTestNode(x, y);
+            var node = child.pickNode(x, y);
             if (node != null) {
                 return node;
             }
         }
 
         return this;
+    }
+
+    @Override
+    public TextStyle getStyle() {
+        return style;
+    }
+
+    @Override
+    public void setStyle(TextStyle style) {
+        this.style = style;
+    }
+
+    @Override
+    public TextStyle getHoverStyle() {
+        return hoverStyle;
+    }
+
+    @Override
+    public void setHoverStyle(TextStyle style) {
+        this.hoverStyle = style;
+    }
+
+    @Override
+    public @Nullable Styleable getStylingParent() {
+        return parent;
     }
 }

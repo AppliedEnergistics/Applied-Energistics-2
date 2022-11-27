@@ -13,23 +13,23 @@ import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-public final class MdastGfmTable {
+public final class GfmTableMdastExtension {
 
     private static final MdastContextProperty<Boolean> IN_TABLE = new MdastContextProperty<>();
 
     public static final MdastExtension INSTANCE = MdastExtension.builder()
-            .enter("table", MdastGfmTable::enterTable)
-            .enter("tableData", MdastGfmTable::enterCell)
-            .enter("tableHeader", MdastGfmTable::enterCell)
-            .enter("tableRow", MdastGfmTable::enterRow)
-            .exit("codeText", MdastGfmTable::exitCodeText)
-            .exit("table", MdastGfmTable::exitTable)
-            .exit("tableData", MdastGfmTable::exit)
-            .exit("tableHeader", MdastGfmTable::exit)
-            .exit("tableRow", MdastGfmTable::exit)
+            .enter("table", GfmTableMdastExtension::enterTable)
+            .enter("tableData", GfmTableMdastExtension::enterCell)
+            .enter("tableHeader", GfmTableMdastExtension::enterCell)
+            .enter("tableRow", GfmTableMdastExtension::enterRow)
+            .exit("codeText", GfmTableMdastExtension::exitCodeText)
+            .exit("table", GfmTableMdastExtension::exitTable)
+            .exit("tableData", GfmTableMdastExtension::exit)
+            .exit("tableHeader", GfmTableMdastExtension::exit)
+            .exit("tableRow", GfmTableMdastExtension::exit)
             .build();
 
-    private MdastGfmTable() {
+    private GfmTableMdastExtension() {
     }
 
     private static void enterTable(MdastContext context, Token token) {
@@ -67,7 +67,7 @@ public final class MdastGfmTable {
         var value = context.resume();
 
         if (Boolean.TRUE.equals(context.get(IN_TABLE))) {
-            value = ESCAPED_PIPE_PATERN.matcher(value).replaceAll(MdastGfmTable::replace);
+            value = ESCAPED_PIPE_PATERN.matcher(value).replaceAll(GfmTableMdastExtension::replace);
         }
 
         var stack = context.getStack();

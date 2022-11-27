@@ -1,5 +1,7 @@
 package appeng.client.guidebook.render;
 
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.screen.GuideScreen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -7,7 +9,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -18,13 +19,10 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.screen.GuideScreen;
-
 public record SimpleRenderContext(@Override GuideScreen screen,
-        @Override LytRect viewport,
-        @Override PoseStack poseStack,
-        @Override LightDarkMode lightDarkMode) implements RenderContext {
+                                  @Override LytRect viewport,
+                                  @Override PoseStack poseStack,
+                                  @Override LightDarkMode lightDarkMode) implements RenderContext {
 
     @Override
     public int resolveColor(ColorRef ref) {
@@ -57,7 +55,7 @@ public record SimpleRenderContext(@Override GuideScreen screen,
 
     @Override
     public void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight,
-            ColorRef bottomRight, ColorRef bottomLeft) {
+                                 ColorRef bottomRight, ColorRef bottomLeft) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);

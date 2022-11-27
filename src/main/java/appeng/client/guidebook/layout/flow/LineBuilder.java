@@ -79,8 +79,8 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     private void appendText(String text, LytFlowContent flowContent) {
-        var style = flowContent.getParentSpan().resolveStyle();
-        var hoverStyle = flowContent.getParentSpan().resolveHoverStyle(style);
+        var style = flowContent.resolveStyle();
+        var hoverStyle = flowContent.resolveHoverStyle(style);
 
         char lastChar = '\0';
         if (getEndOfOpenLine() instanceof LineTextRun textRun && !textRun.text.isEmpty()) {

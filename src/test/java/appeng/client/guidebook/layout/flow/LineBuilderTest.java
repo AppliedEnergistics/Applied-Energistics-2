@@ -68,7 +68,7 @@ class LineBuilderTest {
         for (String textChunk : textChunks) {
             var flowContent = new LytFlowText();
             flowContent.setText(textChunk);
-            flowContent.setParentSpan(new LytFlowSpan());
+            flowContent.setParent(new LytFlowSpan());
             lineBuilder.accept(flowContent);
         }
 

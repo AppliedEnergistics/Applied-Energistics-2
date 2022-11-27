@@ -12,6 +12,7 @@ import appeng.client.guidebook.document.block.LytList;
 import appeng.client.guidebook.document.block.LytListItem;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.block.LytThematicBreak;
+import appeng.client.guidebook.document.block.table.LytTable;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
@@ -26,9 +27,12 @@ import appeng.libs.mdast.MdAst;
 import appeng.libs.mdast.MdAstYamlFrontmatter;
 import appeng.libs.mdast.MdastOptions;
 import appeng.libs.mdast.YamlFrontmatterExtension;
+import appeng.libs.mdast.gfm.GfmTableMdastExtension;
+import appeng.libs.mdast.gfm.model.GfmTable;
 import appeng.libs.mdast.mdx.MdxMdastExtension;
 import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
+import appeng.libs.mdast.model.MdAstAnyContent;
 import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstHeading;
 import appeng.libs.mdast.model.MdAstImage;
@@ -38,6 +42,7 @@ import appeng.libs.mdast.model.MdAstListItem;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.mdast.model.MdAstParagraph;
 import appeng.libs.mdast.model.MdAstParent;
+import appeng.libs.mdast.model.MdAstPhrasingContent;
 import appeng.libs.mdast.model.MdAstPosition;
 import appeng.libs.mdast.model.MdAstRoot;
 import appeng.libs.mdast.model.MdAstStrong;
@@ -69,6 +74,11 @@ import java.util.function.Function;
 public final class PageCompiler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageCompiler.class);
 
+    /**
+     * Default gap between block-level elements. Set as margin.
+     */
+    private static final int DEFAULT_ELEMENT_SPACING = 5;
+
     private final Function<ResourceLocation, byte[]> assetLoader;
     private final String sourcePack;
     private final ResourceLocation id;
@@ -92,7 +102,8 @@ public final class PageCompiler {
                 .withSyntaxExtension(YamlFrontmatterSyntax.INSTANCE)
                 .withSyntaxExtension(GfmTableSyntax.INSTANCE)
                 .withMdastExtension(MdxMdastExtension.INSTANCE)
-                .withMdastExtension(YamlFrontmatterExtension.INSTANCE);
+                .withMdastExtension(YamlFrontmatterExtension.INSTANCE)
+                .withMdastExtension(GfmTableMdastExtension.INSTANCE);
 
         var astRoot = MdAst.fromMarkdown(pageContent, options);
 
@@ -143,17 +154,7 @@ public final class PageCompiler {
             if (child instanceof MdAstThematicBreak) {
                 layoutChild = new LytThematicBreak();
             } else if (child instanceof MdAstList astList) {
-                var list = new LytList(astList.ordered, astList.start);
-                for (var listContent : astList.children()) {
-                    if (listContent instanceof MdAstListItem astListItem) {
-                        var listItem = new LytListItem();
-                        compileBlockContext(astListItem, listItem);
-                        list.append(listItem);
-                    } else {
-                        list.append(createErrorBlock("Cannot handle list content", (MdAstNode) listContent));
-                    }
-                }
-                layoutChild = list;
+                layoutChild = compileList(astList);
             } else if (child instanceof MdAstHeading astHeading) {
                 var heading = new LytHeading();
                 heading.setDepth(astHeading.depth);
@@ -162,12 +163,14 @@ public final class PageCompiler {
             } else if (child instanceof MdAstParagraph astParagraph) {
                 var paragraph = new LytParagraph();
                 compileFlowContext(astParagraph, paragraph);
-                paragraph.setMarginTop(5);
-                paragraph.setMarginBottom(5);
+                paragraph.setMarginTop(DEFAULT_ELEMENT_SPACING);
+                paragraph.setMarginBottom(DEFAULT_ELEMENT_SPACING);
                 layoutChild = paragraph;
             } else if (child instanceof MdAstYamlFrontmatter) {
                 // This is handled by compile directly
                 layoutChild = null;
+            } else if (child instanceof GfmTable astTable) {
+                layoutChild = compileTable(astTable);
             } else if (child instanceof MdxJsxFlowElement el) {
                 var compiler = TagCompilers.get(el.name());
                 if (compiler == null) {
@@ -176,6 +179,11 @@ public final class PageCompiler {
                     layoutChild = null;
                     compiler.compileBlockContext(this, layoutParent, el);
                 }
+            } else if (child instanceof MdAstPhrasingContent phrasingContent) {
+                // Wrap in a paragraph with no margins
+                var paragraph = new LytParagraph();
+                compileFlowContent(paragraph, phrasingContent);
+                layoutChild = paragraph;
             } else {
                 layoutChild = createErrorBlock("Unhandled Markdown node in block context", (MdAstNode) child);
             }
@@ -184,6 +192,50 @@ public final class PageCompiler {
                 layoutParent.append(layoutChild);
             }
         }
+    }
+
+    private LytList compileList(MdAstList astList) {
+        var list = new LytList(astList.ordered, astList.start);
+        for (var listContent : astList.children()) {
+            if (listContent instanceof MdAstListItem astListItem) {
+                var listItem = new LytListItem();
+                compileBlockContext(astListItem, listItem);
+
+                // Fix up top/bottom margin for list item children
+                var children = listItem.getChildren();
+                if (!children.isEmpty()) {
+                    var firstChild = children.get(0);
+                    if (firstChild instanceof LytBlock firstBlock) {
+                        firstBlock.setMarginTop(0);
+                        firstBlock.setMarginBottom(0);
+                    }
+                }
+                list.append(listItem);
+            } else {
+                list.append(createErrorBlock("Cannot handle list content", (MdAstNode) listContent));
+            }
+        }
+        return list;
+    }
+
+    private LytBlock compileTable(GfmTable astTable) {
+        var table = new LytTable();
+        table.setMarginBottom(DEFAULT_ELEMENT_SPACING);
+
+        boolean firstRow = true;
+        for (var astRow : astTable.children()) {
+            var row = table.appendRow();
+            if (firstRow) {
+                row.modifyStyle(style -> style.bold(true));
+                firstRow = false;
+            }
+            for (var astCell : astRow.children()) {
+                var cell = row.appendCell();
+                compileBlockContext(astCell, cell);
+            }
+        }
+
+        return table;
     }
 
     /**
@@ -205,39 +257,43 @@ public final class PageCompiler {
 
     public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {
         for (var child : markdownParent.children()) {
-            LytFlowContent layoutChild;
-            if (child instanceof MdAstText astText) {
-                var text = new LytFlowText();
-                text.setText(astText.value);
-                layoutChild = text;
-            } else if (child instanceof MdAstStrong astStrong) {
-                var span = new LytFlowSpan();
-                span.modifyStyle(style -> style.bold(true));
-                compileFlowContext(astStrong, span);
-                layoutChild = span;
-            } else if (child instanceof MdAstBreak) {
-                layoutChild = new LytFlowBreak();
-            } else if (child instanceof MdAstLink astLink) {
-                layoutChild = compileLink(astLink);
-            } else if (child instanceof MdAstImage astImage) {
-                var inlineBlock = new LytFlowInlineBlock();
-                inlineBlock.setBlock(compileImage(astImage));
-                layoutChild = inlineBlock;
-            } else if (child instanceof MdxJsxTextElement el) {
-                var compiler = TagCompilers.get(el.name());
-                if (compiler == null) {
-                    layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", (MdAstNode) child);
-                } else {
-                    layoutChild = null;
-                    compiler.compileFlowContext(this, layoutParent, el);
-                }
-            } else {
-                layoutChild = createErrorFlowContent("Unhandled Markdown node in flow context", (MdAstNode) child);
-            }
+            compileFlowContent(layoutParent, child);
+        }
+    }
 
-            if (layoutChild != null) {
-                layoutParent.append(layoutChild);
+    private void compileFlowContent(LytFlowParent layoutParent, MdAstAnyContent content) {
+        LytFlowContent layoutChild;
+        if (content instanceof MdAstText astText) {
+            var text = new LytFlowText();
+            text.setText(astText.value);
+            layoutChild = text;
+        } else if (content instanceof MdAstStrong astStrong) {
+            var span = new LytFlowSpan();
+            span.modifyStyle(style -> style.bold(true));
+            compileFlowContext(astStrong, span);
+            layoutChild = span;
+        } else if (content instanceof MdAstBreak) {
+            layoutChild = new LytFlowBreak();
+        } else if (content instanceof MdAstLink astLink) {
+            layoutChild = compileLink(astLink);
+        } else if (content instanceof MdAstImage astImage) {
+            var inlineBlock = new LytFlowInlineBlock();
+            inlineBlock.setBlock(compileImage(astImage));
+            layoutChild = inlineBlock;
+        } else if (content instanceof MdxJsxTextElement el) {
+            var compiler = TagCompilers.get(el.name());
+            if (compiler == null) {
+                layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", (MdAstNode) content);
+            } else {
+                layoutChild = null;
+                compiler.compileFlowContext(this, layoutParent, el);
             }
+        } else {
+            layoutChild = createErrorFlowContent("Unhandled Markdown node in flow context", (MdAstNode) content);
+        }
+
+        if (layoutChild != null) {
+            layoutParent.append(layoutChild);
         }
     }
 

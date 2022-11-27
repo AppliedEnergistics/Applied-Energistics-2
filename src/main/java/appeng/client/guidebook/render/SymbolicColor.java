@@ -8,8 +8,8 @@ public enum SymbolicColor {
     NAVBAR_BG_TOP(Colors.argb(255, 0, 0, 0), Colors.argb(255, 0, 0, 0)),
     NAVBAR_BG_BOTTOM(Colors.argb(127, 0, 0, 0), Colors.argb(127, 0, 0, 0)),
     NAVBAR_ROW_HOVER(Colors.argb(255, 33, 33, 33), Colors.argb(255, 33, 33, 33)),
-
-    NAVBAR_EXPAND_ARROW(Colors.argb(255, 238, 238, 238), Colors.argb(255, 238, 238, 238));
+    NAVBAR_EXPAND_ARROW(Colors.argb(255, 238, 238, 238), Colors.argb(255, 238, 238, 238)),
+    TABLE_BORDER(Colors.argb(255, 124, 124, 124), Colors.argb(255, 124, 124, 124));
 
     final int lightMode;
     final int darkMode;

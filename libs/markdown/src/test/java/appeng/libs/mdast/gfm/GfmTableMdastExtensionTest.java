@@ -7,7 +7,7 @@ import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import org.junit.jupiter.api.Test;
 
-class MdastGfmTableTest extends AbstractMdAstTest {
+class GfmTableMdastExtensionTest extends AbstractMdAstTest {
 
     private MdAstNode parse(String markdown) {
         return removePosition(parseWithPosition(markdown));
@@ -15,7 +15,7 @@ class MdastGfmTableTest extends AbstractMdAstTest {
 
     private MdAstNode parseWithPosition(String markdown) {
         var options = new MdastOptions();
-        options.withMdastExtension(MdastGfmTable.INSTANCE);
+        options.withMdastExtension(GfmTableMdastExtension.INSTANCE);
         options.withSyntaxExtension(GfmTableSyntax.INSTANCE);
         return MdAst.fromMarkdown(markdown, options);
     }

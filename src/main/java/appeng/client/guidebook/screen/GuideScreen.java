@@ -253,7 +253,7 @@ public class GuideScreen extends Screen {
         var underCursor = currentPage.getDocument().pick(x, y);
         if (underCursor != null) {
             // Iterate through content ancestors
-            for (var el = underCursor.content(); el != null; el = el.getParentSpan()) {
+            for (var el = underCursor.content(); el != null; el = el.getFlowParent()) {
                 if (el instanceof InteractiveElement interactiveEl) {
                     var result = invoker.apply(interactiveEl);
                     if (result.isPresent()) {

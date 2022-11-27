@@ -16,9 +16,9 @@ import appeng.client.guidebook.render.RenderContext;
 public class LytParagraph extends LytBlock implements LytFlowContainer {
     protected final FlowBuilder content = new FlowBuilder();
 
-    protected int paddingLeft = 5;
+    protected int paddingLeft;
     protected int paddingTop;
-    protected int paddingRight = 5;
+    protected int paddingRight;
     protected int paddingBottom;
 
     @Nullable
@@ -27,6 +27,7 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     @Override
     public void append(LytFlowContent child) {
         content.append(child);
+        child.setParent(this);
     }
 
     @Override
@@ -74,5 +75,37 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     @Override
     public Stream<LytRect> enumerateContentBounds(LytFlowContent content) {
         return this.content.enumerateContentBounds(content);
+    }
+
+    public int getPaddingLeft() {
+        return paddingLeft;
+    }
+
+    public void setPaddingLeft(int paddingLeft) {
+        this.paddingLeft = paddingLeft;
+    }
+
+    public int getPaddingTop() {
+        return paddingTop;
+    }
+
+    public void setPaddingTop(int paddingTop) {
+        this.paddingTop = paddingTop;
+    }
+
+    public int getPaddingRight() {
+        return paddingRight;
+    }
+
+    public void setPaddingRight(int paddingRight) {
+        this.paddingRight = paddingRight;
+    }
+
+    public int getPaddingBottom() {
+        return paddingBottom;
+    }
+
+    public void setPaddingBottom(int paddingBottom) {
+        this.paddingBottom = paddingBottom;
     }
 }
