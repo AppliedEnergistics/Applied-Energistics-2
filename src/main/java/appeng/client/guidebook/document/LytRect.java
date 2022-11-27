@@ -48,6 +48,10 @@ public record LytRect(int x, int y, int width, int height) {
         return new LytRect(x, y, width, height);
     }
 
+    public LytRect move(int x, int y) {
+        return new LytRect(this.x + x, this.y + y, width, height);
+    }
+
     public LytRect centerVerticallyIn(LytRect other) {
         var centerYOther = other.y + other.height / 2;
         return new LytRect(x, centerYOther - height / 2, width, height);

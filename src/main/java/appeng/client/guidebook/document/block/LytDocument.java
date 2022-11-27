@@ -76,12 +76,19 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         var contentY = 0;
         var contentHeight = 0;
 
+        LytBlock previousBlock = null;
         for (var block : blocks) {
-            contentY += block.getMarginTop();
+            // Margin-collapsing of adjacent paragraphs
+            if (previousBlock != null && previousBlock.getMarginBottom() > 0) {
+                contentY += Math.max(previousBlock.getMarginBottom(), block.getMarginTop()) - previousBlock.getMarginBottom();
+            } else {
+                contentY += block.getMarginTop();
+            }
             var blockWidth = Math.max(1, availableWidth - block.getMarginLeft() - block.getMarginRight());
             var bounds = block.layout(context, block.getMarginLeft(), contentY, blockWidth);
             contentY += bounds.height() + block.getMarginBottom();
             contentHeight = Math.max(contentHeight, bounds.bottom());
+            previousBlock = block;
         }
 
         return new Layout(availableWidth, contentHeight);

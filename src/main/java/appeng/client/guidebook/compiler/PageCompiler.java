@@ -160,6 +160,8 @@ public final class PageCompiler {
             } else if (child instanceof MdAstParagraph astParagraph) {
                 var paragraph = new LytParagraph();
                 compileFlowContext(astParagraph, paragraph);
+                paragraph.setMarginTop(5);
+                paragraph.setMarginBottom(5);
                 layoutChild = paragraph;
             } else if (child instanceof MdAstYamlFrontmatter) {
                 // This is handled by compile directly
