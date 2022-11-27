@@ -19,6 +19,7 @@
 !src/
 src/generated
 out
+build
 !/libs/
 !/guidebook
 

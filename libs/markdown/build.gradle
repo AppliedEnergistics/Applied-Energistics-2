@@ -2,9 +2,6 @@ plugins {
     id 'java-library'
 }
 
-group 'appeng'
-version '0.0.0'
-
 repositories {
     mavenCentral()
 }

@@ -161,21 +161,24 @@ dependencies {
     modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 }
 
-group = artifact_group
 archivesBaseName = artifact_basename
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
+allprojects {
+    group = artifact_group
 
-// ensure everything uses UTF-8 and not some random codepage chosen by gradle
-compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.deprecation = false
-    options.compilerArgs << "-Xmaxerrs" << "9999"
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    // ensure everything uses UTF-8 and not some random codepage chosen by gradle
+    compileJava.options.encoding = 'UTF-8'
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.deprecation = false
+        options.compilerArgs << "-Xmaxerrs" << "9999"
+    }
 }
 
 ///////////////////
