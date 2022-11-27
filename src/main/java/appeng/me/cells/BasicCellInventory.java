@@ -445,12 +445,9 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-        // To avoid long-overflow on the extracting callers side
-        var extractAmount = Math.min(Integer.MAX_VALUE, amount);
-
         var currentAmount = getCellItems().getLong(what);
         if (currentAmount > 0) {
-            if (extractAmount >= currentAmount) {
+            if (amount >= currentAmount) {
                 if (mode == Actionable.MODULATE) {
                     getCellItems().remove(what, currentAmount);
                     this.saveChanges();
@@ -459,11 +456,11 @@ public class BasicCellInventory implements StorageCell {
                 return currentAmount;
             } else {
                 if (mode == Actionable.MODULATE) {
-                    getCellItems().put(what, currentAmount - extractAmount);
+                    getCellItems().put(what, currentAmount - amount);
                     this.saveChanges();
                 }
 
-                return extractAmount;
+                return amount;
             }
         }
 
