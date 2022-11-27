@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.core.AppEng;
+import appeng.util.BootstrapMinecraft;
 
+@BootstrapMinecraft
 class PageCompilerTest {
     private Path guidebookFolder;
 

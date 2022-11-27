@@ -120,7 +120,7 @@ public final class GuideManager {
     }
 
     public boolean pageExists(ResourceLocation pageId) {
-        return developmentPages.containsKey(pageId) || pages.containsKey(pageId);
+        return developmentPages.containsKey(pageId) || pages != null && pages.containsKey(pageId);
     }
 
     class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>>
