@@ -1,10 +1,11 @@
 package appeng.client.guidebook.document;
 
+import net.minecraft.client.Minecraft;
+
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 import appeng.client.guidebook.style.TextStyle;
 import appeng.client.guidebook.style.WhiteSpaceMode;
-import net.minecraft.client.Minecraft;
 
 public class DefaultStyles {
 
@@ -17,8 +18,7 @@ public class DefaultStyles {
             false,
             Minecraft.UNIFORM_FONT,
             SymbolicColor.BODY_TEXT.ref(),
-            WhiteSpaceMode.NORMAL
-    );
+            WhiteSpaceMode.NORMAL);
 
     public static final TextStyle BODY_TEXT = TextStyle.builder()
             .font(Minecraft.UNIFORM_FONT)

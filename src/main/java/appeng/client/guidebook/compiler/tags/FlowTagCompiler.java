@@ -10,8 +10,8 @@ import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
 
 /**
- * Compiler base-class for tag compilers that compile flow content but allow the flow content to be used
- * in block context by wrapping it in a paragraph.
+ * Compiler base-class for tag compilers that compile flow content but allow the flow content to be used in block
+ * context by wrapping it in a paragraph.
  */
 public abstract class FlowTagCompiler implements TagCompiler {
     protected abstract void compile(PageCompiler compiler, LytFlowParent parent, MdxJsxElementFields el);

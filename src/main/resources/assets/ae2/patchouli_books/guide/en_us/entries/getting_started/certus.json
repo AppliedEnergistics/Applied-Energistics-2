@@ -3,7 +3,7 @@
   "category": "ae2:getting_started",
   "icon": "ae2:quartz_cluster",
   "sortnum": 40,
-  "pages" : [
+  "pages": [
     {
       "type": "patchouli:text",
       "text": "$(thing)Certus Quartz$() is a wondrous material found in $(l:ae2:getting_started/compass)Meteorites$(/l). It is grown similarly to $(item)Amethyst$(), though most of its $(l:ae2:getting_started/certus#budding)Budding blocks$(/l) appear to decay over time.$(br2)It is used in many $(thing)AE2$() recipes as a crafting ingredient, can be used to make $(l:ae2:equipment/quartz_tools)Iron-level tools$(/l), crushed into a $(item)Dust$(), used to decorate, and more."

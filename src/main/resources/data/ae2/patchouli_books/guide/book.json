@@ -2,7 +2,7 @@
   "version": 1,
   "name": "patchouli.ae2.guidebook_name",
   "landing_text": "patchouli.ae2.guidebook_landingtext",
-  "use_resource_pack": true, 
+  "use_resource_pack": true,
   "book_texture": "ae2:textures/patchouli/patchouli_gui.png",
   "filler_texture": "ae2:textures/patchouli/patchouli_filler.png",
   "model": "ae2:patchouli",

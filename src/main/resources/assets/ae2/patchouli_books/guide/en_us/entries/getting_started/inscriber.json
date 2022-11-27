@@ -19,9 +19,7 @@
     },
     {
       "type": "patchouli:image",
-      "images": [
-        "ae2:textures/patchouli/images/inscriber_setup.png"
-      ],
+      "images": ["ae2:textures/patchouli/images/inscriber_setup.png"],
       "border": true,
       "title": "Example Semi-Automation"
     },

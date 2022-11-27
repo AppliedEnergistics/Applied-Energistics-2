@@ -1,10 +1,11 @@
 package appeng.client.guidebook.document.block;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
-import net.minecraft.client.renderer.MultiBufferSource;
 
 public class LytThematicBreak extends LytBlock {
     @Override

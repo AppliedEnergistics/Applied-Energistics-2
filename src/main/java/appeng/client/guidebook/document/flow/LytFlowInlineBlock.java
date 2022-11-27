@@ -1,5 +1,9 @@
 package appeng.client.guidebook.document.flow;
 
+import java.util.Optional;
+
+import net.minecraft.client.Minecraft;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
@@ -7,9 +11,6 @@ import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.layout.SimpleLayoutContext;
 import appeng.client.guidebook.screen.GuideScreen;
-import net.minecraft.client.Minecraft;
-
-import java.util.Optional;
 
 public class LytFlowInlineBlock extends LytFlowContent implements InteractiveElement {
 

@@ -1,8 +1,8 @@
 package appeng.client.guidebook.document.interaction;
 
-import appeng.client.guidebook.screen.GuideScreen;
-
 import java.util.Optional;
+
+import appeng.client.guidebook.screen.GuideScreen;
 
 public interface InteractiveElement {
     default boolean mouseClicked(GuideScreen screen, int x, int y, int button) {

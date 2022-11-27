@@ -1,5 +1,21 @@
 package appeng.client.guidebook.screen;
 
+import java.util.Optional;
+import java.util.function.Function;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
+import vazkii.patchouli.common.book.BookRegistry;
+
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
@@ -15,21 +31,6 @@ import appeng.client.guidebook.layout.SimpleLayoutContext;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
-import appeng.core.AppEng;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-import vazkii.patchouli.api.PatchouliAPI;
-import vazkii.patchouli.client.book.ClientBookRegistry;
-import vazkii.patchouli.common.book.BookRegistry;
-
-import java.util.Optional;
-import java.util.function.Function;
 
 public class GuideScreen extends Screen {
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
@@ -60,8 +61,7 @@ public class GuideScreen extends Screen {
         scrollbar.move(
                 docRect.right(),
                 docRect.y(),
-                docRect.height()
-        );
+                docRect.height());
 
         this.navbar = new GuideNavBar(this);
         addRenderableWidget(this.navbar);
@@ -251,7 +251,8 @@ public class GuideScreen extends Screen {
         var document = currentPage.getDocument();
 
         var mouseHandler = minecraft.mouseHandler;
-        var scale = (double) minecraft.getWindow().getGuiScaledWidth() / (double) minecraft.getWindow().getScreenWidth();
+        var scale = (double) minecraft.getWindow().getGuiScaledWidth()
+                / (double) minecraft.getWindow().getScreenWidth();
         var x = mouseHandler.xpos() * scale;
         var y = mouseHandler.ypos() * scale;
 
@@ -379,8 +380,7 @@ public class GuideScreen extends Screen {
         var docViewport = getDocumentViewport();
         var context = new SimpleLayoutContext(
                 minecraft.font,
-                docViewport
-        );
+                docViewport);
 
         // Build layout if needed
         var document = currentPage.getDocument();

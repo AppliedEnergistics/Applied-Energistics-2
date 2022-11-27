@@ -1,18 +1,18 @@
 package appeng.client.guidebook.compiler;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import java.util.Map;
+
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
-import java.util.Map;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 public record Frontmatter(
         FrontmatterNavigation navigationEntry,
-        Map<String, Object> additionalProperties
-) {
+        Map<String, Object> additionalProperties) {
     public static Frontmatter parse(ResourceLocation pageId, String yamlText) {
         var yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
 
@@ -20,7 +20,7 @@ public record Frontmatter(
         Map<String, Object> data = yaml.load(yamlText);
         var navigationObj = data.remove("navigation");
         if (navigationObj != null) {
-            if (!(navigationObj instanceof Map<?, ?> navigationMap)) {
+            if (!(navigationObj instanceof Map<?, ?>navigationMap)) {
                 throw new IllegalArgumentException("The navigation key in the frontmatter has to be a map");
             }
 
@@ -51,8 +51,7 @@ public record Frontmatter(
 
         return new Frontmatter(
                 navigation,
-                Map.copyOf(data)
-        );
+                Map.copyOf(data));
     }
 
     @Nullable

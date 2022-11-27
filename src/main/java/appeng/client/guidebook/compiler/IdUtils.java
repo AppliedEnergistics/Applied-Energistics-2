@@ -1,8 +1,8 @@
 package appeng.client.guidebook.compiler;
 
-import net.minecraft.resources.ResourceLocation;
-
 import java.net.URI;
+
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Helper to resolve shorthand and relative IDs found in markdown pages.
@@ -20,10 +20,9 @@ public final class IdUtils {
     }
 
     /**
-     * Supports relative resource locations such as:
-     * ./somepath, which would resolve relative to a given anchor location.
-     * Relative locations must not be namespaced since we would otherwise run into the
-     * problem if namespaced locations potentially having a different namespace than the anchor.
+     * Supports relative resource locations such as: ./somepath, which would resolve relative to a given anchor
+     * location. Relative locations must not be namespaced since we would otherwise run into the problem if namespaced
+     * locations potentially having a different namespace than the anchor.
      */
     public static ResourceLocation resolveLink(String idText, ResourceLocation anchor) {
         if (!idText.contains(":")) {

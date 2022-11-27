@@ -1,18 +1,18 @@
 package appeng.items.tools;
 
-import appeng.core.AppEng;
-import appeng.items.AEBaseItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
 import vazkii.patchouli.api.PatchouliAPI;
-import vazkii.patchouli.common.base.PatchouliSounds;
+
+import appeng.core.AppEng;
+import appeng.items.AEBaseItem;
 
 public class TabletItem extends AEBaseItem {
     public static final ResourceLocation BOOK_ID = AppEng.makeId("guide");

@@ -1,13 +1,14 @@
 package appeng.client.guidebook.document.flow;
 
+import java.util.Optional;
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.client.guidebook.screen.GuideScreen;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
-import java.util.function.Consumer;
 
 public class LytFlowLink extends LytFlowSpan implements InteractiveElement {
     private String title;

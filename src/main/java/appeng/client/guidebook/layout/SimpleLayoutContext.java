@@ -1,16 +1,17 @@
 package appeng.client.guidebook.layout;
 
+import net.minecraft.client.gui.Font;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.style.ResolvedTextStyle;
-import net.minecraft.client.gui.Font;
 
 public record SimpleLayoutContext(
         Font font,
-        @Override LytRect viewport
-) implements LayoutContext {
+        @Override LytRect viewport) implements LayoutContext {
     @Override
     public float getAdvance(int codePoint, ResolvedTextStyle style) {
-        return font.getFontSet(style.font()).getGlyphInfo(codePoint, false).getAdvance(Boolean.TRUE.equals(style.bold()));
+        return font.getFontSet(style.font()).getGlyphInfo(codePoint, false)
+                .getAdvance(Boolean.TRUE.equals(style.bold()));
     }
 
     @Override

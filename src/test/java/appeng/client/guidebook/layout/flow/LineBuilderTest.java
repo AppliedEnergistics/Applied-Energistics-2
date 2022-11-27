@@ -1,16 +1,17 @@
 package appeng.client.guidebook.layout.flow;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class LineBuilderTest {
 
@@ -20,8 +21,7 @@ class LineBuilderTest {
 
         assertThat(lines).extracting(this::getTextContent).containsExactly(
                 "A ",
-                "BC"
-        );
+                "BC");
     }
 
     /**
@@ -33,8 +33,7 @@ class LineBuilderTest {
 
         assertThat(lines).extracting(this::getTextContent).containsExactly(
                 "A",
-                "BC"
-        );
+                "BC");
     }
 
     /**
@@ -46,8 +45,7 @@ class LineBuilderTest {
 
         assertThat(lines).extracting(this::getTextContent).containsExactly(
                 "A",
-                "B"
-        );
+                "B");
     }
 
     /**
@@ -58,8 +56,7 @@ class LineBuilderTest {
         var lines = getLines(3, "A  B");
 
         assertThat(lines).extracting(this::getTextContent).containsExactly(
-                "A B"
-        );
+                "A B");
     }
 
     @NotNull

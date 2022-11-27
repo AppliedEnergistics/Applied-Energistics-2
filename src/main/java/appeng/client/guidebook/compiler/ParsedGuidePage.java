@@ -1,7 +1,8 @@
 package appeng.client.guidebook.compiler;
 
-import appeng.libs.mdast.model.MdAstRoot;
 import net.minecraft.resources.ResourceLocation;
+
+import appeng.libs.mdast.model.MdAstRoot;
 
 public class ParsedGuidePage {
     final String sourcePack;
@@ -10,7 +11,8 @@ public class ParsedGuidePage {
     final MdAstRoot astRoot;
     final Frontmatter frontmatter;
 
-    public ParsedGuidePage(String sourcePack, ResourceLocation id, String source, MdAstRoot astRoot, Frontmatter frontmatter) {
+    public ParsedGuidePage(String sourcePack, ResourceLocation id, String source, MdAstRoot astRoot,
+            Frontmatter frontmatter) {
         this.sourcePack = sourcePack;
         this.id = id;
         this.source = source;

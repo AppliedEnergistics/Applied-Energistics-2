@@ -1,13 +1,13 @@
 package appeng.client.guidebook.document.interaction;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class TextTooltip implements GuideTooltip {
     private final List<ClientTooltipComponent> lines;

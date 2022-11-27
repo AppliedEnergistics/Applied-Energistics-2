@@ -1,5 +1,19 @@
 package appeng.client.guidebook.screen;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
+
 import appeng.client.Point;
 import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.document.LytRect;
@@ -11,17 +25,6 @@ import appeng.client.guidebook.navigation.NavigationTree;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuideNavBar extends AbstractWidget {
     private static final int WIDTH_CLOSED = 15;
@@ -134,7 +137,8 @@ public class GuideNavBar extends AbstractWidget {
         }
 
         if (state == State.CLOSED) {
-            renderContext.fillGradientHorizontal(x, y, width, height, SymbolicColor.NAVBAR_BG_TOP.ref(), SymbolicColor.NAVBAR_BG_BOTTOM.ref());
+            renderContext.fillGradientHorizontal(x, y, width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
+                    SymbolicColor.NAVBAR_BG_BOTTOM.ref());
 
             var p1 = new Vec2(width - 4, height / 2f);
             var p2 = new Vec2(4, height / 2f - 5);
@@ -142,7 +146,8 @@ public class GuideNavBar extends AbstractWidget {
 
             renderContext.fillTriangle(p1, p2, p3, SymbolicColor.NAVBAR_EXPAND_ARROW.ref());
         } else {
-            renderContext.fillGradientVertical(x, y, width, height, SymbolicColor.NAVBAR_BG_TOP.ref(), SymbolicColor.NAVBAR_BG_BOTTOM.ref());
+            renderContext.fillGradientVertical(x, y, width, height, SymbolicColor.NAVBAR_BG_TOP.ref(),
+                    SymbolicColor.NAVBAR_BG_BOTTOM.ref());
         }
 
         if (state != State.CLOSED) {
@@ -196,7 +201,8 @@ public class GuideNavBar extends AbstractWidget {
 
                 var icon = row.node.icon();
                 if (!icon.isEmpty()) {
-                    renderContext.renderItem(icon, row.paragraph.getBounds().x() - 9, row.paragraph.getBounds().y(), 8, 8);
+                    renderContext.renderItem(icon, row.paragraph.getBounds().x() - 9, row.paragraph.getBounds().y(), 8,
+                            8);
                 }
             }
 
@@ -257,8 +263,7 @@ public class GuideNavBar extends AbstractWidget {
     private void updateLayout() {
         var context = new SimpleLayoutContext(
                 Minecraft.getInstance().font,
-                new LytRect(0, 0, WIDTH_OPEN, height)
-        );
+                new LytRect(0, 0, WIDTH_OPEN, height));
 
         var currentY = 0;
         for (var row : this.rows) {

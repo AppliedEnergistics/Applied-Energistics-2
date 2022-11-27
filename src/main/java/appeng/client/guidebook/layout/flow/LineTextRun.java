@@ -1,8 +1,9 @@
 package appeng.client.guidebook.layout.flow;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
-import net.minecraft.client.renderer.MultiBufferSource;
 
 public class LineTextRun extends LineElement {
     final String text;

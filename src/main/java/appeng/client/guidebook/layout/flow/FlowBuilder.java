@@ -1,17 +1,19 @@
 package appeng.client.guidebook.layout.flow;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
-import net.minecraft.client.renderer.MultiBufferSource;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class FlowBuilder {
     private final List<Line> lines = new ArrayList<>();

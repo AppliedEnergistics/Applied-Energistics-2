@@ -1,18 +1,5 @@
 package appeng.client.guidebook;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.core.AppEng;
-import com.google.common.base.Stopwatch;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.methvin.watcher.DirectoryChangeEvent;
-import io.methvin.watcher.DirectoryChangeListener;
-import io.methvin.watcher.DirectoryWatcher;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -28,6 +15,23 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.google.common.base.Stopwatch;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import io.methvin.watcher.DirectoryChangeEvent;
+import io.methvin.watcher.DirectoryChangeListener;
+import io.methvin.watcher.DirectoryWatcher;
+
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.core.AppEng;
 
 class GuideSourceWatcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideSourceWatcher.class);

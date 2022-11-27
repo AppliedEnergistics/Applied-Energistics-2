@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import appeng.items.tools.TabletItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -63,6 +62,7 @@ import appeng.items.storage.ViewCellItem;
 import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
+import appeng.items.tools.TabletItem;
 import appeng.items.tools.fluix.FluixAxeItem;
 import appeng.items.tools.fluix.FluixHoeItem;
 import appeng.items.tools.fluix.FluixPickaxeItem;

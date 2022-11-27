@@ -1,5 +1,10 @@
 package appeng.client.guidebook.layout.flow;
 
+import java.util.List;
+import java.util.function.Consumer;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
@@ -8,10 +13,6 @@ import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.function.Consumer;
 
 class LineBuilder implements Consumer<LytFlowContent> {
     private final LayoutContext context;
@@ -93,8 +94,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
                     innerX,
                     innerY,
                     Math.round(width),
-                    context.getLineHeight(style)
-            );
+                    context.getLineHeight(style));
             appendToOpenLine(el);
             if (endLine) {
                 closeLine();
@@ -102,7 +102,8 @@ class LineBuilder implements Consumer<LytFlowContent> {
         });
     }
 
-    private void iterateRuns(CharSequence text, ResolvedTextStyle style, char lastChar, float currentLineMaxWidth, float maxWidth, LineConsumer consumer) {
+    private void iterateRuns(CharSequence text, ResolvedTextStyle style, char lastChar, float currentLineMaxWidth,
+            float maxWidth, LineConsumer consumer) {
         int lastBreakOpportunity = -1;
         float widthAtBreakOpportunity = 0;
         float remainingSpace = currentLineMaxWidth;

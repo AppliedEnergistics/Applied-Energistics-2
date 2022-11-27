@@ -1,9 +1,9 @@
 package appeng.client.guidebook.navigation;
 
+import java.util.List;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 public record NavigationNode(
         ResourceLocation pageId,
@@ -11,6 +11,5 @@ public record NavigationNode(
         ItemStack icon,
         List<NavigationNode> children,
         int position,
-        boolean hasPage
-) {
+        boolean hasPage) {
 }

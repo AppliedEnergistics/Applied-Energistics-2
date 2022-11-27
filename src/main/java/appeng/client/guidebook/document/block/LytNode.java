@@ -1,11 +1,12 @@
 package appeng.client.guidebook.document.block;
 
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.document.flow.LytFlowContent;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.flow.LytFlowContent;
 
 public abstract class LytNode {
     @Nullable

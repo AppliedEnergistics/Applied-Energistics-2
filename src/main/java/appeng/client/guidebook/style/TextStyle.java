@@ -1,28 +1,21 @@
 package appeng.client.guidebook.style;
 
-import appeng.client.guidebook.render.ColorRef;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.client.guidebook.render.ColorRef;
+
 public record TextStyle(
-        @Nullable
-        Float fontScale,
-        @Nullable
-        Boolean bold,
-        @Nullable
-        Boolean italic,
-        @Nullable
-        Boolean underlined,
-        @Nullable
-        Boolean strikethrough,
-        @Nullable
-        Boolean obfuscated,
-        @Nullable
-        ResourceLocation font,
-        @Nullable
-        ColorRef color,
-        @Nullable
-        WhiteSpaceMode whiteSpace) {
+        @Nullable Float fontScale,
+        @Nullable Boolean bold,
+        @Nullable Boolean italic,
+        @Nullable Boolean underlined,
+        @Nullable Boolean strikethrough,
+        @Nullable Boolean obfuscated,
+        @Nullable ResourceLocation font,
+        @Nullable ColorRef color,
+        @Nullable WhiteSpaceMode whiteSpace) {
 
     public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null, null);
 
@@ -45,8 +38,7 @@ public record TextStyle(
                 obfuscated,
                 font,
                 color,
-                whiteSpace
-        );
+                whiteSpace);
     }
 
     public Builder toBuilder() {
@@ -117,7 +109,6 @@ public record TextStyle(
             this.color = color;
             return this;
         }
-
 
         public Builder whiteSpace(WhiteSpaceMode whiteSpace) {
             this.whiteSpace = whiteSpace;

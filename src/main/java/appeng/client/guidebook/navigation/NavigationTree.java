@@ -1,14 +1,5 @@
 package appeng.client.guidebook.navigation;
 
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,6 +7,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 public class NavigationTree {
 
@@ -58,11 +61,9 @@ public class NavigationTree {
             pagesWithChildren.compute(
                     page.getId(),
                     (resourceLocation, previousPair) -> {
-                        return previousPair != null ?
-                                Pair.of(page, previousPair.getRight())
+                        return previousPair != null ? Pair.of(page, previousPair.getRight())
                                 : Pair.of(page, new ArrayList<>());
-                    }
-            );
+                    });
 
             // Add this page to the collected children of the parent page (if any)
             var parentId = navigationEntry.parent();
@@ -77,8 +78,7 @@ public class NavigationTree {
                                 children.add(page);
                                 return Pair.of(null, children);
                             }
-                        }
-                );
+                        });
             }
         }
 
@@ -96,10 +96,10 @@ public class NavigationTree {
     }
 
     private static NavigationNode createNode(HashMap<ResourceLocation, NavigationNode> nodeIndex,
-                                             ArrayList<NavigationNode> rootNodes,
-                                             Map<ResourceLocation, Pair<ParsedGuidePage, List<ParsedGuidePage>>> pagesWithChildren,
-                                             ResourceLocation pageId,
-                                             Pair<ParsedGuidePage, List<ParsedGuidePage>> entry) {
+            ArrayList<NavigationNode> rootNodes,
+            Map<ResourceLocation, Pair<ParsedGuidePage, List<ParsedGuidePage>>> pagesWithChildren,
+            ResourceLocation pageId,
+            Pair<ParsedGuidePage, List<ParsedGuidePage>> entry) {
         var page = entry.getKey();
         var children = entry.getRight();
 
@@ -136,8 +136,7 @@ public class NavigationTree {
                 icon,
                 childNodes,
                 navigationEntry.position(),
-                true
-        );
+                true);
         nodeIndex.put(page.getId(), node);
         if (navigationEntry.parent() == null) {
             rootNodes.add(node);

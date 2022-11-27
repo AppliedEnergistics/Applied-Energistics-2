@@ -1,10 +1,12 @@
 package appeng.client.guidebook.layout.flow;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.render.RenderContext;
-import net.minecraft.client.renderer.MultiBufferSource;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class LineElement {
     /**

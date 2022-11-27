@@ -2,8 +2,6 @@ package appeng.client.guidebook.layout;
 
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.style.ResolvedTextStyle;
-import appeng.client.guidebook.style.TextStyle;
-import net.minecraft.network.chat.Style;
 
 public interface LayoutContext {
     LytRect viewport();

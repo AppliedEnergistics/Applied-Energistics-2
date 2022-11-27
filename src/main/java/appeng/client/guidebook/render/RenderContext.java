@@ -1,11 +1,9 @@
 package appeng.client.guidebook.render;
 
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.client.guidebook.style.ResolvedTextStyle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
@@ -13,11 +11,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
-import java.util.function.Supplier;
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.client.guidebook.style.ResolvedTextStyle;
 
 public interface RenderContext {
 
@@ -31,7 +30,8 @@ public interface RenderContext {
 
     void fillRect(LytRect rect, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft);
 
-    void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft);
+    void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight,
+            ColorRef bottomRight, ColorRef bottomLeft);
 
     default void fillTexturedRect(LytRect rect, GuidePageTexture texture) {
         var color = new ColorRef(-1);

@@ -1,16 +1,15 @@
 package appeng.client.guidebook.document.flow;
 
-import appeng.client.guidebook.document.DefaultStyles;
-import appeng.client.guidebook.style.ResolvedTextStyle;
-import appeng.client.guidebook.style.TextStyle;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import appeng.client.guidebook.document.DefaultStyles;
+import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextStyle;
+
 /**
- * Attaches properties to a span of {@link LytFlowContent}, such as links
- * or formatting.
+ * Attaches properties to a span of {@link LytFlowContent}, such as links or formatting.
  */
 public class LytFlowSpan extends LytFlowContent implements LytFlowParent {
 

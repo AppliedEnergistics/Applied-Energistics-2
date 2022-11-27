@@ -1,26 +1,29 @@
 package appeng.client.guidebook.render;
 
-import appeng.client.guidebook.document.LytSize;
-import appeng.core.AppEng;
-import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.stb.STBImage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.NativeImage;
+
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.stb.STBImage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.client.guidebook.document.LytSize;
+import appeng.core.AppEng;
+
 /**
- * A texture that is used in the context of a single guide page and is automatically cleared
- * from texture memory when the guide page it was last used on is closed.
+ * A texture that is used in the context of a single guide page and is automatically cleared from texture memory when
+ * the guide page it was last used on is closed.
  */
 public class GuidePageTexture {
 
@@ -52,7 +55,8 @@ public class GuidePageTexture {
             var yOut = new int[1];
             var compOut = new int[1];
             if (!STBImage.stbi_info_from_memory(this.imageContent, xOut, yOut, compOut)) {
-                throw new IllegalArgumentException("Couldn't determine size of image " + id + ": " + STBImage.stbi_failure_reason());
+                throw new IllegalArgumentException(
+                        "Couldn't determine size of image " + id + ": " + STBImage.stbi_failure_reason());
             }
 
             // Try to determine the size

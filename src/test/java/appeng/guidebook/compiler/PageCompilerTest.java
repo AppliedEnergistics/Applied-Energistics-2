@@ -1,15 +1,16 @@
 package appeng.guidebook.compiler;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.core.AppEng;
-import appeng.client.guidebook.GuidePage;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import appeng.client.guidebook.GuidePage;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.core.AppEng;
 
 class PageCompilerTest {
     private Path guidebookFolder;

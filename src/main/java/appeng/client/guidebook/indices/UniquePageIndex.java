@@ -1,17 +1,20 @@
 package appeng.client.guidebook.indices;
 
-import appeng.client.guidebook.GuidePageChange;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.client.guidebook.GuidePageChange;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 /**
  * Maintains an index for any given page using a mapping function for keys and values of the index.
@@ -104,6 +107,6 @@ public class UniquePageIndex<K, V> implements PageIndex {
         Iterable<Pair<K, V>> getEntry(ParsedGuidePage page);
     }
 
-    private record Record<V>(ResourceLocation pageId, V value) {
+    private record Record<V> (ResourceLocation pageId, V value) {
     }
 }

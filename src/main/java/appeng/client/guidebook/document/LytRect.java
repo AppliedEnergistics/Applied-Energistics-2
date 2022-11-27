@@ -1,6 +1,7 @@
 package appeng.client.guidebook.document;
 
 public record LytRect(int x, int y, int width, int height) {
+
     private static final LytRect EMPTY = new LytRect(0, 0, 0, 0);
 
     public static LytRect empty() {
@@ -24,8 +25,7 @@ public record LytRect(int x, int y, int width, int height) {
                 x + left,
                 y + top,
                 Math.max(width - left - right, 0),
-                Math.max(height - top - bottom, 0)
-        );
+                Math.max(height - top - bottom, 0));
     }
 
     public LytRect expand(int amount) {
@@ -37,8 +37,7 @@ public record LytRect(int x, int y, int width, int height) {
                 x - left,
                 y - top,
                 Math.max(width + left + right, 0),
-                Math.max(height + top + bottom, 0)
-        );
+                Math.max(height + top + bottom, 0));
     }
 
     public LytRect withWidth(int width) {
@@ -69,8 +68,7 @@ public record LytRect(int x, int y, int width, int height) {
         return new LytRect(
                 x, y,
                 right - x,
-                bottom - y
-        );
+                bottom - y);
     }
 
     public boolean contains(int x, int y) {

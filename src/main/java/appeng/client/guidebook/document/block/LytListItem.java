@@ -1,12 +1,13 @@
 package appeng.client.guidebook.document.block;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.client.guidebook.style.ResolvedTextStyle;
-import net.minecraft.client.renderer.MultiBufferSource;
 
 public class LytListItem extends LytVBox {
 
@@ -76,8 +77,7 @@ public class LytListItem extends LytVBox {
                     bounds.y() + 4,
                     2,
                     2,
-                    SymbolicColor.BODY_TEXT.ref()
-            );
+                    SymbolicColor.BODY_TEXT.ref());
         }
 
         super.render(context);

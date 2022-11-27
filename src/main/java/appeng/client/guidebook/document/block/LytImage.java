@@ -1,5 +1,15 @@
 package appeng.client.guidebook.document.block;
 
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
@@ -7,14 +17,6 @@ import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.RenderContext;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 public class LytImage extends LytBlock implements InteractiveElement {
 
