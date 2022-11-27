@@ -74,7 +74,10 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
 
     @Override
     public void onReady() {
-        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+        var validSides = EnumSet.allOf(Direction.class);
+        validSides.remove(this.getForward());
+
+        this.getMainNode().setExposedOnSides(validSides);
         super.onReady();
     }
 
@@ -108,8 +111,12 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     @Override
     public void setOrientation(Direction inForward, Direction inUp) {
         super.setOrientation(inForward, inUp);
-        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
-        this.setPowerSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
+
+        var validSides = EnumSet.allOf(Direction.class);
+        validSides.remove(this.getForward());
+
+        this.getMainNode().setExposedOnSides(validSides);
+        this.setPowerSides(validSides);
     }
 
     @Override
