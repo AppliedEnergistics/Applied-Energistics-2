@@ -22,6 +22,7 @@ import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.render.ColorRef;
+import appeng.client.guidebook.style.TextAlignment;
 import appeng.client.guidebook.style.WhiteSpaceMode;
 import appeng.libs.mdast.MdAst;
 import appeng.libs.mdast.MdAstYamlFrontmatter;
@@ -29,6 +30,7 @@ import appeng.libs.mdast.MdastOptions;
 import appeng.libs.mdast.YamlFrontmatterExtension;
 import appeng.libs.mdast.gfm.GfmTableMdastExtension;
 import appeng.libs.mdast.gfm.model.GfmTable;
+import appeng.libs.mdast.gfm.model.GfmTableCell;
 import appeng.libs.mdast.mdx.MdxMdastExtension;
 import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
@@ -50,6 +52,7 @@ import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
+import appeng.libs.micromark.extensions.gfm.Align;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
@@ -59,6 +62,7 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +70,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -229,9 +234,19 @@ public final class PageCompiler {
                 row.modifyStyle(style -> style.bold(true));
                 firstRow = false;
             }
-            for (var astCell : astRow.children()) {
+
+            var astCells = astRow.children();
+            for (int i = 0; i < astCells.size(); i++) {
                 var cell = row.appendCell();
-                compileBlockContext(astCell, cell);
+                // Apply alignment
+                if (astTable.align != null && i < astTable.align.size()) {
+                    switch (astTable.align.get(i)) {
+                        case CENTER -> cell.modifyStyle(style -> style.alignment(TextAlignment.CENTER));
+                        case RIGHT -> cell.modifyStyle(style -> style.alignment(TextAlignment.RIGHT));
+                    }
+                }
+
+                compileBlockContext(astCells.get(i), cell);
             }
         }
 
@@ -343,18 +358,20 @@ public final class PageCompiler {
     @NotNull
     private LytImage compileImage(MdAstImage astImage) {
         var image = new LytImage();
+        image.setTitle(astImage.title);
+        image.setAlt(astImage.alt);
         try {
             var imageId = IdUtils.resolveLink(astImage.url, id);
             var imageContent = assetLoader.apply(imageId);
             if (imageContent == null) {
                 LOGGER.error("Couldn't find image {}", astImage.url);
+                image.setTitle("Missing image: " + astImage.url);
             }
             image.setImage(imageId, imageContent);
         } catch (ResourceLocationException e) {
             LOGGER.error("Invalid image id: {}", astImage.url);
+            image.setTitle("Invalid image URL: " + astImage.url);
         }
-        image.setTitle(astImage.title);
-        image.setAlt(astImage.alt);
         return image;
     }
 

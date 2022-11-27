@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import appeng.client.guidebook.style.Styleable;
+import appeng.client.guidebook.style.TextAlignment;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,10 +29,9 @@ public class FlowBuilder {
         rootSpan.append(content);
     }
 
-    public LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
-
+    public LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth, TextAlignment alignment) {
         lines.clear();
-        var lineBuilder = new LineBuilder(context, x, y, availableWidth, lines);
+        var lineBuilder = new LineBuilder(context, x, y, availableWidth, lines, alignment);
         visitInDocumentOrder(rootSpan, lineBuilder);
         lineBuilder.end();
 

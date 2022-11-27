@@ -1,10 +1,5 @@
 package appeng.client.guidebook.layout.flow;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import org.jetbrains.annotations.Nullable;
-
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
@@ -13,6 +8,11 @@ import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextAlignment;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 class LineBuilder implements Consumer<LytFlowContent> {
     private final LayoutContext context;
@@ -24,8 +24,10 @@ class LineBuilder implements Consumer<LytFlowContent> {
     private int remainingLineWidth;
     @Nullable
     private LineElement openLineElement;
+    private final TextAlignment alignment;
 
-    public LineBuilder(LayoutContext context, int x, int y, int availableWidth, List<Line> lines) {
+    public LineBuilder(LayoutContext context, int x, int y, int availableWidth, List<Line> lines, TextAlignment alignment) {
+        this.alignment = alignment;
         this.context = context;
         leftEdge = x;
         innerX = leftEdge;
@@ -105,7 +107,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     private void iterateRuns(CharSequence text, ResolvedTextStyle style, char lastChar, float currentLineMaxWidth,
-            float maxWidth, LineConsumer consumer) {
+                             float maxWidth, LineConsumer consumer) {
         int lastBreakOpportunity = -1;
         float widthAtBreakOpportunity = 0;
         float remainingSpace = currentLineMaxWidth;
@@ -208,6 +210,20 @@ class LineBuilder implements Consumer<LytFlowContent> {
         var lineBounds = openLineElement.bounds;
         for (var l = openLineElement.next; l != null; l = l.next) {
             lineBounds = LytRect.union(lineBounds, l.bounds);
+        }
+
+        // Apply alignment
+        int xTranslation = 0;
+        if (alignment == TextAlignment.RIGHT) {
+            xTranslation = lineWidth - lineBounds.width();
+        } else if (alignment == TextAlignment.CENTER) {
+            xTranslation = (lineWidth - lineBounds.width()) / 2;
+        }
+        if (xTranslation != 0) {
+            lineBounds = lineBounds.move(xTranslation, 0);
+            for (var el = openLineElement; el != null; el = el.next) {
+                el.bounds = el.bounds.move(xTranslation, 0);
+            }
         }
 
         var line = new Line(lineBounds, openLineElement);

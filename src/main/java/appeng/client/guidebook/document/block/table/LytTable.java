@@ -109,7 +109,7 @@ public class LytTable extends LytBlock {
 
     public LytTableColumn getOrCreateColumn(int index) {
         while (index >= columns.size()) {
-            columns.add(new LytTableColumn(columns.size()));
+            columns.add(new LytTableColumn());
         }
         return columns.get(index);
     }

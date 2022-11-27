@@ -1,17 +1,15 @@
 package appeng.client.guidebook.document.block;
 
-import java.util.stream.Stream;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.renderer.MultiBufferSource;
-
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.flow.FlowBuilder;
 import appeng.client.guidebook.render.RenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.stream.Stream;
 
 public class LytParagraph extends LytBlock implements LytFlowContainer {
     protected final FlowBuilder content = new FlowBuilder();
@@ -37,7 +35,9 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
         availableWidth -= paddingLeft + paddingRight;
         y += paddingTop;
 
-        var bounds = content.computeLayout(context, x, y, availableWidth);
+        var style = resolveStyle();
+
+        var bounds = content.computeLayout(context, x, y, availableWidth, style.alignment());
         if (paddingBottom != 0) {
             return bounds.withHeight(bounds.height() + paddingBottom);
         }

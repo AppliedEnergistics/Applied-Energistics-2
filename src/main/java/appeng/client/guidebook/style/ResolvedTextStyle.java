@@ -13,5 +13,6 @@ public record ResolvedTextStyle(
         boolean obfuscated,
         ResourceLocation font,
         ColorRef color,
-        WhiteSpaceMode whiteSpace) {
+        WhiteSpaceMode whiteSpace,
+        TextAlignment alignment) {
 }

@@ -63,7 +63,7 @@ class LineBuilderTest {
     private static ArrayList<Line> getLines(int charsPerLine, String... textChunks) {
         var lines = new ArrayList<Line>();
         var context = new MockLayoutContext();
-        var lineBuilder = new LineBuilder(context, 0, 0, charsPerLine * 5, lines);
+        var lineBuilder = new LineBuilder(context, 0, 0, charsPerLine * 5, lines, alignment);
 
         for (String textChunk : textChunks) {
             var flowContent = new LytFlowText();

@@ -76,21 +76,21 @@ a rough estimate of their cost.
 
 ### Storage Cell Contents Vs Cost
 
-| Cell                                    | Bytes  | Types | Byte/Type | C-Quartz | N-Quartz | Gold | Diamonds |
-| --------------------------------------- | ------ | ----- | --------- | -------- | -------- | ---- | -------- |
-| <ItemLink id="item_storage_cell_1k" />  | 1,024  | 63    | 8         | 5        | 5        | 1    | 0        |
-| <ItemLink id="item_storage_cell_4k" />  | 4,096  | 63    | 32        | 17       | 5        | 3    | 0        |
-| <ItemLink id="item_storage_cell_16k" /> | 16,384 | 63    | 128       | 51       | 10       | 9    | 1        |
-| <ItemLink id="item_storage_cell_64k" /> | 65,536 | 63    | 512       | 153      | 20       | 27   | 4        |
+| Cell                                    |  Bytes | Types | Byte/Type | C-Quartz | N-Quartz | Gold | Diamonds |
+|-----------------------------------------|-------:|------:|----------:|---------:|---------:|-----:|---------:|
+| <ItemLink id="item_storage_cell_1k" />  |  1,024 |    63 |         8 |        5 |        5 |    1 |        0 |
+| <ItemLink id="item_storage_cell_4k" />  |  4,096 |    63 |        32 |       17 |        5 |    3 |        0 |
+| <ItemLink id="item_storage_cell_16k" /> | 16,384 |    63 |       128 |       51 |       10 |    9 |        1 |
+| <ItemLink id="item_storage_cell_64k" /> | 65,536 |    63 |       512 |      153 |       20 |   27 |        4 |
 
 ### Storage Capacity with Varying Type Count
 
 | Cell                                    | Stacks of items With 1 Item In Cell | Stacks of items With 63 Items in Cell |
-| --------------------------------------- | ----------------------------------- | ------------------------------------- |
-| <ItemLink id="item_storage_cell_1k" />  | 127                                 | 65                                    |
-| <ItemLink id="item_storage_cell_4k" />  | 508                                 | 260                                   |
-| <ItemLink id="item_storage_cell_16k" /> | 2,032                               | 1,040                                 |
-| <ItemLink id="item_storage_cell_64k" /> | 8,128                               | 4,160                                 |
+|-----------------------------------------|------------------------------------:|--------------------------------------:|
+| <ItemLink id="item_storage_cell_1k" />  |                                 127 |                                    65 |
+| <ItemLink id="item_storage_cell_4k" />  |                                 508 |                                   260 |
+| <ItemLink id="item_storage_cell_16k" /> |                               2,032 |                                 1,040 |
+| <ItemLink id="item_storage_cell_64k" /> |                               8,128 |                                 4,160 |
 
 ## Spatial Storage
 

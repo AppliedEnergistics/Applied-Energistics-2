@@ -1,10 +1,8 @@
 package appeng.client.guidebook.style;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.client.guidebook.render.ColorRef;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 public record TextStyle(
         @Nullable Float fontScale,
@@ -15,9 +13,11 @@ public record TextStyle(
         @Nullable Boolean obfuscated,
         @Nullable ResourceLocation font,
         @Nullable ColorRef color,
-        @Nullable WhiteSpaceMode whiteSpace) {
+        @Nullable WhiteSpaceMode whiteSpace,
+        @Nullable TextAlignment alignment
+) {
 
-    public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null, null);
+    public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null, null, null);
 
     public ResolvedTextStyle mergeWith(ResolvedTextStyle base) {
         var fontScale = this.fontScale != null ? this.fontScale : base.fontScale();
@@ -29,6 +29,7 @@ public record TextStyle(
         var font = this.font != null ? this.font : base.font();
         var color = this.color != null ? this.color : base.color();
         var whiteSpace = this.whiteSpace != null ? this.whiteSpace : base.whiteSpace();
+        var alignment = this.alignment != null ? this.alignment : base.alignment();
         return new ResolvedTextStyle(
                 fontScale,
                 bold,
@@ -38,7 +39,8 @@ public record TextStyle(
                 obfuscated,
                 font,
                 color,
-                whiteSpace);
+                whiteSpace,
+                alignment);
     }
 
     public Builder toBuilder() {
@@ -52,6 +54,7 @@ public record TextStyle(
         builder.font = font;
         builder.color = color;
         builder.whiteSpace = whiteSpace;
+        builder.alignment = alignment;
         return builder;
     }
 
@@ -69,6 +72,7 @@ public record TextStyle(
         private ResourceLocation font;
         private ColorRef color;
         private WhiteSpaceMode whiteSpace;
+        private TextAlignment alignment;
 
         public Builder fontScale(Float fontScale) {
             this.fontScale = fontScale;
@@ -115,6 +119,11 @@ public record TextStyle(
             return this;
         }
 
+        public Builder alignment(TextAlignment alignment) {
+            this.alignment = alignment;
+            return this;
+        }
+
         public TextStyle build() {
             return new TextStyle(fontScale,
                     bold,
@@ -124,7 +133,8 @@ public record TextStyle(
                     obfuscated,
                     font,
                     color,
-                    whiteSpace);
+                    whiteSpace,
+                    alignment);
         }
     }
 }

@@ -1,19 +1,12 @@
 package appeng.client.guidebook;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.indices.PageIndex;
+import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.core.AppEng;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -24,14 +17,19 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.client.guidebook.indices.PageIndex;
-import appeng.client.guidebook.navigation.NavigationTree;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AppEng;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class GuideManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideManager.class);
@@ -132,7 +130,7 @@ public final class GuideManager {
 
         @Override
         protected Map<ResourceLocation, ParsedGuidePage> prepare(ResourceManager resourceManager,
-                ProfilerFiller profiler) {
+                                                                 ProfilerFiller profiler) {
             profiler.startTick();
             Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
@@ -157,7 +155,7 @@ public final class GuideManager {
 
         @Override
         protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager,
-                ProfilerFiller profiler) {
+                             ProfilerFiller profiler) {
             profiler.startTick();
             GuideManager.this.pages = pages;
             profiler.push("indices");
@@ -206,6 +204,16 @@ public final class GuideManager {
         }
 
         // Allow indices to rebuild
+        var allPages = new ArrayList<ParsedGuidePage>(pages.size() + developmentPages.size());
+        allPages.addAll(pages.values());
+        allPages.addAll(developmentPages.values());
+        for (var index : indices) {
+            if (index.supportsUpdate()) {
+                index.update(allPages, changes);
+            } else {
+                index.rebuild(allPages);
+            }
+        }
 
         // Rebuild navigation
         this.navigationTree = buildNavigation();

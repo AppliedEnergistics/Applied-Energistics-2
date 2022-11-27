@@ -231,7 +231,9 @@ public class GuideScreen extends Screen {
     }
 
     public void reloadPage() {
-        navigateTo(getCurrentPageId());
+        GuidePageTexture.releaseUsedTextures();
+        currentPage = GuideManager.INSTANCE.getPage(currentPage.getId());
+        updatePageLayout();
     }
 
     @FunctionalInterface

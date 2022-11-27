@@ -31,7 +31,9 @@ public class ItemLinkCompiler extends FlowTagCompiler {
         }
 
         var linksTo = ItemIndex.INSTANCE.get(id);
-        if (linksTo == null) {
+        // We'll error out for item-links to our own mod because we expect them to have a page
+        // while we don't have pages for Vanilla items or items from other mods.
+        if (linksTo == null && id.getNamespace().equals(compiler.getId().getNamespace())) {
             parent.append(compiler.createErrorFlowContent("No page found for item " + id, (MdAstNode) el));
             return;
         }
@@ -40,7 +42,7 @@ public class ItemLinkCompiler extends FlowTagCompiler {
 
         // If the item link is already on the page we're linking to, replace it with an underlined
         // text that has a tooltip.
-        if (linksTo.anchor() == null && compiler.getId().equals(linksTo.pageId())) {
+        if (linksTo == null || linksTo.anchor() == null && compiler.getId().equals(linksTo.pageId())) {
             var span = new LytTooltipSpan();
             span.modifyStyle(style -> style.italic(true));
             compiler.compileComponentToFlow(stack.getHoverName(), span);

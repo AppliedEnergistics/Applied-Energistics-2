@@ -185,7 +185,7 @@ class GuideSourceWatcher {
 
     private class Listener implements DirectoryChangeListener {
         @Override
-        public synchronized void onEvent(DirectoryChangeEvent event) {
+        public void onEvent(DirectoryChangeEvent event) {
             if (event.isDirectory()) {
                 return;
             }
@@ -207,7 +207,7 @@ class GuideSourceWatcher {
     }
 
     // Only call while holding the lock!
-    private void pageChanged(Path path) {
+    private synchronized void pageChanged(Path path) {
         var pageId = getPageId(path);
         if (pageId == null) {
             return; // Probably not a page
@@ -225,7 +225,7 @@ class GuideSourceWatcher {
     }
 
     // Only call while holding the lock!
-    private void pageDeleted(Path path) {
+    private synchronized void pageDeleted(Path path) {
         var pageId = getPageId(path);
         if (pageId == null) {
             return; // Probably not a page
