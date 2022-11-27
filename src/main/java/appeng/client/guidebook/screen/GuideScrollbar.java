@@ -145,6 +145,9 @@ public class GuideScrollbar extends AbstractWidget {
 
     public void setContentHeight(int contentHeight) {
         this.contentHeight = contentHeight;
+        if (this.scrollAmount > getMaxScrollAmount()) {
+            this.scrollAmount = getMaxScrollAmount();
+        }
     }
 
     public int getScrollAmount() {

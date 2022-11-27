@@ -1,21 +1,5 @@
 package appeng.client.guidebook.screen;
 
-import java.util.Optional;
-import java.util.function.Function;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
-import vazkii.patchouli.common.book.BookRegistry;
-
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
@@ -31,6 +15,18 @@ import appeng.client.guidebook.layout.SimpleLayoutContext;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+import vazkii.patchouli.common.book.BookRegistry;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 public class GuideScreen extends Screen {
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
@@ -44,9 +40,6 @@ public class GuideScreen extends Screen {
         super(Component.literal("AE2 Guidebook"));
         this.currentPage = currentPage;
         this.scrollbar = new GuideScrollbar();
-
-        var aebook = BookRegistry.INSTANCE.books.values().iterator().next();
-        System.out.println();
     }
 
     @Override
@@ -98,7 +91,7 @@ public class GuideScreen extends Screen {
 
         disableScissor();
 
-        // renderHoverOutline(document, context);
+        renderHoverOutline(document, context);
 
         poseStack.popPose();
 
