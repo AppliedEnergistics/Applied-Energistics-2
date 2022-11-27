@@ -12,6 +12,10 @@ import net.minecraft.network.chat.Component;
 public class TextTooltip implements GuideTooltip {
     private final List<ClientTooltipComponent> lines;
 
+    public TextTooltip(String text) {
+        this(Component.literal(text));
+    }
+
     public TextTooltip(List<Component> lines) {
         this.lines = lines.stream()
                 .<ClientTooltipComponent>map(line -> new ClientTextTooltip(line.getVisualOrderText()))

@@ -178,6 +178,12 @@ public class GuideScreen extends Screen {
 
         var docPoint = getDocumentPoint(mouseX, mouseY);
         if (docPoint != null) {
+            if (button == 3) {
+                // TODO: Backwards in history
+            } else if (button == 4) {
+                // TODO: Forward in history
+            }
+
             return dispatchEvent(docPoint.getX(), docPoint.getY(), el -> {
                 return el.mouseClicked(this, docPoint.getX(), docPoint.getY(), button);
             });

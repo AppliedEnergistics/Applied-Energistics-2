@@ -1,26 +1,5 @@
 package appeng.client.guidebook.compiler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.ResourceLocationException;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.document.block.LytBlock;
@@ -39,6 +18,7 @@ import appeng.client.guidebook.document.flow.LytFlowLink;
 import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
+import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.style.WhiteSpaceMode;
 import appeng.libs.mdast.MdAst;
@@ -64,6 +44,25 @@ import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 public final class PageCompiler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageCompiler.class);
@@ -74,9 +73,9 @@ public final class PageCompiler {
     private final String pageContent;
 
     public PageCompiler(Function<ResourceLocation, byte[]> assetLoader,
-            String sourcePack,
-            ResourceLocation id,
-            String pageContent) {
+                        String sourcePack,
+                        ResourceLocation id,
+                        String pageContent) {
         this.assetLoader = assetLoader;
         this.sourcePack = sourcePack;
         this.id = id;
@@ -239,9 +238,11 @@ public final class PageCompiler {
         }
     }
 
-    private LytFlowLink compileLink(MdAstLink astLink) {
+    private LytFlowContent compileLink(MdAstLink astLink) {
         var link = new LytFlowLink();
-        link.setTitle(astLink.title);
+        if (astLink.title != null && !astLink.title.isEmpty()) {
+            link.setTooltip(new TextTooltip(astLink.title));
+        }
 
         // Internal vs. external links
         var uri = URI.create(astLink.url);
@@ -265,7 +266,6 @@ public final class PageCompiler {
                 link.setClickCallback(screen -> {
                     screen.navigateTo(pageId);
                 });
-                link.setTitle(pageId.toString());
             }
         }
 
@@ -331,5 +331,9 @@ public final class PageCompiler {
 
     public ResourceLocation resolveId(String idText) {
         return IdUtils.resolveId(idText, id.getNamespace());
+    }
+
+    public ResourceLocation getId() {
+        return id;
     }
 }

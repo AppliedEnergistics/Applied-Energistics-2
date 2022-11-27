@@ -1,15 +1,15 @@
 package appeng.client.guidebook.compiler.tags;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.flow.LytFlowLink;
 import appeng.client.guidebook.document.flow.LytFlowParent;
+import appeng.client.guidebook.document.flow.LytTooltipSpan;
 import appeng.client.guidebook.document.interaction.ItemTooltip;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
 public class ItemLinkCompiler extends FlowTagCompiler {
     @Override
@@ -31,17 +31,30 @@ public class ItemLinkCompiler extends FlowTagCompiler {
         }
 
         var linksTo = ItemIndex.INSTANCE.get(id);
+        if (linksTo == null) {
+            parent.append(compiler.createErrorFlowContent("No page found for item " + id, (MdAstNode) el));
+            return;
+        }
 
         var stack = item.getDefaultInstance();
 
-        var link = new LytFlowLink();
-        compiler.compileComponentToFlow(stack.getHoverName(), link);
-
-        link.setTooltip(new ItemTooltip(stack));
-        link.setClickCallback(screen -> {
-            screen.navigateTo(linksTo);
-        });
-        parent.append(link);
+        // If the item link is already on the page we're linking to, replace it with an underlined
+        // text that has a tooltip.
+        if (linksTo.anchor() == null && compiler.getId().equals(linksTo.pageId())) {
+            var span = new LytTooltipSpan();
+            span.modifyStyle(style -> style.italic(true));
+            compiler.compileComponentToFlow(stack.getHoverName(), span);
+            span.setTooltip(new ItemTooltip(stack));
+            parent.append(span);
+        } else {
+            var link = new LytFlowLink();
+            link.setClickCallback(screen -> {
+                screen.navigateTo(linksTo);
+            });
+            compiler.compileComponentToFlow(stack.getHoverName(), link);
+            link.setTooltip(new ItemTooltip(stack));
+            parent.append(link);
+        }
     }
 
 }
