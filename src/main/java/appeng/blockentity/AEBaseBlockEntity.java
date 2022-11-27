@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -44,6 +45,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +66,6 @@ import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
-import appeng.helpers.ICustomNameObject;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
@@ -73,7 +74,7 @@ import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements ICustomNameObject, ISegmentedInventory,
+        implements Nameable, ISegmentedInventory,
         RenderAttachmentBlockEntity {
 
     static {
@@ -85,7 +86,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
-    private String customName;
+    private Component customName;
     private boolean setChangedQueued = false;
     /**
      * For diagnosing issues with the delayed block entity initialization, this tracks how often this BE has been queued
@@ -148,7 +149,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     public void loadTag(CompoundTag data) {
         if (data.contains("customName")) {
-            this.customName = data.getString("customName");
+            this.customName = Component.literal(data.getString("customName"));
         } else {
             this.customName = null;
         }
@@ -176,7 +177,7 @@ public class AEBaseBlockEntity extends BlockEntity
         super.saveAdditional(data);
 
         if (this.customName != null) {
-            data.putString("customName", this.customName);
+            data.putString("customName", this.customName.getString());
         }
     }
 
@@ -328,7 +329,9 @@ public class AEBaseBlockEntity extends BlockEntity
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         var customName = CustomNameUtil.getCustomName(input);
         if (customName != null) {
-            this.customName = customName.getString();
+            this.customName = Component.literal(customName.getString());
+        } else {
+            this.customName = null;
         }
 
         MemoryCardItem.importGenericSettings(this, input, player);
@@ -346,14 +349,14 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public Component getCustomInventoryName() {
-        return Component.literal(
-                this.hasCustomInventoryName() ? this.customName : this.getClass().getSimpleName());
+    public Component getName() {
+        return Objects.requireNonNullElse(this.customName, getItemFromBlockEntity().getDescription());
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
-        return this.customName != null && !this.customName.isEmpty();
+    @Nullable
+    public Component getCustomName() {
+        return this.customName;
     }
 
     public void securityBreak() {
@@ -394,7 +397,7 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     public void setName(String name) {
-        this.customName = name;
+        this.customName = Component.literal(name);
     }
 
     @Override

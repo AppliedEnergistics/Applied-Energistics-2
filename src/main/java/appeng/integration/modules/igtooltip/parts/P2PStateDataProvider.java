@@ -80,16 +80,16 @@ public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, 
             }
 
             // If this is the input, and it is named, show that name as the frequency name
-            if (part.hasCustomInventoryName()) {
-                serverData.putString(TAG_P2P_FREQUENCY_NAME, part.getCustomInventoryName().getString());
+            if (part.getCustomName() != null) {
+                serverData.putString(TAG_P2P_FREQUENCY_NAME, part.getCustomName().getString());
             }
         } else {
             var input = part.getInput();
             if (input != null) {
                 state = STATE_OUTPUT;
                 // If the input is named, show that name as the frequency name
-                if (input.hasCustomInventoryName()) {
-                    serverData.putString(TAG_P2P_FREQUENCY_NAME, input.getCustomInventoryName().getString());
+                if (input.getCustomName() != null) {
+                    serverData.putString(TAG_P2P_FREQUENCY_NAME, input.getCustomName().getString());
                 }
             }
         }

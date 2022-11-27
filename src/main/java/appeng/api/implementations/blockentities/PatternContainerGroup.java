@@ -103,8 +103,8 @@ public record PatternContainerGroup(
             }
 
             icon = AEItemKey.of(part.getPartItem());
-            if (part instanceof Nameable nameable && nameable.hasCustomName()) {
-                name = nameable.getCustomName();
+            if (part instanceof Nameable nameable) {
+                name = nameable.getDisplayName();
             } else {
                 name = icon.getDisplayName();
             }

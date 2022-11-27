@@ -35,6 +35,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -68,7 +69,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
-import appeng.helpers.ICustomNameObject;
 import appeng.helpers.InterfaceLogicHost;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
@@ -662,8 +662,8 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         var hostLevel = host.getLevel();
 
         // Prefer own custom name / icon if player has named it
-        if (this.host instanceof ICustomNameObject customNameObject && customNameObject.hasCustomInventoryName()) {
-            var name = customNameObject.getCustomInventoryName();
+        if (this.host instanceof Nameable nameable && nameable.hasCustomName()) {
+            var name = nameable.getCustomName();
             return new PatternContainerGroup(
                     this.host.getTerminalIcon(),
                     name,

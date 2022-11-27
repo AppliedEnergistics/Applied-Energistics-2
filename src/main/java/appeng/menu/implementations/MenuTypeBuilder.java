@@ -32,6 +32,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -40,7 +41,6 @@ import net.minecraft.world.inventory.MenuType;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.security.IActionHost;
 import appeng.core.AppEng;
-import appeng.helpers.ICustomNameObject;
 import appeng.init.InitMenuTypes;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
@@ -275,9 +275,9 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     }
 
     private Component getDefaultMenuTitle(I accessInterface) {
-        if (accessInterface instanceof ICustomNameObject customNameObject) {
-            if (customNameObject.hasCustomInventoryName()) {
-                return customNameObject.getCustomInventoryName();
+        if (accessInterface instanceof Nameable nameable) {
+            if (nameable.hasCustomName()) {
+                return nameable.getCustomName();
             }
         }
 
