@@ -1,6 +1,6 @@
 package appeng.libs.micromark.extensions.gfm;
 
-enum Align {
+public enum Align {
     LEFT,
     CENTER,
     RIGHT,

@@ -45,6 +45,7 @@ import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
+import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -89,6 +90,7 @@ public final class PageCompiler {
         var options = new MdastOptions()
                 .withSyntaxExtension(MdxSyntax.INSTANCE)
                 .withSyntaxExtension(YamlFrontmatterSyntax.INSTANCE)
+                .withSyntaxExtension(GfmTableSyntax.INSTANCE)
                 .withMdastExtension(MdxMdastExtension.INSTANCE)
                 .withMdastExtension(YamlFrontmatterExtension.INSTANCE);
 
