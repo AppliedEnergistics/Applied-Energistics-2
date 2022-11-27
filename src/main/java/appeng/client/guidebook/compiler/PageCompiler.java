@@ -2,6 +2,7 @@ package appeng.client.guidebook.compiler;
 
 import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.GuidePage;
+import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytDocument;
@@ -258,13 +259,21 @@ public final class PageCompiler {
                 }, astLink.url, false));
             });
         } else {
+
             // Determine the page id, account for relative paths
-            var pageId = IdUtils.resolveLink(astLink.url, id);
+            ResourceLocation pageId;
+            try {
+                pageId = IdUtils.resolveLink(uri.getPath(), id);
+            } catch (ResourceLocationException ignored) {
+                return createErrorFlowContent("Invalid page link", astLink);
+            }
+
             if (!GuideManager.INSTANCE.pageExists(pageId)) {
                 LOGGER.error("Broken link to page '{}' in page {}", astLink.url, id);
             } else {
+                var anchor = new PageAnchor(pageId, uri.getFragment());
                 link.setClickCallback(screen -> {
-                    screen.navigateTo(pageId);
+                    screen.navigateTo(anchor);
                 });
             }
         }
