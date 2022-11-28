@@ -17,6 +17,6 @@ public class LytHeading extends LytParagraph {
     public void setDepth(int depth) {
         this.depth = depth;
         var fontScale = Math.max(1, 1.75f - depth * 0.25f);
-        content.getRootSpan().modifyStyle(builder -> builder.fontScale(fontScale).font(Minecraft.DEFAULT_FONT));
+        modifyStyle(builder -> builder.fontScale(fontScale).font(Minecraft.DEFAULT_FONT));
     }
 }

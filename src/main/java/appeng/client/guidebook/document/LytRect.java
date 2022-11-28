@@ -84,4 +84,11 @@ public record LytRect(int x, int y, int width, int height) {
         return right() > other.x() && x < other.right() && bottom() > other.y && y < other.bottom();
     }
 
+    public LytRect withX(int x) {
+        return new LytRect(x, y, width, height);
+    }
+
+    public LytRect withY(int y) {
+        return new LytRect(x, y, width, height);
+    }
 }

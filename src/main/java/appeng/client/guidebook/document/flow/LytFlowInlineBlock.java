@@ -1,20 +1,21 @@
 package appeng.client.guidebook.document.flow;
 
-import java.util.Optional;
-
-import net.minecraft.client.Minecraft;
-
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
-import appeng.client.guidebook.layout.SimpleLayoutContext;
+import appeng.client.guidebook.layout.LayoutContext;
+import appeng.client.guidebook.layout.MinecraftFontMetrics;
 import appeng.client.guidebook.screen.GuideScreen;
+
+import java.util.Optional;
 
 public class LytFlowInlineBlock extends LytFlowContent implements InteractiveElement {
 
     private LytBlock block;
+
+    private InlineBlockAlignment alignment = InlineBlockAlignment.INLINE;
 
     public LytBlock getBlock() {
         return block;
@@ -24,13 +25,21 @@ public class LytFlowInlineBlock extends LytFlowContent implements InteractiveEle
         this.block = block;
     }
 
+    public InlineBlockAlignment getAlignment() {
+        return alignment;
+    }
+
+    public void setAlignment(InlineBlockAlignment alignment) {
+        this.alignment = alignment;
+    }
+
     public LytSize getPreferredSize(int lineWidth) {
         if (block == null) {
             return LytSize.empty();
         }
 
         // We need to compute the layout
-        var layoutContext = new SimpleLayoutContext(Minecraft.getInstance().font, LytRect.empty());
+        var layoutContext = new LayoutContext(new MinecraftFontMetrics(), LytRect.empty());
         var bounds = block.layout(layoutContext, 0, 0, lineWidth);
         return new LytSize(bounds.right(), bounds.bottom());
     }

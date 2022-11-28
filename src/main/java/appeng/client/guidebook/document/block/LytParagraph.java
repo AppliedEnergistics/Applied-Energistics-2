@@ -29,6 +29,16 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     }
 
     @Override
+    public boolean isCulled(LytRect viewport) {
+        // If we have floating content, account for its bounding box exceeding our content box
+        if (content.floatsIntersect(viewport)) {
+            return false;
+        }
+
+        return super.isCulled(viewport);
+    }
+
+    @Override
     public LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
         // Apply padding to paragraph content
         x += paddingLeft;
@@ -57,18 +67,39 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     }
 
     @Override
+    public @Nullable LytNode pickNode(int x, int y) {
+        // If we are the host for any floating elements, those can exceed our own bounds
+        var fl = content.pickFloatingElement(x, y);
+        if (fl != null) {
+            return this;
+        }
+
+        return super.pickNode(x, y);
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
-        content.renderBatch(context, buffers, hoveredContent);
+        // Since we overwrite isCulled, we render even if our actual line content is culled, for floats
+        if (bounds.intersects(context.viewport())) {
+            content.renderBatch(context, buffers, hoveredContent);
+        }
+
+        content.renderFloatsBatch(context, buffers, hoveredContent);
     }
 
     @Override
     public void render(RenderContext context) {
-        content.render(context, hoveredContent);
+        // Since we overwrite isCulled, we render even if our actual line content is culled, for floats
+        if (bounds.intersects(context.viewport())) {
+            content.render(context, hoveredContent);
+        }
+
+        content.renderFloats(context, hoveredContent);
     }
 
     @Override
     public @Nullable LytFlowContent pickContent(int x, int y) {
-        var lineEl = content.hitTest(x, y);
+        var lineEl = content.pick(x, y);
         return lineEl != null ? lineEl.getFlowContent() : null;
     }
 

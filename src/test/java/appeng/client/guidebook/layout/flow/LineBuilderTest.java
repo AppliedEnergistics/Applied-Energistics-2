@@ -1,17 +1,18 @@
 package appeng.client.guidebook.layout.flow;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.ArrayList;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
+import appeng.client.guidebook.layout.FontMetrics;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextAlignment;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class LineBuilderTest {
 
@@ -62,8 +63,9 @@ class LineBuilderTest {
     @NotNull
     private static ArrayList<Line> getLines(int charsPerLine, String... textChunks) {
         var lines = new ArrayList<Line>();
-        var context = new MockLayoutContext();
-        var lineBuilder = new LineBuilder(context, 0, 0, charsPerLine * 5, lines, alignment);
+        var floats = new ArrayList<LineBlock>();
+        var context = new LayoutContext(new MockFontMetrics(), LytRect.empty());
+        var lineBuilder = new LineBuilder(context, 0, 0, charsPerLine * 5, lines, floats, TextAlignment.LEFT);
 
         for (String textChunk : textChunks) {
             var flowContent = new LytFlowText();
@@ -87,12 +89,7 @@ class LineBuilderTest {
     }
 
     // Every character is 5 pixels wide
-    record MockLayoutContext() implements LayoutContext {
-        @Override
-        public LytRect viewport() {
-            return LytRect.empty();
-        }
-
+    record MockFontMetrics() implements FontMetrics {
         @Override
         public float getAdvance(int codePoint, ResolvedTextStyle style) {
             return 5;

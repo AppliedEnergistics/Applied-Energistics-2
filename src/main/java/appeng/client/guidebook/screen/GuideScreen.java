@@ -12,7 +12,8 @@ import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
-import appeng.client.guidebook.layout.SimpleLayoutContext;
+import appeng.client.guidebook.layout.LayoutContext;
+import appeng.client.guidebook.layout.MinecraftFontMetrics;
 import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
@@ -412,9 +413,7 @@ public class GuideScreen extends Screen {
 
     private void updatePageLayout() {
         var docViewport = getDocumentViewport();
-        var context = new SimpleLayoutContext(
-                minecraft.font,
-                docViewport);
+        var context = new LayoutContext(new MinecraftFontMetrics(font), docViewport);
 
         // Build layout if needed
         var document = currentPage.getDocument();

@@ -30,7 +30,6 @@ import appeng.libs.mdast.MdastOptions;
 import appeng.libs.mdast.YamlFrontmatterExtension;
 import appeng.libs.mdast.gfm.GfmTableMdastExtension;
 import appeng.libs.mdast.gfm.model.GfmTable;
-import appeng.libs.mdast.gfm.model.GfmTableCell;
 import appeng.libs.mdast.mdx.MdxMdastExtension;
 import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
@@ -52,7 +51,6 @@ import appeng.libs.mdast.model.MdAstText;
 import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
-import appeng.libs.micromark.extensions.gfm.Align;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
@@ -62,7 +60,6 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +67,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -419,5 +415,9 @@ public final class PageCompiler {
 
     public ResourceLocation getId() {
         return id;
+    }
+
+    public byte[] loadAsset(ResourceLocation imageId) {
+        return assetLoader.apply(imageId);
     }
 }

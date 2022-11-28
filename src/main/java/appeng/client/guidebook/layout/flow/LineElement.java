@@ -25,6 +25,8 @@ public abstract class LineElement {
 
     boolean containsMouse;
 
+    boolean floating;
+
     @Nullable
     public LytFlowContent getFlowContent() {
         return flowContent;

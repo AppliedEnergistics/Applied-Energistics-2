@@ -2,6 +2,7 @@ package appeng.client.guidebook.layout.flow;
 
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.flow.InlineBlockAlignment;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
@@ -12,28 +13,43 @@ import appeng.client.guidebook.style.TextAlignment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 
+/**
+ * Does inline-flow layout similar to how it is described here:
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flow_Layout/Block_and_Inline_Layout_in_Normal_Flow
+ */
 class LineBuilder implements Consumer<LytFlowContent> {
     private final LayoutContext context;
     private final List<Line> lines;
-    private final int leftEdge;
+    // Contains any floating elements we construct as part of processing flow content
+    private final List<LineBlock> floats;
+    private final int lineBoxX;
+    private final int startY;
     private int innerX;
-    private int innerY;
-    private final int lineWidth;
+    private int lineBoxY;
+    private final int lineBoxWidth;
     private int remainingLineWidth;
     @Nullable
     private LineElement openLineElement;
     private final TextAlignment alignment;
 
-    public LineBuilder(LayoutContext context, int x, int y, int availableWidth, List<Line> lines, TextAlignment alignment) {
+    public LineBuilder(LayoutContext context,
+                       int x,
+                       int y,
+                       int availableWidth,
+                       List<Line> lines,
+                       List<LineBlock> floats,
+                       TextAlignment alignment) {
+        this.floats = floats;
         this.alignment = alignment;
         this.context = context;
-        leftEdge = x;
-        innerX = leftEdge;
-        innerY = y;
-        lineWidth = availableWidth;
-        remainingLineWidth = lineWidth;
+        this.startY = y;
+        lineBoxX = x;
+        lineBoxY = y;
+        lineBoxWidth = availableWidth;
+        remainingLineWidth = getAvailableHorizontalSpace();
         this.lines = lines;
     }
 
@@ -60,13 +76,71 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     private void appendInlineBlock(LytFlowInlineBlock inlineBlock) {
+        var size = inlineBlock.getPreferredSize(lineBoxWidth);
+        var block = inlineBlock.getBlock();
+        var marginLeft = block.getMarginLeft();
+        var marginRight = block.getMarginRight();
+        var marginTop = block.getMarginTop();
+        var marginBottom = block.getMarginBottom();
+
+        // Is there enough space to have this element here?
+        var outerWidth = size.width() + marginLeft + marginRight;
+        ensureSpaceIsAvailable(outerWidth);
+
+        var el = new LineBlock(block);
+        el.bounds = new LytRect(innerX + marginLeft, marginTop, size.width(), size.height());
+        el.flowContent = inlineBlock;
+
+        if (inlineBlock.getAlignment() == InlineBlockAlignment.FLOAT_LEFT) {
+            // Float it to the left of the actual text content.
+            // endLine will take care of moving any existing text in the line
+            el.bounds = el.bounds.withX(getInnerLeftEdge() + marginLeft).withY(lineBoxY + marginTop);
+            el.floating = true;
+            context.addLeftFloat(el.bounds.expand(0, 0, marginRight, marginBottom));
+            floats.add(el);
+            remainingLineWidth -= outerWidth;
+        } else if (inlineBlock.getAlignment() == InlineBlockAlignment.FLOAT_RIGHT) {
+            // Float it to the right the actual text content.
+            el.bounds = el.bounds.withX(getInnerRightEdge() - el.bounds.width() + marginRight).withY(lineBoxY + marginTop);
+            el.floating = true;
+            context.addRightFloat(el.bounds.expand(marginLeft, 0, 0, marginBottom));
+            floats.add(el);
+            remainingLineWidth -= outerWidth;
+        } else {
+            // Treat as a normal inline element for positioning
+            innerX += size.width();
+            appendToOpenLine(el);
+
+            // Since no margin is actually accounted for here, the remaining line width should just
+            // be reduced
+            remainingLineWidth -= size.width();
+        }
+    }
+
+    private void ensureSpaceIsAvailable(int width) {
+        if (width <= remainingLineWidth) {
+            return; // Got enough
+        }
+
+        // First, try closing out any open line if we don't have enough space
         closeLine();
 
-        var size = inlineBlock.getPreferredSize(lineWidth);
-        var inlineBlockElement = new LineBlock(inlineBlock.getBlock());
-        inlineBlockElement.bounds = new LytRect(innerX, innerY, size.width(), size.height());
-        openLineElement = inlineBlockElement;
-        closeLine();
+        if (width <= remainingLineWidth) {
+            return; // We got enough by ending the current line and advancing to the next
+        }
+
+        // If we *still* don't have enough room, we need to advance down to clear floats
+        // as long as any float is still open
+        var nextFloatEdge = context.getNextFloatBottomEdge(lineBoxY);
+        while (nextFloatEdge.isPresent()) {
+            lineBoxY = nextFloatEdge.getAsInt();
+            context.clearFloatsAbove(lineBoxY);
+            remainingLineWidth = getAvailableHorizontalSpace();
+            if ( width <= remainingLineWidth) {
+                break; // Finally, we're good!
+            }
+            nextFloatEdge = context.getNextFloatBottomEdge(lineBoxY);
+        }
     }
 
     @Nullable
@@ -85,20 +159,26 @@ class LineBuilder implements Consumer<LytFlowContent> {
         var hoverStyle = flowContent.resolveHoverStyle(style);
 
         char lastChar = '\0';
-        if (getEndOfOpenLine() instanceof LineTextRun textRun && !textRun.text.isEmpty()) {
+        var endOfOpenLine = getEndOfOpenLine();
+        if (endOfOpenLine instanceof LineTextRun textRun && !textRun.text.isEmpty()) {
             lastChar = textRun.text.charAt(textRun.text.length() - 1);
+        } else if (endOfOpenLine == null || endOfOpenLine.floating) {
+            // Treat the first text in a line or text directly after a float as if it was after a line-break.
+            lastChar = '\n';
         }
 
-        iterateRuns(text, style, lastChar, remainingLineWidth, lineWidth, (run, width, endLine) -> {
+        iterateRuns(text, style, lastChar, (run, width, endLine) -> {
             if (!run.isEmpty()) {
                 var el = new LineTextRun(run.toString(), style, hoverStyle);
                 el.flowContent = flowContent;
                 el.bounds = new LytRect(
                         innerX,
-                        innerY,
+                        0,
                         Math.round(width),
                         context.getLineHeight(style));
                 appendToOpenLine(el);
+                innerX += el.bounds.width();
+                remainingLineWidth -= el.bounds.width();
             }
             if (endLine) {
                 closeLine();
@@ -106,11 +186,9 @@ class LineBuilder implements Consumer<LytFlowContent> {
         });
     }
 
-    private void iterateRuns(CharSequence text, ResolvedTextStyle style, char lastChar, float currentLineMaxWidth,
-                             float maxWidth, LineConsumer consumer) {
+    private void iterateRuns(CharSequence text, ResolvedTextStyle style, char lastChar, LineConsumer consumer) {
         int lastBreakOpportunity = -1;
         float widthAtBreakOpportunity = 0;
-        float remainingSpace = currentLineMaxWidth;
         float curLineWidth = 0;
 
         var lineBuffer = new StringBuilder();
@@ -145,7 +223,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
                     widthAtBreakOpportunity = curLineWidth = 0;
                     lastBreakOpportunity = 0;
                     lastCharWasWhitespace = true;
-                    remainingSpace = maxWidth;
+                    remainingLineWidth = getAvailableHorizontalSpace();
                     continue;
                 }
             }
@@ -165,7 +243,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
 
             var advance = context.getAdvance(codePoint, style);
             // Break line if necessary
-            if (curLineWidth + advance > remainingSpace) {
+            if (curLineWidth + advance > remainingLineWidth) {
                 // If we had a break opportunity, use it
                 // In this scenario, the space itself is discarded
                 if (lastBreakOpportunity != -1) {
@@ -186,7 +264,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
                 }
                 lastBreakOpportunity = 0;
                 widthAtBreakOpportunity = curLineWidth;
-                remainingSpace = maxWidth;
+                remainingLineWidth = getAvailableHorizontalSpace();
                 // If a white-space character broke the line, ignore it as it
                 // would otherwise be at the start of the next line
                 if (lastCharWasWhitespace) {
@@ -207,32 +285,66 @@ class LineBuilder implements Consumer<LytFlowContent> {
             return;
         }
 
-        var lineBounds = openLineElement.bounds;
-        for (var l = openLineElement.next; l != null; l = l.next) {
-            lineBounds = LytRect.union(lineBounds, l.bounds);
+        var lineHeight = 1;
+        var lineWidth = 0;
+        for (var el = openLineElement; el != null; el = el.next) {
+            lineHeight = Math.max(lineHeight, el.bounds.bottom());
+            lineWidth = Math.max(lineWidth, el.bounds.right());
         }
+
+        var textAreaStart = getInnerLeftEdge();
+        var textAreaEnd = getInnerRightEdge();
 
         // Apply alignment
-        int xTranslation = 0;
+        int xTranslation = textAreaStart;
         if (alignment == TextAlignment.RIGHT) {
-            xTranslation = lineWidth - lineBounds.width();
+            xTranslation = textAreaEnd - lineWidth;
         } else if (alignment == TextAlignment.CENTER) {
-            xTranslation = (lineWidth - lineBounds.width()) / 2;
-        }
-        if (xTranslation != 0) {
-            lineBounds = lineBounds.move(xTranslation, 0);
-            for (var el = openLineElement; el != null; el = el.next) {
-                el.bounds = el.bounds.move(xTranslation, 0);
-            }
+            xTranslation = textAreaStart + ((textAreaEnd - textAreaStart) - lineWidth) / 2;
         }
 
+        // reposition all line elements
+        for (var el = openLineElement; el != null; el = el.next) {
+            el.bounds = el.bounds.move(xTranslation, lineBoxY);
+        }
+
+        var lineBounds = new LytRect(lineBoxX, lineBoxY, lineBoxWidth, lineHeight);
         var line = new Line(lineBounds, openLineElement);
         lines.add(line);
 
+        // Advance vertically
+        lineBoxY += line.bounds().height();
+
+        // Close out any floats that are above the fold
+        context.clearFloatsAbove(lineBoxY);
+
+        // Reset horizontal position
         openLineElement = null;
-        remainingLineWidth = lineWidth;
-        innerX = leftEdge;
-        innerY += line.bounds().height();
+        innerX = 0;
+
+        // Recompute now that floats may have been closed, what the horizontal space really is
+        remainingLineWidth = getInnerRightEdge() - getInnerLeftEdge();
+    }
+
+    // Clear any remaining floats
+    private void clearFloats() {
+        context.clearFloats(true, true)
+                .ifPresent(floatBottom -> lineBoxY = Math.max(lineBoxY, floatBottom));
+    }
+
+    // How much horizontal space is available in a new line, accounting for active floats that take up space
+    private int getAvailableHorizontalSpace() {
+        return Math.max(0, getInnerRightEdge() - getInnerLeftEdge());
+    }
+
+    // Absolute X coord of the beginning of the text area of the current line box
+    private int getInnerLeftEdge() {
+        return context.getLeftFloatRightEdge().orElse(lineBoxX);
+    }
+
+    // Absolute X coord of the end of the text area of the current line box
+    private int getInnerRightEdge() {
+        return context.getRightFloatLeftEdge().orElse(this.lineBoxX + lineBoxWidth);
     }
 
     private void appendToOpenLine(LineElement el) {
@@ -245,17 +357,21 @@ class LineBuilder implements Consumer<LytFlowContent> {
         } else {
             openLineElement = el;
         }
-        innerX += el.bounds.width();
-        remainingLineWidth -= el.bounds.width();
     }
 
     public void end() {
         closeLine();
     }
 
+    public LytRect getBounds() {
+        return new LytRect(
+                lineBoxX, startY,
+                lineBoxWidth, lineBoxY - startY
+        );
+    }
+
     @FunctionalInterface
     interface LineConsumer {
         void visitRun(CharSequence run, float width, boolean end);
     }
-
 }

@@ -1,12 +1,14 @@
 package appeng.client.guidebook.document.block;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 public abstract class LytBlock extends LytNode {
+    /**
+     * Content rectangle.
+     */
     protected LytRect bounds;
 
     private int marginTop;
@@ -17,6 +19,10 @@ public abstract class LytBlock extends LytNode {
     @Override
     public LytRect getBounds() {
         return bounds;
+    }
+
+    public boolean isCulled(LytRect viewport) {
+        return !viewport.intersects(bounds);
     }
 
     public final LytRect layout(LayoutContext context, int x, int y, int availableWidth) {

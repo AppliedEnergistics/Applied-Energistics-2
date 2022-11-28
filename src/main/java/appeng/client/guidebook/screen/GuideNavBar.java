@@ -5,7 +5,8 @@ import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
-import appeng.client.guidebook.layout.SimpleLayoutContext;
+import appeng.client.guidebook.layout.LayoutContext;
+import appeng.client.guidebook.layout.MinecraftFontMetrics;
 import appeng.client.guidebook.navigation.NavigationNode;
 import appeng.client.guidebook.navigation.NavigationTree;
 import appeng.client.guidebook.render.LightDarkMode;
@@ -258,9 +259,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     private void updateLayout() {
-        var context = new SimpleLayoutContext(
-                Minecraft.getInstance().font,
-                new LytRect(0, 0, WIDTH_OPEN, height));
+        var context = new LayoutContext(new MinecraftFontMetrics(), new LytRect(0, 0, WIDTH_OPEN, height));
 
         var currentY = 0;
         for (var row : this.rows) {

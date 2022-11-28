@@ -8,7 +8,6 @@ import java.util.List;
 
 public final class Micromark {
     private Micromark() {
-
     }
 
     public static ParseContext parse(List<Extension> extensions) {

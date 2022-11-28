@@ -64,9 +64,8 @@ public class LytImage extends LytBlock implements InteractiveElement {
         var width = size.width();
         var height = size.height();
 
-        var scale = Minecraft.getInstance().getWindow().getGuiScale();
-        width /= scale;
-        height /= scale;
+        width /= 4;
+        height /= 4;
 
         if (width > availableWidth) {
             var f = availableWidth / (float) width;

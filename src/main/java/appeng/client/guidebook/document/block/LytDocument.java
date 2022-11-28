@@ -89,7 +89,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
 
     public void render(SimpleRenderContext context) {
         for (var block : blocks) {
-            if (!block.getBounds().intersects(context.viewport())) {
+            if (block.isCulled(context.viewport())) {
                 continue;
             }
             block.render(context);

@@ -77,8 +77,7 @@ Provides 65,536 bytes of storage for crafting.
 
 #### Co-Processor
 
-![A picture of several Co Processors in a Crafting CPU](../assets/large/craftingco.png)
-
+<FloatingImage src="../assets/large/craftingco.png" align="left" alt="A picture of several Co Processors in a Crafting CPU" />
 Provides additional item delivery from the CPU to the <ItemLink id="pattern_provider"/> for
 crafting.
 
