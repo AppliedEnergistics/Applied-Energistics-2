@@ -157,12 +157,15 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.ARROW_DOWN, Settings.SORT_DIRECTION, SortDir.DESCENDING, ButtonToolTips.SortOrder,
                     ButtonToolTips.Descending);
 
-            registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
-                    ButtonToolTips.TerminalStyle,
-                    ButtonToolTips.TerminalStyle_Tall);
             registerApp(Icon.TERMINAL_STYLE_SMALL, Settings.TERMINAL_STYLE, TerminalStyle.SMALL,
                     ButtonToolTips.TerminalStyle,
                     ButtonToolTips.TerminalStyle_Small);
+            registerApp(Icon.TERMINAL_STYLE_MEDIUM, Settings.TERMINAL_STYLE, TerminalStyle.MEDIUM,
+                    ButtonToolTips.TerminalStyle,
+                    ButtonToolTips.TerminalStyle_Medium);
+            registerApp(Icon.TERMINAL_STYLE_TALL, Settings.TERMINAL_STYLE, TerminalStyle.TALL,
+                    ButtonToolTips.TerminalStyle,
+                    ButtonToolTips.TerminalStyle_Tall);
             registerApp(Icon.TERMINAL_STYLE_FULL, Settings.TERMINAL_STYLE, TerminalStyle.FULL,
                     ButtonToolTips.TerminalStyle,
                     ButtonToolTips.TerminalStyle_Full);

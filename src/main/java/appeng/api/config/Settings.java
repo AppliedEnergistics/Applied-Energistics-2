@@ -71,8 +71,8 @@ public final class Settings {
     public static final Setting<FullnessMode> FULLNESS_MODE = register("fullness_mode", FullnessMode.class);
     public static final Setting<YesNo> CRAFT_ONLY = register("craft_only", YesNo.YES, YesNo.NO);
     public static final Setting<FuzzyMode> FUZZY_MODE = register("fuzzy_mode", FuzzyMode.class);
-    public static final Setting<TerminalStyle> TERMINAL_STYLE = register("terminal_style", TerminalStyle.TALL,
-            TerminalStyle.SMALL);
+    public static final Setting<TerminalStyle> TERMINAL_STYLE = register("terminal_style", TerminalStyle.SMALL,
+            TerminalStyle.MEDIUM, TerminalStyle.TALL, TerminalStyle.FULL);
     public static final Setting<ShowPatternProviders> TERMINAL_SHOW_PATTERN_PROVIDERS = register(
             "show_pattern_providers", ShowPatternProviders.class);
 

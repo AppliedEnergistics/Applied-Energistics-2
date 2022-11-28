@@ -25,10 +25,18 @@ package appeng.api.config;
 
 public enum TerminalStyle {
 
-    TALL,
+    SMALL(1),
+    MEDIUM(2),
+    TALL(3),
+    FULL(4);
 
-    FULL,
+    private final int multiplier;
 
-    SMALL
+    TerminalStyle(int multiplier) {
+        this.multiplier = multiplier;
+    }
 
+    public int getRows(int rows) {
+        return rows * this.multiplier / 4;
+    }
 }
