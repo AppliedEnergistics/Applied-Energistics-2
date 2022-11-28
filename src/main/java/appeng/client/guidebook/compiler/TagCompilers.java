@@ -1,6 +1,7 @@
 package appeng.client.guidebook.compiler;
 
 import appeng.client.guidebook.compiler.tags.ATagCompiler;
+import appeng.client.guidebook.compiler.tags.BreakCompiler;
 import appeng.client.guidebook.compiler.tags.DivTagCompiler;
 import appeng.client.guidebook.compiler.tags.FloatingImageCompiler;
 import appeng.client.guidebook.compiler.tags.ItemLinkCompiler;
@@ -20,6 +21,7 @@ public final class TagCompilers {
         register("a", new ATagCompiler());
         register("ItemLink", new ItemLinkCompiler());
         register("FloatingImage", new FloatingImageCompiler());
+        register("br", new BreakCompiler());
     }
 
     public static void register(String tagName, TagCompiler handler) {

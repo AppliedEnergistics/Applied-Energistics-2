@@ -13,7 +13,6 @@ import appeng.client.guidebook.style.TextAlignment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 /**
@@ -73,6 +72,14 @@ class LineBuilder implements Consumer<LytFlowContent> {
             openLineElement.flowContent = flowContent;
         }
         closeLine();
+
+        // Clear floats, if requested
+        if (flowContent instanceof LytFlowBreak flowBreak) {
+            if (flowBreak.isClearLeft() || flowBreak.isClearRight()) {
+                context.clearFloats(flowBreak.isClearLeft(), flowBreak.isClearRight())
+                        .ifPresent(floatBottom -> lineBoxY = Math.max(lineBoxY, floatBottom));
+            }
+        }
     }
 
     private void appendInlineBlock(LytFlowInlineBlock inlineBlock) {
@@ -136,7 +143,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
             lineBoxY = nextFloatEdge.getAsInt();
             context.clearFloatsAbove(lineBoxY);
             remainingLineWidth = getAvailableHorizontalSpace();
-            if ( width <= remainingLineWidth) {
+            if (width <= remainingLineWidth) {
                 break; // Finally, we're good!
             }
             nextFloatEdge = context.getNextFloatBottomEdge(lineBoxY);
@@ -324,12 +331,6 @@ class LineBuilder implements Consumer<LytFlowContent> {
 
         // Recompute now that floats may have been closed, what the horizontal space really is
         remainingLineWidth = getInnerRightEdge() - getInnerLeftEdge();
-    }
-
-    // Clear any remaining floats
-    private void clearFloats() {
-        context.clearFloats(true, true)
-                .ifPresent(floatBottom -> lineBoxY = Math.max(lineBoxY, floatBottom));
     }
 
     // How much horizontal space is available in a new line, accounting for active floats that take up space

@@ -88,6 +88,8 @@ split the same pattern across multiple interfaces.
 
 <RecipeFor id="crafting_accelerator" />
 
+<br clear="all" />
+
 #### Crafting Monitor
 
 ![A picture of a crafting monitor inside a Crafting CPU.](../assets/large/craftingmonitor.png)
