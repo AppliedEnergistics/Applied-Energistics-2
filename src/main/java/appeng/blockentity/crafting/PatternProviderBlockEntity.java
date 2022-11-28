@@ -37,8 +37,8 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
-import appeng.helpers.iface.PatternProviderLogic;
-import appeng.helpers.iface.PatternProviderLogicHost;
+import appeng.helpers.patternprovider.PatternProviderLogic;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 

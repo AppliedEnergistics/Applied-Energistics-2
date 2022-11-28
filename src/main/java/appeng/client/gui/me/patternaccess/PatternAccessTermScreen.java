@@ -58,7 +58,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.implementations.PatternAccessTermMenu;
 
 public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AEBaseScreen<C> {

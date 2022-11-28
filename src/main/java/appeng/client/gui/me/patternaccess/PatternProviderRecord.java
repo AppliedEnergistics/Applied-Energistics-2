@@ -20,7 +20,7 @@ package appeng.client.gui.me.patternaccess;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.util.inv.AppEngInternalInventory;
 

@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.helpers.iface;
+package appeng.helpers.patternprovider;
 
 import java.util.Set;
 
