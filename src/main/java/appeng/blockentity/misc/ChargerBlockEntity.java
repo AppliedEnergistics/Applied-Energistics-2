@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -211,8 +212,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 if (Platform.getRandomFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                    ItemStack charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result.copy();
-                    this.inv.setItemDirect(0, charged);
+                    Item charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
+                    this.inv.setItemDirect(0, new ItemStack(charged));
 
                     changed = true;
                 }

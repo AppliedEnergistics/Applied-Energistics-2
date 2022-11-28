@@ -19,17 +19,27 @@
 package appeng.recipes.mattercannon;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 
+import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.core.NonNullList;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
@@ -54,6 +64,14 @@ public class MatterCannonAmmo implements Recipe<Container> {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.ammo = Objects.requireNonNull(ammo, "ammo must not be null");
         this.weight = weight;
+    }
+
+    public static void item(Consumer<FinishedRecipe> consumer, ResourceLocation id, ItemLike item, float weight) {
+        consumer.accept(new Ammo(id, null, item.asItem(), weight));
+    }
+
+    public static void tag(Consumer<FinishedRecipe> consumer, ResourceLocation id, TagKey<Item> tag, float weight) {
+        consumer.accept(new Ammo(id, tag, null, weight));
     }
 
     @Override
@@ -104,4 +122,39 @@ public class MatterCannonAmmo implements Recipe<Container> {
         return weight;
     }
 
+    public record Ammo(ResourceLocation id, TagKey<Item> tag, Item item, float weight) implements FinishedRecipe {
+
+        @Override
+        public void serializeRecipeData(JsonObject json) {
+            if (tag != null) {
+                json.add("ammo", Ingredient.of(tag).toJson());
+                ConditionJsonProvider.write(json, DefaultResourceConditions.itemTagsPopulated(tag));
+            } else if (item != null) {
+                json.add("ammo", Ingredient.of(item).toJson());
+            }
+            json.addProperty("weight", this.weight);
+        }
+
+        @Override
+        public ResourceLocation getId() {
+            return this.id;
+        }
+
+        @Override
+        public RecipeSerializer<?> getType() {
+            return MatterCannonAmmoSerializer.INSTANCE;
+        }
+
+        @Nullable
+        @Override
+        public JsonObject serializeAdvancement() {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public ResourceLocation getAdvancementId() {
+            return null;
+        }
+    }
 }

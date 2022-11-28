@@ -2,22 +2,13 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import com.google.gson.JsonObject;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
-import appeng.recipes.handlers.ChargerRecipeSerializer;
+import appeng.recipes.handlers.ChargerRecipeBuilder;
 
 public class ChargerRecipes extends AE2RecipeProvider {
     public ChargerRecipes(DataGenerator generator) {
@@ -27,43 +18,13 @@ public class ChargerRecipes extends AE2RecipeProvider {
     @Override
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
-        charge(consumer, "charged_certus_quartz_crystal", AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(),
+        ChargerRecipeBuilder.charge(consumer,
+                AppEng.makeId("charger/charged_certus_quartz_crystal"),
+                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(),
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
-        charge(consumer, "meteorite_compass", Items.COMPASS, AEItems.METEORITE_COMPASS.asItem());
-    }
-
-    public static void charge(Consumer<FinishedRecipe> consumer, String name, Item input, Item output) {
-        consumer.accept(new ChargerRecipeBuilder(name, Ingredient.of(input), new ItemStack(output)));
-    }
-
-    record ChargerRecipeBuilder(String name, Ingredient input, ItemStack output) implements FinishedRecipe {
-
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            json.add("ingredient", input.toJson());
-            json.add("result", toJson(output));
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return AppEng.makeId("charger/" + name);
-        }
-
-        @Override
-        public RecipeSerializer<?> getType() {
-            return ChargerRecipeSerializer.INSTANCE;
-        }
-
-        @Nullable
-        @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
-            return null;
-        }
+        ChargerRecipeBuilder.charge(consumer,
+                AppEng.makeId("charger/meteorite_compass"),
+                Items.COMPASS,
+                AEItems.METEORITE_COMPASS.asItem());
     }
 }

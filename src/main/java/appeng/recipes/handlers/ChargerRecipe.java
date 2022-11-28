@@ -2,6 +2,7 @@ package appeng.recipes.handlers;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -18,9 +19,9 @@ public class ChargerRecipe implements Recipe<Container> {
 
     private final ResourceLocation id;
     public final Ingredient ingredient;
-    public final ItemStack result;
+    public final Item result;
 
-    public ChargerRecipe(ResourceLocation id, Ingredient ingredient, ItemStack result) {
+    public ChargerRecipe(ResourceLocation id, Ingredient ingredient, Item result) {
         this.id = id;
         this.ingredient = ingredient;
         this.result = result;
@@ -43,7 +44,7 @@ public class ChargerRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return result;
+        return new ItemStack(result);
     }
 
     @Override
