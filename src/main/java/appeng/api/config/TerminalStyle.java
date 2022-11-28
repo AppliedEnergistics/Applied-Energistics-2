@@ -36,7 +36,7 @@ public enum TerminalStyle {
         this.multiplier = multiplier;
     }
 
-    public int getRows(int rows) {
-        return rows * this.multiplier / 4;
+    public int getRows(int maxRows) {
+        return maxRows * this.multiplier / 4;
     }
 }
