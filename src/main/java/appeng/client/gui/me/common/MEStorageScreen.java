@@ -34,7 +34,6 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -94,7 +93,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     private static final String TEXT_ID_ENTRIES_SHOWN = "entriesShown";
 
-    private static final int MIN_ROWS = 3;
+    private static final int MIN_ROWS = 2;
+    private static final int PADDING = 24;
 
     private static String rememberedSearch = "";
     private final TerminalStyle style;
@@ -176,12 +176,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         this.addToLeftToolbar(new ActionButton(ActionItems.TERMINAL_SETTINGS, this::showSettings));
 
-        // Show a button to toggle the terminal style if the style doesn't enforce a max number of rows
-        if (this.style.getMaxRows() == null) {
-            appeng.api.config.TerminalStyle terminalStyle = config.getTerminalStyle();
-            this.addToLeftToolbar(new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle,
-                    this::toggleTerminalStyle));
-        }
+        appeng.api.config.TerminalStyle terminalStyle = config.getTerminalStyle();
+        this.addToLeftToolbar(
+                new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
 
         this.widgets.add("upgrades", new UpgradesPanel(
                 menu.getSlots(SlotSemantics.UPGRADE),
@@ -312,9 +309,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public void init() {
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
+        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(true);
 
-        this.rows = Mth.clamp(style.getPossibleRows(height), MIN_ROWS, getMaxRows());
+        this.rows = Math.max(MIN_ROWS, config.getTerminalStyle().getRows(style.getPossibleRows(height, PADDING)));
 
         // Size the menu according to the number of rows we decided to have
         this.imageHeight = style.getScreenHeight(rows);
@@ -459,7 +456,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         // handler for middle mouse button crafting in survival mode
-        if (this.minecraft.options.keyPickItem.matchesMouse(btn)) {
+        if (Minecraft.getInstance().options.keyPickItem.matchesMouse(btn)) {
             Slot slot = this.findSlot(xCoord, yCoord);
             if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
                 handleGridInventoryEntryMouseClick(repoSlot.getEntry(), btn, ClickType.CLONE);
@@ -503,7 +500,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public void removed() {
         super.removed();
-        minecraft.keyboardHandler.setSendRepeatsToGui(false);
+        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(false);
         storeState();
 
         // Mark any keys as pruneable that were pinned due to crafting, but are no longer pending
@@ -675,14 +672,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
         } else {
             this.renderComponentTooltip(poseStack, currentToolTip, x, y);
         }
-    }
-
-    private int getMaxRows() {
-        Integer maxRows = style.getMaxRows();
-        if (maxRows != null) {
-            return maxRows;
-        }
-        return config.getTerminalStyle() == appeng.api.config.TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
     }
 
     @Override

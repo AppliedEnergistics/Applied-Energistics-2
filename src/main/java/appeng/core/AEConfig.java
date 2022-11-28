@@ -568,7 +568,7 @@ public final class AEConfig {
                     "Show toast when long-running crafting jobs finish.");
 
             var terminals = root.subsection("terminals");
-            this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.TALL);
+            this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.SMALL);
             this.pinAutoCraftedItems = terminals.addBoolean("pinAutoCraftedItems", true,
                     "Pin items that the player auto-crafts to the top of the terminal");
             this.clearGridOnClose = client.addBoolean("clearGridOnClose", false,

@@ -18,8 +18,6 @@
 
 package appeng.client.gui.style;
 
-import javax.annotation.Nullable;
-
 import appeng.client.Point;
 
 /**
@@ -51,11 +49,6 @@ public class TerminalStyle {
      * The area to draw at the bottom of the terminal (i.e. includes the player inventory)
      */
     private Blitter bottom;
-
-    /**
-     * If specified, limits the terminal to at most this many rows rather than using up available space.
-     */
-    private Integer maxRows;
 
     /**
      * Currently only 9 is supported here.
@@ -112,10 +105,6 @@ public class TerminalStyle {
         this.bottom = bottom;
     }
 
-    public void setMaxRows(Integer maxRows) {
-        this.maxRows = maxRows;
-    }
-
     public int getSlotsPerRow() {
         return slotsPerRow;
     }
@@ -142,9 +131,9 @@ public class TerminalStyle {
         return screenWidth;
     }
 
-    public int getPossibleRows(int availableHeight) {
-        return (availableHeight - header.getSrcHeight()
-                - bottom.getSrcHeight()) / row.getSrcHeight();
+    public int getPossibleRows(int availableHeight, int padding) {
+        return (availableHeight - padding - header.getSrcHeight()
+                - bottom.getSrcHeight() - padding) / row.getSrcHeight();
     }
 
     /**
@@ -161,15 +150,6 @@ public class TerminalStyle {
 
         // +1 is the margin between the bounding box of the slot and the real minecraft slot. this is due to the border
         return new Point(x, y).move(1, 1);
-    }
-
-    /**
-     * @return The number of rows this terminal should display (at most). If null, the player's chosen terminal style
-     *         determines the number of rows.
-     */
-    @Nullable
-    public Integer getMaxRows() {
-        return maxRows;
     }
 
     /**

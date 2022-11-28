@@ -36,7 +36,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Component.Serializer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -64,6 +63,7 @@ import appeng.menu.implementations.PatternAccessTermMenu;
 public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AEBaseScreen<C> {
 
     private static final int GUI_WIDTH = 195;
+    private static final int GUI_TOP_AND_BOTTOM_PADDING = 54;
 
     private static final int GUI_PADDING_X = 8;
     private static final int GUI_PADDING_Y = 6;
@@ -85,15 +85,6 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
      * Height of a table-row in pixels.
      */
     private static final int ROW_HEIGHT = 18;
-
-    /**
-     * Number of rows for a normal terminal (not tall)
-     */
-    private static final int DEFAULT_ROW_COUNT = 6;
-    /**
-     * Minimum rows for a tall terminal. Should prevent some strange aspect ratios from not displaying any rows.
-     */
-    private static final int MIN_ROW_COUNT = 3;
 
     /**
      * Size of a slot in both x and y dimensions in pixel, most likely always the same as ROW_HEIGHT.
@@ -157,11 +148,8 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     @Override
     public void init() {
-        // Decide on number of rows.
-        TerminalStyle terminalStyle = AEConfig.instance().getTerminalStyle();
-        int maxLines = terminalStyle == TerminalStyle.SMALL ? DEFAULT_ROW_COUNT : Integer.MAX_VALUE;
-        this.numLines = (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT) / ROW_HEIGHT;
-        this.numLines = Mth.clamp(this.numLines, MIN_ROW_COUNT, maxLines);
+        this.numLines = config.getTerminalStyle().getRows(
+                (this.height - GUI_HEADER_HEIGHT - GUI_FOOTER_HEIGHT - GUI_TOP_AND_BOTTOM_PADDING) / ROW_HEIGHT);
         // Render inventory in correct place.
         this.imageHeight = GUI_HEADER_HEIGHT + GUI_FOOTER_HEIGHT + this.numLines * ROW_HEIGHT;
 
