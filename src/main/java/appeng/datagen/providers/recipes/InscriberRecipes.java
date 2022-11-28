@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -43,11 +42,11 @@ public class InscriberRecipes extends AE2RecipeProvider {
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
 
         // Silicon Press Copying & Printing
-        InscriberRecipeBuilder.inscribe(Items.IRON_BLOCK, AEItems.SILICON_PRESS.stack())
+        InscriberRecipeBuilder.inscribe(Items.IRON_BLOCK, AEItems.SILICON_PRESS, 1)
                 .setTop(Ingredient.of(AEItems.SILICON_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/silicon_press"));
-        InscriberRecipeBuilder.inscribe(Ingredient.of(ConventionTags.SILICON), AEItems.SILICON_PRINT.stack())
+        InscriberRecipeBuilder.inscribe(ConventionTags.SILICON, AEItems.SILICON_PRINT, 1)
                 .setTop(Ingredient.of(AEItems.SILICON_PRESS))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/silicon_print"));
@@ -71,17 +70,16 @@ public class InscriberRecipes extends AE2RecipeProvider {
                 Ingredient.of(ConventionTags.GOLD_INGOT));
 
         // Crystal -> Dust Recipes
-        InscriberRecipeBuilder.inscribe(Ingredient.of(ConventionTags.FLUIX_CRYSTAL), AEItems.FLUIX_DUST.stack())
+        InscriberRecipeBuilder.inscribe(ConventionTags.FLUIX_CRYSTAL, AEItems.FLUIX_DUST, 1)
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/fluix_dust"));
-        InscriberRecipeBuilder.inscribe(Ingredient.of(ConventionTags.CERTUS_QUARTZ), AEItems.CERTUS_QUARTZ_DUST.stack())
+        InscriberRecipeBuilder.inscribe(ConventionTags.CERTUS_QUARTZ, AEItems.CERTUS_QUARTZ_DUST, 1)
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/certus_quartz_dust"));
-        InscriberRecipeBuilder.inscribe(Ingredient.of(AEBlocks.SKY_STONE_BLOCK), AEItems.SKY_DUST.stack())
+        InscriberRecipeBuilder.inscribe(AEBlocks.SKY_STONE_BLOCK, AEItems.SKY_DUST, 1)
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/sky_stone_dust"));
-
-        InscriberRecipeBuilder.inscribe(Ingredient.of(Items.ENDER_PEARL), AEItems.ENDER_DUST.stack())
+        InscriberRecipeBuilder.inscribe(Items.ENDER_PEARL, AEItems.ENDER_DUST, 1)
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/ender_dust"));
     }
@@ -93,20 +91,20 @@ public class InscriberRecipes extends AE2RecipeProvider {
             ItemLike processor,
             Ingredient printMaterial) {
         // Making the print
-        InscriberRecipeBuilder.inscribe(printMaterial, new ItemStack(print))
+        InscriberRecipeBuilder.inscribe(printMaterial, print, 1)
                 .setTop(Ingredient.of(press))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/" + name + "_print"));
 
         // Making the processor
-        InscriberRecipeBuilder.inscribe(Items.REDSTONE, new ItemStack(processor))
+        InscriberRecipeBuilder.inscribe(Items.REDSTONE, processor, 1)
                 .setTop(Ingredient.of(print))
                 .setBottom(Ingredient.of(AEItems.SILICON_PRINT))
                 .setMode(InscriberProcessType.PRESS)
                 .save(consumer, AppEng.makeId("inscriber/" + name));
 
         // Copying the press
-        InscriberRecipeBuilder.inscribe(Items.IRON_BLOCK, new ItemStack(press))
+        InscriberRecipeBuilder.inscribe(Items.IRON_BLOCK, press, 1)
                 .setTop(Ingredient.of(press))
                 .setMode(InscriberProcessType.INSCRIBE)
                 .save(consumer, AppEng.makeId("inscriber/" + name + "_press"));

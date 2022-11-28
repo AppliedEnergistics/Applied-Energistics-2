@@ -60,7 +60,7 @@ public class InscriberRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack assemble(Container inv) {
-        return this.output.copy();
+        return getResultItem().copy();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class InscriberRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return output;
+        return this.output;
     }
 
     @Override
@@ -90,11 +90,11 @@ public class InscriberRecipe implements Recipe<Container> {
 
     @Override
     public NonNullList<Ingredient> getIngredients() {
-        NonNullList<Ingredient> nonnulllist = NonNullList.create();
-        nonnulllist.add(this.topOptional);
-        nonnulllist.add(this.middleInput);
-        nonnulllist.add(this.bottomOptional);
-        return nonnulllist;
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        ingredients.add(this.topOptional);
+        ingredients.add(this.middleInput);
+        ingredients.add(this.bottomOptional);
+        return ingredients;
     }
 
     public Ingredient getMiddleInput() {

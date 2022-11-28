@@ -10,7 +10,8 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -19,20 +20,26 @@ public class InscriberRecipeBuilder {
     private final Ingredient middleInput;
     private Ingredient topOptional;
     private Ingredient bottomOptional;
-    private final ItemStack output;
+    private final ItemLike output;
+    private final int count;
     private InscriberProcessType mode = InscriberProcessType.INSCRIBE;
 
-    public InscriberRecipeBuilder(Ingredient middleInput, ItemStack output) {
+    public InscriberRecipeBuilder(Ingredient middleInput, ItemLike output, int count) {
         this.middleInput = middleInput;
         this.output = output;
+        this.count = count;
     }
 
-    public static InscriberRecipeBuilder inscribe(ItemLike middle, ItemStack output) {
-        return new InscriberRecipeBuilder(Ingredient.of(middle), output);
+    public static InscriberRecipeBuilder inscribe(ItemLike middle, ItemLike output, int count) {
+        return new InscriberRecipeBuilder(Ingredient.of(middle), output, count);
     }
 
-    public static InscriberRecipeBuilder inscribe(Ingredient middle, ItemStack output) {
-        return new InscriberRecipeBuilder(middle, output);
+    public static InscriberRecipeBuilder inscribe(TagKey<Item> middle, ItemLike output, int count) {
+        return new InscriberRecipeBuilder(Ingredient.of(middle), output, count);
+    }
+
+    public static InscriberRecipeBuilder inscribe(Ingredient middle, ItemLike output, int count) {
+        return new InscriberRecipeBuilder(middle, output, count);
     }
 
     public InscriberRecipeBuilder setTop(Ingredient topOptional) {
@@ -66,9 +73,9 @@ public class InscriberRecipeBuilder {
             json.addProperty("mode", mode.name().toLowerCase(Locale.ROOT));
 
             var result = new JsonObject();
-            result.addProperty("item", Registry.ITEM.getKey(output.getItem()).toString());
-            if (output.getCount() > 1) {
-                result.addProperty("count", output.getCount());
+            result.addProperty("item", Registry.ITEM.getKey(output.asItem()).toString());
+            if (count > 1) {
+                result.addProperty("count", count);
             }
             json.add("result", result);
 

@@ -44,33 +44,33 @@ public class TransformRecipes extends AE2RecipeProvider {
 
         // Fluix crystals
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/fluix_crystals"),
-                AEItems.FLUIX_CRYSTAL.asItem(), 2, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, Items.REDSTONE,
+                AEItems.FLUIX_CRYSTAL, 2, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, Items.REDSTONE,
                 Items.QUARTZ);
 
         // Recycle dust back into crystals
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/certus_quartz_crystals"),
-                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(), 2, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
+                AEItems.CERTUS_QUARTZ_CRYSTAL, 2, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
                 AEItems.CERTUS_QUARTZ_DUST);
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/fluix_crystal"),
-                AEItems.FLUIX_CRYSTAL.asItem(), 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEItems.FLUIX_DUST);
+                AEItems.FLUIX_CRYSTAL, 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED, AEItems.FLUIX_DUST);
 
         // Restore budding quartz
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/damaged_budding_quartz"),
-                AEBlocks.DAMAGED_BUDDING_QUARTZ.asItem(), 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
+                AEBlocks.DAMAGED_BUDDING_QUARTZ, 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
                 AEBlocks.QUARTZ_BLOCK);
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/chipped_budding_quartz"),
-                AEBlocks.CHIPPED_BUDDING_QUARTZ.asItem(), 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
+                AEBlocks.CHIPPED_BUDDING_QUARTZ, 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
                 AEBlocks.DAMAGED_BUDDING_QUARTZ);
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/flawed_budding_quartz"),
-                AEBlocks.FLAWED_BUDDING_QUARTZ.asItem(), 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
+                AEBlocks.FLAWED_BUDDING_QUARTZ, 1, water, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED,
                 AEBlocks.CHIPPED_BUDDING_QUARTZ);
 
         // Entangled Singularities
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/entangled_singularity"),
-                AEItems.QUANTUM_ENTANGLED_SINGULARITY.asItem(), 2, TransformCircumstance.EXPLOSION,
+                AEItems.QUANTUM_ENTANGLED_SINGULARITY, 2, TransformCircumstance.EXPLOSION,
                 Ingredient.of(AEItems.SINGULARITY), Ingredient.of(ConventionTags.ENDER_PEARL_DUST));
         TransformRecipeBuilder.transform(consumer, AppEng.makeId("transform/entangled_singularity_from_pearl"),
-                AEItems.QUANTUM_ENTANGLED_SINGULARITY.asItem(), 2, TransformCircumstance.EXPLOSION,
+                AEItems.QUANTUM_ENTANGLED_SINGULARITY, 2, TransformCircumstance.EXPLOSION,
                 Ingredient.of(AEItems.SINGULARITY), Ingredient.of(ConventionTags.ENDER_PEARL));
     }
 }
