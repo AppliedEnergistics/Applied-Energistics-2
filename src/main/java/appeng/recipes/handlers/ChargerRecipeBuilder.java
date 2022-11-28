@@ -12,11 +12,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 
 public class ChargerRecipeBuilder {
 
-    public static void charge(Consumer<FinishedRecipe> consumer, ResourceLocation id, Item input, Item output) {
+    public static void charge(Consumer<FinishedRecipe> consumer, ResourceLocation id, ItemLike input, Item output) {
         consumer.accept(new Result(id, Ingredient.of(input), output));
+    }
+
+    public static void charge(Consumer<FinishedRecipe> consumer, ResourceLocation id, Ingredient input, Item output) {
+        consumer.accept(new Result(id, input, output));
     }
 
     record Result(ResourceLocation id, Ingredient input, Item output) implements FinishedRecipe {

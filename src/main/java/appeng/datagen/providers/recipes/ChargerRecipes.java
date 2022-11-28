@@ -17,10 +17,9 @@ public class ChargerRecipes extends AE2RecipeProvider {
 
     @Override
     protected void buildAE2CraftingRecipes(Consumer<FinishedRecipe> consumer) {
-
         ChargerRecipeBuilder.charge(consumer,
                 AppEng.makeId("charger/charged_certus_quartz_crystal"),
-                AEItems.CERTUS_QUARTZ_CRYSTAL.asItem(),
+                AEItems.CERTUS_QUARTZ_CRYSTAL,
                 AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem());
         ChargerRecipeBuilder.charge(consumer,
                 AppEng.makeId("charger/meteorite_compass"),

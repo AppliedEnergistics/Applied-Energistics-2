@@ -47,11 +47,10 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
         tag(consumer, "nuggets/fish", "c:fish_nuggets", 32);
 
         // derived from real world atomic mass...
-        MatterCannonAmmo.tag(consumer, AppEng.makeId("matter_cannon/nuggets/iron"), ConventionTags.IRON_NUGGET,
+        MatterCannonAmmo.ammo(consumer, AppEng.makeId("matter_cannon/nuggets/iron"), ConventionTags.IRON_NUGGET,
                 55.845f);
-        MatterCannonAmmo.tag(consumer, AppEng.makeId("matter_cannon/nuggets/gold"), ConventionTags.GOLD_NUGGET,
+        MatterCannonAmmo.ammo(consumer, AppEng.makeId("matter_cannon/nuggets/gold"), ConventionTags.GOLD_NUGGET,
                 196.96655f);
-
         tag(consumer, "nuggets/lithium", "c:lithium_nuggets", 6.941f);
         tag(consumer, "nuggets/beryllium", "c:beryllium_nuggets", 9.0122f);
         tag(consumer, "nuggets/boron", "c:boron_nuggets", 10.811f);
@@ -113,11 +112,11 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
         tag(consumer, "nuggets/invar", "c:invar_nuggets", (58.6934f + 55.845f + 55.845f) / 3.0f);
         tag(consumer, "nuggets/electrum", "c:electrum_nuggets", (107.8682f + 196.96655f) / 2.0f);
 
-        MatterCannonAmmo.item(consumer, AppEng.makeId("matter_cannon/matter_ball"), AEItems.MATTER_BALL, 32.0f);
+        MatterCannonAmmo.ammo(consumer, AppEng.makeId("matter_cannon/matter_ball"), AEItems.MATTER_BALL, 32.0f);
     }
 
     private static void tag(Consumer<FinishedRecipe> consumer, String recipeId, String tagId, float weight) {
-        MatterCannonAmmo.tag(consumer, AppEng.makeId("matter_cannon/" + recipeId),
+        MatterCannonAmmo.ammo(consumer, AppEng.makeId("matter_cannon/" + recipeId),
                 TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(tagId)), weight);
     }
 }

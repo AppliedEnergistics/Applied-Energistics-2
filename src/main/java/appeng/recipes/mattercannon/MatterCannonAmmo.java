@@ -66,11 +66,15 @@ public class MatterCannonAmmo implements Recipe<Container> {
         this.weight = weight;
     }
 
-    public static void item(Consumer<FinishedRecipe> consumer, ResourceLocation id, ItemLike item, float weight) {
-        consumer.accept(new Ammo(id, null, item.asItem(), weight));
+    public static void ammo(Consumer<FinishedRecipe> consumer, ResourceLocation id, ItemLike item, float weight) {
+        consumer.accept(new Ammo(id, null, Ingredient.of(item), weight));
     }
 
-    public static void tag(Consumer<FinishedRecipe> consumer, ResourceLocation id, TagKey<Item> tag, float weight) {
+    public static void ammo(Consumer<FinishedRecipe> consumer, ResourceLocation id, Ingredient ammo, float weight) {
+        consumer.accept(new Ammo(id, null, ammo, weight));
+    }
+
+    public static void ammo(Consumer<FinishedRecipe> consumer, ResourceLocation id, TagKey<Item> tag, float weight) {
         consumer.accept(new Ammo(id, tag, null, weight));
     }
 
@@ -122,15 +126,16 @@ public class MatterCannonAmmo implements Recipe<Container> {
         return weight;
     }
 
-    public record Ammo(ResourceLocation id, TagKey<Item> tag, Item item, float weight) implements FinishedRecipe {
+    public record Ammo(ResourceLocation id, TagKey<Item> tag, Ingredient nonTag,
+            float weight) implements FinishedRecipe {
 
         @Override
         public void serializeRecipeData(JsonObject json) {
             if (tag != null) {
                 json.add("ammo", Ingredient.of(tag).toJson());
-                ConditionJsonProvider.write(json, DefaultResourceConditions.itemTagsPopulated(tag));
-            } else if (item != null) {
-                json.add("ammo", Ingredient.of(item).toJson());
+                ConditionJsonProvider.write(json, DefaultResourceConditions.tagsPopulated(tag));
+            } else if (nonTag != null) {
+                json.add("ammo", nonTag.toJson());
             }
             json.addProperty("weight", this.weight);
         }
