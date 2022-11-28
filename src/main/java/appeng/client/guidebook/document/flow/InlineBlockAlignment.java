@@ -5,8 +5,7 @@ package appeng.client.guidebook.document.flow;
  */
 public enum InlineBlockAlignment {
     /**
-     * Place it in the line like any other line element. This means text will not
-     * wrap around it to fill the height.
+     * Place it in the line like any other line element. This means text will not wrap around it to fill the height.
      */
     INLINE,
     /**

@@ -1,10 +1,11 @@
 package appeng.client.guidebook.document.flow;
 
-import appeng.client.guidebook.document.interaction.GuideTooltip;
-import appeng.client.guidebook.document.interaction.InteractiveElement;
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import appeng.client.guidebook.document.interaction.GuideTooltip;
+import appeng.client.guidebook.document.interaction.InteractiveElement;
 
 /**
  * An inline span that allows a tooltip to be shown on hover.

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appeng.client.guidebook.style.Styleable;
-import appeng.client.guidebook.style.TextStyle;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Attaches properties to a span of {@link LytFlowContent}, such as links or formatting.

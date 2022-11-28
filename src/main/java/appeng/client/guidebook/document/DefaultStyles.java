@@ -1,10 +1,10 @@
 package appeng.client.guidebook.document;
 
-import appeng.client.guidebook.style.TextAlignment;
 import net.minecraft.client.Minecraft;
 
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.client.guidebook.style.ResolvedTextStyle;
+import appeng.client.guidebook.style.TextAlignment;
 import appeng.client.guidebook.style.TextStyle;
 import appeng.client.guidebook.style.WhiteSpaceMode;
 

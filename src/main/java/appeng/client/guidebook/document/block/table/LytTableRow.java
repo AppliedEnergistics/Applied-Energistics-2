@@ -1,11 +1,10 @@
 package appeng.client.guidebook.document.block.table;
 
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.document.block.LytNode;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.block.LytNode;
 
 /**
  * A row in {@link LytTable}. Contains {@link LytTableCell}.

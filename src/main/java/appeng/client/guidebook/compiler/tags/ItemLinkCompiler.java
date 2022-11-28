@@ -8,27 +8,15 @@ import appeng.client.guidebook.document.interaction.ItemTooltip;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 
 public class ItemLinkCompiler extends FlowTagCompiler {
     @Override
     public void compile(PageCompiler compiler, LytFlowParent parent, MdxJsxElementFields el) {
-        var shortId = el.getAttributeString("id", null);
-
-        ResourceLocation id;
-        try {
-            id = compiler.resolveId(shortId);
-        } catch (Exception e) {
-            parent.append(compiler.createErrorFlowContent("Invalid item id " + shortId, (MdAstNode) el));
-            return;
-        }
-
-        var item = Registry.ITEM.getOptional(id).orElse(null);
+        var item = MdxAttrs.getRequiredItem(compiler, parent, el, "id");
         if (item == null) {
-            parent.append(compiler.createErrorFlowContent("Unable to find item " + id, (MdAstNode) el));
             return;
         }
+        var id = item.builtInRegistryHolder().key().location();
 
         var linksTo = ItemIndex.INSTANCE.get(id);
         // We'll error out for item-links to our own mod because we expect them to have a page

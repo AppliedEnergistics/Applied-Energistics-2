@@ -1,9 +1,9 @@
 package appeng.client.guidebook.layout;
 
+import java.util.List;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
-
-import java.util.List;
 
 public final class Layouts {
     private Layouts() {
@@ -29,7 +29,8 @@ public final class Layouts {
         for (var child : children) {
             // Account for margins of the child, and margin collapsing
             if (previousBlock != null && previousBlock.getMarginBottom() > 0) {
-                innerY += Math.max(previousBlock.getMarginBottom(), child.getMarginTop()) - previousBlock.getMarginBottom();
+                innerY += Math.max(previousBlock.getMarginBottom(), child.getMarginTop())
+                        - previousBlock.getMarginBottom();
             } else {
                 innerY += child.getMarginTop();
             }
@@ -43,8 +44,7 @@ public final class Layouts {
         return new LytRect(
                 x, y,
                 availableWidth,
-                contentHeight + paddingBottom
-        );
+                contentHeight + paddingBottom);
     }
 
 }

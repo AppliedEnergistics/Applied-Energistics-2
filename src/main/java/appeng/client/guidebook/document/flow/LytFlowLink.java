@@ -1,10 +1,11 @@
 package appeng.client.guidebook.document.flow;
 
-import appeng.client.guidebook.render.SymbolicColor;
-import appeng.client.guidebook.screen.GuideScreen;
+import java.util.function.Consumer;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import appeng.client.guidebook.render.SymbolicColor;
+import appeng.client.guidebook.screen.GuideScreen;
 
 public class LytFlowLink extends LytTooltipSpan {
     @Nullable

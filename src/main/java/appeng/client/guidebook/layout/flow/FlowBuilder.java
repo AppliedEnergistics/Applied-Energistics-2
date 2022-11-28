@@ -1,18 +1,20 @@
 package appeng.client.guidebook.layout.flow;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.style.TextAlignment;
-import net.minecraft.client.renderer.MultiBufferSource;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class FlowBuilder {
     private final List<Line> lines = new ArrayList<>();
@@ -48,7 +50,8 @@ public class FlowBuilder {
         }
     }
 
-    public void renderFloatsBatch(RenderContext context, MultiBufferSource buffers, @Nullable LytFlowContent hoveredContent) {
+    public void renderFloatsBatch(RenderContext context, MultiBufferSource buffers,
+            @Nullable LytFlowContent hoveredContent) {
         for (var line : lines) {
             for (var el = line.firstElement(); el != null; el = el.next) {
                 el.containsMouse = hoveredContent != null && hoveredContent.isInclusiveAncestor(el.getFlowContent());

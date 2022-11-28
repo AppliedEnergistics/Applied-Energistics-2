@@ -1,5 +1,19 @@
 package appeng.client.guidebook.screen;
 
+import java.util.Optional;
+import java.util.function.Function;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
@@ -18,17 +32,6 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
-import java.util.function.Function;
 
 public class GuideScreen extends Screen {
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
@@ -133,26 +136,22 @@ public class GuideScreen extends Screen {
                 if (block.getMarginTop() > 0) {
                     context.fillRect(
                             bounds.withHeight(block.getMarginTop()).move(0, -block.getMarginTop()),
-                            new ColorRef(0x7FFFFF00)
-                    );
+                            new ColorRef(0x7FFFFF00));
                 }
                 if (block.getMarginBottom() > 0) {
                     context.fillRect(
                             bounds.withHeight(block.getMarginBottom()).move(0, bounds.height()),
-                            new ColorRef(0x7FFFFF00)
-                    );
+                            new ColorRef(0x7FFFFF00));
                 }
                 if (block.getMarginLeft() > 0) {
                     context.fillRect(
                             bounds.withWidth(block.getMarginLeft()).move(-block.getMarginLeft(), 0),
-                            new ColorRef(0x7FFFFF00)
-                    );
+                            new ColorRef(0x7FFFFF00));
                 }
                 if (block.getMarginRight() > 0) {
                     context.fillRect(
                             bounds.withWidth(block.getMarginRight()).move(bounds.width(), 0),
-                            new ColorRef(0x7FFFFF00)
-                    );
+                            new ColorRef(0x7FFFFF00));
                 }
             }
 

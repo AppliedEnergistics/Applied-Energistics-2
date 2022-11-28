@@ -1,8 +1,10 @@
 package appeng.client.guidebook.style;
 
-import appeng.client.guidebook.render.ColorRef;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.client.guidebook.render.ColorRef;
 
 public record TextStyle(
         @Nullable Float fontScale,
@@ -14,8 +16,7 @@ public record TextStyle(
         @Nullable ResourceLocation font,
         @Nullable ColorRef color,
         @Nullable WhiteSpaceMode whiteSpace,
-        @Nullable TextAlignment alignment
-) {
+        @Nullable TextAlignment alignment) {
 
     public static final TextStyle EMPTY = new TextStyle(null, null, null, null, null, null, null, null, null, null);
 

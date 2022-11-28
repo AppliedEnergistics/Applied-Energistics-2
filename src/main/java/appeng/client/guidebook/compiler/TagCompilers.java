@@ -1,14 +1,15 @@
 package appeng.client.guidebook.compiler;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import appeng.client.guidebook.compiler.tags.ATagCompiler;
 import appeng.client.guidebook.compiler.tags.BreakCompiler;
 import appeng.client.guidebook.compiler.tags.DivTagCompiler;
 import appeng.client.guidebook.compiler.tags.FloatingImageCompiler;
 import appeng.client.guidebook.compiler.tags.ItemLinkCompiler;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import appeng.client.guidebook.compiler.tags.RecipeForCompiler;
 
 /**
  * Maintains a mapping between MDX Tag-Names to handlers for compiling these tags.
@@ -22,6 +23,7 @@ public final class TagCompilers {
         register("ItemLink", new ItemLinkCompiler());
         register("FloatingImage", new FloatingImageCompiler());
         register("br", new BreakCompiler());
+        register("RecipeFor", new RecipeForCompiler());
     }
 
     public static void register(String tagName, TagCompiler handler) {

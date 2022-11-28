@@ -1,8 +1,9 @@
 package appeng.client.guidebook.document.flow;
 
+import org.jetbrains.annotations.Nullable;
+
 import appeng.client.guidebook.style.Styleable;
 import appeng.client.guidebook.style.TextStyle;
-import org.jetbrains.annotations.Nullable;
 
 public class LytFlowContent implements Styleable {
     private TextStyle style = TextStyle.EMPTY;
@@ -19,8 +20,7 @@ public class LytFlowContent implements Styleable {
     }
 
     /**
-     * Gets the parent of this flow content that is itself flow content.
-     * Null if the parent is null or not flow content.
+     * Gets the parent of this flow content that is itself flow content. Null if the parent is null or not flow content.
      */
     @Nullable
     public LytFlowContent getFlowParent() {
@@ -35,7 +35,6 @@ public class LytFlowContent implements Styleable {
         }
         return false;
     }
-
 
     @Override
     public TextStyle getStyle() {

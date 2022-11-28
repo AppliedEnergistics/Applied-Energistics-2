@@ -1,5 +1,12 @@
 package appeng.client.guidebook.layout.flow;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
@@ -7,12 +14,6 @@ import appeng.client.guidebook.layout.FontMetrics;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 import appeng.client.guidebook.style.TextAlignment;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class LineBuilderTest {
 

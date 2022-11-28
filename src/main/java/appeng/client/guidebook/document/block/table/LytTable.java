@@ -1,14 +1,15 @@
 package appeng.client.guidebook.document.block.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
-import net.minecraft.client.renderer.MultiBufferSource;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LytTable extends LytBlock {
     /**
@@ -55,8 +56,7 @@ public class LytTable extends LytBlock {
         return new LytRect(
                 x, y,
                 availableWidth,
-                currentY - y
-        );
+                currentY - y);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class LytTable extends LytBlock {
         for (int i = 0; i < columns.size() - 1; i++) {
             var column = columns.get(i);
             if (i == 0) {
-                //context.fillRect(column.x - 1, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER.ref());
+                // context.fillRect(column.x - 1, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER.ref());
             }
             var colRight = column.x + column.width;
             context.fillRect(colRight, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER.ref());
@@ -85,7 +85,8 @@ public class LytTable extends LytBlock {
             var row = rows.get(i);
 
             if (i == 0) {
-                //context.fillRect(bounds.x(), row.bounds.y() - 1, bounds.width(), 1, SymbolicColor.TABLE_BORDER.ref());
+                // context.fillRect(bounds.x(), row.bounds.y() - 1, bounds.width(), 1,
+                // SymbolicColor.TABLE_BORDER.ref());
             }
             context.fillRect(bounds.x(), row.bounds.bottom(), bounds.width(), 1, SymbolicColor.TABLE_BORDER.ref());
         }
@@ -119,4 +120,3 @@ public class LytTable extends LytBlock {
         return rows;
     }
 }
-

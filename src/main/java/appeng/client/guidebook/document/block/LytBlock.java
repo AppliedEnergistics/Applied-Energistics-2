@@ -1,9 +1,10 @@
 package appeng.client.guidebook.document.block;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
-import net.minecraft.client.renderer.MultiBufferSource;
 
 public abstract class LytBlock extends LytNode {
     /**
