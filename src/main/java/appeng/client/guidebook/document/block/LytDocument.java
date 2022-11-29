@@ -1,18 +1,17 @@
 package appeng.client.guidebook.document.block;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.renderer.MultiBufferSource;
-
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
+import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.Layouts;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import net.minecraft.client.renderer.MultiBufferSource;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Layout document. Has a viewport and an overall size which may exceed the document size vertically, but not
@@ -122,11 +121,20 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     }
 
     public HitTestResult pick(int x, int y) {
-        var node = pickNode(x, y);
+        return pick(this, x, y);
+    }
+
+    private static HitTestResult pick(LytNode root, int x, int y) {
+        var node = root.pickNode(x, y);
         if (node != null) {
             LytFlowContent content = null;
             if (node instanceof LytFlowContainer container) {
                 content = container.pickContent(x, y);
+
+                // If the content is an inline-block, we descend into it! (This can go on and on and on...)
+                if (content instanceof LytFlowInlineBlock inlineBlock && inlineBlock.getBlock() != null) {
+                    return pick(inlineBlock.getBlock(), x, y);
+                }
             }
             return new HitTestResult(node, content);
         }

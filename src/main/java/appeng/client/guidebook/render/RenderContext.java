@@ -1,22 +1,23 @@
 package appeng.client.guidebook.render;
 
+import appeng.client.gui.Icon;
+import appeng.client.gui.style.BackgroundGenerator;
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.client.guidebook.style.ResolvedTextStyle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Vector3f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
-
-import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.client.guidebook.style.ResolvedTextStyle;
 
 public interface RenderContext {
 
@@ -30,17 +31,21 @@ public interface RenderContext {
 
     void fillRect(LytRect rect, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft);
 
+    default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight,
+                                  ColorRef bottomRight, ColorRef bottomLeft) {
+        // Just use the entire texture by default
+        fillTexturedRect(rect, texture, topLeft, topRight, bottomRight, bottomLeft, 0, 0, 1, 1);
+    }
+
     void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight,
-            ColorRef bottomRight, ColorRef bottomLeft);
+                          ColorRef bottomRight, ColorRef bottomLeft, float u0, float v0, float u1, float v1);
 
     default void fillTexturedRect(LytRect rect, GuidePageTexture texture) {
-        var color = new ColorRef(-1);
-        fillTexturedRect(rect, texture.use(), color);
+        fillTexturedRect(rect, texture.use(), ColorRef.WHITE);
     }
 
     default void fillTexturedRect(LytRect rect, AbstractTexture texture) {
-        var color = new ColorRef(-1);
-        fillTexturedRect(rect, texture, color);
+        fillTexturedRect(rect, texture, ColorRef.WHITE);
     }
 
     default void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef color) {
@@ -49,6 +54,22 @@ public interface RenderContext {
 
     default void fillTexturedRect(LytRect rect, GuidePageTexture texture, ColorRef color) {
         fillTexturedRect(rect, texture.use(), color, color, color, color);
+    }
+
+    default void fillTexturedRect(LytRect rect, TextureAtlasSprite sprite, ColorRef color) {
+        fillTexturedRect(rect, sprite.atlas(), color, color, color, color,
+                sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1());
+    }
+
+    default void drawIcon(int x, int y, Icon icon, ColorRef color) {
+        var u0 = icon.x / (float) Icon.TEXTURE_WIDTH;
+        var v0 = icon.y / (float) Icon.TEXTURE_HEIGHT;
+        var u1 = (icon.x + icon.width) / (float) Icon.TEXTURE_WIDTH;
+        var v1 = (icon.y + icon.height) / (float) Icon.TEXTURE_HEIGHT;
+
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(Icon.TEXTURE);
+        fillTexturedRect(new LytRect(x, y, icon.width, icon.height), texture, color, color, color, color,
+                u0, v0, u1, v1);
     }
 
     void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorRef color);
@@ -133,4 +154,8 @@ public interface RenderContext {
     }
 
     void renderItem(ItemStack stack, int x, int y, int z, float width, float height);
+
+    default void renderPanel(LytRect bounds) {
+        BackgroundGenerator.draw(bounds.width(), bounds.height(), poseStack(), 0, bounds.x(), bounds.y());
+    }
 }

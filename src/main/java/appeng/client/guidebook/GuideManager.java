@@ -1,5 +1,40 @@
 package appeng.client.guidebook;
 
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.indices.PageIndex;
+import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.util.Platform;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.LoadingOverlay;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.ReloadableServerResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.ServerPacksSource;
+import net.minecraft.server.packs.resources.MultiPackResourceManager;
+import net.minecraft.server.packs.resources.ReloadInstance;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,29 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
-
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.client.guidebook.indices.PageIndex;
-import appeng.client.guidebook.navigation.NavigationTree;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AppEng;
 
 public final class GuideManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideManager.class);
@@ -72,6 +84,57 @@ public final class GuideManager {
 
     public static void init() {
         // Guaranteed init order
+
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            if (client.getOverlay() instanceof LoadingOverlay loadingOverlay) {
+                ReloadInstance reloadInstance;
+                try {
+                    reloadInstance = (ReloadInstance) FieldUtils.readField(loadingOverlay, "reload", true);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+                reloadInstance.done().thenRunAsync(() -> {
+                            var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
+                            var screen = new GuideScreen(page);
+
+                            try {
+                                var access = RegistryAccess.BUILTIN.get();
+
+                                PackRepository packRepository = new PackRepository(
+                                        PackType.SERVER_DATA,
+                                        new ServerPacksSource(),
+                                        new ModResourcePackCreator(PackType.SERVER_DATA)
+                                );
+                                packRepository.reload();
+                                packRepository.setSelected(ModResourcePackUtil.createDefaultDataPackSettings().getEnabled());
+
+
+                                var closeableResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA, packRepository.openAllSelected());
+                                var stuff = ReloadableServerResources.loadResources(
+                                        closeableResourceManager,
+                                        access,
+                                        Commands.CommandSelection.ALL,
+                                        0,
+                                        Util.backgroundExecutor(),
+                                        Runnable::run
+                                ).get();
+                                stuff.updateRegistryTags(access);
+                                Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            client.setScreen(screen);
+                        }, client)
+                        .exceptionally(throwable -> {
+                            AELog.error(throwable);
+                            return null;
+                        });
+            } else {
+                var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
+                client.setScreen(new GuideScreen(page));
+            }
+        });
     }
 
     @Nullable
@@ -132,7 +195,7 @@ public final class GuideManager {
 
         @Override
         protected Map<ResourceLocation, ParsedGuidePage> prepare(ResourceManager resourceManager,
-                ProfilerFiller profiler) {
+                                                                 ProfilerFiller profiler) {
             profiler.startTick();
             Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
@@ -157,7 +220,7 @@ public final class GuideManager {
 
         @Override
         protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager,
-                ProfilerFiller profiler) {
+                             ProfilerFiller profiler) {
             profiler.startTick();
             GuideManager.this.pages = pages;
             profiler.push("indices");

@@ -1,6 +1,8 @@
 package appeng.client.guidebook.render;
 
 public class ColorRef {
+    public static final ColorRef WHITE = new ColorRef(-1);
+
     final SymbolicColor symbolic;
     final int concrete;
 

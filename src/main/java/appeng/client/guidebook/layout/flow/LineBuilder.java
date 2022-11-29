@@ -1,10 +1,5 @@
 package appeng.client.guidebook.layout.flow;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import org.jetbrains.annotations.Nullable;
-
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.InlineBlockAlignment;
@@ -15,6 +10,10 @@ import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 import appeng.client.guidebook.style.TextAlignment;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Does inline-flow layout similar to how it is described here:
@@ -36,12 +35,12 @@ class LineBuilder implements Consumer<LytFlowContent> {
     private final TextAlignment alignment;
 
     public LineBuilder(LayoutContext context,
-            int x,
-            int y,
-            int availableWidth,
-            List<Line> lines,
-            List<LineBlock> floats,
-            TextAlignment alignment) {
+                       int x,
+                       int y,
+                       int availableWidth,
+                       List<Line> lines,
+                       List<LineBlock> floats,
+                       TextAlignment alignment) {
         this.floats = floats;
         this.alignment = alignment;
         this.context = context;
@@ -72,7 +71,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
             openLineElement = new LineTextRun("", DefaultStyles.BASE_STYLE, DefaultStyles.BASE_STYLE);
             openLineElement.flowContent = flowContent;
         }
-        closeLine();
+        endLine();
 
         // Clear floats, if requested
         if (flowContent instanceof LytFlowBreak flowBreak) {
@@ -103,6 +102,8 @@ class LineBuilder implements Consumer<LytFlowContent> {
             // Float it to the left of the actual text content.
             // endLine will take care of moving any existing text in the line
             el.bounds = el.bounds.withX(getInnerLeftEdge() + marginLeft).withY(lineBoxY + marginTop);
+            // Update the layout of the contained block to update its absolute position
+            block.layout(context, el.bounds.x(), el.bounds.y(), size.width());
             el.floating = true;
             context.addLeftFloat(el.bounds.expand(0, 0, marginRight, marginBottom));
             floats.add(el);
@@ -111,6 +112,8 @@ class LineBuilder implements Consumer<LytFlowContent> {
             // Float it to the right the actual text content.
             el.bounds = el.bounds.withX(getInnerRightEdge() - el.bounds.width() + marginRight)
                     .withY(lineBoxY + marginTop);
+            // Update the layout of the contained block to update its absolute position
+            block.layout(context, el.bounds.x(), el.bounds.y(), size.width());
             el.floating = true;
             context.addRightFloat(el.bounds.expand(marginLeft, 0, 0, marginBottom));
             floats.add(el);
@@ -132,7 +135,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
         }
 
         // First, try closing out any open line if we don't have enough space
-        closeLine();
+        endLine();
 
         if (width <= remainingLineWidth) {
             return; // We got enough by ending the current line and advancing to the next
@@ -190,7 +193,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
                 remainingLineWidth -= el.bounds.width();
             }
             if (endLine) {
-                closeLine();
+                endLine();
             }
         });
     }
@@ -289,7 +292,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
         }
     }
 
-    private void closeLine() {
+    private void endLine() {
         if (openLineElement == null) {
             return;
         }
@@ -315,6 +318,10 @@ class LineBuilder implements Consumer<LytFlowContent> {
         // reposition all line elements
         for (var el = openLineElement; el != null; el = el.next) {
             el.bounds = el.bounds.move(xTranslation, lineBoxY);
+            // Ensure that inline blocks update their blocks absolute position
+            if (el instanceof LineBlock lineBlock) {
+                lineBlock.getBlock().layout(context, el.bounds.x(), el.bounds.y(), el.bounds.width());
+            }
         }
 
         var lineBounds = new LytRect(lineBoxX, lineBoxY, lineBoxWidth, lineHeight);
@@ -363,7 +370,7 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     public void end() {
-        closeLine();
+        endLine();
     }
 
     public LytRect getBounds() {

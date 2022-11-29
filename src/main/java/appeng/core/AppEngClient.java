@@ -208,26 +208,6 @@ public class AppEngClient extends AppEngBase {
 
         MouseWheelScrolled.EVENT.register(this::wheelEvent);
         WorldRenderEvents.LAST.register(OverlayManager.getInstance()::renderWorldLastEvent);
-
-        if (client.getOverlay() instanceof LoadingOverlay loadingOverlay) {
-            ReloadInstance reloadInstance;
-            try {
-                reloadInstance = (ReloadInstance) FieldUtils.readField(loadingOverlay, "reload", true);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            reloadInstance.done().thenRunAsync(() -> {
-                var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
-                client.setScreen(new GuideScreen(page));
-            }, client)
-                    .exceptionally(throwable -> {
-                        AELog.error(throwable);
-                        return null;
-                    });
-        } else {
-            var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
-            client.setScreen(new GuideScreen(page));
-        }
     }
 
     private void registerEntityRenderers() {

@@ -18,44 +18,6 @@
 
 package appeng.util;
 
-import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.collect.Iterables;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.material.Fluid;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -81,6 +43,43 @@ import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridNode;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.prioritylist.IPartitionList;
+import com.google.common.collect.Iterables;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
+
+import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class Platform {
 
@@ -93,8 +92,8 @@ public class Platform {
 
     private static final P2PHelper P2P_HELPER = new P2PHelper();
 
-    public static final Direction[] DIRECTIONS_WITH_NULL = new Direction[] { Direction.DOWN, Direction.UP,
-            Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null };
+    public static final Direction[] DIRECTIONS_WITH_NULL = new Direction[]{Direction.DOWN, Direction.UP,
+            Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null};
 
     /**
      * Class of the Create Ponder Level. Enables {@link VisualStateSaving} if a block entity is attached to a Ponder
@@ -103,6 +102,16 @@ public class Platform {
     @org.jetbrains.annotations.Nullable
     private static final Class<?> ponderLevelClass = findPonderLevelClass(
             "com.simibubi.create.foundation.ponder.PonderWorld");
+    public static RecipeManager fallbackClientRecipeManager;
+
+    public static RecipeManager getClientRecipeManager() {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.level != null) {
+            return minecraft.level.getRecipeManager();
+        }
+
+        return fallbackClientRecipeManager;
+    }
 
     private static Class<?> findPonderLevelClass(String className) {
         if (!hasClientClasses()) {
@@ -144,7 +153,7 @@ public class Platform {
         var displayUnits = AEConfig.instance().getSelectedPowerUnit();
         p = PowerUnits.AE.convertTo(displayUnits, p);
 
-        final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
+        final String[] preFixes = {"k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y"};
         var unitName = displayUnits.getSymbolName();
 
         String level = "";
@@ -188,7 +197,7 @@ public class Platform {
             default ->
 
                 // something is better then nothing?
-                Direction.NORTH;
+                    Direction.NORTH;
         };
 
     }
@@ -216,10 +225,10 @@ public class Platform {
     }
 
     public static boolean checkPermissions(Player player,
-            IActionHost actionHost,
-            SecurityPermissions requiredPermission,
-            boolean requirePower,
-            boolean notifyPlayer) {
+                                           IActionHost actionHost,
+                                           SecurityPermissions requiredPermission,
+                                           boolean requirePower,
+                                           boolean notifyPlayer) {
         var gn = actionHost.getActionableNode();
         if (gn != null) {
             var g = gn.getGrid();
@@ -459,17 +468,17 @@ public class Platform {
     }
 
     public static ItemStack extractItemsByRecipe(IEnergySource energySrc,
-            IActionSource mySrc,
-            MEStorage src,
-            Level level,
-            Recipe<CraftingContainer> r,
-            ItemStack output,
-            CraftingContainer ci,
-            ItemStack providedTemplate,
-            int slot,
-            KeyCounter items,
-            Actionable realForFake,
-            IPartitionList filter) {
+                                                 IActionSource mySrc,
+                                                 MEStorage src,
+                                                 Level level,
+                                                 Recipe<CraftingContainer> r,
+                                                 ItemStack output,
+                                                 CraftingContainer ci,
+                                                 ItemStack providedTemplate,
+                                                 int slot,
+                                                 KeyCounter items,
+                                                 Actionable realForFake,
+                                                 IPartitionList filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
                 return ItemStack.EMPTY;
