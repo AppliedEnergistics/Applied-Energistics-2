@@ -11,6 +11,8 @@ public interface MdxJsxElementFields extends UnistNode {
 
     List<MdxJsxAttributeNode> attributes();
 
+    List<? extends UnistNode> children();
+
     default String getAttributeString(String name, String defaultValue) {
         for (var attributeNode : attributes()) {
             if (attributeNode instanceof MdxJsxAttribute jsxAttribute) {

@@ -36,6 +36,7 @@ import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
 import appeng.libs.mdast.model.MdAstAnyContent;
 import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstCode;
+import appeng.libs.mdast.model.MdAstEmphasis;
 import appeng.libs.mdast.model.MdAstHeading;
 import appeng.libs.mdast.model.MdAstImage;
 import appeng.libs.mdast.model.MdAstInlineCode;
@@ -54,6 +55,7 @@ import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
+import appeng.libs.unist.UnistNode;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -303,6 +305,11 @@ public final class PageCompiler {
             span.modifyStyle(style -> style.bold(true));
             compileFlowContext(astStrong, span);
             layoutChild = span;
+        } else if (content instanceof MdAstEmphasis astEmphasis) {
+            var span = new LytFlowSpan();
+            span.modifyStyle(style -> style.italic(true));
+            compileFlowContext(astEmphasis, span);
+            layoutChild = span;
         } else if (content instanceof MdAstBreak) {
             layoutChild = new LytFlowBreak();
         } else if (content instanceof MdAstLink astLink) {
@@ -391,13 +398,13 @@ public final class PageCompiler {
         return image;
     }
 
-    public LytBlock createErrorBlock(String text, MdAstNode child) {
+    public LytBlock createErrorBlock(String text, UnistNode child) {
         var paragraph = new LytParagraph();
         paragraph.append(createErrorFlowContent(text, child));
         return paragraph;
     }
 
-    public LytFlowContent createErrorFlowContent(String text, MdAstNode child) {
+    public LytFlowContent createErrorFlowContent(String text, UnistNode child) {
         LytFlowSpan span = new LytFlowSpan();
         span.modifyStyle(style -> {
             style.color(new ColorRef(0xFFFF0000))

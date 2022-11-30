@@ -2,11 +2,13 @@ package appeng.client.guidebook.compiler;
 
 import appeng.client.guidebook.compiler.tags.ATagCompiler;
 import appeng.client.guidebook.compiler.tags.BreakCompiler;
+import appeng.client.guidebook.compiler.tags.CategoryIndexCompiler;
 import appeng.client.guidebook.compiler.tags.DivTagCompiler;
 import appeng.client.guidebook.compiler.tags.FloatingImageCompiler;
 import appeng.client.guidebook.compiler.tags.ItemGridCompiler;
 import appeng.client.guidebook.compiler.tags.ItemLinkCompiler;
 import appeng.client.guidebook.compiler.tags.RecipeForCompiler;
+import appeng.client.guidebook.indices.CategoryIndex;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -26,6 +28,7 @@ public final class TagCompilers {
         register("br", new BreakCompiler());
         register("RecipeFor", new RecipeForCompiler());
         register("ItemGrid", new ItemGridCompiler());
+        register("CategoryIndex", new CategoryIndexCompiler());
     }
 
     public static void register(String tagName, TagCompiler handler) {

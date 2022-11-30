@@ -3,7 +3,6 @@ package appeng.client.guidebook.compiler.tags;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.LytErrorSink;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
-import appeng.libs.mdast.model.MdAstNode;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -23,21 +22,23 @@ public final class MdxAttrs {
                                        String attribute) {
         var id = el.getAttributeString(attribute, null);
         if (id == null) {
-            errorSink.appendError(compiler, "Missing " + attribute + " attribute.", (MdAstNode) el);
+            errorSink.appendError(compiler, "Missing " + attribute + " attribute.", el);
             return null;
         }
+
+        id = id.trim(); // Trim leading/trailing whitespace for easier use
 
         ResourceLocation itemId;
         try {
             itemId = compiler.resolveId(id);
         } catch (ResourceLocationException e) {
-            errorSink.appendError(compiler, "Malformed item id " + id + ": " + e.getMessage(), (MdAstNode) el);
+            errorSink.appendError(compiler, "Malformed item id " + id + ": " + e.getMessage(), el);
             return null;
         }
 
         var resultItem = Registry.ITEM.getOptional(itemId).orElse(null);
         if (resultItem == null) {
-            errorSink.appendError(compiler, "Missing item: " + itemId, (MdAstNode) el);
+            errorSink.appendError(compiler, "Missing item: " + itemId, el);
             return null;
         }
         return resultItem;

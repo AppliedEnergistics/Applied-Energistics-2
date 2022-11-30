@@ -20,19 +20,19 @@ number of items they can store depends in part on how many types they're
 holding, and their storage capacity.
 
 <ItemGrid>
-  <ItemIcon itemId="item_storage_cell_1k" />
-  <ItemIcon itemId="item_storage_cell_4k" />
-  <ItemIcon itemId="item_storage_cell_16k" />
-  <ItemIcon itemId="item_storage_cell_64k" />
+  <ItemIcon id="item_storage_cell_1k" />
+  <ItemIcon id="item_storage_cell_4k" />
+  <ItemIcon id="item_storage_cell_16k" />
+  <ItemIcon id="item_storage_cell_64k" />
 </ItemGrid>
 
 ### Portable Item Storage
 
 <ItemGrid>
-  <ItemIcon itemId="portable_item_cell_1k" />
-  <ItemIcon itemId="portable_item_cell_4k" />
-  <ItemIcon itemId="portable_item_cell_16k" />
-  <ItemIcon itemId="portable_item_cell_64k" />
+  <ItemIcon id="portable_item_cell_1k" />
+  <ItemIcon id="portable_item_cell_4k" />
+  <ItemIcon id="portable_item_cell_16k" />
+  <ItemIcon id="portable_item_cell_64k" />
 </ItemGrid>
 
 ## Fluid Storage Cells
@@ -42,19 +42,19 @@ volume of fluid they can store depends in part on how many types they're
 holding, and their storage capacity.
 
 <ItemGrid>
-  <ItemIcon itemId="fluid_storage_cell_1k" />
-  <ItemIcon itemId="fluid_storage_cell_4k" />
-  <ItemIcon itemId="fluid_storage_cell_16k" />
-  <ItemIcon itemId="fluid_storage_cell_64k" />
+  <ItemIcon id="fluid_storage_cell_1k" />
+  <ItemIcon id="fluid_storage_cell_4k" />
+  <ItemIcon id="fluid_storage_cell_16k" />
+  <ItemIcon id="fluid_storage_cell_64k" />
 </ItemGrid>
 
 ### Portable Fluid Storage
 
 <ItemGrid>
-  <ItemIcon itemId="portable_fluid_cell_1k" />
-  <ItemIcon itemId="portable_fluid_cell_4k" />
-  <ItemIcon itemId="portable_fluid_cell_16k" />
-  <ItemIcon itemId="portable_fluid_cell_64k" />
+  <ItemIcon id="portable_fluid_cell_1k" />
+  <ItemIcon id="portable_fluid_cell_4k" />
+  <ItemIcon id="portable_fluid_cell_16k" />
+  <ItemIcon id="portable_fluid_cell_64k" />
 </ItemGrid>
 
 ## Capacity Limits
@@ -97,7 +97,7 @@ a rough estimate of their cost.
 Storage cells for spatial I/O come in three sizes.
 
 <ItemGrid>
-  <ItemIcon itemId="spatial_storage_cell_2" />
-  <ItemIcon itemId="spatial_storage_cell_16" />
-  <ItemIcon itemId="spatial_storage_cell_128" />
+  <ItemIcon id="spatial_storage_cell_2" />
+  <ItemIcon id="spatial_storage_cell_16" />
+  <ItemIcon id="spatial_storage_cell_128" />
 </ItemGrid>

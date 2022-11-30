@@ -61,10 +61,10 @@ No, AE2 isn't broken. The "final" pieces of the AE2 puzzle needed to move up the
 Inscriber Presses. There are four presses that you need (Listed in order of "tier"):
 
 <ItemGrid>
-  <ItemIcon itemId="silicon_press" />
-  <ItemIcon itemId="logic_processor_press" />
-  <ItemIcon itemId="calculation_processor_press" />
-  <ItemIcon itemId="engineering_processor_press" />
+  <ItemIcon id="silicon_press" />
+  <ItemIcon id="logic_processor_press" />
+  <ItemIcon id="calculation_processor_press" />
+  <ItemIcon id="engineering_processor_press" />
 </ItemGrid>
 
 These presses are used to make the Circuits needed for the Tech 2 machines and beyond. They're found randomly

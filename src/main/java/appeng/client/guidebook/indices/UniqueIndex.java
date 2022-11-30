@@ -18,12 +18,9 @@ import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 /**
  * Maintains an index for any given page using a mapping function for keys and values of the index.
- *
- * @param <K>
- * @param <V>
  */
-public class UniquePageIndex<K, V> implements PageIndex {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UniquePageIndex.class);
+public class UniqueIndex<K, V> implements PageIndex {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UniqueIndex.class);
 
     private final Map<K, Record<V>> index = new HashMap<>();
 
@@ -33,7 +30,7 @@ public class UniquePageIndex<K, V> implements PageIndex {
     // We need to track this to fully rebuild on incremental changes if we had duplicates
     private boolean hadDuplicates;
 
-    public UniquePageIndex(String name, EntryFunction<K, V> entryFunction) {
+    public UniqueIndex(String name, EntryFunction<K, V> entryFunction) {
         this.name = name;
         this.entryFunction = entryFunction;
     }

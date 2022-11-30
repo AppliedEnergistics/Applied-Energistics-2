@@ -2,6 +2,7 @@ package appeng.client.guidebook;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.CategoryIndex;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.client.guidebook.indices.PageIndex;
 import appeng.client.guidebook.navigation.NavigationTree;
@@ -61,6 +62,7 @@ public final class GuideManager {
 
     private GuideManager() {
         addIndex(ItemIndex.INSTANCE);
+        addIndex(CategoryIndex.INSTANCE);
 
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
 
@@ -144,19 +146,20 @@ public final class GuideManager {
     }
 
     @Nullable
-    public GuidePage getPage(ResourceLocation id) {
+    public ParsedGuidePage getParsedPage(ResourceLocation id) {
         if (pages == null) {
             LOGGER.warn("Can't get page {}. Pages not loaded yet.", id);
             return null;
         }
 
-        var page = developmentPages.getOrDefault(id, pages.get(id));
+        return developmentPages.getOrDefault(id, pages.get(id));
+    }
 
-        if (page != null) {
-            return PageCompiler.compile(this::getAsset, page);
-        }
+    @Nullable
+    public GuidePage getPage(ResourceLocation id) {
+        var page = getParsedPage(id);
 
-        return null;
+        return page != null ? PageCompiler.compile(this::getAsset, page) : null;
     }
 
     private byte[] getAsset(ResourceLocation id) {
