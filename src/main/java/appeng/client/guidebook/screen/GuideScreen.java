@@ -1,19 +1,5 @@
 package appeng.client.guidebook.screen;
 
-import java.util.Optional;
-import java.util.function.Function;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
@@ -32,8 +18,23 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class GuideScreen extends Screen {
+    private static final int HISTORY_SIZE = 100;
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
 
@@ -41,10 +42,19 @@ public class GuideScreen extends Screen {
     private final GuideScrollbar scrollbar;
     private GuideNavBar navbar;
 
+    private static final List<PageAnchor> history = new ArrayList<>();
+    private static int historyPosition;
+
+    private Button backButton;
+    private Button forwardButton;
+
     public GuideScreen(GuidePage currentPage) {
         super(Component.literal("AE2 Guidebook"));
         this.currentPage = currentPage;
         this.scrollbar = new GuideScrollbar();
+
+        historyPosition = history.size();
+        history.add(new PageAnchor(currentPage.getId(), null));
     }
 
     @Override
@@ -63,10 +73,18 @@ public class GuideScreen extends Screen {
 
         this.navbar = new GuideNavBar(this);
         addRenderableWidget(this.navbar);
+
+        backButton = new Button(docRect.right() - 40, docRect.y() - 15, 20, 15, Component.literal("<"), button -> navigateBack());
+        addRenderableWidget(backButton);
+        forwardButton = new Button(docRect.right() - 20, docRect.y() - 15, 20, 15, Component.literal(">"), button -> navigateForward());
+        addRenderableWidget(forwardButton);
+        updateNavigationButtons();
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        updateNavigationButtons();
+
         renderBackground(poseStack);
 
         // Set scissor rectangle to rect that we show the document in
@@ -179,9 +197,9 @@ public class GuideScreen extends Screen {
         var docPoint = getDocumentPoint(mouseX, mouseY);
         if (docPoint != null) {
             if (button == 3) {
-                // TODO: Backwards in history
+                navigateBack();
             } else if (button == 4) {
-                // TODO: Forward in history
+                navigateForward();
             }
 
             return dispatchEvent(docPoint.getX(), docPoint.getY(), el -> {
@@ -208,20 +226,52 @@ public class GuideScreen extends Screen {
         }
     }
 
-    public void navigateTo(PageAnchor anchor) {
-        navigateTo(anchor.pageId()); // TODO
+    public void navigateTo(ResourceLocation pageId) {
+        navigateTo(new PageAnchor(pageId, null));
     }
 
-    public void navigateTo(ResourceLocation pageId) {
-        if (currentPage.getId().equals(pageId)) {
+    public void navigateTo(PageAnchor anchor) {
+        if (currentPage.getId().equals(anchor.pageId())) {
             // TODO -> scroll up (?)
             return;
         }
 
+        loadPage(anchor);
+
+        // Remove anything from the history after the current page when we navigate to a new one
+        if (historyPosition + 1 < history.size()) {
+            history.subList(historyPosition + 1, history.size()).clear();
+        }
+        // Clamp history length
+        if (history.size() >= HISTORY_SIZE) {
+            history.subList(0, history.size() - HISTORY_SIZE).clear();
+        }
+        // Append to history
+        historyPosition = history.size();
+        history.add(anchor);
+    }
+
+    // Navigate to next page in history (only possible if we've navigated back previously)
+    private void navigateForward() {
+        if (historyPosition + 1 < history.size()) {
+            loadPage(history.get(++historyPosition));
+        }
+    }
+
+    // Navigate to previous page in history
+    private void navigateBack() {
+        if (historyPosition > 0) {
+            loadPage(history.get(--historyPosition));
+        }
+    }
+
+    private void loadPage(PageAnchor anchor) {
         GuidePageTexture.releaseUsedTextures();
-        currentPage = GuideManager.INSTANCE.getPage(pageId);
+        currentPage = GuideManager.INSTANCE.getPage(anchor.pageId());
         scrollbar.setScrollAmount(0);
         updatePageLayout();
+
+        // TODO ANCHOR
     }
 
     @Override
@@ -422,5 +472,10 @@ public class GuideScreen extends Screen {
 
     public ResourceLocation getCurrentPageId() {
         return currentPage.getId();
+    }
+
+    private void updateNavigationButtons() {
+        backButton.active = historyPosition > 0;
+        forwardButton.active = historyPosition + 1 < history.size();
     }
 }

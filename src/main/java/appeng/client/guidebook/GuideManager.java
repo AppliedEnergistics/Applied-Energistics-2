@@ -124,6 +124,12 @@ public final class GuideManager {
                                 throw new RuntimeException(e);
                             }
 
+                            // Iterate and compile all pages
+                            for (var entry : GuideManager.INSTANCE.developmentPages.entrySet()) {
+                                LOGGER.info("Compiling {}", entry.getKey());
+                                GuideManager.INSTANCE.getPage(entry.getKey());
+                            }
+
                             client.setScreen(screen);
                         }, client)
                         .exceptionally(throwable -> {

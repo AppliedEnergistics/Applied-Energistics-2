@@ -1,26 +1,5 @@
 package appeng.client.guidebook.compiler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.ResourceLocationException;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
@@ -56,8 +35,10 @@ import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
 import appeng.libs.mdast.model.MdAstAnyContent;
 import appeng.libs.mdast.model.MdAstBreak;
+import appeng.libs.mdast.model.MdAstCode;
 import appeng.libs.mdast.model.MdAstHeading;
 import appeng.libs.mdast.model.MdAstImage;
+import appeng.libs.mdast.model.MdAstInlineCode;
 import appeng.libs.mdast.model.MdAstLink;
 import appeng.libs.mdast.model.MdAstList;
 import appeng.libs.mdast.model.MdAstListItem;
@@ -73,6 +54,25 @@ import appeng.libs.mdast.model.MdAstThematicBreak;
 import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 public final class PageCompiler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PageCompiler.class);
@@ -88,9 +88,9 @@ public final class PageCompiler {
     private final String pageContent;
 
     public PageCompiler(Function<ResourceLocation, byte[]> assetLoader,
-            String sourcePack,
-            ResourceLocation id,
-            String pageContent) {
+                        String sourcePack,
+                        ResourceLocation id,
+                        String pageContent) {
         this.assetLoader = assetLoader;
         this.sourcePack = sourcePack;
         this.id = id;
@@ -152,12 +152,19 @@ public final class PageCompiler {
     }
 
     public void compileBlockContext(MdAstParent<?> markdownParent, LytBlockContainer layoutParent) {
+        LytBlock previousLayoutChild = null;
         for (var child : markdownParent.children()) {
             LytBlock layoutChild;
             if (child instanceof MdAstThematicBreak) {
                 layoutChild = new LytThematicBreak();
             } else if (child instanceof MdAstList astList) {
                 layoutChild = compileList(astList);
+            } else if (child instanceof MdAstCode astCode) {
+                var paragraph = new LytParagraph();
+                paragraph.modifyStyle(style -> style.italic(true).whiteSpace(WhiteSpaceMode.PRE));
+                paragraph.setMarginLeft(5);
+                paragraph.appendText(astCode.value);
+                layoutChild = paragraph;
             } else if (child instanceof MdAstHeading astHeading) {
                 var heading = new LytHeading();
                 heading.setDepth(astHeading.depth);
@@ -183,10 +190,15 @@ public final class PageCompiler {
                     compiler.compileBlockContext(this, layoutParent, el);
                 }
             } else if (child instanceof MdAstPhrasingContent phrasingContent) {
-                // Wrap in a paragraph with no margins
-                var paragraph = new LytParagraph();
-                compileFlowContent(paragraph, phrasingContent);
-                layoutChild = paragraph;
+                // Wrap in a paragraph with no margins, but try appending to an existing paragraph before this
+                if (previousLayoutChild instanceof LytParagraph paragraph) {
+                    compileFlowContent(paragraph, phrasingContent);
+                    continue;
+                } else {
+                    var paragraph = new LytParagraph();
+                    compileFlowContent(paragraph, phrasingContent);
+                    layoutChild = paragraph;
+                }
             } else {
                 layoutChild = createErrorBlock("Unhandled Markdown node in block context", (MdAstNode) child);
             }
@@ -194,6 +206,7 @@ public final class PageCompiler {
             if (layoutChild != null) {
                 layoutParent.append(layoutChild);
             }
+            previousLayoutChild = layoutChild;
         }
     }
 
@@ -279,6 +292,11 @@ public final class PageCompiler {
         if (content instanceof MdAstText astText) {
             var text = new LytFlowText();
             text.setText(astText.value);
+            layoutChild = text;
+        } else if (content instanceof MdAstInlineCode astCode) {
+            var text = new LytFlowText();
+            text.setText(astCode.value);
+            text.modifyStyle(style -> style.italic(true).whiteSpace(WhiteSpaceMode.PRE));
             layoutChild = text;
         } else if (content instanceof MdAstStrong astStrong) {
             var span = new LytFlowSpan();

@@ -1,6 +1,10 @@
 package appeng.client.guidebook.document.flow;
 
-public interface LytFlowParent {
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.document.LytErrorSink;
+import appeng.libs.mdast.model.MdAstNode;
+
+public interface LytFlowParent extends LytErrorSink {
     void append(LytFlowContent child);
 
     default LytFlowText appendText(String text) {
@@ -13,5 +17,10 @@ public interface LytFlowParent {
     default void appendBreak() {
         var br = new LytFlowBreak();
         append(br);
+    }
+
+    @Override
+    default void appendError(PageCompiler compiler, String text, MdAstNode node) {
+        append(compiler.createErrorFlowContent(text, node));
     }
 }
