@@ -24,6 +24,8 @@ public record SimpleRenderContext(@Override GuideScreen screen,
                                   @Override PoseStack poseStack,
                                   @Override LightDarkMode lightDarkMode) implements RenderContext {
 
+
+
     @Override
     public int resolveColor(ColorRef ref) {
         if (ref.symbolic != null) {
@@ -134,10 +136,5 @@ public record SimpleRenderContext(@Override GuideScreen screen,
         }
 
         poseStack.popPose();
-    }
-
-    private enum GradientDirection {
-        HORIZONTAL,
-        VERTICAL
     }
 }

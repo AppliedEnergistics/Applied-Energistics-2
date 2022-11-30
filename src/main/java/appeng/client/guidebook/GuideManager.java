@@ -195,6 +195,17 @@ public final class GuideManager {
         return developmentPages.containsKey(pageId) || pages != null && pages.containsKey(pageId);
     }
 
+    @Nullable
+    public Path getDevelopmentSourcePath(ResourceLocation id) {
+        if (developmentSourceFolder != null && id.getNamespace().equals(developmentSourceNamespace)) {
+            var path = developmentSourceFolder.resolve(id.getPath());
+            if (Files.exists(path)) {
+                return path;
+            }
+        }
+        return null;
+    }
+
     class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>>
             implements IdentifiableResourceReloadListener {
         @Override

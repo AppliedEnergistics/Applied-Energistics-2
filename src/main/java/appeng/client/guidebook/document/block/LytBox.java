@@ -1,11 +1,12 @@
 package appeng.client.guidebook.document.block;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.layout.LayoutContext;
+import appeng.client.guidebook.render.RenderContext;
 import net.minecraft.client.renderer.MultiBufferSource;
 
-import appeng.client.guidebook.render.RenderContext;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class LytBox extends LytBlock implements LytBlockContainer {
     protected final List<LytBlock> children = new ArrayList<>();
@@ -30,6 +31,28 @@ public abstract class LytBox extends LytBlock implements LytBlockContainer {
         }
         block.parent = this;
         children.add(block);
+    }
+
+    protected abstract LytRect computeBoxLayout(LayoutContext context, int x, int y, int availableWidth);
+
+    @Override
+    protected final LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
+        // Apply adding
+        var innerLayout = computeBoxLayout(
+                context,
+                x + paddingLeft,
+                y + paddingTop,
+                availableWidth - paddingLeft - paddingRight
+        );
+
+        return innerLayout.expand(paddingLeft, paddingTop, paddingRight, paddingBottom);
+    }
+
+    protected final void setPadding(int padding) {
+        paddingLeft = padding;
+        paddingTop = padding;
+        paddingRight = padding;
+        paddingBottom = padding;
     }
 
     @Override

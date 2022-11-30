@@ -11,13 +11,15 @@ import java.util.List;
  * Shows items in a grid-like fashion, i.e. to show-case variants.
  */
 public class LytItemGrid extends LytBox {
-    private static final int PADDING = 5;
-
     private final List<LytSlot> slots = new ArrayList<>();
 
+    public LytItemGrid() {
+        setPadding(5);
+    }
+
     @Override
-    protected LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
-        var cols = Math.max(1, (availableWidth - 2 * PADDING) / LytSlot.OUTER_SIZE);
+    protected LytRect computeBoxLayout(LayoutContext context, int x, int y, int availableWidth) {
+        var cols = Math.max(1, availableWidth / LytSlot.OUTER_SIZE);
         var rows = (slots.size() + cols - 1) / cols;
 
         for (int i = 0; i < slots.size(); i++) {
@@ -25,8 +27,8 @@ public class LytItemGrid extends LytBox {
             var slotY = i / cols;
             slots.get(i).layout(
                     context,
-                    x + PADDING + slotX * LytSlot.OUTER_SIZE,
-                    y + PADDING + slotY * LytSlot.OUTER_SIZE,
+                    x + slotX * LytSlot.OUTER_SIZE,
+                    y + slotY * LytSlot.OUTER_SIZE,
                     availableWidth
             );
         }
@@ -34,8 +36,8 @@ public class LytItemGrid extends LytBox {
         return new LytRect(
                 x,
                 y,
-                2 * PADDING + cols * LytSlot.OUTER_SIZE,
-                2 * PADDING + rows * LytSlot.OUTER_SIZE
+                cols * LytSlot.OUTER_SIZE,
+                rows * LytSlot.OUTER_SIZE
         );
     }
 

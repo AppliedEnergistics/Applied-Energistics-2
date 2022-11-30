@@ -27,4 +27,9 @@ public class DefaultStyles {
             .color(SymbolicColor.BODY_TEXT.ref())
             .build();
 
+    public static final TextStyle CRAFTING_RECIPE_TYPE = TextStyle.builder()
+            .font(Minecraft.UNIFORM_FONT)
+            .color(SymbolicColor.CRAFTING_RECIPE_TYPE.ref())
+            .build();
+
 }

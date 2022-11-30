@@ -10,7 +10,7 @@ public abstract class LytBlock extends LytNode {
     /**
      * Content rectangle.
      */
-    protected LytRect bounds;
+    protected LytRect bounds = LytRect.empty();
 
     private int marginTop;
     private int marginLeft;

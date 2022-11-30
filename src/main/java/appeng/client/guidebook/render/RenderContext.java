@@ -16,10 +16,17 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
 public interface RenderContext {
+
+    LightDarkMode lightDarkMode();
+
+    default boolean isDarkMode() {
+        return lightDarkMode() == LightDarkMode.DARK_MODE;
+    }
 
     GuideScreen screen();
 
@@ -70,6 +77,15 @@ public interface RenderContext {
         var texture = Minecraft.getInstance().getTextureManager().getTexture(Icon.TEXTURE);
         fillTexturedRect(new LytRect(x, y, icon.width, icon.height), texture, color, color, color, color,
                 u0, v0, u1, v1);
+    }
+
+    default void fillTexturedRect(LytRect rect, ResourceLocation textureId) {
+        fillTexturedRect(rect, textureId, ColorRef.WHITE);
+    }
+
+    default void fillTexturedRect(LytRect rect, ResourceLocation textureId, ColorRef color) {
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(textureId);
+        fillTexturedRect(rect, texture, color);
     }
 
     void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorRef color);

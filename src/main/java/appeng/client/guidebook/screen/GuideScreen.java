@@ -27,13 +27,18 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class GuideScreen extends Screen {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuideScreen.class);
+
     private static final int HISTORY_SIZE = 100;
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
@@ -79,6 +84,19 @@ public class GuideScreen extends Screen {
         forwardButton = new Button(docRect.right() - 20, docRect.y() - 15, 20, 15, Component.literal(">"), button -> navigateForward());
         addRenderableWidget(forwardButton);
         updateNavigationButtons();
+
+        addRenderableWidget(new Button(docRect.right(), docRect.y() - 15, 20, 15, Component.literal("EDIT"), button -> {
+            var path = GuideManager.INSTANCE.getDevelopmentSourcePath(currentPage.getId());
+            if (path != null) {
+                try {
+                    var connection = new URL("http://localhost:63342/api/file" + path.toUri().getPath()).openConnection();
+                    connection.connect();
+                    connection.getInputStream().close();
+                } catch (Exception e) {
+                    LOGGER.error("Failed to open page in IntelliJ", e);
+                }
+            }
+        }));
     }
 
     @Override

@@ -12,11 +12,12 @@ import appeng.libs.mdast.model.MdAstNode;
 public class ItemLinkCompiler extends FlowTagCompiler {
     @Override
     public void compile(PageCompiler compiler, LytFlowParent parent, MdxJsxElementFields el) {
-        var item = MdxAttrs.getRequiredItem(compiler, parent, el, "id");
-        if (item == null) {
+        var itemAndId = MdxAttrs.getRequiredItemAndId(compiler, parent, el, "id");
+        if (itemAndId == null) {
             return;
         }
-        var id = item.builtInRegistryHolder().key().location();
+        var id = itemAndId.getLeft();
+        var item = itemAndId.getRight();
 
         var linksTo = ItemIndex.INSTANCE.get(id);
         // We'll error out for item-links to our own mod because we expect them to have a page

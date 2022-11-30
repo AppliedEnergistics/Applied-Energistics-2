@@ -23,10 +23,10 @@ public class LytListItem extends LytVBox {
     }
 
     @Override
-    protected LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
+    protected LytRect computeBoxLayout(LayoutContext context, int x, int y, int availableWidth) {
         // Constraint child layout
         var margin = LEVEL_MARGIN;
-        var bounds = super.computeLayout(context, x + margin, y, availableWidth - margin);
+        var bounds = super.computeBoxLayout(context, x + margin, y, availableWidth - margin);
 
         // Include the space we need for our list bullet in our bounds
         return bounds.expand(LEVEL_MARGIN, 0, 0, 0);

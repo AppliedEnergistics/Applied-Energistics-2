@@ -3,6 +3,10 @@ package appeng.client.guidebook.render;
 public enum SymbolicColor {
     LINK(Colors.argb(255, 0, 213, 255), Colors.argb(255, 0, 213, 255)),
     BODY_TEXT(Colors.argb(255, 174, 174, 174), Colors.argb(255, 174, 174, 174)),
+    /**
+     * Color used for the type of crafting shown in recipe blocks.
+     */
+    CRAFTING_RECIPE_TYPE(Colors.argb(255, 64, 64, 64), Colors.argb(255, 64, 64, 64)),
     THEMATIC_BREAK(Colors.argb(255, 55, 55, 55), Colors.argb(255, 155, 155, 155)),
 
     NAVBAR_BG_TOP(Colors.argb(255, 0, 0, 0), Colors.argb(255, 0, 0, 0)),

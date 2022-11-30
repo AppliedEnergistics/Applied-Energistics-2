@@ -9,15 +9,16 @@ import appeng.client.guidebook.layout.Layouts;
  */
 public class LytVBox extends LytBox {
     @Override
-    protected LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
+    protected LytRect computeBoxLayout(LayoutContext context, int x, int y, int availableWidth) {
+        // Padding is applied through the parent
         return Layouts.verticalLayout(context,
                 children,
                 x,
                 y,
                 availableWidth,
-                paddingLeft,
-                paddingTop,
-                paddingRight,
-                paddingBottom);
+                0,
+                0,
+                0,
+                0);
     }
 }

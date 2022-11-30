@@ -12,13 +12,8 @@ navigation:
   title: Inscriber Logic Press
 ---
 
-Required to make <ItemLink
-id="printed_logic_processor"/> with the
-
-<ItemLink id="inscriber" />. Found in <ItemLink id="sky_stone_chest" /> that
-spawn in meteorites durring world gen, and can be copied using the <ItemLink id="inscriber" />
-
-.
+Required to make <ItemLink id="printed_logic_processor"/> with the <ItemLink id="inscriber" />.
+Found in <ItemLink id="sky_stone_chest" /> that spawn in meteorites durring world gen, and can be copied using the <ItemLink id="inscriber" />.
 
 <RecipeFor id="logic_processor_press" />
 

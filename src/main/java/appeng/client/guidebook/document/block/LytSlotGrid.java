@@ -7,7 +7,7 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.RenderContext;
 import net.minecraft.world.item.crafting.Ingredient;
 
-class LytSlotGrid extends LytBox {
+public class LytSlotGrid extends LytBox {
     private final int width;
     private final int height;
     private final LytSlot[] slots;
@@ -28,7 +28,7 @@ class LytSlotGrid extends LytBox {
     }
 
     @Override
-    protected LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
+    protected LytRect computeBoxLayout(LayoutContext context, int x, int y, int availableWidth) {
         // Lay out the slots left-to-right, top-to-bottom
         for (var row = 0; row < height; row++) {
             for (var col = 0; col < width; col++) {
