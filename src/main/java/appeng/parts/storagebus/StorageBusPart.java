@@ -350,6 +350,10 @@ public class StorageBusPart extends UpgradeablePart
         } else {
             newInventory = NullInventory.of();
             handlerDescription = null;
+            // If we're attached to "nothing", we might not actually notice if the adjacent block makes
+            // an inventory available. It might still be initializing, and maybe it doesn't send a neighbor update
+            // when it finishes. In that case, we'll very slowly continue updating our target.
+            updateStatus = PendingUpdateStatus.SLOW_UPDATE;
         }
         this.handler.setDelegate(newInventory);
 
@@ -372,10 +376,11 @@ public class StorageBusPart extends UpgradeablePart
         }
 
         // Update sleeping state.
-        if (wasSleeping != (this.monitor == null)) {
+        boolean shouldSleep = (this.monitor == null && updateStatus == PendingUpdateStatus.NO_UPDATE);
+        if (wasSleeping != shouldSleep) {
             getMainNode().ifPresent((grid, node) -> {
                 var tm = grid.getTickManager();
-                if (this.monitor == null) {
+                if (shouldSleep) {
                     tm.sleepDevice(node);
                 } else {
                     tm.wakeDevice(node);
@@ -542,5 +547,7 @@ public class StorageBusPart extends UpgradeablePart
          * Indicates that no update is required at the moment.
          */
         NO_UPDATE;
-    };
+    }
+
+    ;
 }
