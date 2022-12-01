@@ -29,6 +29,7 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -75,9 +76,12 @@ import appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer;
 import appeng.items.parts.FacadeItem;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
+import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
 public class ReiPlugin implements REIClientPlugin {
+
+    public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
 
     // Will be hidden if developer items are disabled in the config
     private List<Predicate<ItemStack>> developerItems;
@@ -102,6 +106,7 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
         registry.add(new AttunementCategory());
+        registry.add(new EntropyManipulatorCategory());
 
         registerWorkingStations(registry);
     }
@@ -109,6 +114,7 @@ public class ReiPlugin implements REIClientPlugin {
     @Override
     public void registerDisplays(DisplayRegistry registry) {
         registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeWrapper::new);
+        registry.registerRecipeFiller(EntropyRecipe.class, EntropyRecipe.TYPE, EntropyManipulatorDisplay::new);
 
         registry.add(new CondenserOutputDisplay(CondenserOutput.MATTER_BALLS));
         registry.add(new CondenserOutputDisplay(CondenserOutput.SINGULARITY));
@@ -251,6 +257,9 @@ public class ReiPlugin implements REIClientPlugin {
 
         ItemStack wirelessCraftingTerminal = AEItems.WIRELESS_CRAFTING_TERMINAL.stack();
         registry.addWorkstations(BuiltinPlugin.CRAFTING, EntryStacks.of(wirelessCraftingTerminal));
+
+        ItemStack entropyManipulator = AEItems.ENTROPY_MANIPULATOR.stack();
+        registry.addWorkstations(EntropyManipulatorCategory.ID, EntryStacks.of(entropyManipulator));
     }
 
     private void registerDescriptions(DisplayRegistry registry) {
