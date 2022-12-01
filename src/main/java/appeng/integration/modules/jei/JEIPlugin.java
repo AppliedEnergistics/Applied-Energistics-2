@@ -21,6 +21,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 
+import me.shedaniel.rei.plugincompatibilities.api.REIPluginCompatIgnore;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -63,6 +64,7 @@ import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 
 @JeiPlugin
+@REIPluginCompatIgnore
 public class JEIPlugin implements IModPlugin {
     public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
 

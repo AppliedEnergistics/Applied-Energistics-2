@@ -92,6 +92,9 @@ dependencies {
     //compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}")
     compileOnly "curse.maven:the-one-probe-245211:3671753"
 
+    // Needed to opt-out of the REI JEI compat
+    compileOnly "me.shedaniel:REIPluginCompatibilities-forge-annotations:8.+"
+
     if (project.runtime_itemlist_mod == "jei") {
         runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}:${jei_version}")
         //runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")

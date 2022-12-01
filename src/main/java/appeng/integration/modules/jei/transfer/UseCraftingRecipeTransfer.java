@@ -30,7 +30,6 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jei.JEIPlugin;
-import appeng.integration.modules.jeirei.CompatLayerHelper;
 import appeng.integration.modules.jeirei.CraftingHelper;
 import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
@@ -110,10 +109,6 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
     }
 
     private static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
-        if (CompatLayerHelper.IS_LOADED) {
-            return appeng.integration.modules.rei.transfer.UseCraftingRecipeTransfer.getGuiSlotToIngredientMap(recipe);
-        }
-
         var ingredients = recipe.getIngredients();
 
         // JEI will align non-shaped recipes smaller than 3x3 in the grid. It'll center them horizontally, and

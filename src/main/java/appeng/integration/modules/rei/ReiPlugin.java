@@ -70,7 +70,6 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.REIFacade;
-import appeng.integration.modules.jeirei.CompatLayerHelper;
 import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterCategory;
 import appeng.integration.modules.rei.throwinginwater.ThrowingInWaterDisplay;
 import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
@@ -92,10 +91,6 @@ public class ReiPlugin implements REIClientPlugin {
     private List<Predicate<ItemStack>> coloredCables;
 
     public ReiPlugin() {
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
         IngredientConverters.register(new ItemIngredientConverter());
         IngredientConverters.register(new FluidIngredientConverter());
 
@@ -109,10 +104,6 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
         registry.add(new ThrowingInWaterCategory());
         registry.add(new CondenserCategory());
         registry.add(new InscriberRecipeCategory());
@@ -124,14 +115,6 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
-            registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
-        }
-
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
         registry.registerRecipeFiller(InscriberRecipe.class, InscriberRecipe.TYPE, InscriberRecipeWrapper::new);
         registry.registerRecipeFiller(EntropyRecipe.class, EntropyRecipe.TYPE, EntropyManipulatorDisplay::new);
 
@@ -139,6 +122,10 @@ public class ReiPlugin implements REIClientPlugin {
         registry.add(new CondenserOutputDisplay(CondenserOutput.SINGULARITY));
 
         registerDescriptions(registry);
+
+        if (AEConfig.instance().isEnableFacadeRecipesInJEI()) {
+            registry.registerGlobalDisplayGenerator(new FacadeRegistryGenerator());
+        }
 
         // Add displays for crystal growth
         if (AEConfig.instance().isInWorldCrystalGrowthEnabled()) {
@@ -169,10 +156,6 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerTransferHandlers(TransferHandlerRegistry registry) {
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
         // Allow recipe transfer from JEI to crafting and pattern terminal
         registry.register(new EncodePatternTransferHandler<>(PatternEncodingTermMenu.class));
         registry.register(new UseCraftingRecipeTransfer<>(CraftingTermMenu.class));
@@ -180,10 +163,6 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerScreens(ScreenRegistry registry) {
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
         registry.registerDraggableStackVisitor(new GhostIngredientHandler());
         registry.registerFocusedStack((screen, mouse) -> {
             if (screen instanceof AEBaseScreen<?>aeScreen) {
@@ -255,10 +234,6 @@ public class ReiPlugin implements REIClientPlugin {
 
     @Override
     public void registerExclusionZones(ExclusionZones zones) {
-        if (CompatLayerHelper.IS_LOADED) {
-            return;
-        }
-
         zones.register(AEBaseScreen.class, screen -> {
             return screen != null ? mapRects(screen.getExclusionZones()) : Collections.emptyList();
         });
