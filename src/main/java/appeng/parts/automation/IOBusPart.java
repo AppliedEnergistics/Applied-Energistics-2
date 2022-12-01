@@ -205,7 +205,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
         if (isSleeping()) {
             return TickRateModulation.SLEEP;
         } else {
-            return hasDoneWork ? TickRateModulation.FASTER : TickRateModulation.SLOWER;
+            return hasDoneWork ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
         }
     }
 
