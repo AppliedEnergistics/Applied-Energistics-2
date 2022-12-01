@@ -40,6 +40,7 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -977,4 +978,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             slot.y = y;
         }
     }
+
+    /**
+     * A fix inspired by Create that fixes Vanillas terribly broken Focus handling. IF the keyboard focus is lost by
+     * mouse-clicks away from an EditBox, the screen field for focus is not properly reset!
+     */
+    public GuiEventListener getFocused() {
+        var focused = super.getFocused();
+        if (focused instanceof AbstractWidget && !((AbstractWidget) focused).isFocused()) {
+            setFocused(focused = null);
+        }
+        return focused;
+    }
+
 }
