@@ -1,8 +1,9 @@
 package appeng.items.tools;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.core.AppEng;
+import appeng.items.AEBaseItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,11 +11,8 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AppEng;
-import appeng.items.AEBaseItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Shows the guidebook when used.
@@ -28,7 +26,7 @@ public class GuideItem extends AEBaseItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+        var stack = player.getItemInHand(hand);
 
         if (level.isClientSide()) {
             openGuide();
@@ -38,11 +36,6 @@ public class GuideItem extends AEBaseItem {
     }
 
     private static void openGuide() {
-        try {
-            var screen = GuideScreen.openAtPreviousPage(PageAnchor.page(AppEng.makeId("index.md")));
-            Minecraft.getInstance().setScreen(screen);
-        } catch (Exception e) {
-            LOGGER.error("Failed to open guide.", e);
-        }
+        AppEng.instance().openGuide(AppEng.makeId("index.md"));
     }
 }

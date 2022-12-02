@@ -22,6 +22,7 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
+import appeng.client.guidebook.PageAnchor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -95,4 +96,10 @@ public interface AppEng {
      * registers Hotkeys for {@link appeng.hotkeys.HotkeyActions}
      */
     void registerHotkey(String id);
+
+    /**
+     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page.
+     */
+    default void openGuide(ResourceLocation initialPage) {
+    }
 }
