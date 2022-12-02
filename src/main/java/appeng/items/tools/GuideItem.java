@@ -1,18 +1,17 @@
 package appeng.items.tools;
 
-import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AppEng;
-import appeng.items.AEBaseItem;
-import net.minecraft.client.Minecraft;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import appeng.core.AppEng;
+import appeng.items.AEBaseItem;
 
 /**
  * Shows the guidebook when used.

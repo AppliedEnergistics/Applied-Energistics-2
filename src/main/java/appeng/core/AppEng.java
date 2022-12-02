@@ -22,7 +22,6 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import appeng.client.guidebook.PageAnchor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
