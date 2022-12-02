@@ -25,6 +25,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -56,6 +59,9 @@ import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
+import appeng.client.guidebook.GuideManager;
+import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -94,6 +100,8 @@ import appeng.util.Platform;
  */
 @Environment(EnvType.CLIENT)
 public class AppEngClient extends AppEngBase {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppEngClient.class);
+
     private static AppEngClient INSTANCE;
 
     /**
@@ -118,6 +126,7 @@ public class AppEngClient extends AppEngBase {
         InitAutoRotatingModel.init();
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
+        GuideManager.init();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
 
@@ -369,5 +378,15 @@ public class AppEngClient extends AppEngBase {
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void openGuide(ResourceLocation initialPage) {
+        try {
+            var screen = GuideScreen.openAtPreviousPage(PageAnchor.page(initialPage));
+            Minecraft.getInstance().setScreen(screen);
+        } catch (Exception e) {
+            LOGGER.error("Failed to open guide.", e);
+        }
     }
 }

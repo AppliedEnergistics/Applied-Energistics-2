@@ -95,4 +95,10 @@ public interface AppEng {
      * registers Hotkeys for {@link appeng.hotkeys.HotkeyActions}
      */
     void registerHotkey(String id);
+
+    /**
+     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page.
+     */
+    default void openGuide(ResourceLocation initialPage) {
+    }
 }

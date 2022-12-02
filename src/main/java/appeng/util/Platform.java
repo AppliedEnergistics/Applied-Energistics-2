@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -48,6 +49,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -103,6 +105,18 @@ public class Platform {
     @org.jetbrains.annotations.Nullable
     private static final Class<?> ponderLevelClass = findPonderLevelClass(
             "com.simibubi.create.foundation.ponder.PonderWorld");
+
+    // This hack is used to allow tests and the guidebook to provide a recipe manager before the client loads a world
+    public static RecipeManager fallbackClientRecipeManager;
+
+    public static RecipeManager getClientRecipeManager() {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.level != null) {
+            return minecraft.level.getRecipeManager();
+        }
+
+        return fallbackClientRecipeManager;
+    }
 
     private static Class<?> findPonderLevelClass(String className) {
         if (!hasClientClasses()) {

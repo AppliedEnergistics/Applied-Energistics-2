@@ -1,0 +1,17 @@
+{
+  "name": "Wooden Crank",
+  "category": "ae2:getting_started",
+  "icon": "ae2:crank",
+  "sortnum": 100,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(thing)Wooden Crank$() can be used to manually operate the $(l:ae2:getting_started/charger)Charger$(/l), $(l:ae2:getting_started/inscriber)Inscriber$(/l), and $(l:ae2:getting_started/certus#cga)Crystal Growth Accelerators$(/l).$(br2)To place the $(thing)Crank$() on the $(thing)Charger$(), hold [$(k:sneak)] and then press [$(k:use)]. The $(thing)Wooden Crank$() can only be placed on a valid power input side (normally the top or bottom)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "ae2:network/blocks/crank",
+      "text": "Each turn generates $(l:ae2:concepts/power)160 AE$(). It takes 10 turns to generate enough power to craft a single item in the $(thing)Charger$().$(br2)It may break if overused."
+    }
+  ]
+}

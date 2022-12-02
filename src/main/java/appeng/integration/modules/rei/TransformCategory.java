@@ -11,15 +11,14 @@ import net.minecraft.world.level.material.Fluid;
 import dev.architectury.fluid.FluidStack;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.entry.renderer.EntryRenderer;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.client.util.ClientEntryStacks;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import me.shedaniel.rei.plugin.client.entry.FluidEntryDefinition;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -136,14 +135,15 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
         }
     }
 
+    /**
+     * Creates an entry stack that renders as a 3d block instead of a slot.
+     */
     private static EntryStack<FluidStack> makeCustomRenderingFluidEntry(Fluid fluid) {
-        return EntryStack.of(new FluidEntryDefinition() {
-            @Override
-            public EntryRenderer<FluidStack> getRenderer() {
-                return new FluidBlockRenderer();
-            }
-        }, FluidStack.create(fluid, FluidStack.bucketAmount()))
-                .setting(EntryStack.Settings.FLUID_AMOUNT_VISIBLE, false);
+        var fluidStack = EntryStacks.of(fluid);
+        ClientEntryStacks.setRenderer(fluidStack, entryStack -> {
+            return new FluidBlockRenderer();
+        });
+        return fluidStack;
     }
 
     @Override

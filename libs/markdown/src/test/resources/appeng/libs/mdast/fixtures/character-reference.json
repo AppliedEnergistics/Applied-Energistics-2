@@ -1,0 +1,50 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "Character references, such as named: &,\ndecimal: #, Ӓ, Ϡ, �,\nand hexadecimal: \", ആ, ಫ.",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 3,
+              "column": 43,
+              "offset": 125
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 3,
+          "column": 43,
+          "offset": 125
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 4,
+      "column": 1,
+      "offset": 126
+    }
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "code",
+      "lang": null,
+      "meta": null,
+      "value": "fenced code",
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 3,
+          "column": 4,
+          "offset": 19
+        }
+      }
+    },
+    {
+      "type": "code",
+      "lang": "js",
+      "meta": null,
+      "value": "fenced code with a language",
+      "position": {
+        "start": {
+          "line": 5,
+          "column": 1,
+          "offset": 21
+        },
+        "end": {
+          "line": 7,
+          "column": 4,
+          "offset": 58
+        }
+      }
+    },
+    {
+      "type": "code",
+      "lang": "js",
+      "meta": "line=1",
+      "value": "fenced code with meta",
+      "position": {
+        "start": {
+          "line": 9,
+          "column": 1,
+          "offset": 60
+        },
+        "end": {
+          "line": 11,
+          "column": 4,
+          "offset": 98
+        }
+      }
+    },
+    {
+      "type": "code",
+      "lang": null,
+      "meta": null,
+      "value": "fenced code with tildes",
+      "position": {
+        "start": {
+          "line": 13,
+          "column": 1,
+          "offset": 100
+        },
+        "end": {
+          "line": 15,
+          "column": 4,
+          "offset": 131
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "inlineCode",
+          "value": "not fenced code",
+          "position": {
+            "start": {
+              "line": 17,
+              "column": 1,
+              "offset": 133
+            },
+            "end": {
+              "line": 17,
+              "column": 22,
+              "offset": 154
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 17,
+          "column": 1,
+          "offset": 133
+        },
+        "end": {
+          "line": 17,
+          "column": 22,
+          "offset": 154
+        }
+      }
+    },
+    {
+      "type": "code",
+      "lang": "fenced",
+      "meta": "code~~~",
+      "value": "asd",
+      "position": {
+        "start": {
+          "line": 19,
+          "column": 1,
+          "offset": 156
+        },
+        "end": {
+          "line": 21,
+          "column": 4,
+          "offset": 181
+        }
+      }
+    },
+    {
+      "type": "code",
+      "lang": null,
+      "meta": null,
+      "value": "\nasd",
+      "position": {
+        "start": {
+          "line": 23,
+          "column": 1,
+          "offset": 183
+        },
+        "end": {
+          "line": 26,
+          "column": 4,
+          "offset": 195
+        }
+      }
+    },
+    {
+      "type": "code",
+      "lang": null,
+      "meta": null,
+      "value": "asd\n",
+      "position": {
+        "start": {
+          "line": 28,
+          "column": 1,
+          "offset": 197
+        },
+        "end": {
+          "line": 31,
+          "column": 4,
+          "offset": 209
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 32,
+      "column": 1,
+      "offset": 210
+    }
+  }
+}

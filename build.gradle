@@ -25,56 +25,17 @@ plugins {
     id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url "https://maven.shedaniel.me/"
-        content {
-            includeGroup "me.shedaniel"
-            includeGroup "me.shedaniel.cloth"
-            includeGroup "dev.architectury"
-        }
-    }
-    maven {
-        url "https://maven.bai.lol"
-        content {
-            includeGroup "mcp.mobius.waila"
-            includeGroup "lol.bai"
-        }
-    }
-    maven {
-        url "https://maven.parchmentmc.net/"
-        content {
-            includeGroup "org.parchmentmc.data"
-        }
-    }
-    // For the "No Indium?" mod
-    maven {
-        url = 'https://maven.cafeteria.dev/releases/'
-        content {
-            includeGroup "me.luligabi"
-        }
-    }
-
-    maven {
-        name 'modmaven'
-        url "https://modmaven.dev/"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-
-    maven {
-        name 'cursemaven'
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
+configurations {
+    includeInJar
+    portaforgyImplementation.extendsFrom(compileClasspath)
+    implementation.extendsFrom(includeInJar)
 }
 
 dependencies {
+    includeInJar project(path: ':libs:markdown', configuration: "archives")
+    includeInJar project(path: ':libs:shaded-snakeyaml', configuration: "shadow")
+    includeInJar project(path: ':libs:shaded-directory-watcher', configuration: "shadow")
+
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
@@ -84,13 +45,21 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+    // Always depend on the REI API to compile
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+        exclude group: "org.yaml" // snakeyaml
+        exclude group: "blue.endless" // jankson
+    }
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.rei_version}") {
+        exclude group: "net.fabricmc.fabric-api"
+        exclude group: "org.yaml" // snakeyaml
+        exclude group: "blue.endless" // jankson
+    }
+
     if (project.runtime_itemlist_mod == "jei") {
         modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
-        }
-
-        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-            exclude group: "net.fabricmc.fabric-api"
         }
     } else if (project.runtime_itemlist_mod == "rei") {
         modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
@@ -146,24 +115,82 @@ dependencies {
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
     testImplementation("org.mockito:mockito-inline:4.0.0")
-
 }
 
-group = artifact_group
 archivesBaseName = artifact_basename
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
+allprojects {
+    group = artifact_group
 
-// ensure everything uses UTF-8 and not some random codepage chosen by gradle
-compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-    options.deprecation = false
-    options.compilerArgs << "-Xmaxerrs" << "9999"
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url "https://maven.shedaniel.me/"
+            content {
+                includeGroup "me.shedaniel"
+                includeGroup "me.shedaniel.cloth"
+                includeGroup "dev.architectury"
+            }
+        }
+        maven {
+            url "https://maven.bai.lol"
+            content {
+                includeGroup "mcp.mobius.waila"
+                includeGroup "lol.bai"
+            }
+        }
+        maven {
+            url "https://maven.parchmentmc.net/"
+            content {
+                includeGroup "org.parchmentmc.data"
+            }
+        }
+        // For the "No Indium?" mod
+        maven {
+            url = 'https://maven.cafeteria.dev/releases/'
+            content {
+                includeGroup "me.luligabi"
+            }
+        }
+
+        maven {
+            name 'modmaven'
+            url "https://modmaven.dev/"
+            content {
+                includeGroup "mezz.jei"
+            }
+        }
+
+        maven {
+            name 'cursemaven'
+            url "https://www.cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
+
+        maven {
+            url "https://maven.blamejared.com"
+            content {
+                includeGroup "vazkii.patchouli"
+            }
+        }
+    }
+
+    // ensure everything uses UTF-8 and not some random codepage chosen by gradle
+    compileJava.options.encoding = 'UTF-8'
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+        options.deprecation = false
+        options.compilerArgs << "-Xmaxerrs" << "9999"
+    }
 }
 
 ///////////////////
@@ -217,10 +244,6 @@ sourceSets {
     crowdin
 }
 
-configurations {
-    portaforgyImplementation.extendsFrom(compileClasspath)
-}
-
 test {
     useJUnitPlatform()
 }
@@ -239,6 +262,14 @@ loom {
         client {
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
+            property "appeng.guide-dev.sources", file("guidebook").absolutePath
+        }
+        guide {
+            client()
+            programArgs "--username", "AE2Dev"
+            property "appeng.tests", "true"
+            property "appeng.guide-dev.sources", file("guidebook").absolutePath
+            property "appeng.guide-dev.startup-page", "ae2:index.md"
         }
         datagen {
             client()
@@ -281,6 +312,12 @@ jar {
 
     from sourceSets.main.output.classesDirs
     from sourceSets.main.output.resourcesDir
+
+    from configurations.includeInJar.collect { zipTree it }
+
+    from('guidebook') {
+        into 'assets/ae2/ae2guide'
+    }
 
     manifest {
         attributes([

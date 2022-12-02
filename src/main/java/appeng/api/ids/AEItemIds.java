@@ -278,6 +278,7 @@ public final class AEItemIds {
     public static final ResourceLocation FORMATION_CORE = id("formation_core");
     public static final ResourceLocation ANNIHILATION_CORE = id("annihilation_core");
     public static final ResourceLocation SKY_DUST = id("sky_dust");
+    public static final ResourceLocation GUIDE = id("guide");
     public static final ResourceLocation ENDER_DUST = id("ender_dust");
     public static final ResourceLocation SINGULARITY = id("singularity");
     public static final ResourceLocation QUANTUM_ENTANGLED_SINGULARITY = id("quantum_entangled_singularity");

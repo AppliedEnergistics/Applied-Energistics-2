@@ -1,0 +1,104 @@
+<h1>Align</h1>
+<h2>An empty initial cell</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th align="center">a</th>
+<th align="left">c</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td align="center">b</td>
+<td align="left">c</td>
+</tr>
+<tr>
+<td>a</td>
+<td align="center">b</td>
+<td align="left">c</td>
+</tr>
+</tbody>
+</table>
+<h2>Missing alignment characters</h2>
+<p>| a | b | c |
+|   |---|---|
+| d | e | f |</p>
+<hr />
+<p>| a | b | c |
+|---|---|   |
+| d | e | f |</p>
+<h2>Incorrect characters</h2>
+<p>| a | b | c |
+|---|-*-|---|
+| d | e | f |</p>
+<h2>Two alignments</h2>
+<p>|a|
+|::|</p>
+<table>
+<thead>
+<tr>
+<th align="center">a</th>
+</tr>
+</thead>
+</table>
+<h2>Two at the start or end</h2>
+<p>|a|
+|::-|</p>
+<p>|a|
+|-::|</p>
+<h2>In the middle</h2>
+<p>|a|
+|-:-|</p>
+<h2>A space in the middle</h2>
+<p>|a|
+|- -|</p>
+<h2>No pipe</h2>
+<table>
+<thead>
+<tr>
+<th align="center">a</th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th align="left">a</th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th align="right">a</th>
+</tr>
+</thead>
+</table>
+<h2>A single colon</h2>
+<p>|a|
+|:|</p>
+<p>a
+:</p>
+<h2>Alignment on empty cells</h2>
+<table>
+<thead>
+<tr>
+<th>a</th>
+<th>b</th>
+<th align="left">c</th>
+<th align="right">d</th>
+<th align="center">e</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>f</td>
+<td></td>
+<td align="left"></td>
+<td align="right"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>

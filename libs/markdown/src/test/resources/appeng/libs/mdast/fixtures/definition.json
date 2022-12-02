@@ -1,0 +1,150 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "definition",
+      "identifier": "a",
+      "label": "a",
+      "title": null,
+      "url": "",
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 8,
+          "offset": 7
+        }
+      }
+    },
+    {
+      "type": "definition",
+      "identifier": "a",
+      "label": "a",
+      "title": null,
+      "url": "b",
+      "position": {
+        "start": {
+          "line": 2,
+          "column": 1,
+          "offset": 8
+        },
+        "end": {
+          "line": 2,
+          "column": 7,
+          "offset": 14
+        }
+      }
+    },
+    {
+      "type": "definition",
+      "identifier": "a",
+      "label": "a",
+      "title": "c",
+      "url": "b",
+      "position": {
+        "start": {
+          "line": 3,
+          "column": 1,
+          "offset": 15
+        },
+        "end": {
+          "line": 3,
+          "column": 11,
+          "offset": 25
+        }
+      }
+    },
+    {
+      "type": "definition",
+      "identifier": "a",
+      "label": "a",
+      "title": "c",
+      "url": "b",
+      "position": {
+        "start": {
+          "line": 4,
+          "column": 1,
+          "offset": 26
+        },
+        "end": {
+          "line": 4,
+          "column": 11,
+          "offset": 36
+        }
+      }
+    },
+    {
+      "type": "definition",
+      "identifier": "a",
+      "label": "a",
+      "title": "c",
+      "url": "b",
+      "position": {
+        "start": {
+          "line": 5,
+          "column": 1,
+          "offset": 37
+        },
+        "end": {
+          "line": 5,
+          "column": 11,
+          "offset": 47
+        }
+      }
+    },
+    {
+      "type": "definition",
+      "identifier": "a",
+      "label": "a",
+      "title": null,
+      "url": "b",
+      "position": {
+        "start": {
+          "line": 6,
+          "column": 1,
+          "offset": 48
+        },
+        "end": {
+          "line": 6,
+          "column": 9,
+          "offset": 56
+        }
+      }
+    },
+    {
+      "type": "definition",
+      "identifier": "a",
+      "label": "a",
+      "title": "\nc d\ne",
+      "url": "b",
+      "position": {
+        "start": {
+          "line": 7,
+          "column": 1,
+          "offset": 57
+        },
+        "end": {
+          "line": 9,
+          "column": 4,
+          "offset": 75
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 10,
+      "column": 1,
+      "offset": 76
+    }
+  }
+}

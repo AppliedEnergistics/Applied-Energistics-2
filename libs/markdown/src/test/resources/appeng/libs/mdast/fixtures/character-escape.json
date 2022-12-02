@@ -1,0 +1,116 @@
+{
+  "type": "root",
+  "children": [
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "Character escapes, such as: *not emphasis*.",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 45,
+              "offset": 44
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 45,
+          "offset": 44
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "- not a list.",
+          "position": {
+            "start": {
+              "line": 3,
+              "column": 1,
+              "offset": 46
+            },
+            "end": {
+              "line": 3,
+              "column": 15,
+              "offset": 60
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 3,
+          "column": 1,
+          "offset": 46
+        },
+        "end": {
+          "line": 3,
+          "column": 15,
+          "offset": 60
+        }
+      }
+    },
+    {
+      "type": "paragraph",
+      "children": [
+        {
+          "type": "text",
+          "value": "Escaping non-punctuation doesn’t work: \\1",
+          "position": {
+            "start": {
+              "line": 5,
+              "column": 1,
+              "offset": 62
+            },
+            "end": {
+              "line": 5,
+              "column": 42,
+              "offset": 103
+            }
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 5,
+          "column": 1,
+          "offset": 62
+        },
+        "end": {
+          "line": 5,
+          "column": 42,
+          "offset": 103
+        }
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 6,
+      "column": 1,
+      "offset": 104
+    }
+  }
+}

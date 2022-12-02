@@ -1,0 +1,50 @@
+{
+  "name": "4) Certus Quartz",
+  "category": "ae2:getting_started",
+  "icon": "ae2:quartz_cluster",
+  "sortnum": 40,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(thing)Certus Quartz$() is a wondrous material found in $(l:ae2:getting_started/compass)Meteorites$(/l). It is grown similarly to $(item)Amethyst$(), though most of its $(l:ae2:getting_started/certus#budding)Budding blocks$(/l) appear to decay over time.$(br2)It is used in many $(thing)AE2$() recipes as a crafting ingredient, can be used to make $(l:ae2:equipment/quartz_tools)Iron-level tools$(/l), crushed into a $(item)Dust$(), used to decorate, and more."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "ae2:quartz_cluster",
+      "text": "Growing $(thing)Certus Quartz$() has 3 $(thing)Bud$() stages and then a fully grown $(thing)Cluster$() stage. Breaking it during any of the $(thing)Bud$() stages will drop only a single $(thing)Certus Quartz Dust$() (not affected by $(item)Fortune$()). Breaking a fully grown $(thing)Cluster$() will drop 4 $(thing)Certus Quartz Crystals$(), and this is affected by $(item)Fortune$()."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "anchor": "budding",
+      "item": "ae2:flawless_budding_quartz",
+      "title": "Budding Certus Quartz",
+      "text": "$(thing)Budding Certus Quartz$() comes in 4 tiers.$(br2)$(thing)Flawless$() is the best and never decays, but can only be found in Meteors.$(br2)The next 3 tiers, in descending quality, are $(thing)Flawed$(), $(thing)Chipped$(), and $(thing)Damaged$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When one of those $(thing)Budding$() blocks grows a $(thing)Certus Quartz Bud$() there is a chance for it to decay to a lower tier, with $(thing)Damaged$() decaying into a normal $(thing)Certus Quartz Block$().$(br2)Conveniently, these decaying $(thing)Budding Blocks$() can be crafted by throwing one of them (or a $(thing)Certus Quartz Block$()), along with a $(l:ae2:getting_started/charger)Charged Certus Quartz$() into a pool of water to increase their tier by 1 (Max is $(thing)Flawed$())."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When broken normally any $(thing)Budding Certus Quartz$() will turn into a normal $(thing)Certus Quartz Block$(). If it is broken using $(item)Silk Touch$() then the $(thing)Budding Block$() will decay one tier. If you want $(thing)Flawless Budding Quartz$() at your base then you will need to figure out another way of moving it."
+    },
+    {
+      "type": "patchouli:crafting",
+      "anchor": "cga",
+      "recipe": "ae2:network/blocks/crystal_processing_quartz_growth_accelerator",
+      "text": "$(thing)Crystal Growth Accelerators$() significantly increase the speed at which $(thing)Certus Quartz$() grows. They also work on Amethyst. $(thing)CGAs$() are placed adjacent to the root $(l:ae2:getting_started/certus#budding)Budding Block$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(thing)CGAs$() need power to operate.  They accept either $(l:ae2:concepts/power)Network Power$(/l) or the $(l:ae2:getting_started/crank)Wooden Crank$(/l). They do not accept $(item)External Power$(). Power only connects to two opposing sides of the $(thing)CGA$().$(br2)$(thing)CGAs$() can be $(l:ae2:equipment/wrench)Rotated$(/l). This only affects where power can connect; adjacent $(thing)Budding Blocks$() will be $(thing)Growth Accelerated$() from any side of the $(thing)CGA$(). Also, multiple $(thing)CGAs$() can accelerate a $(thing)Budding Block$() at the same time."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "ae2:textures/patchouli/images/crystal_growth_accelerator_setup.png"
+      ],
+      "border": true,
+      "title": "Example Setup"
+    }
+  ]
+}

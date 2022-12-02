@@ -1,0 +1,32 @@
+{
+  "name": "3) Inscriber",
+  "category": "ae2:getting_started",
+  "icon": "ae2:inscriber",
+  "sortnum": 30,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(thing)Inscriber$() is a common crafting method in AE2. It is used to craft $(thing)Processors$() and certain $(thing)Dusts$().$(br2)The $(thing)Inscriber$() accepts $(l:ae2:concepts/power)Network Power, most external forms of power$(/l), or can be powered manually using a $(l:ae2:getting_started/crank)Wooden Crank$(/l).$(br2)It is $(l:ae2:concepts/sided)Sided$(/l), and can be $(l:ae2:equipment/wrench)Rotated$(/l)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "ae2:network/blocks/inscribers",
+      "text": "Default Orientation Sidedness:$(li)Top Input = \"Top\" Side$(li)Middle Input = \"Sides\"$(li)Bottom Input = \"Bottom\" Side$(li)Output = \"Sides\"$(br)Sides: North, East, South, West$(br2)The items in the Input Slots will not stack."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(thing)Inscribers$() have 3 $(item)Card Upgrade$() Slots and only accept $(l:ae2:misc/cards/acceleration)Acceleration Cards$(/l). They significantly improve the processing speed.$(br2)You will want to automate the $(thing)Inscriber$(). An early-game example is to use $(item)Hoppers$(). Due to the $(thing)Inscriber's$() Sidedness, and $(item)Hoppers'$() limited interaction sides, you will want to rotate the $(thing)Inscriber$() using a $(l:ae2:equipment/wrench)Quartz Wrench$(/l)."
+    },
+    {
+      "type": "patchouli:image",
+      "images": ["ae2:textures/patchouli/images/inscriber_setup.png"],
+      "border": true,
+      "title": "Example Semi-Automation"
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Notable Recipes",
+      "text": "$(todo)<ToDo: Inscriber Recipe Processor. Please use JEI or REI for now>$()$(li)Printed Circuits & Silicon$(li)Processors$(li)Certus Quartz Dust$(li)Fluix Dust$(li)Ender Dust$(li)Sky Stone Dust$(li)Copy Inscriber Plates$(br2)Logic = Gold Ingot$(br)Engineering = Diamond$(br)Calculation = Certus Quartz"
+    }
+  ]
+}
