@@ -1,15 +1,20 @@
 package appeng.client.guidebook;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.CategoryIndex;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.client.guidebook.indices.PageIndex;
-import appeng.client.guidebook.navigation.NavigationTree;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AELog;
-import appeng.core.AppEng;
-import appeng.util.Platform;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -31,20 +36,17 @@ import net.minecraft.server.packs.resources.ReloadInstance;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.CategoryIndex;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.indices.PageIndex;
+import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.core.AELog;
+import appeng.core.AppEng;
+import appeng.util.Platform;
 
 public final class GuideManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideManager.class);
@@ -96,44 +98,42 @@ public final class GuideManager {
                     throw new RuntimeException(e);
                 }
                 reloadInstance.done().thenRunAsync(() -> {
-                            var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
-                            var screen = new GuideScreen(page);
+                    var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
+                    var screen = new GuideScreen(page);
 
-                            try {
-                                var access = RegistryAccess.BUILTIN.get();
+                    try {
+                        var access = RegistryAccess.BUILTIN.get();
 
-                                PackRepository packRepository = new PackRepository(
-                                        PackType.SERVER_DATA,
-                                        new ServerPacksSource(),
-                                        new ModResourcePackCreator(PackType.SERVER_DATA)
-                                );
-                                packRepository.reload();
-                                packRepository.setSelected(ModResourcePackUtil.createDefaultDataPackSettings().getEnabled());
+                        PackRepository packRepository = new PackRepository(
+                                PackType.SERVER_DATA,
+                                new ServerPacksSource(),
+                                new ModResourcePackCreator(PackType.SERVER_DATA));
+                        packRepository.reload();
+                        packRepository.setSelected(ModResourcePackUtil.createDefaultDataPackSettings().getEnabled());
 
+                        var closeableResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
+                                packRepository.openAllSelected());
+                        var stuff = ReloadableServerResources.loadResources(
+                                closeableResourceManager,
+                                access,
+                                Commands.CommandSelection.ALL,
+                                0,
+                                Util.backgroundExecutor(),
+                                Runnable::run).get();
+                        stuff.updateRegistryTags(access);
+                        Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
 
-                                var closeableResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA, packRepository.openAllSelected());
-                                var stuff = ReloadableServerResources.loadResources(
-                                        closeableResourceManager,
-                                        access,
-                                        Commands.CommandSelection.ALL,
-                                        0,
-                                        Util.backgroundExecutor(),
-                                        Runnable::run
-                                ).get();
-                                stuff.updateRegistryTags(access);
-                                Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
+                    // Iterate and compile all pages
+                    for (var entry : GuideManager.INSTANCE.developmentPages.entrySet()) {
+                        LOGGER.info("Compiling {}", entry.getKey());
+                        GuideManager.INSTANCE.getPage(entry.getKey());
+                    }
 
-                            // Iterate and compile all pages
-                            for (var entry : GuideManager.INSTANCE.developmentPages.entrySet()) {
-                                LOGGER.info("Compiling {}", entry.getKey());
-                                GuideManager.INSTANCE.getPage(entry.getKey());
-                            }
-
-                            client.setScreen(screen);
-                        }, client)
+                    client.setScreen(screen);
+                }, client)
                         .exceptionally(throwable -> {
                             AELog.error(throwable);
                             return null;
@@ -215,7 +215,7 @@ public final class GuideManager {
 
         @Override
         protected Map<ResourceLocation, ParsedGuidePage> prepare(ResourceManager resourceManager,
-                                                                 ProfilerFiller profiler) {
+                ProfilerFiller profiler) {
             profiler.startTick();
             Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
@@ -240,7 +240,7 @@ public final class GuideManager {
 
         @Override
         protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager,
-                             ProfilerFiller profiler) {
+                ProfilerFiller profiler) {
             profiler.startTick();
             GuideManager.this.pages = pages;
             profiler.push("indices");

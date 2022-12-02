@@ -1,5 +1,25 @@
 package appeng.client.guidebook.screen;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
@@ -18,23 +38,6 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 public class GuideScreen extends Screen {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideScreen.class);
@@ -79,9 +82,11 @@ public class GuideScreen extends Screen {
         this.navbar = new GuideNavBar(this);
         addRenderableWidget(this.navbar);
 
-        backButton = new Button(docRect.right() - 40, docRect.y() - 15, 20, 15, Component.literal("<"), button -> navigateBack());
+        backButton = new Button(docRect.right() - 40, docRect.y() - 15, 20, 15, Component.literal("<"),
+                button -> navigateBack());
         addRenderableWidget(backButton);
-        forwardButton = new Button(docRect.right() - 20, docRect.y() - 15, 20, 15, Component.literal(">"), button -> navigateForward());
+        forwardButton = new Button(docRect.right() - 20, docRect.y() - 15, 20, 15, Component.literal(">"),
+                button -> navigateForward());
         addRenderableWidget(forwardButton);
         updateNavigationButtons();
 
@@ -89,7 +94,8 @@ public class GuideScreen extends Screen {
             var path = GuideManager.INSTANCE.getDevelopmentSourcePath(currentPage.getId());
             if (path != null) {
                 try {
-                    var connection = new URL("http://localhost:63342/api/file" + path.toUri().getPath()).openConnection();
+                    var connection = new URL("http://localhost:63342/api/file" + path.toUri().getPath())
+                            .openConnection();
                     connection.connect();
                     connection.getInputStream().close();
                 } catch (Exception e) {

@@ -1,14 +1,16 @@
 package appeng.client.guidebook.compiler.tags;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.document.LytErrorSink;
-import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.document.LytErrorSink;
+import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 /**
  * utilities for dealing with attributes of {@link MdxJsxElementFields}.
@@ -19,8 +21,9 @@ public final class MdxAttrs {
     }
 
     @Nullable
-    public static Pair<ResourceLocation, Item> getRequiredItemAndId(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-                                                                    String attribute) {
+    public static Pair<ResourceLocation, Item> getRequiredItemAndId(PageCompiler compiler, LytErrorSink errorSink,
+            MdxJsxElementFields el,
+            String attribute) {
         var id = el.getAttributeString(attribute, null);
         if (id == null) {
             errorSink.appendError(compiler, "Missing " + attribute + " attribute.", el);
@@ -46,7 +49,7 @@ public final class MdxAttrs {
     }
 
     public static Item getRequiredItem(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-                                       String attribute) {
+            String attribute) {
         var result = getRequiredItemAndId(compiler, errorSink, el, attribute);
         if (result != null) {
             return result.getRight();

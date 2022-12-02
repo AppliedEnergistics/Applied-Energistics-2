@@ -1,5 +1,18 @@
 package appeng.client.guidebook.screen;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
+
 import appeng.client.Point;
 import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.document.LytRect;
@@ -12,16 +25,6 @@ import appeng.client.guidebook.navigation.NavigationTree;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec2;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuideNavBar extends AbstractWidget {
     private static final int WIDTH_CLOSED = 15;
@@ -198,7 +201,8 @@ public class GuideNavBar extends AbstractWidget {
 
                 var icon = row.node.icon();
                 if (!icon.isEmpty()) {
-                    renderContext.renderItem(icon, row.paragraph.getBounds().x() - 9, row.paragraph.getBounds().y(), 1, 8,
+                    renderContext.renderItem(icon, row.paragraph.getBounds().x() - 9, row.paragraph.getBounds().y(), 1,
+                            8,
                             8);
                 }
             }

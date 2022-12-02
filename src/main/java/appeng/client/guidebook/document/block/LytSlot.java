@@ -1,5 +1,13 @@
 package appeng.client.guidebook.document.block;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
@@ -7,13 +15,6 @@ import appeng.client.guidebook.document.interaction.ItemTooltip;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Renders a standard Minecraft GUI slot.
@@ -40,7 +41,7 @@ public class LytSlot extends LytBlock implements InteractiveElement {
     }
 
     public LytSlot(ItemStack stack) {
-        this.stacks = new ItemStack[]{stack};
+        this.stacks = new ItemStack[] { stack };
     }
 
     public boolean isLargeSlot() {

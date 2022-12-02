@@ -1,17 +1,19 @@
 package appeng.client.guidebook.indices;
 
-import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.compiler.IdUtils;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import net.minecraft.ResourceLocationException;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.compiler.IdUtils;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 /**
  * An index of Minecraft items to the main guidebook page describing it.
@@ -31,7 +33,7 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
             return List.of();
         }
 
-        if (!(itemIdsNode instanceof List<?> itemIdList)) {
+        if (!(itemIdsNode instanceof List<?>itemIdList)) {
             LOGGER.warn("Page {} contains malformed item_ids frontmatter", page.getId());
             return List.of();
         }

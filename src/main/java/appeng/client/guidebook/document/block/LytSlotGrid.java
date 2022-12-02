@@ -1,11 +1,12 @@
 package appeng.client.guidebook.document.block;
 
+import net.minecraft.world.item.crafting.Ingredient;
+
 import appeng.client.gui.Icon;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.RenderContext;
-import net.minecraft.world.item.crafting.Ingredient;
 
 public class LytSlotGrid extends LytBox {
     private final int width;
@@ -40,8 +41,7 @@ public class LytSlotGrid extends LytBox {
                                 context,
                                 x + col * LytSlot.OUTER_SIZE,
                                 y + row * LytSlot.OUTER_SIZE,
-                                availableWidth
-                        );
+                                availableWidth);
                     }
                 }
             }
@@ -81,8 +81,7 @@ public class LytSlotGrid extends LytBox {
                                 bounds.x() + LytSlot.OUTER_SIZE * x,
                                 bounds.y() + LytSlot.OUTER_SIZE * y,
                                 Icon.SLOT_BACKGROUND,
-                                ColorRef.WHITE
-                        );
+                                ColorRef.WHITE);
                     }
                 }
             }

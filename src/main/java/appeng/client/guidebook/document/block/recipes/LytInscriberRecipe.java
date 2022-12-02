@@ -1,6 +1,8 @@
 
 package appeng.client.guidebook.document.block.recipes;
 
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytSlot;
@@ -8,7 +10,6 @@ import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
-import net.minecraft.resources.ResourceLocation;
 
 public class LytInscriberRecipe extends LytBox {
 
