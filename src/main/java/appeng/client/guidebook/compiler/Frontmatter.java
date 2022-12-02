@@ -3,12 +3,13 @@ package appeng.client.guidebook.compiler;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
-import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+
+import appeng.shaded.snakeyaml.LoaderOptions;
+import appeng.shaded.snakeyaml.Yaml;
+import appeng.shaded.snakeyaml.constructor.SafeConstructor;
 
 public record Frontmatter(
         FrontmatterNavigation navigationEntry,

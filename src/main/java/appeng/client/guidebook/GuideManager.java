@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,6 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
-import net.minecraft.server.packs.resources.ReloadInstance;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -44,7 +43,6 @@ import appeng.client.guidebook.indices.ItemIndex;
 import appeng.client.guidebook.indices.PageIndex;
 import appeng.client.guidebook.navigation.NavigationTree;
 import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.util.Platform;
 
@@ -52,6 +50,26 @@ public final class GuideManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideManager.class);
 
     public static final GuideManager INSTANCE = new GuideManager();
+    /**
+     * Folder for the guidebook assets.
+     */
+    private static final String ASSETS_FOLDER = "ae2guide";
+    /**
+     * System property to set a folder path to load additional resources from for guidebook development
+     */
+    private static final String PROPERTY_DEV_SOURCES = "appeng.guide-dev.sources";
+    /**
+     * System property to load the namespace from for the resources in {@link #PROPERTY_DEV_SOURCES}.
+     */
+    private static final String PROPERTY_DEV_SOURCES_NAMESPACE = "appeng.guide-dev.sources.namespace";
+    /**
+     * System property to specify a page id to load directly after the client starts.
+     */
+    private static final String PROPERTY_DEV_STARTUP_PAGE = "appeng.guide-dev.startup-page";
+    /**
+     * Validates all pages at startup.
+     */
+    private static final String PROPERTY_DEV_VALIDATE = "appeng.guide-dev.validate";
     private final Map<ResourceLocation, ParsedGuidePage> developmentPages = new HashMap<>();
     private final List<PageIndex> indices = new ArrayList<>();
     private NavigationTree navigationTree = new NavigationTree();
@@ -68,11 +86,11 @@ public final class GuideManager {
 
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
 
-        var sourceFolder = System.getProperty("appeng.guide.sources");
+        var sourceFolder = System.getProperty(PROPERTY_DEV_SOURCES);
         if (sourceFolder != null) {
             developmentSourceFolder = Paths.get(sourceFolder);
             // Allow overriding which Mod-ID is used for the sources in the given folder
-            developmentSourceNamespace = System.getProperty("appeng.guide.sources.namespace", AppEng.MOD_ID);
+            developmentSourceNamespace = System.getProperty(PROPERTY_DEV_SOURCES_NAMESPACE, AppEng.MOD_ID);
             watchDevelopmentSources(developmentSourceFolder, developmentSourceNamespace);
         } else {
             developmentSourceFolder = null;
@@ -89,60 +107,84 @@ public final class GuideManager {
     public static void init() {
         // Guaranteed init order
 
+        openPageAtStartupOrValidate();
+    }
+
+    /**
+     * Opens the given page directly after the client started.
+     */
+    private static void openPageAtStartupOrValidate() {
+        var validatePages = Boolean.TRUE.equals(Boolean.getBoolean(PROPERTY_DEV_VALIDATE));
+        ResourceLocation startupPageId;
+
+        var startupPage = System.getProperty(PROPERTY_DEV_STARTUP_PAGE);
+        if (startupPage != null) {
+            startupPageId = new ResourceLocation(startupPage);
+        } else {
+            startupPageId = null;
+        }
+
+        if (startupPageId == null && !validatePages) {
+            return; // Nothing to do
+        }
+
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            CompletableFuture<?> reload;
+
             if (client.getOverlay() instanceof LoadingOverlay loadingOverlay) {
-                ReloadInstance reloadInstance;
-                try {
-                    reloadInstance = (ReloadInstance) FieldUtils.readField(loadingOverlay, "reload", true);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-                reloadInstance.done().thenRunAsync(() -> {
-                    var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
-                    var screen = new GuideScreen(page);
+                reload = loadingOverlay.reload.done();
+            } else {
+                reload = CompletableFuture.completedFuture(null);
+            }
 
-                    try {
-                        var access = RegistryAccess.BUILTIN.get();
-
-                        PackRepository packRepository = new PackRepository(
-                                PackType.SERVER_DATA,
-                                new ServerPacksSource(),
-                                new ModResourcePackCreator(PackType.SERVER_DATA));
-                        packRepository.reload();
-                        packRepository.setSelected(ModResourcePackUtil.createDefaultDataPackSettings().getEnabled());
-
-                        var closeableResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
-                                packRepository.openAllSelected());
-                        var stuff = ReloadableServerResources.loadResources(
-                                closeableResourceManager,
-                                access,
-                                Commands.CommandSelection.ALL,
-                                0,
-                                Util.backgroundExecutor(),
-                                Runnable::run).get();
-                        stuff.updateRegistryTags(access);
-                        Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    // Iterate and compile all pages
+            reload.thenRunAsync(() -> {
+                runDatapackReload();
+                if (validatePages) {
+                    // Iterate and compile all pages to warn about errors on startup
                     for (var entry : GuideManager.INSTANCE.developmentPages.entrySet()) {
                         LOGGER.info("Compiling {}", entry.getKey());
                         GuideManager.INSTANCE.getPage(entry.getKey());
                     }
+                }
 
-                    client.setScreen(screen);
-                }, client)
-                        .exceptionally(throwable -> {
-                            AELog.error(throwable);
-                            return null;
-                        });
-            } else {
-                var page = GuideManager.INSTANCE.getPage(AppEng.makeId("index.md"));
-                client.setScreen(new GuideScreen(page));
-            }
+                if (startupPageId != null) {
+                    client.setScreen(GuideScreen.openNew(PageAnchor.page(startupPageId)));
+                }
+            }, client)
+                    .exceptionally(throwable -> {
+                        LOGGER.error("Failed to open startup page / validate pages.", throwable);
+                        return null;
+                    });
         });
+    }
+
+    // Run a fake datapack reload to properly compile the page (Recipes, Tags, etc.)
+    // Only used when we try to compile pages before entering a world (validation, show on startup)
+    private static void runDatapackReload() {
+        try {
+            var access = RegistryAccess.BUILTIN.get();
+
+            PackRepository packRepository = new PackRepository(
+                    PackType.SERVER_DATA,
+                    new ServerPacksSource(),
+                    new ModResourcePackCreator(PackType.SERVER_DATA));
+            packRepository.reload();
+            packRepository.setSelected(ModResourcePackUtil.createDefaultDataPackSettings().getEnabled());
+
+            var closeableResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
+                    packRepository.openAllSelected());
+            var stuff = ReloadableServerResources.loadResources(
+                    closeableResourceManager,
+                    access,
+                    Commands.CommandSelection.ALL,
+                    0,
+                    Util.backgroundExecutor(),
+                    Runnable::run).get();
+            stuff.updateRegistryTags(access);
+            Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Nullable
@@ -174,6 +216,9 @@ public final class GuideManager {
                 return null;
             }
         }
+
+        // Transform id such that the path is prefixed with "ae2assets", the source folder for the guidebook assets
+        id = new ResourceLocation(id.getNamespace(), ASSETS_FOLDER + "/" + id.getPath());
 
         var resource = Minecraft.getInstance().getResourceManager().getResource(id).orElse(null);
         if (resource == null) {
@@ -219,12 +264,13 @@ public final class GuideManager {
             profiler.startTick();
             Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
-            var resources = resourceManager.listResources("ae2guide", location -> location.getPath().endsWith(".md"));
+            var resources = resourceManager.listResources(ASSETS_FOLDER,
+                    location -> location.getPath().endsWith(".md"));
 
             for (var entry : resources.entrySet()) {
                 var pageId = new ResourceLocation(
                         entry.getKey().getNamespace(),
-                        entry.getKey().getPath().substring("ae2guide/".length()));
+                        entry.getKey().getPath().substring((ASSETS_FOLDER + "/").length()));
 
                 String sourcePackId = entry.getValue().sourcePackId();
                 try (var in = entry.getValue().open()) {

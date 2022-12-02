@@ -23,15 +23,14 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.methvin.watcher.DirectoryChangeEvent;
-import io.methvin.watcher.DirectoryChangeListener;
-import io.methvin.watcher.DirectoryWatcher;
-
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.core.AppEng;
+import appeng.shaded.directorywatcher.watcher.DirectoryChangeEvent;
+import appeng.shaded.directorywatcher.watcher.DirectoryChangeListener;
+import appeng.shaded.directorywatcher.watcher.DirectoryWatcher;
 
 class GuideSourceWatcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideSourceWatcher.class);

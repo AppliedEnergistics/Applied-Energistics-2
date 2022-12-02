@@ -111,7 +111,7 @@ public record SimpleRenderContext(@Override GuideScreen screen,
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         poseStack.pushPose();
-        poseStack.translate(x, y, z);
+        poseStack.translate(x, y, z + 1);
         poseStack.translate(width / 2, height / 2, 0.0);
         poseStack.scale(1.0F, -1.0F, 1.0F);
         poseStack.scale(width, height, 1f);
@@ -119,6 +119,8 @@ public record SimpleRenderContext(@Override GuideScreen screen,
         boolean flatLighting = !model.usesBlockLight();
         if (flatLighting) {
             Lighting.setupForFlatItems();
+        } else {
+            Lighting.setupForEntityInInventory();
         }
 
         itemRenderer.render(stack,

@@ -1,6 +1,5 @@
 package appeng.client.guidebook.screen;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +28,8 @@ import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
+import appeng.client.guidebook.document.block.LytHeading;
+import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
@@ -38,6 +39,7 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.core.AppEng;
 
 public class GuideScreen extends Screen {
     private static final Logger LOGGER = LoggerFactory.getLogger(GuideScreen.class);
@@ -56,13 +58,36 @@ public class GuideScreen extends Screen {
     private Button backButton;
     private Button forwardButton;
 
-    public GuideScreen(GuidePage currentPage) {
+    private GuideScreen(PageAnchor anchor) {
         super(Component.literal("AE2 Guidebook"));
-        this.currentPage = currentPage;
         this.scrollbar = new GuideScrollbar();
+        loadPage(anchor);
+    }
 
-        historyPosition = history.size();
-        history.add(new PageAnchor(currentPage.getId(), null));
+    /**
+     * Opens and resets history.
+     */
+    public static GuideScreen openNew(PageAnchor anchor) {
+        // Append to history if it's not already appended
+        if (history.lastIndexOf(anchor) != history.size()) {
+            historyPosition = history.size();
+            history.add(anchor);
+        }
+
+        return new GuideScreen(anchor);
+    }
+
+    /**
+     * Opens at current history position and only falls back to the index if the history is empty.
+     */
+    public static GuideScreen openAtPreviousPage(PageAnchor anchor) {
+        if (historyPosition < history.size()) {
+            anchor = history.get(historyPosition);
+        } else {
+            return openNew(anchor);
+        }
+
+        return new GuideScreen(anchor);
     }
 
     @Override
@@ -89,20 +114,6 @@ public class GuideScreen extends Screen {
                 button -> navigateForward());
         addRenderableWidget(forwardButton);
         updateNavigationButtons();
-
-        addRenderableWidget(new Button(docRect.right(), docRect.y() - 15, 20, 15, Component.literal("EDIT"), button -> {
-            var path = GuideManager.INSTANCE.getDevelopmentSourcePath(currentPage.getId());
-            if (path != null) {
-                try {
-                    var connection = new URL("http://localhost:63342/api/file" + path.toUri().getPath())
-                            .openConnection();
-                    connection.connect();
-                    connection.getInputStream().close();
-                } catch (Exception e) {
-                    LOGGER.error("Failed to open page in IntelliJ", e);
-                }
-            }
-        }));
     }
 
     @Override
@@ -138,7 +149,7 @@ public class GuideScreen extends Screen {
 
         disableScissor();
 
-        renderHoverOutline(document, context);
+        // renderHoverOutline(document, context);
 
         poseStack.popPose();
 
@@ -292,10 +303,32 @@ public class GuideScreen extends Screen {
     private void loadPage(PageAnchor anchor) {
         GuidePageTexture.releaseUsedTextures();
         currentPage = GuideManager.INSTANCE.getPage(anchor.pageId());
+
+        if (currentPage == null) {
+            // Build a "not found" page dynamically
+            currentPage = buildNotFoundPage(anchor);
+        }
+
         scrollbar.setScrollAmount(0);
         updatePageLayout();
 
         // TODO ANCHOR
+    }
+
+    private GuidePage buildNotFoundPage(PageAnchor anchor) {
+        var document = new LytDocument();
+        var title = new LytHeading();
+        title.appendText("Page not Found");
+        title.setDepth(1);
+        document.append(title);
+        var body = new LytParagraph();
+        body.appendText("Page " + anchor.pageId() + " could not be found.");
+        document.append(body);
+
+        return new GuidePage(
+                AppEng.MOD_ID,
+                anchor.pageId(),
+                document);
     }
 
     @Override
@@ -486,7 +519,7 @@ public class GuideScreen extends Screen {
 
     private void updatePageLayout() {
         var docViewport = getDocumentViewport();
-        var context = new LayoutContext(new MinecraftFontMetrics(font), docViewport);
+        var context = new LayoutContext(new MinecraftFontMetrics(), docViewport);
 
         // Build layout if needed
         var document = currentPage.getDocument();

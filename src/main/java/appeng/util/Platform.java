@@ -105,6 +105,8 @@ public class Platform {
     @org.jetbrains.annotations.Nullable
     private static final Class<?> ponderLevelClass = findPonderLevelClass(
             "com.simibubi.create.foundation.ponder.PonderWorld");
+
+    // This hack is used to allow tests and the guidebook to provide a recipe manager before the client loads a world
     public static RecipeManager fallbackClientRecipeManager;
 
     public static RecipeManager getClientRecipeManager() {

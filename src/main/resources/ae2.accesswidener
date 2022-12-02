@@ -96,3 +96,4 @@ accessible field net/minecraft/world/item/crafting/UpgradeRecipe base Lnet/minec
 accessible field net/minecraft/world/item/crafting/UpgradeRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
 
 accessible method net/minecraft/client/gui/Font getFontSet (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/gui/font/FontSet;
+accessible field net/minecraft/client/gui/screens/LoadingOverlay reload Lnet/minecraft/server/packs/resources/ReloadInstance;

@@ -128,7 +128,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.SPEED_CARD, "item/card_speed");
         flatSingleLayer(AEItems.SMITHING_TABLE_PATTERN, "item/smithing_table_pattern");
         flatSingleLayer(AEItems.STONECUTTING_PATTERN, "item/stonecutting_pattern");
-        flatSingleLayer(AEItemIds.TABLET, "item/tablet");
+        flatSingleLayer(AEItemIds.GUIDE, "item/guide");
         flatSingleLayer(AEItems.VIEW_CELL, "item/view_cell");
         flatSingleLayer(AEItems.WIRELESS_BOOSTER, "item/wireless_booster");
         flatSingleLayer(AEItems.WIRELESS_CRAFTING_TERMINAL, "item/wireless_crafting_terminal");

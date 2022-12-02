@@ -1,5 +1,9 @@
 package appeng.client.guidebook.render;
 
+/**
+ * TODO Colors from WIP patchouli book "nameplate_color": "8A5BA4", "link_color": "8A5BA4", "link_hover_color":
+ * "D7BBEC", "macros": { "$(item)": "$(#582E70)", "$(thing)": "$(#582E70)", "$(todo)": "$(#FF0000)" },
+ */
 public enum SymbolicColor {
     LINK(Colors.argb(255, 0, 213, 255), Colors.argb(255, 0, 213, 255)),
     BODY_TEXT(Colors.argb(255, 174, 174, 174), Colors.argb(255, 174, 174, 174)),
