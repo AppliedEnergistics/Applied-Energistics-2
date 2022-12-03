@@ -59,7 +59,7 @@ import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
-import appeng.client.guidebook.GuideManager;
+import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
@@ -110,6 +110,8 @@ public class AppEngClient extends AppEngBase {
      */
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
+    private Guide guidePages;
+
     public AppEngClient() {
         this.registerParticleFactories();
         this.registerTextures();
@@ -126,7 +128,7 @@ public class AppEngClient extends AppEngBase {
         InitAutoRotatingModel.init();
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        GuideManager.init();
+        guidePages = loadGuidePages();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
 
@@ -144,6 +146,10 @@ public class AppEngClient extends AppEngBase {
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             SiteExporter.initialize();
         }
+    }
+
+    private Guide loadGuidePages() {
+        return Guide.builder(MOD_ID, "ae2guide").build();
     }
 
     private void tickPinnedKeys(Minecraft minecraft) {
@@ -383,7 +389,7 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void openGuide(ResourceLocation initialPage) {
         try {
-            var screen = GuideScreen.openAtPreviousPage(PageAnchor.page(initialPage));
+            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage));
             Minecraft.getInstance().setScreen(screen);
         } catch (Exception e) {
             LOGGER.error("Failed to open guide.", e);

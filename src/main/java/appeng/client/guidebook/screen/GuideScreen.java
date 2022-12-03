@@ -9,8 +9,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -22,9 +20,9 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
-import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.PageCollection;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
@@ -42,24 +40,22 @@ import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AppEng;
 
 public class GuideScreen extends Screen {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuideScreen.class);
-
     private static final int HISTORY_SIZE = 100;
-    private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
-    private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
-
-    private GuidePage currentPage;
-    private final GuideScrollbar scrollbar;
-    private GuideNavBar navbar;
-
     private static final List<PageAnchor> history = new ArrayList<>();
     private static int historyPosition;
+    private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
+    private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
+    private final PageCollection pages;
+
+    private final GuideScrollbar scrollbar;
+    private GuidePage currentPage;
 
     private Button backButton;
     private Button forwardButton;
 
-    private GuideScreen(PageAnchor anchor) {
+    private GuideScreen(PageCollection pages, PageAnchor anchor) {
         super(Component.literal("AE2 Guidebook"));
+        this.pages = pages;
         this.scrollbar = new GuideScrollbar();
         loadPage(anchor);
     }
@@ -67,27 +63,27 @@ public class GuideScreen extends Screen {
     /**
      * Opens and resets history.
      */
-    public static GuideScreen openNew(PageAnchor anchor) {
+    public static GuideScreen openNew(PageCollection pages, PageAnchor anchor) {
         // Append to history if it's not already appended
         if (history.lastIndexOf(anchor) != history.size()) {
             historyPosition = history.size();
             history.add(anchor);
         }
 
-        return new GuideScreen(anchor);
+        return new GuideScreen(pages, anchor);
     }
 
     /**
      * Opens at current history position and only falls back to the index if the history is empty.
      */
-    public static GuideScreen openAtPreviousPage(PageAnchor anchor) {
+    public static GuideScreen openAtPreviousPage(PageCollection pages, PageAnchor anchor) {
         if (historyPosition < history.size()) {
             anchor = history.get(historyPosition);
         } else {
-            return openNew(anchor);
+            return openNew(pages, anchor);
         }
 
-        return new GuideScreen(anchor);
+        return new GuideScreen(pages, anchor);
     }
 
     @Override
@@ -104,8 +100,8 @@ public class GuideScreen extends Screen {
                 docRect.y(),
                 docRect.height());
 
-        this.navbar = new GuideNavBar(this);
-        addRenderableWidget(this.navbar);
+        GuideNavBar navbar = new GuideNavBar(this);
+        addRenderableWidget(navbar);
 
         backButton = new Button(docRect.right() - 40, docRect.y() - 15, 20, 15, Component.literal("<"),
                 button -> navigateBack());
@@ -302,7 +298,7 @@ public class GuideScreen extends Screen {
 
     private void loadPage(PageAnchor anchor) {
         GuidePageTexture.releaseUsedTextures();
-        currentPage = GuideManager.INSTANCE.getPage(anchor.pageId());
+        currentPage = pages.getPage(anchor.pageId());
 
         if (currentPage == null) {
             // Build a "not found" page dynamically
@@ -339,7 +335,7 @@ public class GuideScreen extends Screen {
 
     public void reloadPage() {
         GuidePageTexture.releaseUsedTextures();
-        currentPage = GuideManager.INSTANCE.getPage(currentPage.getId());
+        currentPage = pages.getPage(currentPage.getId());
         updatePageLayout();
     }
 
@@ -534,5 +530,9 @@ public class GuideScreen extends Screen {
     private void updateNavigationButtons() {
         backButton.active = historyPosition > 0;
         forwardButton.active = historyPosition + 1 < history.size();
+    }
+
+    public PageCollection getPages() {
+        return pages;
     }
 }

@@ -14,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 
 import appeng.client.Point;
-import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
@@ -131,7 +130,7 @@ public class GuideNavBar extends AbstractWidget {
         updateMousePos(mouseX, mouseY);
 
         // Check if we need to re-layout
-        var currentNavTree = GuideManager.INSTANCE.getNavigationTree();
+        var currentNavTree = screen.getPages().getNavigationTree();
         if (currentNavTree != this.navTree) {
             recreateRows();
         }
@@ -242,7 +241,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     private void recreateRows() {
-        this.navTree = GuideManager.INSTANCE.getNavigationTree();
+        this.navTree = screen.getPages().getNavigationTree();
         // Save Freeze expanded / scroll position
         this.rows.clear();
 

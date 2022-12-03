@@ -1,6 +1,5 @@
 package appeng.client.guidebook.compiler.tags;
 
-import appeng.client.guidebook.GuideManager;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytList;
@@ -24,7 +23,7 @@ public class CategoryIndexCompiler extends BlockTagCompiler {
 
         var list = new LytList(false, 0);
         for (var pageAnchor : categories) {
-            var page = GuideManager.INSTANCE.getParsedPage(pageAnchor.pageId());
+            var page = compiler.getPageCollection().getParsedPage(pageAnchor.pageId());
 
             var listItem = new LytListItem();
             var listItemPar = new LytParagraph();

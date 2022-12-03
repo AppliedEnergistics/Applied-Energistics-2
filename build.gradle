@@ -275,14 +275,14 @@ loom {
         client {
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
-            property "appeng.guide-dev.sources", file("guidebook").absolutePath
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
         guide {
             client()
             programArgs "--username", "AE2Dev"
             property "appeng.tests", "true"
-            property "appeng.guide-dev.sources", file("guidebook").absolutePath
-            property "appeng.guide-dev.startup-page", "ae2:index.md"
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+            property "guideDev.ae2guide.startupPage", "ae2:index.md"
         }
         datagen {
             client()

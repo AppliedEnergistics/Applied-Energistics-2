@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.core.AppEng;
@@ -31,7 +32,12 @@ class PageCompilerTest {
         var path = guidebookFolder.resolve(id + ".md");
         try (var in = Files.newInputStream(path)) {
             var parsed = PageCompiler.parse("ae2", AppEng.makeId(id), in);
-            return PageCompiler.compile(resourceLocation -> null, parsed);
+            var testPages = Guide.builder(AppEng.MOD_ID, "ae2guide")
+                    .developmentSources(guidebookFolder)
+                    .watchDevelopmentSources(false)
+                    .registerReloadListener(false)
+                    .build();
+            return PageCompiler.compile(testPages, parsed);
         }
     }
 

@@ -8,7 +8,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import org.jetbrains.annotations.Nullable;
@@ -43,33 +45,18 @@ import appeng.client.guidebook.indices.ItemIndex;
 import appeng.client.guidebook.indices.PageIndex;
 import appeng.client.guidebook.navigation.NavigationTree;
 import appeng.client.guidebook.screen.GuideScreen;
-import appeng.core.AppEng;
 import appeng.util.Platform;
 
-public final class GuideManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GuideManager.class);
+/**
+ * Encapsulates a Guide, which consists of a collection of Markdown pages and associated content, loaded from a
+ * guide-specific subdirectory of resource packs.
+ */
+public final class Guide implements PageCollection {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Guide.class);
 
-    public static final GuideManager INSTANCE = new GuideManager();
-    /**
-     * Folder for the guidebook assets.
-     */
-    private static final String ASSETS_FOLDER = "ae2guide";
-    /**
-     * System property to set a folder path to load additional resources from for guidebook development
-     */
-    private static final String PROPERTY_DEV_SOURCES = "appeng.guide-dev.sources";
-    /**
-     * System property to load the namespace from for the resources in {@link #PROPERTY_DEV_SOURCES}.
-     */
-    private static final String PROPERTY_DEV_SOURCES_NAMESPACE = "appeng.guide-dev.sources.namespace";
-    /**
-     * System property to specify a page id to load directly after the client starts.
-     */
-    private static final String PROPERTY_DEV_STARTUP_PAGE = "appeng.guide-dev.startup-page";
-    /**
-     * Validates all pages at startup.
-     */
-    private static final String PROPERTY_DEV_VALIDATE = "appeng.guide-dev.validate";
+    private final String defaultNamespace;
+    private final String folder;
+
     private final Map<ResourceLocation, ParsedGuidePage> developmentPages = new HashMap<>();
     private final List<PageIndex> indices = new ArrayList<>();
     private NavigationTree navigationTree = new NavigationTree();
@@ -80,22 +67,17 @@ public final class GuideManager {
     @Nullable
     private final String developmentSourceNamespace;
 
-    private GuideManager() {
+    private Guide(String defaultNamespace,
+            String folder,
+            @Nullable Path developmentSourceFolder,
+            @Nullable String developmentSourceNamespace) {
+        this.defaultNamespace = defaultNamespace;
+        this.folder = folder;
+        this.developmentSourceFolder = developmentSourceFolder;
+        this.developmentSourceNamespace = developmentSourceNamespace;
+
         addIndex(ItemIndex.INSTANCE);
         addIndex(CategoryIndex.INSTANCE);
-
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener());
-
-        var sourceFolder = System.getProperty(PROPERTY_DEV_SOURCES);
-        if (sourceFolder != null) {
-            developmentSourceFolder = Paths.get(sourceFolder);
-            // Allow overriding which Mod-ID is used for the sources in the given folder
-            developmentSourceNamespace = System.getProperty(PROPERTY_DEV_SOURCES_NAMESPACE, AppEng.MOD_ID);
-            watchDevelopmentSources(developmentSourceFolder, developmentSourceNamespace);
-        } else {
-            developmentSourceFolder = null;
-            developmentSourceNamespace = null;
-        }
     }
 
     public void addIndex(PageIndex index) {
@@ -104,29 +86,12 @@ public final class GuideManager {
         }
     }
 
-    public static void init() {
-        // Guaranteed init order
-
-        openPageAtStartupOrValidate();
+    public static Builder builder(String defaultNamespace, String folder) {
+        return new Builder(defaultNamespace, folder);
     }
 
-    /**
-     * Opens the given page directly after the client started.
-     */
-    private static void openPageAtStartupOrValidate() {
-        var validatePages = Boolean.TRUE.equals(Boolean.getBoolean(PROPERTY_DEV_VALIDATE));
-        ResourceLocation startupPageId;
-
-        var startupPage = System.getProperty(PROPERTY_DEV_STARTUP_PAGE);
-        if (startupPage != null) {
-            startupPageId = new ResourceLocation(startupPage);
-        } else {
-            startupPageId = null;
-        }
-
-        if (startupPageId == null && !validatePages) {
-            return; // Nothing to do
-        }
+    private static CompletableFuture<Minecraft> afterClientStart() {
+        var future = new CompletableFuture<Minecraft>();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             CompletableFuture<?> reload;
@@ -137,25 +102,16 @@ public final class GuideManager {
                 reload = CompletableFuture.completedFuture(null);
             }
 
-            reload.thenRunAsync(() -> {
-                runDatapackReload();
-                if (validatePages) {
-                    // Iterate and compile all pages to warn about errors on startup
-                    for (var entry : GuideManager.INSTANCE.developmentPages.entrySet()) {
-                        LOGGER.info("Compiling {}", entry.getKey());
-                        GuideManager.INSTANCE.getPage(entry.getKey());
-                    }
+            reload.whenCompleteAsync((o, throwable) -> {
+                if (throwable != null) {
+                    future.completeExceptionally(throwable);
+                } else {
+                    future.complete(client);
                 }
-
-                if (startupPageId != null) {
-                    client.setScreen(GuideScreen.openNew(PageAnchor.page(startupPageId)));
-                }
-            }, client)
-                    .exceptionally(throwable -> {
-                        LOGGER.error("Failed to open startup page / validate pages.", throwable);
-                        return null;
-                    });
+            }, client);
         });
+
+        return future;
     }
 
     // Run a fake datapack reload to properly compile the page (Recipes, Tags, etc.)
@@ -187,6 +143,7 @@ public final class GuideManager {
         }
     }
 
+    @Override
     @Nullable
     public ParsedGuidePage getParsedPage(ResourceLocation id) {
         if (pages == null) {
@@ -197,14 +154,16 @@ public final class GuideManager {
         return developmentPages.getOrDefault(id, pages.get(id));
     }
 
+    @Override
     @Nullable
     public GuidePage getPage(ResourceLocation id) {
         var page = getParsedPage(id);
 
-        return page != null ? PageCompiler.compile(this::getAsset, page) : null;
+        return page != null ? PageCompiler.compile(this, page) : null;
     }
 
-    private byte[] getAsset(ResourceLocation id) {
+    @Override
+    public byte[] loadAsset(ResourceLocation id) {
         // Also load images from the development sources folder, if it exists and contains the asset namespace
         if (developmentSourceFolder != null && id.getNamespace().equals(developmentSourceNamespace)) {
             var path = developmentSourceFolder.resolve(id.getPath());
@@ -218,7 +177,7 @@ public final class GuideManager {
         }
 
         // Transform id such that the path is prefixed with "ae2assets", the source folder for the guidebook assets
-        id = new ResourceLocation(id.getNamespace(), ASSETS_FOLDER + "/" + id.getPath());
+        id = new ResourceLocation(id.getNamespace(), folder + "/" + id.getPath());
 
         var resource = Minecraft.getInstance().getResourceManager().getResource(id).orElse(null);
         if (resource == null) {
@@ -232,14 +191,22 @@ public final class GuideManager {
         }
     }
 
+    @Override
     public NavigationTree getNavigationTree() {
         return navigationTree;
     }
 
+    @Override
     public boolean pageExists(ResourceLocation pageId) {
         return developmentPages.containsKey(pageId) || pages != null && pages.containsKey(pageId);
     }
 
+    /**
+     * Returns the on-disk path for a given guidebook resource (i.e. page, asset) if development mode is enabled and the
+     * resource exists in the development source folder.
+     *
+     * @return null if development mode is not enabled or the resource doesn't exist in the development sources.
+     */
     @Nullable
     public Path getDevelopmentSourcePath(ResourceLocation id) {
         if (developmentSourceFolder != null && id.getNamespace().equals(developmentSourceNamespace)) {
@@ -251,11 +218,17 @@ public final class GuideManager {
         return null;
     }
 
-    class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>>
+    private class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>>
             implements IdentifiableResourceReloadListener {
+        private final ResourceLocation id;
+
+        public ReloadListener(ResourceLocation id) {
+            this.id = id;
+        }
+
         @Override
         public ResourceLocation getFabricId() {
-            return AppEng.makeId("guidebook");
+            return id;
         }
 
         @Override
@@ -264,13 +237,13 @@ public final class GuideManager {
             profiler.startTick();
             Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
-            var resources = resourceManager.listResources(ASSETS_FOLDER,
+            var resources = resourceManager.listResources(folder,
                     location -> location.getPath().endsWith(".md"));
 
             for (var entry : resources.entrySet()) {
                 var pageId = new ResourceLocation(
                         entry.getKey().getNamespace(),
-                        entry.getKey().getPath().substring((ASSETS_FOLDER + "/").length()));
+                        entry.getKey().getPath().substring((folder + "/").length()));
 
                 String sourcePackId = entry.getValue().sourcePackId();
                 try (var in = entry.getValue().open()) {
@@ -288,7 +261,7 @@ public final class GuideManager {
         protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager,
                 ProfilerFiller profiler) {
             profiler.startTick();
-            GuideManager.this.pages = pages;
+            Guide.this.pages = pages;
             profiler.push("indices");
             var allPages = new ArrayList<ParsedGuidePage>();
             allPages.addAll(pages.values());
@@ -305,12 +278,12 @@ public final class GuideManager {
 
         @Override
         public String getName() {
-            return "AE2 Guidebook";
+            return id.toString();
         }
     }
 
-    private void watchDevelopmentSources(Path developmentSources, String namespace) {
-        var watcher = new GuideSourceWatcher(namespace, developmentSources);
+    private void watchDevelopmentSources() {
+        var watcher = new GuideSourceWatcher(developmentSourceNamespace, developmentSourceFolder);
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             var changes = watcher.takeChanges();
             if (!changes.isEmpty()) {
@@ -368,4 +341,161 @@ public final class GuideManager {
         }
     }
 
+    public static class Builder {
+        private final String defaultNamespace;
+        private final String folder;
+        private boolean registerReloadListener = true;
+        @Nullable
+        private ResourceLocation startupPage;
+        private boolean validateAtStartup;
+        private Path developmentSourceFolder;
+        private String developmentSourceNamespace;
+        private boolean watchDevelopmentSources = true;
+
+        private Builder(String defaultNamespace, String folder) {
+            this.defaultNamespace = Objects.requireNonNull(defaultNamespace, "defaultNamespace");
+            this.folder = Objects.requireNonNull(folder, folder);
+
+            // Both folder and default namespace need to be valid resource paths
+            if (!ResourceLocation.isValidResourceLocation(defaultNamespace + ":dummy")) {
+                throw new IllegalArgumentException("The default namespace for a guide needs to be a valid namespace");
+            }
+            if (!ResourceLocation.isValidResourceLocation("dummy:" + folder)) {
+                throw new IllegalArgumentException("The folder for a guide needs to be a valid resource location");
+            }
+
+            var startupPageProperty = String.format(Locale.ROOT, "guideDev.%s.startupPage", folder);
+            try {
+                this.startupPage = new ResourceLocation(System.getProperty(startupPageProperty));
+            } catch (Exception e) {
+                LOGGER.error("Specified invalid page id in system property {}", startupPageProperty);
+            }
+
+            // Development sources folder
+            var devSourcesFolderProperty = String.format(Locale.ROOT, "guideDev.%s.sources", folder);
+            var devSourcesNamespaceProperty = String.format(Locale.ROOT, "guideDev.%s.sourcesNamespace",
+                    defaultNamespace);
+            var sourceFolder = System.getProperty(devSourcesFolderProperty);
+            if (sourceFolder != null) {
+                developmentSourceFolder = Paths.get(sourceFolder);
+                // Allow overriding which Mod-ID is used for the sources in the given folder
+                developmentSourceNamespace = System.getProperty(devSourcesNamespaceProperty, defaultNamespace);
+            }
+        }
+
+        /**
+         * Allows the automatic resource reload listener registration to be disabled.
+         */
+        public Builder registerReloadListener(boolean enable) {
+            this.registerReloadListener = enable;
+            return this;
+        }
+
+        /**
+         * Sets the page that should be shown directly after launching the client. This will cause a datapack reload to
+         * happen automatically so that recipes can be shown. This page can also be set via system property
+         * <code>guideDev.&lt;FOLDER>.startupPage</code>, where &lt;FOLDER> is replaced with the folder given to
+         * {@link Guide#builder}.
+         * <p/>
+         * Setting the page to null will disable this feature and overwrite a page set via system properties.
+         */
+        public Builder startupPage(@Nullable ResourceLocation pageId) {
+            this.startupPage = pageId;
+            return this;
+        }
+
+        /**
+         * Enables or disables validation of all discovered pages at startup. This will cause a datapack reload to
+         * happen automatically so that recipes can be validated. This page can also be set via system property
+         * <code>guideDev.&lt;FOLDER>.validateAtStartup</code>, where &lt;FOLDER> is replaced with the folder given to
+         * {@link Guide#builder}.
+         * <p/>
+         * Changing this setting overrides the system property.
+         * <p/>
+         * Validation results will be written to the log.
+         */
+        public Builder validateAllAtStartup(boolean enable) {
+            this.validateAtStartup = enable;
+            return this;
+        }
+
+        /**
+         * See {@linkplain #developmentSources(Path, String)}. Uses the default namespace of the guide as the namespace
+         * for the pages and resources in the folder.
+         */
+        public Builder developmentSources(@Nullable Path folder) {
+            return developmentSources(folder, defaultNamespace);
+        }
+
+        /**
+         * Load additional page resources and assets from the given folder. Useful during development in conjunction
+         * with {@link #watchDevelopmentSources} to automatically reload pages during development.
+         * <p/>
+         * All resources in the given folder are treated as if they were in the given namespace and the folder given to
+         * {@link #builder}.
+         * <p/>
+         * The default values for folder and namespace will be taken from the system properties:
+         * <ul>
+         * <li><code>guideDev.&lt;FOLDER>.sources</code></li>
+         * <li><code>guideDev.&lt;FOLDER>.sourcesNamespace</code></li>
+         * </ul>
+         */
+        public Builder developmentSources(Path folder, String namespace) {
+            this.developmentSourceFolder = folder;
+            this.developmentSourceNamespace = namespace;
+            return this;
+        }
+
+        /**
+         * If development sources are used ({@linkplain #developmentSources(Path, String)}, the given folder will
+         * automatically be watched for change. This method can be used to disable this behavior.
+         */
+        public Builder watchDevelopmentSources(boolean enable) {
+            this.watchDevelopmentSources = enable;
+            return this;
+        }
+
+        /**
+         * Creates the guide.
+         */
+        public Guide build() {
+            var guide = new Guide(defaultNamespace, folder, developmentSourceFolder, developmentSourceNamespace);
+
+            if (registerReloadListener) {
+                guide.registerReloadListener();
+            }
+
+            if (developmentSourceFolder != null && watchDevelopmentSources) {
+                guide.watchDevelopmentSources();
+            }
+
+            if (validateAtStartup || startupPage != null) {
+                var reloadFuture = afterClientStart().thenRun(Guide::runDatapackReload);
+                if (validateAtStartup) {
+                    reloadFuture = reloadFuture.thenRun(guide::validateAll);
+                }
+                if (startupPage != null) {
+                    reloadFuture.thenRun(() -> {
+                        var client = Minecraft.getInstance();
+                        client.setScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage)));
+                    });
+                }
+            }
+
+            return guide;
+        }
+    }
+
+    private void validateAll() {
+        // Iterate and compile all pages to warn about errors on startup
+        for (var entry : developmentPages.entrySet()) {
+            LOGGER.info("Compiling {}", entry.getKey());
+            getPage(entry.getKey());
+        }
+    }
+
+    private void registerReloadListener() {
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener(
+                new ResourceLocation(defaultNamespace, folder)));
+    }
 }
