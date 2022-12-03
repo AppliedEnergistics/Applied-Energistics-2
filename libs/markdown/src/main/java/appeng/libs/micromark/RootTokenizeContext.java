@@ -133,7 +133,7 @@ class RootTokenizeContext implements TokenizeContext {
     public void defineSkip(@NotNull Point value) {
         tokenizer.columnStart.put(value.line(), value.column());
         tokenizer.accountForPotentialSkip();
-        LOGGER.debug("position: define skip: {}", now());
+        LOGGER.trace("position: define skip: {}", now());
     }
 
     @Override

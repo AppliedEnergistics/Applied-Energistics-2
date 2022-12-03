@@ -97,7 +97,7 @@ public class Tokenizer {
                 throw new IllegalArgumentException("expected given code to equal expected code");
             }
 
-            LOGGER.debug("consume: `{}`", code);
+            LOGGER.trace("consume: `{}`", code);
 
             Assert.check(
                     !consumed,
@@ -120,7 +120,7 @@ public class Tokenizer {
                 pointColumn = 1;
                 pointOffset += code == Codes.carriageReturnLineFeed ? 2 : 1;
                 accountForPotentialSkip();
-                LOGGER.debug("position: after eol: `{}`", now());
+                LOGGER.trace("position: after eol: `{}`", now());
             } else if (code != Codes.virtualSpace) {
                 pointColumn++;
                 pointOffset++;
@@ -158,7 +158,7 @@ public class Tokenizer {
             token.type = type;
             token.start = now();
 
-            LOGGER.debug("enter: '{}'", type);
+            LOGGER.trace("enter: '{}'", type);
 
             context.getEvents().add(new Event(EventType.ENTER, token, context));
 
@@ -188,7 +188,7 @@ public class Tokenizer {
                     "expected non-empty token (`" + type + "`)"
             );
 
-            LOGGER.debug("exit: '{}'", token.type);
+            LOGGER.trace("exit: '{}'", token.type);
             context.getEvents().add(Event.exit(token, context));
 
             return token;
@@ -271,7 +271,7 @@ public class Tokenizer {
             throw new IllegalStateException("expected character to be consumed");
         }
         consumed = false;
-        LOGGER.debug("main: passing `{}` to {}", code, state);
+        LOGGER.trace("main: passing `{}` to {}", code, state);
         expectedCode = code;
         if (state == null) {
             throw new IllegalStateException("expected state");
@@ -472,7 +472,7 @@ public class Tokenizer {
                     ListUtils.setLength(context.getEvents(), startEventsIndex);
                     stack = startStack;
                     accountForPotentialSkip();
-                    LOGGER.debug("position: restore: '{}'", now());
+                    LOGGER.trace("position: restore: '{}'", now());
                 },
                 startEventsIndex
         );
