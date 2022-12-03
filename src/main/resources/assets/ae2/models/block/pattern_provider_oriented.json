@@ -3,7 +3,7 @@
   "textures": {
     "particle": "ae2:block/pattern_provider",
     "down": "ae2:block/pattern_provider_alternate",
-    "up": "ae2:block/pattern_provider",
+    "up": "ae2:block/pattern_provider_alternate_front",
     "north": "ae2:block/pattern_provider_alternate_arrow",
     "south": "ae2:block/pattern_provider_alternate_arrow",
     "east": "ae2:block/pattern_provider_alternate_arrow",
