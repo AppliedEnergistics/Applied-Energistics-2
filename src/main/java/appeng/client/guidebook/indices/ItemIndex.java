@@ -17,11 +17,11 @@ import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 /**
  * An index of Minecraft items to the main guidebook page describing it.
+ * <p/>
+ * This index is installed by default on all {@linkplain appeng.client.guidebook.Guide guides}.
  */
 public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemIndex.class);
-
-    public static final ItemIndex INSTANCE = new ItemIndex();
 
     public ItemIndex() {
         super("Item Index", ItemIndex::getItemAnchors);

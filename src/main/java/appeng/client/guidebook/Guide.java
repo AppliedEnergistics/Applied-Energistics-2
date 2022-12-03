@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,7 +59,7 @@ public final class Guide implements PageCollection {
     private final String folder;
 
     private final Map<ResourceLocation, ParsedGuidePage> developmentPages = new HashMap<>();
-    private final List<PageIndex> indices = new ArrayList<>();
+    private final Map<Class<?>, PageIndex> indices;
     private NavigationTree navigationTree = new NavigationTree();
     private Map<ResourceLocation, ParsedGuidePage> pages;
 
@@ -70,20 +71,22 @@ public final class Guide implements PageCollection {
     private Guide(String defaultNamespace,
             String folder,
             @Nullable Path developmentSourceFolder,
-            @Nullable String developmentSourceNamespace) {
+            @Nullable String developmentSourceNamespace,
+            Map<Class<?>, PageIndex> indices) {
         this.defaultNamespace = defaultNamespace;
         this.folder = folder;
         this.developmentSourceFolder = developmentSourceFolder;
         this.developmentSourceNamespace = developmentSourceNamespace;
-
-        addIndex(ItemIndex.INSTANCE);
-        addIndex(CategoryIndex.INSTANCE);
+        this.indices = indices;
     }
 
-    public void addIndex(PageIndex index) {
-        if (!indices.contains(index)) {
-            indices.add(index);
+    @Override
+    public <T extends PageIndex> T getIndex(Class<T> indexClass) {
+        var index = indices.get(indexClass);
+        if (index == null) {
+            throw new IllegalArgumentException("No index of type " + indexClass + " is registered with this guide.");
         }
+        return indexClass.cast(index);
     }
 
     public static Builder builder(String defaultNamespace, String folder) {
@@ -266,7 +269,7 @@ public final class Guide implements PageCollection {
             var allPages = new ArrayList<ParsedGuidePage>();
             allPages.addAll(pages.values());
             allPages.addAll(developmentPages.values());
-            for (PageIndex index : indices) {
+            for (var index : indices.values()) {
                 index.rebuild(allPages);
             }
             profiler.pop();
@@ -311,7 +314,7 @@ public final class Guide implements PageCollection {
         var allPages = new ArrayList<ParsedGuidePage>(pages.size() + developmentPages.size());
         allPages.addAll(pages.values());
         allPages.addAll(developmentPages.values());
-        for (var index : indices) {
+        for (var index : indices.values()) {
             if (index.supportsUpdate()) {
                 index.update(allPages, changes);
             } else {
@@ -344,6 +347,7 @@ public final class Guide implements PageCollection {
     public static class Builder {
         private final String defaultNamespace;
         private final String folder;
+        private final Map<Class<?>, PageIndex> indices = new IdentityHashMap<>();
         private boolean registerReloadListener = true;
         @Nullable
         private ResourceLocation startupPage;
@@ -381,6 +385,10 @@ public final class Guide implements PageCollection {
                 // Allow overriding which Mod-ID is used for the sources in the given folder
                 developmentSourceNamespace = System.getProperty(devSourcesNamespaceProperty, defaultNamespace);
             }
+
+            // Add default indices
+            index(new ItemIndex());
+            index(new CategoryIndex());
         }
 
         /**
@@ -456,10 +464,28 @@ public final class Guide implements PageCollection {
         }
 
         /**
+         * Adds a page index to this guide, to be updated whenever the pages in the guide change.
+         */
+        public Builder index(PageIndex index) {
+            this.indices.put(index.getClass(), index);
+            return this;
+        }
+
+        /**
+         * Adds a page index to this guide, to be updated whenever the pages in the guide change. Allows the class token
+         * under which the index can be retrieved to be specified.
+         */
+        public <T extends PageIndex> Builder index(Class<? super T> clazz, T index) {
+            this.indices.put(clazz, index);
+            return this;
+        }
+
+        /**
          * Creates the guide.
          */
         public Guide build() {
-            var guide = new Guide(defaultNamespace, folder, developmentSourceFolder, developmentSourceNamespace);
+            var guide = new Guide(defaultNamespace, folder, developmentSourceFolder, developmentSourceNamespace,
+                    indices);
 
             if (registerReloadListener) {
                 guide.registerReloadListener();

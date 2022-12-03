@@ -12,11 +12,11 @@ import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 /**
  * Pages can declare to be part of multiple categories using the categories frontmatter.
+ * <p/>
+ * This index is installed by default on all {@linkplain appeng.client.guidebook.Guide guides}.
  */
 public class CategoryIndex extends MultiValuedIndex<String, PageAnchor> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoryIndex.class);
-
-    public static final CategoryIndex INSTANCE = new CategoryIndex();
 
     public CategoryIndex() {
         super("Categories", CategoryIndex::getCategories);

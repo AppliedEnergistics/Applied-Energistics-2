@@ -19,7 +19,7 @@ public class CategoryIndexCompiler extends BlockTagCompiler {
             return;
         }
 
-        var categories = CategoryIndex.INSTANCE.get(category);
+        var categories = compiler.getIndex(CategoryIndex.class).get(category);
 
         var list = new LytList(false, 0);
         for (var pageAnchor : categories) {

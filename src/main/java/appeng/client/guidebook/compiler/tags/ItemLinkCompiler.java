@@ -19,7 +19,7 @@ public class ItemLinkCompiler extends FlowTagCompiler {
         var id = itemAndId.getLeft();
         var item = itemAndId.getRight();
 
-        var linksTo = ItemIndex.INSTANCE.get(id);
+        var linksTo = compiler.getIndex(ItemIndex.class).get(id);
         // We'll error out for item-links to our own mod because we expect them to have a page
         // while we don't have pages for Vanilla items or items from other mods.
         if (linksTo == null && id.getNamespace().equals(compiler.getId().getNamespace())) {

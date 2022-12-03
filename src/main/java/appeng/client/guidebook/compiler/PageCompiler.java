@@ -42,6 +42,7 @@ import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.document.interaction.TextTooltip;
+import appeng.client.guidebook.indices.PageIndex;
 import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.style.TextAlignment;
 import appeng.client.guidebook.style.WhiteSpaceMode;
@@ -454,5 +455,9 @@ public final class PageCompiler {
 
     public byte[] loadAsset(ResourceLocation imageId) {
         return pages.loadAsset(imageId);
+    }
+
+    public <T extends PageIndex> T getIndex(Class<T> clazz) {
+        return pages.getIndex(clazz);
     }
 }
