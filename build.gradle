@@ -23,18 +23,31 @@ plugins {
     id "com.matthewprenger.cursegradle" version "1.4.0"
     id "com.modrinth.minotaur" version "1.2.1"
     id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 configurations {
-    includeInJar
+    shaded {
+        transitive = false
+    }
     portaforgyImplementation.extendsFrom(compileClasspath)
-    implementation.extendsFrom(includeInJar)
 }
 
 dependencies {
-    includeInJar project(path: ':libs:markdown', configuration: "archives")
-    includeInJar project(path: ':libs:shaded-snakeyaml', configuration: "shadow")
-    includeInJar project(path: ':libs:shaded-directory-watcher', configuration: "shadow")
+    // To be copied into the jar file
+    shaded project(path: ':libs:markdown', configuration: "archives")
+    shaded "io.methvin:directory-watcher:${directory_watcher_version}"
+    shaded "org.yaml:snakeyaml:${snakeyaml_version}"
+
+    implementation project(':libs:markdown')
+    // Do not inherit any transitive dependencies here since we rely on those dependencies being
+    // present in Minecrafts own dependencies already.
+    implementation("io.methvin:directory-watcher:${directory_watcher_version}") {
+        transitive = false
+    }
+    implementation("org.yaml:snakeyaml:${snakeyaml_version}")  {
+        transitive = false
+    }
 
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -307,13 +320,13 @@ processResources {
     }
 }
 
-jar {
+jar.enabled = false // Replaced by "shadowJar"
+
+shadowJar {
     finalizedBy 'remapJar'
 
     from sourceSets.main.output.classesDirs
     from sourceSets.main.output.resourcesDir
-
-    from configurations.includeInJar.collect { zipTree it }
 
     from('guidebook') {
         into 'assets/ae2/ae2guide'
@@ -330,6 +343,17 @@ jar {
                 "MixinConfigs"            : "ae2.mixins.json"
         ])
     }
+
+    relocate "io.methvin", "appeng.shaded.methvin"
+    relocate "org.yaml.snakeyaml", "appeng.shaded.snakeyaml"
+
+    configurations = [project.configurations.shaded]
+    archiveClassifier = jar.archiveClassifier
+    destinationDirectory = jar.destinationDirectory
+}
+
+remapJar {
+    inputFile = shadowJar.archiveFile
 }
 
 def publicApiIncludePatterns = {

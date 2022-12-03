@@ -10,5 +10,3 @@ pluginManagement {
 }
 
 include 'libs:markdown'
-include 'libs:shaded-snakeyaml'
-include 'libs:shaded-directory-watcher'
