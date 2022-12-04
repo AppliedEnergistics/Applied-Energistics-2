@@ -68,6 +68,7 @@ import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.client.gui.widgets.ToolboxPanel;
 import appeng.client.gui.widgets.UpgradesPanel;
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
@@ -94,7 +95,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private static final String TEXT_ID_ENTRIES_SHOWN = "entriesShown";
 
     private static final int MIN_ROWS = 2;
-    private static final int PADDING = 24;
 
     private static String rememberedSearch = "";
     private final TerminalStyle style;
@@ -311,7 +311,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     public void init() {
         Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(true);
 
-        this.rows = Math.max(MIN_ROWS, config.getTerminalStyle().getRows(style.getPossibleRows(height, PADDING)));
+        var availableHeight = height - 2 * AEConfig.instance().getTerminalMargin();
+        this.rows = Math.max(MIN_ROWS, config.getTerminalStyle().getRows(style.getPossibleRows(availableHeight)));
 
         // Size the menu according to the number of rows we decided to have
         this.imageHeight = style.getScreenHeight(rows);
