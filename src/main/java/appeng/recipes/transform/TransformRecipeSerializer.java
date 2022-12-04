@@ -49,7 +49,7 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
         TransformCircumstance circumstance = json.has("circumstance")
                 ? TransformCircumstance.fromJson(GsonHelper.getAsJsonObject(json, "circumstance"))
                 : TransformCircumstance.fluid(FluidTags.WATER);
-        return new TransformRecipe(recipeId, ingredients, result.getItem(), result.getCount(), circumstance);
+        return new TransformRecipe(recipeId, ingredients, result, circumstance);
     }
 
     @Nullable
@@ -64,13 +64,12 @@ public class TransformRecipeSerializer implements RecipeSerializer<TransformReci
         }
         TransformCircumstance circumstance = TransformCircumstance.fromNetwork(buffer);
 
-        return new TransformRecipe(recipeId, ingredients, output.getItem(), output.getCount(), circumstance);
+        return new TransformRecipe(recipeId, ingredients, output, circumstance);
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, TransformRecipe recipe) {
-        buffer.writeItem(new ItemStack(recipe.output, recipe.count));
-
+        buffer.writeItem(recipe.output);
         buffer.writeByte(recipe.ingredients.size());
         recipe.ingredients.forEach(ingredient -> ingredient.toNetwork(buffer));
         recipe.circumstance.toNetwork(buffer);

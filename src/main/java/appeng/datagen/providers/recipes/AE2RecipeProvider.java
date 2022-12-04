@@ -25,12 +25,10 @@ import java.util.function.Consumer;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 
-import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.datagen.providers.IAE2DataProvider;
 
@@ -41,15 +39,6 @@ public abstract class AE2RecipeProvider extends net.minecraft.data.recipes.Recip
     public AE2RecipeProvider(DataGenerator generator) {
         super(generator);
         this.outputFolder = generator.getOutputFolder();
-    }
-
-    public static JsonObject toJson(ItemStack stack) {
-        var stackObj = new JsonObject();
-        stackObj.addProperty("item", Registry.ITEM.getKey(stack.getItem()).toString());
-        if (stack.getCount() > 1) {
-            stackObj.addProperty("count", stack.getCount());
-        }
-        return stackObj;
     }
 
     public void run(CachedOutput cache) {

@@ -6,7 +6,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -23,17 +22,15 @@ public final class TransformRecipe implements Recipe<Container> {
 
     private final ResourceLocation id;
     public final NonNullList<Ingredient> ingredients;
-    public final Item output;
-    public final int count;
+    public final ItemStack output;
     public final TransformCircumstance circumstance;
     private static int singularitySeed = 0;
 
-    public TransformRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, Item output, int count,
+    public TransformRecipe(ResourceLocation id, NonNullList<Ingredient> ingredients, ItemStack output,
             TransformCircumstance circumstance) {
         this.id = id;
         this.ingredients = ingredients;
         this.output = output;
-        this.count = count;
         this.circumstance = circumstance;
     }
 
@@ -65,7 +62,7 @@ public final class TransformRecipe implements Recipe<Container> {
 
     @Override
     public ItemStack getResultItem() {
-        return new ItemStack(output, count);
+        return output;
     }
 
     @Override
@@ -85,13 +82,5 @@ public final class TransformRecipe implements Recipe<Container> {
 
     public ResourceLocation id() {
         return id;
-    }
-
-    public Item output() {
-        return output;
-    }
-
-    public int count() {
-        return count;
     }
 }

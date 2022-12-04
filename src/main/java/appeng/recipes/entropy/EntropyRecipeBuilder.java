@@ -55,6 +55,14 @@ public class EntropyRecipeBuilder {
     private boolean outputFluidKeep;
     private List<ItemStack> drops = Collections.emptyList();
 
+    public static EntropyRecipeBuilder cool(ResourceLocation id) {
+        return new EntropyRecipeBuilder().setId(id).setMode(EntropyMode.COOL);
+    }
+
+    public static EntropyRecipeBuilder heat(ResourceLocation id) {
+        return new EntropyRecipeBuilder().setId(id).setMode(EntropyMode.HEAT);
+    }
+
     public EntropyRecipeBuilder setId(ResourceLocation id) {
         Preconditions.checkArgument(id != null);
         this.id = id;

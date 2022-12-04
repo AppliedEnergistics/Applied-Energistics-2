@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.core.AppEng;
-import appeng.recipes.entropy.EntropyMode;
 import appeng.recipes.entropy.EntropyRecipeBuilder;
 
 public class EntropyRecipes extends AE2RecipeProvider {
@@ -44,32 +43,32 @@ public class EntropyRecipes extends AE2RecipeProvider {
 
     private void buildCoolRecipes(Consumer<FinishedRecipe> consumer) {
 
-        cool("flowing_water_snowball")
+        EntropyRecipeBuilder.cool(AppEng.makeId("entropy/cool/flowing_water_snowball"))
                 .setInputFluid(Fluids.FLOWING_WATER)
                 .setDrops(new ItemStack(Items.SNOWBALL))
                 .save(consumer);
 
-        cool("grass_block_dirt")
+        EntropyRecipeBuilder.cool(AppEng.makeId("entropy/cool/grass_block_dirt"))
                 .setInputBlock(Blocks.GRASS_BLOCK)
                 .setOutputBlock(Blocks.DIRT)
                 .save(consumer);
 
-        cool("lava_obsidian")
+        EntropyRecipeBuilder.cool(AppEng.makeId("entropy/cool/lava_obsidian"))
                 .setInputFluid(Fluids.LAVA)
                 .setOutputBlock(Blocks.OBSIDIAN)
                 .save(consumer);
 
-        cool("stone_bricks_cracked_stone_bricks")
+        EntropyRecipeBuilder.cool(AppEng.makeId("entropy/cool/stone_bricks_cracked_stone_bricks"))
                 .setInputBlock(Blocks.STONE_BRICKS)
                 .setOutputBlock(Blocks.CRACKED_STONE_BRICKS)
                 .save(consumer);
 
-        cool("stone_cobblestone")
+        EntropyRecipeBuilder.cool(AppEng.makeId("entropy/cool/stone_cobblestone"))
                 .setInputBlock(Blocks.STONE)
                 .setOutputBlock(Blocks.COBBLESTONE)
                 .save(consumer);
 
-        cool("water_ice")
+        EntropyRecipeBuilder.cool(AppEng.makeId("entropy/cool/water_ice"))
                 .setInputFluid(Fluids.WATER)
                 .setOutputBlock(Blocks.ICE)
                 .save(consumer);
@@ -78,38 +77,25 @@ public class EntropyRecipes extends AE2RecipeProvider {
 
     private void buildHeatRecipes(Consumer<FinishedRecipe> consumer) {
 
-        heat("cobblestone_stone")
+        EntropyRecipeBuilder.heat(AppEng.makeId("entropy/heat/cobblestone_stone"))
                 .setInputBlock(Blocks.COBBLESTONE)
                 .setOutputBlock(Blocks.STONE)
                 .save(consumer);
 
-        heat("ice_water")
+        EntropyRecipeBuilder.heat(AppEng.makeId("entropy/heat/ice_water"))
                 .setInputBlock(Blocks.ICE)
                 .setOutputFluid(Fluids.WATER)
                 .save(consumer);
 
-        heat("snow_water")
+        EntropyRecipeBuilder.heat(AppEng.makeId("entropy/heat/snow_water"))
                 .setInputBlock(Blocks.SNOW)
                 .setOutputFluid(Fluids.FLOWING_WATER)
                 .save(consumer);
 
-        heat("water_air")
+        EntropyRecipeBuilder.heat(AppEng.makeId("entropy/heat/water_air"))
                 .setInputFluid(Fluids.WATER)
                 .setOutputBlock(Blocks.AIR)
                 .save(consumer);
 
     }
-
-    public static EntropyRecipeBuilder cool(String id) {
-        return new EntropyRecipeBuilder()
-                .setId(AppEng.makeId("entropy/cool/" + id))
-                .setMode(EntropyMode.COOL);
-    }
-
-    public static EntropyRecipeBuilder heat(String id) {
-        return new EntropyRecipeBuilder()
-                .setId(AppEng.makeId("entropy/heat/" + id))
-                .setMode(EntropyMode.HEAT);
-    }
-
 }
