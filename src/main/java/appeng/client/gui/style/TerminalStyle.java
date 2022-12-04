@@ -131,9 +131,8 @@ public class TerminalStyle {
         return screenWidth;
     }
 
-    public int getPossibleRows(int availableHeight, int padding) {
-        return (availableHeight - padding - header.getSrcHeight()
-                - bottom.getSrcHeight() - padding) / row.getSrcHeight();
+    public int getPossibleRows(int availableHeight) {
+        return (availableHeight - header.getSrcHeight() - bottom.getSrcHeight()) / row.getSrcHeight();
     }
 
     /**

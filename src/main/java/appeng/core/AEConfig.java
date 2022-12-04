@@ -26,11 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.material.Fluid;
-
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -152,9 +147,6 @@ public final class AEConfig {
 
     // Tunnels
     public static final double TUNNEL_POWER_LOSS = 0.05;
-
-    @Nullable
-    private TagKey<Fluid> improvedFluidTagKey;
 
     private void syncClientConfig() {
         this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
@@ -511,8 +503,8 @@ public final class AEConfig {
         return COMMON.vibrationChamberMaxEnergyPerTick.get();
     }
 
-    public int getVibrationChamberInitialEnergyPerGameTick() {
-        return COMMON.vibrationChamberInitialEnergyPerTick.get();
+    public int getTerminalMargin() {
+        return CLIENT.terminalMargin.get();
     }
 
     // Setters keep visibility as low as possible.
@@ -535,6 +527,7 @@ public final class AEConfig {
         public final EnumOption<TerminalStyle> terminalStyle;
         public final BooleanOption pinAutoCraftedItems;
         public final BooleanOption clearGridOnClose;
+        public final IntegerOption terminalMargin;
 
         // Search Settings
         public final BooleanOption searchTooltips;
@@ -573,6 +566,8 @@ public final class AEConfig {
                     "Pin items that the player auto-crafts to the top of the terminal");
             this.clearGridOnClose = client.addBoolean("clearGridOnClose", false,
                     "Automatically clear the crafting/encoding grid when closing the terminal");
+            this.terminalMargin = client.addInt("terminalMargin", 25,
+                    "The vertical margin to apply when sizing terminals. Used to make room for centered item mod search bars");
 
             // Search Settings
             var search = root.subsection("search");
@@ -666,7 +661,6 @@ public final class AEConfig {
         public final DoubleOption vibrationChamberEnergyPerFuelTick;
         public final IntegerOption vibrationChamberMinEnergyPerTick;
         public final IntegerOption vibrationChamberMaxEnergyPerTick;
-        public final IntegerOption vibrationChamberInitialEnergyPerTick;
 
         // Condenser Power Requirement
         public final IntegerOption condenserMatterBallsPower;
@@ -776,8 +770,6 @@ public final class AEConfig {
                     "Minimum amount of AE/t the vibration chamber can slow down to when energy is being wasted.");
             vibrationChamberMaxEnergyPerTick = vibrationChamber.addInt("maxEnergyPerGameTick", 40, 1, 1000,
                     "Maximum amount of AE/t the vibration chamber can speed up to when generated energy is being fully consumed.");
-            vibrationChamberInitialEnergyPerTick = vibrationChamber.addInt("initialEnergyPerGameTick", 20, 0, 1000,
-                    "An amount of AE/t between minEnergyPerGameTick and maxEnergyPerGameTick that the vibration chamber starts at initially.");
         }
 
     }
