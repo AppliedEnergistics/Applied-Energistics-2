@@ -164,9 +164,9 @@ loom {
     runs {
         guide {
             client()
-            property "appeng.guide-dev.sources", file("guidebook").absolutePath
-            property "appeng.guide-dev.sources.namespace", "your-mod-id"
-            property "appeng.guide-dev.startup-page", "your-mod-id:start-page.md" // or ae2:index.md
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+            property "guideDev.ae2guide.sourcesNamespace", "your-mod-id"
+            property "guideDev.ae2guide.startupPage", "your-mod-id:start-page.md" // or ae2:index.md
         }
     }
 }
