@@ -25,11 +25,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -57,6 +62,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
+import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
@@ -121,6 +127,7 @@ public class AppEngClient extends AppEngBase {
         this.registerEntityRenderers();
         this.registerEntityLayerDefinitions();
         this.registerClientTooltipComponents();
+        this.registerClientCommands();
 
         ClientPickBlockGatherCallback.EVENT.register(this::onPickBlock);
         ClientTickEvents.START_CLIENT_TICK.register(this::updateCableRenderMode);
@@ -146,6 +153,18 @@ public class AppEngClient extends AppEngBase {
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             SiteExporter.initialize();
         }
+    }
+
+    private void registerClientCommands() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            LiteralArgumentBuilder<FabricClientCommandSource> builder = ClientCommandManager.literal("ae2client");
+            if (AEConfig.instance().isDebugToolsEnabled()) {
+                for (var commandBuilder : ClientCommands.DEBUG_COMMANDS) {
+                    commandBuilder.build(builder);
+                }
+            }
+            dispatcher.register(builder);
+        });
     }
 
     private Guide loadGuidePages() {

@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 
 public enum GuiText implements LocalizationEnum {
     inventory(null, "container"), // mc's default Inventory localization.
+    AdjacentToDifferentMachines("Adjacent to Different Machines"),
     And("and"),
     Or("or"),
     AttachedTo("Attached to: %s"),

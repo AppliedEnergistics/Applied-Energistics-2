@@ -30,9 +30,9 @@ import appeng.menu.slot.AppEngSlot;
  */
 public class PatternSlot extends AppEngSlot {
 
-    private final PatternProviderRecord machineInv;
+    private final PatternContainerRecord machineInv;
 
-    public PatternSlot(PatternProviderRecord machineInv, int machineInvSlot, int x, int y) {
+    public PatternSlot(PatternContainerRecord machineInv, int machineInvSlot, int x, int y) {
         super(machineInv.getInventory(), machineInvSlot);
         this.machineInv = machineInv;
         this.x = x;
@@ -58,7 +58,7 @@ public class PatternSlot extends AppEngSlot {
         return !this.getItem().isEmpty();
     }
 
-    public PatternProviderRecord getMachineInv() {
+    public PatternContainerRecord getMachineInv() {
         return this.machineInv;
     }
 

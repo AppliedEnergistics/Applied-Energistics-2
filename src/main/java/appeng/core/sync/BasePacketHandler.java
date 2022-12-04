@@ -26,6 +26,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.core.sync.packets.AssemblerAnimationPacket;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
+import appeng.core.sync.packets.ClearPatternAccessTerminalPacket;
 import appeng.core.sync.packets.ColorApplicatorSelectColorPacket;
 import appeng.core.sync.packets.CompassRequestPacket;
 import appeng.core.sync.packets.CompassResponsePacket;
@@ -97,6 +98,7 @@ public class BasePacketHandler {
 
         ASSEMBLER_ANIMATION(AssemblerAnimationPacket.class, AssemblerAnimationPacket::new),
 
+        PATTERN_PROVIDER_CLEAR(ClearPatternAccessTerminalPacket.class, ClearPatternAccessTerminalPacket::new),
         PATTERN_PROVIDER_UPDATE(PatternAccessTerminalPacket.class, PatternAccessTerminalPacket::new),
 
         NETWORK_STATUS(NetworkStatusPacket.class, NetworkStatusPacket::new),

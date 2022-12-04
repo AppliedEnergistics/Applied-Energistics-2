@@ -37,6 +37,7 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
@@ -76,6 +77,11 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     @Override
     public void saveChanges() {
         getHost().markForSave();
+    }
+
+    @Override
+    public AEItemKey getTerminalIcon() {
+        return AEItemKey.of(getPartItem());
     }
 
     @Override

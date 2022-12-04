@@ -19,8 +19,8 @@
 package appeng.helpers.iface;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,24 +28,17 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -55,6 +48,7 @@ import appeng.api.config.YesNo;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.ICraftingMachine;
+import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -87,7 +81,6 @@ import appeng.util.inv.PlayerInternalInventory;
 public class PatternProviderLogic implements InternalInventoryHost, ICraftingProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(PatternProviderLogic.class);
 
-    public static final int NUMBER_OF_PATTERN_SLOTS = 9;
     public static final String NBT_MEMORY_CARD_PATTERNS = "patterns";
     public static final String NBT_UNLOCK_EVENT = "unlockEvent";
     public static final String NBT_UNLOCK_STACK = "unlockStack";
@@ -104,7 +97,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private int priority;
 
     // Pattern storing logic
-    private final AppEngInternalInventory patternInventory = new AppEngInternalInventory(this, NUMBER_OF_PATTERN_SLOTS);
+    private final AppEngInternalInventory patternInventory;
     private final List<IPatternDetails> patterns = new ArrayList<>();
     /**
      * Keeps track of the inputs of all the patterns. When blocking mode is enabled, if any of these is contained in the
@@ -128,6 +121,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     @Nullable
     public PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
+        this(mainNode, host, 9);
+    }
+
+    public PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host, int patternInventorySize) {
+        this.patternInventory = new AppEngInternalInventory(this, patternInventorySize);
         this.host = host;
         this.mainNode = mainNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
@@ -285,18 +283,12 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             return false;
         }
 
-        for (var direction : host.getTargets()) {
+        for (var direction : getActiveSides()) {
             var adjPos = be.getBlockPos().relative(direction);
             var adjBe = level.getBlockEntity(adjPos);
             var adjBeSide = direction.getOpposite();
 
-            if (adjBe instanceof PatternProviderLogicHost adjHost) {
-                if (adjHost.getLogic().sameGrid(this.mainNode.getGrid())) {
-                    continue;
-                }
-            }
-
-            var craftingMachine = ICraftingMachine.of(adjBe, adjBeSide);
+            var craftingMachine = ICraftingMachine.of(level, adjPos, adjBeSide, adjBe);
             if (craftingMachine != null && craftingMachine.acceptsPlans()) {
                 if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide)) {
                     onPushPatternSuccess(patternDetails);
@@ -393,8 +385,21 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return unlockStack;
     }
 
-    private boolean sameGrid(@Nullable IGrid grid) {
-        return grid != null && grid == this.mainNode.getGrid();
+    private Set<Direction> getActiveSides() {
+        var sides = host.getTargets();
+
+        // Skip sides with grid connections to other pattern providers
+        var node = mainNode.getNode();
+        if (node != null) {
+            for (var entry : node.getInWorldConnections().entrySet()) {
+                var otherNode = entry.getValue().getOtherSide(node);
+                if (otherNode.getOwner() instanceof PatternProviderLogicHost) {
+                    sides.remove(entry.getKey());
+                }
+            }
+        }
+
+        return sides;
     }
 
     public boolean isBlocking() {
@@ -639,91 +644,57 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         }
     }
 
-    // TODO: get rid of this awful code
-    private static final Collection<Block> BAD_BLOCKS = new HashSet<>(100);
-
     /**
      * @return Gets the name used to show this pattern provider in the
      *         {@link appeng.menu.implementations.PatternAccessTermMenu}.
      */
-    public Component getTermName() {
-        final BlockEntity host = this.host.getBlockEntity();
-        final Level hostWorld = host.getLevel();
+    public PatternContainerGroup getTerminalGroup() {
+        var host = this.host.getBlockEntity();
+        var hostLevel = host.getLevel();
 
-        // Prefer own custom name
+        // Prefer own custom name / icon if player has named it
         if (this.host instanceof ICustomNameObject customNameObject && customNameObject.hasCustomInventoryName()) {
-            return customNameObject.getCustomInventoryName();
+            var name = customNameObject.getCustomInventoryName();
+            return new PatternContainerGroup(
+                    this.host.getTerminalIcon(),
+                    name,
+                    List.of());
         }
 
-        for (var direction : this.host.getTargets()) {
-            final BlockPos targ = host.getBlockPos().relative(direction);
-            final BlockEntity directedBlockEntity = hostWorld.getBlockEntity(targ);
-
-            if (directedBlockEntity == null) {
-                continue;
+        var sides = getActiveSides();
+        var groups = new LinkedHashSet<PatternContainerGroup>(sides.size());
+        for (var side : sides) {
+            var sidePos = host.getBlockPos().relative(side);
+            var group = PatternContainerGroup.fromMachine(hostLevel, sidePos, side.getOpposite());
+            if (group != null) {
+                groups.add(group);
             }
+        }
 
-            if (directedBlockEntity instanceof PatternProviderLogicHost interfaceHost) {
-                if (interfaceHost.getLogic().sameGrid(this.mainNode.getGrid())) {
-                    continue;
-                }
-            }
+        // If there's just one group, group by that
+        if (groups.size() == 1) {
+            return groups.iterator().next();
+        }
 
-            if (directedBlockEntity instanceof Nameable nameable && nameable.hasCustomName()) {
-                return nameable.getCustomName();
-            }
-
-            var craftingMachine = ICraftingMachine.of(directedBlockEntity, direction.getOpposite());
-            if (craftingMachine != null) {
-                var displayName = craftingMachine.getDisplayName();
-                if (displayName.isPresent()) {
-                    return displayName.get();
-                }
-            }
-
-            var adaptor = InternalInventory.wrapExternal(directedBlockEntity, direction.getOpposite());
-            if (adaptor != null) {
-                if (!adaptor.mayAllowTransfer()) {
-                    continue;
-                }
-
-                final BlockState directedBlockState = hostWorld.getBlockState(targ);
-                final Block directedBlock = directedBlockState.getBlock();
-                ItemStack what = new ItemStack(directedBlock, 1);
-                try {
-                    Vec3 from = new Vec3(host.getBlockPos().getX() + 0.5, host.getBlockPos().getY() + 0.5,
-                            host.getBlockPos().getZ() + 0.5);
-                    from = from.add(direction.getStepX() * 0.501, direction.getStepY() * 0.501,
-                            direction.getStepZ() * 0.501);
-                    final Vec3 to = from.add(direction.getStepX(), direction.getStepY(),
-                            direction.getStepZ());
-                    final BlockHitResult hit = null;// hostWorld.rayTraceBlocks( from, to ); //FIXME:
-                    // https://github.com/MinecraftForge/MinecraftForge/pull/6708
-                    if (hit != null && !BAD_BLOCKS.contains(directedBlock)
-                            && hit.getBlockPos().equals(directedBlockEntity.getBlockPos())) {
-                        // FIXME fabric
-                        // final ItemStack g = directedBlock.getPickBlock(directedBlockState, hit, hostWorld,
-                        // directedBlockEntity.getBlockPos(), null);
-                        // if (!g.isEmpty()) {
-                        // what = g;
-                        // }
-                    }
-                } catch (Throwable t) {
-                    BAD_BLOCKS.add(directedBlock); // nope!
-                }
-
-                if (what.getItem() != Items.AIR) {
-                    return Component.translatable(what.getDescriptionId());
-                }
-
-                final Item item = Item.byBlock(directedBlock);
-                if (item == Items.AIR) {
-                    return Component.translatable(directedBlock.getDescriptionId());
+        List<Component> tooltip = List.of();
+        // If there are multiple groups, show that in the tooltip
+        if (groups.size() > 1) {
+            tooltip = new ArrayList<>();
+            tooltip.add(GuiText.AdjacentToDifferentMachines.text().withStyle(ChatFormatting.BOLD));
+            for (var group : groups) {
+                tooltip.add(group.name());
+                for (var line : group.tooltip()) {
+                    tooltip.add(Component.literal("  ").append(line));
                 }
             }
         }
 
-        return GuiText.Nothing.text();
+        // If nothing is adjacent, just use itself
+        var hostIcon = this.host.getTerminalIcon();
+        return new PatternContainerGroup(
+                hostIcon,
+                hostIcon.getDisplayName(),
+                tooltip);
     }
 
     public long getSortValue() {

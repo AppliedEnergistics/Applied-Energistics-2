@@ -28,9 +28,11 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.crafting.IPatternDetails;
@@ -52,13 +54,26 @@ public interface ICraftingMachine {
             return null;
         }
 
-        return SIDED.find(blockEntity.getLevel(), blockEntity.getBlockPos(), null, blockEntity, side);
+        return of(blockEntity.getLevel(), blockEntity.getBlockPos(), side, blockEntity);
+    }
+
+    @Nullable
+    static ICraftingMachine of(Level level, BlockPos pos, Direction side,
+            @org.jetbrains.annotations.Nullable BlockEntity blockEntity) {
+        return SIDED.find(level, pos, null, blockEntity, side);
+    }
+
+    // TODO: 1.19.3+ Remove the default implementation.
+    @Nullable
+    default PatternContainerGroup getCraftingMachineInfo() {
+        return null;
     }
 
     /**
      * @return An optional name for this crafting machine, which can be shown in the pattern provider terminal for
      *         adjacent pattern providers that point to this crafting machine.
      */
+    @Deprecated(forRemoval = true)
     default Optional<Component> getDisplayName() {
         return Optional.empty();
     }

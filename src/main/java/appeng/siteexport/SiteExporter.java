@@ -17,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -66,22 +64,17 @@ public final class SiteExporter {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             continueJob(SceneExportJob::tick);
         });
+    }
 
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(
-                    ClientCommandManager.literal("ae2export").executes(context -> {
-                        context.getSource().sendFeedback(Component.literal("AE2 Site-Export started"));
-                        job = null;
-                        try {
-                            startExport(Minecraft.getInstance(), context.getSource());
-                        } catch (Exception e) {
-                            LOGGER.error("AE2 site export failed.", e);
-                            context.getSource().sendError(Component.literal(e.toString()));
-                            return 0;
-                        }
-                        return 0;
-                    }));
-        });
+    public static void export(FabricClientCommandSource source) {
+        source.sendFeedback(Component.literal("AE2 Site-Export started"));
+        job = null;
+        try {
+            startExport(Minecraft.getInstance(), source);
+        } catch (Exception e) {
+            LOGGER.error("AE2 site export failed.", e);
+            source.sendError(Component.literal(e.toString()));
+        }
     }
 
     @FunctionalInterface

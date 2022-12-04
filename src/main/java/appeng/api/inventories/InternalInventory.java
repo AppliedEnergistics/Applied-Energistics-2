@@ -393,7 +393,7 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
     }
 
     @Override
-    default boolean mayAllowTransfer() {
+    default boolean mayAllowInsertion() {
         return size() > 0;
     }
 

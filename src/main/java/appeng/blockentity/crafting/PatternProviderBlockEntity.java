@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
@@ -157,6 +158,11 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
             return EnumSet.allOf(Direction.class);
         }
         return EnumSet.of(this.getForward());
+    }
+
+    @Override
+    public AEItemKey getTerminalIcon() {
+        return AEItemKey.of(AEBlocks.PATTERN_PROVIDER.stack());
     }
 
     @Override

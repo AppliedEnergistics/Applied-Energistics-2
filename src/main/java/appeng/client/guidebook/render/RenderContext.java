@@ -19,7 +19,6 @@ import net.minecraft.world.phys.Vec2;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 
 public interface RenderContext {
@@ -29,8 +28,6 @@ public interface RenderContext {
     default boolean isDarkMode() {
         return lightDarkMode() == LightDarkMode.DARK_MODE;
     }
-
-    GuideScreen screen();
 
     PoseStack poseStack();
 

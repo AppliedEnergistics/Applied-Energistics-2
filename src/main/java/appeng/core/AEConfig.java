@@ -377,6 +377,10 @@ public final class AEConfig {
         return CLIENT.debugGuiOverlays.get();
     }
 
+    public void setShowDebugGuiOverlays(boolean enable) {
+        CLIENT.debugGuiOverlays.set(enable);
+    }
+
     public boolean isSpawnPressesInMeteoritesEnabled() {
         return COMMON.spawnPressesInMeteorites.get();
     }
