@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.player.Input;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -411,7 +412,38 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer container) {
-        return this.recipe.getRemainingItems(container);
+        // Replace substituted fluids with the original item and ensure the slot is deleted
+        // after calling getRemainingItems. This is to fix compatibility with mods that *actually*
+        // search for the fluid containers in the container and warn/error if they're not found.
+        // See AE2 bug 6804 for details.
+        if (canSubstituteFluids) {
+            var slotsToClear = new boolean[container.getContainerSize()];
+            for (int x = 0; x < container.getContainerSize(); ++x) {
+                var validFluid = getValidFluid(x);
+                if (validFluid != null) {
+                    var item = container.getItem(x);
+                    var stack = GenericStack.unwrapItemStack(item);
+                    if (validFluid.equals(stack)) {
+                        container.setItem(x, ((AEItemKey) sparseInputs[x].what()).toStack());
+                        slotsToClear[x] = true;
+                    }
+                }
+            }
+
+            var result = this.recipe.getRemainingItems(container);
+
+            // Now ensure the empty buckets are cleared since we didn't really use any buckets to begin with
+            for (int i = 0; i < slotsToClear.length; i++) {
+                if (slotsToClear[i]) {
+                    result.set(i, ItemStack.EMPTY);
+                }
+            }
+
+            return result;
+        } else {
+            // If no fluid substitution occurred, just call it as-is
+            return this.recipe.getRemainingItems(container);
+        }
     }
 
     private GenericStack getItemOrFluidInput(int slot, GenericStack item) {
