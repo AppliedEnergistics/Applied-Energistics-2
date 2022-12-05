@@ -48,6 +48,7 @@ import appeng.client.gui.Icon;
 import appeng.client.gui.me.items.PatternEncodingTermScreen;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.AECraftingPattern;
+import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.menu.SlotSemantics;
@@ -87,8 +88,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
     private final PatternEncodingLogic encodingLogic;
     private final FakeSlot[] craftingGridSlots = new FakeSlot[9];
-    private final FakeSlot[] processingInputSlots = new FakeSlot[18];
-    private final FakeSlot[] processingOutputSlots = new FakeSlot[6];
+    private final FakeSlot[] processingInputSlots = new FakeSlot[AEProcessingPattern.MAX_INPUT_SLOTS];
+    private final FakeSlot[] processingOutputSlots = new FakeSlot[AEProcessingPattern.MAX_OUTPUT_SLOTS];
     private final FakeSlot stonecuttingInputSlot;
     private final FakeSlot smithingTableBaseSlot;
     private final FakeSlot smithingTableAdditionSlot;
