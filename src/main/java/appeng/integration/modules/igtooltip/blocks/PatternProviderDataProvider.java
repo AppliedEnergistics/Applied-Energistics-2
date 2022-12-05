@@ -3,6 +3,7 @@ package appeng.integration.modules.igtooltip.blocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 import appeng.api.client.AEStackRendering;
@@ -51,10 +52,10 @@ public final class PatternProviderDataProvider
                 Component stackAmount;
                 if (stack != null) {
                     stackName = AEStackRendering.getDisplayName(stack.what());
-                    stackAmount = Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
+                    stackAmount = new TextComponent(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
                 } else {
-                    stackName = Component.literal("ERROR");
-                    stackAmount = Component.literal("ERROR");
+                    stackName = new TextComponent("ERROR");
+                    stackAmount = new TextComponent("ERROR");
 
                 }
                 reason = InGameTooltip.CraftingLockedUntilResult.text(stackName, stackAmount);

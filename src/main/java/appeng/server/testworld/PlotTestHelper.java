@@ -2,6 +2,8 @@ package appeng.server.testworld;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
@@ -12,6 +14,7 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.IPartHost;
@@ -56,6 +59,25 @@ public class PlotTestHelper extends GameTestHelper {
                         plotTranslation.getZ());
     }
 
+    public <T extends AEBasePart> T getPart(BlockPos pos, @Nullable Direction side, Class<T> partClass) {
+        var be = getBlockEntity(pos);
+        if (!(be instanceof IPartHost partHost)) {
+            fail("not a part host", pos);
+            return null;
+        }
+
+        var part = partHost.getPart(side);
+        if (part == null) {
+            fail("part missing", pos);
+        }
+
+        if (!partClass.isInstance(part)) {
+            fail("wrong part", pos);
+        }
+
+        return partClass.cast(part);
+    }
+
     /**
      * Find all grids in the area and return the biggest one.
      */
@@ -65,7 +87,10 @@ public class PlotTestHelper extends GameTestHelper {
         var be = getBlockEntity(pos);
         if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
             return gridConnectedBlockEntity.getMainNode().getGrid();
-        } else if (be instanceof IInWorldGridNodeHost nodeHost) {
+        }
+
+        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(getLevel(), this.absolutePos(pos));
+        if (nodeHost != null) {
             for (var side : Direction.values()) {
                 var node = nodeHost.getGridNode(side);
                 if (node != null) {
