@@ -24,7 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,6 +48,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.LockCraftingMode;
+import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.IPatternDetails;
@@ -81,14 +85,22 @@ import appeng.util.inv.PlayerInternalInventory;
  * Shared code between the pattern provider block and part.
  */
 public class PatternProviderLogic implements InternalInventoryHost, ICraftingProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PatternProviderLogic.class);
 
     public static final int NUMBER_OF_PATTERN_SLOTS = 9;
     public static final String NBT_MEMORY_CARD_PATTERNS = "patterns";
+    public static final String NBT_UNLOCK_EVENT = "unlockEvent";
+    public static final String NBT_UNLOCK_STACK = "unlockStack";
+    public static final String NBT_PRIORITY = "priority";
+    public static final String NBT_SEND_LIST = "sendList";
+    public static final String NBT_SEND_DIRECTION = "sendDirection";
+    public static final String NBT_RETURN_INV = "returnInv";
 
     private final PatternProviderLogicHost host;
     private final IManagedGridNode mainNode;
     private final IActionSource actionSource;
-    private final ConfigManager configManager = new ConfigManager(this::saveChanges);
+    private final ConfigManager configManager = new ConfigManager(this::configChanged);
+
     private int priority;
 
     // Pattern storing logic
@@ -107,6 +119,14 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     private final PatternProviderTargetCache[] targetCaches = new PatternProviderTargetCache[6];
 
+    private YesNo redstoneState = YesNo.UNDECIDED;
+
+    @Nullable
+    private UnlockCraftingEvent unlockEvent;
+    @Nullable
+    private GenericStack unlockStack;
+
+    @Nullable
     public PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
         this.host = host;
         this.mainNode = mainNode
@@ -117,6 +137,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
         this.configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
         this.configManager.registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES);
+        this.configManager.registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
 
         this.returnInv = new PatternProviderReturnInventory(() -> {
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
@@ -137,26 +158,55 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public void writeToNBT(CompoundTag tag) {
         this.configManager.writeToNBT(tag);
         this.patternInventory.writeToNBT(tag, NBT_MEMORY_CARD_PATTERNS);
-        tag.putInt("priority", this.priority);
+        tag.putInt(NBT_PRIORITY, this.priority);
+        if (unlockEvent == UnlockCraftingEvent.PULSE) {
+            tag.putByte(NBT_UNLOCK_EVENT, (byte) 1);
+        } else if (unlockEvent == UnlockCraftingEvent.RESULT) {
+            if (unlockStack != null) {
+                tag.putByte(NBT_UNLOCK_EVENT, (byte) 2);
+                tag.put(NBT_UNLOCK_STACK, GenericStack.writeTag(unlockStack));
+            } else {
+                LOGGER.error("Saving pattern provider {}, locked waiting for stack, but stack is null!", host);
+            }
+        }
 
         ListTag sendListTag = new ListTag();
         for (var toSend : sendList) {
             sendListTag.add(GenericStack.writeTag(toSend));
         }
-        tag.put("sendList", sendListTag);
+        tag.put(NBT_SEND_LIST, sendListTag);
         if (sendDirection != null) {
-            tag.putByte("sendDirection", (byte) sendDirection.get3DDataValue());
+            tag.putByte(NBT_SEND_DIRECTION, (byte) sendDirection.get3DDataValue());
         }
 
-        tag.put("returnInv", this.returnInv.writeToTag());
+        tag.put(NBT_RETURN_INV, this.returnInv.writeToTag());
     }
 
     public void readFromNBT(CompoundTag tag) {
         this.configManager.readFromNBT(tag);
         this.patternInventory.readFromNBT(tag, NBT_MEMORY_CARD_PATTERNS);
-        this.priority = tag.getInt("priority");
+        this.priority = tag.getInt(NBT_PRIORITY);
 
-        ListTag sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
+        var unlockEventType = tag.getByte(NBT_UNLOCK_EVENT);
+        this.unlockEvent = switch (unlockEventType) {
+            case 0 -> null;
+            case 1 -> UnlockCraftingEvent.PULSE;
+            case 2 -> UnlockCraftingEvent.RESULT;
+            default -> {
+                LOGGER.error("Unknown unlock event type {} in NBT for pattern provider: {}", unlockEventType, tag);
+                yield null;
+            }
+        };
+        if (this.unlockEvent == UnlockCraftingEvent.RESULT) {
+            this.unlockStack = GenericStack.readTag(tag.getCompound(NBT_UNLOCK_STACK));
+            if (this.unlockStack == null) {
+                LOGGER.error("Could not load unlock stack for pattern provider from NBT: {}", tag);
+            }
+        } else {
+            this.unlockStack = null;
+        }
+
+        var sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
         for (int i = 0; i < sendListTag.size(); ++i) {
             var stack = GenericStack.readTag(sendListTag.getCompound(i));
             if (stack != null) {
@@ -231,6 +281,10 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         var be = host.getBlockEntity();
         var level = be.getLevel();
 
+        if (getCraftingLockedReason() != LockCraftingMode.NONE) {
+            return false;
+        }
+
         for (var direction : host.getTargets()) {
             var adjPos = be.getBlockPos().relative(direction);
             var adjBe = level.getBlockEntity(adjPos);
@@ -245,6 +299,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             var craftingMachine = ICraftingMachine.of(adjBe, adjBeSide);
             if (craftingMachine != null && craftingMachine.acceptsPlans()) {
                 if (craftingMachine.pushPattern(patternDetails, inputHolder, adjBeSide)) {
+                    onPushPatternSuccess(patternDetails);
                     return true;
                 }
                 continue;
@@ -269,6 +324,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                         }
                     }
                 }
+                onPushPatternSuccess(patternDetails);
                 this.sendDirection = direction;
                 this.sendStacksOut();
                 return true;
@@ -276,6 +332,65 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         }
 
         return false;
+    }
+
+    public void resetCraftingLock() {
+        if (unlockEvent != null) {
+            unlockEvent = null;
+            unlockStack = null;
+            saveChanges();
+        }
+    }
+
+    private void onPushPatternSuccess(IPatternDetails pattern) {
+        resetCraftingLock();
+
+        var lockMode = configManager.getSetting(Settings.LOCK_CRAFTING_MODE);
+        switch (lockMode) {
+            case LOCK_UNTIL_PULSE -> {
+                unlockEvent = UnlockCraftingEvent.PULSE;
+                saveChanges();
+            }
+            case LOCK_UNTIL_RESULT -> {
+                unlockEvent = UnlockCraftingEvent.RESULT;
+                unlockStack = pattern.getPrimaryOutput();
+                saveChanges();
+            }
+        }
+    }
+
+    /**
+     * Gets if the crafting lock is in effect and why.
+     *
+     * @return null if the lock isn't in effect
+     */
+    public LockCraftingMode getCraftingLockedReason() {
+        var lockMode = configManager.getSetting(Settings.LOCK_CRAFTING_MODE);
+        if (lockMode == LockCraftingMode.LOCK_WHILE_LOW && !getRedstoneState()) {
+            // Crafting locked by redstone signal
+            return LockCraftingMode.LOCK_WHILE_LOW;
+        } else if (lockMode == LockCraftingMode.LOCK_WHILE_HIGH && getRedstoneState()) {
+            return LockCraftingMode.LOCK_WHILE_HIGH;
+        } else if (unlockEvent != null) {
+            // Crafting locked by waiting for unlock event
+            switch (unlockEvent) {
+                case PULSE -> {
+                    return LockCraftingMode.LOCK_UNTIL_PULSE;
+                }
+                case RESULT -> {
+                    return LockCraftingMode.LOCK_UNTIL_RESULT;
+                }
+            }
+        }
+        return LockCraftingMode.NONE;
+    }
+
+    /**
+     * @return Null if {@linkplain #getCraftingLockedReason()} is not {@link LockCraftingMode#LOCK_UNTIL_RESULT}.
+     */
+    @Nullable
+    public GenericStack getUnlockStack() {
+        return unlockStack;
     }
 
     private boolean sameGrid(@Nullable IGrid grid) {
@@ -368,7 +483,8 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
     private boolean doWork() {
         // Note: bitwise OR to avoid short-circuiting.
-        return returnInv.injectIntoNetwork(mainNode.getGrid().getStorageService().getInventory(), actionSource)
+        return returnInv.injectIntoNetwork(
+                mainNode.getGrid().getStorageService().getInventory(), actionSource, this::onStackReturnedToNetwork)
                 | sendStacksOut();
     }
 
@@ -405,7 +521,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         patternInventory.writeToNBT(output, NBT_MEMORY_CARD_PATTERNS);
     }
 
-    public void importSettings(CompoundTag input, @org.jetbrains.annotations.Nullable Player player) {
+    public void importSettings(CompoundTag input, @Nullable Player player) {
         if (player != null && input.contains(NBT_MEMORY_CARD_PATTERNS) && !player.level.isClientSide) {
             clearPatternInventory(player);
 
@@ -482,6 +598,26 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         // Place back the removed blank patterns all at once
         if (blankPatternCount > 0) {
             playerInv.placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(blankPatternCount), false);
+        }
+    }
+
+    private void onStackReturnedToNetwork(GenericStack genericStack) {
+        if (unlockEvent != UnlockCraftingEvent.RESULT) {
+            return; // If we're not waiting for the result, we don't care
+        }
+
+        if (unlockStack == null) {
+            // Actually an error state...
+            LOGGER.error("pattern provider was waiting for RESULT, but no result was set");
+            unlockEvent = null;
+        } else if (unlockStack.what().equals(genericStack.what())) {
+            var remainingAmount = unlockStack.amount() - genericStack.amount();
+            if (remainingAmount <= 0) {
+                unlockEvent = null;
+                unlockStack = null;
+            } else {
+                unlockStack = new GenericStack(unlockStack.what(), remainingAmount);
+            }
         }
     }
 
@@ -598,5 +734,34 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     @Nullable
     public IGrid getGrid() {
         return mainNode.getGrid();
+    }
+
+    public void updateRedstoneState() {
+        // If we're waitingh for a pulse, update immediately
+        if (unlockEvent == UnlockCraftingEvent.PULSE && getRedstoneState()) {
+            unlockEvent = null; // Unlocked!
+        } else {
+            // Otherwise, just reset back to undecided
+            redstoneState = YesNo.UNDECIDED;
+        }
+        saveChanges(); // In any case, this needs to be changed since the state is now outdated
+    }
+
+    private void configChanged(IConfigManager manager, Setting<?> setting) {
+        if (setting == Settings.LOCK_CRAFTING_MODE) {
+            resetCraftingLock();
+        } else {
+            saveChanges();
+        }
+    }
+
+    private boolean getRedstoneState() {
+        if (redstoneState == YesNo.UNDECIDED) {
+            var be = this.host.getBlockEntity();
+            redstoneState = be.getLevel().hasNeighborSignal(be.getBlockPos())
+                    ? YesNo.YES
+                    : YesNo.NO;
+        }
+        return redstoneState == YesNo.YES;
     }
 }

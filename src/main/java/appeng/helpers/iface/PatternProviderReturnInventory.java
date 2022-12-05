@@ -19,6 +19,7 @@
 package appeng.helpers.iface;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +59,7 @@ public class PatternProviderReturnInventory extends GenericStackInv {
     /**
      * Return true if something could be injected into the network.
      */
-    public boolean injectIntoNetwork(MEStorage storage, IActionSource src) {
+    public boolean injectIntoNetwork(MEStorage storage, IActionSource src, Consumer<GenericStack> insertionCallback) {
         var didSomething = false;
         injectingIntoNetwork = true;
 
@@ -74,8 +75,10 @@ public class PatternProviderReturnInventory extends GenericStackInv {
                         stacks[i] = new GenericStack(stack.what(), stack.amount() - inserted);
                     }
 
-                    if (GenericStack.getStackSizeOrZero(stacks[i]) != sizeBefore) {
+                    inserted = Math.max(0, sizeBefore - GenericStack.getStackSizeOrZero(stacks[i]));
+                    if (inserted > 0) {
                         didSomething = true;
+                        insertionCallback.accept(new GenericStack(stack.what(), inserted));
                     }
                 }
             }
