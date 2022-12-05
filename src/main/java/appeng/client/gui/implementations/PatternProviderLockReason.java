@@ -16,6 +16,7 @@ import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Icon;
 import appeng.client.gui.Tooltip;
+import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
 
 public class PatternProviderLockReason implements ICompositeWidget {
@@ -61,11 +62,11 @@ public class PatternProviderLockReason implements ICompositeWidget {
         Component lockStatusText;
         if (menu.getCraftingLockedReason() == LockCraftingMode.NONE) {
             icon = Icon.UNLOCKED;
-            lockStatusText = Component.literal("Crafting is unlocked")
+            lockStatusText = GuiText.CraftingLockIsUnlocked.text()
                     .withStyle(ChatFormatting.DARK_GREEN);
         } else {
             icon = Icon.LOCKED;
-            lockStatusText = Component.literal("Crafting is locked")
+            lockStatusText = GuiText.CraftingLockIsLocked.text()
                     .withStyle(ChatFormatting.DARK_RED);
         }
 

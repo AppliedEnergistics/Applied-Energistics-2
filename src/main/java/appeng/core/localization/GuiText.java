@@ -53,6 +53,8 @@ public enum GuiText implements LocalizationEnum {
     ConfirmCraftNoCpu("Storage: N/A : Co Processors: N/A"),
     CopyMode("Copy Mode"),
     CopyModeDesc("Controls if the contents of the configuration pane are cleared when you remove the cell."),
+    CraftingLockIsLocked("Crafting is locked"),
+    CraftingLockIsUnlocked("Crafting is unlocked"),
     CraftErrorIncompletePlan("An incomplete plan cannot be submitted."),
     CraftErrorNoCpuFound("There are no crafting CPUs on the network."),
     CraftErrorNoSuitableCpu("None of the crafting CPUs are suitable for this job."),
