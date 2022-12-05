@@ -97,7 +97,7 @@ public class GuideNavBar extends AbstractWidget {
     @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         var viewport = new LytRect(0, scrollOffset, width, height);
-        var renderContext = new SimpleRenderContext(screen, viewport, poseStack, LightDarkMode.LIGHT_MODE);
+        var renderContext = new SimpleRenderContext(viewport, poseStack, LightDarkMode.LIGHT_MODE);
 
         boolean containsMouse = (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY <= y + height);
         switch (state) {

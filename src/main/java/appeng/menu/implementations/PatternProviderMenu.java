@@ -66,9 +66,10 @@ public class PatternProviderMenu extends AEBaseMenu {
 
         this.logic = host.getLogic();
 
-        for (int x = 0; x < PatternProviderLogic.NUMBER_OF_PATTERN_SLOTS; x++) {
+        var patternInv = logic.getPatternInv();
+        for (int x = 0; x < patternInv.size(); x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                    logic.getPatternInv(), x),
+                    patternInv, x),
                     SlotSemantics.ENCODED_PATTERN);
         }
 

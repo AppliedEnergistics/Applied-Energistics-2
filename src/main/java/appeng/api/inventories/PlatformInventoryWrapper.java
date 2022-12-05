@@ -48,8 +48,8 @@ class PlatformInventoryWrapper implements ItemTransfer {
     }
 
     @Override
-    public boolean mayAllowTransfer() {
-        return this.storage.supportsInsertion() || this.storage.supportsExtraction();
+    public boolean mayAllowInsertion() {
+        return this.storage.supportsInsertion();
     }
 
     @Override

@@ -23,38 +23,36 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component.Serializer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
-import appeng.api.config.YesNo;
+import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.util.IConfigurableObject;
-import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.AELog;
+import appeng.core.sync.packets.ClearPatternAccessTerminalPacket;
 import appeng.core.sync.packets.PatternAccessTerminalPacket;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.iface.PatternProviderLogic;
-import appeng.helpers.iface.PatternProviderLogicHost;
+import appeng.helpers.iface.PatternContainer;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
-import appeng.parts.crafting.PatternProviderPart;
 import appeng.parts.reporting.PatternAccessTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -85,13 +83,13 @@ public class PatternAccessTermMenu extends AEBaseMenu {
     // We use this serial number to uniquely identify all inventories we send to the client
     // It is used in packets sent by the client to interact with these inventories
     private static long inventorySerial = Long.MIN_VALUE;
-    private final Map<PatternProviderLogicHost, InvTracker> diList = new IdentityHashMap<>();
-    private final Long2ObjectOpenHashMap<InvTracker> byId = new Long2ObjectOpenHashMap<>();
+    private final Map<PatternContainer, ContainerTracker> diList = new IdentityHashMap<>();
+    private final Long2ObjectOpenHashMap<ContainerTracker> byId = new Long2ObjectOpenHashMap<>();
     /**
      * Tracks hosts that were visible before, even if they no longer match the filter. For
      * {@link ShowPatternProviders#NOT_FULL}.
      */
-    private final Set<PatternProviderLogicHost> pinnedHosts = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<PatternContainer> pinnedHosts = Collections.newSetFromMap(new IdentityHashMap<>());
 
     public PatternAccessTermMenu(int id, Inventory ip, PatternAccessTerminalPart anchor) {
         this(TYPE, id, ip, anchor, true);
@@ -106,6 +104,7 @@ public class PatternAccessTermMenu extends AEBaseMenu {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void broadcastChanges() {
         if (isClientSide()) {
@@ -122,13 +121,16 @@ public class PatternAccessTermMenu extends AEBaseMenu {
 
         IGrid grid = getGrid();
 
-        VisitorState state = new VisitorState();
+        var state = new VisitorState();
         if (grid != null) {
-            visitPatternProviderHosts(grid, PatternProviderBlockEntity.class, state);
-            visitPatternProviderHosts(grid, PatternProviderPart.class, state);
+            for (var machineClass : grid.getMachineClasses()) {
+                if (PatternContainer.class.isAssignableFrom(machineClass)) {
+                    visitPatternProviderHosts(grid, (Class<? extends PatternContainer>) machineClass, state);
+                }
+            }
 
             // Ensure we don't keep references to removed hosts
-            pinnedHosts.removeIf(host -> host.getLogic().getGrid() != grid);
+            pinnedHosts.removeIf(host -> host.getGrid() != grid);
         } else {
             pinnedHosts.clear();
         }
@@ -159,40 +161,38 @@ public class PatternAccessTermMenu extends AEBaseMenu {
         boolean forceFullUpdate;
     }
 
-    private boolean isFull(PatternProviderLogic logic) {
-        for (int i = 0; i < logic.getPatternInv().size(); i++) {
-            if (logic.getPatternInv().getStackInSlot(i).isEmpty()) {
+    private boolean isFull(PatternContainer logic) {
+        for (int i = 0; i < logic.getTerminalPatternInventory().size(); i++) {
+            if (logic.getTerminalPatternInventory().getStackInSlot(i).isEmpty()) {
                 return false;
             }
         }
         return true;
     }
 
-    private boolean isHostVisible(PatternProviderLogicHost host) {
-        var logic = host.getLogic();
-        boolean isVisible = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL) == YesNo.YES;
+    private boolean isVisible(PatternContainer container) {
+        boolean isVisible = container.isVisibleInTerminal();
 
         return switch (getShownProviders()) {
             case VISIBLE -> isVisible;
-            case NOT_FULL -> isVisible && (pinnedHosts.contains(host) || !isFull(logic));
+            case NOT_FULL -> isVisible && (pinnedHosts.contains(container) || !isFull(container));
             case ALL -> true;
         };
     }
 
-    private <T extends PatternProviderLogicHost> void visitPatternProviderHosts(IGrid grid, Class<T> machineClass,
+    private <T extends PatternContainer> void visitPatternProviderHosts(IGrid grid, Class<T> machineClass,
             VisitorState state) {
-        for (var ih : grid.getActiveMachines(machineClass)) {
-            var dual = ih.getLogic();
-            if (!isHostVisible(ih)) {
+        for (var container : grid.getActiveMachines(machineClass)) {
+            if (!isVisible(container)) {
                 continue;
             }
 
             if (getShownProviders() == ShowPatternProviders.NOT_FULL) {
-                pinnedHosts.add(ih);
+                pinnedHosts.add(container);
             }
 
-            final InvTracker t = this.diList.get(ih);
-            if (t == null || !t.name.equals(dual.getTermName())) {
+            var t = this.diList.get(container);
+            if (t == null || !t.group.equals(container.getTerminalGroup())) {
                 state.forceFullUpdate = true;
             }
 
@@ -202,14 +202,14 @@ public class PatternAccessTermMenu extends AEBaseMenu {
 
     @Override
     public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
-        final InvTracker inv = this.byId.get(id);
+        final ContainerTracker inv = this.byId.get(id);
         if (inv == null) {
             // Can occur if the client sent an interaction packet right before an inventory got removed
             return;
         }
         if (slot < 0 || slot >= inv.server.size()) {
             // Client refers to an invalid slot. This should NOT happen
-            AELog.warn("Client refers to invalid slot %d of inventory %s", slot, inv.name.getString());
+            AELog.warn("Client refers to invalid slot %d of inventory %s", slot, inv.container);
             return;
         }
 
@@ -219,8 +219,7 @@ public class PatternAccessTermMenu extends AEBaseMenu {
 
         var carried = getCarried();
         switch (action) {
-            case PICKUP_OR_SET_DOWN:
-
+            case PICKUP_OR_SET_DOWN -> {
                 if (!carried.isEmpty()) {
                     ItemStack inSlot = patternSlot.getStackInSlot(0);
                     if (inSlot.isEmpty()) {
@@ -245,10 +244,8 @@ public class PatternAccessTermMenu extends AEBaseMenu {
                     setCarried(patternSlot.getStackInSlot(0));
                     patternSlot.setItemDirect(0, ItemStack.EMPTY);
                 }
-
-                break;
-            case SPLIT_OR_PLACE_SINGLE:
-
+            }
+            case SPLIT_OR_PLACE_SINGLE -> {
                 if (!carried.isEmpty()) {
                     ItemStack extra = carried.split(1);
                     if (!extra.isEmpty()) {
@@ -260,9 +257,8 @@ public class PatternAccessTermMenu extends AEBaseMenu {
                 } else if (!is.isEmpty()) {
                     setCarried(patternSlot.extractItem(0, (is.getCount() + 1) / 2, false));
                 }
-
-                break;
-            case SHIFT_CLICK: {
+            }
+            case SHIFT_CLICK -> {
                 var stack = patternSlot.getStackInSlot(0).copy();
                 if (!player.getInventory().add(stack)) {
                     patternSlot.setItemDirect(0, stack);
@@ -270,8 +266,7 @@ public class PatternAccessTermMenu extends AEBaseMenu {
                     patternSlot.setItemDirect(0, ItemStack.EMPTY);
                 }
             }
-                break;
-            case MOVE_REGION:
+            case MOVE_REGION -> {
                 for (int x = 0; x < inv.server.size(); x++) {
                     var stack = inv.server.getStackInSlot(x);
                     if (!player.getInventory().add(stack)) {
@@ -280,13 +275,12 @@ public class PatternAccessTermMenu extends AEBaseMenu {
                         patternSlot.setItemDirect(0, ItemStack.EMPTY);
                     }
                 }
-
-                break;
-            case CREATIVE_DUPLICATE:
+            }
+            case CREATIVE_DUPLICATE -> {
                 if (player.getAbilities().instabuild && carried.isEmpty()) {
                     setCarried(is.isEmpty() ? ItemStack.EMPTY : is.copy());
                 }
-                break;
+            }
         }
     }
 
@@ -294,100 +288,123 @@ public class PatternAccessTermMenu extends AEBaseMenu {
         this.byId.clear();
         this.diList.clear();
 
-        sendPacketToClient(PatternAccessTerminalPacket.clearExistingData());
+        sendPacketToClient(new ClearPatternAccessTerminalPacket());
 
         if (grid == null) {
             return;
         }
 
-        for (var ih : grid.getActiveMachines(PatternProviderBlockEntity.class)) {
-            var dual = ih.getLogic();
-            if (isHostVisible(ih)) {
-                this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
+        for (var machineClass : grid.getMachineClasses()) {
+            var containerClass = tryCastMachineToContainer(machineClass);
+            if (containerClass == null) {
+                continue;
             }
-        }
 
-        for (var ih : grid.getActiveMachines(PatternProviderPart.class)) {
-            var dual = ih.getLogic();
-            if (isHostVisible(ih)) {
-                this.diList.put(ih, new InvTracker(dual, dual.getPatternInv(), dual.getTermName()));
+            for (var container : grid.getActiveMachines(containerClass)) {
+                if (isVisible(container)) {
+                    this.diList.put(container, new ContainerTracker(container,
+                            container.getTerminalPatternInventory(),
+                            container.getTerminalGroup()));
+                }
             }
         }
 
         for (var inv : this.diList.values()) {
             this.byId.put(inv.serverId, inv);
-            CompoundTag data = new CompoundTag();
-            this.addItems(data, inv, 0, inv.server.size());
-            sendPacketToClient(PatternAccessTerminalPacket.inventory(inv.serverId, data));
+            sendPacketToClient(inv.createFullPacket());
         }
     }
 
     private void sendIncrementalUpdate() {
         for (var inv : this.diList.values()) {
-            CompoundTag data = null;
-            for (int x = 0; x < inv.server.size(); x++) {
-                if (this.isDifferent(inv.server.getStackInSlot(x), inv.client.getStackInSlot(x))) {
-                    if (data == null) {
-                        data = new CompoundTag();
-                    }
-                    this.addItems(data, inv, x, 1);
-                }
-            }
-            if (data != null) {
-                sendPacketToClient(PatternAccessTerminalPacket.inventory(inv.serverId, data));
+            var packet = inv.createUpdatePacket();
+            if (packet != null) {
+                sendPacketToClient(packet);
             }
         }
     }
 
-    private boolean isDifferent(ItemStack a, ItemStack b) {
-        if (a.isEmpty() && b.isEmpty()) {
-            return false;
-        }
+    private static class ContainerTracker {
 
-        if (a.isEmpty() || b.isEmpty()) {
-            return true;
-        }
-
-        return !ItemStack.matches(a, b);
-    }
-
-    private void addItems(CompoundTag tag, InvTracker inv, int offset, int length) {
-        if (tag.isEmpty()) {
-            tag.putLong("sortBy", inv.sortBy);
-            tag.putString("un", Serializer.toJson(inv.name));
-        }
-
-        for (int x = 0; x < length; x++) {
-            var itemNBT = new CompoundTag();
-
-            var is = inv.server.getStackInSlot(x + offset);
-
-            // "update" client side.
-            inv.client.setItemDirect(x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
-
-            if (!is.isEmpty()) {
-                is.save(itemNBT);
-            }
-
-            tag.put(Integer.toString(x + offset), itemNBT);
-        }
-    }
-
-    private static class InvTracker {
-
+        private final PatternContainer container;
         private final long sortBy;
         private final long serverId = inventorySerial++;
-        private final Component name;
+        private final PatternContainerGroup group;
         // This is used to track the inventory contents we sent to the client for change detection
         private final InternalInventory client;
         // This is a reference to the real inventory used by this machine
         private final InternalInventory server;
 
-        public InvTracker(PatternProviderLogic dual, InternalInventory patterns, Component name) {
+        public ContainerTracker(PatternContainer container, InternalInventory patterns, PatternContainerGroup group) {
+            this.container = container;
             this.server = patterns;
             this.client = new AppEngInternalInventory(this.server.size());
-            this.name = name;
-            this.sortBy = dual.getSortValue();
+            this.group = group;
+            this.sortBy = container.getTerminalSortOrder();
+        }
+
+        public PatternAccessTerminalPacket createFullPacket() {
+            var slots = new Int2ObjectArrayMap<ItemStack>(server.size());
+            for (int i = 0; i < server.size(); i++) {
+                var stack = server.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    slots.put(i, stack);
+                }
+            }
+
+            return PatternAccessTerminalPacket.fullUpdate(
+                    serverId,
+                    server.size(),
+                    sortBy,
+                    group,
+                    slots);
+        }
+
+        @Nullable
+        public PatternAccessTerminalPacket createUpdatePacket() {
+            var changedSlots = detectChangedSlots();
+            if (changedSlots == null) {
+                return null;
+            }
+
+            var slots = new Int2ObjectArrayMap<ItemStack>(changedSlots.size());
+            for (int i = 0; i < changedSlots.size(); i++) {
+                var slot = changedSlots.getInt(i);
+                var stack = server.getStackInSlot(slot);
+                // "update" client side.
+                client.setItemDirect(slot, stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+                slots.put(slot, stack);
+            }
+
+            return PatternAccessTerminalPacket.incrementalUpdate(
+                    serverId,
+                    slots);
+        }
+
+        @Nullable
+        private IntList detectChangedSlots() {
+            IntList changedSlots = null;
+            for (int x = 0; x < server.size(); x++) {
+                if (isDifferent(server.getStackInSlot(x), client.getStackInSlot(x))) {
+                    if (changedSlots == null) {
+                        changedSlots = new IntArrayList();
+                    }
+                    changedSlots.add(x);
+                }
+            }
+            return changedSlots;
+        }
+
+        private static boolean isDifferent(ItemStack a, ItemStack b) {
+            if (a.isEmpty() && b.isEmpty()) {
+                return false;
+            }
+
+            if (a.isEmpty() || b.isEmpty()) {
+                return true;
+            }
+
+            return !ItemStack.matches(a, b);
         }
     }
 
@@ -401,5 +418,12 @@ public class PatternAccessTermMenu extends AEBaseMenu {
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             return !stack.isEmpty() && stack.getItem() instanceof EncodedPatternItem;
         }
+    }
+
+    private static Class<? extends PatternContainer> tryCastMachineToContainer(Class<?> machineClass) {
+        if (PatternContainer.class.isAssignableFrom(machineClass)) {
+            return machineClass.asSubclass(PatternContainer.class);
+        }
+        return null;
     }
 }

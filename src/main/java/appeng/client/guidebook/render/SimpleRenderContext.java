@@ -19,9 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.screen.GuideScreen;
 
-public record SimpleRenderContext(@Override GuideScreen screen,
+public record SimpleRenderContext(
         @Override LytRect viewport,
         @Override PoseStack poseStack,
         @Override LightDarkMode lightDarkMode) implements RenderContext {

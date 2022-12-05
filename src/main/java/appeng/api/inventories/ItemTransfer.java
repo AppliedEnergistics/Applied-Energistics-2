@@ -72,8 +72,8 @@ public interface ItemTransfer {
     ItemStack addItems(ItemStack stack, boolean simulate);
 
     /**
-     * Heuristically determine if this transfer object allows inserting or extracting items, i.e. if it's a slot based
-     * inventory and has no slots, it probably doesn't allow insertion or extraction.
+     * Heuristically determine if this transfer object allows inserting items, i.e. if it's a slot based inventory and
+     * has no slots, it probably doesn't allow insertion.
      */
-    boolean mayAllowTransfer();
+    boolean mayAllowInsertion();
 }

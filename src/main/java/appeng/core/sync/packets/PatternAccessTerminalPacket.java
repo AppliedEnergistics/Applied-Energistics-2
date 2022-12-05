@@ -1,21 +1,3 @@
-/*
- * This file is part of Applied Energistics 2.
- * Copyright (c) 2013 - 2014, AlgorithmX2, All rights reserved.
- *
- * Applied Energistics 2 is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Applied Energistics 2 is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
- */
-
 package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
@@ -23,52 +5,107 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
+import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.sync.BasePacket;
 
 /**
- * Sends the content for the pattern access terminal GUI to the client.
+ * Sends the content for a single {@link appeng.helpers.iface.PatternContainer} shown in the pattern access terminal to
+ * the client.
  */
 public class PatternAccessTerminalPacket extends BasePacket {
 
     // input.
-    private boolean clearExistingData;
+    private boolean fullUpdate;
     private long inventoryId;
-    private CompoundTag in;
+    private int inventorySize; // Only valid if fullUpdate
+    private long sortBy; // Only valid if fullUpdate
+    private PatternContainerGroup group; // Only valid if fullUpdate
+    private Int2ObjectMap<ItemStack> slots;
 
     public PatternAccessTerminalPacket(FriendlyByteBuf stream) {
-        this.clearExistingData = stream.readBoolean();
-        this.inventoryId = stream.readLong();
-        this.in = stream.readNbt();
+        inventoryId = stream.readVarLong();
+        fullUpdate = stream.readBoolean();
+        if (fullUpdate) {
+            inventorySize = stream.readVarInt();
+            sortBy = stream.readVarLong();
+            group = PatternContainerGroup.readFromPacket(stream);
+        }
+
+        var slotsCount = stream.readVarInt();
+        slots = new Int2ObjectArrayMap<>(slotsCount);
+        for (int i = 0; i < slotsCount; i++) {
+            var slot = stream.readVarInt();
+            var item = stream.readItem();
+            slots.put(slot, item);
+        }
     }
 
     // api
-    private PatternAccessTerminalPacket(boolean clearExistingData, long inventoryId, CompoundTag din) {
+    private PatternAccessTerminalPacket(boolean fullUpdate,
+            long inventoryId,
+            int inventorySize,
+            long sortBy,
+            PatternContainerGroup group,
+            Int2ObjectMap<ItemStack> slots) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer(2048));
         data.writeInt(this.getPacketID());
-        data.writeBoolean(clearExistingData);
-        data.writeLong(inventoryId);
-        data.writeNbt(din);
+        data.writeVarLong(inventoryId);
+        data.writeBoolean(fullUpdate);
+        if (fullUpdate) {
+            data.writeVarInt(inventorySize);
+            data.writeVarLong(sortBy);
+            group.writeToPacket(data);
+        }
+        data.writeVarInt(slots.size());
+        for (var entry : slots.int2ObjectEntrySet()) {
+            data.writeVarInt(entry.getIntKey());
+            data.writeItem(entry.getValue());
+        }
         this.configureWrite(data);
     }
 
-    public static PatternAccessTerminalPacket clearExistingData() {
-        return new PatternAccessTerminalPacket(true, -1, new CompoundTag());
+    public static PatternAccessTerminalPacket fullUpdate(long inventoryId,
+            int inventorySize,
+            long sortBy,
+            PatternContainerGroup group,
+            Int2ObjectMap<ItemStack> slots) {
+        return new PatternAccessTerminalPacket(
+                true,
+                inventoryId,
+                inventorySize,
+                sortBy,
+                group,
+                slots);
     }
 
-    public static PatternAccessTerminalPacket inventory(long id, CompoundTag data) {
-        return new PatternAccessTerminalPacket(false, id, data);
+    public static PatternAccessTerminalPacket incrementalUpdate(long inventoryId,
+            Int2ObjectMap<ItemStack> slots) {
+        return new PatternAccessTerminalPacket(
+                false,
+                inventoryId,
+                0,
+                0,
+                null,
+                slots);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(Player player) {
-        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen patternAccessTerminal) {
-            patternAccessTerminal.postInventoryUpdate(this.clearExistingData, this.inventoryId, this.in);
+        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?>patternAccessTerminal) {
+            if (fullUpdate) {
+                patternAccessTerminal.postFullUpdate(this.inventoryId, sortBy, group, inventorySize, slots);
+            } else {
+                patternAccessTerminal.postIncrementalUpdate(this.inventoryId, slots);
+            }
         }
     }
 }

@@ -129,7 +129,7 @@ public class GuideScreen extends Screen {
         poseStack.translate(documentRect.x() - documentViewport.x(), documentRect.y() - documentViewport.y(), 0);
 
         var document = currentPage.getDocument();
-        var context = new SimpleRenderContext(this,
+        var context = new SimpleRenderContext(
                 documentViewport,
                 poseStack,
                 LightDarkMode.LIGHT_MODE);

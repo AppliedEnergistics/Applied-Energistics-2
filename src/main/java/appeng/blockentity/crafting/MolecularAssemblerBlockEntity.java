@@ -44,6 +44,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.implementations.blockentities.ICraftingMachine;
+import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
@@ -63,6 +64,8 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.network.TargetPoint;
 import appeng.core.sync.packets.AssemblerAnimationPacket;
@@ -113,6 +116,32 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
 
     private int getUpgradeSlots() {
         return 5;
+    }
+
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public PatternContainerGroup getCraftingMachineInfo() {
+        Component name;
+        if (hasCustomInventoryName()) {
+            name = getCustomInventoryName();
+        } else {
+            name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getDescription();
+        }
+        var icon = AEItemKey.of(AEBlocks.MOLECULAR_ASSEMBLER);
+
+        // List installed upgrades as the tooltip to differentiate assemblers by upgrade count
+        List<Component> tooltip;
+        var accelerationCards = getInstalledUpgrades(AEItems.SPEED_CARD);
+        if (accelerationCards == 0) {
+            tooltip = List.of();
+        } else {
+            tooltip = List.of(
+                    GuiText.CompatibleUpgrade.text(
+                            Tooltips.of(AEItems.SPEED_CARD.asItem().getDescription()),
+                            Tooltips.ofUnformattedNumber(accelerationCards)));
+        }
+
+        return new PatternContainerGroup(icon, name, tooltip);
     }
 
     @Override

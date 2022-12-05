@@ -18,8 +18,7 @@
 
 package appeng.client.gui.me.patternaccess;
 
-import net.minecraft.network.chat.Component;
-
+import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.util.inv.AppEngInternalInventory;
@@ -28,9 +27,9 @@ import appeng.util.inv.AppEngInternalInventory;
  * This class is used on the client-side to represent a pattern provider and it's inventory as it is shown in the
  * {@link PatternAccessTermScreen}'s table.
  */
-public class PatternProviderRecord implements Comparable<PatternProviderRecord> {
+public class PatternContainerRecord implements Comparable<PatternContainerRecord> {
 
-    private final String displayName;
+    private final PatternContainerGroup group;
     private final String searchName;
 
     /**
@@ -47,16 +46,16 @@ public class PatternProviderRecord implements Comparable<PatternProviderRecord> 
      */
     private final long order;
 
-    public PatternProviderRecord(long serverId, int slots, long order, Component name) {
+    public PatternContainerRecord(long serverId, int slots, long order, PatternContainerGroup group) {
         this.inventory = new AppEngInternalInventory(slots);
-        this.displayName = name.getString();
-        this.searchName = this.displayName.toLowerCase();
+        this.group = group;
+        this.searchName = group.name().getString().toLowerCase();
         this.serverId = serverId;
         this.order = order;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public PatternContainerGroup getGroup() {
+        return group;
     }
 
     public String getSearchName() {
@@ -64,7 +63,7 @@ public class PatternProviderRecord implements Comparable<PatternProviderRecord> 
     }
 
     @Override
-    public int compareTo(PatternProviderRecord o) {
+    public int compareTo(PatternContainerRecord o) {
         return Long.compare(this.order, o.order);
     }
 
