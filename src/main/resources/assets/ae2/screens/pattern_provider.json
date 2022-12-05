@@ -3,17 +3,17 @@
   "includes": ["common/common.json", "common/player_inventory.json"],
   "background": {
     "texture": "guis/pattern_provider.png",
-    "srcRect": [0, 0, 176, 185]
+    "srcRect": [0, 0, 176, 213]
   },
   "slots": {
     "ENCODED_PATTERN": {
       "left": 8,
-      "top": 35,
+      "top": 45,
       "grid": "HORIZONTAL"
     },
     "STORAGE": {
       "left": 8,
-      "top": 69,
+      "top": 97,
       "grid": "HORIZONTAL"
     }
   },
@@ -33,7 +33,7 @@
       },
       "position": {
         "left": 8,
-        "top": 24
+        "top": 34
       }
     },
     "interface_stored_items": {
@@ -42,7 +42,7 @@
       },
       "position": {
         "left": 8,
-        "top": 58
+        "top": 86
       }
     }
   },
@@ -50,6 +50,10 @@
     "openPriority": {
       "left": 154,
       "top": 0
+    },
+    "lockReason": {
+      "left": 5,
+      "top": 15
     }
   }
 }

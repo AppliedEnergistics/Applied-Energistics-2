@@ -80,7 +80,8 @@ public final class TestPlots {
             TestPlots.class,
             AutoCraftingTestPlot.class,
             P2PTestPlots.class,
-            MemoryCardTestPlots.class
+            MemoryCardTestPlots.class,
+            PatternProviderLockModePlots.class
     };
 
     @Nullable
