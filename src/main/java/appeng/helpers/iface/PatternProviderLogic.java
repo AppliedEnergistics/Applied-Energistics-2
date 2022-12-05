@@ -740,14 +740,14 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     }
 
     public void updateRedstoneState() {
-        // If we're waitingh for a pulse, update immediately
+        // If we're waiting for a pulse, update immediately
         if (unlockEvent == UnlockCraftingEvent.PULSE && getRedstoneState()) {
             unlockEvent = null; // Unlocked!
+            saveChanges();
         } else {
             // Otherwise, just reset back to undecided
             redstoneState = YesNo.UNDECIDED;
         }
-        saveChanges(); // In any case, this needs to be changed since the state is now outdated
     }
 
     private void configChanged(IConfigManager manager, Setting<?> setting) {
