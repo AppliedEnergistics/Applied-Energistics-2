@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.client.gui.AEBaseScreen;
@@ -37,7 +38,9 @@ import appeng.menu.implementations.PatternProviderMenu;
 public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
 
     private final SettingToggleButton<YesNo> blockingModeButton;
+    private final SettingToggleButton<LockCraftingMode> lockCraftingModeButton;
     private final ToggleButton showInInterfaceTerminalButton;
+    private final PatternProviderLockReason lockReason;
 
     public PatternProviderScreen(PatternProviderMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -46,6 +49,9 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
         this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
         this.addToLeftToolbar(this.blockingModeButton);
 
+        lockCraftingModeButton = new ServerSettingToggleButton<>(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
+        this.addToLeftToolbar(lockCraftingModeButton);
+
         widgets.addOpenPriorityButton();
 
         this.showInInterfaceTerminalButton = new ToggleButton(Icon.PATTERN_ACCESS_SHOW,
@@ -53,13 +59,18 @@ public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
                 GuiText.PatternAccessTerminal.text(), GuiText.PatternAccessTerminalHint.text(),
                 btn -> selectNextInterfaceMode());
         this.addToLeftToolbar(this.showInInterfaceTerminalButton);
+
+        this.lockReason = new PatternProviderLockReason(this);
+        widgets.add("lockReason", this.lockReason);
     }
 
     @Override
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
+        this.lockReason.setVisible(menu.getLockCraftingMode() != LockCraftingMode.NONE);
         this.blockingModeButton.set(this.menu.getBlockingMode());
+        this.lockCraftingModeButton.set(this.menu.getLockCraftingMode());
         this.showInInterfaceTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
     }
 

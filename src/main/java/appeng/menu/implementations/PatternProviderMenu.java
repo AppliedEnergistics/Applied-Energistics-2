@@ -21,9 +21,11 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
+import appeng.api.config.LockCraftingMode;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
+import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
@@ -50,6 +52,12 @@ public class PatternProviderMenu extends AEBaseMenu {
     public YesNo blockingMode = YesNo.NO;
     @GuiSync(4)
     public YesNo showInAccessTerminal = YesNo.YES;
+    @GuiSync(5)
+    public LockCraftingMode lockCraftingMode = LockCraftingMode.NONE;
+    @GuiSync(6)
+    public LockCraftingMode craftingLockedReason = LockCraftingMode.NONE;
+    @GuiSync(7)
+    public GenericStack unlockStack = null;
 
     public PatternProviderMenu(int id, Inventory playerInventory, PatternProviderLogicHost host) {
         super(TYPE, id, playerInventory, host);
@@ -81,6 +89,9 @@ public class PatternProviderMenu extends AEBaseMenu {
         if (isServerSide()) {
             blockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE);
             showInAccessTerminal = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
+            lockCraftingMode = logic.getConfigManager().getSetting(Settings.LOCK_CRAFTING_MODE);
+            craftingLockedReason = logic.getCraftingLockedReason();
+            unlockStack = logic.getUnlockStack();
         }
 
         super.broadcastChanges();
@@ -92,6 +103,18 @@ public class PatternProviderMenu extends AEBaseMenu {
 
     public YesNo getBlockingMode() {
         return blockingMode;
+    }
+
+    public LockCraftingMode getLockCraftingMode() {
+        return lockCraftingMode;
+    }
+
+    public LockCraftingMode getCraftingLockedReason() {
+        return craftingLockedReason;
+    }
+
+    public GenericStack getUnlockStack() {
+        return unlockStack;
     }
 
     public YesNo getShowInAccessTerminal() {

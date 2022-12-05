@@ -41,6 +41,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
+import appeng.api.config.LockCraftingMode;
 import appeng.api.config.OperationMode;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
@@ -270,6 +271,22 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ShowPatternProviders.NOT_FULL,
                     ButtonToolTips.InterfaceTerminalDisplayMode,
                     ButtonToolTips.ShowNonFullProviders);
+
+            registerApp(Icon.UNLOCKED, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE,
+                    ButtonToolTips.LockCraftingMode,
+                    ButtonToolTips.LockCraftingModeNone);
+            registerApp(Icon.REDSTONE_LOW, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_WHILE_HIGH,
+                    ButtonToolTips.LockCraftingMode,
+                    ButtonToolTips.LockCraftingWhileRedstoneHigh);
+            registerApp(Icon.REDSTONE_HIGH, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_WHILE_LOW,
+                    ButtonToolTips.LockCraftingMode,
+                    ButtonToolTips.LockCraftingWhileRedstoneLow);
+            registerApp(Icon.REDSTONE_PULSE, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_UNTIL_PULSE,
+                    ButtonToolTips.LockCraftingMode,
+                    ButtonToolTips.LockCraftingUntilRedstonePulse);
+            registerApp(Icon.ENTER, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_UNTIL_RESULT,
+                    ButtonToolTips.LockCraftingMode,
+                    ButtonToolTips.LockCraftingUntilResultReturned);
         }
     }
 

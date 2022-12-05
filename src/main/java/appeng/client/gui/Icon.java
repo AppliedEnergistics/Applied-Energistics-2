@@ -38,6 +38,10 @@ public enum Icon {
     ENTER(112, 0),
     // ENCODE
     WHITE_ARROW_DOWN(128, 0),
+    // LOCKED
+    LOCKED(144, 0),
+    // UNLOCKED
+    UNLOCKED(160, 0),
     BACKGROUND_PRIMARY_OUTPUT(224, 0),
     BACKGROUND_STORAGE_CELL(240, 0),
 

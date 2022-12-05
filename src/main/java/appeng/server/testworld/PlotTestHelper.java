@@ -1,5 +1,7 @@
 package appeng.server.testworld;
 
+import java.util.Objects;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
@@ -125,6 +127,13 @@ public class PlotTestHelper extends GameTestHelper {
         }
     }
 
+    public void assertEquals(BlockPos ref, Object expected, Object actual) {
+        if (!Objects.equals(expected, actual)) {
+            String message = actual + " was not " + expected;
+            fail(message, ref);
+        }
+    }
+
     public void check(boolean test, String errorMessage) throws GameTestAssertException {
         if (!test) {
             throw new GameTestAssertException(errorMessage);
@@ -146,4 +155,5 @@ public class PlotTestHelper extends GameTestHelper {
             }
         }
     }
+
 }

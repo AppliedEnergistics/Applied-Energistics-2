@@ -77,6 +77,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         addJadeProviderDisplayName(TooltipIds.GRID_NODE_STATE, "AE2 Network State");
         addJadeProviderDisplayName(TooltipIds.POWER_STORAGE, "AE2 Power State");
         addJadeProviderDisplayName(TooltipIds.CRAFTING_MONITOR, "AE2 Crafting Monitor");
+        addJadeProviderDisplayName(TooltipIds.PATTERN_PROVIDER, "AE2 Pattern Provider");
         addJadeProviderDisplayName(TooltipIds.CHARGER, "AE2 Charger");
         addJadeProviderDisplayName(TooltipIds.PART_NAME, "AE2 Part Name");
         addJadeProviderDisplayName(TooltipIds.PART_ICON, "AE2 Part Icon");

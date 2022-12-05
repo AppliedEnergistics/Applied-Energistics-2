@@ -33,6 +33,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import appeng.api.stacks.GenericStack;
+
 /**
  * This class is responsible for synchronizing menu-fields from server to client.
  */
@@ -95,6 +97,8 @@ public abstract class SynchronizedField<T> {
             return new CustomField(source, field);
         } else if (fieldType.isAssignableFrom(Component.class)) {
             return new TextComponentField(source, field);
+        } else if (fieldType.isAssignableFrom(GenericStack.class)) {
+            return new GenericStackField(source, field);
         } else if (fieldType.isAssignableFrom(ResourceLocation.class)) {
             return new ResourceLocationField(source, field);
         } else if (fieldType == String.class) {
@@ -230,6 +234,22 @@ public abstract class SynchronizedField<T> {
             } else {
                 return null;
             }
+        }
+    }
+
+    private static class GenericStackField extends SynchronizedField<GenericStack> {
+        private GenericStackField(Object source, Field field) {
+            super(source, field);
+        }
+
+        @Override
+        protected void writeValue(FriendlyByteBuf data, GenericStack value) {
+            GenericStack.writeBuffer(value, data);
+        }
+
+        @Override
+        protected GenericStack readValue(FriendlyByteBuf data) {
+            return GenericStack.readBuffer(data);
         }
     }
 

@@ -97,6 +97,12 @@ public interface PlotBuilder {
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
     }
 
+    default <T extends IPart> void facade(String bb,
+            Direction side,
+            ItemLike item) {
+        addBuildAction(new PlaceFacade(bb(bb), item.asItem().getDefaultInstance(), side));
+    }
+
     default void creativeEnergyCell(BlockPos pos) {
         creativeEnergyCell(posToBb(pos));
     }

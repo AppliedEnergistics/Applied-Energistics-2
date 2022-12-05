@@ -38,6 +38,11 @@ public class CableBuilder {
         return this;
     }
 
+    public <T extends IPart> CableBuilder facade(Direction side, ItemLike item) {
+        plotBuilder.facade(bb, side, item);
+        return this;
+    }
+
     /**
      * Set up a level emitter configured to emit a given item for crafting.
      */

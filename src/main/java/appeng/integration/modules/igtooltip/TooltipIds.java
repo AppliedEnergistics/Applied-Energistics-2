@@ -12,6 +12,7 @@ public final class TooltipIds {
     public static final ResourceLocation GRID_NODE_STATE = AppEng.makeId("grid_node_state");
     public static final ResourceLocation POWER_STORAGE = AppEng.makeId("power_storage");
     public static final ResourceLocation CRAFTING_MONITOR = AppEng.makeId("crafting_monitor");
+    public static final ResourceLocation PATTERN_PROVIDER = AppEng.makeId("pattern_provider");
     public static final ResourceLocation CHARGER = AppEng.makeId("charger");
 
     public static final ResourceLocation PART_NAME = AppEng.makeId("part_name");
