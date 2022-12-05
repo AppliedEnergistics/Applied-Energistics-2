@@ -31,6 +31,16 @@ configurations {
         transitive = false
     }
     portaforgyImplementation.extendsFrom(compileClasspath)
+
+    internal {
+        visible = false
+        canBeConsumed = false
+        canBeResolved = false
+    }
+    configurations.compileClasspath.extendsFrom(internal)
+    configurations.runtimeClasspath.extendsFrom(internal)
+    configurations.testCompileClasspath.extendsFrom(internal)
+    configurations.testRuntimeClasspath.extendsFrom(internal)
 }
 
 dependencies {
@@ -39,13 +49,13 @@ dependencies {
     shaded "io.methvin:directory-watcher:${directory_watcher_version}"
     shaded "org.yaml:snakeyaml:${snakeyaml_version}"
 
-    implementation project(':libs:markdown')
+    internal project(':libs:markdown')
     // Do not inherit any transitive dependencies here since we rely on those dependencies being
     // present in Minecrafts own dependencies already.
-    implementation("io.methvin:directory-watcher:${directory_watcher_version}") {
+    internal("io.methvin:directory-watcher:${directory_watcher_version}") {
         transitive = false
     }
-    implementation("org.yaml:snakeyaml:${snakeyaml_version}")  {
+    internal("org.yaml:snakeyaml:${snakeyaml_version}")  {
         transitive = false
     }
 
@@ -117,7 +127,7 @@ dependencies {
     // Include No Indium? https://github.com/Luligabi1/NoIndium
     include "me.luligabi:NoIndium:${project.no_indium_version}"
 
-    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    internal 'com.google.code.findbugs:jsr305:3.0.2'
 
     // unit test dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
