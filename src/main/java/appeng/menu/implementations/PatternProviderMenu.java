@@ -63,7 +63,13 @@ public class PatternProviderMenu extends AEBaseMenu {
 
     public PatternProviderMenu(int id, Inventory playerInventory, PatternProviderLogicHost host) {
         this(TYPE, id, playerInventory, host);
-        createPatternInventory();
+
+        var patternInv = logic.getPatternInv();
+        for (int x = 0; x < patternInv.size(); x++) {
+            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
+                            patternInv, x),
+                    SlotSemantics.ENCODED_PATTERN);
+        }
     }
 
     public PatternProviderMenu(MenuType<?> menuType, int id, Inventory playerInventory, PatternProviderLogicHost host) {
@@ -71,19 +77,7 @@ public class PatternProviderMenu extends AEBaseMenu {
         this.createPlayerInventorySlots(playerInventory);
 
         this.logic = host.getLogic();
-        createReturnInventory();
-    }
 
-    private void createPatternInventory() {
-        var patternInv = logic.getPatternInv();
-        for (int x = 0; x < patternInv.size(); x++) {
-            this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
-                    patternInv, x),
-                    SlotSemantics.ENCODED_PATTERN);
-        }
-    }
-
-    private void createReturnInventory() {
         // Show first few entries of the return inv
         var returnInv = logic.getReturnInv().createMenuWrapper();
         for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++) {

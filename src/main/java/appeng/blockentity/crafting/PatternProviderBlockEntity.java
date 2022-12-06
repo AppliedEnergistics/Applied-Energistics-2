@@ -44,12 +44,16 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {
-    protected PatternProviderLogic logic;
+    protected final PatternProviderLogic logic = createLogic();
     private boolean omniDirectional = true;
 
     public PatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.logic = new PatternProviderLogic(this.getMainNode(), this);
+    }
+
+    @Override
+    public PatternProviderLogic createLogic() {
+        return new PatternProviderLogic(this.getMainNode(), this);
     }
 
     @Override
