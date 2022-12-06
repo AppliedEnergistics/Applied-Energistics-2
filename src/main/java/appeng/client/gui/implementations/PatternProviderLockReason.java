@@ -13,20 +13,22 @@ import appeng.api.client.AEStackRendering;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
+import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Icon;
 import appeng.client.gui.Tooltip;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
+import appeng.menu.implementations.PatternProviderMenu;
 
 public class PatternProviderLockReason implements ICompositeWidget {
     protected boolean visible = false;
     protected int x;
     protected int y;
 
-    private final PatternProviderScreen screen;
+    private final AEBaseScreen<? extends PatternProviderMenu> screen;
 
-    public PatternProviderLockReason(PatternProviderScreen screen) {
+    public PatternProviderLockReason(AEBaseScreen<? extends PatternProviderMenu> screen) {
         this.screen = screen;
     }
 

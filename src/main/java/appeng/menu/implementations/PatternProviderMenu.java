@@ -42,11 +42,13 @@ import appeng.menu.slot.RestrictedInputSlot;
 public class PatternProviderMenu extends AEBaseMenu {
 
     public static final MenuType<PatternProviderMenu> TYPE = MenuTypeBuilder
-            .create(PatternProviderMenu::new, PatternProviderLogicHost.class)
+            .create(
+                    (id, inv, host) -> new PatternProviderMenu(id, inv, host),
+                    PatternProviderLogicHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("pattern_provider");
 
-    private final PatternProviderLogic logic;
+    protected final PatternProviderLogic logic;
 
     @GuiSync(3)
     public YesNo blockingMode = YesNo.NO;
@@ -60,19 +62,28 @@ public class PatternProviderMenu extends AEBaseMenu {
     public GenericStack unlockStack = null;
 
     public PatternProviderMenu(int id, Inventory playerInventory, PatternProviderLogicHost host) {
-        super(TYPE, id, playerInventory, host);
+        this(TYPE, id, playerInventory, host);
+        createPatternInventory();
+    }
 
+    public PatternProviderMenu(MenuType<?> menuType, int id, Inventory playerInventory, PatternProviderLogicHost host) {
+        super(menuType, id, playerInventory, host);
         this.createPlayerInventorySlots(playerInventory);
 
         this.logic = host.getLogic();
+        createReturnInventory();
+    }
 
+    private void createPatternInventory() {
         var patternInv = logic.getPatternInv();
         for (int x = 0; x < patternInv.size(); x++) {
             this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.ENCODED_PATTERN,
                     patternInv, x),
                     SlotSemantics.ENCODED_PATTERN);
         }
+    }
 
+    private void createReturnInventory() {
         // Show first few entries of the return inv
         var returnInv = logic.getReturnInv().createMenuWrapper();
         for (int i = 0; i < PatternProviderReturnInventory.NUMBER_OF_SLOTS; i++) {
@@ -80,7 +91,6 @@ public class PatternProviderMenu extends AEBaseMenu {
                 this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
             }
         }
-
     }
 
     @Override
