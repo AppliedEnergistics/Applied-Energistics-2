@@ -147,7 +147,10 @@ public final class InitScreens {
         register(SpatialIOPortMenu.TYPE, SpatialIOPortScreen::new, "/screens/spatial_io_port.json");
         register(InscriberMenu.TYPE, InscriberScreen::new, "/screens/inscriber.json");
         register(CellWorkbenchMenu.TYPE, CellWorkbenchScreen::new, "/screens/cell_workbench.json");
-        register(PatternProviderMenu.TYPE, PatternProviderScreen::new, "/screens/pattern_provider.json");
+        InitScreens.<PatternProviderMenu, PatternProviderScreen<PatternProviderMenu>>register(
+                PatternProviderMenu.TYPE,
+                PatternProviderScreen::new,
+                "/screens/pattern_provider.json");
         register(MolecularAssemblerMenu.TYPE, MolecularAssemblerScreen::new, "/screens/molecular_assembler.json");
         register(CraftAmountMenu.TYPE, CraftAmountScreen::new, "/screens/craft_amount.json");
         register(CraftConfirmMenu.TYPE, CraftConfirmScreen::new, "/screens/craft_confirm.json");

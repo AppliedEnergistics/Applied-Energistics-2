@@ -35,14 +35,14 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfigButtonPacket;
 import appeng.menu.implementations.PatternProviderMenu;
 
-public class PatternProviderScreen extends AEBaseScreen<PatternProviderMenu> {
+public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBaseScreen<C> {
 
     private final SettingToggleButton<YesNo> blockingModeButton;
     private final SettingToggleButton<LockCraftingMode> lockCraftingModeButton;
     private final ToggleButton showInPatternAccessTerminalButton;
     private final PatternProviderLockReason lockReason;
 
-    public PatternProviderScreen(PatternProviderMenu menu, Inventory playerInventory, Component title,
+    public PatternProviderScreen(C menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
