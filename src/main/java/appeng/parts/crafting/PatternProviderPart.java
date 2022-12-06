@@ -67,7 +67,7 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
-    private final PatternProviderLogic logic;
+    protected PatternProviderLogic logic;
 
     public PatternProviderPart(IPartItem<?> partItem) {
         super(partItem);
