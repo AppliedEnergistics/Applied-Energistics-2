@@ -40,9 +40,9 @@ import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
-public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlockEntity> {
+public class PatternProviderBlock<P extends PatternProviderBlockEntity> extends AEBaseEntityBlock<P> {
 
-    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
+    public static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
 
     public PatternProviderBlock() {
         super(defaultProps(Material.METAL));
@@ -56,7 +56,7 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
     }
 
     @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, PatternProviderBlockEntity be) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, P be) {
         return currentState.setValue(OMNIDIRECTIONAL, be.isOmniDirectional());
     }
 
