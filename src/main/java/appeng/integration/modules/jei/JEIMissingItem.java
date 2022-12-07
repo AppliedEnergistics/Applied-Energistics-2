@@ -72,7 +72,7 @@ public class JEIMissingItem implements IRecipeTransferError {
                                                     }
                                                 }
                                                 found = true;
-                                                break;
+                                                used.add(itemStack.copy().setStackSize(1));
                                             }
                                         }
                                     }
@@ -83,11 +83,11 @@ public class JEIMissingItem implements IRecipeTransferError {
                                         if (ext.getStackSize() > 0 && (usedStack == null || ext.getStackSize() > usedStack.getStackSize())) {
                                             used.add(ext.copy().setStackSize(1));
                                             found = true;
-                                        } else {
-                                            found = false;
                                         }
                                     }
                                 }
+                            } else {
+                                found = true;
                             }
                         }
                     }
