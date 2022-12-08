@@ -42,11 +42,12 @@ import appeng.menu.slot.RestrictedInputSlot;
 public class PatternProviderMenu extends AEBaseMenu {
 
     public static final MenuType<PatternProviderMenu> TYPE = MenuTypeBuilder
-            .create(PatternProviderMenu::new, PatternProviderLogicHost.class)
+            .create((id, inv, host) -> new PatternProviderMenu(id, inv, host),
+                    PatternProviderLogicHost.class)
             .requirePermission(SecurityPermissions.BUILD)
             .build("pattern_provider");
 
-    private final PatternProviderLogic logic;
+    protected final PatternProviderLogic logic;
 
     @GuiSync(3)
     public YesNo blockingMode = YesNo.NO;
@@ -60,8 +61,12 @@ public class PatternProviderMenu extends AEBaseMenu {
     public GenericStack unlockStack = null;
 
     public PatternProviderMenu(int id, Inventory playerInventory, PatternProviderLogicHost host) {
-        super(TYPE, id, playerInventory, host);
+        this(TYPE, id, playerInventory, host);
+    }
 
+    protected PatternProviderMenu(MenuType<?> menuType, int id, Inventory playerInventory,
+            PatternProviderLogicHost host) {
+        super(menuType, id, playerInventory, host);
         this.createPlayerInventorySlots(playerInventory);
 
         this.logic = host.getLogic();
@@ -80,7 +85,6 @@ public class PatternProviderMenu extends AEBaseMenu {
                 this.addSlot(new AppEngSlot(returnInv, i), SlotSemantics.STORAGE);
             }
         }
-
     }
 
     @Override

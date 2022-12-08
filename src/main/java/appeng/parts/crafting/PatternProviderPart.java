@@ -67,11 +67,14 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
-    private final PatternProviderLogic logic;
+    protected final PatternProviderLogic logic = createLogic();
 
     public PatternProviderPart(IPartItem<?> partItem) {
         super(partItem);
-        this.logic = new PatternProviderLogic(this.getMainNode(), this);
+    }
+
+    protected PatternProviderLogic createLogic() {
+        return new PatternProviderLogic(this.getMainNode(), this);
     }
 
     @Override
@@ -86,6 +89,7 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
 
     @Override
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
+        super.onMainNodeStateChanged(reason);
         this.logic.onMainNodeStateChanged();
     }
 

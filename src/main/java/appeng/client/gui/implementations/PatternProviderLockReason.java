@@ -24,9 +24,9 @@ public class PatternProviderLockReason implements ICompositeWidget {
     protected int x;
     protected int y;
 
-    private final PatternProviderScreen screen;
+    private final PatternProviderScreen<?> screen;
 
-    public PatternProviderLockReason(PatternProviderScreen screen) {
+    public PatternProviderLockReason(PatternProviderScreen<?> screen) {
         this.screen = screen;
     }
 
