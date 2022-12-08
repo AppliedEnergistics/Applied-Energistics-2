@@ -51,8 +51,7 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
         super(blockEntityType, pos, blockState);
     }
 
-    @Override
-    public PatternProviderLogic createLogic() {
+    protected PatternProviderLogic createLogic() {
         return new PatternProviderLogic(this.getMainNode(), this);
     }
 

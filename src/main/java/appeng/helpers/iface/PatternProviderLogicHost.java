@@ -46,8 +46,6 @@ import appeng.menu.locator.MenuLocator;
 public interface PatternProviderLogicHost extends IConfigurableObject, IPriorityHost, PatternContainer {
     PatternProviderLogic getLogic();
 
-    PatternProviderLogic createLogic();
-
     /**
      * @return The block entity that is in-world and hosts the interface.
      */

@@ -64,7 +64,8 @@ public class PatternProviderMenu extends AEBaseMenu {
         this(TYPE, id, playerInventory, host);
     }
 
-    public PatternProviderMenu(MenuType<?> menuType, int id, Inventory playerInventory, PatternProviderLogicHost host) {
+    protected PatternProviderMenu(MenuType<?> menuType, int id, Inventory playerInventory,
+            PatternProviderLogicHost host) {
         super(menuType, id, playerInventory, host);
         this.createPlayerInventorySlots(playerInventory);
 

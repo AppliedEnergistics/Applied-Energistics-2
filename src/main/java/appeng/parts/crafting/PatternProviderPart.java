@@ -73,8 +73,7 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
         super(partItem);
     }
 
-    @Override
-    public PatternProviderLogic createLogic() {
+    protected PatternProviderLogic createLogic() {
         return new PatternProviderLogic(this.getMainNode(), this);
     }
 
