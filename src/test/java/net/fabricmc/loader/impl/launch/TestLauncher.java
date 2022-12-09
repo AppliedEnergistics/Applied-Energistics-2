@@ -1,5 +1,6 @@
 package net.fabricmc.loader.impl.launch;
 
+import net.bytebuddy.dynamic.loading.ClassInjector;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -39,7 +41,23 @@ class TestLauncher extends FabricLauncherBase {
         FabricLauncherBase.finishMixinBootstrapping();
 
         var transformer = MixinServiceKnotAccessor.getTransformer();
-        instrumentation.addTransformer(new AccessWidenerTransformer(loader.getAccessWidener(), transformer));
+
+        Path tempDir;
+        try {
+            tempDir = Files.createTempDirectory("ae2test");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                Files.delete(tempDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }));
+        var classInjector = ClassInjector.UsingInstrumentation
+                .of(tempDir.toFile(), ClassInjector.UsingInstrumentation.Target.SYSTEM, instrumentation);
+        instrumentation.addTransformer(new AccessWidenerTransformer(loader.getAccessWidener(), transformer, classInjector));
     }
 
     @Override
