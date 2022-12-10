@@ -41,7 +41,6 @@ import net.minecraft.world.ticks.ScheduledTick;
 import appeng.api.ids.AETags;
 import appeng.api.movable.BlockEntityMoveStrategies;
 import appeng.api.movable.IBlockEntityMoveStrategy;
-import appeng.api.util.WorldCoord;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.server.services.compass.CompassService;
@@ -61,7 +60,7 @@ public class CachedPlane {
     private final List<BlockEntityMoveRecord> blockEntities = new ArrayList<>();
     private final List<ScheduledTick<Block>> ticks = new ArrayList<>();
     private final ServerLevel level;
-    private final List<WorldCoord> updates = new ArrayList<>();
+    private final List<BlockPos> updates = new ArrayList<>();
     private final BlockState matrixBlockState;
 
     public CachedPlane(ServerLevel level, int minX, int minY, int minZ, int maxX,
@@ -239,9 +238,9 @@ public class CachedPlane {
     }
 
     private void markForUpdate(int x, int y, int z) {
-        this.updates.add(new WorldCoord(x, y, z));
+        this.updates.add(new BlockPos(x, y, z));
         for (Direction d : Direction.values()) {
-            this.updates.add(new WorldCoord(x + d.getStepX(), y + d.getStepY(), z + d.getStepZ()));
+            this.updates.add(new BlockPos(x + d.getStepX(), y + d.getStepY(), z + d.getStepZ()));
         }
     }
 
@@ -329,7 +328,7 @@ public class CachedPlane {
         level.getChunkSource().tick(() -> false, false);
     }
 
-    List<WorldCoord> getUpdates() {
+    List<BlockPos> getUpdates() {
         return this.updates;
     }
 
