@@ -59,9 +59,7 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
         if (supportsFuzzyRangeSearch()) {
             this.setFuzzyMode(cm.getSetting(Settings.FUZZY_MODE));
         }
-        if (getHost().supportsEntityPlacement()) {
-            this.setPlaceMode(cm.getSetting(Settings.PLACE_BLOCK));
-        }
+        this.setPlaceMode(cm.getSetting(Settings.PLACE_BLOCK));
     }
 
     @Override
@@ -76,10 +74,6 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
     private void setPlaceMode(YesNo placeMode) {
         this.placeMode = placeMode;
-    }
-
-    public boolean supportsPlaceMode() {
-        return getHost().supportsEntityPlacement();
     }
 
     public boolean supportsFuzzyMode() {

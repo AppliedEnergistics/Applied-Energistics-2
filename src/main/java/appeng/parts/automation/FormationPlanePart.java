@@ -45,7 +45,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -166,18 +165,6 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
         var placeBlock = this.getConfigManager().getSetting(Settings.PLACE_BLOCK);
 
         return getPlacementStrategies().placeInWorld(what, amount, type, placeBlock != YesNo.YES);
-    }
-
-    /**
-     * Indicates whether this formation plane supports placement of injected stacks as entities into the world.
-     */
-    public boolean supportsEntityPlacement() {
-        for (int i = 0; i < config.size(); i++) {
-            if (AEItemKey.is(config.getKey(i))) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
