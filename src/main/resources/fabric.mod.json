@@ -15,6 +15,7 @@
   "entrypoints": {
     "client": ["appeng.core.AppEngClientStartup"],
     "server": ["appeng.core.AppEngServerStartup"],
+    "fabric-datagen": ["appeng.datagen.DatagenEntrypoint"],
     "rei_client": ["appeng.integration.modules.rei.ReiPlugin"],
     "jei_mod_plugin": ["appeng.integration.modules.jei.JEIPlugin"],
     "jade": ["appeng.integration.modules.jade.JadeModule"]

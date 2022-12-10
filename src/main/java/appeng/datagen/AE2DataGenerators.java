@@ -70,50 +70,54 @@ import appeng.init.worldgen.InitStructures;
 
 public class AE2DataGenerators {
     public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+        // for use on Forge
+        onGatherData(generator, existingFileHelper, generator.getVanillaPack(true));
+    }
+
+    public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper,
+            DataGenerator.PackGenerator pack) {
         var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
         var registries = createAppEngProvider(registryAccess);
 
         var localization = new LocalizationProvider(generator);
 
-        var mainPack = generator.getVanillaPack(true);
-
         // Worldgen et al
-        mainPack.addProvider(bindRegistries(WorldGenProvider::new, registries));
+        pack.addProvider(bindRegistries(WorldGenProvider::new, registries));
 
         // Loot
-        mainPack.addProvider(BlockDropProvider::new);
+        pack.addProvider(BlockDropProvider::new);
 
         // Tags
-        var blockTagsProvider = mainPack.addProvider(bindRegistries(BlockTagsProvider::new, registries));
-        mainPack.addProvider(packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider));
-        mainPack.addProvider(bindRegistries(FluidTagsProvider::new, registries));
-        mainPack.addProvider(bindRegistries(BiomeTagsProvider::new, registries));
-        mainPack.addProvider(bindRegistries(PoiTypeTagsProvider::new, registries));
+        var blockTagsProvider = pack.addProvider(bindRegistries(BlockTagsProvider::new, registries));
+        pack.addProvider(packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider));
+        pack.addProvider(bindRegistries(FluidTagsProvider::new, registries));
+        pack.addProvider(bindRegistries(BiomeTagsProvider::new, registries));
+        pack.addProvider(bindRegistries(PoiTypeTagsProvider::new, registries));
 
         // Models
-        mainPack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new DecorationModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new ItemModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new CableModelProvider(packOutput, existingFileHelper));
-        mainPack.addProvider(packOutput -> new PartModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new DecorationModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new ItemModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new CableModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new PartModelProvider(packOutput, existingFileHelper));
 
         // Misc
-        mainPack.addProvider(packOutput -> new AdvancementGenerator(packOutput, localization));
+        pack.addProvider(packOutput -> new AdvancementGenerator(packOutput, localization));
 
         // Recipes
-        mainPack.addProvider(DecorationRecipes::new);
-        mainPack.addProvider(DecorationBlockRecipes::new);
-        mainPack.addProvider(MatterCannonAmmoProvider::new);
-        mainPack.addProvider(EntropyRecipes::new);
-        mainPack.addProvider(InscriberRecipes::new);
-        mainPack.addProvider(SmeltingRecipes::new);
-        mainPack.addProvider(CraftingRecipes::new);
-        mainPack.addProvider(SmithingRecipes::new);
-        mainPack.addProvider(TransformRecipes::new);
-        mainPack.addProvider(ChargerRecipes::new);
+        pack.addProvider(DecorationRecipes::new);
+        pack.addProvider(DecorationBlockRecipes::new);
+        pack.addProvider(MatterCannonAmmoProvider::new);
+        pack.addProvider(EntropyRecipes::new);
+        pack.addProvider(InscriberRecipes::new);
+        pack.addProvider(SmeltingRecipes::new);
+        pack.addProvider(CraftingRecipes::new);
+        pack.addProvider(SmithingRecipes::new);
+        pack.addProvider(TransformRecipes::new);
+        pack.addProvider(ChargerRecipes::new);
 
         // Must run last
-        mainPack.addProvider(packOutput -> localization);
+        pack.addProvider(packOutput -> localization);
     }
 
     private static <T extends DataProvider> DataProvider.Factory<T> bindRegistries(

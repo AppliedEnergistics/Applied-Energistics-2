@@ -302,9 +302,9 @@ loom {
         datagen {
             client()
             source "main"
-            property "appeng.generateData", "true"
-            property "appeng.generateData.outputPath", file("src/generated/resources").absolutePath
-            property "appeng.generateData.existingData", file("src/main/resources").absolutePath
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
+            property "appeng.datagen.existingData", file("src/main/resources").absolutePath
         }
 
         // Use to run the tests
