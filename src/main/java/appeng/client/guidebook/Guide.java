@@ -28,9 +28,9 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.RegistryDataLoader;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.PackRepository;
@@ -123,7 +123,7 @@ public final class Guide implements PageCollection {
     // Only used when we try to compile pages before entering a world (validation, show on startup)
     private static void runDatapackReload() {
         try {
-            var access = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+            var layeredAccess = RegistryLayer.createRegistryAccess();
 
             PackRepository packRepository = new PackRepository(
                     new ServerPacksSource(),
@@ -131,17 +131,24 @@ public final class Guide implements PageCollection {
             packRepository.reload();
             packRepository.setSelected(ModResourcePackUtil.createDefaultDataConfiguration().dataPacks().getEnabled());
 
-            var closeableResourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
+            var resourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
                     packRepository.openAllSelected());
+
+            var worldgenLayer = RegistryDataLoader.load(
+                    resourceManager,
+                    layeredAccess.getAccessForLoading(RegistryLayer.WORLDGEN),
+                    RegistryDataLoader.WORLDGEN_REGISTRIES);
+            layeredAccess = layeredAccess.replaceFrom(RegistryLayer.WORLDGEN, worldgenLayer);
+
             var stuff = ReloadableServerResources.loadResources(
-                    closeableResourceManager,
-                    access,
+                    resourceManager,
+                    layeredAccess.getAccessForLoading(RegistryLayer.RELOADABLE),
                     FeatureFlagSet.of(),
                     Commands.CommandSelection.ALL,
                     0,
                     Util.backgroundExecutor(),
                     Runnable::run).get();
-            stuff.updateRegistryTags(access);
+            stuff.updateRegistryTags(layeredAccess.compositeAccess());
             Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -503,11 +510,16 @@ public final class Guide implements PageCollection {
                     reloadFuture = reloadFuture.thenRun(guide::validateAll);
                 }
                 if (startupPage != null) {
-                    reloadFuture.thenRun(() -> {
+                    reloadFuture = reloadFuture.thenRun(() -> {
                         var client = Minecraft.getInstance();
                         client.setScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage)));
                     });
                 }
+                reloadFuture.whenComplete((unused, throwable) -> {
+                    if (throwable != null) {
+                        LOGGER.error("Failed Guide startup.", throwable);
+                    }
+                });
             }
 
             return guide;
