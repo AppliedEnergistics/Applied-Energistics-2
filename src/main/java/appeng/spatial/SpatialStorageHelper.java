@@ -36,7 +36,6 @@ import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.util.WorldCoord;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.stats.AdvancementTriggers;
 
@@ -176,12 +175,12 @@ public class SpatialStorageHelper {
                     -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
         }
 
-        for (WorldCoord wc : cDst.getUpdates()) {
-            cSrc.getLevel().updateNeighborsAt(wc.getPos(), Blocks.AIR);
+        for (BlockPos pos : cDst.getUpdates()) {
+            cSrc.getLevel().updateNeighborsAt(pos, Blocks.AIR);
         }
 
-        for (WorldCoord wc : cSrc.getUpdates()) {
-            cSrc.getLevel().updateNeighborsAt(wc.getPos(), Blocks.AIR);
+        for (BlockPos pos : cSrc.getUpdates()) {
+            cSrc.getLevel().updateNeighborsAt(pos, Blocks.AIR);
         }
 
         this.transverseEdges(srcX - 1, srcY - 1, srcZ - 1, srcX + scaleX + 1, srcY + scaleY + 1, srcZ + scaleZ + 1,
