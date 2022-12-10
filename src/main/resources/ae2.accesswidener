@@ -99,3 +99,7 @@ accessible field net/minecraft/client/gui/screens/LoadingOverlay reload Lnet/min
 
 accessible field net/minecraft/data/DataGenerator vanillaPackOutput Lnet/minecraft/data/PackOutput;
 extendable method net/minecraft/data/recipes/RecipeProvider getName ()Ljava/lang/String;
+
+accessible field net/minecraft/core/RegistrySetBuilder entries Ljava/util/List;
+accessible class net/minecraft/core/RegistrySetBuilder$RegistryStub
+accessible field net/minecraft/data/registries/VanillaRegistries BUILDER Lnet/minecraft/core/RegistrySetBuilder;

@@ -15,11 +15,7 @@
     "BreakSpeedMixin",
     "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin",
-    "StructureTemplateMixin",
-    "datagen.BiomesMixin",
-    "datagen.DimensionTypesMixin",
-    "datagen.StructuresMixin",
-    "datagen.StructureSetsMixin"
+    "StructureTemplateMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",
