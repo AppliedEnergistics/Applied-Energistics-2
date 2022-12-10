@@ -301,10 +301,9 @@ loom {
         }
         datagen {
             client()
-            source "main"
-            property "appeng.generateData", "true"
-            property "appeng.generateData.outputPath", file("src/generated/resources").absolutePath
-            property "appeng.generateData.existingData", file("src/main/resources").absolutePath
+            property "fabric-api.datagen"
+            property "fabric-api.datagen.output-dir", file("src/generated/resources").absolutePath
+            property "appeng.datagen.existingData", file("src/main/resources").absolutePath
         }
 
         // Use to run the tests
