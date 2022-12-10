@@ -301,9 +301,8 @@ loom {
         }
         datagen {
             client()
-            source "main"
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
+            property "fabric-api.datagen"
+            property "fabric-api.datagen.output-dir", file("src/generated/resources").absolutePath
             property "appeng.datagen.existingData", file("src/main/resources").absolutePath
         }
 
