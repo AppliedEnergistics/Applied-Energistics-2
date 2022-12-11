@@ -4,17 +4,14 @@ navigation:
   title: Channels
   icon: controller
 ---
-# Channels
+## Channels
 
 Applied Energistics 2's [ME Networks](../me-network.md) require
 Channels to support devices which use networked storage, or other network
-services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
-so many devices connected to it. Most devices such as standard cables, and machines can only pass through
-up to 8 channels. You can think of standard cables as a bundle of 8 "channel wires". However <ItemLink id="fluix_covered_dense_cable"/> can support up
+services. Most devices such as standard cables, and machines can only support
+up to 8 channels. However <ItemLink id="fluix_covered_dense_cable"/> can support up
 to 32 channels, the only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
 and the [Quantum Network Bridge](quantum-bridge.md).
-
-An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
 
 A Network without a <ItemLink id="controller"/>
 is considered to be Ad-Hoc, and can support up to 8 channel using devices.
@@ -38,11 +35,7 @@ already maxed out, some devices may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your
 channels go in the path you desire.
 
-# A Visual Example
-
-![Channels](../assets/assemblies/channels.png)
-
-# Channel Modes
+## Channel Modes
 
 AE2 10.0.0 for Minecraft 1.18 introduces new options to change how AE2 channels behave in your world.
 There's a new configuration option in the general section (`channels`) which controls this option, and a new in-game
@@ -63,7 +56,7 @@ The following table lists the available modes in both the configuration file and
 | `x4`       | All channel capacities are quadrupled (32 on normal cable, 128 on dense cable, ad-hoc networks support 32 channels)                                                                                                                       |
 | `infinite` | All channel restrictions are removed. Controllers still reduce the power consumption of grids _significantly_. Smart cables will only toggle between completely off (no channels carried) and completely on (1 or more channels carried). |
 
-# Design
+## Design
 
 Designing your layouts with channels can be tricky because of their shortest
 route nature, if any specific spot in your system has two possible routes, you
@@ -123,7 +116,7 @@ a different outcome.
 
 ![Diagram showing how to fix a previous setup with a p2p tunnel.](../../assets/channels/p2psplit.png)
 
-# Using P2P-Tunnels to adjust route lengths
+## Using P2P-Tunnels to adjust route lengths
 
 One last important note about this, you can see that the p2p tunnel is
 directly on the controller, and directly on the block of machines at the

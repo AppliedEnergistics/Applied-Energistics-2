@@ -4,4 +4,4 @@ navigation:
   title: Processor Automation
   icon: inscriber
 ---
-# Automation of Processor Production
+## Automation of Processor Production
