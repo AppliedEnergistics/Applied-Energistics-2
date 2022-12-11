@@ -5,11 +5,11 @@ import appeng.items.misc.ItemEncodedPattern;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -32,12 +32,21 @@ import java.util.List;
  * the pattern is being
  * rendered in the GUI, and not anywhere else.
  */
-class ItemEncodedPatternBakedModel implements IBakedModel {
+public class ItemEncodedPatternBakedModel implements IBakedModel {
     private final IBakedModel baseModel;
 
     private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
 
     private final CustomOverrideList overrides;
+
+    public static final IItemColor PATTERN_ITEM_COLOR_HANDLER = (stack, tintIndex) -> {
+        ItemEncodedPattern iep = (ItemEncodedPattern) stack.getItem();
+        ItemStack output = iep.getOutput(stack);
+        if (!output.isEmpty() && isShiftKeyDown()) {
+            return Minecraft.getMinecraft().getItemColors().colorMultiplier(output, tintIndex);
+        }
+        return 0xFFFFFF;
+    };
 
     ItemEncodedPatternBakedModel(IBakedModel baseModel, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
         this.baseModel = baseModel;
@@ -90,88 +99,8 @@ class ItemEncodedPatternBakedModel implements IBakedModel {
         return PerspectiveMapWrapper.handlePerspective(this, this.transforms, cameraTransformType);
     }
 
-    /**
-     * Since the ItemOverrideList handling comes before handling the perspective awareness (which is the first place
-     * where we
-     * know how we are being rendered) we need to remember the model of the crafting output, and make the decision on
-     * which to render later on.
-     * Sadly, Forge is pretty inconsistent when it will call the handlePerspective method, so some methods are called
-     * even on this interim-model.
-     * Usually those methods only matter for rendering on the ground and other cases, where we wouldn't render the
-     * crafting output model anyway,
-     * so in those cases we delegate to the model of the encoded pattern.
-     */
-    private class ShiftHoldingModelWrapper implements IBakedModel {
-
-        private final IBakedModel outputModel;
-
-        private ShiftHoldingModelWrapper(IBakedModel outputModel) {
-            this.outputModel = outputModel;
-        }
-
-        @Override
-        public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-            final IBakedModel selectedModel;
-
-            // No need to re-check for shift being held since this model is only handed out in that case
-            if (cameraTransformType == ItemCameraTransforms.TransformType.GUI) {
-                selectedModel = this.outputModel;
-            } else {
-                selectedModel = ItemEncodedPatternBakedModel.this.baseModel;
-            }
-
-            // Now retroactively handle the isGui3d call, for which we always return false below
-            if (selectedModel.isGui3d() != ItemEncodedPatternBakedModel.this.baseModel.isGui3d()) {
-                GlStateManager.enableLighting();
-            }
-
-            if (selectedModel instanceof IBakedModel) {
-                return selectedModel.handlePerspective(cameraTransformType);
-            }
-
-            return PerspectiveMapWrapper.handlePerspective(this, ItemEncodedPatternBakedModel.this.transforms, cameraTransformType);
-        }
-
-        @Override
-        public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-            // This may be called for items on the ground, in which case we will always fall back to the pattern
-            return ItemEncodedPatternBakedModel.this.baseModel.getQuads(state, side, rand);
-        }
-
-        @Override
-        public boolean isAmbientOcclusion() {
-            return ItemEncodedPatternBakedModel.this.baseModel.isAmbientOcclusion();
-        }
-
-        @Override
-        public boolean isGui3d() {
-            // NOTE: Sadly, Forge will let Minecraft call this method before handling the perspective awareness
-            return ItemEncodedPatternBakedModel.this.baseModel.isGui3d();
-        }
-
-        @Override
-        public boolean isBuiltInRenderer() {
-            // This may be called for items on the ground, in which case we will always fall back to the pattern
-            return ItemEncodedPatternBakedModel.this.baseModel.isBuiltInRenderer();
-        }
-
-        @Override
-        public TextureAtlasSprite getParticleTexture() {
-            // This may be called for items on the ground, in which case we will always fall back to the pattern
-            return ItemEncodedPatternBakedModel.this.baseModel.getParticleTexture();
-        }
-
-        @Override
-        public ItemCameraTransforms getItemCameraTransforms() {
-            // This may be called for items on the ground, in which case we will always fall back to the pattern
-            return ItemEncodedPatternBakedModel.this.baseModel.getItemCameraTransforms();
-        }
-
-        @Override
-        public ItemOverrideList getOverrides() {
-            // This may be called for items on the ground, in which case we will always fall back to the pattern
-            return ItemEncodedPatternBakedModel.this.baseModel.getOverrides();
-        }
+    private static boolean isShiftKeyDown() {
+        return Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
     }
 
     /**
@@ -188,15 +117,11 @@ class ItemEncodedPatternBakedModel implements IBakedModel {
 
         @Override
         public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
-            boolean shiftHeld = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT);
-            if (shiftHeld) {
+            if (isShiftKeyDown()) {
                 ItemEncodedPattern iep = (ItemEncodedPattern) stack.getItem();
                 ItemStack output = iep.getOutput(stack);
                 if (!output.isEmpty()) {
-                    IBakedModel realModel = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(output);
-                    // Give the item model a chance to handle the overrides as well
-                    realModel = realModel.getOverrides().handleItemState(realModel, output, world, entity);
-                    return new ShiftHoldingModelWrapper(realModel);
+                    return Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(output, world, entity);
                 }
             }
 
