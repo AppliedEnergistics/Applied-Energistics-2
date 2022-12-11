@@ -1,7 +1,7 @@
 ---
 navigation:
   parent: website/index.md
-  title: Getting Started  (1.19+)
+  title: Getting Started Old  (1.19+)
 ---
 
 <div class="notification is-info">

@@ -1,6 +1,7 @@
 ---
 navigation:
   title: AE2 Website
+  position: 100
 path: /
 ---
 
