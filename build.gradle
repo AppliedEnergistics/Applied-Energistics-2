@@ -88,9 +88,6 @@ dependencies {
         modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
         }
-
-        // Manually override architectury TODO remove once REI's dependency is fixed
-        modLocalRuntime "dev.architectury:architectury-fabric:6.2.43"
         modLocalRuntime modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
             exclude group: "net.fabricmc.fabric-api"
         }
