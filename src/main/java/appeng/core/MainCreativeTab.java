@@ -55,7 +55,7 @@ public final class MainCreativeTab {
 
     public static void initExternal(CreativeModeTabEvent.BuildContents contents) {
         for (var itemDefinition : externalItemDefs.get(contents.getTab())) {
-            contents.registerSimple(contents.getTab(), itemDefinition);
+            contents.accept(itemDefinition);
         }
     }
 

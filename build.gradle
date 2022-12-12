@@ -162,7 +162,7 @@ dependencies {
         compileOnly fg.deobf("curse.maven:jade-324717:${project.jade_file_id}")
     }
 
-    def topDependency = "curse.maven:the-one-probe-245211:3871444"
+    def topDependency = "curse.maven:the-one-probe-245211:4159743"
     if (project.runtime_tooltip_mod == "top") {
         implementation fg.deobf(topDependency)
     } else {
