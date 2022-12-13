@@ -96,6 +96,11 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return getAECurrentPower(oldStack) == getAECurrentPower(newStack);
+    }
+
+    @Override
     public double injectAEPower(ItemStack stack, double amount, Actionable mode) {
         final double maxStorage = this.getAEMaxPower(stack);
         final double currentStorage = this.getAECurrentPower(stack);
