@@ -47,7 +47,10 @@ public class WorldGenProvider implements DataProvider {
     private <T> CompletableFuture<Void> writeRegistryEntries(CachedOutput writer, HolderLookup.Provider provider,
             DynamicOps<JsonElement> ops, RegistryDataLoader.RegistryData<T> registryData) {
         var registryKey = registryData.key();
-        var registry = provider.lookupOrThrow(registryKey);
+        var registry = provider.lookup(registryKey).orElse(null);
+        if (registry == null) {
+            return CompletableFuture.completedFuture(null);
+        }
         var pathResolver = this.output.createPathProvider(PackOutput.Target.DATA_PACK,
                 registryKey.location().getPath());
 
