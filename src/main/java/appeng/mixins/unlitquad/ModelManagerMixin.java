@@ -18,15 +18,18 @@
 
 package appeng.mixins.unlitquad;
 
-import java.io.IOException;
+import java.util.Map;
+
+import com.mojang.datafixers.util.Pair;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 
 import appeng.hooks.UnlitQuadHooks;
 
@@ -34,17 +37,18 @@ import appeng.hooks.UnlitQuadHooks;
  * The only job of this mixin is to only enable the unlit extensions if the model is whitelisted for it, which is
  * decided in {@link UnlitQuadHooks}.
  */
-@Mixin(ModelBakery.class)
-public class ModelBakeryMixin {
+@Mixin(ModelManager.class)
+public class ModelManagerMixin {
 
-    @Inject(method = "loadModel", at = @At("HEAD"), allow = 1)
-    protected void onBeginLoadModel(ResourceLocation location, CallbackInfo cri)
-            throws IOException {
-        UnlitQuadHooks.beginDeserializingModel(location);
+    @Inject(method = "method_45898", at = @At("HEAD"), allow = 1, remap = false)
+    private static void onBeginLoadModel(Map.Entry<ResourceLocation, Resource> entry,
+            CallbackInfoReturnable<Pair<?, ?>> cri) {
+        UnlitQuadHooks.beginDeserializingModel(entry.getKey());
     }
 
-    @Inject(method = "loadModel", at = @At("RETURN"))
-    protected void onEndLoadModel(ResourceLocation location, CallbackInfo cri) {
+    @Inject(method = "method_45898", at = @At("RETURN"), remap = false)
+    private static void onEndLoadModel(Map.Entry<ResourceLocation, Resource> entry,
+            CallbackInfoReturnable<Pair<?, ?>> cri) {
         UnlitQuadHooks.endDeserializingModel();
     }
 

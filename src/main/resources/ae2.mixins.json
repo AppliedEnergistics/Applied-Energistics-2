@@ -20,7 +20,7 @@
   "client": [
     "spatial.SkyRenderMixin",
     "spatial.SkyPropertiesMixin",
-    "unlitquad.ModelBakeryMixin",
+    "unlitquad.ModelManagerMixin",
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
     "AbstractContainerScreenMixin",
