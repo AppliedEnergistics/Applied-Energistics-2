@@ -26,8 +26,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import com.google.common.collect.Lists;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
@@ -419,10 +417,10 @@ public class AEBaseBlockEntity extends BlockEntity
         final BlockState blockState = level.getBlockState(pos);
         final Block block = blockState.getBlock();
 
-        var itemDropCandidates = Platform.getBlockDrops(level, pos);
+        var pickupCandidates = Platform.getBlockDrops(level, pos);
         var op = new ItemStack(getBlockState().getBlock());
 
-        for (var ol : itemDropCandidates) {
+        for (var ol : pickupCandidates) {
             if (ItemComparisonHelper.isEqualItemType(ol, op)) {
                 var tag = new CompoundTag();
                 exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
@@ -436,8 +434,9 @@ public class AEBaseBlockEntity extends BlockEntity
         level.removeBlock(pos, false);
         block.destroy(level, pos, getBlockState());
 
-        var itemsToDrop = Lists.newArrayList(itemDropCandidates);
-        Platform.spawnDrops(level, pos, itemsToDrop);
+        for (var item : pickupCandidates) {
+            player.getInventory().placeItemBackInInventory(item);
+        }
 
         return InteractionResult.sidedSuccess(level.isClientSide());
     }

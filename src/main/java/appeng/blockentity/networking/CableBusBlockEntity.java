@@ -328,8 +328,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
                 Platform.notifyBlocksOfNeighbors(level, pos);
             }
 
-            if (!is.isEmpty()) {
-                Platform.spawnDrops(level, pos, is);
+            for (var item : is) {
+                player.getInventory().placeItemBackInInventory(item);
             }
         }
 

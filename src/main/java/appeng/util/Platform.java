@@ -75,6 +75,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -268,6 +269,9 @@ public class Platform {
         final BlockEntity blockEntity = level.getBlockEntity(pos);
 
         List<ItemStack> out = Block.getDrops(state, serverLevel, pos, blockEntity);
+        if (blockEntity instanceof AEBaseBlockEntity be) {
+            be.addAdditionalDrops(level, pos, out);
+        }
 
         return out.toArray(new ItemStack[0]);
     }

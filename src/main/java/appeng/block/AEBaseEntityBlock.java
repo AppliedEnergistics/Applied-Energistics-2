@@ -18,7 +18,6 @@
 
 package appeng.block;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -52,7 +51,6 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 /**
@@ -127,16 +125,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             return; // Just a block state change
         }
 
-        var te = this.getBlockEntity(level, pos);
-        if (te != null) {
-            var drops = new ArrayList<ItemStack>();
-            te.addAdditionalDrops(level, pos, drops);
-
-            // Cry ;_; ...
-            Platform.spawnDrops(level, pos, drops);
-        }
-
-        // super will remove the BE, as it is not an instance of BlockContainer
+        // super will remove the TE, as it is not an instance of BlockContainer
         super.onRemove(state, level, pos, newState, isMoving);
     }
 
