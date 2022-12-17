@@ -69,14 +69,15 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("decorative/sky_stone_small_brick"));
 
         SingleItemRecipeBuilder
-                .stonecutting(Ingredient.of(AEBlocks.SMOOTH_SKY_STONE_BLOCK), RecipeCategory.MISC, AEBlocks.SKY_STONE_BRICK)
+                .stonecutting(Ingredient.of(AEBlocks.SMOOTH_SKY_STONE_BLOCK), RecipeCategory.MISC,
+                        AEBlocks.SKY_STONE_BRICK)
                 .unlockedBy(criterionName(AEBlocks.SMOOTH_SKY_STONE_BLOCK), has(AEBlocks.SMOOTH_SKY_STONE_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/sky_stone_brick_from_stonecutting"));
         SingleItemRecipeBuilder
-                .stonecutting(Ingredient.of(AEBlocks.SMOOTH_SKY_STONE_BLOCK), RecipeCategory.MISC, AEBlocks.SKY_STONE_SMALL_BRICK)
+                .stonecutting(Ingredient.of(AEBlocks.SMOOTH_SKY_STONE_BLOCK), RecipeCategory.MISC,
+                        AEBlocks.SKY_STONE_SMALL_BRICK)
                 .unlockedBy(criterionName(AEBlocks.SMOOTH_SKY_STONE_BLOCK), has(AEBlocks.SMOOTH_SKY_STONE_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/sky_stone_small_brick_from_stonecutting"));
-
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.CUT_QUARTZ_BLOCK, 4)
                 .pattern("aa")
