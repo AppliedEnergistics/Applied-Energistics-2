@@ -22,11 +22,11 @@ import static appeng.core.AppEng.makeId;
 
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.decorative.solid.QuartzPillarBlock;
 
 public class DecorationModelProvider extends AE2BlockStateProvider {
 
@@ -74,11 +74,11 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
         var quartzPillar = models().cubeColumn(AEBlocks.QUARTZ_PILLAR.id().getPath(),
                 makeId("block/quartz_pillar_side"), makeId("block/quartz_pillar_top"));
         getVariantBuilder(AEBlocks.QUARTZ_PILLAR.block())
-                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y)
+                .partialState().with(QuartzPillarBlock.AXIS, Direction.Axis.Y)
                 .modelForState().modelFile(quartzPillar).addModel()
-                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Z)
+                .partialState().with(QuartzPillarBlock.AXIS, Direction.Axis.Z)
                 .modelForState().modelFile(quartzPillar).rotationX(90).addModel()
-                .partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.X)
+                .partialState().with(QuartzPillarBlock.AXIS, Direction.Axis.X)
                 .modelForState().modelFile(quartzPillar).rotationX(90).rotationY(90).addModel();
 
         simpleBlockItem(AEBlocks.QUARTZ_PILLAR.block(), quartzPillar);
