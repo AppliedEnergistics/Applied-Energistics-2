@@ -107,6 +107,9 @@ public final class PageCompiler {
     public static ParsedGuidePage parse(String sourcePack, ResourceLocation id, InputStream in) throws IOException {
         String pageContent = new String(in.readAllBytes(), StandardCharsets.UTF_8);
 
+        // Normalize line ending
+        pageContent = pageContent.replaceAll("\\r\\n?", "\n");
+
         var options = new MdastOptions()
                 .withSyntaxExtension(MdxSyntax.INSTANCE)
                 .withSyntaxExtension(YamlFrontmatterSyntax.INSTANCE)
