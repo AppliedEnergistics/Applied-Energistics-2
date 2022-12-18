@@ -8,8 +8,9 @@ navigation:
 
 Applied Energistics 2's [ME Networks](../me-network.md) require
 Channels to support devices which use networked storage, or other network
-services. Most devices such as standard cables, and machines can only support
-up to 8 channels. However <ItemLink id="fluix_covered_dense_cable"/> can support up
+services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
+so many devices connected to it. Most devices such as standard cables, and machines can only pass through
+up to 8 channels. You can think of standard cables as a bundle of 8 "channel wires". However <ItemLink id="fluix_covered_dense_cable"/> can support up
 to 32 channels, the only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
 and the [Quantum Network Bridge](quantum-bridge.md).
 
