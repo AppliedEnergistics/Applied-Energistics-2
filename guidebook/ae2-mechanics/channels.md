@@ -14,6 +14,8 @@ up to 8 channels. You can think of standard cables as a bundle of 8 "channel wir
 to 32 channels, the only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
 and the [Quantum Network Bridge](quantum-bridge.md).
 
+An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
+
 A Network without a <ItemLink id="controller"/>
 is considered to be Ad-Hoc, and can support up to 8 channel using devices.
 Once you exceed 8 devices the networks channel using devices will shutdown,
