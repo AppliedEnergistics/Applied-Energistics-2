@@ -3,8 +3,12 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Inscriber
   icon: inscriber
+item_ids:
+- ae2:inscriber
 ---
 ## The Inscriber
+
+![A picture of an inscriber.](../assets/blocks/inscriber.png)
 
 The inscriber is used to inscribe circuits and processors using presses, and to crush various items into dust. It is sided, so
 inserting items from different sides inserts them into different slots in its inventory. To facilitate this, it can be
@@ -28,7 +32,7 @@ While the name press can be used to name blocks similar to an anvil, useful for 
 
 ### The GUI
 
-![Inscriber GUI](../../../assets/content/inscriberGUI.png)
+![Inscriber GUI](../assets/diagrams/inscriber_gui.png)
 
 A. **Top Input** accessed via the top side of the inscriber (items can be both pushed to and pulled from this slot)
 
