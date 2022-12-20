@@ -89,8 +89,10 @@ item_ids:
 - ae2:red_smart_dense_cable
 - ae2:black_smart_dense_cable
 - ae2:fluix_smart_dense_cable
+- ae2:toggle_bus
+- ae2:inverted_toggle_bus
 ---
-# Cables
+## Cables
 
 ![Some Cables, Demonstrating Connection Rules](../assets/assemblies/cables.png)
 
@@ -98,19 +100,13 @@ While ME networks are also created by adjacent ME-capable machines, cables are t
 extending an ME network over larger areas.
 
 Differently colored cables can be used to ensure adjacent cables do not connected to each other,
-allowing [channels](../ae2-mechanics/channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
-so you don't have to have all your terminals be purple. Fluix cables connect to every other color.
+allowing [channels](channels.md) to be distributed more efficiently.
 
-# An Important Note
-**If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
-It will show how channels are routed through your network, making their behavior more understandable.**
+## An Important Note
+If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
+It will show how channels are routed through your network, making their behavior more understandable.
 
-# Another Note
-
-**These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
-into them, all they do is connect AE2 devices together into a network.
-
-# Glass Cable
+## Glass Cable
 
 ![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
 
@@ -132,7 +128,7 @@ your [Channels](channels.md).
 <RecipeFor id="fluix_glass_cable" />
 <RecipeFor id="blue_glass_cable" />
 
-# Covered Cable
+## Covered Cable
 
 ![A picture of covered cables.](../assets/blocks/fluix_covered_cable.png)
 
@@ -146,10 +142,10 @@ id="fluix_covered_cable"/> can be crafted with
 redstone and glowstone to make <ItemLink
 id="fluix_covered_dense_cable"/>.
 
-<Recipe id="network/cables/covered_fluix" />
+<RecipeFor id="fluix_covered_cable" />
 <RecipeFor id="blue_covered_cable" />
 
-# Dense Cable
+## Dense Cable
 
 ![A picture of dense cable.](../assets/blocks/fluix_covered_dense_cable.png)
 
@@ -162,10 +158,10 @@ panels. Shows load similarly to <ItemLink
 id="fluix_smart_cable"/>, with each line lit
 representing four channels in use.
 
-<Recipe id="network/cables/dense_covered_fluix" />
+<RecipeFor id="fluix_covered_dense_cable" />
 <RecipeFor id="blue_covered_dense_cable" />
 
-# Smart Cable
+## Smart Cable
 
 ![A picture of smart cable.](../assets/blocks/fluix_smart_cable.png)![A picture of smart cable.](../assets/blocks/fluix_smart_dense_cable.png)
 
@@ -179,6 +175,25 @@ cable, the next four show as white lines.
 These can also be colored in the same manner as <ItemLink
 id="fluix_glass_cable"/>.
 
-<Recipe id="network/cables/smart_fluix" />
-<Recipe id="network/cables/dense_smart_fluix" />
+<RecipeFor id="fluix_smart_cable" />
+<RecipeFor id="fluix_smart_dense_cable" />
 <RecipeFor id="blue_smart_cable" />
+
+
+## Toggle Bus
+
+A bus which functions similarly to <ItemLink
+id="fluix_glass_cable"/> or other cables, but it
+allows its connection state to be toggled via redstone. This allows you to cut
+off a section of a [ME Network](../me-network.md).
+
+When redstone signal supplied the part enables the connection, <ItemLink
+id="inverted_toggle_bus"/> provides the reverse
+behavior by disabling the connection instead.
+
+<RecipeFor id="toggle_bus" />
+
+There is also an inverted version of the toggle bus that disables the connection
+when a redstone signal is supplied.
+
+<RecipeFor id="inverted_toggle_bus" />
