@@ -3,9 +3,12 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Charger
   icon: charger
+item_ids:
+- ae2:charger
 ---
+## The Charger
 
-![A picture of a charger.](../../../assets/large/charger_with_crank.jpg)
+![A picture of a charger.](../assets/assemblies/charger_with_crank.png)
 
 The <ItemLink id="charger"/> provides a way to charge
 supported tools through the [ME Network](../../me-network.md) or manually using a crank.
@@ -20,4 +23,5 @@ from <ItemLink id="certus_quartz_crystal"/>, and <ItemLink id="meteorite_compass
 
 To power it manually, place a crank on the top or bottom and right-click it until the item is charged.
 
+<RecipeFor id="charger" />
 <RecipeFor id="crank" />
