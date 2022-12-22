@@ -1,8 +1,7 @@
 ---
 categories:
   - ME Network/Powered Machines
-item_ids:
-  - ae2:inscriber
+
 related:
   - Presses
 navigation:
