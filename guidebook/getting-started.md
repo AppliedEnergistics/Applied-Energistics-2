@@ -8,7 +8,12 @@ navigation:
   The following information only applies to Applied Energistics 2 in Minecraft 1.19 and newer.
 </div>
 
+## Getting Started
+
 ## Getting The Initial Materials
+
+![The interior of a meteor](assets/assemblies/meteor_interior.png)
+
 To get started with Applied Energistics 2, one must first find a [meteorite](./features/meteorites.md). These are fairly common and tend to leave massive holes in the terrain, so you've probably encountered one in your travels.
 If you haven't, you can craft a <ItemLink id="meteorite_compass" />, which will point toward the nearest NEED INFO DOES IT POINT AT THE SKY STONE OR THE MYSTERIOUS CUBE.
 
@@ -79,6 +84,8 @@ take advantage you need to set up an [ME Network](features/me-network.md).
 ## Your Very First ME System
 Now that you have all of the basic materials and machines for Applied Energistics 2, you can make your first ME (Matter Energy) system. This will be a very basic one, no autocrafting, no logistics, just nice, simple, searchable storage.
 
+![A Small ME System](assets/assemblies/tiny_me_system.png)
+
 - Your ingredients list:
     - 1x <ItemLink id="drive" />
     - 1x <ItemLink id="terminal" /> or <ItemLink id="crafting_terminal" />
@@ -86,8 +93,8 @@ Now that you have all of the basic materials and machines for Applied Energistic
     - A few [cables](./features/me-network/cables.md), either glass, covered, or smart, but not dense
     - A few [storage cells](./features/storage-cells.md), recommended of the 4k variety for a good mix of capacity and types (it would be more efficient to partition a mix of 4k and 1k but that's a complexity we won't go into now)
 1. Place the drive down.
-2. The pattern provider (and several other AE2 devices) comes in 2 modes, cube and flat. They can be switched between in a crafting grid. If your energy acceptor is a cube, place it down next to the drive. If it's a flat square, place a cable on the drive and place the acceptor on that.
-3. Run energy into the pattern provider with a cable/pipe/conduit from your favorite energy-generation mod.
+2. The energy acceptor (and several other AE2 devices) comes in 2 modes, cube and flat. They can be switched between in a crafting grid. If your energy acceptor is a cube, place it down next to the drive. If it's a flat square, place a cable on the drive and place the acceptor on that.
+3. Run energy into the energy acceptor with a cable/pipe/conduit from your favorite energy-generation mod.
 4. Place a cable on top of the drive (or otherwise at eye level) and place your terminal or crafting terminal on it.
 5. Put your storage cells into the drive
 6. Profit
