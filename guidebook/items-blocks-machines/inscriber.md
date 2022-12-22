@@ -30,9 +30,9 @@ While the name press can be used to name blocks similar to an anvil, useful for 
 
 <RecipeFor id="inscriber" />
 
-### The GUI
+### The GUI And Sidedness
 
-![Inscriber GUI](../assets/diagrams/inscriber_gui.png)
+![Inscriber GUI](../assets/diagrams/inscriber_gui.png) ![Inscriber Sides](../assets/diagrams/inscriber_sides.png)
 
 A. **Top Input** accessed via the top side of the inscriber (items can be both pushed to and pulled from this slot)
 
