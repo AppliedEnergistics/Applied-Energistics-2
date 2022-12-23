@@ -14,7 +14,7 @@ quantities of items in stock, crafting more as needed, or simply transfer items 
 #### Getting Started
 
 - [Getting Started](getting-started.md)
-- [Basic AE2 Mechanics](ae2-mechanics/ae2-mechanics-index.md)
+- [AE2 Mechanics](ae2-mechanics/ae2-mechanics-index.md)
 - [Example Setups](example-setups/example-setups-index.md)
 - [Miscellaneous Tips](miscellaneous-tips.md)
 - [Old Website](./website/index.md)

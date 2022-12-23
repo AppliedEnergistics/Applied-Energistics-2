@@ -15,7 +15,7 @@ navigation:
 ![The interior of a meteor](assets/assemblies/meteor_interior.png)
 
 To get started with Applied Energistics 2, one must first find a [meteorite](./features/meteorites.md). These are fairly common and tend to leave massive holes in the terrain, so you've probably encountered one in your travels.
-If you haven't, you can craft a <ItemLink id="meteorite_compass" />, which will point toward the nearest NEED INFO DOES IT POINT AT THE SKY STONE OR THE MYSTERIOUS CUBE.
+If you haven't, you can craft a <ItemLink id="meteorite_compass" />, which will point toward the nearest <ItemLink id="mysterious_cube" />.
 
 Once you have found a meteorite, mine into its center. You will find certus quartz clusters, certus quartz buds, budding certus quartz of various types, and a Mysterious Cube in the center.
 
