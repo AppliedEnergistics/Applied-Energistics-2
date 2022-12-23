@@ -100,7 +100,8 @@ While ME networks are also created by adjacent ME-capable machines, cables are t
 extending an ME network over larger areas.
 
 Differently colored cables can be used to ensure adjacent cables do not connected to each other,
-allowing [channels](channels.md) to be distributed more efficiently.
+allowing [channels](channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
+so you don't have to have all your terminals be purple. Fluix cables connect to every other color.
 
 ## An Important Note
 If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
