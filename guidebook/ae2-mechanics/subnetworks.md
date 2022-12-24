@@ -3,7 +3,7 @@ navigation:
   parent: ae2-mechanics/ae2-mechanics-index.md
   title: Subnetworks
 ---
-## Subnetworks
+# Subnetworks
 
 "Subnetwork" is a rather loosely-defined term, but one might say that a subnetwork is any network that supports your
 main network or does some small task. They are typically small enough to not require controllers.

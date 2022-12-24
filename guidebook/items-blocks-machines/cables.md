@@ -92,7 +92,7 @@ item_ids:
 - ae2:toggle_bus
 - ae2:inverted_toggle_bus
 ---
-## Cables
+# Cables
 
 ![Some Cables, Demonstrating Connection Rules](../assets/assemblies/cables.png)
 
@@ -103,11 +103,11 @@ Differently colored cables can be used to ensure adjacent cables do not connecte
 allowing [channels](channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
 so you don't have to have all your terminals be purple. Fluix cables connect to every other color.
 
-## An Important Note
-If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
-It will show how channels are routed through your network, making their behavior more understandable.
+# An Important Note
+**If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
+It will show how channels are routed through your network, making their behavior more understandable.**
 
-## Glass Cable
+# Glass Cable
 
 ![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
 
@@ -129,7 +129,7 @@ your [Channels](channels.md).
 <RecipeFor id="fluix_glass_cable" />
 <RecipeFor id="blue_glass_cable" />
 
-## Covered Cable
+# Covered Cable
 
 ![A picture of covered cables.](../assets/blocks/fluix_covered_cable.png)
 
@@ -146,7 +146,7 @@ id="fluix_covered_dense_cable"/>.
 <RecipeFor id="fluix_covered_cable" />
 <RecipeFor id="blue_covered_cable" />
 
-## Dense Cable
+# Dense Cable
 
 ![A picture of dense cable.](../assets/blocks/fluix_covered_dense_cable.png)
 
@@ -162,7 +162,7 @@ representing four channels in use.
 <RecipeFor id="fluix_covered_dense_cable" />
 <RecipeFor id="blue_covered_dense_cable" />
 
-## Smart Cable
+# Smart Cable
 
 ![A picture of smart cable.](../assets/blocks/fluix_smart_cable.png)![A picture of smart cable.](../assets/blocks/fluix_smart_dense_cable.png)
 
@@ -181,7 +181,7 @@ id="fluix_glass_cable"/>.
 <RecipeFor id="blue_smart_cable" />
 
 
-## Toggle Bus
+# Toggle Bus
 
 A bus which functions similarly to <ItemLink
 id="fluix_glass_cable"/> or other cables, but it
