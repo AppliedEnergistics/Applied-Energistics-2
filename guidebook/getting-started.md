@@ -8,9 +8,9 @@ navigation:
   The following information only applies to Applied Energistics 2 in Minecraft 1.19 and newer.
 </div>
 
-## Getting Started
+# Getting Started
 
-## Getting The Initial Materials
+# Getting The Initial Materials
 
 ![The interior of a meteor](assets/assemblies/meteor_interior.png)
 
@@ -25,7 +25,7 @@ Do not break any flawless budding certus, as even with silk touch they will degr
 
 Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscriber presses.
 
-## Growing Quartz
+# Growing Quartz
 Certus quartz buds will sprout from budding certus blocks, similar to amethyst. If you break a bud that is not finished growing, it will drop one certus quartz dust, unchanged by fortune. If you break a fully grown cluster, it will drop four certus quartz crystals, and fortune will increase this number.
 
 Every time a bud grows by another stage, the budding block has a chance to degrade by one tier, eventually turning into a plain certus quartz block. They can be repaired (and new budding blocks created) by throwing the budding block (or a certus quartz block) in water with one or more charged certus.
@@ -36,12 +36,12 @@ If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /
 
 Harvesting the certus automatically is "left as an exercise for the reader".
 
-## A Quick Aside on Fluix
+# A Quick Aside on Fluix
 Another material you will need is Fluix, which you have already encountered in making growth accelerators. It is made by throwing charged certus, redstone, and nether quartz in water. Doing this automatically is "left as an exercise for the reader."
 
 The <ItemLink id="charger" /> is required to produce charged quartz, if you haven't made one already.
 
-## Inscribing Some Processors
+# Inscribing Some Processors
 In your looting of a meteorite, you will have found four "presses" from breaking the Mysterious Cube. These are used in the <ItemLink id="inscriber" /> to make the three types of processor.
   <ItemGrid>
   <ItemIcon id="silicon_press" />
@@ -56,7 +56,7 @@ To facilitate automation with hoppers (and possibly reduce pipe spaghetti), insc
 
 Produce a few of each type of processor in preparation for the next step, making a very basic ME system. Automating processor production is "left as an exercise for the reader".
 
-## Matter Energy Tech: ME Networks and Storage
+# Matter Energy Tech: ME Networks and Storage
 
 ### What is ME Storage?
 
@@ -81,7 +81,7 @@ While the <ItemLink id="chest"/> is a great way to get introduced to the concept
 take advantage you need to set up an [ME Network](features/me-network.md).
 
 
-## Your Very First ME System
+# Your Very First ME System
 Now that you have all of the basic materials and machines for Applied Energistics 2, you can make your first ME (Matter Energy) system. This will be a very basic one, no autocrafting, no logistics, just nice, simple, searchable storage.
 
 ![A Small ME System](assets/assemblies/tiny_me_system.png)

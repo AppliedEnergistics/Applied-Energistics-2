@@ -4,7 +4,7 @@ navigation:
   title: Channels
   icon: controller
 ---
-## Channels
+# Channels
 
 Applied Energistics 2's [ME Networks](../me-network.md) require
 Channels to support devices which use networked storage, or other network
@@ -38,7 +38,7 @@ already maxed out, some devices may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your
 channels go in the path you desire.
 
-## Channel Modes
+# Channel Modes
 
 AE2 10.0.0 for Minecraft 1.18 introduces new options to change how AE2 channels behave in your world.
 There's a new configuration option in the general section (`channels`) which controls this option, and a new in-game
@@ -59,7 +59,7 @@ The following table lists the available modes in both the configuration file and
 | `x4`       | All channel capacities are quadrupled (32 on normal cable, 128 on dense cable, ad-hoc networks support 32 channels)                                                                                                                       |
 | `infinite` | All channel restrictions are removed. Controllers still reduce the power consumption of grids _significantly_. Smart cables will only toggle between completely off (no channels carried) and completely on (1 or more channels carried). |
 
-## Design
+# Design
 
 Designing your layouts with channels can be tricky because of their shortest
 route nature, if any specific spot in your system has two possible routes, you
@@ -119,7 +119,7 @@ a different outcome.
 
 ![Diagram showing how to fix a previous setup with a p2p tunnel.](../../assets/channels/p2psplit.png)
 
-## Using P2P-Tunnels to adjust route lengths
+# Using P2P-Tunnels to adjust route lengths
 
 One last important note about this, you can see that the p2p tunnel is
 directly on the controller, and directly on the block of machines at the
