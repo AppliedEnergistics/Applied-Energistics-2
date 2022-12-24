@@ -1,9 +1,6 @@
 ---
 categories:
   - ME Network/Powered Machines
-item_ids:
-  - ae2:charger
-  - ae2:crank
 related:
   - Supported Tools
 navigation:
