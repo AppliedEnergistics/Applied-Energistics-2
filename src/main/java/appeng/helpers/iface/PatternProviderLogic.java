@@ -69,6 +69,7 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.settings.TickRates;
 import appeng.helpers.ICustomNameObject;
+import appeng.helpers.InterfaceLogicHost;
 import appeng.me.helpers.MachineSource;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
@@ -388,12 +389,14 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private Set<Direction> getActiveSides() {
         var sides = host.getTargets();
 
-        // Skip sides with grid connections to other pattern providers
+        // Skip sides with grid connections to other pattern providers and to interfaces connected to the same network
         var node = mainNode.getNode();
         if (node != null) {
             for (var entry : node.getInWorldConnections().entrySet()) {
                 var otherNode = entry.getValue().getOtherSide(node);
-                if (otherNode.getOwner() instanceof PatternProviderLogicHost) {
+                if (otherNode.getOwner() instanceof PatternProviderLogicHost
+                        || (otherNode.getOwner() instanceof InterfaceLogicHost
+                                && otherNode.getGrid().equals(mainNode.getGrid()))) {
                     sides.remove(entry.getKey());
                 }
             }
