@@ -99,6 +99,9 @@ dependencies {
     //Code chicken lib, GTCE dependency
     deobfCompile "curse.maven:CCL-242818:2779848"
 
+    compileOnly "curse.maven:recipe-stages-280554:3405072"
+    compileOnly "curse.maven:item-stages-280316:2696769"
+    compileOnly "curse.maven:game-stages-268655:2951844"
     compileOnly "net.darkhax.tesla:Tesla-1.12.2:${tesla_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
     compileOnly "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}:api"

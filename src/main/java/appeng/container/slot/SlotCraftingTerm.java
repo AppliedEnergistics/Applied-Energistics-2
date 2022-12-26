@@ -40,6 +40,11 @@ import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperInvItemHandler;
 import appeng.util.item.AEItemStack;
+import com.blamejared.recipestages.RecipeStages;
+import com.blamejared.recipestages.recipes.RecipeStage;
+import net.darkhax.gamestages.GameStageHelper;
+import net.darkhax.itemstages.ItemStages;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -49,8 +54,10 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -88,6 +95,23 @@ public class SlotCraftingTerm extends AppEngCraftingSlot {
     @Override
     public ItemStack onTake(final EntityPlayer p, final ItemStack is) {
         return is;
+    }
+
+    // Don't render the item client-side if the item stage for it is not unlocked yet
+    @Override
+    public ItemStack getStack() {
+        if (Platform.isClient() && Loader.isModLoaded("itemstages")) {
+            final ItemStack item = super.getStack();
+            final String itemsStage = ItemStages.getStage(item);
+            final String enchantStage = ItemStages.getEnchantStage(item);
+            final EntityPlayer player = Minecraft.getMinecraft().player;
+
+            if ((itemsStage != null && !GameStageHelper.hasStage(player, itemsStage))
+                    || (enchantStage != null && !GameStageHelper.hasStage(player, enchantStage)))
+                return ItemStack.EMPTY;
+        }
+
+        return super.getStack();
     }
 
     public void doClick(final InventoryAction action, final EntityPlayer who) {
@@ -144,17 +168,39 @@ public class SlotCraftingTerm extends AppEngCraftingSlot {
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
-    protected IRecipe findRecipe(InventoryCrafting ic, World world) {
+    protected IRecipe findRecipe(InventoryCrafting ic, World world, EntityPlayer player) {
         if (this.container instanceof ContainerCraftingTerm) {
             final ContainerCraftingTerm containerTerminal = (ContainerCraftingTerm) this.container;
             final IRecipe recipe = containerTerminal.getCurrentRecipe();
 
             if (recipe != null && recipe.matches(ic, world)) {
-                return containerTerminal.getCurrentRecipe();
+                return handleRecipe(ic, containerTerminal.getCurrentRecipe(), player);
             }
         }
 
-        return CraftingManager.findMatchingRecipe(ic, world);
+        return handleRecipe(ic, CraftingManager.findMatchingRecipe(ic, world), player);
+    }
+
+    // Returns null in case this recipe is not yet unlocked
+    private IRecipe handleRecipe(InventoryCrafting ic, IRecipe recipe, EntityPlayer player) {
+        if (Loader.isModLoaded("recipestages")) {
+            if (recipe instanceof RecipeStage) {
+                final RecipeStage staged = (RecipeStage) recipe;
+                if (!staged.isGoodForCrafting(ic))
+                    return null;
+            }
+        }
+
+        if (Loader.isModLoaded("itemstages")) {
+            final String itemsStage = ItemStages.getStage(recipe.getRecipeOutput());
+            final String enchantStage = ItemStages.getEnchantStage(recipe.getRecipeOutput());
+
+            if ((itemsStage != null && !GameStageHelper.hasStage(player, itemsStage))
+                || (enchantStage != null && !GameStageHelper.hasStage(player, enchantStage)))
+                return null;
+        }
+
+        return recipe;
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full container/gui refactoring.
@@ -192,7 +238,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot {
                     ic.setInventorySlotContents(x, this.getPattern().getStackInSlot(x));
                 }
 
-                final IRecipe r = this.findRecipe(ic, p.world);
+                final IRecipe r = this.findRecipe(ic, p.world, p);
 
                 if (r == null) {
                     final Item target = request.getItem();
