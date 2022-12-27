@@ -26,20 +26,31 @@ Do not break any flawless budding certus, as even with silk touch they will degr
 Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscriber presses.
 
 # Growing Quartz
-Certus quartz buds will sprout from budding certus blocks, similar to amethyst. If you break a bud that is not finished growing, it will drop one certus quartz dust, unchanged by fortune. If you break a fully grown cluster, it will drop four certus quartz crystals, and fortune will increase this number.
 
-Every time a bud grows by another stage, the budding block has a chance to degrade by one tier, eventually turning into a plain certus quartz block. They can be repaired (and new budding blocks created) by throwing the budding block (or a certus quartz block) in water with one or more charged certus.
+![A Flawless Budding Certus with a small certus bud on top](assets/assemblies/budding_certus_1.png)
 
-By themselves, certus quartz buds grow very slowly. Luckily the <ItemLink id="quartz_growth_accelerator" /> massively accelerates this process when placed adjacent to the budding block. You should build a few of these as your first priority.
+Certus quartz buds will sprout from budding certus blocks, similar to amethyst. If you break a bud that is not finished
+growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by fortune. If you break a fully grown cluster, it will drop four
+<ItemLink id="certus_quartz_crystal" />s, and fortune will increase this number.
 
-If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />, you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.
+Every time a bud grows by another stage, the budding block has a chance to degrade by one tier, eventually turning into
+a plain certus quartz block. They can be repaired (and new budding blocks created) by throwing the budding block (or a
+certus quartz block) in water with one or more <ItemLink id="charged_certus_quartz_crystal" />.
 
-Harvesting the certus automatically is "left as an exercise for the reader".
+By themselves, certus quartz buds grow very slowly. Luckily the <ItemLink id="quartz_growth_accelerator" /> massively
+accelerates this process when placed adjacent to the budding block. You should build a few of these as your first priority.
+
+![A Flawless Budding Certus with a growth accelerator](assets/assemblies/budding_certus_2.png)
+
+If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />,
+you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.
+
+Harvesting the certus automatically is "left as an exercise for the reader". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)
 
 # A Quick Aside on Fluix
 Another material you will need is Fluix, which you have already encountered in making growth accelerators. It is made by throwing charged certus, redstone, and nether quartz in water. Doing this automatically is "left as an exercise for the reader."
 
-The <ItemLink id="charger" /> is required to produce charged quartz, if you haven't made one already.
+The <ItemLink id="charger" /> is required to produce <ItemLink id="charged_certus_quartz_crystal" />., if you haven't made one already.
 
 # Inscribing Some Processors
 In your looting of a meteorite, you will have found four "presses" from breaking the Mysterious Cube. These are used in the <ItemLink id="inscriber" /> to make the three types of processor.
