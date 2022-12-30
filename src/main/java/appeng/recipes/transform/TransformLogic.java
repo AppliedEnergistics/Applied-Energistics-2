@@ -62,9 +62,6 @@ public final class TransformLogic {
                     continue;
             }
 
-            missingIngredients.remove(0);
-            selectedEntities.add(entity);
-
             for (var itemEntity : itemEntities) {
                 final ItemStack other = itemEntity.getItem();
                 if (!other.isEmpty()) {
