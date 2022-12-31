@@ -65,6 +65,15 @@ Multiple pattern providers with identical patterns are supported and work in par
 for example, 8 cobblestone = 8 stone instead of 1 cobblestone = 1 stone, and the pattern provider will insert 8 cobblestone into
 your smelting setup every operation instead of one at a time.
 
+# The Most General Form of "Pattern"
+
+There is actually an even more "general" form of "pattern" than a processing pattern. A level emitter with a crafting card can be set
+to emit a redstone signal in order to craft something. This "pattern" does not define, or even care about ingredients.
+All it says is "If you emit redstone from this level emitter, the ME system will recieve this item at some point in the
+near or distant future". This is usually used to activate and deactivate infinite farms which require no input ingredients,
+or to activate a system that handles recursive recipes (which standard autocafting cannot understand) like, for example, "1 cobblestone = 2 cobblestone"
+if you have a machine that duplicates cobblestone.
+
 # The Crafting CPU
 
 ![Crafting CPUs](../assets/assemblies/crafting_cpus.png)
