@@ -9,7 +9,7 @@ navigation:
 
 ![A Flawless Budding Certus with a small certus bud on top](../assets/assemblies/budding_certus_1.png)
 
-Certus quartz buds will sprout from budding certus blocks, similar to amethyst. If you break a bud that is not finished 
+Certus quartz buds will sprout from [budding certus blocks](../items-blocks-machines/budding_certus.md), similar to amethyst. If you break a bud that is not finished 
 growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by fortune. If you break a fully grown cluster, it will drop four
 <ItemLink id="certus_quartz_crystal" />s, and fortune will increase this number.
 

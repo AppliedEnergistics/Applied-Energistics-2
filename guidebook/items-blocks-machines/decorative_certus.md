@@ -2,7 +2,7 @@
 navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Decorative Certus Blocks
-  icon: quartz_stairs
+  icon: quartz_pillar
 item_ids:
 - ae2:cut_quartz_block
 - ae2:smooth_quartz_block
