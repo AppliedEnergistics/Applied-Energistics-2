@@ -14,10 +14,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBlockContainer;
+import appeng.client.guidebook.document.block.recipes.LytChargerRecipe;
 import appeng.client.guidebook.document.block.recipes.LytCraftingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytInscriberRecipe;
 import appeng.client.guidebook.document.block.recipes.LytSmeltingRecipe;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.util.Platform;
 
@@ -29,7 +31,8 @@ public class RecipeForCompiler extends BlockTagCompiler {
     private final List<RecipeTypeMapping<?, ?>> mappings = List.of(
             new RecipeTypeMapping<>(RecipeType.CRAFTING, LytCraftingRecipe::new),
             new RecipeTypeMapping<>(RecipeType.SMELTING, LytSmeltingRecipe::new),
-            new RecipeTypeMapping<>(InscriberRecipe.TYPE, LytInscriberRecipe::new));
+            new RecipeTypeMapping<>(InscriberRecipe.TYPE, LytInscriberRecipe::new),
+            new RecipeTypeMapping<>(ChargerRecipe.TYPE, LytChargerRecipe::new));
 
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
