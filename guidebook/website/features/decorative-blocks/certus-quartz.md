@@ -2,10 +2,6 @@
 navigation:
   parent: website/index.md
   title: Certus Quartz
-item_ids:
-  - ae2:quartz_block
-  - ae2:quartz_pillar
-  - ae2:chiseled_quartz_block
 ---
 
 ![A picture of Certus Quartz Block](../../assets/large/certus_quartz_block.png)
