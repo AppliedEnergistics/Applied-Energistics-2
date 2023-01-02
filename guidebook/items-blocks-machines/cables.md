@@ -89,8 +89,6 @@ item_ids:
 - ae2:red_smart_dense_cable
 - ae2:black_smart_dense_cable
 - ae2:fluix_smart_dense_cable
-- ae2:toggle_bus
-- ae2:inverted_toggle_bus
 ---
 # Cables
 
@@ -179,22 +177,3 @@ id="fluix_glass_cable"/>.
 <RecipeFor id="fluix_smart_cable" />
 <RecipeFor id="fluix_smart_dense_cable" />
 <RecipeFor id="blue_smart_cable" />
-
-
-# Toggle Bus
-
-A bus which functions similarly to <ItemLink
-id="fluix_glass_cable"/> or other cables, but it
-allows its connection state to be toggled via redstone. This allows you to cut
-off a section of a [ME Network](../me-network.md).
-
-When redstone signal supplied the part enables the connection, <ItemLink
-id="inverted_toggle_bus"/> provides the reverse
-behavior by disabling the connection instead.
-
-<RecipeFor id="toggle_bus" />
-
-There is also an inverted version of the toggle bus that disables the connection
-when a redstone signal is supplied.
-
-<RecipeFor id="inverted_toggle_bus" />
