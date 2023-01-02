@@ -21,7 +21,7 @@ public final class MdxAttrs {
     }
 
     @Nullable
-    public static Pair<ResourceLocation, Item> getRequiredItemAndId(PageCompiler compiler, LytErrorSink errorSink,
+    public static ResourceLocation getRequiredId(PageCompiler compiler, LytErrorSink errorSink,
             MdxJsxElementFields el,
             String attribute) {
         var id = el.getAttributeString(attribute, null);
@@ -34,11 +34,18 @@ public final class MdxAttrs {
 
         ResourceLocation itemId;
         try {
-            itemId = compiler.resolveId(id);
+            return compiler.resolveId(id);
         } catch (ResourceLocationException e) {
-            errorSink.appendError(compiler, "Malformed item id " + id + ": " + e.getMessage(), el);
+            errorSink.appendError(compiler, "Malformed id " + id + ": " + e.getMessage(), el);
             return null;
         }
+    }
+
+    @Nullable
+    public static Pair<ResourceLocation, Item> getRequiredItemAndId(PageCompiler compiler, LytErrorSink errorSink,
+            MdxJsxElementFields el,
+            String attribute) {
+        var itemId = getRequiredId(compiler, errorSink, el, attribute);
 
         var resultItem = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
         if (resultItem == null) {
