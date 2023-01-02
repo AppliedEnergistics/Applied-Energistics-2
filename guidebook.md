@@ -100,6 +100,8 @@ primary guidebook page for that item, use the  `<ItemLink id="item_id" />` tag. 
 
 To show the recipes used to create a certain item, use the `<RecipeFor id="item_id" />` tag.
 
+To show a specific recipe, use the `<Recipe id="recipe/id" />` tag.
+
 #### Item Grids
 
 To show-case multiple related items in a grid-layout, use the following markup:

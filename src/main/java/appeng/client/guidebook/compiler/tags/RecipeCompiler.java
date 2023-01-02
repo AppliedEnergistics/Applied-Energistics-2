@@ -26,7 +26,7 @@ import appeng.util.Platform;
 /**
  * Shows a Recipe-Book-Like representation of the recipe needed to craft a given item.
  */
-public class RecipeForCompiler extends BlockTagCompiler {
+public class RecipeCompiler extends BlockTagCompiler {
 
     private final List<RecipeTypeMapping<?, ?>> mappings = List.of(
             new RecipeTypeMapping<>(RecipeType.CRAFTING, LytCraftingRecipe::new),
@@ -36,31 +36,54 @@ public class RecipeForCompiler extends BlockTagCompiler {
 
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
-        var itemAndId = MdxAttrs.getRequiredItemAndId(compiler, parent, el, "id");
-        if (itemAndId == null) {
-            return;
-        }
-
-        var id = itemAndId.getLeft();
-        var item = itemAndId.getRight();
-
         // Find the recipe
         var recipeManager = Platform.getClientRecipeManager();
         if (recipeManager == null) {
-            parent.appendError(compiler, "Cannot show recipe for " + id + " while not in-game", el);
+            parent.appendError(compiler, "Cannot show recipe while not in-game", el);
             return;
         }
 
-        for (var mapping : mappings) {
-            var block = mapping.tryCreate(recipeManager, item);
-            if (block != null) {
-                parent.append(block);
+        if ("RecipeFor".equals(el.name())) {
+            var itemAndId = MdxAttrs.getRequiredItemAndId(compiler, parent, el, "id");
+            if (itemAndId == null) {
                 return;
             }
-        }
 
-        // TODO This *can* be legit if there's no recipe due to datapacks
-        parent.appendError(compiler, "Couldn't find recipe for " + id, el);
+            var id = itemAndId.getLeft();
+            var item = itemAndId.getRight();
+
+            for (var mapping : mappings) {
+                var block = mapping.tryCreate(recipeManager, item);
+                if (block != null) {
+                    parent.append(block);
+                    return;
+                }
+            }
+
+            // TODO This *can* be legit if there's no recipe due to datapacks
+            parent.appendError(compiler, "Couldn't find recipe for " + id, el);
+        } else {
+            var recipeId = MdxAttrs.getRequiredId(compiler, parent, el, "id");
+            if (recipeId == null) {
+                return;
+            }
+
+            var recipe = recipeManager.byKey(recipeId).orElse(null);
+            if (recipe == null) {
+                parent.appendError(compiler, "Couldn't find recipe " + recipeId, el);
+                return;
+            }
+
+            for (var mapping : mappings) {
+                var block = mapping.tryCreate(recipe);
+                if (block != null) {
+                    parent.append(block);
+                    return;
+                }
+            }
+
+            parent.appendError(compiler, "Couldn't find a handler for recipe " + recipeId, el);
+        }
     }
 
     /**
@@ -75,6 +98,16 @@ public class RecipeForCompiler extends BlockTagCompiler {
                 if (recipe.getResultItem().getItem() == resultItem) {
                     return factory.apply(recipe);
                 }
+            }
+
+            return null;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Nullable
+        LytBlock tryCreate(Recipe<?> recipe) {
+            if (recipeType == recipe.getType()) {
+                return factory.apply((T) recipe);
             }
 
             return null;
