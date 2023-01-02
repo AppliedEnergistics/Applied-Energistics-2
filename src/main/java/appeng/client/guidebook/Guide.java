@@ -379,7 +379,10 @@ public final class Guide implements PageCollection {
 
             var startupPageProperty = String.format(Locale.ROOT, "guideDev.%s.startupPage", folder);
             try {
-                this.startupPage = new ResourceLocation(System.getProperty(startupPageProperty));
+                var startupPageIdText = System.getProperty(startupPageProperty);
+                if (startupPageIdText != null) {
+                    this.startupPage = new ResourceLocation(startupPageIdText);
+                }
             } catch (Exception e) {
                 LOGGER.error("Specified invalid page id in system property {}", startupPageProperty);
             }
