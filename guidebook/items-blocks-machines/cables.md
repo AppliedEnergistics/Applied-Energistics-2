@@ -98,7 +98,7 @@ While ME networks are also created by adjacent ME-capable machines, cables are t
 extending an ME network over larger areas.
 
 Differently colored cables can be used to ensure adjacent cables do not connected to each other,
-allowing [channels](channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
+allowing [channels](../ae2-mechanics/channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
 so you don't have to have all your terminals be purple. Fluix cables connect to every other color.
 
 # An Important Note
@@ -141,7 +141,7 @@ id="fluix_covered_cable"/> can be crafted with
 redstone and glowstone to make <ItemLink
 id="fluix_covered_dense_cable"/>.
 
-<RecipeFor id="fluix_covered_cable" />
+<Recipe id="network/cables/covered_fluix" />
 <RecipeFor id="blue_covered_cable" />
 
 # Dense Cable
@@ -157,7 +157,7 @@ panels. Shows load similarly to <ItemLink
 id="fluix_smart_cable"/>, with each line lit
 representing four channels in use.
 
-<RecipeFor id="fluix_covered_dense_cable" />
+<Recipe id="network/cables/dense_covered_fluix" />
 <RecipeFor id="blue_covered_dense_cable" />
 
 # Smart Cable
@@ -174,6 +174,6 @@ cable, the next four show as white lines.
 These can also be colored in the same manner as <ItemLink
 id="fluix_glass_cable"/>.
 
-<RecipeFor id="fluix_smart_cable" />
-<RecipeFor id="fluix_smart_dense_cable" />
+<Recipe id="network/cables/smart_fluix" />
+<Recipe id="network/cables/dense_smart_fluix" />
 <RecipeFor id="blue_smart_cable" />
