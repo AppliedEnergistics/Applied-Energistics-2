@@ -81,6 +81,10 @@ public class TransformCircumstance {
         return false;
     }
 
+    public boolean isFluidTag(TagKey<Fluid> tag) {
+        return false;
+    }
+
     public boolean isFluid(FluidState state) {
         return false;
     }
@@ -132,6 +136,11 @@ public class TransformCircumstance {
         @Override
         public boolean isFluid(Fluid fluid) {
             return fluid.is(fluidTag);
+        }
+
+        @Override
+        public boolean isFluidTag(TagKey<Fluid> tag) {
+            return fluidTag.equals(tag);
         }
 
         @Override
