@@ -108,11 +108,11 @@ public class AE2DataGenerators {
         pack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries, existingFileHelper));
 
         // Models
-        pack.addProvider(packOutput -> new BlockModelProvider(generator, existingFileHelper));
-        pack.addProvider(packOutput -> new DecorationModelProvider(generator, existingFileHelper));
-        pack.addProvider(packOutput -> new ItemModelProvider(generator, existingFileHelper));
-        pack.addProvider(packOutput -> new CableModelProvider(generator, existingFileHelper));
-        pack.addProvider(packOutput -> new PartModelProvider(generator, existingFileHelper));
+        pack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new DecorationModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new ItemModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new CableModelProvider(packOutput, existingFileHelper));
+        pack.addProvider(packOutput -> new PartModelProvider(packOutput, existingFileHelper));
 
         // Misc
         pack.addProvider(packOutput -> new AdvancementGenerator(packOutput, localization));
