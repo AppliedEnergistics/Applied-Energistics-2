@@ -5,6 +5,7 @@ navigation:
   icon: pattern_provider
 item_ids:
 - ae2:pattern_provider
+- ae2:cable_pattern_provider
 ---
 # The Pattern Provider
 
