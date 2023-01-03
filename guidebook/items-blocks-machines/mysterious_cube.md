@@ -5,6 +5,7 @@ navigation:
   icon: mysterious_cube
 item_ids:
 - ae2:mysterious_cube
+- ae2:not_so_mysterious_cube
 ---
 # The Mysterious Cube
 
