@@ -38,6 +38,10 @@ already maxed out, some devices may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your
 channels go in the path you desire.
 
+# A Visual Example
+
+![Channels](../assets/assemblies/channels.png)
+
 # Channel Modes
 
 AE2 10.0.0 for Minecraft 1.18 introduces new options to change how AE2 channels behave in your world.
