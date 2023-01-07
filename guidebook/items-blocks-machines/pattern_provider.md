@@ -16,6 +16,14 @@ their patterns to adjacent inventories, and items can be inserted into them in o
 a channel can be saved by piping the output of a machine back into a nearby pattern provider (often the one that pushed the ingredients)
 instead of using an <ItemLink id="import_bus" /> to pull the output of the machine into the network.
 
+Of note, since they push the ingredients directly from [network storage](../ae2-mechanics/import-export-storage.md), they
+never actually contain the ingredients in their inventory, so you cannot pipe out from them. You have to have the provider push
+to another inventory (like a barrel) then pipe from that.
+
+Pattern providers have a special interaction with interfaces on [subnets](../ae2-mechanics/subnetworks.md): if the interface is unmodified (nothing in the request slots)
+the provider will skip the interface entirely and push directly to that subnet's [storage](../ae2-mechanics/import-export-storage.md),
+skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
+
 # Variants
 
 Pattern Providers come in 3 different variants: normal, directional, and flat. This affects which specific sides they push
@@ -34,9 +42,15 @@ providing a network connection on their face.
 
 Pattern providers can be swapped between normal and flat in a crafting grid.
 
-Pattern providers have a variety of modes. Blocking mode stops the provider from pushing a new batch of ingredients if there are already
-ingredients in the machine. There are also options to lock the provider under various redstone conditions, or until the result of the
+# Settings
+
+Pattern providers have a variety of modes:
+
+- **Blocking Mode** stops the provider from pushing a new batch of ingredients if there are already
+ingredients in the machine.
+- **Lock Crafting** can lock the provider under various redstone conditions, or until the result of the
 previous craft is inserted into that specific pattern provider.
+- The provider can be shown or hidden on <ItemLink id="pattern_access_terminal" />s.
 
 # Recipe
 
