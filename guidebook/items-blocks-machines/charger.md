@@ -23,6 +23,8 @@ from <ItemLink id="certus_quartz_crystal"/>, and <ItemLink id="meteorite_compass
 
 To power it manually, place a <ItemLink id="crank"/> on the top or bottom and right-click it until the item is charged.
 
+It also acts as the workstation for the AE2 villager.
+
 # Simple Automation
 
 As an example, the rotateability lets you semi-automate chargers like so:
