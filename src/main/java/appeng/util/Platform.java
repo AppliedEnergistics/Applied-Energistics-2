@@ -1416,7 +1416,7 @@ public class Platform {
 
     //consider methods below moving to a compability class
     public static boolean isGTDamageableItem(Item item) {
-        return ((GTLoaded) && item.getClass().isInstance(ToolClass.getGTToolClass()));
+        return ((GTLoaded) && ToolClass.getGTToolClass().isAssignableFrom(item.getClass()));
     }
 
     public static MetaTileEntity getMetaTileEntity(IBlockAccess world, BlockPos pos) {

@@ -9,10 +9,14 @@ import java.lang.reflect.Method;
 
 public class ToolClass {
     private static Class<?> GTToolClass;
+    private static Method getMaxItemDamage = null;
+    private static Method getItemDamage = null;
 
     static {
         try {
             GTToolClass = Class.forName("gregtech.api.items.IToolItem", false, Launch.classLoader);
+            getItemDamage = ReflectionHelper.findMethod(GTToolClass, "getItemDamage", null, ItemStack.class);
+            getMaxItemDamage = ReflectionHelper.findMethod(GTToolClass, "getMaxItemDamage", null, ItemStack.class);
         } catch (ClassNotFoundException ignored) {
             try {
                 GTToolClass = Class.forName("gregtech.api.items.toolitem.IGTTool", false, Launch.classLoader);
@@ -23,10 +27,11 @@ public class ToolClass {
     }
 
     private static final Enum<Interfaces> GTToolInterface = getGTToolInterface();
-    private static final Method getMaxItemDamage = ReflectionHelper.findMethod(GTToolClass, "getMaxItemDamage", null, ItemStack.class);
-    private static final Method getItemDamage = ReflectionHelper.findMethod(GTToolClass, "getItemDamage", null, ItemStack.class);
 
     public static Class<?> getGTToolClass() {
+        if (GTToolClass == null) {
+            System.out.printf("TToolClass == null");
+        }
         return GTToolClass;
     }
 
@@ -58,7 +63,7 @@ public class ToolClass {
                 throw new RuntimeException(e);
             }
         } else {
-            return itemStack.getMaxDamage();
+            return itemStack.getItemDamage();
         }
     }
 
