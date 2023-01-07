@@ -1,7 +1,9 @@
 package appeng.api.stacks;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
+import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -23,22 +25,36 @@ import appeng.core.AELog;
 import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
-    private final Item item;
-    @Nullable
-    private final CompoundTag tag;
-    private final int hashCode;
-    private final int cachedDamage;
+    private static final WeakHashMap<SharedItemKey, WeakReference<AEItemKey>> interningMap = new WeakHashMap<>();
 
-    private AEItemKey(Item item, @Nullable CompoundTag tag) {
-        super(Platform.getItemDisplayName(item, tag));
-        this.item = item;
-        this.tag = tag;
-        this.hashCode = Objects.hash(item, tag);
-        if (this.tag != null && tag.get("Damage") instanceof NumericTag numericTag) {
-            this.cachedDamage = numericTag.getAsInt();
-        } else {
-            this.cachedDamage = 0;
+    private static synchronized AEItemKey getInterned(Item item, @Nullable CompoundTag originalTag) {
+        var searchKey = new SharedItemKey(item, originalTag);
+        var weak = interningMap.get(searchKey);
+        AEItemKey ret = null;
+
+        if (weak != null) {
+            ret = weak.get();
         }
+
+        if (ret == null) {
+            // Always copy the tag since we're not sure we can take ownership of it.
+            var sharedKey = new SharedItemKey(item, originalTag == null ? null : originalTag.copy());
+            ret = new AEItemKey(sharedKey);
+            interningMap.put(sharedKey, new WeakReference<>(ret));
+        }
+
+        return ret;
+    }
+
+    private final SharedItemKey internalKey;
+
+    /**
+     * Never call this directly, always use {@link #getInterned(Item, CompoundTag)}.
+     */
+    private AEItemKey(SharedItemKey internalKey) {
+        super(Platform.getItemDisplayName(internalKey.item, internalKey.tag));
+
+        this.internalKey = internalKey;
     }
 
     @Nullable
@@ -77,23 +93,17 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public AEItemKey dropSecondary() {
-        return of(item, null);
+        return of(internalKey.item, null);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        AEItemKey aeItemKey = (AEItemKey) o;
-        // The hash code comparison is a fast-fail for two objects with different NBT or items
-        return hashCode == aeItemKey.hashCode && item == aeItemKey.item && Objects.equals(tag, aeItemKey.tag);
+        return this == o; // Safe since we're interning all AEItemKeys.
     }
 
     @Override
     public int hashCode() {
-        return hashCode;
+        return internalKey.hashCode;
     }
 
     public static AEItemKey of(ItemLike item) {
@@ -101,12 +111,11 @@ public final class AEItemKey extends AEKey {
     }
 
     public static AEItemKey of(ItemLike item, @Nullable CompoundTag tag) {
-        // Do a defensive copy of the tag if we're not sure that we can take ownership
-        return new AEItemKey(item.asItem(), tag != null ? tag.copy() : null);
+        return getInterned(item.asItem(), tag);
     }
 
     public boolean matches(ItemStack stack) {
-        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), tag);
+        return !stack.isEmpty() && stack.is(internalKey.item) && Objects.equals(stack.getTag(), internalKey.tag);
     }
 
     public ItemStack toStack() {
@@ -118,14 +127,14 @@ public final class AEItemKey extends AEKey {
             return ItemStack.EMPTY;
         }
 
-        var result = new ItemStack(item);
+        var result = new ItemStack(internalKey.item);
         result.setTag(copyTag());
         result.setCount(count);
         return result;
     }
 
     public Item getItem() {
-        return item;
+        return internalKey.item;
     }
 
     @Nullable
@@ -144,10 +153,10 @@ public final class AEItemKey extends AEKey {
     @Override
     public CompoundTag toTag() {
         CompoundTag result = new CompoundTag();
-        result.putString("id", BuiltInRegistries.ITEM.getKey(item).toString());
+        result.putString("id", BuiltInRegistries.ITEM.getKey(internalKey.item).toString());
 
-        if (tag != null) {
-            result.put("tag", tag.copy());
+        if (internalKey.tag != null) {
+            result.put("tag", internalKey.tag.copy());
         }
 
         return result;
@@ -155,7 +164,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public Object getPrimaryKey() {
-        return item;
+        return internalKey.item;
     }
 
     /**
@@ -163,7 +172,7 @@ public final class AEItemKey extends AEKey {
      */
     @Override
     public int getFuzzySearchValue() {
-        return this.cachedDamage;
+        return internalKey.cachedDamage;
     }
 
     /**
@@ -171,16 +180,16 @@ public final class AEItemKey extends AEKey {
      */
     @Override
     public int getFuzzySearchMaxValue() {
-        return item.getMaxDamage();
+        return internalKey.item.getMaxDamage();
     }
 
     @Override
     public ResourceLocation getId() {
-        return BuiltInRegistries.ITEM.getKey(item);
+        return BuiltInRegistries.ITEM.getKey(internalKey.item);
     }
 
     public ItemVariant toVariant() {
-        return ItemVariant.of(item, tag);
+        return ItemVariant.of(internalKey.item, internalKey.tag);
     }
 
     /**
@@ -188,16 +197,16 @@ public final class AEItemKey extends AEKey {
      */
     @Nullable
     public CompoundTag getTag() {
-        return tag;
+        return internalKey.tag;
     }
 
     @Nullable
     public CompoundTag copyTag() {
-        return tag != null ? tag.copy() : null;
+        return internalKey.tag != null ? internalKey.tag.copy() : null;
     }
 
     public boolean hasTag() {
-        return tag != null;
+        return internalKey.tag != null;
     }
 
     @Override
@@ -209,11 +218,11 @@ public final class AEItemKey extends AEKey {
     public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         while (amount > 0) {
             if (drops.size() > 1000) {
-                AELog.warn("Tried dropping an excessive amount of items, ignoring %s %ss", amount, item);
+                AELog.warn("Tried dropping an excessive amount of items, ignoring %s %ss", amount, internalKey.item);
                 break;
             }
 
-            var taken = Math.min(amount, item.getMaxStackSize());
+            var taken = Math.min(amount, internalKey.item.getMaxStackSize());
             amount -= taken;
             drops.add(toStack((int) taken));
         }
@@ -223,22 +232,22 @@ public final class AEItemKey extends AEKey {
     @Override
     public boolean isTagged(TagKey<?> tag) {
         // This will just return false for incorrectly cast tags
-        return item.builtInRegistryHolder().is((TagKey<Item>) tag);
+        return internalKey.item.builtInRegistryHolder().is((TagKey<Item>) tag);
     }
 
     /**
      * @return True if the item represented by this key is damaged.
      */
     public boolean isDamaged() {
-        return tag != null && tag.getInt(ItemStack.TAG_DAMAGE) > 0;
+        return internalKey.tag != null && internalKey.tag.getInt(ItemStack.TAG_DAMAGE) > 0;
     }
 
     @Override
     public void writeToPacket(FriendlyByteBuf data) {
-        data.writeVarInt(Item.getId(item));
+        data.writeVarInt(Item.getId(internalKey.item));
         CompoundTag compoundTag = null;
-        if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
-            compoundTag = tag;
+        if (internalKey.item.canBeDepleted() || internalKey.item.shouldOverrideMultiplayerNbt()) {
+            compoundTag = internalKey.tag;
         }
         data.writeNbt(compoundTag);
     }
@@ -247,14 +256,48 @@ public final class AEItemKey extends AEKey {
         int i = data.readVarInt();
         var item = Item.byId(i);
         var tag = data.readNbt();
-        return new AEItemKey(item, tag);
+        return getInterned(item, tag);
     }
 
     @Override
     public String toString() {
-        var id = BuiltInRegistries.ITEM.getKey(item);
+        var id = BuiltInRegistries.ITEM.getKey(internalKey.item);
         String idString = id != BuiltInRegistries.ITEM.getDefaultKey() ? id.toString()
-                : item.getClass().getName() + "(unregistered)";
-        return tag == null ? idString : idString + " (+tag)";
+                : internalKey.item.getClass().getName() + "(unregistered)";
+        return internalKey.tag == null ? idString : idString + " (+tag)";
+    }
+
+    private static final class SharedItemKey {
+        private final Item item;
+        @Nullable
+        private final CompoundTag tag;
+        private final int hashCode;
+        private final int cachedDamage;
+
+        SharedItemKey(Item item, @Nullable CompoundTag tag) {
+            this.item = item;
+            this.tag = tag;
+            this.hashCode = Objects.hash(item, tag);
+            if (this.tag != null && tag.get("Damage") instanceof NumericTag numericTag) {
+                this.cachedDamage = numericTag.getAsInt();
+            } else {
+                this.cachedDamage = 0;
+            }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            SharedItemKey aeItemKey = (SharedItemKey) o;
+            return item == aeItemKey.item && Objects.equals(tag, aeItemKey.tag);
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
     }
 }
