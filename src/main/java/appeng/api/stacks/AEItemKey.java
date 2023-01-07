@@ -1,7 +1,9 @@
 package appeng.api.stacks;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
+import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -24,17 +26,16 @@ import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
     private final Item item;
-    @Nullable
-    private final CompoundTag tag;
+    private final TagHolder tagHolder;
     private final int hashCode;
     private final int cachedDamage;
 
-    private AEItemKey(Item item, @Nullable CompoundTag tag) {
-        super(Platform.getItemDisplayName(item, tag));
+    private AEItemKey(Item item, TagHolder tagHolder) {
+        super(Platform.getItemDisplayName(item, tagHolder.tag));
         this.item = item;
-        this.tag = tag;
-        this.hashCode = Objects.hash(item, tag);
-        if (this.tag != null && tag.get("Damage") instanceof NumericTag numericTag) {
+        this.tagHolder = tagHolder;
+        this.hashCode = Objects.hash(item, tagHolder);
+        if (tagHolder.tag != null && tagHolder.tag.get("Damage") instanceof NumericTag numericTag) {
             this.cachedDamage = numericTag.getAsInt();
         } else {
             this.cachedDamage = 0;
@@ -87,8 +88,8 @@ public final class AEItemKey extends AEKey {
         if (o == null || getClass() != o.getClass())
             return false;
         AEItemKey aeItemKey = (AEItemKey) o;
-        // The hash code comparison is a fast-fail for two objects with different NBT or items
-        return hashCode == aeItemKey.hashCode && item == aeItemKey.item && Objects.equals(tag, aeItemKey.tag);
+        // TagHolder instances are interned, compare by reference.
+        return item == aeItemKey.item && tagHolder == aeItemKey.tagHolder;
     }
 
     @Override
@@ -101,12 +102,12 @@ public final class AEItemKey extends AEKey {
     }
 
     public static AEItemKey of(ItemLike item, @Nullable CompoundTag tag) {
-        // Do a defensive copy of the tag if we're not sure that we can take ownership
-        return new AEItemKey(item.asItem(), tag != null ? tag.copy() : null);
+        var tagHolder = getTagHolder(tag);
+        return new AEItemKey(item.asItem(), tagHolder);
     }
 
     public boolean matches(ItemStack stack) {
-        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), tag);
+        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), tagHolder.tag);
     }
 
     public ItemStack toStack() {
@@ -146,8 +147,8 @@ public final class AEItemKey extends AEKey {
         CompoundTag result = new CompoundTag();
         result.putString("id", BuiltInRegistries.ITEM.getKey(item).toString());
 
-        if (tag != null) {
-            result.put("tag", tag.copy());
+        if (tagHolder.tag != null) {
+            result.put("tag", tagHolder.tag.copy());
         }
 
         return result;
@@ -180,7 +181,7 @@ public final class AEItemKey extends AEKey {
     }
 
     public ItemVariant toVariant() {
-        return ItemVariant.of(item, tag);
+        return ItemVariant.of(item, tagHolder.tag);
     }
 
     /**
@@ -188,16 +189,16 @@ public final class AEItemKey extends AEKey {
      */
     @Nullable
     public CompoundTag getTag() {
-        return tag;
+        return tagHolder.tag;
     }
 
     @Nullable
     public CompoundTag copyTag() {
-        return tag != null ? tag.copy() : null;
+        return tagHolder.tag != null ? tagHolder.tag.copy() : null;
     }
 
     public boolean hasTag() {
-        return tag != null;
+        return tagHolder.tag != null;
     }
 
     @Override
@@ -230,7 +231,7 @@ public final class AEItemKey extends AEKey {
      * @return True if the item represented by this key is damaged.
      */
     public boolean isDamaged() {
-        return tag != null && tag.getInt(ItemStack.TAG_DAMAGE) > 0;
+        return tagHolder.tag != null && tagHolder.tag.getInt(ItemStack.TAG_DAMAGE) > 0;
     }
 
     @Override
@@ -238,7 +239,7 @@ public final class AEItemKey extends AEKey {
         data.writeVarInt(Item.getId(item));
         CompoundTag compoundTag = null;
         if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
-            compoundTag = tag;
+            compoundTag = tagHolder.tag;
         }
         data.writeNbt(compoundTag);
     }
@@ -247,7 +248,7 @@ public final class AEItemKey extends AEKey {
         int i = data.readVarInt();
         var item = Item.byId(i);
         var tag = data.readNbt();
-        return new AEItemKey(item, tag);
+        return of(item, tag);
     }
 
     @Override
@@ -255,6 +256,59 @@ public final class AEItemKey extends AEKey {
         var id = BuiltInRegistries.ITEM.getKey(item);
         String idString = id != BuiltInRegistries.ITEM.getDefaultKey() ? id.toString()
                 : item.getClass().getName() + "(unregistered)";
-        return tag == null ? idString : idString + " (+tag)";
+        return tagHolder.tag == null ? idString : idString + " (+tag)";
+    }
+
+    private static final WeakHashMap<TagHolder, WeakReference<TagHolder>> holderInterningMap = new WeakHashMap<>();
+
+    private static TagHolder getTagHolder(@Nullable CompoundTag tag) {
+        if (tag == null) {
+            return TagHolder.EMPTY;
+        }
+
+        synchronized (AEItemKey.class) {
+            var searchHolder = new TagHolder(tag);
+            var weakRef = holderInterningMap.get(searchHolder);
+            TagHolder ret = null;
+
+            if (weakRef != null) {
+                ret = weakRef.get();
+            }
+
+            if (ret == null) {
+                // Copy the tag now since we are not sure that we can take ownership of it.
+                ret = new TagHolder(tag.copy());
+                holderInterningMap.put(ret, new WeakReference<>(ret));
+            }
+
+            return ret;
+        }
+    }
+
+    private static final class TagHolder {
+        private static final TagHolder EMPTY = new TagHolder(null);
+
+        private final CompoundTag tag;
+        private final int hashCode;
+
+        TagHolder(CompoundTag tag) {
+            this.tag = tag;
+            this.hashCode = Objects.hash(tag);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+            TagHolder tagHolder = (TagHolder) o;
+            return Objects.equals(tag, tagHolder.tag);
+        }
+
+        @Override
+        public int hashCode() {
+            return hashCode;
+        }
     }
 }
