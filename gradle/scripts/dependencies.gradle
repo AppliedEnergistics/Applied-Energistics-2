@@ -83,7 +83,9 @@ configurations {
 dependencies {
     // deobfCompile "gregtechce:gregtech:1.12.2:1.15.1.735"
     // installable runtime dependencies
-    deobfCompile "curse.maven:gregtechceu-557242:3949406"
+    //deobfCompile "curse.maven:gregtechceu-557242:3949406"
+
+    compileOnly(files("etc/gregtech-1.12.2-2.4.4-beta.jar"))
 
     compileOnly "curse.maven:chisel-235279:2915375"
 

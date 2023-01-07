@@ -20,9 +20,9 @@ package appeng.util.item;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.integration.modules.gregtech.ToolClass;
 import appeng.util.Platform;
 import com.google.common.base.Preconditions;
-import gregtech.api.items.IToolItem;
 import ic2.api.item.ICustomDamageItem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMap;
@@ -154,8 +154,8 @@ class FuzzyItemVariantList extends ItemVariantList {
             maxDamage = ((ICustomDamageItem) stack.getItem()).getMaxCustomDamage(stack);
             damage = ((ICustomDamageItem) stack.getItem()).getCustomDamage(stack);
         } else if (Platform.isGTDamageableItem(stack.getItem())) {
-            maxDamage = ((IToolItem) stack.getItem()).getMaxItemDamage(stack);
-            damage = ((IToolItem) stack.getItem()).getItemDamage(stack);
+            maxDamage = ToolClass.getGTMaxDamage(stack);
+            damage = ToolClass.getGTitemDamage(stack);
         } else {
             maxDamage = stack.getMaxDamage();
             damage = stack.getItemDamage();
@@ -189,8 +189,8 @@ class FuzzyItemVariantList extends ItemVariantList {
                 maxDamage = ((ICustomDamageItem) stack.getItem()).getMaxCustomDamage(stack);
                 damage = ((ICustomDamageItem) stack.getItem()).getCustomDamage(stack);
             } else if (Platform.isGTDamageableItem(stack.getItem())) {
-                maxDamage = ((IToolItem) stack.getItem()).getMaxItemDamage(stack);
-                damage = ((IToolItem) stack.getItem()).getItemDamage(stack);
+                maxDamage = ToolClass.getGTMaxDamage(stack);
+                damage = ToolClass.getGTitemDamage(stack);
             } else {
                 maxDamage = stack.getMaxDamage();
                 damage = stack.getItemDamage();

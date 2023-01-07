@@ -56,6 +56,7 @@ import appeng.fluids.util.AEFluidStack;
 import appeng.hooks.TickHandler;
 import appeng.integration.Integrations;
 import appeng.integration.modules.bogosorter.InventoryBogoSortModule;
+import appeng.integration.modules.gregtech.ToolClass;
 import appeng.me.GridAccessException;
 import appeng.me.GridNode;
 import appeng.me.helpers.AENetworkProxy;
@@ -67,7 +68,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import gregtech.api.block.machines.BlockMachine;
-import gregtech.api.items.IToolItem;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.util.GTUtility;
 import ic2.api.item.ICustomDamageItem;
@@ -126,7 +126,6 @@ import java.util.*;
  * @version rv2
  * @since rv0
  */
-@Optional.Interface(iface = "gregtech.api.items.IToolItem", modid = "gregtech")
 @Optional.Interface(iface = "ic2.api.item.ICustomDamageItem", modid = "IC2")
 public class Platform {
 
@@ -1417,7 +1416,7 @@ public class Platform {
 
     //consider methods below moving to a compability class
     public static boolean isGTDamageableItem(Item item) {
-        return ((GTLoaded) && item instanceof IToolItem);
+        return ((GTLoaded) && item.getClass().isInstance(ToolClass.getGTToolClass()));
     }
 
     public static MetaTileEntity getMetaTileEntity(IBlockAccess world, BlockPos pos) {

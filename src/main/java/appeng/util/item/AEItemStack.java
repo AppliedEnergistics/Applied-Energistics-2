@@ -23,9 +23,9 @@ import appeng.api.storage.IStorageChannel;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.core.Api;
+import appeng.integration.modules.gregtech.ToolClass;
 import appeng.util.Platform;
 import com.google.common.primitives.Ints;
-import gregtech.api.items.IToolItem;
 import ic2.api.item.ICustomDamageItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
@@ -326,7 +326,7 @@ public class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
                 } else if (a.getItem().isDamageable()) {
                     return a.getItemDamage() > 1 == b.getItemDamage() > 1;
                 } else if (Platform.isGTDamageableItem(a.getItem())) {
-                    return ((IToolItem) a.getItem()).getItemDamage(a) > 1 == ((IToolItem) b.getItem()).getItemDamage(b) > 1;
+                    return (ToolClass.getGTitemDamage(a) > 1 == ToolClass.getGTitemDamage(b) > 1);
                 }
             } else {
                 float percentDamageOfA = 0;
@@ -338,8 +338,8 @@ public class AEItemStack extends AEStack<IAEItemStack> implements IAEItemStack {
                     percentDamageOfA = (float) a.getItemDamage() / a.getMaxDamage();
                     percentDamageOfB = (float) b.getItemDamage() / b.getMaxDamage();
                 } else if (Platform.isGTDamageableItem(a.getItem())) {
-                    percentDamageOfA = (float) ((IToolItem) a.getItem()).getItemDamage(a) / ((IToolItem) a.getItem()).getMaxItemDamage(a);
-                    percentDamageOfB = (float) ((IToolItem) b.getItem()).getItemDamage(b) / ((IToolItem) b.getItem()).getMaxItemDamage(b);
+                    percentDamageOfA = (float) ToolClass.getGTitemDamage(a) / ToolClass.getGTMaxDamage(a);
+                    percentDamageOfB = (float) ToolClass.getGTitemDamage(b) / ToolClass.getGTMaxDamage(b);
                 }
 
                 return percentDamageOfA > mode.breakPoint == percentDamageOfB > mode.breakPoint;
