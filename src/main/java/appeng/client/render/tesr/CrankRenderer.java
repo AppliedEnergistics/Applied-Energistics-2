@@ -18,10 +18,11 @@
 
 package appeng.client.render.tesr;
 
+import appeng.block.orientation.BlockOrientation;
+import appeng.blockentity.misc.CrankBlockEntity;
+import appeng.core.AELog;
+import appeng.core.AppEng;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.joml.Quaternionf;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -33,11 +34,7 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-
-import appeng.blockentity.misc.CrankBlockEntity;
-import appeng.client.render.FacingToRotation;
-import appeng.core.AELog;
-import appeng.core.AppEng;
+import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
@@ -56,7 +53,7 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
 
     @Override
     public void render(CrankBlockEntity crank, float partialTick, PoseStack stack, MultiBufferSource buffers,
-            int packedLight, int packedOverlay) {
+                       int packedLight, int packedOverlay) {
 
         var baseModel = modelManager.bakedRegistry.get(BASE_MODEL);
         if (baseModel == null) {
@@ -73,11 +70,12 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
         var buffer = buffers.getBuffer(RenderType.cutout());
         var pos = crank.getBlockPos();
 
-        // Apply GL transformations relative to the center of the block: 1) TE rotation
+        // Apply GL transformations relative to the center of the block:
+        // 1) Block orientation. The cranks top faces NORTH by default
         // and 2) crank rotation
         stack.pushPose();
         stack.translate(0.5, 0.5, 0.5);
-        FacingToRotation.get(crank.getForward(), crank.getUp()).push(stack);
+        stack.mulPose(BlockOrientation.get(crank).getQuaternion());
         stack.translate(-0.5, -0.5, -0.5);
 
         // Render the base model followed by the actual crank model
@@ -93,8 +91,9 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
                 blockState.getSeed(pos),
                 packedOverlay);
 
+        // The unrotated cranks orientation is towards NORTH (negative Z axis)
         stack.translate(0.5, 0.5, 0.5);
-        stack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * crank.getVisibleRotation()));
+        stack.mulPose(new Quaternionf().rotationZ(-Mth.DEG_TO_RAD * crank.getVisibleRotation()));
         stack.translate(-0.5, -0.5, -0.5);
 
         blockRenderer.getModelRenderer().tesselateWithAO(

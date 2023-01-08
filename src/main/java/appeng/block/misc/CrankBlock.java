@@ -18,35 +18,38 @@
 
 package appeng.block.misc;
 
-import org.jetbrains.annotations.Nullable;
-
+import appeng.api.implementations.blockentities.ICrankable;
+import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
+import appeng.block.orientation.RelativeSide;
+import appeng.blockentity.misc.CrankBlockEntity;
+import appeng.util.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.api.implementations.blockentities.ICrankable;
-import appeng.api.util.IOrientableBlock;
-import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.misc.CrankBlockEntity;
-import appeng.util.FakePlayer;
+import java.util.Arrays;
 
-public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> implements IOrientableBlock {
+public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
+
+    private static final VoxelShape[] SHAPES = Arrays.stream(Direction.values())
+            .map(CrankBlock::createShape)
+            .toArray(VoxelShape[]::new);
 
     public CrankBlock(Properties props) {
         super(props);
@@ -54,7 +57,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> implements I
 
     @Override
     public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
-            @Nullable ItemStack heldItem, BlockHitResult hit) {
+                                         @Nullable ItemStack heldItem, BlockHitResult hit) {
         if (player instanceof FakePlayer || player == null) {
             this.dropCrank(level, pos);
             return InteractionResult.sidedSuccess(level.isClientSide());
@@ -74,52 +77,6 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> implements I
         level.sendBlockUpdated(pos, defaultBlockState(), level.getBlockState(pos), 3);
     }
 
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack is) {
-        super.setPlacedBy(level, pos, state, placer, is);
-
-        var be = getBlockEntity(level, pos);
-        if (be != null) {
-            var mnt = this.findCrankableDirection(level, pos);
-            if (mnt == null) {
-                dropCrank(level, pos);
-                return;
-            }
-
-            Direction forward = Direction.UP;
-            if (mnt == Direction.UP || mnt == Direction.DOWN) {
-                forward = Direction.SOUTH;
-            }
-            be.setOrientation(forward, mnt.getOpposite());
-        } else {
-            dropCrank(level, pos);
-        }
-    }
-
-    @Override
-    protected boolean isValidOrientation(LevelAccessor levelAccessor, BlockPos pos, Direction forward, Direction up) {
-        if (levelAccessor instanceof Level level) {
-            var be = level.getBlockEntity(pos);
-            return !(be instanceof CrankBlockEntity) || isCrankable(level, pos, up.getOpposite());
-        } else {
-            return true;
-        }
-    }
-
-    private Direction findCrankableDirection(Level level, BlockPos pos) {
-        for (var dir : Direction.values()) {
-            if (isCrankable(level, pos, dir)) {
-                return dir;
-            }
-        }
-        return null;
-    }
-
-    private boolean isCrankable(Level level, BlockPos pos, Direction offset) {
-        var o = pos.relative(offset);
-        return ICrankable.get(level, o, offset.getOpposite()) != null;
-    }
-
     @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState state) {
@@ -128,45 +85,53 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> implements I
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        var be = this.getBlockEntity(level, pos);
-        if (be != null) {
-            if (!isCrankable(level, pos, be.getUp().getOpposite())) {
+                                boolean isMoving) {
+        // Does the change originate from the block we're attached to?
+        if (getAttachedToPos(state, pos).equals(fromPos)) {
+            if (getCrankable(state, level, pos) == null) {
                 dropCrank(level, pos);
             }
-        } else {
-            dropCrank(level, pos);
         }
     }
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader levelReader, BlockPos pos) {
         if (levelReader instanceof Level level) {
-            return findCrankableDirection(level, pos) != null;
+            return getCrankable(state, level, pos) != null;
         } else {
+            // We'll allow it for worldgen purposes...
             return true;
         }
     }
 
-    private Direction getUp(BlockGetter level, BlockPos pos) {
-        var crank = getBlockEntity(level, pos);
-        return crank != null ? crank.getUp() : null;
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        var top = getOrientationStrategy().getSide(state, RelativeSide.FRONT);
+        return SHAPES[top.ordinal()];
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Direction up = getUp(level, pos);
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.facing();
+    }
 
-        if (up == null) {
-            return Shapes.empty();
-        } else {
-            // FIXME: Cache per direction, and build it 'precise', not just from AABB
-            final double xOff = -0.15 * up.getStepX();
-            final double yOff = -0.15 * up.getStepY();
-            final double zOff = -0.15 * up.getStepZ();
-            return Shapes.create(
-                    new AABB(xOff + 0.15, yOff + 0.15, zOff + 0.15, xOff + 0.85, yOff + 0.85, zOff + 0.85));
-        }
+    public ICrankable getCrankable(BlockState state, Level level, BlockPos pos) {
+        // This is facing away from the block the crank is attached to
+        var facing = getOrientationStrategy().getFacing(state);
+        var attachedToPos = getAttachedToPos(state, pos);
+        return ICrankable.get(level, attachedToPos, facing);
+    }
 
+    private BlockPos getAttachedToPos(BlockState state, BlockPos pos) {
+        var attachedToSide = getOrientationStrategy().getFacing(state).getOpposite();
+        return pos.relative(attachedToSide);
+    }
+
+    private static VoxelShape createShape(Direction forward) {
+        var xOff = -0.15 * forward.getStepX();
+        var yOff = -0.15 * forward.getStepY();
+        var zOff = -0.15 * forward.getStepZ();
+        return Shapes.create(xOff + 0.15, yOff + 0.15, zOff + 0.15,
+                xOff + 0.85, yOff + 0.85, zOff + 0.85);
     }
 }

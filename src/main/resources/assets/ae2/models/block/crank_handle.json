@@ -1,34 +1,35 @@
 {
-  "parent": "block/block",
-  "textures": {
-    "wood": "ae2:block/crank"
-  },
-  "elements": [
-    {
-      "name": "Crank Shaft",
-      "from": [7.2, 0.1, 7.2],
-      "to": [8.8, 9.7, 8.8],
-      "faces": {
-        "north": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "east": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "south": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "west": { "uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood" },
-        "up": { "uv": [7.2, 7.2, 8.8, 8.8], "texture": "#wood" },
-        "down": { "uv": [7.2, 7.2, 8.8, 8.8], "texture": "#wood" }
-      }
-    },
-    {
-      "name": "Crank Handle",
-      "from": [8.8, 8.1, 7.2],
-      "to": [13.6, 9.7, 8.8],
-      "faces": {
-        "north": { "uv": [2.4, 6.3, 7.2, 7.9], "texture": "#wood" },
-        "east": { "uv": [7.2, 6.3, 8.8, 7.9], "texture": "#wood" },
-        "south": { "uv": [8.8, 6.3, 13.6, 7.9], "texture": "#wood" },
-        "west": { "uv": [7.2, 6.3, 8.8, 7.9], "texture": "#wood" },
-        "up": { "uv": [8.8, 7.2, 13.6, 8.8], "texture": "#wood" },
-        "down": { "uv": [8.8, 7.2, 13.6, 8.8], "texture": "#wood" }
-      }
-    }
-  ]
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"wood": "ae2:block/crank"
+	},
+	"elements": [
+		{
+			"name": "Crank Shaft",
+			"from": [7.2, 7.2, 6.3],
+			"to": [8.8, 8.8, 15.9],
+			"faces": {
+				"north": {"uv": [7.2, 7.2, 8.8, 8.8], "rotation": 180, "texture": "#wood"},
+				"east": {"uv": [7.2, 6.3, 8.8, 15.9], "rotation": 90, "texture": "#wood"},
+				"south": {"uv": [7.2, 7.2, 8.8, 8.8], "texture": "#wood"},
+				"west": {"uv": [7.2, 6.3, 8.8, 15.9], "rotation": 270, "texture": "#wood"},
+				"up": {"uv": [7.2, 6.3, 8.8, 15.9], "texture": "#wood"},
+				"down": {"uv": [7.2, 6.3, 8.8, 15.9], "rotation": 180, "texture": "#wood"}
+			}
+		},
+		{
+			"name": "Crank Handle",
+			"from": [8.8, 7.2, 6.3],
+			"to": [13.6, 8.8, 7.9],
+			"faces": {
+				"north": {"uv": [8.8, 7.2, 13.6, 8.8], "rotation": 180, "texture": "#wood"},
+				"east": {"uv": [7.2, 6.3, 8.8, 7.9], "rotation": 90, "texture": "#wood"},
+				"south": {"uv": [8.8, 7.2, 13.6, 8.8], "texture": "#wood"},
+				"west": {"uv": [7.2, 6.3, 8.8, 7.9], "rotation": 270, "texture": "#wood"},
+				"up": {"uv": [8.8, 6.3, 13.6, 7.9], "texture": "#wood"},
+				"down": {"uv": [2.4, 6.3, 7.2, 7.9], "rotation": 180, "texture": "#wood"}
+			}
+		}
+	]
 }
