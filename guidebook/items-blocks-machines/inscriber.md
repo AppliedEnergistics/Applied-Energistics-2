@@ -10,11 +10,11 @@ item_ids:
 
 ![A picture of an inscriber.](../assets/blocks/inscriber.png)
 
-The inscriber is used to inscribe circuits and processors using presses, and to crush various items into dust.
-It can accept either AE2's power (AE) or Forge Energy (FE). It is sided, so inserting items from different sides
+The inscriber is used to inscribe circuits and [processors](processors.md) using [presses](presses.md), and to crush various items into dust.
+It can accept either AE2's power (AE) or Fabric/Forge Energy (E/FE). It is sided, so inserting items from different sides
 inserts them into different slots in its inventory. To facilitate this, it can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 
-The 4 circuit presses are used to craft processors
+The 4 circuit presses are used to craft [processors](processors.md)
   <ItemGrid>
   <ItemIcon id="silicon_press" />
   <ItemIcon id="logic_processor_press" />
