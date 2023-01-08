@@ -37,7 +37,7 @@ In the case of a non-crafting recipe (a "processing pattern") this will be some 
 
 ![A Pattern](../assets/items/crafting_pattern.png)
 
-Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of <ItemLink id="blank_pattern" />.
+Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of <ItemLink id="blank_pattern" />s.
 
 There are several different types of pattern for different things:
 
