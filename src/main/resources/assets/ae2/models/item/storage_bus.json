@@ -1,4 +1,5 @@
 {
+  "credit": "Made with Blockbench by Sea_Kerman",
   "parent": "ae2:item/part_base",
   "textures": {
     "sides": "ae2:part/storage_bus_sides",
@@ -10,72 +11,36 @@
       "from": [3, 3, 6],
       "to": [13, 13, 7],
       "faces": {
-        "north": {
-          "texture": "#front"
-        },
-        "south": {
-          "texture": "#back"
-        },
-        "east": {
-          "texture": "#sides"
-        },
-        "west": {
-          "texture": "#sides"
-        },
-        "up": {
-          "texture": "#sides"
-        },
-        "down": {
-          "texture": "#sides"
-        }
+        "north": { "uv": [3, 3, 13, 13], "texture": "#front" },
+        "east": { "uv": [15, 3, 16, 13], "texture": "#sides" },
+        "south": { "uv": [3, 3, 13, 13], "texture": "#back" },
+        "west": { "uv": [0, 3, 1, 13], "texture": "#sides" },
+        "up": { "uv": [3, 0, 13, 1], "texture": "#sides" },
+        "down": { "uv": [3, 15, 13, 16], "texture": "#sides" }
       }
     },
     {
       "from": [2, 2, 7],
       "to": [14, 14, 8],
       "faces": {
-        "north": {
-          "texture": "#front"
-        },
-        "south": {
-          "texture": "#back"
-        },
-        "east": {
-          "texture": "#sides"
-        },
-        "west": {
-          "texture": "#sides"
-        },
-        "up": {
-          "texture": "#sides"
-        },
-        "down": {
-          "texture": "#sides"
-        }
+        "north": { "uv": [2, 2, 14, 14], "texture": "#front" },
+        "east": { "uv": [14, 2, 15, 14], "texture": "#sides" },
+        "south": { "uv": [2, 2, 14, 14], "texture": "#back" },
+        "west": { "uv": [1, 2, 2, 14], "texture": "#sides" },
+        "up": { "uv": [2, 1, 14, 2], "texture": "#sides" },
+        "down": { "uv": [2, 14, 14, 15], "texture": "#sides" }
       }
     },
     {
       "from": [5, 5, 8],
       "to": [11, 11, 10],
       "faces": {
-        "north": {
-          "texture": "#front"
-        },
-        "south": {
-          "texture": "#back"
-        },
-        "east": {
-          "texture": "#sides"
-        },
-        "west": {
-          "texture": "#sides"
-        },
-        "up": {
-          "texture": "#sides"
-        },
-        "down": {
-          "texture": "#sides"
-        }
+        "north": { "uv": [5, 5, 11, 11], "texture": "#front" },
+        "east": { "uv": [6, 5, 8, 11], "texture": "#sides" },
+        "south": { "uv": [5, 5, 11, 11], "texture": "#back" },
+        "west": { "uv": [8, 5, 10, 11], "texture": "#sides" },
+        "up": { "uv": [5, 8, 11, 10], "texture": "#sides" },
+        "down": { "uv": [5, 6, 11, 8], "texture": "#sides" }
       }
     }
   ]
