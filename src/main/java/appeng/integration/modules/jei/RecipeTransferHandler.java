@@ -48,6 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static appeng.helpers.ItemStackHelper.stackToNBT;
+
 
 class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandler<T> {
 
@@ -108,8 +110,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
             if (!ingredient.isInput()) {
                 ItemStack output = ingredient.getDisplayedIngredient();
                 if (output != null) {
-                    final NBTTagCompound tag = new NBTTagCompound();
-                    output.writeToNBT(tag);
+                    final NBTTagCompound tag = stackToNBT(output);
                     outputs.appendTag(tag);
                 }
                 continue;
@@ -140,8 +141,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
                         }
 
                         for (final ItemStack is : list) {
-                            final NBTTagCompound tag = new NBTTagCompound();
-                            is.writeToNBT(tag);
+                            final NBTTagCompound tag = stackToNBT(is);
                             tags.appendTag(tag);
                         }
 

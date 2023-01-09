@@ -101,6 +101,8 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static appeng.helpers.ItemStackHelper.*;
+
 
 public class DualityInterface implements IGridTickable, IStorageMonitorable, IInventoryDestination, IAEAppEngInventory, IConfigManagerHost, ICraftingProvider, IUpgradeableHost {
     public static final int NUMBER_OF_STORAGE_SLOTS = 9;
@@ -208,12 +210,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
         final NBTTagList waitingToSend = new NBTTagList();
         if (this.waitingToSend != null) {
             for (final ItemStack is : this.waitingToSend) {
-                final NBTTagCompound item = new NBTTagCompound();
-                is.writeToNBT(item);
-                if (is.getCount() > Byte.MAX_VALUE) {
-                    item.setInteger("stackSize", is.getCount());
-                }
-                waitingToSend.appendTag(item);
+                final NBTTagCompound itemNBT = stackToNBT(is);
+                waitingToSend.appendTag(itemNBT);
             }
         }
         data.setTag("waitingToSend", waitingToSend);
@@ -225,12 +223,8 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 NBTTagList waitingListSided = new NBTTagList();
                 if (this.waitingToSendFacing.containsKey(s)) {
                     for (final ItemStack is : this.waitingToSendFacing.get(s)) {
-                        final NBTTagCompound item = new NBTTagCompound();
-                        is.writeToNBT(item);
-                        if (is.getCount() > Byte.MAX_VALUE) {
-                            item.setInteger("stackSize", is.getCount());
-                        }
-                        waitingListSided.appendTag(item);
+                        final NBTTagCompound itemNBT = stackToNBT(is);
+                        waitingListSided.appendTag(itemNBT);
                     }
                     sidedWaitList.setTag(s.name(), waitingListSided);
                 }
@@ -246,10 +240,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
             for (int x = 0; x < waitingList.tagCount(); x++) {
                 final NBTTagCompound c = waitingList.getCompoundTagAt(x);
                 if (c != null) {
-                    final ItemStack is = new ItemStack(c);
-                    if (c.hasKey("stackSize")) {
-                        is.setCount(c.getInteger("stackSize"));
-                    }
+                    final ItemStack is = stackFromNBT(c);
                     this.addToSendList(is);
                 }
             }
@@ -264,10 +255,7 @@ public class DualityInterface implements IGridTickable, IStorageMonitorable, IIn
                 for (int x = 0; x < w.tagCount(); x++) {
                     final NBTTagCompound c = w.getCompoundTagAt(x);
                     if (c != null) {
-                        final ItemStack is = new ItemStack(c);
-                        if (c.hasKey("stackSize")) {
-                            is.setCount(c.getInteger("stackSize"));
-                        }
+                        final ItemStack is = stackFromNBT(c);
                         this.addToSendListFacing(is, EnumFacing.getFront(s.getIndex()));
                     }
                 }

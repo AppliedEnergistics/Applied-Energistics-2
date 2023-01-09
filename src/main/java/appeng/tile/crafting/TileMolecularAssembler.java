@@ -80,6 +80,9 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
+import static appeng.helpers.ItemStackHelper.stackWriteToNBT;
+
 
 public class TileMolecularAssembler extends AENetworkInvTile implements IUpgradeableHost, IConfigManagerHost, IGridTickable, ICraftingMachine, IPowerChannelState {
     private final InventoryCrafting craftingInv;
@@ -288,7 +291,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
             final ItemStack pattern = this.myPlan.getPattern();
             if (!pattern.isEmpty()) {
                 final NBTTagCompound compound = new NBTTagCompound();
-                pattern.writeToNBT(compound);
+                stackWriteToNBT(pattern, compound);
                 data.setTag("myPlan", compound);
                 data.setInteger("pushDirection", this.pushDirection.ordinal());
             }
@@ -303,7 +306,7 @@ public class TileMolecularAssembler extends AENetworkInvTile implements IUpgrade
     public void readFromNBT(final NBTTagCompound data) {
         super.readFromNBT(data);
         if (data.hasKey("myPlan")) {
-            final ItemStack myPat = new ItemStack(data.getCompoundTag("myPlan"));
+            final ItemStack myPat = stackFromNBT(data.getCompoundTag("myPlan"));
 
             if (!myPat.isEmpty() && myPat.getItem() instanceof ItemEncodedPattern) {
                 final World w = this.getWorld();

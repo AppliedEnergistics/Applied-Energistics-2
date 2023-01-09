@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static appeng.helpers.ItemStackHelper.stackWriteToNBT;
+
 public abstract class ContainerPatternEncoder extends ContainerMEMonitorable implements IAEAppEngInventory, IOptionalSlotHost, IContainerCraftingPacket {
 
     private final AbstractPartEncoder patternTerminal;
@@ -526,10 +528,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
         final NBTTagCompound c = new NBTTagCompound();
 
         if (!i.isEmpty()) {
-            i.writeToNBT(c);
-            if (i.getCount() > Byte.MAX_VALUE) {
-                c.setInteger("stackSize", i.getCount());
-            }
+            stackWriteToNBT(i, c);
         }
 
         return c;

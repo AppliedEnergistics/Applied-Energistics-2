@@ -63,6 +63,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
+
 
 public class PacketJEIRecipe extends AppEngPacket {
 
@@ -85,7 +87,7 @@ public class PacketJEIRecipe extends AppEngPacket {
                     if (list.tagCount() > 0) {
                         this.recipe.add(new ItemStack[list.tagCount()]);
                         for (int y = 0; y < list.tagCount(); y++) {
-                            this.recipe.get(x)[y] = new ItemStack(list.getCompoundTagAt(y));
+                            this.recipe.get(x)[y] = stackFromNBT(list.getCompoundTagAt(y));
                         }
                     } else {
                         this.recipe.add(emptyArray);
@@ -97,7 +99,7 @@ public class PacketJEIRecipe extends AppEngPacket {
                 final NBTTagList outputList = comp.getTagList("outputs", 10);
                 this.output = new ArrayList<>();
                 for (int z = 0; z < outputList.tagCount(); z++) {
-                    this.output.add(new ItemStack(outputList.getCompoundTagAt(z)));
+                    this.output.add(stackFromNBT(outputList.getCompoundTagAt(z)));
                 }
             }
         }

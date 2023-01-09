@@ -57,6 +57,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static appeng.helpers.ItemStackHelper.stackWriteToNBT;
+
 
 public final class ContainerInterfaceTerminal extends AEBaseContainer {
 
@@ -345,7 +347,7 @@ public final class ContainerInterfaceTerminal extends AEBaseContainer {
             ItemHandlerUtil.setStackInSlot(inv.client, x + offset, is.isEmpty() ? ItemStack.EMPTY : is.copy());
 
             if (!is.isEmpty()) {
-                is.writeToNBT(itemNBT);
+                stackWriteToNBT(is, itemNBT);
             }
 
             tag.setTag(Integer.toString(x + offset), itemNBT);

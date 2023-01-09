@@ -39,6 +39,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
+import static appeng.helpers.ItemStackHelper.stackWriteToNBT;
+
 
 public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInventory {
 
@@ -50,7 +53,7 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
             final NBTTagCompound opt = data.getCompoundTag("inv");
             for (int x = 0; x < inv.getSlots(); x++) {
                 final NBTTagCompound item = opt.getCompoundTag("item" + x);
-                ItemHandlerUtil.setStackInSlot(inv, x, new ItemStack(item));
+                ItemHandlerUtil.setStackInSlot(inv, x, stackFromNBT(item));
             }
         }
     }
@@ -65,12 +68,12 @@ public abstract class AEBaseInvTile extends AEBaseTile implements IAEAppEngInven
         if (inv != EmptyHandler.INSTANCE) {
             final NBTTagCompound opt = new NBTTagCompound();
             for (int x = 0; x < inv.getSlots(); x++) {
-                final NBTTagCompound item = new NBTTagCompound();
+                final NBTTagCompound itemNBT = new NBTTagCompound();
                 final ItemStack is = inv.getStackInSlot(x);
                 if (!is.isEmpty()) {
-                    is.writeToNBT(item);
+                    stackWriteToNBT(is, itemNBT);
                 }
-                opt.setTag("item" + x, item);
+                opt.setTag("item" + x, itemNBT);
             }
             data.setTag("inv", opt);
         }

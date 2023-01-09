@@ -40,6 +40,8 @@ import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import java.util.*;
 
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
+
 
 public class PatternHelper implements ICraftingPatternDetails, Comparable<PatternHelper> {
 
@@ -91,11 +93,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
         for (int x = 0; x < inTag.tagCount(); x++) {
             NBTTagCompound ingredient = inTag.getCompoundTagAt(x);
-            final ItemStack gs = new ItemStack(ingredient);
-
-            if (ingredient.hasKey("stackSize")) {
-                gs.setCount(ingredient.getInteger("stackSize"));
-            }
+            final ItemStack gs = stackFromNBT(ingredient);
 
             if (!ingredient.hasNoTags() && gs.isEmpty()) {
                 throw new IllegalArgumentException("No pattern here!");
@@ -126,11 +124,7 @@ public class PatternHelper implements ICraftingPatternDetails, Comparable<Patter
 
             for (int x = 0; x < outTag.tagCount(); x++) {
                 NBTTagCompound resultItemTag = outTag.getCompoundTagAt(x);
-                final ItemStack gs = new ItemStack(resultItemTag);
-
-                if (resultItemTag.hasKey("stackSize")) {
-                    gs.setCount(resultItemTag.getInteger("stackSize"));
-                }
+                final ItemStack gs = stackFromNBT(resultItemTag);
 
                 if (!resultItemTag.hasNoTags() && gs.isEmpty()) {
                     throw new IllegalArgumentException("No pattern here!");

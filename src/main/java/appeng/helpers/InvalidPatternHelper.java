@@ -28,6 +28,8 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
+
 
 public class InvalidPatternHelper {
 
@@ -89,11 +91,14 @@ public class InvalidPatternHelper {
         private final ItemStack stack;
 
         public PatternIngredient(NBTTagCompound tag) {
-            this.stack = new ItemStack(tag);
+            this.stack = stackFromNBT(tag);
 
             if (this.stack.isEmpty()) {
                 this.id = tag.getString("id");
                 this.count = tag.getByte("Count");
+                if (tag.hasKey("stackSize")) {
+                    this.count = tag.getInteger("stackSize");
+                }
                 this.damage = Math.max(0, tag.getShort("Damage"));
             }
         }

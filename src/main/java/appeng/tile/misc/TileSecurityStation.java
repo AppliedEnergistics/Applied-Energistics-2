@@ -71,6 +71,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
+
 
 public class TileSecurityStation extends AENetworkTile implements ITerminalHost, IAEAppEngInventory, ILocatable, IConfigManagerHost, ISecurityProvider, IColorableTile {
 
@@ -175,7 +177,7 @@ public class TileSecurityStation extends AENetworkTile implements ITerminalHost,
         for (final Object key : storedItems.getKeySet()) {
             final NBTBase obj = storedItems.getTag((String) key);
             if (obj instanceof NBTTagCompound) {
-                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(new ItemStack((NBTTagCompound) obj)));
+                this.inventory.getStoredItems().add(AEItemStack.fromItemStack(stackFromNBT((NBTTagCompound) obj)));
             }
         }
     }

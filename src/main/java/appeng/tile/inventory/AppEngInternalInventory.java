@@ -35,6 +35,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
+import static appeng.helpers.ItemStackHelper.stackToNBT;
+
 
 public class AppEngInternalInventory extends ItemStackHandler implements Iterable<ItemStack> {
     protected boolean enableClientEvents = false;
@@ -162,12 +165,8 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
         for (int i = 0; i < stacks.size(); i++) {
             ItemStack is = stacks.get(i);
             if (!is.isEmpty()) {
-                NBTTagCompound itemTag = new NBTTagCompound();
+                NBTTagCompound itemTag = stackToNBT(is);
                 itemTag.setInteger("Slot", i);
-                if (is.getCount() > Byte.MAX_VALUE) {
-                    itemTag.setInteger("stackSize", stacks.get(i).getCount());
-                }
-                stacks.get(i).writeToNBT(itemTag);
                 nbtTagList.appendTag(itemTag);
             }
         }
@@ -196,11 +195,7 @@ public class AppEngInternalInventory extends ItemStackHandler implements Iterabl
             NBTTagCompound itemTags = tagList.getCompoundTagAt(i);
             int slot = itemTags.getInteger("Slot");
             if (slot >= 0 && slot < stacks.size()) {
-                stacks.set(slot, new ItemStack(itemTags));
-                if (itemTags.hasKey("stackSize")) {
-                    int stackSize = itemTags.getInteger("stackSize");
-                    stacks.get(slot).setCount(stackSize);
-                }
+                stacks.set(slot, stackFromNBT(itemTags));
             }
         }
         onLoad();

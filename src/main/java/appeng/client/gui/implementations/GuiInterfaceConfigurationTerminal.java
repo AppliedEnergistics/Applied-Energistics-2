@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.*;
 
 import static appeng.client.render.BlockPosHighlighter.hilightBlock;
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
 
 
 public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEIGhostIngredients {
@@ -299,11 +300,7 @@ public class GuiInterfaceConfigurationTerminal extends AEBaseGui implements IJEI
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.hasKey(which)) {
-                            NBTTagCompound tag = invData.getCompoundTag(which);
-                            current.getInventory().setStackInSlot(x, new ItemStack(tag));
-                            if (tag.hasKey("stackSize")) {
-                                current.getInventory().getStackInSlot(x).setCount(tag.getInteger("stackSize"));
-                            }
+                            current.getInventory().setStackInSlot(x, stackFromNBT(invData.getCompoundTag(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {

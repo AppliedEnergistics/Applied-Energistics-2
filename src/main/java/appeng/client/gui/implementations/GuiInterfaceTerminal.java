@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static appeng.client.render.BlockPosHighlighter.hilightBlock;
+import static appeng.helpers.ItemStackHelper.stackFromNBT;
 
 
 public class GuiInterfaceTerminal extends AEBaseGui {
@@ -321,7 +322,7 @@ public class GuiInterfaceTerminal extends AEBaseGui {
                     for (int x = 0; x < current.getInventory().getSlots(); x++) {
                         final String which = Integer.toString(x);
                         if (invData.hasKey(which)) {
-                            current.getInventory().setStackInSlot(x, new ItemStack(invData.getCompoundTag(which)));
+                            current.getInventory().setStackInSlot(x, stackFromNBT(invData.getCompoundTag(which)));
                         }
                     }
                 } catch (final NumberFormatException ignored) {
