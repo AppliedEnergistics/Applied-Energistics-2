@@ -37,3 +37,6 @@ A setup with just an import and export bus will not work. The import bus will at
 and store the items or fluid in network storage. The export bus will attempt to pull from network storage and put the
 items or fluid in the destination inventory. However since this network **has no storage**, the import bus can't import
 and the export bus can't export, so nothing happens.
+
+# A Pipe-Like Subnet
+
