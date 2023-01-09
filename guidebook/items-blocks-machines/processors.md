@@ -27,14 +27,14 @@ process (usually achieved via a series of inscribers and filtered piping).
 1. Gather/make the required ingredients: silicon, redstone, gold, <ItemLink id="certus_quartz_crystal" />, diamond.  
 
 <RecipeFor id="silicon" />
-<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
 2. Press the prerequisite printed circuit components
 
 <RecipeFor id="printed_silicon" />
 <RecipeFor id="printed_logic_processor" />
 <RecipeFor id="printed_calculation_processor" />
 <RecipeFor id="printed_engineering_processor" />
-<br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/>
 3. Final assembly
 
 <RecipeFor id="logic_processor" />

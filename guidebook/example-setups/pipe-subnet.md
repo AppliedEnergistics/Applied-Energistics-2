@@ -6,7 +6,7 @@ navigation:
 ---
 # Item/Fluid "Pipe" Subnet
 A simple method of emulating an item and/or fluid pipe with AE2 devices, useful for, well, anything you'd use an item or fluid pipe for.
-This includes returning the result of a craft to a <ItemLink id="pattern_provider"/>.
+This includes returning the result foa  craft to a <ItemLink id="pattern_provider"/>.
 
 There are generally two different methods of achieving this:
 # Import Bus -> Storage Bus
@@ -40,11 +40,3 @@ and the export bus can't export, so nothing happens.
 
 # A Pipe-Like Subnet
 
-![Interfaces!](../assets/assemblies/interface_storage_pipe_furnace.png)
-
-It turns out there are devices besides import busses that push items into [network storage](../ae2-mechanics/import-export-storage.md)!
-Of relevance here is the <ItemLink id="interface"/>. If an item is inserted that the interface is not set to stock, the interface will
-push it to network storage, which we can exploit similarly to the import bus -> storage bus pipe. This setup is of particular
-utility with a <ItemLink id="pattern_provider"/> since an import bus can't extract recipe ingredients from it. Just make sure
-the provider is in directional or flat subpart mode and/or the interface is in flat subpart mode, so the two don't form a network
-connection.
