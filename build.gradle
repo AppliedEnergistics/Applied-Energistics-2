@@ -66,6 +66,8 @@ archivesBaseName = aebasename
 jar {
     manifest {
         attributes 'FMLAT': 'appeng_at.cfg'
+        attributes "FMLCorePlugin": "appeng.core.AE2ELCore"
+        attributes "FMLCorePluginContainsFMLMod": "true"
     }
 
     from sourceSets.api.output
