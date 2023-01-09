@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Optional.Interface(iface = "gregtech.api.items.IToolItem", modid = "gregtech")
 public class CraftingTreeNode {
 
     // what slot!
