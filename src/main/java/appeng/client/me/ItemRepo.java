@@ -39,22 +39,19 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 
 public class ItemRepo {
 
     private final IItemList<IAEItemStack> list = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
-    private final List<IAEItemStack> view;
-    private List<IAEItemStack> asyncUpdatedView;
-    private boolean updated;
+    private final ArrayList<IAEItemStack> view = new ArrayList<>();
     private final IScrollSource src;
     private final ISortSource sortSrc;
 
     private int rowSize = 9;
 
-    private volatile String searchString = "";
+    private String searchString = "";
     private IPartitionList<IAEItemStack> myPartitionList;
     private String innerSearch = "";
     private boolean hasPower;
@@ -62,14 +59,11 @@ public class ItemRepo {
     public ItemRepo(final IScrollSource src, final ISortSource sortSrc) {
         this.src = src;
         this.sortSrc = sortSrc;
-
-        this.view = Collections.synchronizedList(new ArrayList<>());
-        this.asyncUpdatedView = Collections.synchronizedList(new ArrayList<>());
-        list.forEach(this.view::add);
     }
 
     public IAEItemStack getReferenceItem(int idx) {
         idx += this.src.getCurrentScroll() * this.rowSize;
+
         if (idx >= this.view.size()) {
             return null;
         }
@@ -101,128 +95,111 @@ public class ItemRepo {
         this.updateView();
     }
 
-    private CompletableFuture<Void> searchTask = null;
-
     public void updateView() {
-        if (searchTask != null) {
-            return;
+        this.view.clear();
+
+        this.view.ensureCapacity(this.list.size());
+
+        final Enum viewMode = this.sortSrc.getSortDisplay();
+        final Enum searchMode = AEConfig.instance().getConfigManager().getSetting(Settings.SEARCH_MODE);
+        final boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
+
+        if (searchMode == SearchBoxMode.JEI_AUTOSEARCH || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH || searchMode == SearchBoxMode.JEI_AUTOSEARCH_KEEP || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP) {
+            this.updateJEI(this.searchString);
         }
 
-        if (updated) {
-            this.view.clear();
-            this.view.addAll(asyncUpdatedView);
-            this.asyncUpdatedView.clear();
-            this.updated = false;
+        final boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting(Settings.SEARCH_TOOLTIPS) != YesNo.NO;
+
+        boolean searchMod = false;
+
+        this.innerSearch = searchString.toLowerCase();
+        if (this.innerSearch.startsWith("@")) {
+            searchMod = true;
+            this.innerSearch = this.innerSearch.substring(1);
         }
 
-        // Since sortSrc is final, so we can safely call it inside lambda
-        searchTask = CompletableFuture.supplyAsync(() -> {
-            IItemList<IAEItemStack> list = this.list.clone();
-            List<IAEItemStack> view = new ArrayList<>(list.size());
-            Enum viewMode = this.sortSrc.getSortDisplay();
-
-            boolean needsZeroCopy = viewMode == ViewItems.CRAFTABLE;
-
-            boolean terminalSearchToolTips = AEConfig.instance().getConfigManager().getSetting(Settings.SEARCH_TOOLTIPS) != YesNo.NO;
-
-            boolean searchMod = false;
-
-            String innerSearch = searchString.toLowerCase();
-            if (innerSearch.startsWith("@")) {
-                searchMod = true;
-                innerSearch = innerSearch.substring(1);
-            }
-
-            Pattern m = null;
+        Pattern m = null;
+        try {
+            m = Pattern.compile(this.innerSearch, Pattern.CASE_INSENSITIVE);
+        } catch (final Throwable ignore) {
             try {
-                m = Pattern.compile(innerSearch, Pattern.CASE_INSENSITIVE);
-            } catch (final Throwable ignore) {
-                try {
-                    m = Pattern.compile(Pattern.quote(innerSearch), Pattern.CASE_INSENSITIVE);
-                } catch (final Throwable __) {
-                    return Collections.<IAEItemStack>emptyList();
+                m = Pattern.compile(Pattern.quote(this.innerSearch), Pattern.CASE_INSENSITIVE);
+            } catch (final Throwable __) {
+                return;
+            }
+        }
+
+        boolean notDone = false;
+        for (IAEItemStack is : this.list) {
+            if (this.myPartitionList != null) {
+                if (!this.myPartitionList.isListed(is)) {
+                    continue;
                 }
             }
 
+            if (viewMode == ViewItems.CRAFTABLE && !is.isCraftable()) {
+                continue;
+            }
 
-            for (IAEItemStack is : list) {
-                if (this.myPartitionList != null) {
-                    if (!this.myPartitionList.isListed(is)) {
-                        continue;
-                    }
-                }
+            if (viewMode == ViewItems.STORED && is.getStackSize() == 0) {
+                continue;
+            }
 
-                if (viewMode == ViewItems.CRAFTABLE && !is.isCraftable()) {
-                    continue;
-                }
+            final String dspName = (searchMod ? Platform.getModId(is) : Platform.getItemDisplayName(is)).toLowerCase();
+            boolean foundMatchingItemStack = true;
 
-                if (viewMode == ViewItems.STORED && is.getStackSize() == 0) {
-                    continue;
-                }
-
-                final String dspName = (searchMod ? Platform.getModId(is) : Platform.getItemDisplayName(is)).toLowerCase();
-                boolean foundMatchingItemStack = true;
-
-                for (String term : innerSearch.split(" ")) {
-                    if (term.length() > 1 && (term.startsWith("-") || term.startsWith("!"))) {
-                        term = term.substring(1);
-                        if (dspName.contains(term)) {
-                            foundMatchingItemStack = false;
-                            break;
-                        }
-                    } else if (!dspName.contains(term)) {
+            for (String term : innerSearch.split(" ")) {
+                if (term.length() > 1 && (term.startsWith("-") || term.startsWith("!"))) {
+                    term = term.substring(1);
+                    if (dspName.contains(term)) {
                         foundMatchingItemStack = false;
                         break;
                     }
-                }
-
-                if (terminalSearchToolTips && !foundMatchingItemStack) {
-                    final List<String> tooltip = Platform.getTooltip(is);
-                    for (final String line : tooltip) {
-                        if (m.matcher(line).find()) {
-                            foundMatchingItemStack = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (foundMatchingItemStack) {
-                    if (needsZeroCopy) {
-                        is = is.copy();
-                        is.setStackSize(0);
-                    }
-
-                    view.add(is);
+                } else if (!dspName.contains(term)) {
+                    foundMatchingItemStack = false;
+                    break;
                 }
             }
 
-            final Enum SortBy = this.sortSrc.getSortBy();
-            final Enum SortDir = this.sortSrc.getSortDir();
-
-            ItemSorters.setDirection((appeng.api.config.SortDir) SortDir);
-            ItemSorters.init();
-
-            if (SortBy == SortOrder.MOD) {
-                view.sort(ItemSorters.CONFIG_BASED_SORT_BY_MOD);
-            } else if (SortBy == SortOrder.AMOUNT) {
-                view.sort(ItemSorters.CONFIG_BASED_SORT_BY_SIZE);
-            } else if (SortBy == SortOrder.INVTWEAKS) {
-                if (InventoryBogoSortModule.isLoaded()) {
-                    view.sort(InventoryBogoSortModule.COMPARATOR);
-                } else {
-                    view.sort(ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS);
+            if (terminalSearchToolTips && !foundMatchingItemStack) {
+                final List<String> tooltip = Platform.getTooltip(is);
+                for (final String line : tooltip) {
+                    if (m.matcher(line).find()) {
+                        foundMatchingItemStack = true;
+                        break;
+                    }
                 }
+            }
+
+            if (foundMatchingItemStack) {
+                if (needsZeroCopy) {
+                    is = is.copy();
+                    is.setStackSize(0);
+                }
+
+                this.view.add(is);
+            }
+        }
+
+        final Enum SortBy = this.sortSrc.getSortBy();
+        final Enum SortDir = this.sortSrc.getSortDir();
+
+        ItemSorters.setDirection((appeng.api.config.SortDir) SortDir);
+        ItemSorters.init();
+
+        if (SortBy == SortOrder.MOD) {
+            Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_MOD);
+        } else if (SortBy == SortOrder.AMOUNT) {
+            Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_SIZE);
+        } else if (SortBy == SortOrder.INVTWEAKS) {
+            if (InventoryBogoSortModule.isLoaded()) {
+                Collections.sort(this.view, InventoryBogoSortModule.COMPARATOR);
             } else {
-                view.sort(ItemSorters.CONFIG_BASED_SORT_BY_NAME);
+                Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_INV_TWEAKS);
             }
-
-            return view;
-        }).thenAcceptAsync(view -> {
-            this.updated = true;
-            this.asyncUpdatedView.addAll(view);
-        }).thenRunAsync(() -> {
-            this.searchTask = null; // Prevent redundant cancellation
-        });
+        } else {
+            Collections.sort(this.view, ItemSorters.CONFIG_BASED_SORT_BY_NAME);
+        }
     }
 
     private void updateJEI(String filter) {
@@ -234,10 +211,6 @@ public class ItemRepo {
     }
 
     public void clear() {
-        if (searchTask != null) {
-            searchTask.cancel(true);
-            searchTask = null;
-        }
         this.list.resetStatus();
     }
 
@@ -263,17 +236,6 @@ public class ItemRepo {
 
     public void setSearchString(@Nonnull final String searchString) {
         this.searchString = searchString;
-
-        if (searchTask != null) {
-            searchTask.cancel(true);
-            searchTask = null;
-        }
-
-        // Passive JEI auto search
-        final Enum<?> searchMode = AEConfig.instance().getConfigManager().getSetting(Settings.SEARCH_MODE);
-        if (searchMode == SearchBoxMode.JEI_AUTOSEARCH || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH || searchMode == SearchBoxMode.JEI_AUTOSEARCH_KEEP || searchMode == SearchBoxMode.JEI_MANUAL_SEARCH_KEEP) {
-            this.updateJEI(this.searchString);
-        }
     }
 
     public IItemList<IAEItemStack> getList() {
