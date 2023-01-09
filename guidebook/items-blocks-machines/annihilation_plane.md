@@ -15,23 +15,15 @@ into [network storage](../ae2-mechanics/import-export-storage.md). For items to 
 face of the plane, it does not pick up in an area.
 
 Annihilation planes can be enchanted with any pickaxe enchantment, so yes, you can put crazy levels of fortune on a few and
-[automate ore processing](../example-setups/ore-fortuner.md) if your modpack allows it. In addition, silk touch does what
-you'd expect it to, efficiency reduces the energy cost of breaking a block, and unbreaking gives a chance of not using any energy.
-
-They are [cable subparts](../ae2-mechanics/cable-subparts.md)
+automate ore processing if your modpack allows it.
 
 # Filtering
 
 The annihilation plane will only break a block or pick up an item if it can store the resulting drops/items
 in its network. this means to filter one, *you must restrict what can be stored on its network*, most likely by putting
-it on a [subnetwork](../ae2-mechanics/subnetworks.md). A <ItemLink id="storage_bus" /> or [cell](../items-blocks-machines/storage_cells.md)
-can be partitioned to achieve this.
+it on a [subnetwork](../ae2-mechanics/subnetworks.md). A <ItemLink id="storage_bus" /> or cell can be partitioned to achieve this.
 
 ![Annihilation Plane Subnet](../assets/assemblies/annihilation_filtering.png)
-
-Again, it filters *by the item drops* so, for example, if you want to filter breaking of [budding certus blocks](../items-blocks-machines/budding_certus.md)
-you need a plane enchanted with silk touch, otherwise every tier of budding block drops <ItemLink id="quartz_block" /> and so
-the drops cannot be differentiated.
 
 # Recipe
 
