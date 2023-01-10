@@ -13,8 +13,6 @@ item_ids:
 The import bus pulls items and fluids (and whatever else, given addons) from the inventory it's touching and pushes them into
 [network storage](../ae2-mechanics/import-export-storage.md).
 
-They are [cable subparts](../ae2-mechanics/cable-subparts.md)
-
 # Filtering
 
 By default the bus will import anything it has access to. Items inserted into its filter slots will act as a whitelist, only
