@@ -23,6 +23,7 @@ and logistics setups.
 
 # Storage Priority
 
+Priorities can be set by clicking the wrench in the top-right of some GUIs.
 Items entering the network will start at the highest priority storage, as
 their first destination, in the case of two storages have the same priority,
 if one already contains the item, they will prefer that storage over any
