@@ -12,7 +12,7 @@ item_ids:
 ![Pattern Providers](../assets/assemblies/pattern_provider_variants.png)
 
 Pattern providers are the primary way in which your autocrafting system interacts with the world. They push the ingredients in
-their patterns to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often
+their [patterns](patterns.md) to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often
 a channel can be saved by piping the output of a machine back into a nearby pattern provider (often the one that pushed the ingredients)
 instead of using an <ItemLink id="import_bus" /> to pull the output of the machine into the network.
 
@@ -51,6 +51,12 @@ ingredients in the machine.
 - **Lock Crafting** can lock the provider under various redstone conditions, or until the result of the
 previous craft is inserted into that specific pattern provider.
 - The provider can be shown or hidden on <ItemLink id="pattern_access_terminal" />s.
+
+# Priority
+
+Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](patterns.md)
+for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
+unless the network does not have the ingredients for the higher priority pattern.
 
 # Recipe
 
