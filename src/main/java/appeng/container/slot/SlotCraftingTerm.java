@@ -40,7 +40,6 @@ import appeng.util.inv.AdaptorItemHandler;
 import appeng.util.inv.WrapperCursorItemHandler;
 import appeng.util.inv.WrapperInvItemHandler;
 import appeng.util.item.AEItemStack;
-import com.blamejared.recipestages.RecipeStages;
 import com.blamejared.recipestages.recipes.RecipeStage;
 import net.darkhax.gamestages.GameStageHelper;
 import net.darkhax.itemstages.ItemStages;
@@ -55,9 +54,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -101,16 +101,21 @@ public class SlotCraftingTerm extends AppEngCraftingSlot {
     @Override
     public ItemStack getStack() {
         if (Platform.isClient() && Loader.isModLoaded("itemstages")) {
-            final ItemStack item = super.getStack();
-            final String itemsStage = ItemStages.getStage(item);
-            final String enchantStage = ItemStages.getEnchantStage(item);
-            final EntityPlayer player = Minecraft.getMinecraft().player;
-
-            if ((itemsStage != null && !GameStageHelper.hasStage(player, itemsStage))
-                    || (enchantStage != null && !GameStageHelper.hasStage(player, enchantStage)))
-                return ItemStack.EMPTY;
+            return itemstageStack();
         }
+        return super.getStack();
+    }
 
+    @SideOnly(Side.CLIENT)
+    ItemStack itemstageStack() {
+        final ItemStack item = super.getStack();
+        final String itemsStage = ItemStages.getStage(item);
+        final String enchantStage = ItemStages.getEnchantStage(item);
+        final EntityPlayer player = Minecraft.getMinecraft().player;
+
+        if ((itemsStage != null && !GameStageHelper.hasStage(player, itemsStage))
+                || (enchantStage != null && !GameStageHelper.hasStage(player, enchantStage)))
+            return ItemStack.EMPTY;
         return super.getStack();
     }
 
@@ -196,7 +201,7 @@ public class SlotCraftingTerm extends AppEngCraftingSlot {
             final String enchantStage = ItemStages.getEnchantStage(recipe.getRecipeOutput());
 
             if ((itemsStage != null && !GameStageHelper.hasStage(player, itemsStage))
-                || (enchantStage != null && !GameStageHelper.hasStage(player, enchantStage)))
+                    || (enchantStage != null && !GameStageHelper.hasStage(player, enchantStage)))
                 return null;
         }
 
