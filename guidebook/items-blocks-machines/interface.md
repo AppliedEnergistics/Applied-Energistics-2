@@ -50,7 +50,7 @@ them or dragged from JEI/REI, a wrench appears that lets you set the quantity.
 
 The interface supports the following upgrades:
 
-- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
+- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level
 - <ItemLink id="crafting_card" /> lets the interface send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)
   system to get the items it desires. It will pull the items from storage if possible, before maing a request
   for a new item to be crafted.
