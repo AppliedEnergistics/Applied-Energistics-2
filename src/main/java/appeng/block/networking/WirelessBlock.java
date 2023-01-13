@@ -48,6 +48,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.helpers.AEMaterials;
 import appeng.menu.MenuOpener;
@@ -57,7 +59,7 @@ import appeng.util.InteractionUtil;
 
 public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implements SimpleWaterloggedBlock {
 
-    enum State implements StringRepresentable {
+    public enum State implements StringRepresentable {
         OFF, ON, HAS_CHANNEL;
 
         @Override
@@ -239,14 +241,16 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implem
     }
 
     @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.facingAttached();
+    }
+
+    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
-        BlockState blockState = this.defaultBlockState()
+        var fluidState = context.getLevel().getFluidState(context.getClickedPos());
+        return super.getStateForPlacement(context)
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
-
-        return blockState;
     }
 
     @Override

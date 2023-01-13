@@ -18,9 +18,7 @@
 
 package appeng.decorative.solid;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,10 +26,8 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
 import appeng.decorative.AEDecorativeBlock;
-import appeng.helpers.MetaRotation;
 
 public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableBlock {
     public static final EnumProperty<Axis> AXIS = BlockStateProperties.AXIS;
@@ -47,11 +43,6 @@ public class QuartzPillarBlock extends AEDecorativeBlock implements IOrientableB
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(AXIS);
-    }
-
-    @Override
-    public IOrientable getOrientable(BlockGetter level, BlockPos pos) {
-        return new MetaRotation(level, pos, null);
     }
 
 }

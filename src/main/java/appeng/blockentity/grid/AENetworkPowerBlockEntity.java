@@ -18,8 +18,6 @@
 
 package appeng.blockentity.grid;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,17 +25,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.GridHelper;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.util.AECableType;
+import appeng.block.orientation.BlockOrientation;
 import appeng.blockentity.powersink.AEBasePoweredBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
-        implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+        implements IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
             .setVisualRepresentation(getItemFromBlockEntity())
@@ -47,6 +44,7 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
 
     public AENetworkPowerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+        getMainNode().setExposedOnSides(BlockOrientation.get(blockState).getSides(getGridConnectableSides()));
     }
 
     protected IManagedGridNode createMainNode() {
@@ -67,23 +65,6 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
 
     public final IManagedGridNode getMainNode() {
         return this.mainNode;
-    }
-
-    @Nullable
-    public IGridNode getGridNode() {
-        return this.mainNode.getNode();
-    }
-
-    @Override
-    public IGridNode getGridNode(Direction dir) {
-        var node = this.getMainNode().getNode();
-
-        // Check if the proxy exposes the node on this side
-        if (node != null && node.isExposedOnSide(dir)) {
-            return node;
-        }
-
-        return null;
     }
 
     @Override
@@ -113,6 +94,12 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
     public void onReady() {
         super.onReady();
         this.getMainNode().create(getLevel(), getBlockEntity().getBlockPos());
+    }
+
+    @Override
+    protected void onOrientationChanged(BlockOrientation orientation) {
+        super.onOrientationChanged(orientation);
+        getMainNode().setExposedOnSides(orientation.getSides(getGridConnectableSides()));
     }
 
 }

@@ -18,8 +18,6 @@
 
 package appeng.blockentity.grid;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,28 +25,28 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.GridHelper;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.BlockOrientation;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
-public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+public class AENetworkBlockEntity extends AEBaseBlockEntity implements IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
             .setVisualRepresentation(getItemFromBlockEntity())
             .setInWorldNode(true)
             .setTagName("proxy");
 
-    protected IManagedGridNode createMainNode() {
-        return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE);
-    }
-
     public AENetworkBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+        getMainNode().setExposedOnSides(BlockOrientation.get(blockState).getSides(getGridConnectableSides()));
+    }
+
+    protected IManagedGridNode createMainNode() {
+        return GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE);
     }
 
     @Override
@@ -65,23 +63,6 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
 
     public final IManagedGridNode getMainNode() {
         return this.mainNode;
-    }
-
-    @Nullable
-    public IGridNode getGridNode() {
-        return getMainNode().getNode();
-    }
-
-    @Override
-    public IGridNode getGridNode(Direction dir) {
-        var node = this.getMainNode().getNode();
-
-        // Check if the proxy exposes the node on this side
-        if (node != null && node.isExposedOnSide(dir)) {
-            return node;
-        }
-
-        return null;
     }
 
     @Override
@@ -111,6 +92,12 @@ public class AENetworkBlockEntity extends AEBaseBlockEntity implements IInWorldG
                 this.markForUpdate();
             }
         }
+    }
+
+    @Override
+    protected void onOrientationChanged(BlockOrientation orientation) {
+        super.onOrientationChanged(orientation);
+        getMainNode().setExposedOnSides(orientation.getSides(getGridConnectableSides()));
     }
 
     @Override

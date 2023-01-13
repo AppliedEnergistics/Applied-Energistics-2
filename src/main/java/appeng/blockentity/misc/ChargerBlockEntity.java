@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -47,6 +48,8 @@ import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.block.orientation.BlockOrientation;
+import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.settings.TickRates;
@@ -64,11 +67,11 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     public ChargerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode()
-                .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .setFlags()
                 .setIdlePowerUsage(0)
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(POWER_MAXIMUM_AMOUNT);
+        this.setPowerSides(getOrientation().getSides(getGridConnectableSides()));
     }
 
     @Override
@@ -77,12 +80,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void onReady() {
-        var validSides = EnumSet.allOf(Direction.class);
-        validSides.remove(this.getForward());
-
-        this.getMainNode().setExposedOnSides(validSides);
-        super.onReady();
+    public Set<RelativeSide> getGridConnectableSides() {
+        return EnumSet.complementOf(EnumSet.of(RelativeSide.FRONT));
     }
 
     @Override
@@ -113,14 +112,10 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
+    protected void onOrientationChanged(BlockOrientation orientation) {
+        super.onOrientationChanged(orientation);
 
-        var validSides = EnumSet.allOf(Direction.class);
-        validSides.remove(this.getForward());
-
-        this.getMainNode().setExposedOnSides(validSides);
-        this.setPowerSides(validSides);
+        this.setPowerSides(orientation.getSides(getGridConnectableSides()));
     }
 
     @Override

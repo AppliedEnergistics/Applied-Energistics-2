@@ -46,8 +46,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.BlockOrientation;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.misc.ChargerBlockEntity;
-import appeng.client.render.FacingToRotation;
 import appeng.client.render.effects.LightningArcParticleData;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
@@ -57,6 +59,11 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
     public ChargerBlock() {
         super(defaultProps(Material.METAL).noOcclusion());
+    }
+
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.full();
     }
 
     @Override
@@ -95,7 +102,7 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                 return;
             }
 
-            var rotation = FacingToRotation.get(blockEntity.getForward(), blockEntity.getUp());
+            var rotation = BlockOrientation.get(blockEntity);
 
             for (int bolts = 0; bolts < 3; bolts++) {
                 // Slightly offset the lightning arc on the x/z plane
@@ -106,10 +113,10 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
                 // Account for the rotation while doing this.
                 var center = new Vector3f(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
                 var origin = new Vector3f(xOff, -0.3f, zOff);
-                origin.rotate(rotation.getRot());
+                origin.rotate(rotation.getQuaternion());
                 origin.add(center);
                 var target = new Vector3f(xOff, 0.3f, zOff);
-                target.rotate(rotation.getRot());
+                target.rotate(rotation.getQuaternion());
                 target.add(center);
 
                 // Split the arcs between arc coming from the top/bottom of the charger since it's symmetrical

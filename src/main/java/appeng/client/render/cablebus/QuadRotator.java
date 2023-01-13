@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.Direction;
 
-import appeng.client.render.FacingToRotation;
+import appeng.block.orientation.BlockOrientation;
 
 /**
  * Assuming a default-orientation of forward=NORTH and up=UP, this class rotates a given list of quads to the desired
@@ -40,11 +40,11 @@ public class QuadRotator implements RenderContext.QuadTransform {
 
     public static final RenderContext.QuadTransform NULL_TRANSFORM = quad -> true;
 
-    private static final EnumMap<FacingToRotation, RenderContext.QuadTransform> TRANSFORMS = new EnumMap<>(
-            FacingToRotation.class);
+    private static final EnumMap<BlockOrientation, RenderContext.QuadTransform> TRANSFORMS = new EnumMap<>(
+            BlockOrientation.class);
 
     static {
-        for (FacingToRotation rotation : FacingToRotation.values()) {
+        for (BlockOrientation rotation : BlockOrientation.values()) {
             if (rotation.isRedundant()) {
                 TRANSFORMS.put(rotation, NULL_TRANSFORM);
             } else {
@@ -53,20 +53,20 @@ public class QuadRotator implements RenderContext.QuadTransform {
         }
     }
 
-    private final FacingToRotation rotation;
+    private final BlockOrientation rotation;
 
     private final Quaternionf quaternion;
 
-    private QuadRotator(FacingToRotation rotation) {
+    private QuadRotator(BlockOrientation rotation) {
         this.rotation = rotation;
-        this.quaternion = rotation.getRot();
+        this.quaternion = rotation.getQuaternion();
     }
 
-    public static RenderContext.QuadTransform get(Direction newForward, Direction newUp) {
-        return get(getRotation(newForward, newUp));
+    public static RenderContext.QuadTransform get(Direction facing, int spin) {
+        return get(BlockOrientation.get(facing, spin));
     }
 
-    public static RenderContext.QuadTransform get(FacingToRotation rotation) {
+    public static RenderContext.QuadTransform get(BlockOrientation rotation) {
         if (rotation.isRedundant()) {
             return NULL_TRANSFORM; // This is the default orientation
         }
@@ -112,19 +112,6 @@ public class QuadRotator implements RenderContext.QuadTransform {
         quad.fromVanilla(data, 0, false);
 
         return true;
-    }
-
-    private static FacingToRotation getRotation(Direction forward, Direction up) {
-        // Sanitize forward/up
-        if (forward.getAxis() == up.getAxis()) {
-            if (up.getAxis() == Direction.Axis.Y) {
-                up = Direction.NORTH;
-            } else {
-                up = Direction.UP;
-            }
-        }
-
-        return FacingToRotation.get(forward, up);
     }
 
 }

@@ -21,32 +21,39 @@ package appeng.block;
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
-import appeng.api.util.IOrientable;
 import appeng.api.util.IOrientableBlock;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
 import appeng.helpers.AEMaterials;
-import appeng.util.Platform;
 
-public abstract class AEBaseBlock extends Block {
-
-    private boolean isInventory = false;
+public abstract class AEBaseBlock extends Block implements IOrientableBlock {
 
     protected AEBaseBlock(BlockBehaviour.Properties props) {
         super(props);
+    }
+
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.none();
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        for (var property : getOrientationStrategy().getProperties()) {
+            builder.add(property);
+        }
     }
 
     /**
@@ -78,101 +85,8 @@ public abstract class AEBaseBlock extends Block {
         }
     }
 
-    @Override
-    public boolean hasAnalogOutputSignal(BlockState state) {
-        return this.isInventory();
-    }
-
-    @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        return 0;
-    }
-
     public void addToMainCreativeTab(CreativeModeTab.Output output) {
         output.accept(this);
-    }
-
-    /**
-     * Rotates around the given Axis (usually the current up axis).
-     */
-    public boolean rotateAroundFaceAxis(LevelAccessor level, BlockPos pos, Direction face) {
-        final IOrientable rotatable = this.getOrientable(level, pos);
-
-        if (rotatable != null && rotatable.canBeRotated()) {
-            if (this.hasCustomRotation()) {
-                this.customRotateBlock(rotatable, face);
-                return true;
-            } else {
-                Direction forward = rotatable.getForward();
-                Direction up = rotatable.getUp();
-
-                for (int rs = 0; rs < 4; rs++) {
-                    forward = Platform.rotateAround(forward, face);
-                    up = Platform.rotateAround(up, face);
-
-                    if (this.isValidOrientation(level, pos, forward, up)) {
-                        rotatable.setOrientation(forward, up);
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public final Direction mapRotation(IOrientable ori, Direction dir) {
-        // case DOWN: return bottomIcon;
-        // case UP: return blockIcon;
-        // case NORTH: return northIcon;
-        // case SOUTH: return southIcon;
-        // case WEST: return sideIcon;
-        // case EAST: return sideIcon;
-
-        final Direction forward = ori.getForward();
-        final Direction up = ori.getUp();
-
-        if (forward == null || up == null) {
-            return dir;
-        }
-
-        final int west_x = forward.getStepY() * up.getStepZ() - forward.getStepZ() * up.getStepY();
-        final int west_y = forward.getStepZ() * up.getStepX() - forward.getStepX() * up.getStepZ();
-        final int west_z = forward.getStepX() * up.getStepY() - forward.getStepY() * up.getStepX();
-
-        Direction west = null;
-        for (Direction dx : Direction.values()) {
-            if (dx.getStepX() == west_x && dx.getStepY() == west_y && dx.getStepZ() == west_z) {
-                west = dx;
-            }
-        }
-
-        if (west == null) {
-            return dir;
-        }
-
-        if (dir == forward) {
-            return Direction.SOUTH;
-        }
-        if (dir == forward.getOpposite()) {
-            return Direction.NORTH;
-        }
-
-        if (dir == up) {
-            return Direction.UP;
-        }
-        if (dir == up.getOpposite()) {
-            return Direction.DOWN;
-        }
-
-        if (dir == west) {
-            return Direction.WEST;
-        }
-        if (dir == west.getOpposite()) {
-            return Direction.EAST;
-        }
-
-        return null;
     }
 
     @Override
@@ -187,32 +101,112 @@ public abstract class AEBaseBlock extends Block {
         return id != BuiltInRegistries.BLOCK.getDefaultKey() ? id : null;
     }
 
-    protected boolean hasCustomRotation() {
-        return false;
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        var state = this.defaultBlockState();
+        return getOrientationStrategy().getStateForPlacement(state, context);
     }
 
-    protected void customRotateBlock(IOrientable rotatable, Direction axis) {
-
-    }
-
-    protected IOrientable getOrientable(BlockGetter level, BlockPos pos) {
-        if (this instanceof IOrientableBlock orientable) {
-            return orientable.getOrientable(level, pos);
-        }
-        return null;
-    }
-
-    protected boolean isValidOrientation(LevelAccessor level, BlockPos pos, Direction forward,
-            Direction up) {
-        return true;
-    }
-
-    protected boolean isInventory() {
-        return this.isInventory;
-    }
-
-    protected void setInventory(boolean isInventory) {
-        this.isInventory = isInventory;
-    }
-
+    //
+//    /**
+//     * Called when a player uses a wrench on this block entity to rotate it.
+//     */
+//    public InteractionResult rotateWithWrench(Player player, Level level, BlockHitResult hitResult) {
+//        BlockPos pos = hitResult.getBlockPos();
+//
+//        var block = getBlockState().getBlock();
+//        if (block instanceof AEBaseBlock aeBlock) {
+//            if (aeBlock.rotateAroundFaceAxis(level, pos, hitResult.getDirection())) {
+//                return InteractionResult.sidedSuccess(level.isClientSide());
+//            }
+//        }
+//
+//        return InteractionResult.PASS;
+//    }
+//    /**
+//     * TODO: 1.17 Refactor to use Block#onBlockPlacedBy(), BlockItem#setTileEntityNBT() or equivalent.
+//     */
+//    @Override
+//    public InteractionResult place(BlockPlaceContext context) {
+//
+//        Direction up = null;
+//        Direction forward = null;
+//
+//        Direction side = context.getClickedFace();
+//        Player player = context.getPlayer();
+//
+//        if (this.blockType instanceof AEBaseEntityBlock) {
+//            if (this.blockType instanceof LightDetectorBlock) {
+//                up = side;
+//                if (up == Direction.UP || up == Direction.DOWN) {
+//                    forward = Direction.SOUTH;
+//                } else {
+//                    forward = Direction.UP;
+//                }
+//            } else if (this.blockType instanceof WirelessBlock) {
+//                forward = side;
+//                if (forward == Direction.UP || forward == Direction.DOWN) {
+//                    up = Direction.SOUTH;
+//                } else {
+//                    up = Direction.UP;
+//                }
+//            } else {
+//                up = Direction.UP;
+//                forward = context.getHorizontalDirection().getOpposite();
+//
+//                if (player != null) {
+//                    if (player.getXRot() > 65) {
+//                        up = forward.getOpposite();
+//                        forward = Direction.UP;
+//                    } else if (player.getXRot() < -65) {
+//                        up = forward.getOpposite();
+//                        forward = Direction.DOWN;
+//                    }
+//                }
+//            }
+//        }
+//
+//        IOrientable ori = null;
+//        if (this.blockType instanceof IOrientableBlock) {
+//            ori = ((IOrientableBlock) this.blockType).getOrientable(context.getLevel(), context.getClickedPos());
+//            up = side;
+//            forward = Direction.SOUTH;
+//            if (up.getStepY() == 0) {
+//                forward = Direction.UP;
+//            }
+//        }
+//
+//        if (!this.blockType.isValidOrientation(context.getLevel(), context.getClickedPos(), forward, up)) {
+//            return InteractionResult.FAIL;
+//        }
+//
+//        InteractionResult result = super.place(context);
+//        if (!result.consumesAction()) {
+//            return result;
+//        }
+//
+//        if (this.blockType instanceof AEBaseEntityBlock && !(this.blockType instanceof LightDetectorBlock)) {
+//            final AEBaseBlockEntity blockEntity = ((AEBaseEntityBlock<?>) this.blockType).getBlockEntity(
+//                    context.getLevel(),
+//                    context.getClickedPos());
+//            ori = blockEntity;
+//
+//            if (blockEntity == null) {
+//                return result;
+//            }
+//
+//            if (ori.canBeRotated() && !this.blockType.hasCustomRotation()) {
+//                ori.setOrientation(forward, up);
+//            }
+//
+//            if (blockEntity instanceof IOwnerAwareBlockEntity ownerAware) {
+//                ownerAware.setOwner(player);
+//            }
+//        } else if (this.blockType instanceof IOrientableBlock) {
+//            ori.setOrientation(forward, up);
+//        }
+//
+//        return result;
+//
+//    }
 }

@@ -76,7 +76,7 @@ import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.FacadeItem;
 import appeng.me.GridConnection;
-import appeng.me.GridNode;
+import appeng.me.InWorldGridNode;
 import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -454,9 +454,8 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         for (var direction : Direction.values()) {
             var part = getPart(direction);
             if (part != null) {
-                var node = part.getExternalFacingNode();
-                if (node != null) {
-                    ((GridNode) node).setExposedOnSides(EnumSet.of(direction));
+                if (part.getExternalFacingNode() instanceof InWorldGridNode inWorldNode) {
+                    inWorldNode.setExposedOnSides(EnumSet.of(direction));
                 }
             }
         }

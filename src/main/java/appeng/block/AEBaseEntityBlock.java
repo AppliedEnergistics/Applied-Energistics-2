@@ -47,7 +47,6 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.implementations.items.IMemoryCard;
 import appeng.api.implementations.items.MemoryCardMessages;
-import appeng.api.util.IOrientable;
 import appeng.block.networking.CableBusBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -58,7 +57,7 @@ import appeng.util.SettingsFrom;
 
 /**
  * Base class for blocks that have a {@link BlockEntity}.
- * 
+ *
  * @param <T> The type of {@link BlockEntity} or this block.
  */
 public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEBaseBlock implements EntityBlock {
@@ -86,7 +85,6 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
         this.blockEntityType = blockEntityType;
         this.serverTicker = serverTicker;
         this.clientTicker = clientTicker;
-        this.setInventory(AEBaseInvBlockEntity.class.isAssignableFrom(blockEntityClass));
     }
 
     @Nullable
@@ -125,26 +123,31 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.getBlock() == state.getBlock()) {
+        if (newState.is(state.getBlock())) {
             return; // Just a block state change
         }
 
-        final AEBaseBlockEntity te = this.getBlockEntity(level, pos);
+        var te = this.getBlockEntity(level, pos);
         if (te != null) {
-            final ArrayList<ItemStack> drops = new ArrayList<>();
+            var drops = new ArrayList<ItemStack>();
             te.addAdditionalDrops(level, pos, drops);
 
             // Cry ;_; ...
             Platform.spawnDrops(level, pos, drops);
         }
 
-        // super will remove the TE, as it is not an instance of BlockContainer
+        // super will remove the BE, as it is not an instance of BlockContainer
         super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return AEBaseInvBlockEntity.class.isAssignableFrom(blockEntityClass);
+    }
+
+    @Override
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        final BlockEntity te = this.getBlockEntity(level, pos);
+        var te = this.getBlockEntity(level, pos);
         if (te instanceof AEBaseInvBlockEntity invBlockEntity) {
             if (invBlockEntity.getInternalInventory().size() > 0) {
                 return invBlockEntity.getInternalInventory().getRedstoneSignal();
@@ -233,11 +236,6 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             InteractionHand hand,
             @Nullable ItemStack heldItem, BlockHitResult hit) {
         return InteractionResult.PASS;
-    }
-
-    @Override
-    public IOrientable getOrientable(BlockGetter level, BlockPos pos) {
-        return this.getBlockEntity(level, pos);
     }
 
     /**

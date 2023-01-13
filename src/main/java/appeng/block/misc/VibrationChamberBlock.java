@@ -37,6 +37,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.core.AEConfig;
 import appeng.menu.MenuOpener;
@@ -63,6 +65,11 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);
+    }
+
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.full();
     }
 
     @Override

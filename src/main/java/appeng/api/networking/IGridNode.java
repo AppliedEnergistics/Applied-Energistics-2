@@ -169,11 +169,6 @@ public interface IGridNode {
     double getIdlePowerUsage();
 
     /**
-     * @return True if the grid node is accessible on the given side of the host.
-     */
-    boolean isExposedOnSide(Direction side);
-
-    /**
      * @return An item that will only be used to represent this grid node in user interfaces. Can return an
      *         <code>null</code> to indicate the node should not be shown in the UI.
      */

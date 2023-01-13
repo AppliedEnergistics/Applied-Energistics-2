@@ -163,9 +163,9 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
                     throw new IllegalStateException("Trying to use an unregistered part model: " + model);
                 }
 
-                Direction spinDirection = getPartSpin(facing, partModelData);
+                var spin = getPartSpin(partModelData);
 
-                context.pushTransform(QuadRotator.get(facing, spinDirection));
+                context.pushTransform(QuadRotator.get(facing, spin));
                 if (bakedModel instanceof IDynamicPartBakedModel dynamicPartBakedModel) {
                     dynamicPartBakedModel.emitQuads(blockView, state, pos, randomSupplier, context,
                             facing, partModelData);
@@ -209,13 +209,12 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
         return firstType == secondType && cableType == firstType && cableType == secondType;
     }
 
-    private static Direction getPartSpin(Direction facing, Object partModelData) {
-        if (partModelData instanceof ReportingModelData) {
-            byte spin = ((ReportingModelData) partModelData).getSpin();
-            return SPIN_TO_DIRECTION[facing.ordinal() * 4 + spin];
+    private static int getPartSpin(Object partModelData) {
+        if (partModelData instanceof ReportingModelData reportingModelData) {
+            return reportingModelData.getSpin();
         }
 
-        return Direction.UP;
+        return 0;
     }
 
     private Mesh buildCableModel(CableBusRenderState renderState) {

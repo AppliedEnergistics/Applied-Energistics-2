@@ -21,6 +21,7 @@ package appeng.blockentity.crafting;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.google.common.collect.Iterators;
 
@@ -43,6 +44,8 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.orientation.BlockOrientation;
+import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
@@ -63,7 +66,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public CraftingBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL)
-                .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .addService(IGridMultiblock.class, this::getMultiblockNodes);
     }
 
@@ -73,11 +75,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
             return Items.AIR;
         }
         return getUnitBlock().type.getItemFromType();
-    }
-
-    @Override
-    public boolean canBeRotated() {
-        return false;
     }
 
     @Override
@@ -151,17 +148,27 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
 
         if (updateFormed) {
-            if (formed) {
-                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
-            } else {
-                this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
-            }
+            updateGridNodeExposedSides();
         }
+    }
+
+    @Override
+    public Set<RelativeSide> getGridConnectableSides() {
+        if (isFormed()) {
+            return EnumSet.allOf(RelativeSide.class);
+        } else {
+            return EnumSet.noneOf(RelativeSide.class);
+        }
+    }
+
+    private void updateGridNodeExposedSides() {
+        var orientation = BlockOrientation.get(getBlockState());
+        getMainNode().setExposedOnSides(orientation.getSides(getGridConnectableSides()));
     }
 
     public boolean isFormed() {
         if (isClientSide()) {
-            return this.level.getBlockState(this.worldPosition).getValue(AbstractCraftingUnitBlock.FORMED);
+            return getBlockState().getValue(AbstractCraftingUnitBlock.FORMED);
         }
         return this.cluster != null;
     }
@@ -287,7 +294,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     public Object getRenderAttachmentData() {
-        return new CraftingCubeModelData(getUp(), getForward(), getConnections());
+        return new CraftingCubeModelData(getConnections());
     }
 
     protected EnumSet<Direction> getConnections() {

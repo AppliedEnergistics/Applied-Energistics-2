@@ -1,23 +1,23 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "block/block",
-	"textures": {
-		"wood": "ae2:block/crank"
-	},
-	"elements": [
-		{
-			"name": "Crank Base",
-			"from": [6, 6, 13],
-			"to": [10, 10, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
-			"faces": {
-				"north": {"uv": [3, 0, 7, 4], "rotation": 180, "texture": "#wood"},
-				"east": {"uv": [0, 0, 3, 4], "texture": "#wood"},
-				"south": {"uv": [7, 0, 11, 4], "texture": "#wood"},
-				"west": {"uv": [0, 0, 3, 4], "rotation": 180, "texture": "#wood"},
-				"up": {"uv": [0, 0, 3, 4], "rotation": 270, "texture": "#wood"},
-				"down": {"uv": [0, 0, 3, 4], "rotation": 90, "texture": "#wood"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "parent": "block/block",
+  "textures": {
+    "wood": "ae2:block/crank"
+  },
+  "elements": [
+    {
+      "name": "Crank Base",
+      "from": [6, 6, 13],
+      "to": [10, 10, 16],
+      "rotation": { "angle": 0, "axis": "y", "origin": [8, 8, 8] },
+      "faces": {
+        "north": { "uv": [3, 0, 7, 4], "rotation": 180, "texture": "#wood" },
+        "east": { "uv": [0, 0, 3, 4], "texture": "#wood" },
+        "south": { "uv": [7, 0, 11, 4], "texture": "#wood" },
+        "west": { "uv": [0, 0, 3, 4], "rotation": 180, "texture": "#wood" },
+        "up": { "uv": [0, 0, 3, 4], "rotation": 270, "texture": "#wood" },
+        "down": { "uv": [0, 0, 3, 4], "rotation": 90, "texture": "#wood" }
+      }
+    }
+  ]
 }

@@ -21,7 +21,6 @@ package appeng.block.crafting;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +33,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.api.util.IOrientable;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.menu.locator.MenuLocators;
@@ -85,17 +83,5 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
-    }
-
-    @Override
-    protected boolean hasCustomRotation() {
-        return true;
-    }
-
-    @Override
-    protected void customRotateBlock(IOrientable rotatable, Direction axis) {
-        if (rotatable instanceof PatternProviderBlockEntity patternProvider) {
-            patternProvider.setSide(axis);
-        }
     }
 }

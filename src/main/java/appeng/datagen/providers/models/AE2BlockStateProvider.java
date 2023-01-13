@@ -1,6 +1,7 @@
 package appeng.datagen.providers.models;
 
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
@@ -88,6 +89,13 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
         ModelFile stairsOuter = models().stairsOuter(baseName + "_outer", side, bottom, top);
         stairsBlock(stairs.block(), stairsModel, stairsInner, stairsOuter);
         simpleBlockItem(stairs.block(), stairsModel);
+    }
+
+    protected VariantsBuilder rotatedVariants(BlockDefinition<?> blockDef) {
+        Block block = blockDef.block();
+        var builder = new VariantsBuilder(block);
+        registeredBlocks.put(block, builder);
+        return builder;
     }
 
     @Override

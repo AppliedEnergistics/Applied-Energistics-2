@@ -40,7 +40,6 @@ public class BasicFluidCellGuiHandler implements ICellGuiHandler {
 
     @Override
     public void openChestGui(Player player, IChestOrDrive chest, ICellHandler cellHandler, ItemStack cell) {
-        chest.getUp();
         MenuOpener.open(MEStorageMenu.TYPE, player,
                 MenuLocators.forBlockEntity((BlockEntity) chest));
     }

@@ -1,36 +1,19 @@
 {
+  "credit": "Made with Blockbench",
   "textures": {
     "torch": "ae2:block/wireless_access_point"
   },
   "elements": [
     {
-      "from": [7, 7, 1],
-      "to": [9, 9, 9],
+      "from": [7, 7, 7],
+      "to": [9, 9, 15],
+      "rotation": { "angle": 0, "axis": "y", "origin": [0, 0, 16] },
       "faces": {
-        "up": {
-          "texture": "#torch",
-          "uv": [1, 7, 9, 9],
-          "rotation": 90
-        },
-        "down": {
-          "texture": "#torch",
-          "uv": [1, 7, 9, 9],
-          "rotation": 270
-        },
-        "east": {
-          "texture": "#torch",
-          "uv": [1, 7, 9, 9],
-          "rotation": 180
-        },
-        "west": {
-          "texture": "#torch",
-          "uv": [1, 7, 9, 9]
-        },
-        "south": {
-          "texture": "#torch",
-          "uv": [7, 7, 9, 9],
-          "rotation": 270
-        }
+        "north": { "uv": [7, 9, 9, 7], "rotation": 270, "texture": "#torch" },
+        "east": { "uv": [9, 7, 1, 9], "rotation": 180, "texture": "#torch" },
+        "west": { "uv": [9, 7, 1, 9], "texture": "#torch" },
+        "up": { "uv": [9, 7, 1, 9], "rotation": 90, "texture": "#torch" },
+        "down": { "uv": [9, 7, 1, 9], "rotation": 270, "texture": "#torch" }
       }
     }
   ]

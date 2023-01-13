@@ -29,8 +29,8 @@ public class CraftingMonitorModelData extends CraftingCubeModelData {
 
     private final AEColor color;
 
-    public CraftingMonitorModelData(Direction up, Direction forward, EnumSet<Direction> connections, AEColor color) {
-        super(up, forward, connections);
+    public CraftingMonitorModelData(EnumSet<Direction> connections, AEColor color) {
+        super(connections);
         this.color = Objects.requireNonNull(color);
     }
 

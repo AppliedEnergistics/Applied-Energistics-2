@@ -18,13 +18,10 @@
 
 package appeng.block.misc;
 
-import appeng.api.implementations.blockentities.ICrankable;
-import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
-import appeng.block.orientation.RelativeSide;
-import appeng.blockentity.misc.CrankBlockEntity;
-import appeng.util.FakePlayer;
+import java.util.Arrays;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -41,9 +38,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import appeng.api.implementations.blockentities.ICrankable;
+import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
+import appeng.block.orientation.RelativeSide;
+import appeng.blockentity.misc.CrankBlockEntity;
+import appeng.util.FakePlayer;
 
 public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 
@@ -57,7 +59,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 
     @Override
     public InteractionResult onActivated(Level level, BlockPos pos, Player player, InteractionHand hand,
-                                         @Nullable ItemStack heldItem, BlockHitResult hit) {
+            @Nullable ItemStack heldItem, BlockHitResult hit) {
         if (player instanceof FakePlayer || player == null) {
             this.dropCrank(level, pos);
             return InteractionResult.sidedSuccess(level.isClientSide());
@@ -85,7 +87,7 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-                                boolean isMoving) {
+            boolean isMoving) {
         // Does the change originate from the block we're attached to?
         if (getAttachedToPos(state, pos).equals(fromPos)) {
             if (getCrankable(state, level, pos) == null) {

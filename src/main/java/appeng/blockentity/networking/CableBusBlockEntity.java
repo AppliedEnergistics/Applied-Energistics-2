@@ -154,11 +154,6 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public boolean canBeRotated() {
-        return false;
-    }
-
-    @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         this.getCableBus().addAdditionalDrops(drops);
     }

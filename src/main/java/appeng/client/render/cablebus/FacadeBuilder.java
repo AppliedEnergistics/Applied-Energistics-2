@@ -111,7 +111,7 @@ public class FacadeBuilder {
                 QuadEmitter emitter = meshBuilder.getEmitter();
 
                 // Rotate quads accordingly
-                RenderContext.QuadTransform rotator = QuadRotator.get(facing, Direction.UP);
+                RenderContext.QuadTransform rotator = QuadRotator.get(facing, 0);
 
                 for (BakedQuad quad : partQuads) {
                     emitter.fromVanilla(quad.getVertices(), 0, false);
@@ -149,7 +149,7 @@ public class FacadeBuilder {
 
         // Create pre-rotated variants of the cable anchor stems
         for (Direction side : Direction.values()) {
-            RenderContext.QuadTransform rotator = QuadRotator.get(side, Direction.UP);
+            RenderContext.QuadTransform rotator = QuadRotator.get(side, 0);
 
             MeshBuilder meshBuilder = renderer.meshBuilder();
             QuadEmitter emitter = meshBuilder.getEmitter();

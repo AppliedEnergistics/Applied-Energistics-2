@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.mojang.math.Transformation;
+
 import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -54,11 +56,12 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
     private final RenderContext.QuadTransform[] slotTransforms;
 
-    public DriveBakedModel(BakedModel bakedBase, Map<Item, BakedModel> cellModels, BakedModel defaultCell) {
+    public DriveBakedModel(Transformation rotation, BakedModel bakedBase, Map<Item, BakedModel> cellModels,
+            BakedModel defaultCell) {
         this.wrapped = bakedBase;
         this.defaultCellModel = defaultCell;
         this.defaultCell = convertCellModel(defaultCell);
-        this.slotTransforms = buildSlotTransforms();
+        this.slotTransforms = buildSlotTransforms(rotation);
         this.bakedCells = convertCellModels(cellModels);
         this.cellModels = cellModels;
     }
@@ -142,7 +145,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         return model != null ? model : defaultCellModel;
     }
 
-    private RenderContext.QuadTransform[] buildSlotTransforms() {
+    private RenderContext.QuadTransform[] buildSlotTransforms(Transformation rotation) {
         RenderContext.QuadTransform[] result = new RenderContext.QuadTransform[5 * 2];
 
         for (int row = 0; row < 5; row++) {
@@ -150,6 +153,7 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
 
                 Vector3f translation = new Vector3f();
                 getSlotOrigin(row, col, translation);
+                rotation.getLeftRotation().transform(translation);
 
                 result[getSlotIndex(row, col)] = new QuadTranslator(translation.x(), translation.y(),
                         translation.z());

@@ -28,6 +28,7 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.collect.Lists;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import io.netty.buffer.Unpooled;
@@ -58,9 +59,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
-import appeng.api.util.IOrientable;
-import appeng.block.AEBaseBlock;
+import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.BlockOrientation;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
+import appeng.block.orientation.RelativeSide;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.helpers.ICustomNameObject;
@@ -73,7 +77,7 @@ import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
-        implements IOrientable, ICustomNameObject, ISegmentedInventory,
+        implements ICustomNameObject, ISegmentedInventory,
         RenderAttachmentBlockEntity {
 
     static {
@@ -86,8 +90,6 @@ public class AEBaseBlockEntity extends BlockEntity
     private static final Map<BlockEntityType<?>, Item> REPRESENTATIVE_ITEMS = new HashMap<>();
     @Nullable
     private String customName;
-    private Direction forward = Direction.NORTH;
-    private Direction up = Direction.UP;
     private boolean setChangedQueued = false;
     /**
      * For diagnosing issues with the delayed block entity initialization, this tracks how often this BE has been queued
@@ -99,6 +101,10 @@ public class AEBaseBlockEntity extends BlockEntity
      * subsequently be equal.
      */
     private byte readyInvoked = 0;
+
+    // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
+    @org.jetbrains.annotations.Nullable
+    private BlockOrientation pendingOrientationChange;
 
     public AEBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -151,12 +157,14 @@ public class AEBaseBlockEntity extends BlockEntity
             this.customName = null;
         }
 
-        try {
-            if (this.canBeRotated()) {
-                this.forward = Direction.valueOf(data.getString("forward").toUpperCase(Locale.ROOT));
-                this.up = Direction.valueOf(data.getString("up").toUpperCase(Locale.ROOT));
+        // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
+        if (data.contains("forward", Tag.TAG_STRING) && data.contains("up", Tag.TAG_STRING)) {
+            try {
+                var forward = Direction.valueOf(data.getString("forward").toUpperCase(Locale.ROOT));
+                var up = Direction.valueOf(data.getString("up").toUpperCase(Locale.ROOT));
+                pendingOrientationChange = BlockOrientation.get(forward, up);
+            } catch (IllegalArgumentException ignored) {
             }
-        } catch (IllegalArgumentException ignored) {
         }
     }
 
@@ -171,11 +179,6 @@ public class AEBaseBlockEntity extends BlockEntity
 
         super.saveAdditional(data);
 
-        if (this.canBeRotated()) {
-            data.putString("forward", this.getForward().name());
-            data.putString("up", this.getUp().name());
-        }
-
         if (this.customName != null) {
             data.putString("customName", this.customName);
         }
@@ -188,6 +191,14 @@ public class AEBaseBlockEntity extends BlockEntity
     @OverridingMethodsMustInvokeSuper
     public void onReady() {
         readyInvoked++;
+
+        if (pendingOrientationChange != null) {
+            level.setBlockAndUpdate(getBlockPos(), getOrientationStrategy().setOrientation(
+                    getBlockState(),
+                    pendingOrientationChange.getSide(RelativeSide.FRONT),
+                    pendingOrientationChange.getSpin()));
+            pendingOrientationChange = null;
+        }
     }
 
     protected void scheduleInit() {
@@ -229,24 +240,10 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     protected boolean readFromStream(FriendlyByteBuf data) {
-        if (this.canBeRotated()) {
-            final Direction old_Forward = this.forward;
-            final Direction old_Up = this.up;
-
-            final byte orientation = data.readByte();
-            this.forward = Direction.values()[orientation & 0x7];
-            this.up = Direction.values()[orientation >> 3];
-
-            return this.forward != old_Forward || this.up != old_Up;
-        }
         return false;
     }
 
     protected void writeToStream(FriendlyByteBuf data) {
-        if (this.canBeRotated()) {
-            final byte orientation = (byte) (this.up.ordinal() << 3 | this.forward.ordinal());
-            data.writeByte(orientation);
-        }
     }
 
     /**
@@ -290,33 +287,41 @@ public class AEBaseBlockEntity extends BlockEntity
         }
     }
 
-    /**
-     * By default all blocks can have orientation, this handles saving, and loading, as well as synchronization.
-     *
-     * @return true if block entity can be rotated
-     */
-    @Override
-    public boolean canBeRotated() {
-        return true;
+    protected final BlockOrientation getOrientation() {
+        return BlockOrientation.get(getBlockState());
     }
 
-    @Override
+    protected final IOrientationStrategy getOrientationStrategy() {
+        var blockState = getBlockState();
+        if (blockState.getBlock() instanceof IOrientableBlock orientableBlock) {
+            return orientableBlock.getOrientationStrategy();
+        } else {
+            return OrientationStrategies.none();
+        }
+    }
+
     public Direction getForward() {
-        return this.forward;
+        return getOrientationStrategy().getFacing(getBlockState());
     }
 
-    @Override
     public Direction getUp() {
-        return this.up;
+        return getOrientationStrategy().getSide(getBlockState(), RelativeSide.TOP);
     }
 
-    @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        this.forward = inForward;
-        this.up = inUp;
-        this.markForUpdate();
-        Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
-        this.saveChanges();
+    public void setOrientation(Direction forward, Direction up) {
+        var currentState = getBlockState();
+        var newState = getOrientationStrategy().setOrientation(currentState, forward, up);
+        if (currentState != newState) {
+            AELog.blockUpdate(this.worldPosition, currentState, newState, this);
+            this.level.setBlockAndUpdate(worldPosition, newState);
+        }
+    }
+
+    /**
+     * Called when the orientation of the block the block-entity is attached to is changed.
+     */
+    @ApiStatus.OverrideOnly
+    protected void onOrientationChanged(BlockOrientation orientation) {
     }
 
     /**
@@ -422,7 +427,7 @@ public class AEBaseBlockEntity extends BlockEntity
     @Nullable
     @Override
     public Object getRenderAttachmentData() {
-        return new AEModelData(up, forward);
+        return new AEModelData();
     }
 
     /**
@@ -456,27 +461,27 @@ public class AEBaseBlockEntity extends BlockEntity
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
-    /**
-     * Called when a player uses a wrench on this block entity to rotate it.
-     */
-    public InteractionResult rotateWithWrench(Player player, Level level, BlockHitResult hitResult) {
-        BlockPos pos = hitResult.getBlockPos();
-
-        var block = getBlockState().getBlock();
-        if (block instanceof AEBaseBlock aeBlock) {
-            if (aeBlock.rotateAroundFaceAxis(level, pos, hitResult.getDirection())) {
-                return InteractionResult.sidedSuccess(level.isClientSide());
-            }
-        }
-
-        return InteractionResult.PASS;
-    }
-
     public byte getQueuedForReady() {
         return queuedForReady;
     }
 
     public byte getReadyInvoked() {
         return readyInvoked;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void setBlockState(BlockState state) {
+        var strategy = getOrientationStrategy();
+        var previousOrientation = BlockOrientation.get(strategy, getBlockState());
+
+        super.setBlockState(state);
+
+        // This method is called when the blockstate of an existing block-entity is changed
+        // We use this to detect a change to rotation
+        var newOrientation = BlockOrientation.get(strategy, getBlockState());
+        if (previousOrientation != newOrientation) {
+            onOrientationChanged(newOrientation);
+        }
     }
 }

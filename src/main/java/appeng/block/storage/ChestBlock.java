@@ -35,13 +35,15 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.storage.cells.CellState;
 import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.InteractionUtil;
 
 public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
 
-    private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
+    public final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
     public ChestBlock() {
         super(defaultProps(Material.METAL));
@@ -52,6 +54,11 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(LIGHTS_ON);
+    }
+
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.full();
     }
 
     @Override

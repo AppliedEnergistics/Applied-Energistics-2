@@ -44,6 +44,8 @@ public class InWorldGridNode extends GridNode {
 
     private final BlockPos location;
 
+    private final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(Direction.class);
+
     public <T> InWorldGridNode(ServerLevel level,
             BlockPos location,
             T owner,
@@ -136,7 +138,8 @@ public class InWorldGridNode extends GridNode {
 
             var theirSide = ourSide.getOpposite();
             IGridNode otherNode = connection.getOtherSide(this);
-            if (!otherNode.isExposedOnSide(theirSide) || !hasCompatibleColor(otherNode)) {
+            if (!(otherNode instanceof InWorldGridNode otherInWorldNode) || !otherInWorldNode.isExposedOnSide(theirSide)
+                    || !hasCompatibleColor(otherNode)) {
                 connection.destroy();
                 continue;
             }
@@ -171,4 +174,17 @@ public class InWorldGridNode extends GridNode {
     public BlockPos getLocation() {
         return location;
     }
+
+    public void setExposedOnSides(Set<Direction> directions) {
+        if (!exposedOnSides.equals(directions)) {
+            exposedOnSides.clear();
+            exposedOnSides.addAll(directions);
+            updateState();
+        }
+    }
+
+    public boolean isExposedOnSide(Direction side) {
+        return getMyGrid() != null && exposedOnSides.contains(side);
+    }
+
 }

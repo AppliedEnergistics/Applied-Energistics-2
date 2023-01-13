@@ -107,11 +107,6 @@ public class CraftingMonitorBlockEntity extends CraftingBlockEntity implements I
 
     @Override
     public Object getRenderAttachmentData() {
-        return new CraftingMonitorModelData(getUp(), getForward(), getConnections(), getColor());
-    }
-
-    @Override
-    public boolean canBeRotated() {
-        return true;
+        return new CraftingMonitorModelData(getConnections(), getColor());
     }
 }

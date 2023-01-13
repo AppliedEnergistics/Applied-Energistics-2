@@ -41,9 +41,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.block.orientation.BlockOrientation;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.render.BakedModelUnwrapper;
-import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 import appeng.core.definitions.AEBlocks;
 
@@ -87,8 +87,8 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        FacingToRotation rotation = FacingToRotation.get(chest.getForward(), chest.getUp());
-        rotation.push(poseStack);
+        var rotation = BlockOrientation.get(chest);
+        poseStack.mulPose(rotation.getQuaternion());
         poseStack.translate(-0.5, -0.5, -0.5);
 
         // The models are created for the top-left slot of the drive model,
@@ -121,9 +121,9 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
      * the incorrect lighting data would be used to apply diffuse lighting and the lightmap texture.
      */
     private static class FaceRotatingModel extends ForwardingBakedModel {
-        private final FacingToRotation r;
+        private final BlockOrientation r;
 
-        protected FaceRotatingModel(BakedModel base, FacingToRotation r) {
+        protected FaceRotatingModel(BakedModel base, BlockOrientation r) {
             this.wrapped = base;
             this.r = r;
         }

@@ -23,19 +23,21 @@
 
 package appeng.api.util;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+
+import appeng.block.orientation.BlockOrientation;
+import appeng.block.orientation.IOrientationStrategy;
 
 /**
- * Implemented on many of AE's non Block entity Blocks as a way to get a IOrientable.
+ * Implemented on many of AEs non Block entity Blocks as a way to get a IOrientable.
  */
 public interface IOrientableBlock {
+    IOrientationStrategy getOrientationStrategy();
 
-    /**
-     * @param level world of block
-     * @param pos   The position of the block.
-     *
-     * @return a IOrientable if applicable
-     */
-    IOrientable getOrientable(BlockGetter level, BlockPos pos);
+    default BlockOrientation getOrientation(BlockState state) {
+        var strategy = getOrientationStrategy();
+        var facing = strategy.getFacing(state);
+        var spin = strategy.getSpin(state);
+        return BlockOrientation.get(facing, spin);
+    }
 }

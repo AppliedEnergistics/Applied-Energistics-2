@@ -20,11 +20,11 @@ package appeng.blockentity.spatial;
 
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.google.common.collect.Iterators;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,6 +34,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.SpatialPylonCalculator;
@@ -120,9 +121,13 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         }
 
         this.cluster = c;
-        this.getMainNode()
-                .setExposedOnSides(c == null ? EnumSet.noneOf(Direction.class) : EnumSet.allOf(Direction.class));
+        this.getMainNode().setExposedOnSides(getOrientation().getSides(getGridConnectableSides()));
         this.recalculateDisplay();
+    }
+
+    @Override
+    public Set<RelativeSide> getGridConnectableSides() {
+        return this.cluster == null ? EnumSet.noneOf(RelativeSide.class) : EnumSet.allOf(RelativeSide.class);
     }
 
     public void recalculateDisplay() {
@@ -158,11 +163,6 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         if (oldBits != this.displayBits) {
             this.markForUpdate();
         }
-    }
-
-    @Override
-    public boolean canBeRotated() {
-        return false;
     }
 
     @Override

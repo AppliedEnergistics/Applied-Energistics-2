@@ -21,6 +21,7 @@ package appeng.blockentity.storage;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -47,6 +48,7 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.util.AECableType;
+import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
 import appeng.client.render.model.DriveModelData;
@@ -63,6 +65,9 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class DriveBlockEntity extends AENetworkInvBlockEntity
         implements IChestOrDrive, IPriorityHost, IStorageProvider {
 
+    private static final EnumSet<RelativeSide> GRID_CONNECTABLE_SIDES = EnumSet
+            .complementOf(EnumSet.of(RelativeSide.FRONT));
+
     private final AppEngCellInventory inv = new AppEngCellInventory(this, getCellCount());
     private final DriveWatcher[] invBySlot = new DriveWatcher[getCellCount()];
     private boolean isCached = false;
@@ -75,18 +80,17 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     public DriveBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.getMainNode()
+        getMainNode()
                 .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.inv.setFilter(new CellValidInventoryFilter());
+        inv.setFilter(new CellValidInventoryFilter());
 
         Arrays.fill(clientSideCellState, CellState.ABSENT);
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
-        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(inForward)));
+    public Set<RelativeSide> getGridConnectableSides() {
+        return GRID_CONNECTABLE_SIDES;
     }
 
     @Override
@@ -420,7 +424,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         for (int i = 0; i < getCellCount(); i++) {
             cells[i] = getCellItem(i);
         }
-        return new DriveModelData(getUp(), getForward(), cells);
+        return new DriveModelData(cells);
     }
 
     public void openMenu(Player player) {

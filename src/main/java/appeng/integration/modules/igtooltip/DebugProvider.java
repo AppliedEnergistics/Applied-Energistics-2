@@ -20,7 +20,7 @@ import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
-import appeng.blockentity.AEBaseBlockEntity;
+import appeng.block.orientation.IOrientationStrategy;
 import appeng.core.definitions.AEItems;
 import appeng.me.InWorldGridNode;
 import appeng.me.helpers.IGridConnectedBlockEntity;
@@ -72,15 +72,17 @@ public final class DebugProvider {
     }
 
     private static void addBlockEntityRotation(BlockEntity blockEntity, TooltipBuilder tooltip) {
-        if (blockEntity instanceof AEBaseBlockEntity be && be.canBeRotated()) {
-            var up = be.getUp();
-            var forward = be.getForward();
+        var blockState = blockEntity.getBlockState();
+        var strategy = IOrientationStrategy.get(blockState);
+        if (!strategy.getProperties().isEmpty()) {
+            var forward = strategy.getFacing(blockState);
+            var spin = strategy.getSpin(blockState);
             tooltip.addLine(
                     Component.literal("")
-                            .append(Component.literal("Up: ").withStyle(ChatFormatting.WHITE))
-                            .append(Component.literal(up.name()))
                             .append(Component.literal(" Forward: ").withStyle(ChatFormatting.WHITE))
-                            .append(Component.literal(forward.name())));
+                            .append(Component.literal(forward.name()))
+                            .append(Component.literal(" Spin: ").withStyle(ChatFormatting.WHITE))
+                            .append(Component.literal(String.valueOf(spin))));
         }
     }
 
@@ -204,11 +206,11 @@ public final class DebugProvider {
             tag.putLong(TAG_TICK_LAST_TICK, status.lastTick());
         }
 
-        if (node instanceof InWorldGridNode) {
+        if (node instanceof InWorldGridNode inWorldNode) {
             // Record on which sides the node is exposed
             int exposedSides = 0;
-            for (Direction value : Direction.values()) {
-                if (node.isExposedOnSide(value)) {
+            for (var value : Direction.values()) {
+                if (inWorldNode.isExposedOnSide(value)) {
                     exposedSides |= 1 << value.ordinal();
                 }
             }

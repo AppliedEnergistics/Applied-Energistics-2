@@ -75,7 +75,6 @@ import appeng.hooks.MouseWheelScrolled;
 import appeng.hooks.RenderBlockOutlineHook;
 import appeng.hotkeys.HotkeyActions;
 import appeng.init.client.InitAdditionalModels;
-import appeng.init.client.InitAutoRotatingModel;
 import appeng.init.client.InitBlockColors;
 import appeng.init.client.InitBlockEntityRenderers;
 import appeng.init.client.InitBuiltInModels;
@@ -122,7 +121,6 @@ public class AppEngClient extends AppEngBase {
         ClientPickBlockGatherCallback.EVENT.register(this::onPickBlock);
         ClientTickEvents.START_CLIENT_TICK.register(this::updateCableRenderMode);
 
-        InitAutoRotatingModel.init();
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
         guidePages = loadGuidePages();

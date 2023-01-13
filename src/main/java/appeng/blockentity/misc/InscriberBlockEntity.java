@@ -20,6 +20,7 @@ package appeng.blockentity.misc;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -49,6 +50,8 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
+import appeng.block.orientation.BlockOrientation;
+import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -94,7 +97,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         super(blockEntityType, pos, blockState);
 
         this.getMainNode()
-                .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .setIdlePowerUsage(0)
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
@@ -107,6 +109,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         this.topItemHandlerExtern = new FilteredInternalInventory(this.topItemHandler, filter);
         this.bottomItemHandlerExtern = new FilteredInternalInventory(this.bottomItemHandler, filter);
         this.sideItemHandlerExtern = new FilteredInternalInventory(this.sideItemHandler, filter);
+
+        this.setPowerSides(getOrientation().getSides(getGridConnectableSides()));
     }
 
     @Override
@@ -170,16 +174,15 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public void onReady() {
-        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
-        super.onReady();
+    public Set<RelativeSide> getGridConnectableSides() {
+        return EnumSet.complementOf(EnumSet.of(RelativeSide.FRONT));
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
-        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
-        this.setPowerSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+    protected void onOrientationChanged(BlockOrientation orientation) {
+        super.onOrientationChanged(orientation);
+
+        this.setPowerSides(orientation.getSides(getGridConnectableSides()));
     }
 
     @Override
