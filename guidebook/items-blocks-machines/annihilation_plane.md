@@ -17,6 +17,8 @@ face of the plane, it does not pick up in an area.
 Annihilation planes can be enchanted with any pickaxe enchantment, so yes, you can put crazy levels of fortune on a few and
 automate ore processing if your modpack allows it.
 
+They are [cable subparts](../ae2-mechanics/cable-subparts.md)
+
 # Filtering
 
 The annihilation plane will only break a block or pick up an item if it can store the resulting drops/items
