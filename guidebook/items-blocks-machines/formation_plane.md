@@ -45,7 +45,7 @@ Items entering the network will start at the highest priority storage.
 The formation plane supports the following upgrades:
 
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
-- <ItemLink id="fuzzy_card" /> lets the plane filter by damage level and/or ignore item NBT
+- <ItemLink id="fuzzy_card" /> lets the plane filter by damage level
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 
 # Recipe
