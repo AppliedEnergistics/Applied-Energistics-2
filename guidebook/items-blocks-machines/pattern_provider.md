@@ -36,8 +36,8 @@ like a cable providing network connection to all sides.
 direction. They only push ingredients to the selected side, receive inputs from all sides, and specifically don't provide a network
 connection on the selected side. This allows them to push to AE2 machines without connecting networks, if you want to make a subnetwork.
 
-- Flat pattern providers are a [cable subpart](../ae2-mechanics/cable-subparts.md), and so multiple can be placed on the same cable, allowing for compact setups.
-They act similar to the selected side on a directional pattern provider, providing patterns, receiving inputs, and not
+- Flat pattern providers are [cable subparts](../ae2-mechanics/cable-subparts.md), and so multiple can be placed on the same cable, allowing for compact setups.
+They act similar to the selected side on a directional pattern provider, providing patterns, receiving inputs, and **not**
 providing a network connection on their face.
 
 Pattern providers can be swapped between normal and flat in a crafting grid.
