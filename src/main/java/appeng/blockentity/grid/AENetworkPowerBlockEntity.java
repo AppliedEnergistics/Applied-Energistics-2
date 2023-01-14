@@ -44,7 +44,7 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
 
     public AENetworkPowerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        getMainNode().setExposedOnSides(BlockOrientation.get(blockState).getSides(getGridConnectableSides()));
+        onGridConnectableSidesChanged();
     }
 
     protected IManagedGridNode createMainNode() {
@@ -99,7 +99,14 @@ public abstract class AENetworkPowerBlockEntity extends AEBasePoweredBlockEntity
     @Override
     protected void onOrientationChanged(BlockOrientation orientation) {
         super.onOrientationChanged(orientation);
-        getMainNode().setExposedOnSides(orientation.getSides(getGridConnectableSides()));
+        onGridConnectableSidesChanged();
     }
 
+    /**
+     * Call when the return value {@link IGridConnectedBlockEntity#getGridConnectableSides(BlockOrientation)} has
+     * changed, to update the grid nodes exposed sides.
+     */
+    protected final void onGridConnectableSidesChanged() {
+        getMainNode().setExposedOnSides(getGridConnectableSides(getOrientation()));
+    }
 }

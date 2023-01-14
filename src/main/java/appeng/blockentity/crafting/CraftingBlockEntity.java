@@ -45,7 +45,6 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.orientation.BlockOrientation;
-import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.me.cluster.IAEMultiBlock;
@@ -148,22 +147,17 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
 
         if (updateFormed) {
-            updateGridNodeExposedSides();
+            onGridConnectableSidesChanged();
         }
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
         if (isFormed()) {
-            return EnumSet.allOf(RelativeSide.class);
+            return EnumSet.allOf(Direction.class);
         } else {
-            return EnumSet.noneOf(RelativeSide.class);
+            return EnumSet.noneOf(Direction.class);
         }
-    }
-
-    private void updateGridNodeExposedSides() {
-        var orientation = BlockOrientation.get(getBlockState());
-        getMainNode().setExposedOnSides(orientation.getSides(getGridConnectableSides()));
     }
 
     public boolean isFormed() {

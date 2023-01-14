@@ -21,6 +21,7 @@ package appeng.block.crafting;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -37,25 +38,22 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
+import appeng.util.Platform;
 
 public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlockEntity> {
 
-    private static final BooleanProperty OMNIDIRECTIONAL = BooleanProperty.create("omnidirectional");
+    public static final EnumProperty<PushDirection> PUSH_DIRECTION = EnumProperty.create("push_direction",
+            PushDirection.class);
 
     public PatternProviderBlock() {
         super(defaultProps(Material.METAL));
-        registerDefaultState(defaultBlockState().setValue(OMNIDIRECTIONAL, true));
+        registerDefaultState(defaultBlockState().setValue(PUSH_DIRECTION, PushDirection.ALL));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(OMNIDIRECTIONAL);
-    }
-
-    @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, PatternProviderBlockEntity be) {
-        return currentState.setValue(OMNIDIRECTIONAL, be.isOmniDirectional());
+        builder.add(PUSH_DIRECTION);
     }
 
     @Override
@@ -75,6 +73,11 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
             return InteractionResult.PASS;
         }
 
+        if (heldItem != null && InteractionUtil.canWrenchRotate(heldItem)) {
+            setSide(level, pos, hit.getDirection());
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
+
         var be = this.getBlockEntity(level, pos);
         if (be != null) {
             if (!level.isClientSide()) {
@@ -83,5 +86,23 @@ public class PatternProviderBlock extends AEBaseEntityBlock<PatternProviderBlock
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
+    }
+
+    public void setSide(Level level, BlockPos pos, Direction facing) {
+        var currentState = level.getBlockState(pos);
+        var pushSide = currentState.getValue(PUSH_DIRECTION).getDirection();
+
+        PushDirection newPushDirection;
+        if (pushSide == facing.getOpposite()) {
+            newPushDirection = PushDirection.fromDirection(facing);
+        } else if (pushSide == facing) {
+            newPushDirection = PushDirection.ALL;
+        } else if (pushSide == null) {
+            newPushDirection = PushDirection.fromDirection(facing.getOpposite());
+        } else {
+            newPushDirection = PushDirection.fromDirection(Platform.rotateAround(pushSide, facing));
+        }
+
+        level.setBlockAndUpdate(pos, currentState.setValue(PUSH_DIRECTION, newPushDirection));
     }
 }

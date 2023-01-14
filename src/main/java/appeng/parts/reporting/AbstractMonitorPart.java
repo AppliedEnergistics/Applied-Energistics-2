@@ -41,6 +41,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
+import appeng.block.orientation.BlockOrientation;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
 import appeng.menu.me.interaction.StackInteractions;
@@ -237,10 +238,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         }
 
         poseStack.pushPose();
+
+        var orientation = BlockOrientation.get(getSide(), getSpin());
+
         poseStack.translate(0.5, 0.5, 0.5); // Move into the center of the block
-
-        BlockEntityRenderHelper.rotateToFace(poseStack, getSide(), this.getSpin());
-
+        BlockEntityRenderHelper.rotateToFace(poseStack, orientation);
         poseStack.translate(0, 0.05, 0.5);
 
         BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,

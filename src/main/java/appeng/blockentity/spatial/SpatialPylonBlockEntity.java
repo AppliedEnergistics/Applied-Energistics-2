@@ -25,6 +25,7 @@ import java.util.Set;
 import com.google.common.collect.Iterators;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,7 +35,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.block.orientation.RelativeSide;
+import appeng.block.orientation.BlockOrientation;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.SpatialPylonCalculator;
@@ -121,13 +122,13 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         }
 
         this.cluster = c;
-        this.getMainNode().setExposedOnSides(getOrientation().getSides(getGridConnectableSides()));
+        onGridConnectableSidesChanged();
         this.recalculateDisplay();
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
-        return this.cluster == null ? EnumSet.noneOf(RelativeSide.class) : EnumSet.allOf(RelativeSide.class);
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return this.cluster == null ? EnumSet.noneOf(Direction.class) : EnumSet.allOf(Direction.class);
     }
 
     public void recalculateDisplay() {

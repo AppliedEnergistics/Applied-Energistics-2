@@ -36,6 +36,7 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
+import appeng.block.orientation.BlockOrientation;
 import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.AEConfig;
@@ -59,8 +60,8 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
-        return EnumSet.of(RelativeSide.BACK);
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.of(orientation.getSide(RelativeSide.BACK));
     }
 
     @Override
@@ -119,7 +120,6 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     @Override
     public void onReady() {
-        this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
         this.updatePower();
         super.onReady();
     }

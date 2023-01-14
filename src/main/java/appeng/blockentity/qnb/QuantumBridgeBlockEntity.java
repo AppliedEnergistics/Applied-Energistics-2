@@ -34,7 +34,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.util.AECableType;
-import appeng.block.orientation.RelativeSide;
+import appeng.block.orientation.BlockOrientation;
 import appeng.block.qnb.QnbFormedState;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -64,21 +64,16 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
         if (!isFormed()) {
-            return EnumSet.noneOf(RelativeSide.class);
+            return EnumSet.noneOf(Direction.class);
         }
 
         if (this.isCorner() || this.isCenter()) {
-            var sides = this.getAdjacentQuantumBridges();
-            return getOrientation().getRelativeSides(sides);
+            return this.getAdjacentQuantumBridges();
         } else {
-            return EnumSet.allOf(RelativeSide.class);
+            return EnumSet.allOf(Direction.class);
         }
-    }
-
-    private void updateConnectableSides() {
-        getMainNode().setExposedOnSides(getOrientation().getSides(getGridConnectableSides()));
     }
 
     @Override
@@ -183,7 +178,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         this.cluster = null;
 
         if (affectWorld) {
-            this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
+            onGridConnectableSidesChanged();
         }
     }
 
@@ -206,7 +201,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
                 this.markForUpdate();
             }
 
-            updateConnectableSides();
+            onGridConnectableSidesChanged();
         }
     }
 

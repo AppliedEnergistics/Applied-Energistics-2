@@ -71,7 +71,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 .setIdlePowerUsage(0)
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(POWER_MAXIMUM_AMOUNT);
-        this.setPowerSides(getOrientation().getSides(getGridConnectableSides()));
+        this.setPowerSides(getGridConnectableSides(getOrientation()));
     }
 
     @Override
@@ -80,8 +80,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
-        return EnumSet.complementOf(EnumSet.of(RelativeSide.FRONT));
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.complementOf(EnumSet.of(orientation.getSide(RelativeSide.FRONT)));
     }
 
     @Override
@@ -115,7 +115,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     protected void onOrientationChanged(BlockOrientation orientation) {
         super.onOrientationChanged(orientation);
 
-        this.setPowerSides(orientation.getSides(getGridConnectableSides()));
+        this.setPowerSides(getGridConnectableSides(orientation));
     }
 
     @Override

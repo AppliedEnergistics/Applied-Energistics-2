@@ -29,6 +29,7 @@ import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.QuartzGrowthAcceleratorBlock;
 import appeng.block.misc.SecurityStationBlock;
 import appeng.block.misc.VibrationChamberBlock;
@@ -80,6 +81,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         quartzGrowthAccelerator();
         securityStation();
         meChest();
+        patternProvider();
 
         builtInBlockModel("spatial_pylon");
         builtInBlockModel("qnb/qnb_formed");
@@ -367,6 +369,23 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var normalModel = cubeAll(def.block());
         simpleBlockItem(def.block(), normalModel);
         // the block state and the oriented model are in manually written json files
+
+        var orientedModel = models().getExistingFile(AppEng.makeId("block/pattern_provider_oriented"));
+        multiVariantGenerator(AEBlocks.PATTERN_PROVIDER, Variant.variant())
+                .with(PropertyDispatch.property(PatternProviderBlock.PUSH_DIRECTION).generate(pushDirection -> {
+                    var forward = pushDirection.getDirection();
+                    if (forward == null) {
+                        return Variant.variant().with(VariantProperties.MODEL, normalModel.getLocation());
+                    } else {
+                        var orientation = BlockOrientation.get(forward);
+                        return applyRotation(
+                                Variant.variant().with(VariantProperties.MODEL, orientedModel.getLocation()),
+                                // + 90 because the default model is oriented UP, while block orientation assumes NORTH
+                                orientation.getAngleX() + 90,
+                                orientation.getAngleY(),
+                                0);
+                    }
+                }));
     }
 
     private void ioPorts() {

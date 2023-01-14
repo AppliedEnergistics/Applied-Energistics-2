@@ -48,6 +48,7 @@ import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.util.AECableType;
+import appeng.block.orientation.BlockOrientation;
 import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
@@ -64,9 +65,6 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public class DriveBlockEntity extends AENetworkInvBlockEntity
         implements IChestOrDrive, IPriorityHost, IStorageProvider {
-
-    private static final EnumSet<RelativeSide> GRID_CONNECTABLE_SIDES = EnumSet
-            .complementOf(EnumSet.of(RelativeSide.FRONT));
 
     private final AppEngCellInventory inv = new AppEngCellInventory(this, getCellCount());
     private final DriveWatcher[] invBySlot = new DriveWatcher[getCellCount()];
@@ -89,8 +87,8 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
-        return GRID_CONNECTABLE_SIDES;
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.complementOf(EnumSet.of(orientation.getSide(RelativeSide.FRONT)));
     }
 
     @Override

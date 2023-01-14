@@ -34,7 +34,7 @@ import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.block.IOwnerAwareBlockEntity;
-import appeng.block.orientation.RelativeSide;
+import appeng.block.orientation.BlockOrientation;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.me.InWorldGridNode;
 
@@ -50,10 +50,11 @@ public interface IGridConnectedBlockEntity extends IActionHost, IOwnerAwareBlock
     IManagedGridNode getMainNode();
 
     /**
+     * @param orientation The current orientation of the block.
      * @return The sides of this block that are exposed for ME grid connections.
      */
-    default Set<RelativeSide> getGridConnectableSides() {
-        return EnumSet.allOf(RelativeSide.class);
+    default Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.allOf(Direction.class);
     }
 
     @Nullable

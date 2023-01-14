@@ -110,7 +110,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         this.bottomItemHandlerExtern = new FilteredInternalInventory(this.bottomItemHandler, filter);
         this.sideItemHandlerExtern = new FilteredInternalInventory(this.sideItemHandler, filter);
 
-        this.setPowerSides(getOrientation().getSides(getGridConnectableSides()));
+        this.setPowerSides(getGridConnectableSides(getOrientation()));
     }
 
     @Override
@@ -174,15 +174,15 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
-        return EnumSet.complementOf(EnumSet.of(RelativeSide.FRONT));
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.complementOf(EnumSet.of(orientation.getSide(RelativeSide.FRONT)));
     }
 
     @Override
     protected void onOrientationChanged(BlockOrientation orientation) {
         super.onOrientationChanged(orientation);
 
-        this.setPowerSides(orientation.getSides(getGridConnectableSides()));
+        this.setPowerSides(getGridConnectableSides(orientation));
     }
 
     @Override

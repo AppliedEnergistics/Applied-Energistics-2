@@ -287,7 +287,7 @@ public class AEBaseBlockEntity extends BlockEntity
         }
     }
 
-    protected final BlockOrientation getOrientation() {
+    public final BlockOrientation getOrientation() {
         return BlockOrientation.get(getBlockState());
     }
 
@@ -301,11 +301,11 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     public Direction getForward() {
-        return getOrientationStrategy().getFacing(getBlockState());
+        return getOrientation().getSide(RelativeSide.FRONT);
     }
 
     public Direction getUp() {
-        return getOrientationStrategy().getSide(getBlockState(), RelativeSide.TOP);
+        return getOrientation().getSide(RelativeSide.TOP);
     }
 
     public void setOrientation(Direction forward, Direction up) {

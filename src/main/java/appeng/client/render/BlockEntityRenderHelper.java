@@ -25,55 +25,33 @@ import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
-import appeng.util.Platform;
+import appeng.block.orientation.BlockOrientation;
 
 /**
  * Helper methods for rendering block entities.
  */
-public class BlockEntityRenderHelper {
-    /**
-     * Find the spin based on two-direction orientation, for use with {@link #rotateToFace}.
-     */
-    public static byte findSpin(Direction facing, Direction up) {
-        // Find spin by iterating rotation...
-        Direction currentUp = switch (facing) {
-            case UP -> Direction.NORTH;
-            case DOWN -> Direction.SOUTH;
-            default -> Direction.UP;
-        };
+public final class BlockEntityRenderHelper {
+    private BlockEntityRenderHelper() {
+    }
 
-        for (byte spin = 0; spin < 4; ++spin) {
-            if (currentUp == up) {
-                return spin;
-            }
+    private static final Quaternionf ROTATE_TO_FRONT;
 
-            currentUp = Platform.rotateAround(currentUp, facing);
-        }
-        return 0;
+    static {
+        ROTATE_TO_FRONT = new Quaternionf().rotationY(Mth.DEG_TO_RAD * 180);
     }
 
     /**
-     * Rotate the current coordinate system so it is on the face of the given block side. This can be used to render on
-     * the given face as if it was a 2D canvas.
+     * Rotate the current coordinate system, so it is on the face of the given block side. This can be used to render on
+     * the given face as if it was a 2D canvas, where x+ is facing right and y+ is facing up.
      */
-    public static void rotateToFace(PoseStack mStack, Direction face, byte spin) {
-        switch (face) {
-            case UP -> mStack.mulPose(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 270));
-            case DOWN -> mStack.mulPose(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90.0F));
-            case EAST -> mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
-            case WEST -> mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
-            case NORTH -> mStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 180.0F));
-            case SOUTH -> {
-            }
-        }
-
-        mStack.last().pose().rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -spin * 90.0F));
+    public static void rotateToFace(PoseStack stack, BlockOrientation orientation) {
+        stack.mulPose(orientation.getQuaternion());
+        stack.mulPose(ROTATE_TO_FRONT);
     }
 
     /**

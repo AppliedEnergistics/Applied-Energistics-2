@@ -25,7 +25,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
 
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.client.render.BlockEntityRenderHelper;
@@ -40,19 +39,16 @@ public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMoni
     }
 
     @Override
-    public void render(CraftingMonitorBlockEntity te, float partialTicks, PoseStack poseStack,
+    public void render(CraftingMonitorBlockEntity be, float partialTicks, PoseStack poseStack,
             MultiBufferSource buffers, int combinedLight, int combinedOverlay) {
 
-        Direction facing = te.getForward();
-
-        var jobProgress = te.getJobProgress();
+        var orientation = be.getOrientation();
+        var jobProgress = be.getJobProgress();
 
         if (jobProgress != null) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5); // Move to the center of the block
-
-            byte spin = BlockEntityRenderHelper.findSpin(facing, te.getUp());
-            BlockEntityRenderHelper.rotateToFace(poseStack, facing, spin);
+            BlockEntityRenderHelper.rotateToFace(poseStack, orientation);
             poseStack.translate(0, 0.02, 0.5);
 
             BlockEntityRenderHelper.renderItem2dWithAmount(
@@ -62,7 +58,7 @@ public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMoni
                     jobProgress.amount(),
                     0.3f,
                     -0.18f,
-                    te.getColor().contrastTextColor);
+                    be.getColor().contrastTextColor);
 
             poseStack.popPose();
         }

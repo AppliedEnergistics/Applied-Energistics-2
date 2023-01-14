@@ -37,6 +37,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.util.AECableType;
+import appeng.block.orientation.BlockOrientation;
 import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.AEConfig;
@@ -46,7 +47,6 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
     // Allow storage of up to 10 cranks
     public static final int MAX_STORED_POWER = 10 * CrankBlockEntity.POWER_PER_CRANK_TURN;
     private static final int POWER_PER_TICK = 8;
-    private static final Set<RelativeSide> EXPOSED_SIDES = EnumSet.of(RelativeSide.FRONT, RelativeSide.BACK);
 
     private boolean hasPower = false;
 
@@ -73,8 +73,8 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
     }
 
     @Override
-    public Set<RelativeSide> getGridConnectableSides() {
-        return EXPOSED_SIDES;
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return orientation.getSides(EnumSet.of(RelativeSide.FRONT, RelativeSide.BACK));
     }
 
     private void onTick(int ticksSinceLastCall) {
