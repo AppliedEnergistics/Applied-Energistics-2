@@ -59,11 +59,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
-import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.block.orientation.BlockOrientation;
 import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.block.orientation.RelativeSide;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
@@ -193,8 +191,9 @@ public class AEBaseBlockEntity extends BlockEntity
         readyInvoked++;
 
         if (pendingOrientationChange != null) {
-            level.setBlockAndUpdate(getBlockPos(), getOrientationStrategy().setOrientation(
-                    getBlockState(),
+            var state = getBlockState();
+            level.setBlockAndUpdate(getBlockPos(), IOrientationStrategy.get(state).setOrientation(
+                    state,
                     pendingOrientationChange.getSide(RelativeSide.FRONT),
                     pendingOrientationChange.getSpin()));
             pendingOrientationChange = null;
@@ -291,15 +290,6 @@ public class AEBaseBlockEntity extends BlockEntity
         return BlockOrientation.get(getBlockState());
     }
 
-    protected final IOrientationStrategy getOrientationStrategy() {
-        var blockState = getBlockState();
-        if (blockState.getBlock() instanceof IOrientableBlock orientableBlock) {
-            return orientableBlock.getOrientationStrategy();
-        } else {
-            return OrientationStrategies.none();
-        }
-    }
-
     public Direction getForward() {
         return getOrientation().getSide(RelativeSide.FRONT);
     }
@@ -310,7 +300,8 @@ public class AEBaseBlockEntity extends BlockEntity
 
     public void setOrientation(Direction forward, Direction up) {
         var currentState = getBlockState();
-        var newState = getOrientationStrategy().setOrientation(currentState, forward, up);
+        var strategy = IOrientationStrategy.get(currentState);
+        var newState = strategy.setOrientation(currentState, forward, up);
         if (currentState != newState) {
             AELog.blockUpdate(this.worldPosition, currentState, newState, this);
             this.level.setBlockAndUpdate(worldPosition, newState);
@@ -472,14 +463,13 @@ public class AEBaseBlockEntity extends BlockEntity
     @SuppressWarnings("deprecation")
     @Override
     public void setBlockState(BlockState state) {
-        var strategy = getOrientationStrategy();
-        var previousOrientation = BlockOrientation.get(strategy, getBlockState());
+        var previousOrientation = BlockOrientation.get(getBlockState());
 
         super.setBlockState(state);
 
         // This method is called when the blockstate of an existing block-entity is changed
         // We use this to detect a change to rotation
-        var newOrientation = BlockOrientation.get(strategy, getBlockState());
+        var newOrientation = BlockOrientation.get(getBlockState());
         if (previousOrientation != newOrientation) {
             onOrientationChanged(newOrientation);
         }

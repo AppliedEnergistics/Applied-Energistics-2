@@ -34,6 +34,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
+import appeng.block.orientation.IOrientationStrategy;
+import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.SpatialAnchorMenu;
@@ -83,4 +85,8 @@ public class SpatialAnchorBlock extends AEBaseEntityBlock<SpatialAnchorBlockEnti
         return InteractionResult.PASS;
     }
 
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.facing();
+    }
 }

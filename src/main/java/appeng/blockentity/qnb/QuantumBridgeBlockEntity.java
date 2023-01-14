@@ -212,10 +212,12 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     public EnumSet<Direction> getAdjacentQuantumBridges() {
         var set = EnumSet.noneOf(Direction.class);
 
-        for (var d : Direction.values()) {
-            var te = this.level.getBlockEntity(this.worldPosition.relative(d));
-            if (te instanceof QuantumBridgeBlockEntity) {
-                set.add(d);
+        if (level != null) {
+            for (var d : Direction.values()) {
+                var te = this.level.getBlockEntity(this.worldPosition.relative(d));
+                if (te instanceof QuantumBridgeBlockEntity) {
+                    set.add(d);
+                }
             }
         }
 

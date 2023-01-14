@@ -49,7 +49,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseBlock;
 import appeng.block.orientation.RelativeSide;
 import appeng.client.render.effects.ParticleTypes;
@@ -57,7 +56,7 @@ import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
 
-public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock, SimpleWaterloggedBlock {
+public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterloggedBlock {
 
     // Cache VoxelShapes for each facing
     private static final Map<Direction, VoxelShape> SHAPES;

@@ -220,4 +220,23 @@ public enum BlockOrientation {
         }
         return result;
     }
+
+    public BlockOrientation rotateClockwiseAround(Direction side) {
+        return rotateClockwiseAround(side.getAxis(), side.getAxisDirection());
+    }
+
+    public BlockOrientation rotateClockwiseAround(Direction.Axis axis, Direction.AxisDirection direction) {
+        var facing = getSide(RelativeSide.FRONT);
+        var up = getSide(RelativeSide.TOP);
+        Direction newFacing;
+        Direction newUp;
+        if (direction == Direction.AxisDirection.POSITIVE) {
+            newFacing = facing.getClockWise(axis);
+            newUp = up.getClockWise(axis);
+        } else {
+            newFacing = facing.getCounterClockWise(axis);
+            newUp = up.getCounterClockWise(axis);
+        }
+        return get(newFacing, newUp);
+    }
 }

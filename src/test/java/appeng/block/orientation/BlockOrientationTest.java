@@ -99,4 +99,19 @@ class BlockOrientationTest {
         assertEquals(rotatedUp, rotation.rotate(Direction.UP));
     }
 
+    @CsvSource({
+            "0,NORTH,WEST",
+            "1,EAST,NORTH",
+            "2,SOUTH,EAST",
+            "3,WEST,SOUTH"
+    })
+    @ParameterizedTest
+    public void testRotateAroundPerpendicularAxis(int rotateTimes, Direction expectedFront, Direction expectedTop) {
+        var orientation = BlockOrientation.get(Direction.NORTH, 1);
+        for (int i = 0; i < rotateTimes; i++) {
+            orientation = orientation.rotateClockwiseAround(Direction.UP);
+        }
+        assertEquals(expectedFront, orientation.getSide(RelativeSide.FRONT));
+        assertEquals(expectedTop, orientation.getSide(RelativeSide.TOP));
+    }
 }

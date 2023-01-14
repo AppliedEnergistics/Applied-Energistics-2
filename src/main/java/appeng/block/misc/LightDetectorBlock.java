@@ -42,14 +42,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.api.util.IOrientableBlock;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.helpers.AEMaterials;
 import appeng.hooks.INeighborChangeSensitive;
 
 public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity>
-        implements IOrientableBlock, INeighborChangeSensitive {
+        implements INeighborChangeSensitive {
 
     // Cache VoxelShapes for each facing
     private static final Map<Direction, VoxelShape> SHAPES;

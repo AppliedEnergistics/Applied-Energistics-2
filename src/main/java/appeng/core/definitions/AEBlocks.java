@@ -34,6 +34,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.StairBlock;
@@ -97,7 +98,6 @@ import appeng.decorative.solid.CertusQuartzClusterBlock;
 import appeng.decorative.solid.NotSoMysteriousCubeBlock;
 import appeng.decorative.solid.QuartzGlassBlock;
 import appeng.decorative.solid.QuartzLampBlock;
-import appeng.decorative.solid.QuartzPillarBlock;
 
 /**
  * Internal implementation for the API blocks
@@ -133,7 +133,7 @@ public final class AEBlocks {
     public static final BlockDefinition<AEDecorativeBlock> CUT_QUARTZ_BLOCK = block("Cut Certus Quartz Block", AEBlockIds.CUT_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<AEDecorativeBlock> SMOOTH_QUARTZ_BLOCK = block("Smooth Certus Quartz Block", AEBlockIds.SMOOTH_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<AEDecorativeBlock> QUARTZ_BRICKS = block("Certus Quartz Bricks", AEBlockIds.QUARTZ_BRICKS, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
-    public static final BlockDefinition<QuartzPillarBlock> QUARTZ_PILLAR = block("Certus Quartz Pillar", AEBlockIds.QUARTZ_PILLAR, () -> new QuartzPillarBlock(QUARTZ_PROPERTIES));
+    public static final BlockDefinition<RotatedPillarBlock> QUARTZ_PILLAR = block("Certus Quartz Pillar", AEBlockIds.QUARTZ_PILLAR, () -> new RotatedPillarBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<AEDecorativeBlock> CHISELED_QUARTZ_BLOCK = block("Chiseled Certus Quartz Block", AEBlockIds.CHISELED_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
 
     public static final BlockDefinition<QuartzGlassBlock> QUARTZ_GLASS = block("Quartz Glass", AEBlockIds.QUARTZ_GLASS, () -> new QuartzGlassBlock(defaultProps(Material.GLASS).noOcclusion().isValidSpawn(NEVER_ALLOW_SPAWN)));
