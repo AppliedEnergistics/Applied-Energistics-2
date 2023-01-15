@@ -26,16 +26,16 @@ import appeng.util.Platform;
 
 public final class AEItemKey extends AEKey {
     private final Item item;
-    private final TagHolder tagHolder;
+    private final InternedTag internedTag;
     private final int hashCode;
     private final int cachedDamage;
 
-    private AEItemKey(Item item, TagHolder tagHolder) {
-        super(Platform.getItemDisplayName(item, tagHolder.tag));
+    private AEItemKey(Item item, InternedTag internedTag) {
+        super(Platform.getItemDisplayName(item, internedTag.tag));
         this.item = item;
-        this.tagHolder = tagHolder;
-        this.hashCode = Objects.hash(item, tagHolder);
-        if (tagHolder.tag != null && tagHolder.tag.get("Damage") instanceof NumericTag numericTag) {
+        this.internedTag = internedTag;
+        this.hashCode = item.hashCode() * 31 + internedTag.hashCode;
+        if (internedTag.tag != null && internedTag.tag.get("Damage") instanceof NumericTag numericTag) {
             this.cachedDamage = numericTag.getAsInt();
         } else {
             this.cachedDamage = 0;
@@ -44,7 +44,6 @@ public final class AEItemKey extends AEKey {
 
     @Nullable
     public static AEItemKey of(ItemVariant variant) {
-
         if (variant.isBlank()) {
             return null;
         }
@@ -89,7 +88,7 @@ public final class AEItemKey extends AEKey {
             return false;
         AEItemKey aeItemKey = (AEItemKey) o;
         // TagHolder instances are interned, compare by reference.
-        return item == aeItemKey.item && tagHolder == aeItemKey.tagHolder;
+        return item == aeItemKey.item && internedTag == aeItemKey.internedTag;
     }
 
     @Override
@@ -102,12 +101,11 @@ public final class AEItemKey extends AEKey {
     }
 
     public static AEItemKey of(ItemLike item, @Nullable CompoundTag tag) {
-        var tagHolder = getTagHolder(tag);
-        return new AEItemKey(item.asItem(), tagHolder);
+        return new AEItemKey(item.asItem(), InternedTag.of(tag, false));
     }
 
     public boolean matches(ItemStack stack) {
-        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), tagHolder.tag);
+        return !stack.isEmpty() && stack.is(item) && Objects.equals(stack.getTag(), internedTag.tag);
     }
 
     public ItemStack toStack() {
@@ -147,8 +145,8 @@ public final class AEItemKey extends AEKey {
         CompoundTag result = new CompoundTag();
         result.putString("id", BuiltInRegistries.ITEM.getKey(item).toString());
 
-        if (tagHolder.tag != null) {
-            result.put("tag", tagHolder.tag.copy());
+        if (internedTag.tag != null) {
+            result.put("tag", internedTag.tag.copy());
         }
 
         return result;
@@ -181,7 +179,7 @@ public final class AEItemKey extends AEKey {
     }
 
     public ItemVariant toVariant() {
-        return ItemVariant.of(item, tagHolder.tag);
+        return ItemVariant.of(item, internedTag.tag);
     }
 
     /**
@@ -189,16 +187,16 @@ public final class AEItemKey extends AEKey {
      */
     @Nullable
     public CompoundTag getTag() {
-        return tagHolder.tag;
+        return internedTag.tag;
     }
 
     @Nullable
     public CompoundTag copyTag() {
-        return tagHolder.tag != null ? tagHolder.tag.copy() : null;
+        return internedTag.tag != null ? internedTag.tag.copy() : null;
     }
 
     public boolean hasTag() {
-        return tagHolder.tag != null;
+        return internedTag.tag != null;
     }
 
     @Override
@@ -231,7 +229,7 @@ public final class AEItemKey extends AEKey {
      * @return True if the item represented by this key is damaged.
      */
     public boolean isDamaged() {
-        return tagHolder.tag != null && tagHolder.tag.getInt(ItemStack.TAG_DAMAGE) > 0;
+        return cachedDamage > 0;
     }
 
     @Override
@@ -239,7 +237,7 @@ public final class AEItemKey extends AEKey {
         data.writeVarInt(Item.getId(item));
         CompoundTag compoundTag = null;
         if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
-            compoundTag = tagHolder.tag;
+            compoundTag = internedTag.tag;
         }
         data.writeNbt(compoundTag);
     }
@@ -248,7 +246,7 @@ public final class AEItemKey extends AEKey {
         int i = data.readVarInt();
         var item = Item.byId(i);
         var tag = data.readNbt();
-        return of(item, tag);
+        return new AEItemKey(item, InternedTag.of(tag, true));
     }
 
     @Override
@@ -256,44 +254,20 @@ public final class AEItemKey extends AEKey {
         var id = BuiltInRegistries.ITEM.getKey(item);
         String idString = id != BuiltInRegistries.ITEM.getDefaultKey() ? id.toString()
                 : item.getClass().getName() + "(unregistered)";
-        return tagHolder.tag == null ? idString : idString + " (+tag)";
+        return internedTag.tag == null ? idString : idString + " (+tag)";
     }
 
-    private static final WeakHashMap<TagHolder, WeakReference<TagHolder>> holderInterningMap = new WeakHashMap<>();
+    private static final class InternedTag {
+        private static final InternedTag EMPTY = new InternedTag(null);
 
-    private static TagHolder getTagHolder(@Nullable CompoundTag tag) {
-        if (tag == null) {
-            return TagHolder.EMPTY;
-        }
-
-        synchronized (AEItemKey.class) {
-            var searchHolder = new TagHolder(tag);
-            var weakRef = holderInterningMap.get(searchHolder);
-            TagHolder ret = null;
-
-            if (weakRef != null) {
-                ret = weakRef.get();
-            }
-
-            if (ret == null) {
-                // Copy the tag now since we are not sure that we can take ownership of it.
-                ret = new TagHolder(tag.copy());
-                holderInterningMap.put(ret, new WeakReference<>(ret));
-            }
-
-            return ret;
-        }
-    }
-
-    private static final class TagHolder {
-        private static final TagHolder EMPTY = new TagHolder(null);
+        private static final WeakHashMap<InternedTag, WeakReference<InternedTag>> INTERNED = new WeakHashMap<>();
 
         private final CompoundTag tag;
         private final int hashCode;
 
-        TagHolder(CompoundTag tag) {
+        InternedTag(CompoundTag tag) {
             this.tag = tag;
-            this.hashCode = Objects.hash(tag);
+            this.hashCode = Objects.hashCode(tag);
         }
 
         @Override
@@ -302,13 +276,37 @@ public final class AEItemKey extends AEKey {
                 return true;
             if (o == null || getClass() != o.getClass())
                 return false;
-            TagHolder tagHolder = (TagHolder) o;
-            return Objects.equals(tag, tagHolder.tag);
+            InternedTag internedTag = (InternedTag) o;
+            return Objects.equals(tag, internedTag.tag);
         }
 
         @Override
         public int hashCode() {
             return hashCode;
+        }
+
+        public static InternedTag of(@Nullable CompoundTag tag, boolean giveOwnership) {
+            if (tag == null) {
+                return EMPTY;
+            }
+
+            synchronized (AEItemKey.class) {
+                var searchHolder = new InternedTag(tag);
+                var weakRef = INTERNED.get(searchHolder);
+                InternedTag ret = null;
+
+                if (weakRef != null) {
+                    ret = weakRef.get();
+                }
+
+                if (ret == null) {
+                    // Intern a copy of the tag, since we cannot guarantee that we take ownership
+                    ret = new InternedTag(giveOwnership ? tag : tag.copy());
+                    INTERNED.put(ret, new WeakReference<>(ret));
+                }
+
+                return ret;
+            }
         }
     }
 }
