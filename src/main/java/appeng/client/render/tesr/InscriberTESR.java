@@ -40,7 +40,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.block.orientation.BlockOrientation;
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberProcessType;

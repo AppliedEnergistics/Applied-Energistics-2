@@ -1,4 +1,4 @@
-package appeng.block.orientation;
+package appeng.api.orientation;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -9,8 +9,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import appeng.api.util.IOrientableBlock;
+import appeng.block.orientation.SpinMapping;
 
+/**
+ * Specifies how a block determines its orientation and stores it in the blockstate. For use with
+ * {@link IOrientableBlock}.
+ */
 public interface IOrientationStrategy {
     // This is the clockwise rotation around the facing, starting at:
     // UP for horizontal axes

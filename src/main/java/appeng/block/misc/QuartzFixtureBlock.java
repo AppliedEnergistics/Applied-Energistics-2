@@ -49,8 +49,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseBlock;
-import appeng.block.orientation.RelativeSide;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;

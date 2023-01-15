@@ -1,4 +1,4 @@
-package appeng.block.orientation;
+package appeng.api.orientation;
 
 import net.minecraft.core.Direction;
 

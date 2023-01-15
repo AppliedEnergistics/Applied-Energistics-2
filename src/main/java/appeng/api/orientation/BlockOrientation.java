@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.orientation;
+package appeng.api.orientation;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -26,11 +26,16 @@ import com.mojang.math.Transformation;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+/**
+ * All possible rotations for a fully orientable block.
+ */
 public enum BlockOrientation {
 
     // DUNSWE
@@ -121,6 +126,22 @@ public enum BlockOrientation {
             }
         }
         throw new IllegalArgumentException("Invalid x, y or z rotation: " + xRot + ", " + yRot + ", " + zRot);
+    }
+
+    public void set(BlockEntity be) {
+        set(be.getLevel(), be.getBlockPos());
+    }
+
+    public void set(Level level, BlockPos pos) {
+        var state = level.getBlockState(pos);
+        var strategy = IOrientationStrategy.get(state);
+        var newState = strategy.setOrientation(state,
+                getSide(RelativeSide.FRONT),
+                getSpin());
+        if (newState != state) {
+            level.setBlockAndUpdate(pos, newState);
+        }
+
     }
 
     public boolean isRedundant() {

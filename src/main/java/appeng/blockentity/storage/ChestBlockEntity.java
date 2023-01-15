@@ -411,7 +411,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Override
     public InternalInventory getExposedInventoryForSide(Direction side) {
-        if (side == this.getForward()) {
+        if (side == this.getFront()) {
             return this.cellInventory;
         } else {
             return this.inputInventory;
@@ -560,7 +560,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Nullable
     public Storage<FluidVariant> getFluidHandler(Direction side) {
-        if (side != getForward()) {
+        if (side != getFront()) {
             return fluidHandler;
         } else {
             return null;
@@ -569,7 +569,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Nullable
     public IStorageMonitorableAccessor getMEHandler(Direction side) {
-        if (side != getForward()) {
+        if (side != getFront()) {
             return accessor;
         } else {
             return null;

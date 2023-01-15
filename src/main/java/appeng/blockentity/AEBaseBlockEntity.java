@@ -59,10 +59,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.BlockOrientation;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.RelativeSide;
 import appeng.client.render.model.AEModelData;
 import appeng.core.AELog;
 import appeng.helpers.ICustomNameObject;
@@ -290,22 +290,12 @@ public class AEBaseBlockEntity extends BlockEntity
         return BlockOrientation.get(getBlockState());
     }
 
-    public Direction getForward() {
+    public Direction getFront() {
         return getOrientation().getSide(RelativeSide.FRONT);
     }
 
-    public Direction getUp() {
+    public Direction getTop() {
         return getOrientation().getSide(RelativeSide.TOP);
-    }
-
-    public void setOrientation(Direction forward, Direction up) {
-        var currentState = getBlockState();
-        var strategy = IOrientationStrategy.get(currentState);
-        var newState = strategy.setOrientation(currentState, forward, up);
-        if (currentState != newState) {
-            AELog.blockUpdate(this.worldPosition, currentState, newState, this);
-            this.level.setBlockAndUpdate(worldPosition, newState);
-        }
     }
 
     /**

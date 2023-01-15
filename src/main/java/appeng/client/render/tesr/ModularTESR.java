@@ -28,7 +28,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 
-import appeng.block.orientation.BlockOrientation;
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.client.render.renderable.Renderable;
 

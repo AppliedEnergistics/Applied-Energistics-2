@@ -33,10 +33,10 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.api.storage.cells.CellState;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.core.localization.PlayerMessages;
 import appeng.util.InteractionUtil;
@@ -79,7 +79,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
         var be = this.getBlockEntity(level, pos);
         if (be != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {
-                if (hit.getDirection() == be.getUp()) {
+                if (hit.getDirection() == be.getTop()) {
                     if (!be.openGui(p)) {
                         p.sendSystemMessage(PlayerMessages.ChestCannotReadStorageCell.text());
                     }

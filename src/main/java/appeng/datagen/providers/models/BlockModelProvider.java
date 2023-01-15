@@ -20,6 +20,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.QuartzGrowthAcceleratorBlock;
@@ -27,7 +28,6 @@ import appeng.block.misc.SecurityStationBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessBlock;
-import appeng.block.orientation.BlockOrientation;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.storage.ChestBlock;

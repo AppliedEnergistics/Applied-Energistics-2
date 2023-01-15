@@ -32,9 +32,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.util.InteractionUtil;
 

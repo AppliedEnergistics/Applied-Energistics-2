@@ -33,9 +33,9 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.SpatialIOPortMenu;

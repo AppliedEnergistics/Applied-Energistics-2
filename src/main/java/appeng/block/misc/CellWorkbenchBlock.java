@@ -29,9 +29,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.CellWorkbenchMenu;

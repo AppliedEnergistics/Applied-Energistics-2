@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
-import appeng.block.orientation.BlockOrientation;
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.client.render.model.DriveBakedModel;
 

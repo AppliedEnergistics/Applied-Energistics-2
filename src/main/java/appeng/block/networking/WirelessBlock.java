@@ -22,6 +22,8 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -47,9 +49,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
+import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.networking.WirelessBlockEntity;
 import appeng.helpers.AEMaterials;
 import appeng.menu.MenuOpener;
@@ -117,122 +120,68 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implem
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        final WirelessBlockEntity blockEntity = this.getBlockEntity(level, pos);
-        if (blockEntity != null) {
-            final Direction forward = blockEntity.getForward();
-
-            double minX = 0;
-            double minY = 0;
-            double minZ = 0;
-            double maxX = 1;
-            double maxY = 1;
-            double maxZ = 1;
-
-            switch (forward) {
-                case DOWN:
-                    minZ = minX = 3.0 / 16.0;
-                    maxZ = maxX = 13.0 / 16.0;
-                    maxY = 1.0;
-                    minY = 5.0 / 16.0;
-                    break;
-                case EAST:
-                    minZ = minY = 3.0 / 16.0;
-                    maxZ = maxY = 13.0 / 16.0;
-                    maxX = 11.0 / 16.0;
-                    minX = 0.0;
-                    break;
-                case NORTH:
-                    minY = minX = 3.0 / 16.0;
-                    maxY = maxX = 13.0 / 16.0;
-                    maxZ = 1.0;
-                    minZ = 5.0 / 16.0;
-                    break;
-                case SOUTH:
-                    minY = minX = 3.0 / 16.0;
-                    maxY = maxX = 13.0 / 16.0;
-                    maxZ = 11.0 / 16.0;
-                    minZ = 0.0;
-                    break;
-                case UP:
-                    minZ = minX = 3.0 / 16.0;
-                    maxZ = maxX = 13.0 / 16.0;
-                    maxY = 11.0 / 16.0;
-                    minY = 0.0;
-                    break;
-                case WEST:
-                    minZ = minY = 3.0 / 16.0;
-                    maxZ = maxY = 13.0 / 16.0;
-                    maxX = 1.0;
-                    minX = 5.0 / 16.0;
-                    break;
-                default:
-                    break;
-            }
-
-            return Shapes.create(new AABB(minX, minY, minZ, maxX, maxY, maxZ));
-        }
-        return Shapes.empty();
+        return getVoxelShape(state);
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return getVoxelShape(state);
+    }
 
-        final WirelessBlockEntity blockEntity = this.getBlockEntity(level, pos);
-        if (blockEntity != null) {
-            final Direction forward = blockEntity.getForward();
+    @NotNull
+    private VoxelShape getVoxelShape(BlockState state) {
+        var orientation = getOrientation(state);
+        var forward = orientation.getSide(RelativeSide.FRONT);
 
-            double minX = 0;
-            double minY = 0;
-            double minZ = 0;
-            double maxX = 1;
-            double maxY = 1;
-            double maxZ = 1;
+        double minX = 0;
+        double minY = 0;
+        double minZ = 0;
+        double maxX = 1;
+        double maxY = 1;
+        double maxZ = 1;
 
-            switch (forward) {
-                case DOWN:
-                    minZ = minX = 3.0 / 16.0;
-                    maxZ = maxX = 13.0 / 16.0;
-                    maxY = 1.0;
-                    minY = 5.0 / 16.0;
-                    break;
-                case EAST:
-                    minZ = minY = 3.0 / 16.0;
-                    maxZ = maxY = 13.0 / 16.0;
-                    maxX = 11.0 / 16.0;
-                    minX = 0.0;
-                    break;
-                case NORTH:
-                    minY = minX = 3.0 / 16.0;
-                    maxY = maxX = 13.0 / 16.0;
-                    maxZ = 1.0;
-                    minZ = 5.0 / 16.0;
-                    break;
-                case SOUTH:
-                    minY = minX = 3.0 / 16.0;
-                    maxY = maxX = 13.0 / 16.0;
-                    maxZ = 11.0 / 16.0;
-                    minZ = 0.0;
-                    break;
-                case UP:
-                    minZ = minX = 3.0 / 16.0;
-                    maxZ = maxX = 13.0 / 16.0;
-                    maxY = 11.0 / 16.0;
-                    minY = 0.0;
-                    break;
-                case WEST:
-                    minZ = minY = 3.0 / 16.0;
-                    maxZ = maxY = 13.0 / 16.0;
-                    maxX = 1.0;
-                    minX = 5.0 / 16.0;
-                    break;
-                default:
-                    break;
+        switch (forward) {
+            case DOWN -> {
+                minZ = minX = 3.0 / 16.0;
+                maxZ = maxX = 13.0 / 16.0;
+                maxY = 1.0;
+                minY = 5.0 / 16.0;
             }
-
-            return Shapes.create(new AABB(minX, minY, minZ, maxX, maxY, maxZ));
-        } else {
-            return Shapes.empty();
+            case EAST -> {
+                minZ = minY = 3.0 / 16.0;
+                maxZ = maxY = 13.0 / 16.0;
+                maxX = 11.0 / 16.0;
+                minX = 0.0;
+            }
+            case NORTH -> {
+                minY = minX = 3.0 / 16.0;
+                maxY = maxX = 13.0 / 16.0;
+                maxZ = 1.0;
+                minZ = 5.0 / 16.0;
+            }
+            case SOUTH -> {
+                minY = minX = 3.0 / 16.0;
+                maxY = maxX = 13.0 / 16.0;
+                maxZ = 11.0 / 16.0;
+                minZ = 0.0;
+            }
+            case UP -> {
+                minZ = minX = 3.0 / 16.0;
+                maxZ = maxX = 13.0 / 16.0;
+                maxY = 11.0 / 16.0;
+                minY = 0.0;
+            }
+            case WEST -> {
+                minZ = minY = 3.0 / 16.0;
+                maxZ = maxY = 13.0 / 16.0;
+                maxX = 1.0;
+                minX = 5.0 / 16.0;
+            }
+            default -> {
+            }
         }
+
+        return Shapes.create(new AABB(minX, minY, minZ, maxX, maxY, maxZ));
     }
 
     @Override

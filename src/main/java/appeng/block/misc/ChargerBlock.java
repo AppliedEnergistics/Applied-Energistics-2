@@ -26,7 +26,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -44,11 +43,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AEAxisAlignedBB;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.BlockOrientation;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.client.render.effects.LightningArcParticleData;
 import appeng.core.AEConfig;
@@ -140,54 +140,39 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        var orientation = getOrientation(state);
+        var up = orientation.getSide(RelativeSide.TOP);
+        var forward = orientation.getSide(RelativeSide.FRONT);
+        var twoPixels = 2.0 / 16.0;
 
-        final ChargerBlockEntity blockEntity = this.getBlockEntity(level, pos);
-        if (blockEntity != null) {
-            final double twoPixels = 2.0 / 16.0;
-            final Direction up = blockEntity.getUp();
-            final Direction forward = blockEntity.getForward();
-            final AEAxisAlignedBB bb = new AEAxisAlignedBB(twoPixels, twoPixels, twoPixels, 1.0 - twoPixels,
-                    1.0 - twoPixels, 1.0 - twoPixels);
+        var bb = new AEAxisAlignedBB(twoPixels, twoPixels, twoPixels, 1.0 - twoPixels,
+                1.0 - twoPixels, 1.0 - twoPixels);
 
-            if (up.getStepX() != 0) {
-                bb.minX = 0;
-                bb.maxX = 1;
-            }
-            if (up.getStepY() != 0) {
-                bb.minY = 0;
-                bb.maxY = 1;
-            }
-            if (up.getStepZ() != 0) {
-                bb.minZ = 0;
-                bb.maxZ = 1;
-            }
-
-            switch (forward) {
-                case DOWN:
-                    bb.maxY = 1;
-                    break;
-                case UP:
-                    bb.minY = 0;
-                    break;
-                case NORTH:
-                    bb.maxZ = 1;
-                    break;
-                case SOUTH:
-                    bb.minZ = 0;
-                    break;
-                case EAST:
-                    bb.minX = 0;
-                    break;
-                case WEST:
-                    bb.maxX = 1;
-                    break;
-                default:
-                    break;
-            }
-
-            return Shapes.create(bb.getBoundingBox());
+        if (up.getStepX() != 0) {
+            bb.minX = 0;
+            bb.maxX = 1;
         }
-        return Shapes.create(new AABB(0.0, 0, 0.0, 1.0, 1.0, 1.0));
+        if (up.getStepY() != 0) {
+            bb.minY = 0;
+            bb.maxY = 1;
+        }
+        if (up.getStepZ() != 0) {
+            bb.minZ = 0;
+            bb.maxZ = 1;
+        }
+
+        switch (forward) {
+            case DOWN -> bb.maxY = 1;
+            case UP -> bb.minY = 0;
+            case NORTH -> bb.maxZ = 1;
+            case SOUTH -> bb.minZ = 0;
+            case EAST -> bb.minX = 0;
+            case WEST -> bb.maxX = 1;
+            default -> {
+            }
+        }
+
+        return Shapes.create(bb.getBoundingBox());
     }
 
     @Override

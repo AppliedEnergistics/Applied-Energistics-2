@@ -20,7 +20,7 @@ import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.ticking.IGridTickable;
-import appeng.block.orientation.IOrientationStrategy;
+import appeng.api.orientation.IOrientationStrategy;
 import appeng.core.definitions.AEItems;
 import appeng.me.InWorldGridNode;
 import appeng.me.helpers.IGridConnectedBlockEntity;

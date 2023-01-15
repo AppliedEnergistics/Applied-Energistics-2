@@ -36,9 +36,9 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AECableType;
-import appeng.block.orientation.BlockOrientation;
-import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.AEConfig;
 
@@ -150,7 +150,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
      */
     @org.jetbrains.annotations.Nullable
     public ICrankable getCrankable(Direction direction) {
-        if (direction == getUp() || direction == getUp().getOpposite()) {
+        if (direction == getTop() || direction == getTop().getOpposite()) {
             return new Crankable();
         }
         return null;

@@ -21,15 +21,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.util;
+package appeng.api.orientation;
 
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.orientation.BlockOrientation;
-import appeng.block.orientation.IOrientationStrategy;
-
 /**
- * Implemented on many of AEs non Block entity Blocks as a way to get a IOrientable.
+ * Implemented on many of AEs blocks to control their orientation.
  */
 public interface IOrientableBlock {
     IOrientationStrategy getOrientationStrategy();

@@ -1,4 +1,4 @@
-package appeng.block.orientation;
+package appeng.api.orientation;
 
 import java.util.Collection;
 import java.util.Collections;

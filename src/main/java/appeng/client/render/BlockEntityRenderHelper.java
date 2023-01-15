@@ -28,9 +28,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
 
 import appeng.api.client.AEStackRendering;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
-import appeng.block.orientation.BlockOrientation;
 
 /**
  * Helper methods for rendering block entities.

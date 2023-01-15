@@ -51,9 +51,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.menu.MenuOpener;
@@ -138,7 +138,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         final SkyChestBlockEntity sk = this.getBlockEntity(level, pos);
-        Direction up = sk != null ? sk.getUp() : Direction.UP;
+        Direction up = sk != null ? sk.getTop() : Direction.UP;
         return SHAPES.get(up);
     }
 

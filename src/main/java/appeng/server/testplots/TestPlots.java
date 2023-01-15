@@ -48,6 +48,7 @@ import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.networking.pathing.ChannelMode;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.PartHelper;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -307,7 +308,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("-1 2 1");
         plot.blockEntity("-1 2 0", AEBlocks.INSCRIBER, inscriber -> {
             inscriber.getInternalInventory().setItemDirect(0, new ItemStack(processorPress));
-            inscriber.setOrientation(Direction.NORTH, Direction.WEST);
+            BlockOrientation.NORTH_WEST.set(inscriber);
         });
 
         // Set up the inscriber for the silicon print
@@ -315,7 +316,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("1 2 1");
         plot.blockEntity("1 2 0", AEBlocks.INSCRIBER, inscriber -> {
             inscriber.getInternalInventory().setItemDirect(0, AEItems.SILICON_PRESS.stack());
-            inscriber.setOrientation(Direction.NORTH, Direction.WEST);
+            BlockOrientation.NORTH_WEST.set(inscriber);
         });
 
         // Set up the inscriber for assembly
@@ -323,9 +324,7 @@ public final class TestPlots {
         plot.hopper("-1 1 0", Direction.EAST);
         plot.filledHopper("0 2 0", Direction.DOWN, Items.REDSTONE);
         plot.creativeEnergyCell("0 1 1");
-        plot.blockEntity("0 1 0", AEBlocks.INSCRIBER, inscriber -> {
-            inscriber.setOrientation(Direction.NORTH, Direction.WEST);
-        });
+        plot.blockEntity("0 1 0", AEBlocks.INSCRIBER, BlockOrientation.NORTH_WEST::set);
         plot.hopper("0 0 0", Direction.DOWN);
     }
 

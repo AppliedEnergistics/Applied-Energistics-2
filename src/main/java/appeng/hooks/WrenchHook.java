@@ -6,10 +6,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.block.orientation.BlockOrientation;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;

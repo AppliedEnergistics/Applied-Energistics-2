@@ -36,11 +36,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
-import appeng.block.orientation.BlockOrientation;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.iface.PatternProviderLogic;

@@ -1,4 +1,4 @@
-package appeng.block.orientation;
+package appeng.api.orientation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

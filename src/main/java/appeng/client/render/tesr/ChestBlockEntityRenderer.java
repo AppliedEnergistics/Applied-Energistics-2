@@ -41,7 +41,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import appeng.block.orientation.BlockOrientation;
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.client.render.BakedModelUnwrapper;
 import appeng.client.render.model.DriveBakedModel;

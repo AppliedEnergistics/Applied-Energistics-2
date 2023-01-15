@@ -22,10 +22,10 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.blockentity.crafting.CraftingMonitorModelData;
 import appeng.client.render.cablebus.CubeBuilder;

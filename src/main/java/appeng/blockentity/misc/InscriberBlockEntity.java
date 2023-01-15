@@ -46,12 +46,12 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
-import appeng.block.orientation.BlockOrientation;
-import appeng.block.orientation.RelativeSide;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -331,9 +331,9 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
     @Override
     public InternalInventory getExposedInventoryForSide(Direction facing) {
-        if (facing == this.getUp()) {
+        if (facing == this.getTop()) {
             return this.topItemHandlerExtern;
-        } else if (facing == this.getUp().getOpposite()) {
+        } else if (facing == this.getTop().getOpposite()) {
             return this.bottomItemHandlerExtern;
         } else {
             return this.sideItemHandlerExtern;
@@ -381,7 +381,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
      */
     @org.jetbrains.annotations.Nullable
     public ICrankable getCrankable(Direction direction) {
-        if (direction != getForward()) {
+        if (direction != getFront()) {
             return new Crankable();
         }
         return null;

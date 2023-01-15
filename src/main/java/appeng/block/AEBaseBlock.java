@@ -33,9 +33,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 
-import appeng.api.util.IOrientableBlock;
-import appeng.block.orientation.IOrientationStrategy;
-import appeng.block.orientation.OrientationStrategies;
+import appeng.api.orientation.IOrientableBlock;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.helpers.AEMaterials;
 
 public abstract class AEBaseBlock extends Block implements IOrientableBlock {

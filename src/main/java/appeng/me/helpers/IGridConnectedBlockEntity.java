@@ -33,8 +33,8 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.orientation.BlockOrientation;
 import appeng.block.IOwnerAwareBlockEntity;
-import appeng.block.orientation.BlockOrientation;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.me.InWorldGridNode;
 

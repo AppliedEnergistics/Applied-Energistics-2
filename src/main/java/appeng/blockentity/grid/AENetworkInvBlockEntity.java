@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IManagedGridNode;
-import appeng.block.orientation.BlockOrientation;
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;

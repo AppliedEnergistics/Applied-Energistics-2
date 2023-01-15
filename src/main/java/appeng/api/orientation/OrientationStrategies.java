@@ -1,7 +1,10 @@
-package appeng.block.orientation;
+package appeng.api.orientation;
 
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+/**
+ * Default implementations for {@link IOrientationStrategy}.
+ */
 public final class OrientationStrategies {
     private static final IOrientationStrategy none = new NoOrientationStrategy();
     private static final IOrientationStrategy horizontalFacing = new FacingStrategy(
