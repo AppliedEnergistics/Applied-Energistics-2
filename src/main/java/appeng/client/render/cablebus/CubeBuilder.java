@@ -18,25 +18,30 @@
 
 package appeng.client.render.cablebus;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.List;
 
 import com.google.common.base.Preconditions;
 
 import org.joml.Vector4f;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+
+import appeng.thirdparty.fabric.EncodingFormat;
+import appeng.thirdparty.fabric.MutableQuadViewImpl;
+import appeng.thirdparty.fabric.QuadEmitter;
 
 /**
  * Builds the quads for a cube.
  */
-@Environment(EnvType.CLIENT)
 public class CubeBuilder {
+
+    private final List<BakedQuad> output;
 
     private final EnumMap<Direction, TextureAtlasSprite> textures = new EnumMap<>(Direction.class);
 
@@ -44,7 +49,7 @@ public class CubeBuilder {
 
     private final EnumMap<Direction, Vector4f> customUv = new EnumMap<>(Direction.class);
 
-    private final byte[] uvRotations = new byte[Direction.values().length];
+    private byte[] uvRotations = new byte[Direction.values().length];
 
     private final boolean[] flipU = new boolean[Direction.values().length];
 
@@ -54,10 +59,12 @@ public class CubeBuilder {
 
     private boolean emissiveMaterial;
 
-    private final QuadEmitter emitter;
+    public CubeBuilder(List<BakedQuad> output) {
+        this.output = output;
+    }
 
-    public CubeBuilder(QuadEmitter emitter) {
-        this.emitter = emitter;
+    public CubeBuilder() {
+        this(new ArrayList<>(6));
     }
 
     public void addCube(float x1, float y1, float z1, float x2, float y2, float z2) {
@@ -96,7 +103,17 @@ public class CubeBuilder {
 
         var texture = this.textures.get(face);
 
-        var emitter = this.emitter;
+        var emitter = new MutableQuadViewImpl() {
+            {
+                begin(new int[EncodingFormat.TOTAL_STRIDE], 0);
+            }
+
+            @Override
+            public QuadEmitter emit() {
+                output.add(toBakedQuad(texture));
+                return this;
+            }
+        };
         emitter.colorIndex(-1);
 
         var uv = new UvVector();
@@ -253,5 +270,9 @@ public class CubeBuilder {
     public void setUvRotation(Direction facing, int rotation) {
         Preconditions.checkArgument(rotation >= 0 && rotation <= 3, "rotation");
         this.uvRotations[facing.ordinal()] = (byte) rotation;
+    }
+
+    public List<BakedQuad> getOutput() {
+        return this.output;
     }
 }

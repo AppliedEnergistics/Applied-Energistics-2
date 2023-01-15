@@ -24,7 +24,6 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
@@ -76,14 +75,14 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeWrapper>
         List<EntryIngredient> ingredients = recipeDisplay.getInputEntries();
         EntryIngredient output = recipeDisplay.getOutputEntries().get(0);
 
-        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 1)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_TOP)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 19, innerY + 24)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_MIDDLE)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 47)).disableBackground().markInput()
-                .entries(ingredients.get(SLOT_INPUT_BOTTOM)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 69, innerY + 25)).disableBackground().markOutput()
-                .entries(output));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 1)).disableBackground().markInput()
+// TODO 1.19.3                .entries(ingredients.get(SLOT_INPUT_TOP)));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 19, innerY + 24)).disableBackground().markInput()
+// TODO 1.19.3                .entries(ingredients.get(SLOT_INPUT_MIDDLE)));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 47)).disableBackground().markInput()
+// TODO 1.19.3                .entries(ingredients.get(SLOT_INPUT_BOTTOM)));
+// TODO 1.19.3        widgets.add(Widgets.createSlot(new Point(innerX + 69, innerY + 25)).disableBackground().markOutput()
+// TODO 1.19.3                .entries(output));
 
         return widgets;
     }
