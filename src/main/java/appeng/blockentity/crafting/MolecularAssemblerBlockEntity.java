@@ -117,7 +117,6 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         return 5;
     }
 
-    @org.jetbrains.annotations.Nullable
     @Override
     public PatternContainerGroup getCraftingMachineInfo() {
         Component name;

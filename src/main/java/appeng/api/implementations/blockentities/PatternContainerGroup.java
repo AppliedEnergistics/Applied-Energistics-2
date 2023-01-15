@@ -73,10 +73,7 @@ public record PatternContainerGroup(
         // Check for first-class support
         var craftingMachine = ICraftingMachine.of(level, pos, side, target);
         if (craftingMachine != null) {
-            var info = craftingMachine.getCraftingMachineInfo();
-            if (info != null) {
-                return info;
-            }
+            return craftingMachine.getCraftingMachineInfo();
         }
 
         // Anything else requires a block entity

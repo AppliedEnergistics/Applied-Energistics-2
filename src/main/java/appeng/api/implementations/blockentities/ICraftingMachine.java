@@ -60,11 +60,10 @@ public interface ICraftingMachine {
         return SIDED.find(level, pos, null, blockEntity, side);
     }
 
-    // TODO: 1.19.3+ Remove the default implementation.
-    @Nullable
-    default PatternContainerGroup getCraftingMachineInfo() {
-        return null;
-    }
+    /**
+     * Describe how this machine is displayed & grouped in the pattern access terminal.
+     */
+    PatternContainerGroup getCraftingMachineInfo();
 
     /**
      * inserts a crafting plan, and the necessary items into the crafting machine.
