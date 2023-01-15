@@ -13,11 +13,12 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import org.joml.Vector2f;
 import org.joml.Vector4i;
 
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+
+import appeng.thirdparty.fabric.SpriteFinder;
 
 /**
  * Captured rendering data.

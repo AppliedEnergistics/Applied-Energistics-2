@@ -22,7 +22,6 @@ import java.util.Arrays;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -39,6 +38,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.FakePlayer;
 
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.orientation.IOrientationStrategy;

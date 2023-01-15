@@ -26,17 +26,12 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.entity.FakePlayer;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -61,6 +56,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -76,7 +75,6 @@ import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
-import appeng.core.AppEng;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.util.helpers.P2PHelper;
@@ -84,7 +82,8 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class Platform {
 
-    private static final FabricLoader FABRIC = FabricLoader.getInstance();
+    @VisibleForTesting
+    public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
 
     /*
      * random source, use it for item drop locations...
@@ -217,15 +216,15 @@ public class Platform {
      * @return True if client-side classes (such as Renderers) are available.
      */
     public static boolean hasClientClasses() {
-        return FABRIC.getEnvironmentType() == EnvType.CLIENT;
+        // The null check is for tests
+        return FMLEnvironment.dist == null || FMLEnvironment.dist.isClient();
     }
 
     /*
      * returns true if the code is on the client.
      */
     public static boolean isClient() {
-        var currentServer = AppEng.instance().getCurrentServer();
-        return currentServer == null || Thread.currentThread() != currentServer.getRunningThread();
+        return Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER;
     }
 
     public static boolean hasPermissions(DimensionalBlockPos dc, Player player) {
@@ -250,21 +249,14 @@ public class Platform {
      * returns true if the code is on the server.
      */
     public static boolean isServer() {
-        try {
-            var currentServer = AppEng.instance().getCurrentServer();
-            return currentServer != null && Thread.currentThread() == currentServer.getRunningThread();
-        } catch (NullPointerException npe) {
-            // FIXME TEST HACKS
-            // Running from tests: AppEng.instance() is null... :(
-            return false;
-        }
+        return Thread.currentThread().getThreadGroup() == SidedThreadGroups.SERVER;
     }
 
     /**
      * Throws an exception if the current thread is not one of the server threads.
      */
     public static void assertServerThread() {
-        if (!isServer()) {
+        if (Thread.currentThread().getThreadGroup() != serverThreadGroup) {
             throw new UnsupportedOperationException(
                     "This code can only be called server-side and this is most likely a bug.");
         }
@@ -280,19 +272,22 @@ public class Platform {
 
     @Nullable
     public static String getModName(String modId) {
-        return FABRIC.getModContainer(modId).map(mc -> mc.getMetadata().getName()).orElse(modId);
+        return ModList.get().getModContainerById(modId).map(mc -> mc.getModInfo().getDisplayName())
+                .orElse(modId);
     }
 
     public static String getDescriptionId(Fluid fluid) {
         return fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
     }
 
-    public static String getDescriptionId(FluidVariant fluid) {
-        return getDescriptionId(fluid.getFluid());
+    public static String getDescriptionId(FluidStack fluid) {
+        return fluid.getDisplayName().getString();
     }
 
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
-        return FluidVariantAttributes.getName(FluidVariant.of(fluid, tag));
+        var fluidStack = new FluidStack(fluid, 1);
+        fluidStack.setTag(tag);
+        return fluidStack.getDisplayName();
     }
 
     // tag copy is not necessary, as the tag is not modified.
@@ -456,10 +451,6 @@ public class Platform {
         return level instanceof ServerLevel serverLevel && serverLevel.getChunkSource().isPositionTicking(chunkPos);
     }
 
-    public static Transaction openOrJoinTx() {
-        return Transaction.openNested(Transaction.getCurrentUnsafe());
-    }
-
     /**
      * Create a full packet of the chunks data with lighting.
      */
@@ -511,6 +502,6 @@ public class Platform {
      * @return True if AE2 is being run within a dev environment.
      */
     public static boolean isDevelopmentEnvironment() {
-        return FabricLoader.getInstance().isDevelopmentEnvironment();
+        return !FMLEnvironment.production;
     }
 }
