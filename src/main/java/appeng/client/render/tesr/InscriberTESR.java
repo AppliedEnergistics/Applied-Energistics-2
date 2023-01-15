@@ -40,6 +40,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.InscriberBlockEntity;
@@ -246,7 +247,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             // for direction=null, while a block-model will have their faces for
             // cull-faces, but not direction=null
             var model = itemRenderer.getItemModelShaper().getItemModel(stack);
-            var quads = model.getQuads(null, null, RandomSource.create());
+            var quads = model.getQuads(null, null, RandomSource.create(), ModelData.EMPTY, null);
             // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
             if (quads != null && !quads.isEmpty()) {
                 ms.scale(0.5f, 0.5f, 0.5f);

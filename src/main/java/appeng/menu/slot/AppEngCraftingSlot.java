@@ -25,6 +25,7 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeHooks;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.crafting.CraftingEvent;
@@ -82,8 +83,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     public void onTake(Player playerIn, ItemStack stack) {
         CraftingEvent.fireCraftingEvent(playerIn, stack, this.craftingGrid.toContainer());
         this.checkTakeAchievements(stack);
-        // FIXME FABRIC no crafting hooks
-        // ForgeHooks.setCraftingPlayer(playerIn);
+        ForgeHooks.setCraftingPlayer(playerIn);
         final CraftingContainer ic = new TransientCraftingContainer(this.getMenu(), 3, 3);
 
         for (int x = 0; x < this.craftingGrid.size(); x++) {
@@ -94,8 +94,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
         Inventories.copy(ic, this.craftingGrid, false);
 
-        // FIXME FABRIC no crafting hooks
-        // ForgeHooks.setCraftingPlayer(null);
+        ForgeHooks.setCraftingPlayer(null);
 
         for (int i = 0; i < aitemstack.size(); ++i) {
             final ItemStack itemstack1 = this.craftingGrid.getStackInSlot(i);
