@@ -18,17 +18,16 @@
 
 package appeng.client.render.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -40,19 +39,23 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.hooks.CompassManager;
 import appeng.hooks.CompassResult;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This baked model combines the quads of a compass base and the quads of a compass pointer, which will be rotated
  * around the Y-axis to get the compass to point in the right direction.
  */
-public class MeteoriteCompassBakedModel implements BakedModel, FabricBakedModel {
-
+public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
     // Rotation is expressed as radians
+    public static final ModelProperty<Float> ROTATION = new ModelProperty<>();
 
     private final BakedModel base;
 
@@ -65,34 +68,28 @@ public class MeteoriteCompassBakedModel implements BakedModel, FabricBakedModel 
         this.pointer = pointer;
     }
 
-    public BakedModel getBase() {
-        return base;
-    }
-
     public BakedModel getPointer() {
         return pointer;
     }
 
     @Override
-    public boolean isVanillaAdapter() {
-        return false;
-    }
-
-    @Override
-    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos,
-            Supplier<RandomSource> randomSupplier, RenderContext context) {
-        // Pre-compute the quad count to avoid list resizes
-        context.bakedModelConsumer().accept(this.base);
-    }
-
-    @Override
-    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        context.bakedModelConsumer().accept(base);
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand,
+            ModelData extraData, RenderType renderType) {
+        float rotation;
+        // Get rotation from the special block state
+        Float rotationFromData = extraData.get(ROTATION);
+        if (rotationFromData != null) {
+            rotation = rotationFromData;
+        } else {
+            // This is used to render a compass pointing in a specific direction when being
+            // held in hand
+            rotation = this.fallbackRotation;
+        }
 
         // This is used to render a compass pointing in a specific direction when being
         // held in hand
         // Set up the rotation around the Y-axis for the pointer
-        context.pushTransform(quad -> {
+        RenderContext.QuadTransform transform = quad -> {
             Quaternionf quaternion = new Quaternionf().rotationY(this.fallbackRotation);
             Vector3f pos = new Vector3f();
             for (int i = 0; i < 4; i++) {
@@ -103,15 +100,21 @@ public class MeteoriteCompassBakedModel implements BakedModel, FabricBakedModel 
                 quad.pos(i, pos);
             }
             return true;
-        });
-        context.bakedModelConsumer().accept(this.pointer);
-        context.popTransform();
-    }
+        };
 
-    // this is used in the block entity renderer
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, RandomSource random) {
-        return base.getQuads(state, face, random);
+        // Pre-compute the quad count to avoid list resizes
+        List<BakedQuad> quads = new ArrayList<>(this.base.getQuads(state, side, rand, extraData, renderType));
+        // We'll add the pointer as "sideless" to the item rendering when state is null
+        if (side == null && state == null) {
+            var quadView = MutableQuadView.getInstance();
+            for (BakedQuad bakedQuad : this.pointer.getQuads(state, side, rand, extraData, renderType)) {
+                quadView.fromVanilla(bakedQuad, null);
+                transform.transform(quadView);
+                quads.add(quadView.toBlockBakedQuad());
+            }
+        }
+
+        return quads;
     }
 
     @Override

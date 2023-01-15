@@ -13,11 +13,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 public class ChargerRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("charger");
 
-    public static final RecipeType<ChargerRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static final RecipeType<ChargerRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     public final Ingredient ingredient;

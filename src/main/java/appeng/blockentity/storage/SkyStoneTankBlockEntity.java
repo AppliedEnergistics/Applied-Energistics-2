@@ -1,10 +1,8 @@
 package appeng.blockentity.storage;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +11,14 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import appeng.blockentity.AEBaseBlockEntity;
 
@@ -20,24 +26,15 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
 
     public static final int BUCKET_CAPACITY = 16;
 
-    private final SingleVariantStorage<FluidVariant> storage = new SingleVariantStorage<>() {
-
+    protected FluidTank tank = new FluidTank(FluidType.BUCKET_VOLUME * BUCKET_CAPACITY) {
         @Override
-        protected FluidVariant getBlankVariant() {
-            return FluidVariant.blank();
-        }
-
-        @Override
-        protected long getCapacity(FluidVariant variant) {
-            return FluidConstants.BUCKET * BUCKET_CAPACITY;
-        }
-
-        @Override
-        protected void onFinalCommit() {
+        protected void onContentsChanged() {
             SkyStoneTankBlockEntity.this.markForUpdate();
             SkyStoneTankBlockEntity.this.setChanged();
         }
     };
+
+    private final LazyOptional<IFluidHandler> holder = LazyOptional.of(() -> tank);
 
     public SkyStoneTankBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -46,40 +43,44 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.put("variant", storage.variant.toNbt());
-        data.putLong("amount", storage.amount);
+        if (!tank.isEmpty()) {
+            tank.writeToNBT(data);
+        }
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
-        storage.variant = FluidVariant.fromNbt(data.getCompound("variant"));
-        storage.amount = data.getLong("amount");
+        tank.readFromNBT(data);
     }
 
     public boolean onPlayerUse(Player player, InteractionHand hand) {
-        return FluidStorageUtil.interactWithFluidStorage(storage, player, hand);
+        return FluidUtil.interactWithFluidHandler(player, hand, tank);
     }
 
-    public Storage<FluidVariant> getStorage(Direction direction) {
-        return storage;
+    public IFluidTank getStorage() {
+        return tank;
     }
 
-    public SingleVariantStorage<FluidVariant> getStorage() {
-        return storage;
+    @Override
+    @Nonnull
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            return holder.cast();
+        }
+        return super.getCapability(capability, facing);
     }
 
     protected boolean readFromStream(FriendlyByteBuf data) {
         boolean ret = super.readFromStream(data);
-        storage.amount = data.readLong();
-        storage.variant = FluidVariant.fromNbt(data.readNbt());
+        tank.readFromNBT(data.readNbt());
         return ret;
     }
 
     protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
-        data.writeLong(storage.amount);
-        data.writeNbt(storage.getResource().toNbt());
-
+        var tag = new CompoundTag();
+        tank.writeToNBT(tag);
+        data.writeNbt(tag);
     }
 }

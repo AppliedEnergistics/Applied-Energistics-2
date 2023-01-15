@@ -30,6 +30,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
@@ -51,9 +53,12 @@ import appeng.util.inv.filter.IAEItemFilter;
 public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
 
+    public static final ModelProperty<QnbFormedState> FORMED_STATE = new ModelProperty<>();
+
     private static int singularitySeed = 0;
 
     public static final String TAG_FREQUENCY = "freq";
+
     private final byte corner = 16;
     private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
     private final FilteredInternalInventory externalInventory = new FilteredInternalInventory(this.internalInventory,
@@ -294,8 +299,13 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public QnbFormedState getRenderAttachmentData() {
-        return new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered());
+    public ModelData getModelData() {
+        // FIXME must trigger model data updates
+
+        return ModelData.builder()
+                .with(FORMED_STATE, new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered()))
+                .build();
+
     }
 
     /**

@@ -27,8 +27,6 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -36,7 +34,6 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.core.AppEng;
 
 /**
  * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
@@ -53,9 +50,6 @@ import appeng.core.AppEng;
  * want to control their {@code MEStorage}.
  */
 public interface MEStorage {
-    BlockApiLookup<MEStorage, Direction> SIDED = BlockApiLookup.get(
-            AppEng.makeId("storage"), MEStorage.class, Direction.class);
-
     /**
      * Returns whether this inventory is the preferred storage location for the given stack when being compared to other
      * inventories of the same overall priority.

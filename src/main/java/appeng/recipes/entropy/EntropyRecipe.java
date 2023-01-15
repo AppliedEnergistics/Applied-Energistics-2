@@ -43,6 +43,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 
 /**
@@ -52,7 +53,7 @@ public class EntropyRecipe implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    public static final RecipeType<EntropyRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static final RecipeType<EntropyRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
 
