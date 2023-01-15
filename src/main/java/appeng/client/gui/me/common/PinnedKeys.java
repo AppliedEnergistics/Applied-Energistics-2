@@ -11,12 +11,12 @@ import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class PinnedKeys {
     // One rows worth of keys
     public static final int MAX_PINNED = 9;

@@ -21,9 +21,13 @@ package appeng.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 
 import appeng.api.ids.AECreativeTabIds;
 import appeng.block.AEBaseBlock;
@@ -35,10 +39,12 @@ import appeng.items.AEBaseItem;
 
 public final class MainCreativeTab {
 
+    private static final Multimap<ResourceKey<CreativeModeTab>, ItemDefinition<?>> externalItemDefs = HashMultimap
+            .create();
     private static final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
 
     public static void init(Registry<CreativeModeTab> registry) {
-        var tab = FabricItemGroup.builder()
+        var tab = CreativeModeTab.builder()
                 .title(GuiText.CreativeTab.text())
                 .icon(() -> AEBlocks.CONTROLLER.stack(1))
                 .displayItems(MainCreativeTab::buildDisplayItems)
@@ -46,8 +52,18 @@ public final class MainCreativeTab {
         Registry.register(registry, AECreativeTabIds.MAIN, tab);
     }
 
+    public static void initExternal(BuildCreativeModeTabContentsEvent contents) {
+        for (var itemDefinition : externalItemDefs.get(contents.getTabKey())) {
+            contents.accept(itemDefinition);
+        }
+    }
+
     public static void add(ItemDefinition<?> itemDef) {
         itemDefs.add(itemDef);
+    }
+
+    public static void addExternal(ResourceKey<CreativeModeTab> tab, ItemDefinition<?> itemDef) {
+        externalItemDefs.put(tab, itemDef);
     }
 
     private static void buildDisplayItems(CreativeModeTab.ItemDisplayParameters itemDisplayParameters,

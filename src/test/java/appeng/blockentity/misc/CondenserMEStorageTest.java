@@ -6,11 +6,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
@@ -35,6 +34,8 @@ class CondenserMEStorageTest {
         assertThat(inv).isNotNull();
         assertThat(inv).isInstanceOf(CondenserMEStorage.class);
         assertThat(inv.getAvailableStacks()).isEmpty();
+
+        CondenserOutput.SINGULARITY.requiredPower = 256000;
 
         be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY);
         be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.stack());
@@ -65,18 +66,12 @@ class CondenserMEStorageTest {
         assertThat(be.getStoredPower()).isEqualTo(8 + 1);
 
         // test Fluid insert via transfer API
-        try (Transaction transaction = Transaction.openOuter()) {
-            be.getFluidHandler().insert(FluidVariant.of(Fluids.WATER.getSource()), AEFluidKey.AMOUNT_BUCKET,
-                    transaction);
-            transaction.commit();
-        }
+        be.getFluidHandler().fill(new FluidStack(Fluids.WATER.getSource(), AEFluidKey.AMOUNT_BUCKET),
+                IFluidHandler.FluidAction.EXECUTE);
         assertThat(be.getStoredPower()).isEqualTo(8 + 1 + 8);
 
         // test item insert via transfer API
-        try (Transaction transaction = Transaction.openOuter()) {
-            be.getExternalInv().toStorage().insert(ItemVariant.of(AEItems.MATTER_BALL.stack()), 1, transaction);
-            transaction.commit();
-        }
+        be.getExternalInv().insertItem(0, AEItems.MATTER_BALL.stack(), false);
         assertThat(be.getStoredPower()).isEqualTo(8 + 1 + 8 + 1);
     }
 }

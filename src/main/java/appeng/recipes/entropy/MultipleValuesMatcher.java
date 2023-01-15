@@ -24,12 +24,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Matches against a list of values.
@@ -75,7 +75,7 @@ class MultipleValuesMatcher<T extends Comparable<T>> implements StateMatcher {
         return new MultipleValuesMatcher<>(property, values);
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static MultipleValuesMatcher<?> readFromPacket(StateDefinition<?, ?> stateDefinition,
             FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();

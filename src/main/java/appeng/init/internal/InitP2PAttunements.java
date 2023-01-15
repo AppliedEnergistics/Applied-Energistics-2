@@ -18,11 +18,10 @@
 
 package appeng.init.internal;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-
-import team.reborn.energy.api.EnergyStorage;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import appeng.api.features.P2PTunnelAttunement;
+import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEParts;
 import appeng.core.localization.GuiText;
 
@@ -39,9 +38,10 @@ public final class InitP2PAttunements {
         P2PTunnelAttunement.registerAttunementTag(AEParts.ITEM_P2P_TUNNEL);
         P2PTunnelAttunement.registerAttunementTag(AEParts.LIGHT_P2P_TUNNEL);
 
-        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.ENERGY_TUNNEL, EnergyStorage.ITEM,
+        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.ENERGY_TUNNEL, Capabilities.FORGE_ENERGY,
                 GuiText.P2PAttunementEnergy.text());
-        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.FLUID_TUNNEL, FluidStorage.ITEM,
+        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.FLUID_TUNNEL,
+                ForgeCapabilities.FLUID_HANDLER,
                 GuiText.P2PAttunementFluid.text());
     }
 }

@@ -20,12 +20,12 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.core.AppEngClient;
@@ -67,7 +67,7 @@ public class ItemTransitionEffectPacket extends BasePacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void clientPacketData(Player player) {
         EnergyParticleData data = new EnergyParticleData(true, this.d);
         for (int zz = 0; zz < 8; zz++) {

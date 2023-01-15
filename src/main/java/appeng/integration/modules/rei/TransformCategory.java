@@ -66,19 +66,19 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
             // so ingredients lists with less than two rows get centered vertically
             y += 9 * (3 - nInputs);
         }
-        for (var input : display.getInputEntries()) {
-            var slot = Widgets.createSlot(new Point(x, y))
-                    .entries(input)
-                    .markInput();
-            y += slot.getBounds().height;
-            if (y >= bounds.y + 64) {
-                // we don't actually have room to make multiple columns of ingredients look nice,
-                // but this is better than just overflowing downwards.
-                y -= 54;
-                x += 18;
-            }
-            widgets.add(slot);
-        }
+        // TODO 1.19.3 for (var input : display.getInputEntries()) {
+        // TODO 1.19.3 var slot = Widgets.createSlot(new Point(x, y))
+        // TODO 1.19.3 .entries(input)
+        // TODO 1.19.3 .markInput();
+        // TODO 1.19.3 y += slot.getBounds().height;
+        // TODO 1.19.3 if (y >= bounds.y + 64) {
+        // TODO 1.19.3 // we don't actually have room to make multiple columns of ingredients look nice,
+        // TODO 1.19.3 // but this is better than just overflowing downwards.
+        // TODO 1.19.3 y -= 54;
+        // TODO 1.19.3 x += 18;
+        // TODO 1.19.3 }
+        // TODO 1.19.3 widgets.add(slot);
+        // TODO 1.19.3 }
 
         // To center everything but the ingredients vertically
         int yOffset = bounds.y + 28;
@@ -88,37 +88,37 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
         var arrow1 = Widgets.createArrow(new Point(col2, yOffset));
         widgets.add(arrow1);
 
-        // Third column is water block
-        final int col3 = col2 + arrow1.getBounds().getWidth() + 6;
-        var catalystSlot = Widgets.createSlot(new Point(col3, yOffset))
-                .entries(getCatalystForRendering(display))
-                .markInput()
-                .backgroundEnabled(false);
-        widgets.add(catalystSlot);
-
-        // Fourth column is arrow pointing to results
-        final int col4 = col3 + 16 + 5;
-        var arrow2 = Widgets.createArrow(new Point(col4, yOffset));
-        widgets.add(arrow2);
-
-        // Fifth column is the result
-        final int col5 = arrow2.getBounds().getMaxX() + 10;
-        var slot = Widgets.createSlot(new Point(col5, yOffset))
-                .entries(display.getOutputEntries().get(0))
-                .markOutput();
-        widgets.add(slot);
-
-        Component circumstance;
-        if (display.getTransformCircumstance().isExplosion()) {
-            circumstance = ItemModText.EXPLOSION.text();
-        } else {
-            circumstance = ItemModText.SUBMERGE_IN.text();
-        }
-
-        widgets.add(Widgets.createLabel(new Point(bounds.getCenterX(), bounds.y + 15), circumstance)
-                .color(0x7E7E7E)
-                .noShadow());
-
+// TODO 1.19.3        // Third column is water block
+// TODO 1.19.3        final int col3 = col2 + arrow1.getBounds().getWidth() + 6;
+// TODO 1.19.3        var catalystSlot = Widgets.createSlot(new Point(col3, yOffset))
+// TODO 1.19.3                .entries(getCatalystForRendering(display))
+// TODO 1.19.3                .markInput()
+// TODO 1.19.3                .backgroundEnabled(false);
+// TODO 1.19.3        widgets.add(catalystSlot);
+// TODO 1.19.3
+// TODO 1.19.3        // Fourth column is arrow pointing to results
+// TODO 1.19.3        final int col4 = col3 + 16 + 5;
+// TODO 1.19.3        var arrow2 = Widgets.createArrow(new Point(col4, yOffset));
+// TODO 1.19.3        widgets.add(arrow2);
+// TODO 1.19.3
+// TODO 1.19.3        // Fifth column is the result
+// TODO 1.19.3        final int col5 = arrow2.getBounds().getMaxX() + 10;
+// TODO 1.19.3        var slot = Widgets.createSlot(new Point(col5, yOffset))
+// TODO 1.19.3                .entries(display.getOutputEntries().get(0))
+// TODO 1.19.3                .markOutput();
+// TODO 1.19.3        widgets.add(slot);
+// TODO 1.19.3
+// TODO 1.19.3        Component circumstance;
+// TODO 1.19.3        if (display.getTransformCircumstance().isExplosion()) {
+// TODO 1.19.3            circumstance = ItemModText.EXPLOSION.text();
+// TODO 1.19.3        } else {
+// TODO 1.19.3            circumstance = ItemModText.SUBMERGE_IN.text();
+// TODO 1.19.3        }
+// TODO 1.19.3
+// TODO 1.19.3        widgets.add(Widgets.createLabel(new Point(bounds.getCenterX(), bounds.y + 15), circumstance)
+// TODO 1.19.3                .color(0x7E7E7E)
+// TODO 1.19.3                .noShadow());
+// TODO 1.19.3
         return widgets;
     }
 
