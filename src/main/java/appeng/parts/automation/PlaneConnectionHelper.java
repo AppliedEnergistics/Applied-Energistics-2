@@ -148,7 +148,10 @@ public final class PlaneConnectionHelper {
      * Call this when an adjacent block has changed since the connections need to be recalculated.
      */
     public void updateConnections() {
-        // Not needed in Fabric, since model data is automatically updated
+        BlockEntity host = getHostBlockEntity();
+        if (host != null) {
+            host.requestModelDataUpdate();
+        }
     }
 
     private boolean isCompatiblePlaneAdjacent(@Nullable BlockEntity adjacentBlockEntity) {

@@ -22,12 +22,11 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
-import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -42,8 +41,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.NotCondition;
+import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
@@ -52,7 +55,7 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("matter_cannon");
 
-    public static final RecipeType<MatterCannonAmmo> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static final RecipeType<MatterCannonAmmo> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
 
@@ -130,15 +133,18 @@ public class MatterCannonAmmo implements Recipe<Container> {
     public record Ammo(ResourceLocation id, TagKey<Item> tag, Ingredient nonTag,
             float weight) implements FinishedRecipe {
 
-        @Override
         public void serializeRecipeData(JsonObject json) {
+            JsonArray conditions = new JsonArray();
             if (tag != null) {
                 json.add("ammo", Ingredient.of(tag).toJson());
-                ConditionJsonProvider.write(json, DefaultResourceConditions.tagsPopulated(tag));
+                conditions.add(CraftingHelper.serialize(new NotCondition(
+                        new TagEmptyCondition(tag.location()))));
             } else if (nonTag != null) {
                 json.add("ammo", nonTag.toJson());
             }
+
             json.addProperty("weight", this.weight);
+            json.add("conditions", conditions);
         }
 
         @Override

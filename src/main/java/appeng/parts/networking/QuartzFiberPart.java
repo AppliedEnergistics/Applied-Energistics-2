@@ -44,6 +44,7 @@ import appeng.items.parts.PartModels;
 import appeng.me.energy.IEnergyOverlayGridConnection;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
+import appeng.parts.AEBasePart.NodeListener;
 import appeng.parts.PartModel;
 
 /**
