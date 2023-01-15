@@ -39,6 +39,7 @@ import appeng.api.networking.events.GridEvent;
 import appeng.hooks.ticking.TickHandler;
 import appeng.me.GridConnection;
 import appeng.me.GridEventBus;
+import appeng.me.InWorldGridNode;
 import appeng.me.ManagedGridNode;
 
 /**
@@ -154,11 +155,11 @@ public final class GridHelper {
         }
 
         var node = host.getGridNode(side);
-        if (node == null || !node.isExposedOnSide(side)) {
-            return null;
+        if (node instanceof InWorldGridNode inWorldNode && inWorldNode.isExposedOnSide(side)) {
+            return node;
         }
+        return null;
 
-        return node;
     }
 
     /**

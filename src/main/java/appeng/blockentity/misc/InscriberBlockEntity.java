@@ -20,6 +20,7 @@ package appeng.blockentity.misc;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -45,6 +46,8 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
@@ -94,7 +97,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         super(blockEntityType, pos, blockState);
 
         this.getMainNode()
-                .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .setIdlePowerUsage(0)
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
@@ -107,6 +109,8 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         this.topItemHandlerExtern = new FilteredInternalInventory(this.topItemHandler, filter);
         this.bottomItemHandlerExtern = new FilteredInternalInventory(this.bottomItemHandler, filter);
         this.sideItemHandlerExtern = new FilteredInternalInventory(this.sideItemHandler, filter);
+
+        this.setPowerSides(getGridConnectableSides(getOrientation()));
     }
 
     @Override
@@ -170,16 +174,15 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public void onReady() {
-        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
-        super.onReady();
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.complementOf(EnumSet.of(orientation.getSide(RelativeSide.FRONT)));
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
-        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
-        this.setPowerSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
+    protected void onOrientationChanged(BlockOrientation orientation) {
+        super.onOrientationChanged(orientation);
+
+        this.setPowerSides(getGridConnectableSides(orientation));
     }
 
     @Override
@@ -328,9 +331,9 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
     @Override
     public InternalInventory getExposedInventoryForSide(Direction facing) {
-        if (facing == this.getUp()) {
+        if (facing == this.getTop()) {
             return this.topItemHandlerExtern;
-        } else if (facing == this.getUp().getOpposite()) {
+        } else if (facing == this.getTop().getOpposite()) {
             return this.bottomItemHandlerExtern;
         } else {
             return this.sideItemHandlerExtern;
@@ -378,7 +381,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
      */
     @org.jetbrains.annotations.Nullable
     public ICrankable getCrankable(Direction direction) {
-        if (direction != getForward()) {
+        if (direction != getFront()) {
             return new Crankable();
         }
         return null;

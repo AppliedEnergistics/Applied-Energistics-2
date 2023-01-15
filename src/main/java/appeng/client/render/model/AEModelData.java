@@ -18,32 +18,10 @@
 
 package appeng.client.render.model;
 
-import java.util.Objects;
-
-import net.minecraft.core.Direction;
-
 /**
- * This implementation of IModelData allows us to know precisely which data is part of the model data. This is relevant
- * for {@link AutoRotatingBakedModel} and {@link AutoRotatingCacheKey}.
+ * This implementation of IModelData allows us to know precisely which data is part of the model data.
  */
 public class AEModelData {
-
-    private final Direction up;
-    private final Direction forward;
-
-    public AEModelData(Direction up, Direction forward) {
-        this.up = Objects.requireNonNull(up);
-        this.forward = Objects.requireNonNull(forward);
-    }
-
-    public Direction getUp() {
-        return up;
-    }
-
-    public Direction getForward() {
-        return forward;
-    }
-
     public boolean isCacheable() {
         return true;
     }
@@ -56,13 +34,12 @@ public class AEModelData {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AEModelData that = (AEModelData) o;
-        return up == that.up && forward == that.forward;
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(up, forward);
+        return 0;
     }
 
 }

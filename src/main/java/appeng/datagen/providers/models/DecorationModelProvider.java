@@ -20,13 +20,14 @@ package appeng.datagen.providers.models;
 
 import static appeng.core.AppEng.makeId;
 
-import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
-import appeng.decorative.solid.QuartzPillarBlock;
 
 public class DecorationModelProvider extends AE2BlockStateProvider {
 
@@ -73,15 +74,11 @@ public class DecorationModelProvider extends AE2BlockStateProvider {
 
         var quartzPillar = models().cubeColumn(AEBlocks.QUARTZ_PILLAR.id().getPath(),
                 makeId("block/quartz_pillar_side"), makeId("block/quartz_pillar_top"));
-        getVariantBuilder(AEBlocks.QUARTZ_PILLAR.block())
-                .partialState().with(QuartzPillarBlock.AXIS, Direction.Axis.Y)
-                .modelForState().modelFile(quartzPillar).addModel()
-                .partialState().with(QuartzPillarBlock.AXIS, Direction.Axis.Z)
-                .modelForState().modelFile(quartzPillar).rotationX(90).addModel()
-                .partialState().with(QuartzPillarBlock.AXIS, Direction.Axis.X)
-                .modelForState().modelFile(quartzPillar).rotationX(90).rotationY(90).addModel();
-
+        multiVariantGenerator(AEBlocks.QUARTZ_PILLAR,
+                Variant.variant().with(VariantProperties.MODEL, quartzPillar.getLocation()))
+                        .with(BlockModelGenerators.createRotatedPillar());
         simpleBlockItem(AEBlocks.QUARTZ_PILLAR.block(), quartzPillar);
+
         stairsBlock(AEBlocks.QUARTZ_PILLAR_STAIRS, "block/quartz_pillar_top", "block/quartz_pillar_side",
                 "block/quartz_pillar_top");
         slabBlock(AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR, "block/quartz_pillar_top",

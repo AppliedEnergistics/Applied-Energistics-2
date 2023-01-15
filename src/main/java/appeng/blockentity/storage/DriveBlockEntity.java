@@ -21,6 +21,7 @@ package appeng.blockentity.storage;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -42,6 +43,8 @@ import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageCells;
@@ -75,18 +78,17 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     public DriveBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.getMainNode()
+        getMainNode()
                 .addService(IStorageProvider.class, this)
                 .setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.inv.setFilter(new CellValidInventoryFilter());
+        inv.setFilter(new CellValidInventoryFilter());
 
         Arrays.fill(clientSideCellState, CellState.ABSENT);
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
-        this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(inForward)));
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.complementOf(EnumSet.of(orientation.getSide(RelativeSide.FRONT)));
     }
 
     @Override
@@ -420,7 +422,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         for (int i = 0; i < getCellCount(); i++) {
             cells[i] = getCellItem(i);
         }
-        return new DriveModelData(getUp(), getForward(), cells);
+        return new DriveModelData(cells);
     }
 
     public void openMenu(Player player) {

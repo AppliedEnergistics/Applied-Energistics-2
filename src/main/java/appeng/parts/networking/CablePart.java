@@ -44,7 +44,6 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.BusSupport;
 import appeng.api.parts.IPartCollisionHelper;
-import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
@@ -187,9 +186,9 @@ public class CablePart extends AEBasePart implements ICablePart {
 
         bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
 
-        final IPartHost ph = this.getHost();
+        var ph = this.getHost();
         if (ph != null) {
-            for (Direction dir : Direction.values()) {
+            for (var dir : Direction.values()) {
                 var p = ph.getPart(dir);
                 if (p != null) {
                     var dist = p.getCableConnectionLength(this.getCableConnectionType());
@@ -199,51 +198,29 @@ public class CablePart extends AEBasePart implements ICablePart {
                     }
 
                     switch (dir) {
-                        case DOWN:
-                            bch.addBox(6.0, dist, 6.0, 10.0, 6.0, 10.0);
-                            break;
-                        case EAST:
-                            bch.addBox(10.0, 6.0, 6.0, 16.0 - dist, 10.0, 10.0);
-                            break;
-                        case NORTH:
-                            bch.addBox(6.0, 6.0, dist, 10.0, 10.0, 6.0);
-                            break;
-                        case SOUTH:
-                            bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0 - dist);
-                            break;
-                        case UP:
-                            bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0 - dist, 10.0);
-                            break;
-                        case WEST:
-                            bch.addBox(dist, 6.0, 6.0, 6.0, 10.0, 10.0);
-                            break;
-                        default:
+                        case DOWN -> bch.addBox(6.0, dist, 6.0, 10.0, 6.0, 10.0);
+                        case EAST -> bch.addBox(10.0, 6.0, 6.0, 16.0 - dist, 10.0, 10.0);
+                        case NORTH -> bch.addBox(6.0, 6.0, dist, 10.0, 10.0, 6.0);
+                        case SOUTH -> bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0 - dist);
+                        case UP -> bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0 - dist, 10.0);
+                        case WEST -> bch.addBox(dist, 6.0, 6.0, 6.0, 10.0, 10.0);
+                        default -> {
+                        }
                     }
                 }
             }
         }
 
-        for (Direction of : this.getConnections()) {
+        for (var of : this.getConnections()) {
             switch (of) {
-                case DOWN:
-                    bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
-                    break;
-                case EAST:
-                    bch.addBox(10.0, 6.0, 6.0, 16.0, 10.0, 10.0);
-                    break;
-                case NORTH:
-                    bch.addBox(6.0, 6.0, 0.0, 10.0, 10.0, 6.0);
-                    break;
-                case SOUTH:
-                    bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0);
-                    break;
-                case UP:
-                    bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0, 10.0);
-                    break;
-                case WEST:
-                    bch.addBox(0.0, 6.0, 6.0, 6.0, 10.0, 10.0);
-                    break;
-                default:
+                case DOWN -> bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
+                case EAST -> bch.addBox(10.0, 6.0, 6.0, 16.0, 10.0, 10.0);
+                case NORTH -> bch.addBox(6.0, 6.0, 0.0, 10.0, 10.0, 6.0);
+                case SOUTH -> bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0);
+                case UP -> bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0, 10.0);
+                case WEST -> bch.addBox(0.0, 6.0, 6.0, 6.0, 10.0, 10.0);
+                default -> {
+                }
             }
         }
     }

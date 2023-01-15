@@ -29,9 +29,8 @@ import net.minecraft.world.item.Item;
 
 import appeng.api.networking.security.IActionHost;
 import appeng.api.storage.cells.CellState;
-import appeng.api.util.IOrientable;
 
-public interface IChestOrDrive extends IOrientable, IActionHost {
+public interface IChestOrDrive extends IActionHost {
 
     /**
      * @return how many slots are available. Chest has 1, Drive has 10.

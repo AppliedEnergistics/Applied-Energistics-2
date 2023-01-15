@@ -49,16 +49,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import appeng.api.util.IOrientable;
-import appeng.api.util.IOrientableBlock;
+import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.helpers.AEMaterials;
-import appeng.helpers.MetaRotation;
 
-public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock, SimpleWaterloggedBlock {
+public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterloggedBlock {
 
     // Cache VoxelShapes for each facing
     private static final Map<Direction, VoxelShape> SHAPES;
@@ -76,7 +74,6 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         }
     }
 
-    // Cannot use the vanilla FACING property here because it excludes facing DOWN
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     // Used to alternate between two variants of the fixture on adjacent blocks
@@ -102,20 +99,21 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState blockstate = super.getStateForPlacement(context);
+        BlockState state = super.getStateForPlacement(context);
         BlockPos pos = context.getClickedPos();
         FluidState fluidState = context.getLevel().getFluidState(pos);
 
         // Set the even/odd property
         boolean oddPlacement = (pos.getX() + pos.getY() + pos.getZ()) % 2 != 0;
-        blockstate = blockstate.setValue(ODD, oddPlacement).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+        state = state.setValue(ODD, oddPlacement).setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
 
-        LevelReader levelReader = context.getLevel();
-        Direction[] adirection = context.getNearestLookingDirections();
+        var levelReader = context.getLevel();
+        var adirection = context.getNearestLookingDirections();
 
-        for (Direction direction : adirection) {
-            if (canPlaceAt(levelReader, pos, direction)) {
-                return blockstate.setValue(FACING, direction.getOpposite());
+        for (var direction : adirection) {
+            var placedState = state.setValue(FACING, direction.getOpposite());
+            if (canSurvive(placedState, levelReader, pos)) {
+                return placedState;
             }
         }
 
@@ -125,29 +123,17 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
     // Break the fixture if the block it is attached to is changed so that it could
     // no longer be placed
     @Override
-    public BlockState updateShape(BlockState blockState, Direction facing, BlockState facingState, LevelAccessor level,
+    public BlockState updateShape(BlockState state, Direction direction, BlockState facingState, LevelAccessor level,
             BlockPos currentPos, BlockPos facingPos) {
-        if (blockState.getValue(WATERLOGGED).booleanValue()) {
+        if (state.getValue(WATERLOGGED).booleanValue()) {
             level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        Direction fixtureFacing = blockState.getValue(FACING);
-        if (facing.getOpposite() == fixtureFacing && !canPlaceAt(level, currentPos, facing)) {
+        if (direction.getOpposite() == state.getValue(FACING) && !state.canSurvive(level, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
-        return blockState;
-    }
 
-    @Override
-    public boolean isValidOrientation(LevelAccessor level, BlockPos pos, Direction forward,
-            Direction up) {
-        // FIXME: I think this entire method -> not required, but not sure... are quartz
-        // fixtures rotateable???
-        return this.canPlaceAt(level, pos, up.getOpposite());
-    }
-
-    private boolean canPlaceAt(LevelReader level, BlockPos pos, Direction dir) {
-        return canSupportCenter(level, pos.relative(dir), dir.getOpposite());
+        return state;
     }
 
     @Override
@@ -167,10 +153,12 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
             return;
         }
 
-        final Direction up = this.getOrientable(level, pos).getUp();
-        final double xOff = -0.3 * up.getStepX();
-        final double yOff = -0.3 * up.getStepY();
-        final double zOff = -0.3 * up.getStepZ();
+        var orientation = getOrientation(state);
+
+        var top = orientation.getSide(RelativeSide.TOP);
+        final double xOff = -0.3 * top.getStepX();
+        final double yOff = -0.3 * top.getStepY();
+        final double zOff = -0.3 * top.getStepZ();
         for (int bolts = 0; bolts < 3; bolts++) {
             if (AppEngClient.instance().shouldAddParticles(r)) {
                 level.addParticle(ParticleTypes.LIGHTNING, xOff + 0.5 + pos.getX(), yOff + 0.5 + pos.getY(),
@@ -179,35 +167,11 @@ public class QuartzFixtureBlock extends AEBaseBlock implements IOrientableBlock,
         }
     }
 
-    // FIXME: Replaced by the postPlaceupdate stuff above, but check item drops!
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        final Direction up = this.getOrientable(level, pos).getUp();
-        if (!this.canPlaceAt(level, pos, up.getOpposite())) {
-            this.dropTorch(level, pos);
-        }
-    }
-
-    private void dropTorch(Level level, BlockPos pos) {
-        final BlockState prev = level.getBlockState(pos);
-        level.destroyBlock(pos, true);
-        level.sendBlockUpdated(pos, prev, level.getBlockState(pos), 3);
-    }
-
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        for (Direction dir : Direction.values()) {
-            if (this.canPlaceAt(level, pos, dir)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public IOrientable getOrientable(BlockGetter level, BlockPos pos) {
-        return new MetaRotation(level, pos, FACING);
+        var facing = state.getValue(FACING);
+        var blockPos = pos.relative(facing.getOpposite());
+        return canSupportCenter(level, blockPos, facing);
     }
 
     @Override

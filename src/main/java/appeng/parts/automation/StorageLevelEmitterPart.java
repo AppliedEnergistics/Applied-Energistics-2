@@ -252,7 +252,7 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
             }
         } else if (isUpgradedWith(AEItems.FUZZY_CARD)) {
             this.lastReportedValue = 0;
-            final FuzzyMode fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
+            var fzMode = this.getConfigManager().getSetting(Settings.FUZZY_MODE);
             var fuzzyList = stacks.findFuzzy(myStack, fzMode);
             for (var st : fuzzyList) {
                 this.lastReportedValue += st.getLongValue();

@@ -105,12 +105,9 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
-        BlockState blockState = this.defaultBlockState()
+        var fluidState = context.getLevel().getFluidState(context.getClickedPos());
+        return super.getStateForPlacement(context)
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
-
-        return blockState;
     }
 
     @Override

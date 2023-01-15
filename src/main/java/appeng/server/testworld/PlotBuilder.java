@@ -26,6 +26,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
@@ -305,7 +306,15 @@ public interface PlotBuilder {
      * Creates a drive with an empty item and fluid cell.
      */
     default void storageDrive(BlockPos pos) {
+        storageDrive(pos, Direction.NORTH);
+    }
+
+    /**
+     * Creates a drive with an empty item and fluid cell.
+     */
+    default void storageDrive(BlockPos pos, Direction facing) {
         blockEntity(posToBb(pos), AEBlocks.DRIVE, drive -> {
+            BlockOrientation.get(facing).setOn(drive);
             var cells = drive.getInternalInventory();
             cells.addItems(AEItems.ITEM_CELL_64K.stack());
             cells.addItems(AEItems.FLUID_CELL_64K.stack());

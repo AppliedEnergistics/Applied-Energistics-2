@@ -31,7 +31,8 @@
     "WrappedGenericStackTooltipModIdMixin",
     "ResizableSlotHighlightMixin",
     "PickColorMixin",
-    "PonderWorldMixin"
+    "PonderWorldMixin",
+    "VariantDeserializerMixin"
   ],
   "server": [],
   "injectors": {

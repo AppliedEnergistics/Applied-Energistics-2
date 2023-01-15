@@ -91,7 +91,7 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
     public void render(SkyChestBlockEntity blockEntity, float partialTicks, PoseStack matrixStackIn,
             MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         matrixStackIn.pushPose();
-        float f = blockEntity.getForward().toYRot();
+        float f = blockEntity.getFront().toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
         matrixStackIn.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);

@@ -19,6 +19,7 @@
 package appeng.blockentity.misc;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,6 +36,8 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.AEConfig;
@@ -52,10 +55,9 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
 
     public QuartzGrowthAcceleratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
-        this.getMainNode().setFlags();
-        this.getMainNode().setIdlePowerUsage(POWER_PER_TICK);
-        this.getMainNode().addService(IGridTickable.class, new IGridTickable() {
+        getMainNode().setFlags();
+        getMainNode().setIdlePowerUsage(POWER_PER_TICK);
+        getMainNode().addService(IGridTickable.class, new IGridTickable() {
             @Override
             public TickingRequest getTickingRequest(IGridNode node) {
                 int speed = AEConfig.instance().getGrowthAcceleratorSpeed();
@@ -68,6 +70,11 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
                 return TickRateModulation.SAME;
             }
         });
+    }
+
+    @Override
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return orientation.getSides(EnumSet.of(RelativeSide.FRONT, RelativeSide.BACK));
     }
 
     private void onTick(int ticksSinceLastCall) {
@@ -117,25 +124,13 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
     @Override
     public void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
-        data.writeBoolean(this.getMainNode().isPowered());
-    }
-
-    @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
-        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
-    }
-
-    @Override
-    public void onReady() {
-        this.getMainNode().setExposedOnSides(EnumSet.of(this.getUp(), this.getUp().getOpposite()));
-        super.onReady();
+        data.writeBoolean(getMainNode().isPowered());
     }
 
     @Override
     public boolean isPowered() {
         if (!isClientSide()) {
-            return this.getMainNode().isPowered() || storedPower > 0;
+            return getMainNode().isPowered() || storedPower > 0;
         }
 
         return this.hasPower;
@@ -155,7 +150,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
      */
     @org.jetbrains.annotations.Nullable
     public ICrankable getCrankable(Direction direction) {
-        if (direction == getUp() || direction == getUp().getOpposite()) {
+        if (direction == getTop() || direction == getTop().getOpposite()) {
             return new Crankable();
         }
         return null;

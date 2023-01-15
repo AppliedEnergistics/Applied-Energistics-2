@@ -29,6 +29,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.menu.MenuOpener;
@@ -58,5 +60,10 @@ public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEnti
             return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.full();
     }
 }

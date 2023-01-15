@@ -18,24 +18,20 @@
 
 package appeng.blockentity.grid;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.GridHelper;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 
 public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
-        implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
+        implements IGridConnectedBlockEntity {
 
     private final IManagedGridNode mainNode = createMainNode()
             .setVisualRepresentation(this.getItemFromBlockEntity())
@@ -44,6 +40,7 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
 
     public AENetworkInvBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+        onGridConnectableSidesChanged();
     }
 
     protected IManagedGridNode createMainNode() {
@@ -66,23 +63,6 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
         return this.mainNode;
     }
 
-    @Nullable
-    public IGridNode getGridNode() {
-        return getMainNode().getNode();
-    }
-
-    @Override
-    public IGridNode getGridNode(Direction dir) {
-        var node = this.getMainNode().getNode();
-
-        // Check if the proxy exposes the node on this side
-        if (node != null && node.isExposedOnSide(dir)) {
-            return node;
-        }
-
-        return null;
-    }
-
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
@@ -93,6 +73,20 @@ public abstract class AENetworkInvBlockEntity extends AEBaseInvBlockEntity
     public void onReady() {
         super.onReady();
         this.getMainNode().create(level, worldPosition);
+    }
+
+    @Override
+    protected void onOrientationChanged(BlockOrientation orientation) {
+        super.onOrientationChanged(orientation);
+        onGridConnectableSidesChanged();
+    }
+
+    /**
+     * Call when the return value {@link IGridConnectedBlockEntity#getGridConnectableSides(BlockOrientation)} has
+     * changed, to update the grid nodes exposed sides.
+     */
+    protected final void onGridConnectableSidesChanged() {
+        getMainNode().setExposedOnSides(getGridConnectableSides(getOrientation()));
     }
 
     @Override

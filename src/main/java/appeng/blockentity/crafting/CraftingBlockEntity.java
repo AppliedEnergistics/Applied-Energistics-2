@@ -21,6 +21,7 @@ package appeng.blockentity.crafting;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import com.google.common.collect.Iterators;
 
@@ -40,6 +41,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridMultiblock;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
@@ -63,7 +65,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     public CraftingBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode().setFlags(GridFlags.MULTIBLOCK, GridFlags.REQUIRE_CHANNEL)
-                .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .addService(IGridMultiblock.class, this::getMultiblockNodes);
     }
 
@@ -73,11 +74,6 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
             return Items.AIR;
         }
         return getUnitBlock().type.getItemFromType();
-    }
-
-    @Override
-    public boolean canBeRotated() {
-        return false;
     }
 
     @Override
@@ -151,17 +147,22 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
         }
 
         if (updateFormed) {
-            if (formed) {
-                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
-            } else {
-                this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
-            }
+            onGridConnectableSidesChanged();
+        }
+    }
+
+    @Override
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        if (isFormed()) {
+            return EnumSet.allOf(Direction.class);
+        } else {
+            return EnumSet.noneOf(Direction.class);
         }
     }
 
     public boolean isFormed() {
         if (isClientSide()) {
-            return this.level.getBlockState(this.worldPosition).getValue(AbstractCraftingUnitBlock.FORMED);
+            return getBlockState().getValue(AbstractCraftingUnitBlock.FORMED);
         }
         return this.cluster != null;
     }
@@ -287,7 +288,7 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
 
     @Override
     public Object getRenderAttachmentData() {
-        return new CraftingCubeModelData(getUp(), getForward(), getConnections());
+        return new CraftingCubeModelData(getConnections());
     }
 
     protected EnumSet<Direction> getConnections() {

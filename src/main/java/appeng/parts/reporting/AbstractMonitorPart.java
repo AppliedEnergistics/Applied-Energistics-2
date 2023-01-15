@@ -36,6 +36,7 @@ import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.IStackWatcher;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.storage.IStorageWatcherNode;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
@@ -237,10 +238,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         }
 
         poseStack.pushPose();
+
+        var orientation = BlockOrientation.get(getSide(), getSpin());
+
         poseStack.translate(0.5, 0.5, 0.5); // Move into the center of the block
-
-        BlockEntityRenderHelper.rotateToFace(poseStack, getSide(), this.getSpin());
-
+        BlockEntityRenderHelper.rotateToFace(poseStack, orientation);
         poseStack.translate(0, 0.05, 0.5);
 
         BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,

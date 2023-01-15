@@ -33,6 +33,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.api.storage.cells.CellState;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.ChestBlockEntity;
@@ -41,7 +43,7 @@ import appeng.util.InteractionUtil;
 
 public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
 
-    private final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
+    public final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
     public ChestBlock() {
         super(defaultProps(Material.METAL));
@@ -52,6 +54,11 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(LIGHTS_ON);
+    }
+
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.full();
     }
 
     @Override
@@ -72,7 +79,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
         var be = this.getBlockEntity(level, pos);
         if (be != null && !InteractionUtil.isInAlternateUseMode(p)) {
             if (!level.isClientSide()) {
-                if (hit.getDirection() == be.getUp()) {
+                if (hit.getDirection() == be.getTop()) {
                     if (!be.openGui(p)) {
                         p.sendSystemMessage(PlayerMessages.ChestCannotReadStorageCell.text());
                     }

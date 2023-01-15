@@ -41,6 +41,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.menu.MenuOpener;
@@ -89,14 +91,16 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> impl
     }
 
     @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.full();
+    }
+
+    @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
-        BlockState blockState = this.defaultBlockState()
+        var fluidState = context.getLevel().getFluidState(context.getClickedPos());
+        return super.getStateForPlacement(context)
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
-
-        return blockState;
     }
 
     @Override

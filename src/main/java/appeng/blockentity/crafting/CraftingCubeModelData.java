@@ -31,8 +31,7 @@ public class CraftingCubeModelData extends AEModelData {
     // of a formed crafting cube
     private final EnumSet<Direction> connections;
 
-    public CraftingCubeModelData(Direction up, Direction forward, EnumSet<Direction> connections) {
-        super(up, forward);
+    public CraftingCubeModelData(EnumSet<Direction> connections) {
         this.connections = Objects.requireNonNull(connections);
     }
 

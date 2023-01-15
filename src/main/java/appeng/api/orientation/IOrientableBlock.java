@@ -21,39 +21,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.util;
+package appeng.api.orientation;
 
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Nearly all of AE's Block entities implement IOrientable.
- *
- * and it can be used to manipulate the direction of some machines, most of these orientations are purely visual.
- *
- * AE also responds to Block.rotateBlock
+ * Implemented on many of AEs blocks to control their orientation.
  */
-public interface IOrientable {
+public interface IOrientableBlock {
+    IOrientationStrategy getOrientationStrategy();
 
-    /**
-     * @return true or false, if the block entity rotation is meaningful, or even changeable
-     */
-    boolean canBeRotated();
-
-    /**
-     * @return the direction the block entity is facing
-     */
-    Direction getForward();
-
-    /**
-     * @return the direction top of the block entity
-     */
-    Direction getUp();
-
-    /**
-     * Update the orientation
-     *
-     * @param Forward new forward direction
-     * @param Up      new upwards direction
-     */
-    void setOrientation(Direction Forward, Direction Up);
+    default BlockOrientation getOrientation(BlockState state) {
+        var strategy = getOrientationStrategy();
+        var facing = strategy.getFacing(state);
+        var spin = strategy.getSpin(state);
+        return BlockOrientation.get(facing, spin);
+    }
 }

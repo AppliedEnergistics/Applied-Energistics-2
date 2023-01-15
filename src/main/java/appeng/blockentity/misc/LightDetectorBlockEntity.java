@@ -56,9 +56,4 @@ public class LightDetectorBlockEntity extends AEBaseBlockEntity implements Commo
             Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
         }
     }
-
-    @Override
-    public boolean canBeRotated() {
-        return false;
-    }
 }

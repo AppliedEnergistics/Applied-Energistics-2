@@ -51,6 +51,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.definitions.AEBlockEntities;
@@ -95,6 +97,11 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
         builder.add(WATERLOGGED);
     }
 
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.horizontalFacing();
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public RenderShape getRenderShape(BlockState state) {
@@ -131,7 +138,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         final SkyChestBlockEntity sk = this.getBlockEntity(level, pos);
-        Direction up = sk != null ? sk.getUp() : Direction.UP;
+        Direction up = sk != null ? sk.getTop() : Direction.UP;
         return SHAPES.get(up);
     }
 
@@ -161,12 +168,9 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos pos = context.getClickedPos();
-        FluidState fluidState = context.getLevel().getFluidState(pos);
-        BlockState blockState = this.defaultBlockState()
+        var fluidState = context.getLevel().getFluidState(context.getClickedPos());
+        return super.getStateForPlacement(context)
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
-
-        return blockState;
     }
 
     @Override

@@ -29,8 +29,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.DriveBlockEntity;
-import appeng.client.render.FacingToRotation;
 import appeng.client.render.model.DriveBakedModel;
 
 /**
@@ -52,7 +52,8 @@ public class DriveLedBlockEntityRenderer implements BlockEntityRenderer<DriveBlo
 
         ms.pushPose();
         ms.translate(0.5, 0.5, 0.5);
-        FacingToRotation.get(drive.getForward(), drive.getUp()).push(ms);
+        var blockOrientation = BlockOrientation.get(drive);
+        ms.mulPose(blockOrientation.getQuaternion());
         ms.translate(-0.5, -0.5, -0.5);
 
         VertexConsumer buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);

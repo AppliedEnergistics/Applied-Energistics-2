@@ -3,19 +3,34 @@ package appeng.datagen.providers.models;
 import static appeng.core.AppEng.makeId;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.models.blockstates.Condition;
+import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
+import appeng.block.crafting.PatternProviderBlock;
+import appeng.block.misc.QuartzGrowthAcceleratorBlock;
+import appeng.block.misc.SecurityStationBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.EnergyCellBlock;
+import appeng.block.networking.WirelessBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
+import appeng.block.storage.ChestBlock;
 import appeng.block.storage.IOPortBlock;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -23,6 +38,7 @@ import appeng.core.definitions.BlockDefinition;
 import appeng.init.client.InitItemModelsProperties;
 
 public class BlockModelProvider extends AE2BlockStateProvider {
+
     public BlockModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, AppEng.MOD_ID, exFileHelper);
     }
@@ -35,10 +51,34 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         builtInModel(AEBlocks.QUARTZ_GLASS, true);
         builtInModel(AEBlocks.CABLE_BUS);
         builtInModel(AEBlocks.PAINT);
-        builtInBlockModel("drive");
+
+        var driveModel = builtInBlockModel("drive");
+        multiVariantGenerator(AEBlocks.DRIVE, Variant.variant().with(VariantProperties.MODEL, driveModel.getLocation()))
+                .with(createFacingSpinDispatch());
+
+        var charger = models().getExistingFile(AppEng.makeId("charger"));
+        multiVariantGenerator(AEBlocks.CHARGER, Variant.variant().with(VariantProperties.MODEL, charger.getLocation()))
+                .with(createFacingSpinDispatch());
+
+        var inscriber = models().getExistingFile(AppEng.makeId("inscriber"));
+        multiVariantGenerator(AEBlocks.INSCRIBER,
+                Variant.variant().with(VariantProperties.MODEL, inscriber.getLocation()))
+                        .with(createFacingSpinDispatch());
+
+        wirelessAccessPoint();
+        craftingMonitor();
+        quartzGrowthAccelerator();
+        securityStation();
+        meChest();
+        patternProvider();
+        vibrationChamber();
+        spatialAnchor();
+        patternProvider();
+        ioPort();
+        spatialIoPort();
+
         builtInBlockModel("spatial_pylon");
         builtInBlockModel("qnb/qnb_formed");
-        builtInBlockModel("crafting/monitor_formed");
         builtInBlockModel("crafting/unit_formed");
         builtInBlockModel("crafting/accelerator_formed");
         builtInBlockModel("crafting/1k_storage_formed");
@@ -89,14 +129,95 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         energyCell(AEBlocks.DENSE_ENERGY_CELL, "block/dense_energy_cell");
         simpleBlockAndItem(AEBlocks.CREATIVE_ENERGY_CELL, "block/creative_energy_cell");
 
-        vibrationChamber();
-        spatialAnchor();
-        patternProvider();
-        ioPorts();
-
         // Both use the same mysterious cube model
         simpleBlockAndItem(AEBlocks.MYSTERIOUS_CUBE, models().getExistingFile(makeId("block/mysterious_cube")));
         simpleBlockAndItem(AEBlocks.NOT_SO_MYSTERIOUS_CUBE, models().getExistingFile(makeId("block/mysterious_cube")));
+    }
+
+    private void meChest() {
+        var multipart = multiPartGenerator(AEBlocks.CHEST);
+        withOrientations(
+                multipart,
+                Variant.variant().with(VariantProperties.MODEL, AppEng.makeId("block/chest/base")));
+        withOrientations(
+                multipart,
+                () -> Condition.condition().term(ChestBlock.LIGHTS_ON, false),
+                Variant.variant().with(VariantProperties.MODEL, AppEng.makeId("block/chest/lights_off")));
+        withOrientations(
+                multipart,
+                () -> Condition.condition().term(ChestBlock.LIGHTS_ON, true),
+                Variant.variant().with(VariantProperties.MODEL, AppEng.makeId("block/chest/lights_on")));
+    }
+
+    private void quartzGrowthAccelerator() {
+        var unpoweredModel = getExistingModel("block/quartz_growth_accelerator_off");
+        var poweredModel = getExistingModel("block/quartz_growth_accelerator_on");
+
+        multiVariantGenerator(AEBlocks.QUARTZ_GROWTH_ACCELERATOR)
+                .with(createFacingDispatch(90, 0))
+                .with(PropertyDispatch.property(QuartzGrowthAcceleratorBlock.POWERED)
+                        .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
+                        .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
+    }
+
+    private void securityStation() {
+        var unpoweredModel = getExistingModel("block/security_station_off");
+        var poweredModel = getExistingModel("block/security_station_on");
+
+        multiVariantGenerator(AEBlocks.SECURITY_STATION)
+                .with(createFacingSpinDispatch())
+                .with(PropertyDispatch.property(SecurityStationBlock.POWERED)
+                        .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
+                        .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
+    }
+
+    private void craftingMonitor() {
+        var formedModel = AppEng.makeId("block/crafting/monitor_formed");
+        var unformedModel = AppEng.makeId("block/crafting/monitor");
+
+        multiVariantGenerator(AEBlocks.CRAFTING_MONITOR)
+                .with(PropertyDispatch.properties(AbstractCraftingUnitBlock.FORMED, BlockStateProperties.FACING)
+                        .generate((formed, facing) -> {
+                            if (formed) {
+                                return Variant.variant().with(VariantProperties.MODEL, formedModel);
+                            } else {
+                                return applyOrientation(
+                                        Variant.variant().with(VariantProperties.MODEL, unformedModel),
+                                        BlockOrientation.get(facing));
+                            }
+                        }));
+    }
+
+    private void wirelessAccessPoint() {
+        var builder = getMultipartBuilder(AEBlocks.WIRELESS_ACCESS_POINT.block());
+
+        var chassis = models().getExistingFile(AppEng.makeId("block/wireless_access_point_chassis"));
+        var antennaOff = models().getExistingFile(AppEng.makeId("block/wireless_access_point_off"));
+        var antennaOn = models().getExistingFile(AppEng.makeId("block/wireless_access_point_on"));
+        var statusOff = models().getExistingFile(AppEng.makeId("block/wireless_access_point_status_off"));
+        var statusOn = models().getExistingFile(AppEng.makeId("block/wireless_access_point_status_has_channel"));
+
+        for (var facing : Direction.values()) {
+            var rotation = BlockOrientation.get(facing, 0);
+
+            Function<ModelFile, MultiPartBlockStateBuilder.PartBuilder> addModel = modelFile -> builder.part()
+                    .modelFile(modelFile)
+                    .rotationX(rotation.getAngleX())
+                    .rotationY(rotation.getAngleY())
+                    .addModel()
+                    .condition(BlockStateProperties.FACING, facing);
+
+            addModel.apply(chassis).end();
+
+            addModel.apply(antennaOff).condition(WirelessBlock.STATE, WirelessBlock.State.OFF).end();
+            addModel.apply(statusOff).condition(WirelessBlock.STATE, WirelessBlock.State.OFF).end();
+
+            addModel.apply(antennaOff).condition(WirelessBlock.STATE, WirelessBlock.State.ON).end();
+            addModel.apply(statusOn).condition(WirelessBlock.STATE, WirelessBlock.State.ON).end();
+
+            addModel.apply(antennaOn).condition(WirelessBlock.STATE, WirelessBlock.State.HAS_CHANNEL).end();
+            addModel.apply(statusOn).condition(WirelessBlock.STATE, WirelessBlock.State.HAS_CHANNEL).end();
+        }
     }
 
     private void vibrationChamber() {
@@ -111,9 +232,12 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/vibration_chamber_front_on"),
                 makeId("block/vibration_chamber"));
 
-        getVariantBuilder(AEBlocks.VIBRATION_CHAMBER.block())
-                .partialState().with(VibrationChamberBlock.ACTIVE, true).setModels(new ConfiguredModel(onModel))
-                .partialState().with(VibrationChamberBlock.ACTIVE, false).setModels(new ConfiguredModel(offModel));
+        multiVariantGenerator(AEBlocks.VIBRATION_CHAMBER)
+                .with(createFacingSpinDispatch())
+                .with(PropertyDispatch.property(VibrationChamberBlock.ACTIVE)
+                        .select(false, Variant.variant().with(VariantProperties.MODEL, offModel.getLocation()))
+                        .select(true, Variant.variant().with(VariantProperties.MODEL, onModel.getLocation())));
+
         itemModels().withExistingParent(modelPath(AEBlocks.VIBRATION_CHAMBER), offModel.getLocation());
     }
 
@@ -129,9 +253,12 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/spatial_anchor_bottom"),
                 makeId("block/spatial_anchor_top"));
 
-        getVariantBuilder(AEBlocks.SPATIAL_ANCHOR.block())
-                .partialState().with(SpatialAnchorBlock.POWERED, true).setModels(new ConfiguredModel(onModel))
-                .partialState().with(SpatialAnchorBlock.POWERED, false).setModels(new ConfiguredModel(offModel));
+        multiVariantGenerator(AEBlocks.SPATIAL_ANCHOR)
+                .with(createFacingDispatch(90, 0))
+                .with(PropertyDispatch.property(SpatialAnchorBlock.POWERED)
+                        .select(false, Variant.variant().with(VariantProperties.MODEL, offModel.getLocation()))
+                        .select(true, Variant.variant().with(VariantProperties.MODEL, onModel.getLocation())));
+
         itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_ANCHOR), offModel.getLocation());
     }
 
@@ -140,38 +267,63 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var normalModel = cubeAll(def.block());
         simpleBlockItem(def.block(), normalModel);
         // the block state and the oriented model are in manually written json files
+
+        var orientedModel = models().getExistingFile(AppEng.makeId("block/pattern_provider_oriented"));
+        multiVariantGenerator(AEBlocks.PATTERN_PROVIDER, Variant.variant())
+                .with(PropertyDispatch.property(PatternProviderBlock.PUSH_DIRECTION).generate(pushDirection -> {
+                    var forward = pushDirection.getDirection();
+                    if (forward == null) {
+                        return Variant.variant().with(VariantProperties.MODEL, normalModel.getLocation());
+                    } else {
+                        var orientation = BlockOrientation.get(forward);
+                        return applyRotation(
+                                Variant.variant().with(VariantProperties.MODEL, orientedModel.getLocation()),
+                                // + 90 because the default model is oriented UP, while block orientation assumes NORTH
+                                orientation.getAngleX() + 90,
+                                orientation.getAngleY(),
+                                0);
+                    }
+                }));
     }
 
-    private void ioPorts() {
-        var ioOff = models().cubeBottomTop(
+    private void ioPort() {
+        var offModel = models().cubeBottomTop(
                 modelPath(AEBlocks.IO_PORT),
                 makeId("block/io_port_side_off"),
                 makeId("block/io_port_bottom"),
                 makeId("block/io_port_top_off"));
-        var ioOn = models().cubeBottomTop(
+        var onModel = models().cubeBottomTop(
                 modelPath(AEBlocks.IO_PORT) + "_on",
                 makeId("block/io_port_side"),
                 makeId("block/io_port_bottom"),
                 makeId("block/io_port_top"));
-        var spatialOff = models().cubeBottomTop(
+
+        multiVariantGenerator(AEBlocks.IO_PORT)
+                .with(createFacingSpinDispatch())
+                .with(PropertyDispatch.property(IOPortBlock.POWERED)
+                        .select(false, Variant.variant().with(VariantProperties.MODEL, offModel.getLocation()))
+                        .select(true, Variant.variant().with(VariantProperties.MODEL, onModel.getLocation())));
+        itemModels().withExistingParent(modelPath(AEBlocks.IO_PORT), offModel.getLocation());
+    }
+
+    private void spatialIoPort() {
+        var offModel = models().cubeBottomTop(
                 modelPath(AEBlocks.SPATIAL_IO_PORT),
                 makeId("block/spatial_io_port_side_off"),
                 makeId("block/spatial_io_port_bottom"),
                 makeId("block/spatial_io_port_top_off"));
-        var spatialOn = models().cubeBottomTop(
+        var onModel = models().cubeBottomTop(
                 modelPath(AEBlocks.SPATIAL_IO_PORT) + "_on",
                 makeId("block/spatial_io_port_side"),
                 makeId("block/spatial_io_port_bottom"),
                 makeId("block/spatial_io_port_top"));
 
-        getVariantBuilder(AEBlocks.IO_PORT.block())
-                .partialState().with(IOPortBlock.POWERED, true).setModels(new ConfiguredModel(ioOn))
-                .partialState().with(IOPortBlock.POWERED, false).setModels(new ConfiguredModel(ioOff));
-        getVariantBuilder(AEBlocks.SPATIAL_IO_PORT.block())
-                .partialState().with(SpatialIOPortBlock.POWERED, true).setModels(new ConfiguredModel(spatialOn))
-                .partialState().with(SpatialIOPortBlock.POWERED, false).setModels(new ConfiguredModel(spatialOff));
-        itemModels().withExistingParent(modelPath(AEBlocks.IO_PORT), ioOff.getLocation());
-        itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_IO_PORT), spatialOff.getLocation());
+        multiVariantGenerator(AEBlocks.SPATIAL_IO_PORT)
+                .with(createFacingSpinDispatch())
+                .with(PropertyDispatch.property(SpatialIOPortBlock.POWERED)
+                        .select(false, Variant.variant().with(VariantProperties.MODEL, offModel.getLocation()))
+                        .select(true, Variant.variant().with(VariantProperties.MODEL, onModel.getLocation())));
+        itemModels().withExistingParent(modelPath(AEBlocks.SPATIAL_IO_PORT), offModel.getLocation());
     }
 
     private String modelPath(BlockDefinition<?> block) {
@@ -244,5 +396,9 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         var model = models().cross(name, texture);
         directionalBlock(quartz.block(), model);
         itemModels().withExistingParent(name, mcLoc("item/generated")).texture("layer0", texture);
+    }
+
+    private ResourceLocation getExistingModel(String name) {
+        return models().getExistingFile(AppEng.makeId(name)).getLocation();
     }
 }

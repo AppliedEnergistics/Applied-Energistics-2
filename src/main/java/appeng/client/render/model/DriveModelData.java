@@ -21,15 +21,13 @@ package appeng.client.render.model;
 import java.util.Arrays;
 import java.util.Objects;
 
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 
 public class DriveModelData extends AEModelData {
 
     private final Item[] cells;
 
-    public DriveModelData(Direction up, Direction forward, Item[] cells) {
-        super(up, forward);
+    public DriveModelData(Item[] cells) {
         this.cells = cells;
     }
 

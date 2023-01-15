@@ -55,7 +55,7 @@ public class DriveModel implements BasicUnbakedModel {
 
         // Load the base model and the model for each cell model.
         for (var entry : StorageCellModels.models().entrySet()) {
-            BakedModel cellModel = baker.bake(entry.getValue(), modelTransform);
+            var cellModel = baker.bake(entry.getValue(), modelTransform);
             cellModels.put(entry.getKey(), cellModel);
         }
 
@@ -63,7 +63,7 @@ public class DriveModel implements BasicUnbakedModel {
         final BakedModel defaultCell = baker.bake(StorageCellModels.getDefaultModel(), modelTransform);
         cellModels.put(Items.AIR, baker.bake(MODEL_CELL_EMPTY, modelTransform));
 
-        return new DriveBakedModel(baseModel, cellModels, defaultCell);
+        return new DriveBakedModel(modelTransform.getRotation(), baseModel, cellModels, defaultCell);
     }
 
     @Override

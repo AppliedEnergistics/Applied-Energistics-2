@@ -33,13 +33,15 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.util.InteractionUtil;
 
 public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlockEntity> {
 
-    private static final BooleanProperty POWERED = BooleanProperty.create("powered");
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public SecurityStationBlock() {
         super(defaultProps(Material.METAL));
@@ -51,6 +53,11 @@ public class SecurityStationBlock extends AEBaseEntityBlock<SecurityStationBlock
     protected void createBlockStateDefinition(Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(POWERED);
+    }
+
+    @Override
+    public IOrientationStrategy getOrientationStrategy() {
+        return OrientationStrategies.full();
     }
 
     @Override

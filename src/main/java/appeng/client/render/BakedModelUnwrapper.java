@@ -18,9 +18,8 @@
 
 package appeng.client.render;
 
+import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.client.resources.model.BakedModel;
-
-import appeng.client.render.model.AutoRotatingBakedModel;
 
 /**
  * Helper to get a specific baked model class out of a chain of delegating baked models.
@@ -35,8 +34,8 @@ public final class BakedModelUnwrapper {
             return targetClass.cast(model);
         }
 
-        if (model instanceof AutoRotatingBakedModel) {
-            model = ((AutoRotatingBakedModel) model).getWrapped();
+        if (model instanceof ForwardingBakedModel forwardingBakedModel) {
+            model = forwardingBakedModel.getWrappedModel();
             if (targetClass.isInstance(model)) {
                 return targetClass.cast(model);
             }

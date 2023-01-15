@@ -18,10 +18,10 @@
 
 package appeng.blockentity.misc;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +44,8 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
@@ -64,11 +66,11 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     public ChargerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.getMainNode()
-                .setExposedOnSides(EnumSet.noneOf(Direction.class))
                 .setFlags()
                 .setIdlePowerUsage(0)
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(POWER_MAXIMUM_AMOUNT);
+        this.setPowerSides(getGridConnectableSides(getOrientation()));
     }
 
     @Override
@@ -77,12 +79,8 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void onReady() {
-        var validSides = EnumSet.allOf(Direction.class);
-        validSides.remove(this.getForward());
-
-        this.getMainNode().setExposedOnSides(validSides);
-        super.onReady();
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.complementOf(EnumSet.of(orientation.getSide(RelativeSide.FRONT)));
     }
 
     @Override
@@ -113,14 +111,10 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
+    protected void onOrientationChanged(BlockOrientation orientation) {
+        super.onOrientationChanged(orientation);
 
-        var validSides = EnumSet.allOf(Direction.class);
-        validSides.remove(this.getForward());
-
-        this.getMainNode().setExposedOnSides(validSides);
-        this.setPowerSides(validSides);
+        this.setPowerSides(getGridConnectableSides(orientation));
     }
 
     @Override
@@ -142,7 +136,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
             return;
         }
 
-        final ItemStack myItem = this.inv.getStackInSlot(0);
+        var myItem = this.inv.getStackInSlot(0);
         if (myItem.isEmpty()) {
             ItemStack held = player.getInventory().getSelected();
 
@@ -151,10 +145,9 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
                 this.inv.setItemDirect(0, held);
             }
         } else {
-            final List<ItemStack> drops = new ArrayList<>();
-            drops.add(myItem);
+            var drops = List.of(myItem);
             this.inv.setItemDirect(0, ItemStack.EMPTY);
-            Platform.spawnDrops(player.level, this.worldPosition.relative(this.getForward()), drops);
+            Platform.spawnDrops(player.level, this.worldPosition.relative(this.getFront()), drops);
         }
     }
 
@@ -254,7 +247,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
      */
     @Nullable
     public ICrankable getCrankable(Direction direction) {
-        var up = getUp();
+        var up = getTop();
         if (direction == up || direction == up.getOpposite()) {
             return new Crankable();
         }

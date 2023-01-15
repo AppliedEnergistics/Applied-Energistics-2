@@ -21,12 +21,12 @@ package appeng.blockentity.misc;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.implementations.blockentities.ICrankable;
+import appeng.block.misc.CrankBlock;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ClientTickingBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
@@ -53,9 +53,11 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements ServerTicking
             return null;
         }
 
-        var targetDir = this.getUp().getOpposite();
-        var targetPos = getBlockPos().relative(targetDir);
-        return ICrankable.get(level, targetPos, targetDir.getOpposite());
+        var blockState = getBlockState();
+        if (blockState.getBlock() instanceof CrankBlock crankBlock) {
+            return crankBlock.getCrankable(blockState, level, getBlockPos());
+        }
+        return null;
     }
 
     @Override
@@ -69,14 +71,6 @@ public class CrankBlockEntity extends AEBaseBlockEntity implements ServerTicking
     protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
         data.writeInt(this.rotation);
-    }
-
-    @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
-        var pos = getBlockPos();
-        var state = level.getBlockState(pos);
-        level.neighborChanged(state, pos, state.getBlock(), pos, false);
     }
 
     /**

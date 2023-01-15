@@ -126,11 +126,6 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public boolean canBeRotated() {
-        return false;
-    }
-
-    @Override
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         super.importSettings(mode, input, player);
 

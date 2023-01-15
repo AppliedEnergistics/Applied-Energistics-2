@@ -28,8 +28,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.AEBaseBlockEntity;
-import appeng.client.render.FacingToRotation;
 import appeng.client.render.renderable.Renderable;
 
 @Environment(EnvType.CLIENT)
@@ -43,14 +43,15 @@ public class ModularTESR<T extends AEBaseBlockEntity> implements BlockEntityRend
     }
 
     @Override
-    public void render(T te, float partialTicks, PoseStack ms, MultiBufferSource buffers, int combinedLight,
+    public void render(T blockEntity, float partialTicks, PoseStack ms, MultiBufferSource buffers, int combinedLight,
             int combinedOverlay) {
         ms.pushPose();
         ms.translate(0.5, 0.5, 0.5);
-        FacingToRotation.get(te.getForward(), te.getUp()).push(ms);
+        BlockOrientation blockOrientation = BlockOrientation.get(blockEntity);
+        ms.mulPose(blockOrientation.getQuaternion());
         ms.translate(-0.5, -0.5, -0.5);
         for (Renderable<? super T> renderable : this.renderables) {
-            renderable.renderBlockEntityAt(te, partialTicks, ms, buffers, combinedLight, combinedOverlay);
+            renderable.renderBlockEntityAt(blockEntity, partialTicks, ms, buffers, combinedLight, combinedOverlay);
         }
         ms.popPose();
     }

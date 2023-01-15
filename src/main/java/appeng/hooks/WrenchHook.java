@@ -6,6 +6,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.IOrientationStrategy;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.util.InteractionUtil;
@@ -46,16 +49,23 @@ public final class WrenchHook {
                         hitResult);
             }
         } else if (!InteractionUtil.isInAlternateUseMode(player) && InteractionUtil.canWrenchRotate(itemStack)) {
-            var be = level.getBlockEntity(hitResult.getBlockPos());
-            if (be instanceof AEBaseBlockEntity baseBlockEntity) {
+            var pos = hitResult.getBlockPos();
+            var state = level.getBlockState(pos);
+            var strategy = IOrientationStrategy.get(state);
+
+            var clickedFace = hitResult.getDirection();
+            var orientation = BlockOrientation.get(strategy, state);
+            orientation = orientation.rotateClockwiseAround(clickedFace);
+            var newState = strategy.setOrientation(state, orientation.getSide(RelativeSide.FRONT),
+                    orientation.getSpin());
+
+            if (newState != state && newState.canSurvive(level, pos)) {
                 if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitResult.getBlockPos()), player)) {
                     return InteractionResult.FAIL;
                 }
 
-                return baseBlockEntity.rotateWithWrench(
-                        player,
-                        level,
-                        hitResult);
+                level.setBlockAndUpdate(pos, newState);
+                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
 

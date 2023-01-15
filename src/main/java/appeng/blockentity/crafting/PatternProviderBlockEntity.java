@@ -20,13 +20,15 @@ package appeng.blockentity.crafting;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -34,18 +36,22 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
+import appeng.block.crafting.PatternProviderBlock;
+import appeng.block.crafting.PushDirection;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.iface.PatternProviderLogic;
 import appeng.helpers.iface.PatternProviderLogicHost;
-import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {
     protected final PatternProviderLogic logic = createLogic();
-    private boolean omniDirectional = true;
+
+    @Nullable
+    private PushDirection pendingPushDirectionChange;
 
     public PatternProviderBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -60,48 +66,20 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
         this.logic.onMainNodeStateChanged();
     }
 
-    public void setSide(Direction facing) {
-        Direction newForward;
-
-        if (!this.omniDirectional && this.getForward() == facing.getOpposite()) {
-            newForward = facing;
-        } else if (!this.omniDirectional
-                && (this.getForward() == facing || this.getForward() == facing.getOpposite())) {
-            newForward = null;
-        } else if (this.omniDirectional) {
-            newForward = facing.getOpposite();
-        } else {
-            newForward = Platform.rotateAround(this.getForward(), facing);
-        }
-
-        setPushDirection(newForward);
+    private PushDirection getPushDirection() {
+        return getBlockState().getValue(PatternProviderBlock.PUSH_DIRECTION);
     }
 
-    public void setPushDirection(@Nullable Direction direction) {
-        this.omniDirectional = direction == null;
-        if (direction == null) {
-            direction = Direction.NORTH;
+    @Override
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        // In omnidirectional mode, every side is grid-connectable
+        var pushDirection = getPushDirection().getDirection();
+        if (pushDirection == null) {
+            return EnumSet.allOf(Direction.class);
         }
 
-        Direction newUp = Direction.UP;
-        if (direction == Direction.UP || direction == Direction.DOWN) {
-            newUp = Direction.NORTH;
-        }
-        this.setOrientation(direction, newUp);
-
-        if (!isClientSide()) {
-            this.configureNodeSides();
-            this.markForUpdate();
-            this.saveChanges();
-        }
-    }
-
-    private void configureNodeSides() {
-        if (this.omniDirectional) {
-            this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
-        } else {
-            this.getMainNode().setExposedOnSides(EnumSet.complementOf(EnumSet.of(this.getForward())));
-        }
+        // Otherwise all sides *except* the target side are connectable
+        return EnumSet.complementOf(EnumSet.of(pushDirection));
     }
 
     @Override
@@ -111,7 +89,13 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void onReady() {
-        this.configureNodeSides();
+        if (pendingPushDirectionChange != null) {
+            level.setBlockAndUpdate(
+                    getBlockPos(),
+                    getBlockState().setValue(PatternProviderBlock.PUSH_DIRECTION, pendingPushDirectionChange));
+            pendingPushDirectionChange = null;
+            onGridConnectableSidesChanged();
+        }
 
         super.onReady();
         this.logic.updatePatterns();
@@ -120,30 +104,25 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.putBoolean("omniDirectional", this.omniDirectional);
         this.logic.writeToNBT(data);
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
-        this.omniDirectional = data.getBoolean("omniDirectional");
+
+        // Remove in 1.20.1+: Convert legacy NBT orientation to blockstate
+        if (data.getBoolean("omniDirectional")) {
+            pendingPushDirectionChange = PushDirection.ALL;
+        } else if (data.contains("forward", Tag.TAG_STRING)) {
+            try {
+                var forward = Direction.valueOf(data.getString("forward").toUpperCase(Locale.ROOT));
+                pendingPushDirectionChange = PushDirection.fromDirection(forward);
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
 
         this.logic.readFromNBT(data);
-    }
-
-    @Override
-    protected boolean readFromStream(FriendlyByteBuf data) {
-        final boolean c = super.readFromStream(data);
-        boolean oldOmniDirectional = this.omniDirectional;
-        this.omniDirectional = data.readBoolean();
-        return oldOmniDirectional != this.omniDirectional || c;
-    }
-
-    @Override
-    protected void writeToStream(FriendlyByteBuf data) {
-        super.writeToStream(data);
-        data.writeBoolean(this.omniDirectional);
     }
 
     @Override
@@ -158,10 +137,12 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public EnumSet<Direction> getTargets() {
-        if (this.omniDirectional) {
+        var pushDirection = getPushDirection();
+        if (pushDirection.getDirection() == null) {
             return EnumSet.allOf(Direction.class);
+        } else {
+            return EnumSet.of(pushDirection.getDirection());
         }
-        return EnumSet.of(this.getForward());
     }
 
     @Override
@@ -176,6 +157,9 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             logic.exportSettings(output);
+
+            var pushDirection = getPushDirection();
+            output.putByte("push_direction", (byte) pushDirection.ordinal());
         }
     }
 
@@ -186,15 +170,30 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             logic.importSettings(input, player);
-        }
-    }
 
-    public boolean isOmniDirectional() {
-        return this.omniDirectional;
+            // Restore push direction blockstate
+            if (input.contains(PatternProviderBlock.PUSH_DIRECTION.getName(), Tag.TAG_BYTE)) {
+                var pushDirection = input.getByte(PatternProviderBlock.PUSH_DIRECTION.getName());
+                if (pushDirection >= 0 && pushDirection < PushDirection.values().length) {
+                    var level = getLevel();
+                    if (level != null) {
+                        level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(
+                                PatternProviderBlock.PUSH_DIRECTION,
+                                PushDirection.values()[pushDirection]));
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public ItemStack getMainMenuIcon() {
         return AEBlocks.PATTERN_PROVIDER.stack();
+    }
+
+    @Override
+    public void setBlockState(BlockState state) {
+        super.setBlockState(state);
+        onGridConnectableSidesChanged();
     }
 }

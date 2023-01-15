@@ -96,7 +96,6 @@ public class GridNode implements IGridNode, IPathItem {
     private int usedChannels = 0;
     private int lastUsedChannels = 0;
     private final EnumSet<GridFlags> flags;
-    protected final EnumSet<Direction> exposedOnSides = EnumSet.noneOf(Direction.class);
     private ClassToInstanceMap<IGridNodeService> services;
 
     public <T> GridNode(ServerLevel level,
@@ -222,18 +221,10 @@ public class GridNode implements IGridNode, IPathItem {
         }
     }
 
-    private void updateState() {
+    protected final void updateState() {
         if (ready) {
             this.findInWorldConnections();
             this.getInternalGrid();
-        }
-    }
-
-    public void setExposedOnSides(Set<Direction> directions) {
-        if (!exposedOnSides.equals(directions)) {
-            exposedOnSides.clear();
-            exposedOnSides.addAll(directions);
-            updateState();
         }
     }
 
@@ -481,11 +472,6 @@ public class GridNode implements IGridNode, IPathItem {
     @Override
     public AEColor getGridColor() {
         return gridColor;
-    }
-
-    @Override
-    public boolean isExposedOnSide(Direction side) {
-        return myGrid != null && exposedOnSides.contains(side);
     }
 
     @Override

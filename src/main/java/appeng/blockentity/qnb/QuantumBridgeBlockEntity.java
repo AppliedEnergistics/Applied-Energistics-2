@@ -19,6 +19,7 @@
 package appeng.blockentity.qnb;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,13 +27,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.orientation.BlockOrientation;
 import appeng.api.util.AECableType;
 import appeng.block.qnb.QnbFormedState;
 import appeng.blockentity.ServerTickingBlockEntity;
@@ -58,9 +59,21 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
 
     public QuantumBridgeBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
-        this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
         this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
         this.getMainNode().setIdlePowerUsage(22);
+    }
+
+    @Override
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        if (!isFormed()) {
+            return EnumSet.noneOf(Direction.class);
+        }
+
+        if (this.isCorner() || this.isCenter()) {
+            return this.getAdjacentQuantumBridges();
+        } else {
+            return EnumSet.allOf(Direction.class);
+        }
     }
 
     @Override
@@ -165,7 +178,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         this.cluster = null;
 
         if (affectWorld) {
-            this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
+            onGridConnectableSidesChanged();
         }
     }
 
@@ -188,12 +201,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
                 this.markForUpdate();
             }
 
-            if (this.isCorner() || this.isCenter()) {
-                EnumSet<Direction> sides = EnumSet.copyOf(this.getAdjacentQuantumBridges());
-                this.getMainNode().setExposedOnSides(sides);
-            } else {
-                this.getMainNode().setExposedOnSides(EnumSet.allOf(Direction.class));
-            }
+            onGridConnectableSidesChanged();
         }
     }
 
@@ -202,12 +210,14 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     }
 
     public EnumSet<Direction> getAdjacentQuantumBridges() {
-        final EnumSet<Direction> set = EnumSet.noneOf(Direction.class);
+        var set = EnumSet.noneOf(Direction.class);
 
-        for (Direction d : Direction.values()) {
-            final BlockEntity te = this.level.getBlockEntity(this.worldPosition.relative(d));
-            if (te instanceof QuantumBridgeBlockEntity) {
-                set.add(d);
+        if (level != null) {
+            for (var d : Direction.values()) {
+                var te = this.level.getBlockEntity(this.worldPosition.relative(d));
+                if (te instanceof QuantumBridgeBlockEntity) {
+                    set.add(d);
+                }
             }
         }
 

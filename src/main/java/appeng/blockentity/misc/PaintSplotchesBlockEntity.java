@@ -50,11 +50,6 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public boolean canBeRotated() {
-        return false;
-    }
-
-    @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         final FriendlyByteBuf myDat = new FriendlyByteBuf(Unpooled.buffer());

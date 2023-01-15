@@ -92,10 +92,9 @@ public class CertusQuartzClusterBlock extends AEBaseBlock {
 
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        LevelAccessor levelAccessor = context.getLevel();
-        BlockPos blockPos = context.getClickedPos();
-        return this.defaultBlockState()
-                .setValue(WATERLOGGED, levelAccessor.getFluidState(blockPos).getType() == Fluids.WATER)
+        var fluidState = context.getLevel().getFluidState(context.getClickedPos());
+        return super.getStateForPlacement(context)
+                .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER)
                 .setValue(FACING, context.getClickedFace());
     }
 

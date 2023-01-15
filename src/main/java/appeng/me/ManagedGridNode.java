@@ -80,8 +80,9 @@ public class ManagedGridNode implements IManagedGridNode {
             GridNode node;
             if (inWorldNode) {
                 Preconditions.checkState(pos != null, "No position was set for an in-world node");
-                node = new InWorldGridNode((ServerLevel) level, pos, logicalHost, listener, flags);
-                node.setExposedOnSides(exposedOnSides);
+                var inWorldNode = new InWorldGridNode((ServerLevel) level, pos, logicalHost, listener, flags);
+                inWorldNode.setExposedOnSides(exposedOnSides);
+                node = inWorldNode;
             } else {
                 node = new GridNode((ServerLevel) level, logicalHost, listener, flags);
             }
@@ -265,8 +266,8 @@ public class ManagedGridNode implements IManagedGridNode {
     public ManagedGridNode setExposedOnSides(Set<Direction> directions) {
         if (node == null) {
             getInitData().exposedOnSides = ImmutableSet.copyOf(directions);
-        } else {
-            node.setExposedOnSides(directions);
+        } else if (node instanceof InWorldGridNode inWorldNode) {
+            inWorldNode.setExposedOnSides(directions);
         }
         return this;
     }

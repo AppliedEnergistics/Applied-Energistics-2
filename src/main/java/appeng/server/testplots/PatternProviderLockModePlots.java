@@ -232,7 +232,7 @@ public final class PatternProviderLockModePlots {
 
     private static void testLockModeResult(PlotBuilder plot) {
         // Add storage because unlocking happens only when items are actually returned to the network
-        plot.storageDrive(BlockPos.ZERO.south());
+        plot.storageDrive(BlockPos.ZERO.south(), Direction.SOUTH);
 
         plot.test(helper -> {
             var host = getHost(helper);

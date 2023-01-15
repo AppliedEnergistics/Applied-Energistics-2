@@ -19,6 +19,7 @@
 package appeng.blockentity.networking;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,6 +34,8 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.orientation.BlockOrientation;
+import appeng.api.orientation.RelativeSide;
 import appeng.api.util.AECableType;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
@@ -54,13 +57,11 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
         super(blockEntityType, pos, blockState);
         this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
-        this.getMainNode().setExposedOnSides(EnumSet.noneOf(Direction.class));
     }
 
     @Override
-    public void setOrientation(Direction inForward, Direction inUp) {
-        super.setOrientation(inForward, inUp);
-        this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
+    public Set<Direction> getGridConnectableSides(BlockOrientation orientation) {
+        return EnumSet.of(orientation.getSide(RelativeSide.BACK));
     }
 
     @Override
@@ -119,7 +120,6 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     @Override
     public void onReady() {
-        this.getMainNode().setExposedOnSides(EnumSet.of(this.getForward().getOpposite()));
         this.updatePower();
         super.onReady();
     }
