@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -35,7 +33,6 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import me.shedaniel.rei.plugin.common.displays.crafting.DefaultShapedDisplay;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.items.parts.FacadeItem;
@@ -90,9 +87,6 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
     }
 
     private DefaultShapedDisplay make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
-        // This id should only be used within JEI and not really matter
-        ResourceLocation id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
-
         var ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
         ingredients.set(1, Ingredient.of(cableAnchor));
         ingredients.set(3, Ingredient.of(cableAnchor));
@@ -102,7 +96,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
 
         result.setCount(4);
 
-        return new DefaultShapedDisplay(new ShapedRecipe(id, "", CraftingBookCategory.MISC, 3, 3, ingredients, result));
+        return new DefaultShapedDisplay(new ShapedRecipe("", CraftingBookCategory.MISC, 3, 3, ingredients, result));
     }
 
 }

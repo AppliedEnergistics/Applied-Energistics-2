@@ -18,11 +18,12 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -36,8 +37,8 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     // This is from the default recipe serializer for smelting
     private static final int DEFAULT_SMELTING_TIME = 200;
 
-    public SmeltingRecipes(PackOutput output) {
-        super(output);
+    public SmeltingRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
 
         SimpleCookingRecipeBuilder
                 .smelting(Ingredient.of(ConventionTags.CERTUS_QUARTZ_DUST), RecipeCategory.MISC, AEItems.SILICON, .35f,

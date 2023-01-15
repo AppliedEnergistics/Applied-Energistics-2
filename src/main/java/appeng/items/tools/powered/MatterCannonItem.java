@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -38,7 +36,6 @@ import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
@@ -53,6 +50,8 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -92,7 +91,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
      */
     private static final int ENERGY_PER_SHOT = 1600;
 
-    public MatterCannonItem(Item.Properties props) {
+    public MatterCannonItem(Properties props) {
         super(AEConfig.instance().getMatterCannonBattery(), props);
     }
 
@@ -101,7 +100,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
@@ -456,7 +455,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         var recipes = server.getRecipeManager().byType(MatterCannonAmmo.TYPE);
-        for (var ammoRecipe : recipes.values()) {
+        for (var holder : recipes.values()) {
+            var ammoRecipe = holder.value();
             if (ammoRecipe.getAmmo().test(itemStack)) {
                 return ammoRecipe.getWeight();
             }

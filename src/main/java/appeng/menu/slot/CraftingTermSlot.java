@@ -28,7 +28,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
@@ -148,11 +149,11 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
-    protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level level) {
+    protected RecipeHolder<CraftingRecipe> findRecipe(CraftingContainer ic, Level level) {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
-            if (recipe != null && recipe.matches(ic, level)) {
+            if (recipe != null && recipe.value().matches(ic, level)) {
                 return terminalMenu.getCurrentRecipe();
             }
         }
@@ -167,8 +168,8 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
-            if (recipe != null && recipe.matches(ic, level)) {
-                return terminalMenu.getCurrentRecipe().getRemainingItems(ic);
+            if (recipe != null && recipe.value().matches(ic, level)) {
+                return terminalMenu.getCurrentRecipe().value().getRemainingItems(ic);
             }
         }
 
@@ -220,13 +221,14 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 return ItemStack.EMPTY;
             }
 
-            is = r.assemble(ic, level.registryAccess());
+            is = r.value().assemble(ic, level.registryAccess());
 
             if (inv != null) {
                 var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());
                 for (var x = 0; x < this.getPattern().size(); x++) {
                     if (!this.getPattern().getStackInSlot(x).isEmpty()) {
-                        set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r, is, ic,
+                        set[x] = Platform.extractItemsByRecipe(this.energySrc, this.mySrc, inv, level, r.value(), is,
+                                ic,
                                 this.getPattern().getStackInSlot(x), x, all, Actionable.MODULATE,
                                 filter);
                         ic.setItem(x, set[x]);

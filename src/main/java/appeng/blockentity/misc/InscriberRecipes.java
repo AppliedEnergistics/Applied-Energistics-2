@@ -22,12 +22,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.materials.NamePressItem;
 import appeng.recipes.handlers.InscriberProcessType;
@@ -39,15 +38,13 @@ import appeng.recipes.handlers.InscriberRecipe;
  */
 public final class InscriberRecipes {
 
-    public static final ResourceLocation NAMEPLATE_RECIPE_ID = new ResourceLocation(AppEng.MOD_ID, "nameplate");
-
     private InscriberRecipes() {
     }
 
     /**
      * Returns an unmodifiable view of all registered inscriber recipes.
      */
-    public static Iterable<InscriberRecipe> getRecipes(Level level) {
+    public static Iterable<RecipeHolder<InscriberRecipe>> getRecipes(Level level) {
         return level.getRecipeManager().byType(InscriberRecipe.TYPE).values();
     }
 
@@ -65,7 +62,8 @@ public final class InscriberRecipes {
             }
         }
 
-        for (InscriberRecipe recipe : getRecipes(level)) {
+        for (var holder : getRecipes(level)) {
+            var recipe = holder.value();
             // The recipe can be flipped at will
             final boolean matchA = recipe.getTopOptional().test(plateA) && recipe.getBottomOptional().test(plateB);
             final boolean matchB = recipe.getTopOptional().test(plateB) && recipe.getBottomOptional().test(plateA);
@@ -102,7 +100,7 @@ public final class InscriberRecipes {
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-        return new InscriberRecipe(NAMEPLATE_RECIPE_ID, startingItem, renamedItem,
+        return new InscriberRecipe(startingItem, renamedItem,
                 plateA.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateA),
                 plateB.isEmpty() ? Ingredient.EMPTY : Ingredient.of(plateB), type);
     }
@@ -112,7 +110,8 @@ public final class InscriberRecipes {
      * combination and the reverse will be searched.
      */
     public static boolean isValidOptionalIngredientCombination(Level level, ItemStack pressA, ItemStack pressB) {
-        for (InscriberRecipe recipe : getRecipes(level)) {
+        for (var holder : getRecipes(level)) {
+            var recipe = holder.value();
             if (recipe.getTopOptional().test(pressA) && recipe.getBottomOptional().test(pressB)
                     || recipe.getTopOptional().test(pressB) && recipe.getBottomOptional().test(pressA)) {
                 return true;
@@ -127,7 +126,8 @@ public final class InscriberRecipes {
      * top can be used interchangeably here, because the inscriber will flip the recipe if needed.
      */
     public static boolean isValidOptionalIngredient(Level level, ItemStack is) {
-        for (InscriberRecipe recipe : getRecipes(level)) {
+        for (var holder : getRecipes(level)) {
+            var recipe = holder.value();
             if (recipe.getTopOptional().test(is) || recipe.getBottomOptional().test(is)) {
                 return true;
             }

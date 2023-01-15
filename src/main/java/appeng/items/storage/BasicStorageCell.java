@@ -21,8 +21,6 @@ package appeng.items.storage;
 import java.util.List;
 import java.util.Optional;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,12 +28,13 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEKeyType;
@@ -63,7 +62,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     protected final int totalTypes;
     private final AEKeyType keyType;
 
-    public BasicStorageCell(Item.Properties properties,
+    public BasicStorageCell(Properties properties,
             ItemLike coreItem,
             ItemLike housingItem,
             double idleDrain,
@@ -81,7 +80,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         this.keyType = keyType;
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack,
             Level level,

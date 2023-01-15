@@ -19,17 +19,17 @@
 package appeng.core.sync;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.INetworkDirection;
+import net.neoforged.neoforge.network.PlayNetworkDirection;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
+import appeng.core.sync.network.NetworkHandler;
 
 public abstract class BasePacket {
-
-    // KEEP THIS SHORT. It's serialized as a string!
-    public static final ResourceLocation CHANNEL = new ResourceLocation("ae2:m");
 
     private FriendlyByteBuf p;
 
@@ -52,21 +52,17 @@ public abstract class BasePacket {
         this.p = data;
     }
 
-    public FriendlyByteBuf getPayload() {
-        var buffer = this.p;
-        var packetSize = buffer.readableBytes();
-        if (packetSize > 2 * 1024 * 1024) // 2k walking room :)
+    public Packet<?> toPacket(PlayNetworkDirection direction) {
+        if (this.p.array().length > 2 * 1024 * 1024) // 2k walking room :)
         {
-            throw new IllegalArgumentException("Sorry AE2 made a " + packetSize
-                    + " byte packet (" + getClass().getName()
-                    + ") by accident!");
+            throw new IllegalArgumentException(
+                    "Sorry AE2 made a " + this.p.array().length + " byte packet by accident!");
         }
 
         if (AEConfig.instance().isPacketLogEnabled()) {
-            AELog.info(getClass().getName() + " : " + packetSize);
+            AELog.info(this.getClass().getName() + " : " + p.readableBytes());
         }
 
-        return buffer;
+        return direction.buildPacket(new INetworkDirection.PacketData(p, 0), NetworkHandler.instance().getChannel());
     }
-
 }

@@ -758,7 +758,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return updateBlock;
     }
 
-    private static int getSideIndex(@org.jetbrains.annotations.Nullable Direction side) {
+    private static int getSideIndex(@Nullable Direction side) {
         return side == null ? 6 : side.ordinal();
     }
 
@@ -958,7 +958,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 continue;
             }
 
-            renderState.getPartModelData().put(side, part.getRenderAttachmentData());
+            renderState.getPartModelData().put(side, part.getModelData());
 
             // This will add the part's bounding boxes to the render state, which is
             // required for facades

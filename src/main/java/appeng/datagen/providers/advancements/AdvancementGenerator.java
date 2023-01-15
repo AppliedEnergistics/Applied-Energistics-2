@@ -45,8 +45,9 @@ import java.util.function.Consumer;
 import com.google.common.collect.Sets;
 
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.CachedOutput;
@@ -82,13 +83,13 @@ public class AdvancementGenerator implements IAE2DataProvider {
         Path path = this.output.getOutputFolder();
         Set<ResourceLocation> set = Sets.newHashSet();
         var futures = new ArrayList<CompletableFuture<?>>();
-        Consumer<Advancement> consumer = (advancement) -> {
-            if (!set.add(advancement.getId())) {
-                throw new IllegalStateException("Duplicate advancement " + advancement.getId());
+        Consumer<AdvancementHolder> consumer = (advancement) -> {
+            if (!set.add(advancement.id())) {
+                throw new IllegalStateException("Duplicate advancement " + advancement.id());
             } else {
                 Path path1 = createPath(path, advancement);
 
-                futures.add(DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path1));
+                futures.add(DataProvider.saveStable(cache, advancement.value().serializeToJson(), path1));
             }
         };
 
@@ -97,7 +98,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
-    private void generateAdvancements(Consumer<Advancement> consumer) {
+    private void generateAdvancements(Consumer<AdvancementHolder> consumer) {
 
         var root = Advancement.Builder.advancement()
                 .display(
@@ -211,7 +212,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 .addCriterion("c16k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_16K))
                 .addCriterion("c64k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_64K))
                 .addCriterion("c256k", InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.ITEM_CELL_256K))
-                .requirements(RequirementsStrategy.OR)
+                .requirements(AdvancementRequirements.Strategy.OR)
                 .save(consumer, "ae2:main/storage_cell");
 
         var ioport = Advancement.Builder.advancement()
@@ -273,7 +274,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false)
                 .parent(patternTerminal)
                 .addCriterion("cu", InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.CRAFTING_UNIT))
-                .requirements(RequirementsStrategy.OR)
+                .requirements(AdvancementRequirements.Strategy.OR)
                 .save(consumer, "ae2:main/crafting_cpu");
 
         var fluix = Advancement.Builder.advancement()
@@ -354,7 +355,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(glassCable)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_APPRENTICE.instance())
+                .addCriterion("cable", AdvancementTriggers.NETWORK_APPRENTICE.criterion())
                 .save(consumer, "ae2:main/network1");
 
         var network2 = Advancement.Builder.advancement()
@@ -370,7 +371,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(network1)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_ENGINEER.instance())
+                .addCriterion("cable", AdvancementTriggers.NETWORK_ENGINEER.criterion())
                 .save(consumer, "ae2:main/network2");
 
         var network3 = Advancement.Builder.advancement()
@@ -386,7 +387,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(network2)
-                .addCriterion("cable", AdvancementTriggers.NETWORK_ADMIN.instance())
+                .addCriterion("cable", AdvancementTriggers.NETWORK_ADMIN.criterion())
                 .save(consumer, "ae2:main/network3");
 
         var networkTool = Advancement.Builder.advancement()
@@ -440,7 +441,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL64K))
                 .addCriterion("pc_256k",
                         InventoryChangeTrigger.TriggerInstance.hasItems(AEItems.PORTABLE_ITEM_CELL256K))
-                .requirements(RequirementsStrategy.OR)
+                .requirements(AdvancementRequirements.Strategy.OR)
                 .save(consumer, "ae2:main/portable_cell");
 
         var qnb = Advancement.Builder.advancement()
@@ -485,7 +486,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false,
                         false)
                 .parent(spatialIoport)
-                .addCriterion("explorer", AdvancementTriggers.SPATIAL_EXPLORER.instance())
+                .addCriterion("explorer", AdvancementTriggers.SPATIAL_EXPLORER.criterion())
                 .save(consumer, "ae2:main/spatial_explorer");
 
         var storageBus = Advancement.Builder.advancement()
@@ -516,14 +517,14 @@ public class AdvancementGenerator implements IAE2DataProvider {
                         false /* hidden */
                 )
                 .parent(storageBus)
-                .addCriterion("recursive", AdvancementTriggers.RECURSIVE.instance())
+                .addCriterion("recursive", AdvancementTriggers.RECURSIVE.criterion())
                 .save(consumer, "ae2:main/recursive");
 
     }
 
-    private static Path createPath(Path basePath, Advancement advancement) {
-        return basePath.resolve("data/" + advancement.getId().getNamespace()
-                + "/advancements/" + advancement.getId().getPath() + ".json");
+    private static Path createPath(Path basePath, AdvancementHolder advancement) {
+        return basePath.resolve("data/" + advancement.id().getNamespace()
+                + "/advancements/" + advancement.id().getPath() + ".json");
     }
 
     @Override

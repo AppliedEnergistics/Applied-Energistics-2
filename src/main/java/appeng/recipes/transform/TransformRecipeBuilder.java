@@ -1,7 +1,6 @@
 package appeng.recipes.transform;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonArray;
@@ -10,8 +9,10 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -19,12 +20,12 @@ import net.minecraft.world.level.ItemLike;
 
 public class TransformRecipeBuilder {
 
-    public static void transform(Consumer<FinishedRecipe> consumer, ResourceLocation id, ItemLike output, int count,
+    public static void transform(RecipeOutput consumer, ResourceLocation id, ItemLike output, int count,
             TransformCircumstance circumstance, ItemLike... inputs) {
         consumer.accept(new Result(id, Stream.of(inputs).map(Ingredient::of).toList(), output, count, circumstance));
     }
 
-    public static void transform(Consumer<FinishedRecipe> consumer, ResourceLocation id, ItemLike output, int count,
+    public static void transform(RecipeOutput consumer, ResourceLocation id, ItemLike output, int count,
             TransformCircumstance circumstance, Ingredient... inputs) {
         consumer.accept(new Result(id, List.of(inputs), output, count, circumstance));
     }
@@ -42,30 +43,24 @@ public class TransformRecipeBuilder {
             json.add("result", stackObj);
 
             JsonArray inputs = new JsonArray();
-            ingredients.forEach(ingredient -> inputs.add(ingredient.toJson()));
+            ingredients.forEach(ingredient -> inputs.add(ingredient.toJson(false)));
             json.add("ingredients", inputs);
             json.add("circumstance", circumstance.toJson());
         }
 
         @Override
-        public ResourceLocation getId() {
+        public ResourceLocation id() {
             return id;
         }
 
         @Override
-        public RecipeSerializer<?> getType() {
+        public RecipeSerializer<?> type() {
             return TransformRecipeSerializer.INSTANCE;
         }
 
         @Nullable
         @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
+        public AdvancementHolder advancement() {
             return null;
         }
     }

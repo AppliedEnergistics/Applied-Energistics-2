@@ -40,6 +40,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.InscriberBlockEntity;
@@ -219,7 +220,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
     }
 
     private static void addVertex(VertexConsumer vb, PoseStack ms, TextureAtlasSprite sprite, float x, float y,
-            float z, double texU, double texV, int overlayUV, int lightmapUV, Direction front) {
+            float z, float texU, float texV, int overlayUV, int lightmapUV, Direction front) {
         vb.vertex(ms.last().pose(), x, y, z);
         vb.color(1.0f, 1.0f, 1.0f, 1.0f);
         vb.uv(sprite.getU(texU), sprite.getV(texV));
@@ -246,7 +247,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             // for direction=null, while a block-model will have their faces for
             // cull-faces, but not direction=null
             var model = itemRenderer.getItemModelShaper().getItemModel(stack);
-            var quads = model.getQuads(null, null, RandomSource.create());
+            var quads = model.getQuads(null, null, RandomSource.create(), ModelData.EMPTY, null);
             // Note: quads may be null for mods implementing FabricBakedModel without caring about getQuads.
             if (quads != null && !quads.isEmpty()) {
                 ms.scale(0.5f, 0.5f, 0.5f);

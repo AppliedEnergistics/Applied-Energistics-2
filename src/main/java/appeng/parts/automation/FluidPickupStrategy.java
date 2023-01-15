@@ -16,6 +16,7 @@ import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.behaviors.PickupSink;
 import appeng.api.behaviors.PickupStrategy;
+import appeng.api.behaviors.PickupStrategy.Result;
 import appeng.api.config.Actionable;
 import appeng.api.ids.AETags;
 import appeng.api.networking.energy.IEnergySource;
@@ -23,11 +24,14 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.core.AppEng;
 import appeng.core.sync.packets.BlockTransitionEffectPacket;
 import appeng.util.GenericContainerHelper;
+import appeng.util.Platform;
 
 public class FluidPickupStrategy implements PickupStrategy {
     private final ServerLevel level;
     private final BlockPos pos;
     private final Direction side;
+    @Nullable
+    private final UUID owningPlayerId;
 
     /**
      * {@link System#currentTimeMillis()} of when the last sound/visual effect was played by this plane.
@@ -39,6 +43,7 @@ public class FluidPickupStrategy implements PickupStrategy {
         this.level = level;
         this.pos = pos;
         this.side = side;
+        this.owningPlayerId = owningPlayerId;
     }
 
     @Override
@@ -74,7 +79,8 @@ public class FluidPickupStrategy implements PickupStrategy {
                     // bucket
                     // This _MIGHT_ change the liquid, and if it does, and we dont have enough
                     // space, tough luck. you loose the source block.
-                    var fluidContainer = bucketPickup.pickupBlock(level, pos, blockstate);
+                    var fakePlayer = Platform.getFakePlayer(level, owningPlayerId);
+                    var fluidContainer = bucketPickup.pickupBlock(fakePlayer, level, pos, blockstate);
                     var pickedUpStack = GenericContainerHelper.getContainedFluidStack(fluidContainer);
                     if (pickedUpStack != null && pickedUpStack.what() instanceof AEFluidKey fluidKey) {
                         this.storeFluid(sink, fluidKey, pickedUpStack.amount(), true);

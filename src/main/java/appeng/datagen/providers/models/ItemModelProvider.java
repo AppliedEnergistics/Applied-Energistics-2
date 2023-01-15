@@ -4,9 +4,8 @@ import static appeng.core.AppEng.makeId;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
@@ -18,10 +17,10 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 import appeng.init.client.InitItemModelsProperties;
 
-public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider
+public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider
         implements IAE2DataProvider {
-    public ItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, AppEng.MOD_ID, existingFileHelper);
+    public ItemModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
+        super(packOutput, AppEng.MOD_ID, existingFileHelper);
     }
 
     @Override
@@ -244,9 +243,6 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
 
     private ItemModelBuilder builtInItemModel(String name) {
         var model = getBuilder("item/" + name);
-        var loaderId = AppEng.makeId("item/" + name);
-        model.customLoader((bmb, efh) -> new CustomLoaderBuilder<>(loaderId, bmb, efh) {
-        });
         return model;
     }
 }

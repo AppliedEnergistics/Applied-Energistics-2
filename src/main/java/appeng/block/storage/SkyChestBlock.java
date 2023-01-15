@@ -38,7 +38,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -85,7 +84,7 @@ public class SkyChestBlock extends AEBaseEntityBlock<SkyChestBlockEntity> implem
 
     public final SkyChestType type;
 
-    public SkyChestBlock(SkyChestType type, BlockBehaviour.Properties props) {
+    public SkyChestBlock(SkyChestType type, Properties props) {
         super(props);
         this.type = type;
         registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));

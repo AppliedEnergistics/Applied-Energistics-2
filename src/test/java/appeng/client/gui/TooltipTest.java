@@ -40,7 +40,7 @@ class TooltipTest {
                 Component.literal("Fourth Line"));
 
         assertThat(tooltip.getContent())
-                .extracting(net.minecraft.network.chat.Component::getString)
+                .extracting(Component::getString)
                 .containsExactly(
                         "BOLDMore Text",
                         "Second LineContinued Second Line",
@@ -54,7 +54,7 @@ class TooltipTest {
                 Component.translatable("gui.tooltips.ae2.MatterBalls", 256));
 
         assertThat(tooltip.getContent())
-                .extracting(net.minecraft.network.chat.Component::getString)
+                .extracting(Component::getString)
                 .containsExactly(
                         "Condense Into Matter Balls",
                         "256 per item");
@@ -67,7 +67,7 @@ class TooltipTest {
                 Component.translatable("b"));
 
         assertThat(tooltip.getContent())
-                .extracting(net.minecraft.network.chat.Component::getString)
+                .extracting(Component::getString)
                 .containsExactly(
                         "a", "b");
     }

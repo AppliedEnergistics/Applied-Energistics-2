@@ -23,14 +23,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -38,7 +39,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 public class EntropyRecipeBuilder {
-    private ResourceLocation id;
     private EntropyMode mode;
 
     private Block inputBlock;
@@ -55,18 +55,12 @@ public class EntropyRecipeBuilder {
     private boolean outputFluidKeep;
     private List<ItemStack> drops = Collections.emptyList();
 
-    public static EntropyRecipeBuilder cool(ResourceLocation id) {
-        return new EntropyRecipeBuilder().setId(id).setMode(EntropyMode.COOL);
+    public static EntropyRecipeBuilder cool() {
+        return new EntropyRecipeBuilder().setMode(EntropyMode.COOL);
     }
 
-    public static EntropyRecipeBuilder heat(ResourceLocation id) {
-        return new EntropyRecipeBuilder().setId(id).setMode(EntropyMode.HEAT);
-    }
-
-    public EntropyRecipeBuilder setId(ResourceLocation id) {
-        Preconditions.checkArgument(id != null);
-        this.id = id;
-        return this;
+    public static EntropyRecipeBuilder heat() {
+        return new EntropyRecipeBuilder().setMode(EntropyMode.HEAT);
     }
 
     public EntropyRecipeBuilder setMode(EntropyMode mode) {
@@ -168,45 +162,44 @@ public class EntropyRecipeBuilder {
     }
 
     public EntropyRecipe build() {
-        Preconditions.checkState(id != null);
         Preconditions.checkState(mode != null);
         Preconditions.checkState(inputBlock != null || inputFluid != null,
                 "Either inputBlock or inputFluid needs to be not null");
 
-        return new EntropyRecipe(id, mode, inputBlock, inputBlockMatchers, inputFluid, inputFluidMatchers, outputBlock,
+        return new EntropyRecipe(mode, inputBlock, inputBlockMatchers, inputFluid, inputFluidMatchers, outputBlock,
                 outputBlockStateAppliers, outputBlockKeep, outputFluid, outputFluidStateAppliers, outputFluidKeep,
                 drops);
     }
 
-    public void save(Consumer<FinishedRecipe> consumer) {
-        consumer.accept(new Result());
+    public void save(RecipeOutput consumer, ResourceLocation id) {
+        consumer.accept(new Result(id));
     }
 
     private class Result implements FinishedRecipe {
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            EntropyRecipeSerializer.INSTANCE.toJson(build(), json);
+        private final ResourceLocation id;
+
+        public Result(ResourceLocation id) {
+            this.id = id;
         }
 
         @Override
-        public ResourceLocation getId() {
+        public void serializeRecipeData(JsonObject json) {
+            EntropyRecipeSerializer.writeToJson(json, build());
+        }
+
+        @Override
+        public ResourceLocation id() {
             return id;
         }
 
         @Override
-        public RecipeSerializer<?> getType() {
+        public RecipeSerializer<?> type() {
             return EntropyRecipeSerializer.INSTANCE;
         }
 
         @Nullable
         @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
+        public AdvancementHolder advancement() {
             return null;
         }
     }

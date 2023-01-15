@@ -281,7 +281,7 @@ public class NumberEntryWidget implements ICompositeWidget {
     public void setLongValue(long value) {
         var internalValue = convertToInternalValue(Longs.constrainToRange(value, minValue, maxValue));
         this.textField.setValue(decimalFormat.format(internalValue));
-        this.textField.moveCursorToEnd();
+        this.textField.moveCursorToEnd(false);
         this.textField.setHighlightPos(0);
         validate();
     }

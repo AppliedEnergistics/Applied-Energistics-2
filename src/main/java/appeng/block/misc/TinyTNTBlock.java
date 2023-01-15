@@ -33,7 +33,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -49,7 +48,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     private static final VoxelShape SHAPE = Shapes
             .create(new AABB(0.25f, 0.0f, 0.25f, 0.75f, 0.5f, 0.75f));
 
-    public TinyTNTBlock(BlockBehaviour.Properties props) {
+    public TinyTNTBlock(Properties props) {
         super(props);
     }
 

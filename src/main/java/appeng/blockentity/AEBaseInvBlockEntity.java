@@ -27,6 +27,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.util.LazyOptional;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
@@ -97,8 +100,21 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     @Override
     public abstract void onChangeInventory(InternalInventory inv, int slot);
 
-    public InternalInventory getExposedInventoryForSide(Direction side) {
+    protected InternalInventory getExposedInventoryForSide(Direction side) {
         return this.getInternalInventory();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        if (capability == Capabilities.ITEM_HANDLER) {
+            if (facing == null) {
+                return (LazyOptional<T>) LazyOptional.of(getInternalInventory()::toItemHandler);
+            } else {
+                return (LazyOptional<T>) LazyOptional.of(() -> getExposedInventoryForSide(facing).toItemHandler());
+            }
+        }
+        return super.getCapability(capability, facing);
     }
 
 }

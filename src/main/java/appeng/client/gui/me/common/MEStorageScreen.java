@@ -470,14 +470,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public boolean mouseScrolled(double x, double y, double wheelDelta) {
-        if (wheelDelta != 0 && hasShiftDown()) {
+    public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
+        if (deltaY != 0 && hasShiftDown()) {
             if (this.findSlot(x, y) instanceof RepoSlot repoSlot) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
-                final InventoryAction direction = wheelDelta > 0 ? InventoryAction.ROLL_DOWN
+                final InventoryAction direction = deltaY > 0 ? InventoryAction.ROLL_DOWN
                         : InventoryAction.ROLL_UP;
-                int times = (int) Math.abs(wheelDelta);
+                int times = (int) Math.abs(deltaY);
                 for (int h = 0; h < times; h++) {
                     final MEInteractionPacket p = new MEInteractionPacket(this.menu.containerId, serial, direction);
                     NetworkHandler.instance().sendToServer(p);
@@ -486,7 +486,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 return true;
             }
         }
-        return super.mouseScrolled(x, y, wheelDelta);
+        return super.mouseScrolled(x, y, deltaX, deltaY);
     }
 
     @Override
@@ -667,7 +667,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Special case to support the Item API of visual tooltip components
         if (entry.getWhat() instanceof AEItemKey itemKey) {
             var stack = itemKey.toStack();
-            guiGraphics.renderTooltip(font, currentToolTip, stack.getTooltipImage(), x, y);
+            // By using the overload of the renderTooltip method that takes an ItemStack, we support the Forge tooltip
+            // event system
+            guiGraphics.renderTooltip(font, currentToolTip, stack.getTooltipImage(), stack, x, y);
         } else {
             guiGraphics.renderComponentTooltip(font, currentToolTip, x, y);
         }

@@ -24,7 +24,6 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRenderer;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 
-import appeng.core.AppEng;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.CraftingHelper;
 import appeng.integration.modules.jeirei.TransferHelper;
@@ -109,7 +108,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
             ingredients.set(i, ingredient);
         }
 
-        return new ShapedRecipe(AppEng.makeId("__fake_recipe"), "", CraftingBookCategory.MISC, CRAFTING_GRID_WIDTH,
+        return new ShapedRecipe("", CraftingBookCategory.MISC, CRAFTING_GRID_WIDTH,
                 CRAFTING_GRID_HEIGHT,
                 ingredients, ItemStack.EMPTY);
     }

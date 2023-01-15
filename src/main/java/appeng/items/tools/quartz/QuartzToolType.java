@@ -32,9 +32,11 @@ public enum QuartzToolType {
     NETHER("nether_quartz", () -> Ingredient.of(ConventionTags.NETHER_QUARTZ)),
     ;
 
+    private final String name;
     private final Tier toolTier;
 
     QuartzToolType(String name, Supplier<Ingredient> repairIngredient) {
+        this.name = name;
         this.toolTier = new Tier() {
             @Override
             public int getUses() {
@@ -72,6 +74,10 @@ public enum QuartzToolType {
                 return AppEng.MOD_ID + ":" + name;
             }
         };
+    }
+
+    public String getName() {
+        return name;
     }
 
     public final Tier getToolTier() {

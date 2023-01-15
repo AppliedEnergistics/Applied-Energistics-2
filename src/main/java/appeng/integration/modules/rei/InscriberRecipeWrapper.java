@@ -63,6 +63,6 @@ class InscriberRecipeWrapper implements Display {
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(recipe.getId());
+        throw new UnsupportedOperationException(); // TODO
     }
 }

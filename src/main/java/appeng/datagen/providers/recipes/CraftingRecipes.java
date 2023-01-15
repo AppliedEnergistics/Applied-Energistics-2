@@ -1,12 +1,12 @@
 
 package appeng.datagen.providers.recipes;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
-import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 
 import appeng.api.ids.AETags;
 import appeng.api.stacks.AEKeyType;
@@ -28,8 +29,8 @@ import appeng.datagen.providers.tags.ConventionTags;
 import appeng.items.tools.powered.PortableCellItem;
 
 public class CraftingRecipes extends AE2RecipeProvider {
-    public CraftingRecipes(PackOutput output) {
-        super(output);
+    public CraftingRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(RecipeOutput consumer) {
 
         // ====================================================
         // Basic Cards
@@ -887,7 +888,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
 
     }
 
-    private void portableCell(Consumer<FinishedRecipe> consumer, ItemDefinition<PortableCellItem> cell) {
+    private void portableCell(RecipeOutput consumer, ItemDefinition<PortableCellItem> cell) {
         ItemDefinition<?> housing;
         if (cell.asItem().getKeyType() == AEKeyType.items()) {
             housing = AEItems.ITEM_CELL_HOUSING;
@@ -908,7 +909,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, cell.asItem().getRecipeId());
     }
 
-    private void addSpatialCells(Consumer<FinishedRecipe> consumer) {
+    private void addSpatialCells(RecipeOutput consumer) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.SPATIAL_2_CELL_COMPONENT)
                 .pattern("aba")
                 .pattern("bcb")
@@ -986,7 +987,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cells/spatial_storage_cell_128_cubed_storage"));
     }
 
-    private void addItemCells(Consumer<FinishedRecipe> consumer) {
+    private void addItemCells(RecipeOutput consumer) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.CELL_COMPONENT_1K)
                 .pattern("aba")
                 .pattern("bcb")
@@ -1119,7 +1120,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cells/item_storage_cell_256k_storage"));
     }
 
-    private void addFluidCells(Consumer<FinishedRecipe> consumer) {
+    private void addFluidCells(RecipeOutput consumer) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.FLUID_CELL_1K)
                 .pattern("aba")
                 .pattern("bcb")
@@ -1202,7 +1203,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cells/fluid_storage_cell_256k_storage"));
     }
 
-    private void addQuartzTools(Consumer<FinishedRecipe> consumer) {
+    private void addQuartzTools(RecipeOutput consumer) {
         // Certus Quartz Vanilla-Like Tools
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.CERTUS_QUARTZ_AXE)
                 .pattern("aa")
@@ -1334,7 +1335,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
     // ====================================================
     // recipes/network/cables
     // ====================================================
-    private static void addCables(Consumer<FinishedRecipe> consumer) {
+    private static void addCables(RecipeOutput consumer) {
         for (var color : AEColor.VALID_COLORS) {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEParts.COVERED_CABLE.item(color), 8)
                     .pattern("aaa")
@@ -1469,7 +1470,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .save(consumer, AppEng.makeId("network/cables/smart_fluix_clean"));
     }
 
-    private void addPaintBalls(Consumer<FinishedRecipe> consumer) {
+    private void addPaintBalls(RecipeOutput consumer) {
         for (var color : AEColor.VALID_COLORS) {
             ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.COLORED_PAINT_BALL.item(color), 8)
                     .pattern("aaa")
@@ -1492,6 +1493,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
     }
 
     private static Ingredient tagExcept(TagKey<Item> tag, ItemLike exception) {
-        return DefaultCustomIngredients.difference(Ingredient.of(tag), Ingredient.of(exception));
+        return DifferenceIngredient.of(Ingredient.of(tag), Ingredient.of(exception));
     }
 }

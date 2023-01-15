@@ -50,7 +50,7 @@ public class ScreenStyle {
      * Overrides the default help topic for this screen. This will be resolved as a link to a page in the guidebook and
      * may contain an optional fragment (#some-heading) to directly link to a heading or anchor in the page.
      */
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     private String helpTopic;
 
     /**
@@ -108,12 +108,12 @@ public class ScreenStyle {
         return tooltips;
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     public Blitter getBackground() {
         return background != null ? background.copy() : null;
     }
 
-    @org.jetbrains.annotations.Nullable
+    @Nullable
     public GeneratedBackground getGeneratedBackground() {
         return generatedBackground;
     }

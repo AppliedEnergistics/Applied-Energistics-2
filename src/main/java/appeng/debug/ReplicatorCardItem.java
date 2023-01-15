@@ -32,7 +32,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -44,13 +43,12 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
-public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
+public class ReplicatorCardItem extends AEBaseItem {
 
-    public ReplicatorCardItem(Item.Properties properties) {
+    public ReplicatorCardItem(Properties properties) {
         super(properties);
     }
 

@@ -1,14 +1,15 @@
 package appeng.recipes.handlers;
 
 import java.util.Locale;
-import java.util.function.Consumer;
 
 import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -57,7 +58,7 @@ public class InscriberRecipeBuilder {
         return this;
     }
 
-    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void save(RecipeOutput consumer, ResourceLocation id) {
         consumer.accept(new Result(id));
     }
 
@@ -80,35 +81,29 @@ public class InscriberRecipeBuilder {
             json.add("result", result);
 
             var ingredients = new JsonObject();
-            ingredients.add("middle", middleInput.toJson());
+            ingredients.add("middle", middleInput.toJson(false));
             if (topOptional != null) {
-                ingredients.add("top", topOptional.toJson());
+                ingredients.add("top", topOptional.toJson(true));
             }
             if (bottomOptional != null) {
-                ingredients.add("bottom", bottomOptional.toJson());
+                ingredients.add("bottom", bottomOptional.toJson(true));
             }
             json.add("ingredients", ingredients);
         }
 
         @Override
-        public ResourceLocation getId() {
+        public ResourceLocation id() {
             return id;
         }
 
         @Override
-        public RecipeSerializer<?> getType() {
+        public RecipeSerializer<?> type() {
             return InscriberRecipeSerializer.INSTANCE;
         }
 
         @Nullable
         @Override
-        public JsonObject serializeAdvancement() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
+        public AdvancementHolder advancement() {
             return null;
         }
     }

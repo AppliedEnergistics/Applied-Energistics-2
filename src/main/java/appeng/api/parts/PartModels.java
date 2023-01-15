@@ -29,7 +29,7 @@ import net.minecraft.resources.ResourceLocation;
  * Allows registration of part models that can then be used in {@link IPart#getStaticModels()}.
  * <p/>
  * The models will automatically be added as dependencies to the model of the cable bus, and registered with
- * {@link ModelLoader#addSpecialModel(net.minecraft.resources.ResourceLocation)}.
+ * {@link ModelLoader#addSpecialModel(ResourceLocation)}.
  */
 public final class PartModels {
 

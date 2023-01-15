@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.neoforged.fml.ModList;
 
 public class SodiumCompat {
     private static final Logger LOGGER = LoggerFactory.getLogger(SodiumCompat.class);
@@ -26,7 +26,7 @@ public class SodiumCompat {
                     MethodType.methodType(void.class, TextureAtlasSprite.class));
             LOGGER.info("Loaded Sodium active sprite compat.");
         } catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
-            if (FabricLoader.getInstance().isModLoaded("sodium")) {
+            if (ModList.get().getModContainerById("sodium").isPresent()) {
                 LOGGER.error("Failed to load Sodium active sprite compat.", e);
             }
         }

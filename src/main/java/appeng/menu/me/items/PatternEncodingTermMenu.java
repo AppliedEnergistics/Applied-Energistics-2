@@ -35,6 +35,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
@@ -102,7 +103,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private final ConfigInventory encodedInputsInv;
     private final ConfigInventory encodedOutputsInv;
 
-    private CraftingRecipe currentRecipe;
+    private RecipeHolder<CraftingRecipe> currentRecipe;
     // The current mode is essentially the last-known client-side version of mode
     private EncodingMode currentMode;
 
@@ -116,7 +117,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     @Nullable
     public ResourceLocation stonecuttingRecipeId;
 
-    private final List<StonecutterRecipe> stonecuttingRecipes = new ArrayList<>();
+    private final List<RecipeHolder<StonecutterRecipe>> stonecuttingRecipes = new ArrayList<>();
 
     /**
      * Whether fluids can be substituted or not depends on the recipe. This set contains the slots of the crafting
@@ -219,7 +220,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             }
         }
 
-        if (this.currentRecipe == null || !this.currentRecipe.matches(ic, level)) {
+        if (this.currentRecipe == null || !this.currentRecipe.value().matches(ic, level)) {
             if (invalidIngredients) {
                 this.currentRecipe = null;
             } else {
@@ -234,7 +235,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.assemble(ic, level.registryAccess());
+            is = this.currentRecipe.value().assemble(ic, level.registryAccess());
         }
 
         this.craftOutputSlot.setDisplayedCraftingOutput(is);
@@ -392,7 +393,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        var output = AEItemKey.of(recipe.assemble(container, level.registryAccess()));
+        var output = AEItemKey.of(recipe.value().assemble(container, level.registryAccess()));
 
         return PatternDetailsHelper.encodeSmithingTablePattern(recipe, template, base, addition, output,
                 encodingLogic.isSubstitution());
@@ -421,7 +422,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        var output = AEItemKey.of(recipe.getResultItem(level.registryAccess()));
+        var output = AEItemKey.of(recipe.value().getResultItem(level.registryAccess()));
 
         return PatternDetailsHelper.encodeStonecuttingPattern(recipe, input, output, encodingLogic.isSubstitution());
     }
@@ -516,7 +517,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
         // Deselect a recipe that is now unavailable
         if (stonecuttingRecipeId != null
-                && stonecuttingRecipes.stream().noneMatch(r -> r.getId().equals(stonecuttingRecipeId))) {
+                && stonecuttingRecipes.stream().noneMatch(r -> r.id().equals(stonecuttingRecipeId))) {
             stonecuttingRecipeId = null;
         }
     }
@@ -705,7 +706,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
                 && Arrays.stream(processingOutputSlots).filter(s -> !s.getItem().isEmpty()).count() > 1;
     }
 
-    public List<StonecutterRecipe> getStonecuttingRecipes() {
+    public List<RecipeHolder<StonecutterRecipe>> getStonecuttingRecipes() {
         return stonecuttingRecipes;
     }
 

@@ -12,7 +12,7 @@ import snownee.jade.api.config.IPluginConfig;
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
 
 /**
- * Delegation provider for tiles through {@link snownee.jade.api.IBlockComponentProvider}
+ * Delegation provider for tiles through {@link IBlockComponentProvider}
  */
 class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements IBlockComponentProvider {
     private final BodyProvider<? super T> provider;

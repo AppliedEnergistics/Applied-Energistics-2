@@ -91,9 +91,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
     }
 
     @Override
-    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
-            ItemStack newStack) {
-        return false;
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
     }
 
     // Override to change the default color
@@ -133,7 +132,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
 
         // We refund the crafting recipe ingredients (the first one each)
         var recipe = level.getRecipeManager().byKey(getRecipeId()).orElse(null);
-        if (!(recipe instanceof CraftingRecipe craftingRecipe)) {
+        if (!(recipe.value() instanceof CraftingRecipe craftingRecipe)) {
             AELog.debug("Cannot disassemble portable cell because it's crafting recipe doesn't exist: %s",
                     getRecipeId());
             return false;

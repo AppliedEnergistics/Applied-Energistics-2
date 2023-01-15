@@ -27,6 +27,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mojang.serialization.Codec;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +35,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,15 +48,23 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
     public static final EntropyRecipeSerializer INSTANCE = new EntropyRecipeSerializer();
 
+    private static final Codec<EntropyRecipe> CODEC = ExtraCodecs.adaptJsonSerializer(
+            EntropyRecipeSerializer::fromJson,
+            EntropyRecipeSerializer::toJson);
+
     private EntropyRecipeSerializer() {
     }
 
     @Override
-    public EntropyRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+    public Codec<EntropyRecipe> codec() {
+        return CODEC;
+    }
+
+    private static EntropyRecipe fromJson(JsonElement jsonEl) {
+        var json = jsonEl.getAsJsonObject();
         EntropyRecipeBuilder builder = new EntropyRecipeBuilder();
 
         // Set id and mode
-        builder.setId(recipeId);
         builder.setMode(EntropyMode.valueOf(GsonHelper.getAsString(json, "mode").toUpperCase(Locale.ROOT)));
 
         //// Parse inputs
@@ -136,10 +146,9 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
 
     @Nullable
     @Override
-    public EntropyRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+    public EntropyRecipe fromNetwork(FriendlyByteBuf buffer) {
         EntropyRecipeBuilder builder = new EntropyRecipeBuilder();
 
-        builder.setId(recipeId);
         builder.setMode(buffer.readEnum(EntropyMode.class));
 
         if (buffer.readBoolean()) {
@@ -295,13 +304,19 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         });
     }
 
-    public void toJson(EntropyRecipe recipe, JsonObject json) {
+    public static void writeToJson(JsonObject json, EntropyRecipe recipe) {
         json.addProperty("mode", recipe.getMode().name().toLowerCase(Locale.ROOT));
         json.add("input", serializeInput(recipe));
         json.add("output", serializeOutput(recipe));
     }
 
-    private JsonObject serializeInput(EntropyRecipe recipe) {
+    private static JsonElement toJson(EntropyRecipe recipe) {
+        JsonObject json = new JsonObject();
+        writeToJson(json, recipe);
+        return json;
+    }
+
+    private static JsonObject serializeInput(EntropyRecipe recipe) {
         var input = new JsonObject();
         if (recipe.getInputBlock() != null) {
             var jsonBlock = new JsonObject();
@@ -319,7 +334,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         return input;
     }
 
-    private JsonElement serializeOutput(EntropyRecipe recipe) {
+    private static JsonElement serializeOutput(EntropyRecipe recipe) {
         var output = new JsonObject();
         if (recipe.getOutputBlock() != null) {
             var jsonBlock = new JsonObject();
@@ -358,7 +373,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         return output;
     }
 
-    private void serializeStateMatchers(List<StateMatcher> matchers, JsonObject json) {
+    private static void serializeStateMatchers(List<StateMatcher> matchers, JsonObject json) {
         if (matchers.isEmpty()) {
             return;
         }
@@ -389,7 +404,7 @@ public class EntropyRecipeSerializer implements RecipeSerializer<EntropyRecipe> 
         json.add("properties", properties);
     }
 
-    private void serializeStateAppliers(List<StateApplier<?>> appliers, JsonObject json) {
+    private static void serializeStateAppliers(List<StateApplier<?>> appliers, JsonObject json) {
         if (appliers.isEmpty()) {
             return;
         }

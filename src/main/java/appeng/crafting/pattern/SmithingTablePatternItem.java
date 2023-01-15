@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
@@ -54,7 +55,7 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(SmithingRecipe recipe, AEItemKey template, AEItemKey base, AEItemKey addition,
+    public ItemStack encode(RecipeHolder<SmithingRecipe> recipe, AEItemKey template, AEItemKey base, AEItemKey addition,
             AEItemKey out, boolean allowSubstitutes) {
         var stack = new ItemStack(this);
         SmithingTablePatternEncoding.encode(stack.getOrCreateTag(), recipe, template, base, addition, out,
@@ -88,13 +89,13 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
         }
 
         // Try to find the output in the potential recipe list
-        if (!AEItemKey.matches(output, recipe.getResultItem(level.registryAccess()))) {
+        if (!AEItemKey.matches(output, recipe.value().getResultItem(level.registryAccess()))) {
             AELog.info("Failed to recover encoded smithing pattern for recipe %s (output mismatch)", recipeId);
             return false;
         }
 
         // Yay we found a match, reencode the pattern
-        AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, recipe.getId());
+        AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, recipe.id());
         SmithingTablePatternEncoding.encode(tag, recipe, template, base, addition, output,
                 SmithingTablePatternEncoding.canSubstitute(tag));
         return true;

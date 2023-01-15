@@ -2,6 +2,7 @@ package appeng.client.guidebook.document.block.recipes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -26,9 +27,9 @@ public class LytTransformRecipe extends LytRecipeBox {
 
     private final LytSlot resultSlot;
 
-    public LytTransformRecipe(TransformRecipe recipe) {
-        super(recipe);
-        this.recipe = recipe;
+    public LytTransformRecipe(RecipeHolder<TransformRecipe> holder) {
+        super(holder);
+        this.recipe = holder.value();
         setPadding(5);
         paddingTop = 15;
 

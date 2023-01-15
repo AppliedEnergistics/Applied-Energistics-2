@@ -92,7 +92,7 @@ public class ExtensionCollection {
         /**
          * Adds all extensions from the given collection to this builder.
          */
-        public Builder addAll(ExtensionCollection.Builder builder) {
+        public Builder addAll(Builder builder) {
             for (var entry : builder.extensions.entrySet()) {
                 for (Object o : entry.getValue()) {
                     addUntyped(entry.getKey(), o);

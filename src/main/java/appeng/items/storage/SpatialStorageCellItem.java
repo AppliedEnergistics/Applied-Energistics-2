@@ -22,18 +22,17 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Locale;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.implementations.items.ISpatialStorageCell;
 import appeng.core.AELog;
@@ -55,12 +54,12 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
 
     private final int maxRegion;
 
-    public SpatialStorageCellItem(Item.Properties props, int spatialScale) {
+    public SpatialStorageCellItem(Properties props, int spatialScale) {
         super(props);
         this.maxRegion = spatialScale;
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {

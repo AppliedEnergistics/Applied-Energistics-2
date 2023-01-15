@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 import appeng.client.Point;
@@ -74,14 +75,13 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
         var startIndex = scrollbar.getCurrentScroll() * COLS;
         var endIndex = startIndex + ROWS * COLS;
 
-        var minecraft = Minecraft.getInstance();
         var selectedRecipe = menu.getStonecuttingRecipeId();
 
         for (int i = startIndex; i < endIndex && i < recipes.size(); ++i) {
             var slotBounds = getRecipeBounds(i - startIndex);
 
             var recipe = recipes.get(i);
-            boolean selected = selectedRecipe != null && selectedRecipe.equals(recipe.getId());
+            boolean selected = selectedRecipe != null && selectedRecipe.equals(recipe.id());
 
             Blitter blitter = BG_SLOT;
             if (selected) {
@@ -93,7 +93,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
             var renderX = bounds.getX() + slotBounds.getX();
             var renderY = bounds.getY() + slotBounds.getY();
             blitter.dest(renderX, renderY - 1).blit(guiGraphics);
-            ItemStack resultItem = recipe.getResultItem(getRegistryAccess());
+            ItemStack resultItem = recipe.value().getResultItem(getRegistryAccess());
             guiGraphics.renderItem(resultItem, renderX, renderY);
             guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX, renderY);
         }
@@ -103,7 +103,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public boolean onMouseDown(Point mousePos, int button) {
         var recipe = getRecipeAt(mousePos);
         if (recipe != null) {
-            menu.setStonecuttingRecipeId(recipe.getId());
+            menu.setStonecuttingRecipeId(recipe.id());
             Minecraft.getInstance().getSoundManager()
                     .play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
             return true;
@@ -116,14 +116,14 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         var recipe = getRecipeAt(new Point(mouseX, mouseY));
         if (recipe != null) {
-            var lines = screen.getTooltipFromContainerItem(recipe.getResultItem(getRegistryAccess()));
+            var lines = screen.getTooltipFromContainerItem(recipe.value().getResultItem(getRegistryAccess()));
             return new Tooltip(lines);
         }
         return null;
     }
 
     @Nullable
-    private StonecutterRecipe getRecipeAt(Point point) {
+    private RecipeHolder<StonecutterRecipe> getRecipeAt(Point point) {
         var recipes = menu.getStonecuttingRecipes();
 
         if (!recipes.isEmpty()) {

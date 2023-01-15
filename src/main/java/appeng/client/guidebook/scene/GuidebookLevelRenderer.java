@@ -13,8 +13,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -27,6 +25,8 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FluidState;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import appeng.client.guidebook.scene.annotation.InWorldAnnotation;
 import appeng.client.guidebook.scene.annotation.InWorldAnnotationRenderer;
@@ -49,7 +49,11 @@ public class GuidebookLevelRenderer {
     public void render(GuidebookLevel level,
             CameraSettings cameraSettings,
             Collection<InWorldAnnotation> annotations) {
+        lightmap.update(level);
+
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        RenderSystem.setShaderGameTime(System.currentTimeMillis(), 0);
+
         var buffers = Minecraft.getInstance().renderBuffers().bufferSource();
         render(level, cameraSettings, buffers, annotations);
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
@@ -133,7 +137,7 @@ public class GuidebookLevelRenderer {
             buffers.endBatch(Sheets.signSheet());
             buffers.endBatch(Sheets.hangingSignSheet());
             buffers.endBatch(Sheets.chestSheet());
-            buffers.endBatch();
+            buffers.endLastBatch();
 
             renderBlocks(level, buffers, true);
             buffers.endBatch(RenderType.translucent());
@@ -162,15 +166,25 @@ public class GuidebookLevelRenderer {
             }
 
             if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
-                var renderType = ItemBlockRenderTypes.getChunkRenderType(blockState);
-                if (renderType != RenderType.translucent() || translucent) {
-                    var bufferBuilder = buffers.getBuffer(renderType);
+                var be = level.getBlockEntity(pos);
+                ModelData modelData = ModelData.EMPTY;
+                if (be != null) {
+                    modelData = be.getModelData();
+                }
 
-                    poseStack.pushPose();
-                    poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                    blockRenderDispatcher.renderBatched(blockState, pos, level, poseStack, bufferBuilder, true,
-                            randomSource);
-                    poseStack.popPose();
+                var model = blockRenderDispatcher.getBlockModel(blockState);
+                var renderTypes = model.getRenderTypes(blockState, randomSource, modelData);
+
+                for (var renderType : renderTypes) {
+                    if (renderType != RenderType.translucent() || translucent) {
+                        var bufferBuilder = buffers.getBuffer(renderType);
+
+                        poseStack.pushPose();
+                        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+                        blockRenderDispatcher.renderBatched(blockState, pos, level, poseStack, bufferBuilder, true,
+                                randomSource, modelData, renderType);
+                        poseStack.popPose();
+                    }
                 }
             }
         });
@@ -193,11 +207,13 @@ public class GuidebookLevelRenderer {
     private static void markFluidSpritesActive(FluidState fluidState) {
         // For Sodium compatibility, ensure the sprites actually animate even if no block is on-screen
         // that would cause them to, otherwise.
-        var fluidVariant = FluidVariant.of(fluidState.getType());
-        var sprites = FluidVariantRendering.getSprites(fluidVariant);
-        for (var sprite : sprites) {
-            SodiumCompat.markSpriteActive(sprite);
-        }
+        var props = IClientFluidTypeExtensions.of(fluidState);
+        var sprite1 = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(props.getStillTexture());
+        SodiumCompat.markSpriteActive(sprite1);
+        var sprite2 = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(props.getFlowingTexture());
+        SodiumCompat.markSpriteActive(sprite2);
     }
 
     private <E extends BlockEntity> void handleBlockEntity(PoseStack stack,

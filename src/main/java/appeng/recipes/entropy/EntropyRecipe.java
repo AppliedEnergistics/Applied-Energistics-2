@@ -43,6 +43,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 
 /**
@@ -52,9 +53,7 @@ public class EntropyRecipe implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    public static final RecipeType<EntropyRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
-
-    private final ResourceLocation id;
+    public static final RecipeType<EntropyRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final EntropyMode mode;
 
@@ -81,14 +80,13 @@ public class EntropyRecipe implements Recipe<Container> {
 
     private final List<ItemStack> drops;
 
-    public EntropyRecipe(ResourceLocation id, EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
+    public EntropyRecipe(EntropyMode mode, Block inputBlock, List<StateMatcher> inputBlockMatchers,
             Fluid inputFluid, List<StateMatcher> inputFluidMatchers, Block outputBlock,
             List<StateApplier<?>> outputBlockStateAppliers, boolean outputBlockKeep, Fluid outputFluid,
             List<StateApplier<?>> outputFluidStateAppliers, boolean outputFluidKeep, List<ItemStack> drops) {
         Preconditions.checkArgument(inputBlock != null || inputFluid != null,
                 "One of inputBlock or inputFluid must not be null");
 
-        this.id = Objects.requireNonNull(id, "id must not be null");
         this.mode = Objects.requireNonNull(mode, "mode must not be null");
 
         this.inputBlock = inputBlock;
@@ -128,11 +126,6 @@ public class EntropyRecipe implements Recipe<Container> {
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     @Override

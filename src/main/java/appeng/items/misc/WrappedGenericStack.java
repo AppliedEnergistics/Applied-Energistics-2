@@ -64,7 +64,7 @@ public class WrappedGenericStack extends AEBaseItem {
         return result;
     }
 
-    public WrappedGenericStack(Item.Properties properties) {
+    public WrappedGenericStack(Properties properties) {
         super(properties.stacksTo(1));
     }
 

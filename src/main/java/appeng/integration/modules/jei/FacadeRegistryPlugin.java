@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,7 +17,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.advanced.IRecipeManagerPlugin;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 
-import appeng.core.AppEng;
 import appeng.items.parts.FacadeItem;
 
 /**
@@ -89,11 +86,6 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
     }
 
     private ShapedRecipe make(ItemStack textureItem, ItemStack cableAnchor, ItemStack result) {
-        // This id should only be used within JEI and not really matter
-        var itemId = BuiltInRegistries.ITEM.getKey(textureItem.getItem());
-        ResourceLocation id = new ResourceLocation(AppEng.MOD_ID,
-                "facade/" + itemId.getNamespace() + "/" + itemId.getPath());
-
         NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
         ingredients.set(1, Ingredient.of(cableAnchor));
         ingredients.set(3, Ingredient.of(cableAnchor));
@@ -104,7 +96,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         var output = result.copy();
         output.setCount(4);
 
-        return new ShapedRecipe(id, "", CraftingBookCategory.MISC, 3, 3, ingredients, output);
+        return new ShapedRecipe("", CraftingBookCategory.MISC, 3, 3, ingredients, output);
     }
 
     @Override

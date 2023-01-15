@@ -52,6 +52,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
+    private final ResourceLocation recipeId;
     private final StonecutterRecipe recipe;
     private final Container testFrame;
     private final AEItemKey input;
@@ -72,8 +73,8 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         this.canSubstitute = StonecuttingPatternEncoding.canSubstitute(tag);
 
         // Find recipe
-        var recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
-        this.recipe = level.getRecipeManager().byType(RecipeType.STONECUTTING).get(recipeId);
+        this.recipeId = StonecuttingPatternEncoding.getRecipeId(tag);
+        this.recipe = level.getRecipeManager().byType(RecipeType.STONECUTTING).get(recipeId).value();
 
         // Build frame and find output
         this.testFrame = new SimpleContainer(1);
@@ -97,7 +98,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     public ResourceLocation getRecipeId() {
-        return recipe.getId();
+        return recipeId;
     }
 
     @Override

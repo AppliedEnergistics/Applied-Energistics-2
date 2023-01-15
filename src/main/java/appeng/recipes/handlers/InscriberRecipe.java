@@ -18,11 +18,16 @@
 
 package appeng.recipes.handlers;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,13 +35,36 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 public class InscriberRecipe implements Recipe<Container> {
+
+    private static final Codec<InscriberProcessType> MODE_CODEC = ExtraCodecs.stringResolverCodec(
+            mode -> switch (mode) {
+            case INSCRIBE -> "inscribe";
+            case PRESS -> "press";
+            },
+            mode -> switch (mode) {
+            default -> InscriberProcessType.INSCRIBE;
+            case "press" -> InscriberProcessType.PRESS;
+            });
+
+    public static final Codec<InscriberRecipe> CODEC = RecordCodecBuilder.create(
+            builder -> builder
+                    .group(
+                            Ingredient.CODEC_NONEMPTY.fieldOf("middle")
+                                    .fieldOf("ingredients").forGetter(ir -> ir.middleInput),
+                            CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter(ir -> ir.output),
+                            ExtraCodecs.strictOptionalField(Ingredient.CODEC, "top", Ingredient.EMPTY)
+                                    .fieldOf("ingredients").forGetter(ir -> ir.topOptional),
+                            ExtraCodecs.strictOptionalField(Ingredient.CODEC, "bottom", Ingredient.EMPTY)
+                                    .fieldOf("ingredients").forGetter(ir -> ir.bottomOptional),
+                            MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
+                    .apply(builder, InscriberRecipe::new));
+
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
-    public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
-
-    private final ResourceLocation id;
+    public static final RecipeType<InscriberRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final Ingredient middleInput;
     private final Ingredient topOptional;
@@ -44,9 +72,8 @@ public class InscriberRecipe implements Recipe<Container> {
     private final ItemStack output;
     private final InscriberProcessType processType;
 
-    public InscriberRecipe(ResourceLocation id, Ingredient middleInput, ItemStack output,
+    public InscriberRecipe(Ingredient middleInput, ItemStack output,
             Ingredient topOptional, Ingredient bottomOptional, InscriberProcessType processType) {
-        this.id = id;
         this.middleInput = middleInput;
         this.output = output;
         this.topOptional = topOptional;
@@ -76,11 +103,6 @@ public class InscriberRecipe implements Recipe<Container> {
 
     public ItemStack getResultItem() {
         return this.output;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return id;
     }
 
     @Override

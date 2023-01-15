@@ -22,22 +22,21 @@ public class AdvancementTriggers {
     /**
      * Has a network with 8 channels
      */
-    public static final AppEngAdvancementTrigger NETWORK_APPRENTICE = new AppEngAdvancementTrigger(
-            "network_apprentice");
+    public static final AppEngAdvancementTrigger NETWORK_APPRENTICE = new AppEngAdvancementTrigger();
     /**
      * Has a network with 128 channels
      */
-    public static final AppEngAdvancementTrigger NETWORK_ENGINEER = new AppEngAdvancementTrigger("network_engineer");
+    public static final AppEngAdvancementTrigger NETWORK_ENGINEER = new AppEngAdvancementTrigger();
     /**
      * Has a network with 2048 channels
      */
-    public static final AppEngAdvancementTrigger NETWORK_ADMIN = new AppEngAdvancementTrigger("network_admin");
+    public static final AppEngAdvancementTrigger NETWORK_ADMIN = new AppEngAdvancementTrigger();
     /**
      * Entered spatial dimension
      */
-    public static final AppEngAdvancementTrigger SPATIAL_EXPLORER = new AppEngAdvancementTrigger("spatial_explorer");
+    public static final AppEngAdvancementTrigger SPATIAL_EXPLORER = new AppEngAdvancementTrigger();
     /**
      * Placed a storage bus on an interface.
      */
-    public static final AppEngAdvancementTrigger RECURSIVE = new AppEngAdvancementTrigger("recursive_networking");
+    public static final AppEngAdvancementTrigger RECURSIVE = new AppEngAdvancementTrigger();
 }

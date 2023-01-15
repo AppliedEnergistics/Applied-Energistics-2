@@ -33,6 +33,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.items.tools.NetworkToolItem;
@@ -82,8 +83,7 @@ public final class InteractionUtil {
     }
 
     public static LookDirection getPlayerRay(Player playerIn) {
-        // FIXME FABRIC 117 This can currently not be modded in API in Fabric
-        double reachDistance = 36.0D;
+        double reachDistance = playerIn.getAttribute(NeoForgeMod.BLOCK_REACH.get()).getValue();
         return getPlayerRay(playerIn, reachDistance);
     }
 
@@ -116,7 +116,7 @@ public final class InteractionUtil {
         float f1 = p.xRotO + (p.getXRot() - p.xRotO) * f;
         final float f2 = p.yRotO + (p.getYRot() - p.yRotO) * f;
         final double d0 = p.xo + (p.getX() - p.xo) * f;
-        final double d1 = p.yo + (p.getY() - p.yo) * f + 1.62D - p.getMyRidingOffset();
+        final double d1 = p.yo + (p.getY() - p.yo) * f + 1.62D - p.getMyRidingOffset(p);
         final double d2 = p.zo + (p.getZ() - p.zo) * f;
         final Vec3 vec3 = new Vec3(d0, d1, d2);
         final float f3 = Mth.cos(-f2 * 0.017453292F - (float) Math.PI);

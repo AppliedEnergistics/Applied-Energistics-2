@@ -20,10 +20,10 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
@@ -58,7 +58,7 @@ public class LightningPacket extends BasePacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void clientPacketData(Player player) {
         try {
             if (AEConfig.instance().isEnableEffects()) {

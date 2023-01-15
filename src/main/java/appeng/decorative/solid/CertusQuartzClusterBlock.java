@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -42,7 +41,7 @@ public class CertusQuartzClusterBlock extends AEBaseBlock implements SimpleWater
     protected final VoxelShape upAabb;
     protected final VoxelShape downAabb;
 
-    public CertusQuartzClusterBlock(int i, int j, BlockBehaviour.Properties properties) {
+    public CertusQuartzClusterBlock(int i, int j, Properties properties) {
         super(properties);
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(FACING, Direction.UP));
         this.upAabb = Block.box(j, 0.0, j, (16 - j), i, (16 - j));
