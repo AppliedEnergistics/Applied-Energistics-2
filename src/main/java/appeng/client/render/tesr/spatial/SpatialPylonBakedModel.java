@@ -18,29 +18,22 @@
 
 package appeng.client.render.tesr.spatial;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.client.render.cablebus.CubeBuilder;
@@ -48,7 +41,7 @@ import appeng.client.render.cablebus.CubeBuilder;
 /**
  * The baked model that will be used for rendering the spatial pylon.
  */
-class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
+class SpatialPylonBakedModel implements IDynamicBakedModel {
 
     private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
 
@@ -57,16 +50,11 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean isVanillaAdapter() {
-        return false;
-    }
+    public List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction side, RandomSource rand,
+            ModelData extraData, RenderType renderType) {
+        var state = getState(extraData);
 
-    @Override
-    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState blockState, BlockPos pos,
-            Supplier<RandomSource> randomSupplier, RenderContext context) {
-        var state = getState(blockView, pos);
-
-        CubeBuilder builder = new CubeBuilder(context.getEmitter());
+        CubeBuilder builder = new CubeBuilder();
 
         if (state.axisPosition() != SpatialPylonBlockEntity.AxisPosition.NONE) {
             Direction ori = null;
@@ -139,27 +127,13 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
 
         // Reset back to default
         builder.setEmissiveMaterial(false);
+
+        return builder.getOutput();
     }
 
-    @Override
-    public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        // Not intended to be used as an item model.
-    }
-
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        // Can only sensibly render using the new API
-        return Collections.emptyList();
-    }
-
-    private SpatialPylonBlockEntity.ClientState getState(BlockAndTintGetter blockRenderView, BlockPos pos) {
-        if (blockRenderView instanceof RenderAttachedBlockView renderAttachedBlockView) {
-            Object attachment = renderAttachedBlockView.getBlockEntityRenderAttachment(pos);
-            if (attachment instanceof SpatialPylonBlockEntity.ClientState state) {
-                return state;
-            }
-        }
-        return SpatialPylonBlockEntity.ClientState.DEFAULT;
+    private SpatialPylonBlockEntity.ClientState getState(ModelData modelData) {
+        var state = modelData.get(SpatialPylonBlockEntity.STATE);
+        return state != null ? state : SpatialPylonBlockEntity.ClientState.DEFAULT;
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideOutside(SpatialPylonBlockEntity.ClientState state,
@@ -219,11 +193,6 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.textures.get(SpatialPylonTextureType.DIM);
-    }
-
-    @Override
-    public ItemTransforms getTransforms() {
-        return ItemTransforms.NO_TRANSFORMS;
     }
 
     @Override

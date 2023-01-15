@@ -20,12 +20,12 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Matches an exact value.
@@ -67,7 +67,7 @@ class SingleValueMatcher<T extends Comparable<T>> implements StateMatcher {
         return new SingleValueMatcher<>(property, value);
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static SingleValueMatcher<?> readFromPacket(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String value = buffer.readUtf();

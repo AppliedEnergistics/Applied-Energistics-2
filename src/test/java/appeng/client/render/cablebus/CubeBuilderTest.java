@@ -7,10 +7,12 @@ import static org.mockito.Mockito.mock;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mockito;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.FaceBakery;
@@ -33,22 +35,23 @@ class CubeBuilderTest {
     @ParameterizedTest
     @EnumSource(Direction.class)
     void testFaceVertexOrdering(Direction side) {
-        var output = new ArrayList<BakedQuad>();
-        var emitter = new BakedQuadBuilder(output);
-        var cb = new CubeBuilder(emitter);
-        cb.setTexture(mock(TextureAtlasSprite.class));
-        cb.addQuad(side, 0, 0, 0, 1, 1, 1);
+        try (var mockedStatic = Mockito.mockStatic(RenderSystem.class)) {
+            var output = new ArrayList<BakedQuad>();
+            var cb = new CubeBuilder(output);
+            cb.setTexture(mock(TextureAtlasSprite.class));
+            cb.addQuad(side, 0, 0, 0, 1, 1, 1);
 
-        assertEquals(1, output.size());
-        var quad = output.get(0);
-        assertEquals(side, quad.getDirection());
+            assertEquals(1, output.size());
+            var quad = output.get(0);
+            assertEquals(side, quad.getDirection());
 
-        var fb = new FaceBakery();
-        var rewinded = quad.getVertices().clone();
-        fb.recalculateWinding(rewinded, side);
+            var fb = new FaceBakery();
+            var rewinded = quad.getVertices().clone();
+            fb.recalculateWinding(rewinded, side);
 
-        assertThat(getVertexOrder(rewinded, quad.getVertices()))
-                .containsExactly(0, 1, 2, 3);
+            assertThat(getVertexOrder(rewinded, quad.getVertices()))
+                    .containsExactly(0, 1, 2, 3);
+        }
     }
 
     // Get the order of vertices compared to the original array
