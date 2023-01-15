@@ -27,6 +27,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -80,6 +82,12 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     @Override
     public boolean isBarVisible(ItemStack stack) {
         return true;
+    }
+
+    @Override
+    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
+            ItemStack newStack) {
+        return getAECurrentPower(oldStack) == getAECurrentPower(newStack);
     }
 
     @Override
