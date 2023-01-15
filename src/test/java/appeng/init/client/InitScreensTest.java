@@ -21,6 +21,7 @@ package appeng.init.client;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +101,12 @@ class InitScreensTest {
      */
     @Test
     void testMissingTranslationKeys() throws IOException {
+        // Load AE2 translation data
+        Map<String, String> i18n = new HashMap<>(Language.getInstance().getLanguageData());
+        try (InputStream in = getClass().getResourceAsStream("/assets/ae2/lang/en_us.json")) {
+            Language.loadFromJson(in, i18n::put);
+        }
+
         StyleManager.initialize(MockResourceManager.create());
 
         Map<String, String> errors = new HashMap<>();

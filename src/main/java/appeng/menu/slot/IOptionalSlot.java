@@ -18,8 +18,8 @@
 
 package appeng.menu.slot;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.Point;
 
@@ -35,7 +35,7 @@ public interface IOptionalSlot {
 
     boolean isSlotEnabled();
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     Point getBackgroundPos();
 
 }

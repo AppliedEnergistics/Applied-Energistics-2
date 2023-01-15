@@ -16,50 +16,87 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-plugins {
-    id "fabric-loom"
-    id "maven-publish"
-    id "com.diffplug.spotless"
-    id "io.github.juuxel.loom-quiltflower"
-    id "com.github.johnrengelman.shadow"
-    id "de.undercouch.download"
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
 }
 
-sourceSets {
-    portaforgy
-    main {
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
-        java {
-            srcDir 'src/main/flatbuffers/generated'
-        }
-        resources {
-            srcDir 'src/generated/resources'
+plugins {
+    id "maven-publish"
+    id "com.diffplug.spotless"
+    id "com.matthewprenger.cursegradle"
+    id "com.modrinth.minotaur"
+    id "com.github.johnrengelman.shadow"
+    id "idea"
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: "eclipse"
+
+// All jar files from this folder will be added automatically as runtime mod dependencies
+def extraModsDir = "extra-mods-${minecraft_version}"
+
+repositories {
+    flatDir {
+        name "extra-mods"
+        dir file(extraModsDir)
+    }
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://maven.shedaniel.me/"
+        content {
+            includeGroup "me.shedaniel"
+            includeGroup "me.shedaniel.cloth"
+            includeGroup "dev.architectury"
         }
     }
-    test {
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
+    maven {
+        url "https://maven.bai.lol"
+        content {
+            includeGroup "mcp.mobius.waila"
+            includeGroup "lol.bai"
+        }
     }
-    buildtools
+    maven { // modmaven, maven proxy
+        name 'modmaven'
+        url "https://modmaven.dev/"
+    }
+    maven { // for TOP
+        url "https://maven.k-4u.nl/"
+        content {
+            includeGroup "mcjty"
+        }
+    }
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven { url = 'https://repo.spongepowered.org/maven' }
+    maven {
+        url "https://maven.parchmentmc.net/"
+        content {
+            includeGroup "org.parchmentmc.data"
+        }
+    }
 }
 
 configurations {
     shaded {
         transitive = false
     }
-    portaforgyImplementation.extendsFrom(compileClasspath)
-    buildtoolsImplementation.extendsFrom(compileClasspath)
 
-    internal {
-        visible = false
-        canBeConsumed = false
-        canBeResolved = false
-    }
-    configurations.compileClasspath.extendsFrom(internal)
-    configurations.runtimeClasspath.extendsFrom(internal)
-    configurations.testCompileClasspath.extendsFrom(internal)
-    configurations.testRuntimeClasspath.extendsFrom(internal)
+    buildtoolsImplementation.extendsFrom(compileClasspath)
 }
 
 dependencies {
@@ -67,107 +104,72 @@ dependencies {
     shaded project(path: ':libs:markdown', configuration: "archives")
     shaded "io.methvin:directory-watcher:${directory_watcher_version}"
     shaded "org.yaml:snakeyaml:${snakeyaml_version}"
-    shaded "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
 
-    internal project(':libs:markdown')
+    minecraftLibrary(project(':libs:markdown')) {
+        transitive = false
+    }
     // Do not inherit any transitive dependencies here since we rely on those dependencies being
     // present in Minecrafts own dependencies already.
-    internal("io.methvin:directory-watcher:${directory_watcher_version}") {
+    minecraftLibrary("io.methvin:directory-watcher:${directory_watcher_version}") {
         transitive = false
     }
-    internal("org.yaml:snakeyaml:${snakeyaml_version}") {
+    minecraftLibrary("org.yaml:snakeyaml:${snakeyaml_version}") {
         transitive = false
-    }
-    internal("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
-        transitive = false
-    }
-    // Used for the guide export
-    internal("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
-
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.19.3:2023.02.05@zip")
     }
 
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // compile against provided APIs
+    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}")
 
     // Always depend on the REI API to compile
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
-        exclude group: "net.fabricmc"
-        exclude group: "net.fabricmc.fabric-api"
-        exclude group: "org.yaml" // snakeyaml
-        exclude group: "blue.endless" // jankson
-    }
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.rei_version}") {
-        exclude group: "net.fabricmc"
-        exclude group: "net.fabricmc.fabric-api"
-        exclude group: "org.yaml" // snakeyaml
-        exclude group: "blue.endless" // jankson
-    }
-
     if (project.runtime_itemlist_mod == "jei") {
-        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-            exclude group: "net.fabricmc"
-            exclude group: "net.fabricmc.fabric-api"
-        }
-        modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
-            exclude group: "mezz.jei"
-        }
+        runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")
+
+        compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
+        compileOnly fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
+        compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     } else if (project.runtime_itemlist_mod == "rei") {
-        modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
-            exclude group: "mezz.jei"
-        }
-        modLocalRuntime modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-            exclude group: "net.fabricmc"
-            exclude group: "net.fabricmc.fabric-api"
-        }
+        implementation "me.shedaniel.cloth:basic-math:0.6.1"
+        implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
+        implementation fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
+        implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     } else {
-        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-            exclude group: "net.fabricmc"
-            exclude group: "net.fabricmc.fabric-api"
-        }
-        modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
-            exclude group: "mezz.jei"
-        }
+        compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
+        compileOnly fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
+        compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     }
 
-    modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
-        exclude group: "net.fabricmc"
-        exclude group: "net.fabricmc.fabric-api"
+    // Locally sourced extra mods for runtime (i.e. testing)
+    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
+        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
+        def versionSep = basename.lastIndexOf('-')
+        assert versionSep != -1
+        def artifactId = basename.substring(0, versionSep)
+        def version = basename.substring(versionSep + 1)
+        runtimeOnly fg.deobf("extra-mods:$artifactId:$version")
     }
+
+    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${project.wthit_version}")
 
     if (project.runtime_tooltip_mod == "wthit") {
-        modLocalRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
-            exclude group: "net.fabricmc"
-            exclude group: "net.fabricmc.fabric-api"
-        }
-    }
-
-    modCompileOnly("curse.maven:jade-324717:${project.jade_file_id}") {
-        exclude group: "net.fabricmc"
-        exclude group: "net.fabricmc.fabric-api"
+        runtimeOnly fg.deobf("mcp.mobius.waila:wthit:forge-${project.wthit_version}")
+        runtimeOnly fg.deobf("lol.bai:badpackets:forge-0.1.2")
     }
 
     if (project.runtime_tooltip_mod == "jade") {
-        modLocalRuntime("curse.maven:jade-324717:${project.jade_file_id}") {
-            exclude group: "net.fabricmc"
-            exclude group: "net.fabricmc.fabric-api"
-        }
+        implementation fg.deobf("curse.maven:jade-324717:${project.jade_file_id}")
+    } else {
+        compileOnly fg.deobf("curse.maven:jade-324717:${project.jade_file_id}")
     }
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
-    include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
-        exclude group: "net.fabricmc"
-        exclude group: "net.fabricmc.fabric-api"
+    def topDependency = "curse.maven:the-one-probe-245211:4159743"
+    if (project.runtime_tooltip_mod == "top") {
+        implementation fg.deobf(topDependency)
+    } else {
+        compileOnly topDependency
     }
-
-    // TODO 1.20
-    // Include No Indium? https://github.com/Luligabi1/NoIndium
-    //include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
@@ -179,9 +181,9 @@ dependencies {
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
 
-    compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
+    // Annotation Processors
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
-
 archivesBaseName = artifact_basename
 
 allprojects {
@@ -274,11 +276,11 @@ if (ext.branch) {
 
 ext.tag = System.getenv('TAG') ?: ""
 if (ext.tag) {
-    if (!ext.tag.startsWith("fabric/v")) {
-        throw new GradleException("Tags for the fabric version should start with fabric/: ${ext.tag}")
+    if (!ext.tag.startsWith("forge/v")) {
+        throw new GradleException("Tags for the forge version should start with forge/: ${ext.tag}")
     }
 
-    version = ext.tag.substring("fabric/v".length())
+    version = ext.tag.substring("forge/v".length())
     // Validate that the rest is a semver version
     if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
         if (System.getenv("GITHUB_ENV")) {
@@ -293,6 +295,15 @@ if (ext.tag) {
 ext.isAlpha = project.version.contains("alpha")
 ext.isBeta = project.version.contains("beta")
 
+sourceSets {
+    main {
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
+    buildtools
+}
+
 test {
     useJUnitPlatform()
     systemProperty "fabric.debug.logLibClassification", "true"
@@ -304,69 +315,87 @@ dependencies {
     buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
-////////////////////
-// Forge/Minecraft
-loom {
-    accessWidenerPath = file("src/main/resources/ae2.accesswidener")
-
-    runs {
-        client {
-            programArgs "--username", "AE2Dev"
-            property "appeng.tests", "true"
-            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
-        }
-        guide {
-            client()
-            programArgs "--username", "AE2Dev"
-            property "appeng.tests", "true"
-            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
-            property "guideDev.ae2guide.startupPage", "ae2:index.md"
-        }
-        datagen {
-            client()
-            property "fabric-api.datagen"
-            property "fabric-api.datagen.output-dir", file("src/generated/resources").absolutePath
-            property "appeng.datagen.existingData", file("src/main/resources").absolutePath
-        }
-        guideexport {
-            client()
-            property "appeng.runGuideExportAndExit", "true"
-            property "appeng.guideExportFolder", file("$buildDir/guide").absolutePath
-            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
-        }
-
-        // Use to run the tests
-        gametest {
-            server()
-            name "Game Test"
-            property "appeng.tests", "true"
-            vmArg "-Dfabric-api.gametest"
-            runDir "build/gametest"
-            source sourceSets.test
+/**
+ * Configures properties common to all run configurations
+ */
+def commonRunProperties = {
+    workingDirectory project.file('run')
+    property 'forge.logging.console.level', 'debug'
+    property 'fml.earlyprogresswindow', 'false'
+    property 'appeng.tests', 'true'
+    jvmArgs "--add-opens", "java.base/sun.security.util=ALL-UNNAMED"
+    jvmArgs "--add-opens", "java.base/java.util.jar=ALL-UNNAMED"
+    // See https://github.com/Vazkii/Patchouli#mixin-troubleshooting
+    property 'mixin.env.remapRefMap', 'true'
+    property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    // property "mixin.debug.export", "true"
+    mods {
+        appliedenergistics2 {
+            source sourceSets.main
         }
     }
 }
 
-// For reproducible results, the world should be deleted before each run
-task cleanGametestWorld(type: Delete) {
-    delete "build/gametest"
+////////////////////
+// Forge/Minecraft
+minecraft {
+    mappings channel: 'official', version: project.minecraft_version
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            with commonRunProperties
+            property "appeng.tests", "true"
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+        }
+        guide {
+            parent runs.client
+            with commonRunProperties
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+            property "guideDev.ae2guide.startupPage", "ae2:index.md"
+        }
+        server {
+            with commonRunProperties
+        }
+        data {
+            with commonRunProperties
+            args '--mod', 'ae2', '--all', '--output', file('src/generated/resources/'), "--existing", file("src/main/resources")
+        }
+        // Use to run the tests
+        gametest {
+            parent server
+            with commonRunProperties
+            workingDirectory "build/gametest"
+        }
+    }
 }
-tasks.runGametest.dependsOn cleanGametestWorld
+
+///////////
+// Mixins
+mixin {
+    add sourceSets.main, "ae2.mixins.refmap.json"
+}
 
 //////////////
 // Artifacts
 processResources {
     exclude '.cache'
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+    filesMatching("META-INF/mods.toml") {
+        expand 'minecraft_version': project.minecraft_version_range, 'forge_version': project.forge_version_range,
+                'jei_version': project.jei_version_range, 'top_version': project.top_version_range,
+                'jade_version': project.jade_version_range
+        filter { line ->
+            line.replace('version="0.0.0"', "version=\"$version\"")
+        }
     }
 }
 
 jar.enabled = false // Replaced by "shadowJar"
 
 shadowJar {
-    finalizedBy 'remapJar'
+    finalizedBy 'reobfShadowJar'
 
     from sourceSets.main.output.classesDirs
     from sourceSets.main.output.resourcesDir
@@ -389,16 +418,20 @@ shadowJar {
 
     relocate "io.methvin", "appeng.shaded.methvin"
     relocate "org.yaml.snakeyaml", "appeng.shaded.snakeyaml"
-    relocate "com.google.flatbuffers", "appeng.shaded.flatbuffers"
 
     configurations = [project.configurations.shaded]
-    archiveClassifier = jar.archiveClassifier
-    destinationDirectory = jar.destinationDirectory
+    archiveClassifier = null
 }
 
-remapJar {
-    inputFile = shadowJar.archiveFile
+reobf {
+    shadowJar {}
 }
+
+afterEvaluate {
+    tasks.reobfJar.enabled = false
+}
+
+tasks.assemble.dependsOn reobfShadowJar
 
 def publicApiIncludePatterns = {
     exclude "**/*Internal.*"
@@ -420,12 +453,10 @@ task javadocJar(type: Jar, dependsOn: javadoc, group: "build") {
     archiveClassifier = "javadoc"
     from javadoc.destinationDir
 }
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
+
+task sourcesJar(type: Jar) {
     archiveClassifier = "sources"
-    from sourceSets.main.allSource
+    from sourceSets.main.allJava
 }
 
 task apiJar(type: Jar, group: "build") {
@@ -445,23 +476,23 @@ artifacts {
 //////////////////
 // Maven publish
 publishing {
-    if (!version.endsWith("-SNAPSHOT")) {
-        publications {
-            maven(MavenPublication) {
-                groupId = project.group
-                artifactId = 'appliedenergistics2-fabric'
-                version = project.version
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            artifactId = project.archivesBaseName
+            version = project.version
 
-                // add all the jars that should be included when publishing to maven
-                artifact(remapJar) {
-                    builtBy remapJar
-                }
-                artifact(sourcesJar) {
-                    builtBy remapSourcesJar
-                }
-                artifact javadocJar
-                artifact apiJar
+            // ForgeGradle will generate wild dependency definitions, see https://github.com/MinecraftForge/ForgeGradle/issues/584
+            // Since we don't actually depend on anything, just remove the entire node.
+            pom.withXml {
+                asNode().remove(asNode().dependencies)
             }
+
+            from components.java
+            artifact shadowJar
+            artifact sourcesJar
+            artifact javadocJar
+            artifact apiJar
         }
     }
     repositories {
@@ -497,15 +528,6 @@ spotless {
         toggleOffOn()
         eclipse().configFile 'codeformat/codeformat.xml'
         importOrderFile 'codeformat/ae2.importorder'
-
-        // courtesy of diffplug/spotless#240
-        // https://github.com/diffplug/spotless/issues/240#issuecomment-385206606
-        custom 'noWildcardImports', {
-            if (it.contains('*;\n')) {
-                throw new Error('No wildcard imports allowed')
-            }
-        }
-        bumpThisNumberIfACustomStepChanges(1)
     }
 
     format 'json', {
@@ -537,6 +559,56 @@ task downloadFromCrowdin(type: JavaExec) {
 }
 
 ////////////////
+// Curse Forge
+if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
+    def cfReleaseType = "release"
+    if (ext.isAlpha) {
+        cfReleaseType = "alpha"
+    } else if (ext.isBeta) {
+        cfReleaseType = "beta"
+    }
+
+    curseforge {
+        apiKey = System.getenv("CURSEFORGE")
+        project {
+            id = project.curseforge_project
+            changelogType = "markdown"
+            changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
+            releaseType = cfReleaseType
+            addGameVersion project.minecraft_version
+            addGameVersion "Forge"
+            mainArtifact(jar.archiveFile) {
+                displayName = "AE2 ${project.version} [FORGE]"
+            }
+        }
+    }
+}
+
+////////////////
+// Modrinth
+
+if (System.getenv("MODRINTH") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
+    def mrVersionType = "release"
+    if (ext.isAlpha) {
+        mrVersionType = "alpha"
+    } else if (ext.isBeta) {
+        mrVersionType = "beta"
+    }
+
+    modrinth {
+        token = System.getenv("MODRINTH")
+        changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
+        projectId = 'XxWD5pD3'
+        versionName = project.version + " [FORGE]"
+        versionNumber = "forge-" + project.version
+        versionType = mrVersionType
+        uploadFile = jar
+        gameVersions = [ project.minecraft_version ]
+        loaders = [ "forge" ]
+    }
+}
+
+////////////////
 // IntelliJ Project Import
 // The Mixin annotation process does not have an obfuscation source when running through the IntelliJ compiler,
 // thus we have to prevent it from being activated as part of importing this Gradle project into IntelliJ.
@@ -560,89 +632,4 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     mainClass = 'ValidateResourceIds'
     workingDir "."
     args "guidebook"
-}
-
-/**
- * This task download the FlatBuffers compiler suitable for the current platform.
- */
-tasks.register('downloadFlatbufferCompiler', Download) {
-    var os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
-    var arch = System.getProperty("os.arch")
-    if (os.startsWith("windows")) {
-        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Windows.flatc.binary.zip"
-    } else if (os.startsWith("mac")) {
-        if (arch == "aarch64") {
-            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Mac.flatc.binary.zip"
-        } else if (arch == "amd64") {
-            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/MacIntel.flatc.binary.zip"
-        } else {
-            throw new GradleException("Unknown Mac architecture: $arch")
-        }
-    } else if (os.startsWith("linux")) {
-        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Linux.flatc.binary.clang++-12.zip"
-    } else {
-        throw new GradleException("Unknown OS: $os")
-    }
-    onlyIfModified true
-    dest "${project.buildDir}/flatc.zip"
-}
-
-tasks.register('downloadAndUnzipFlatbufferCompiler', Copy) {
-    dependsOn downloadFlatbufferCompiler
-    from zipTree(downloadFlatbufferCompiler.dest)
-    into "${project.buildDir}/flatbuffers-bin"
-}
-/**
- * Update the generated Java Code for our scene export schema.
- * The code is checked in so this only needs to be run when the schema changes.
- */
-tasks.register('updateFlatbufferSources', Exec) {
-    group 'build'
-    dependsOn downloadAndUnzipFlatbufferCompiler
-    workingDir project.projectDir
-    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
-            "--gen-mutable",
-            "--java-package-prefix", "appeng.flatbuffers",
-            "--gen-generated",
-            "--java",
-            "-o",
-            "${project.projectDir}/src/main/flatbuffers/generated",
-            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
-
-    doFirst {
-        file("${project.projectDir}/src/main/flatbuffers/generated").deleteDir()
-    }
-    doLast {
-    }
-    doLast {
-        // sadly flatc uses an outdated annotation
-        def folder = file("${project.projectDir}/src/main/flatbuffers/generated")
-        folder.eachFileRecurse(groovy.io.FileType.FILES) { file ->
-            String content = file.text
-            if (content.contains('@javax.annotation.Generated')) {
-                content = content.replace('@javax.annotation.Generated', '@javax.annotation.processing.Generated')
-                file.write(content)
-            }
-        }
-    }
-}
-
-/**
- * Generate the TypeScript sources for our schema. The sources are manually copied
- * over to the website repository.
- */
-tasks.register('updateFlatbufferTypescriptSources', Exec) {
-    group 'build'
-    dependsOn downloadAndUnzipFlatbufferCompiler
-    workingDir project.projectDir
-    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
-            "--ts-flat-files",
-            "--ts",
-            "-o",
-            "${project.buildDir}/scene-ts",
-            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
-
-    doFirst {
-        file("${project.buildDir}/scene-ts").deleteDir()
-    }
 }

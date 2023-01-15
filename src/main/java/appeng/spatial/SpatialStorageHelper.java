@@ -20,8 +20,8 @@ package appeng.spatial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,6 +35,7 @@ import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.ITeleporter;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.stats.AdvancementTriggers;
@@ -106,7 +107,20 @@ public class SpatialStorageHelper {
 
         PortalInfo portalInfo = new PortalInfo(new Vec3(link.x, link.y, link.z), Vec3.ZERO, entity.getYRot(),
                 entity.getXRot());
-        entity = FabricDimensions.teleport(entity, link.dim, portalInfo);
+        entity = entity.changeDimension(link.dim, new ITeleporter() {
+            @Override
+            public Entity placeEntity(Entity entity, ServerLevel currentLevel, ServerLevel destLevel, float yaw,
+                    Function<Boolean, Entity> repositionEntity) {
+                return repositionEntity.apply(false);
+            }
+
+            @Override
+            public PortalInfo getPortalInfo(Entity entity, ServerLevel destLevel,
+                    Function<ServerLevel, PortalInfo> defaultPortalInfo) {
+                return portalInfo;
+            }
+        });
+
         if (entity != null && !passengersOnOtherSide.isEmpty()) {
             for (Entity passanger : passengersOnOtherSide) {
                 passanger.startRiding(entity, true);
