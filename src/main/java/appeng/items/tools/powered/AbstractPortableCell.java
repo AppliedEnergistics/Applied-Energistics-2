@@ -91,9 +91,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
     }
 
     @Override
-    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
-            ItemStack newStack) {
-        return false;
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged;
     }
 
     // Override to change the default color

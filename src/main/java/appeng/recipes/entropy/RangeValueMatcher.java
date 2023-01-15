@@ -20,12 +20,12 @@ package appeng.recipes.entropy;
 
 import java.util.Objects;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Matches a range between a min and max value (inclusive).
@@ -74,7 +74,7 @@ class RangeValueMatcher<T extends Comparable<T>> implements StateMatcher {
         return new RangeValueMatcher<>(property, minValueName, maxValueName);
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static StateMatcher readFromPacket(StateDefinition<?, ?> stateDefinition, FriendlyByteBuf buffer) {
         String propertyName = buffer.readUtf();
         String minName = buffer.readUtf();

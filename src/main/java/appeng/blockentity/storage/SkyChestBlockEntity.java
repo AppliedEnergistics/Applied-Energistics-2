@@ -18,8 +18,6 @@
 
 package appeng.blockentity.storage;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.EnvironmentInterface;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -34,6 +32,8 @@ import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.LidBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.AEBaseInvBlockEntity;
@@ -42,7 +42,7 @@ import appeng.menu.implementations.SkyChestMenu;
 import appeng.util.inv.AppEngInternalInventory;
 
 @SuppressWarnings("JavadocReference")
-@EnvironmentInterface(value = EnvType.CLIENT, itf = LidBlockEntity.class)
+@OnlyIn(value = Dist.CLIENT, _interface = LidBlockEntity.class)
 public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientTickingBlockEntity, LidBlockEntity {
 
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 9 * 4);

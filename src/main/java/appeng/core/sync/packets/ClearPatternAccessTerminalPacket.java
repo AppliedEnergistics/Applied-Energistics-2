@@ -2,11 +2,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.sync.BasePacket;
@@ -27,7 +27,7 @@ public class ClearPatternAccessTerminalPacket extends BasePacket {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void clientPacketData(Player player) {
         if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?>patternAccessTerminal) {
             patternAccessTerminal.clear();

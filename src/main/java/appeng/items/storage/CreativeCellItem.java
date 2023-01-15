@@ -21,16 +21,17 @@ package appeng.items.storage;
 import java.util.List;
 import java.util.Optional;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.config.FuzzyMode;
@@ -65,7 +66,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     public void setFuzzyMode(ItemStack is, FuzzyMode fzMode) {
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines, TooltipFlag advancedTooltips) {
         var inventory = StorageCells.getCellInventory(stack, null);

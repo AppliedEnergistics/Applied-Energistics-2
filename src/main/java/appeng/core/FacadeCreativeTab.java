@@ -21,7 +21,6 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Set;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -38,8 +37,9 @@ public final class FacadeCreativeTab {
     private static CreativeModeTab group;
 
     public static void init(Registry<CreativeModeTab> registry) {
-        group = FabricItemGroup.builder()
+        group = CreativeModeTab.builder()
                 .title(GuiText.CreativeTabFacades.text())
+                .withTabsBefore(AECreativeTabIds.MAIN)
                 .icon(() -> {
                     if (group == null) {
                         return ItemStack.EMPTY;
