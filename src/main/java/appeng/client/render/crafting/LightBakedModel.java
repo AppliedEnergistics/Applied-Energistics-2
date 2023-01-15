@@ -21,9 +21,9 @@ package appeng.client.render.crafting;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.block.crafting.AbstractCraftingUnitBlock;
-import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.cablebus.CubeBuilder;
 
 /**
@@ -44,8 +44,8 @@ public class LightBakedModel extends CraftingCubeBakedModel {
     }
 
     @Override
-    protected void addInnerCube(Direction facing, BlockState state, CraftingCubeModelData modelData,
-            CubeBuilder builder, float x1, float y1, float z1, float x2, float y2, float z2) {
+    protected void addInnerCube(Direction facing, BlockState state, ModelData modelData, CubeBuilder builder, float x1,
+            float y1, float z1, float x2, float y2, float z2) {
         builder.setTexture(this.baseTexture);
         builder.addCube(x1, y1, z1, x2, y2, z2);
 

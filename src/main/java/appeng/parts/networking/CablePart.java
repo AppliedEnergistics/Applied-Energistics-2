@@ -54,6 +54,7 @@ import appeng.core.definitions.AEParts;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.parts.AEBasePart;
+import appeng.parts.AEBasePart.NodeListener;
 
 public abstract class CablePart extends AEBasePart implements ICablePart {
 

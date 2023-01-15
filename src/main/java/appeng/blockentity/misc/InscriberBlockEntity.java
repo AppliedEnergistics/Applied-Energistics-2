@@ -35,6 +35,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -60,6 +62,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
+import appeng.capabilities.Capabilities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
@@ -422,7 +425,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(Direction facing) {
         if (isSeparateSides()) {
             if (facing == this.getTop()) {
                 return this.topItemHandlerExtern;
@@ -510,7 +513,37 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         return null;
     }
 
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        if (Capabilities.CRANKABLE.equals(capability)) {
+            var crankable = getCrankable(facing);
+            if (crankable == null) {
+                return LazyOptional.empty();
+            }
+            return Capabilities.CRANKABLE.orEmpty(
+                    capability,
+                    LazyOptional.of(() -> crankable));
+        }
+
+        return super.getCapability(capability, facing);
+    }
+
+    /**
+     * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
+     * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
+     * another mod attempted insertion of items when there were already items in the slot.
+     */
     public class BaseFilter implements IAEItemFilter {
+        @Override
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
+            if (InscriberBlockEntity.this.isSmash()) {
+                return false;
+            }
+
+            return inv == InscriberBlockEntity.this.topItemHandler || inv == InscriberBlockEntity.this.bottomItemHandler
+                    || slot == 1;
+        }
+
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             // output slot

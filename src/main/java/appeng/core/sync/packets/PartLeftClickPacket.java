@@ -20,12 +20,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import appeng.api.parts.IPartHost;
 import appeng.core.sync.BasePacket;
@@ -54,8 +53,9 @@ public class PartLeftClickPacket extends BasePacket {
     @Override
     public void serverPacketData(ServerPlayer player) {
         // Fire event on the server to give protection mods a chance to cancel the interaction
-        if (AttackBlockCallback.EVENT.invoker().interact(player, player.level(), InteractionHand.MAIN_HAND,
-                hitResult.getBlockPos(), hitResult.getDirection()) != InteractionResult.PASS) {
+        var evt = new PlayerInteractEvent.LeftClickBlock(player, hitResult.getBlockPos(), hitResult.getDirection());
+        MinecraftForge.EVENT_BUS.post(evt);
+        if (evt.isCanceled() || evt.getResult() == net.minecraftforge.eventbus.api.Event.Result.DENY) {
             return;
         }
 

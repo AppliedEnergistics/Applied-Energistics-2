@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
@@ -21,7 +21,7 @@ import appeng.util.SearchInventoryEvent;
 /**
  * Tracks pending crafting jobs started by this player.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class PendingCraftingJobs {
     private static final Map<UUID, PendingJob> jobs = new HashMap<>();
 
