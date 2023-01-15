@@ -17,6 +17,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.AEKeyFilter;
 import appeng.helpers.externalstorage.GenericStackInv;
+import appeng.helpers.externalstorage.GenericStackInv.Mode;
 import appeng.me.helpers.BaseActionSource;
 
 /**

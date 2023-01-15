@@ -30,11 +30,12 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 public class InscriberRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
-    public static final RecipeType<InscriberRecipe> TYPE = RecipeType.register(TYPE_ID.toString());
+    public static final RecipeType<InscriberRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
 

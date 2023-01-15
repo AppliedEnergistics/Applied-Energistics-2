@@ -6,12 +6,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.IGeneratedBlockstate;
+import net.minecraftforge.client.model.generators.IGeneratedBlockState;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
 
-class VariantsBuilder implements IGeneratedBlockstate {
+class VariantsBuilder implements IGeneratedBlockState {
     private final Block block;
     private final JsonObject blockStateDef = new JsonObject();
     private final JsonObject variantsDef;

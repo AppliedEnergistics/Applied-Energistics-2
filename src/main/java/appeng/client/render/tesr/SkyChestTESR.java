@@ -18,14 +18,11 @@
 
 package appeng.client.render.tesr;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Quaternionf;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -42,6 +39,8 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.block.storage.SkyChestBlock;
 import appeng.block.storage.SkyChestBlock.SkyChestType;
@@ -49,7 +48,7 @@ import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.AppEng;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
@@ -59,8 +58,6 @@ public class SkyChestTESR implements BlockEntityRenderer<SkyChestBlockEntity> {
             new ResourceLocation(AppEng.MOD_ID, "block/skychest"));
     public static final Material TEXTURE_BLOCK = new Material(TextureAtlas.LOCATION_BLOCKS,
             new ResourceLocation(AppEng.MOD_ID, "block/skyblockchest"));
-
-    public static final ImmutableList<Material> SPRITES = ImmutableList.of(TEXTURE_STONE, TEXTURE_BLOCK);
 
     private final ModelPart lid;
     private final ModelPart bottom;

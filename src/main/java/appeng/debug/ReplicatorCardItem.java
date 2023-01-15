@@ -44,11 +44,10 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.core.AEConfig;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 
-public class ReplicatorCardItem extends AEBaseItem implements AEToolItem {
+public class ReplicatorCardItem extends AEBaseItem {
 
     public ReplicatorCardItem(Item.Properties properties) {
         super(properties);
