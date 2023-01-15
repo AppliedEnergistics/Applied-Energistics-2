@@ -87,7 +87,6 @@ public final class AEItemKey extends AEKey {
         if (o == null || getClass() != o.getClass())
             return false;
         AEItemKey aeItemKey = (AEItemKey) o;
-        // TagHolder instances are interned, compare by reference.
         return item == aeItemKey.item && internedTag == aeItemKey.internedTag;
     }
 
@@ -300,8 +299,12 @@ public final class AEItemKey extends AEKey {
                 }
 
                 if (ret == null) {
-                    // Intern a copy of the tag, since we cannot guarantee that we take ownership
-                    ret = new InternedTag(giveOwnership ? tag : tag.copy());
+                    // Copy the tag if we don't get to have ownership of it
+                    if (giveOwnership) {
+                        ret = searchHolder;
+                    } else {
+                        ret = new InternedTag(tag.copy());
+                    }
                     INTERNED.put(ret, new WeakReference<>(ret));
                 }
 
