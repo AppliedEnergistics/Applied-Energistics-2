@@ -31,8 +31,8 @@ import appeng.core.definitions.AEBlocks;
 
 public class DecorationModelProvider extends AE2BlockStateProvider {
 
-    public DecorationModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, AppEng.MOD_ID, exFileHelper);
+    public DecorationModelProvider(PackOutput packOutput, ExistingFileHelper exFileHelper) {
+        super(packOutput, AppEng.MOD_ID, exFileHelper);
     }
 
     @Override

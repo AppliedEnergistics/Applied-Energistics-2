@@ -3,7 +3,6 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -15,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.crafting.DifferenceIngredient;
 
 import appeng.api.ids.AETags;
 import appeng.api.stacks.AEKeyType;
@@ -1510,6 +1510,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
     }
 
     private static Ingredient tagExcept(TagKey<Item> tag, ItemLike exception) {
-        return DefaultCustomIngredients.difference(Ingredient.of(tag), Ingredient.of(exception));
+        return DifferenceIngredient.of(Ingredient.of(tag), Ingredient.of(exception));
     }
 }

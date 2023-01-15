@@ -2,9 +2,10 @@ package appeng.server.testplots;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.level.ServerPlayer;
+
+import appeng.api.events.Event;
+import appeng.api.events.EventFactory;
 
 public class KitOutPlayerEvent {
     public static final Event<Consumer<ServerPlayer>> EVENT = EventFactory.createArrayBacked(

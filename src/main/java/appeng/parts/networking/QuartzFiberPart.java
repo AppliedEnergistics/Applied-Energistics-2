@@ -43,6 +43,7 @@ import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
+import appeng.parts.AEBasePart.NodeListener;
 import appeng.parts.PartModel;
 
 public class QuartzFiberPart extends AEBasePart {
