@@ -27,8 +27,6 @@ import com.google.gson.stream.JsonWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
@@ -46,6 +44,7 @@ import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.compiler.MdAstNodeAdapter;
@@ -161,11 +160,11 @@ public class SiteExportWriter {
         siteExport.items.put(itemInfo.id, itemInfo);
     }
 
-    public void addFluid(String id, FluidVariant fluid, String iconPath) {
+    public void addFluid(String id, FluidStack fluid, String iconPath) {
         var fluidInfo = new FluidInfoJson();
         fluidInfo.id = id;
         fluidInfo.icon = iconPath;
-        fluidInfo.displayName = FluidVariantRendering.getTooltip(fluid).get(0).getString();
+        fluidInfo.displayName = fluid.getDisplayName().getString();
         siteExport.fluids.put(fluidInfo.id, fluidInfo);
     }
 

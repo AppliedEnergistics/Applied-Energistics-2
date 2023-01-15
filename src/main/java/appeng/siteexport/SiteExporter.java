@@ -24,12 +24,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.ChatFormatting;
 import net.minecraft.DetectedVersion;
 import net.minecraft.client.Minecraft;
@@ -44,6 +38,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -59,6 +54,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.features.P2PTunnelAttunementInternal;
@@ -87,7 +88,7 @@ import appeng.util.Platform;
 /**
  * Exports a data package for use by the website.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class SiteExporter implements ResourceExporter {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -128,19 +129,22 @@ public final class SiteExporter implements ResourceExporter {
         if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
             Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
 
-            ClientTickEvents.END_CLIENT_TICK.register(client -> {
-                if (client.getOverlay() instanceof LoadingOverlay) {
-                    return; // Do nothing while it's loading
-                }
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> {
+                if (evt.phase == TickEvent.Phase.END) {
+                    var client = Minecraft.getInstance();
+                    if (client.getOverlay() instanceof LoadingOverlay) {
+                        return; // Do nothing while it's loading
+                    }
 
-                var guide = AppEngClient.instance().getGuide();
-                try {
-                    export(client, outputFolder, guide);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(1);
+                    var guide = AppEngClient.instance().getGuide();
+                    try {
+                        export(client, outputFolder, guide);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                    System.exit(0);
                 }
-                System.exit(0);
             });
         }
     }
@@ -413,7 +417,7 @@ public final class SiteExporter implements ResourceExporter {
 
             // Export attunement info
             var attunementInfo = P2PTunnelAttunementInternal.getAttunementInfo(tunnelItem);
-            attunementInfo.apis().stream().map(lookup -> lookup.apiClass().getName())
+            attunementInfo.apis().stream().map(lookup -> lookup.getName())
                     .forEach(typeInfo.attunementApiClasses::add);
 
             usedVanillaItems.addAll(items);
@@ -511,12 +515,15 @@ public final class SiteExporter implements ResourceExporter {
 
             LOGGER.info("Exporting fluids...");
             for (var fluid : fluids) {
-                var fluidVariant = FluidVariant.of(fluid);
+                var fluidVariant = new FluidStack(fluid, 1);
                 String fluidId = BuiltInRegistries.FLUID.getKey(fluid).toString();
 
-                var sprites = FluidVariantRendering.getSprites(fluidVariant);
-                var sprite = sprites != null ? sprites[0] : null;
-                var color = FluidVariantRendering.getColor(fluidVariant);
+                var props = IClientFluidTypeExtensions.of(fluidVariant.getFluid());
+
+                var sprite = Minecraft.getInstance()
+                        .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                        .apply(props.getStillTexture(fluidVariant));
+                var color = props.getTintColor(fluidVariant);
 
                 var baseName = "!fluids/" + fluidId.replace(':', '/');
                 var iconPath = renderAndWrite(
