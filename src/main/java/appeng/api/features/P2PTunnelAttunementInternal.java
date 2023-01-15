@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.capabilities.Capability;
 
 /**
  * Internal methods that complement {@link P2PTunnelAttunement} and which are not part of the public API.
@@ -45,15 +45,15 @@ public final class P2PTunnelAttunementInternal {
     public static AttunementInfo getAttunementInfo(ItemLike tunnelType) {
         var tunnelItem = tunnelType.asItem();
 
-        Set<ItemApiLookup<?, ?>> apis = new HashSet<>();
+        Set<Capability<?>> caps = new HashSet<>();
 
         for (var entry : P2PTunnelAttunement.apiAttunements) {
             if (entry.tunnelType() == tunnelItem) {
-                apis.add(entry.api());
+                caps.add(entry.capability());
             }
         }
 
-        return new AttunementInfo(apis);
+        return new AttunementInfo(caps);
     }
 
     public static List<Resultant> getApiTunnels() {
@@ -65,7 +65,7 @@ public final class P2PTunnelAttunementInternal {
         return P2PTunnelAttunement.tagTunnels;
     }
 
-    public record AttunementInfo(Set<ItemApiLookup<?, ?>> apis) {
+    public record AttunementInfo(Set<Capability<?>> apis) {
     }
 
     public record Resultant(Component description, Item tunnelType, Predicate<ItemStack> stackPredicate) {

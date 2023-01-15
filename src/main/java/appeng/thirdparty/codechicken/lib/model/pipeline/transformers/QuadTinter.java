@@ -18,8 +18,8 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import appeng.thirdparty.fabric.MutableQuadView;
+import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This transformer tints quads.

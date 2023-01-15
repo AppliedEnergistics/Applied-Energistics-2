@@ -18,16 +18,16 @@
 
 package appeng.client.render.effects;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.RandomSource;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class LightningArcFX extends LightningFX {
 
     private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
@@ -65,7 +65,7 @@ public class LightningArcFX extends LightningFX {
         }
     }
 
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static class Factory implements ParticleProvider<LightningArcParticleData> {
         private final SpriteSet spriteSet;
 

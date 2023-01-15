@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 import appeng.api.ids.AEPartIds;
 import appeng.api.parts.IPart;
@@ -130,7 +130,7 @@ public final class AEParts {
             String englishName,
             ResourceLocation id,
             Class<T> partClass,
-            Function<FabricItemSettings, PartItem<T>> factory) {
+            Function<Item.Properties, PartItem<T>> factory) {
 
         PartModels.registerModels(PartModelsHelper.createModels(partClass));
         return item(englishName, id, factory);
