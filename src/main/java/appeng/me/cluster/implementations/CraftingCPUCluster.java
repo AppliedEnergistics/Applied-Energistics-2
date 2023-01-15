@@ -284,11 +284,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         this.myName = null;
         for (CraftingBlockEntity te : this.blockEntities) {
 
-            if (te.hasCustomInventoryName()) {
+            if (te.hasCustomName()) {
                 if (this.myName != null) {
-                    this.myName.copy().append(" ").append(te.getCustomInventoryName());
+                    this.myName.copy().append(" ").append(te.getCustomName());
                 } else {
-                    this.myName = te.getCustomInventoryName().copy();
+                    this.myName = te.getCustomName().copy();
                 }
             }
         }

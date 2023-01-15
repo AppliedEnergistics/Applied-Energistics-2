@@ -23,14 +23,11 @@
 
 package appeng.api.implementations.blockentities;
 
-import java.util.Optional;
-
 import javax.annotation.Nullable;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -67,15 +64,6 @@ public interface ICraftingMachine {
     @Nullable
     default PatternContainerGroup getCraftingMachineInfo() {
         return null;
-    }
-
-    /**
-     * @return An optional name for this crafting machine, which can be shown in the pattern provider terminal for
-     *         adjacent pattern providers that point to this crafting machine.
-     */
-    @Deprecated(forRemoval = true)
-    default Optional<Component> getDisplayName() {
-        return Optional.empty();
     }
 
     /**

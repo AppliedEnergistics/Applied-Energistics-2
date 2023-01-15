@@ -35,6 +35,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +61,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
-import appeng.helpers.ICustomNameObject;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
@@ -68,7 +68,7 @@ import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class AEBasePart
-        implements IPart, IActionHost, ICustomNameObject, ISegmentedInventory, IPowerChannelState {
+        implements IPart, IActionHost, ISegmentedInventory, IPowerChannelState, Nameable {
 
     private final IManagedGridNode mainNode;
     private IPartItem<?> partItem;
@@ -141,13 +141,14 @@ public abstract class AEBasePart
     }
 
     @Override
-    public Component getCustomInventoryName() {
-        return Objects.requireNonNullElse(customName, Component.empty());
+    public Component getName() {
+        return Objects.requireNonNullElse(this.customName, partItem.asItem().getDescription());
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
-        return customName != null;
+    @Nullable
+    public Component getCustomName() {
+        return this.customName;
     }
 
     @Override

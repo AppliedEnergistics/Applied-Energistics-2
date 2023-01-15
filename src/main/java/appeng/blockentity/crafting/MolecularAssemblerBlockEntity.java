@@ -19,7 +19,6 @@
 package appeng.blockentity.crafting;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -122,8 +121,8 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     @Override
     public PatternContainerGroup getCraftingMachineInfo() {
         Component name;
-        if (hasCustomInventoryName()) {
-            name = getCustomInventoryName();
+        if (hasCustomName()) {
+            name = getCustomName();
         } else {
             name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getDescription();
         }
@@ -142,15 +141,6 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         }
 
         return new PatternContainerGroup(icon, name, tooltip);
-    }
-
-    @Override
-    public Optional<Component> getDisplayName() {
-        if (hasCustomInventoryName()) {
-            return Optional.of(getCustomInventoryName());
-        } else {
-            return Optional.of(getItemFromBlockEntity().getDescription());
-        }
     }
 
     @Override
