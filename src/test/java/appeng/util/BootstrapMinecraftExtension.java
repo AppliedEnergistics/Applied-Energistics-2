@@ -1,60 +1,90 @@
 package appeng.util;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import com.google.common.reflect.Reflection;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.util.ReflectionUtils;
+import org.mockito.Mockito;
 
-import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.impl.entrypoint.EntrypointUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.NewRegistryEvent;
+import net.minecraftforge.registries.RegistryBuilder;
 
-import appeng.client.guidebook.Guide;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
+import appeng.api.stacks.AEKeyTypesInternal;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.AppEngBootstrap;
+import appeng.core.definitions.AEBlockEntities;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.init.InitBlocks;
+import appeng.init.InitItems;
 
-public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback, AfterAllCallback {
+public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback {
 
-    private static boolean modInitialized;
-
-    Path configDir;
+    private static boolean keyTypesInitialized;
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
         AppEngBootstrap.runEarlyStartup();
+        Reflection.initialize(AEItems.class);
+        Reflection.initialize(AEBlocks.class);
+        Reflection.initialize(AEBlockEntities.class);
 
-        configDir = Files.createTempDirectory("ae2config");
-        if (AEConfig.instance() == null) {
-            AEConfig.load(configDir);
-        }
-
-        if (!modInitialized) {
-            modInitialized = true;
-
-            EntrypointUtils.invoke("preLaunch", PreLaunchEntrypoint.class, PreLaunchEntrypoint::onPreLaunch);
-            EntrypointUtils.invoke("main", ModInitializer.class, ModInitializer::onInitialize);
-            EntrypointUtils.invoke("server", DedicatedServerModInitializer.class,
-                    DedicatedServerModInitializer::onInitializeServer);
-
-            Guide.runDatapackReload();
-        }
-    }
-
-    @Override
-    public void afterAll(ExtensionContext context) throws Exception {
-        if (configDir != null && Files.exists(configDir)) {
+        var configDir = Files.createTempDirectory("ae2config");
+        try {
+            if (AEConfig.instance() == null) {
+                AEConfig.load(configDir);
+            }
+        } finally {
             MoreFiles.deleteRecursively(configDir, RecursiveDeleteOption.ALLOW_INSECURE);
         }
+
+        if (!keyTypesInitialized) {
+            try {
+                InitBlocks.init(ForgeRegistries.BLOCKS);
+                InitItems.init(ForgeRegistries.ITEMS);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+
+            mockForgeFluidTypes();
+
+            var e = new NewRegistryEvent();
+            var supplier = e.create(new RegistryBuilder<AEKeyType>()
+                    .setMaxID(127)
+                    .setName(AppEng.makeId("keytypes")));
+            ReflectionUtils.invokeMethod(NewRegistryEvent.class.getDeclaredMethod("fill"), e);
+            AEKeyTypesInternal.setRegistry(supplier);
+            AEKeyTypes.register(AEKeyType.items());
+            AEKeyTypes.register(AEKeyType.fluids());
+            keyTypesInitialized = true;
+        }
+
+    }
+
+    private void mockForgeFluidTypes() {
+        // Otherwise constructing ANY FluidKey will crash
+        var mocked = Mockito.mockStatic(ForgeHooks.class, Mockito.CALLS_REAL_METHODS);
+        var props = FluidType.Properties.create();
+        props.descriptionId("fluid");
+        mocked.when(() -> ForgeHooks.getVanillaFluidType(any()))
+                .thenReturn(new FluidType(props));
     }
 }

@@ -17,6 +17,7 @@ import mcp.mobius.waila.api.ITooltipComponent;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
 import mcp.mobius.waila.api.WailaConstants;
+import mcp.mobius.waila.api.WailaPlugin;
 import mcp.mobius.waila.api.component.ItemComponent;
 
 import appeng.api.integrations.igtooltip.ClientRegistration;
@@ -29,6 +30,7 @@ import appeng.api.integrations.igtooltip.providers.NameProvider;
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.integration.modules.igtooltip.TooltipProviders;
 
+@WailaPlugin(id = "ae2:wthit")
 public class WthitModule implements IWailaPlugin {
     public void register(IRegistrar registrar) {
         TooltipProviders.loadCommon(new CommonRegistration() {

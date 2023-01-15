@@ -18,11 +18,11 @@
 
 package appeng.init.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.block.networking.EnergyCellBlockItem;
@@ -33,7 +33,7 @@ import appeng.items.tools.powered.ColorApplicatorItem;
 /**
  * Registers custom properties that can be used in item model JSON files.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class InitItemModelsProperties {
 
     public static final ResourceLocation COLORED_PREDICATE_ID = AppEng.makeId("colored");
@@ -44,8 +44,7 @@ public final class InitItemModelsProperties {
 
     public static void init() {
         ColorApplicatorItem colorApplicatorItem = AEItems.COLOR_APPLICATOR.asItem();
-        ItemProperties.register(colorApplicatorItem,
-                COLORED_PREDICATE_ID,
+        ItemProperties.register(colorApplicatorItem, COLORED_PREDICATE_ID,
                 (itemStack, level, entity, seed) -> {
                     // If the stack has no color, don't use the colored model since the impact of
                     // calling getColor for every quad is extremely high, if the stack tries to
@@ -61,8 +60,7 @@ public final class InitItemModelsProperties {
                 return;
             }
 
-            ItemProperties.register(energyCell,
-                    ENERGY_FILL_LEVEL_ID,
+            ItemProperties.register(energyCell, ENERGY_FILL_LEVEL_ID,
                     (is, level, entity, seed) -> {
                         double curPower = energyCell.getAECurrentPower(is);
                         double maxPower = energyCell.getAEMaxPower(is);

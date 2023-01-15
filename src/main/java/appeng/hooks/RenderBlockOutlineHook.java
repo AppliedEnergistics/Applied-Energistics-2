@@ -15,11 +15,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -36,6 +33,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.api.parts.IFacadePart;
@@ -55,11 +54,13 @@ public class RenderBlockOutlineHook {
     /**
      * Similar to {@link RenderType#LINES}, but with inverted depth test.
      */
-    public static final RenderType.CompositeRenderType LINES_BEHIND_BLOCK = RenderType.create(
+    public static final RenderType LINES_BEHIND_BLOCK = RenderType.create(
             "lines_behind_block",
             DefaultVertexFormat.POSITION_COLOR_NORMAL,
             VertexFormat.Mode.LINES,
             256,
+            false,
+            false,
             RenderType.CompositeState.builder()
                     .setShaderState(RENDERTYPE_LINES_SHADER)
                     .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
@@ -72,22 +73,26 @@ public class RenderBlockOutlineHook {
                     .createCompositeState(false));
 
     public static void install() {
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((WorldRenderContext context, @Nullable HitResult hitResult) -> {
-            var level = context.world();
-            var poseStack = context.matrixStack();
-            var buffers = context.consumers();
-            var camera = context.camera();
-            if (level == null || buffers == null) {
-                return true;
-            }
+        MinecraftForge.EVENT_BUS.addListener(RenderBlockOutlineHook::handleEvent);
+    }
 
-            if (!(hitResult instanceof BlockHitResult blockHitResult)
-                    || blockHitResult.getType() != HitResult.Type.BLOCK) {
-                return true;
-            }
+    private static void handleEvent(RenderHighlightEvent.Block evt) {
+        var level = Minecraft.getInstance().level;
+        var poseStack = evt.getPoseStack();
+        var buffers = evt.getMultiBufferSource();
+        var camera = evt.getCamera();
+        if (level == null || buffers == null) {
+            return;
+        }
 
-            return !replaceBlockOutline(level, poseStack, buffers, camera, blockHitResult);
-        });
+        var blockHitResult = evt.getTarget();
+        if (blockHitResult.getType() != HitResult.Type.BLOCK) {
+            return;
+        }
+
+        if (replaceBlockOutline(level, poseStack, buffers, camera, blockHitResult)) {
+            evt.setCanceled(true);
+        }
     }
 
     /*

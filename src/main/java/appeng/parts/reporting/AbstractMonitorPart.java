@@ -22,8 +22,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -32,6 +30,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
@@ -286,7 +286,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void renderDynamic(float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
             int combinedLightIn, int combinedOverlayIn) {
 
