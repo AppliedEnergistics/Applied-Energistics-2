@@ -123,20 +123,17 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.is(state.getBlock())) {
-            return; // Just a block state change
+        // Drop internal BE content
+        if (!level.isClientSide() && !newState.is(state.getBlock())) {
+            var be = this.getBlockEntity(level, pos);
+            if (be != null) {
+                var drops = new ArrayList<ItemStack>();
+                be.addAdditionalDrops(level, pos, drops, false);
+                Platform.spawnDrops(level, pos, drops);
+            }
         }
 
-        var te = this.getBlockEntity(level, pos);
-        if (te != null) {
-            var drops = new ArrayList<ItemStack>();
-            te.addAdditionalDrops(level, pos, drops);
-
-            // Cry ;_; ...
-            Platform.spawnDrops(level, pos, drops);
-        }
-
-        // super will remove the BE, as it is not an instance of BlockContainer
+        // super will remove the TE, as it is not an instance of BlockContainer
         super.onRemove(state, level, pos, newState, isMoving);
     }
 

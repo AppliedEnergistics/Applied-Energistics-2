@@ -46,7 +46,8 @@ public final class WrenchHook {
                 return baseBlockEntity.disassembleWithWrench(
                         player,
                         level,
-                        hitResult);
+                        hitResult,
+                        itemStack);
             }
         } else if (!InteractionUtil.isInAlternateUseMode(player) && InteractionUtil.canWrenchRotate(itemStack)) {
             var pos = hitResult.getBlockPos();

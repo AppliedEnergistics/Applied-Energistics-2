@@ -214,13 +214,14 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
         unpackLootTable(null);
-        super.addAdditionalDrops(level, pos, drops);
+        super.addAdditionalDrops(level, pos, drops, remove);
     }
 
     @Override
-    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult) {
+    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult,
+            ItemStack wrench) {
         return InteractionResult.FAIL;
     }
 }

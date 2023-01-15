@@ -342,8 +342,9 @@ public interface IPart extends ICustomCableConnection {
      * Add additional drops to the drop list (the contents of the part, but not the part itself).
      *
      * @param wrenched control flag for wrenched vs broken
+     * @param remove   remove the items being dropped from the inventory
      */
-    default void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+    default void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
     }
 
     /**
