@@ -18,20 +18,18 @@
 
 package appeng.api.orientation;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.mojang.math.Transformation;
-
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * All possible rotations for a fully orientable block.
@@ -118,11 +116,18 @@ public enum BlockOrientation {
         }
     }
 
-    public void set(BlockEntity be) {
-        set(be.getLevel(), be.getBlockPos());
+    /**
+     * Changes the orientation of the given block entity to this, if possible.
+     */
+    public void setOn(BlockEntity be) {
+        setOn(be.getLevel(), be.getBlockPos());
     }
 
-    public void set(Level level, BlockPos pos) {
+    /**
+     * Changes the orientation of the block at the given position/level to this,
+     * if possible.
+     */
+    public void setOn(Level level, BlockPos pos) {
         var state = level.getBlockState(pos);
         var strategy = IOrientationStrategy.get(state);
         var newState = strategy.setOrientation(state,

@@ -314,7 +314,7 @@ public interface PlotBuilder {
      */
     default void storageDrive(BlockPos pos, Direction facing) {
         blockEntity(posToBb(pos), AEBlocks.DRIVE, drive -> {
-            BlockOrientation.get(facing).set(drive);
+            BlockOrientation.get(facing).setOn(drive);
             var cells = drive.getInternalInventory();
             cells.addItems(AEItems.ITEM_CELL_64K.stack());
             cells.addItems(AEItems.FLUID_CELL_64K.stack());

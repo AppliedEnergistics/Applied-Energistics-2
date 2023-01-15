@@ -308,7 +308,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("-1 2 1");
         plot.blockEntity("-1 2 0", AEBlocks.INSCRIBER, inscriber -> {
             inscriber.getInternalInventory().setItemDirect(0, new ItemStack(processorPress));
-            BlockOrientation.NORTH_WEST.set(inscriber);
+            BlockOrientation.NORTH_WEST.setOn(inscriber);
         });
 
         // Set up the inscriber for the silicon print
@@ -316,7 +316,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("1 2 1");
         plot.blockEntity("1 2 0", AEBlocks.INSCRIBER, inscriber -> {
             inscriber.getInternalInventory().setItemDirect(0, AEItems.SILICON_PRESS.stack());
-            BlockOrientation.NORTH_WEST.set(inscriber);
+            BlockOrientation.NORTH_WEST.setOn(inscriber);
         });
 
         // Set up the inscriber for assembly
@@ -324,7 +324,7 @@ public final class TestPlots {
         plot.hopper("-1 1 0", Direction.EAST);
         plot.filledHopper("0 2 0", Direction.DOWN, Items.REDSTONE);
         plot.creativeEnergyCell("0 1 1");
-        plot.blockEntity("0 1 0", AEBlocks.INSCRIBER, BlockOrientation.NORTH_WEST::set);
+        plot.blockEntity("0 1 0", AEBlocks.INSCRIBER, BlockOrientation.NORTH_WEST::setOn);
         plot.hopper("0 0 0", Direction.DOWN);
     }
 
