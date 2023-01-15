@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
@@ -54,7 +55,8 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(StonecutterRecipe recipe, AEItemKey in, AEItemKey out, boolean allowSubstitutes) {
+    public ItemStack encode(RecipeHolder<StonecutterRecipe> recipe, AEItemKey in, AEItemKey out,
+            boolean allowSubstitutes) {
         var stack = new ItemStack(this);
         StonecuttingPatternEncoding.encode(stack.getOrCreateTag(), recipe, in, out, allowSubstitutes);
         return stack;
@@ -80,9 +82,9 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
 
         // Try to find the output in the potential recipe list
         for (var potentialRecipe : potentialRecipes) {
-            if (AEItemKey.matches(output, potentialRecipe.getResultItem(level.registryAccess()))) {
+            if (AEItemKey.matches(output, potentialRecipe.value().getResultItem(level.registryAccess()))) {
                 // Yay we found a match, reencode the pattern
-                AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, potentialRecipe.getId());
+                AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, potentialRecipe.id());
                 StonecuttingPatternEncoding.encode(tag, potentialRecipe, input, output,
                         StonecuttingPatternEncoding.canSubstitute(tag));
             }

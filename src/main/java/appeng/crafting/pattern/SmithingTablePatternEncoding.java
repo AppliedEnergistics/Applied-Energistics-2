@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 
 import appeng.api.stacks.AEItemKey;
@@ -70,7 +71,7 @@ class SmithingTablePatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
-    public static void encode(CompoundTag tag, SmithingRecipe recipe, AEItemKey template, AEItemKey base,
+    public static void encode(CompoundTag tag, RecipeHolder<SmithingRecipe> recipe, AEItemKey template, AEItemKey base,
             AEItemKey addition,
             AEItemKey output, boolean allowSubstitution) {
         tag.put(NBT_TEMPLATE, template.toTag());
@@ -78,6 +79,6 @@ class SmithingTablePatternEncoding {
         tag.put(NBT_ADDITION, addition.toTag());
         tag.put(NBT_OUTPUT, output.toTag());
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
-        tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
+        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
     }
 }

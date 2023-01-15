@@ -26,6 +26,7 @@ import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.saveddata.SavedData;
 
 import appeng.core.AELog;
 import appeng.core.worlddata.AESavedData;
@@ -34,6 +35,10 @@ import appeng.core.worlddata.AESavedData;
  * A compass region stores information about the occurrence of skystone blocks in a region of 1024x1024 chunks.
  */
 final class CompassRegion extends AESavedData {
+    private static final SavedData.Factory<CompassRegion> FACTORY = new Factory<>(
+            CompassRegion::new,
+            CompassRegion::load,
+            null);
 
     /**
      * The number of chunks that get saved in a region on each axis.
@@ -63,8 +68,7 @@ final class CompassRegion extends AESavedData {
         var regionZ = chunkPos.z / CHUNKS_PER_REGION;
 
         return level.getDataStorage().computeIfAbsent(
-                CompassRegion::load,
-                CompassRegion::new,
+                FACTORY,
                 getRegionSaveName(regionX, regionZ));
     }
 

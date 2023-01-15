@@ -28,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -56,7 +55,7 @@ public abstract class QuantumBaseBlock extends AEBaseEntityBlock<QuantumBridgeBl
         SHAPE = Shapes.create(new AABB(shave, shave, shave, 1.0f - shave, 1.0f - shave, 1.0f - shave));
     }
 
-    public QuantumBaseBlock(BlockBehaviour.Properties props) {
+    public QuantumBaseBlock(Properties props) {
         super(props);
         this.registerDefaultState(this.defaultBlockState().setValue(FORMED, false)
                 .setValue(WATERLOGGED, false));

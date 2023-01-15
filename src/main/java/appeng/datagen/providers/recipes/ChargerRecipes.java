@@ -1,9 +1,10 @@
 package appeng.datagen.providers.recipes;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 
 import appeng.core.AppEng;
@@ -11,12 +12,12 @@ import appeng.core.definitions.AEItems;
 import appeng.recipes.handlers.ChargerRecipeBuilder;
 
 public class ChargerRecipes extends AE2RecipeProvider {
-    public ChargerRecipes(PackOutput output) {
-        super(output);
+    public ChargerRecipes(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     @Override
-    public void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    public void buildRecipes(RecipeOutput consumer) {
         ChargerRecipeBuilder.charge(consumer,
                 AppEng.makeId("charger/charged_certus_quartz_crystal"),
                 AEItems.CERTUS_QUARTZ_CRYSTAL, AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED);

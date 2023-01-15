@@ -24,7 +24,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -41,7 +40,7 @@ public class MolecularAssemblerBlock extends AEBaseEntityBlock<MolecularAssemble
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public MolecularAssemblerBlock(BlockBehaviour.Properties props) {
+    public MolecularAssemblerBlock(Properties props) {
         super(props);
         registerDefaultState(defaultBlockState().setValue(POWERED, false));
     }

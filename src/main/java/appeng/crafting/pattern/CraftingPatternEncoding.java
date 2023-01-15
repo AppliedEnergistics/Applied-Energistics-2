@@ -28,6 +28,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import appeng.api.stacks.GenericStack;
 
@@ -82,13 +83,14 @@ class CraftingPatternEncoding {
         return ItemStack.of(nbt.getCompound(NBT_OUTPUTS));
     }
 
-    public static void encodeCraftingPattern(CompoundTag tag, CraftingRecipe recipe, ItemStack[] sparseInputs,
+    public static void encodeCraftingPattern(CompoundTag tag, RecipeHolder<CraftingRecipe> recipe,
+            ItemStack[] sparseInputs,
             ItemStack output, boolean allowSubstitution, boolean allowFluidSubstitution) {
         tag.put(NBT_INPUTS, encodeItemStackList(sparseInputs));
         tag.putBoolean(NBT_SUBSITUTE, allowSubstitution);
         tag.putBoolean(NBT_SUBSITUTE_FLUIDS, allowFluidSubstitution);
         tag.put(NBT_OUTPUTS, output.save(new CompoundTag()));
-        tag.putString(NBT_RECIPE_ID, recipe.getId().toString());
+        tag.putString(NBT_RECIPE_ID, recipe.id().toString());
     }
 
     private static ListTag encodeItemStackList(ItemStack[] stacks) {

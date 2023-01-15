@@ -640,9 +640,9 @@ public class GuideScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (!super.mouseScrolled(mouseX, mouseY, delta)) {
-            return scrollbar.mouseScrolled(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+        if (!super.mouseScrolled(mouseX, mouseY, deltaX, deltaY)) {
+            return scrollbar.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
         }
         return true;
     }

@@ -1,74 +1,90 @@
 package appeng.util;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.function.Consumer;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import com.google.common.reflect.Reflection;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.platform.commons.util.ReflectionUtils;
+import org.mockito.Mockito;
 
-import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 
-import appeng.client.guidebook.Guide;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.stacks.AEKeyTypes;
+import appeng.api.stacks.AEKeyTypesInternal;
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.core.AppEngBootstrap;
+import appeng.core.definitions.AEBlockEntities;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
+import appeng.init.InitBlocks;
+import appeng.init.InitItems;
 
-public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback, AfterAllCallback {
+public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback {
 
-    private static boolean modInitialized;
-
-    Path configDir;
+    private static boolean keyTypesInitialized;
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
         AppEngBootstrap.runEarlyStartup();
+        Reflection.initialize(AEItems.class);
+        Reflection.initialize(AEBlocks.class);
+        Reflection.initialize(AEBlockEntities.class);
 
-        configDir = Files.createTempDirectory("ae2config");
-        if (AEConfig.instance() == null) {
-            AEConfig.load(configDir);
-        }
-
-        if (!modInitialized) {
-            modInitialized = true;
-
-            invokeEntrypoints("preLaunch", PreLaunchEntrypoint.class, PreLaunchEntrypoint::onPreLaunch);
-            invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
-            invokeEntrypoints("server", DedicatedServerModInitializer.class,
-                    DedicatedServerModInitializer::onInitializeServer);
-
-            Guide.runDatapackReload();
-        }
-    }
-
-    private <T> void invokeEntrypoints(String name, Class<T> type, Consumer<? super T> invoker) {
-        var entrypoints = FabricLoaderImpl.INSTANCE.getEntrypointContainers(name, type);
-
-        for (var container : entrypoints) {
-            var modId = container.getProvider().getMetadata().getId();
-            // Fix WTHIT API runtime protection messing our tests up
-            if (modId.equals("wthit_api")) {
-                continue;
+        var configDir = Files.createTempDirectory("ae2config");
+        try {
+            if (AEConfig.instance() == null) {
+                AEConfig.load(configDir);
             }
-            invoker.accept(container.getEntrypoint());
-        }
-    }
-
-    @Override
-    public void afterAll(ExtensionContext context) throws Exception {
-        if (configDir != null && Files.exists(configDir)) {
+        } finally {
             MoreFiles.deleteRecursively(configDir, RecursiveDeleteOption.ALLOW_INSECURE);
         }
+
+        if (!keyTypesInitialized) {
+            try {
+                InitBlocks.init(ForgeRegistries.BLOCKS);
+                InitItems.init(ForgeRegistries.ITEMS);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+
+            mockForgeFluidTypes();
+
+            var e = new NewRegistryEvent();
+            var supplier = e.create(new RegistryBuilder<AEKeyType>()
+                    .setMaxID(127)
+                    .setName(AppEng.makeId("keytypes")));
+            ReflectionUtils.invokeMethod(NewRegistryEvent.class.getDeclaredMethod("fill"), e);
+            AEKeyTypesInternal.setRegistry(supplier);
+            AEKeyTypes.register(AEKeyType.items());
+            AEKeyTypes.register(AEKeyType.fluids());
+            keyTypesInitialized = true;
+        }
+
+    }
+
+    private void mockForgeFluidTypes() {
+        // Otherwise constructing ANY FluidKey will crash
+        var mocked = Mockito.mockStatic(CommonHooks.class, Mockito.CALLS_REAL_METHODS);
+        var props = FluidType.Properties.create();
+        props.descriptionId("fluid");
+        mocked.when(() -> ForgeHooks.getVanillaFluidType(any()))
+                .thenReturn(new FluidType(props));
     }
 }

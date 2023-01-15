@@ -16,9 +16,9 @@ import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
 
 /**
- * Wraps this configuration inventory as an {@link net.minecraft.world.item.ItemStack} based inventory for use in a
- * menu. It will automatically convert appropriately from {@link net.minecraft.world.item.ItemStack}s set by the player
- * to the internal key-based representation with the help of a matching {@link AEKeyType}.
+ * Wraps this configuration inventory as an {@link ItemStack} based inventory for use in a menu. It will automatically
+ * convert appropriately from {@link ItemStack}s set by the player to the internal key-based representation with the
+ * help of a matching {@link AEKeyType}.
  */
 public class ConfigMenuInventory implements InternalInventory {
     private final GenericStackInv inv;

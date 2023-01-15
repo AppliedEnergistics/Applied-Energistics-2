@@ -18,17 +18,14 @@
 
 package appeng.recipes.handlers;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 
 public class InscriberRecipeSerializer implements RecipeSerializer<InscriberRecipe> {
 
@@ -37,48 +34,21 @@ public class InscriberRecipeSerializer implements RecipeSerializer<InscriberReci
     private InscriberRecipeSerializer() {
     }
 
-    private static InscriberProcessType getMode(JsonObject json) {
-        String mode = GsonHelper.getAsString(json, "mode", "inscribe");
-        return switch (mode) {
-            case "inscribe" -> InscriberProcessType.INSCRIBE;
-            case "press" -> InscriberProcessType.PRESS;
-            default -> throw new IllegalStateException("Unknown mode for inscriber recipe: " + mode);
-        };
-
-    }
-
     @Override
-    public InscriberRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-
-        InscriberProcessType mode = getMode(json);
-
-        ItemStack result = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-
-        // Deserialize the three parts of the input
-        JsonObject ingredients = GsonHelper.getAsJsonObject(json, "ingredients");
-        Ingredient middle = Ingredient.fromJson(ingredients.get("middle"));
-        Ingredient top = Ingredient.EMPTY;
-        if (ingredients.has("top")) {
-            top = Ingredient.fromJson(ingredients.get("top"));
-        }
-        Ingredient bottom = Ingredient.EMPTY;
-        if (ingredients.has("bottom")) {
-            bottom = Ingredient.fromJson(ingredients.get("bottom"));
-        }
-
-        return new InscriberRecipe(recipeId, middle, result, top, bottom, mode);
+    public Codec<InscriberRecipe> codec() {
+        return InscriberRecipe.CODEC;
     }
 
     @Nullable
     @Override
-    public InscriberRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+    public InscriberRecipe fromNetwork(FriendlyByteBuf buffer) {
         Ingredient middle = Ingredient.fromNetwork(buffer);
         ItemStack result = buffer.readItem();
         Ingredient top = Ingredient.fromNetwork(buffer);
         Ingredient bottom = Ingredient.fromNetwork(buffer);
         InscriberProcessType mode = buffer.readEnum(InscriberProcessType.class);
 
-        return new InscriberRecipe(recipeId, middle, result, top, bottom, mode);
+        return new InscriberRecipe(middle, result, top, bottom, mode);
     }
 
     @Override

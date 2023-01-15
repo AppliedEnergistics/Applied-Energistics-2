@@ -66,8 +66,10 @@ final class PlayerRegistryInternal extends AESavedData implements IPlayerRegistr
             throw new IllegalStateException("Cannot retrieve player data for a server that has no overworld.");
         }
         return overworld.getDataStorage().computeIfAbsent(
-                nbt -> PlayerRegistryInternal.load(server, nbt),
-                () -> new PlayerRegistryInternal(server),
+                new Factory<>(
+                        () -> new PlayerRegistryInternal(server),
+                        nbt -> PlayerRegistryInternal.load(server, nbt),
+                        null),
                 PlayerRegistryInternal.NAME);
     }
 

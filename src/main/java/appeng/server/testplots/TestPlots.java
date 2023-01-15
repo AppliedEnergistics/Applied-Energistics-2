@@ -654,7 +654,8 @@ public final class TestPlots {
             Set<AEItemKey> neededIngredients = new HashSet<>();
             Set<AEItemKey> providedResults = new HashSet<>();
 
-            for (var recipe : craftingRecipes) {
+            for (var holder : craftingRecipes) {
+                var recipe = holder.value();
                 if (recipe.isSpecial()) {
                     continue;
                 }
@@ -670,7 +671,7 @@ public final class TestPlots {
                                 }
                             }).toArray(ItemStack[]::new);
                     craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
-                            recipe,
+                            holder,
                             ingredients,
                             recipe.getResultItem(node.getLevel().registryAccess()),
                             false,
@@ -850,9 +851,9 @@ public final class TestPlots {
             helper.succeedWhen(() -> {
                 helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
                 var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
-                helper.check(tank.getStorage().amount == AEFluidKey.AMOUNT_BUCKET,
+                helper.check(tank.getStorage().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
                         "Less than a bucket stored");
-                helper.check(tank.getStorage().variant.getFluid() == Fluids.LAVA,
+                helper.check(tank.getStorage().getFluid().getFluid() == Fluids.LAVA,
                         "Something other than lava stored");
             });
         });

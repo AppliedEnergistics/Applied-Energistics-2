@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AELog;
@@ -23,15 +24,15 @@ public final class CraftingHelper {
     private CraftingHelper() {
     }
 
-    public static void performTransfer(CraftingTermMenu menu, Recipe<?> recipe, boolean craftMissing) {
+    public static void performTransfer(CraftingTermMenu menu, RecipeHolder<?> recipe, boolean craftMissing) {
 
         // We send the items in the recipe in any case to serve as a fallback in case the recipe is transient
-        var templateItems = findGoodTemplateItems(recipe, menu);
+        var templateItems = findGoodTemplateItems(recipe.value(), menu);
 
-        var recipeId = recipe.getId();
+        var recipeId = recipe.id();
         // Don't transmit a recipe id to the server in case the recipe is not actually resolvable
         // this is the case for recipes synthetically generated for JEI
-        if (menu.getPlayer().level().getRecipeManager().byKey(recipe.getId()).isEmpty()) {
+        if (menu.getPlayer().level().getRecipeManager().byKey(recipe.id()).isEmpty()) {
             AELog.debug("Cannot send recipe id %s to server because it's transient", recipeId);
             recipeId = null;
         }

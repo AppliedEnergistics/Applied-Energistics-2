@@ -21,12 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LoadingOverlay;
@@ -43,6 +37,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.level.validation.DirectoryValidator;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
@@ -112,7 +112,9 @@ public final class Guide implements PageCollection {
     private static CompletableFuture<Minecraft> afterClientStart() {
         var future = new CompletableFuture<Minecraft>();
 
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener((FMLClientSetupEvent evt) -> {
+            var client = Minecraft.getInstance();
             CompletableFuture<?> reload;
 
             if (client.getOverlay() instanceof LoadingOverlay loadingOverlay) {
@@ -140,10 +142,11 @@ public final class Guide implements PageCollection {
             var layeredAccess = RegistryLayer.createRegistryAccess();
 
             PackRepository packRepository = new PackRepository(
-                    new ServerPacksSource(),
-                    new ModResourcePackCreator(PackType.SERVER_DATA));
+                    new ServerPacksSource(new DirectoryValidator(path -> false)));
+            net.neoforged.neoforge.resource.ResourcePackLoader.loadResourcePacks(packRepository,
+                    net.neoforged.neoforge.server.ServerLifecycleHooks::buildPackFinder);
             packRepository.reload();
-            packRepository.setSelected(ModResourcePackUtil.createDefaultDataConfiguration().dataPacks().getEnabled());
+            packRepository.setSelected(packRepository.getAvailableIds());
 
             var resourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
                     packRepository.openAllSelected());
@@ -161,7 +164,14 @@ public final class Guide implements PageCollection {
                     Commands.CommandSelection.ALL,
                     0,
                     Util.backgroundExecutor(),
-                    Runnable::run).get();
+                    command -> {
+                        try {
+                            command.run();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            throw e;
+                        }
+                    }).get();
             stuff.updateRegistryTags(layeredAccess.compositeAccess());
             Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
             Platform.fallbackClientRegistryAccess = layeredAccess.compositeAccess();
@@ -259,17 +269,11 @@ public final class Guide implements PageCollection {
         return extensions;
     }
 
-    private class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>>
-            implements IdentifiableResourceReloadListener {
+    private class ReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, ParsedGuidePage>> {
         private final ResourceLocation id;
 
         public ReloadListener(ResourceLocation id) {
             this.id = id;
-        }
-
-        @Override
-        public ResourceLocation getFabricId() {
-            return id;
         }
 
         @Override
@@ -325,13 +329,16 @@ public final class Guide implements PageCollection {
 
     private void watchDevelopmentSources() {
         var watcher = new GuideSourceWatcher(developmentSourceNamespace, developmentSourceFolder);
-        ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            var changes = watcher.takeChanges();
-            if (!changes.isEmpty()) {
-                applyChanges(changes);
+
+        NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> {
+            if (evt.phase == TickEvent.Phase.START) {
+                var changes = watcher.takeChanges();
+                if (!changes.isEmpty()) {
+                    applyChanges(changes);
+                }
             }
         });
-        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> watcher.close());
+        Runtime.getRuntime().addShutdownHook(new Thread(watcher::close));
         for (var page : watcher.loadAll()) {
             developmentPages.put(page.getId(), page);
         }
@@ -613,7 +620,9 @@ public final class Guide implements PageCollection {
     }
 
     private void registerReloadListener() {
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new ReloadListener(
-                new ResourceLocation(defaultNamespace, folder)));
+        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener((RegisterClientReloadListenersEvent evt) -> {
+            evt.registerReloadListener(new ReloadListener(new ResourceLocation(defaultNamespace, folder)));
+        });
     }
 }

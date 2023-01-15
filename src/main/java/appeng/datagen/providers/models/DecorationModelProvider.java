@@ -24,15 +24,15 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
 public class DecorationModelProvider extends AE2BlockStateProvider {
 
-    public DecorationModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, AppEng.MOD_ID, exFileHelper);
+    public DecorationModelProvider(PackOutput packOutput, ExistingFileHelper exFileHelper) {
+        super(packOutput, AppEng.MOD_ID, exFileHelper);
     }
 
     @Override

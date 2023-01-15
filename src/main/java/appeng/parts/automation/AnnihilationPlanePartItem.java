@@ -5,8 +5,11 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
@@ -40,7 +43,17 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     }
 
     @Override
-    public int getMaxDamage() {
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.category == EnchantmentCategory.DIGGER;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        return true;
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
         return CALLING_DAMAGEABLE_FROM_ANVIL.get() != null ? 1 : super.getMaxDamage();
     }
 

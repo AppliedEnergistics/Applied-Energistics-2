@@ -90,12 +90,12 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         if (state != State.OPENING && state != State.OPEN) {
             return false;
         }
 
-        setScrollOffset((int) Math.round(scrollOffset - delta * 20));
+        setScrollOffset((int) Math.round(scrollOffset - deltaY * 20));
         return true;
     }
 

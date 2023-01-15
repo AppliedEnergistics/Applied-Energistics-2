@@ -39,9 +39,9 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ClipContext.Fluid;
@@ -72,7 +72,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      */
     public static final int ENERGY_PER_USE = 1600;
 
-    public EntropyManipulatorItem(Item.Properties props) {
+    public EntropyManipulatorItem(Properties props) {
         super(AEConfig.instance().getEntropyManipulatorBattery(), props);
     }
 
@@ -167,9 +167,9 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
 
         if (tryBoth || !InteractionUtil.isInAlternateUseMode(p)) {
-            if (block instanceof TntBlock tntBlock) {
-                tntBlock.playerWillDestroy(level, pos, level.getBlockState(pos), p);
+            if (block instanceof TntBlock) {
                 level.removeBlock(pos, false);
+                block.onCaughtFire(level.getBlockState(pos), level, pos, side, p);
                 return true;
             }
 
@@ -234,7 +234,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         for (ItemStack i : drops) {
             tempInv.setItem(0, i);
             Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
-                    level);
+                    level).map(RecipeHolder::value);
 
             if (!recipe.isPresent()) {
                 return false;
@@ -283,7 +283,8 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     @Nullable
     private static EntropyRecipe findRecipe(Level level, EntropyMode mode, BlockState blockState,
             FluidState fluidState) {
-        for (var recipe : level.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
+        for (var holder : level.getRecipeManager().byType(EntropyRecipe.TYPE).values()) {
+            var recipe = holder.value();
             if (recipe.matches(mode, blockState, fluidState)) {
                 return recipe;
             }

@@ -24,12 +24,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.ChatFormatting;
 import net.minecraft.DetectedVersion;
 import net.minecraft.client.Minecraft;
@@ -44,13 +38,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
@@ -59,6 +54,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.features.P2PTunnelAttunementInternal;
@@ -87,7 +88,7 @@ import appeng.util.Platform;
 /**
  * Exports a data package for use by the website.
  */
-@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class SiteExporter implements ResourceExporter {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -103,7 +104,7 @@ public final class SiteExporter implements ResourceExporter {
 
     private ParsedGuidePage currentPage;
 
-    private final Set<Recipe<?>> recipes = new HashSet<>();
+    private final Set<RecipeHolder<?>> recipes = new HashSet<>();
 
     private final Set<Item> items = new HashSet<>();
 
@@ -128,19 +129,22 @@ public final class SiteExporter implements ResourceExporter {
         if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
             Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
 
-            ClientTickEvents.END_CLIENT_TICK.register(client -> {
-                if (client.getOverlay() instanceof LoadingOverlay) {
-                    return; // Do nothing while it's loading
-                }
+            NeoForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> {
+                if (evt.phase == TickEvent.Phase.END) {
+                    var client = Minecraft.getInstance();
+                    if (client.getOverlay() instanceof LoadingOverlay) {
+                        return; // Do nothing while it's loading
+                    }
 
-                var guide = AppEngClient.instance().getGuide();
-                try {
-                    export(client, outputFolder, guide);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(1);
+                    var guide = AppEngClient.instance().getGuide();
+                    try {
+                        export(client, outputFolder, guide);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                    System.exit(0);
                 }
-                System.exit(0);
             });
         }
     }
@@ -191,10 +195,12 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     @Override
-    public void referenceRecipe(Recipe<?> recipe) {
-        if (!recipes.add(recipe)) {
+    public void referenceRecipe(RecipeHolder<?> holder) {
+        if (!recipes.add(holder)) {
             return; // Already added
         }
+
+        var recipe = holder.value();
 
         var registryAccess = Platform.getClientRegistryAccess();
         var resultItem = recipe.getResultItem(registryAccess);
@@ -207,32 +213,35 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     private void dumpRecipes(SiteExportWriter writer) {
-        for (var recipe : recipes) {
+        for (var holder : recipes) {
+            var id = holder.id();
+            var recipe = holder.value();
+
             if (recipe instanceof CraftingRecipe craftingRecipe) {
                 if (craftingRecipe.isSpecial()) {
                     continue;
                 }
-                writer.addRecipe(craftingRecipe);
+                writer.addRecipe(id, craftingRecipe);
             } else if (recipe instanceof AbstractCookingRecipe cookingRecipe) {
-                writer.addRecipe(cookingRecipe);
+                writer.addRecipe(id, cookingRecipe);
             } else if (recipe instanceof InscriberRecipe inscriberRecipe) {
-                writer.addRecipe(inscriberRecipe);
+                writer.addRecipe(id, inscriberRecipe);
             } else if (recipe instanceof TransformRecipe transformRecipe) {
-                writer.addRecipe(transformRecipe);
+                writer.addRecipe(id, transformRecipe);
             } else if (recipe instanceof SmithingTransformRecipe smithingTransformRecipe) {
-                writer.addRecipe(smithingTransformRecipe);
+                writer.addRecipe(id, smithingTransformRecipe);
             } else if (recipe instanceof SmithingTrimRecipe smithingTrimRecipe) {
-                writer.addRecipe(smithingTrimRecipe);
+                writer.addRecipe(id, smithingTrimRecipe);
             } else if (recipe instanceof StonecutterRecipe stonecutterRecipe) {
-                writer.addRecipe(stonecutterRecipe);
+                writer.addRecipe(id, stonecutterRecipe);
             } else if (recipe instanceof EntropyRecipe entropyRecipe) {
-                writer.addRecipe(entropyRecipe);
+                writer.addRecipe(id, entropyRecipe);
             } else if (recipe instanceof MatterCannonAmmo ammoRecipe) {
-                writer.addRecipe(ammoRecipe);
+                writer.addRecipe(id, ammoRecipe);
             } else if (recipe instanceof ChargerRecipe chargerRecipe) {
-                writer.addRecipe(chargerRecipe);
+                writer.addRecipe(id, chargerRecipe);
             } else {
-                LOGGER.warn("Unable to handle recipe {} of type {}", recipe.getId(), recipe.getType());
+                LOGGER.warn("Unable to handle recipe {} of type {}", holder.id(), recipe.getType());
             }
         }
     }
@@ -413,7 +422,7 @@ public final class SiteExporter implements ResourceExporter {
 
             // Export attunement info
             var attunementInfo = P2PTunnelAttunementInternal.getAttunementInfo(tunnelItem);
-            attunementInfo.apis().stream().map(lookup -> lookup.apiClass().getName())
+            attunementInfo.apis().stream().map(lookup -> lookup.getName())
                     .forEach(typeInfo.attunementApiClasses::add);
 
             usedVanillaItems.addAll(items);
@@ -511,12 +520,15 @@ public final class SiteExporter implements ResourceExporter {
 
             LOGGER.info("Exporting fluids...");
             for (var fluid : fluids) {
-                var fluidVariant = FluidVariant.of(fluid);
+                var fluidVariant = new FluidStack(fluid, 1);
                 String fluidId = BuiltInRegistries.FLUID.getKey(fluid).toString();
 
-                var sprites = FluidVariantRendering.getSprites(fluidVariant);
-                var sprite = sprites != null ? sprites[0] : null;
-                var color = FluidVariantRendering.getColor(fluidVariant);
+                var props = IClientFluidTypeExtensions.of(fluidVariant.getFluid());
+
+                var sprite = Minecraft.getInstance()
+                        .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                        .apply(props.getStillTexture(fluidVariant));
+                var color = props.getTintColor(fluidVariant);
 
                 var baseName = "!fluids/" + fluidId.replace(':', '/');
                 var iconPath = renderAndWrite(

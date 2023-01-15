@@ -28,7 +28,7 @@ import appeng.parts.automation.IOBusPart;
 import appeng.parts.automation.ImportBusPart;
 
 /**
- * Used for {@link ImportBusPart}, {@link appeng.parts.automation.ExportBusPart}.
+ * Used for {@link ImportBusPart}, {@link ExportBusPart}.
  *
  * @see IOBusScreen
  */

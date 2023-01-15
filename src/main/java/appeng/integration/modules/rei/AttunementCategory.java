@@ -46,10 +46,10 @@ public class AttunementCategory implements DisplayCategory<AttunementDisplay> {
         widgets.add(Widgets.createRecipeBase(bounds));
         widgets.add(Widgets.createArrow(new Point(startPoint.x + 27, startPoint.y + 4)));
         widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 61, startPoint.y + 5)));
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5))
-                .entries(display.getInputEntries().get(0)).markInput());
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5))
-                .entries(display.getOutputEntries().get(0)).disableBackground().markOutput());
+        // TODO 1.19.3 widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5))
+        // TODO 1.19.3 .entries(display.getInputEntries().get(0)).markInput());
+        // TODO 1.19.3 widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5))
+        // TODO 1.19.3 .entries(display.getOutputEntries().get(0)).disableBackground().markOutput());
         return widgets;
     }
 

@@ -127,7 +127,7 @@ public class GuideScrollbar extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta, double deltaHorizontal) {
         if (this.visible) {
             this.setScrollAmount((int) (this.scrollAmount - delta * 10));
             return true;

@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import io.netty.handler.codec.DecoderException;
 
@@ -18,7 +20,20 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 public class TransformCircumstance {
+
     public static final TransformCircumstance EXPLOSION = new TransformCircumstance("explosion");
+
+    private static final Codec<TransformCircumstance> EXPLOSION_CODEC = Codec.unit(EXPLOSION);
+
+    private static final Codec<FluidType> FLUID_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            TagKey.codec(Registries.FLUID).fieldOf("tag").forGetter(f -> f.fluidTag)).apply(builder, FluidType::new));
+
+    public static final Codec<TransformCircumstance> CODEC = Codec.STRING.dispatch(t -> t.type, type -> switch (type) {
+        case "explosion" -> EXPLOSION_CODEC;
+        case "fluid" -> FLUID_CODEC;
+        default -> throw new IllegalStateException("Invalid type: " + type);
+    });
+
     private final String type;
 
     public TransformCircumstance(String type) {

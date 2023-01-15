@@ -12,7 +12,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.core.AELog;
 
 /**
- * Locates a menu host based on {@link appeng.api.implementations.menuobjects.IMenuItem} in the player inventory.
+ * Locates a menu host based on {@link IMenuItem} in the player inventory.
  * <p/>
  * Optionally also contains a block position and side in case the menu is to be opened by the item but for a clicked
  * host (i.e. network tool).

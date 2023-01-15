@@ -21,7 +21,7 @@ import appeng.integration.modules.jei.widgets.Widget;
 import appeng.integration.modules.jei.widgets.WidgetFactory;
 
 /**
- * Displays information about growing quartz from {@link appeng.decorative.solid.BuddingCertusQuartzBlock}.
+ * Displays information about growing quartz from {@link BuddingCertusQuartzBlock}.
  */
 public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory.Page> {
 

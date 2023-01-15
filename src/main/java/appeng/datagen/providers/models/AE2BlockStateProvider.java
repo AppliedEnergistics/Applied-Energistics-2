@@ -20,9 +20,9 @@ import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
@@ -34,8 +34,8 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
     private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
             r -> new JsonPrimitive(r.ordinal() * 90));
 
-    public AE2BlockStateProvider(PackOutput output, String modid, ExistingFileHelper exFileHelper) {
-        super(output, modid, exFileHelper);
+    public AE2BlockStateProvider(PackOutput packOutput, String modid, ExistingFileHelper exFileHelper) {
+        super(packOutput, modid, exFileHelper);
     }
 
     /**

@@ -31,8 +31,12 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
 import appeng.datagen.providers.WorldGenProvider;
 import appeng.datagen.providers.advancements.AdvancementGenerator;
@@ -62,7 +66,14 @@ import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
 
+@Mod.EventBusSubscriber(modid = AppEng.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AE2DataGenerators {
+
+    @SubscribeEvent
+    public static void onGatherData(GatherDataEvent dataEvent) {
+        onGatherData(dataEvent.getGenerator(), dataEvent.getExistingFileHelper());
+    }
+
     public static void onGatherData(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         // for use on Forge
         onGatherData(generator, existingFileHelper, generator.getVanillaPack(true));
@@ -82,12 +93,14 @@ public class AE2DataGenerators {
         pack.addProvider(BlockDropProvider::new);
 
         // Tags
-        var blockTagsProvider = pack.addProvider(bindRegistries(BlockTagsProvider::new, registries));
+        var blockTagsProvider = pack
+                .addProvider(packOutput -> new BlockTagsProvider(packOutput, registries, existingFileHelper));
         pack.addProvider(
-                packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider.contentsGetter()));
-        pack.addProvider(bindRegistries(FluidTagsProvider::new, registries));
-        pack.addProvider(bindRegistries(BiomeTagsProvider::new, registries));
-        pack.addProvider(bindRegistries(PoiTypeTagsProvider::new, registries));
+                packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider.contentsGetter(),
+                        existingFileHelper));
+        pack.addProvider(packOutput -> new FluidTagsProvider(packOutput, registries, existingFileHelper));
+        pack.addProvider(packOutput -> new BiomeTagsProvider(packOutput, registries, existingFileHelper));
+        pack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries, existingFileHelper));
 
         // Models
         pack.addProvider(packOutput -> new BlockModelProvider(packOutput, existingFileHelper));
@@ -100,16 +113,16 @@ public class AE2DataGenerators {
         pack.addProvider(packOutput -> new AdvancementGenerator(packOutput, localization));
 
         // Recipes
-        pack.addProvider(DecorationRecipes::new);
-        pack.addProvider(DecorationBlockRecipes::new);
-        pack.addProvider(MatterCannonAmmoProvider::new);
-        pack.addProvider(EntropyRecipes::new);
-        pack.addProvider(InscriberRecipes::new);
-        pack.addProvider(SmeltingRecipes::new);
-        pack.addProvider(CraftingRecipes::new);
-        pack.addProvider(SmithingRecipes::new);
-        pack.addProvider(TransformRecipes::new);
-        pack.addProvider(ChargerRecipes::new);
+        pack.addProvider(bindRegistries(DecorationRecipes::new, registries));
+        pack.addProvider(bindRegistries(DecorationBlockRecipes::new, registries));
+        pack.addProvider(bindRegistries(MatterCannonAmmoProvider::new, registries));
+        pack.addProvider(bindRegistries(EntropyRecipes::new, registries));
+        pack.addProvider(bindRegistries(InscriberRecipes::new, registries));
+        pack.addProvider(bindRegistries(SmeltingRecipes::new, registries));
+        pack.addProvider(bindRegistries(CraftingRecipes::new, registries));
+        pack.addProvider(bindRegistries(SmithingRecipes::new, registries));
+        pack.addProvider(bindRegistries(TransformRecipes::new, registries));
+        pack.addProvider(bindRegistries(ChargerRecipes::new, registries));
 
         // Must run last
         pack.addProvider(packOutput -> localization);

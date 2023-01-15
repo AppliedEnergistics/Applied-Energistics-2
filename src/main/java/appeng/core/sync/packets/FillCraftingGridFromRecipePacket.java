@@ -261,7 +261,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         if (this.recipeId != null) {
             var recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
             if (recipe != null) {
-                return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
+                return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
             }
         }
 
@@ -286,7 +286,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
      * <p/>
      * We normalize the stored amount vs. the amount needed for the recipe. While this is irrelevant for crafting
      * recipes, it can be relevant for processing patterns where an ingredient doesn't always have amount=1.
-     * 
+     *
      * <pre>
      * Example:
      * Recipe asks for 16xItem A or 1xItem B.

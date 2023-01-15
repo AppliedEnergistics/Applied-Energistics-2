@@ -48,6 +48,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IGridNodeListener.State;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.parts.IPart;
@@ -96,9 +97,9 @@ public abstract class AEBasePart
      * @param reason Indicates which of the properties has changed.
      */
     @MustBeInvokedByOverriders
-    protected void onMainNodeStateChanged(IGridNodeListener.State reason) {
+    protected void onMainNodeStateChanged(State reason) {
         // Client flags shouldn't depend on grid boot, optimize!
-        if (reason != IGridNodeListener.State.GRID_BOOT) {
+        if (reason != State.GRID_BOOT) {
             markForUpdateIfClientFlagsChanged();
         }
     }

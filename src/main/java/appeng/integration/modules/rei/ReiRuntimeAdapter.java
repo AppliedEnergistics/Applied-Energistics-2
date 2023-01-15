@@ -59,6 +59,6 @@ class ReiRuntimeAdapter implements IREI {
     @Override
     public boolean hasSearchFocus() {
         var searchField = this.runtime.getSearchTextField();
-        return searchField != null && searchField.isFocused();
+        return searchField != null && searchField.m_93696_();
     }
 }

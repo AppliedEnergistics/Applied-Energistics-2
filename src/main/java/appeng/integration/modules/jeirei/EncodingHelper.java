@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import appeng.api.stacks.AEItemKey;
@@ -96,13 +97,13 @@ public final class EncodingHelper {
     }
 
     public static void encodeCraftingRecipe(PatternEncodingTermMenu menu,
-            @Nullable Recipe<?> recipe,
+            @Nullable RecipeHolder<?> recipe,
             List<List<GenericStack>> genericIngredients,
             Predicate<ItemStack> visiblePredicate) {
-        if (recipe != null && recipe.getType().equals(RecipeType.STONECUTTING)) {
+        if (recipe != null && recipe.value().getType().equals(RecipeType.STONECUTTING)) {
             menu.setMode(EncodingMode.STONECUTTING);
-            menu.setStonecuttingRecipeId(recipe.getId());
-        } else if (recipe != null && recipe.getType().equals(RecipeType.SMITHING)) {
+            menu.setStonecuttingRecipeId(recipe.id());
+        } else if (recipe != null && recipe.value().getType().equals(RecipeType.SMITHING)) {
             menu.setMode(EncodingMode.SMITHING_TABLE);
         } else {
             menu.setMode(EncodingMode.CRAFTING);
@@ -116,7 +117,7 @@ public final class EncodingHelper {
         if (recipe != null) {
             // When we have access to a crafting recipe, we'll switch modes and try to find suitable
             // ingredients based on the recipe ingredients, which allows for fuzzy-matching.
-            var ingredients3x3 = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
+            var ingredients3x3 = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
 
             // Find a good match for every ingredient
             for (int slot = 0; slot < ingredients3x3.size(); slot++) {

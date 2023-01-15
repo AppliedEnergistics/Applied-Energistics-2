@@ -19,7 +19,6 @@
 package appeng.items.tools.powered;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
@@ -32,7 +31,7 @@ import appeng.util.Platform;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 
-    public ChargedStaffItem(Item.Properties props) {
+    public ChargedStaffItem(Properties props) {
         super(AEConfig.instance().getChargedStaffBattery(), props);
     }
 

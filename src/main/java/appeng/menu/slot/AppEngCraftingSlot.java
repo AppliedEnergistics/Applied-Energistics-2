@@ -25,6 +25,7 @@ import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.CommonHooks;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.crafting.CraftingEvent;
@@ -83,8 +84,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
         CraftingEvent.fireCraftingEvent(playerIn, stack, this.craftingGrid.toContainer());
         this.amountCrafted += stack.getCount();
         this.checkTakeAchievements(stack);
-        // FIXME FABRIC no crafting hooks
-        // ForgeHooks.setCraftingPlayer(playerIn);
+        CommonHooks.setCraftingPlayer(playerIn);
         final CraftingContainer ic = new TransientCraftingContainer(this.getMenu(), 3, 3);
 
         for (int x = 0; x < this.craftingGrid.size(); x++) {
@@ -95,8 +95,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
 
         Inventories.copy(ic, this.craftingGrid, false);
 
-        // FIXME FABRIC no crafting hooks
-        // ForgeHooks.setCraftingPlayer(null);
+        CommonHooks.setCraftingPlayer(null);
 
         for (int i = 0; i < aitemstack.size(); ++i) {
             final ItemStack itemstack1 = this.craftingGrid.getStackInSlot(i);
@@ -140,7 +139,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     // refactoring.
     protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
         return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level)
-                .map(iCraftingRecipe -> iCraftingRecipe.getRemainingItems(ic))
+                .map(recipe -> recipe.value().getRemainingItems(ic))
                 .orElse(NonNullList.withSize(9, ItemStack.EMPTY));
     }
 }

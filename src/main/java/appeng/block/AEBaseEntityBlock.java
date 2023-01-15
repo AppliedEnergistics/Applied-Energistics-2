@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -72,7 +71,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     @Nullable
     private BlockEntityTicker<T> clientTicker;
 
-    public AEBaseEntityBlock(BlockBehaviour.Properties props) {
+    public AEBaseEntityBlock(Properties props) {
         super(props);
     }
 

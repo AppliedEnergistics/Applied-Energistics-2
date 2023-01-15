@@ -28,7 +28,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
@@ -37,7 +36,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import appeng.core.AEConfig;
-import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -46,11 +44,11 @@ import appeng.worldgen.meteorite.MeteoritePlacer;
 import appeng.worldgen.meteorite.PlacedMeteoriteSettings;
 import appeng.worldgen.meteorite.debug.MeteoriteSpawner;
 
-public class MeteoritePlacerItem extends AEBaseItem implements AEToolItem {
+public class MeteoritePlacerItem extends AEBaseItem {
 
     private static final String MODE_TAG = "mode";
 
-    public MeteoritePlacerItem(Item.Properties properties) {
+    public MeteoritePlacerItem(Properties properties) {
         super(properties);
     }
 

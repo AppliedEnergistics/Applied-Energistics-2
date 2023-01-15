@@ -18,11 +18,10 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
 
 public class QuartzSwordItem extends SwordItem {
-    public QuartzSwordItem(Item.Properties props, QuartzToolType type) {
+    public QuartzSwordItem(Properties props, QuartzToolType type) {
         super(type.getToolTier(), 3, -2.4F, props);
     }
 }
