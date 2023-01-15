@@ -12,7 +12,7 @@ import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.api.stacks.AmountFormat;
 import appeng.core.localization.InGameTooltip;
-import appeng.helpers.iface.PatternProviderLogicHost;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 
 /**
  * Shows information about the current crafting lock.

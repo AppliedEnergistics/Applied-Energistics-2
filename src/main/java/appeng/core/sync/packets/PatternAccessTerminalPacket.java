@@ -17,8 +17,8 @@ import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.sync.BasePacket;
 
 /**
- * Sends the content for a single {@link appeng.helpers.iface.PatternContainer} shown in the pattern access terminal to
- * the client.
+ * Sends the content for a single {@link appeng.helpers.patternprovider.PatternContainer} shown in the pattern access
+ * terminal to the client.
  */
 public class PatternAccessTerminalPacket extends BasePacket {
 

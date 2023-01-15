@@ -17,7 +17,7 @@ import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
-import appeng.helpers.iface.PatternProviderLogicHost;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.parts.crafting.PatternProviderPart;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;

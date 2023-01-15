@@ -43,8 +43,8 @@ import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.crafting.PushDirection;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.definitions.AEBlocks;
-import appeng.helpers.iface.PatternProviderLogic;
-import appeng.helpers.iface.PatternProviderLogicHost;
+import appeng.helpers.patternprovider.PatternProviderLogic;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.util.SettingsFrom;
 
 public class PatternProviderBlockEntity extends AENetworkBlockEntity implements PatternProviderLogicHost {

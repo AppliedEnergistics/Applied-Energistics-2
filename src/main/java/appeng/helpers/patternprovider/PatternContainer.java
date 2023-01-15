@@ -1,4 +1,4 @@
-package appeng.helpers.iface;
+package appeng.helpers.patternprovider;
 
 import org.jetbrains.annotations.Nullable;
 

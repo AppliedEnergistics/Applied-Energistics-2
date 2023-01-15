@@ -21,7 +21,7 @@ import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
-import appeng.helpers.iface.PatternProviderLogicHost;
+import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.integration.modules.igtooltip.blocks.ChargerDataProvider;
 import appeng.integration.modules.igtooltip.blocks.CraftingMonitorDataProvider;
 import appeng.integration.modules.igtooltip.blocks.GridNodeStateDataProvider;

@@ -1,4 +1,4 @@
-package appeng.helpers.iface;
+package appeng.helpers.patternprovider;
 
 import java.util.IdentityHashMap;
 import java.util.Map;

@@ -19,7 +19,7 @@
 package appeng.client.gui.me.patternaccess;
 
 import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.helpers.iface.PatternProviderLogic;
+import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.implementations.PatternAccessTermMenu;
 import appeng.util.inv.AppEngInternalInventory;
 
