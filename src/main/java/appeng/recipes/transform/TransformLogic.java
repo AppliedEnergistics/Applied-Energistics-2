@@ -9,8 +9,6 @@ import java.util.function.Predicate;
 
 import com.google.common.collect.Lists;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
@@ -20,6 +18,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
@@ -173,19 +175,19 @@ public final class TransformLogic {
         return ret;
     }
 
-    static {
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> clearCache());
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
-            if (success)
-                clearCache();
-        });
-        CommonLifecycleEvents.TAGS_LOADED.register((registries, client) -> {
-            if (client) {
-                // a bit cheesy, but probably fine (technically we should be listening for recipes, not tags)
-                // TODO: PR client recipe load callback to fabric
-                clearCache();
-            }
-        });
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent e) {
+        clearCache();
+    }
+
+    @SubscribeEvent
+    public static void onReloadServerResources(AddReloadListenerEvent e) {
+        clearCache();
+    }
+
+    @SubscribeEvent
+    public static void onClientRecipesUpdated(RecipesUpdatedEvent e) {
+        clearCache();
     }
 
     private TransformLogic() {

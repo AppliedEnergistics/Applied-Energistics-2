@@ -19,6 +19,7 @@
 package appeng.block.spatial;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -91,4 +92,9 @@ public class MatrixFrameBlock extends AEBaseBlock {
         return 1.0f;
     }
 
+    @Override
+    public boolean canEntityDestroy(final BlockState state, final BlockGetter level, final BlockPos pos,
+            final Entity entity) {
+        return false;
+    }
 }

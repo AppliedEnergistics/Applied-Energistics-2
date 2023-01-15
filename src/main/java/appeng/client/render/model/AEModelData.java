@@ -18,28 +18,22 @@
 
 package appeng.client.render.model;
 
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
+
 /**
  * This implementation of IModelData allows us to know precisely which data is part of the model data.
  */
-public class AEModelData {
-    public boolean isCacheable() {
-        return true;
+public final class AEModelData {
+
+    public static final ModelProperty<Boolean> SKIP_CACHE = new ModelProperty<>();
+    public static final ModelProperty<Byte> SPIN = new ModelProperty<>();
+
+    public static ModelData.Builder builder() {
+        return ModelData.builder();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        return true;
+    public static ModelData create() {
+        return builder().build();
     }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
 }

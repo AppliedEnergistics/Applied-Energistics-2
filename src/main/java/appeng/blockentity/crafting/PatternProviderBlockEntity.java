@@ -34,6 +34,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.orientation.BlockOrientation;
@@ -184,6 +186,15 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
                 }
             }
         }
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @javax.annotation.Nullable Direction side) {
+        var lo = logic.getCapability(cap);
+        if (lo.isPresent()) {
+            return lo;
+        }
+        return super.getCapability(cap, side);
     }
 
     @Override

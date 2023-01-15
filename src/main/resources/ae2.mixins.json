@@ -1,7 +1,8 @@
 {
   "required": true,
-  "minVersion": "0.8.2",
+  "minVersion": "0.8.3",
   "package": "appeng.mixins",
+  "refmap": "ae2.mixins.refmap.json",
   "compatibilityLevel": "JAVA_11",
   "plugin": "appeng.mixins.ConfigPlugin",
   "mixins": [
@@ -9,11 +10,7 @@
     "feature.LevelLightEngineMixin",
     "EarlyStartupMixin",
     "EnchantmentHelperMixin",
-    "DynamicLadderMixin",
     "ItemEntityMixin",
-    "OnNeighborUpdateMixin",
-    "BreakSpeedMixin",
-    "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin",
     "StructureTemplateMixin"
   ],
@@ -24,14 +21,13 @@
     "unlitquad.BlockModelMixin",
     "unlitquad.BlockPartFaceDeserializerMixin",
     "AbstractContainerScreenMixin",
-    "BlockBreakParticleMixin",
-    "ModelsReloadMixin",
-    "MouseWheelMixin",
     "ItemRendererMixin",
     "WrappedGenericStackTooltipModIdMixin",
     "ResizableSlotHighlightMixin",
     "PickColorMixin",
+    "TextureAtlasMixin",
     "PonderWorldMixin",
+    "ModelBakeryMixin",
     "VariantDeserializerMixin"
   ],
   "server": [],

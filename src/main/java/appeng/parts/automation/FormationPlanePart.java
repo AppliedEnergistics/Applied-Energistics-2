@@ -32,6 +32,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
@@ -286,8 +287,10 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return getConnections();
+    public ModelData getModelData() {
+        return ModelData.builder()
+                .with(PlaneModelData.CONNECTIONS, getConnections())
+                .build();
     }
 
 }

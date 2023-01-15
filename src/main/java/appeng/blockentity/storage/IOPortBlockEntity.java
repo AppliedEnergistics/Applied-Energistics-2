@@ -246,7 +246,7 @@ public class IOPortBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public InternalInventory getExposedInventoryForSide(Direction facing) {
+    protected InternalInventory getExposedInventoryForSide(Direction facing) {
         if (facing == this.getTop() || facing == this.getTop().getOpposite()) {
             return this.inputCellsExt;
         } else {

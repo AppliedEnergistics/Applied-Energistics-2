@@ -19,49 +19,29 @@
 package appeng.blockentity.crafting;
 
 import java.util.EnumSet;
-import java.util.Objects;
 
 import net.minecraft.core.Direction;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 
 import appeng.client.render.model.AEModelData;
 
-public class CraftingCubeModelData extends AEModelData {
+public final class CraftingCubeModelData {
 
     // Contains information on which sides of the block are connected to other parts
     // of a formed crafting cube
-    private final EnumSet<Direction> connections;
+    public static final ModelProperty<EnumSet<Direction>> CONNECTIONS = new ModelProperty<>();
 
-    public CraftingCubeModelData(EnumSet<Direction> connections) {
-        this.connections = Objects.requireNonNull(connections);
+    private CraftingCubeModelData() {
     }
 
-    @Override
-    public boolean isCacheable() {
-        return false; // Too many variants
+    public static ModelData.Builder builder(EnumSet<Direction> connections) {
+        return AEModelData.builder()
+                .with(AEModelData.SKIP_CACHE, true)
+                .with(CONNECTIONS, connections);
     }
 
-    public EnumSet<Direction> getConnections() {
-        return connections;
+    public static ModelData create(EnumSet<Direction> connections) {
+        return builder(connections).build();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        CraftingCubeModelData that = (CraftingCubeModelData) o;
-        return connections.equals(that.connections);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), connections);
-    }
-
 }

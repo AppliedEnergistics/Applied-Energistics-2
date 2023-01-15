@@ -13,8 +13,8 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
 
 public class CableModelProvider extends AE2BlockStateProvider {
-    public CableModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, AppEng.MOD_ID, existingFileHelper);
+    public CableModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
+        super(packOutput, AppEng.MOD_ID, existingFileHelper);
     }
 
     @Override

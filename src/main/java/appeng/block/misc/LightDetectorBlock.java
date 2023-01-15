@@ -45,10 +45,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.helpers.AEMaterials;
-import appeng.hooks.INeighborChangeSensitive;
 
-public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity>
-        implements INeighborChangeSensitive {
+public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity> {
 
     // Cache VoxelShapes for each facing
     private static final Map<Direction, VoxelShape> SHAPES;

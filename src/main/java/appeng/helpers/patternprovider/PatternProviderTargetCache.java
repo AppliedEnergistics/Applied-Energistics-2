@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -18,17 +17,19 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
+import appeng.capabilities.Capabilities;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
+import appeng.util.BlockApiCache;
 
 class PatternProviderTargetCache {
-    private final BlockApiCache<IStorageMonitorableAccessor, Direction> cache;
+    private final BlockApiCache<IStorageMonitorableAccessor> cache;
     private final Direction direction;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
 
     PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src) {
-        this.cache = BlockApiCache.create(IStorageMonitorableAccessor.SIDED, l, pos);
+        this.cache = BlockApiCache.create(Capabilities.STORAGE_MONITORABLE_ACCESSOR, l, pos);
         this.direction = direction;
         this.src = src;
         this.strategies = StackWorldBehaviors.createExternalStorageStrategies(l, pos, direction);

@@ -34,8 +34,8 @@ public abstract class AE2BlockStateProvider extends BlockStateProvider implement
     private static final VariantProperty<VariantProperties.Rotation> Z_ROT = new VariantProperty<>("ae2:z",
             r -> new JsonPrimitive(r.ordinal() * 90));
 
-    public AE2BlockStateProvider(PackOutput output, String modid, ExistingFileHelper exFileHelper) {
-        super(output, modid, exFileHelper);
+    public AE2BlockStateProvider(PackOutput packOutput, String modid, ExistingFileHelper exFileHelper) {
+        super(packOutput, modid, exFileHelper);
     }
 
     /**
