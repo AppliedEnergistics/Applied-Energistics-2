@@ -20,13 +20,12 @@ package appeng.items;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 
-public abstract class AEBaseItem extends Item implements FabricItem {
+public abstract class AEBaseItem extends Item {
 
     public AEBaseItem(Item.Properties properties) {
         super(properties);
@@ -47,4 +46,5 @@ public abstract class AEBaseItem extends Item implements FabricItem {
         String regName = this.getRegistryName() != null ? this.getRegistryName().getPath() : "unregistered";
         return this.getClass().getSimpleName() + "[" + regName + "]";
     }
+
 }

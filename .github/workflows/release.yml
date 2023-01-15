@@ -32,12 +32,12 @@ jobs:
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
-          echo ::set-output name=ARTIFACT_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}.jar
-          echo ::set-output name=ARTIFACT_NAME::appliedenergistics2-fabric-${VERSION}.jar
-          echo ::set-output name=JAVADOC_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}-javadoc.jar
-          echo ::set-output name=JAVADOC_NAME::appliedenergistics2-fabric-${VERSION}-javadoc.jar
-          echo ::set-output name=API_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}-api.jar
-          echo ::set-output name=API_NAME::appliedenergistics2-fabric-${VERSION}-api.jar
+          echo ::set-output name=ARTIFACT_PATH::./build/libs/appliedenergistics2-forge-${VERSION}.jar
+          echo ::set-output name=ARTIFACT_NAME::appliedenergistics2-forge-${VERSION}.jar
+          echo ::set-output name=JAVADOC_PATH::./build/libs/appliedenergistics2-forge-${VERSION}-javadoc.jar
+          echo ::set-output name=JAVADOC_NAME::appliedenergistics2-forge-${VERSION}-javadoc.jar
+          echo ::set-output name=API_PATH::./build/libs/appliedenergistics2-forge-${VERSION}-api.jar
+          echo ::set-output name=API_NAME::appliedenergistics2-forge-${VERSION}-api.jar
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
         run: tar -I zstd -cf build.tar.zst .gradle build src/generated

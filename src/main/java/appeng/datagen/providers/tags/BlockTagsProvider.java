@@ -33,15 +33,20 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.api.ids.AETags;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implements IAE2DataProvider {
-    public BlockTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
-        super(packOutput, Registries.BLOCK, registries, block -> block.builtInRegistryHolder().key());
+    public BlockTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
+            ExistingFileHelper existingFileHelper) {
+        super(packOutput, Registries.BLOCK, registries, block -> block.builtInRegistryHolder().key(), AppEng.MOD_ID,
+                existingFileHelper);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
 
         tag(ConventionTags.CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK)
                 .add(AEBlocks.QUARTZ_BLOCK.block());
-        tag("c:storage_blocks")
+        tag(Tags.Blocks.STORAGE_BLOCKS)
                 .addTag(ConventionTags.CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK);
 
         // Special behavior is associated with this tag, so our walls need to be added to it

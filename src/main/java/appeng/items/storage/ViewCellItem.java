@@ -20,6 +20,7 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.FuzzyMode;
