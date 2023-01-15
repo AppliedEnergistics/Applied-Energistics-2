@@ -118,8 +118,8 @@ public class PatternProviderPart extends BasicStatePart implements PatternProvid
     }
 
     @Override
-    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
-        this.logic.addDrops(drops);
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
+        this.logic.addDrops(drops, remove);
     }
 
     @Override

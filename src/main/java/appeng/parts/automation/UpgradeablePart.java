@@ -100,7 +100,7 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     @Override
-    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
         for (var is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);

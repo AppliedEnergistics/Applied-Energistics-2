@@ -18,6 +18,7 @@
 
 package appeng.block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -51,6 +52,7 @@ import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.InteractionUtil;
+import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 /**
@@ -121,8 +123,14 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (newState.is(state.getBlock())) {
-            return; // Just a block state change
+        // Drop internal BE content
+        if (!level.isClientSide() && !newState.is(state.getBlock())) {
+            var be = this.getBlockEntity(level, pos);
+            if (be != null) {
+                var drops = new ArrayList<ItemStack>();
+                be.addAdditionalDrops(level, pos, drops, false);
+                Platform.spawnDrops(level, pos, drops);
+            }
         }
 
         // super will remove the TE, as it is not an instance of BlockContainer

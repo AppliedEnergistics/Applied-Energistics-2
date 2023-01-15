@@ -186,11 +186,14 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-        super.addAdditionalDrops(level, pos, drops);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+        super.addAdditionalDrops(level, pos, drops, remove);
 
         for (var upgrade : upgrades) {
             drops.add(upgrade);
+        }
+        if (remove) {
+            upgrades.clear();
         }
     }
 

@@ -42,6 +42,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -68,7 +69,6 @@ import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
-import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 import appeng.util.helpers.ItemComparisonHelper;
 
@@ -337,11 +337,12 @@ public class AEBaseBlockEntity extends BlockEntity
     /**
      * returns the contents of the block entity but not the block itself, to drop into the world
      *
-     * @param level level
-     * @param pos   block position
-     * @param drops drops of block entity
+     * @param level  level
+     * @param pos    block position
+     * @param drops  drops of block entity
+     * @param remove Remove the drops from the block entity so they don't drop again when it is broken.
      */
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
     }
 
     @Override
@@ -412,31 +413,39 @@ public class AEBaseBlockEntity extends BlockEntity
     /**
      * Called when a player uses a wrench on this block entity to disassemble it.
      */
-    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult) {
+    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult,
+            ItemStack wrench) {
         var pos = hitResult.getBlockPos();
-        final BlockState blockState = level.getBlockState(pos);
-        final Block block = blockState.getBlock();
+        var state = level.getBlockState(pos);
+        var block = state.getBlock();
 
-        var pickupCandidates = Platform.getBlockDrops(level, pos);
-        var op = new ItemStack(getBlockState().getBlock());
+        if (level instanceof ServerLevel serverLevel) {
+            // Drops of the block itself (without extra block entity inventory)
+            var drops = Block.getDrops(state, serverLevel, pos, this, player, wrench);
 
-        for (var ol : pickupCandidates) {
-            if (ItemComparisonHelper.isEqualItemType(ol, op)) {
-                var tag = new CompoundTag();
-                exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
-                if (!tag.isEmpty()) {
-                    ol.setTag(tag);
+            var op = new ItemStack(state.getBlock());
+            for (var ol : drops) {
+                if (ItemComparisonHelper.isEqualItemType(ol, op)) {
+                    var tag = new CompoundTag();
+                    exportSettings(SettingsFrom.DISMANTLE_ITEM, tag, player);
+                    if (!tag.isEmpty()) {
+                        ol.setTag(tag);
+                    }
+                    break;
                 }
+            }
+
+            // Add and remove extra block entity inventory
+            addAdditionalDrops(level, pos, drops, true);
+
+            for (var item : drops) {
+                player.getInventory().placeItemBackInInventory(item);
             }
         }
 
-        block.playerWillDestroy(level, pos, blockState, player);
+        block.playerWillDestroy(level, pos, state, player);
         level.removeBlock(pos, false);
         block.destroy(level, pos, getBlockState());
-
-        for (var item : pickupCandidates) {
-            player.getInventory().placeItemBackInInventory(item);
-        }
 
         return InteractionResult.sidedSuccess(level.isClientSide());
     }

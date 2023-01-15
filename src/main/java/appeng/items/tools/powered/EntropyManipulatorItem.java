@@ -19,6 +19,7 @@
 package appeng.items.tools.powered;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -218,14 +219,19 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
      * all drops of the block have smelting recipes.
      */
     private boolean performInWorldSmelting(ItemStack item, Level level, Player p, BlockPos pos, Block block) {
-        ItemStack[] stack = Platform.getBlockDrops(level, pos);
+        var state = level.getBlockState(pos);
+        List<ItemStack> drops = Collections.emptyList();
+        if (level instanceof ServerLevel serverLevel) {
+            var be = level.getBlockEntity(pos);
+            drops = Block.getDrops(state, serverLevel, pos, be, p, item);
+        }
 
         // Results of the operation
         BlockState smeltedBlockState = null;
         List<ItemStack> smeltedDrops = new ArrayList<>();
 
         var tempInv = new SimpleContainer(1);
-        for (ItemStack i : stack) {
+        for (ItemStack i : drops) {
             tempInv.setItem(0, i);
             Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, tempInv,
                     level);

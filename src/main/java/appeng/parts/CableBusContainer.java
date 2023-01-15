@@ -896,7 +896,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
 
             if (side != null) {
-                final IFacadePart fp = this.getFacadeContainer().getFacade(side);
+                var fp = this.getFacadeContainer().getFacade(side);
                 if (fp != null) {
                     drops.add(fp.getItemStack());
                 }
@@ -906,11 +906,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return drops;
     }
 
-    public List<ItemStack> addAdditionalDrops(List<ItemStack> drops) {
+    public List<ItemStack> addAdditionalDrops(List<ItemStack> drops, boolean remove) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(side);
             if (part != null) {
-                part.addAdditionalDrops(drops, false);
+                part.addAdditionalDrops(drops, false, remove);
             }
         }
 

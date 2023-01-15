@@ -71,6 +71,12 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         return EmptyInternalInventory.INSTANCE;
     }
 
+    default void clear() {
+        for (int i = 0; i < size(); i++) {
+            setItemDirect(i, ItemStack.EMPTY);
+        }
+    }
+
     default boolean isEmpty() {
         return !iterator().hasNext();
     }

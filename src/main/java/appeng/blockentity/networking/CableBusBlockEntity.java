@@ -27,6 +27,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -154,8 +156,8 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
-        this.getCableBus().addAdditionalDrops(drops);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+        this.getCableBus().addAdditionalDrops(drops, remove);
     }
 
     @Override
@@ -299,10 +301,11 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult) {
+    public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult,
+            ItemStack wrench) {
 
         if (!level.isClientSide) {
-            final List<ItemStack> is = new ArrayList<>();
+            var is = new ArrayList<ItemStack>();
             final SelectedPart sp;
 
             AppEng.instance().setPartInteractionPlayer(player);
@@ -315,23 +318,35 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             // SelectedPart contains either a facade or a part. Never both.
             if (sp.part != null) {
                 sp.part.addPartDrop(is, true);
-                sp.part.addAdditionalDrops(is, true);
+                sp.part.addAdditionalDrops(is, true, remove);
+
+                // All facades will be dropped to the ground when the cable is removed,
+                // do it manually here, so they are moved to the player inv too
+                if (sp.side == null) {
+                    var facades = getFacadeContainer();
+                    for (var side : Direction.values()) {
+                        var facade = facades.getFacade(side);
+                        if (facade != null) {
+                            is.add(facade.getItemStack());
+                            facades.removeFacade(cb, side);
+                        }
+                    }
+                }
+
                 cb.removePartFromSide(sp.side);
-            }
-
-            var pos = getBlockPos();
-
-            // A facade cannot exist without a cable part, no host cleanup needed.
-            if (sp.facade != null) {
+            } else if (sp.facade != null) {
                 is.add(sp.facade.getItemStack());
                 cb.getFacadeContainer().removeFacade(cb, sp.side);
-                Platform.notifyBlocksOfNeighbors(level, pos);
+                Platform.notifyBlocksOfNeighbors(level, getBlockPos());
             }
 
             for (var item : is) {
                 player.getInventory().placeItemBackInInventory(item);
             }
         }
+
+        // Play a break sound
+        level.playSound(player, getBlockPos(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, .7f, 1f);
 
         return InteractionResult.sidedSuccess(level.isClientSide());
 

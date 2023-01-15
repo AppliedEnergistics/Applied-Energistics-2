@@ -43,7 +43,7 @@ import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -52,9 +52,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
 
@@ -75,7 +73,6 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.DimensionalBlockPos;
-import appeng.blockentity.AEBaseBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -258,38 +255,13 @@ public class Platform {
         return true;
     }
 
-    public static ItemStack[] getBlockDrops(Level level, BlockPos pos) {
-        // FIXME: Check assumption here and if this could only EVER be called with a
-        // server level
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return new ItemStack[0];
-        }
-
-        final BlockState state = level.getBlockState(pos);
-        final BlockEntity blockEntity = level.getBlockEntity(pos);
-
-        List<ItemStack> out = Block.getDrops(state, serverLevel, pos, blockEntity);
-        if (blockEntity instanceof AEBaseBlockEntity be) {
-            be.addAdditionalDrops(level, pos, out);
-        }
-
-        return out.toArray(new ItemStack[0]);
-    }
-
     /*
      * Generates Item entities in the level similar to how items are generally dropped.
      */
     public static void spawnDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         if (!level.isClientSide()) {
-            for (ItemStack i : drops) {
-                if (!i.isEmpty() && i.getCount() > 0) {
-                    final double offset_x = (getRandomInt() % 32 - 16) / 82D;
-                    final double offset_y = (getRandomInt() % 32 - 16) / 82D;
-                    final double offset_z = (getRandomInt() % 32 - 16) / 82D;
-                    final ItemEntity ei = new ItemEntity(level, 0.5 + offset_x + pos.getX(),
-                            0.5 + offset_y + pos.getY(), 0.2 + offset_z + pos.getZ(), i.copy());
-                    level.addFreshEntity(ei);
-                }
+            for (var i : drops) {
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), i);
             }
         }
     }
