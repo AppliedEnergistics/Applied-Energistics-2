@@ -118,16 +118,6 @@ public enum BlockOrientation {
         }
     }
 
-    // This is not fast and should probably use a lookup table instead
-    public static BlockOrientation getFromAngles(int xRot, int yRot, int zRot) {
-        for (var orientation : values()) {
-            if (orientation.getAngleX() == xRot && orientation.getAngleY() == yRot && orientation.getAngleZ() == zRot) {
-                return orientation;
-            }
-        }
-        throw new IllegalArgumentException("Invalid x, y or z rotation: " + xRot + ", " + yRot + ", " + zRot);
-    }
-
     public void set(BlockEntity be) {
         set(be.getLevel(), be.getBlockPos());
     }
