@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,13 +44,6 @@ public class FacadeContainer implements IFacadeContainer {
      */
     private static final String[] NBT_KEY_NAMES = Arrays.stream(Direction.values())
             .map(d -> "facade" + StringUtils.capitalize(d.getSerializedName()))
-            .toArray(String[]::new);
-
-    /**
-     * Key names to store facades (the old ones pre 1.20). TODO: Remove in 1.20
-     */
-    private static final String[] NBT_KEY_OLD_NAMES = Arrays.stream(Direction.values())
-            .map(d -> "facade:" + d.ordinal())
             .toArray(String[]::new);
 
     private final CableBusStorage storage;
@@ -98,11 +90,7 @@ public class FacadeContainer implements IFacadeContainer {
         for (var side : Direction.values()) {
             this.storage.removeFacade(side);
 
-            Tag tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
-            if (tag == null) {
-                tag = c.get(NBT_KEY_OLD_NAMES[side.ordinal()]);
-            }
-
+            var tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
             if (tag instanceof CompoundTag facadeTag) {
                 var is = ItemStack.of(facadeTag);
                 if (!is.isEmpty()) {

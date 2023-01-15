@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -89,22 +88,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
      */
     private static final String[] NBT_KEY_SIDES = Arrays.stream(Platform.DIRECTIONS_WITH_NULL)
             .map(d -> d == null ? "cable" : d.getSerializedName())
-            .toArray(String[]::new);
-
-    /**
-     * Old NBT property names used to store the item-ids for parts on the given side. Index is 0-5 for normal directions
-     * and 6 for the null-direction. TODO Remove in 1.20
-     */
-    private static final String[] NBT_KEY_OLD_PART_ID = Arrays.stream(Platform.DIRECTIONS_WITH_NULL)
-            .map(d -> d == null ? "item:center" : "item:" + d.name())
-            .toArray(String[]::new);
-
-    /**
-     * Old NBT property names used to store the item-ids for parts on the given side. Index is 0-5 for normal directions
-     * and 6 for the null-direction. TODO Remove in 1.20
-     */
-    private static final String[] NBT_KEY_OLD_PART_DATA = Arrays.stream(Platform.DIRECTIONS_WITH_NULL)
-            .map(d -> d == null ? "extra:center" : "extra:" + d.name())
             .toArray(String[]::new);
 
     private static final ThreadLocal<Boolean> IS_LOADING = new ThreadLocal<>();
@@ -847,15 +830,6 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             var sideTag = data.get(sideKey);
             if (sideTag instanceof CompoundTag partData && loadPart(side, partData)) {
                 continue;
-            }
-
-            // Try to migrate old part data (TODO: Remove in 1.20)
-            if (data.contains(NBT_KEY_OLD_PART_ID[sideIndex], Tag.TAG_STRING)) {
-                var partData = data.getCompound(NBT_KEY_OLD_PART_DATA[sideIndex]).copy();
-                partData.putString("id", data.getString(NBT_KEY_OLD_PART_ID[sideIndex]));
-                if (loadPart(side, partData)) {
-                    continue;
-                }
             }
 
             // If nothing was loaded, the side is empty and has to be cleared

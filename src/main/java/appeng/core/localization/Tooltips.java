@@ -17,13 +17,13 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.behaviors.EmptyingAction;
 import appeng.api.config.PowerUnits;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AEConfig;
-import appeng.menu.me.interaction.EmptyingAction;
 
 /**
  * Static utilities for constructing tooltips in various places.

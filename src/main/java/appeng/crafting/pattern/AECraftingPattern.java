@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.player.Input;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -39,6 +38,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -48,7 +48,6 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.menu.AutoCraftingMenu;
-import appeng.menu.me.interaction.StackInteractions;
 
 public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSupportedPattern {
     public static final int CRAFTING_GRID_DIMENSION = 3;
@@ -451,7 +450,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return item;
         }
 
-        var containedFluid = StackInteractions.getContainedStack(itemKey.toStack(), AEKeyType.fluids());
+        var containedFluid = ContainerItemStrategies.getContainedStack(itemKey.toStack(), AEKeyType.fluids());
         // Milk is not natively a fluid container, but it might be made one by other mods
         var isBucket = itemKey.getItem() instanceof BucketItem || itemKey.getItem() instanceof MilkBucketItem;
 

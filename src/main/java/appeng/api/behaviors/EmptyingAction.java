@@ -1,4 +1,4 @@
-package appeng.menu.me.interaction;
+package appeng.api.behaviors;
 
 import net.minecraft.network.chat.Component;
 

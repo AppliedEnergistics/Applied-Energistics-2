@@ -37,6 +37,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.SecurityPermissions;
@@ -79,7 +80,6 @@ import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigManager;
@@ -457,12 +457,12 @@ public class MEStorageMenu extends AEBaseMenu
             return;
         }
 
-        if (action == InventoryAction.PICKUP_OR_SET_DOWN && StackInteractions.isKeySupported(clickedKey)) {
+        if (action == InventoryAction.PICKUP_OR_SET_DOWN && ContainerItemStrategies.isKeySupported(clickedKey)) {
             action = InventoryAction.FILL_ITEM;
         }
 
         if (action == InventoryAction.SPLIT_OR_PLACE_SINGLE) {
-            if (StackInteractions.getContainedStack(getCarried()) != null) {
+            if (ContainerItemStrategies.getContainedStack(getCarried()) != null) {
                 action = InventoryAction.EMPTY_ITEM;
             }
         }

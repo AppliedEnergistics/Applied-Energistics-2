@@ -1,4 +1,4 @@
-package appeng.menu.me.interaction;
+package appeng.api.behaviors;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -13,14 +13,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.util.GenericContainerHelper;
 import appeng.util.fluid.FluidSoundHelper;
 
-public class FluidContainerItemStrategy implements ContainerItemStrategy<AEFluidKey, Storage<FluidVariant>> {
+class FluidContainerItemStrategy implements ContainerItemStrategy<AEFluidKey, Storage<FluidVariant>> {
     @Override
     public @Nullable GenericStack getContainedStack(ItemStack stack) {
         return GenericContainerHelper.getContainedFluidStack(stack);

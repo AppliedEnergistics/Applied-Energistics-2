@@ -32,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.IStackWatcher;
 import appeng.api.networking.storage.IStorageService;
@@ -44,7 +45,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.Platform;
 
 /**
@@ -156,7 +156,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             var eq = player.getItemInHand(hand);
             if (AEItemKey.matches(this.configuredItem, eq)) {
                 // Already matches: try to swap to key contained in the item.
-                var containedStack = StackInteractions.getContainedStack(eq);
+                var containedStack = ContainerItemStrategies.getContainedStack(eq);
                 if (containedStack != null) {
                     this.configuredItem = containedStack.what();
                 }

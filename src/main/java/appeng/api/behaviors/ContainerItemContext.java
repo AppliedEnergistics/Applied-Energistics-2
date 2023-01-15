@@ -1,4 +1,4 @@
-package appeng.menu.me.interaction;
+package appeng.api.behaviors;
 
 import com.google.common.base.Preconditions;
 
@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 
-import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;

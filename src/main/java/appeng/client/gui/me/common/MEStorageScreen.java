@@ -39,6 +39,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.client.AEStackRendering;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Setting;
@@ -83,7 +84,6 @@ import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftingStatusMenu;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.ExternalSearch;
 import appeng.util.IConfigManagerListener;
 import appeng.util.Platform;
@@ -219,7 +219,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         // Is there an emptying action? If so, send it to the server
         if (mouseButton == 1 && clickType == ClickType.PICKUP && !menu.getCarried().isEmpty()) {
-            var emptyingAction = StackInteractions.getEmptyingAction(menu.getCarried());
+            var emptyingAction = ContainerItemStrategies.getEmptyingAction(menu.getCarried());
             if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
                 menu.handleInteraction(-1, InventoryAction.EMPTY_ITEM);
                 return;
@@ -612,7 +612,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (this.hoveredSlot instanceof RepoSlot repoSlot) {
             var carried = menu.getCarried();
             if (!carried.isEmpty()) {
-                var emptyingAction = StackInteractions.getEmptyingAction(carried);
+                var emptyingAction = ContainerItemStrategies.getEmptyingAction(carried);
                 if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
                     drawTooltip(
                             poseStack,

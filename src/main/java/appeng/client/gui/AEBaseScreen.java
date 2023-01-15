@@ -55,6 +55,8 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.behaviors.ContainerItemStrategies;
+import appeng.api.behaviors.EmptyingAction;
 import appeng.api.client.AEStackRendering;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
@@ -79,8 +81,6 @@ import appeng.helpers.InventoryAction;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
-import appeng.menu.me.interaction.EmptyingAction;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import appeng.menu.slot.DisabledSlot;
@@ -260,7 +260,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // See if we should offer the left-/right-click differentiation for setting a different filter
-        var emptyingAction = StackInteractions.getEmptyingAction(carried);
+        var emptyingAction = ContainerItemStrategies.getEmptyingAction(carried);
         if (emptyingAction != null) {
             var wrappedStack = GenericStack.wrapInItemStack(new GenericStack(emptyingAction.what(), 1));
             if (configInv.isItemValid(slot.slot, wrappedStack)) {

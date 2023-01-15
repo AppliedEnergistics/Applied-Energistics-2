@@ -17,6 +17,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.stacks.AEItemKey;
@@ -39,7 +40,6 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractPortableCell extends AEBasePoweredItem
@@ -241,7 +241,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             ItemStack cellStack,
             ItemStack otherStack) {
         // Try all available strategies
-        for (var keyType : StackInteractions.getSupportedKeyTypes()) {
+        for (var keyType : ContainerItemStrategies.getSupportedKeyTypes()) {
             if (tryInsertFromPlayerOwnedItem(player, cellStack, otherStack, keyType)) {
                 return true;
             }
@@ -266,7 +266,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             ItemStack cellStack,
             ItemStack otherStack,
             AEKeyType keyType) {
-        var context = StackInteractions.findOwnedItemContext(keyType, player, otherStack);
+        var context = ContainerItemStrategies.findOwnedItemContext(keyType, player, otherStack);
         if (context != null) {
             var containedStack = context.getExtractableContent();
             if (containedStack != null) {

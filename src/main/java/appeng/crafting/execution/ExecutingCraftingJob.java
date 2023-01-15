@@ -94,12 +94,7 @@ public class ExecutingCraftingJob {
         }
 
         this.finalOutput = GenericStack.readTag(data.getCompound(NBT_FINAL_OUTPUT));
-        // TODO 1.20: Remove
-        if (data.contains(NBT_REMAINING_AMOUNT)) {
-            this.remainingAmount = data.getLong(NBT_REMAINING_AMOUNT);
-        } else {
-            this.remainingAmount = this.finalOutput.amount();
-        }
+        this.remainingAmount = data.getLong(NBT_REMAINING_AMOUNT);
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
         this.waitingFor.readFromNBT(data.getList(NBT_WAITING_FOR, Tag.TAG_COMPOUND));
         this.timeTracker = new ElapsedTimeTracker(data.getCompound(NBT_TIME_TRACKER));

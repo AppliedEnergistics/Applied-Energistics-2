@@ -1,4 +1,4 @@
-package appeng.menu.me.interaction;
+package appeng.api.behaviors;
 
 import java.util.List;
 import java.util.Set;
@@ -11,15 +11,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.behaviors.ContainerItemStrategy;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.util.CowMap;
 
-// TODO 1.20: Rename -> ContainerItemStrategies, make API. This is not purely for UI now.
-public class StackInteractions {
+/**
+ * Manages {@link ContainerItemStrategy} registrations for {@linkplain AEKeyType key types}.
+ */
+public class ContainerItemStrategies {
     private static final CowMap<AEKeyType, ContainerItemStrategy<?, ?>> strategies = CowMap.identityHashMap();
 
     static {

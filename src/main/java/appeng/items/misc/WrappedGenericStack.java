@@ -32,13 +32,13 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.util.Platform;
 
 /**
@@ -136,7 +136,7 @@ public class WrappedGenericStack extends AEBaseItem {
         // Allow picking up fluids items with a fluid container, this is a special case for fluids
         var what = unwrapWhat(itemInSlot);
         if (clickAction == ClickAction.PRIMARY) {
-            var heldContainer = StackInteractions.findCarriedContextForKey(what, player, player.containerMenu);
+            var heldContainer = ContainerItemStrategies.findCarriedContextForKey(what, player, player.containerMenu);
             if (heldContainer != null) {
                 long amount = unwrapAmount(itemInSlot);
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);

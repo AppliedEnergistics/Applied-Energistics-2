@@ -11,7 +11,6 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
-import appeng.menu.me.interaction.StackInteractions;
 
 /**
  * Strategy to interact with the non-item keys held by container items, for example the fluid contained in a bucket.
@@ -44,7 +43,7 @@ public interface ContainerItemStrategy<T extends AEKey, C> {
     GenericStack getExtractableContent(C context);
 
     static <T extends AEKey> void register(AEKeyType keyType, Class<T> keyClass, ContainerItemStrategy<T, ?> strategy) {
-        StackInteractions.register(keyType, keyClass, strategy);
+        ContainerItemStrategies.register(keyType, keyClass, strategy);
     }
 
 }

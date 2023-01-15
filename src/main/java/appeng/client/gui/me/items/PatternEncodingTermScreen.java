@@ -31,6 +31,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.behaviors.ContainerItemStrategies;
+import appeng.api.behaviors.EmptyingAction;
 import appeng.api.config.ActionItems;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.MEStorageScreen;
@@ -45,8 +47,6 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantics;
-import appeng.menu.me.interaction.EmptyingAction;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.parts.encoding.EncodingMode;
 
@@ -141,7 +141,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         // does not work out of the box.
         if (menu.isProcessingPatternSlot(slot)) {
             // See if we should offer the left-/right-click differentiation for setting a different filter
-            var emptyingAction = StackInteractions.getEmptyingAction(carried);
+            var emptyingAction = ContainerItemStrategies.getEmptyingAction(carried);
             if (emptyingAction != null) {
                 return emptyingAction;
             }

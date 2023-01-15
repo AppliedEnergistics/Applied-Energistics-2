@@ -45,6 +45,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -63,7 +64,6 @@ import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.guisync.DataSynchronization;
 import appeng.menu.locator.MenuLocator;
-import appeng.menu.me.interaction.StackInteractions;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
@@ -617,7 +617,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final void handleFillingHeldItem(FillingSource source, AEKey what) {
-        var ctx = StackInteractions.findCarriedContextForKey(what, getPlayer(), this);
+        var ctx = ContainerItemStrategies.findCarriedContextForKey(what, getPlayer(), this);
         if (ctx == null) {
             return;
         }
@@ -656,7 +656,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     protected final void handleEmptyHeldItem(EmptyingSink sink) {
-        var ctx = StackInteractions.findCarriedContext(null, getPlayer(), this);
+        var ctx = ContainerItemStrategies.findCarriedContext(null, getPlayer(), this);
         if (ctx == null) {
             return;
         }
@@ -720,7 +720,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
                 break;
             case EMPTY_ITEM: {
-                var emptyingAction = StackInteractions.getEmptyingAction(hand);
+                var emptyingAction = ContainerItemStrategies.getEmptyingAction(hand);
                 if (emptyingAction != null) {
                     fakeSlot.set(GenericStack.wrapInItemStack(emptyingAction.what(), emptyingAction.maxAmount()));
                 }
