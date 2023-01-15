@@ -44,6 +44,7 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
         super(props);
     }
 
+    @Override
     public IOrientationStrategy getOrientationStrategy() {
         return OrientationStrategies.none();
     }
