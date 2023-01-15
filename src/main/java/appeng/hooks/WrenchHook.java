@@ -5,6 +5,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.IOrientationStrategy;
@@ -21,6 +23,18 @@ import appeng.util.Platform;
 public final class WrenchHook {
 
     private WrenchHook() {
+    }
+
+    public static void onPlayerUseBlockEvent(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getUseBlock() == Event.Result.DENY) {
+            // See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6900
+            return;
+        }
+        var result = onPlayerUseBlock(event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec());
+        if (result != InteractionResult.PASS) {
+            event.setCanceled(true);
+            event.setCancellationResult(result);
+        }
     }
 
     public static InteractionResult onPlayerUseBlock(Player player,

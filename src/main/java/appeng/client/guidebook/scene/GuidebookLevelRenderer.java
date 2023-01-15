@@ -11,8 +11,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -28,6 +26,7 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 
@@ -172,11 +171,13 @@ public class GuidebookLevelRenderer {
     private static void markFluidSpritesActive(FluidState fluidState) {
         // For Sodium compatibility, ensure the sprites actually animate even if no block is on-screen
         // that would cause them to, otherwise.
-        var fluidVariant = FluidVariant.of(fluidState.getType());
-        var sprites = FluidVariantRendering.getSprites(fluidVariant);
-        for (var sprite : sprites) {
-            SodiumCompat.markSpriteActive(sprite);
-        }
+        var props = IClientFluidTypeExtensions.of(fluidState);
+        var sprite1 = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(props.getStillTexture());
+        SodiumCompat.markSpriteActive(sprite1);
+        var sprite2 = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(props.getFlowingTexture());
+        SodiumCompat.markSpriteActive(sprite2);
     }
 
     private <E extends BlockEntity> void handleBlockEntity(PoseStack stack,

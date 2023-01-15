@@ -46,6 +46,7 @@ import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.PartModels;
+import appeng.parts.AEBasePart.NodeListener;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
 

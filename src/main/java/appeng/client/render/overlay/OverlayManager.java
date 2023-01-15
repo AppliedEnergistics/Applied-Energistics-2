@@ -26,10 +26,11 @@ import java.util.stream.Collectors;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.api.util.DimensionalBlockPos;
 
@@ -46,13 +47,11 @@ public class OverlayManager {
         return INSTANCE;
     }
 
-    private OverlayManager() {
-    }
-
-    public void renderWorldLastEvent(WorldRenderContext context) {
+    @SubscribeEvent
+    public void renderWorldLastEvent(RenderLevelLastEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
         BufferSource buffer = minecraft.renderBuffers().bufferSource();
-        PoseStack poseStack = context.matrixStack();
+        PoseStack poseStack = event.getPoseStack();
 
         poseStack.pushPose();
 

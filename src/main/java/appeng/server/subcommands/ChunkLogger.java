@@ -20,13 +20,15 @@ package appeng.server.subcommands;
 
 import com.mojang.brigadier.context.CommandContext;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.ChunkEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -34,7 +36,6 @@ import appeng.server.ISubCommand;
 
 public class ChunkLogger implements ISubCommand {
 
-    private boolean eventsRegistered = false;
     private boolean enabled = false;
 
     private void displayStack() {
@@ -51,8 +52,10 @@ public class ChunkLogger implements ISubCommand {
         }
     }
 
-    private void onChunkLoadEvent(ServerLevel level, LevelChunk chunk) {
-        if (enabled) {
+    @SubscribeEvent
+    public void onChunkLoadEvent(final ChunkEvent.Load event) {
+        if (event.getLevel() instanceof ServerLevel level) {
+            var chunk = event.getChunk();
             var chunkPos = chunk.getPos();
             var center = getCenter(chunk);
             AELog.info("Loaded chunk " + chunkPos.x + "," + chunkPos.z + " [center: " + center + "] in "
@@ -61,8 +64,10 @@ public class ChunkLogger implements ISubCommand {
         }
     }
 
-    private void onChunkUnloadEvent(ServerLevel level, LevelChunk chunk) {
-        if (enabled) {
+    @SubscribeEvent
+    public void onChunkUnloadEvent(final ChunkEvent.Unload event) {
+        if (event.getLevel() instanceof ServerLevel level) {
+            var chunk = event.getChunk();
             var chunkPos = chunk.getPos();
             var center = getCenter(chunk);
             AELog.info("Unloaded chunk " + chunkPos.x + "," + chunkPos.z + " [center: " + center + "] in "
@@ -71,7 +76,7 @@ public class ChunkLogger implements ISubCommand {
         }
     }
 
-    private static String getCenter(LevelChunk chunk) {
+    private static String getCenter(ChunkAccess chunk) {
         var chunkPos = chunk.getPos();
         var x = chunkPos.getMiddleBlockX();
         var z = chunkPos.getMiddleBlockZ();
@@ -82,16 +87,13 @@ public class ChunkLogger implements ISubCommand {
     @Override
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> data,
             CommandSourceStack sender) {
-        if (!eventsRegistered) {
-            ServerChunkEvents.CHUNK_LOAD.register(this::onChunkLoadEvent);
-            ServerChunkEvents.CHUNK_UNLOAD.register(this::onChunkUnloadEvent);
-        }
-
         this.enabled = !this.enabled;
 
         if (this.enabled) {
+            MinecraftForge.EVENT_BUS.register(this);
             sender.sendSuccess(Component.translatable("commands.ae2.ChunkLoggerOn"), true);
         } else {
+            MinecraftForge.EVENT_BUS.unregister(this);
             sender.sendSuccess(Component.translatable("commands.ae2.ChunkLoggerOff"), true);
         }
     }

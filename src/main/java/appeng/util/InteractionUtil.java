@@ -33,6 +33,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeMod;
 
 import appeng.datagen.providers.tags.ConventionTags;
 import appeng.items.tools.NetworkToolItem;
@@ -82,8 +83,7 @@ public final class InteractionUtil {
     }
 
     public static LookDirection getPlayerRay(Player playerIn) {
-        // FIXME FABRIC 117 This can currently not be modded in API in Fabric
-        double reachDistance = 36.0D;
+        double reachDistance = playerIn.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
         return getPlayerRay(playerIn, reachDistance);
     }
 

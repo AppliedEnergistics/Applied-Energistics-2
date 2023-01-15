@@ -23,14 +23,41 @@
 
 package appeng.api.config;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 public enum Actionable {
     /**
      * Perform the intended action.
      */
-    MODULATE,
+    MODULATE(FluidAction.EXECUTE),
 
     /**
      * Pretend to perform the action.
      */
-    SIMULATE;
+    SIMULATE(FluidAction.SIMULATE);
+
+    private final FluidAction fluidAction;
+
+    Actionable(FluidAction fluidAction) {
+        this.fluidAction = fluidAction;
+    }
+
+    public static Actionable of(FluidAction action) {
+        return switch (action) {
+            case EXECUTE -> MODULATE;
+            case SIMULATE -> SIMULATE;
+        };
+    }
+
+    public static Actionable ofSimulate(boolean simulate) {
+        return simulate ? SIMULATE : MODULATE;
+    }
+
+    public FluidAction getFluidAction() {
+        return fluidAction;
+    }
+
+    public boolean isSimulate() {
+        return this == SIMULATE;
+    }
 }

@@ -1,7 +1,5 @@
 package appeng.integration.modules.rei.transfer;
 
-import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,12 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
-import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.gui.widgets.Slot;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
@@ -147,16 +142,16 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
     private static TransferHandlerRenderer createErrorRenderer(Set<AEKey> craftableKeys) {
         return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
             for (Widget widget : widgets) {
-                if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
-                    if (isCraftable(craftableKeys, slot.getEntries())) {
-                        matrices.pushPose();
-                        matrices.translate(0, 0, 400);
-                        Rectangle innerBounds = slot.getInnerBounds();
-                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                                innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
-                        matrices.popPose();
-                    }
-                }
+                // TODO 1.19.3 if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
+                // TODO 1.19.3 if (isCraftable(craftableKeys, slot.getEntries())) {
+                // TODO 1.19.3 matrices.pushPose();
+                // TODO 1.19.3 matrices.translate(0, 0, 400);
+                // TODO 1.19.3 Rectangle innerBounds = slot.getInnerBounds();
+                // TODO 1.19.3 GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                // TODO 1.19.3 innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
+                // TODO 1.19.3 matrices.popPose();
+                // TODO 1.19.3 }
+                // TODO 1.19.3 }
             }
         };
     }

@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
 
@@ -30,7 +31,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -47,6 +47,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.IMenuCraftingPacket;
+import appeng.helpers.IMenuCraftingPacket.AutoCraftEntry;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
@@ -169,21 +170,21 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
     }
 
     @Override
-    public boolean hasItemType(ItemStack itemStack, int amount) {
+    public boolean hasIngredient(Predicate<ItemStack> predicate, int amount) {
         // In addition to the base item repo, also check the crafting grid if it
         // already contains some of the needed items
-        for (Slot slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
-            ItemStack stackInSlot = slot.getItem();
-            if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameTags(itemStack, stackInSlot)) {
-                if (itemStack.getCount() >= amount) {
+        for (var slot : getSlots(SlotSemantics.CRAFTING_GRID)) {
+            var stackInSlot = slot.getItem();
+            if (!stackInSlot.isEmpty() && predicate.test(stackInSlot)) {
+                if (stackInSlot.getCount() >= amount) {
                     return true;
                 }
-                amount -= itemStack.getCount();
+                amount -= stackInSlot.getCount();
             }
 
         }
 
-        return super.hasItemType(itemStack, amount);
+        return super.hasIngredient(predicate, amount);
     }
 
     /**
@@ -228,15 +229,11 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
             // Then check the terminal screen's repository of network items
             if (!found) {
-                for (var stack : ingredient.getItems()) {
-                    // We use AE stacks to get an easily comparable item type key that ignores stack size
-                    var itemKey = AEItemKey.of(stack);
-                    int reservedAmount = reservedGridAmounts.getOrDefault(itemKey, 0) + 1;
-                    if (hasItemType(stack, reservedAmount)) {
-                        reservedGridAmounts.put(itemKey, reservedAmount);
-                        found = true;
-                        break;
-                    }
+                // We use AE stacks to get an easily comparable item type key that ignores stack size
+                int neededAmount = reservedGridAmounts.getOrDefault(ingredient, 0) + 1;
+                if (hasIngredient(ingredient, neededAmount)) {
+                    reservedGridAmounts.put(ingredient, neededAmount);
+                    found = true;
                 }
             }
 

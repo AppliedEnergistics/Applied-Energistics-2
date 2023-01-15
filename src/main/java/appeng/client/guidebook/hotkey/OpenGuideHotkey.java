@@ -9,10 +9,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -22,6 +18,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 
 import appeng.client.guidebook.GuidebookText;
 import appeng.client.guidebook.PageAnchor;
@@ -56,9 +55,9 @@ public final class OpenGuideHotkey {
 
     public static void init() {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            ItemTooltipCallback.EVENT.register(TOOLTIP_PHASE, OpenGuideHotkey::handleTooltip);
-            ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, TOOLTIP_PHASE);
-            ClientTickEvents.START_CLIENT_TICK.register(client -> newTick = true);
+            MinecraftForge.EVENT_BUS.addListener(
+                    (ItemTooltipEvent evt) -> handleTooltip(evt.getItemStack(), evt.getFlags(), evt.getToolTip()));
+            MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent evt) -> newTick = true);
         } else {
             LOG.info("AE2 guide hotkey is disabled via config.");
         }
@@ -165,8 +164,7 @@ public final class OpenGuideHotkey {
      * This circumvents any current UI key handling.
      */
     private static boolean isKeyHeld() {
-        var boundKey = KeyBindingHelper.getBoundKeyOf(getHotkey());
-        int keyCode = boundKey.getValue();
+        int keyCode = getHotkey().getKey().getValue();
         var window = Minecraft.getInstance().getWindow().getWindow();
 
         return InputConstants.isKeyDown(window, keyCode);

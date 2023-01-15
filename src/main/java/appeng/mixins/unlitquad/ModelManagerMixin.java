@@ -40,13 +40,13 @@ import appeng.hooks.UnlitQuadHooks;
 @Mixin(ModelManager.class)
 public class ModelManagerMixin {
 
-    @Inject(method = "method_45898", at = @At("HEAD"), allow = 1, remap = false)
+    @Inject(method = "lambda$loadBlockModels$8", at = @At("HEAD"), allow = 1)
     private static void onBeginLoadModel(Map.Entry<ResourceLocation, Resource> entry,
             CallbackInfoReturnable<Pair<?, ?>> cri) {
         UnlitQuadHooks.beginDeserializingModel(entry.getKey());
     }
 
-    @Inject(method = "method_45898", at = @At("RETURN"), remap = false)
+    @Inject(method = "lambda$loadBlockModels$8", at = @At("RETURN"))
     private static void onEndLoadModel(Map.Entry<ResourceLocation, Resource> entry,
             CallbackInfoReturnable<Pair<?, ?>> cri) {
         UnlitQuadHooks.endDeserializingModel();

@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.core.LayeredRegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +24,8 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.LevelEvent;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
@@ -84,7 +85,7 @@ public abstract class MinecraftServerMixin {
         // NOTE: We don't register the spatial dimension for the world-border. Players can't move freely in that
         // dimension anyway.
         this.levels.put(SpatialStorageDimensionIds.WORLD_ID, level);
-        // Fabric hooks the "levels.put" call to emit the world load event. We have to trigger it manually here.
-        ServerWorldEvents.LOAD.invoker().onWorldLoad((MinecraftServer) (Object) this, level);
+        // Emulate the Forge world load event
+        MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(level));
     }
 }

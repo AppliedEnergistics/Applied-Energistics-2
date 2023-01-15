@@ -35,6 +35,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
 
 import appeng.api.implementations.IPowerChannelState;
 import appeng.api.networking.GridFlags;
@@ -287,8 +288,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     }
 
     @Override
-    public Object getRenderAttachmentData() {
-        return new CraftingCubeModelData(getConnections());
+    public ModelData getModelData() {
+        return CraftingCubeModelData.create(getConnections());
     }
 
     protected EnumSet<Direction> getConnections() {
@@ -310,6 +311,16 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
     private boolean isConnected(BlockGetter level, BlockPos pos, Direction side) {
         BlockPos adjacentPos = pos.relative(side);
         return level.getBlockState(adjacentPos).getBlock() instanceof AbstractCraftingUnitBlock;
+    }
+
+    /**
+     * When the block state changes (i.e. becoming formed or unformed), we need to update the model data since it
+     * contains connections to neighboring block entities.
+     */
+    @Override
+    public void setBlockState(BlockState state) {
+        super.setBlockState(state);
+        requestModelDataUpdate();
     }
 
     private Iterator<IGridNode> getMultiblockNodes() {
