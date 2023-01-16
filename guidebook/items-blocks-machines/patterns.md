@@ -38,6 +38,10 @@ There are several different types of pattern for different things:
   the ingredients into an entire complex factory production chain which will sort out stuff, take in other ingredients from infinitely-producing
   farms, print the entirety of the Bee Movie script, the ME system does not care as long as it gets the result the pattern specifies.
 
+Multiple pattern providers with identical patterns are supported and work in parallel. Additionally, you can have a pattern say,
+for example, 8 cobblestone = 8 stone instead of 1 cobblestone = 1 stone, and the pattern provider will insert 8 cobblestone into
+your smelting setup every operation instead of one at a time.
+
 # Recipe
 
 <RecipeFor id="blank_pattern" />

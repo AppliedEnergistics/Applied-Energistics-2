@@ -16,13 +16,18 @@ their [patterns](patterns.md) to adjacent inventories, and items can be inserted
 a channel can be saved by piping the output of a machine back into a nearby pattern provider (often the one that pushed the ingredients)
 instead of using an <ItemLink id="import_bus" /> to pull the output of the machine into the network.
 
-Of note, since they push the ingredients directly from [network storage](../ae2-mechanics/import-export-storage.md), they
+Of note, since they push the ingredients directly from the [crafting storage](./items-blocks-machines/crafting-storages.md) in a crafting CPU, they
 never actually contain the ingredients in their inventory, so you cannot pipe out from them. You have to have the provider push
 to another inventory (like a barrel) then pipe from that.
+
+Also of note, the provider has to push ALL of the ingredients at once, it can't push half-batches. This is useful
+to exploit.
 
 Pattern providers have a special interaction with interfaces on [subnets](../ae2-mechanics/subnetworks.md): if the interface is unmodified (nothing in the request slots)
 the provider will skip the interface entirely and push directly to that subnet's [storage](../ae2-mechanics/import-export-storage.md),
 skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
+
+Multiple pattern providers with identical patterns are supported and work in parallel.
 
 # Variants
 
