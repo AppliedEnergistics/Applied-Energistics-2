@@ -129,10 +129,17 @@ public abstract class ExternalStorageFacade implements MEStorage {
             int slotCount = handler.getSlots();
             boolean simulate = mode == Actionable.SIMULATE;
 
-            // This uses a brute force approach and tries to jam it in every slot the inventory exposes.
-            for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
-                remaining = handler.insertItem(i, remaining, simulate);
-            }
+            int emptySlotsOnlyTries = 1;
+            do {
+                // This uses a brute force approach and tries to jam it in every slot the inventory exposes (first try
+                // to push to empty slots only).
+                for (int i = 0; i < slotCount && !remaining.isEmpty(); i++) {
+                    if (emptySlotsOnlyTries > 0 && !handler.getStackInSlot(i).isEmpty())
+                        continue;
+
+                    remaining = handler.insertItem(i, remaining, simulate);
+                }
+            } while (emptySlotsOnlyTries-- > 0 && !remaining.isEmpty());
 
             // At this point, we still have some items left...
             if (remaining == orgInput) {

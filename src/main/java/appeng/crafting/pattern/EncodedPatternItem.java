@@ -18,6 +18,7 @@
 
 package appeng.crafting.pattern;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -173,16 +174,20 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             first = false;
         }
 
-        first = true;
+        var sparseInputStacks = new ArrayList<GenericStack>();
         for (var anIn : in) {
-            if (anIn == null) {
-                continue;
+            for (var inputStack : anIn.getPossibleInputs()) {
+                if (inputStack == null || inputStack.what().equals(AEItemKey.of(ItemStack.EMPTY.getItem())))
+                    continue;
+                sparseInputStacks.add(
+                        new GenericStack(inputStack.what(), inputStack.amount() * anIn.getMultiplier()));
             }
+        }
+        var condensedInputStacks = AEPatternHelper.condenseStacks(sparseInputStacks.toArray(GenericStack[]::new));
 
-            var primaryInputTemplate = anIn.getPossibleInputs()[0];
-            var primaryInput = new GenericStack(primaryInputTemplate.what(),
-                    primaryInputTemplate.amount() * anIn.getMultiplier());
-            lines.add((first ? with : and).copy().append(getStackComponent(primaryInput)));
+        first = true;
+        for (var inputStack : condensedInputStacks) {
+            lines.add((first ? with : and).copy().append(getStackComponent(inputStack)));
             first = false;
         }
 

@@ -18,6 +18,7 @@
 
 package appeng.crafting.pattern;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -25,7 +26,6 @@ import javax.annotation.Nullable;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
-import appeng.api.crafting.IPatternDetails.IInput;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -45,10 +45,14 @@ public class AEProcessingPattern implements IPatternDetails {
 
         this.sparseInputs = ProcessingPatternEncoding.getProcessingInputs(tag);
         this.sparseOutputs = ProcessingPatternEncoding.getProcessingOutputs(tag);
-        var condensedInputs = AEPatternHelper.condenseStacks(sparseInputs);
-        this.inputs = new Input[condensedInputs.length];
+        var nonEmptySparseInputs = new ArrayList<GenericStack>();
+        for (var sparseInput : sparseInputs) {
+            if (sparseInput != null)
+                nonEmptySparseInputs.add(sparseInput);
+        }
+        this.inputs = new Input[nonEmptySparseInputs.size()];
         for (int i = 0; i < inputs.length; ++i) {
-            inputs[i] = new Input(condensedInputs[i]);
+            inputs[i] = new Input(nonEmptySparseInputs.get(i));
         }
 
         // Ordering is preserved by condenseStacks
