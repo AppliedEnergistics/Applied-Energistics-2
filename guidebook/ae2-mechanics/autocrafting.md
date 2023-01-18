@@ -41,8 +41,8 @@ Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of <ItemL
 
 There are several different types of pattern for different things:
 
-- <ItemLink id="crafting_pattern" />s encode recipes made by a crafting table. They can be put directly in a <ItemLink id="molecular_assembler" /> to make it
-craft the result whenever given the ingredients, but their main use is in a <ItemLink id="pattern_provider" /> next to a molecular assembler.
+- <ItemLink id="crafting_pattern" />s encode recipes made by a crafting table. While they can be put directly in a <ItemLink id="molecular_assembler" /> to make it
+craft the result whenever given the ingredients, their main use is in a <ItemLink id="pattern_provider" /> next to a molecular assembler.
 Pattern providers have special behavior in this case, and will send the relevant pattern along with the ingredients to adjacent assemblers.
 Since assemblers auto-eject the results of crafts to adjacent inventories, an assembler on a pattern provider is all that is needed to automate crafting patterns.
 
