@@ -126,16 +126,16 @@ dependencies {
         runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")
 
         compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
-        compileOnly fg.deobf("dev.architectury:architectury-forge:6.2.46")
+        compileOnly fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
         compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     } else if (project.runtime_itemlist_mod == "rei") {
         implementation "me.shedaniel.cloth:basic-math:0.6.1"
         implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.2.88")
-        implementation fg.deobf("dev.architectury:architectury-forge:6.2.46")
+        implementation fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
         implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     } else {
         compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:8.2.88")
-        compileOnly fg.deobf("dev.architectury:architectury-forge:6.2.46")
+        compileOnly fg.deobf("dev.architectury:architectury-forge:${project.architectury_version}")
         compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     }
 
