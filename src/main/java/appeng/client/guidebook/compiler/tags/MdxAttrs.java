@@ -1,16 +1,15 @@
 package appeng.client.guidebook.compiler.tags;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
-
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.document.LytErrorSink;
+import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.document.LytErrorSink;
-import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import net.minecraft.world.level.block.Block;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * utilities for dealing with attributes of {@link MdxJsxElementFields}.
@@ -22,8 +21,8 @@ public final class MdxAttrs {
 
     @Nullable
     public static ResourceLocation getRequiredId(PageCompiler compiler, LytErrorSink errorSink,
-            MdxJsxElementFields el,
-            String attribute) {
+                                                 MdxJsxElementFields el,
+                                                 String attribute) {
         var id = el.getAttributeString(attribute, null);
         if (id == null) {
             errorSink.appendError(compiler, "Missing " + attribute + " attribute.", el);
@@ -42,9 +41,23 @@ public final class MdxAttrs {
     }
 
     @Nullable
+    public static Pair<ResourceLocation, Block> getRequiredBlockAndId(PageCompiler compiler, LytErrorSink errorSink,
+                                                                      MdxJsxElementFields el,
+                                                                      String attribute) {
+        var itemId = getRequiredId(compiler, errorSink, el, attribute);
+
+        var resultItem = BuiltInRegistries.BLOCK.getOptional(itemId).orElse(null);
+        if (resultItem == null) {
+            errorSink.appendError(compiler, "Missing block: " + itemId, el);
+            return null;
+        }
+        return Pair.of(itemId, resultItem);
+    }
+
+    @Nullable
     public static Pair<ResourceLocation, Item> getRequiredItemAndId(PageCompiler compiler, LytErrorSink errorSink,
-            MdxJsxElementFields el,
-            String attribute) {
+                                                                    MdxJsxElementFields el,
+                                                                    String attribute) {
         var itemId = getRequiredId(compiler, errorSink, el, attribute);
 
         var resultItem = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
@@ -56,7 +69,7 @@ public final class MdxAttrs {
     }
 
     public static Item getRequiredItem(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-            String attribute) {
+                                       String attribute) {
         var result = getRequiredItemAndId(compiler, errorSink, el, attribute);
         if (result != null) {
             return result.getRight();

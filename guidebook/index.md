@@ -5,6 +5,8 @@ navigation:
 ---
 # What is Applied Energistics 2?
 
+<BlockImage id="inscriber" />
+
 Applied Energistics 2 adds components and mechanics to provide logistics and storage solutions. You can replace your
 massive room full of chests with a compact [ME Network](features/me-network.md), but that's just the beginning of things.
 Applied Energistics is meant to work with and allow automation of other mods in a modpack. You can set up your system to,
