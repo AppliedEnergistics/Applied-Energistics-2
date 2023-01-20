@@ -20,7 +20,7 @@ package appeng.datagen.providers.models;
 
 import static appeng.core.AppEng.makeId;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.core.AppEng;
@@ -28,8 +28,8 @@ import appeng.core.definitions.AEBlocks;
 
 public class DecorationModelProvider extends AE2BlockStateProvider {
 
-    public DecorationModelProvider(DataGenerator generator, ExistingFileHelper exFileHelper) {
-        super(generator, AppEng.MOD_ID, exFileHelper);
+    public DecorationModelProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+        super(output, AppEng.MOD_ID, exFileHelper);
     }
 
     @Override

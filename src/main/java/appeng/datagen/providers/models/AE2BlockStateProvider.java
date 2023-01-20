@@ -1,6 +1,6 @@
 package appeng.datagen.providers.models;
 
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
@@ -13,8 +13,8 @@ import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
 public abstract class AE2BlockStateProvider extends BlockStateProvider implements IAE2DataProvider {
-    public AE2BlockStateProvider(DataGenerator generator, String modid, ExistingFileHelper exFileHelper) {
-        super(generator, modid, exFileHelper);
+    public AE2BlockStateProvider(PackOutput output, String modid, ExistingFileHelper exFileHelper) {
+        super(output, modid, exFileHelper);
     }
 
     /**
