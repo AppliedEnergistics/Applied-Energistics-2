@@ -11,11 +11,8 @@ item_ids:
 
 ![A formed Quantum Network Bridge](../assets/diagrams/quantum_bridge_demonstration.png)
 
-Quantum Network Bridges can extend a network over infinite distances and even between dimensions.
-They can carry 32 channels in total (regardless of how cables are connected to each face), essentially
-acting like a [dense cable](cables.md).
-
-Of note, **both sides must get power to initiate the connection**, then one side can send power through and power both rings.
+Quantum Network Bridges can connect two networks over infinite distances and even between dimensions.
+They can carry 32 channels in total (regardless of how cables are connected to each face).
 
 # Quantum Ring
 
