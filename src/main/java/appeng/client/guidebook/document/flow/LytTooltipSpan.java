@@ -15,7 +15,7 @@ public class LytTooltipSpan extends LytFlowSpan implements InteractiveElement {
     private GuideTooltip tooltip;
 
     @Override
-    public Optional<GuideTooltip> getTooltip() {
+    public Optional<GuideTooltip> getTooltip(float x, float y) {
         return Optional.ofNullable(tooltip);
     }
 

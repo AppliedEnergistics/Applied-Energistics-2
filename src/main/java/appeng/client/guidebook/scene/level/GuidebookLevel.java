@@ -111,6 +111,10 @@ public class GuidebookLevel extends Level {
         return new Bounds(min, max);
     }
 
+    public boolean isFilledBlock(BlockPos blockPos) {
+        return filledBlocks.contains(blockPos.asLong());
+    }
+
     public record Bounds(BlockPos min, BlockPos max) {
     }
 

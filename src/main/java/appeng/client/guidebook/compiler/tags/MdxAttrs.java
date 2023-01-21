@@ -76,4 +76,20 @@ public final class MdxAttrs {
         }
         return null;
     }
+
+    public static float getFloat(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
+                                 String name, float defaultValue) {
+        var attrValue = el.getAttributeString(name, null);
+        if (attrValue == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Float.parseFloat(attrValue);
+        } catch (NumberFormatException e) {
+            errorSink.appendError(compiler, "Malformed floating point value: '" + attrValue + "'", el);
+            return defaultValue;
+        }
+    }
 }
+

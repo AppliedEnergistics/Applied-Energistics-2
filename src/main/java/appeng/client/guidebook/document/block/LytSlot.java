@@ -88,7 +88,7 @@ public class LytSlot extends LytBlock implements InteractiveElement {
     }
 
     @Override
-    public Optional<GuideTooltip> getTooltip() {
+    public Optional<GuideTooltip> getTooltip(float x, float y) {
         var stack = getDisplayedStack();
         if (stack.isEmpty()) {
             return Optional.empty();

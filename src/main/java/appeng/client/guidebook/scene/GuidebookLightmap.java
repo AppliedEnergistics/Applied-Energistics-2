@@ -19,13 +19,10 @@ import java.util.Objects;
  */
 public class GuidebookLightmap implements AutoCloseable {
     private final DynamicTexture lightmapTexture;
-    private final ResourceLocation lightmapTextureLocation;
     private final NativeImage lightmapPixels;
 
     public GuidebookLightmap() {
         lightmapTexture = new DynamicTexture(16, 16, false);
-        lightmapTextureLocation = AppEng.makeId("guidebook_lightmap");
-        Minecraft.getInstance().getTextureManager().register(lightmapTextureLocation, lightmapTexture);
         lightmapPixels = Objects.requireNonNull(lightmapTexture.getPixels());
         lightmapPixels.fillRect(0, 0, 16, 16, -1);
         lightmapTexture.upload();
@@ -89,8 +86,8 @@ public class GuidebookLightmap implements AutoCloseable {
     }
 
     public void bind() {
-        RenderSystem.setShaderTexture(2, lightmapTextureLocation);
-        Minecraft.getInstance().getTextureManager().bindForSetup(lightmapTextureLocation);
+        RenderSystem.setShaderTexture(2, lightmapTexture.getId());
+        lightmapTexture.bind();
         RenderSystem.texParameter(GlConst.GL_TEXTURE_2D, GlConst.GL_TEXTURE_MIN_FILTER, GlConst.GL_LINEAR);
         RenderSystem.texParameter(GlConst.GL_TEXTURE_2D, GlConst.GL_TEXTURE_MAG_FILTER, GlConst.GL_LINEAR);
         RenderSystem.setShaderColor(1, 1, 1, 1);
