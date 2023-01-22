@@ -6,6 +6,7 @@ import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
 import appeng.client.guidebook.compiler.tags.MdxAttrs;
 import appeng.client.guidebook.document.block.LytBlockContainer;
+import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
@@ -17,12 +18,14 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
         var pair = MdxAttrs.getRequiredBlockAndId(compiler, parent, el, "id");
 
 
-        var scale = MdxAttrs.getFloat(compiler, parent, el, "scale", 1.0f);
+        var zoom = MdxAttrs.getFloat(compiler, parent, el, "zoom", 1.0f);
 
-        var scene = new LytScene();
-        scene.setScale(scale);
+        var level = new GuidebookLevel();
+        var cameraSettings = new CameraSettings();
+        cameraSettings.setZoom(zoom);
 
-        var level = scene.getLevel();
+        var scene = new GuidebookScene(level, cameraSettings);
+
         level.setBlock(BlockPos.ZERO, pair.getRight().defaultBlockState(), 3);
         var be = (InscriberBlockEntity) level.getBlockEntity(BlockPos.ZERO);
         var inv = be.getInternalInventory();
@@ -37,6 +40,8 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
         var charger = (ChargerBlockEntity) level.getBlockEntity(chargerPos);
         charger.getInternalInventory().setItemDirect(0, AEItems.WIRELESS_CRAFTING_TERMINAL.stack());
 
-        parent.append(scene);
+        var lytScene = new LytGuidebookScene();
+        lytScene.setScene(scene);
+        parent.append(lytScene);
     }
 }

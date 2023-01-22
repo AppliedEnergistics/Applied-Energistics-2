@@ -5,11 +5,11 @@ navigation:
 ---
 # What is Applied Energistics 2?
 
-<BlockImage id="inscriber" scale="1" />
+<BlockImage id="inscriber" zoom="1" />
 
-<BlockImage id="inscriber" scale="2" />
+<BlockImage id="inscriber" zoom="2" />
 
-<BlockImage id="inscriber" scale="4" />
+<BlockImage id="inscriber" zoom="4" />
 
 Applied Energistics 2 adds components and mechanics to provide logistics and storage solutions. You can replace your
 massive room full of chests with a compact [ME Network](features/me-network.md), but that's just the beginning of things.
