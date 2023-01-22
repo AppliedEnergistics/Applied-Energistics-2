@@ -72,26 +72,68 @@ public class GuidebookLevelRenderer {
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(projectionMatrix);
 
-        var randomSource = level.random;
-        var blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
+        var lightDirection = new Vector4f(15 / 90f, .35f, 1, 0);
+        var lightTransform = new Matrix4f(viewMatrix);
+        lightTransform.invert();
+        lightTransform.transform(lightDirection);
+
+        var transformedLightDirection = new Vector3f(lightDirection.x, lightDirection.y, lightDirection.z);
+        RenderSystem.setShaderLights(transformedLightDirection, transformedLightDirection);
 
         var renderBuffers = Minecraft.getInstance().renderBuffers();
 
+        var buffers = renderBuffers.bufferSource();
+
+        renderBlocks(level, buffers);
+
+        buffers.endLastBatch();
+
+        // The order comes from LevelRenderer#renderLevel
+        buffers.endBatch(RenderType.entitySolid(TextureAtlas.LOCATION_BLOCKS));
+        buffers.endBatch(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS));
+        buffers.endBatch(RenderType.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS));
+        buffers.endBatch(RenderType.entitySmoothCutout(TextureAtlas.LOCATION_BLOCKS));
+
+        // These would normally be pre-baked, but they are not for us
+        for (var layer : RenderType.chunkBufferLayers()) {
+            buffers.endBatch(layer);
+        }
+
+        buffers.endBatch(RenderType.solid());
+        buffers.endBatch(RenderType.endPortal());
+        buffers.endBatch(RenderType.endGateway());
+        buffers.endBatch(Sheets.solidBlockSheet());
+        buffers.endBatch(Sheets.cutoutBlockSheet());
+        buffers.endBatch(Sheets.bedSheet());
+        buffers.endBatch(Sheets.shulkerBoxSheet());
+        buffers.endBatch(Sheets.signSheet());
+        buffers.endBatch(Sheets.hangingSignSheet());
+        buffers.endBatch(Sheets.chestSheet());
+        buffers.endBatch();
+
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.restoreProjectionMatrix();
+    }
+
+    private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers) {
+        var randomSource = level.random;
+        var blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
         var poseStack = new PoseStack();
-        var bufferSource = renderBuffers.bufferSource();
+
         level.getFilledBlocks().forEach(pos -> {
             var blockState = level.getBlockState(pos);
             var fluidState = blockState.getFluidState();
             if (!fluidState.isEmpty()) {
                 var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
-                var bufferBuilder = bufferSource.getBuffer(renderType);
+                var bufferBuilder = buffers.getBuffer(renderType);
 
                 blockRenderDispatcher.renderLiquid(pos, level, bufferBuilder, blockState, fluidState);
             }
 
             if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
                 var renderType = ItemBlockRenderTypes.getChunkRenderType(blockState);
-                var bufferBuilder = bufferSource.getBuffer(renderType);
+                var bufferBuilder = buffers.getBuffer(renderType);
 
                 poseStack.pushPose();
                 poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -102,47 +144,10 @@ public class GuidebookLevelRenderer {
             if (blockState.hasBlockEntity()) {
                 var blockEntity = level.getBlockEntity(pos);
                 if (blockEntity != null) {
-                    this.handleBlockEntity(poseStack, blockEntity, bufferSource);
+                    this.handleBlockEntity(poseStack, blockEntity, buffers);
                 }
             }
         });
-
-        var lightDirection = new Vector4f(15 / 90f, .35f, 1, 0);
-        var lightTransform = new Matrix4f(viewMatrix);
-        lightTransform.invert();
-        lightTransform.transform(lightDirection);
-
-        var transformedLightDirection = new Vector3f(lightDirection.x, lightDirection.y, lightDirection.z);
-        RenderSystem.setShaderLights(transformedLightDirection, transformedLightDirection);
-
-        bufferSource.endLastBatch();
-
-        // The order comes from LevelRenderer#renderLevel
-        bufferSource.endBatch(RenderType.entitySolid(TextureAtlas.LOCATION_BLOCKS));
-        bufferSource.endBatch(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS));
-        bufferSource.endBatch(RenderType.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS));
-        bufferSource.endBatch(RenderType.entitySmoothCutout(TextureAtlas.LOCATION_BLOCKS));
-
-        // These would normally be pre-baked, but they are not for us
-        for (var layer : RenderType.chunkBufferLayers()) {
-            bufferSource.endBatch(layer);
-        }
-
-        bufferSource.endBatch(RenderType.solid());
-        bufferSource.endBatch(RenderType.endPortal());
-        bufferSource.endBatch(RenderType.endGateway());
-        bufferSource.endBatch(Sheets.solidBlockSheet());
-        bufferSource.endBatch(Sheets.cutoutBlockSheet());
-        bufferSource.endBatch(Sheets.bedSheet());
-        bufferSource.endBatch(Sheets.shulkerBoxSheet());
-        bufferSource.endBatch(Sheets.signSheet());
-        bufferSource.endBatch(Sheets.hangingSignSheet());
-        bufferSource.endBatch(Sheets.chestSheet());
-        bufferSource.endBatch();
-
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.restoreProjectionMatrix();
     }
 
     private <E extends BlockEntity> void handleBlockEntity(PoseStack stack,

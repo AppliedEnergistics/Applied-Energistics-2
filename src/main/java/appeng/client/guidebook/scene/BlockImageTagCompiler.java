@@ -1,7 +1,9 @@
 package appeng.client.guidebook.scene;
 
+import appeng.block.networking.ControllerBlock;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
+import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
 import appeng.client.guidebook.compiler.tags.MdxAttrs;
@@ -11,6 +13,7 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 public class BlockImageTagCompiler extends BlockTagCompiler {
     @Override
@@ -35,10 +38,30 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
         be.setSmash(true);
         be.setRepeatSmash(true);
 
-        var chargerPos = BlockPos.ZERO.east().east();
+        var chargerPos = BlockPos.ZERO.east().east().east().east();
         level.setBlockAndUpdate(chargerPos, AEBlocks.CHARGER.block().defaultBlockState());
         var charger = (ChargerBlockEntity) level.getBlockEntity(chargerPos);
         charger.getInternalInventory().setItemDirect(0, AEItems.WIRELESS_CRAFTING_TERMINAL.stack());
+
+        var controllerPos = BlockPos.ZERO.above().above().above();
+        level.setBlockAndUpdate(controllerPos, AEBlocks.CONTROLLER.block().defaultBlockState()
+                .setValue(ControllerBlock.CONTROLLER_STATE, ControllerBlock.ControllerBlockState.online));
+
+        var drivePos = BlockPos.ZERO.north().north().north().west();
+        level.setBlockAndUpdate(drivePos, AEBlocks.DRIVE.block().defaultBlockState());
+
+        var tag = new CompoundTag();
+        var visual = new CompoundTag();
+        tag.put("visual", visual);
+
+        visual.putBoolean("online", true);
+        var cell0 = new CompoundTag();
+        cell0.putString("id", AEItems.ITEM_CELL_1K.id().toString());
+        cell0.putString("state", "NOT_EMPTY");
+        visual.put("cell3", cell0);
+
+        var drive = (DriveBlockEntity) level.getBlockEntity(drivePos);
+        drive.load(tag);
 
         var lytScene = new LytGuidebookScene();
         lytScene.setScene(scene);
