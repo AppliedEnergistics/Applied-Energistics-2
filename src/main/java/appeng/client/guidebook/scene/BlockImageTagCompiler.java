@@ -14,6 +14,8 @@ import appeng.core.definitions.AEItems;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 
 public class BlockImageTagCompiler extends BlockTagCompiler {
     @Override
@@ -62,6 +64,8 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
 
         var drive = (DriveBlockEntity) level.getBlockEntity(drivePos);
         drive.load(tag);
+
+        level.setBlock(BlockPos.ZERO.north(), Fluids.WATER.defaultFluidState().createLegacyBlock(), 11);
 
         var lytScene = new LytGuidebookScene();
         lytScene.setScene(scene);

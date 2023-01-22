@@ -4,11 +4,14 @@ import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
+import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -74,27 +77,34 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
         var renderer = GuidebookLevelRenderer.getInstance();
 
-        renderer.render(scene.getLevel(), scene.getCameraSettings());
+        renderer.render(scene.getLevel(), scene.getCameraSettings(), scene.getHighlights());
 
         RenderSystem.viewport(0, 0, window.getWidth(), window.getHeight());
     }
 
     @Override
     public Optional<GuideTooltip> getTooltip(float x, float y) {
-       /* if (lastViewMatrix == null || lastProjectionMatrix == null) {
+        if (scene == null || bounds.isEmpty()) {
             return Optional.empty();
         }
 
-        var hitResult = pickBlock(lastViewMatrix, lastProjectionMatrix, x, y);
+        var localX = (x - bounds.x()) / bounds.width() * 2 - 1;
+        var localY = -((y - bounds.y()) / bounds.height() * 2 - 1);
+
+        var hitResult = scene.pickBlock(localX, localY);
         if (hitResult.getType() == HitResult.Type.BLOCK) {
-            var blockState = level.getBlockState(hitResult.getBlockPos());
+            var blockState = scene.getLevel().getBlockState(hitResult.getBlockPos());
+
+            scene.addHighlight(new BlockHighlight(hitResult.getBlockPos(), 0.6f, 0.6f, 0.6f, .8f));
 
             var text = Component.translatable(blockState.getBlock().getDescriptionId());
             return Optional.of(
                     new TextTooltip(text)
             );
-        }*/
+        } else {
+            scene.clearHighlights();
+        }
 
-        return Optional.empty();
+        return Optional.of(new TextTooltip(String.format("%f %f", localX, localY)));
     }
 }
