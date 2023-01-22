@@ -90,6 +90,9 @@ public class GuidebookLevelRenderer {
 
         var buffers = renderBuffers.bufferSource();
 
+        var bounds = level.getBounds();
+        CheckerboardFloor.render(buffers, level, bounds.min(), bounds.max());
+
         renderBlocks(level, buffers);
 
         for (var highlight : highlights) {
