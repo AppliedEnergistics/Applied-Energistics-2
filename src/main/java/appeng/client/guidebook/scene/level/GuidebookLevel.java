@@ -1,6 +1,7 @@
 package appeng.client.guidebook.scene.level;
 
 import appeng.core.AppEng;
+import appeng.util.Platform;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
@@ -48,6 +49,7 @@ import net.minecraft.world.ticks.LevelTickAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Stream;
 
@@ -56,8 +58,6 @@ public class GuidebookLevel extends Level {
     private static final ResourceKey<Level> LEVEL_ID = ResourceKey.create(Registries.DIMENSION, AppEng.makeId("guidebook"));
 
     private final Long2ObjectMap<GuidebookChunk> chunks = new Long2ObjectOpenHashMap<>();
-
-    private final ClientLevel clientLevel;
 
     private final TransientEntitySectionManager<Entity> entityStorage = new TransientEntitySectionManager<>(Entity.class, new EntityCallbacks());
 
@@ -68,7 +68,14 @@ public class GuidebookLevel extends Level {
     private final LongSet filledBlocks = new LongOpenHashSet();
 
     public GuidebookLevel() {
-        this(Minecraft.getInstance().getConnection().registryAccess());
+        this(getRegistryAccess());
+    }
+
+    private static RegistryAccess getRegistryAccess() {
+        if (Minecraft.getInstance().level != null) {
+            return Minecraft.getInstance().level.registryAccess();
+        }
+        return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
     }
 
     public GuidebookLevel(RegistryAccess registryAccess) {
@@ -82,7 +89,6 @@ public class GuidebookLevel extends Level {
                 0 /* seed */,
                 1000000 /* max neighbor updates */
         );
-        this.clientLevel = Minecraft.getInstance().level;
         this.registryAccess = registryAccess;
         this.biome = registryAccess.registryOrThrow(Registries.BIOME).getHolderOrThrow(Biomes.PLAINS);
         this.lightEngine = new LevelLightEngine(chunkSource, true, true);
@@ -191,7 +197,7 @@ public class GuidebookLevel extends Level {
 
     @Override
     public RecipeManager getRecipeManager() {
-        return clientLevel.getRecipeManager();
+        return Platform.getClientRecipeManager();
     }
 
     @Override
