@@ -28,7 +28,7 @@ The import bus supports the following upgrades:
 
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
 - <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
-- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level
+- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 - <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
 

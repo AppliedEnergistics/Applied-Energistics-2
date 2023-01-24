@@ -27,6 +27,10 @@ it on a [subnetwork](../ae2-mechanics/subnetworks.md). A <ItemLink id="storage_b
 
 ![Annihilation Plane Subnet](../assets/assemblies/annihilation_filtering.png)
 
+Again, it filters *by the item drops* so, for example, if you want to filter breaking of [budding certus blocks](../items-blocks-machines/budding_certus.md)
+you need a plane enchanted with silk touch, otherwise every tier of budding block drops <ItemLink id="quartz_block" /> and so
+the drops cannot be differentiated.
+
 # Recipe
 
 <RecipeFor id="annihilation_plane" />

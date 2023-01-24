@@ -53,7 +53,7 @@ from network storage, higher priority storages will be filled and lower priority
 The storage bus supports the following upgrades:
 
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
-- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level
+- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 
 # Recipe

@@ -28,7 +28,7 @@ The import bus supports the following upgrades:
 
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
 - <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
-- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level
+- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
 - <ItemLink id="crafting_card" /> lets the bus send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)
   system to get the items it desires. Can be set to pull the items from storage if possible, or to always make a request
   for a new item to be crafted.
