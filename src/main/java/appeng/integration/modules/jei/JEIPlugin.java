@@ -27,9 +27,7 @@ import appeng.api.definitions.IMaterials;
 import appeng.api.features.IGrinderRecipe;
 import appeng.api.features.IInscriberRecipe;
 import appeng.client.gui.AEGuiHandler;
-import appeng.container.implementations.ContainerCraftingTerm;
-import appeng.container.implementations.ContainerExpandedProcessingPatternTerm;
-import appeng.container.implementations.ContainerPatternTerm;
+import appeng.container.implementations.*;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.localization.GuiText;
@@ -86,8 +84,10 @@ public class JEIPlugin implements IModPlugin {
 
         // Allow recipe transfer from JEI to crafting and pattern terminal
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerCraftingTerm.class), VanillaRecipeCategoryUid.CRAFTING);
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerWirelessCraftingTerminal.class), VanillaRecipeCategoryUid.CRAFTING);
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerPatternTerm.class), Constants.UNIVERSAL_RECIPE_TRANSFER_UID);
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerExpandedProcessingPatternTerm.class), Constants.UNIVERSAL_RECIPE_TRANSFER_UID);
+        registry.getRecipeTransferRegistry().addRecipeTransferHandler(new RecipeTransferHandler<>(ContainerWirelessPatternTerminal.class), Constants.UNIVERSAL_RECIPE_TRANSFER_UID);
 
         aeGuiHandler = new AEGuiHandler();
         registry.addAdvancedGuiHandlers(aeGuiHandler);

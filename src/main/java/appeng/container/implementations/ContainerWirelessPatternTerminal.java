@@ -226,6 +226,14 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
     }
 
     @Override
+    public IItemHandler getInventoryByName(String name) {
+        if (name.equals("crafting")) {
+            return this.crafting;
+        }
+        return super.getInventoryByName(name);
+    }
+
+    @Override
     public boolean useRealItems() {
         return false;
     }

@@ -139,6 +139,8 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
     public IItemHandler getInventoryByName(final String name) {
         if (name.equals("player")) {
             return new PlayerInvWrapper(this.getInventoryPlayer());
+        } else if (name.equals("crafting")) {
+            return this.craftingGrid;
         }
         return null;
     }

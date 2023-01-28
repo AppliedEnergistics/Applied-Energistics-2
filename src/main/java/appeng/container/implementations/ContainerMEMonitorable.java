@@ -51,6 +51,7 @@ import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketMEInventoryUpdate;
 import appeng.core.sync.packets.PacketValueConfig;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.me.helpers.ChannelPowerSrc;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
@@ -115,6 +116,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
                 if (monitorable instanceof IPortableCell) {
                     this.setPowerSource((IEnergySource) monitorable);
+                    if ( monitorable instanceof WirelessTerminalGuiObject) {
+                        this.networkNode = ((WirelessTerminalGuiObject) monitorable).getActionableNode();
+                    }
                 } else if (monitorable instanceof IMEChest) {
                     this.setPowerSource((IEnergySource) monitorable);
                 } else if (monitorable instanceof IGridHost || monitorable instanceof IActionHost) {
