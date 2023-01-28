@@ -15,9 +15,6 @@ public enum PerspectivePreset implements StringRepresentable {
      */
     ISOMETRIC_NORTH_WEST("isometric-north-west");
 
-    public static final StringRepresentable.EnumCodec<PerspectivePreset> CODEC = StringRepresentable
-            .fromEnum(PerspectivePreset::values);
-
     private final String serializedName;
 
     PerspectivePreset(String serializedName) {

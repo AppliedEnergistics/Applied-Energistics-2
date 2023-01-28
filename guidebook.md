@@ -134,6 +134,41 @@ To automatically show a table of contents for a category, use the `<CategoryInde
 and specify the name of the category. It will then display a list of all pages that declare to be part of that
 category.
 
+#### Item Images
+
+To show an item, use:
+
+```
+<ItemImage id="mod:item_id" />
+```
+
+IDs from your own mod don't need to be qualified with the mod id.
+
+The tag also supports the following attributes:
+
+| Attribute | Description                                                                                                                                       |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| scale     | Allows the item image to be scaled. Supports floating point numbers. `scale="1.5"` will show the item at 150% of its natural size.                |
+| float     | Allows the item image to be floated like  `FloatingImage` to make it show to the left or right with a block of text. (Allows values: left, right) |
+
+#### Block Images
+
+To show a 3d rendering of a block, use:
+
+```
+<BlockImage id="mod:block_id" />
+```
+
+IDs from your own mod don't need to be qualified with the mod id.
+
+The tag also supports the following attributes:
+
+| Attribute   | Description                                                                                                                                                                                     |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| scale       | Allows the block image to be scaled. Supports floating point numbers. `scale="1.5"` will show at 150% of its normal size.                                                                       |
+| float       | Allows the block image to be floated like `FloatingImage` to make it show to the left or right with a block of text. (Allows values: left, right)                                               |
+| perspective | Allows the orientation of the block to be changed. By default, the north-east corner of the block will be facing forward. Allowed values: isometric-north-east (default), isometric-north-west. |                         
+
 ## For Addon Authors
 
 The guidebook will automatically load all pages that are in the `ae2guide` subfolder of all resource packs across

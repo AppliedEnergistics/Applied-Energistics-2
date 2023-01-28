@@ -20,7 +20,7 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
             return;
         }
 
-        var zoom = MdxAttrs.getFloat(compiler, parent, el, "zoom", 1.0f);
+        var scale = MdxAttrs.getFloat(compiler, parent, el, "scale", 1.0f);
         var perspective = MdxAttrs.getEnum(compiler, parent, el, "perspective", PerspectivePreset.ISOMETRIC_NORTH_EAST);
         if (perspective == null) {
             return;
@@ -28,7 +28,7 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
 
         var level = new GuidebookLevel();
         var cameraSettings = new CameraSettings();
-        cameraSettings.setZoom(zoom);
+        cameraSettings.setZoom(scale);
         cameraSettings.setPerspectivePreset(perspective);
 
         var scene = new GuidebookScene(level, cameraSettings);
