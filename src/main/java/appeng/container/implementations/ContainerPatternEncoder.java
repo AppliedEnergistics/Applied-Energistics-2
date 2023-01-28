@@ -133,7 +133,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
         }
     }
 
-    private void fixCraftingRecipes() {
+    void fixCraftingRecipes() {
         if (this.isCraftingMode()) {
             for (int x = 0; x < this.crafting.getSlots(); x++) {
                 final ItemStack is = this.crafting.getStackInSlot(x);
@@ -505,7 +505,18 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
 
     public void setCraftingMode(final boolean craftingMode) {
         this.craftingMode = craftingMode;
-        this.fixCraftingRecipes();
+        if (getPart() != null) {
+            getPart().setCraftingRecipe(craftingMode);
+        } else if (iGuiItemObject != null) {
+            NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
+            if (nbtTagCompound != null) {
+                nbtTagCompound.setBoolean("isCraftingMode", craftingMode);
+                this.updateOrderOfOutputSlots();
+            }
+        }
+        if (craftingMode) {
+            this.fixCraftingRecipes();
+        }
     }
 
 
@@ -526,14 +537,15 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
                     this.setCraftingMode(this.getPart().isCraftingRecipe());
                     this.updateOrderOfOutputSlots();
                 }
+                this.substitute = this.getPart().isSubstitution();
             }
-            if (iGuiItemObject != null) {
+            else if (iGuiItemObject != null) {
                 NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
                 if (nbtTagCompound != null) {
                     if (nbtTagCompound.hasKey("isCraftingMode")) {
                         boolean crafting = nbtTagCompound.getBoolean("isCraftingMode");
                         if (this.isCraftingMode() != crafting) {
-                            this.setCraftingMode(isCraftingMode());
+                            this.setCraftingMode(crafting);
                             this.updateOrderOfOutputSlots();
                         }
                     } else {
@@ -544,17 +556,12 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
                     nbtTagCompound.setBoolean("isCraftingMode", false);
                     iGuiItemObject.getItemStack().setTagCompound(nbtTagCompound);
                 }
-            }
-            if (getPart() != null) {
-                this.substitute = this.getPart().isSubstitution();
-            } else if (iGuiItemObject != null) {
-                NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
+                nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
                 if (nbtTagCompound != null) {
                     if (nbtTagCompound.hasKey("isSubstitute")) {
-                        boolean crafting = nbtTagCompound.getBoolean("isSubstitute");
-                        if (this.isCraftingMode() != crafting) {
-                            this.setCraftingMode(!crafting);
-                            this.updateOrderOfOutputSlots();
+                        boolean substitute = nbtTagCompound.getBoolean("isSubstitute");
+                        if (this.isSubstitute() != substitute) {
+                            this.setSubstitute(substitute);
                         }
                     } else {
                         nbtTagCompound.setBoolean("isSubstitute", false);

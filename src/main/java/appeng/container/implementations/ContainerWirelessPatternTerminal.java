@@ -21,7 +21,10 @@ package appeng.container.implementations;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.networking.crafting.ICraftingPatternDetails;
+import appeng.api.storage.data.IAEItemStack;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
@@ -30,9 +33,11 @@ import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
+import appeng.helpers.ItemStackHelper;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
+import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -196,6 +201,27 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
 
     @Override
     public void onChangeInventory(final IItemHandler inv, final int slot, final InvOperation mc, final ItemStack removedStack, final ItemStack newStack) {
+        if (inv == this.pattern && slot == 1) {
+            final ItemStack is = this.pattern.getStackInSlot(1);
+            if (!is.isEmpty() && is.getItem() instanceof ICraftingPatternItem) {
+                final ICraftingPatternItem pattern = (ICraftingPatternItem) is.getItem();
+                final ICraftingPatternDetails details = pattern.getPatternForItem(is, this.getPlayerInv().player.world);
+                if (details != null) {
+                    this.setCraftingMode(details.isCraftable());
+                    this.setSubstitute(details.canSubstitute());
+
+                    for (int x = 0; x < this.crafting.getSlots() && x < details.getInputs().length; x++) {
+                        final IAEItemStack item = details.getInputs()[x];
+                        ItemHandlerUtil.setStackInSlot(this.crafting, x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                    }
+
+                    for (int x = 0; x < this.output.getSlots() && x < details.getOutputs().length; x++) {
+                        final IAEItemStack item = details.getOutputs()[x];
+                        this.output.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
+                    }
+                }
+            }
+        }
         super.onChangeInventory(inv, slot, mc, removedStack, newStack);
     }
 
