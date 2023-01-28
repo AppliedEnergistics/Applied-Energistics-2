@@ -28,6 +28,7 @@ package appeng.core.api.imc;
 import appeng.api.AEApi;
 import appeng.core.AELog;
 import appeng.core.api.IIMCProcessor;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 
 
@@ -37,7 +38,7 @@ public class IMCSpatial implements IIMCProcessor {
     public void process(final IMCMessage m) {
 
         try {
-            final Class classInstance = Class.forName(m.getStringValue());
+            final Class classInstance = Class.forName(m.getStringValue(), false, Launch.classLoader);
             AEApi.instance().registries().movable().whiteListTileEntity(classInstance);
         } catch (final ClassNotFoundException e) {
             AELog.info("Bad Class Registered: " + m.getStringValue() + " by " + m.getSender());

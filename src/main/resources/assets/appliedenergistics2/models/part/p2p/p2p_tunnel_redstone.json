@@ -1,6 +1,6 @@
 {
     "parent": "appliedenergistics2:part/p2p/p2p_tunnel_base",
     "textures": {
-        "type": "blocks/redstone_block"
+        "type": "appliedenergistics2:blocks/redstone_p2p"
     }
 }
