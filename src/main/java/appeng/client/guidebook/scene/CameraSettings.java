@@ -1,25 +1,54 @@
 package appeng.client.guidebook.scene;
 
-import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import net.minecraft.util.Mth;
+
 public class CameraSettings {
 
     private float zoom;
 
-    private Vector3f center = new Vector3f();
+    private final Vector3f center = new Vector3f();
 
-    private Vector4f viewport;
+    private final Vector4f viewport = new Vector4f();
+
+    private final Matrix4f baseViewMatrix = new Matrix4f();
 
     public Vector4f getViewport() {
         return viewport;
     }
 
     public void setViewport(Vector4f viewport) {
-        this.viewport = new Vector4f(viewport);
+        this.viewport.set(viewport);
+    }
+
+    public CameraSettings() {
+        setPerspectivePreset(PerspectivePreset.ISOMETRIC_NORTH_EAST);
+    }
+
+    public void setPerspectivePreset(PerspectivePreset preset) {
+        baseViewMatrix.identity();
+        switch (preset) {
+            case ISOMETRIC_NORTH_EAST -> {
+                baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 30));
+                baseViewMatrix.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 225));
+            }
+            case ISOMETRIC_NORTH_WEST -> {
+                baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 30));
+                baseViewMatrix.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 135));
+            }
+        }
+    }
+
+    public void setZoom(float zoom) {
+        this.zoom = zoom;
+    }
+
+    public float getZoom() {
+        return zoom;
     }
 
     public Matrix4f getViewMatrix() {
@@ -27,11 +56,8 @@ public class CameraSettings {
 
         // 0.625f comes from the default block model json GUI transform
         result.scale(0.625f * 16 * zoom, 0.625f * 16 * zoom, 0.625f * 16 * zoom);
-//        poseStack.mulPose(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 30));
-//        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 135));
 
-        result.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 30));
-        result.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 225));
+        result.mul(baseViewMatrix);
 
 //        // Get the center and move the origin there
 //        var bounds = level.getBounds();
@@ -50,13 +76,5 @@ public class CameraSettings {
         var projectionMatrix = new Matrix4f();
         projectionMatrix.ortho(viewport.x, viewport.z, viewport.y, viewport.w, -1000, 3000);
         return projectionMatrix;
-    }
-
-    public void setZoom(float zoom) {
-        this.zoom = zoom;
-    }
-
-    public float getZoom() {
-        return zoom;
     }
 }

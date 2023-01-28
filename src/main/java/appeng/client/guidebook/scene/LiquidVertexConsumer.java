@@ -2,17 +2,18 @@ package appeng.client.guidebook.scene;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.core.SectionPos;
+
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.core.SectionPos;
+
 /**
- * The only purpose of this vertex consumer proxy is to
- * transform vertex positions emitted by the  {@link net.minecraft.client.renderer.block.LiquidBlockRenderer}
- * into absolute coordinates. The renderer assumes it is being called in the context
- * of tessellating a chunk section (16x16x16) and emits corresponding coordinates,
- * while we batch all visible chunks in the guidebook together.
+ * The only purpose of this vertex consumer proxy is to transform vertex positions emitted by the
+ * {@link net.minecraft.client.renderer.block.LiquidBlockRenderer} into absolute coordinates. The renderer assumes it is
+ * being called in the context of tessellating a chunk section (16x16x16) and emits corresponding coordinates, while we
+ * batch all visible chunks in the guidebook together.
  */
 public class LiquidVertexConsumer implements VertexConsumer {
     private final VertexConsumer delegate;
@@ -63,7 +64,8 @@ public class LiquidVertexConsumer implements VertexConsumer {
     }
 
     @Override
-    public void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float texU, float texV, int overlayUV, int lightmapUV, float normalX, float normalY, float normalZ) {
+    public void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float texU,
+            float texV, int overlayUV, int lightmapUV, float normalX, float normalY, float normalZ) {
         delegate.vertex(x, y, z, red, green, blue, alpha, texU, texV, overlayUV, lightmapUV, normalX, normalY, normalZ);
     }
 
@@ -98,12 +100,14 @@ public class LiquidVertexConsumer implements VertexConsumer {
     }
 
     @Override
-    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float red, float green, float blue, int combinedLight, int combinedOverlay) {
+    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float red, float green, float blue,
+            int combinedLight, int combinedOverlay) {
         delegate.putBulkData(poseEntry, quad, red, green, blue, combinedLight, combinedOverlay);
     }
 
     @Override
-    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float[] colorMuls, float red, float green, float blue, int[] combinedLights, int combinedOverlay, boolean mulColor) {
+    public void putBulkData(PoseStack.Pose poseEntry, BakedQuad quad, float[] colorMuls, float red, float green,
+            float blue, int[] combinedLights, int combinedOverlay, boolean mulColor) {
         delegate.putBulkData(poseEntry, quad, colorMuls, red, green, blue, combinedLights, combinedOverlay, mulColor);
     }
 

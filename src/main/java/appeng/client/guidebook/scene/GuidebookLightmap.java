@@ -1,18 +1,18 @@
 package appeng.client.guidebook.scene;
 
-import appeng.core.AppEng;
+import java.util.Objects;
+
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import org.joml.Vector3f;
-
-import java.util.Objects;
 
 /**
  * A version of {@link LightTexture} which is independent of the current client level.
@@ -77,7 +77,8 @@ public class GuidebookLightmap implements AutoCloseable {
     }
 
     private static void clampColor(Vector3f vector3f) {
-        vector3f.set(Mth.clamp(vector3f.x, 0.0F, 1.0F), Mth.clamp(vector3f.y, 0.0F, 1.0F), Mth.clamp(vector3f.z, 0.0F, 1.0F));
+        vector3f.set(Mth.clamp(vector3f.x, 0.0F, 1.0F), Mth.clamp(vector3f.y, 0.0F, 1.0F),
+                Mth.clamp(vector3f.z, 0.0F, 1.0F));
     }
 
     private float notGamma(float value) {

@@ -1,7 +1,16 @@
 package appeng.client.guidebook.scene;
 
-import appeng.client.guidebook.scene.level.GuidebookLevel;
-import net.minecraft.client.Minecraft;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.joml.Intersectionf;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -12,16 +21,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
-import org.joml.Intersectionf;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
+import appeng.client.guidebook.scene.level.GuidebookLevel;
 
 public class GuidebookScene {
 
@@ -51,8 +52,7 @@ public class GuidebookScene {
                                 pos.getX() + xCorner,
                                 pos.getY() + yCorner,
                                 pos.getZ() + zCorner,
-                                tmpPos
-                        );
+                                tmpPos);
                         min.min(tmpPos);
                         max.max(tmpPos);
                     }
@@ -63,18 +63,17 @@ public class GuidebookScene {
                 min.x,
                 min.y,
                 max.x,
-                max.y
-        );
+                max.y);
     }
 
     public Vector2f worldToScreen(Matrix4f viewMatrix, Matrix4f projectionMatrix, float x, float y, float z) {
         Vector3f screenPos = new Vector3f();
         viewMatrix.transformPosition(x, y, z, screenPos);
         projectionMatrix.transformProject(screenPos);
-        /*var screenX = this.bounds.x() + (screenPos.x + 1) * this.bounds.width() / 2;
-        var screenY = this.bounds.bottom() - (screenPos.y + 1) * this.bounds.height() / 2;
-        return new Vector2f(screenX, screenY);/*
-        */
+        /*
+         * var screenX = this.bounds.x() + (screenPos.x + 1) * this.bounds.width() / 2; var screenY =
+         * this.bounds.bottom() - (screenPos.y + 1) * this.bounds.height() / 2; return new Vector2f(screenX, screenY);/*
+         */
         return new Vector2f();
     }
 
@@ -88,13 +87,12 @@ public class GuidebookScene {
                 screenX, screenY,
                 // We already expect normalized device coordinates,
                 // so the viewport is set in such a way as to leave the coordinates alone
-                new int[]{
+                new int[] {
                         -1, -1,
                         2, 2
                 },
                 rayOrigin,
-                rayDir
-        );
+                rayDir);
 
         var levelBounds = level.getBounds();
         var intersection = new Vector2f();
@@ -103,8 +101,7 @@ public class GuidebookScene {
                 rayDir,
                 new Vector3f(levelBounds.min().getX(), levelBounds.min().getY(), levelBounds.min().getZ()),
                 new Vector3f(levelBounds.max().getX(), levelBounds.max().getY(), levelBounds.max().getZ()),
-                intersection
-        )) {
+                intersection)) {
             return BlockHitResult.miss(Vec3.ZERO, Direction.UP, BlockPos.ZERO);
         }
 
@@ -123,7 +120,8 @@ public class GuidebookScene {
             var blockShape = blockClipContext.get(blockState, level, blockPos, CollisionContext.empty());
             var blockHit = level.clipWithInteractionOverride(fromVec3, toVec3, blockPos, blockShape, blockState);
 
-            var fluidShape = fluidClipContext.canPick(fluidState) ? fluidState.getShape(level, blockPos) : Shapes.empty();
+            var fluidShape = fluidClipContext.canPick(fluidState) ? fluidState.getShape(level, blockPos)
+                    : Shapes.empty();
             var fluidHit = fluidShape.clip(fromVec3, toVec3, blockPos);
 
             double blockDist = blockHit == null ? Double.MAX_VALUE : fromVec3.distanceToSqr(blockHit.getLocation());

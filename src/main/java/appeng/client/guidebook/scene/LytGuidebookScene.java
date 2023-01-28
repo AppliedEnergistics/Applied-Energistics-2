@@ -1,5 +1,16 @@
 package appeng.client.guidebook.scene;
 
+import java.util.Optional;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.HitResult;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
@@ -7,14 +18,6 @@ import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 /**
  * Shows a pseudo-in-world scene within the guidebook.
@@ -22,6 +25,7 @@ import java.util.Optional;
 public class LytGuidebookScene extends LytBlock implements InteractiveElement {
     @Nullable
     private GuidebookScene scene;
+    private boolean interactive;
 
     public LytGuidebookScene() {
     }
@@ -48,8 +52,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
         var height = (int) Math.ceil(Math.abs(screenBounds.w - screenBounds.y));
 
         scene.getCameraSettings().setViewport(
-                screenBounds
-        );
+                screenBounds);
 
         return new LytRect(x, y, width, height);
     }
@@ -72,8 +75,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
                 (int) (viewport.x() * window.getGuiScale()),
                 (int) (window.getHeight() - viewport.bottom() * window.getGuiScale()),
                 (int) (viewport.width() * window.getGuiScale()),
-                (int) (viewport.height() * window.getGuiScale())
-        );
+                (int) (viewport.height() * window.getGuiScale()));
 
         var renderer = GuidebookLevelRenderer.getInstance();
 
@@ -84,7 +86,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public Optional<GuideTooltip> getTooltip(float x, float y) {
-        if (scene == null || bounds.isEmpty()) {
+        if (!interactive || scene == null || bounds.isEmpty()) {
             return Optional.empty();
         }
 
@@ -99,12 +101,19 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
             var text = Component.translatable(blockState.getBlock().getDescriptionId());
             return Optional.of(
-                    new TextTooltip(text)
-            );
+                    new TextTooltip(text));
         } else {
             scene.clearHighlights();
         }
 
         return Optional.of(new TextTooltip(String.format("%f %f", localX, localY)));
+    }
+
+    public void setInteractive(boolean interactive) {
+        this.interactive = interactive;
+    }
+
+    public boolean isInteractive() {
+        return interactive;
     }
 }

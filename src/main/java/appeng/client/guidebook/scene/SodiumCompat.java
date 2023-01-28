@@ -1,14 +1,15 @@
 package appeng.client.guidebook.scene;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class SodiumCompat {
     private static final Logger LOGGER = LoggerFactory.getLogger(SodiumCompat.class);

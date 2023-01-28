@@ -1,6 +1,10 @@
 
 package appeng.client.guidebook.scene;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.Fluids;
+
 import appeng.block.networking.ControllerBlock;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
@@ -13,15 +17,11 @@ import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.material.Fluids;
 
 public class SceneTagCompiler extends BlockTagCompiler {
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
         var pair = MdxAttrs.getRequiredBlockAndId(compiler, parent, el, "id");
-
 
         var zoom = MdxAttrs.getFloat(compiler, parent, el, "zoom", 1.0f);
 

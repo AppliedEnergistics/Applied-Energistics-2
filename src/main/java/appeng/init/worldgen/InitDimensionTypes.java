@@ -1,14 +1,16 @@
 package appeng.init.worldgen;
 
-import appeng.spatial.SpatialStorageChunkGenerator;
-import appeng.spatial.SpatialStorageDimensionIds;
+import java.util.OptionalLong;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.dimension.DimensionType;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.OptionalLong;
+import appeng.spatial.SpatialStorageChunkGenerator;
+import appeng.spatial.SpatialStorageDimensionIds;
 
 public final class InitDimensionTypes {
     private InitDimensionTypes() {
@@ -38,7 +40,6 @@ public final class InitDimensionTypes {
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
                 1.0f, // ambientLight
-                new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)
-        );
+                new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0));
     }
 }

@@ -1,10 +1,16 @@
 package appeng.client.guidebook.scene;
 
-import appeng.client.guidebook.scene.level.GuidebookLevel;
+import java.util.Collection;
+
 import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
@@ -22,11 +28,8 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FluidState;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 
-import java.util.Collection;
+import appeng.client.guidebook.scene.level.GuidebookLevel;
 
 public class GuidebookLevelRenderer {
 
@@ -43,8 +46,8 @@ public class GuidebookLevelRenderer {
     }
 
     public void render(GuidebookLevel level,
-                       CameraSettings cameraSettings,
-                       Collection<BlockHighlight> highlights) {
+            CameraSettings cameraSettings,
+            Collection<BlockHighlight> highlights) {
         lightmap.update(level);
 
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
@@ -93,7 +96,8 @@ public class GuidebookLevelRenderer {
         renderBlocks(level, buffers);
 
         for (var highlight : highlights) {
-            BlockHighlightRenderer.render(buffers, highlight.pos(), highlight.r(), highlight.g(), highlight.b(), highlight.a());
+            BlockHighlightRenderer.render(buffers, highlight.pos(), highlight.r(), highlight.g(), highlight.b(),
+                    highlight.a());
         }
 
         buffers.endLastBatch();
@@ -151,7 +155,8 @@ public class GuidebookLevelRenderer {
 
                 poseStack.pushPose();
                 poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                blockRenderDispatcher.renderBatched(blockState, pos, level, poseStack, bufferBuilder, true, randomSource);
+                blockRenderDispatcher.renderBatched(blockState, pos, level, poseStack, bufferBuilder, true,
+                        randomSource);
                 poseStack.popPose();
             }
 
@@ -175,8 +180,8 @@ public class GuidebookLevelRenderer {
     }
 
     private <E extends BlockEntity> void handleBlockEntity(PoseStack stack,
-                                                           E blockEntity,
-                                                           MultiBufferSource buffers) {
+            E blockEntity,
+            MultiBufferSource buffers) {
         var dispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
         var renderer = dispatcher.getRenderer(blockEntity);
         if (renderer != null) {

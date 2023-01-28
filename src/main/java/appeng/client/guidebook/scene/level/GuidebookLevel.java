@@ -1,11 +1,11 @@
 package appeng.client.guidebook.scene.level;
 
-import appeng.core.AppEng;
-import appeng.util.Platform;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -14,7 +14,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.profiling.InactiveProfiler;
@@ -23,48 +22,41 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkSource;
-import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.entity.LevelCallback;
 import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.entity.TransientEntitySectionManager;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.ticks.BlackholeTickAccess;
 import net.minecraft.world.ticks.LevelTickAccess;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.function.BooleanSupplier;
-import java.util.stream.Stream;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+
+import appeng.core.AppEng;
+import appeng.util.Platform;
 
 public class GuidebookLevel extends Level {
 
-    private static final ResourceKey<Level> LEVEL_ID = ResourceKey.create(Registries.DIMENSION, AppEng.makeId("guidebook"));
+    private static final ResourceKey<Level> LEVEL_ID = ResourceKey.create(Registries.DIMENSION,
+            AppEng.makeId("guidebook"));
 
-    private final Long2ObjectMap<GuidebookChunk> chunks = new Long2ObjectOpenHashMap<>();
+    private final TransientEntitySectionManager<Entity> entityStorage = new TransientEntitySectionManager<>(
+            Entity.class, new EntityCallbacks());
 
-    private final TransientEntitySectionManager<Entity> entityStorage = new TransientEntitySectionManager<>(Entity.class, new EntityCallbacks());
-
-    private final ChunkSource chunkSource = new GuidebookChunkSource();
+    private final ChunkSource chunkSource = new GuidebookChunkSource(this);
     private final Holder<Biome> biome;
     private final RegistryAccess registryAccess;
-    private final LevelLightEngine lightEngine;
     private final LongSet filledBlocks = new LongOpenHashSet();
 
     public GuidebookLevel() {
@@ -82,16 +74,16 @@ public class GuidebookLevel extends Level {
         super(
                 createLevelData(),
                 LEVEL_ID,
-                registryAccess.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD),
+                registryAccess.registryOrThrow(Registries.DIMENSION_TYPE)
+                        .getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD),
                 () -> InactiveProfiler.INSTANCE,
                 true /* client-side */,
-                false  /* debug */,
+                false /* debug */,
                 0 /* seed */,
                 1000000 /* max neighbor updates */
         );
         this.registryAccess = registryAccess;
         this.biome = registryAccess.registryOrThrow(Registries.BIOME).getHolderOrThrow(Biomes.PLAINS);
-        this.lightEngine = new LevelLightEngine(chunkSource, true, true);
     }
 
     public Bounds getBounds() {
@@ -119,6 +111,14 @@ public class GuidebookLevel extends Level {
 
     public boolean isFilledBlock(BlockPos blockPos) {
         return filledBlocks.contains(blockPos.asLong());
+    }
+
+    void removeFilledBlock(BlockPos pos) {
+        filledBlocks.remove(pos.asLong());
+    }
+
+    void addFilledBlock(BlockPos pos) {
+        filledBlocks.add(pos.asLong());
     }
 
     public record Bounds(BlockPos min, BlockPos max) {
@@ -159,11 +159,13 @@ public class GuidebookLevel extends Level {
     }
 
     @Override
-    public void playSeededSound(@Nullable Player player, double d, double e, double f, Holder<SoundEvent> holder, SoundSource soundSource, float g, float h, long l) {
+    public void playSeededSound(@Nullable Player player, double d, double e, double f, Holder<SoundEvent> holder,
+            SoundSource soundSource, float g, float h, long l) {
     }
 
     @Override
-    public void playSeededSound(@Nullable Player player, Entity entity, Holder<SoundEvent> holder, SoundSource soundSource, float f, float g, long l) {
+    public void playSeededSound(@Nullable Player player, Entity entity, Holder<SoundEvent> holder,
+            SoundSource soundSource, float f, float g, long l) {
     }
 
     @Override
@@ -285,65 +287,5 @@ public class GuidebookLevel extends Level {
         @Override
         public void onSectionChange(Entity object) {
         }
-    }
-
-    private class GuidebookChunkSource extends ChunkSource {
-        @Nullable
-        @Override
-        public ChunkAccess getChunk(int chunkX, int chunkZ, ChunkStatus requiredStatus, boolean load) {
-            var chunkKey = ChunkPos.asLong(chunkX, chunkZ);
-            var chunk = chunks.get(chunkKey);
-            if (chunk == null) {
-                chunk = new GuidebookChunk(GuidebookLevel.this, new ChunkPos(chunkX, chunkZ));
-                chunks.put(chunkKey, chunk);
-            }
-            return chunk;
-        }
-
-        @Override
-        public void tick(BooleanSupplier booleanSupplier, boolean bl) {
-        }
-
-        @Override
-        public String gatherStats() {
-            return "";
-        }
-
-        @Override
-        public int getLoadedChunksCount() {
-            return 0;
-        }
-
-        @Override
-        public LevelLightEngine getLightEngine() {
-            return lightEngine;
-        }
-
-        @Override
-        public BlockGetter getLevel() {
-            return GuidebookLevel.this;
-        }
-    }
-
-    public class GuidebookChunk extends LevelChunk {
-        public GuidebookChunk(Level level, ChunkPos pos) {
-            super(level, pos);
-        }
-
-        @Nullable
-        public BlockState setBlockState(BlockPos pos, BlockState state, boolean isMoving) {
-            var result = super.setBlockState(pos, state, isMoving);
-            if (state.isAir()) {
-                filledBlocks.remove(pos.asLong());
-            } else {
-                filledBlocks.add(pos.asLong());
-            }
-            return result;
-        }
-
-        public ChunkHolder.FullChunkStatus getFullStatus() {
-            return ChunkHolder.FullChunkStatus.BORDER;
-        }
-
     }
 }

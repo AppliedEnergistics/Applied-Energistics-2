@@ -1,12 +1,13 @@
 package appeng.client.guidebook.scene;
 
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 
 public class LytItemImage extends LytBlock {
     private ItemStack item = ItemStack.EMPTY;
