@@ -35,7 +35,7 @@ public class GuiMEPortableCell extends GuiMEMonitorable {
     }
 
     @Override
-    int getMaxRows() {
+    protected int getMaxRows() {
         return 3;
     }
 }

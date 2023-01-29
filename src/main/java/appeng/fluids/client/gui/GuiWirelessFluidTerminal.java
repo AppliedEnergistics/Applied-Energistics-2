@@ -16,21 +16,18 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.gui.implementations;
+package appeng.fluids.client.gui;
 
 
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.fluids.container.ContainerWirelessFluidTerminal;
+import appeng.helpers.WirelessTerminalGuiObject;
 import net.minecraft.entity.player.InventoryPlayer;
 
 
-public class GuiWirelessFluidTerminal extends GuiMEPortableCell {
+public class GuiWirelessFluidTerminal extends GuiMEPortableFluidCell {
 
-    public GuiWirelessFluidTerminal(final InventoryPlayer inventoryPlayer, final IPortableCell te) {
-        super(inventoryPlayer, te);
-    }
-
-    @Override
-    int getMaxRows() {
-        return this.defaultGetMaxRows();
+    public GuiWirelessFluidTerminal(final InventoryPlayer inventoryPlayer, final WirelessTerminalGuiObject te) {
+        super(inventoryPlayer, te, new ContainerWirelessFluidTerminal(inventoryPlayer, te));
     }
 }

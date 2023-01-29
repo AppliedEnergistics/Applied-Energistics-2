@@ -442,7 +442,7 @@ public class GuiMEMonitorable extends AEBaseMEGui implements ISortSource, IConfi
         return this.repo.hasPower();
     }
 
-    int getMaxRows() {
+    protected int getMaxRows() {
         return AEConfig.instance().getConfigManager().getSetting(Settings.TERMINAL_STYLE) == TerminalStyle.SMALL ? 6 : Integer.MAX_VALUE;
     }
 

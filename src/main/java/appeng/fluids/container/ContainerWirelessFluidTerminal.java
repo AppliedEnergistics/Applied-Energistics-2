@@ -16,9 +16,10 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.container.implementations;
+package appeng.fluids.container;
 
 
+import appeng.container.implementations.ContainerMEPortableCell;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
@@ -26,7 +27,7 @@ import appeng.util.Platform;
 import net.minecraft.entity.player.InventoryPlayer;
 
 
-public class ContainerWirelessFluidTerminal extends ContainerMEPortableCell {
+public class ContainerWirelessFluidTerminal extends ContainerMEPortableFluidCell {
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 

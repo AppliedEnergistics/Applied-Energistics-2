@@ -30,7 +30,7 @@ public class GuiWirelessTerm extends GuiMEPortableCell {
     }
 
     @Override
-    int getMaxRows() {
+    protected int getMaxRows() {
         return this.defaultGetMaxRows();
     }
 }

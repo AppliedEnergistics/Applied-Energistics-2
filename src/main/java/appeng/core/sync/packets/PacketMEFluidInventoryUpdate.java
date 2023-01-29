@@ -24,6 +24,7 @@ import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.client.gui.GuiFluidTerminal;
+import appeng.fluids.client.gui.GuiWirelessFluidTerminal;
 import appeng.fluids.util.AEFluidStack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -138,6 +139,8 @@ public class PacketMEFluidInventoryUpdate extends AppEngPacket {
 
         if (gs instanceof GuiFluidTerminal) {
             ((GuiFluidTerminal) gs).postUpdate(this.list);
+        } else if (gs instanceof GuiWirelessFluidTerminal) {
+            ((GuiWirelessFluidTerminal)gs).postUpdate(this.list);
         }
     }
 
