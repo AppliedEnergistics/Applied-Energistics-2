@@ -388,7 +388,10 @@ public abstract class AEBaseContainer extends Container {
 
                             if (Platform.itemComparisons().isSameItem(tis, t)) // t.isItemEqual(tis))
                             {
-                                int maxSize = d.getSlotStackLimit();
+                                int maxSize = t.getMaxStackSize();
+                                if (maxSize > d.getSlotStackLimit()) {
+                                    maxSize = d.getSlotStackLimit();
+                                }
 
                                 int placeAble = maxSize - t.getCount();
 
