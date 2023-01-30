@@ -37,16 +37,18 @@ public class ContainerWirelessFluidTerminal extends ContainerMEPortableFluidCell
 
     @Override
     public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+        if (Platform.isServer()) {
+            super.detectAndSendChanges();
 
-        if (!this.wirelessTerminalGUIObject.rangeCheck()) {
-            if (Platform.isServer() && this.isValidContainer()) {
-                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+            if (!this.wirelessTerminalGUIObject.rangeCheck()) {
+                if (Platform.isServer() && this.isValidContainer()) {
+                    this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+                }
+
+                this.setValidContainer(false);
+            } else {
+                this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
             }
-
-            this.setValidContainer(false);
-        } else {
-            this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
         }
     }
 }

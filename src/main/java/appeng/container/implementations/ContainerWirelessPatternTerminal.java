@@ -33,6 +33,7 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.parts.automation.StackUpgradeInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
@@ -51,6 +52,8 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
     private final int slot;
     protected AppEngInternalInventory output;
     protected AppEngInternalInventory pattern;
+    protected AppEngInternalInventory upgrades;
+
     private double powerMultiplier = 0.5;
     private int ticks = 0;
 
@@ -73,6 +76,7 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
             this.lockPlayerInventorySlot(ip.currentItem);
         }
         this.wirelessTerminalGUIObject = gui;
+        upgrades = new StackUpgradeInventory(wirelessTerminalGUIObject.getItemStack(), this, 2);
 
         this.loadFromNBT();
 
@@ -110,36 +114,39 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
 
     @Override
     public void detectAndSendChanges() {
-        final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+        if (Platform.isServer()) {
 
-        if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
-            this.setValidContainer(false);
-        } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
-            if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
-                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
-            } else {
+            final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+
+            if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
                 this.setValidContainer(false);
-            }
-        }
-
-        // drain 1 ae t
-        this.ticks++;
-        if (this.ticks > 10) {
-            this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
-            this.ticks = 0;
-        }
-
-        if (!this.wirelessTerminalGUIObject.rangeCheck()) {
-            if (Platform.isServer() && this.isValidContainer()) {
-                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+            } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
+                if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
+                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
+                } else {
+                    this.setValidContainer(false);
+                }
             }
 
-            this.setValidContainer(false);
-        } else {
-            this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
-        }
+            // drain 1 ae t
+            this.ticks++;
+            if (this.ticks > 10) {
+                this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                this.ticks = 0;
+            }
 
-        super.detectAndSendChanges();
+            if (!this.wirelessTerminalGUIObject.rangeCheck()) {
+                if (Platform.isServer() && this.isValidContainer()) {
+                    this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+                }
+
+                this.setValidContainer(false);
+            } else {
+                this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
+            }
+
+            super.detectAndSendChanges();
+        }
     }
 
     private double getPowerMultiplier() {
@@ -178,6 +185,8 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
 
             this.output.writeToNBT(tag, "output");
             this.pattern.writeToNBT(tag, "patterns");
+            this.upgrades.writeToNBT(tag, "upgrades");
+
             this.wirelessTerminalGUIObject.saveChanges(tag);
         }
     }
@@ -188,6 +197,7 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
             ((AppEngInternalInventory) crafting).readFromNBT(data, "craftingGrid");
             this.output.readFromNBT(data, "output");
             this.pattern.readFromNBT(data, "patterns");
+            upgrades.readFromNBT(wirelessTerminalGUIObject.getItemStack().getTagCompound().getCompoundTag("upgrades"));
         }
     }
 
@@ -238,7 +248,6 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
     @Override
     public void setupUpgrades() {
         if (wirelessTerminalGUIObject != null) {
-            final IItemHandler upgrades = wirelessTerminalGUIObject.getInventoryByName("upgrades");
             for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
                         (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, upgradeSlot * 18 - 2, this.getInventoryPlayer()))

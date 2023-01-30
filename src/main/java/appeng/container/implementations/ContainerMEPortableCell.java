@@ -27,19 +27,26 @@ import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;
+import appeng.parts.automation.StackUpgradeInventory;
+import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class ContainerMEPortableCell extends ContainerMEMonitorable implements IUpgradeableCellContainer {
+public class ContainerMEPortableCell extends ContainerMEMonitorable implements IUpgradeableCellContainer, IAEAppEngInventory {
 
     protected final WirelessTerminalGuiObject wirelessTerminalGUIObject;
     private final int slot;
     private double powerMultiplier = 0.5;
     private int ticks = 0;
 
+    protected AppEngInternalInventory upgrades;
 
     public ContainerMEPortableCell(InventoryPlayer ip, WirelessTerminalGuiObject monitorable, boolean bindInventory) {
         super(ip, monitorable, bindInventory);
@@ -52,44 +59,51 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
             this.lockPlayerInventorySlot(ip.currentItem);
         }
         this.wirelessTerminalGUIObject = monitorable;
+        this.upgrades = new StackUpgradeInventory(wirelessTerminalGUIObject.getItemStack(), this, 2);
+        this.loadFromNBT();
+
         if (bindInventory) {
             this.bindPlayerInventory(ip, 0, 0);
         }
         this.setupUpgrades();
     }
 
+
     @Override
     public void detectAndSendChanges() {
-        final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+        if (Platform.isServer()) {
 
-        if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
-            this.setValidContainer(false);
-        } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
-            if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
-                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
-            } else {
+            final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+
+            if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
                 this.setValidContainer(false);
-            }
-        }
-
-        // drain 1 ae t
-        this.ticks++;
-        if (this.ticks > 10) {
-            this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
-            this.ticks = 0;
-        }
-
-        if (!this.wirelessTerminalGUIObject.rangeCheck()) {
-            if (Platform.isServer() && this.isValidContainer()) {
-                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+            } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
+                if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
+                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
+                } else {
+                    this.setValidContainer(false);
+                }
             }
 
-            this.setValidContainer(false);
-        } else {
-            this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
-        }
+            // drain 1 ae t
+            this.ticks++;
+            if (this.ticks > 10) {
+                this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                this.ticks = 0;
+            }
 
-        super.detectAndSendChanges();
+            if (!this.wirelessTerminalGUIObject.rangeCheck()) {
+                if (Platform.isServer() && this.isValidContainer()) {
+                    this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
+                }
+
+                this.setValidContainer(false);
+            } else {
+                this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
+            }
+
+            super.detectAndSendChanges();
+        }
     }
 
     private double getPowerMultiplier() {
@@ -107,7 +121,6 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
     @Override
     public void setupUpgrades() {
         if (wirelessTerminalGUIObject != null) {
-            final IItemHandler upgrades = wirelessTerminalGUIObject.getInventoryByName("upgrades");
             for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
                         (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, upgradeSlot * 18, this.getInventoryPlayer()))
@@ -116,4 +129,30 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
         }
     }
 
+    @Override
+    public void onSlotChange(Slot s) {
+        super.detectAndSendChanges();
+    }
+
+    @Override
+    public void saveChanges() {
+        if (Platform.isServer()) {
+            NBTTagCompound tag = new NBTTagCompound();
+            this.upgrades.writeToNBT(tag, "upgrades");
+
+            this.wirelessTerminalGUIObject.saveChanges(tag);
+        }
+    }
+
+    private void loadFromNBT() {
+        NBTTagCompound data = wirelessTerminalGUIObject.getItemStack().getTagCompound();
+        if (data != null) {
+            upgrades.readFromNBT(wirelessTerminalGUIObject.getItemStack().getTagCompound().getCompoundTag("upgrades"));
+        }
+    }
+
+    @Override
+    public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
+
+    }
 }

@@ -22,8 +22,6 @@ package appeng.container.implementations;
 import appeng.container.ContainerNull;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotCraftingTerm;
-import appeng.core.AEConfig;
-import appeng.core.localization.PlayerMessages;
 import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.tile.inventory.AppEngInternalInventory;
@@ -58,6 +56,8 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
         super(ip, gui, false);
         this.wirelessTerminalGUIObject = gui;
 
+        this.loadFromNBT();
+
         final IItemHandler crafting = this.craftingGrid;
 
         for (int y = 0; y < 3; y++) {
@@ -70,7 +70,6 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
                 .getPowerSource(), this.wirelessTerminalGUIObject, crafting, crafting, this.output, 131, -72 + 18, this));
 
         this.bindPlayerInventory(ip, 0, 0);
-        this.loadFromNBT();
 
         this.onCraftMatrixChanged(new WrapperInvItemHandler(crafting));
     }
@@ -102,14 +101,17 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
         if (Platform.isServer()) {
             NBTTagCompound tag = new NBTTagCompound();
             this.craftingGrid.writeToNBT(tag, "craftingGrid");
+            this.upgrades.writeToNBT(tag, "upgrades");
+
             this.wirelessTerminalGUIObject.saveChanges(tag);
         }
     }
 
-    private void loadFromNBT() {
+    protected void loadFromNBT() {
         NBTTagCompound data = wirelessTerminalGUIObject.getItemStack().getTagCompound();
         if (data != null) {
             this.craftingGrid.readFromNBT(data, "craftingGrid");
+            upgrades.readFromNBT(wirelessTerminalGUIObject.getItemStack().getTagCompound().getCompoundTag("upgrades"));
         }
     }
 

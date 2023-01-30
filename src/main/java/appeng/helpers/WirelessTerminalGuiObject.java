@@ -331,7 +331,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         }
     }
 
-    private void loadFromNBT() {
+    public void loadFromNBT() {
         NBTTagCompound data = effectiveItem.getTagCompound();
         if (data != null) {
             viewCell.readFromNBT(data);
