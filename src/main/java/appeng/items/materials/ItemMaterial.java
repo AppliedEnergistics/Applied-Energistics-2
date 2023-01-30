@@ -144,6 +144,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
                 return Upgrades.CRAFTING;
             case CARD_PATTERN_EXPANSION:
                 return Upgrades.PATTERN_EXPANSION;
+            case CARD_MAGNET:
+                return Upgrades.MAGNET;
+            case CARD_QUANTUM_LINK:
+                return Upgrades.QUANTUM_LINK;
             default:
                 return null;
         }

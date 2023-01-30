@@ -32,66 +32,61 @@ import net.minecraft.item.ItemStack;
 import appeng.api.definitions.IItemDefinition;
 
 
-public enum Upgrades
-{
-	/**
-	 * Gold Tier Upgrades.
-	 */
-	CAPACITY( 0 ),
-	REDSTONE( 0 ),
-	CRAFTING( 0 ),
+public enum Upgrades {
+    /**
+     * Gold Tier Upgrades.
+     */
+    CAPACITY(0),
+    REDSTONE(0),
+    CRAFTING(0),
+    MAGNET(0),
 
-	/**
-	 * Diamond Tier Upgrades.
-	 */
-	FUZZY( 1 ),
-	SPEED( 1 ),
-	INVERTER( 1 ),
-	PATTERN_EXPANSION(1);
+    /**
+     * Diamond Tier Upgrades.
+     */
+    FUZZY(1),
+    SPEED(1),
+    INVERTER(1),
+    PATTERN_EXPANSION(1),
+    QUANTUM_LINK(1);
 
-	private final int tier;
-	private final Map<ItemStack, Integer> supportedMax = new HashMap<>();
+    private final int tier;
+    private final Map<ItemStack, Integer> supportedMax = new HashMap<>();
 
-	Upgrades( final int tier )
-	{
-		this.tier = tier;
-	}
+    Upgrades(final int tier) {
+        this.tier = tier;
+    }
 
-	/**
-	 * @return list of Items/Blocks that support this upgrade, and how many it supports.
-	 */
-	public Map<ItemStack, Integer> getSupported()
-	{
-		return this.supportedMax;
-	}
+    /**
+     * @return list of Items/Blocks that support this upgrade, and how many it supports.
+     */
+    public Map<ItemStack, Integer> getSupported() {
+        return this.supportedMax;
+    }
 
-	/**
-	 * Registers a specific amount of this upgrade into a specific machine
-	 *
-	 * @param item machine in which this upgrade can be installed
-	 * @param maxSupported amount how many upgrades can be installed
-	 */
-	public void registerItem( final IItemDefinition item, final int maxSupported )
-	{
-		item.maybeStack( 1 ).ifPresent( is -> this.registerItem( is, maxSupported ) );
-	}
+    /**
+     * Registers a specific amount of this upgrade into a specific machine
+     *
+     * @param item         machine in which this upgrade can be installed
+     * @param maxSupported amount how many upgrades can be installed
+     */
+    public void registerItem(final IItemDefinition item, final int maxSupported) {
+        item.maybeStack(1).ifPresent(is -> this.registerItem(is, maxSupported));
+    }
 
-	/**
-	 * Registers a specific amount of this upgrade into a specific machine
-	 *
-	 * @param stack machine in which this upgrade can be installed
-	 * @param maxSupported amount how many upgrades can be installed
-	 */
-	public void registerItem( final ItemStack stack, final int maxSupported )
-	{
-		if( stack != null )
-		{
-			this.supportedMax.put( stack, maxSupported );
-		}
-	}
+    /**
+     * Registers a specific amount of this upgrade into a specific machine
+     *
+     * @param stack        machine in which this upgrade can be installed
+     * @param maxSupported amount how many upgrades can be installed
+     */
+    public void registerItem(final ItemStack stack, final int maxSupported) {
+        if (stack != null) {
+            this.supportedMax.put(stack, maxSupported);
+        }
+    }
 
-	public int getTier()
-	{
-		return this.tier;
-	}
+    public int getTier() {
+        return this.tier;
+    }
 }

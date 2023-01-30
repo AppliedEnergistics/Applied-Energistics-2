@@ -27,121 +27,124 @@ package appeng.api.definitions;
 /**
  * A list of all materials in AE
  */
-public interface IMaterials
-{
-	IItemDefinition cell2SpatialPart();
+public interface IMaterials {
+    IItemDefinition cell2SpatialPart();
 
-	IItemDefinition cell16SpatialPart();
+    IItemDefinition cell16SpatialPart();
 
-	IItemDefinition cell128SpatialPart();
+    IItemDefinition cell128SpatialPart();
 
-	IItemDefinition silicon();
+    IItemDefinition silicon();
 
-	IItemDefinition skyDust();
+    IItemDefinition skyDust();
 
-	IItemDefinition calcProcessorPress();
+    IItemDefinition calcProcessorPress();
 
-	IItemDefinition engProcessorPress();
+    IItemDefinition engProcessorPress();
 
-	IItemDefinition logicProcessorPress();
+    IItemDefinition logicProcessorPress();
 
-	IItemDefinition calcProcessorPrint();
+    IItemDefinition calcProcessorPrint();
 
-	IItemDefinition engProcessorPrint();
+    IItemDefinition engProcessorPrint();
 
-	IItemDefinition logicProcessorPrint();
+    IItemDefinition logicProcessorPrint();
 
-	IItemDefinition siliconPress();
+    IItemDefinition siliconPress();
 
-	IItemDefinition siliconPrint();
+    IItemDefinition siliconPrint();
 
-	IItemDefinition namePress();
+    IItemDefinition namePress();
 
-	IItemDefinition logicProcessor();
+    IItemDefinition logicProcessor();
 
-	IItemDefinition calcProcessor();
+    IItemDefinition calcProcessor();
 
-	IItemDefinition engProcessor();
+    IItemDefinition engProcessor();
 
-	IItemDefinition basicCard();
+    IItemDefinition basicCard();
 
-	IItemDefinition advCard();
+    IItemDefinition advCard();
 
-	IItemDefinition purifiedCertusQuartzCrystal();
+    IItemDefinition purifiedCertusQuartzCrystal();
 
-	IItemDefinition purifiedNetherQuartzCrystal();
+    IItemDefinition purifiedNetherQuartzCrystal();
 
-	IItemDefinition purifiedFluixCrystal();
+    IItemDefinition purifiedFluixCrystal();
 
-	IItemDefinition cell1kPart();
+    IItemDefinition cell1kPart();
 
-	IItemDefinition cell4kPart();
+    IItemDefinition cell4kPart();
 
-	IItemDefinition cell16kPart();
+    IItemDefinition cell16kPart();
 
-	IItemDefinition cell64kPart();
+    IItemDefinition cell64kPart();
 
-	IItemDefinition emptyStorageCell();
+    IItemDefinition emptyStorageCell();
 
-	IItemDefinition cardRedstone();
+    IItemDefinition cardRedstone();
 
-	IItemDefinition cardSpeed();
+    IItemDefinition cardSpeed();
 
-	IItemDefinition cardCapacity();
+    IItemDefinition cardCapacity();
 
-	IItemDefinition cardPatternExpansion();
+    IItemDefinition cardPatternExpansion();
 
-	IItemDefinition cardFuzzy();
+    public IItemDefinition cardQuantumLink();
 
-	IItemDefinition cardInverter();
+    public IItemDefinition cardMagnet();
 
-	IItemDefinition cardCrafting();
+    IItemDefinition cardFuzzy();
 
-	IItemDefinition enderDust();
+    IItemDefinition cardInverter();
 
-	IItemDefinition flour();
+    IItemDefinition cardCrafting();
 
-	IItemDefinition goldDust();
+    IItemDefinition enderDust();
 
-	IItemDefinition ironDust();
+    IItemDefinition flour();
 
-	IItemDefinition fluixDust();
+    IItemDefinition goldDust();
 
-	IItemDefinition certusQuartzDust();
+    IItemDefinition ironDust();
 
-	IItemDefinition netherQuartzDust();
+    IItemDefinition fluixDust();
 
-	IItemDefinition matterBall();
+    IItemDefinition certusQuartzDust();
 
-	IItemDefinition certusQuartzCrystal();
+    IItemDefinition netherQuartzDust();
 
-	IItemDefinition certusQuartzCrystalCharged();
+    IItemDefinition matterBall();
 
-	IItemDefinition fluixCrystal();
+    IItemDefinition certusQuartzCrystal();
 
-	IItemDefinition fluixPearl();
+    IItemDefinition certusQuartzCrystalCharged();
 
-	IItemDefinition woodenGear();
+    IItemDefinition fluixCrystal();
 
-	IItemDefinition wirelessReceiver();
+    IItemDefinition fluixPearl();
 
-	IItemDefinition wirelessBooster();
+    IItemDefinition woodenGear();
 
-	IItemDefinition annihilationCore();
+    IItemDefinition wirelessReceiver();
 
-	IItemDefinition formationCore();
+    IItemDefinition wirelessBooster();
 
-	IItemDefinition singularity();
+    IItemDefinition annihilationCore();
 
-	IItemDefinition qESingularity();
+    IItemDefinition formationCore();
 
-	IItemDefinition blankPattern();
+    IItemDefinition singularity();
 
-	IItemDefinition fluidCell1kPart();
+    IItemDefinition qESingularity();
 
-	IItemDefinition fluidCell4kPart();
+    IItemDefinition blankPattern();
 
-	IItemDefinition fluidCell16kPart();
+    IItemDefinition fluidCell1kPart();
 
-	IItemDefinition fluidCell64kPart();
+    IItemDefinition fluidCell4kPart();
+
+    IItemDefinition fluidCell16kPart();
+
+    IItemDefinition fluidCell64kPart();
 }

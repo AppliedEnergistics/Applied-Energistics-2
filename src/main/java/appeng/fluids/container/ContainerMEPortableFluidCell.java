@@ -39,6 +39,8 @@ import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.ConfigManager;
 import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -53,7 +55,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 
-public class ContainerMEPortableFluidCell extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack>, IUpgradeableCellContainer {
+public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAEAppEngInventory, IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack>, IUpgradeableCellContainer {
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
@@ -138,7 +140,7 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
 
         if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
-        } else if (this.wirelessTerminalGUIObject != null && !this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
+        } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
             if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
                 this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
             } else {
@@ -524,13 +526,24 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
 
     @Override
     public void setupUpgrades() {
-        if (wirelessTerminalGUIObject instanceof WirelessTerminalGuiObject) {
-            final IItemHandler upgrades = ((WirelessTerminalGuiObject) wirelessTerminalGUIObject).getInventoryByName("upgrades");
-            for (int a = 0; a < availableUpgrades(); a++) {
+        if (wirelessTerminalGUIObject != null) {
+            final IItemHandler upgrades = wirelessTerminalGUIObject.getInventoryByName("upgrades");
+            for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
-                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 139 + a * 18, this.getInventoryPlayer()))
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, 139 + upgradeSlot * 18, this.getInventoryPlayer()))
                                 .setNotDraggable());
             }
         }
+    }
+
+
+    @Override
+    public void saveChanges() {
+
+    }
+
+    @Override
+    public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
+
     }
 }

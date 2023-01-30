@@ -108,9 +108,9 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
     public void setupUpgrades() {
         if (wirelessTerminalGUIObject != null) {
             final IItemHandler upgrades = wirelessTerminalGUIObject.getInventoryByName("upgrades");
-            for (int a = 0; a < availableUpgrades(); a++) {
+            for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
-                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, a * 18, this.getInventoryPlayer()))
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, upgradeSlot * 18, this.getInventoryPlayer()))
                                 .setNotDraggable());
             }
         }

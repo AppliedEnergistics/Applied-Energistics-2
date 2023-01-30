@@ -46,6 +46,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
     private int inverterUpgrades = 0;
     private int craftingUpgrades = 0;
     private int patternExpansionUpgrades = 0;
+    private int magnetUpgrades = 0;
+    private int quantumUpgrades = 0;
 
     public UpgradeInventory(final IAEAppEngInventory parent, final int s) {
         super(null, s, 1);
@@ -79,6 +81,10 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
                 return this.craftingUpgrades;
             case PATTERN_EXPANSION:
                 return this.patternExpansionUpgrades;
+            case MAGNET:
+                return this.magnetUpgrades;
+            case QUANTUM_LINK:
+                return this.quantumUpgrades;
             default:
                 return 0;
         }
@@ -88,7 +94,7 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
 
     private void updateUpgradeInfo() {
         this.cached = true;
-        this.patternExpansionUpgrades = this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = 0;
+        this.patternExpansionUpgrades = this.inverterUpgrades = this.capacityUpgrades = this.redstoneUpgrades = this.speedUpgrades = this.fuzzyUpgrades = this.craftingUpgrades = magnetUpgrades = quantumUpgrades = 0;
 
         for (final ItemStack is : this) {
             if (is == null || is.getItem() == Items.AIR || !(is.getItem() instanceof IUpgradeModule)) {
@@ -118,6 +124,11 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
                 case PATTERN_EXPANSION:
                     this.patternExpansionUpgrades++;
                     break;
+                case MAGNET:
+                    this.magnetUpgrades++;
+                    break;
+                case QUANTUM_LINK:
+                    this.quantumUpgrades++;
                 default:
                     break;
             }
@@ -130,6 +141,8 @@ public abstract class UpgradeInventory extends AppEngInternalInventory implement
         this.inverterUpgrades = Math.min(this.inverterUpgrades, this.getMaxInstalled(Upgrades.INVERTER));
         this.craftingUpgrades = Math.min(this.craftingUpgrades, this.getMaxInstalled(Upgrades.CRAFTING));
         this.patternExpansionUpgrades = Math.min(this.patternExpansionUpgrades, this.getMaxInstalled(Upgrades.PATTERN_EXPANSION));
+        this.magnetUpgrades = Math.min(this.magnetUpgrades, this.getMaxInstalled(Upgrades.MAGNET));
+        this.quantumUpgrades = Math.min(this.quantumUpgrades, this.getMaxInstalled(Upgrades.QUANTUM_LINK));
     }
 
     @Override

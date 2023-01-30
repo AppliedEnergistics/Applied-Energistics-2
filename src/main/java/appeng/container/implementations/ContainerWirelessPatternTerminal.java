@@ -114,7 +114,7 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
 
         if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
-        } else if (this.wirelessTerminalGUIObject != null && !this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
+        } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
             if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
                 this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
             } else {
@@ -239,9 +239,9 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
     public void setupUpgrades() {
         if (wirelessTerminalGUIObject != null) {
             final IItemHandler upgrades = wirelessTerminalGUIObject.getInventoryByName("upgrades");
-            for (int a = 0; a < availableUpgrades(); a++) {
+            for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
-                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, -2 + a * 18, this.getInventoryPlayer()))
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, upgradeSlot * 18 - 2, this.getInventoryPlayer()))
                                 .setNotDraggable());
             }
         }

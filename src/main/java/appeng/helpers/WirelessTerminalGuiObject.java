@@ -105,7 +105,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             }
         }
 
-        upgrades = new StackUpgradeInventory(effectiveItem, this, 4);
+        upgrades = new StackUpgradeInventory(effectiveItem, this, 2);
 
         this.loadFromNBT();
     }
@@ -319,6 +319,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
             data = new NBTTagCompound();
         }
         viewCell.writeToNBT(data, "viewCell");
+        upgrades.writeToNBT(data, "upgrades");
     }
 
     @Override
@@ -347,6 +348,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     public IItemHandler getInventoryByName(String name) {
         if (name.equals("upgrades")) {
             return upgrades;
+        } else if (name.equals("viewCell")) {
+            return viewCell;
         }
         return null;
     }
