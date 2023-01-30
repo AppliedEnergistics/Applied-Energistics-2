@@ -75,11 +75,6 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
     @GuiSync(96)
     public boolean substitute = false;
 
-    public ContainerPatternEncoder(InventoryPlayer ip, ITerminalHost monitorable) {
-        super(ip, monitorable);
-        patternTerminal = (AbstractPartEncoder) monitorable;
-    }
-
     protected ContainerPatternEncoder(InventoryPlayer ip, ITerminalHost monitorable, boolean bindInventory) {
         super(ip, monitorable, bindInventory);
         patternTerminal = (AbstractPartEncoder) monitorable;
@@ -550,8 +545,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
                     this.updateOrderOfOutputSlots();
                 }
                 this.substitute = this.getPart().isSubstitution();
-            }
-            else if (iGuiItemObject != null) {
+            } else if (iGuiItemObject != null) {
                 NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
                 if (nbtTagCompound != null) {
                     if (nbtTagCompound.hasKey("isCraftingMode")) {
@@ -677,7 +671,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
                 storage = this.getPart()
                         .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
             } else if (iGuiItemObject != null) {
-                storage = ((ITerminalHost)iGuiItemObject).getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
+                storage = ((ITerminalHost) iGuiItemObject).getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
             }
 
             final IItemList<IAEItemStack> all = storage.getStorageList();
@@ -720,7 +714,7 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
                     if (!failed.isEmpty()) {
                         this.getCellInventory()
                                 .injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
-                                        new MachineSource(this.getPart() != null? this.getPart() : (IActionHost) iGuiItemObject));
+                                        new MachineSource(this.getPart() != null ? this.getPart() : (IActionHost) iGuiItemObject));
                     }
                 }
             }

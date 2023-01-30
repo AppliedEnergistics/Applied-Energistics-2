@@ -22,10 +22,9 @@ package appeng.container.implementations;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.implementations.ICraftingPatternItem;
-import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.IUpgradeableCellContainer;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
-import appeng.container.interfaces.IInventorySlotAware;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotPatternOutputs;
@@ -33,35 +32,27 @@ import appeng.container.slot.SlotPatternTerm;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
-import appeng.helpers.ItemStackHelper;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 import static appeng.helpers.PatternHelper.CRAFTING_GRID_DIMENSION;
 
 
-public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
+public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder implements IUpgradeableCellContainer {
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
-    private double powerMultiplier = 0.5;
-    protected final IPortableCell civ;
-    private int ticks = 0;
     private final int slot;
-
     protected AppEngInternalInventory output;
     protected AppEngInternalInventory pattern;
+    private double powerMultiplier = 0.5;
+    private int ticks = 0;
 
     public ContainerWirelessPatternTerminal(final InventoryPlayer ip, final WirelessTerminalGuiObject gui) {
         super(ip, gui, gui, false);
@@ -81,7 +72,6 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
             this.slot = -1;
             this.lockPlayerInventorySlot(ip.currentItem);
         }
-        this.civ = gui;
         this.wirelessTerminalGUIObject = gui;
 
         this.loadFromNBT();
@@ -114,17 +104,19 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
         this.updateOrderOfOutputSlots();
 
         this.bindPlayerInventory(ip, 0, 0);
+
+        this.setupUpgrades();
     }
 
     @Override
     public void detectAndSendChanges() {
         final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
 
-        if (this.civ == null || currentItem.isEmpty()) {
+        if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
-        } else if (this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack()) {
-            if (ItemStack.areItemsEqual(this.civ.getItemStack(), currentItem)) {
-                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.civ.getItemStack());
+        } else if (this.wirelessTerminalGUIObject != null && !this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
+            if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
+                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
             } else {
                 this.setValidContainer(false);
             }
@@ -133,7 +125,7 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
         // drain 1 ae t
         this.ticks++;
         if (this.ticks > 10) {
-            this.civ.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+            this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
             this.ticks = 0;
         }
 
@@ -236,5 +228,22 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder {
     @Override
     public boolean useRealItems() {
         return false;
+    }
+
+    @Override
+    public int availableUpgrades() {
+        return 2;
+    }
+
+    @Override
+    public void setupUpgrades() {
+        if (wirelessTerminalGUIObject != null) {
+            final IItemHandler upgrades = wirelessTerminalGUIObject.getInventoryByName("upgrades");
+            for (int a = 0; a < availableUpgrades(); a++) {
+                this.addSlotToContainer(
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, -2 + a * 18, this.getInventoryPlayer()))
+                                .setNotDraggable());
+            }
+        }
     }
 }

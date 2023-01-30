@@ -19,7 +19,6 @@
 package appeng.fluids.container;
 
 
-import appeng.container.implementations.ContainerMEPortableCell;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.helpers.WirelessTerminalGuiObject;

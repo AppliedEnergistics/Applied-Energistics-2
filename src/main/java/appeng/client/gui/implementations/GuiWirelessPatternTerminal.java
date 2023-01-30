@@ -19,9 +19,6 @@
 package appeng.client.gui.implementations;
 
 
-import appeng.api.implementations.guiobjects.IGuiItemObject;
-import appeng.api.implementations.guiobjects.IPortableCell;
-import appeng.container.implementations.ContainerWirelessCraftingTerminal;
 import appeng.container.implementations.ContainerWirelessPatternTerminal;
 import appeng.helpers.WirelessTerminalGuiObject;
 import net.minecraft.entity.player.InventoryPlayer;

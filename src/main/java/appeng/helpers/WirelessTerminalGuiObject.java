@@ -25,6 +25,7 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.implementations.IUpgradeableCellHost;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
@@ -44,6 +45,8 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
+import appeng.parts.automation.StackUpgradeInventory;
+import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.networking.TileWireless;
 import appeng.util.inv.IAEAppEngInventory;
@@ -55,7 +58,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware, IViewCellStorage, IAEAppEngInventory {
+public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware, IViewCellStorage, IAEAppEngInventory, IUpgradeableCellHost {
 
     private final ItemStack effectiveItem;
     private final IWirelessTermHandler wth;
@@ -70,6 +73,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     private final int inventorySlot;
 
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
+    private final UpgradeInventory upgrades;
+
 
     public WirelessTerminalGuiObject(final IWirelessTermHandler wh, final ItemStack is, final EntityPlayer ep, final World w, final int x, final int y, final int z) {
         this.encryptionKey = wh.getEncryptionKey(is);
@@ -99,6 +104,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 }
             }
         }
+
+        upgrades = new StackUpgradeInventory(effectiveItem, this, 4);
 
         this.loadFromNBT();
     }
@@ -327,11 +334,20 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         NBTTagCompound data = effectiveItem.getTagCompound();
         if (data != null) {
             viewCell.readFromNBT(data);
+            upgrades.readFromNBT(data);
         }
     }
 
     @Override
     public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
 
+    }
+
+    @Override
+    public IItemHandler getInventoryByName(String name) {
+        if (name.equals("upgrades")) {
+            return upgrades;
+        }
+        return null;
     }
 }

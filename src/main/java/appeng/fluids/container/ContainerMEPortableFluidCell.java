@@ -2,6 +2,7 @@ package appeng.fluids.container;
 
 import appeng.api.AEApi;
 import appeng.api.config.*;
+import appeng.api.implementations.IUpgradeableCellContainer;
 import appeng.api.implementations.guiobjects.IPortableCell;
 import appeng.api.networking.IGridHost;
 import appeng.api.networking.IGridNode;
@@ -24,6 +25,7 @@ import appeng.container.interfaces.IInventorySlotAware;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotPlayerHotBar;
 import appeng.container.slot.SlotPlayerInv;
+import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
@@ -45,12 +47,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 
-public class ContainerMEPortableFluidCell extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack> {
+public class ContainerMEPortableFluidCell extends AEBaseContainer implements IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack>, IUpgradeableCellContainer {
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
@@ -66,8 +69,6 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
     // Holds the fluid the client wishes to extract, or null for insert
     private IAEFluidStack clientRequestedTargetFluid = null;
     private double powerMultiplier = 0.5;
-
-    protected final IPortableCell civ;
     private int ticks = 0;
     private final int slot;
 
@@ -98,24 +99,22 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
                 this.monitor.addListener(this, null);
 
                 this.setPowerSource((IEnergySource) terminal);
-                if (terminal instanceof IGridHost || terminal instanceof IActionHost) {
-                    final IGridNode node;
-                    if (terminal instanceof IGridHost) {
-                        node = ((IGridHost) terminal).getGridNode(AEPartLocation.INTERNAL);
-                    } else {
-                        node = ((IActionHost) terminal).getActionableNode();
-                    }
+                final IGridNode node;
+                if (terminal instanceof IGridHost) {
+                    node = ((IGridHost) terminal).getGridNode(AEPartLocation.INTERNAL);
+                } else {
+                    node = ((IActionHost) terminal).getActionableNode();
+                }
 
-                    if (node != null) {
-                        this.networkNode = node;
-                    }
+                if (node != null) {
+                    this.networkNode = node;
                 }
             }
         } else {
             this.monitor = null;
         }
 
-        if (monitorable instanceof IInventorySlotAware) {
+        if (monitorable != null) {
             final int slotIndex = ((IInventorySlotAware) monitorable).getInventorySlot();
             this.lockPlayerInventorySlot(slotIndex);
             this.slot = slotIndex;
@@ -123,11 +122,13 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
             this.slot = -1;
             this.lockPlayerInventorySlot(ip.currentItem);
         }
-        this.civ = monitorable;
+
         if (bindInventory) {
             this.bindPlayerInventory(ip, 0, 140);
         }
-        hasPower = this.civ.extractAEPower(this.getPowerMultiplier(), Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.001;
+        hasPower = this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier(), Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.001;
+
+        this.setupUpgrades();
 
     }
 
@@ -135,11 +136,11 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
     public void detectAndSendChanges() {
         final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
 
-        if (this.civ == null || currentItem.isEmpty()) {
+        if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
             this.setValidContainer(false);
-        } else if (this.civ != null && !this.civ.getItemStack().isEmpty() && currentItem != this.civ.getItemStack()) {
-            if (ItemStack.areItemsEqual(this.civ.getItemStack(), currentItem)) {
-                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.civ.getItemStack());
+        } else if (this.wirelessTerminalGUIObject != null && !this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
+            if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
+                this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
             } else {
                 this.setValidContainer(false);
             }
@@ -148,7 +149,7 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
         // drain 1 ae t
         this.ticks++;
         if (this.ticks > 10) {
-            double power = this.civ.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+            double power = this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
             this.ticks = 0;
             this.hasPower = power > 0.001;
         }
@@ -514,5 +515,22 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements ICo
 
     public void setGui(@Nonnull final IConfigManagerHost gui) {
         this.gui = gui;
+    }
+
+    @Override
+    public int availableUpgrades() {
+        return 2;
+    }
+
+    @Override
+    public void setupUpgrades() {
+        if (wirelessTerminalGUIObject instanceof WirelessTerminalGuiObject) {
+            final IItemHandler upgrades = ((WirelessTerminalGuiObject) wirelessTerminalGUIObject).getInventoryByName("upgrades");
+            for (int a = 0; a < availableUpgrades(); a++) {
+                this.addSlotToContainer(
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, 0, 187, 139 + a * 18, this.getInventoryPlayer()))
+                                .setNotDraggable());
+            }
+        }
     }
 }

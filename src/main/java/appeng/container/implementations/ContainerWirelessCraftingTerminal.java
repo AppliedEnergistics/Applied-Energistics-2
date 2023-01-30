@@ -55,7 +55,7 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
     private IRecipe currentRecipe;
 
     public ContainerWirelessCraftingTerminal(final InventoryPlayer ip, final WirelessTerminalGuiObject gui) {
-        super(ip, gui, gui, false);
+        super(ip, gui, false);
         this.wirelessTerminalGUIObject = gui;
 
         final IItemHandler crafting = this.craftingGrid;
@@ -67,27 +67,12 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
         }
 
         this.addSlotToContainer(this.outputSlot = new SlotCraftingTerm(this.getPlayerInv().player, this.getActionSource(), this
-                .getPowerSource(), this.civ, crafting, crafting, this.output, 131, -72 + 18, this));
+                .getPowerSource(), this.wirelessTerminalGUIObject, crafting, crafting, this.output, 131, -72 + 18, this));
 
         this.bindPlayerInventory(ip, 0, 0);
         this.loadFromNBT();
 
         this.onCraftMatrixChanged(new WrapperInvItemHandler(crafting));
-    }
-
-    @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-
-        if (!this.wirelessTerminalGUIObject.rangeCheck()) {
-            if (Platform.isServer() && this.isValidContainer()) {
-                this.getPlayerInv().player.sendMessage(PlayerMessages.OutOfRange.get());
-            }
-
-            this.setValidContainer(false);
-        } else {
-            this.setPowerMultiplier(AEConfig.instance().wireless_getDrainRate(this.wirelessTerminalGUIObject.getRange()));
-        }
     }
 
     @Override
