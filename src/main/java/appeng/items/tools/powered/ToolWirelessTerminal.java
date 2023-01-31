@@ -30,22 +30,29 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 
 
 public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler {
+
+    int magnetTick;
 
     public ToolWirelessTerminal() {
         super(AEConfig.instance().getWirelessTerminalBattery());
@@ -131,6 +138,33 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+        if (entityIn instanceof EntityPlayer) {
+            this.magnetTick++;
+            if (magnetTick % 5 != 0) {
+                return;
+            }
+            magnetTick = 0;
+            if (!entityIn.isSneaking()) {
+                NBTTagCompound upgradeNBT = Platform.openNbtData(stack).getCompoundTag("upgrades");
+                ItemStackHandler siu = new ItemStackHandler(0);
+                siu.deserializeNBT(upgradeNBT);
+                for (int s = 0; s < siu.getSlots(); s++) {
+                    if (siu.getStackInSlot(s).isItemEqual(AEApi.instance().definitions().materials().cardMagnet().maybeStack(1).get())) {
+                        List<EntityItem> ei = worldIn.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(
+                                new Vec3d(entityIn.posX + 5, entityIn.posY + 5, entityIn.posZ + 5),
+                                new Vec3d(entityIn.posX - 5, entityIn.posY - 5, entityIn.posZ - 5)));
+                        for (EntityItem i : ei) {
+                            i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
