@@ -102,7 +102,6 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
             NBTTagCompound tag = new NBTTagCompound();
             this.craftingGrid.writeToNBT(tag, "craftingGrid");
             this.upgrades.writeToNBT(tag, "upgrades");
-
             this.wirelessTerminalGUIObject.saveChanges(tag);
         }
     }

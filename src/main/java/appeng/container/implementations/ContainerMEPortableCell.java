@@ -21,7 +21,10 @@ package appeng.container.implementations;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.IUpgradeableCellContainer;
+import appeng.api.implementations.tiles.IViewCellStorage;
+import appeng.api.networking.security.IActionHost;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.core.AEConfig;
@@ -32,6 +35,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -68,7 +72,6 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
         this.setupUpgrades();
     }
 
-
     @Override
     public void detectAndSendChanges() {
         if (Platform.isServer()) {
@@ -104,6 +107,11 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
 
             super.detectAndSendChanges();
         }
+    }
+
+    @Override
+    protected IActionHost getActionHost() {
+        return this.wirelessTerminalGUIObject;
     }
 
     private double getPowerMultiplier() {
