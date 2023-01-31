@@ -19,6 +19,7 @@
 package appeng.core;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
 import appeng.api.definitions.IItemDefinition;
@@ -379,6 +380,9 @@ final class Registration {
 
         Upgrades.FUZZY.registerItem(items.viewCell(), 1);
         Upgrades.INVERTER.registerItem(items.viewCell(), 1);
+
+        Upgrades.FUZZY.registerItem(AEApi.instance().definitions().materials().cardMagnet(), 1);
+        Upgrades.INVERTER.registerItem(AEApi.instance().definitions().materials().cardMagnet(), 1);
 
         // Storage Bus
         Upgrades.FUZZY.registerItem(parts.storageBus(), 1);

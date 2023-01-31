@@ -26,6 +26,9 @@ import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
+import appeng.items.contents.CellConfig;
+import appeng.items.contents.CellUpgrades;
+import appeng.items.materials.ItemMaterial;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
@@ -154,12 +157,48 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                 ItemStackHandler siu = new ItemStackHandler(0);
                 siu.deserializeNBT(upgradeNBT);
                 for (int s = 0; s < siu.getSlots(); s++) {
-                    if (siu.getStackInSlot(s).isItemEqual(AEApi.instance().definitions().materials().cardMagnet().maybeStack(1).get())) {
+                    ItemStack is = siu.getStackInSlot(s);
+                    if (is.isItemEqual(AEApi.instance().definitions().materials().cardMagnet().maybeStack(1).get())) {
+                        ItemMaterial im = (ItemMaterial) is.getItem();
+                        CellConfig c = (CellConfig) im.getConfigInventory(is);
+                        CellUpgrades u = (CellUpgrades) im.getUpgradesInventory(is);
+                        FuzzyMode fz = null;
+                        boolean isFuzzy = u.getInstalledUpgrades(Upgrades.FUZZY) == 1;
+                        if (isFuzzy) {
+                            fz = im.getFuzzyMode(is);
+                        }
+                        boolean inverted = u.getInstalledUpgrades(Upgrades.INVERTER) == 1;
+
                         List<EntityItem> ei = worldIn.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(
                                 new Vec3d(entityIn.posX + 5, entityIn.posY + 5, entityIn.posZ + 5),
                                 new Vec3d(entityIn.posX - 5, entityIn.posY - 5, entityIn.posZ - 5)));
+                        boolean emptyFilter = true;
                         for (EntityItem i : ei) {
-                            i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
+                            boolean matched = false;
+                            for (int ss = 0; ss < c.getSlots(); ss++) {
+                                ItemStack filter = c.getStackInSlot(ss);
+                                if (filter.isEmpty()) continue;
+                                emptyFilter = false;
+                                if (isFuzzy) {
+                                    if (Platform.itemComparisons().isFuzzyEqualItem(filter, i.getItem(), fz)) {
+                                        matched = true;
+                                        break;
+                                    }
+                                } else {
+                                    if (Platform.itemComparisons().isSameItem(filter, i.getItem())) {
+                                        matched = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (emptyFilter) {
+                                i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
+                            }
+                            if (matched && !inverted) {
+                                i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
+                            } else if (!matched && inverted) {
+                                i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
+                            }
                         }
                     }
                 }
