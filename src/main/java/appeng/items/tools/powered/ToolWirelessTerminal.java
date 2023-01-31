@@ -32,8 +32,11 @@ import appeng.items.materials.ItemMaterial;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -45,6 +48,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -52,8 +56,9 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 
-public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler {
+public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler, IBauble {
 
     int magnetTick;
 
@@ -146,6 +151,31 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
     @Override
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+        if (Platform.isServer()) {
+            magnetLogic(stack, worldIn, entityIn);
+        }
+    }
+
+    @Override
+    public IGuiHandler getGuiHandler(ItemStack is) {
+        return GuiBridge.GUI_WIRELESS_TERM;
+    }
+
+    @Optional.Method(modid = "baubles")
+    @Override
+    public BaubleType getBaubleType(ItemStack itemStack) {
+        return BaubleType.TRINKET;
+    }
+
+    @Optional.Method(modid = "baubles")
+    @Override
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        if (Platform.isServer()) {
+            magnetLogic(itemstack, player.world, player);
+        }
+    }
+
+    public void magnetLogic(ItemStack stack, World worldIn, Entity entityIn) {
         if (entityIn instanceof EntityPlayer) {
             this.magnetTick++;
             if (magnetTick % 5 != 0) {
@@ -204,10 +234,5 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                 }
             }
         }
-    }
-
-    @Override
-    public IGuiHandler getGuiHandler(ItemStack is) {
-        return GuiBridge.GUI_WIRELESS_TERM;
     }
 }
