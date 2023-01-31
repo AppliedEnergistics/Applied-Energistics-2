@@ -45,10 +45,13 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
+import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.implementations.QuantumCluster;
 import appeng.parts.automation.StackUpgradeInventory;
 import appeng.parts.automation.UpgradeInventory;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.networking.TileWireless;
+import appeng.tile.qnb.TileQuantumBridge;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -74,6 +77,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
 
     private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
     private final UpgradeInventory upgrades;
+    private QuantumCluster myQC;
 
 
     public WirelessTerminalGuiObject(final IWirelessTermHandler wh, final ItemStack is, final EntityPlayer ep, final World w, final int x, final int y, final int z) {
@@ -244,6 +248,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         this.rangeCheck();
         if (this.myWap != null) {
             return this.myWap.getActionableNode();
+        } else if (this.myQC != null && this.myQC.getCenter().isPowered()) {
+            return this.myQC.getCenter().getActionableNode();
         }
         return null;
     }
@@ -259,9 +265,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 return false;
             }
 
-            final IMachineSet tw = this.targetGrid.getMachines(TileWireless.class);
+            IMachineSet tw = this.targetGrid.getMachines(TileWireless.class);
 
             this.myWap = null;
+            this.myQC = null;
 
             for (final IGridNode n : tw) {
                 final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
@@ -270,7 +277,24 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 }
             }
 
-            return this.myWap != null;
+            if (myWap != null) return true;
+
+            tw = this.targetGrid.getMachines(TileQuantumBridge.class);
+            for (final IGridNode n : tw) {
+                TileQuantumBridge tqb = (TileQuantumBridge) n.getMachine();
+                if (tqb.getCluster() != null) {
+                    TileQuantumBridge center = ((QuantumCluster) tqb.getCluster()).getCenter();
+                    if (center != null) {
+                        if (center.getInternalInventory().getStackInSlot(1).isItemEqual(AEApi.instance().definitions().materials().cardQuantumLink().maybeStack(1).get())) {
+                            myQC = (QuantumCluster) tqb.getCluster();
+                            myRange = 1;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return this.myWap != null || this.myQC != null;
         }
         return false;
     }

@@ -53,7 +53,7 @@ import java.util.Optional;
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable {
     private final byte corner = 16;
-    private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
+    private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 2, 1);
     private final byte hasSingularity = 32;
     private final byte powered = 64;
 

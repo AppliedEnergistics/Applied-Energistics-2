@@ -23,16 +23,27 @@ import appeng.container.AEBaseContainer;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 
 
 public class ContainerQNB extends AEBaseContainer {
 
+    SlotRestrictedInput SINGULARITY;
+    SlotRestrictedInput QUANTUM_CARD;
+
     public ContainerQNB(final InventoryPlayer ip, final TileQuantumBridge quantumBridge) {
         super(ip, quantumBridge, null);
 
-        this.addSlotToContainer((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, quantumBridge
-                .getInternalInventory(), 0, 80, 37, this.getInventoryPlayer())).setStackLimit(1));
+        SINGULARITY = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, quantumBridge
+                .getInternalInventory(), 0, 80, 37, this.getInventoryPlayer());
+        this.addSlotToContainer(SINGULARITY.setStackLimit(1));
+
+        QUANTUM_CARD = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.CARD_QUANTUM, quantumBridge
+                .getInternalInventory(), 1, 80, 55, this.getInventoryPlayer());
+        this.addSlotToContainer((QUANTUM_CARD).setStackLimit(1));
 
         this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
     }
+
+
 }
