@@ -25,6 +25,7 @@ import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.implementations.IUpgradeableCellContainer;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotPatternOutputs;
@@ -38,6 +39,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
+import baubles.api.BaublesApi;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -69,7 +71,9 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
 
         if (gui != null) {
             final int slotIndex = gui.getInventorySlot();
-            this.lockPlayerInventorySlot(slotIndex);
+            if (!((IInventorySlotAware) gui).isBaubleSlot()) {
+                this.lockPlayerInventorySlot(slotIndex);
+            }
             this.slot = slotIndex;
         } else {
             this.slot = -1;
@@ -116,9 +120,14 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
     public void detectAndSendChanges() {
         if (Platform.isServer()) {
 
-            final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+            final ItemStack currentItem;
+            if (wirelessTerminalGUIObject.isBaubleSlot()) {
+                currentItem = BaublesApi.getBaublesHandler(this.getPlayerInv().player).getStackInSlot(this.slot);
+            } else {
+                currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+            }
 
-            if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
+            if (currentItem.isEmpty()) {
                 this.setValidContainer(false);
             } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
                 if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {

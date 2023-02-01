@@ -67,6 +67,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     private final IWirelessTermHandler wth;
     private final String encryptionKey;
     private final EntityPlayer myPlayer;
+    private final boolean isBaubleSlot;
     private IGrid targetGrid;
     private IStorageGrid sg;
     private IMEMonitor<IAEItemStack> itemStorage;
@@ -86,6 +87,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         this.myPlayer = ep;
         this.wth = wh;
         this.inventorySlot = x;
+        this.isBaubleSlot = y == 1;
 
         ILocatable obj = null;
 
@@ -325,6 +327,11 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     @Override
     public int getInventorySlot() {
         return this.inventorySlot;
+    }
+
+    @Override
+    public boolean isBaubleSlot() {
+        return isBaubleSlot;
     }
 
     @Override

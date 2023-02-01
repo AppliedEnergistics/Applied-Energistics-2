@@ -342,6 +342,18 @@ public class Platform {
         }
     }
 
+    public static void openGUI(@Nonnull final EntityPlayer p, int i, @Nonnull final GuiBridge type, boolean isBauble) {
+        if (isClient()) {
+            return;
+        }
+
+        if (type.getType().isItem()) {
+            if (type.getType() == GuiHostType.ITEM) {
+                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), i, isBauble ? 1 : 0, 0);
+            }
+        }
+    }
+
     /*
      * returns true if the code is on the client.
      */

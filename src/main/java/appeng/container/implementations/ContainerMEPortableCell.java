@@ -35,6 +35,7 @@ import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
+import baubles.api.BaublesApi;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
@@ -56,7 +57,9 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
         super(ip, monitorable, bindInventory);
         if (monitorable != null) {
             final int slotIndex = ((IInventorySlotAware) monitorable).getInventorySlot();
-            this.lockPlayerInventorySlot(slotIndex);
+            if (!((IInventorySlotAware) monitorable).isBaubleSlot()) {
+                this.lockPlayerInventorySlot(slotIndex);
+            }
             this.slot = slotIndex;
         } else {
             this.slot = -1;
@@ -76,9 +79,14 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
     public void detectAndSendChanges() {
         if (Platform.isServer()) {
 
-            final ItemStack currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+            final ItemStack currentItem;
+            if (wirelessTerminalGUIObject.isBaubleSlot()) {
+                currentItem = BaublesApi.getBaublesHandler(this.getPlayerInv().player).getStackInSlot(this.slot);
+            } else {
+                currentItem = this.slot < 0 ? this.getPlayerInv().getCurrentItem() : this.getPlayerInv().getStackInSlot(this.slot);
+            }
 
-            if (this.wirelessTerminalGUIObject == null || currentItem.isEmpty()) {
+            if (currentItem.isEmpty()) {
                 this.setValidContainer(false);
             } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
                 if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {

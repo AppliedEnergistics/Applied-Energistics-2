@@ -35,6 +35,7 @@ import appeng.core.Api;
 import appeng.core.AppEng;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketAssemblerAnimation;
+import appeng.core.sync.packets.PacketTerminalUse;
 import appeng.core.sync.packets.PacketValueConfig;
 import appeng.entity.EntityFloatingItem;
 import appeng.entity.EntityTinyTNTPrimed;
@@ -44,6 +45,8 @@ import appeng.helpers.HighlighterHandler;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.TickHandler;
 import appeng.hooks.TickHandler.PlayerColor;
+import appeng.items.tools.powered.Terminal;
+import appeng.items.tools.powered.ToolWirelessTerminal;
 import appeng.server.ServerHelper;
 import appeng.util.Platform;
 import net.minecraft.client.Minecraft;
@@ -59,12 +62,19 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
@@ -73,11 +83,17 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 
+import static appeng.client.KeyBindings.WCT;
+import static appeng.client.KeyBindings.WFT;
+import static appeng.client.KeyBindings.WPT;
+import static appeng.client.KeyBindings.WT;
+
 
 public class ClientHelper extends ServerHelper {
-    private final static String KEY_CATEGORY = "key.appliedenergistics2.category";
+    public final static String KEY_CATEGORY = "key.appliedenergistics2.category";
 
     private final EnumMap<ActionKey, KeyBinding> bindings = new EnumMap<>(ActionKey.class);
+    private final List<KeyBinding> keyBindings = new ArrayList<>();
 
     @Override
     public void preinit() {
@@ -97,6 +113,11 @@ public class ClientHelper extends ServerHelper {
             final KeyBinding binding = new KeyBinding(key.getTranslationKey(), key.getDefaultKey(), KEY_CATEGORY);
             ClientRegistry.registerKeyBinding(binding);
             this.bindings.put(key, binding);
+        }
+
+        for (KeyBindings k : KeyBindings.values()) {
+            ClientRegistry.registerKeyBinding(k.getKeyBinding());
+            this.keyBindings.add(k.getKeyBinding());
         }
 
         Api.INSTANCE.definitions().items().encodedPattern().maybeItem().ifPresent(pattern ->
@@ -314,6 +335,23 @@ public class ClientHelper extends ServerHelper {
                     me.setCanceled(true);
                 } catch (final IOException e) {
                     AELog.debug(e);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onInputEvent(final InputEvent.KeyInputEvent event) {
+        for (KeyBinding k : keyBindings) {
+            if (k.isPressed()) {
+                if (k == WT.getKeyBinding()) {
+                    NetworkHandler.instance().sendToServer(new PacketTerminalUse(Terminal.WIRELESS_TERMINAL));
+                } else if (k == WCT.getKeyBinding()) {
+                    NetworkHandler.instance().sendToServer(new PacketTerminalUse(Terminal.WIRELESS_CRAFTING_TERMINAL));
+                } else if (k == WPT.getKeyBinding()) {
+                    NetworkHandler.instance().sendToServer(new PacketTerminalUse(Terminal.WIRELESS_PATTERN_TERMINAL));
+                } else if (k == WFT.getKeyBinding()) {
+                    NetworkHandler.instance().sendToServer(new PacketTerminalUse(Terminal.WIRELESS_FLUID_TERMINAL));
                 }
             }
         }

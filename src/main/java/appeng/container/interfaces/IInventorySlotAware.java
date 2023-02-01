@@ -32,4 +32,8 @@ public interface IInventorySlotAware {
      * @return the inventory index of this portable cell.
      */
     int getInventorySlot();
+
+    default boolean isBaubleSlot() {
+        return false;
+    }
 }

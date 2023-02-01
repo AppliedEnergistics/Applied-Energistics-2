@@ -71,6 +71,7 @@ import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
+import baubles.api.BaublesApi;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -233,10 +234,14 @@ public enum GuiBridge implements IGuiHandler {
         final boolean stem = ((ordinal >> 3) & 1) == 1;
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
-            if (stem) {
-                it = player.inventory.getCurrentItem();
-            } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
-                it = player.inventory.getStackInSlot(x);
+            if (y == 0) {
+                if (stem) {
+                    it = player.inventory.getCurrentItem();
+                } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
+                    it = player.inventory.getStackInSlot(x);
+                }
+            } else {
+                it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
             }
             final Object myItem = this.getGuiObject(it, player, w, x, y, z);
             if (myItem != null && ID.CorrectTileOrPart(myItem)) {
@@ -344,10 +349,14 @@ public enum GuiBridge implements IGuiHandler {
         final boolean stem = ((ordinal >> 3) & 1) == 1;
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
-            if (stem) {
-                it = player.inventory.getCurrentItem();
-            } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
-                it = player.inventory.getStackInSlot(x);
+            if (y == 0) {
+                if (stem) {
+                    it = player.inventory.getCurrentItem();
+                } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
+                    it = player.inventory.getStackInSlot(x);
+                }
+            } else {
+                it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
             }
             final Object myItem = this.getGuiObject(it, player, w, x, y, z);
             if (myItem != null && ID.CorrectTileOrPart(myItem)) {
