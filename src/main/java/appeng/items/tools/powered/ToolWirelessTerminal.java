@@ -188,7 +188,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                 siu.deserializeNBT(upgradeNBT);
                 for (int s = 0; s < siu.getSlots(); s++) {
                     ItemStack is = siu.getStackInSlot(s);
-                    if (is.isItemEqual(AEApi.instance().definitions().materials().cardMagnet().maybeStack(1).get())) {
+                    if (AEApi.instance().definitions().materials().cardMagnet().isSameAs(is)) {
                         ItemMaterial im = (ItemMaterial) is.getItem();
                         CellConfig c = (CellConfig) im.getConfigInventory(is);
                         CellUpgrades u = (CellUpgrades) im.getUpgradesInventory(is);

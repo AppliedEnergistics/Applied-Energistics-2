@@ -33,14 +33,14 @@ public class PacketTerminalUse extends AppEngPacket {
         NonNullList<ItemStack> mainInventory = player.inventory.mainInventory;
         for (int i = 0; i < mainInventory.size(); i++) {
             ItemStack is = mainInventory.get(i);
-            if (is.isItemEqual(terminal.getItemDefinition().maybeStack(1).get())) {
+            if (terminal.getItemDefinition().isSameAs(is)) {
                 Platform.openGUI(player, i, terminal.getBridge(), false);
                 return;
             }
         }
         for (int i = 0; i < BaublesApi.getBaublesHandler(player).getSlots(); i++) {
             ItemStack is = BaublesApi.getBaublesHandler(player).getStackInSlot(i);
-            if (is.isItemEqual(terminal.getItemDefinition().maybeStack(1).get())) {
+            if (terminal.getItemDefinition().isSameAs(is)) {
                 Platform.openGUI(player, i, terminal.getBridge(), true);
                 break;
             }

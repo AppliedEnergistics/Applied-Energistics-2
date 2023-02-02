@@ -307,9 +307,9 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
         @Override
         public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
             if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(1).isEmpty() ) {
-                if (slot == 0 && stack.isItemEqual(AEApi.instance().definitions().materials().qESingularity().maybeStack(1).get())) {
+                if (slot == 0 && AEApi.instance().definitions().materials().qESingularity().isSameAs(stack)) {
                     return true;
-                } else return slot == 1 && stack.isItemEqual(AEApi.instance().definitions().materials().cardQuantumLink().maybeStack(1).get());
+                } else return slot == 1 && AEApi.instance().definitions().materials().cardQuantumLink().isSameAs(stack);
             } else if (slot == 0 && inv.getStackInSlot(1).isEmpty()) {
                 return true;
             }else return slot == 1 && inv.getStackInSlot(0).isEmpty();
