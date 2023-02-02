@@ -21,9 +21,7 @@ package appeng.container.implementations;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.IUpgradeableCellContainer;
-import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.networking.security.IActionHost;
 import appeng.container.interfaces.IInventorySlotAware;
 import appeng.container.slot.SlotRestrictedInput;
@@ -36,7 +34,6 @@ import appeng.util.Platform;
 import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import baubles.api.BaublesApi;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

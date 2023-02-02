@@ -237,7 +237,7 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAE
                     AELog.debug(e);
                 }
             }
-            //this.updatePowerStatus();
+            super.detectAndSendChanges();
         }
     }
 

@@ -26,7 +26,6 @@ import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
-import appeng.util.inv.IAEAppEngInventory;
 import appeng.util.inv.InvOperation;
 import appeng.util.inv.WrapperInvItemHandler;
 import net.minecraft.entity.player.InventoryPlayer;
