@@ -69,8 +69,6 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
         this.addSlotToContainer(this.outputSlot = new SlotCraftingTerm(this.getPlayerInv().player, this.getActionSource(), this
                 .getPowerSource(), this.wirelessTerminalGUIObject, crafting, crafting, this.output, 131, -72 + 18, this));
 
-        this.bindPlayerInventory(ip, 0, 0);
-
         this.onCraftMatrixChanged(new WrapperInvItemHandler(crafting));
     }
 

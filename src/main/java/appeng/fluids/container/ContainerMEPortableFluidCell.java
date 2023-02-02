@@ -544,7 +544,7 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAE
 
     @Override
     public int availableUpgrades() {
-        return 2;
+        return 1;
     }
 
     @Override

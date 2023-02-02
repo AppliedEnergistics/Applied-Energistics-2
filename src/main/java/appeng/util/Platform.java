@@ -45,6 +45,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -322,18 +323,25 @@ public class Platform {
             return;
         }
 
-        int x = (int) p.posX;
+        int x;
         int y = (int) p.posY;
         int z = (int) p.posZ;
         if (tile != null) {
             x = tile.getPos().getX();
             y = tile.getPos().getY();
             z = tile.getPos().getZ();
+        } else {
+            if (p.openContainer instanceof IInventorySlotAware) {
+                x = ((IInventorySlotAware) p.openContainer).getInventorySlot();
+                y = ((IInventorySlotAware)p.openContainer).isBaubleSlot() ? 1 : 0;
+            } else {
+                x = p.inventory.currentItem;
+            }
         }
 
         if ((type.getType().isItem() && tile == null) || type.hasPermissions(tile, x, y, z, side, p)) {
             if (tile == null && type.getType() == GuiHostType.ITEM) {
-                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0);
+                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), x, 0, 0);
             } else if (tile == null || type.getType() == GuiHostType.ITEM) {
                 p.openGui(AppEng.instance(), type.ordinal() << 4 | (1 << 3), p.getEntityWorld(), x, y, z);
             } else {

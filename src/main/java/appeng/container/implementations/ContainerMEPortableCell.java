@@ -44,7 +44,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
 
 
-public class ContainerMEPortableCell extends ContainerMEMonitorable implements IUpgradeableCellContainer, IAEAppEngInventory {
+public class ContainerMEPortableCell extends ContainerMEMonitorable implements IUpgradeableCellContainer, IAEAppEngInventory, IInventorySlotAware {
 
     protected final WirelessTerminalGuiObject wirelessTerminalGUIObject;
     private final int slot;
@@ -68,10 +68,6 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
         this.wirelessTerminalGUIObject = monitorable;
         this.upgrades = new StackUpgradeInventory(wirelessTerminalGUIObject.getItemStack(), this, 2);
         this.loadFromNBT();
-
-        if (bindInventory) {
-            this.bindPlayerInventory(ip, 0, 0);
-        }
         this.setupUpgrades();
     }
 
@@ -171,5 +167,15 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
     @Override
     public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
 
+    }
+
+    @Override
+    public int getInventorySlot() {
+        return wirelessTerminalGUIObject.getInventorySlot();
+    }
+
+    @Override
+    public boolean isBaubleSlot() {
+        return wirelessTerminalGUIObject.isBaubleSlot();
     }
 }
