@@ -352,8 +352,7 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         viewCell.writeToNBT(data, "viewCell");
         upgrades.writeToNBT(data, "upgrades");
     }
-
-    @Override
+    
     public void saveChanges(NBTTagCompound data) {
         if (effectiveItem.getTagCompound() != null) {
             effectiveItem.getTagCompound().merge(data);

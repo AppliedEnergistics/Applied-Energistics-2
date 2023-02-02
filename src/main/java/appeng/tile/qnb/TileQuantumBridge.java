@@ -36,6 +36,8 @@ import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
+import appeng.util.inv.filter.AEItemDefinitionFilter;
+import appeng.util.inv.filter.IAEItemFilter;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -66,6 +68,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
         this.getProxy().setValidSides(EnumSet.noneOf(EnumFacing.class));
         this.getProxy().setFlags(GridFlags.DENSE_CAPACITY);
         this.getProxy().setIdlePowerUsage(22);
+        this.internalInventory.setFilter(new QuantumBridgeInventoryFilter());
     }
 
     @Override
@@ -291,5 +294,25 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
     public byte getCorner() {
         return this.corner;
+    }
+
+    private class QuantumBridgeInventoryFilter implements IAEItemFilter {
+
+
+        @Override
+        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+            return true;
+        }
+
+        @Override
+        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+            if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(1).isEmpty() ) {
+                if (slot == 0 && stack.isItemEqual(AEApi.instance().definitions().materials().qESingularity().maybeStack(1).get())) {
+                    return true;
+                } else return slot == 1 && stack.isItemEqual(AEApi.instance().definitions().materials().cardQuantumLink().maybeStack(1).get());
+            } else if (slot == 0 && inv.getStackInSlot(1).isEmpty()) {
+                return true;
+            }else return slot == 1 && inv.getStackInSlot(0).isEmpty();
+        }
     }
 }
