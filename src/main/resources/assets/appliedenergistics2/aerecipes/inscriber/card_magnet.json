@@ -1,0 +1,27 @@
+{
+  "conditions": [
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.card_magnet"
+    }
+  ],
+  "type": "appliedenergistics2:inscriber",
+  "mode": "press",
+  "result": {
+    "part": "material.card_magnet"
+  },
+  "ingredients": {
+    "top": {
+      "type": "forge:ore_dict",
+      "ore": "blockRedstone"
+    },
+    "middle": {
+      "type": "appliedenergistics2:part",
+      "part": "material.basic_card"
+    },
+    "bottom": {
+      "type": "forge:ore_dict",
+      "ore": "blockLapis"
+    }
+  }
+}
