@@ -130,8 +130,9 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
         this.powerMultiplier = powerMultiplier;
     }
 
+    @Override
     public int availableUpgrades() {
-        return 2;
+        return 1;
     }
 
     @Override

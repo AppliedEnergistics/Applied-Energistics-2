@@ -251,7 +251,7 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
 
     @Override
     public int availableUpgrades() {
-        return 2;
+        return 1;
     }
 
     @Override

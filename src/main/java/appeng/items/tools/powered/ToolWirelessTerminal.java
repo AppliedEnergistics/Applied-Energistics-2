@@ -213,7 +213,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                                 continue;
                             }
 
-                            if (i.getThrower().equals(entityIn.getName()) && i.cannotPickup()) {
+                            if (i.getThrower() != null && i.getThrower().equals(entityIn.getName()) && i.cannotPickup()) {
                                 continue;
                             }
 
