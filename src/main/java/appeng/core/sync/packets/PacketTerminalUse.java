@@ -46,8 +46,4 @@ public class PacketTerminalUse extends AppEngPacket {
             }
         }
     }
-
-    enum a {
-
-    }
 }

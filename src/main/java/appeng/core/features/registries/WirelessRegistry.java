@@ -84,13 +84,6 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
 
         final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
 
-        WirelessTerminalGuiObject wtgo = new WirelessTerminalGuiObject(handler, item, player, w, (int) player.posX, (int) player.posY, (int) player.posZ);
-        IItemHandler upgrades = wtgo.getInventoryByName("upgrades");
-        if (upgrades.getSlots() > 0) {
-            player.sendMessage(new TextComponentString("ahhaah eheheh ihihih"));
-        }
-
-
         final String unparsedKey = handler.getEncryptionKey(item);
         if (unparsedKey.isEmpty()) {
             player.sendMessage(PlayerMessages.DeviceNotLinked.get());
