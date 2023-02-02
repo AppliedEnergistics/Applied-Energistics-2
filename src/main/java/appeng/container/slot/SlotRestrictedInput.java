@@ -276,7 +276,7 @@ public class SlotRestrictedInput extends AppEngSlot {
         RANGE_BOOSTER(6 * 16 + 15),
         QE_SINGULARITY(10 * 16 + 15),
 
-        CARD_QUANTUM(0),
+        CARD_QUANTUM(13 * 16 + 15),
         SPATIAL_STORAGE_CELLS(11 * 16 + 15),
 
         FUEL(12 * 16 + 15),

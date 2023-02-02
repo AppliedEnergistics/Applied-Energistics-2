@@ -120,7 +120,7 @@ public enum MaterialType {
 
     CARD_PATTERN_EXPANSION(58, "material_card_pattern_expansion", EnumSet.of(AEFeature.ADVANCED_CARDS)),
     CARD_QUANTUM_LINK(59, "material_card_quantum_link", EnumSet.of(AEFeature.ADVANCED_CARDS)),
-    CARD_MAGNET(60, "material_card_quantum_link", EnumSet.of(AEFeature.BASIC_CARDS));
+    CARD_MAGNET(60, "material_card_magnet", EnumSet.of(AEFeature.BASIC_CARDS));
 
 
     private final Set<AEFeature> features;

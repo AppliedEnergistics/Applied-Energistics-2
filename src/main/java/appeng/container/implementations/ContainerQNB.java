@@ -25,7 +25,6 @@ import appeng.container.slot.OptionalSlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
 
 
 public class ContainerQNB extends AEBaseContainer implements IOptionalSlotHost {
