@@ -1,0 +1,47 @@
+{
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:wireless_pattern_terminal"
+                },
+                {
+                    "type": "minecraft:item_exists",
+                    "item": "appliedenergistics2:dense_energy_cell"
+                },
+                {
+                    "type": "appliedenergistics2:part_exists",
+                    "part": "part.pattern_terminal"
+                },
+                {
+                    "type": "appliedenergistics2:material_exists",
+                    "material": "material.wireless"
+                }
+            ]
+        }
+    ],
+    "result": {
+        "item": "appliedenergistics2:wireless_pattern_terminal"
+    },
+    "type": "forge:ore_shaped",
+    "pattern": [
+        "a",
+        "b",
+        "c"
+    ],
+    "key": {
+        "b": {
+            "type": "appliedenergistics2:part",
+            "part": "part.pattern_terminal"
+        },
+        "c": {
+            "item": "appliedenergistics2:dense_energy_cell"
+        },
+        "a": {
+            "type": "appliedenergistics2:part",
+            "part": "material.wireless"
+        }
+    }
+}
