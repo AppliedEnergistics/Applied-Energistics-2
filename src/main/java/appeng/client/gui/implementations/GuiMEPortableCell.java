@@ -28,11 +28,7 @@ public class GuiMEPortableCell extends GuiMEMonitorable {
     public GuiMEPortableCell(final InventoryPlayer inventoryPlayer, final IPortableCell te) {
         super(inventoryPlayer, te);
     }
-
-    int defaultGetMaxRows() {
-        return super.getMaxRows();
-    }
-
+    
     @Override
     protected int getMaxRows() {
         return 3;

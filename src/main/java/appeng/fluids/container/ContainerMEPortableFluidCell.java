@@ -65,7 +65,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 
-public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAEAppEngInventory, IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack>, IUpgradeableCellContainer {
+public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAEAppEngInventory, IConfigManagerHost, IConfigurableObject, IMEMonitorHandlerReceiver<IAEFluidStack>, IUpgradeableCellContainer, IInventorySlotAware {
 
     protected final WirelessTerminalGuiObject wirelessTerminalGUIObject;
 
@@ -552,7 +552,7 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAE
         if (wirelessTerminalGUIObject != null) {
             for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
-                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, 139 + upgradeSlot * 18, this.getInventoryPlayer()))
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 183, 139 + upgradeSlot * 18, this.getInventoryPlayer()))
                                 .setNotDraggable());
             }
         }
@@ -577,5 +577,15 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAE
 
     @Override
     public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
+    }
+
+    @Override
+    public int getInventorySlot() {
+        return wirelessTerminalGUIObject.getInventorySlot();
+    }
+
+    @Override
+    public boolean isBaubleSlot() {
+        return wirelessTerminalGUIObject.isBaubleSlot();
     }
 }

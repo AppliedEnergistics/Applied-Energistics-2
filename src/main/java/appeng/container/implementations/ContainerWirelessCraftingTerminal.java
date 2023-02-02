@@ -40,23 +40,18 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 
-public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell implements IAEAppEngInventory, IContainerCraftingPacket {
-
-    private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
+public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell implements IContainerCraftingPacket {
 
     private final AppEngInternalInventory output = new AppEngInternalInventory(this, 1);
     private final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
     private final SlotCraftingTerm outputSlot;
 
-    private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
+    private AppEngInternalInventory craftingGrid;
 
     private IRecipe currentRecipe;
 
     public ContainerWirelessCraftingTerminal(final InventoryPlayer ip, final WirelessTerminalGuiObject gui) {
-        super(ip, gui, false);
-        this.wirelessTerminalGUIObject = gui;
-
-        this.loadFromNBT();
+        super(ip, gui, true);
 
         final IItemHandler crafting = this.craftingGrid;
 
@@ -104,11 +99,13 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell i
         }
     }
 
+    @Override
     protected void loadFromNBT() {
+        super.loadFromNBT();
+        this.craftingGrid = new AppEngInternalInventory(this, 9);
         NBTTagCompound data = wirelessTerminalGUIObject.getItemStack().getTagCompound();
         if (data != null) {
             this.craftingGrid.readFromNBT(data, "craftingGrid");
-            upgrades.readFromNBT(wirelessTerminalGUIObject.getItemStack().getTagCompound().getCompoundTag("upgrades"));
         }
     }
 

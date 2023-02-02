@@ -48,7 +48,7 @@ import net.minecraftforge.items.IItemHandler;
 import static appeng.helpers.PatternHelper.CRAFTING_GRID_DIMENSION;
 
 
-public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder implements IUpgradeableCellContainer {
+public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder implements IUpgradeableCellContainer, IInventorySlotAware {
 
     private final WirelessTerminalGuiObject wirelessTerminalGUIObject;
     private final int slot;
@@ -259,9 +259,19 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
         if (wirelessTerminalGUIObject != null) {
             for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
-                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, upgradeSlot * 18 - 2, this.getInventoryPlayer()))
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 206, 135 + upgradeSlot * 18, this.getInventoryPlayer()))
                                 .setNotDraggable());
             }
         }
+    }
+
+    @Override
+    public int getInventorySlot() {
+        return wirelessTerminalGUIObject.getInventorySlot();
+    }
+
+    @Override
+    public boolean isBaubleSlot() {
+        return wirelessTerminalGUIObject.isBaubleSlot();
     }
 }

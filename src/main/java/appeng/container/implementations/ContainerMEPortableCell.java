@@ -136,7 +136,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
         if (wirelessTerminalGUIObject != null) {
             for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
                 this.addSlotToContainer(
-                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 187, upgradeSlot * 18, this.getInventoryPlayer()))
+                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 206, 135 + upgradeSlot * 18, this.getInventoryPlayer()))
                                 .setNotDraggable());
             }
         }
@@ -157,7 +157,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
         }
     }
 
-    private void loadFromNBT() {
+    protected void loadFromNBT() {
         NBTTagCompound data = wirelessTerminalGUIObject.getItemStack().getTagCompound();
         if (data != null) {
             upgrades.readFromNBT(wirelessTerminalGUIObject.getItemStack().getTagCompound().getCompoundTag("upgrades"));

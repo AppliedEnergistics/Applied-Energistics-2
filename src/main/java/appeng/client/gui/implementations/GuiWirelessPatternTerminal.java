@@ -21,6 +21,7 @@ package appeng.client.gui.implementations;
 
 import appeng.container.implementations.ContainerWirelessPatternTerminal;
 import appeng.helpers.WirelessTerminalGuiObject;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.InventoryPlayer;
 
 
@@ -29,5 +30,12 @@ public class GuiWirelessPatternTerminal extends GuiPatternTerm {
     public GuiWirelessPatternTerminal(final InventoryPlayer inventoryPlayer, final WirelessTerminalGuiObject te) {
         super(inventoryPlayer, te, new ContainerWirelessPatternTerminal(inventoryPlayer, te));
         this.setReservedSpace(81);
+    }
+
+    @Override
+    public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.bindTexture("guis/wirelessupgrades.png");
+        Gui.drawModalRectWithCustomSizedTexture(offsetX + 198, offsetY + 127, 0, 0, 32, 32, 32, 32);
+        super.drawBG(offsetX, offsetY, mouseX, mouseY);
     }
 }

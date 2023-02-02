@@ -43,6 +43,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.*;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.fluids.container.*;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.parts.PartFluidFormationPlane;
@@ -243,10 +244,10 @@ public enum GuiBridge implements IGuiHandler {
             } else {
                 if (stem) {
                     if (player.openContainer instanceof IInventorySlotAware) {
-                        int slot = ((IInventorySlotAware)player.openContainer).getInventorySlot();
+                        int slot = ((IInventorySlotAware) player.openContainer).getInventorySlot();
                         it = BaublesApi.getBaublesHandler(player).getStackInSlot(slot);
                     }
-                }else {
+                } else {
                     it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
                 }
             }
@@ -363,7 +364,14 @@ public enum GuiBridge implements IGuiHandler {
                     it = player.inventory.getStackInSlot(x);
                 }
             } else {
-                it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
+                if (stem) {
+                    if (player.openContainer instanceof IInventorySlotAware) {
+                        int slot = ((IInventorySlotAware) player.openContainer).getInventorySlot();
+                        it = BaublesApi.getBaublesHandler(player).getStackInSlot(slot);
+                    }
+                } else {
+                    it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
+                }
             }
             final Object myItem = this.getGuiObject(it, player, w, x, y, z);
             if (myItem != null && ID.CorrectTileOrPart(myItem)) {
