@@ -204,6 +204,19 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                                 new Vec3d(entityIn.posX - 5, entityIn.posY - 5, entityIn.posZ - 5)));
                         boolean emptyFilter = true;
                         for (EntityItem i : ei) {
+                            if (i.isDead) {
+                                continue;
+                            }
+
+                            NBTTagCompound itemTag = i.getEntityData();
+                            if (itemTag.hasKey("PreventRemoteMovement")) {
+                                continue;
+                            }
+
+                            if (i.getThrower().equals(entityIn.getName()) && i.cannotPickup()) {
+                                continue;
+                            }
+
                             boolean matched = false;
                             for (int ss = 0; ss < c.getSlots(); ss++) {
                                 ItemStack filter = c.getStackInSlot(ss);
@@ -222,17 +235,21 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                                 }
                             }
                             if (emptyFilter) {
-                                i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
-                            }
-                            if (matched && !inverted) {
-                                i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
+                                teleportItem(i,entityIn);
+                            } else if (matched && !inverted) {
+                                teleportItem(i,entityIn);
                             } else if (!matched && inverted) {
-                                i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
+                                teleportItem(i,entityIn);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private void teleportItem(EntityItem i, Entity entityIn){
+        i.motionX = i.motionY = i.motionZ = 0;
+        i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
     }
 }
