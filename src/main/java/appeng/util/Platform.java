@@ -324,8 +324,8 @@ public class Platform {
         }
 
         int x;
-        int y = (int) p.posY;
-        int z = (int) p.posZ;
+        int y = 0;
+        int z = 0;
         if (tile != null) {
             x = tile.getPos().getX();
             y = tile.getPos().getY();
