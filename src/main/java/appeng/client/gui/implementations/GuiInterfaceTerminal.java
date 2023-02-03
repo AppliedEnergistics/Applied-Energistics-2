@@ -22,6 +22,7 @@ package appeng.client.gui.implementations;
 import appeng.api.AEApi;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
+import appeng.api.config.TerminalStyle;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiImgButton;
@@ -30,6 +31,8 @@ import appeng.client.gui.widgets.MEGuiTextField;
 import appeng.client.me.ClientDCInternalInv;
 import appeng.client.me.SlotDisconnected;
 import appeng.container.implementations.ContainerInterfaceTerminal;
+import appeng.container.slot.AppEngSlot;
+import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.helpers.DualityInterface;
 import appeng.parts.reporting.PartInterfaceTerminal;
@@ -39,6 +42,7 @@ import com.google.common.collect.HashMultimap;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -49,7 +53,13 @@ import net.minecraftforge.common.DimensionManager;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import static appeng.client.render.BlockPosHighlighter.hilightBlock;
 import static appeng.helpers.ItemStackHelper.stackFromNBT;
@@ -57,10 +67,13 @@ import static appeng.helpers.ItemStackHelper.stackFromNBT;
 
 public class GuiInterfaceTerminal extends AEBaseGui {
 
-    private static final int LINES_ON_PAGE = 6;
+    private int rows = 6;
 
     // TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
     private final int offsetX = 21;
+    private int maxRows = Integer.MAX_VALUE;
+
+    private int reservedSpace = 0;
 
     private final HashMap<Long, ClientDCInternalInv> byId = new HashMap<>();
     private final HashMultimap<String, ClientDCInternalInv> byName = HashMultimap.create();
@@ -79,7 +92,10 @@ public class GuiInterfaceTerminal extends AEBaseGui {
     private final PartInterfaceTerminal partInterfaceTerminal;
     private GuiButton guiButtonHide;
     private GuiButton guiButtonNextAssembler;
+    private GuiImgButton terminalStyleBox;
+
     private final HashMap<ClientDCInternalInv, Integer> dimHashMap = new HashMap<>();
+    private int drawnRows = 0;
 
     public GuiInterfaceTerminal(final InventoryPlayer inventoryPlayer, final PartInterfaceTerminal te) {
         super(new ContainerInterfaceTerminal(inventoryPlayer, te));
@@ -89,10 +105,33 @@ public class GuiInterfaceTerminal extends AEBaseGui {
         this.setScrollBar(scrollbar);
         this.xSize = 208;
         this.ySize = 255;
+        this.setReservedSpace(82);
     }
 
     @Override
     public void initGui() {
+        this.maxRows = AEConfig.instance()
+                .getConfigManager()
+                .getSetting(
+                        Settings.TERMINAL_STYLE) != TerminalStyle.TALL ? 6 : Integer.MAX_VALUE;
+
+        final int magicNumber = 82 + 14;
+        final int extraSpace = this.height - magicNumber - this.reservedSpace;
+
+        this.rows = (int) Math.floor(extraSpace / 18);
+        if (this.rows > this.maxRows) {
+            this.rows = this.maxRows;
+        }
+
+        if (this.rows < 6) {
+            this.rows = 6;
+        }
+
+        this.ySize = magicNumber + this.rows * 18 + this.reservedSpace;
+        // this.guiTop = top;
+        final int unusedSpace = this.height - this.ySize;
+        this.guiTop = (int) Math.floor(unusedSpace / (unusedSpace < 0 ? 3.8f : 2.0f));
+
         super.initGui();
 
         this.getScrollBar().setLeft(189);
@@ -115,6 +154,17 @@ public class GuiInterfaceTerminal extends AEBaseGui {
 
         this.searchFieldInputs.setText(partInterfaceTerminal.in);
         this.searchFieldOutputs.setText(partInterfaceTerminal.out);
+
+        this.fontRenderer.drawString(this.getGuiDisplayName(GuiText.InterfaceTerminal.getLocal()), 8, 6, 4210752);
+        this.fontRenderer.drawString(GuiText.inventory.getLocal(), this.offsetX + 2, this.ySize - 96 + 3, 4210752);
+
+    }
+
+    protected void repositionSlot(final AppEngSlot s) {
+        this.ySize = 82 + 14 + this.drawnRows * 18 + this.reservedSpace;
+
+        s.yPos = s.getY() + this.ySize - 112;
+        s.xPos = s.getX() + 14;
     }
 
     @Override
@@ -127,9 +177,6 @@ public class GuiInterfaceTerminal extends AEBaseGui {
     public void drawFG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         this.buttonList.clear();
 
-        this.fontRenderer.drawString(this.getGuiDisplayName(GuiText.InterfaceTerminal.getLocal()), 8, 6, 4210752);
-        this.fontRenderer.drawString(GuiText.inventory.getLocal(), this.offsetX + 2, this.ySize - 96 + 3, 4210752);
-
         final int currentScroll = this.getScrollBar().getCurrentScroll();
 
         this.guiButtonNextAssembler = new GuiImgButton(guiLeft + 123, guiTop + 25, Settings.ACTIONS, ActionItems.FREE_MOLECULAR_SLOT_SHORTCUT);
@@ -138,11 +185,15 @@ public class GuiInterfaceTerminal extends AEBaseGui {
         guiButtonHide = new GuiImgButton(guiLeft + 141, guiTop + 25, Settings.ACTIONS, this.partInterfaceTerminal.onlyInterfacesWithFreeSlots ? ActionItems.TOGGLE_SHOW_FULL_INTERFACES_OFF : ActionItems.TOGGLE_SHOW_FULL_INTERFACES_ON);
         this.buttonList.add(guiButtonHide);
 
+        this.buttonList.add(this.terminalStyleBox = new GuiImgButton(this.guiLeft - 18, guiTop + 18, Settings.TERMINAL_STYLE, AEConfig.instance()
+                .getConfigManager()
+                .getSetting(Settings.TERMINAL_STYLE)));
+
         this.inventorySlots.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
 
         int offset = 52;
         int linesDraw = 0;
-        for (int x = 0; x < LINES_ON_PAGE && linesDraw < LINES_ON_PAGE && currentScroll + x < this.lines.size(); x++) {
+        for (int x = 0; x < rows && linesDraw < rows && currentScroll + x < this.lines.size(); x++) {
             final Object lineObj = this.lines.get(currentScroll + x);
             if (lineObj instanceof ClientDCInternalInv) {
                 final ClientDCInternalInv inv = (ClientDCInternalInv) lineObj;
@@ -152,7 +203,7 @@ public class GuiInterfaceTerminal extends AEBaseGui {
                 this.buttonList.add(guiButton);
                 int extraLines = numUpgradesMap.get(inv);
 
-                for (int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row) {
+                for (int row = 0; row < 1 + extraLines && linesDraw < rows; ++row) {
                     for (int z = 0; z < 9; z++) {
                         this.inventorySlots.inventorySlots.add(new SlotDisconnected(inv, z + (row * 9), (z * 18 + 22), offset));
                         if (this.matchedStacks.contains(inv.getInventory().getStackInSlot(z + (row * 9)))) {
@@ -227,6 +278,25 @@ public class GuiInterfaceTerminal extends AEBaseGui {
             mc.player.closeScreen();
         }
 
+        if (btn instanceof GuiImgButton) {
+            final boolean backwards = Mouse.isButtonDown(1);
+
+            final GuiImgButton iBtn = (GuiImgButton) btn;
+            if (iBtn.getSetting() != Settings.ACTIONS) {
+                final Enum cv = iBtn.getCurrentValue();
+                final Enum next = Platform.rotateEnum(cv, backwards, iBtn.getSetting().getPossibleValues());
+
+                if (btn == this.terminalStyleBox) {
+                    AEConfig.instance().getConfigManager().putSetting(iBtn.getSetting(), next);
+                }
+
+                iBtn.set(next);
+
+                if (next.getClass() == TerminalStyle.class) {
+                    this.reinitalize();
+                }
+            }
+        }
         if (btn == guiButtonHide) {
             partInterfaceTerminal.onlyInterfacesWithFreeSlots = !partInterfaceTerminal.onlyInterfacesWithFreeSlots;
             this.refreshList();
@@ -247,15 +317,21 @@ public class GuiInterfaceTerminal extends AEBaseGui {
         }
     }
 
+    private void reinitalize() {
+        this.buttonList.clear();
+        this.initGui();
+    }
+
     @Override
     public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
         this.bindTexture("guis/newinterfaceterminal.png");
-        this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
+        //split the texture for the top
+        this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, 166);
 
         int offset = 51;
         final int ex = this.getScrollBar().getCurrentScroll();
         int linesDraw = 0;
-        for (int x = 0; x < LINES_ON_PAGE && linesDraw < LINES_ON_PAGE && ex + x < this.lines.size(); x++) {
+        for (int x = 0; x < rows && linesDraw < rows && ex + x < this.lines.size(); x++) {
             final Object lineObj = this.lines.get(ex + x);
             if (lineObj instanceof ClientDCInternalInv) {
                 GlStateManager.color(1, 1, 1, 1);
@@ -263,14 +339,36 @@ public class GuiInterfaceTerminal extends AEBaseGui {
 
                 int extraLines = numUpgradesMap.get(lineObj);
 
-                for (int row = 0; row < 1 + extraLines && linesDraw < LINES_ON_PAGE; ++row) {
+                for (int row = 0; row < 1 + extraLines && linesDraw < rows; ++row) {
+                    if (linesDraw == 6) {
+                        this.drawTexturedModalRect(offsetX, offsetY + offset + 7, 0, 166, 189, 7);
+                        this.drawTexturedModalRect(offsetX, offsetY + offset + 14, 0, 166, 189, 4);
+                    } else if (linesDraw >= 7) {
+                        this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 173, 189, 18);
+                    }
                     this.drawTexturedModalRect(offsetX + 20, offsetY + offset, 20, 173, width, 18);
+
                     offset += 18;
                     linesDraw++;
                 }
             } else {
                 offset += 18;
                 linesDraw++;
+            }
+        }
+        offset = 51 + Math.max(6 * 18, linesDraw * 18);
+        if (linesDraw > 6) {
+            this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 166, 189, 7);
+        }
+        this.drawTexturedModalRect(offsetX, offsetY + offset + 7, 0, 166, this.xSize, 90);
+
+        this.drawnRows = Math.max(6, linesDraw);
+
+        for (final Slot s : this.inventorySlots.inventorySlots) {
+            if (s instanceof AppEngSlot) {
+                if (s.xPos < 197) {
+                    this.repositionSlot((AppEngSlot) s);
+                }
             }
         }
 
@@ -522,5 +620,13 @@ public class GuiInterfaceTerminal extends AEBaseGui {
         }
 
         return o;
+    }
+
+    int getReservedSpace() {
+        return this.reservedSpace;
+    }
+
+    void setReservedSpace(final int reservedSpace) {
+        this.reservedSpace = reservedSpace;
     }
 }
