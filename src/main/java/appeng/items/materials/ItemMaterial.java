@@ -95,6 +95,17 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
             lines.add(c.getString("InscribeName"));
         }
 
+        if (mt == MaterialType.CARD_MAGNET) {
+            final NBTTagCompound c = Platform.openNbtData(stack);
+            if (!c.hasKey("enabled") || c.getBoolean("enabled")) {
+                lines.add(I18n.translateToLocal("gui.tooltips.appliedenergistics2.Enable"));
+            } else {
+                lines.add(I18n.translateToLocal("gui.tooltips.appliedenergistics2.Disabled"));
+            }
+            lines.add(I18n.translateToLocal("item.appliedenergistics2.material.card_magnet.usage"));
+            lines.add(I18n.translateToLocal("item.appliedenergistics2.material.card_magnet.partition"));
+        }
+
         final Upgrades u = this.getType(stack);
         if (u != null) {
             final List<String> textList = new ArrayList<>();

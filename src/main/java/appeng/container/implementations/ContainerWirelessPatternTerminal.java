@@ -40,7 +40,9 @@ import appeng.util.Platform;
 import appeng.util.helpers.ItemHandlerUtil;
 import appeng.util.inv.InvOperation;
 import baubles.api.BaublesApi;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.IItemHandler;
@@ -55,6 +57,8 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
     protected AppEngInternalInventory output;
     protected AppEngInternalInventory pattern;
     protected AppEngInternalInventory upgrades;
+
+    protected SlotRestrictedInput magnetSlot;
 
     private double powerMultiplier = 0.5;
     private int ticks = 0;
@@ -158,6 +162,31 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
         }
     }
 
+    @Override
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+        if (clickTypeIn == ClickType.PICKUP && dragType == 1) {
+            if (this.inventorySlots.get(slotId) == magnetSlot) {
+                ItemStack itemStack = magnetSlot.getStack();
+                if (!magnetSlot.getStack().isEmpty()) {
+                    NBTTagCompound tag = itemStack.getTagCompound();
+                    if (tag == null) {
+                        tag = new NBTTagCompound();
+                    }
+                    if (tag.hasKey("enabled")) {
+                        boolean e = tag.getBoolean("enabled");
+                        tag.setBoolean("enabled", !e);
+                    } else {
+                        tag.setBoolean("enabled", false);
+                    }
+                    magnetSlot.getStack().setTagCompound(tag);
+                    magnetSlot.onSlotChanged();
+                    return ItemStack.EMPTY;
+                }
+            }
+        }
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
+    }
+
     private double getPowerMultiplier() {
         return this.powerMultiplier;
     }
@@ -258,9 +287,9 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
     public void setupUpgrades() {
         if (wirelessTerminalGUIObject != null) {
             for (int upgradeSlot = 0; upgradeSlot < availableUpgrades(); upgradeSlot++) {
-                this.addSlotToContainer(
-                        (new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 206, 135 + upgradeSlot * 18, this.getInventoryPlayer()))
-                                .setNotDraggable());
+                this.magnetSlot = new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.UPGRADES, upgrades, upgradeSlot, 206, 135 + upgradeSlot * 18, this.getInventoryPlayer());
+                this.magnetSlot.setNotDraggable();
+                this.addSlotToContainer(magnetSlot);
             }
         }
     }

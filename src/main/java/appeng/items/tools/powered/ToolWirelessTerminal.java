@@ -20,7 +20,13 @@ package appeng.items.tools.powered;
 
 
 import appeng.api.AEApi;
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.Upgrades;
+import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
@@ -189,6 +195,10 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                 for (int s = 0; s < siu.getSlots(); s++) {
                     ItemStack is = siu.getStackInSlot(s);
                     if (AEApi.instance().definitions().materials().cardMagnet().isSameAs(is)) {
+                        NBTTagCompound tag = is.getTagCompound();
+                        if (tag != null && !tag.getBoolean("enabled")) {
+                            return;
+                        }
                         ItemMaterial im = (ItemMaterial) is.getItem();
                         CellConfig c = (CellConfig) im.getConfigInventory(is);
                         CellUpgrades u = (CellUpgrades) im.getUpgradesInventory(is);
@@ -235,11 +245,11 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                                 }
                             }
                             if (emptyFilter) {
-                                teleportItem(i,entityIn);
+                                teleportItem(i, entityIn);
                             } else if (matched && !inverted) {
-                                teleportItem(i,entityIn);
+                                teleportItem(i, entityIn);
                             } else if (!matched && inverted) {
-                                teleportItem(i,entityIn);
+                                teleportItem(i, entityIn);
                             }
                         }
                     }
@@ -248,7 +258,7 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
         }
     }
 
-    private void teleportItem(EntityItem i, Entity entityIn){
+    private void teleportItem(EntityItem i, Entity entityIn) {
         i.motionX = i.motionY = i.motionZ = 0;
         i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
     }

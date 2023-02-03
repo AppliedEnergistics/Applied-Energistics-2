@@ -90,9 +90,9 @@ public interface IMaterials {
 
     IItemDefinition cardPatternExpansion();
 
-    public IItemDefinition cardQuantumLink();
+    IItemDefinition cardQuantumLink();
 
-    public IItemDefinition cardMagnet();
+    IItemDefinition cardMagnet();
 
     IItemDefinition cardFuzzy();
 
