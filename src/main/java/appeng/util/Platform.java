@@ -324,8 +324,9 @@ public class Platform {
         }
 
         int x;
-        int y = 0;
-        int z = 0;
+        int y;
+        int z;
+
         if (tile != null) {
             x = tile.getPos().getX();
             y = tile.getPos().getY();
@@ -333,10 +334,12 @@ public class Platform {
         } else {
             if (p.openContainer instanceof IInventorySlotAware) {
                 x = ((IInventorySlotAware) p.openContainer).getInventorySlot();
-                y = ((IInventorySlotAware)p.openContainer).isBaubleSlot() ? 1 : 0;
+                y = ((IInventorySlotAware) p.openContainer).isBaubleSlot() ? 1 : 0;
             } else {
                 x = p.inventory.currentItem;
+                y = 0;
             }
+            z = Integer.MIN_VALUE;
         }
 
         if ((type.getType().isItem() && tile == null) || type.hasPermissions(tile, x, y, z, side, p)) {
@@ -346,18 +349,6 @@ public class Platform {
                 p.openGui(AppEng.instance(), type.ordinal() << 4 | (1 << 3), p.getEntityWorld(), x, y, z);
             } else {
                 p.openGui(AppEng.instance(), type.ordinal() << 4 | (side.ordinal()), tile.getWorld(), x, y, z);
-            }
-        }
-    }
-
-    public static void openGUI(@Nonnull final EntityPlayer p, int i, @Nonnull final GuiBridge type, boolean isBauble) {
-        if (isClient()) {
-            return;
-        }
-
-        if (type.getType().isItem()) {
-            if (type.getType() == GuiHostType.ITEM) {
-                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), i, isBauble ? 1 : 0, 0);
             }
         }
     }

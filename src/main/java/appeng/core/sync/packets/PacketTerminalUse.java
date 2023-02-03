@@ -1,5 +1,6 @@
 package appeng.core.sync.packets;
 
+import appeng.api.util.AEPartLocation;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.items.tools.powered.Terminal;
@@ -31,17 +32,16 @@ public class PacketTerminalUse extends AppEngPacket {
     @Override
     public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player) {
         NonNullList<ItemStack> mainInventory = player.inventory.mainInventory;
-        for (int i = 0; i < mainInventory.size(); i++) {
-            ItemStack is = mainInventory.get(i);
+        for (ItemStack is : mainInventory) {
             if (terminal.getItemDefinition().isSameAs(is)) {
-                Platform.openGUI(player, i, terminal.getBridge(), false);
+                Platform.openGUI(player, null, AEPartLocation.INTERNAL, terminal.getBridge());
                 return;
             }
         }
         for (int i = 0; i < BaublesApi.getBaublesHandler(player).getSlots(); i++) {
             ItemStack is = BaublesApi.getBaublesHandler(player).getStackInSlot(i);
             if (terminal.getItemDefinition().isSameAs(is)) {
-                Platform.openGUI(player, i, terminal.getBridge(), true);
+                Platform.openGUI(player, null, AEPartLocation.INTERNAL, terminal.getBridge());
                 break;
             }
         }
