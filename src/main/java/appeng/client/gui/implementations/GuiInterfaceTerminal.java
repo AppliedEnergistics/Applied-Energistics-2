@@ -52,11 +52,13 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.DimensionManager;
 import org.lwjgl.input.Mouse;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -171,6 +173,14 @@ public class GuiInterfaceTerminal extends AEBaseGui {
     public void onGuiClosed() {
         partInterfaceTerminal.saveSearchStrings(this.searchFieldInputs.getText().toLowerCase(), this.searchFieldOutputs.getText().toLowerCase());
         super.onGuiClosed();
+    }
+
+    @Override
+    public List<Rectangle> getJEIExclusionArea() {
+        Rectangle craftingCPUArea = new Rectangle(this.guiLeft - 18, this.guiTop, 18, 18);
+        List<Rectangle> area = new ArrayList<>();
+        area.add(craftingCPUArea);
+        return area;
     }
 
     @Override
@@ -551,7 +561,7 @@ public class GuiInterfaceTerminal extends AEBaseGui {
         final NBTTagCompound encodedValue = itemStack.getTagCompound();
 
         if (encodedValue == null) {
-            return false;
+            return searchTerm.matches(GuiText.InvalidPattern.getLocal());
         }
 
         NBTTagList tag = new NBTTagList();
