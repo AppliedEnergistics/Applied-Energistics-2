@@ -191,6 +191,14 @@ public class GuiInterfaceTerminal extends AEBaseGui {
 
         this.inventorySlots.inventorySlots.removeIf(slot -> slot instanceof SlotDisconnected);
 
+        for (final Slot s : this.inventorySlots.inventorySlots) {
+            if (s instanceof AppEngSlot) {
+                if (s.xPos < 197) {
+                    this.repositionSlot((AppEngSlot) s);
+                }
+            }
+        }
+
         int offset = 52;
         int linesDraw = 0;
         for (int x = 0; x < rows && linesDraw < rows && currentScroll + x < this.lines.size(); x++) {
@@ -341,10 +349,10 @@ public class GuiInterfaceTerminal extends AEBaseGui {
 
                 for (int row = 0; row < 1 + extraLines && linesDraw < rows; ++row) {
                     if (linesDraw == 6) {
-                        this.drawTexturedModalRect(offsetX, offsetY + offset + 7, 0, 166, 189, 7);
-                        this.drawTexturedModalRect(offsetX, offsetY + offset + 14, 0, 166, 189, 4);
+                        this.drawTexturedModalRect(offsetX, offsetY + offset + 7, 0, 166, 190, 7);
+                        this.drawTexturedModalRect(offsetX, offsetY + offset + 14, 0, 166, 190, 4);
                     } else if (linesDraw >= 7) {
-                        this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 173, 189, 18);
+                        this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 173, 190, 18);
                     }
                     this.drawTexturedModalRect(offsetX + 20, offsetY + offset, 20, 173, width, 18);
 
@@ -352,25 +360,25 @@ public class GuiInterfaceTerminal extends AEBaseGui {
                     linesDraw++;
                 }
             } else {
+                if (linesDraw == 6) {
+                    this.drawTexturedModalRect(offsetX, offsetY + offset + 7, 0, 166, 190, 7);
+                    this.drawTexturedModalRect(offsetX, offsetY + offset + 14, 0, 166, 190, 4);
+                    this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 53, 183, 18);
+                } else if (linesDraw >= 7) {
+                    this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 53, 183, 18);
+                    this.drawTexturedModalRect(offsetX + 183, offsetY + offset, 183, 166, 7, 18);
+                }
                 offset += 18;
                 linesDraw++;
             }
         }
         offset = 51 + Math.max(6 * 18, linesDraw * 18);
         if (linesDraw > 6) {
-            this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 166, 189, 7);
+            this.drawTexturedModalRect(offsetX, offsetY + offset, 0, 166, 190, 7);
         }
         this.drawTexturedModalRect(offsetX, offsetY + offset + 7, 0, 166, this.xSize, 90);
 
         this.drawnRows = Math.max(6, linesDraw);
-
-        for (final Slot s : this.inventorySlots.inventorySlots) {
-            if (s instanceof AppEngSlot) {
-                if (s.xPos < 197) {
-                    this.repositionSlot((AppEngSlot) s);
-                }
-            }
-        }
 
         if (this.searchFieldInputs != null) {
             this.searchFieldInputs.drawTextBox();
