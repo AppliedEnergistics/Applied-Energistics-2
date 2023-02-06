@@ -14,7 +14,9 @@ import appeng.api.util.IClientHelper;
 import appeng.core.localization.GuiText;
 import appeng.fluids.items.FluidDummyItem;
 import appeng.fluids.util.AEFluidStack;
+import appeng.util.ReadableNumberConverter;
 import appeng.util.item.AEItemStack;
+import li.cil.repack.org.luaj.vm2.ast.Str;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -22,11 +24,17 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import org.lwjgl.input.Keyboard;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
 
 
 public class ApiClientHelper implements IClientHelper {
+
+    private static final String[] NUMBER_FORMATS = new String[]{"#.000", "#.00", "#.0", "#"};
+
     @Override
     public <T extends IAEStack<T>> void addCellInformation(ICellInventoryHandler<T> handler, List<String> lines) {
         if (handler == null) {
@@ -63,7 +71,7 @@ public class ApiClientHelper implements IClientHelper {
                             if (!handler.isFuzzy()) {
                                 final IAEItemStack ais = AEItemStack.fromItemStack(is);
                                 IAEItemStack stocked = ((IItemList<IAEItemStack>) itemList).findPrecise(ais);
-                                lines.add("[" + is.getDisplayName() + "]" + ": " + (stocked == null ? "0" : String.valueOf(stocked.getStackSize())));
+                                lines.add("[" + is.getDisplayName() + "]" + ": " + (stocked == null ? "0" : ReadableNumberConverter.INSTANCE.toWideReadableForm(stocked.getStackSize())));
                             } else {
                                 final IAEItemStack ais = AEItemStack.fromItemStack(is);
                                 Collection<IAEItemStack> stocked = ((IItemList<IAEItemStack>) itemList).findFuzzy(ais, handler.getCellInv().getFuzzyMode());
@@ -81,7 +89,7 @@ public class ApiClientHelper implements IClientHelper {
                                     for (int j : ids) {
                                         sb.append(OreDictionary.getOreName(j)).append(", ");
                                     }
-                                    lines.add("[{" + sb.substring(0, sb.length() - 2) + "}]" + ": " + size);
+                                    lines.add("[{" + sb.substring(0, sb.length() - 2) + "}]" + ": " + ReadableNumberConverter.INSTANCE.toWideReadableForm(size));
                                 }
                             }
                         } else if (cellInventory.getChannel() instanceof IFluidStorageChannel) {
@@ -92,7 +100,7 @@ public class ApiClientHelper implements IClientHelper {
                                 ais = AEFluidStack.fromFluidStack(FluidUtil.getFluidContained(is));
                             }
                             IAEFluidStack stocked = ((IItemList<IAEFluidStack>) itemList).findPrecise(ais);
-                            lines.add("[" + is.getDisplayName() + "]" + ": " + (stocked == null ? "0" : String.valueOf(stocked.getStackSize())));
+                            lines.add("[" + is.getDisplayName() + "]" + ": " + (stocked == null ? "0" : fluidStackSize(stocked.getStackSize())));
                         }
                     }
                 }
@@ -102,12 +110,35 @@ public class ApiClientHelper implements IClientHelper {
                 cellInventory.getAvailableItems((IItemList) itemList);
                 for (IAEStack<?> s : itemList) {
                     if (s instanceof IAEItemStack) {
-                        lines.add(((IAEItemStack) s).getDefinition().getDisplayName() + ": " + s.getStackSize());
+                        lines.add(((IAEItemStack) s).getDefinition().getDisplayName() + ": " + ReadableNumberConverter.INSTANCE.toWideReadableForm(s.getStackSize()));
                     } else if (s instanceof IAEFluidStack) {
-                        lines.add(((IAEFluidStack) s).getFluidStack().getLocalizedName() + ": " + s.getStackSize() + "mB");
+                        lines.add(((IAEFluidStack) s).getFluidStack().getLocalizedName() + ": " + fluidStackSize(s.getStackSize()));
                     }
                 }
             }
         }
+    }
+
+    private String fluidStackSize(long size) {
+        String unit;
+        if (size >= 1000) {
+            unit = "B";
+        } else {
+            unit = "mB";
+        }
+
+        final int log = (int) Math.floor(Math.log10(size)) / 2;
+
+        final int index = Math.max(0, Math.min(3, log));
+
+        final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator('.');
+        final DecimalFormat format = new DecimalFormat(NUMBER_FORMATS[index]);
+        format.setDecimalFormatSymbols(symbols);
+        format.setRoundingMode(RoundingMode.DOWN);
+
+        String formatted = format.format(size / 1000d);
+
+        return formatted.concat(unit);
     }
 }

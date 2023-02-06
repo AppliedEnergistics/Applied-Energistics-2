@@ -335,7 +335,7 @@ public class Platform {
 
         if ((type.getType().isItem() && tile == null) || type.hasPermissions(tile, x, y, z, side, p)) {
             if (tile == null && type.getType() == GuiHostType.ITEM) {
-                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), x, y, z);
+                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0);
             } else if (tile == null || type.getType() == GuiHostType.ITEM) {
                 p.openGui(AppEng.instance(), type.ordinal() << 4 | (1 << 3), p.getEntityWorld(), x, y, z);
             } else {
