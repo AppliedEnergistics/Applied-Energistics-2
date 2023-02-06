@@ -25,7 +25,9 @@ import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.features.ILocatable;
 import appeng.api.features.IWirelessTermHandler;
+import appeng.api.implementations.IUpgradeableCellHost;
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.api.implementations.tiles.IViewCellStorage;
 import appeng.api.implementations.tiles.IWirelessAccessPoint;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -43,18 +45,29 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.DimensionalCoord;
 import appeng.api.util.IConfigManager;
 import appeng.container.interfaces.IInventorySlotAware;
+import appeng.me.cluster.IAECluster;
+import appeng.me.cluster.implementations.QuantumCluster;
+import appeng.parts.automation.StackUpgradeInventory;
+import appeng.parts.automation.UpgradeInventory;
+import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.tile.networking.TileWireless;
+import appeng.tile.qnb.TileQuantumBridge;
+import appeng.util.inv.IAEAppEngInventory;
+import appeng.util.inv.InvOperation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 
-public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware {
+public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, IInventorySlotAware, IViewCellStorage, IAEAppEngInventory, IUpgradeableCellHost {
 
     private final ItemStack effectiveItem;
     private final IWirelessTermHandler wth;
     private final String encryptionKey;
     private final EntityPlayer myPlayer;
+    private final boolean isBaubleSlot;
     private IGrid targetGrid;
     private IStorageGrid sg;
     private IMEMonitor<IAEItemStack> itemStorage;
@@ -63,12 +76,18 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
     private double myRange = Double.MAX_VALUE;
     private final int inventorySlot;
 
+    private final AppEngInternalInventory viewCell = new AppEngInternalInventory(this, 5);
+    private final UpgradeInventory upgrades;
+    private QuantumCluster myQC;
+
+
     public WirelessTerminalGuiObject(final IWirelessTermHandler wh, final ItemStack is, final EntityPlayer ep, final World w, final int x, final int y, final int z) {
         this.encryptionKey = wh.getEncryptionKey(is);
         this.effectiveItem = is;
         this.myPlayer = ep;
         this.wth = wh;
         this.inventorySlot = x;
+        this.isBaubleSlot = y == 1;
 
         ILocatable obj = null;
 
@@ -91,6 +110,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 }
             }
         }
+
+        upgrades = new StackUpgradeInventory(effectiveItem, this, 2);
+
+        this.loadFromNBT();
     }
 
     public double getRange() {
@@ -227,6 +250,8 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         this.rangeCheck();
         if (this.myWap != null) {
             return this.myWap.getActionableNode();
+        } else if (this.myQC != null && this.myQC.getCenter().isPowered()) {
+            return this.myQC.getCenter().getActionableNode();
         }
         return null;
     }
@@ -242,9 +267,10 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 return false;
             }
 
-            final IMachineSet tw = this.targetGrid.getMachines(TileWireless.class);
+            IMachineSet tw = this.targetGrid.getMachines(TileWireless.class);
 
             this.myWap = null;
+            this.myQC = null;
 
             for (final IGridNode n : tw) {
                 final IWirelessAccessPoint wap = (IWirelessAccessPoint) n.getMachine();
@@ -253,7 +279,24 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
                 }
             }
 
-            return this.myWap != null;
+            if (myWap != null) return true;
+
+            tw = this.targetGrid.getMachines(TileQuantumBridge.class);
+            for (final IGridNode n : tw) {
+                TileQuantumBridge tqb = (TileQuantumBridge) n.getMachine();
+                if (tqb.getCluster() != null) {
+                    TileQuantumBridge center = ((QuantumCluster) tqb.getCluster()).getCenter();
+                    if (center != null) {
+                        if (center.getInternalInventory().getStackInSlot(1).isItemEqual(AEApi.instance().definitions().materials().cardQuantumLink().maybeStack(1).get())) {
+                            myQC = (QuantumCluster) tqb.getCluster();
+                            myRange = 1;
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return this.myWap != null || this.myQC != null;
         }
         return false;
     }
@@ -286,4 +329,58 @@ public class WirelessTerminalGuiObject implements IPortableCell, IActionHost, II
         return this.inventorySlot;
     }
 
+    @Override
+    public boolean isBaubleSlot() {
+        return isBaubleSlot;
+    }
+
+    @Override
+    public IItemHandler getViewCellStorage() {
+        NBTTagCompound data = effectiveItem.getTagCompound();
+        if (data != null) {
+            viewCell.readFromNBT(data, "viewCell");
+        }
+        return this.viewCell;
+    }
+
+    @Override
+    public void saveChanges() {
+        NBTTagCompound data = effectiveItem.getTagCompound();
+        if (data == null) {
+            data = new NBTTagCompound();
+        }
+        viewCell.writeToNBT(data, "viewCell");
+        upgrades.writeToNBT(data, "upgrades");
+    }
+    
+    public void saveChanges(NBTTagCompound data) {
+        if (effectiveItem.getTagCompound() != null) {
+            effectiveItem.getTagCompound().merge(data);
+        } else {
+            effectiveItem.setTagCompound(data);
+        }
+    }
+
+    public void loadFromNBT() {
+        NBTTagCompound data = effectiveItem.getTagCompound();
+        if (data != null) {
+            viewCell.readFromNBT(data);
+            upgrades.readFromNBT(data);
+        }
+    }
+
+    @Override
+    public void onChangeInventory(IItemHandler inv, int slot, InvOperation mc, ItemStack removedStack, ItemStack newStack) {
+
+    }
+
+    @Override
+    public IItemHandler getInventoryByName(String name) {
+        if (name.equals("upgrades")) {
+            return upgrades;
+        } else if (name.equals("viewCell")) {
+            return viewCell;
+        }
+        return null;
+    }
 }

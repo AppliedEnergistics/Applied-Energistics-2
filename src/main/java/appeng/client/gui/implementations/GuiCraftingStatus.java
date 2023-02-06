@@ -26,6 +26,7 @@ package appeng.client.gui.implementations;
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
+import appeng.api.features.IWirelessTermHandler;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.client.gui.widgets.GuiScrollbar;
@@ -33,6 +34,7 @@ import appeng.client.gui.widgets.GuiTabButton;
 import appeng.container.implementations.ContainerCraftingStatus;
 import appeng.container.implementations.CraftingCPUStatus;
 import appeng.core.AELog;
+import appeng.core.features.registries.WirelessRegistry;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
@@ -84,9 +86,8 @@ public class GuiCraftingStatus extends GuiCraftingCPU {
         final IParts parts = definitions.parts();
 
         if (target instanceof WirelessTerminalGuiObject) {
-            this.myIcon = definitions.items().wirelessTerminal().maybeStack(1).orElse(ItemStack.EMPTY);
-
-            this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
+            myIcon = ((WirelessTerminalGuiObject) target).getItemStack();
+            this.originalGui = (GuiBridge) AEApi.instance().registries().wireless().getWirelessTerminalHandler(myIcon).getGuiHandler(myIcon);
         }
 
         if (target instanceof PartTerminal) {

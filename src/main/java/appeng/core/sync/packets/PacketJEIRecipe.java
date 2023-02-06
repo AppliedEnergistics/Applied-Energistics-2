@@ -33,6 +33,7 @@ import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.container.implementations.ContainerExpandedProcessingPatternTerm;
+import appeng.container.implementations.ContainerPatternEncoder;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -252,7 +253,7 @@ public class PacketJEIRecipe extends AppEngPacket {
 
             con.onCraftMatrixChanged(new WrapperInvItemHandler(craftMatrix));
 
-            if (this.output != null && ((con instanceof ContainerPatternTerm && !((ContainerPatternTerm) con).isCraftingMode()) || con instanceof ContainerExpandedProcessingPatternTerm)) {
+            if (this.output != null && ((con instanceof ContainerPatternEncoder && !((ContainerPatternEncoder) con).isCraftingMode()))) {
                 IItemHandler outputSlots = cct.getInventoryByName("output");
                 for (int i = 0; i < outputSlots.getSlots(); ++i) {
                     ItemHandlerUtil.setStackInSlot(outputSlots, i, ItemStack.EMPTY);

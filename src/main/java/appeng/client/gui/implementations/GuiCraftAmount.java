@@ -22,6 +22,7 @@ package appeng.client.gui.implementations;
 import appeng.api.AEApi;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IParts;
+import appeng.api.features.IWirelessTermHandler;
 import appeng.api.storage.ITerminalHost;
 import appeng.client.gui.AEBaseGui;
 import appeng.client.gui.widgets.GuiNumberBox;
@@ -97,9 +98,8 @@ public class GuiCraftAmount extends AEBaseGui {
         final IParts parts = definitions.parts();
 
         if (target instanceof WirelessTerminalGuiObject) {
-            myIcon = definitions.items().wirelessTerminal().maybeStack(1).orElse(myIcon);
-
-            this.originalGui = GuiBridge.GUI_WIRELESS_TERM;
+            myIcon = ((WirelessTerminalGuiObject) target).getItemStack();
+            this.originalGui = (GuiBridge) AEApi.instance().registries().wireless().getWirelessTerminalHandler(myIcon).getGuiHandler(myIcon);
         }
 
         if (target instanceof PartTerminal) {

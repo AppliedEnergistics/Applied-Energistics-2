@@ -2,11 +2,17 @@ package appeng.integration.modules.jei;
 
 import appeng.api.AEApi;
 import appeng.api.config.FuzzyMode;
+import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.client.gui.implementations.GuiCraftingTerm;
+import appeng.client.gui.implementations.GuiWirelessCraftingTerminal;
 import appeng.container.implementations.ContainerCraftingTerm;
+import appeng.container.implementations.ContainerMEMonitorable;
+import appeng.container.implementations.ContainerWirelessCraftingTerminal;
+import appeng.helpers.IContainerCraftingPacket;
+import appeng.util.IConfigManagerHost;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
 import mezz.jei.api.gui.IGuiIngredient;
@@ -39,13 +45,10 @@ public class JEIMissingItem implements IRecipeTransferError {
     IItemList<IAEItemStack> used = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
 
     JEIMissingItem(Container container, @Nonnull IRecipeLayout recipeLayout) {
-        if (container instanceof ContainerCraftingTerm) {
-            ContainerCraftingTerm craftingTerm = (ContainerCraftingTerm) container;
-            GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
-
-            IItemList<IAEItemStack> ir = g.getRepo().getList();
-
-            IItemList<IAEItemStack> available = mergeInventories(ir, (ContainerCraftingTerm) container);
+        if (container instanceof ContainerMEMonitorable) {
+            IItemList<IAEItemStack> ir = ((ContainerMEMonitorable) container).items;
+            
+            IItemList<IAEItemStack> available = mergeInventories(ir, (ContainerMEMonitorable) container);
 
             boolean found;
             this.errored = false;
@@ -109,11 +112,9 @@ public class JEIMissingItem implements IRecipeTransferError {
     @Override
     public void showError(Minecraft minecraft, int mouseX, int mouseY, @Nonnull IRecipeLayout recipeLayout, int recipeX, int recipeY) {
         Container c = minecraft.player.openContainer;
-        if (c instanceof ContainerCraftingTerm) {
-            ContainerCraftingTerm craftingTerm = (ContainerCraftingTerm) c;
-
-            GuiCraftingTerm g = (GuiCraftingTerm) craftingTerm.getGui();
-            IItemList<IAEItemStack> ir = g.getRepo().getList();
+        if (c instanceof ContainerMEMonitorable) {
+            ContainerMEMonitorable container = (ContainerMEMonitorable) c;
+            IItemList<IAEItemStack> ir = ((ContainerMEMonitorable) c).items;
             boolean found;
             boolean craftable;
             int currentSlot = 0;
@@ -121,7 +122,7 @@ public class JEIMissingItem implements IRecipeTransferError {
 
             if (System.currentTimeMillis() - lastUpdate > 1000) {
                 lastUpdate = System.currentTimeMillis();
-                available = mergeInventories(ir, (ContainerCraftingTerm) minecraft.player.openContainer);
+                available = mergeInventories(ir, container);
                 this.foundSlots.clear();
                 this.craftableSlots.clear();
             } else {
@@ -219,7 +220,7 @@ public class JEIMissingItem implements IRecipeTransferError {
         }
     }
 
-    IItemList<IAEItemStack> mergeInventories(IItemList<IAEItemStack> repo, ContainerCraftingTerm containerCraftingTerm) {
+    IItemList<IAEItemStack> mergeInventories(IItemList<IAEItemStack> repo, ContainerMEMonitorable containerCraftingTerm) {
         IItemList<IAEItemStack> itemList = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
         for (IAEItemStack i : repo) {
             itemList.addStorage(i);
@@ -230,9 +231,11 @@ public class JEIMissingItem implements IRecipeTransferError {
             itemList.addStorage(AEItemStack.fromItemStack(invWrapper.getStackInSlot(i)));
         }
 
-        IItemHandler itemHandler = containerCraftingTerm.getInventoryByName("crafting");
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            itemList.addStorage(AEItemStack.fromItemStack(itemHandler.getStackInSlot(i)));
+        if (containerCraftingTerm instanceof IContainerCraftingPacket) {
+            IItemHandler itemHandler = ((IContainerCraftingPacket) containerCraftingTerm).getInventoryByName("crafting");
+            for (int i = 0; i < itemHandler.getSlots(); i++) {
+                itemList.addStorage(AEItemStack.fromItemStack(itemHandler.getStackInSlot(i)));
+            }
         }
         return itemList;
     }

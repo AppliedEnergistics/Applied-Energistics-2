@@ -22,6 +22,7 @@ package appeng.core.sync.packets;
 import appeng.api.AEApi;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
+import appeng.container.implementations.ContainerPatternEncoder;
 import appeng.container.implementations.ContainerPatternTerm;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
@@ -98,9 +99,9 @@ public class PacketPatternSlot extends AppEngPacket {
     @Override
     public void serverPacketData(final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player) {
         final EntityPlayerMP sender = (EntityPlayerMP) player;
-        if (sender.openContainer instanceof ContainerPatternTerm) {
-            final ContainerPatternTerm patternTerminal = (ContainerPatternTerm) sender.openContainer;
-            patternTerminal.craftOrGetItem(this);
+        if (sender.openContainer instanceof ContainerPatternEncoder) {
+            final ContainerPatternEncoder patternEncoder = (ContainerPatternEncoder) sender.openContainer;
+            patternEncoder.craftOrGetItem(this);
         }
     }
 }

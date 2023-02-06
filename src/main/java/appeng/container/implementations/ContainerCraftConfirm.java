@@ -54,6 +54,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IContainerListener;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -279,7 +280,8 @@ public class ContainerCraftConfirm extends AEBaseContainer {
 
         final IActionHost ah = this.getActionHost();
         if (ah instanceof WirelessTerminalGuiObject) {
-            originalGui = GuiBridge.GUI_WIRELESS_TERM;
+            ItemStack myIcon = ((WirelessTerminalGuiObject) ah).getItemStack();
+            originalGui = (GuiBridge) AEApi.instance().registries().wireless().getWirelessTerminalHandler(myIcon).getGuiHandler(myIcon);
         }
 
         if (ah instanceof PartTerminal) {

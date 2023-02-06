@@ -20,30 +20,53 @@ package appeng.items.tools.powered;
 
 
 import appeng.api.AEApi;
-import appeng.api.config.*;
+import appeng.api.config.Actionable;
+import appeng.api.config.FuzzyMode;
+import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
+import appeng.api.config.Upgrades;
+import appeng.api.config.ViewItems;
 import appeng.api.features.IWirelessTermHandler;
 import appeng.api.util.IConfigManager;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
+import appeng.core.sync.GuiBridge;
+import appeng.items.contents.CellConfig;
+import appeng.items.contents.CellUpgrades;
+import appeng.items.materials.ItemMaterial;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.util.ConfigManager;
 import appeng.util.Platform;
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 
+@Optional.Interface(iface = "baubles.api.IBauble", modid = "baubles")
 
-public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler {
+public class ToolWirelessTerminal extends AEBasePoweredItem implements IWirelessTermHandler, IBauble {
+
+    int magnetTick;
 
     public ToolWirelessTerminal() {
         super(AEConfig.instance().getWirelessTerminalBattery());
@@ -129,5 +152,114 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
+        if (Platform.isServer()) {
+            magnetLogic(stack, worldIn, entityIn);
+        }
+    }
+
+    @Override
+    public IGuiHandler getGuiHandler(ItemStack is) {
+        return GuiBridge.GUI_WIRELESS_TERM;
+    }
+
+    @Optional.Method(modid = "baubles")
+    @Override
+    public BaubleType getBaubleType(ItemStack itemStack) {
+        return BaubleType.TRINKET;
+    }
+
+    @Optional.Method(modid = "baubles")
+    @Override
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
+        if (Platform.isServer()) {
+            magnetLogic(itemstack, player.world, player);
+        }
+    }
+
+    public void magnetLogic(ItemStack stack, World worldIn, Entity entityIn) {
+        if (entityIn instanceof EntityPlayer) {
+            this.magnetTick++;
+            if (magnetTick % 5 != 0) {
+                return;
+            }
+            magnetTick = 0;
+            if (!entityIn.isSneaking()) {
+                NBTTagCompound upgradeNBT = Platform.openNbtData(stack).getCompoundTag("upgrades");
+                ItemStackHandler siu = new ItemStackHandler(0);
+                siu.deserializeNBT(upgradeNBT);
+                for (int s = 0; s < siu.getSlots(); s++) {
+                    ItemStack is = siu.getStackInSlot(s);
+                    if (AEApi.instance().definitions().materials().cardMagnet().isSameAs(is)) {
+                        NBTTagCompound tag = is.getTagCompound();
+                        if (tag != null && !tag.getBoolean("enabled")) {
+                            return;
+                        }
+                        ItemMaterial im = (ItemMaterial) is.getItem();
+                        CellConfig c = (CellConfig) im.getConfigInventory(is);
+                        CellUpgrades u = (CellUpgrades) im.getUpgradesInventory(is);
+                        FuzzyMode fz = null;
+                        boolean isFuzzy = u.getInstalledUpgrades(Upgrades.FUZZY) == 1;
+                        if (isFuzzy) {
+                            fz = im.getFuzzyMode(is);
+                        }
+                        boolean inverted = u.getInstalledUpgrades(Upgrades.INVERTER) == 1;
+
+                        List<EntityItem> ei = worldIn.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(
+                                new Vec3d(entityIn.posX + 5, entityIn.posY + 5, entityIn.posZ + 5),
+                                new Vec3d(entityIn.posX - 5, entityIn.posY - 5, entityIn.posZ - 5)));
+                        boolean emptyFilter = true;
+                        for (EntityItem i : ei) {
+                            if (i.isDead) {
+                                continue;
+                            }
+
+                            NBTTagCompound itemTag = i.getEntityData();
+                            if (itemTag.hasKey("PreventRemoteMovement")) {
+                                continue;
+                            }
+
+                            if (i.getThrower() != null && i.getThrower().equals(entityIn.getName()) && i.cannotPickup()) {
+                                continue;
+                            }
+
+                            boolean matched = false;
+                            for (int ss = 0; ss < c.getSlots(); ss++) {
+                                ItemStack filter = c.getStackInSlot(ss);
+                                if (filter.isEmpty()) continue;
+                                emptyFilter = false;
+                                if (isFuzzy) {
+                                    if (Platform.itemComparisons().isFuzzyEqualItem(filter, i.getItem(), fz)) {
+                                        matched = true;
+                                        break;
+                                    }
+                                } else {
+                                    if (Platform.itemComparisons().isSameItem(filter, i.getItem())) {
+                                        matched = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (emptyFilter) {
+                                teleportItem(i, entityIn);
+                            } else if (matched && !inverted) {
+                                teleportItem(i, entityIn);
+                            } else if (!matched && inverted) {
+                                teleportItem(i, entityIn);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void teleportItem(EntityItem i, Entity entityIn) {
+        i.motionX = i.motionY = i.motionZ = 0;
+        i.setPosition(entityIn.posX, entityIn.posY, entityIn.posZ);
     }
 }

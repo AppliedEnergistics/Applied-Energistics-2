@@ -25,6 +25,7 @@ import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.network.INetworkInfo;
 import appeng.fluids.container.ContainerFluidInterface;
 import appeng.fluids.container.ContainerFluidTerminal;
+import appeng.fluids.container.ContainerWirelessFluidTerminal;
 import appeng.fluids.util.AEFluidStack;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -74,6 +75,8 @@ public class PacketTargetFluidStack extends AppEngPacket {
     public void serverPacketData(final INetworkInfo manager, final AppEngPacket packet, final EntityPlayer player) {
         if (player.openContainer instanceof ContainerFluidTerminal) {
             ((ContainerFluidTerminal) player.openContainer).setTargetStack(this.stack);
+        } else if (player.openContainer instanceof ContainerWirelessFluidTerminal) {
+            ((ContainerWirelessFluidTerminal) player.openContainer).setTargetStack(this.stack);
         } else if (player.openContainer instanceof ContainerFluidInterface) {
             ((ContainerFluidInterface) player.openContainer).setTargetStack(this.stack);
         } else if (player.openContainer instanceof ContainerFluidInterfaceConfigurationTerminal) {

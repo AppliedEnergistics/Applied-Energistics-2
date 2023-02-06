@@ -78,6 +78,9 @@ public final class ApiItems implements IItems {
 
     private final IItemDefinition entropyManipulator;
     private final IItemDefinition wirelessTerminal;
+    private final IItemDefinition wirelessCraftingTerminal;
+    private final IItemDefinition wirelessPatternTerminal;
+    private final IItemDefinition wirelessFluidTerminal;
     private final IItemDefinition biometricCard;
     private final IItemDefinition chargedStaff;
     private final IItemDefinition massCannon;
@@ -178,6 +181,10 @@ public final class ApiItems implements IItems {
                 .dispenserBehavior(DispenserBlockTool::new)
                 .build();
         this.wirelessTerminal = powerTools.item("wireless_terminal", ToolWirelessTerminal::new).addFeatures(AEFeature.WIRELESS_ACCESS_TERMINAL).build();
+        this.wirelessCraftingTerminal = powerTools.item("wireless_crafting_terminal", ToolWirelessCraftingTerminal::new).addFeatures(AEFeature.WIRELESS_CRAFTING_TERMINAL).build();
+        this.wirelessPatternTerminal = powerTools.item("wireless_pattern_terminal", ToolWirelessPatternTerminal::new).addFeatures(AEFeature.WIRELESS_PATTERN_TERMINAL).build();
+        this.wirelessFluidTerminal = powerTools.item("wireless_fluid_terminal", ToolWirelessFluidTerminal::new).addFeatures(AEFeature.WIRELESS_FLUID_TERMINAL).build();
+
         this.chargedStaff = powerTools.item("charged_staff", ToolChargedStaff::new).addFeatures(AEFeature.CHARGED_STAFF).build();
         this.massCannon = powerTools.item("matter_cannon", ToolMatterCannon::new)
                 .addFeatures(AEFeature.MATTER_CANNON)
@@ -341,6 +348,21 @@ public final class ApiItems implements IItems {
     @Override
     public IItemDefinition wirelessTerminal() {
         return this.wirelessTerminal;
+    }
+
+    @Override
+    public IItemDefinition wirelessCraftingTerminal() {
+        return wirelessCraftingTerminal;
+    }
+
+    @Override
+    public IItemDefinition wirelessFluidTerminal() {
+        return wirelessFluidTerminal;
+    }
+
+    @Override
+    public IItemDefinition wirelessPatternTerminal() {
+        return wirelessPatternTerminal;
     }
 
     @Override

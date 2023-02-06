@@ -41,7 +41,7 @@ public class GuiQNB extends AEBaseGui {
 
     @Override
     public void drawBG(final int offsetX, final int offsetY, final int mouseX, final int mouseY) {
-        this.bindTexture("guis/chest.png");
+        this.bindTexture("guis/qbgui.png");
         this.drawTexturedModalRect(offsetX, offsetY, 0, 0, this.xSize, this.ySize);
     }
 }

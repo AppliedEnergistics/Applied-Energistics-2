@@ -20,6 +20,7 @@ package appeng.client.gui.implementations;
 
 
 import appeng.api.AEApi;
+import appeng.api.features.IWirelessTermHandler;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.channels.IItemStorageChannel;
 import appeng.api.storage.data.IAEItemStack;
@@ -84,7 +85,8 @@ public class GuiCraftConfirm extends AEBaseGui {
         this.ccc.setGui(this);
 
         if (te instanceof WirelessTerminalGuiObject) {
-            this.OriginalGui = GuiBridge.GUI_WIRELESS_TERM;
+            ItemStack itemStack = ((WirelessTerminalGuiObject) te).getItemStack();
+            this.OriginalGui = (GuiBridge) AEApi.instance().registries().wireless().getWirelessTerminalHandler(itemStack).getGuiHandler(itemStack);
         }
 
         if (te instanceof PartTerminal) {

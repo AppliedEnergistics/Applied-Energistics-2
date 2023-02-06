@@ -20,19 +20,43 @@ package appeng.container.implementations;
 
 
 import appeng.container.AEBaseContainer;
+import appeng.container.slot.IOptionalSlotHost;
+import appeng.container.slot.OptionalSlotRestrictedInput;
 import appeng.container.slot.SlotRestrictedInput;
 import appeng.tile.qnb.TileQuantumBridge;
 import net.minecraft.entity.player.InventoryPlayer;
 
 
-public class ContainerQNB extends AEBaseContainer {
+public class ContainerQNB extends AEBaseContainer implements IOptionalSlotHost {
+
+    OptionalSlotRestrictedInput SINGULARITY;
+    OptionalSlotRestrictedInput QUANTUM_CARD;
 
     public ContainerQNB(final InventoryPlayer ip, final TileQuantumBridge quantumBridge) {
         super(ip, quantumBridge, null);
 
-        this.addSlotToContainer((new SlotRestrictedInput(SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, quantumBridge
-                .getInternalInventory(), 0, 80, 37, this.getInventoryPlayer())).setStackLimit(1));
+        SINGULARITY = new OptionalSlotRestrictedInput(SlotRestrictedInput.PlacableItemType.QE_SINGULARITY, quantumBridge
+                .getInternalInventory(), this, 0, 80, 37, 0, this.getInventoryPlayer());
+        this.addSlotToContainer(SINGULARITY.setStackLimit(1));
+
+        QUANTUM_CARD = new OptionalSlotRestrictedInput(SlotRestrictedInput.PlacableItemType.CARD_QUANTUM, quantumBridge
+                .getInternalInventory(), this, 1, 80, 55, 1, this.getInventoryPlayer());
+        this.addSlotToContainer((QUANTUM_CARD).setStackLimit(1));
 
         this.bindPlayerInventory(ip, 0, 166 - /* height of player inventory */82);
+    }
+
+
+    @Override
+    public boolean isSlotEnabled(int idx) {
+        if (QUANTUM_CARD.getItemHandler().getStackInSlot(QUANTUM_CARD.slotNumber).isEmpty() &&
+                SINGULARITY.getItemHandler().getStackInSlot(SINGULARITY.slotNumber).isEmpty()) {
+            return true;
+        } else if (idx == 0) {
+            return QUANTUM_CARD.getItemHandler().getStackInSlot(QUANTUM_CARD.slotNumber).isEmpty();
+        } else if (idx == 1) {
+            return SINGULARITY.getItemHandler().getStackInSlot(SINGULARITY.slotNumber).isEmpty();
+        }
+        return false;
     }
 }

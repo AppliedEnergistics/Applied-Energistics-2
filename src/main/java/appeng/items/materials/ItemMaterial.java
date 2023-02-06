@@ -19,6 +19,8 @@
 package appeng.items.materials;
 
 
+import appeng.api.AEApi;
+import appeng.api.config.FuzzyMode;
 import appeng.api.config.Upgrades;
 import appeng.api.implementations.IUpgradeableHost;
 import appeng.api.implementations.items.IItemGroup;
@@ -27,11 +29,14 @@ import appeng.api.implementations.items.IUpgradeModule;
 import appeng.api.implementations.tiles.ISegmentedInventory;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.SelectedPart;
+import appeng.api.storage.ICellWorkbenchItem;
 import appeng.core.AEConfig;
 import appeng.core.features.AEFeature;
 import appeng.core.features.IStackSrc;
 import appeng.core.features.MaterialStackSrc;
 import appeng.items.AEBaseItem;
+import appeng.items.contents.CellConfig;
+import appeng.items.contents.CellUpgrades;
 import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
 import appeng.util.inv.AdaptorItemHandler;
@@ -51,6 +56,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -63,7 +69,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule {
+public final class ItemMaterial extends AEBaseItem implements IStorageComponent, IUpgradeModule, ICellWorkbenchItem {
     public static ItemMaterial instance;
 
     private static final int KILO_SCALAR = 1024;
@@ -88,6 +94,17 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
         if (mt == MaterialType.NAME_PRESS) {
             final NBTTagCompound c = Platform.openNbtData(stack);
             lines.add(c.getString("InscribeName"));
+        }
+
+        if (mt == MaterialType.CARD_MAGNET) {
+            final NBTTagCompound c = Platform.openNbtData(stack);
+            if (!c.hasKey("enabled") || c.getBoolean("enabled")) {
+                lines.add(I18n.translateToLocal("gui.tooltips.appliedenergistics2.Enable"));
+            } else {
+                lines.add(I18n.translateToLocal("gui.tooltips.appliedenergistics2.Disabled"));
+            }
+            lines.add(I18n.translateToLocal("item.appliedenergistics2.material.card_magnet.usage"));
+            lines.add(I18n.translateToLocal("item.appliedenergistics2.material.card_magnet.partition"));
         }
 
         final Upgrades u = this.getType(stack);
@@ -144,6 +161,10 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
                 return Upgrades.CRAFTING;
             case CARD_PATTERN_EXPANSION:
                 return Upgrades.PATTERN_EXPANSION;
+            case CARD_MAGNET:
+                return Upgrades.MAGNET;
+            case CARD_QUANTUM_LINK:
+                return Upgrades.QUANTUM_LINK;
             default:
                 return null;
         }
@@ -307,6 +328,36 @@ public final class ItemMaterial extends AEBaseItem implements IStorageComponent,
             default:
         }
         return false;
+    }
+
+    @Override
+    public boolean isEditable(ItemStack is) {
+        return is.isItemEqual(AEApi.instance().definitions().materials().cardMagnet().maybeStack(1).get());
+    }
+
+    @Override
+    public IItemHandler getUpgradesInventory(final ItemStack is) {
+        return new CellUpgrades(is, 2);
+    }
+
+    @Override
+    public IItemHandler getConfigInventory(final ItemStack is) {
+        return new CellConfig(is);
+    }
+
+    @Override
+    public FuzzyMode getFuzzyMode(final ItemStack is) {
+        final String fz = Platform.openNbtData(is).getString("FuzzyMode");
+        try {
+            return FuzzyMode.valueOf(fz);
+        } catch (final Throwable t) {
+            return FuzzyMode.IGNORE_ALL;
+        }
+    }
+
+    @Override
+    public void setFuzzyMode(final ItemStack is, final FuzzyMode fzMode) {
+        Platform.openNbtData(is).setString("FuzzyMode", fzMode.name());
     }
 
     private static class SlightlyBetterSort implements Comparator<String> {

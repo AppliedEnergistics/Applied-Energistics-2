@@ -19,8 +19,10 @@
 package appeng.core;
 
 
+import appeng.api.AEApi;
 import appeng.api.config.Upgrades;
 import appeng.api.definitions.IBlocks;
+import appeng.api.definitions.IItemDefinition;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IParts;
 import appeng.api.features.IRecipeHandlerRegistry;
@@ -105,7 +107,9 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -377,6 +381,9 @@ final class Registration {
         Upgrades.FUZZY.registerItem(items.viewCell(), 1);
         Upgrades.INVERTER.registerItem(items.viewCell(), 1);
 
+        Upgrades.FUZZY.registerItem(AEApi.instance().definitions().materials().cardMagnet(), 1);
+        Upgrades.INVERTER.registerItem(AEApi.instance().definitions().materials().cardMagnet(), 1);
+
         // Storage Bus
         Upgrades.FUZZY.registerItem(parts.storageBus(), 1);
         Upgrades.INVERTER.registerItem(parts.storageBus(), 1);
@@ -403,7 +410,22 @@ final class Registration {
         Upgrades.SPEED.registerItem(blocks.inscriber(), 3);
 
         // Wireless Terminal Handler
-        items.wirelessTerminal().maybeItem().ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
+        ArrayList<IItemDefinition> iids = new ArrayList<>();
+        iids.add(items.wirelessTerminal());
+        iids.add(items.wirelessCraftingTerminal());
+        iids.add(items.wirelessPatternTerminal());
+
+        for (IItemDefinition id : iids) {
+            id.maybeItem().ifPresent(terminal -> {
+                registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal);
+                Upgrades.QUANTUM_LINK.registerItem(id, 1);
+                Upgrades.MAGNET.registerItem(id, 1);
+            });
+        }
+        items.wirelessFluidTerminal().maybeItem().ifPresent(terminal -> {
+            registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal);
+            Upgrades.QUANTUM_LINK.registerItem(items.wirelessFluidTerminal(), 1);
+        });
 
         // Charge Rates
         items.chargedStaff().maybeItem().ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 320d));

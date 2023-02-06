@@ -19,48 +19,19 @@
 package appeng.container.implementations;
 
 
-import appeng.api.AEApi;
-import appeng.api.config.Actionable;
-import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.channels.IItemStorageChannel;
-import appeng.api.storage.data.IAEItemStack;
-import appeng.api.storage.data.IItemList;
-import appeng.container.ContainerNull;
-import appeng.container.guisync.GuiSync;
-import appeng.container.slot.AppEngSlot;
-import appeng.container.slot.IOptionalSlotHost;
 import appeng.container.slot.OptionalSlotFake;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.container.slot.SlotPatternOutputs;
 import appeng.container.slot.SlotPatternTerm;
-import appeng.container.slot.SlotPlayerHotBar;
-import appeng.container.slot.SlotPlayerInv;
 import appeng.container.slot.SlotRestrictedInput;
-import appeng.core.sync.packets.PacketPatternSlot;
-import appeng.items.storage.ItemViewCell;
-import appeng.me.helpers.MachineSource;
-import appeng.util.InventoryAdaptor;
 import appeng.util.Platform;
-import appeng.util.inv.AdaptorItemHandler;
-import appeng.util.inv.WrapperCursorItemHandler;
-import appeng.util.item.AEItemStack;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IContainerListener;
-import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.items.IItemHandler;
 
 
 public class ContainerPatternTerm extends ContainerPatternEncoder {
-
+    
 
     public ContainerPatternTerm(final InventoryPlayer ip, final ITerminalHost monitorable) {
         super(ip, monitorable, false);
@@ -114,91 +85,4 @@ public class ContainerPatternTerm extends ContainerPatternEncoder {
         }
     }
 
-    public void craftOrGetItem(final PacketPatternSlot packetPatternSlot) {
-        if (packetPatternSlot.slotItem != null && this.getCellInventory() != null) {
-            final IAEItemStack out = packetPatternSlot.slotItem.copy();
-            InventoryAdaptor inv = new AdaptorItemHandler(new WrapperCursorItemHandler(this.getPlayerInv().player.inventory));
-            final InventoryAdaptor playerInv = InventoryAdaptor.getAdaptor(this.getPlayerInv().player);
-
-            if (packetPatternSlot.shift) {
-                inv = playerInv;
-            }
-
-            if (!inv.simulateAdd(out.createItemStack()).isEmpty()) {
-                return;
-            }
-
-            final IAEItemStack extracted = Platform.poweredExtraction(this.getPowerSource(), this.getCellInventory(), out, this.getActionSource());
-            final EntityPlayer p = this.getPlayerInv().player;
-
-            if (extracted != null) {
-                inv.addItems(extracted.createItemStack());
-                if (p instanceof EntityPlayerMP) {
-                    this.updateHeld((EntityPlayerMP) p);
-                }
-                this.detectAndSendChanges();
-                return;
-            }
-
-            final InventoryCrafting ic = new InventoryCrafting(new ContainerNull(), 3, 3);
-            final InventoryCrafting real = new InventoryCrafting(new ContainerNull(), 3, 3);
-
-            for (int x = 0; x < 9; x++) {
-                ic.setInventorySlotContents(x, packetPatternSlot.pattern[x] == null ? ItemStack.EMPTY : packetPatternSlot.pattern[x].createItemStack());
-            }
-
-            final IRecipe r = CraftingManager.findMatchingRecipe(ic, p.world);
-
-            if (r == null) {
-                return;
-            }
-
-            final IMEMonitor<IAEItemStack> storage = this.getPart()
-                    .getInventory(AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class));
-            final IItemList<IAEItemStack> all = storage.getStorageList();
-
-            final ItemStack is = r.getCraftingResult(ic);
-
-            for (int x = 0; x < ic.getSizeInventory(); x++) {
-                if (!ic.getStackInSlot(x).isEmpty()) {
-                    final ItemStack pulled = Platform.extractItemsByRecipe(this.getPowerSource(), this.getActionSource(), storage, p.world, r, is, ic,
-                            ic.getStackInSlot(x), x, all, Actionable.MODULATE, ItemViewCell.createFilter(this.getViewCells()));
-                    real.setInventorySlotContents(x, pulled);
-                }
-            }
-
-            final IRecipe rr = CraftingManager.findMatchingRecipe(real, p.world);
-
-            if (rr == r && Platform.itemComparisons().isSameItem(rr.getCraftingResult(real), is)) {
-                final InventoryCraftResult craftingResult = new InventoryCraftResult();
-                craftingResult.setRecipeUsed(rr);
-
-                final SlotCrafting sc = new SlotCrafting(p, real, craftingResult, 0, 0, 0);
-                sc.onTake(p, is);
-
-                for (int x = 0; x < real.getSizeInventory(); x++) {
-                    final ItemStack failed = playerInv.addItems(real.getStackInSlot(x));
-
-                    if (!failed.isEmpty()) {
-                        p.dropItem(failed, false);
-                    }
-                }
-
-                inv.addItems(is);
-                if (p instanceof EntityPlayerMP) {
-                    this.updateHeld((EntityPlayerMP) p);
-                }
-                this.detectAndSendChanges();
-            } else {
-                for (int x = 0; x < real.getSizeInventory(); x++) {
-                    final ItemStack failed = real.getStackInSlot(x);
-                    if (!failed.isEmpty()) {
-                        this.getCellInventory()
-                                .injectItems(AEItemStack.fromItemStack(failed), Actionable.MODULATE,
-                                        new MachineSource(this.getPart()));
-                    }
-                }
-            }
-        }
-    }
 }

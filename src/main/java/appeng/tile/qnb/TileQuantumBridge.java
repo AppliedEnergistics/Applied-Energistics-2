@@ -36,6 +36,8 @@ import appeng.tile.grid.AENetworkInvTile;
 import appeng.tile.inventory.AppEngInternalInventory;
 import appeng.util.Platform;
 import appeng.util.inv.InvOperation;
+import appeng.util.inv.filter.AEItemDefinitionFilter;
+import appeng.util.inv.filter.IAEItemFilter;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -53,7 +55,7 @@ import java.util.Optional;
 
 public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock, ITickable {
     private final byte corner = 16;
-    private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
+    private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 2, 1);
     private final byte hasSingularity = 32;
     private final byte powered = 64;
 
@@ -66,6 +68,7 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
         this.getProxy().setValidSides(EnumSet.noneOf(EnumFacing.class));
         this.getProxy().setFlags(GridFlags.DENSE_CAPACITY);
         this.getProxy().setIdlePowerUsage(22);
+        this.internalInventory.setFilter(new QuantumBridgeInventoryFilter());
     }
 
     @Override
@@ -291,5 +294,25 @@ public class TileQuantumBridge extends AENetworkInvTile implements IAEMultiBlock
 
     public byte getCorner() {
         return this.corner;
+    }
+
+    private class QuantumBridgeInventoryFilter implements IAEItemFilter {
+
+
+        @Override
+        public boolean allowExtract(IItemHandler inv, int slot, int amount) {
+            return true;
+        }
+
+        @Override
+        public boolean allowInsert(IItemHandler inv, int slot, ItemStack stack) {
+            if (inv.getStackInSlot(0).isEmpty() && inv.getStackInSlot(1).isEmpty() ) {
+                if (slot == 0 && AEApi.instance().definitions().materials().qESingularity().isSameAs(stack)) {
+                    return true;
+                } else return slot == 1 && AEApi.instance().definitions().materials().cardQuantumLink().isSameAs(stack);
+            } else if (slot == 0 && inv.getStackInSlot(1).isEmpty()) {
+                return true;
+            }else return slot == 1 && inv.getStackInSlot(0).isEmpty();
+        }
     }
 }

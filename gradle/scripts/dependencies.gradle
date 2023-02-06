@@ -23,12 +23,10 @@ repositories {
         url "https://cursemaven.com"
     }
 
-    /*
     maven {
         name = "CurseForge"
         url = "https://minecraft.curseforge.com/api/maven/"
     }
-    */
 
     maven {
         name "Mobius"
@@ -87,11 +85,12 @@ dependencies {
 
     compileOnly "curse.maven:chisel-235279:2915375"
 
+    deobfCompile "baubles:Baubles:1.12:1.5.2"
     //mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
     mods "curse.maven:hwyla-253449:2568751"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
     mods "mcjty.theoneprobe:TheOneProbe-${minecraft_version}:${top_version}"
-    
+
     // compile against provided APIs
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
     //compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}"

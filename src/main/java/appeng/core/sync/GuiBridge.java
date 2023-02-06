@@ -43,6 +43,7 @@ import appeng.container.AEBaseContainer;
 import appeng.container.ContainerNull;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.*;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.fluids.container.*;
 import appeng.fluids.helper.IFluidInterfaceHost;
 import appeng.fluids.parts.PartFluidFormationPlane;
@@ -71,6 +72,7 @@ import appeng.tile.storage.TileDrive;
 import appeng.tile.storage.TileIOPort;
 import appeng.tile.storage.TileSkyChest;
 import appeng.util.Platform;
+import baubles.api.BaublesApi;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -101,6 +103,10 @@ public enum GuiBridge implements IGuiHandler {
     GUI_PORTABLE_CELL(ContainerMEPortableCell.class, IPortableCell.class, GuiHostType.ITEM, null),
 
     GUI_WIRELESS_TERM(ContainerWirelessTerm.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+    GUI_WIRELESS_CRAFTING_TERMINAL(ContainerWirelessCraftingTerminal.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+    GUI_WIRELESS_PATTERN_TERMINAL(ContainerWirelessPatternTerminal.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+    GUI_WIRELESS_FLUID_TERMINAL(ContainerWirelessFluidTerminal.class, WirelessTerminalGuiObject.class, GuiHostType.ITEM, null),
+
 
     GUI_NETWORK_STATUS(ContainerNetworkStatus.class, INetworkTool.class, GuiHostType.ITEM, null),
 
@@ -229,10 +235,21 @@ public enum GuiBridge implements IGuiHandler {
         final boolean stem = ((ordinal >> 3) & 1) == 1;
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
-            if (stem) {
-                it = player.inventory.getCurrentItem();
-            } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
-                it = player.inventory.getStackInSlot(x);
+            if (y == 0) {
+                if (stem) {
+                    it = player.inventory.getCurrentItem();
+                } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
+                    it = player.inventory.getStackInSlot(x);
+                }
+            } else if (y == 1 && z == Integer.MIN_VALUE) {
+                if (stem) {
+                    if (player.openContainer instanceof IInventorySlotAware) {
+                        int slot = ((IInventorySlotAware) player.openContainer).getInventorySlot();
+                        it = BaublesApi.getBaublesHandler(player).getStackInSlot(slot);
+                    }
+                } else {
+                    it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
+                }
             }
             final Object myItem = this.getGuiObject(it, player, w, x, y, z);
             if (myItem != null && ID.CorrectTileOrPart(myItem)) {
@@ -340,10 +357,21 @@ public enum GuiBridge implements IGuiHandler {
         final boolean stem = ((ordinal >> 3) & 1) == 1;
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
-            if (stem) {
-                it = player.inventory.getCurrentItem();
-            } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
-                it = player.inventory.getStackInSlot(x);
+            if (y == 0) {
+                if (stem) {
+                    it = player.inventory.getCurrentItem();
+                } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
+                    it = player.inventory.getStackInSlot(x);
+                }
+            } else if (y == 1 && z == Integer.MIN_VALUE) {
+                if (stem) {
+                    if (player.openContainer instanceof IInventorySlotAware) {
+                        int slot = ((IInventorySlotAware) player.openContainer).getInventorySlot();
+                        it = BaublesApi.getBaublesHandler(player).getStackInSlot(slot);
+                    }
+                } else {
+                    it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
+                }
             }
             final Object myItem = this.getGuiObject(it, player, w, x, y, z);
             if (myItem != null && ID.CorrectTileOrPart(myItem)) {

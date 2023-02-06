@@ -45,6 +45,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.api.util.AEColor;
 import appeng.api.util.AEPartLocation;
 import appeng.api.util.DimensionalCoord;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -322,9 +323,10 @@ public class Platform {
             return;
         }
 
-        int x = (int) p.posX;
-        int y = (int) p.posY;
-        int z = (int) p.posZ;
+        int x = 0;
+        int y = 0;
+        int z = Integer.MIN_VALUE;
+
         if (tile != null) {
             x = tile.getPos().getX();
             y = tile.getPos().getY();
@@ -333,7 +335,7 @@ public class Platform {
 
         if ((type.getType().isItem() && tile == null) || type.hasPermissions(tile, x, y, z, side, p)) {
             if (tile == null && type.getType() == GuiHostType.ITEM) {
-                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), p.inventory.currentItem, 0, 0);
+                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), x, y, z);
             } else if (tile == null || type.getType() == GuiHostType.ITEM) {
                 p.openGui(AppEng.instance(), type.ordinal() << 4 | (1 << 3), p.getEntityWorld(), x, y, z);
             } else {
@@ -341,6 +343,19 @@ public class Platform {
             }
         }
     }
+
+    public static void openGUI(@Nonnull final EntityPlayer p, int slot, @Nonnull final GuiBridge type, boolean isBauble) {
+        if (isClient()) {
+            return;
+        }
+
+        if (type.getType().isItem()) {
+            if (type.getType() == GuiHostType.ITEM) {
+                p.openGui(AppEng.instance(), type.ordinal() << 4, p.getEntityWorld(), slot, isBauble ? 1 : 0, Integer.MIN_VALUE);
+            }
+        }
+    }
+
 
     /*
      * returns true if the code is on the client.

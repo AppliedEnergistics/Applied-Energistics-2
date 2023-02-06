@@ -20,17 +20,22 @@ package appeng.client.gui.implementations;
 
 
 import appeng.api.implementations.guiobjects.IPortableCell;
+import appeng.container.implementations.ContainerWirelessTerm;
+import appeng.helpers.WirelessTerminalGuiObject;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.player.InventoryPlayer;
 
 
-public class GuiWirelessTerm extends GuiMEPortableCell {
+public class GuiWirelessTerm extends GuiMEMonitorable {
 
-    public GuiWirelessTerm(final InventoryPlayer inventoryPlayer, final IPortableCell te) {
-        super(inventoryPlayer, te);
+    public GuiWirelessTerm(final InventoryPlayer inventoryPlayer, final WirelessTerminalGuiObject te) {
+        super(inventoryPlayer, te, new ContainerWirelessTerm(inventoryPlayer, te));
     }
 
     @Override
-    int getMaxRows() {
-        return this.defaultGetMaxRows();
+    public void drawBG(int offsetX, int offsetY, int mouseX, int mouseY) {
+        this.bindTexture("guis/wirelessupgrades.png");
+        Gui.drawModalRectWithCustomSizedTexture(offsetX + 198, offsetY + 127, 0, 0, 32, 32, 32, 32);
+        super.drawBG(offsetX, offsetY, mouseX, mouseY);
     }
 }

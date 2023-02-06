@@ -118,7 +118,9 @@ public enum MaterialType {
     FLUID_CELL16K_PART(56, "material_fluid_cell16k_part", EnumSet.of(AEFeature.STORAGE_CELLS)),
     FLUID_CELL64K_PART(57, "material_fluid_cell64k_part", EnumSet.of(AEFeature.STORAGE_CELLS)),
 
-    CARD_PATTERN_EXPANSION(58, "material_card_pattern_expansion", EnumSet.of(AEFeature.ADVANCED_CARDS));
+    CARD_PATTERN_EXPANSION(58, "material_card_pattern_expansion", EnumSet.of(AEFeature.ADVANCED_CARDS)),
+    CARD_QUANTUM_LINK(59, "material_card_quantum_link", EnumSet.of(AEFeature.ADVANCED_CARDS)),
+    CARD_MAGNET(60, "material_card_magnet", EnumSet.of(AEFeature.BASIC_CARDS));
 
 
     private final Set<AEFeature> features;

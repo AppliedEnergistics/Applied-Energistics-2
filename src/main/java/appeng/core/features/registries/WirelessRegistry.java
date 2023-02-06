@@ -25,10 +25,13 @@ import appeng.api.features.IWirelessTermHandler;
 import appeng.api.features.IWirelessTermRegistry;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.GuiBridge;
+import appeng.helpers.WirelessTerminalGuiObject;
 import appeng.util.Platform;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +83,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         final IWirelessTermHandler handler = this.getWirelessTerminalHandler(item);
+
         final String unparsedKey = handler.getEncryptionKey(item);
         if (unparsedKey.isEmpty()) {
             player.sendMessage(PlayerMessages.DeviceNotLinked.get());
@@ -94,7 +98,7 @@ public final class WirelessRegistry implements IWirelessTermRegistry {
         }
 
         if (handler.hasPower(player, 0.5, item)) {
-            Platform.openGUI(player, null, null, GuiBridge.GUI_WIRELESS_TERM);
+            Platform.openGUI(player, null, null, (GuiBridge) handler.getGuiHandler(item));
         } else {
             player.sendMessage(PlayerMessages.DeviceNotPowered.get());
         }

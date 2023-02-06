@@ -1,0 +1,27 @@
+{
+  "conditions": [
+    {
+      "type": "appliedenergistics2:material_exists",
+      "material": "material.card_quantum_link"
+    }
+  ],
+  "type": "appliedenergistics2:inscriber",
+  "mode": "press",
+  "result": {
+    "part": "material.card_quantum_link"
+  },
+  "ingredients": {
+    "top": {
+      "type": "appliedenergistics2:part",
+      "part": "material.singularity"
+    },
+    "middle": {
+      "type": "appliedenergistics2:part",
+      "part": "material.advanced_card"
+    },
+    "bottom": {
+      "type": "appliedenergistics2:part",
+      "part": "material.singularity"
+    }
+  }
+}

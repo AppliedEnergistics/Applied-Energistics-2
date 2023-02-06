@@ -20,7 +20,9 @@ package appeng.integration.modules.jei;
 
 
 import appeng.container.implementations.ContainerCraftingTerm;
+import appeng.container.implementations.ContainerPatternEncoder;
 import appeng.container.implementations.ContainerPatternTerm;
+import appeng.container.implementations.ContainerWirelessCraftingTerminal;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotFakeCraftingMatrix;
 import appeng.core.AELog;
@@ -74,7 +76,7 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
         }
 
         if (!doTransfer) {
-            if (container instanceof ContainerCraftingTerm && recipeType.equals(VanillaRecipeCategoryUid.CRAFTING)) {
+            if (recipeType.equals(VanillaRecipeCategoryUid.CRAFTING) && (container instanceof ContainerCraftingTerm || container instanceof ContainerWirelessCraftingTerminal)) {
                 JEIMissingItem error = new JEIMissingItem(container, recipeLayout);
                 if (error.errored())
                     return error;
@@ -82,9 +84,9 @@ class RecipeTransferHandler<T extends Container> implements IRecipeTransferHandl
             return null;
         }
 
-        if (container instanceof ContainerPatternTerm) {
+        if (container instanceof ContainerPatternEncoder) {
             try {
-                if (!((ContainerPatternTerm) container).isCraftingMode()) {
+                if (!((ContainerPatternEncoder) container).isCraftingMode()) {
                     if (recipeType.equals(VanillaRecipeCategoryUid.CRAFTING)) {
                         NetworkHandler.instance().sendToServer(new PacketValueConfig("PatternTerminal.CraftMode", "1"));
                     }

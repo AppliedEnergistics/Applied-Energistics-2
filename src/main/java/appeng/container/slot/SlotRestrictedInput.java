@@ -20,6 +20,7 @@ package appeng.container.slot;
 
 
 import appeng.api.AEApi;
+import appeng.api.config.Upgrades;
 import appeng.api.definitions.IDefinitions;
 import appeng.api.definitions.IItems;
 import appeng.api.definitions.IMaterials;
@@ -200,6 +201,11 @@ public class SlotRestrictedInput extends AppEngSlot {
                 return i.getItem() instanceof IBiometricCard;
             case UPGRADES:
                 return i.getItem() instanceof IUpgradeModule && ((IUpgradeModule) i.getItem()).getType(i) != null;
+            case CARD_QUANTUM:
+                if (AEApi.instance().definitions().materials().cardQuantumLink().maybeItem().isPresent()) {
+                    return AEApi.instance().definitions().materials().cardQuantumLink().maybeItem().get() == i.getItem();
+                }
+                return false;
             default:
                 break;
         }
@@ -269,6 +275,8 @@ public class SlotRestrictedInput extends AppEngSlot {
 
         RANGE_BOOSTER(6 * 16 + 15),
         QE_SINGULARITY(10 * 16 + 15),
+
+        CARD_QUANTUM(13 * 16 + 15),
         SPATIAL_STORAGE_CELLS(11 * 16 + 15),
 
         FUEL(12 * 16 + 15),

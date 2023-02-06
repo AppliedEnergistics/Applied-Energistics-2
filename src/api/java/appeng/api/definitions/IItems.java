@@ -30,8 +30,7 @@ import appeng.api.util.AEColoredItemDefinition;
 /**
  * A list of all items in AE
  */
-public interface IItems
-{
+public interface IItems {
 	IItemDefinition certusQuartzAxe();
 
 	IItemDefinition certusQuartzHoe();
@@ -63,6 +62,12 @@ public interface IItems
 	IItemDefinition entropyManipulator();
 
 	IItemDefinition wirelessTerminal();
+
+	IItemDefinition wirelessCraftingTerminal();
+
+	IItemDefinition wirelessPatternTerminal();
+
+	IItemDefinition wirelessFluidTerminal();
 
 	IItemDefinition biometricCard();
 
