@@ -363,7 +363,7 @@ public enum GuiBridge implements IGuiHandler {
                 } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
                     it = player.inventory.getStackInSlot(x);
                 }
-            } else if (y == 1 && z == 0) {
+            } else if (y == 1 && z == Integer.MIN_VALUE) {
                 if (stem) {
                     if (player.openContainer instanceof IInventorySlotAware) {
                         int slot = ((IInventorySlotAware) player.openContainer).getInventorySlot();

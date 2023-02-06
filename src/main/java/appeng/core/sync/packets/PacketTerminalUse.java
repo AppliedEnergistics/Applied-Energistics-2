@@ -32,16 +32,17 @@ public class PacketTerminalUse extends AppEngPacket {
     @Override
     public void serverPacketData(INetworkInfo manager, AppEngPacket packet, EntityPlayer player) {
         NonNullList<ItemStack> mainInventory = player.inventory.mainInventory;
-        for (ItemStack is : mainInventory) {
+        for (int i = 0; i < mainInventory.size(); i++) {
+            ItemStack is = mainInventory.get(i);
             if (terminal.getItemDefinition().isSameAs(is)) {
-                Platform.openGUI(player, null, AEPartLocation.INTERNAL, terminal.getBridge());
+                Platform.openGUI(player, i, terminal.getBridge(), false);
                 return;
             }
         }
         for (int i = 0; i < BaublesApi.getBaublesHandler(player).getSlots(); i++) {
             ItemStack is = BaublesApi.getBaublesHandler(player).getStackInSlot(i);
             if (terminal.getItemDefinition().isSameAs(is)) {
-                Platform.openGUI(player, null, AEPartLocation.INTERNAL, terminal.getBridge());
+                Platform.openGUI(player, i, terminal.getBridge(), true);
                 break;
             }
         }
