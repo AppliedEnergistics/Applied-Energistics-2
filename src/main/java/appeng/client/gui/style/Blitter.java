@@ -246,7 +246,7 @@ public final class Blitter {
     }
 
     public void blit(PoseStack poseStack, int zIndex) {
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.texture);
 
         // With no source rectangle, we'll use the entirety of the texture. This happens rarely though.
