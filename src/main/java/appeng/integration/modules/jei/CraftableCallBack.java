@@ -7,8 +7,10 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.storage.data.IItemList;
 import appeng.container.AEBaseContainer;
 import appeng.container.implementations.ContainerCraftingTerm;
+import appeng.container.implementations.ContainerMEMonitorable;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
+import appeng.helpers.IContainerCraftingPacket;
 import appeng.helpers.InventoryAction;
 import appeng.util.Platform;
 import appeng.util.item.AEItemStack;
@@ -41,7 +43,7 @@ public class CraftableCallBack implements ITooltipCallback<ItemStack> {
         if (!input) return;
         if (list != null) {
 
-            IItemList<IAEItemStack> available = mergeInventories(list, (ContainerCraftingTerm) container);
+            IItemList<IAEItemStack> available = mergeInventories(list, (ContainerMEMonitorable) container);
 
             IAEItemStack search = AEItemStack.fromItemStack(ingredient);
             if (ingredient.getItem().isDamageable() || Platform.isGTDamageableItem(ingredient.getItem())) {
@@ -100,7 +102,7 @@ public class CraftableCallBack implements ITooltipCallback<ItemStack> {
         }
     }
 
-    IItemList<IAEItemStack> mergeInventories(IItemList<IAEItemStack> repo, ContainerCraftingTerm containerCraftingTerm) {
+    IItemList<IAEItemStack> mergeInventories(IItemList<IAEItemStack> repo, ContainerMEMonitorable containerCraftingTerm) {
         IItemList<IAEItemStack> itemList = AEApi.instance().storage().getStorageChannel(IItemStorageChannel.class).createList();
         for (IAEItemStack i : repo) {
             itemList.addStorage(i);
@@ -111,9 +113,11 @@ public class CraftableCallBack implements ITooltipCallback<ItemStack> {
             itemList.addStorage(AEItemStack.fromItemStack(invWrapper.getStackInSlot(i)));
         }
 
-        IItemHandler itemHandler = containerCraftingTerm.getInventoryByName("crafting");
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            itemList.addStorage(AEItemStack.fromItemStack(itemHandler.getStackInSlot(i)));
+        if (containerCraftingTerm instanceof IContainerCraftingPacket) {
+            IItemHandler itemHandler = ((IContainerCraftingPacket) containerCraftingTerm).getInventoryByName("crafting");
+            for (int i = 0; i < itemHandler.getSlots(); i++) {
+                itemList.addStorage(AEItemStack.fromItemStack(itemHandler.getStackInSlot(i)));
+            }
         }
         return itemList;
     }

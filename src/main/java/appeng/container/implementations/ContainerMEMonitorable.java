@@ -116,7 +116,7 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
 
                 if (monitorable instanceof IPortableCell) {
                     this.setPowerSource((IEnergySource) monitorable);
-                    if ( monitorable instanceof WirelessTerminalGuiObject) {
+                    if (monitorable instanceof WirelessTerminalGuiObject) {
                         this.networkNode = ((WirelessTerminalGuiObject) monitorable).getActionableNode();
                     }
                 } else if (monitorable instanceof IMEChest) {
@@ -381,6 +381,9 @@ public class ContainerMEMonitorable extends AEBaseContainer implements IConfigMa
     }
 
     public void postUpdate(final List<IAEItemStack> list) {
+        for (final IAEItemStack is : list) {
+            this.items.add(is);
+        }
         ((GuiMEMonitorable) this.gui).postUpdate(list);
     }
 }

@@ -90,8 +90,4 @@ public class GuiWirelessCraftingTerminal extends GuiMEMonitorable {
     protected String getBackground() {
         return "guis/crafting.png";
     }
-
-    public ItemRepo getRepo() {
-        return this.repo;
-    }
 }
