@@ -16,7 +16,6 @@ import appeng.fluids.items.FluidDummyItem;
 import appeng.fluids.util.AEFluidStack;
 import appeng.util.ReadableNumberConverter;
 import appeng.util.item.AEItemStack;
-import li.cil.repack.org.luaj.vm2.ast.Str;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;

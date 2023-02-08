@@ -668,3 +668,7 @@ stat.ae2.TurnedCranks=Turned Cranks
 //Keys
 key.appliedenergistics2.category=Applied Energistics 2
 key.toggle_focus.desc=Toggle search box focus
+key.open_wireless_terminal.desc=Open Wireless Terminal
+key.open_wireless_crafting_terminal.desc=Open Wireless Crafting Terminal
+key.open_wireless_pattern_terminal.desc=Open Wireless Pattern Terminal
+key.open_wireless_fluid_terminal.desc=Open Wireless Fluid Terminal

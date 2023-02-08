@@ -232,24 +232,14 @@ public enum GuiBridge implements IGuiHandler {
     public Object getServerGuiElement(final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z) {
         final AEPartLocation side = AEPartLocation.fromOrdinal(ordinal & 0x07);
         final GuiBridge ID = values()[ordinal >> 4];
-        final boolean stem = ((ordinal >> 3) & 1) == 1;
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
             if (y == 0) {
-                if (stem) {
-                    it = player.inventory.getCurrentItem();
-                } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
+                if (x >= 0 && x < player.inventory.mainInventory.size()) {
                     it = player.inventory.getStackInSlot(x);
                 }
             } else if (y == 1 && z == Integer.MIN_VALUE) {
-                if (stem) {
-                    if (player.openContainer instanceof IInventorySlotAware) {
-                        int slot = ((IInventorySlotAware) player.openContainer).getInventorySlot();
-                        it = BaublesApi.getBaublesHandler(player).getStackInSlot(slot);
-                    }
-                } else {
-                    it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
-                }
+                it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
             }
             final Object myItem = this.getGuiObject(it, player, w, x, y, z);
             if (myItem != null && ID.CorrectTileOrPart(myItem)) {
@@ -354,24 +344,15 @@ public enum GuiBridge implements IGuiHandler {
     public Object getClientGuiElement(final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z) {
         final AEPartLocation side = AEPartLocation.fromOrdinal(ordinal & 0x07);
         final GuiBridge ID = values()[ordinal >> 4];
-        final boolean stem = ((ordinal >> 3) & 1) == 1;
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
             if (y == 0) {
-                if (stem) {
-                    it = player.inventory.getCurrentItem();
-                } else if (x >= 0 && x < player.inventory.mainInventory.size()) {
+                if (x >= 0 && x < player.inventory.mainInventory.size()) {
                     it = player.inventory.getStackInSlot(x);
                 }
-            } else if (y == 1 && z == Integer.MIN_VALUE) {
-                if (stem) {
-                    if (player.openContainer instanceof IInventorySlotAware) {
-                        int slot = ((IInventorySlotAware) player.openContainer).getInventorySlot();
-                        it = BaublesApi.getBaublesHandler(player).getStackInSlot(slot);
-                    }
-                } else {
-                    it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
-                }
+            }
+            if (y == 1 && z == Integer.MIN_VALUE) {
+                it = BaublesApi.getBaublesHandler(player).getStackInSlot(x);
             }
             final Object myItem = this.getGuiObject(it, player, w, x, y, z);
             if (myItem != null && ID.CorrectTileOrPart(myItem)) {
