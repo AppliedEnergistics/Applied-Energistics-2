@@ -50,6 +50,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
@@ -74,6 +75,8 @@ public class GuiInterfaceTerminal extends AEBaseGui {
     // TODO: copied from GuiMEMonitorable. It looks not changed, maybe unneeded?
     private final int offsetX = 21;
     private int maxRows = Integer.MAX_VALUE;
+
+    protected int jeiOffset = Loader.isModLoaded("jei") ? 24 : 0;
 
     private int reservedSpace = 0;
 
@@ -177,9 +180,9 @@ public class GuiInterfaceTerminal extends AEBaseGui {
 
     @Override
     public List<Rectangle> getJEIExclusionArea() {
-        Rectangle craftingCPUArea = new Rectangle(this.guiLeft - 18, this.guiTop, 18, 18);
+        Rectangle tallButton = new Rectangle(this.guiLeft - 18, this.guiTop + 24 + jeiOffset, 18, 18);
         List<Rectangle> area = new ArrayList<>();
-        area.add(craftingCPUArea);
+        area.add(tallButton);
         return area;
     }
 
@@ -195,7 +198,7 @@ public class GuiInterfaceTerminal extends AEBaseGui {
         guiButtonHide = new GuiImgButton(guiLeft + 141, guiTop + 25, Settings.ACTIONS, this.partInterfaceTerminal.onlyInterfacesWithFreeSlots ? ActionItems.TOGGLE_SHOW_FULL_INTERFACES_OFF : ActionItems.TOGGLE_SHOW_FULL_INTERFACES_ON);
         this.buttonList.add(guiButtonHide);
 
-        this.buttonList.add(this.terminalStyleBox = new GuiImgButton(this.guiLeft - 18, guiTop + 18, Settings.TERMINAL_STYLE, AEConfig.instance()
+        this.buttonList.add(this.terminalStyleBox = new GuiImgButton(this.guiLeft - 18, guiTop + 24 + jeiOffset, Settings.TERMINAL_STYLE, AEConfig.instance()
                 .getConfigManager()
                 .getSetting(Settings.TERMINAL_STYLE)));
 
