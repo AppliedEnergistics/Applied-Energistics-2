@@ -533,6 +533,14 @@ public abstract class ContainerPatternEncoder extends ContainerMEMonitorable imp
 
     public void setSubstitute(final boolean substitute) {
         this.substitute = substitute;
+        if (getPart() != null) {
+            getPart().setSubstitution(substitute);
+        } else if (iGuiItemObject != null) {
+            NBTTagCompound nbtTagCompound = iGuiItemObject.getItemStack().getTagCompound();
+            if (nbtTagCompound != null) {
+                nbtTagCompound.setBoolean("isSubstitute", substitute);
+            }
+        }
     }
 
     @Override
