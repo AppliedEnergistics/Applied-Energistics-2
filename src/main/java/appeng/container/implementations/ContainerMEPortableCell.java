@@ -53,11 +53,11 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
     protected AppEngInternalInventory upgrades;
     protected SlotRestrictedInput magnetSlot;
 
-    public ContainerMEPortableCell(InventoryPlayer ip, WirelessTerminalGuiObject monitorable, boolean bindInventory) {
-        super(ip, monitorable, bindInventory);
-        if (monitorable != null) {
-            final int slotIndex = ((IInventorySlotAware) monitorable).getInventorySlot();
-            if (!((IInventorySlotAware) monitorable).isBaubleSlot()) {
+    public ContainerMEPortableCell(InventoryPlayer ip, WirelessTerminalGuiObject guiObject, boolean bindInventory) {
+        super(ip, guiObject, guiObject, bindInventory);
+        if (guiObject != null) {
+            final int slotIndex = ((IInventorySlotAware) guiObject).getInventorySlot();
+            if (!((IInventorySlotAware) guiObject).isBaubleSlot()) {
                 this.lockPlayerInventorySlot(slotIndex);
             }
             this.slot = slotIndex;
@@ -65,7 +65,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
             this.slot = -1;
             this.lockPlayerInventorySlot(ip.currentItem);
         }
-        this.wirelessTerminalGUIObject = monitorable;
+        this.wirelessTerminalGUIObject = guiObject;
         this.upgrades = new StackUpgradeInventory(wirelessTerminalGUIObject.getItemStack(), this, 2);
         this.loadFromNBT();
         this.setupUpgrades();

@@ -19,8 +19,10 @@
 package appeng.core.sync.packets;
 
 
+import appeng.api.networking.security.IActionHost;
 import appeng.container.AEBaseContainer;
 import appeng.container.ContainerOpenContext;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.INetworkInfo;
@@ -60,8 +62,21 @@ public class PacketSwitchGuis extends AppEngPacket {
             final AEBaseContainer bc = (AEBaseContainer) c;
             final ContainerOpenContext context = bc.getOpenContext();
             if (context != null) {
-                final TileEntity te = context.getTile();
-                Platform.openGUI(player, te, context.getSide(), this.newGui);
+                final Object target = bc.getTarget();
+                if (target instanceof IActionHost) {
+                    final IActionHost ah = (IActionHost) target;
+
+                    final TileEntity te = context.getTile();
+
+                    if (te != null) {
+                        Platform.openGUI(player, te, bc.getOpenContext().getSide(), this.newGui);
+                    } else {
+                        if (ah instanceof IInventorySlotAware) {
+                            IInventorySlotAware i = ((IInventorySlotAware) ah);
+                            Platform.openGUI(player, i.getInventorySlot(), this.newGui, i.isBaubleSlot());
+                        }
+                    }
+                }
             }
         }
     }

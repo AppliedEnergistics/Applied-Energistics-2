@@ -84,7 +84,7 @@ public abstract class AEBaseContainer extends Container {
     private final HashSet<Integer> locked = new HashSet<>();
     private final TileEntity tileEntity;
     private final IPart part;
-    private final IGuiItemObject obj;
+    protected final IGuiItemObject obj;
     private final HashMap<Integer, SyncData> syncData = new HashMap<>();
     private boolean isContainerValid = true;
     private String customName;
