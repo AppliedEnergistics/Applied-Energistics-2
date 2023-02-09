@@ -27,6 +27,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.container.ContainerOpenContext;
 import appeng.container.implementations.ContainerCraftAmount;
 import appeng.container.implementations.ContainerCraftConfirm;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.AELog;
 import appeng.core.sync.AppEngPacket;
 import appeng.core.sync.GuiBridge;
@@ -91,7 +92,14 @@ public class PacketCraftRequest extends AppEngPacket {
                     final ContainerOpenContext context = cca.getOpenContext();
                     if (context != null) {
                         final TileEntity te = context.getTile();
-                        Platform.openGUI(player, te, cca.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_CONFIRM);
+                        if (te != null) {
+                            Platform.openGUI(player, te, cca.getOpenContext().getSide(), GuiBridge.GUI_CRAFTING_CONFIRM);
+                        } else {
+                            if (ah instanceof IInventorySlotAware) {
+                                IInventorySlotAware i = ((IInventorySlotAware) ah);
+                                Platform.openGUI(player, i.getInventorySlot(), GuiBridge.GUI_CRAFTING_CONFIRM, i.isBaubleSlot());
+                            }
+                        }
 
                         if (player.openContainer instanceof ContainerCraftConfirm) {
                             final ContainerCraftConfirm ccc = (ContainerCraftConfirm) player.openContainer;

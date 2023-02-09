@@ -232,9 +232,12 @@ public enum GuiBridge implements IGuiHandler {
     public Object getServerGuiElement(final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z) {
         final AEPartLocation side = AEPartLocation.fromOrdinal(ordinal & 0x07);
         final GuiBridge ID = values()[ordinal >> 4];
+        final boolean usingItemOnTile = ((ordinal >> 3) & 1) == 1;
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
-            if (y == 0) {
+            if (usingItemOnTile) {
+                it = player.inventory.getCurrentItem();
+            } else if (y == 0) {
                 if (x >= 0 && x < player.inventory.mainInventory.size()) {
                     it = player.inventory.getStackInSlot(x);
                 }
@@ -344,9 +347,13 @@ public enum GuiBridge implements IGuiHandler {
     public Object getClientGuiElement(final int ordinal, final EntityPlayer player, final World w, final int x, final int y, final int z) {
         final AEPartLocation side = AEPartLocation.fromOrdinal(ordinal & 0x07);
         final GuiBridge ID = values()[ordinal >> 4];
+        final boolean usingItemOnTile = ((ordinal >> 3) & 1) == 1;
+
         if (ID.type.isItem()) {
             ItemStack it = ItemStack.EMPTY;
-            if (y == 0) {
+            if (usingItemOnTile) {
+                it = player.inventory.getCurrentItem();
+            } else if (y == 0) {
                 if (x >= 0 && x < player.inventory.mainInventory.size()) {
                     it = player.inventory.getStackInSlot(x);
                 }
