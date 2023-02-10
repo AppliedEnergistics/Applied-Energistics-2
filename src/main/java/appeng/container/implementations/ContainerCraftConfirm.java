@@ -38,6 +38,7 @@ import appeng.api.storage.data.IItemList;
 import appeng.client.gui.implementations.GuiCraftConfirm;
 import appeng.container.AEBaseContainer;
 import appeng.container.guisync.GuiSync;
+import appeng.container.interfaces.IInventorySlotAware;
 import appeng.core.AELog;
 import appeng.core.sync.GuiBridge;
 import appeng.core.sync.network.NetworkHandler;
@@ -306,7 +307,14 @@ public class ContainerCraftConfirm extends AEBaseContainer {
             this.setAutoStart(false);
             if (g != null && originalGui != null && this.getOpenContext() != null) {
                 final TileEntity te = this.getOpenContext().getTile();
-                Platform.openGUI(this.getInventoryPlayer().player, te, this.getOpenContext().getSide(), originalGui);
+                if (te != null) {
+                    Platform.openGUI(this.getInventoryPlayer().player, te, this.getOpenContext().getSide(), originalGui);
+                } else {
+                    if (ah instanceof IInventorySlotAware) {
+                        IInventorySlotAware i = ((IInventorySlotAware) ah);
+                        Platform.openGUI(this.getInventoryPlayer().player, i.getInventorySlot(), originalGui, i.isBaubleSlot());
+                    }
+                }
             }
         }
     }
