@@ -164,23 +164,25 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
 
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-        if (clickTypeIn == ClickType.PICKUP && dragType == 1) {
-            if (this.inventorySlots.get(slotId) == magnetSlot) {
-                ItemStack itemStack = magnetSlot.getStack();
-                if (!magnetSlot.getStack().isEmpty()) {
-                    NBTTagCompound tag = itemStack.getTagCompound();
-                    if (tag == null) {
-                        tag = new NBTTagCompound();
+        if (slotId >= 0 && slotId < this.inventorySlots.size()) {
+            if (clickTypeIn == ClickType.PICKUP && dragType == 1) {
+                if (this.inventorySlots.get(slotId) == magnetSlot) {
+                    ItemStack itemStack = magnetSlot.getStack();
+                    if (!magnetSlot.getStack().isEmpty()) {
+                        NBTTagCompound tag = itemStack.getTagCompound();
+                        if (tag == null) {
+                            tag = new NBTTagCompound();
+                        }
+                        if (tag.hasKey("enabled")) {
+                            boolean e = tag.getBoolean("enabled");
+                            tag.setBoolean("enabled", !e);
+                        } else {
+                            tag.setBoolean("enabled", false);
+                        }
+                        magnetSlot.getStack().setTagCompound(tag);
+                        magnetSlot.onSlotChanged();
+                        return ItemStack.EMPTY;
                     }
-                    if (tag.hasKey("enabled")) {
-                        boolean e = tag.getBoolean("enabled");
-                        tag.setBoolean("enabled", !e);
-                    } else {
-                        tag.setBoolean("enabled", false);
-                    }
-                    magnetSlot.getStack().setTagCompound(tag);
-                    magnetSlot.onSlotChanged();
-                    return ItemStack.EMPTY;
                 }
             }
         }
