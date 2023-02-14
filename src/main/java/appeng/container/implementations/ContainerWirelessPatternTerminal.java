@@ -278,6 +278,8 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
     public IItemHandler getInventoryByName(String name) {
         if (name.equals("crafting")) {
             return this.crafting;
+        } else if (name.equals("output")) {
+            return this.output;
         }
         return super.getInventoryByName(name);
     }
