@@ -105,6 +105,11 @@ so you don't have to have all your terminals be purple. Fluix cables connect to 
 **If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
 It will show how channels are routed through your network, making their behavior more understandable.**
 
+# Another Note
+
+**These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
+into them, all they do is connect AE2 devices together into a network.
+
 # Glass Cable
 
 ![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
