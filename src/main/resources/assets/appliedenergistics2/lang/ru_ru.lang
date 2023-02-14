@@ -607,7 +607,7 @@ commands.ae2.ChunkLoggerOff=Логирование чанков выключен
 commands.ae2.Supporters=Отображает список поддержавших AE2
 
 // Achievements
-achievement.ae2.Root=Applied Energistics! Падите ниц!
+achievement.ae2.Root=Applied Energistics
 achievement.ae2.Root.desc=Когда сундука уже не хватает...
 achievement.ae2.Compass=Охотник за метеоритами!
 achievement.ae2.Compass.desc=Сделайте метеоритный компас!
