@@ -23,7 +23,8 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md)
 
 The annihilation plane will only break a block or pick up an item if it can store the resulting drops/items
 in its network. this means to filter one, *you must restrict what can be stored on its network*, most likely by putting
-it on a [subnetwork](../ae2-mechanics/subnetworks.md). A <ItemLink id="storage_bus" /> or cell can be partitioned to achieve this.
+it on a [subnetwork](../ae2-mechanics/subnetworks.md). A <ItemLink id="storage_bus" /> or [cell](../items-blocks-machines/storage_cells.md)
+can be partitioned to achieve this.
 
 ![Annihilation Plane Subnet](../assets/assemblies/annihilation_filtering.png)
 
