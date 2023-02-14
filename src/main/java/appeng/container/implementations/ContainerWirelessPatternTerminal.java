@@ -144,7 +144,14 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
             // drain 1 ae t
             this.ticks++;
             if (this.ticks > 10) {
-                this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                double ext = this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                if (ext < this.getPowerMultiplier() * this.ticks) {
+                    if (Platform.isServer() && this.isValidContainer()) {
+                        this.getPlayerInv().player.sendMessage(PlayerMessages.DeviceNotPowered.get());
+                    }
+
+                    this.setValidContainer(false);
+                }
                 this.ticks = 0;
             }
 

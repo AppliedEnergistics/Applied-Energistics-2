@@ -171,9 +171,16 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAE
             // drain 1 ae t
             this.ticks++;
             if (this.ticks > 10) {
-                double power = this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                double ext = this.wirelessTerminalGUIObject.extractAEPower(this.getPowerMultiplier() * this.ticks, Actionable.MODULATE, PowerMultiplier.CONFIG);
+                if (ext < this.getPowerMultiplier() * this.ticks) {
+                    if (Platform.isServer() && this.isValidContainer()) {
+                        this.getPlayerInv().player.sendMessage(PlayerMessages.DeviceNotPowered.get());
+                    }
+
+                    this.setValidContainer(false);
+                }
                 this.ticks = 0;
-                this.hasPower = power > 0.001;
+                this.hasPower = ext > 0.001;
             }
 
             if (!this.wirelessTerminalGUIObject.rangeCheck()) {
