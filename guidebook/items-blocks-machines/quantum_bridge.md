@@ -14,6 +14,8 @@ item_ids:
 Quantum Network Bridges can connect two networks over infinite distances and even between dimensions.
 They can carry 32 channels in total (regardless of how cables are connected to each face).
 
+Of note, **both sides must get power to initiate the connection**, then one side can send power through and power both rings.
+
 # Quantum Ring
 
 Eight of these blocks placed around a <ItemLink id="quantum_link"/> will create a

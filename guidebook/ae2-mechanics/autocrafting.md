@@ -88,7 +88,7 @@ intermediate ingredients involved in a craft, so larger or more storages are req
 with more ingredients.
 - <ItemLink id="crafting_accelerator" />s, they make the system send out more ingredient batches from pattern providers.
 This allows, say, a pattern provider surrounded by 6 molecular assemblers to send ingredients to (and thus use) all 6 at once instead of just one.
-- <ItemLink id="crafting_monitor" />s, they display the job the CPU is handling at the moment.
+- <ItemLink id="crafting_monitor" />s, they display the job the CPU is handling at the moment. They can be colored via a <ItemLink id="color_applicator" />
 - <ItemLink id="crafting_unit" />s, they simply fill space in order to make the CPU a rectangular prism.
 
 Each crafting CPU handles 1 request or job, so if you want to request both a calculation processor and 256 smooth stone at once, you need 2 CPU multiblocks.

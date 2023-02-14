@@ -7,7 +7,7 @@ navigation:
 **your ME system and the world**
 
 An important concept in AE2 is the idea of Network Storage. It is the place in which the contents of a network are stored,
-usually [storage cells](../items-blocks-machines/storage cells.md) or whatever inventory a <ItemLink id="storage_bus" />
+usually [storage cells](../items-blocks-machines/storage_cells.md) or whatever inventory a <ItemLink id="storage_bus" />
 is connected to. Most AE2 devices interact with it in one way or another.
 
 For example,
