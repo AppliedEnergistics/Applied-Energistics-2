@@ -48,8 +48,7 @@ public class StackSizeRenderer {
         Transformation tm = new Transformation(new Vector3f(0, 0, 300), // Taken from
                 // ItemRenderer.renderItemOverlayIntoGUI
                 null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
-
-        renderSizeLabel(tm.getMatrix(), fontRenderer, xPos, yPos, text, false);
+        renderSizeLabel(tm.getMatrix(), fontRenderer, xPos, yPos, text, largeFonts);
     }
 
     public static void renderSizeLabel(Matrix4f matrix, Font fontRenderer, float xPos, float yPos, String text,
