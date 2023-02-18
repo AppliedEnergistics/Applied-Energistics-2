@@ -15,7 +15,8 @@ into [network storage](../ae2-mechanics/import-export-storage.md). For items to 
 face of the plane, it does not pick up in an area.
 
 Annihilation planes can be enchanted with any pickaxe enchantment, so yes, you can put crazy levels of fortune on a few and
-automate ore processing if your modpack allows it.
+[automate ore processing](../example-setups/ore-fortuner.md) if your modpack allows it. In addition, silk touch does what
+you'd expect it to, efficiency reduces the energy cost of breaking a block, and unbreaking gives a chance of not using any energy.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md)
 

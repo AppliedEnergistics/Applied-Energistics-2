@@ -6,6 +6,11 @@ navigation:
 item_ids:
 - ae2:item_cell_housing
 - ae2:fluid_cell_housing
+- ae2:cell_component_1k
+- ae2:cell_component_4k
+- ae2:cell_component_16k
+- ae2:cell_component_64k
+- ae2:cell_component_256k
 - ae2:item_storage_cell_1k
 - ae2:item_storage_cell_4k
 - ae2:item_storage_cell_16k
