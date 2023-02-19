@@ -85,11 +85,7 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
             if (currentItem.isEmpty()) {
                 this.setValidContainer(false);
             } else if (!this.wirelessTerminalGUIObject.getItemStack().isEmpty() && currentItem != this.wirelessTerminalGUIObject.getItemStack()) {
-                if (ItemStack.areItemsEqual(this.wirelessTerminalGUIObject.getItemStack(), currentItem)) {
-                    this.getPlayerInv().setInventorySlotContents(this.getPlayerInv().currentItem, this.wirelessTerminalGUIObject.getItemStack());
-                } else {
-                    this.setValidContainer(false);
-                }
+                this.setValidContainer(false);
             }
 
             // drain 1 ae t
