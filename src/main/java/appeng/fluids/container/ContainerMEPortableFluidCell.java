@@ -477,11 +477,6 @@ public class ContainerMEPortableFluidCell extends AEBaseContainer implements IAE
         }
     }
 
-    @Override
-    public void onSlotChange(Slot s) {
-        detectAndSendChanges();
-    }
-
     private void queueInventory(final IContainerListener c) {
         if (Platform.isServer() && c instanceof EntityPlayer && this.monitor != null) {
             try {

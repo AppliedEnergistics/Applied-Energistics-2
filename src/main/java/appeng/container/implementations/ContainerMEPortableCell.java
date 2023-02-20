@@ -175,11 +175,6 @@ public class ContainerMEPortableCell extends ContainerMEMonitorable implements I
     }
 
     @Override
-    public void onSlotChange(Slot s) {
-        super.detectAndSendChanges();
-    }
-
-    @Override
     public void saveChanges() {
         if (Platform.isServer()) {
             NBTTagCompound tag = new NBTTagCompound();
