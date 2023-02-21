@@ -39,7 +39,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 
 
-public class ContainerWirelessCraftingTerminal extends ContainerMEPortableCell implements IContainerCraftingPacket {
+public class ContainerWirelessCraftingTerminal extends ContainerMEPortableTerminal implements IContainerCraftingPacket {
 
     private final AppEngInternalInventory output = new AppEngInternalInventory(this, 1);
     private final SlotCraftingMatrix[] craftingSlots = new SlotCraftingMatrix[9];
