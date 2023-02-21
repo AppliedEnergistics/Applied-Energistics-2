@@ -209,9 +209,11 @@ public class ToolWirelessTerminal extends AEBasePoweredItem implements IWireless
                         }
                         boolean inverted = u.getInstalledUpgrades(Upgrades.INVERTER) == 1;
 
-                        List<EntityItem> ei = worldIn.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(
-                                new Vec3d(entityIn.posX + 5, entityIn.posY + 5, entityIn.posZ + 5),
-                                new Vec3d(entityIn.posX - 5, entityIn.posY - 5, entityIn.posZ - 5)));
+                        List<EntityItem> ei = worldIn.getEntitiesWithinAABB(EntityItem.class,
+                                new AxisAlignedBB(
+                                        entityIn.posX - 5, entityIn.posY - 5, entityIn.posZ - 5,
+                                        entityIn.posX + 5, entityIn.posY + 5, entityIn.posZ + 5
+                                ));
                         boolean emptyFilter = true;
                         for (EntityItem i : ei) {
                             if (i.isDead) {
