@@ -262,8 +262,13 @@ public class ContainerWirelessPatternTerminal extends ContainerPatternEncoder im
                         ItemHandlerUtil.setStackInSlot(this.crafting, x, item == null ? ItemStack.EMPTY : item.createItemStack());
                     }
 
-                    for (int x = 0; x < this.output.getSlots() && x < details.getOutputs().length; x++) {
-                        final IAEItemStack item = details.getOutputs()[x];
+                    for (int x = 0; x < this.output.getSlots(); x++) {
+                        final IAEItemStack item;
+                        if (x < details.getOutputs().length) {
+                            item = details.getOutputs()[x];
+                        } else {
+                            item = null;
+                        }
                         this.output.setStackInSlot(x, item == null ? ItemStack.EMPTY : item.createItemStack());
                     }
                 }
