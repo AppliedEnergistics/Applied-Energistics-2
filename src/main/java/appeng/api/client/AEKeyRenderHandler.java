@@ -38,10 +38,10 @@ import appeng.api.stacks.AEKey;
 import appeng.util.Platform;
 
 /**
- * Client-side rendering of AE stacks. Must be registered in {@link AEStackRendering} for each storage channel!
+ * Client-side rendering of AE stacks. Must be registered in {@link AEKeyRendering} for each storage channel!
  */
 @Environment(EnvType.CLIENT)
-public interface IAEStackRenderHandler<T extends AEKey> {
+public interface AEKeyRenderHandler<T extends AEKey> {
     /**
      * Draw the stack, for example the item or the fluid sprite, but not the amount.
      */

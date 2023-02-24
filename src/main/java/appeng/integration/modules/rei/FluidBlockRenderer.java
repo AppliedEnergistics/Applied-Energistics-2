@@ -11,7 +11,7 @@ import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.TooltipContext;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEFluidKey;
 import appeng.integration.modules.jeirei.FluidBlockRendering;
 
@@ -27,6 +27,6 @@ public class FluidBlockRenderer implements EntryRenderer<FluidStack> {
     @Override
     public @Nullable Tooltip getTooltip(EntryStack<FluidStack> entry, TooltipContext context) {
         var key = AEFluidKey.of(entry.getValue().getFluid(), entry.getValue().getTag());
-        return Tooltip.create(context.getPoint(), AEStackRendering.getTooltip(key));
+        return Tooltip.create(context.getPoint(), AEKeyRendering.getTooltip(key));
     }
 }

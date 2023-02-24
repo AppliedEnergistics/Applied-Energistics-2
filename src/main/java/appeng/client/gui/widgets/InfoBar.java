@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.client.gui.Icon;
@@ -78,7 +78,7 @@ public class InfoBar {
             poseStack.pushPose();
             poseStack.translate(x, y, 0);
             poseStack.scale(scale, scale, 1);
-            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, 0, 0, what);
+            AEKeyRendering.drawInGui(Minecraft.getInstance(), poseStack, 0, 0, what);
             poseStack.popPose();
         }
     }

@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.integrations.igtooltip.TooltipBuilder;
 import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
@@ -50,7 +50,7 @@ public final class PatternProviderDataProvider
                 Component stackName;
                 Component stackAmount;
                 if (stack != null) {
-                    stackName = AEStackRendering.getDisplayName(stack.what());
+                    stackName = AEKeyRendering.getDisplayName(stack.what());
                     stackAmount = Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
                 } else {
                     stackName = Component.literal("ERROR");

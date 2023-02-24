@@ -29,7 +29,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
@@ -67,7 +67,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
         if (inventory != null) {
             var cc = getConfigInventory(stack);
             for (var key : cc.keySet()) {
-                lines.add(AEStackRendering.getDisplayName(key));
+                lines.add(AEKeyRendering.getDisplayName(key));
             }
         }
     }

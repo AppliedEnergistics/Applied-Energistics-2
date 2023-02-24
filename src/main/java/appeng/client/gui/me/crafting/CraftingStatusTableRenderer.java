@@ -23,7 +23,7 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.util.AEColor;
@@ -67,7 +67,7 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
 
     @Override
     protected List<Component> getEntryTooltip(CraftingStatusEntry entry) {
-        List<Component> lines = AEStackRendering.getTooltip(entry.getWhat());
+        List<Component> lines = AEKeyRendering.getTooltip(entry.getWhat());
 
         // The tooltip compares the unabbreviated amounts
         if (entry.getStoredAmount() > 0) {

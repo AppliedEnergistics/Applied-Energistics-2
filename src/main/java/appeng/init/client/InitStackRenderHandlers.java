@@ -38,8 +38,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import appeng.api.client.AEStackRendering;
-import appeng.api.client.IAEStackRenderHandler;
+import appeng.api.client.AEKeyRenderHandler;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
@@ -51,11 +51,11 @@ public class InitStackRenderHandlers {
     }
 
     public static void init() {
-        AEStackRendering.register(AEKeyType.items(), AEItemKey.class, new ItemKeyRenderHandler());
-        AEStackRendering.register(AEKeyType.fluids(), AEFluidKey.class, new FluidKeyRenderHandler());
+        AEKeyRendering.register(AEKeyType.items(), AEItemKey.class, new ItemKeyRenderHandler());
+        AEKeyRendering.register(AEKeyType.fluids(), AEFluidKey.class, new FluidKeyRenderHandler());
     }
 
-    private static class ItemKeyRenderHandler implements IAEStackRenderHandler<AEItemKey> {
+    private static class ItemKeyRenderHandler implements AEKeyRenderHandler<AEItemKey> {
         @Override
         public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, AEItemKey stack) {
             poseStack.pushPose();
@@ -100,7 +100,7 @@ public class InitStackRenderHandlers {
         }
     }
 
-    private static class FluidKeyRenderHandler implements IAEStackRenderHandler<AEFluidKey> {
+    private static class FluidKeyRenderHandler implements AEKeyRenderHandler<AEFluidKey> {
         @Override
         public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, AEFluidKey what) {
             FluidBlitter.create(what)

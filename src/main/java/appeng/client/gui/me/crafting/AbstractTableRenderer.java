@@ -27,7 +27,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
@@ -118,7 +118,7 @@ public abstract class AbstractTableRenderer<T> {
                 var entryStack = getEntryStack(entry);
 
                 int itemY = cellY + (CELL_HEIGHT - 16) / 2;
-                AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entryStack);
+                AEKeyRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entryStack);
 
                 int overlay = getEntryOverlayColor(entry);
                 if (overlay != 0) {

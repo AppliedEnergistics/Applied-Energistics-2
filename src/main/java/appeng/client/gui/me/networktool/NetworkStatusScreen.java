@@ -27,7 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
@@ -101,7 +101,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
 
             drawMachineCount(poseStack, itemX, cellY, entry.getCount());
 
-            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entry.getDisplay());
+            AEKeyRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entry.getDisplay());
 
             // Update the tooltip based on the calculated cell rectangle and mouse position
             if (isHovering(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {

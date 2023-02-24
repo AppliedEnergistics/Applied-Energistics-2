@@ -40,7 +40,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategies;
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -562,7 +562,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        AEStackRendering.drawInGui(
+                        AEKeyRendering.drawInGui(
                                 minecraft,
                                 poseStack,
                                 s.x,
@@ -638,7 +638,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry entry, int x, int y) {
 
-        var currentToolTip = AEStackRendering.getTooltip(entry.getWhat());
+        var currentToolTip = AEKeyRendering.getTooltip(entry.getWhat());
 
         if (Tooltips.shouldShowAmountTooltip(entry.getWhat(), entry.getStoredAmount())) {
             currentToolTip.add(

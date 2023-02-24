@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.StackSizeRenderer;
@@ -70,7 +70,7 @@ public final class ItemRendererHooks {
 
         var unwrapped = GenericStack.unwrapItemStack(stack);
         if (unwrapped != null) {
-            AEStackRendering.drawInGui(
+            AEKeyRendering.drawInGui(
                     minecraft,
                     poseStack,
                     x,

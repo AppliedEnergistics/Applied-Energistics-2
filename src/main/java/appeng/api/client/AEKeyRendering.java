@@ -46,17 +46,17 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 
 /**
- * Registry for {@link IAEStackRenderHandler}. Also contains convenience functions to render a stack without having to
+ * Registry for {@link AEKeyRenderHandler}. Also contains convenience functions to render a stack without having to
  * query the render handler first.
  */
 @Environment(EnvType.CLIENT)
 @ThreadSafe
-public class AEStackRendering {
-    private static volatile Map<AEKeyType, IAEStackRenderHandler<?>> renderers = new IdentityHashMap<>();
+public class AEKeyRendering {
+    private static volatile Map<AEKeyType, AEKeyRenderHandler<?>> renderers = new IdentityHashMap<>();
 
     public static synchronized <T extends AEKey> void register(AEKeyType channel,
             Class<T> keyClass,
-            IAEStackRenderHandler<T> handler) {
+            AEKeyRenderHandler<T> handler) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(handler, "handler");
         Objects.requireNonNull(keyClass, "keyClass");
@@ -71,11 +71,11 @@ public class AEStackRendering {
     }
 
     @Nullable
-    public static IAEStackRenderHandler<?> get(AEKeyType channel) {
+    public static AEKeyRenderHandler<?> get(AEKeyType channel) {
         return renderers.get(channel);
     }
 
-    public static IAEStackRenderHandler<?> getOrThrow(AEKeyType channel) {
+    public static AEKeyRenderHandler<?> getOrThrow(AEKeyType channel) {
         var renderHandler = get(channel);
 
         if (renderHandler == null) {
@@ -86,7 +86,7 @@ public class AEStackRendering {
     }
 
     @SuppressWarnings("rawtypes")
-    private static IAEStackRenderHandler getUnchecked(AEKey stack) {
+    private static AEKeyRenderHandler getUnchecked(AEKey stack) {
         return getOrThrow(stack.getType());
     }
 
