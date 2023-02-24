@@ -246,7 +246,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         poseStack.translate(0, 0.05, 0.5);
 
         BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,
-                0.4f, -0.23f, getColor().contrastTextColor);
+                0.4f, -0.23f, getColor().contrastTextColor, getLevel());
 
         poseStack.popPose();
 

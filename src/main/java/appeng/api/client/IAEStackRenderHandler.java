@@ -32,6 +32,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEKey;
 import appeng.util.Platform;
@@ -44,12 +45,13 @@ public interface IAEStackRenderHandler<T extends AEKey> {
     /**
      * Draw the stack, for example the item or the fluid sprite, but not the amount.
      */
-    void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int zIndex, T stack);
+    void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, T stack);
 
     /**
      * Draw the representation of a key in-world on the face of a block. Used for displaying it on screens and monitors.
      */
-    void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, T what, float scale, int combinedLight);
+    void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, T what, float scale, int combinedLight,
+            Level level);
 
     /**
      * Name of the stack, ignoring the amount.

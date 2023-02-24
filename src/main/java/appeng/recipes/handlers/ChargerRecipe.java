@@ -1,5 +1,6 @@
 package appeng.recipes.handlers;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -33,7 +34,7 @@ public class ChargerRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container container) {
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
         return null;
     }
 
@@ -43,6 +44,10 @@ public class ChargerRecipe implements Recipe<Container> {
     }
 
     @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return getResultItem();
+    }
+
     public ItemStack getResultItem() {
         return new ItemStack(result);
     }

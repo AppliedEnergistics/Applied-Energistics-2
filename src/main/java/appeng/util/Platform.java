@@ -482,7 +482,8 @@ public class Platform {
                     if (x.getKey() instanceof AEItemKey itemKey) {
                         if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
                             ci.setItem(slot, itemKey.toStack());
-                            if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
+                            if (r.matches(ci, level)
+                                    && ItemStack.isSame(r.assemble(ci, level.registryAccess()), output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
                                     var ex = src.extract(itemKey, 1, realForFake, mySrc);
                                     if (ex > 0) {

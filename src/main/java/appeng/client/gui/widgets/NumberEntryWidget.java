@@ -32,6 +32,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.function.Consumer;
 
+import com.google.common.primitives.Longs;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
@@ -42,7 +43,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -103,7 +103,6 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         this.textField.setMaxLength(16);
         this.textField.setTextColor(normalTextColor);
         this.textField.setVisible(true);
-        this.textField.setFocus(true);
         this.textField.setResponder(text -> {
             validate();
             if (onChange != null) {
@@ -234,8 +233,6 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
         // we need to re-validate because the icon may now be present and needs it's
         // initial state
         this.validate();
-
-        screen.changeFocus(true);
     }
 
     /**
@@ -274,7 +271,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     }
 
     public void setLongValue(long value) {
-        var internalValue = convertToInternalValue(Mth.clamp(value, minValue, maxValue));
+        var internalValue = convertToInternalValue(Longs.constrainToRange(value, minValue, maxValue));
         this.textField.setValue(decimalFormat.format(internalValue));
         this.textField.moveCursorToEnd();
         this.textField.setHighlightPos(0);
@@ -395,7 +392,7 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
         if (type.unit() != null) {
             var font = Minecraft.getInstance().font;
             font.draw(

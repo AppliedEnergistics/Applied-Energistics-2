@@ -21,7 +21,6 @@ package appeng.core;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStackLinkedSet;
@@ -52,8 +51,8 @@ public final class FacadeCreativeTab {
         return group;
     }
 
-    private static void buildDisplayItems(FeatureFlagSet featureFlagSet, CreativeModeTab.Output output,
-            boolean opItems) {
+    private static void buildDisplayItems(CreativeModeTab.ItemDisplayParameters displayParameters,
+            CreativeModeTab.Output output) {
         // We need to create our own set since vanilla doesn't allow duplicates, but we cannot guarantee
         // uniqueness
         var facades = ItemStackLinkedSet.createTypeAndTagSet();

@@ -1,5 +1,7 @@
 package appeng.client.gui.me.items;
 
+import java.util.Objects;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -7,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
@@ -56,14 +59,18 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack, zIndex);
+    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack);
 
-        drawRecipes(poseStack, zIndex, bounds, mouse);
+        drawRecipes(poseStack, bounds, mouse);
 
     }
 
-    private void drawRecipes(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    private RegistryAccess getRegistryAccess() {
+        return Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
+    }
+
+    private void drawRecipes(PoseStack poseStack, Rect2i bounds, Point mouse) {
         var recipes = menu.getStonecuttingRecipes();
         var startIndex = scrollbar.getCurrentScroll() * COLS;
         var endIndex = startIndex + ROWS * COLS;
@@ -86,8 +93,9 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
 
             var renderX = bounds.getX() + slotBounds.getX();
             var renderY = bounds.getY() + slotBounds.getY();
-            blitter.dest(renderX, renderY - 1).blit(poseStack, zIndex);
-            minecraft.getItemRenderer().renderAndDecorateItem(recipe.getResultItem(), renderX, renderY);
+            blitter.dest(renderX, renderY - 1).blit(poseStack);
+            minecraft.getItemRenderer().renderAndDecorateItem(poseStack, recipe.getResultItem(getRegistryAccess()),
+                    renderX, renderY);
         }
     }
 
@@ -108,7 +116,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         var recipe = getRecipeAt(new Point(mouseX, mouseY));
         if (recipe != null) {
-            var lines = screen.getTooltipFromItem(recipe.getResultItem());
+            var lines = screen.getTooltipFromItem(recipe.getResultItem(getRegistryAccess()));
             return new Tooltip(lines);
         }
         return null;

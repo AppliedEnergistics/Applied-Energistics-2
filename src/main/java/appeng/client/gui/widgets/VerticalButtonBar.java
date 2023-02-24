@@ -117,7 +117,7 @@ public class VerticalButtonBar implements ICompositeWidget {
         this.screenOrigin = Point.fromTopLeft(bounds);
         for (var button : this.buttons) {
             if (button.isFocused()) {
-                button.changeFocus(false);
+                button.setFocused(false);
             }
             addWidget.accept(button);
         }

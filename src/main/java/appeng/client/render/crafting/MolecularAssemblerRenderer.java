@@ -26,7 +26,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -35,6 +34,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
@@ -128,8 +128,8 @@ public class MolecularAssemblerRenderer implements BlockEntityRenderer<Molecular
             ms.translate(0, -0.2f, 0);
         }
 
-        itemRenderer.renderStatic(is, TransformType.GROUND, combinedLightIn,
-                OverlayTexture.NO_OVERLAY, ms, bufferIn, 0);
+        itemRenderer.renderStatic(is, ItemDisplayContext.GROUND, combinedLightIn,
+                OverlayTexture.NO_OVERLAY, ms, bufferIn, molecularAssembler.getLevel(), 0);
         ms.popPose();
     }
 

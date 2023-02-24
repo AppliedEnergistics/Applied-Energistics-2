@@ -477,9 +477,6 @@ public class GuideScreen extends Screen {
 
         TooltipFrame.render(poseStack, x, y, frameWidth, frameHeight, zOffset);
 
-        float prevZOffset = itemRenderer.blitOffset;
-        itemRenderer.blitOffset = zOffset;
-
         if (!tooltip.getIcon().isEmpty()) {
             x += 18;
         }
@@ -502,7 +499,10 @@ public class GuideScreen extends Screen {
         // Then render tooltip decorations, items, etc.
         currentY = y;
         if (!tooltip.getIcon().isEmpty()) {
-            itemRenderer.renderGuiItem(tooltip.getIcon(), x - 18, y);
+            poseStack.pushPose();
+            poseStack.translate(0, 0, zOffset);
+            itemRenderer.renderGuiItem(poseStack, tooltip.getIcon(), x - 18, y);
+            poseStack.popPose();
         }
 
         for (int i = 0; i < clientLines.size(); ++i) {
@@ -510,7 +510,6 @@ public class GuideScreen extends Screen {
             line.renderImage(minecraft.font, x, currentY, poseStack, this.itemRenderer, zOffset);
             currentY += line.getHeight() + (i == 0 ? 2 : 0);
         }
-        this.itemRenderer.blitOffset = prevZOffset;
     }
 
     private void updatePageLayout() {

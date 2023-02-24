@@ -17,15 +17,14 @@ import appeng.client.gui.Icon;
 public class InfoBar {
     private final List<Widget> widgets = new ArrayList<>();
 
-    public void render(PoseStack poseStack, int x, int y, int z) {
+    public void render(PoseStack poseStack, int x, int y) {
         var maxHeight = widgets.stream().mapToInt(Widget::getHeight).max().orElse(0);
 
         for (var widget : widgets) {
             widget.render(
                     poseStack,
                     x,
-                    Math.round(y + maxHeight / 2.f - widget.getHeight() / 2.f),
-                    z);
+                    Math.round(y + maxHeight / 2.f - widget.getHeight() / 2.f));
             x += widget.getWidth();
         }
 
@@ -36,7 +35,7 @@ public class InfoBar {
 
         int getHeight();
 
-        void render(PoseStack poseStack, int x, int y, int z);
+        void render(PoseStack poseStack, int x, int y);
     }
 
     void add(Icon icon, float scale) {
@@ -75,11 +74,11 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(PoseStack poseStack, int x, int y) {
             poseStack.pushPose();
-            poseStack.translate(x, y, z);
+            poseStack.translate(x, y, 0);
             poseStack.scale(scale, scale, 1);
-            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, 0, 0, 0, what);
+            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, 0, 0, what);
             poseStack.popPose();
         }
     }
@@ -96,13 +95,13 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(PoseStack poseStack, int x, int y) {
             poseStack.pushPose();
             poseStack.translate(x, y, 0);
             poseStack.scale(scale, scale, 1);
             icon.getBlitter()
                     .dest(0, 0)
-                    .blit(poseStack, z);
+                    .blit(poseStack);
             poseStack.popPose();
         }
     }
@@ -134,10 +133,10 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(PoseStack poseStack, int x, int y) {
             var font = Minecraft.getInstance().font;
             poseStack.pushPose();
-            poseStack.translate(x, y, z);
+            poseStack.translate(x, y, 0);
             poseStack.scale(scale, scale, 1);
             font.draw(poseStack, text, 0, 0, color);
             poseStack.popPose();
@@ -162,7 +161,7 @@ public class InfoBar {
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, int z) {
+        public void render(PoseStack poseStack, int x, int y) {
         }
     }
 }

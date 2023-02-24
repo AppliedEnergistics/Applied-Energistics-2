@@ -298,6 +298,21 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
+    public void initializeContents(int stateId, List<ItemStack> items, ItemStack carried) {
+        for (int i = 0; i < items.size(); ++i) {
+            var slot = this.getSlot(i);
+            if (slot instanceof AppEngSlot aeSlot) {
+                aeSlot.initialize(items.get(i));
+            } else {
+                slot.set(items.get(i));
+            }
+        }
+
+        this.setCarried(carried);
+        this.stateId = stateId;
+    }
+
+    @Override
     public void broadcastChanges() {
         if (itemMenuHost != null && !itemMenuHost.onBroadcastChanges(this)) {
             setValidMenu(false);

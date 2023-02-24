@@ -121,7 +121,6 @@ public class AppEngSlot extends Slot {
         }
     }
 
-    @Override
     public void initialize(ItemStack stack) {
         // In some cases like buses, slots have a backing inventory slot but are just visually disabled
         // those slots should be initialized, so they are order-independent of the upgrade slots.

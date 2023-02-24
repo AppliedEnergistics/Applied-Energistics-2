@@ -40,6 +40,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -90,14 +91,14 @@ public class AEStackRendering {
     }
 
     @SuppressWarnings("unchecked")
-    public static void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, int z, AEKey what) {
-        getUnchecked(what).drawInGui(minecraft, poseStack, x, y, z, what);
+    public static void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, AEKey what) {
+        getUnchecked(what).drawInGui(minecraft, poseStack, x, y, what);
     }
 
     @SuppressWarnings("unchecked")
     public static void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEKey what, float scale,
-            int combinedLightIn) {
-        getUnchecked(what).drawOnBlockFace(poseStack, buffers, what, scale, combinedLightIn);
+            int combinedLightIn, Level level) {
+        getUnchecked(what).drawOnBlockFace(poseStack, buffers, what, scale, combinedLightIn, level);
     }
 
     @SuppressWarnings("unchecked")

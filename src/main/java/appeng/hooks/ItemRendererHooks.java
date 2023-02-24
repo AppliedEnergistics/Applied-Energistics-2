@@ -44,7 +44,8 @@ public final class ItemRendererHooks {
      * This hook will exchange the rendered item model for encoded patterns to the item being crafted by them if shift
      * is held.
      */
-    public static boolean onRenderGuiItemModel(ItemRenderer renderer, ItemStack stack, int x, int y) {
+    public static boolean onRenderGuiItemModel(ItemRenderer renderer, PoseStack poseStack, ItemStack stack, int x,
+            int y) {
         var minecraft = Minecraft.getInstance();
 
         if (stack.getItem() instanceof EncodedPatternItem) {
@@ -59,7 +60,7 @@ public final class ItemRendererHooks {
                 var output = encodedPattern.getOutput(stack);
                 if (!output.isEmpty()) {
                     var realModel = renderer.getModel(output, level, minecraft.player, 0);
-                    renderInstead(renderer, output, x, y, realModel);
+                    renderInstead(renderer, poseStack, output, x, y, realModel);
                     return true;
                 }
             }
@@ -71,16 +72,14 @@ public final class ItemRendererHooks {
         if (unwrapped != null) {
             AEStackRendering.drawInGui(
                     minecraft,
-                    new PoseStack(),
+                    poseStack,
                     x,
-                    y,
-                    (int) renderer.blitOffset,
-                    unwrapped.what());
+                    y, unwrapped.what());
 
             if (unwrapped.amount() > 0) {
                 String amtText = unwrapped.what().formatAmount(unwrapped.amount(), AmountFormat.SLOT);
                 Font font = minecraft.font;
-                StackSizeRenderer.renderSizeLabel(font, x, y, amtText, false);
+                StackSizeRenderer.renderSizeLabel(poseStack, font, x, y, amtText, false);
             }
 
             return true;
@@ -89,10 +88,11 @@ public final class ItemRendererHooks {
         return false;
     }
 
-    private static void renderInstead(ItemRenderer renderer, ItemStack stack, int x, int y, BakedModel realModel) {
+    private static void renderInstead(ItemRenderer renderer, PoseStack poseStack, ItemStack stack, int x, int y,
+            BakedModel realModel) {
         OVERRIDING_FOR.set(stack);
         try {
-            renderer.renderGuiItem(stack, x, y, realModel);
+            renderer.renderGuiItem(poseStack, stack, x, y, realModel);
         } finally {
             OVERRIDING_FOR.remove();
         }

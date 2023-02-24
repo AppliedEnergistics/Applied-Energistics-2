@@ -23,9 +23,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 
 import appeng.api.client.AEStackRendering;
 import appeng.api.orientation.BlockOrientation;
@@ -61,19 +63,20 @@ public final class BlockEntityRenderHelper {
             MultiBufferSource buffers,
             AEKey what,
             float scale,
-            int combinedLightIn) {
+            int combinedLightIn, Level level) {
         AEStackRendering.drawOnBlockFace(
                 poseStack,
                 buffers,
                 what,
                 scale,
-                combinedLightIn);
+                combinedLightIn, level);
     }
 
     /**
      * Render an item in 2D and the given text below it.
      *
      * @param spacing Specifies how far apart the item and the item stack amount are rendered.
+     * @param level
      */
     public static void renderItem2dWithAmount(PoseStack poseStack,
             MultiBufferSource buffers,
@@ -81,8 +84,8 @@ public final class BlockEntityRenderHelper {
             long amount,
             float itemScale,
             float spacing,
-            int textColor) {
-        renderItem2d(poseStack, buffers, what, itemScale, LightTexture.FULL_BRIGHT);
+            int textColor, Level level) {
+        renderItem2d(poseStack, buffers, what, itemScale, LightTexture.FULL_BRIGHT, level);
 
         var renderedStackSize = what.formatAmount(amount, AmountFormat.SLOT);
 
@@ -94,8 +97,8 @@ public final class BlockEntityRenderHelper {
         poseStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
         poseStack.scale(0.5f, 0.5f, 0);
         poseStack.translate(-0.5f * width, 0.0f, 0.5f);
-        fr.drawInBatch(renderedStackSize, 0, 0, textColor, false, poseStack.last().pose(), buffers, false, 0,
-                LightTexture.FULL_BRIGHT);
+        fr.drawInBatch(renderedStackSize, 0, 0, textColor, false, poseStack.last().pose(), buffers,
+                Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
         poseStack.popPose();
 
     }

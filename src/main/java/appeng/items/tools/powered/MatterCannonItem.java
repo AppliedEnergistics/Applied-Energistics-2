@@ -32,7 +32,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
@@ -72,6 +71,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEDamageTypes;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.packets.MatterCannonPacket;
@@ -258,7 +258,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     sh.setColor(col.dye);
                 }
 
-                entityHit.hurt(DamageSource.playerAttack(p), 0);
+                entityHit.hurt(level.damageSources().playerAttack(p), 0);
             } else if (pos instanceof BlockHitResult blockResult) {
                 final Direction side = blockResult.getDirection();
                 final BlockPos hitPos = blockResult.getBlockPos().relative(side);
@@ -339,7 +339,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             }
 
             if (pos.getType() != Type.MISS) {
-                final DamageSource dmgSrc = new EntityDamageSource("matter_cannon", p);
+                final DamageSource dmgSrc = level.damageSources().source(AEDamageTypes.MATTER_CANNON, p);
 
                 if (pos instanceof EntityHitResult entityResult) {
                     Entity entityHit = entityResult.getEntity();

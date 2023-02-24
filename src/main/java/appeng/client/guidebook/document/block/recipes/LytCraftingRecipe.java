@@ -1,5 +1,6 @@
 package appeng.client.guidebook.document.block.recipes;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -57,7 +58,7 @@ public class LytCraftingRecipe extends LytBox {
         }
         append(grid);
 
-        append(resultSlot = new LytSlot(recipe.getResultItem()));
+        append(resultSlot = new LytSlot(recipe.getResultItem(Minecraft.getInstance().level.registryAccess())));
     }
 
     @Override

@@ -66,8 +66,8 @@ public class SiteExportWriter {
             json.height = shapedRecipe.getHeight();
         }
 
-        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem().getItem()).toString();
-        json.resultCount = recipe.getResultItem().getCount();
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
+        json.resultCount = recipe.getResultItem(null).getCount();
 
         var ingredients = recipe.getIngredients();
         json.ingredients = new String[ingredients.size()][];
@@ -96,7 +96,7 @@ public class SiteExportWriter {
         var json = new SmeltingRecipeJson();
         json.id = recipe.getId().toString();
 
-        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem().getItem()).toString();
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
 
         var ingredients = recipe.getIngredients();
         json.ingredient = convertIngredient(ingredients.get(0));

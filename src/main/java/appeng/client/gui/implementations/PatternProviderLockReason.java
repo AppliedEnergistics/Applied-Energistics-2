@@ -55,7 +55,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
         var menu = screen.getMenu();
 
         Icon icon;
@@ -70,7 +70,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
                     .withStyle(ChatFormatting.DARK_RED);
         }
 
-        icon.getBlitter().dest(x, y).blit(poseStack, zIndex);
+        icon.getBlitter().dest(x, y).blit(poseStack);
         Minecraft.getInstance().font.draw(poseStack, lockStatusText, x + 15, y + 5, -1);
     }
 

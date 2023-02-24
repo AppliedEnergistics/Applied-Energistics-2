@@ -5,7 +5,7 @@ accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
 
 # GUI rendering
 extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen renderSlot (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/inventory/Slot;)V
-extendable method net/minecraft/client/gui/components/EditBox renderHighlight (IIII)V
+extendable method net/minecraft/client/gui/components/EditBox renderHighlight (Lcom/mojang/blaze3d/vertex/PoseStack;IIII)V
 accessible method net/minecraft/client/gui/components/EditBox getMaxLength ()I
 accessible method net/minecraft/client/gui/components/EditBox isEditable ()Z
 accessible field net/minecraft/client/gui/components/AbstractWidget height I
@@ -16,6 +16,9 @@ accessible method net/minecraft/client/gui/GuiComponent fillGradient (Lcom/mojan
 # We need to change yPos of existing slots to resize the container
 mutable field net/minecraft/world/inventory/Slot x I
 mutable field net/minecraft/world/inventory/Slot y I
+
+# Custom slot init logic
+accessible field net/minecraft/world/inventory/AbstractContainerMenu stateId I
 
 # For JEI registration
 accessible method net/minecraft/world/item/crafting/RecipeManager byType (Lnet/minecraft/world/item/crafting/RecipeType;)Ljava/util/Map;
@@ -37,7 +40,7 @@ accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
 accessible method net/minecraft/client/renderer/LevelRenderer renderShape (Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/phys/shapes/VoxelShape;DDDFFFF)V
 
 # For Encoded Pattern Rendering
-accessible method net/minecraft/client/renderer/entity/ItemRenderer renderGuiItem (Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V
+accessible method net/minecraft/client/renderer/entity/ItemRenderer renderGuiItem (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V
 
 # Fabric's Attack Block Hook doesn't set the interaction delay
 accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyDelay I
@@ -80,6 +83,11 @@ accessible class net/minecraft/client/renderer/block/model/BlockElementFace$Dese
 accessible class net/minecraft/world/entity/npc/VillagerTrades$EmeraldForItems
 accessible class net/minecraft/world/entity/npc/VillagerTrades$ItemsForEmeralds
 
+accessible method net/minecraft/world/damagesource/DamageSources source (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/world/entity/Entity;)Lnet/minecraft/world/damagesource/DamageSource;
+
+accessible method net/minecraft/client/gui/screens/Screen setInitialFocus (Lnet/minecraft/client/gui/components/events/GuiEventListener;)V
+accessible method net/minecraft/client/gui/screens/Screen changeFocus (Lnet/minecraft/client/gui/ComponentPath;)V
+
 ## Tests
 accessible field net/minecraft/gametest/framework/GameTestHelper testInfo Lnet/minecraft/gametest/framework/GameTestInfo;
 
@@ -91,8 +99,8 @@ accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deseria
 accessible field net/minecraft/client/renderer/block/model/BlockModel$GuiLight name Ljava/lang/String;
 accessible method net/minecraft/client/renderer/block/model/BlockElement uvsByFace (Lnet/minecraft/core/Direction;)[F
 
-accessible field net/minecraft/world/item/crafting/UpgradeRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
-accessible field net/minecraft/world/item/crafting/UpgradeRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
+accessible field net/minecraft/world/item/crafting/LegacyUpgradeRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
+accessible field net/minecraft/world/item/crafting/LegacyUpgradeRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
 
 accessible method net/minecraft/client/gui/Font getFontSet (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/gui/font/FontSet;
 accessible field net/minecraft/client/gui/screens/LoadingOverlay reload Lnet/minecraft/server/packs/resources/ReloadInstance;

@@ -229,7 +229,7 @@ public final class AutoCraftingTestPlot {
 
         var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, c, level).orElseThrow();
 
-        var result = recipe.assemble(c);
+        var result = recipe.assemble(c, level.registryAccess());
 
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,
