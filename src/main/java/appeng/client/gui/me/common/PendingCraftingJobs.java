@@ -2,6 +2,7 @@ package appeng.client.gui.me.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,7 +21,7 @@ import appeng.items.tools.powered.WirelessTerminalItem;
  */
 @Environment(EnvType.CLIENT)
 public final class PendingCraftingJobs {
-    private static final Map<String, PendingJob> jobs = new HashMap<>();
+    private static final Map<UUID, PendingJob> jobs = new HashMap<>();
 
     private PendingCraftingJobs() {
     }
@@ -29,7 +30,7 @@ public final class PendingCraftingJobs {
         return jobs.entrySet().stream().anyMatch(s -> s.getValue().what.equals(what));
     }
 
-    public static void jobStatus(String id,
+    public static void jobStatus(UUID id,
             AEKey what,
             long requestedAmount,
             long remainingAmount,
@@ -76,6 +77,6 @@ public final class PendingCraftingJobs {
         return false;
     }
 
-    record PendingJob(String jobId, AEKey what, long requestedAmount, long remainingAmount) {
+    record PendingJob(UUID jobId, AEKey what, long requestedAmount, long remainingAmount) {
     }
 }

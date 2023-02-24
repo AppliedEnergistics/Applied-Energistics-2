@@ -1,5 +1,7 @@
 package appeng.core.sync.packets;
 
+import java.util.UUID;
+
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,25 +20,25 @@ public class CraftingJobStatusPacket extends BasePacket {
     /**
      * What is being crafted.
      */
-    private String jobId;
+    private UUID jobId;
     private AEKey what;
     private long requestedAmount;
     private long remainingAmount;
     private Status status;
 
     public CraftingJobStatusPacket(FriendlyByteBuf stream) {
-        this.jobId = stream.readUtf();
+        this.jobId = stream.readUUID();
         this.status = stream.readEnum(Status.class);
         this.what = AEKey.readKey(stream);
         this.requestedAmount = stream.readLong();
         this.remainingAmount = stream.readLong();
     }
 
-    public CraftingJobStatusPacket(String jobId, AEKey what, long requestedAmount, long remainingAmount,
+    public CraftingJobStatusPacket(UUID jobId, AEKey what, long requestedAmount, long remainingAmount,
             Status status) {
         var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
-        data.writeUtf(jobId);
+        data.writeUUID(jobId);
         data.writeEnum(status);
         AEKey.writeKey(data, what);
         data.writeLong(requestedAmount);
