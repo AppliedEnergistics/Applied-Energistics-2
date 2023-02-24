@@ -18,16 +18,11 @@
 
 package appeng.datagen;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
-import org.jetbrains.annotations.Nullable;
-
+import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,8 +31,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.VanillaRegistries;
-import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -140,47 +133,16 @@ public class AE2DataGenerators {
      */
     private static CompletableFuture<HolderLookup.Provider> createAppEngProvider(RegistryAccess registryAccess) {
 
-        var extensions = List.of(
-                new LookupExtension<>(Registries.DIMENSION_TYPE, InitDimensionTypes::init),
-                new LookupExtension<>(Registries.STRUCTURE, InitStructures::initDatagenStructures),
-                new LookupExtension<>(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets),
-                new LookupExtension<>(Registries.BIOME, InitBiomes::init));
+        var vanillaLookup = CompletableFuture.supplyAsync(VanillaRegistries::createLookup, Util.backgroundExecutor());
 
-        var builder = new RegistrySetBuilder();
-        for (var entry : VanillaRegistries.BUILDER.entries) {
-            var extension = extensions.stream()
-                    .filter(e -> e.key() == entry.key())
-                    .findFirst()
-                    .orElse(null);
-            addEntry(builder, entry, extension);
-        }
+        return vanillaLookup.thenApply(provider -> {
+            var builder = new RegistrySetBuilder()
+                    .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
+                    .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
+                    .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
+                    .add(Registries.BIOME, InitBiomes::init);
 
-        return CompletableFuture.completedFuture(builder.build(registryAccess));
-    }
-
-    private static <T> void addEntry(RegistrySetBuilder builder,
-            RegistrySetBuilder.RegistryStub<T> entry,
-            @Nullable LookupExtension<?> extension) {
-        var typedExtension = extension != null ? extension.tryCast(entry.key()) : null;
-        if (typedExtension == null) {
-            builder.add(entry.key(), entry.lifecycle(), entry.bootstrap());
-            return;
-        }
-
-        builder.add(entry.key(), entry.lifecycle(), bootstapContext -> {
-            entry.bootstrap().run(bootstapContext);
-            typedExtension.extender().accept(bootstapContext);
+            return builder.buildPatch(registryAccess, provider);
         });
-    }
-
-    record LookupExtension<T> (ResourceKey<Registry<T>> key, Consumer<BootstapContext<T>> extender) {
-        @SuppressWarnings("unchecked")
-        @Nullable
-        public <U> LookupExtension<U> tryCast(ResourceKey<? extends Registry<U>> registryKey) {
-            if (Objects.equals(registryKey, key)) {
-                return (LookupExtension<U>) this;
-            }
-            return null;
-        }
     }
 }
