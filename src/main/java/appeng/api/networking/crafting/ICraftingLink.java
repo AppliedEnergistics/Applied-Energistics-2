@@ -23,6 +23,8 @@
 
 package appeng.api.networking.crafting;
 
+import java.util.UUID;
+
 import net.minecraft.nbt.CompoundTag;
 
 public interface ICraftingLink {
@@ -57,5 +59,5 @@ public interface ICraftingLink {
     /**
      * @return the crafting ID for this link.
      */
-    String getCraftingID();
+    UUID getCraftingID();
 }

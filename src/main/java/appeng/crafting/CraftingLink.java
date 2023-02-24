@@ -18,6 +18,8 @@
 
 package appeng.crafting;
 
+import java.util.UUID;
+
 import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.config.Actionable;
@@ -30,14 +32,14 @@ public class CraftingLink implements ICraftingLink {
 
     private final ICraftingRequester req;
     private final ICraftingCPU cpu;
-    private final String CraftID;
+    private final UUID craftId;
     private final boolean standalone;
     private boolean canceled = false;
     private boolean done = false;
     private CraftingLinkNexus tie;
 
     public CraftingLink(CompoundTag data, ICraftingRequester req) {
-        this.CraftID = data.getString("CraftID");
+        this.craftId = data.getUUID("craftId");
         this.setCanceled(data.getBoolean("canceled"));
         this.setDone(data.getBoolean("done"));
         this.standalone = data.getBoolean("standalone");
@@ -51,7 +53,7 @@ public class CraftingLink implements ICraftingLink {
     }
 
     public CraftingLink(CompoundTag data, ICraftingCPU cpu) {
-        this.CraftID = data.getString("CraftID");
+        this.craftId = data.getUUID("craftId");
         this.setCanceled(data.getBoolean("canceled"));
         this.setDone(data.getBoolean("done"));
         this.standalone = data.getBoolean("standalone");
@@ -120,7 +122,7 @@ public class CraftingLink implements ICraftingLink {
 
     @Override
     public void writeToNBT(CompoundTag tag) {
-        tag.putString("CraftID", this.CraftID);
+        tag.putUUID("craftId", this.craftId);
         tag.putBoolean("canceled", this.isCanceled());
         tag.putBoolean("done", this.isDone());
         tag.putBoolean("standalone", this.standalone);
@@ -128,8 +130,8 @@ public class CraftingLink implements ICraftingLink {
     }
 
     @Override
-    public String getCraftingID() {
-        return this.CraftID;
+    public UUID getCraftingID() {
+        return this.craftId;
     }
 
     public void setNexus(CraftingLinkNexus n) {

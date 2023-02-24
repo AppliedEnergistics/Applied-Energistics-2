@@ -19,6 +19,7 @@
 package appeng.crafting.execution;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -71,10 +72,10 @@ public class CraftingCpuHelper {
         return null;
     }
 
-    public static CompoundTag generateLinkData(String craftingID, boolean standalone, boolean req) {
+    public static CompoundTag generateLinkData(UUID craftId, boolean standalone, boolean req) {
         final CompoundTag tag = new CompoundTag();
 
-        tag.putString("CraftID", craftingID);
+        tag.putUUID("craftId", craftId);
         tag.putBoolean("canceled", false);
         tag.putBoolean("done", false);
         tag.putBoolean("standalone", standalone);

@@ -18,8 +18,8 @@
 package appeng.crafting.execution;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
@@ -102,7 +102,7 @@ public class CraftingCpuLogic {
         var playerId = src.player()
                 .map(p -> p instanceof ServerPlayer serverPlayer ? IPlayerRegistry.getPlayerId(serverPlayer) : null)
                 .orElse(null);
-        var craftId = this.generateCraftId(plan.finalOutput());
+        var craftId = UUID.randomUUID();
         var linkCpu = new CraftingLink(CraftingCpuHelper.generateLinkData(craftId, requester == null, false), cluster);
         this.job = new ExecutingCraftingJob(plan, this::postChange, linkCpu, playerId);
         cluster.updateOutput(plan.finalOutput());
@@ -379,15 +379,6 @@ public class CraftingCpuLogic {
         this.inventory.list.removeZeros();
 
         cluster.markDirty();
-    }
-
-    private String generateCraftId(GenericStack finalOutput) {
-        final var now = System.currentTimeMillis();
-        final var hash = System.identityHashCode(this);
-        final var hmm = Objects.hashCode(finalOutput);
-
-        return Long.toString(now, Character.MAX_RADIX) + '-' + Integer.toString(hash, Character.MAX_RADIX) + '-'
-                + Integer.toString(hmm, Character.MAX_RADIX);
     }
 
     private void postChange(AEKey what) {
