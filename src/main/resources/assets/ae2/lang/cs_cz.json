@@ -288,7 +288,6 @@
   "gui.tooltips.ae2.SubstitutionsOff": "Záměna zakázána",
   "gui.tooltips.ae2.SubstitutionsOn": "Záměna povolena",
   "gui.tooltips.ae2.TerminalStyle": "Styl terminálu",
-  "gui.tooltips.ae2.TerminalStyle_Full": "Celo-obrazový terminál",
   "gui.tooltips.ae2.TerminalStyle_Small": "Nízko-centrovaný terminál",
   "gui.tooltips.ae2.TerminalStyle_Tall": "Vysoko-centrovaný terminál",
   "gui.tooltips.ae2.TransferDirection": "Směr přesunu",

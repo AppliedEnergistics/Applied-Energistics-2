@@ -361,7 +361,6 @@
   "gui.tooltips.ae2.SubstitutionsOff": "대체 비활성화",
   "gui.tooltips.ae2.SubstitutionsOn": "대체 활성화",
   "gui.tooltips.ae2.TerminalStyle": "터미널 스타일",
-  "gui.tooltips.ae2.TerminalStyle_Full": "풀 스크린 터미널",
   "gui.tooltips.ae2.TerminalStyle_Small": "짧은 중앙 터미널",
   "gui.tooltips.ae2.TerminalStyle_Tall": "긴 중앙 터미널",
   "gui.tooltips.ae2.TransferDirection": "전송 방향",
