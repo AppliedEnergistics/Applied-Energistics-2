@@ -636,7 +636,7 @@ public final class TestPlots {
                     craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
                             recipe,
                             ingredients,
-                            recipe.getResultItem(),
+                            recipe.getResultItem(node.getLevel().registryAccess()),
                             false,
                             false);
 
@@ -646,8 +646,8 @@ public final class TestPlots {
                             neededIngredients.add(key);
                         }
                     }
-                    if (!recipe.getResultItem().isEmpty()) {
-                        providedResults.add(AEItemKey.of(recipe.getResultItem()));
+                    if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
+                        providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
                     }
                 } catch (Exception e) {
                     AELog.warn(e);

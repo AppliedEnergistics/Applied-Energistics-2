@@ -101,8 +101,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
 
             drawMachineCount(poseStack, itemX, cellY, entry.getCount());
 
-            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, getBlitOffset(),
-                    entry.getDisplay());
+            AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entry.getDisplay());
 
             // Update the tooltip based on the calculated cell rectangle and mouse position
             if (isHovering(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {

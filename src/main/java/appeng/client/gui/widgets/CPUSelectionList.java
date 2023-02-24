@@ -169,14 +169,14 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
         var x = bounds.getX() + this.bounds.getX();
         var y = bounds.getY() + this.bounds.getY();
         background.dest(
                 x,
                 y,
                 this.bounds.getWidth(),
-                this.bounds.getHeight()).blit(poseStack, zIndex);
+                this.bounds.getHeight()).blit(poseStack);
 
         // Move to first button
         x += 9;
@@ -193,7 +193,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
             }
             buttonBg.dest(x, y)
                     .colorRgb(color)
-                    .blit(poseStack, zIndex);
+                    .blit(poseStack);
 
             var name = getCpuName(cpu);
             poseStack.pushPose();
@@ -244,7 +244,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
                 }
             }
 
-            infoBar.render(poseStack, x + 2, y + buttonBg.getSrcHeight() - 12, zIndex);
+            infoBar.render(poseStack, x + 2, y + buttonBg.getSrcHeight() - 12);
 
             y += buttonBg.getSrcHeight() + 1;
         }

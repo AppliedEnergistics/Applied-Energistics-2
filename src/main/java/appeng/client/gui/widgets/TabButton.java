@@ -68,7 +68,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int x, int y, float partial) {
+    public void renderWidget(PoseStack poseStack, int x, int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
@@ -86,7 +86,7 @@ public class TabButton extends Button implements ITooltip {
                 }
             };
 
-            backdrop.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
+            backdrop.getBlitter().dest(getX(), getY()).blit(poseStack);
 
             var iconX = switch (this.style) {
                 case CORNER -> 4;
@@ -96,13 +96,14 @@ public class TabButton extends Button implements ITooltip {
             var iconY = 3;
 
             if (this.icon != null) {
-                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY).blit(poseStack, getBlitOffset());
+                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY).blit(poseStack);
             }
 
             if (this.item != null) {
-                this.itemRenderer.blitOffset = 100.0F;
-                this.itemRenderer.renderAndDecorateItem(this.item, getX() + iconX, getY() + iconY);
-                this.itemRenderer.blitOffset = 0.0F;
+                poseStack.pushPose();
+                poseStack.translate(0, 0, 100);
+                this.itemRenderer.renderAndDecorateItem(poseStack, this.item, getX() + iconX, getY() + iconY);
+                poseStack.popPose();
             }
         }
     }

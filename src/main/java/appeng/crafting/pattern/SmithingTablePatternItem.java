@@ -5,9 +5,9 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
@@ -54,7 +54,7 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(UpgradeRecipe recipe, AEItemKey base, AEItemKey addition, AEItemKey out,
+    public ItemStack encode(LegacyUpgradeRecipe recipe, AEItemKey base, AEItemKey addition, AEItemKey out,
             boolean allowSubstitutes) {
         var stack = new ItemStack(this);
         SmithingTablePatternEncoding.encode(stack.getOrCreateTag(), recipe, base, addition, out, allowSubstitutes);
@@ -80,20 +80,20 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
 
         // Multiple recipes can match for stonecutting
         var recipe = recipeManager.getRecipeFor(RecipeType.SMITHING, testInventory, level).orElse(null);
-        if (recipe == null) {
-            AELog.info("Failed to recover encoded stonecutting pattern for recipe %s (no recipe for inputs)", recipeId);
+        if (!(recipe instanceof LegacyUpgradeRecipe legacyRecipe)) {
+            AELog.info("Failed to recover encoded smithing pattern for recipe %s (no recipe for inputs)", recipeId);
             return false;
         }
 
         // Try to find the output in the potential recipe list
-        if (!AEItemKey.matches(output, recipe.getResultItem())) {
-            AELog.info("Failed to recover encoded stonecutting pattern for recipe %s (output mismatch)", recipeId);
+        if (!AEItemKey.matches(output, recipe.getResultItem(level.registryAccess()))) {
+            AELog.info("Failed to recover encoded smithing pattern for recipe %s (output mismatch)", recipeId);
             return false;
         }
 
         // Yay we found a match, reencode the pattern
         AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, recipe.getId());
-        SmithingTablePatternEncoding.encode(tag, recipe, base, addition, output,
+        SmithingTablePatternEncoding.encode(tag, legacyRecipe, base, addition, output,
                 SmithingTablePatternEncoding.canSubstitute(tag));
         return true;
     }

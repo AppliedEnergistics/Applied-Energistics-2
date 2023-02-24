@@ -29,8 +29,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.IPatternDetails;
@@ -50,7 +50,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
     private final AEItemKey definition;
     public final boolean canSubstitute;
-    private final UpgradeRecipe recipe;
+    private final LegacyUpgradeRecipe recipe;
     private final Container testFrame;
     private final ItemStack output;
     private final AEItemKey base;
@@ -68,7 +68,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
 
         // Find recipe
         var recipeId = SmithingTablePatternEncoding.getRecipeId(tag);
-        this.recipe = level.getRecipeManager().byType(RecipeType.SMITHING).get(recipeId);
+        this.recipe = (LegacyUpgradeRecipe) level.getRecipeManager().byType(RecipeType.SMITHING).get(recipeId);
 
         // Build frame and find output
         this.testFrame = new SimpleContainer(2);
@@ -79,7 +79,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
             throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testFrame);
+        this.output = this.recipe.assemble(testFrame, level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -143,7 +143,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         testContainer.setItem(1, container.getItem(ADDITION_CRAFTING_GRID_SLOT));
 
         if (recipe.matches(testContainer, level)) {
-            return recipe.assemble(testContainer);
+            return recipe.assemble(testContainer, level.registryAccess());
         }
         return ItemStack.EMPTY;
     }
@@ -176,7 +176,8 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         var previousStack = testFrame.removeItemNoUpdate(containerSlot);
         testFrame.setItem(containerSlot, key.toStack());
 
-        var newResult = recipe.matches(testFrame, level) && ItemStack.matches(output, recipe.assemble(testFrame));
+        var newResult = recipe.matches(testFrame, level)
+                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
 
         // Restore old stack in the frame
         testFrame.setItem(containerSlot, previousStack);

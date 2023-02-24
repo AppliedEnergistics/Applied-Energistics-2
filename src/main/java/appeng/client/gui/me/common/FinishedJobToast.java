@@ -64,7 +64,7 @@ public class FinishedJobToast implements Toast {
             toastComponent.getMinecraft().font.draw(poseStack, line, 30.0F, lineY, TEXT_COLOR);
             lineY += font.lineHeight;
         }
-        AEStackRendering.drawInGui(minecraft, poseStack, 8, 8, 0, what);
+        AEStackRendering.drawInGui(minecraft, poseStack, 8, 8, what);
 
         return timeSinceLastVisible >= TIME_VISIBLE ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
     }

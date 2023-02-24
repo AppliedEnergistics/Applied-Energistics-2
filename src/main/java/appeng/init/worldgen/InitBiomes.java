@@ -38,7 +38,7 @@ public final class InitBiomes {
 
         Biome biome = new Biome.BiomeBuilder()
                 .generationSettings(new BiomeGenerationSettings.Builder(placedFeatures, configuredCarvers).build())
-                .precipitation(Biome.Precipitation.NONE)
+                .hasPrecipitation(false)
                 // Copied from the vanilla void biome
                 .temperature(0.5F).downfall(0.5F)
                 .specialEffects(new BiomeSpecialEffects.Builder().waterColor(4159204).waterFogColor(329011).fogColor(0)

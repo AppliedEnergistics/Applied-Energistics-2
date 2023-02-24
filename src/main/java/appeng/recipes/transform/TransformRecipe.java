@@ -3,6 +3,7 @@ package appeng.recipes.transform;
 import java.util.Date;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -45,8 +46,8 @@ public final class TransformRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container container) {
-        ItemStack result = getResultItem().copy();
+    public ItemStack assemble(Container container, RegistryAccess registryAccess) {
+        ItemStack result = getResultItem(registryAccess).copy();
         if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(result) && result.getCount() > 1) {
             final CompoundTag cmp = result.getOrCreateTag();
             cmp.putLong("freq", new Date().getTime() * 100 + singularitySeed % 100);
@@ -61,6 +62,10 @@ public final class TransformRecipe implements Recipe<Container> {
     }
 
     @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return getResultItem();
+    }
+
     public ItemStack getResultItem() {
         return output;
     }

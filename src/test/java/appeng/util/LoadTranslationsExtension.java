@@ -18,14 +18,13 @@
 
 package appeng.util;
 
-import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import net.minecraft.client.resources.language.ClientLanguage;
-import net.minecraft.client.resources.language.LanguageInfo;
 import net.minecraft.locale.Language;
 
 import appeng.client.gui.MockResourceManager;
@@ -35,9 +34,7 @@ public class LoadTranslationsExtension implements Extension, BeforeAllCallback {
     public void beforeAll(ExtensionContext context) throws Exception {
 
         // Load AE2 translations to test translated texts
-        LanguageInfo language = new LanguageInfo("en_us", "US", "English", false);
-        ClientLanguage languageMap = ClientLanguage.loadFrom(MockResourceManager.create(),
-                Collections.singletonList(language));
+        ClientLanguage languageMap = ClientLanguage.loadFrom(MockResourceManager.create(), List.of("en_us"), false);
         Language.inject(languageMap);
     }
 }

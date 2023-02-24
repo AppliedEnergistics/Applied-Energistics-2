@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -115,7 +116,7 @@ public class EntropyRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inv) {
+    public ItemStack assemble(Container inv, RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 
@@ -125,7 +126,7 @@ public class EntropyRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 

@@ -383,7 +383,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         final int ox = this.leftPos;
         final int oy = this.topPos;
 
-        widgets.drawForegroundLayer(poseStack, getBlitOffset(), getBounds(false), new Point(x - ox, y - oy));
+        widgets.drawForegroundLayer(poseStack, getBounds(false), new Point(x - ox, y - oy));
 
         this.drawFG(poseStack, ox, oy, x, y);
 
@@ -467,7 +467,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         this.drawBG(poseStack, leftPos, topPos, x, y, f);
 
-        widgets.drawBackgroundLayer(poseStack, getBlitOffset(), getBounds(true), new Point(x - leftPos, y - topPos));
+        widgets.drawBackgroundLayer(poseStack, getBounds(true), new Point(x - leftPos, y - topPos));
 
         for (Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
@@ -487,7 +487,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             Icon.SLOT_BACKGROUND.getBlitter()
                     .dest(leftPos + pos.getX(), topPos + pos.getY())
                     .color(1, 1, 1, alpha)
-                    .blit(poseStack, getBlitOffset());
+                    .blit(poseStack);
         }
     }
 
@@ -725,22 +725,22 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     generatedBackground.getWidth(),
                     generatedBackground.getHeight(),
                     poseStack,
-                    getBlitOffset(),
                     offsetX,
                     offsetY);
         }
 
         var background = style.getBackground();
         if (background != null) {
-            background.dest(offsetX, offsetY).blit(poseStack, getBlitOffset());
+            background.dest(offsetX, offsetY).blit(poseStack);
         }
 
     }
 
-    public void drawItem(int x, int y, ItemStack is) {
-        this.itemRenderer.blitOffset = 100.0F;
-        this.itemRenderer.renderAndDecorateItem(is, x, y);
-        this.itemRenderer.blitOffset = 0.0F;
+    public void drawItem(PoseStack pose, int x, int y, ItemStack is) {
+        pose.pushPose();
+        pose.translate(0, 0, 100);
+        this.itemRenderer.renderAndDecorateItem(pose, is, x, y);
+        pose.popPose();
     }
 
     protected Component getGuiDisplayName(Component in) {
@@ -772,7 +772,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             s.getIcon().getBlitter()
                     .dest(s.x, s.y)
                     .opacity(s.getOpacityOfIcon())
-                    .blit(poseStack, getBlitOffset());
+                    .blit(poseStack);
         }
 
         // Draw a red background for slots that are in an invalid state

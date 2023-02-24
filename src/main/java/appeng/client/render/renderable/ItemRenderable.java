@@ -27,7 +27,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -49,7 +49,7 @@ public class ItemRenderable<T extends BlockEntity> implements Renderable<T> {
                 poseStack.mulPoseMatrix(pair.getRight().getMatrix());
             }
             Minecraft.getInstance().getItemRenderer().renderStatic(pair.getLeft(),
-                    TransformType.GROUND, combinedLight, combinedOverlay, poseStack, buffers, 0);
+                    ItemDisplayContext.GROUND, combinedLight, combinedOverlay, poseStack, buffers, be.getLevel(), 0);
             poseStack.popPose();
         }
     }

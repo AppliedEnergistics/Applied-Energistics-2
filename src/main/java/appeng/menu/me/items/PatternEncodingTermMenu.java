@@ -35,6 +35,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
@@ -232,7 +233,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.assemble(ic);
+            is = this.currentRecipe.assemble(ic, level.registryAccess());
         }
 
         this.craftOutputSlot.setDisplayedCraftingOutput(is);
@@ -384,13 +385,13 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         var recipe = level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMITHING, container, level)
                 .orElse(null);
-        if (recipe == null) {
+        if (!(recipe instanceof LegacyUpgradeRecipe legacyRecipe)) {
             return null;
         }
 
-        var output = AEItemKey.of(recipe.assemble(container));
+        var output = AEItemKey.of(recipe.assemble(container, level.registryAccess()));
 
-        return PatternDetailsHelper.encodeSmithingTablePattern(recipe, base, addition, output,
+        return PatternDetailsHelper.encodeSmithingTablePattern(legacyRecipe, base, addition, output,
                 encodingLogic.isSubstitution());
     }
 
@@ -417,7 +418,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
             return null;
         }
 
-        var output = AEItemKey.of(recipe.getResultItem());
+        var output = AEItemKey.of(recipe.getResultItem(level.registryAccess()));
 
         return PatternDetailsHelper.encodeStonecuttingPattern(recipe, input, output, encodingLogic.isSubstitution());
     }

@@ -118,8 +118,7 @@ public abstract class AbstractTableRenderer<T> {
                 var entryStack = getEntryStack(entry);
 
                 int itemY = cellY + (CELL_HEIGHT - 16) / 2;
-                AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY,
-                        screen.getBlitOffset(), entryStack);
+                AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entryStack);
 
                 int overlay = getEntryOverlayColor(entry);
                 if (overlay != 0) {

@@ -72,7 +72,7 @@ public class VibrationChamberScreen extends AEBaseScreen<VibrationChamberMenu> {
                             BURN_PROGRESS.getSrcWidth(),
                             f)
                     .dest(80, 20 + BURN_PROGRESS.getSrcHeight() - f)
-                    .blit(poseStack, getBlitOffset());
+                    .blit(poseStack);
         }
     }
 

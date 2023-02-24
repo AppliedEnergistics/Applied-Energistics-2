@@ -1,5 +1,6 @@
 package appeng.client.guidebook.document.block.recipes;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.Blocks;
@@ -28,7 +29,7 @@ public class LytSmeltingRecipe extends LytBox {
         paddingTop = 15;
 
         append(inputSlot = new LytSlot(recipe.getIngredients().get(0)));
-        append(resultSlot = new LytSlot(recipe.getResultItem()));
+        append(resultSlot = new LytSlot(recipe.getResultItem(Minecraft.getInstance().level.registryAccess())));
     }
 
     @Override

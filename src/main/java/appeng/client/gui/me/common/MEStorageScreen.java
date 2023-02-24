@@ -423,7 +423,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             int x = this.craftingStatusBtn.getX() + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.getY() + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
-            StackSizeRenderer.renderSizeLabel(font, x - this.leftPos, y - this.topPos,
+            StackSizeRenderer.renderSizeLabel(poseStack, font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
     }
@@ -439,7 +439,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     Blitter.texture("block/molecular_assembler_lights.png", 16, 192)
                             .src(2, 2 + frame * 16, 12, 12)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
-                            .blit(poseStack, getBlitOffset());
+                            .blit(poseStack);
                 }
             }
         }
@@ -518,10 +518,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         style.getHeader()
                 .dest(offsetX, offsetY)
-                .blit(poseStack, getBlitOffset());
+                .blit(poseStack);
 
         int y = offsetY;
-        style.getHeader().dest(offsetX, y).blit(poseStack, getBlitOffset());
+        style.getHeader().dest(offsetX, y).blit(poseStack);
         y += style.getHeader().getSrcHeight();
 
         // To draw the first/last row, we need to at least draw 2
@@ -533,18 +533,18 @@ public class MEStorageScreen<C extends MEStorageMenu>
             } else if (x + 1 == rowsToDraw) {
                 row = style.getLastRow();
             }
-            row.dest(offsetX, y).blit(poseStack, getBlitOffset());
+            row.dest(offsetX, y).blit(poseStack);
             y += style.getRow().getSrcHeight();
         }
 
-        style.getBottom().dest(offsetX, y).blit(poseStack, getBlitOffset());
+        style.getBottom().dest(offsetX, y).blit(poseStack);
 
         // Draw the overlay for the pinned row
         if (repo.hasPinnedRow()) {
             Blitter.texture("guis/terminal.png")
                     .src(0, 204, 162, 18)
                     .dest(offsetX + 7, offsetY + style.getHeader().getSrcHeight())
-                    .blit(poseStack, getBlitOffset());
+                    .blit(poseStack);
         }
 
         if (this.searchField != null) {
@@ -566,9 +566,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                                 minecraft,
                                 poseStack,
                                 s.x,
-                                s.y,
-                                getBlitOffset(),
-                                entry.getWhat());
+                                s.y, entry.getWhat());
                     } catch (Exception err) {
                         AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
                     }
@@ -581,14 +579,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
                         var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
                                 : GuiText.SmallFontCraft.getLocal();
-                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
+                        StackSizeRenderer.renderSizeLabel(poseStack, this.font, s.x, s.y, craftLabelText);
                     } else {
                         AmountFormat format = useLargeFonts ? AmountFormat.SLOT_LARGE_FONT
                                 : AmountFormat.SLOT;
                         var text = entry.getWhat().formatAmount(storedAmount, format);
-                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
+                        StackSizeRenderer.renderSizeLabel(poseStack, this.font, s.x, s.y, text, useLargeFonts);
                         if (craftable) {
-                            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", false);
+                            StackSizeRenderer.renderSizeLabel(poseStack, this.font, s.x - 11, s.y - 11, "+", false);
                         }
                     }
                 }
@@ -698,7 +696,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
-            this.searchField.setFocus(false);
+            this.searchField.setFocused(false);
             this.setFocused(null);
             return true;
         }

@@ -21,10 +21,8 @@ package appeng.client.gui.me.common;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Transformation;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -39,34 +37,23 @@ import appeng.core.AEConfig;
  * @since rv0
  */
 public class StackSizeRenderer {
-    public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text) {
-        renderSizeLabel(fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
-    }
-
-    public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text, boolean largeFonts) {
-        final float scaleFactor = largeFonts ? 0.85f : 0.5f;
-
-        Transformation tm = new Transformation(new Vector3f(0, 0, 300), // Taken from
-                // ItemRenderer.renderItemOverlayIntoGUI
-                null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
-
-        renderSizeLabel(tm.getMatrix(), fontRenderer, xPos, yPos, text, false);
-    }
-
-    public static void renderSizeLabel(Matrix4f matrix, Font fontRenderer, float xPos, float yPos, String text,
+    private static void renderSizeLabel(Matrix4f matrix, Font fontRenderer, float xPos, float yPos, String text,
             boolean largeFonts) {
         final float scaleFactor = largeFonts ? 0.85f : 0.5f;
         final float inverseScaleFactor = 1.0f / scaleFactor;
         final int offset = largeFonts ? 0 : -1;
 
         RenderSystem.disableBlend();
-        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.width(text) * scaleFactor)
-                * inverseScaleFactor);
+        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.width(text) * scaleFactor) * inverseScaleFactor);
         final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
         BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, matrix, buffer, false, 0, 15728880);
+        fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 15728880);
         buffer.endBatch();
         RenderSystem.enableBlend();
+    }
+
+    public static void renderSizeLabel(PoseStack stack, Font fontRenderer, float xPos, float yPos, String text) {
+        renderSizeLabel(stack, fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
     }
 
     public static void renderSizeLabel(PoseStack stack, Font fontRenderer, float xPos, float yPos, String text,
@@ -74,6 +61,8 @@ public class StackSizeRenderer {
         final float scaleFactor = largeFonts ? 0.85f : 0.5f;
 
         stack.pushPose();
+        // According to ItemRenderer, text is 200 above items.
+        stack.translate(0, 0, 200);
         stack.scale(scaleFactor, scaleFactor, scaleFactor);
 
         renderSizeLabel(stack.last().pose(), fontRenderer, xPos, yPos, text, largeFonts);

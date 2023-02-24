@@ -11,10 +11,10 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
@@ -36,7 +36,6 @@ public record SimpleRenderContext(
 
     @Override
     public void fillRect(LytRect rect, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft) {
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -51,7 +50,6 @@ public record SimpleRenderContext(
         builder.vertex(matrix, rect.right(), rect.bottom(), z).color(resolveColor(bottomRight)).endVertex();
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 
     @Override
@@ -78,7 +76,6 @@ public record SimpleRenderContext(
     public void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorRef color) {
         var resolvedColor = resolveColor(color);
 
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -92,7 +89,6 @@ public record SimpleRenderContext(
         builder.vertex(matrix, p3.x, p3.y, z).color(resolvedColor).endVertex();
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 
     @Override
@@ -123,7 +119,7 @@ public record SimpleRenderContext(
         }
 
         itemRenderer.render(stack,
-                ItemTransforms.TransformType.GUI,
+                ItemDisplayContext.GUI,
                 false,
                 poseStack,
                 buffers,

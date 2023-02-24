@@ -27,7 +27,6 @@ import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -38,7 +37,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.InscriberBlockEntity;
@@ -175,15 +176,18 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
                     is = ir.getResultItem().copy();
                 }
             }
-            this.renderItem(ms, is, 0.0f, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, is, 0.0f, buffers, combinedLight, combinedOverlay, blockEntity.getLevel());
         } else {
             renderPresses = true;
-            this.renderItem(ms, inv.getStackInSlot(2), 0.0f, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, inv.getStackInSlot(2), 0.0f, buffers, combinedLight, combinedOverlay,
+                    blockEntity.getLevel());
         }
 
         if (renderPresses) {
-            this.renderItem(ms, inv.getStackInSlot(0), press, buffers, combinedLight, combinedOverlay);
-            this.renderItem(ms, inv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay);
+            this.renderItem(ms, inv.getStackInSlot(0), press, buffers, combinedLight, combinedOverlay,
+                    blockEntity.getLevel());
+            this.renderItem(ms, inv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay,
+                    blockEntity.getLevel());
         }
 
         ms.popPose();
@@ -201,7 +205,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
     }
 
     private void renderItem(PoseStack ms, ItemStack stack, float o, MultiBufferSource buffers,
-            int combinedLight, int combinedOverlay) {
+            int combinedLight, int combinedOverlay, Level level) {
         if (!stack.isEmpty()) {
             ms.pushPose();
             // move to center
@@ -224,8 +228,8 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
             }
 
             RenderSystem.applyModelViewMatrix();
-            itemRenderer.renderStatic(stack, TransformType.FIXED, combinedLight, combinedOverlay, ms,
-                    buffers, 0);
+            itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, combinedLight, combinedOverlay, ms,
+                    buffers, level, 0);
             ms.popPose();
         }
     }

@@ -26,7 +26,7 @@ public class CraftingPatternHelper {
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,
                 actualInputs,
-                recipe.getResultItem(),
+                recipe.getResultItem(level.registryAccess()),
                 false,
                 false);
     }

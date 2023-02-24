@@ -95,7 +95,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testFrame);
+        this.output = this.recipe.assemble(testFrame, level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -254,7 +254,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         var previousStack = testFrame.removeItemNoUpdate(slot);
         testFrame.setItem(slot, key.toStack());
 
-        var newResult = recipe.matches(testFrame, level) && ItemStack.matches(output, recipe.assemble(testFrame));
+        var newResult = recipe.matches(testFrame, level)
+                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
 
         setTestResult(slot, key, newResult);
 
@@ -387,7 +388,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
                 specialRecipeTestFrame.setItem(x, item.copy());
             }
 
-            return recipe.assemble(specialRecipeTestFrame);
+            return recipe.assemble(specialRecipeTestFrame, level.registryAccess());
         }
 
         for (int x = 0; x < container.getContainerSize(); x++) {

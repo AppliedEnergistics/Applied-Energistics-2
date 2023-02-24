@@ -239,13 +239,7 @@ public final class Blitter {
         return color(r, g, b);
     }
 
-    public void blit(int zIndex) {
-        // If we're not using a specific pose stack for transforms, we pass an empty
-        // one to just get an identity transform
-        blit(new PoseStack(), zIndex);
-    }
-
-    public void blit(PoseStack poseStack, int zIndex) {
+    public void blit(PoseStack poseStack) {
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, this.texture);
 
@@ -278,19 +272,19 @@ public final class Blitter {
 
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix, x1, y2, zIndex)
+        bufferbuilder.vertex(matrix, x1, y2, 0)
                 .uv(minU, maxV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x2, y2, zIndex)
+        bufferbuilder.vertex(matrix, x2, y2, 0)
                 .uv(maxU, maxV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x2, y1, zIndex)
+        bufferbuilder.vertex(matrix, x2, y1, 0)
                 .uv(maxU, minV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x1, y1, zIndex)
+        bufferbuilder.vertex(matrix, x1, y1, 0)
                 .uv(minU, minV)
                 .color(r, g, b, a)
                 .endVertex();
@@ -301,7 +295,6 @@ public final class Blitter {
         } else {
             RenderSystem.disableBlend();
         }
-        RenderSystem.enableTexture();
         BufferUploader.drawWithShader(bufferbuilder.end());
     }
 

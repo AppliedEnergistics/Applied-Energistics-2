@@ -95,7 +95,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         var viewport = new LytRect(0, scrollOffset, width, height);
         var renderContext = new SimpleRenderContext(viewport, poseStack, LightDarkMode.LIGHT_MODE);
 

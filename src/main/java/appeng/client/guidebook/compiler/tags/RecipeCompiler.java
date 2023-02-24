@@ -98,7 +98,7 @@ public class RecipeCompiler extends BlockTagCompiler {
         @Nullable
         LytBlock tryCreate(RecipeManager recipeManager, Item resultItem) {
             for (var recipe : recipeManager.byType(recipeType).values()) {
-                if (recipe.getResultItem().getItem() == resultItem) {
+                if (recipe.getResultItem(null).getItem() == resultItem) {
                     return factory.apply(recipe);
                 }
             }

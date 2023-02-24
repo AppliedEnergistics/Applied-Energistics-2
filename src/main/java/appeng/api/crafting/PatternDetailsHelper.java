@@ -33,8 +33,8 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
@@ -152,7 +152,7 @@ public final class PatternDetailsHelper {
      * @param allowSubstitutes Controls whether the ME system will allow the use of equivalent items to craft this
      *                         recipe.
      */
-    public static ItemStack encodeSmithingTablePattern(UpgradeRecipe recipe, AEItemKey base, AEItemKey addition,
+    public static ItemStack encodeSmithingTablePattern(LegacyUpgradeRecipe recipe, AEItemKey base, AEItemKey addition,
             AEItemKey out,
             boolean allowSubstitutes) {
         Preconditions.checkNotNull(recipe, "recipe");

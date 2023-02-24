@@ -20,8 +20,6 @@ public final class DashedRectangle {
     }
 
     public static void render(PoseStack stack, LytRect bounds, DashPattern pattern, float z) {
-
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -44,7 +42,6 @@ public final class DashedRectangle {
 
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 
     private static void buildHorizontalDashedLine(BufferBuilder builder, PoseStack stack,
