@@ -11,7 +11,7 @@ import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.FormattedCharSequence;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.core.localization.GuiText;
@@ -36,7 +36,7 @@ public class FinishedJobToast implements Toast {
 
         var formattedAmount = what.formatAmount(amount, AmountFormat.SLOT);
 
-        var text = GuiText.ToastCraftingJobFinishedText.text(formattedAmount, AEStackRendering.getDisplayName(what));
+        var text = GuiText.ToastCraftingJobFinishedText.text(formattedAmount, AEKeyRendering.getDisplayName(what));
         lines = font.split(text, width() - 30 - 5);
         height = Toast.super.height() + (lines.size() - 1) * font.lineHeight;
     }
@@ -64,7 +64,7 @@ public class FinishedJobToast implements Toast {
             toastComponent.getMinecraft().font.draw(poseStack, line, 30.0F, lineY, TEXT_COLOR);
             lineY += font.lineHeight;
         }
-        AEStackRendering.drawInGui(minecraft, poseStack, 8, 8, what);
+        AEKeyRendering.drawInGui(minecraft, poseStack, 8, 8, what);
 
         return timeSinceLastVisible >= TIME_VISIBLE ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
     }

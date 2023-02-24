@@ -29,7 +29,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
@@ -64,7 +64,7 @@ public final class BlockEntityRenderHelper {
             AEKey what,
             float scale,
             int combinedLightIn, Level level) {
-        AEStackRendering.drawOnBlockFace(
+        AEKeyRendering.drawOnBlockFace(
                 poseStack,
                 buffers,
                 what,

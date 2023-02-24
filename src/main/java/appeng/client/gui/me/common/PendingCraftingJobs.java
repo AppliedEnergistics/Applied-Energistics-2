@@ -8,7 +8,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -36,7 +36,7 @@ public final class PendingCraftingJobs {
             CraftingJobStatusPacket.Status status) {
 
         AELog.debug("Crafting job " + id + " for " + requestedAmount
-                + "x" + AEStackRendering.getDisplayName(what).getString() + ". State=" + status);
+                + "x" + AEKeyRendering.getDisplayName(what).getString() + ". State=" + status);
 
         var existing = jobs.get(id);
         switch (status) {

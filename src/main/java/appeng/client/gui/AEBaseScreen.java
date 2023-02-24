@@ -57,7 +57,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
@@ -917,7 +917,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public List<Component> getTooltipFromItem(ItemStack stack) {
         var unwrapped = GenericStack.unwrapItemStack(stack);
         if (unwrapped != null) {
-            return AEStackRendering.getTooltip(unwrapped.what());
+            return AEKeyRendering.getTooltip(unwrapped.what());
         }
         return super.getTooltipFromItem(stack);
     }
