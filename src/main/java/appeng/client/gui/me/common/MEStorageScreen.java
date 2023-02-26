@@ -26,7 +26,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -676,10 +675,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return true;
         }
 
-        if (shouldAutoFocus() && !this.searchField.isFocused() && isHovered()) {
-            this.setInitialFocus(this.searchField);
-        }
-
         return super.charTyped(character, modifiers);
     }
 
@@ -690,11 +685,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        Key input = InputConstants.getKey(keyCode, scanCode);
-        if (this.checkHotbarKeys(input)) {
-            return true;
-        }
-
         if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
             this.searchField.setFocused(false);
             this.setFocused(null);
