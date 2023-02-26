@@ -20,7 +20,6 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.lwjgl.glfw.GLFW;
@@ -146,8 +145,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     // Allow players to confirm a craft via the enter key
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (!this.checkHotbarKeys(InputConstants.getKey(keyCode, scanCode))
-                && (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER)) {
+        if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
             this.start();
             return true;
         }

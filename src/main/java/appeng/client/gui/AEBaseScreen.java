@@ -32,7 +32,6 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -661,23 +660,24 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return super.hasClickedOutside(mouseX, mouseY, screenX, screenY, button);
     }
 
-    @Override
-    protected boolean checkHotbarKeyPressed(int keyCode, int scanCode) {
-        return checkHotbarKeys(InputConstants.getKey(keyCode, scanCode));
-    }
-
     protected LocalPlayer getPlayer() {
         // Our UIs are usually not opened when not in-game, so this should not be a
         // problem
         return Objects.requireNonNull(getMinecraft().player);
     }
 
-    protected boolean checkHotbarKeys(Key input) {
+    @Override
+    protected boolean checkHotbarKeyPressed(int keyCode, int scanCode) {
         final Slot theSlot = this.getSlotUnderMouse();
 
         if (getMenu().getCarried().isEmpty() && theSlot != null) {
+            if (this.minecraft.options.keySwapOffhand.matches(keyCode, scanCode)) {
+                this.slotClicked(theSlot, theSlot.index, Inventory.SLOT_OFFHAND, ClickType.SWAP);
+                return true;
+            }
+
             for (int j = 0; j < 9; ++j) {
-                if (getMinecraft().options.keyHotbarSlots[j].matches(input.getValue(), -1)) {
+                if (getMinecraft().options.keyHotbarSlots[j].matches(keyCode, scanCode)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (Slot s : slots) {
                         if (s.slot == j && s.container == this.menu.getPlayerInventory()
