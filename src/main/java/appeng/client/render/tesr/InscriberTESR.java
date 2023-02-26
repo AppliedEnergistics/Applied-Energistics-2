@@ -128,7 +128,8 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
                 Direction.SOUTH);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 14, 3, combinedOverlay, combinedLight,
                 Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, 1.0f - TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, 1.0f - TwoPx, 14, 3 - 16 * (press - base),
+                combinedOverlay,
                 combinedLight, Direction.SOUTH);
         addVertex(buffer, ms, tas, TwoPx, middle + base, 1.0f - TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.SOUTH);
@@ -160,7 +161,8 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
                 Direction.SOUTH);
         addVertex(buffer, ms, tas, TwoPx, middle - base, 1.0f - TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + -base, 1.0f - TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + -base, 1.0f - TwoPx, 2, 3 - 16 * (press - base),
+                combinedOverlay,
                 combinedLight, Direction.SOUTH);
 
         // render items.
