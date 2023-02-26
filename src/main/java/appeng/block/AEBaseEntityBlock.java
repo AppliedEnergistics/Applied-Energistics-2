@@ -162,7 +162,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer,
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
             ItemStack is) {
         // Inherit the item stack's display name, but only if it's a user defined string rather than a translation
         // component, since our custom naming cannot handle untranslated I18N strings and we would translate it using
@@ -171,6 +171,10 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
 
         if (blockEntity == null) {
             return;
+        }
+
+        if (blockEntity instanceof IOwnerAwareBlockEntity ownerAware && placer instanceof Player player) {
+            ownerAware.setOwner(player);
         }
 
         var hoverName = is.getHoverName();
