@@ -123,6 +123,17 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
                 Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 2, 3, combinedOverlay, combinedLight, Direction.NORTH);
 
+        // Rear of Top Stamp
+        addVertex(buffer, ms, tas, TwoPx, middle + base, 1.0f - TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
+                combinedLight, Direction.SOUTH);
+        addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 2, 3, combinedOverlay, combinedLight,
+                Direction.SOUTH);
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 14, 3, combinedOverlay, combinedLight,
+                Direction.SOUTH);
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, 1.0f - TwoPx, 14, 3 - 16 * (press - base),
+                combinedOverlay,
+                combinedLight, Direction.SOUTH);
+
         // Top of Bottom Stamp
         middle -= 2.0f * 0.02f;
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 13, combinedOverlay, combinedLight,
@@ -134,7 +145,7 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
                 Direction.UP);
 
         // Front of Bottom Stamp
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + -base, TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, TwoPx, 2, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
         addVertex(buffer, ms, tas, TwoPx, middle - base, TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
                 combinedLight, Direction.NORTH);
@@ -142,6 +153,17 @@ public final class InscriberTESR implements BlockEntityRenderer<InscriberBlockEn
                 Direction.NORTH);
         addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 2, 3, combinedOverlay, combinedLight,
                 Direction.NORTH);
+
+        // Rear of Bottom Stamp
+        addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 14, 3, combinedOverlay, combinedLight,
+                Direction.SOUTH);
+        addVertex(buffer, ms, tas, TwoPx, middle - base, 1.0f - TwoPx, 14, 3 - 16 * (press - base), combinedOverlay,
+                combinedLight, Direction.SOUTH);
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, 1.0f - TwoPx, 2, 3 - 16 * (press - base),
+                combinedOverlay,
+                combinedLight, Direction.SOUTH);
+        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 2, 3, combinedOverlay, combinedLight,
+                Direction.SOUTH);
 
         // render items.
 
