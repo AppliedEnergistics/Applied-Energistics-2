@@ -150,7 +150,7 @@ public class GuideScreen extends Screen {
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.translate(0, 0, 100);
+        poseStack.translate(0, 0, 200);
 
         super.render(poseStack, mouseX, mouseY, partialTick);
 

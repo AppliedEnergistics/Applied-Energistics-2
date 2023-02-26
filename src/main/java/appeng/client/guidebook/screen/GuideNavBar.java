@@ -87,8 +87,9 @@ public class GuideNavBar extends AbstractWidget {
 
     private void setScrollOffset(int offset) {
         var maxScrollOffset = 0;
-        if (!rows.isEmpty()) {
-            var contentHeight = rows.get(rows.size() - 1).bottom - rows.get(0).top;
+        var visibleRows = rows.stream().filter(Row::isVisible).toList();
+        if (!visibleRows.isEmpty()) {
+            var contentHeight = visibleRows.get(visibleRows.size() - 1).bottom - visibleRows.get(0).top;
             maxScrollOffset = Math.max(0, contentHeight - height);
         }
         scrollOffset = Mth.clamp(offset, 0, maxScrollOffset);
