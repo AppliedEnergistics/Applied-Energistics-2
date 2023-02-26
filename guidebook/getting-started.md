@@ -17,7 +17,7 @@ navigation:
 To get started with Applied Energistics 2, one must first find a [meteorite](./features/meteorites.md). These are fairly common and tend to leave massive holes in the terrain, so you've probably encountered one in your travels.
 If you haven't, you can craft a <ItemLink id="meteorite_compass" />, which will point toward the nearest <ItemLink id="mysterious_cube" />.
 
-Once you have found a meteorite, mine into its center. You will find certus quartz clusters, certus quartz buds, budding certus quartz of various types, and a Mysterious Cube in the center.
+Once you have found a meteorite, mine into its center. You will find certus quartz clusters, certus quartz buds, [budding certus blocks](../items-blocks-machines/budding_certus.md) of various types, and a Mysterious Cube in the center.
 
 Mine the certus quartz clusters and any certus quartz blocks you find. You can also pick up the budding certus blocks, but without silk touch they will drop as plain certus quartz blocks and even with silk touch they will degrade by one tier.
 
@@ -29,7 +29,7 @@ Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscr
 
 ![A Flawless Budding Certus with a small certus bud on top](assets/assemblies/budding_certus_1.png)
 
-Certus quartz buds will sprout from budding certus blocks, similar to amethyst. If you break a bud that is not finished
+Certus quartz buds will sprout from [budding certus blocks](../items-blocks-machines/budding_certus.md), similar to amethyst. If you break a bud that is not finished
 growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by fortune. If you break a fully grown cluster, it will drop four
 <ItemLink id="certus_quartz_crystal" />s, and fortune will increase this number.
 

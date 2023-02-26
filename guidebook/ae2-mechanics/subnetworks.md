@@ -14,6 +14,8 @@ storage, or it will put the items in your storage cells instead of in the destin
 - To save channels on your main network, like having a pattern provider output to an interface connected to several storage
 busses on several machines, using 1 channel, instead of putting a pattern provider on each machine, using several channels.
 
+Cables with different colors have nothing to do with making a subnetwork other than that they won't connect to each other.
+
 They can be
 
 - an import bus and storage bus set up to transfer items or fluids from one container to another like an item or fluid pipe
@@ -24,4 +26,4 @@ They can be
 - and so on
 
 Very useful for making subnetworks is the <ItemLink id="quartz_fiber"/>. It transfers power between networks without
-connecting them, allowing you to power subnets without needing to put energy acceptors and power cables everywhere
+connecting them, allowing you to power subnets without needing to put energy acceptors and power cables everywhere.

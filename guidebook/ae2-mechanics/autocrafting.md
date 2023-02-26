@@ -10,7 +10,7 @@ navigation:
 ![Some neat looking devices](../assets/assemblies/autocraft_setup_greebles.png)
 
 Autocrafting is one of the primary functions of AE2. Instead of manually having to craft the correct number of each sub-ingredient
-like some sort of *plebian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.
+and labor away like some sort of *plebian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.
 Or automatically keep certain amounts of items in stock through clever emergent behavior. It also works with fluids, and, if you have
 certain addons for extra mod material types, like Mekanism gasses, those materials too. It's pretty great.
 
@@ -148,3 +148,18 @@ Pattern providers have a variety of modes:
 Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](patterns.md)
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
+
+# Molecular Assemblers
+
+![Molecular Assembler](../assets/blocks/molecular_assembler.png)
+
+The molecular assembler takes items input into it and carries out the operation defined by an adjacent <ItemLink id="pattern_provider" />,
+or the inserted <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />,
+then pushes the result to adjacent inventories.
+
+Their main use is next to a <ItemLink id="pattern_provider" />. Pattern providers have special behavior in this case,
+and will send information about the relevant pattern along with the ingredients to adjacent assemblers. Since assemblers auto-eject the results of
+crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider
+is all that is needed to automate crafting patterns.
+
+![Assembler Tower](../assets/assemblies/assembler_tower.png)

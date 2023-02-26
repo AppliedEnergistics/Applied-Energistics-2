@@ -16,16 +16,6 @@ and the [Quantum Network Bridge](quantum-bridge.md).
 
 An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
 
-A Network without a <ItemLink id="controller"/>
-is considered to be Ad-Hoc, and can support up to 8 channel using devices.
-Once you exceed 8 devices the networks channel using devices will shutdown,
-you can either remove devices, or add a <ItemLink id="controller"/>.
-
-While using [Ad-Hoc](ad-hoc-networks.md) networks each device will
-use 1 channel network wide, this is very different from how <ItemLink
-id="controller"/> allocate channels based on
-shortest route.
-
 Channels will consume 1⁄128 ae/t per node they transverse, this means that by
 adding a <ItemLink id="controller"/> for a
 network with 8 devices and over 96 nodes your power usage might actually
@@ -37,6 +27,21 @@ id="controller"/> to the device. If the path is
 already maxed out, some devices may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your
 channels go in the path you desire.
+
+# Ad-Hoc Networks
+
+A Network without a <ItemLink id="controller"/>
+is considered to be Ad-Hoc, and can support up to 8 channel using devices.
+Once you exceed 8 devices the networks channel using devices will shutdown,
+you can either remove devices, or add a <ItemLink id="controller"/>.
+
+Unlike with controllered networks, [smart cables](../items-blocks-machines/cables.md) on ad-hoc networks will show the number
+of channels in use network-wide instead of the number of channels flowing through that specific cable.
+
+While using [Ad-Hoc](ad-hoc-networks.md) networks each device will
+use 1 channel network wide, this is very different from how <ItemLink
+id="controller"/> allocate channels based on
+shortest route.
 
 # A Visual Example
 
