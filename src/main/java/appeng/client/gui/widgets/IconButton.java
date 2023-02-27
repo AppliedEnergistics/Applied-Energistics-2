@@ -81,7 +81,15 @@ public abstract class IconButton extends Button implements ITooltip {
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
 
             if (isFocused()) {
-                fill(poseStack, getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
+                // Draw 1px border with 4 quads, don't rely on the background as it can be disabled.
+                // top
+                fill(poseStack, getX() - 1, getY() - 1, getX() + width + 1, getY(), 0xFFFFFFFF);
+                // left
+                fill(poseStack, getX() - 1, getY(), getX(), getY() + height, 0xFFFFFFFF);
+                // right
+                fill(poseStack, getX() + width, getY(), getX() + width + 1, getY() + height, 0xFFFFFFFF);
+                // bottom
+                fill(poseStack, getX() - 1, getY() + height, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
             }
 
             if (this.halfSize) {
