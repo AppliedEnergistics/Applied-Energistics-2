@@ -22,19 +22,14 @@ import appeng.thirdparty.fabric.MutableQuadView;
 import appeng.thirdparty.fabric.RenderContext;
 
 /**
- * This transformer tints quads.. Feed it the output of BlockColors.colorMultiplier.
- *
- * @author covers1624
+ * This transformer tints quads.
  */
 public class QuadTinter implements RenderContext.QuadTransform {
 
-    private final int abgr;
+    private final int argb;
 
     public QuadTinter(int rgb) {
-        this.abgr = 0xFF << 24 |
-                ((rgb & 0xFF) << 16) |
-                (rgb & 0xFF00) |
-                ((rgb >> 16) & 0xFF);
+        this.argb = 0xFF << 24 | rgb;
     }
 
     @Override
@@ -43,7 +38,7 @@ public class QuadTinter implements RenderContext.QuadTransform {
         quad.colorIndex(-1);
         for (int i = 0; i < 4; i++) {
             int color = quad.spriteColor(i, 0);
-            color = multiplyColor(color, abgr);
+            color = multiplyColor(color, argb);
             quad.spriteColor(i, 0, color);
         }
         return true;
