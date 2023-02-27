@@ -115,7 +115,7 @@ public class TabButton extends Button implements ITooltip {
 
     @Override
     public Rect2i getTooltipArea() {
-        return new Rect2i(getX(), getY(), 22, 22);
+        return new Rect2i(getX(), getY(), width, height);
     }
 
     @Override
