@@ -512,23 +512,25 @@ class CableBuilder {
     // connection and spans the entire block
     // for the given direction
     private static void addStraightDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
+        // Go slightly beyond the block (-0.01f and 16.01f) to prevent z-fighting with facades.
+        // See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6889
         switch (facing) {
             case DOWN, UP -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
-                cubeBuilder.addCube(3, 0, 3, 13, 16, 13);
+                cubeBuilder.addCube(3, -0.01f, 3, 13, 16.01f, 13);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
             }
             case EAST, WEST -> {
                 cubeBuilder.setUvRotation(Direction.SOUTH, 3);
                 cubeBuilder.setUvRotation(Direction.NORTH, 3);
-                cubeBuilder.addCube(0, 3, 3, 16, 13, 13);
+                cubeBuilder.addCube(-0.01f, 3, 3, 16.01f, 13, 13);
                 cubeBuilder.setUvRotation(Direction.SOUTH, 0);
                 cubeBuilder.setUvRotation(Direction.NORTH, 0);
             }
             case NORTH, SOUTH -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.setUvRotation(Direction.WEST, 3);
-                cubeBuilder.addCube(3, 3, 0, 13, 13, 16);
+                cubeBuilder.addCube(3, 3, -0.01f, 13, 13, 16.01f);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
                 cubeBuilder.setUvRotation(Direction.WEST, 0);
             }
