@@ -41,8 +41,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.commons.RemappingClassAdapter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -150,7 +150,7 @@ public class ApiPart implements IPartHelper {
         final DefaultPackageClassNameRemapper remapper = new DefaultPackageClassNameRemapper();
         remapper.inputOutput.put("appeng/api/parts/LayerBase", n.superName);
         remapper.inputOutput.put(originalName, n.name);
-        n.accept(new RemappingClassAdapter(cw, remapper));
+        n.accept(new ClassRemapper(cw, remapper));
         // n.accept( cw );
 
         // n.accept( new TraceClassVisitor( new PrintWriter( System.out ) ) );

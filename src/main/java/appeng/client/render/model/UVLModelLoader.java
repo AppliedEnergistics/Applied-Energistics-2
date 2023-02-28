@@ -32,6 +32,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.EnumHelperClient;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
@@ -54,7 +55,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,11 +74,7 @@ public enum UVLModelLoader implements ICustomModelLoader {
 
     static {
         try {
-            Field modifiers = Field.class.getDeclaredField("modifiers");
-            modifiers.setAccessible(true);
-
             faceBakery = ReflectionHelper.findField(ModelBakery.class, "faceBakery", "field_177607_l");
-            modifiers.set(faceBakery, faceBakery.getModifiers() & (~Modifier.FINAL));
 
             Class clas = Class.forName(ModelLoader.class.getName() + "$VanillaModelWrapper");
             vanillaModelWrapper = clas.getDeclaredConstructor(ModelLoader.class, ResourceLocation.class, ModelBlock.class, boolean.class,
@@ -118,7 +114,7 @@ public enum UVLModelLoader implements ICustomModelLoader {
 
     private static void setFaceBakery(ModelBakery modelBakery, FaceBakery faceBakery) {
         try {
-            UVLModelLoader.faceBakery.set(modelBakery, faceBakery);
+            EnumHelperClient.setFailsafeFieldValue(UVLModelLoader.faceBakery, modelBakery, faceBakery);
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
