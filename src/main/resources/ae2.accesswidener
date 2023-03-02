@@ -111,3 +111,6 @@ extendable method net/minecraft/data/recipes/RecipeProvider getName ()Ljava/lang
 accessible field net/minecraft/core/RegistrySetBuilder entries Ljava/util/List;
 accessible class net/minecraft/core/RegistrySetBuilder$RegistryStub
 accessible field net/minecraft/data/registries/VanillaRegistries BUILDER Lnet/minecraft/core/RegistrySetBuilder;
+
+# workaround to make annihilation plane combinable in anvils
+extendable method net/minecraft/world/item/Item getMaxDamage ()I
