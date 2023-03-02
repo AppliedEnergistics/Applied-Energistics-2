@@ -20,8 +20,9 @@ package appeng.menu.slot;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
@@ -45,8 +46,7 @@ public class AppEngSlot extends Slot {
     /**
      * Tooltip for this slot if the slot is empty.
      */
-    @Nullable
-    private List<Component> emptyTooltip;
+    private Supplier<@Nullable List<Component>> emptyTooltip = () -> null;
 
     private boolean isDraggable = true;
     private AEBaseMenu menu = null;
@@ -83,8 +83,11 @@ public class AppEngSlot extends Slot {
     @Nullable
     public List<Component> getCustomTooltip(Function<ItemStack, List<Component>> getItemTooltip,
             ItemStack carriedItem) {
-        if (getDisplayStack().isEmpty() && emptyTooltip != null) {
-            return emptyTooltip;
+        if (getDisplayStack().isEmpty()) {
+            var tooltip = emptyTooltip.get();
+            if (tooltip != null) {
+                return tooltip;
+            }
         }
         return null;
     }
@@ -304,12 +307,7 @@ public class AppEngSlot extends Slot {
         this.hideAmount = hideAmount;
     }
 
-    @Nullable
-    public List<Component> getEmptyTooltip() {
-        return emptyTooltip;
-    }
-
-    public void setEmptyTooltip(@Nullable List<Component> emptyTooltip) {
+    public void setEmptyTooltip(Supplier<@Nullable List<Component>> emptyTooltip) {
         this.emptyTooltip = emptyTooltip;
     }
 }

@@ -23,8 +23,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
+import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
+import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.Side;
@@ -32,8 +36,8 @@ import appeng.core.localization.Tooltips;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
+import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.OutputSlot;
-import appeng.menu.slot.RestrictedInputSlot;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen
@@ -54,31 +58,46 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     @GuiSync(3)
     public int processingTime = -1;
 
+    @GuiSync(7)
+    public YesNo separateSides = YesNo.NO;
+    @GuiSync(8)
+    public YesNo autoExport = YesNo.NO;
+
     public InscriberMenu(int id, Inventory ip, InscriberBlockEntity host) {
         super(TYPE, id, ip, host);
 
         var inv = host.getInternalInventory();
 
-        RestrictedInputSlot top = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv, 0);
-        top.setStackLimit(1);
-        top.setEmptyTooltip(Tooltips.inputSlot(Side.TOP));
+        var top = new AppEngSlot(inv, 0);
+        top.setIcon(Icon.BACKGROUND_PLATE);
+        top.setEmptyTooltip(
+                () -> separateSides == YesNo.YES ? Tooltips.inputSlot(Side.TOP) : Tooltips.inputSlot(Side.ANY));
         this.top = this.addSlot(top, SlotSemantics.INSCRIBER_PLATE_TOP);
 
-        RestrictedInputSlot bottom = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_PLATE, inv,
-                1);
-        bottom.setStackLimit(1);
-        bottom.setEmptyTooltip(Tooltips.inputSlot(Side.BOTTOM));
+        var bottom = new AppEngSlot(inv, 1);
+        bottom.setIcon(Icon.BACKGROUND_PLATE);
+        bottom.setEmptyTooltip(
+                () -> separateSides == YesNo.YES ? Tooltips.inputSlot(Side.BOTTOM) : Tooltips.inputSlot(Side.ANY));
         this.bottom = this.addSlot(bottom, SlotSemantics.INSCRIBER_PLATE_BOTTOM);
 
-        RestrictedInputSlot middle = new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.INSCRIBER_INPUT, inv,
-                2);
-        middle.setStackLimit(1);
-        middle.setEmptyTooltip(Tooltips.inputSlot(Side.LEFT, Side.RIGHT, Side.BACK, Side.FRONT));
+        var middle = new AppEngSlot(inv, 2);
+        middle.setIcon(Icon.BACKGROUND_INGOT);
+        middle.setEmptyTooltip(
+                () -> separateSides == YesNo.YES ? Tooltips.inputSlot(Side.LEFT, Side.RIGHT, Side.BACK, Side.FRONT)
+                        : Tooltips.inputSlot(Side.ANY));
         this.middle = this.addSlot(middle, SlotSemantics.MACHINE_INPUT);
 
         var output = new OutputSlot(inv, 3, null);
-        output.setEmptyTooltip(Tooltips.outputSlot(Side.LEFT, Side.RIGHT, Side.BACK, Side.FRONT));
+        output.setEmptyTooltip(
+                () -> separateSides == YesNo.YES ? Tooltips.outputSlot(Side.LEFT, Side.RIGHT, Side.BACK, Side.FRONT)
+                        : Tooltips.outputSlot(Side.ANY));
         this.addSlot(output, SlotSemantics.MACHINE_OUTPUT);
+    }
+
+    @Override
+    protected void loadSettingsFromHost(IConfigManager cm) {
+        this.separateSides = getHost().getConfigManager().getSetting(Settings.INSCRIBER_SEPARATE_SIDES);
+        this.autoExport = getHost().getConfigManager().getSetting(Settings.AUTO_EXPORT);
     }
 
     @Override
@@ -131,5 +150,13 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     @Override
     public int getMaxProgress() {
         return this.maxProcessingTime;
+    }
+
+    public YesNo getSeparateSides() {
+        return separateSides;
+    }
+
+    public YesNo getAutoExport() {
+        return autoExport;
     }
 }

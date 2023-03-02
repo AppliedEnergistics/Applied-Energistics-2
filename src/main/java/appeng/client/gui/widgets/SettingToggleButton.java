@@ -289,6 +289,20 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.ENTER, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.LOCK_UNTIL_RESULT,
                     ButtonToolTips.LockCraftingMode,
                     ButtonToolTips.LockCraftingUntilResultReturned);
+
+            registerApp(Icon.INSCRIBER_SEPARATE_SIDES, Settings.INSCRIBER_SEPARATE_SIDES, YesNo.YES,
+                    ButtonToolTips.InscriberSideness,
+                    ButtonToolTips.InscriberSidenessSeparate);
+            registerApp(Icon.INSCRIBER_COMBINED_SIDES, Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO,
+                    ButtonToolTips.InscriberSideness,
+                    ButtonToolTips.InscriberSidenessCombined);
+
+            registerApp(Icon.AUTO_EXPORT_ON, Settings.AUTO_EXPORT, YesNo.YES,
+                    ButtonToolTips.AutoExport,
+                    ButtonToolTips.AutoExportOn);
+            registerApp(Icon.AUTO_EXPORT_OFF, Settings.AUTO_EXPORT, YesNo.NO,
+                    ButtonToolTips.AutoExport,
+                    ButtonToolTips.AutoExportOff);
         }
     }
 

@@ -19,7 +19,9 @@
 package appeng.blockentity.misc;
 
 import java.util.EnumSet;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -37,6 +39,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
+import appeng.api.config.Setting;
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -52,12 +57,15 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
+import appeng.api.util.IConfigManager;
+import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkPowerBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -69,29 +77,41 @@ import appeng.util.inv.filter.IAEItemFilter;
  * @version rv2
  * @since rv0
  */
-public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements IGridTickable, IUpgradeableObject {
+public class InscriberBlockEntity extends AENetworkPowerBlockEntity
+        implements IGridTickable, IUpgradeableObject, IConfigurableObject {
     private final int maxProcessingTime = 100;
 
     private final IUpgradeInventory upgrades;
+    private final ConfigManager configManager;
     private int processingTime = 0;
     // cycles from 0 - 16, at 8 it preforms the action, at 16 it re-enables the
     // normal routine.
     private boolean smash;
     private int finalStep;
     private long clientStart;
-    private final AppEngInternalInventory topItemHandler = new AppEngInternalInventory(this, 1, 1);
-    private final AppEngInternalInventory bottomItemHandler = new AppEngInternalInventory(this, 1, 1);
-    private final AppEngInternalInventory sideItemHandler = new AppEngInternalInventory(this, 2, 1);
+
+    // Internally visible inventories
+    private final IAEItemFilter baseFilter = new BaseFilter();
+    private final AppEngInternalInventory topItemHandler = new AppEngInternalInventory(this, 1, 64, baseFilter);
+    private final AppEngInternalInventory bottomItemHandler = new AppEngInternalInventory(this, 1, 64, baseFilter);
+    private final AppEngInternalInventory sideItemHandler = new AppEngInternalInventory(this, 2, 64, baseFilter);
+    // Combined internally visible inventories
+    private final InternalInventory inv = new CombinedInternalInventory(this.topItemHandler,
+            this.bottomItemHandler, this.sideItemHandler);
+
+    // "Hack" to see if active recipe changed.
+    private final Map<InternalInventory, ItemStack> lastStacks = new IdentityHashMap<>(Map.of(
+            topItemHandler, ItemStack.EMPTY, bottomItemHandler, ItemStack.EMPTY,
+            sideItemHandler, ItemStack.EMPTY));
 
     // The externally visible inventories (with filters applied)
     private final InternalInventory topItemHandlerExtern;
     private final InternalInventory bottomItemHandlerExtern;
     private final InternalInventory sideItemHandlerExtern;
+    // Combined externally visible inventories
+    private final InternalInventory combinedItemHandlerExtern;
 
     private InscriberRecipe cachedTask = null;
-
-    private final InternalInventory inv = new CombinedInternalInventory(this.topItemHandler,
-            this.bottomItemHandler, this.sideItemHandler);
 
     public InscriberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -102,13 +122,17 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         this.setInternalMaxPower(1600);
 
         this.upgrades = UpgradeInventories.forMachine(AEBlocks.INSCRIBER, 3, this::saveChanges);
+        this.configManager = new ConfigManager(this::onConfigChanged);
+        this.configManager.registerSetting(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO);
+        this.configManager.registerSetting(Settings.AUTO_EXPORT, YesNo.NO);
 
-        this.sideItemHandler.setMaxStackSize(1, 64);
+        var automationFilter = new AutomationFilter();
+        this.topItemHandlerExtern = new FilteredInternalInventory(this.topItemHandler, automationFilter);
+        this.bottomItemHandlerExtern = new FilteredInternalInventory(this.bottomItemHandler, automationFilter);
+        this.sideItemHandlerExtern = new FilteredInternalInventory(this.sideItemHandler, automationFilter);
 
-        var filter = new ItemHandlerFilter();
-        this.topItemHandlerExtern = new FilteredInternalInventory(this.topItemHandler, filter);
-        this.bottomItemHandlerExtern = new FilteredInternalInventory(this.bottomItemHandler, filter);
-        this.sideItemHandlerExtern = new FilteredInternalInventory(this.sideItemHandler, filter);
+        this.combinedItemHandlerExtern = new CombinedInternalInventory(topItemHandlerExtern, bottomItemHandlerExtern,
+                sideItemHandlerExtern);
 
         this.setPowerSides(getGridConnectableSides(getOrientation()));
     }
@@ -122,12 +146,14 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
         this.upgrades.writeToNBT(data, "upgrades");
+        this.configManager.writeToNBT(data);
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
         this.upgrades.readFromNBT(data, "upgrades");
+        this.configManager.readFromNBT(data);
     }
 
     @Override
@@ -205,14 +231,18 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
         if (slot == 0) {
+            boolean isEmpty = inv.getStackInSlot(0).isEmpty();
+            boolean wasEmpty = lastStacks.get(inv).isEmpty();
+            lastStacks.put(inv, inv.getStackInSlot(0).copy());
+            if (isEmpty == wasEmpty) {
+                return; // Don't care if it's just a count change
+            }
+
+            // Reset recipe
             this.setProcessingTime(0);
+            this.cachedTask = null;
         }
 
-        if (!this.isSmash()) {
-            this.markForUpdate();
-        }
-
-        this.cachedTask = null;
         getMainNode().ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
     }
 
@@ -220,10 +250,15 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
     // @Override
     @Override
     public TickingRequest getTickingRequest(IGridNode node) {
-        return new TickingRequest(TickRates.Inscriber, !this.hasWork(), false);
+        return new TickingRequest(TickRates.Inscriber, !hasAutoExportWork() && !this.hasCraftWork(), false);
     }
 
-    private boolean hasWork() {
+    private boolean hasAutoExportWork() {
+        return !this.sideItemHandler.getStackInSlot(1).isEmpty()
+                && configManager.getSetting(Settings.AUTO_EXPORT) == YesNo.YES;
+    }
+
+    private boolean hasCraftWork() {
         if (this.getTask() != null) {
             return true;
         }
@@ -242,11 +277,6 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
                 return null; // No input to handle
             }
 
-            // If the player somehow managed to insert more than one item, we bail here
-            if (input.getCount() > 1 || plateA.getCount() > 1 || plateB.getCount() > 1) {
-                return null;
-            }
-
             this.cachedTask = InscriberRecipes.findRecipe(level, input, plateA, plateB, true);
         }
         return this.cachedTask;
@@ -259,15 +289,15 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
             if (this.finalStep == 8) {
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getResultItem(level.registryAccess()).copy();
+                    final ItemStack outputCopy = out.getResultItem().copy();
 
                     if (this.sideItemHandler.insertItem(1, outputCopy, false).isEmpty()) {
                         this.setProcessingTime(0);
                         if (out.getProcessType() == InscriberProcessType.PRESS) {
-                            this.topItemHandler.setItemDirect(0, ItemStack.EMPTY);
-                            this.bottomItemHandler.setItemDirect(0, ItemStack.EMPTY);
+                            this.topItemHandler.extractItem(0, 1, false);
+                            this.bottomItemHandler.extractItem(0, 1, false);
                         }
-                        this.sideItemHandler.setItemDirect(0, ItemStack.EMPTY);
+                        this.sideItemHandler.extractItem(0, 1, false);
                     }
                 }
                 this.saveChanges();
@@ -294,12 +324,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
                 if (powerReq > powerThreshold) {
                     src.extractAEPower(powerConsumption, Actionable.MODULATE, PowerMultiplier.CONFIG);
-
-                    if (this.getProcessingTime() == 0) {
-                        this.setProcessingTime(this.getProcessingTime() + speedFactor);
-                    } else {
-                        this.setProcessingTime(this.getProcessingTime() + ticksSinceLastCall * speedFactor);
-                    }
+                    this.setProcessingTime(this.getProcessingTime() + speedFactor);
                 }
             });
 
@@ -307,7 +332,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
                 this.setProcessingTime(this.getMaxProcessingTime());
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getResultItem(level.registryAccess()).copy();
+                    final ItemStack outputCopy = out.getResultItem().copy();
                     if (this.sideItemHandler.insertItem(1, outputCopy, true).isEmpty()) {
                         this.setSmash(true);
                         this.finalStep = 0;
@@ -317,7 +342,44 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
             }
         }
 
-        return this.hasWork() ? TickRateModulation.URGENT : TickRateModulation.SLEEP;
+        if (this.pushOutResult()) {
+            return TickRateModulation.URGENT;
+        }
+
+        return this.hasCraftWork() ? TickRateModulation.URGENT
+                : this.hasAutoExportWork() ? TickRateModulation.SLOWER : TickRateModulation.SLEEP;
+    }
+
+    /**
+     * @return true if something was pushed, false otherwise
+     */
+    private boolean pushOutResult() {
+        if (!this.hasAutoExportWork()) {
+            return false;
+        }
+
+        var pushSides = EnumSet.allOf(Direction.class);
+        if (isSeparateSides()) {
+            pushSides.remove(this.getTop());
+            pushSides.remove(this.getTop().getOpposite());
+        }
+
+        for (var dir : pushSides) {
+            var target = InternalInventory.wrapExternal(level, getBlockPos().relative(dir), dir.getOpposite());
+
+            if (target != null) {
+                int startItems = this.sideItemHandler.getStackInSlot(1).getCount();
+                this.sideItemHandler.insertItem(1, target.addItems(this.sideItemHandler.extractItem(1, 64, false)),
+                        false);
+                int endItems = this.sideItemHandler.getStackInSlot(1).getCount();
+
+                if (startItems != endItems) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Nullable
@@ -332,20 +394,47 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         return super.getSubInventory(id);
     }
 
+    private boolean isSeparateSides() {
+        return this.configManager.getSetting(Settings.INSCRIBER_SEPARATE_SIDES) == YesNo.YES;
+    }
+
     @Override
     public InternalInventory getExposedInventoryForSide(Direction facing) {
-        if (facing == this.getTop()) {
-            return this.topItemHandlerExtern;
-        } else if (facing == this.getTop().getOpposite()) {
-            return this.bottomItemHandlerExtern;
+        if (isSeparateSides()) {
+            if (facing == this.getTop()) {
+                return this.topItemHandlerExtern;
+            } else if (facing == this.getTop().getOpposite()) {
+                return this.bottomItemHandlerExtern;
+            } else {
+                return this.sideItemHandlerExtern;
+            }
         } else {
-            return this.sideItemHandlerExtern;
+            return this.combinedItemHandlerExtern;
         }
     }
 
     @Override
     public IUpgradeInventory getUpgrades() {
         return upgrades;
+    }
+
+    @Override
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+
+    private void onConfigChanged(IConfigManager manager, Setting<?> setting) {
+        if (setting == Settings.AUTO_EXPORT) {
+            getMainNode().ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
+        }
+
+        if (setting == Settings.INSCRIBER_SEPARATE_SIDES) {
+            // Send a block update since our exposed inventory changed...
+            // In theory this shouldn't be necessary, but we do it just in case...
+            markForUpdate();
+        }
+
+        saveChanges();
     }
 
     public long getClientStart() {
@@ -390,15 +479,71 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
         return null;
     }
 
-    /**
-     * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
-     * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
-     * another mod attempted insertion of items when there were already items in the slot.
-     */
-    private class ItemHandlerFilter implements IAEItemFilter {
+    public class BaseFilter implements IAEItemFilter {
+        @Override
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            // output slot
+            if (slot == 1) {
+                // slots and automation prevent insertion into the output,
+                // we need it here for the inscriber's own internal logic
+                return true;
+            }
+
+            // always allow name press
+            if (inv == topItemHandler || inv == bottomItemHandler) {
+                if (AEItems.NAME_PRESS.isSameAs(stack)) {
+                    return true;
+                }
+            }
+
+            if (inv == sideItemHandler && (AEItems.NAME_PRESS.isSameAs(topItemHandler.getStackInSlot(0))
+                    || AEItems.NAME_PRESS.isSameAs(bottomItemHandler.getStackInSlot(0)))) {
+                // can always rename anything
+                return true;
+            }
+
+            // only allow if is a proper recipe match
+            ItemStack bot = bottomItemHandler.getStackInSlot(0);
+            ItemStack middle = sideItemHandler.getStackInSlot(0);
+            ItemStack top = topItemHandler.getStackInSlot(0);
+
+            if (inv == bottomItemHandler)
+                bot = stack;
+            if (inv == sideItemHandler)
+                middle = stack;
+            if (inv == topItemHandler)
+                top = stack;
+
+            for (var recipe : InscriberRecipes.getRecipes(getLevel())) {
+                if (!middle.isEmpty() && !recipe.getMiddleInput().test(middle)) {
+                    continue;
+                }
+
+                if (bot.isEmpty() && top.isEmpty()) {
+                    return true;
+                } else if (bot.isEmpty()) {
+                    if (recipe.getTopOptional().test(top) || recipe.getBottomOptional().test(top)) {
+                        return true;
+                    }
+                } else if (top.isEmpty()) {
+                    if (recipe.getBottomOptional().test(bot) || recipe.getTopOptional().test(bot)) {
+                        return true;
+                    }
+                } else {
+                    if ((recipe.getTopOptional().test(top) && recipe.getBottomOptional().test(bot))
+                            || (recipe.getBottomOptional().test(top) && recipe.getTopOptional().test(bot))) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+    public class AutomationFilter implements IAEItemFilter {
         @Override
         public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-            if (InscriberBlockEntity.this.isSmash()) {
+            if (isSmash()) {
                 return false;
             }
 
@@ -408,22 +553,10 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity implements I
 
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            // output slot
             if (slot == 1) {
-                return false;
+                return false; // No inserting into the output slot
             }
-
-            if (InscriberBlockEntity.this.isSmash()) {
-                return false;
-            }
-
-            if (inv == InscriberBlockEntity.this.topItemHandler || inv == InscriberBlockEntity.this.bottomItemHandler) {
-                if (AEItems.NAME_PRESS.isSameAs(stack)) {
-                    return true;
-                }
-                return InscriberRecipes.isValidOptionalIngredient(getLevel(), stack);
-            }
-            return true;
+            return !isSmash();
         }
     }
 
