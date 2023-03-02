@@ -105,6 +105,11 @@ so you don't have to have all your terminals be purple. Fluix cables connect to 
 **If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
 It will show how channels are routed through your network, making their behavior more understandable.**
 
+# Another Note
+
+**These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
+into them, all they do is connect AE2 devices together into a network.
+
 # Glass Cable
 
 ![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
@@ -151,11 +156,8 @@ id="fluix_covered_dense_cable"/>.
 Higher Capacity cable, can carry 32 channels unlike standard cable which can only carry 8,
 however it doesn't support buses so you must first step down from dense to a
 smaller cable (such as <ItemLink
-id="fluix_glass_cable"/> or <ItemLink
-id="fluix_smart_cable"/>) before using buses or
-panels. Shows load similarly to <ItemLink
-id="fluix_smart_cable"/>, with each line lit
-representing four channels in use.
+id="fluix_glass_cable"/> or <ItemLink id="fluix_smart_cable"/>) before using buses or
+panels.
 
 <Recipe id="network/cables/dense_covered_fluix" />
 <RecipeFor id="blue_covered_dense_cable" />
@@ -168,8 +170,12 @@ While bearing some similarity to <ItemLink id="fluix_covered_cable"/> in appeara
 provide diagnostic function by visualizing the channel usage on the cables,
 the channels appear as lit colored lines that run along the black stripe on
 the cables giving you an understanding of how your channels are being used on
-your network. The first four channels show as lines matching the color of the
-cable, the next four show as white lines.
+your network. For regular smart cables, the first four channels show as lines matching the color of the
+cable, the next four show as white lines. For dense smart cable, each stripe represents 4 channels.
+
+On networks with a <ItemLink id="controller"/>, the lines on the cables show the exact path the channels take.
+
+Smart cables on ad-hoc networks will instead show the number of channels in use network-wide instead of the number of channels flowing through that specific cable.
 
 These can also be colored in the same manner as <ItemLink
 id="fluix_glass_cable"/>.

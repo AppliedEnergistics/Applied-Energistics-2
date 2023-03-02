@@ -10,7 +10,7 @@ navigation:
 ![Some neat looking devices](../assets/assemblies/autocraft_setup_greebles.png)
 
 Autocrafting is one of the primary functions of AE2. Instead of manually having to craft the correct number of each sub-ingredient
-like some sort of *plebian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.
+and labor away like some sort of *plebian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.
 Or automatically keep certain amounts of items in stock through clever emergent behavior. It also works with fluids, and, if you have
 certain addons for extra mod material types, like Mekanism gasses, those materials too. It's pretty great.
 
@@ -41,8 +41,8 @@ Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of <ItemL
 
 There are several different types of pattern for different things:
 
-- <ItemLink id="crafting_pattern" />s encode recipes made by a crafting table. They can be put directly in a <ItemLink id="molecular_assembler" /> to make it
-craft the result whenever given the ingredients, but their main use is in a <ItemLink id="pattern_provider" /> next to a molecular assembler.
+- <ItemLink id="crafting_pattern" />s encode recipes made by a crafting table. While they can be put directly in a <ItemLink id="molecular_assembler" /> to make it
+craft the result whenever given the ingredients, their main use is in a <ItemLink id="pattern_provider" /> next to a molecular assembler.
 Pattern providers have special behavior in this case, and will send the relevant pattern along with the ingredients to adjacent assemblers.
 Since assemblers auto-eject the results of crafts to adjacent inventories, an assembler on a pattern provider is all that is needed to automate crafting patterns.
 
@@ -88,7 +88,7 @@ intermediate ingredients involved in a craft, so larger or more storages are req
 with more ingredients.
 - <ItemLink id="crafting_accelerator" />s, they make the system send out more ingredient batches from pattern providers.
 This allows, say, a pattern provider surrounded by 6 molecular assemblers to send ingredients to (and thus use) all 6 at once instead of just one.
-- <ItemLink id="crafting_monitor" />s, they display the job the CPU is handling at the moment.
+- <ItemLink id="crafting_monitor" />s, they display the job the CPU is handling at the moment. They can be colored via a <ItemLink id="color_applicator" />
 - <ItemLink id="crafting_unit" />s, they simply fill space in order to make the CPU a rectangular prism.
 
 Each crafting CPU handles 1 request or job, so if you want to request both a calculation processor and 256 smooth stone at once, you need 2 CPU multiblocks.
@@ -104,9 +104,12 @@ their [patterns](patterns.md) to adjacent inventories, and items can be inserted
 a channel can be saved by piping the output of a machine back into a nearby pattern provider (often the one that pushed the ingredients)
 instead of using an <ItemLink id="import_bus" /> to pull the output of the machine into the network.
 
-Of note, since they push the ingredients directly from [network storage](../ae2-mechanics/import-export-storage.md), they
+Of note, since they push the ingredients directly from the [crafting storage](./items-blocks-machines/crafting-storages.md) in a crafting CPU, they
 never actually contain the ingredients in their inventory, so you cannot pipe out from them. You have to have the provider push
 to another inventory (like a barrel) then pipe from that.
+
+Also of note, the provider has to push ALL of the ingredients at once, it can't push half-batches. This is useful
+to exploit.
 
 Pattern providers have a special interaction with interfaces on [subnets](../ae2-mechanics/subnetworks.md): if the interface is unmodified (nothing in the request slots)
 the provider will skip the interface entirely and push directly to that subnet's [storage](../ae2-mechanics/import-export-storage.md),
@@ -145,3 +148,18 @@ Pattern providers have a variety of modes:
 Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](patterns.md)
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
+
+# Molecular Assemblers
+
+![Molecular Assembler](../assets/blocks/molecular_assembler.png)
+
+The molecular assembler takes items input into it and carries out the operation defined by an adjacent <ItemLink id="pattern_provider" />,
+or the inserted <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />,
+then pushes the result to adjacent inventories.
+
+Their main use is next to a <ItemLink id="pattern_provider" />. Pattern providers have special behavior in this case,
+and will send information about the relevant pattern along with the ingredients to adjacent assemblers. Since assemblers auto-eject the results of
+crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider
+is all that is needed to automate crafting patterns.
+
+![Assembler Tower](../assets/assemblies/assembler_tower.png)

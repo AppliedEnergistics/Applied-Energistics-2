@@ -2,6 +2,7 @@
 navigation:
   parent: example-setups/example-setups-index.md
   title: Item/Fluid "Pipe" Subnet
+  icon: storage_bus
 ---
 # Item/Fluid "Pipe" Subnet
 A simple method of emulating an item and/or fluid pipe with AE2 devices, useful for, well, anything you'd use an item or fluid pipe for.
