@@ -36,7 +36,9 @@ There are several different types of pattern for different things:
   near or distant future". They are how you will autocraft with almost any modded machine, or furnaces and the like. Because they are so
   general in use and do not care what happens between pushing ingredients and receiving the result, you can do some really funky stuff, like inputting
   the ingredients into an entire complex factory production chain which will sort out stuff, take in other ingredients from infinitely-producing
-  farms, print the entirety of the Bee Movie script, the ME system does not care as long as it gets the result the pattern specifies.
+  farms, print the entirety of the Bee Movie script, the ME system does not care as long as it gets the result the pattern specifies. In fact,
+  it doesn't even care if the ingredients are in any way related to the result. You could tell it "1 cherry wood planks = 1 nether star" and have
+  your wither farm kill a wither upon receiving a cherry wood planks and it would work.
 
 Multiple pattern providers with identical patterns are supported and work in parallel. Additionally, you can have a pattern say,
 for example, 8 cobblestone = 8 stone instead of 1 cobblestone = 1 stone, and the pattern provider will insert 8 cobblestone into
