@@ -79,7 +79,7 @@ import appeng.util.inv.filter.IAEItemFilter;
  */
 public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         implements IGridTickable, IUpgradeableObject, IConfigurableObject {
-    private final int maxProcessingTime = 100;
+    private static final int MAX_PROCESSING_STEPS = 200;
 
     private final IUpgradeInventory upgrades;
     private final ConfigManager configManager;
@@ -121,7 +121,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 .addService(IGridTickable.class, this);
         this.setInternalMaxPower(1600);
 
-        this.upgrades = UpgradeInventories.forMachine(AEBlocks.INSCRIBER, 3, this::saveChanges);
+        this.upgrades = UpgradeInventories.forMachine(AEBlocks.INSCRIBER, 4, this::saveChanges);
         this.configManager = new ConfigManager(this::onConfigChanged);
         this.configManager.registerSetting(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO);
         this.configManager.registerSetting(Settings.AUTO_EXPORT, YesNo.NO);
@@ -243,6 +243,11 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
             this.cachedTask = null;
         }
 
+        // Update displayed stacks on the client
+        if (!this.isSmash()) {
+            this.markForUpdate();
+        }
+
         getMainNode().ifPresent((grid, node) -> grid.getTickManager().wakeDevice(node));
     }
 
@@ -311,8 +316,14 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 IEnergyService eg = grid.getEnergyService();
                 IEnergySource src = this;
 
-                // Base 1, increase by 1 for each card
-                final int speedFactor = 1 + this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD);
+                // Note: required ticks = 16 + ceil(MAX_PROCESSING_STEPS / speedFactor)
+                final int speedFactor = switch (this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD)) {
+                    default -> 2; // 116 ticks
+                    case 1 -> 3; // 83 ticks
+                    case 2 -> 5; // 56 ticks
+                    case 3 -> 10; // 36 ticks
+                    case 4 -> 50; // 20 ticks
+                };
                 final int powerConsumption = 10 * speedFactor;
                 final double powerThreshold = powerConsumption - 0.01;
                 double powerReq = this.extractAEPower(powerConsumption, Actionable.SIMULATE, PowerMultiplier.CONFIG);
@@ -457,7 +468,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     public int getMaxProcessingTime() {
-        return this.maxProcessingTime;
+        return this.MAX_PROCESSING_STEPS;
     }
 
     public int getProcessingTime() {

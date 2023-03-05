@@ -143,7 +143,7 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.SPEED_CARD, AEBlocks.MOLECULAR_ASSEMBLER, 5);
 
         // Inscriber
-        Upgrades.add(AEItems.SPEED_CARD, AEBlocks.INSCRIBER, 3);
+        Upgrades.add(AEItems.SPEED_CARD, AEBlocks.INSCRIBER, 4);
     }
 
 }
