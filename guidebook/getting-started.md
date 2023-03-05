@@ -19,7 +19,7 @@ If you haven't, you can craft a <ItemLink id="meteorite_compass" />, which will 
 
 Once you have found a meteorite, mine into its center. You will find certus quartz clusters, certus quartz buds, [budding certus blocks](../items-blocks-machines/budding_certus.md) of various types, and a Mysterious Cube in the center.
 
-Mine the certus quartz clusters and any certus quartz blocks you find. You can also pick up the budding certus blocks, but without silk touch they will drop as plain certus quartz blocks and even with silk touch they will degrade by one tier.
+Mine the certus quartz clusters and any certus quartz blocks you find. You can also pick up the budding certus blocks, but without silk touch they will degrade by 1 tier.
 
 Do not break any flawless budding certus, as even with silk touch they will degrade to flawed budding certus, and it is impossible to repair them back to flawless.
 
