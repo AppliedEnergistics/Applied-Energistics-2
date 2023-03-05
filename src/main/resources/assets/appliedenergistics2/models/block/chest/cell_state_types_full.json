@@ -1,37 +1,23 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"front": "appliedenergistics2:blocks/chest/cell_state_backdrop",
-		"state": "appliedenergistics2:blocks/chest/cell_state_types_full",
-		"top_front": "appliedenergistics2:blocks/drive_cell_states_emissive"
+		"backdrop": "appliedenergistics2:blocks/chest/cell_state_backdrop",
+		"state": "appliedenergistics2:blocks/chest/cell_state_types_full"
 	},
 	"elements": [
 		{
-			"name": "Cell Backdrop",
 			"from": [5, 4, 0],
 			"to": [11, 6, 1],
-			"shade": false,
 			"faces": {
-				"north": {"uv": [5, 10, 11, 12], "texture": "#front"},
-				"up": {"uv": [5, 10, 11, 11], "texture": "#front"}
+				"north": {"uv": [5, 10, 11, 12], "texture": "#backdrop"},
+				"up": {"uv": [5, 9, 11, 10], "texture": "#backdrop"}
 			}
 		},
 		{
-			"name": "Cell Light",
-			"from": [9, 4, 0],
-			"to": [10, 5, 0],
-			"shade": false,
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
 			"faces": {
-				"north": {"uv": [6, 11, 7, 12], "texture": "#state"}
-			}
-		},
-		{
-			"name": "Cell Light",
-			"from": [9, 4, 0],
-			"to": [10, 5, 0],
-			"shade": false,
-			"faces": {
-				"north": {"uv": [1, 5, 2, 6], "texture": "#top_front"}
+				"north": {"uv": [0, 0, 16, 16], "texture": "#state"}
 			}
 		}
 	]

@@ -18,7 +18,6 @@
 
 package appeng.client.render.model;
 
-
 import appeng.block.storage.BlockDrive;
 import appeng.block.storage.DriveSlotState;
 import appeng.block.storage.DriveSlotsState;
@@ -38,7 +37,6 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 public class DriveBakedModel implements IBakedModel {
     private final IBakedModel bakedBase;
@@ -72,9 +70,10 @@ public class DriveBakedModel implements IBakedModel {
                     Matrix4f transform = new Matrix4f();
                     transform.setIdentity();
 
-                    // Position this drive model copy at the correct slot. The transform is based on the
+                    // Position this drive model copy at the correct slot. The transform is based on
+                    // the
                     // cell-model being in slot 0,0 at the top left of the drive.
-                    float xOffset = -col * 7 / 16.0f;
+                    float xOffset = -col * 8 / 16.0f;
                     float yOffset = -row * 3 / 16.0f;
 
                     transform.setTranslation(new Vector3f(xOffset, yOffset, 0));
