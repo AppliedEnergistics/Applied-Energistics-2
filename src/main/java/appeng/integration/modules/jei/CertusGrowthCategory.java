@@ -193,13 +193,15 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
                     var decayingVariants = new ArrayList<>(BUDDING_QUARTZ_VARIANTS);
                     decayingVariants.removeIf(is -> !BUDDING_QUARTZ_DECAY_ORDER.contains(is.getItem()));
 
-                    builder.addSlot(RecipeIngredientRole.INPUT, centerX - 40, 30)
+                    var slot1 = builder.addSlot(RecipeIngredientRole.INPUT, centerX - 40, 30)
                             .setBackground(slotBackground, -1, -1)
                             .addItemStacks(decayingVariants);
 
-                    builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 30)
+                    var slot2 = builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 30)
                             .setBackground(slotBackground, -1, -1)
                             .addItemStacks(BUDDING_QUARTZ_DECAY_ORDER.stream().map(ItemStack::new).toList());
+
+                    builder.createFocusLink(slot1, slot2);
                 }
             };
             /*
@@ -225,9 +227,9 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                     widgets.add(factory.unfilledArrow(centerX - 12, 22));
 
-                    widgets.add(factory.label(centerX, 42, ItemModText.SILK_TOUCH_CAUSES_LESS_DECAY.text())
+                    widgets.add(factory.label(centerX, 42, ItemModText.SILK_TOUCH_PREVENTS_DECAY_FOR_IMPERFECT.text())
                             .bodyText());
-                    widgets.add(factory.label(centerX, 53, ItemModText.SPATIAL_IO_CAUSES_NONE.text())
+                    widgets.add(factory.label(centerX, 53, ItemModText.SPATIAL_IO_NEVER_CAUSES_ANY_DECAY.text())
                             .bodyText());
                 }
             };
