@@ -135,6 +135,9 @@ public class OreHelper {
 
         List<OreDictFilterMatcher.MatchRule> rulesList = OreDictFilterMatcher.parseExpression(oreExp);
         for (String ore : OreDictionary.getOreNames()) {
+            if (ore == null) {
+                continue;
+            }
             if (OreDictFilterMatcher.matches(rulesList, ore)) {
                 matchingIds.add(OreDictionary.getOreID(ore));
             }
