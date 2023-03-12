@@ -13,6 +13,20 @@ public interface MdxJsxElementFields extends UnistNode {
 
     List<? extends UnistNode> children();
 
+    default boolean hasAttribute(String name) {
+        for (var attributeNode : attributes()) {
+            if (attributeNode instanceof MdxJsxAttribute jsxAttribute) {
+                if (name.equals(jsxAttribute.name)) {
+                    return true;
+                }
+            } else if (attributeNode instanceof MdxJsxExpressionAttribute jsxExpressionAttribute) {
+                throw new IllegalStateException("Attribute spreads unsupported!");
+            }
+        }
+
+        return false;
+    }
+
     default String getAttributeString(String name, String defaultValue) {
         for (var attributeNode : attributes()) {
             if (attributeNode instanceof MdxJsxAttribute jsxAttribute) {

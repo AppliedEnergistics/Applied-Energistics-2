@@ -13,7 +13,11 @@ public interface InteractiveElement {
         return false;
     }
 
-    default Optional<GuideTooltip> getTooltip() {
+    /**
+     * @param x X position of the mouse in document coordinates.
+     * @param y Y position of the mouse in document coordinates.
+     */
+    default Optional<GuideTooltip> getTooltip(float x, float y) {
         return Optional.empty();
     }
 }

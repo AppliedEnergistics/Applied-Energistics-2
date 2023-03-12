@@ -298,6 +298,8 @@ class LineBuilder implements Consumer<LytFlowContent> {
             return;
         }
 
+        context.clearFloatsAbove(lineBoxY);
+
         var lineHeight = 1;
         var lineWidth = 0;
         for (var el = openLineElement; el != null; el = el.next) {

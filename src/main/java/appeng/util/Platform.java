@@ -1,3 +1,4 @@
+
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
@@ -36,6 +37,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -106,6 +108,7 @@ public class Platform {
 
     // This hack is used to allow tests and the guidebook to provide a recipe manager before the client loads a world
     public static RecipeManager fallbackClientRecipeManager;
+    public static RegistryAccess fallbackClientRegistryAccess;
 
     public static RecipeManager getClientRecipeManager() {
         var minecraft = Minecraft.getInstance();

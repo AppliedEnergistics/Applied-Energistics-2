@@ -12,6 +12,8 @@ import appeng.client.guidebook.compiler.tags.FloatingImageCompiler;
 import appeng.client.guidebook.compiler.tags.ItemGridCompiler;
 import appeng.client.guidebook.compiler.tags.ItemLinkCompiler;
 import appeng.client.guidebook.compiler.tags.RecipeCompiler;
+import appeng.client.guidebook.scene.BlockImageTagCompiler;
+import appeng.client.guidebook.scene.ItemImageTagCompiler;
 
 /**
  * Maintains a mapping between MDX Tag-Names to handlers for compiling these tags.
@@ -29,6 +31,9 @@ public final class TagCompilers {
         register("Recipe", new RecipeCompiler());
         register("ItemGrid", new ItemGridCompiler());
         register("CategoryIndex", new CategoryIndexCompiler());
+        register("BlockImage", new BlockImageTagCompiler());
+        register("ItemImage", new ItemImageTagCompiler());
+        register("Scene", new BlockImageTagCompiler());
     }
 
     public static void register(String tagName, TagCompiler handler) {
