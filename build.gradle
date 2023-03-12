@@ -31,6 +31,7 @@ configurations {
         transitive = false
     }
     portaforgyImplementation.extendsFrom(compileClasspath)
+    buildtoolsImplementation.extendsFrom(compileClasspath)
 
     internal {
         visible = false
@@ -55,7 +56,7 @@ dependencies {
     internal("io.methvin:directory-watcher:${directory_watcher_version}") {
         transitive = false
     }
-    internal("org.yaml:snakeyaml:${snakeyaml_version}")  {
+    internal("org.yaml:snakeyaml:${snakeyaml_version}") {
         transitive = false
     }
 
@@ -266,7 +267,7 @@ sourceSets {
         compileClasspath += sourceSets.portaforgy.output
         runtimeClasspath += sourceSets.portaforgy.output
     }
-    crowdin
+    buildtools
 }
 
 test {
@@ -274,8 +275,8 @@ test {
 }
 
 dependencies {
-    crowdinImplementation 'de.siegmar:fastcsv:2.1.0'
-    crowdinImplementation 'com.google.code.gson:gson:2.8.9'
+    buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
+    buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
 ////////////////////
@@ -345,13 +346,13 @@ shadowJar {
 
     manifest {
         attributes([
-                "Specification-Title"     : "Applied Energistics 2",
-                "Specification-Vendor"    : "TeamAppliedEnergistics",
-                "Specification-Version"   : "${project.version}",
-                "Implementation-Title"    : "${project.name}",
-                "Implementation-Version"  : "${project.version}",
-                "Implementation-Vendor"   : "TeamAppliedEnergistics",
-                "MixinConfigs"            : "ae2.mixins.json"
+                "Specification-Title"   : "Applied Energistics 2",
+                "Specification-Vendor"  : "TeamAppliedEnergistics",
+                "Specification-Version" : "${project.version}",
+                "Implementation-Title"  : "${project.name}",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" : "TeamAppliedEnergistics",
+                "MixinConfigs"          : "ae2.mixins.json"
         ])
     }
 
@@ -482,24 +483,26 @@ spotless {
     }
 }
 
+
 import com.modrinth.minotaur.TaskModrinthUpload
+import com.modrinth.minotaur.request.VersionType
 
 ////////////////
 // Crowdin
 task uploadToCrowdin(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_source'
     workingDir "."
 }
 task uploadTranslations(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_translations'
     workingDir "."
 }
 task downloadFromCrowdin(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'update_translations'
     workingDir "."
@@ -539,8 +542,6 @@ if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.ver
 
 ////////////////
 // Modrinth
-
-import com.modrinth.minotaur.request.VersionType
 
 if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
     def mrVersionType = VersionType.RELEASE
@@ -584,4 +585,12 @@ if (System.getProperty("idea.sync.active") == "true") {
 // Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
+}
+
+check.dependsOn tasks.register('validateResources', JavaExec) {
+    group = "verification"
+    classpath = sourceSets.buildtools.runtimeClasspath
+    mainClass = 'ValidateResourceIds'
+    workingDir "."
+    args "guidebook"
 }
