@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Molecular Assembler
   icon: molecular_assembler
+  position: 310
 item_ids:
 - ae2:molecular_assembler
 ---

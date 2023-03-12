@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Inscriber
   icon: inscriber
+  position: 310
 item_ids:
 - ae2:inscriber
 ---

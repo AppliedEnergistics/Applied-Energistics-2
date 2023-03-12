@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Import Bus
   icon: import_bus
+  position: 220
 item_ids:
 - ae2:import_bus
 ---

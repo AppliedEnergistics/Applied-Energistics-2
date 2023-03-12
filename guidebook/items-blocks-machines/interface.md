@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Interface
   icon: interface
+  position: 210
 item_ids:
 - ae2:interface
 - ae2:cable_interface

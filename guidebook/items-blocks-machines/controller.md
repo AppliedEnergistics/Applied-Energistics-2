@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Controller
   icon: controller
+  position: 110
 item_ids:
 - ae2:controller
 ---

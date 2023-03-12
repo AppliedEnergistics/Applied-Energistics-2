@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Toggle Bus
   icon: toggle_bus
+  position: 110
 item_ids:
 - ae2:toggle_bus
 - ae2:inverted_toggle_bus

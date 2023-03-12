@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Cell Workbench
   icon: cell_workbench
+  position: 310
 item_ids:
 - ae2:cell_workbench
 ---

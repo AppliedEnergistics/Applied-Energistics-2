@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Crystal Growth Accelerator
   icon: quartz_growth_accelerator
+  position: 310
 item_ids:
 - ae2:quartz_growth_accelerator
 ---

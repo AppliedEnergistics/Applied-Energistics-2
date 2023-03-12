@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Export Bus
   icon: export_bus
+  position: 220
 item_ids:
 - ae2:export_bus
 ---

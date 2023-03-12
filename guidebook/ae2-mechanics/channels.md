@@ -28,6 +28,8 @@ already maxed out, some devices may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your
 channels go in the path you desire.
 
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**
+
 # Ad-Hoc Networks
 
 A Network without a <ItemLink id="controller"/>

@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Pattern Provider
   icon: pattern_provider
+  position: 210
 item_ids:
 - ae2:pattern_provider
 - ae2:cable_pattern_provider

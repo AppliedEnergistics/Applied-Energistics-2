@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Annihilation Plane
   icon: annihilation_plane
+  position: 210
 item_ids:
 - ae2:annihilation_plane
 ---

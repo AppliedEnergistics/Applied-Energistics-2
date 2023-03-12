@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Formation Plane
   icon: formation_plane
+  position: 210
 item_ids:
 - ae2:formation_plane
 ---

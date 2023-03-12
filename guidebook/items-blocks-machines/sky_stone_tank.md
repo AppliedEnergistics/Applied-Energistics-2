@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Sky Stone Tank
   icon: sky_stone_tank
+  position: 310
 item_ids:
 - ae2:sky_stone_tank
 ---
