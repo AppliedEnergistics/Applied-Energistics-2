@@ -74,6 +74,7 @@ public class GuidebookLevel extends Level {
         super(
                 createLevelData(),
                 LEVEL_ID,
+                registryAccess,
                 registryAccess.registryOrThrow(Registries.DIMENSION_TYPE)
                         .getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD),
                 () -> InactiveProfiler.INSTANCE,

@@ -129,7 +129,7 @@ public class GuidebookScene {
             return blockDist <= fluidDist ? blockHit : fluidHit;
         }, ignored -> {
             Vec3 vec3 = fromVec3.subtract(toVec3);
-            return BlockHitResult.miss(toVec3, Direction.getNearest(vec3.x, vec3.y, vec3.z), new BlockPos(toVec3));
+            return BlockHitResult.miss(toVec3, Direction.getNearest(vec3.x, vec3.y, vec3.z), BlockPos.containing(toVec3));
         });
     }
 
