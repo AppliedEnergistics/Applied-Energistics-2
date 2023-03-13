@@ -8,7 +8,7 @@ item_ids:
 ---
 # The Fluix Crystal
 
-![Fluix Crystal](../assets/items/fluix_crystal.png)
+<ItemImage id="fluix_crystal" scale="4" />
 
 *"Fluix Crystals possess the unique ability to absorb and convert energy from one form to another, and are the foundation of
 all Matter Energy technology"*
@@ -18,6 +18,4 @@ One of the primary ingredients for AE2 blocks, devices, and items. Made by throw
 
 # Recipe
 
-<Recipe id="transform/fluix_crystals" />
-<Recipe id="transform/fluix_crystal" />
-<Recipe id="misc/deconstruction_fluix_block" />
+<Recipe id="transform/fluix_crystals" />   <Recipe id="transform/fluix_crystal" />   <Recipe id="misc/deconstruction_fluix_block" />

@@ -12,7 +12,7 @@ item_ids:
 ---
 # Patterns
 
-![A Pattern](../assets/items/crafting_pattern.png)
+<ItemImage id="crafting_pattern" scale="4" />
 
 Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of blank patterns.
 

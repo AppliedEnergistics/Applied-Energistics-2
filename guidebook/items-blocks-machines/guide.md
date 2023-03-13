@@ -1,12 +1,14 @@
 ---
 navigation:
-parent: items-blocks-machines/items-blocks-machines-index.md
-title: Guide
-icon: guide
+  parent: items-blocks-machines/items-blocks-machines-index.md
+  title: Guide
+  icon: guide
 item_ids:
 - ae2:guide
 ---
 # The Guide
+
+<ItemImage id="guide" scale="8" />
 
 This guide that you are reading now, for all your AE2 guiding needs.
 

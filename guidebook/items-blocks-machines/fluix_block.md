@@ -8,7 +8,7 @@ item_ids:
 ---
 # The Fluix Block
 
-![A picture of a fluix block.](../assets/blocks/fluix_block.png)
+<BlockImage id="fluix_block" scale="8" />
 
 The storage block for <ItemLink id="fluix_crystal" />. It is also used in the recipes for a few machines.
 

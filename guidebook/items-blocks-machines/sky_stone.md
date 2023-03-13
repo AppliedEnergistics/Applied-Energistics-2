@@ -10,7 +10,7 @@ item_ids:
 ---
 # Sky Stone
 
-![A picture of a sky stone block](../assets/blocks/sky_stone_block.png)
+<BlockImage id="sky_stone_block" scale="8" />
 
 The material [meteorites](./features/meteorites.md) are made out of, used in the recipes of the <ItemLink id="sky_stone_tank" />, <ItemLink id="not_so_mysterious_cube" />,
 <ItemLink id="cell_component_256k" />, and most importantly, the <ItemLink id="controller" />.
@@ -21,4 +21,3 @@ place an annihilation plane facing up at max worldheight to get sky stone dust
 
 <RecipeFor id="sky_stone_block" />
 <RecipeFor id="smooth_sky_stone_block" />
-<RecipeFor id="sky_dust" />

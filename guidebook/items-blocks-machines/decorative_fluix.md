@@ -16,4 +16,4 @@ item_ids:
 
 # Recipes
 
-<RecipeFor id="fluix_stairs" /> <RecipeFor id="fluix_wall" /> <RecipeFor id="fluix_slab" />
+<RecipeFor id="fluix_stairs" />   <RecipeFor id="fluix_wall" />   <RecipeFor id="fluix_slab" />

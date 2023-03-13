@@ -8,7 +8,7 @@ item_ids:
 ---
 # The Certus Quartz Crystal
 
-<ItemImage id="certus_quartz_crystal" scale="1" />
+<ItemImage id="certus_quartz_crystal" scale="4" />
 
 *"Certus Quartz Crystals possess the unique trait of accepting large quantities of energy into their crystalline matrix"*
 

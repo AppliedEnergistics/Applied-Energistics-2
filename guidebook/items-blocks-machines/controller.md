@@ -9,6 +9,7 @@ item_ids:
 ---
 # The Controller
 
+<BlockImage id="controller" scale="4" />
 
 ![A picture of some controllers.](../assets/assemblies/controllers.png)
 

@@ -9,7 +9,7 @@ item_ids:
 ---
 # The Molecular Assembler
 
-![Molecular Assembler](../assets/blocks/molecular_assembler.png)
+<BlockImage id="molecular_assembler" scale="8" />
 
 The molecular assembler takes items input into it and carries out the operation defined by an adjacent <ItemLink id="pattern_provider" />,
 or the inserted <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />,

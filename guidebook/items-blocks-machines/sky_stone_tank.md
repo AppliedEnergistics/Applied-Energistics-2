@@ -9,7 +9,7 @@ item_ids:
 ---
 # The Sky Stone Tank
 
-![Sky Stone Tank](../assets/blocks/sky_stone_tank.png)
+<BlockImage id="sky_stone_tank" scale="8" />
 
 It's a fluid tank that stores 16 buckets of fluid. Does not retain its contents when picked up. Not much else to say.
 

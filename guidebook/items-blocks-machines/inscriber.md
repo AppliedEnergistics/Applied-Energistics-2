@@ -9,7 +9,7 @@ item_ids:
 ---
 # The Inscriber
 
-![A picture of an inscriber.](../assets/blocks/inscriber.png)
+<BlockImage id="inscriber" scale="8" />
 
 The inscriber is used to inscribe circuits and [processors](processors.md) using [presses](presses.md), and to crush various items into dust.
 It can accept either AE2's power (AE) or Fabric/Forge Energy (E/FE). It can be sided, such that inserting items from different sides

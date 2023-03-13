@@ -9,7 +9,7 @@ item_ids:
 ---
 # The Charger
 
-![A picture of a charger.](../assets/assemblies/charger_with_crank.png)
+<BlockImage id="charger" scale="8" />
 
 The <ItemLink id="charger"/> provides a way to charge
 supported tools through the [ME Network](../../me-network.md) or manually using a <ItemLink id="crank"/>.
