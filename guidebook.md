@@ -167,7 +167,8 @@ The tag also supports the following attributes:
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | scale       | Allows the block image to be scaled. Supports floating point numbers. `scale="1.5"` will show at 150% of its normal size.                                                                       |
 | float       | Allows the block image to be floated like `FloatingImage` to make it show to the left or right with a block of text. (Allows values: left, right)                                               |
-| perspective | Allows the orientation of the block to be changed. By default, the north-east corner of the block will be facing forward. Allowed values: isometric-north-east (default), isometric-north-west. |                         
+| perspective | Allows the orientation of the block to be changed. By default, the north-east corner of the block will be facing forward. Allowed values: isometric-north-east (default), isometric-north-west. |
+| `p:<name>`  | Allows setting arbitrary block state properties on the rendered block, where <name> is the name of a block state property.                                                                      |
 
 ## For Addon Authors
 
