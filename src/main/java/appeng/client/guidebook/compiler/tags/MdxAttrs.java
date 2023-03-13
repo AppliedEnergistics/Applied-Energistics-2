@@ -1,10 +1,8 @@
 package appeng.client.guidebook.compiler.tags;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.document.LytErrorSink;
-import appeng.client.guidebook.document.block.LytBlockContainer;
-import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
-import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,8 +11,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
+
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.document.LytErrorSink;
+import appeng.client.guidebook.document.block.LytBlockContainer;
+import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
+import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 /**
  * utilities for dealing with attributes of {@link MdxJsxElementFields}.
@@ -26,7 +28,7 @@ public final class MdxAttrs {
 
     @Nullable
     public static ResourceLocation getRequiredId(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-                                                 String attribute) {
+            String attribute) {
         var id = el.getAttributeString(attribute, null);
         if (id == null) {
             errorSink.appendError(compiler, "Missing " + attribute + " attribute.", el);
@@ -46,7 +48,7 @@ public final class MdxAttrs {
 
     @Nullable
     public static Pair<ResourceLocation, Block> getRequiredBlockAndId(PageCompiler compiler, LytErrorSink errorSink,
-                                                                      MdxJsxElementFields el, String attribute) {
+            MdxJsxElementFields el, String attribute) {
         var itemId = getRequiredId(compiler, errorSink, el, attribute);
 
         var resultItem = BuiltInRegistries.BLOCK.getOptional(itemId).orElse(null);
@@ -59,7 +61,7 @@ public final class MdxAttrs {
 
     @Nullable
     public static Pair<ResourceLocation, Item> getRequiredItemAndId(PageCompiler compiler, LytErrorSink errorSink,
-                                                                    MdxJsxElementFields el, String attribute) {
+            MdxJsxElementFields el, String attribute) {
         var itemId = getRequiredId(compiler, errorSink, el, attribute);
 
         var resultItem = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
@@ -71,7 +73,7 @@ public final class MdxAttrs {
     }
 
     public static Item getRequiredItem(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-                                       String attribute) {
+            String attribute) {
         var result = getRequiredItemAndId(compiler, errorSink, el, attribute);
         if (result != null) {
             return result.getRight();
@@ -80,7 +82,7 @@ public final class MdxAttrs {
     }
 
     public static float getFloat(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el, String name,
-                                 float defaultValue) {
+            float defaultValue) {
         var attrValue = el.getAttributeString(name, null);
         if (attrValue == null) {
             return defaultValue;
@@ -97,7 +99,7 @@ public final class MdxAttrs {
     @SuppressWarnings("unchecked")
     @Nullable
     public static <T extends Enum<T> & StringRepresentable> T getEnum(PageCompiler compiler, LytErrorSink errorSink,
-                                                                      MdxJsxElementFields el, String name, T defaultValue) {
+            MdxJsxElementFields el, String name, T defaultValue) {
 
         var stringValue = el.getAttributeString(name, defaultValue.getSerializedName());
 
@@ -112,7 +114,8 @@ public final class MdxAttrs {
         return null;
     }
 
-    public static BlockState applyBlockStateProperties(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el, BlockState state) {
+    public static BlockState applyBlockStateProperties(PageCompiler compiler, LytBlockContainer parent,
+            MdxJsxElementFields el, BlockState state) {
         for (var attrNode : el.attributes()) {
             if (!(attrNode instanceof MdxJsxAttribute attr)) {
                 continue;
@@ -134,11 +137,11 @@ public final class MdxAttrs {
     }
 
     private static <T extends Comparable<T>> BlockState applyProperty(PageCompiler compiler,
-                                                                      LytErrorSink errorSink,
-                                                                      MdxJsxElementFields el,
-                                                                      BlockState state,
-                                                                      Property<T> property,
-                                                                      String stringValue) {
+            LytErrorSink errorSink,
+            MdxJsxElementFields el,
+            BlockState state,
+            Property<T> property,
+            String stringValue) {
         var propertyValue = property.getValue(stringValue);
         if (propertyValue.isEmpty()) {
             errorSink.appendError(compiler, "Invalid value  for property " + property + ": " + stringValue, el);
