@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.render.spatial;
+package appeng.client.render.tesr.spatial;
 
 import java.util.EnumMap;
 import java.util.Locale;

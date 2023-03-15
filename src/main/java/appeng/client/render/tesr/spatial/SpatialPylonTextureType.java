@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.render.spatial;
+package appeng.client.render.tesr.spatial;
 
 enum SpatialPylonTextureType {
     BASE, BASE_END, BASE_SPANNED, DIM, DIM_END, DIM_SPANNED, RED, RED_END, RED_SPANNED

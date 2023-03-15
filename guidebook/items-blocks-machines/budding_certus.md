@@ -32,7 +32,7 @@ enchanted with silk touch, they will not degrade, unless they were flawless. **T
 be picked up and moved with a pickaxe**. Instead, [Spatial Storage](../ae2-mechanics/spatial-storage.md) can be used to
 cut-and-paste the flawless budding blocks around.
 
-# Recipe
+# Recipes
 
 Flawed, chipped, and damaged budding certus can be crafted by throwing the previous tier of budding block (or a <ItemLink id="quartz_block" />)
 in water with one or more <ItemLink id="charged_certus_quartz_crystal" />.

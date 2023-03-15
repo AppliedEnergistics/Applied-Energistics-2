@@ -42,7 +42,7 @@ import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.GlassModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.client.render.model.MeteoriteCompassModel;
-import appeng.client.render.spatial.SpatialPylonModel;
+import appeng.client.render.tesr.spatial.SpatialPylonModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PlaneModel;
 

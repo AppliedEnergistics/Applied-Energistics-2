@@ -15,7 +15,7 @@ item_ids:
 The material [meteorites](./features/meteorites.md) are made out of, used in the recipes of the <ItemLink id="sky_stone_tank" />, <ItemLink id="not_so_mysterious_cube" />,
 <ItemLink id="cell_component_256k" />, and most importantly, the <ItemLink id="controller" />.
 
-# Recipe
+# Recipes
 
 place an annihilation plane facing up at max worldheight to get sky stone dust
 

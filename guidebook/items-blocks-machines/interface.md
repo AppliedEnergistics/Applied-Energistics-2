@@ -61,7 +61,7 @@ The interface supports the following upgrades:
 Priorities can be set by clicking the wrench in the top-right of the GUI. Interfaces with higher priority will get their items
 before those with lower priority, 
 
-# Recipe
+# Recipes
 
 <Recipe id="network/blocks/interfaces_interface" />
 <RecipeFor id="cable_interface" />

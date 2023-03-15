@@ -64,7 +64,7 @@ Priorities can be set by clicking the wrench in the top-right of the GUI. In the
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
 
-# Recipe
+# Recipes
 
 <RecipeFor id="pattern_provider" />
 <RecipeFor id="cable_pattern_provider" />

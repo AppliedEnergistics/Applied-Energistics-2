@@ -21,7 +21,7 @@ When redstone signal supplied the part enables the connection, <ItemLink
 id="inverted_toggle_bus"/> provides the reverse
 behavior by disabling the connection instead.
 
-# Recipe
+# Recipes
 
 <RecipeFor id="toggle_bus" />
 <RecipeFor id="inverted_toggle_bus" />
