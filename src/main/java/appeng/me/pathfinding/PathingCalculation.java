@@ -41,9 +41,11 @@ public class PathingCalculation {
      */
     private final Set<IPathItem> multiblocksWithChannel = new HashSet<>();
     /**
-     * The BFS queue: all the path items that need to be visited on the next tick.
+     * The BFS queues: all the path items that need to be visited on the next tick. Dense queue is prioritized to have
+     * the behavior of dense cables extending the controller faces.
      */
-    private List<IPathItem> queue = new ArrayList<>();
+    private List<IPathItem> denseQueue = new ArrayList<>();
+    private List<IPathItem> nonDenseQueue = new ArrayList<>();
     /**
      * Path items that are either in the queue, or have been processed already.
      */
@@ -67,18 +69,40 @@ public class PathingCalculation {
             for (var gcc : node.getConnections()) {
                 var gc = (GridConnection) gcc;
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
-                    visited.add(gc);
-                    queue.add(gc);
+                    enqueue(gc, true);
                     gc.setControllerRoute((GridNode) node);
                 }
             }
         }
     }
 
-    public void step() {
-        final List<IPathItem> oldOpen = this.queue;
-        this.queue = new ArrayList<>();
+    private void enqueue(IPathItem pathItem, boolean comingFromDense) {
+        visited.add(pathItem);
 
+        // To go into the dense queue, we need to come directly from the controller and dense cables,
+        // i.e. we need comingFromDense to be true.
+        // We also need to still be dense if this is a GridNode.
+        if (comingFromDense && (pathItem instanceof GridConnection || pathItem.hasFlag(GridFlags.DENSE_CAPACITY))) {
+            denseQueue.add(pathItem);
+        } else {
+            nonDenseQueue.add(pathItem);
+        }
+    }
+
+    public void step() {
+        // Keep processing dense queue as long as it's not empty.
+        if (!this.denseQueue.isEmpty()) {
+            List<IPathItem> oldOpen = this.denseQueue;
+            this.denseQueue = new ArrayList<>();
+            processQueue(oldOpen, true);
+        } else {
+            List<IPathItem> oldOpen = this.nonDenseQueue;
+            this.nonDenseQueue = new ArrayList<>();
+            processQueue(oldOpen, false);
+        }
+    }
+
+    private void processQueue(List<IPathItem> oldOpen, boolean isDenseQueue) {
         for (IPathItem i : oldOpen) {
             for (IPathItem pi : i.getPossibleOptions()) {
                 if (!this.visited.contains(pi)) {
@@ -110,8 +134,7 @@ public class PathingCalculation {
                         }
                     }
 
-                    this.visited.add(pi);
-                    this.queue.add(pi);
+                    enqueue(pi, isDenseQueue);
                 }
             }
         }
@@ -152,7 +175,7 @@ public class PathingCalculation {
     }
 
     public boolean isFinished() {
-        return queue.isEmpty();
+        return denseQueue.isEmpty() && nonDenseQueue.isEmpty();
     }
 
     public int getChannelsInUse() {
