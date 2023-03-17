@@ -89,10 +89,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
-        poseStack.pushPose();
-        poseStack.translate(0, 0, blitOffset);
-
+    public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = 0;
@@ -119,7 +116,5 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
                 xoff += 17;
             }
         }
-
-        poseStack.popPose();
     }
 }

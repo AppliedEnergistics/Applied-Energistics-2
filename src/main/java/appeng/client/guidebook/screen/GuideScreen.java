@@ -502,7 +502,6 @@ public class GuideScreen extends Screen {
         }
 
         bufferSource.endBatch();
-        poseStack.popPose();
 
         // Then render tooltip decorations, items, etc.
         currentY = y;
@@ -515,9 +514,10 @@ public class GuideScreen extends Screen {
 
         for (int i = 0; i < clientLines.size(); ++i) {
             var line = clientLines.get(i);
-            line.renderImage(minecraft.font, x, currentY, poseStack, this.itemRenderer, zOffset);
+            line.renderImage(minecraft.font, x, currentY, poseStack, this.itemRenderer);
             currentY += line.getHeight() + (i == 0 ? 2 : 0);
         }
+        poseStack.popPose();
     }
 
     private void updatePageLayout() {
