@@ -21,12 +21,16 @@ adding a <ItemLink id="controller"/> for a
 network with 8 devices and over 96 nodes your power usage might actually
 decrease power consumption because it changes how channels are allocated.
 
-When using a <ItemLink id="controller"/>
-Channels must route via the shortest path from the <ItemLink
-id="controller"/> to the device. If the path is
-already maxed out, some devices may not get their required channels, use
+When using a <ItemLink id="controller"/>,
+channels route via the shortest path from the <ItemLink
+id="controller"/> to the device. Channels prefer to route through dense cable over normal cable or devices, even if the path
+through the dense cable might be longer.
+If the shortest path is already maxed out, some devices may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your
 channels go in the path you desire.
+
+Dense cables (and other 32-channel-capable things like p2p tunnels) slightly override the "shortest path" behavior of channels,
+channels will take the shortest path to a dense cable, and then the shortest path through that dense cable to a controller.
 
 Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**
 

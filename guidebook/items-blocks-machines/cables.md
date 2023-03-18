@@ -162,6 +162,9 @@ smaller cable (such as <ItemLink
 id="fluix_glass_cable"/> or <ItemLink id="fluix_smart_cable"/>) before using buses or
 panels.
 
+Dense cables slightly override the "shortest path" behavior of channels, channels will take the shortest path to a
+dense cable, and then the shortest path through that dense cable to a controller.
+
 <Recipe id="network/cables/dense_covered_fluix" />
 <RecipeFor id="blue_covered_dense_cable" />
 
