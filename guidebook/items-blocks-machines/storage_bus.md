@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Storage Bus
   icon: storage_bus
+  position: 220
 item_ids:
 - ae2:storage_bus
 ---
@@ -20,6 +21,8 @@ Due to AE2's philosophy of emergent mechanics through interaction of the functio
 necessarily *have* to use a storage bus for *storage*. By using [subnetworks](../ae2-mechanics/subnetworks.md)
 to make a storage bus (or handful of storage busses) the *only* storage on a network, you can use it as a source or destination
 for item transfer. (see ["pipe subnet"](../example-setups/pipe-subnet.md))
+
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # Filtering
 

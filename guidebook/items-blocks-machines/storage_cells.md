@@ -24,6 +24,8 @@ item_ids:
 ---
 # Storage Cells
 
+<ItemImage id="item_storage_cell_1k" scale="4" />   <ItemImage id="fluid_storage_cell_16k" scale="4" />
+
 Storage Cells are one of the primary methods of storage in Applied Energistics. They go in <ItemLink id="drive" />s
 or <ItemLink id="chest" />s.
 
@@ -35,20 +37,19 @@ Cells can be made with a storage component and a housing or with the housing rec
 
 <Recipe id="network/cells/item_storage_cell_1k_storage" />
 <Recipe id="network/cells/item_storage_cell_1k" />
-<br/><br/><br/><br/><br/><br/><br/><br/>
-<RecipeFor id="item_cell_housing" />
-<RecipeFor id="fluid_cell_housing" />
+
+Housings by themselves are crafted like so:
+
+<RecipeFor id="item_cell_housing" />   <RecipeFor id="fluid_cell_housing" />
 
 # Storage Components
 
 Storage Components are the core of all AE2 cells, determining the capacity of the cells. Each tier increases the capacity
 by 4x and costs 3 of the previous tier.
 
-<RecipeFor id="cell_component_1k" />
-<RecipeFor id="cell_component_4k" />
-<RecipeFor id="cell_component_16k" />
-<RecipeFor id="cell_component_64k" />
-<RecipeFor id="cell_component_256k" />
+<RecipeFor id="cell_component_1k" />   <RecipeFor id="cell_component_4k" />   <RecipeFor id="cell_component_16k" />
+
+<RecipeFor id="cell_component_64k" />   <RecipeFor id="cell_component_256k" />
 
 # Partitioning
 
@@ -71,11 +72,9 @@ case of an equal distribution card, useful for stopping farms from backing up. B
 
 Item storage cells can hold up to 63 distinct types of items, and are available in all the standard capacities.
 
-<RecipeFor id="item_storage_cell_1k" />
-<RecipeFor id="item_storage_cell_4k" />
-<RecipeFor id="item_storage_cell_16k" />
-<RecipeFor id="item_storage_cell_64k" />
-<RecipeFor id="item_storage_cell_256k" />
+<Recipe id="network/cells/item_storage_cell_1k_storage" />   <Recipe id="network/cells/item_storage_cell_4k_storage" />   <Recipe id="network/cells/item_storage_cell_16k_storage" />
+
+<Recipe id="network/cells/item_storage_cell_64k_storage" />   <Recipe id="network/cells/item_storage_cell_256k_storage" />
 
 # Portable Item Storage
 
@@ -86,21 +85,17 @@ total byte capacity.
 
 In addition to the upgrade cards all cells can receive, these also accept <ItemLink id="energy_card" />s to upgrade their internal batteries.
 
-<RecipeFor id="portable_item_cell_1k" />
-<RecipeFor id="portable_item_cell_4k" />
-<RecipeFor id="portable_item_cell_16k" />
-<RecipeFor id="portable_item_cell_64k" />
-<RecipeFor id="portable_item_cell_256k" />
+<RecipeFor id="portable_item_cell_1k" />   <RecipeFor id="portable_item_cell_4k" />   <RecipeFor id="portable_item_cell_16k" />
+
+<RecipeFor id="portable_item_cell_64k" />   <RecipeFor id="portable_item_cell_256k" />
 
 # Fluid Storage Cells
 
 Fluid storage cells can hold up to 5 distinct types of fluids, and are available in all the standard capacities.
 
-<RecipeFor id="fluid_storage_cell_1k" />
-<RecipeFor id="fluid_storage_cell_4k" />
-<RecipeFor id="fluid_storage_cell_16k" />
-<RecipeFor id="fluid_storage_cell_64k" />
-<RecipeFor id="fluid_storage_cell_256k" />
+<Recipe id="network/cells/fluid_storage_cell_1k_storage" />   <Recipe id="network/cells/fluid_storage_cell_4k_storage" />   <Recipe id="network/cells/fluid_storage_cell_16k_storage" />
+
+<Recipe id="network/cells/fluid_storage_cell_64k_storage" />   <Recipe id="network/cells/fluid_storage_cell_256k_storage" />
 
 # Portable Fluid Storage
 
@@ -111,8 +106,6 @@ total byte capacity.
 
 In addition to the upgrade cards all cells can receive, these also accept <ItemLink id="energy_card" />s to upgrade their internal batteries.
 
-<RecipeFor id="portable_fluid_cell_1k" />
-<RecipeFor id="portable_fluid_cell_4k" />
-<RecipeFor id="portable_fluid_cell_16k" />
-<RecipeFor id="portable_fluid_cell_64k" />
-<RecipeFor id="portable_fluid_cell_256k" />
+<RecipeFor id="portable_fluid_cell_1k" />   <RecipeFor id="portable_fluid_cell_4k" />   <RecipeFor id="portable_fluid_cell_16k" />
+
+<RecipeFor id="portable_fluid_cell_64k" />   <RecipeFor id="portable_fluid_cell_256k" />

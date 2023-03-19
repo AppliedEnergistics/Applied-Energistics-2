@@ -8,7 +8,7 @@ item_ids:
 ---
 # Fluix Pearl
 
-![Fluix Pearl](../assets/items/fluix_pearl.png)
+<ItemImage id="fluix_pearl" scale="4" />
 
 An ender pearl coated in <ItemLink id="fluix_crystal" />, used in the production of
 several AE2 components.

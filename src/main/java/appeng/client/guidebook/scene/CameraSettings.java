@@ -40,6 +40,10 @@ public class CameraSettings {
                 baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 30));
                 baseViewMatrix.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 135));
             }
+            case UP -> {
+                baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 120));
+                baseViewMatrix.rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 45));
+            }
         }
     }
 

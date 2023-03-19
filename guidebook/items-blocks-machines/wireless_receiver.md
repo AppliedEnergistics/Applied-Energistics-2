@@ -8,7 +8,7 @@ item_ids:
 ---
 # Wireless Receiver
 
-![Wireless Receriver](../assets/items/wireless_receiver.png)
+<ItemImage id="wireless_receiver" scale="4" />
 
 A <ItemLink id="fluix_pearl" /> in a reflector dish, a component of short-range wireless ME technology.
 

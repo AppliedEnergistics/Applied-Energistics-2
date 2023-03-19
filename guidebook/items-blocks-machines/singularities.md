@@ -10,7 +10,7 @@ item_ids:
 
 # Singularity
 
-![Singularity](../assets/items/singularity.png)
+<ItemImage id="singularity" scale="4" />
 
 A very compact ball of matter.
 
@@ -18,7 +18,7 @@ Made with 256,000 items in a <ItemLink id="matter_condenser" /> in singularity m
 
 # Quantum Entangled Singularity
 
-![Quantum Entangled Singularity](../assets/items/quantum_entangled_singularity.png)
+<ItemImage id="quantum_entangled_singularity" scale="4" />
 
 Required to create a connection between two [Quantum Network Bridges](quantum_bridge.md), they are always produced in matching
 pairs. To create a connection place 1 of the pair of quantum entangled singularities into the <ItemLink id="quantum_link" /> of

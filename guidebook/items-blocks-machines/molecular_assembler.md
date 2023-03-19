@@ -3,12 +3,13 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Molecular Assembler
   icon: molecular_assembler
+  position: 310
 item_ids:
 - ae2:molecular_assembler
 ---
 # The Molecular Assembler
 
-![Molecular Assembler](../assets/blocks/molecular_assembler.png)
+<BlockImage id="molecular_assembler" scale="8" />
 
 The molecular assembler takes items input into it and carries out the operation defined by an adjacent <ItemLink id="pattern_provider" />,
 or the inserted <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />,

@@ -3,12 +3,13 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Crystal Growth Accelerator
   icon: quartz_growth_accelerator
+  position: 310
 item_ids:
 - ae2:quartz_growth_accelerator
 ---
 # The Crystal Growth Accelerator
 
-![A picture of a growth accelerator](../assets/blocks/quartz_growth_accelerator.png)
+<BlockImage id="quartz_growth_accelerator" p:powered="true" scale="8" perspective="up" />
 
 The Crystal Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/farming-certus.md) certus or amethyst when placed adjacent to the budding block.
 

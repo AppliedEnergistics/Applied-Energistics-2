@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: ME Chest
   icon: chest
+  position: 210
 item_ids:
 - ae2:chest
 ---

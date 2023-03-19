@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Interface
   icon: interface
+  position: 210
 item_ids:
 - ae2:interface
 - ae2:cable_interface
@@ -19,6 +20,7 @@ Interfaces also have a few special functionalities with other AE2 devices:
 
 A <ItemLink id="storage_bus" /> on an unconfigured interface will present the entirety of the [network storage](../ae2-mechanics/import-export-storage.md)
 of its network to the storage bus' network, as if the interface's network was one big chest the storage bus was placed on.
+Setting an item to be stocked in the interface's filter slots disables this.
 
 ![Storage Bus On Interface](../assets/assemblies/interface_storage.png)
 
@@ -30,7 +32,7 @@ skipping the interface and not filling it with recipe batches, and more importan
 
 # Variants
 
-Interfaces come in 2 different variants: normal and flat. This affects which specific sides their inventories can be accessed
+Interfaces come in 2 different variants: normal and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides their inventories can be accessed
 from and that they provide a network connection to.
 
 - Normal interfaces allow things to push to, pull from, and access their inventory from all sides and, like most AE2 machines, act
@@ -60,7 +62,7 @@ The interface supports the following upgrades:
 Priorities can be set by clicking the wrench in the top-right of the GUI. Interfaces with higher priority will get their items
 before those with lower priority, 
 
-# Recipe
+# Recipes
 
 <Recipe id="network/blocks/interfaces_interface" />
 <RecipeFor id="cable_interface" />

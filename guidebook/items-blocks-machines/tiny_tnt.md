@@ -8,7 +8,7 @@ item_ids:
 ---
 # Tiny TNT
 
-![tiny TNT](../assets/blocks/tiny_tnt.png)
+<BlockImage id="tiny_tnt" scale="8" />
 
 Small TNT for small explosions. Useful for making <ItemLink id="quantum_entangled_singularity"/> pairs.
 

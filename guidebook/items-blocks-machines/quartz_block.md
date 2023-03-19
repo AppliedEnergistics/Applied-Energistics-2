@@ -8,7 +8,7 @@ item_ids:
 ---
 # The Certus Quartz Block
 
-![A picture of a certus quartz block.](../assets/blocks/quartz_block.png)
+<BlockImage id="quartz_block" scale="8" />
 
 The storage block for <ItemLink id="certus_quartz_crystal" />. Can be used to make [budding certus blocks](budding_certus.md)
 or [decorative certus blocks](decorative_certus.md).

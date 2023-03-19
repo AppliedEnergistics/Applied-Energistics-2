@@ -8,7 +8,7 @@ item_ids:
 ---
 # Sky Stone Dust
 
-![Sky Stone Dust](../assets/items/sky_dust.png)
+<ItemImage id="sky_dust" scale="4" />
 
 A <ItemLink id="sky_stone_block"/> block that has been crushed by an <ItemLink id="inscriber"/>. Used in the production of
 <ItemLink id="cell_component_256k"/> and <ItemLink id="sky_stone_block"/>.

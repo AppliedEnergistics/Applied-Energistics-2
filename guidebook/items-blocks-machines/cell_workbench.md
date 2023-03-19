@@ -3,12 +3,13 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Cell Workbench
   icon: cell_workbench
+  position: 310
 item_ids:
 - ae2:cell_workbench
 ---
 # The ME Drive
 
-![A Drive](../assets/blocks/cell_workbench.png)
+<BlockImage id="cell_workbench" scale="8" />
 
 The Cell Workbench allows you to configure [storage cells](../items-blocks-machines/storage_cells.md) and <ItemLink id="view_cell" />s.
 

@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Pattern Provider
   icon: pattern_provider
+  position: 210
 item_ids:
 - ae2:pattern_provider
 - ae2:cable_pattern_provider
@@ -31,7 +32,7 @@ Multiple pattern providers with identical patterns are supported and work in par
 
 # Variants
 
-Pattern Providers come in 3 different variants: normal, directional, and flat. This affects which specific sides they push
+Pattern Providers come in 3 different variants: normal, directional, and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides they push
 ingredients to, receive items from, and provide a network connection to.
 
 - Normal pattern providers push ingredients to all sides, receive inputs from all sides, and, like most AE2 machines, act
@@ -63,7 +64,7 @@ Priorities can be set by clicking the wrench in the top-right of the GUI. In the
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
 
-# Recipe
+# Recipes
 
 <RecipeFor id="pattern_provider" />
 <RecipeFor id="cable_pattern_provider" />

@@ -13,7 +13,11 @@ public enum PerspectivePreset implements StringRepresentable {
     /**
      * An isometric camera where the northwest corner of blocks faces forward.
      */
-    ISOMETRIC_NORTH_WEST("isometric-north-west");
+    ISOMETRIC_NORTH_WEST("isometric-north-west"),
+    /**
+     * An isometric camera where the northeast corner of blocks faces up
+     */
+    UP("up");
 
     private final String serializedName;
 

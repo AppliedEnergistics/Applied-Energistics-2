@@ -8,7 +8,7 @@ item_ids:
 ---
 # Certus Quartz Dust
 
-![Certus Quartz Dust](../assets/items/certus_quartz_dust.png)
+<ItemImage id="certus_quartz_dust" scale="4" />
 
 A <ItemLink id="certus_quartz_crystal"/> that has been crushed by an <ItemLink id="inscriber"/>. Used in the production of
 several AE2 materials and components.

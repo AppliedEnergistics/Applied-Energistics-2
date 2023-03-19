@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Formation Plane
   icon: formation_plane
+  position: 210
 item_ids:
 - ae2:formation_plane
 ---
@@ -16,7 +17,7 @@ placing/dropping when things are "stored" in it by devices inserting into [netwo
 This device makes use of the mechanics used by storage busses in things like [pipe subnets](../example_setups/pipe-subnet.md),
 and can replace storage busses in those setups if you want to drop items/place blocks instead of transport items.
 
-They are [cable subparts](../ae2-mechanics/cable-subparts.md)
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # A bug that might have been fixed
 

@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Toggle Bus
   icon: toggle_bus
+  position: 110
 item_ids:
 - ae2:toggle_bus
 - ae2:inverted_toggle_bus
@@ -20,7 +21,9 @@ When redstone signal supplied the part enables the connection, <ItemLink
 id="inverted_toggle_bus"/> provides the reverse
 behavior by disabling the connection instead.
 
-# Recipe
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
+
+# Recipes
 
 <RecipeFor id="toggle_bus" />
 <RecipeFor id="inverted_toggle_bus" />
