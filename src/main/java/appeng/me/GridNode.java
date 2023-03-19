@@ -20,7 +20,6 @@ package appeng.me;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -143,8 +142,6 @@ public class GridNode implements IGridNode, IPathItem {
         if (gridConnection.isInWorld()) {
             callListener(IGridNodeListener::onInWorldConnectionChanged);
         }
-
-        connections.sort(new ConnectionComparator(this));
     }
 
     void removeConnection(IGridConnection gridConnection) {
@@ -620,22 +617,6 @@ public class GridNode implements IGridNode, IPathItem {
 
     public void setPreviousDraw(double previousDraw) {
         this.previousDraw = previousDraw;
-    }
-
-    private static class ConnectionComparator implements Comparator<IGridConnection> {
-        private final IGridNode gn;
-
-        public ConnectionComparator(IGridNode gn) {
-            this.gn = gn;
-        }
-
-        @Override
-        public int compare(IGridConnection o1, IGridConnection o2) {
-            final boolean preferredA = o1.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
-            final boolean preferredB = o2.getOtherSide(this.gn).hasFlag(GridFlags.PREFERRED);
-
-            return preferredA == preferredB ? 0 : preferredA ? -1 : 1;
-        }
     }
 
     @Nullable
