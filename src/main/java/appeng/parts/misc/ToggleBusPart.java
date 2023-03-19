@@ -80,7 +80,7 @@ public class ToggleBusPart extends BasicStatePart {
         super(partItem);
 
         this.getMainNode().setIdlePowerUsage(0.0);
-        this.getMainNode().setFlags();
+        this.getMainNode().setFlags(GridFlags.PREFERRED);
     }
 
     @Override
