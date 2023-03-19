@@ -579,7 +579,12 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             // forth of they wanted to stock the same item and happened to have storage buses on them.
             var requestPriority = getRequestInterfacePriority(source);
             if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
-                return 0;
+                // Only skip extraction if the two interfaces are on the same network
+                var sourceGrid = source.machine().map(IActionHost::getActionableNode).map(IGridNode::getGrid)
+                        .orElse(null);
+                if (sourceGrid == mainNode.getGrid()) {
+                    return 0;
+                }
             }
 
             return super.extract(what, amount, mode, source);

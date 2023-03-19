@@ -161,7 +161,13 @@ public class PlotTestHelper extends GameTestHelper {
 
     public void check(boolean test, String errorMessage) throws GameTestAssertException {
         if (!test) {
-            throw new GameTestAssertException(errorMessage);
+            fail(errorMessage);
+        }
+    }
+
+    public void check(boolean test, String errorMessage, BlockPos pos) throws GameTestAssertException {
+        if (!test) {
+            fail(errorMessage, pos);
         }
     }
 
