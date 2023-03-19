@@ -42,10 +42,13 @@ public class PathingCalculation {
     private final Set<IPathItem> multiblocksWithChannel = new HashSet<>();
     /**
      * The BFS queues: all the path items that need to be visited on the next tick. Dense queue is prioritized to have
-     * the behavior of dense cables extending the controller faces.
+     * the behavior of dense cables extending the controller faces, then cables, then normal devices.
      */
-    private List<IPathItem> denseQueue = new ArrayList<>();
-    private List<IPathItem> nonDenseQueue = new ArrayList<>();
+    private List<IPathItem>[] queues = new List[] {
+            new ArrayList<>(), // 0: dense cable queue
+            new ArrayList<>(), // 1: normal cable queue
+            new ArrayList<>() // 2: non-cable queue
+    };
     /**
      * Path items that are either in the queue, or have been processed already.
      */
@@ -69,40 +72,48 @@ public class PathingCalculation {
             for (var gcc : node.getConnections()) {
                 var gc = (GridConnection) gcc;
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
-                    enqueue(gc, true);
+                    enqueue(gc, 0);
                     gc.setControllerRoute((GridNode) node);
                 }
             }
         }
     }
 
-    private void enqueue(IPathItem pathItem, boolean comingFromDense) {
+    private void enqueue(IPathItem pathItem, int queueIndex) {
         visited.add(pathItem);
 
-        // To go into the dense queue, we need to come directly from the controller and dense cables,
-        // i.e. we need comingFromDense to be true.
-        // We also need to still be dense if this is a GridNode.
-        if (comingFromDense && (pathItem instanceof GridConnection || pathItem.hasFlag(GridFlags.DENSE_CAPACITY))) {
-            denseQueue.add(pathItem);
+        int possibleIndex;
+
+        if (pathItem instanceof GridConnection) {
+            // Grid connection does not have flags, allow any queue.
+            possibleIndex = 0;
+        } else if (pathItem.hasFlag(GridFlags.DENSE_CAPACITY)) {
+            // Dense queue if possible.
+            possibleIndex = 0;
+        } else if (pathItem.hasFlag(GridFlags.PREFERRED)) {
+            // Cable queue if possible.
+            possibleIndex = 1;
         } else {
-            nonDenseQueue.add(pathItem);
+            possibleIndex = 2;
         }
+
+        int index = Math.max(possibleIndex, queueIndex);
+        queues[index].add(pathItem);
     }
 
     public void step() {
         // Keep processing dense queue as long as it's not empty.
-        if (!this.denseQueue.isEmpty()) {
-            List<IPathItem> oldOpen = this.denseQueue;
-            this.denseQueue = new ArrayList<>();
-            processQueue(oldOpen, true);
-        } else {
-            List<IPathItem> oldOpen = this.nonDenseQueue;
-            this.nonDenseQueue = new ArrayList<>();
-            processQueue(oldOpen, false);
+        for (int i = 0; i < 3; ++i) {
+            if (!queues[i].isEmpty()) {
+                List<IPathItem> oldOpen = queues[i];
+                queues[i] = new ArrayList<>();
+                processQueue(oldOpen, i);
+                break;
+            }
         }
     }
 
-    private void processQueue(List<IPathItem> oldOpen, boolean isDenseQueue) {
+    private void processQueue(List<IPathItem> oldOpen, int queueIndex) {
         for (IPathItem i : oldOpen) {
             for (IPathItem pi : i.getPossibleOptions()) {
                 if (!this.visited.contains(pi)) {
@@ -134,7 +145,7 @@ public class PathingCalculation {
                         }
                     }
 
-                    enqueue(pi, isDenseQueue);
+                    enqueue(pi, queueIndex);
                 }
             }
         }
@@ -175,7 +186,12 @@ public class PathingCalculation {
     }
 
     public boolean isFinished() {
-        return denseQueue.isEmpty() && nonDenseQueue.isEmpty();
+        for (List<IPathItem> queue : queues) {
+            if (!queue.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int getChannelsInUse() {

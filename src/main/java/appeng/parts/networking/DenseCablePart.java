@@ -30,7 +30,7 @@ public abstract class DenseCablePart extends CablePart {
     public DenseCablePart(ColoredPartItem<?> partItem) {
         super(partItem);
 
-        this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY, GridFlags.PREFERRED);
+        this.getMainNode().setFlags(GridFlags.DENSE_CAPACITY);
     }
 
     @Override
