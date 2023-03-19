@@ -55,7 +55,7 @@ public interface PlotBuilder {
     }
 
     default CableBuilder cable(String bb) {
-        return cable(bb, AEParts.GLASS_CABLE, AEColor.TRANSPARENT);
+        return cable(bb, AEParts.SMART_CABLE, AEColor.TRANSPARENT);
     }
 
     default CableBuilder cable(String bb, ColoredItemDefinition<? extends IPartItem<?>> definition) {
