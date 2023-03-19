@@ -21,6 +21,8 @@ When redstone signal supplied the part enables the connection, <ItemLink
 id="inverted_toggle_bus"/> provides the reverse
 behavior by disabling the connection instead.
 
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
+
 # Recipes
 
 <RecipeFor id="toggle_bus" />

@@ -22,17 +22,13 @@ network with 8 devices and over 96 nodes your power usage might actually
 decrease power consumption because it changes how channels are allocated.
 
 When using a <ItemLink id="controller"/>,
-channels route via the shortest path from the <ItemLink
-id="controller"/> to the device. Channels prefer to route through dense cable over normal cable or devices, even if the path
-through the dense cable might be longer.
+channels route via 3 steps. They first take the shortest path through adjacent machines to the nearest [normal cable](../items-blocks-machines/cables.md)
+(glass, covered, or smart). They then take the shortest path through that normal cable to the nearest [dense cable](../items-blocks-machines/cables.md)
+(dense or dense smart). They then take the shortest path through that dense cable to the <ItemLink id="controller"/>. 
 If the shortest path is already maxed out, some devices may not get their required channels, use
-colored cables, cable anchors and tunnels to your advantage to make sure your
-channels go in the path you desire.
+colored cables, cable anchors and tunnels to your advantage to make sure your channels go in the path you desire.
 
-Dense cables (and other 32-channel-capable things like p2p tunnels) slightly override the "shortest path" behavior of channels,
-channels will take the shortest path to a dense cable, and then the shortest path through that dense cable to a controller.
-
-Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does is make cables not connect.
 
 # Ad-Hoc Networks
 
@@ -51,7 +47,7 @@ shortest route.
 
 # A Visual Example
 
-![Channels](../assets/assemblies/channels.png)
+WAITING UNTIL 3D SCENES ARE IMPLEMENTED
 
 # Channel Modes
 
@@ -76,68 +72,7 @@ The following table lists the available modes in both the configuration file and
 
 # Design
 
-Designing your layouts with channels can be tricky because of their shortest
-route nature, if any specific spot in your system has two possible routes, you
-may find yourself returning home from a mining trip to see half your devices
-offline. Take a look at the following example:
+It's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
+branching out from the dense, and devices in clusters of 8 or fewer on the regular cables.
 
-![Diagram showing that two equal length paths are bad.](../../assets/channels/badLength.png)
-
----
-
-Equal Length Route
-
-In the above image the controller is represented by the Green Block, Cables or
-machines by green lines. The blue square indicate which Locations only have 1
-route; this is good, but there is a red block, which indicates that there is
-two possible routes, this can be bad, especially if your exceeding 8 channels
-on cable, or machines for a specific block of machines. Now that you can
-understand that basic issue and diagram look at these other diagrams.
-
-<div className="tile"><div className="tile">
-
-![An example of a good layout](../../assets/channels/good_split.png)
-
-</div><div className="tile">
-
-![An example of a bad layout](../../assets/channels/bad_split3.png)
-
-</div><div className="tile">
-
-![An example of a bad layout](../../assets/channels/bad_split.png)
-
-</div><div className="tile">
-
-![An example of a bad layout](../../assets/channels/bad_split2.png)
-
-</div></div>
-
-You can see that depending on how you run your cable, you might end up with
-different possible outcomes in a block of machines, you can also see that
-using a controller you can ensure that the channels equilibrium is kept from a
-straight line.
-
-In the second setup you can see that the middle line is red, however its
-important to remember that it only matters if that line of machines uses
-channels, if that line was for instance molecular assemblers, it wouldn't
-matter, so that could be a valid setup for building.
-
-In the Last two you can see that you might run an extra cable into a block of
-machines, and it might appear to work, but you can see that it can break quite
-easily.
-
-Now that you understand how this works, I'll leave you with one final piece of
-helpful information, if you run into a situation where you can't use a
-controller, and your design is imbalanced, consider using p2p tunnels, since a
-tunnel connection is considered a single "hop" you can get the system to have
-a different outcome.
-
-![Diagram showing how to fix a previous setup with a p2p tunnel.](../../assets/channels/p2psplit.png)
-
-# Using P2P-Tunnels to adjust route lengths
-
-One last important note about this, you can see that the p2p tunnel is
-directly on the controller, and directly on the block of machines at the
-bottom of the setup, this is done because the in and out tunnel are both
-considered "a node", so the two cable from the controller and in and out
-tunnel balance to create the final balanced setup.
+ILLUSTRATION IN-PROGRESS

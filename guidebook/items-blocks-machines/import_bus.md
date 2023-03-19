@@ -17,7 +17,7 @@ The import bus pulls items and fluids (and whatever else, given addons) from the
 For purposes of lag reduction, if the import bus has not imported something recently, it goes into a sort of
 "sleep mode" where it operates slowly, and wakes up and accelerates to full speed when it successfully imports something.
 
-They are [cable subparts](../ae2-mechanics/cable-subparts.md)
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # Filtering
 

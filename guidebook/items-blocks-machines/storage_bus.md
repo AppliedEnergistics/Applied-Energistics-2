@@ -22,6 +22,8 @@ necessarily *have* to use a storage bus for *storage*. By using [subnetworks](..
 to make a storage bus (or handful of storage busses) the *only* storage on a network, you can use it as a source or destination
 for item transfer. (see ["pipe subnet"](../example-setups/pipe-subnet.md))
 
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
+
 # Filtering
 
 By default the bus will store everything. Items inserted into its filter slots will act as a whitelist, only

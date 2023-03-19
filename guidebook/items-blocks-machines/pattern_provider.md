@@ -32,7 +32,7 @@ Multiple pattern providers with identical patterns are supported and work in par
 
 # Variants
 
-Pattern Providers come in 3 different variants: normal, directional, and flat. This affects which specific sides they push
+Pattern Providers come in 3 different variants: normal, directional, and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides they push
 ingredients to, receive items from, and provide a network connection to.
 
 - Normal pattern providers push ingredients to all sides, receive inputs from all sides, and, like most AE2 machines, act

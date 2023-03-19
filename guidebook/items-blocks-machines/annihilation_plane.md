@@ -19,7 +19,7 @@ Annihilation planes can be enchanted with any pickaxe enchantment, so yes, you c
 [automate ore processing](../example-setups/ore-fortuner.md) if your modpack allows it. In addition, silk touch does what
 you'd expect it to, efficiency reduces the energy cost of breaking a block, and unbreaking gives a chance of not using any energy.
 
-They are [cable subparts](../ae2-mechanics/cable-subparts.md)
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # Filtering
 
