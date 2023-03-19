@@ -983,4 +983,32 @@ public final class TestPlots {
         });
     }
 
+    /**
+     * Tests that the priority checks for interface -> interface restocking don't apply when the source interface is on
+     * another network. Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6847.
+     */
+    @TestPlot("interface_to_interface_different_networks")
+    public static void interfaceToInterfaceDifferentNetworks(PlotBuilder plot) {
+        var o = BlockPos.ZERO;
+        plot.cable(o)
+                .part(Direction.NORTH, AEParts.STORAGE_BUS);
+        plot.blockEntity(o.north(), AEBlocks.INTERFACE, iface -> {
+            iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
+            iface.getStorage().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE, 64)));
+        });
+        plot.block(o.north().north(), AEBlocks.CREATIVE_ENERGY_CELL);
+        plot.block(o.east(), AEBlocks.CREATIVE_ENERGY_CELL);
+        plot.blockEntity(o.south(), AEBlocks.INTERFACE, iface -> {
+            iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
+        });
+
+        plot.test(helper -> {
+            helper.succeedWhen(() -> {
+                var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                var apples = iface.getStorage().getStack(0);
+                helper.check(apples != null && apples.amount() == 1, "Expected 1 apple", o.south());
+            });
+        });
+    }
+
 }
