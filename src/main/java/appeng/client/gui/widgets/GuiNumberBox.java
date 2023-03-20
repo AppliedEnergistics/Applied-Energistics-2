@@ -37,6 +37,9 @@ public class GuiNumberBox extends GuiTextField {
         final String original = this.getText();
         super.writeText(selectedText);
 
+        if (this.getText().isEmpty()) {
+            return;
+        }
         try {
             if (this.type == int.class || this.type == Integer.class) {
                 Integer.parseInt(this.getText());
