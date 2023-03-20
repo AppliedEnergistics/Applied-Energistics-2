@@ -993,6 +993,7 @@ public final class TestPlots {
         plot.cable(o)
                 .part(Direction.NORTH, AEParts.STORAGE_BUS);
         plot.blockEntity(o.north(), AEBlocks.INTERFACE, iface -> {
+            // Need something in the config to not expose the full network...
             iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
             iface.getStorage().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE, 64)));
         });
@@ -1002,13 +1003,24 @@ public final class TestPlots {
             iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
         });
 
-        plot.test(helper -> {
-            helper.succeedWhen(() -> {
-                var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
-                var apples = iface.getStorage().getStack(0);
-                helper.check(apples != null && apples.amount() == 1, "Expected 1 apple", o.south());
-            });
-        });
+        plot.test(helper -> helper.startSequence()
+                // Test interface restock
+                .thenWaitUntil(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    var apples = iface.getStorage().getStack(0);
+                    helper.check(apples != null && apples.amount() == 1, "Expected 1 apple", o.south());
+                })
+                // Test interface pushing items away to subnet
+                .thenExecute(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    iface.getStorage().setStack(1, GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)));
+                })
+                .thenWaitUntil(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.north());
+                    var diamonds = iface.getStorage().getStack(1);
+                    helper.check(diamonds != null && diamonds.amount() == 1, "Expected 1 diamond", o.north());
+                })
+                .thenSucceed());
     }
 
 }
