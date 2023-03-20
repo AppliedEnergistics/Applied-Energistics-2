@@ -1,12 +1,10 @@
 package appeng.client.guidebook.scene.level;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,14 +58,7 @@ public class GuidebookLevel extends Level {
     private final LongSet filledBlocks = new LongOpenHashSet();
 
     public GuidebookLevel() {
-        this(getRegistryAccess());
-    }
-
-    private static RegistryAccess getRegistryAccess() {
-        if (Minecraft.getInstance().level != null) {
-            return Minecraft.getInstance().level.registryAccess();
-        }
-        return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
+        this(Platform.getClientRegistryAccess());
     }
 
     public GuidebookLevel(RegistryAccess registryAccess) {

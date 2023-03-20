@@ -110,6 +110,13 @@ public class Platform {
     public static RecipeManager fallbackClientRecipeManager;
     public static RegistryAccess fallbackClientRegistryAccess;
 
+    public static RegistryAccess getClientRegistryAccess() {
+        if (Minecraft.getInstance().level != null) {
+            return Minecraft.getInstance().level.registryAccess();
+        }
+        return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
+    }
+
     public static RecipeManager getClientRecipeManager() {
         var minecraft = Minecraft.getInstance();
         if (minecraft.level != null) {

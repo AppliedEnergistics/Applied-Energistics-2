@@ -36,6 +36,7 @@ import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -79,6 +80,7 @@ import appeng.items.tools.NetworkToolItem;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
+import appeng.sounds.AppEngSounds;
 import appeng.spatial.SpatialStorageChunkGenerator;
 import appeng.spatial.SpatialStorageDimensionIds;
 
@@ -136,6 +138,7 @@ public abstract class AppEngBase implements AppEng {
         registerMenuTypes(BuiltInRegistries.MENU);
         registerRecipeSerializers(BuiltInRegistries.RECIPE_SERIALIZER);
         registerStructures(BuiltInRegistries.STRUCTURE_TYPE);
+        registerSounds(BuiltInRegistries.SOUND_EVENT);
 
         postRegistrationInitialization();
 
@@ -206,6 +209,10 @@ public abstract class AppEngBase implements AppEng {
     public void registerCommands(MinecraftServer server) {
         CommandDispatcher<CommandSourceStack> dispatcher = server.getCommands().getDispatcher();
         new AECommand().register(dispatcher);
+    }
+
+    public void registerSounds(Registry<SoundEvent> registry) {
+        AppEngSounds.register(registry);
     }
 
     public void registerDimension() {

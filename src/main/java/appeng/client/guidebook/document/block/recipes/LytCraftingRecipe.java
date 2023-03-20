@@ -1,6 +1,5 @@
 package appeng.client.guidebook.document.block.recipes;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -15,6 +14,7 @@ import appeng.client.guidebook.document.block.LytSlotGrid;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
+import appeng.util.Platform;
 
 public class LytCraftingRecipe extends LytBox {
     private static final ResourceLocation ARROW_LIGHT = AppEng.makeId("ae2guide/gui/recipe_arrow_light.png");
@@ -58,7 +58,7 @@ public class LytCraftingRecipe extends LytBox {
         }
         append(grid);
 
-        append(resultSlot = new LytSlot(recipe.getResultItem(Minecraft.getInstance().level.registryAccess())));
+        append(resultSlot = new LytSlot(recipe.getResultItem(Platform.getClientRegistryAccess())));
     }
 
     @Override
