@@ -305,7 +305,9 @@ public class ContainerCraftConfirm extends AEBaseContainer {
             final ICraftingGrid cc = this.getGrid().getCache(ICraftingGrid.class);
             final ICraftingLink g = cc.submitJob(this.result, null, this.getSelectedCpu() == -1 ? null : this.cpus.get(this.getSelectedCpu()).getCpu(), true, this.getActionSrc());
             this.setAutoStart(false);
-            if (g != null && originalGui != null && this.getOpenContext() != null) {
+            if (g == null) {
+                this.setJob(cc.beginCraftingJob(this.getWorld(), this.getGrid(), this.getActionSrc(), this.result.getOutput(), null));
+            } else if (originalGui != null && this.getOpenContext() != null) {
                 final TileEntity te = this.getOpenContext().getTile();
                 if (te != null) {
                     Platform.openGUI(this.getInventoryPlayer().player, te, this.getOpenContext().getSide(), originalGui);
