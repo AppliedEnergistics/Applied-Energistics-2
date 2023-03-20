@@ -354,6 +354,7 @@ gui.tooltips.appliedenergistics2.FilterModeKeep=Восстановить пре�
 gui.tooltips.appliedenergistics2.FilterModeClear=Очищать при каждом открытии.
 gui.tooltips.appliedenergistics2.ItemsStored=Хранящиеся предметы: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=Запрашиваемые предметы: %s
+gui.tooltips.appliedenergistics2.ItemsCraftable=Можно создать
 gui.tooltips.appliedenergistics2.P2PFrequency=Частота: %s
 gui.tooltips.appliedenergistics2.MultiplyByTwo=Удвоить колличество предметов
 gui.tooltips.appliedenergistics2.MultiplyByTwoDesc=Удвоить колличество предметов, установленных в слотах для крафта

@@ -359,6 +359,7 @@ gui.tooltips.appliedenergistics2.FilterModeKeep=以前の検索フィルター�
 gui.tooltips.appliedenergistics2.FilterModeClear=GUIを開くたびにリセットする
 gui.tooltips.appliedenergistics2.ItemsStored=在庫アイテム: %s
 gui.tooltips.appliedenergistics2.ItemsRequestable=要求可能なアイテム: %s
+gui.tooltips.appliedenergistics2.ItemsCraftable=クラフト可能
 gui.tooltips.appliedenergistics2.P2PFrequency=周波数: %s
 gui.tooltips.appliedenergistics2.MultiplyByTwo=アイテムを倍にする
 gui.tooltips.appliedenergistics2.MultiplyByTwoDesc=スロットのアイテム数を倍にすることを試みる

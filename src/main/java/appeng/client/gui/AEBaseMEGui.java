@@ -77,7 +77,7 @@ public abstract class AEBaseMEGui extends AEBaseGui {
                 }
 
                 if (myStack.isCraftable() && AEConfig.instance().isShowCraftableTooltip()) {
-                    final String local = ButtonToolTips.ItemCraftable.getLocal();
+                    final String local = ButtonToolTips.ItemsCraftable.getLocal();
                     currentToolTip.add(TextFormatting.GRAY + local);
                 }
 

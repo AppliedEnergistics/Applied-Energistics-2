@@ -354,6 +354,7 @@ gui.tooltips.appliedenergistics2.FilterModeKeep=重载上一个搜索过滤器�
 gui.tooltips.appliedenergistics2.FilterModeClear=在每次打开时清空。
 gui.tooltips.appliedenergistics2.ItemsStored=存储物品：%s
 gui.tooltips.appliedenergistics2.ItemsRequestable=可请求：%s
+gui.tooltips.appliedenergistics2.ItemsCraftable=可合成
 gui.tooltips.appliedenergistics2.P2PFrequency=频率：%s
 gui.tooltips.appliedenergistics2.MultiplyByTwo=物品数量×2
 gui.tooltips.appliedenergistics2.MultiplyByTwoDesc=将尝试将格内物品数量×2
