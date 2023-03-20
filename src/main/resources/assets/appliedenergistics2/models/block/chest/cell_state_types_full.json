@@ -1,24 +1,23 @@
 {
-	"credit": "Made with Blockbench",
-	"textures": {
-		"backdrop": "appliedenergistics2:blocks/chest/cell_state_backdrop",
-		"state": "appliedenergistics2:blocks/chest/cell_state_types_full"
-	},
-	"elements": [
-		{
-			"from": [5, 4, 0],
-			"to": [11, 6, 1],
-			"faces": {
-				"north": {"uv": [5, 10, 11, 12], "texture": "#backdrop"},
-				"up": {"uv": [5, 9, 11, 10], "texture": "#backdrop"}
-			}
-		},
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#state"}
-			}
-		}
-	]
+  "textures": {
+    "backdrop": "appliedenergistics2:blocks/chest/cell_state_backdrop",
+    "state": "appliedenergistics2:blocks/chest/cell_state_types_full"
+  },
+  "elements": [
+    {
+      "from": [5, 4, 0],
+      "to": [11, 6, 1],
+      "faces": {
+        "north": { "uv": [5, 10, 11, 12], "texture": "#backdrop" },
+        "up": { "uv": [5, 9, 11, 10], "texture": "#backdrop" }
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 16], "texture": "#state" }
+      }
+    }
+  ]
 }

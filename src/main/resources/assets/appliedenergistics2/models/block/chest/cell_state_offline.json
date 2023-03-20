@@ -1,16 +1,15 @@
 {
-	"credit": "Made with Blockbench",
-	"textures": {
-		"state": "appliedenergistics2:blocks/chest/cell_state_offline"
-	},
-	"elements": [
-		{
-			"from": [5, 4, 0],
-			"to": [11, 6, 1],
-			"faces": {
-				"north": {"uv": [5, 10, 11, 12], "texture": "#state"},
-				"up": {"uv": [5, 9, 11, 10], "texture": "#state"}
-			}
-		}
-	]
+  "textures": {
+    "state": "appliedenergistics2:blocks/chest/cell_state_offline"
+  },
+  "elements": [
+    {
+      "from": [5, 4, 0],
+      "to": [11, 6, 1],
+      "faces": {
+        "north": { "uv": [5, 10, 11, 12], "texture": "#state" },
+        "up": { "uv": [5, 9, 11, 10], "texture": "#state" }
+      }
+    }
+  ]
 }

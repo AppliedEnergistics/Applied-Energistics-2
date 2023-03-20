@@ -81,11 +81,11 @@ configurations {
 dependencies {
     // deobfCompile "gregtechce:gregtech:1.12.2:1.15.1.735"
     // installable runtime dependencies
-    deobfCompile "curse.maven:gregtechceu-557242:3949406"
+    deobfCompile "curse.maven:gregtechceu-557242:4429261"
 
     compileOnly "curse.maven:chisel-235279:2915375"
 
-    deobfCompile "baubles:Baubles:1.12:1.5.2"
+    deobfCompile "curse.maven:baubles-227083:2518667"
     //mods "mcp.mobius.waila:Hwyla:${hwyla_version}"
     mods "curse.maven:hwyla-253449:2568751"
     mods "net.industrial-craft:industrialcraft-2:${ic2_version}:dev"
@@ -107,7 +107,7 @@ dependencies {
     compileOnly "cofh:CoFHCore:${cofhcore_version}:deobf"
     compileOnly "CraftTweaker2:CraftTweaker2-API:${crafttweaker_version}"
     compileOnly "curse.maven:inventory-tweaks-223094:2482482"
-    compileOnly "curse.maven:inventory-bogo-sorter-632327:4329854"
+    compileOnly "curse.maven:inventory-bogo-sorter-632327:4399738"
     compileOnly "team.chisel.ctm:CTM:${ctm_version}"
     compileOnly "de.ellpeck.actuallyadditions:ActuallyAdditions:1.12.2-r152.16:api"
     deobfCompile "net.sengir.forestry:forestry_${minecraft_version}:$forestry_version"
