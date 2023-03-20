@@ -189,6 +189,11 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                 .orElseGet(OptionalInt::empty);
     }
 
+    protected final boolean isSameGrid(IActionSource src) {
+        var otherGrid = src.machine().map(IActionHost::getActionableNode).map(IGridNode::getGrid).orElse(null);
+        return otherGrid == mainNode.getGrid();
+    }
+
     protected final boolean hasWorkToDo() {
         for (var requiredWork : this.plannedWork) {
             if (requiredWork != null) {
@@ -565,7 +570,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             // Prevents other interfaces from injecting their items into this interface when they push
             // their local inventory into the network. This prevents items from bouncing back and forth
             // between interfaces.
-            if (getRequestInterfacePriority(source).isPresent()) {
+            if (getRequestInterfacePriority(source).isPresent() && isSameGrid(source)) {
                 return 0;
             }
 
@@ -578,13 +583,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             // Otherwise we'd see a "ping-pong" effect where two interfaces could start pulling items back and
             // forth of they wanted to stock the same item and happened to have storage buses on them.
             var requestPriority = getRequestInterfacePriority(source);
-            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
-                // Only skip extraction if the two interfaces are on the same network
-                var sourceGrid = source.machine().map(IActionHost::getActionableNode).map(IGridNode::getGrid)
-                        .orElse(null);
-                if (sourceGrid == mainNode.getGrid()) {
-                    return 0;
-                }
+            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority() && isSameGrid(source)) {
+                return 0;
             }
 
             return super.extract(what, amount, mode, source);
