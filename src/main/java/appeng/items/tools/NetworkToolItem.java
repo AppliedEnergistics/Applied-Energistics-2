@@ -174,7 +174,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
         // Sort ascending by amount
         stacks.sort(Comparator.comparingLong(GenericStack::amount).reversed());
 
-        return Optional.of(new StorageCellTooltipComponent(List.of(), stacks, false));
+        return Optional.of(new StorageCellTooltipComponent(List.of(), stacks, false, true));
     }
 
     /**
