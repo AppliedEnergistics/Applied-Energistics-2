@@ -49,6 +49,7 @@ import mezz.jei.api.gui.IGhostIngredientHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -568,7 +569,10 @@ public abstract class AEBaseGui extends GuiContainer implements IMTModGuiContain
                     action = (mouseButton == 1) ? InventoryAction.SPLIT_OR_PLACE_SINGLE : InventoryAction.PICKUP_OR_SET_DOWN;
                     stack = ((SlotME) slot).getAEStack();
 
-                    if (stack != null && action == InventoryAction.PICKUP_OR_SET_DOWN && stack.getStackSize() == 0 && player.inventory.getItemStack().isEmpty()) {
+                    if (stack != null
+                        && action == InventoryAction.PICKUP_OR_SET_DOWN
+                        && (stack.getStackSize() == 0 || GuiScreen.isAltKeyDown())
+                        && player.inventory.getItemStack().isEmpty()) {
                         action = InventoryAction.AUTO_CRAFT;
                     }
 

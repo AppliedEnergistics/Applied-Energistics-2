@@ -76,6 +76,11 @@ public abstract class AEBaseMEGui extends AEBaseGui {
                     currentToolTip.add(format);
                 }
 
+                if (myStack.isCraftable() && AEConfig.instance().isShowCraftableTooltip()) {
+                    final String local = ButtonToolTips.ItemCraftable.getLocal();
+                    currentToolTip.add(TextFormatting.GRAY + local);
+                }
+
                 this.drawHoveringText(currentToolTip, x, y, this.fontRenderer);
 
                 return;

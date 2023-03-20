@@ -26,6 +26,7 @@ import appeng.util.ISlimReadableNumberConverter;
 import appeng.util.IWideReadableNumberConverter;
 import appeng.util.ReadableNumberConverter;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 
 
@@ -48,7 +49,7 @@ public class StackSizeRenderer {
             final boolean unicodeFlag = fontRenderer.getUnicodeFlag();
             fontRenderer.setUnicodeFlag(false);
 
-            if (aeStack.getStackSize() == 0 && aeStack.isCraftable()) {
+            if ((aeStack.getStackSize() == 0 || GuiScreen.isAltKeyDown()) && aeStack.isCraftable()) {
                 final String craftLabelText = AEConfig.instance().useTerminalUseLargeFont() ? GuiText.LargeFontCraft.getLocal() : GuiText.SmallFontCraft
                         .getLocal();
                 GlStateManager.disableLighting();
@@ -64,8 +65,7 @@ public class StackSizeRenderer {
                 GlStateManager.enableDepth();
                 GlStateManager.enableBlend();
             }
-
-            if (aeStack.getStackSize() > 0) {
+            else if (aeStack.getStackSize() > 0) {
                 final String stackSize = this.getToBeRenderedStackSize(aeStack.getStackSize());
 
                 GlStateManager.disableLighting();
