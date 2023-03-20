@@ -99,11 +99,13 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
             }
 
             // Now render the amounts on top of the items
-            xoff = 0;
-            for (var stack : content) {
-                var amtText = stack.what().formatAmount(stack.amount(), AmountFormat.SLOT);
-                StackSizeRenderer.renderSizeLabel(poseStack, font, x + xoff, y, amtText, false);
-                xoff += 17;
+            if (tooltipComponent.showAmounts()) {
+                xoff = 0;
+                for (var stack : content) {
+                    var amtText = stack.what().formatAmount(stack.amount(), AmountFormat.SLOT);
+                    StackSizeRenderer.renderSizeLabel(poseStack, font, x + xoff, y, amtText, false);
+                    xoff += 17;
+                }
             }
             y += 17;
         }

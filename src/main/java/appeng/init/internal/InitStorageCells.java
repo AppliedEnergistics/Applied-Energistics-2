@@ -75,7 +75,7 @@ public final class InitStorageCells {
 
     public static void init() {
         StorageCells.addCellHandler(BasicCellHandler.INSTANCE);
-        StorageCells.addCellHandler(new CreativeCellHandler());
+        StorageCells.addCellHandler(CreativeCellHandler.INSTANCE);
         StorageCells.addCellGuiHandler(new BasicItemCellGuiHandler());
         StorageCells.addCellGuiHandler(new BasicFluidCellGuiHandler());
 

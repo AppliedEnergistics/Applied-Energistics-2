@@ -9,5 +9,6 @@ import appeng.api.stacks.GenericStack;
 
 public record StorageCellTooltipComponent(List<ItemStack> upgrades,
         List<GenericStack> content,
-        boolean hasMoreContent) implements TooltipComponent {
+        boolean hasMoreContent,
+        boolean showAmounts) implements TooltipComponent {
 }

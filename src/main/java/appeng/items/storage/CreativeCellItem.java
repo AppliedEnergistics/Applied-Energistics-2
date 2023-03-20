@@ -19,10 +19,13 @@
 package appeng.items.storage;
 
 import java.util.List;
+import java.util.Optional;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ItemLike;
@@ -36,8 +39,11 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
+import appeng.core.localization.Tooltips;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
+import appeng.me.cells.CreativeCellHandler;
 import appeng.util.ConfigInventory;
 
 public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
@@ -66,10 +72,21 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
 
         if (inventory != null) {
             var cc = getConfigInventory(stack);
-            for (var key : cc.keySet()) {
-                lines.add(AEKeyRendering.getDisplayName(key));
+            if (!cc.isEmpty()) {
+                if (Screen.hasShiftDown()) {
+                    for (var key : cc.keySet()) {
+                        lines.add(Tooltips.of(AEKeyRendering.getDisplayName(key)));
+                    }
+                } else {
+                    lines.add(Tooltips.of(GuiText.PressShiftForFullList));
+                }
             }
         }
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        return CreativeCellHandler.INSTANCE.getTooltipImage(stack);
     }
 
     public static ItemStack ofItems(ItemLike... items) {

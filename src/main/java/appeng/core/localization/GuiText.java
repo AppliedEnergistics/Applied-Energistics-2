@@ -164,6 +164,7 @@ public enum GuiText implements LocalizationEnum {
     PowerUsageRate("Energy Usage: %s"),
     Precise("Precise"),
     PressureTunnel("Pressure"),
+    PressShiftForFullList("Press [Shift] for full list"),
     Priority("Priority"),
     PriorityExtractionHint("Extraction: Lower priority first"),
     PriorityInsertionHint("Insertion: Higher priority first"),

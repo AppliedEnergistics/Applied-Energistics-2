@@ -134,6 +134,7 @@ public class BasicCellHandler implements ICellHandler {
         return Optional.of(new StorageCellTooltipComponent(
                 upgradeStacks,
                 content,
-                hasMoreContent));
+                hasMoreContent,
+                true));
     }
 }
