@@ -596,29 +596,29 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             return;
         }
 
-        // Check how much we can store in the item
-        long amountAllowed = ctx.insert(what, Long.MAX_VALUE, Actionable.SIMULATE);
-        if (amountAllowed == 0) {
-            return; // Nothing.
-        }
-
         // Check if we can pull out of the system
-        var canPull = source.extract(amountAllowed, Actionable.SIMULATE);
+        var canPull = source.extract(Long.MAX_VALUE, Actionable.SIMULATE);
         if (canPull <= 0) {
             return;
         }
 
-        // How much could fit into the carried container
-        long canFill = ctx.insert(what, canPull, Actionable.MODULATE);
-        if (canFill == 0) {
-            return;
+        // Check how much we can store in the item
+        long amountAllowed = ctx.insert(what, canPull, Actionable.SIMULATE);
+        if (amountAllowed == 0) {
+            return; // Nothing.
         }
 
         // Now actually pull out of the system
-        var extracted = source.extract(canFill, Actionable.MODULATE);
+        var extracted = source.extract(amountAllowed, Actionable.MODULATE);
         if (extracted <= 0) {
             // Something went wrong
             AELog.error("Unable to pull fluid out of the ME system even though the simulation said yes ");
+            return;
+        }
+
+        // How much could fit into the carried container
+        long inserted = ctx.insert(what, extracted, Actionable.MODULATE);
+        if (inserted == 0) {
             return;
         }
 
