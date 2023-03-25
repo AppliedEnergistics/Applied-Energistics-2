@@ -33,6 +33,6 @@ They can also be duplicated in an <ItemLink id="inscriber" />.
 The Name Press can be used in an inscriber to name items, similar to an anvil.
 
 To craft, right click the <ItemLink id="certus_quartz_cutting_knife"/> or <ItemLink id="nether_quartz_cutting_knife"/>
-and insert an <ItemLink id="minecraft:iron_ingot" />, you will then have to type the name you
+and insert an ingot of metal, you will then have to type the name you
 wish to write onto the plate then simply extract the finished plate. You can use one or two plates at a time in the inscriber,
 if you use two plates, it will print the name using the combination of both names, top slot, then bottom slot.
