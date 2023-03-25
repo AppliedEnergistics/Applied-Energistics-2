@@ -42,6 +42,26 @@ public class LytSlotGrid extends LytBox {
         return grid;
     }
 
+    public static LytSlotGrid row(List<Ingredient> ingredients, boolean skipEmpty) {
+        if (!skipEmpty) {
+            var grid = new LytSlotGrid(ingredients.size(), 1);
+            for (int i = 0; i < ingredients.size(); i++) {
+                grid.setIngredient(i, 0, ingredients.get(i));
+            }
+            return grid;
+        }
+
+        var nonEmptyIngredients = (int) ingredients.stream().filter(i -> !i.isEmpty()).count();
+        var grid = new LytSlotGrid(nonEmptyIngredients, 1);
+        var index = 0;
+        for (var ingredient : ingredients) {
+            if (!ingredient.isEmpty()) {
+                grid.setIngredient(index++, 0, ingredient);
+            }
+        }
+        return grid;
+    }
+
     public boolean isRenderEmptySlots() {
         return renderEmptySlots;
     }

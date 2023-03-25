@@ -18,6 +18,7 @@ import appeng.client.guidebook.document.block.recipes.LytChargerRecipe;
 import appeng.client.guidebook.document.block.recipes.LytCraftingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytInscriberRecipe;
 import appeng.client.guidebook.document.block.recipes.LytSmeltingRecipe;
+import appeng.client.guidebook.document.block.recipes.LytSmithingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytTransformRecipe;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.recipes.handlers.ChargerRecipe;
@@ -33,6 +34,7 @@ public class RecipeCompiler extends BlockTagCompiler {
     private final List<RecipeTypeMapping<?, ?>> mappings = List.of(
             new RecipeTypeMapping<>(RecipeType.CRAFTING, LytCraftingRecipe::new),
             new RecipeTypeMapping<>(RecipeType.SMELTING, LytSmeltingRecipe::new),
+            new RecipeTypeMapping<>(RecipeType.SMITHING, LytSmithingRecipe::new),
             new RecipeTypeMapping<>(InscriberRecipe.TYPE, LytInscriberRecipe::new),
             new RecipeTypeMapping<>(ChargerRecipe.TYPE, LytChargerRecipe::new),
             new RecipeTypeMapping<>(TransformRecipe.TYPE, LytTransformRecipe::new));
