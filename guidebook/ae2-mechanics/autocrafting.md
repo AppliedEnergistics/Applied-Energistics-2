@@ -21,7 +21,7 @@ An autocrafting setup consists of 3 things: the thing sending the crafting reque
 1. Something creates a crafting request. This can be you in the terminal clicking on something autocraftable,
 or an export bus or interface with a crafting card requesting one of the item they're set to export/stock.
    
-- (**IMPORTANT:** middle-click to request crafts of something you already have in stock, this can conflict with inventory sorting mods),
+- (**IMPORTANT:** use whatever you have bound to "pick block" (usually middle-mouse) to request crafts of something you already have in stock, this can conflict with inventory sorting mods),
 
 2. The ME system calculates the required ingredients and prerequisite crafting steps to fulfill the request, and stores them in a crafting CPU
 
@@ -35,7 +35,7 @@ In the case of a non-crafting recipe (a "processing pattern") this will be some 
 
 # Patterns
 
-![A Pattern](../assets/items/crafting_pattern.png)
+<ItemImage id="crafting_pattern" scale="4" />
 
 Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of <ItemLink id="blank_pattern" />s.
 
@@ -85,7 +85,7 @@ being carried out, and affect how big jobs can be, and to some degree how fast t
 must be rectangular prisms.
 
 Crafting CPUs are made out of:
-- [Crafting storages](./items-blocks-machines/crafting-storages.md), available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k). They store the ingredients and
+- [Crafting storages](../items-blocks-machines/crafting_cpu_multiblock.md), available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k). They store the ingredients and
 intermediate ingredients involved in a craft, so larger or more storages are required for the CPU to handle crafting jobs
 with more ingredients.
 - <ItemLink id="crafting_accelerator" />s, they make the system send out more ingredient batches from pattern providers.
@@ -102,11 +102,11 @@ They can be set to handle requests from players, automation (export busses and i
 ![Pattern Providers](../assets/assemblies/pattern_provider_variants.png)
 
 <ItemLink id="pattern_provider" />s are the primary way in which your autocrafting system interacts with the world. They push the ingredients in
-their [patterns](patterns.md) to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often
+their [patterns](../items-blocks-machines/patterns.md) to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often
 a channel can be saved by piping the output of a machine back into a nearby pattern provider (often the one that pushed the ingredients)
 instead of using an <ItemLink id="import_bus" /> to pull the output of the machine into the network.
 
-Of note, since they push the ingredients directly from the [crafting storage](./items-blocks-machines/crafting-storages.md) in a crafting CPU, they
+Of note, since they push the ingredients directly from the [crafting storage](../items-blocks-machines/crafting_cpu_multiblock.md) in a crafting CPU, they
 never actually contain the ingredients in their inventory, so you cannot pipe out from them. You have to have the provider push
 to another inventory (like a barrel) then pipe from that.
 
@@ -147,13 +147,13 @@ Pattern providers have a variety of modes:
 
 # Priority
 
-Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](patterns.md)
+Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](../items-blocks-machines/patterns.md)
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
 
 # Molecular Assemblers
 
-![Molecular Assembler](../assets/blocks/molecular_assembler.png)
+<BlockImage id="molecular_assembler" scale="8" />
 
 The molecular assembler takes items input into it and carries out the operation defined by an adjacent <ItemLink id="pattern_provider" />,
 or the inserted <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />,
