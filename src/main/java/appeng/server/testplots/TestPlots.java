@@ -78,7 +78,7 @@ import appeng.util.CraftingRecipeUtil;
 public final class TestPlots {
     private static final Class<?>[] PLOT_CLASSES = {
             TestPlots.class,
-            AutoCraftingTestPlot.class,
+            AutoCraftingTestPlots.class,
             P2PTestPlots.class,
             PatternProviderLockModePlots.class
     };

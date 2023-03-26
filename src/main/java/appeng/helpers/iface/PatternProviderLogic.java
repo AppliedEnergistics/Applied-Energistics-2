@@ -127,6 +127,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     private UnlockCraftingEvent unlockEvent;
     @Nullable
     private GenericStack unlockStack;
+    private int roundRobinIndex = 0;
 
     @Nullable
     public PatternProviderLogic(IManagedGridNode mainNode, PatternProviderLogicHost host) {
@@ -274,6 +275,21 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return this.priority;
     }
 
+    /**
+     * Apply round-robin to list.
+     */
+    private <T> void rearrangeRoundRobin(List<T> list) {
+        if (list.isEmpty()) {
+            return;
+        }
+
+        roundRobinIndex %= list.size();
+        for (int i = 0; i < roundRobinIndex; ++i) {
+            list.add(list.get(i));
+        }
+        list.subList(0, roundRobinIndex).clear();
+    }
+
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
         if (!sendList.isEmpty() || !this.mainNode.isActive() || !this.patterns.contains(patternDetails)) {
@@ -287,6 +303,11 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             return false;
         }
 
+        record PushTarget(Direction direction, PatternProviderTarget target) {
+        }
+        var possibleTargets = new ArrayList<PushTarget>();
+
+        // Push to crafting machines first
         for (var direction : host.getTargets()) {
             var adjPos = be.getBlockPos().relative(direction);
             var adjBe = level.getBlockEntity(adjPos);
@@ -311,6 +332,17 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             if (adapter == null)
                 continue;
 
+            possibleTargets.add(new PushTarget(direction, adapter));
+        }
+
+        // Rearrange for round-robin
+        rearrangeRoundRobin(possibleTargets);
+
+        // Push to other kinds of blocks
+        for (var target : possibleTargets) {
+            var direction = target.direction();
+            var adapter = target.target();
+
             if (this.isBlocking() && adapter.containsPatternInput(this.patternInputs)) {
                 continue;
             }
@@ -329,6 +361,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                 onPushPatternSuccess(patternDetails);
                 this.sendDirection = direction;
                 this.sendStacksOut();
+                ++roundRobinIndex;
                 return true;
             }
         }
