@@ -18,26 +18,21 @@ item_ids:
 - ae2:energy_card
 ---
 # Upgrade Cards
-<Row>
-<ItemImage id="redstone_card" scale="2" /><ItemImage id="capacity_card" scale="2" /><ItemImage id="void_card" scale="2" />
-<ItemImage id="fuzzy_card" scale="2" /><ItemImage id="speed_card" scale="2" /><ItemImage id="inverter_card" scale="2" />
-<ItemImage id="crafting_card" scale="2" /><ItemImage id="equal_distribution_card" scale="2" /><ItemImage id="energy_card" scale="2" />
-</Row>
+
+<ItemImage id="redstone_card" scale="2" />   <ItemImage id="capacity_card" scale="2" />   <ItemImage id="void_card" scale="2" />
+   <ItemImage id="fuzzy_card" scale="2" />   <ItemImage id="speed_card" scale="2" />   <ItemImage id="inverter_card" scale="2" />
+   <ItemImage id="crafting_card" scale="2" />   <ItemImage id="equal_distribution_card" scale="2" />   <ItemImage id="energy_card" scale="2" />
 
 Upgrade cards change the behavior of AE2 [devices](../ae2-mechanics/devices.md) and machines, increasing their speed, improving their
 filter capacity, enabling redstone control, etc.
 
----
-
 # Card Components
 
-<Row><ItemImage id="basic_card" scale="2" /><ItemImage id="advanced_card" scale="2" /></Row>
+<ItemImage id="basic_card" scale="2" />   <ItemImage id="advanced_card" scale="2" />
 
 Cards are crafted with either basic or advanced card bases
 
-<Row><RecipeFor id="basic_card" /><RecipeFor id="advanced_card" /></Row>
-
----
+<RecipeFor id="basic_card" />   <RecipeFor id="advanced_card" />
 
 # Redstone Card
 
@@ -47,8 +42,6 @@ Redstone cards add redstone control, adding a toggle button in the device's GUI 
 
 <RecipeFor id="redstone_card" />
 
----
-
 # Capacity Card
 
 <ItemImage id="capacity_card" scale="2" />
@@ -57,19 +50,15 @@ Capacity cards increase the amount of filter slots in import, export, and storag
 
 <RecipeFor id="capacity_card" />
 
----
-
 # Overflow Destruction Card
 
 <ItemImage id="void_card" scale="2" />
 
 Overflow destruction cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench"/>
-and will delete incoming items if the cell is full. (make sure to [partition](cell_workbench.md) your cells!) Combined with an equal distribution card,
+and will delete incoming items if the cell is full. (make sure to partition your cells!) Combined with an equal distribution card,
 items will be voided if that specific item's section of the cell is full, even if other items' sections are empty.
 
 <RecipeFor id="void_card" />
-
----
 
 # Fuzzy Card
 
@@ -78,37 +67,7 @@ items will be voided if that specific item's section of the cell is full, even i
 Fuzzy cards let devices and tools with filters filter by damage level and/or ignore item NBT, allowing you to export
 all iron axes no matter the damage level and enchantments, or only export damaged diamond swords, not fully repaired ones.
 
-Below is an example of how Fuzzy Damage comparison mods work, left side is the
-bus config, top is the compared item.
-
-| 25%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
-| ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | \*\*\*\*            | \*\*\*\*            | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            | ✅                  | ✅                  | ✅                  |
-
-| 50%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
-| ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | \*\*\*\*            | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            | \*\*\*\*            | ✅                  | ✅                  |
-
-| 75%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
-| ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | \*\*\*\*            | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            |                     | ✅                  | ✅                  |
-
-| 99%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
-| ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | ✅                  | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            | \*\*\*\*            | \*\*\*\*            | ✅                  |
-
-| Ignore                 | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
-| ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | ✅                  | **✅**              |
-| Fully Repaired Pickaxe | **✅**              | **✅**              | **✅**              | ✅                  |
-
 <RecipeFor id="fuzzy_card" />
-
----
 
 # Acceleration Card
 
@@ -119,8 +78,6 @@ and assemblers work faster.
 
 <RecipeFor id="speed_card" />
 
----
-
 # Inverter Card
 
 <ItemImage id="inverter_card" scale="2" />
@@ -128,8 +85,6 @@ and assemblers work faster.
 Inverter cards swap filters in devices and tools from whitelist to blacklist.
 
 <RecipeFor id="inverter_card" />
-
----
 
 # Crafting Card
 
@@ -140,19 +95,15 @@ system to get the items it desires.
 
 <RecipeFor id="inverter_card" />
 
----
-
 # Equal Distribution Card
 
 <ItemImage id="equal_distribution_card" scale="2" />
 
 Equal distribution cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench"/> and
-split the cell into equally-sized sections based on what the card is [partitioned](cell_workbench.md) to. This prevents one item type from completely
+split the cell into equally-sized sections based on what the card is partitioned to. This prevents one item type from completely
 filling the cell.
 
 <RecipeFor id="equal_distribution_card" />
-
----
 
 # Energy Card
 
