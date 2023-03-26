@@ -147,12 +147,12 @@ public final class AEItems {
     ///
     private static ItemDefinition<PortableCellItem> makePortableItemCell(ResourceLocation id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Item Cell";
-        return item(name, id, p -> new PortableCellItem(AEKeyType.items(), MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1)));
+        return item(name, id, p -> new PortableCellItem(AEKeyType.items(), MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1), 0xDDDDDD));
     }
 
     private static ItemDefinition<PortableCellItem> makePortableFluidCell(ResourceLocation id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Fluid Cell";
-        return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1)));
+        return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1), 0xFF6D36));
     }
 
     public static final ItemDefinition<PortableCellItem> PORTABLE_ITEM_CELL1K = makePortableItemCell(AEItemIds.PORTABLE_ITEM_CELL1K, StorageTier.SIZE_1K);
@@ -173,8 +173,7 @@ public final class AEItems {
 
     public static final ItemDefinition<BiometricCardItem> BIOMETRIC_CARD = item("Biometric Card", AEItemIds.BIOMETRIC_CARD, p -> new BiometricCardItem(p.stacksTo(1)));
     public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item("Network Tool", AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1)));
-    public static final ColoredItemDefinition<MemoryCardItem> MEMORY_CARDS = createColoredItems("Memory Card", AEItemIds.MEMORY_CARDS, (p, color) -> new MemoryCardItem(p.stacksTo(1)));
-
+    public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item("Memory Card", AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.stacksTo(1)));
 
     public static final ItemDefinition<FacadeItem> FACADE = item("Cable Facade", AEItemIds.FACADE, FacadeItem::new);
     public static final ItemDefinition<MaterialItem> BLANK_PATTERN = item("Blank Pattern", AEItemIds.BLANK_PATTERN, MaterialItem::new);

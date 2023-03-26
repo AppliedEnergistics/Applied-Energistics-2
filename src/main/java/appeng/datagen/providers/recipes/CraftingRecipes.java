@@ -16,7 +16,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-import appeng.api.ids.AEItemIds;
 import appeng.api.ids.AETags;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
@@ -901,7 +900,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
                 .save(consumer, AppEng.makeId("tools/network_color_applicator"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.MEMORY_CARDS.item(AEColor.TRANSPARENT))
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.MEMORY_CARD)
                 .pattern("abb")
                 .pattern("cdc")
                 .define('a', AEItems.CALCULATION_PROCESSOR)
@@ -910,22 +909,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.REDSTONE)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("tools/network_memory_card"));
-
-        for (var entry : AEItemIds.MEMORY_CARDS.entrySet()) {
-            if (entry.getKey().dye != null) {
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.MEMORY_CARDS.item(entry.getKey()))
-                        .requires(ConventionTags.MEMORY_CARDS)
-                        .requires(ConventionTags.dye(entry.getKey().dye))
-                        .unlockedBy("has_memory_card", has(ConventionTags.MEMORY_CARDS))
-                        .save(consumer, AppEng.makeId("tools/network_memory_card_" + entry.getKey().registryPrefix));
-            }
-        }
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.MEMORY_CARDS.item(AEColor.TRANSPARENT))
-                .requires(tagExcept(ConventionTags.MEMORY_CARDS, AEItems.MEMORY_CARDS.item(AEColor.TRANSPARENT)))
-                .requires(ConventionTags.CAN_REMOVE_COLOR)
-                .unlockedBy("has_memory_card", has(ConventionTags.MEMORY_CARDS))
-                .save(consumer, AppEng.makeId("network/cables/network_memory_card_clean"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.NETWORK_TOOL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)

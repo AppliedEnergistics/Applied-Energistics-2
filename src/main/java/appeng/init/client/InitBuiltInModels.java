@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.block.paint.PaintSplotchesModel;
 import appeng.block.qnb.QnbFormedModel;
@@ -55,11 +54,7 @@ public final class InitBuiltInModels {
         addBuiltInModel("block/cable_bus", CableBusModel::new);
         addBuiltInModel("block/quartz_glass", GlassModel::new);
         addBuiltInModel("item/meteorite_compass", MeteoriteCompassModel::new);
-        for (AEColor color : AEColor.values()) {
-            String builtInItemModelName = "memory_card"
-                    + (color != AEColor.TRANSPARENT ? ("_" + color.registryPrefix) : "");
-            addBuiltInModel("item/" + builtInItemModelName, () -> new MemoryCardModel(color));
-        }
+        addBuiltInModel("item/memory_card", MemoryCardModel::new);
         addBuiltInModel("item/biometric_card", BiometricCardModel::new);
         addBuiltInModel("block/drive", DriveModel::new);
         addBuiltInModel("color_applicator", ColorApplicatorModel::new);

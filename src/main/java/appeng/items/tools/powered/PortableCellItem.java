@@ -48,8 +48,9 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
     private final StorageTier tier;
     private final AEKeyType keyType;
 
-    public PortableCellItem(AEKeyType keyType, MenuType<?> menuType, StorageTier tier, Properties props) {
-        super(menuType, props);
+    public PortableCellItem(AEKeyType keyType, MenuType<?> menuType, StorageTier tier, Properties props,
+            int defaultColor) {
+        super(menuType, props, defaultColor);
         this.tier = tier;
         this.keyType = keyType;
     }

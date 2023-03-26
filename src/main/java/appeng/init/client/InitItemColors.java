@@ -32,6 +32,7 @@ import appeng.items.misc.PaintBallItem;
 import appeng.items.parts.ColoredPartItem;
 import appeng.items.parts.PartItem;
 import appeng.items.storage.BasicStorageCell;
+import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.items.tools.powered.PortableCellItem;
 
@@ -43,6 +44,8 @@ public final class InitItemColors {
         itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.SECURITY_STATION.asItem());
         // I checked, the ME chest doesn't keep its color in item form
         itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.asItem());
+
+        itemColors.register(MemoryCardItem::getTintColor, AEItems.MEMORY_CARD);
 
         itemColors.register(InitItemColors::getColorApplicatorColor, AEItems.COLOR_APPLICATOR);
 
