@@ -3,19 +3,6 @@ navigation:
   parent: website/index.md
   title: Auto-Crafting
   icon: molecular_assembler
-item_ids:
-  - ae2:blank_pattern
-  - ae2:crafting_pattern
-  - ae2:processing_pattern
-  - ae2:1k_crafting_storage
-  - ae2:4k_crafting_storage
-  - ae2:16k_crafting_storage
-  - ae2:64k_crafting_storage
-  - ae2:crafting_accelerator
-  - ae2:crafting_monitor
-  - ae2:crafting_unit
-  - ae2:pattern_provider
-  - ae2:cable_pattern_provider
 ---
 
 ## Crafting CPU

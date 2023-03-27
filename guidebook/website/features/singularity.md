@@ -1,6 +1,4 @@
 ---
-item_ids:
-  - ae2:singularity
 navigation:
   parent: website/index.md
   title: Singularity

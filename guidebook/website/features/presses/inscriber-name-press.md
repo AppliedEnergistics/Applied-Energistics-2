@@ -1,8 +1,6 @@
 ---
 categories:
   - Presses
-item_ids:
-  - ae2:name_press
 navigation:
   parent: website/index.md
   title: Inscriber Name Press

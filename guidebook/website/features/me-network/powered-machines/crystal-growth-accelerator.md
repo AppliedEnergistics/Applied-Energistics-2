@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Powered Machines
-item_ids:
-  - ae2:quartz_growth_accelerator
 navigation:
   parent: website/index.md
   title: Crystal Growth Accelerator

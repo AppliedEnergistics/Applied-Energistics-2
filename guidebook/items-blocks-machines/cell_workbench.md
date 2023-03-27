@@ -7,11 +7,11 @@ navigation:
 item_ids:
 - ae2:cell_workbench
 ---
-# The ME Drive
+# The Cell Workbench
 
 <BlockImage id="cell_workbench" scale="8" />
 
-The Cell Workbench allows you to configure [storage cells](../items-blocks-machines/storage_cells.md) and <ItemLink id="view_cell" />s.
+The Cell Workbench allows you to configure [storage cells](storage_cells.md) and <ItemLink id="view_cell" />s.
 
 You can add upgrade cards and configure "partitions" to filter what the cell will store.
 

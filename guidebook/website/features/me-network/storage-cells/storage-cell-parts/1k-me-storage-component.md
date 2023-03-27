@@ -1,8 +1,6 @@
 ---
 categories:
   - Storage Cells/Storage Cell Parts
-item_ids:
-  - ae2:cell_component_1k
 related:
   - Storage Cell Parts
   - Storage Cells

@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Storage Cells
   icon: item_storage_cell_1k
+  position: 410
 item_ids:
 - ae2:item_cell_housing
 - ae2:fluid_cell_housing
@@ -111,3 +112,14 @@ In addition to the upgrade cards all cells can receive, these also accept <ItemL
 <RecipeFor id="portable_fluid_cell_1k" />   <RecipeFor id="portable_fluid_cell_4k" />   <RecipeFor id="portable_fluid_cell_16k" />
 
 <RecipeFor id="portable_fluid_cell_64k" />   <RecipeFor id="portable_fluid_cell_256k" />
+
+# Coloring
+
+Portable item and fluid cells can be colored similar to leather armor, by crafting them together with dyes.
+
+# Creative Item and Fluid Cells
+
+<ItemImage id="creative_item_cell" scale="2" />   <ItemImage id="creative_fluid_cell" scale="2" />
+
+Creative item and fluid cells **do not provide infinite storage**. Instead, they act as infinite sources and sinks of whatever
+item or fluid you [partition](cell_workbench.md) them to.

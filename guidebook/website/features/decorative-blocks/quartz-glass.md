@@ -1,9 +1,6 @@
 ---
 categories:
   - Decorative Blocks
-item_ids:
-  - ae2:quartz_glass
-  - ae2:quartz_vibrant_glass
 navigation:
   parent: website/index.md
   title: Quartz Glass

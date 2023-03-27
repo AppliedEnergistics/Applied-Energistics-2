@@ -117,6 +117,10 @@ Pattern providers have a special interaction with interfaces on [subnets](../ae2
 the provider will skip the interface entirely and push directly to that subnet's [storage](../ae2-mechanics/import-export-storage.md),
 skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
 
+Multiple pattern providers with identical patterns are supported and work in parallel.
+
+Pattern providers with processing patterns will attempt to round-robin their batches to all of their faces.
+
 # Variants
 
 Pattern Providers come in 3 different variants: normal, directional, and flat. This affects which specific sides they push

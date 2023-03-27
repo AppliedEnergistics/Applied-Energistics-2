@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Weapons
-item_ids:
-  - ae2:charged_staff
 navigation:
   parent: website/index.md
   title: Charged Staff

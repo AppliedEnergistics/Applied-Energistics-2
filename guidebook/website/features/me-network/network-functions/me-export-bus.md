@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Network Functions
-item_ids:
-  - ae2:export_bus
 related:
   - Possible Upgrades
 navigation:

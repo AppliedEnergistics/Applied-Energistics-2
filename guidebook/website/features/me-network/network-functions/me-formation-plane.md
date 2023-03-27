@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Network Functions
-item_ids:
-  - ae2:formation_plane
 related:
   - Possible Upgrades
 navigation:

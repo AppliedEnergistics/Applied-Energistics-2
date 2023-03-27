@@ -1,6 +1,4 @@
 ---
-item_ids:
-  - ae2:controller
 navigation:
   parent: website/index.md
   title: ME Controller

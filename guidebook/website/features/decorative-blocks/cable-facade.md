@@ -2,8 +2,6 @@
 navigation:
   parent: website/index.md
   title: Cable Facade
-item_ids:
-  - ae2:facade
 ---
 
 ![A picture of some stone brick facades.](../../assets/large/facade.png)

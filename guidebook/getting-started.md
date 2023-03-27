@@ -111,7 +111,7 @@ Now that you have all of the basic materials and machines for Applied Energistic
     - 1x <ItemLink id="terminal" /> or <ItemLink id="crafting_terminal" />
     - 1x <ItemLink id="energy_acceptor" />
     - A few [cables](./features/me-network/cables.md), either glass, covered, or smart, but not dense
-    - A few [storage cells](./features/storage-cells.md), recommended of the 4k variety for a good mix of capacity and types (it would be more efficient to partition a mix of 4k and 1k but that's a complexity we won't go into now)
+    - A few [storage cells](./features/storage-cells.md), recommended of the 4k variety for a good mix of capacity and types (it would be more efficient to [partition](cell_workbench.md) a mix of 4k and 1k but that's a complexity we won't go into now)
 1. Place the drive down.
 2. The energy acceptor (and several other AE2 devices) comes in 2 modes, cube and flat. They can be switched between in a crafting grid. If your energy acceptor is a cube, place it down next to the drive. If it's a flat square, place a cable on the drive and place the acceptor on that.
 3. Run energy into the energy acceptor with a cable/pipe/conduit from your favorite energy-generation mod.

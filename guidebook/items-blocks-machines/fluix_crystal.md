@@ -4,7 +4,7 @@ navigation:
   title: Fluix Crystal
   icon: fluix_crystal
 item_ids:
-- ae2:Fluix Crystal
+- ae2:fluix_crystal
 ---
 # The Fluix Crystal
 

@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Network Functions
-item_ids:
-  - ae2:annihilation_plane
 navigation:
   parent: website/index.md
   title: ME Annihilation Plane

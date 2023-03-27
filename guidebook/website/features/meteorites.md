@@ -2,9 +2,6 @@
 navigation:
   parent: website/index.md
   title: Meteorites
-item_ids:
-  - ae2:meteorite_compass
-  - ae2:sky_stone_block
 ---
 
 ### Meteorites

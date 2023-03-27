@@ -1,10 +1,6 @@
 ---
 categories:
   - Decorative Blocks
-item_ids:
-  - ae2:smooth_sky_stone_block
-  - ae2:sky_stone_brick
-  - ae2:sky_stone_small_brick
 navigation:
   parent: website/index.md
   title: Sky Stone

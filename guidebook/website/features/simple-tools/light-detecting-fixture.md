@@ -1,8 +1,6 @@
 ---
 categories:
   - Simple Tools/Misc
-item_ids:
-  - ae2:light_detector
 navigation:
   parent: website/index.md
   title: Light Detector

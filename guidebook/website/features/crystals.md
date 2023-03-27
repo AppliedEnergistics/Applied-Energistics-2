@@ -3,13 +3,6 @@ navigation:
   parent: website/index.md
   title: Crystals
   icon: certus_quartz_crystal
-item_ids:
-  - ae2:quartz_ore
-  - ae2:certus_quartz_crystal
-  - ae2:charged_certus_quartz_crystal
-  - ae2:certus_quartz_dust
-  - ae2:fluix_crystal
-  - ae2:fluix_dust
 ---
 
 ## Certus Quartz Crystals
