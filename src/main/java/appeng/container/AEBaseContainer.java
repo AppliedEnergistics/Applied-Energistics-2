@@ -22,6 +22,7 @@ package appeng.container;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.SecurityPermissions;
+import appeng.api.definitions.IItemDefinition;
 import appeng.api.implementations.guiobjects.IGuiItemObject;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -37,6 +38,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.client.me.SlotME;
 import appeng.container.guisync.GuiSync;
 import appeng.container.guisync.SyncData;
+import appeng.container.implementations.ContainerInterface;
 import appeng.container.slot.AppEngSlot;
 import appeng.container.slot.SlotCraftingMatrix;
 import appeng.container.slot.SlotCraftingTerm;
@@ -45,6 +47,8 @@ import appeng.container.slot.SlotFake;
 import appeng.container.slot.SlotInaccessible;
 import appeng.container.slot.SlotPlayerHotBar;
 import appeng.container.slot.SlotPlayerInv;
+import appeng.container.slot.SlotRestrictedInput;
+import appeng.container.slot.SlotRestrictedInput.PlacableItemType;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.PacketInventoryAction;
@@ -318,10 +322,13 @@ public abstract class AEBaseContainer extends Container {
         }
         if (clickSlot != null && clickSlot.getHasStack()) {
             ItemStack tis = clickSlot.getStack();
-
+  
             if (tis.isEmpty()) {
                 return ItemStack.EMPTY;
             }
+            
+            IItemDefinition expansionCard = AEApi.instance().definitions().materials().cardPatternExpansion();
+            ContainerInterface casted;
 
             final List<Slot> selectedSlots = new ArrayList<>();
 
@@ -332,6 +339,10 @@ public abstract class AEBaseContainer extends Container {
                 tis = this.transferStackToContainer(tis);
 
                 if (!tis.isEmpty()) {
+                    if (this instanceof ContainerInterface && expansionCard.isSameAs(tis) && (casted = (ContainerInterface) this).getPatternUpgrades() == casted.availableUpgrades() - 1) {
+                        return ItemStack.EMPTY; // Don't insert more pattern expansions than maximum useful
+                    }
+
                     // target slots in the container...
                     for (final Object inventorySlot : this.inventorySlots) {
                         final AppEngSlot cs = (AppEngSlot) inventorySlot;
@@ -394,6 +405,10 @@ public abstract class AEBaseContainer extends Container {
 
                             if (Platform.itemComparisons().isSameItem(tis, t)) // t.isItemEqual(tis))
                             {
+                                if (d instanceof SlotRestrictedInput && ((SlotRestrictedInput) d).getPlaceableItemType() == PlacableItemType.ENCODED_PATTERN) {
+                                    return ItemStack.EMPTY; // don't insert duplicate encoded patterns to interfaces
+                                }
+
                                 int maxSize = t.getMaxStackSize();
                                 if (maxSize > d.getSlotStackLimit()) {
                                     maxSize = d.getSlotStackLimit();
@@ -455,6 +470,13 @@ public abstract class AEBaseContainer extends Container {
                                 return ItemStack.EMPTY;
                             } else {
                                 this.updateSlot(d);
+                                
+                                if (
+                                    (d instanceof SlotRestrictedInput && ((SlotRestrictedInput) d).getPlaceableItemType() == PlacableItemType.ENCODED_PATTERN) ||
+                                    (this instanceof ContainerInterface && expansionCard.isSameAs(tis) && (casted = (ContainerInterface) this).getPatternUpgrades() == casted.availableUpgrades() - 1)
+                                    ) {
+                                    break; // Only insert one pattern when shift-clicking into interfaces, and don't insert more pattern expansions than maximum useful
+                                }
                             }
                         }
                     }

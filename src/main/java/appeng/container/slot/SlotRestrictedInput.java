@@ -65,6 +65,10 @@ public class SlotRestrictedInput extends AppEngSlot {
         this.p = p;
     }
 
+    public PlacableItemType getPlaceableItemType() {
+        return which;
+    }
+
     @Override
     public int getSlotStackLimit() {
         if (this.stackLimit != -1) {
