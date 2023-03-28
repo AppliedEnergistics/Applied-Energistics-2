@@ -409,6 +409,8 @@ final class Registration {
         // Inscriber
         Upgrades.SPEED.registerItem(blocks.inscriber(), 3);
 
+        Upgrades.QUANTUM_LINK.registerItem(blocks.quantumLink(), 1);
+
         // Wireless Terminal Handler
         ArrayList<IItemDefinition> iids = new ArrayList<>();
         iids.add(items.wirelessTerminal());
