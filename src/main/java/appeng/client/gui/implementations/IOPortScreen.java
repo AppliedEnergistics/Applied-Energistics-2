@@ -60,6 +60,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
         super.updateBeforeRender();
 
         this.redstoneMode.set(this.menu.getRedStoneMode());
+        this.redstoneMode.setVisibility(menu.hasUpgrade(AEItems.REDSTONE_CARD));
         this.operationMode.set(this.menu.getOperationMode());
         this.fullMode.set(this.menu.getFullMode());
     }
