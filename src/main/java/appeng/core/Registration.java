@@ -418,14 +418,10 @@ final class Registration {
         for (IItemDefinition id : iids) {
             id.maybeItem().ifPresent(terminal -> {
                 registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal);
-                Upgrades.QUANTUM_LINK.registerItem(id, 1);
                 Upgrades.MAGNET.registerItem(id, 1);
             });
         }
-        items.wirelessFluidTerminal().maybeItem().ifPresent(terminal -> {
-            registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal);
-            Upgrades.QUANTUM_LINK.registerItem(items.wirelessFluidTerminal(), 1);
-        });
+        items.wirelessFluidTerminal().maybeItem().ifPresent(terminal -> registries.wireless().registerWirelessHandler((IWirelessTermHandler) terminal));
 
         // Charge Rates
         items.chargedStaff().maybeItem().ifPresent(chargedStaff -> registries.charger().addChargeRate(chargedStaff, 320d));
