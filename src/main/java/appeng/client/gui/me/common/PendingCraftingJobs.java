@@ -1,6 +1,8 @@
 package appeng.client.gui.me.common;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -15,6 +17,8 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Tracks pending crafting jobs started by this player.
@@ -62,9 +66,8 @@ public final class PendingCraftingJobs {
     }
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
-        var playerInv = player.getInventory();
-        for (int i = 0; i < playerInv.getContainerSize(); i++) {
-            var stack = playerInv.getItem(i);
+        var inventories = WirelessTerminalEvent.getInventories(player);
+        for (ItemStack stack : inventories) {
             if (!stack.isEmpty()
                     && stack.getItem() instanceof WirelessTerminalItem wirelessTerminal
                     // Should have some power
@@ -78,5 +81,40 @@ public final class PendingCraftingJobs {
     }
 
     record PendingJob(UUID jobId, AEKey what, long requestedAmount, long remainingAmount) {
+    }
+
+    public static class WirelessTerminalEvent {
+        private static final List<handler> handlers = new ArrayList<>();
+        public static void registerHandler(handler handler) {
+            handlers.add(handler);
+        }
+
+        public static List<ItemStack> getInventories(Player player) {
+            var event = new WirelessTerminalEvent(player);
+            for (var handler : handlers) {
+                handler.handle(event);
+            }
+            return event.getItems();
+        }
+
+        @FunctionalInterface
+        interface handler {
+            void handle(WirelessTerminalEvent event);
+        }
+
+        private final Player player;
+        private final List<ItemStack> items = new ArrayList<>();
+
+        public WirelessTerminalEvent(Player player) {
+            this.player = player;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public List<ItemStack> getItems() {
+            return items;
+        }
     }
 }
