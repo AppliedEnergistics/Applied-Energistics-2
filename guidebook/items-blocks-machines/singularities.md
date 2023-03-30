@@ -16,8 +16,6 @@ A very compact ball of matter.
 
 Made with 256,000 items or buckets in a <ItemLink id="condenser" /> in singularity mode.
 
----
-
 # Quantum Entangled Singularity
 
 <ItemImage id="quantum_entangled_singularity" scale="4" />

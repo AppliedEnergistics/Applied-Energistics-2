@@ -7,11 +7,11 @@ navigation:
 # Channels
 
 Applied Energistics 2's [ME Networks](../me-network.md) require
-Channels to support [devices](../ae2-mechanics/devices.md) which use networked storage, or other network
+Channels to support devices which use networked storage, or other network
 services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
-so many devices connected to it. Most machines, full-block devices, and standard cables can only pass through
-up to 8 channels. You can think of full-block devices and standard cables as a bundle of 8 "channel wires". However, [dense cables](../items-blocks-machines/cables.md) can support up
-to 32 channels. The only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
+so many devices connected to it. Most devices such as standard cables, and machines can only pass through
+up to 8 channels. You can think of standard cables as a bundle of 8 "channel wires". However <ItemLink id="fluix_covered_dense_cable"/> can support up
+to 32 channels, the only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
 and the [Quantum Network Bridge](quantum-bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
 the bundle, which obviously means that "wire" isn't available further down the line.
 
@@ -26,7 +26,7 @@ When using a <ItemLink id="controller"/>,
 channels route via 3 steps. They first take the shortest path through adjacent machines to the nearest [normal cable](../items-blocks-machines/cables.md)
 (glass, covered, or smart). They then take the shortest path through that normal cable to the nearest [dense cable](../items-blocks-machines/cables.md)
 (dense or dense smart). They then take the shortest path through that dense cable to the <ItemLink id="controller"/>. 
-If the shortest path is already maxed out, some [devices](devices.md) may not get their required channels, use
+If the shortest path is already maxed out, some devices may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your channels go in the path you desire.
 
 Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does is make cables not connect.
@@ -74,6 +74,6 @@ The following table lists the available modes in both the configuration file and
 # Design
 
 It's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
-branching out from the dense, and [devices](../ae2-mechanics/devices.md) in clusters of 8 or fewer on the regular cables.
+branching out from the dense, and devices in clusters of 8 or fewer on the regular cables.
 
 ILLUSTRATION IN-PROGRESS
