@@ -12,7 +12,8 @@ services. Think of channels like USB cables to all your devices. A computer only
 so many devices connected to it. Most devices such as standard cables, and machines can only pass through
 up to 8 channels. You can think of standard cables as a bundle of 8 "channel wires". However <ItemLink id="fluix_covered_dense_cable"/> can support up
 to 32 channels, the only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
-and the [Quantum Network Bridge](quantum-bridge.md).
+and the [Quantum Network Bridge](quantum-bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
+the bundle, which obviously means that "wire" isn't available further down the line.
 
 An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
 
