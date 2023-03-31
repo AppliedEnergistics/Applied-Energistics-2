@@ -297,6 +297,10 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     @Override
     public void broadcastChanges() {
+        if (!isValidMenu()) {
+            return;
+        }
+
         if (itemMenuHost != null && !itemMenuHost.onBroadcastChanges(this)) {
             setValidMenu(false);
             return;
