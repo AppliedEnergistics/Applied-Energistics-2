@@ -69,7 +69,7 @@ Storage cells support the following upgrades, inserted via a <ItemLink id="cell_
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 - <ItemLink id="equal_distribution_card" /> allocates the same amount of cell byte space to each type, so one type cannot fill up the entire cell
 - <ItemLink id="void_card" /> voids items inserted if the cell is full (or that specific type's allocated space in the
-case of an equal distribution card, useful for stopping farms from backing up. Be careful to partition this!
+case of an equal distribution card), useful for stopping farms from backing up. Be careful to partition this!
 - Portable cells can accept <ItemLink id="energy_card" /> in order to increase their battery capacity
 
 # Item Storage Cells
