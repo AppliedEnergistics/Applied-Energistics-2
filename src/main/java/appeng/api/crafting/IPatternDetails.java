@@ -28,9 +28,11 @@ import javax.annotation.Nullable;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
+import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
 
 /**
  * Information about a pattern for use by the autocrafting system.
@@ -63,6 +65,22 @@ public interface IPatternDetails {
      */
     GenericStack[] getOutputs();
 
+    /**
+     * Gives the pattern a chance to reorder its inputs for pushing to external inventories (i.e. NOT to
+     * {@link ICraftingMachine}s).
+     *
+     * @param inputHolder For each {@link IInput}, the relevant items. The ownership is given to the pattern, do
+     *                    whatever with the key counters as long as all of their contents end up in the input sink.
+     * @param inputSink   Where to push the inputs to.
+     */
+    default void pushInputsToExternalInventory(KeyCounter[] inputHolder, PatternInputSink inputSink) {
+        for (var inputList : inputHolder) {
+            for (var input : inputList) {
+                inputSink.pushInput(input.getKey(), input.getLongValue());
+            }
+        }
+    }
+
     interface IInput {
         /**
          * A list of possible inputs for this pattern: the first input is the primary input, others are just substitutes
@@ -89,5 +107,9 @@ public interface IPatternDetails {
          */
         @Nullable
         AEKey getRemainingKey(AEKey template);
+    }
+
+    interface PatternInputSink {
+        void pushInput(AEKey key, long amount);
     }
 }

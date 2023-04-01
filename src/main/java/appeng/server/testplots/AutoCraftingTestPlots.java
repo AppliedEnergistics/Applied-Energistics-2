@@ -23,6 +23,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
+import appeng.blockentity.storage.SkyChestBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -31,6 +32,7 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.menu.AutoCraftingMenu;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.TestCraftingJob;
+import appeng.util.inv.AppEngInternalInventory;
 
 public final class AutoCraftingTestPlots {
     private AutoCraftingTestPlots() {
@@ -312,6 +314,72 @@ public final class AutoCraftingTestPlots {
                             helper.check(inscriber.getInternalInventory().getStackInSlot(2).getCount() == 5,
                                     "Furnace should have 5 = 10/2 items", pos);
                         }
+                    })
+                    .thenSucceed();
+        });
+    }
+
+    /**
+     * Tests that identical processing pattern inputs get "unstacked" when they are pushed. This is validated using a
+     * sky stone chest with a changed slot limit of 1.
+     */
+    @TestPlot("processing_pattern_inputs_unstacking")
+    public static void processingPatternInputsUnstacking(PlotBuilder plot) {
+        var chestPos = new BlockPos(1, 0, -3);
+
+        craftingCube(plot);
+
+        plot.cable("0 0 -2");
+        plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
+            var pattern = PatternDetailsHelper.encodeProcessingPattern(
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(new ItemStack(Items.STONE)),
+                            GenericStack.fromItemStack(new ItemStack(Items.STONE)),
+                            GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)),
+                            GenericStack.fromItemStack(new ItemStack(Items.STONE)),
+                    },
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
+                    });
+            provider.getLogic().getPatternInv().addItems(pattern);
+        });
+        plot.blockEntity(chestPos, AEBlocks.SKY_STONE_CHEST, skyChest -> {
+            var inv = (AppEngInternalInventory) skyChest.getInternalInventory();
+            for (int i = 0; i < inv.size(); i++) {
+                inv.setMaxStackSize(i, 1);
+            }
+        });
+        plot.cable("0 0 -4");
+        {
+            var db = plot.drive(new BlockPos(0, 0, -5));
+            db.addCreativeCell().add(Items.STONE).add(Items.DIAMOND);
+            db.addItemCell64k();
+        }
+        plot.cable("0 1 -5").part(Direction.NORTH, AEParts.CRAFTING_TERMINAL);
+        plot.creativeEnergyCell("0 -1 -5");
+
+        // Check item distribution in chest
+        plot.test(helper -> {
+            var craftingJob = new TestCraftingJob(helper, BlockPos.ZERO, AEItemKey.of(AEItems.CERTUS_QUARTZ_DUST), 1);
+            helper.startSequence()
+                    .thenWaitUntil(craftingJob::tickUntilStarted)
+                    .thenIdle(1) // give time to push out job
+                    .thenExecute(() -> {
+                        var chest = (SkyChestBlockEntity) helper.getBlockEntity(chestPos);
+                        var inv = chest.getInternalInventory();
+                        for (int i = 0; i < 4; ++i) {
+                            helper.check(inv.getStackInSlot(i).getCount() == 1,
+                                    "Chest should have 1 item in slot " + i, chestPos);
+                        }
+
+                        helper.check(inv.getStackInSlot(0).is(Items.STONE), "Chest should have stone in slot 0",
+                                chestPos);
+                        helper.check(inv.getStackInSlot(1).is(Items.STONE), "Chest should have stone in slot 1",
+                                chestPos);
+                        helper.check(inv.getStackInSlot(2).is(Items.DIAMOND), "Chest should have diamond in slot 2",
+                                chestPos);
+                        helper.check(inv.getStackInSlot(3).is(Items.STONE), "Chest should have stone in slot 3",
+                                chestPos);
                     })
                     .thenSucceed();
         });
