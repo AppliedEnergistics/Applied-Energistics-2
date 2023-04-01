@@ -339,16 +339,12 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             }
 
             if (this.adapterAcceptsAll(adapter, inputHolder)) {
-                for (var inputList : inputHolder) {
-                    for (var input : inputList) {
-                        var what = input.getKey();
-                        long amount = input.getLongValue();
-                        var inserted = adapter.insert(what, amount, Actionable.MODULATE);
-                        if (inserted < amount) {
-                            this.addToSendList(what, amount - inserted);
-                        }
+                patternDetails.pushInputsToExternalInventory(inputHolder, (what, amount) -> {
+                    var inserted = adapter.insert(what, amount, Actionable.MODULATE);
+                    if (inserted < amount) {
+                        this.addToSendList(what, amount - inserted);
                     }
-                }
+                });
                 onPushPatternSuccess(patternDetails);
                 this.sendDirection = direction;
                 this.sendStacksOut();
