@@ -129,9 +129,6 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     public boolean fireCannon(Level level, ItemStack stack, Player player, LookDirection dir) {
-        if (getAECurrentPower(stack) < ENERGY_PER_SHOT) {
-            return false;
-        }
 
         var inv = StorageCells.getCellInventory(stack, null);
         if (inv == null) {
@@ -154,40 +151,47 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
         shots = Math.min(shots, (int) req.getLongValue());
 
-        for (int sh = 0; sh < shots; sh++) {
-            extractAEPower(stack, ENERGY_PER_SHOT, Actionable.MODULATE);
+        if (getAECurrentPower(stack) < ENERGY_PER_SHOT * shots) {
+            return false;
+        }
 
-            if (level.isClientSide()) {
-                // Up until this point, we can simulate on the client, after this,
-                // we need to run the server-side version
-                return true;
-            }
+        extractAEPower(stack, ENERGY_PER_SHOT * shots, Actionable.MODULATE);
 
+        if (level.isClientSide()) {
+            // Up until this point, we can simulate on the client, after this,
+            // we need to run the server-side version
+            return true;
+        }
+
+        for (int sh = 0; sh < shots; sh++)
+        {
             var aeAmmo = inv.extract(req.getKey(), 1, Actionable.MODULATE, new PlayerSource(player));
-            if (aeAmmo == 0) {
+            if (aeAmmo == 0)
+            {
                 return true;
-            }
-
-            var rayFrom = dir.getA();
-            var rayTo = dir.getB();
-            var direction = rayTo.subtract(rayFrom);
-            direction.normalize();
-
-            var x = rayFrom.x;
-            var y = rayFrom.y;
-            var z = rayFrom.z;
-
-            var ammoStack = itemKey.toStack();
-            var penetration = getPenetration(ammoStack); // 196.96655f;
-            if (penetration <= 0) {
-                if (ammoStack.getItem() instanceof PaintBallItem) {
-                    shootPaintBalls(ammoStack, level, player, rayFrom, rayTo, direction, x, y, z);
-                    return true;
-                }
-            } else {
-                standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
             }
         }
+
+        var rayFrom = dir.getA();
+        var rayTo = dir.getB();
+        var direction = rayTo.subtract(rayFrom);
+        direction.normalize();
+
+        var x = rayFrom.x;
+        var y = rayFrom.y;
+        var z = rayFrom.z;
+
+        var ammoStack = itemKey.toStack();
+        var penetration = getPenetration(ammoStack) * shots; // 196.96655f;
+        if (penetration <= 0) {
+            if (ammoStack.getItem() instanceof PaintBallItem) {
+                shootPaintBalls(ammoStack, level, player, rayFrom, rayTo, direction, x, y, z);
+                return true;
+            }
+        } else {
+            standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
+        }
+
 
         return true;
     }
