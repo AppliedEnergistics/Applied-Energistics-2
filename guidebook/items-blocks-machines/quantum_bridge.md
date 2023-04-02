@@ -18,6 +18,8 @@ acting like a [dense cable](cables.md).
 
 Of note, **both sides must get power to initiate the connection**, then one side can send power through and power both rings.
 
+Additionally, **both sides must be chunkloaded** so a <ItemLink id="spatial_anchor"/> or other chunkloader must be used.
+
 # Quantum Ring
 
 Eight of these blocks placed around a <ItemLink id="quantum_link"/> will create a
