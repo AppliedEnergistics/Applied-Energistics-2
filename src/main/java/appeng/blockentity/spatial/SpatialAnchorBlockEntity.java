@@ -329,7 +329,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         }
 
         ServerLevel level = this.getServerLevel();
-        boolean forced = ChunkLoadingService.getInstance().forceChunk(level, this.getBlockPos(), chunkPos, true);
+        boolean forced = ChunkLoadingService.getInstance().forceChunk(level, this.getBlockPos(), chunkPos);
 
         if (forced) {
             this.chunks.add(chunkPos);
@@ -343,7 +343,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
 
     private boolean release(ChunkPos chunkPos, boolean remove) {
         ServerLevel level = this.getServerLevel();
-        boolean removed = ChunkLoadingService.getInstance().releaseChunk(level, this.getBlockPos(), chunkPos, true);
+        boolean removed = ChunkLoadingService.getInstance().releaseChunk(level, this.getBlockPos(), chunkPos);
 
         if (removed && remove) {
             this.chunks.remove(chunkPos);

@@ -5,6 +5,9 @@
   "compatibilityLevel": "JAVA_11",
   "plugin": "appeng.mixins.ConfigPlugin",
   "mixins": [
+    "chunkloading.ChunkMapMixin",
+    "chunkloading.MinecraftServerMixin",
+    "chunkloading.ServerLevelMixin",
     "spatial.MinecraftServerMixin",
     "feature.LevelLightEngineMixin",
     "AnvilMenuMixin",
