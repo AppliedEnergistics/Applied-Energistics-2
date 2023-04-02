@@ -123,6 +123,7 @@ public final class AEConfig {
     private boolean isEnableFacadeRecipesInJEI;
     private int craftingCalculationTimePerTick;
     private boolean craftingSimulatedExtraction;
+    private boolean spatialAnchorEnablesRandomTicks;
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -191,6 +192,7 @@ public final class AEConfig {
 
         this.craftingCalculationTimePerTick = COMMON.craftingCalculationTimePerTick.get();
         this.craftingSimulatedExtraction = COMMON.craftingSimulatedExtraction.get();
+        this.spatialAnchorEnablesRandomTicks = COMMON.spatialAnchorEnableRandomTicks.get();
 
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
         AELog.setDebugLogEnabled(COMMON.debugLog.get());
@@ -335,6 +337,10 @@ public final class AEConfig {
 
     public boolean isCraftingSimulatedExtraction() {
         return this.craftingSimulatedExtraction;
+    }
+
+    public boolean isSpatialAnchorEnablesRandomTicks() {
+        return this.spatialAnchorEnablesRandomTicks;
     }
 
     public double getSpatialPowerExponent() {
@@ -610,6 +616,7 @@ public final class AEConfig {
         public final BooleanOption serverOpsIgnoreSecurity;
         public final EnumOption<ChannelMode> channels;
         public final IntegerOption pathfindingStepsPerTick;
+        public final BooleanOption spatialAnchorEnableRandomTicks;
 
         public final BooleanOption disassemblyCrafting;
         public final IntegerOption growthAcceleratorSpeed;
@@ -682,6 +689,8 @@ public final class AEConfig {
             pathfindingStepsPerTick = general.addInt("pathfindingStepsPerTick", 4,
                     1, 1024,
                     "The number of pathfinding steps that are taken per tick and per grid that is booting. Lower numbers will mean booting takes longer, but less work is done per tick.");
+            spatialAnchorEnableRandomTicks = general.addBoolean("spatialAnchorEnableRandomTicks", true,
+                    "Whether Spatial Anchors should force random chunk ticks and entity spawning.");
 
             ConfigSection automation = root.subsection("automation");
             formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
