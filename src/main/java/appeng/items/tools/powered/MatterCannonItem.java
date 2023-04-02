@@ -166,8 +166,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         var aeAmmo = inv.extract(req.getKey(), 1, Actionable.MODULATE, new PlayerSource(player));
-        if (aeAmmo == 0)
-        {
+        if (aeAmmo == 0) {
             return true;
         }
 
@@ -190,7 +189,6 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         } else {
             standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
         }
-
 
         return true;
     }
