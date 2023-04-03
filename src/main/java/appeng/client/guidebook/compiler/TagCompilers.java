@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import appeng.client.guidebook.compiler.tags.ATagCompiler;
+import appeng.client.guidebook.compiler.tags.BoxFlowDirection;
+import appeng.client.guidebook.compiler.tags.BoxTagCompiler;
 import appeng.client.guidebook.compiler.tags.BreakCompiler;
 import appeng.client.guidebook.compiler.tags.CategoryIndexCompiler;
 import appeng.client.guidebook.compiler.tags.DivTagCompiler;
@@ -34,6 +36,8 @@ public final class TagCompilers {
         register("BlockImage", new BlockImageTagCompiler());
         register("ItemImage", new ItemImageTagCompiler());
         register("Scene", new BlockImageTagCompiler());
+        register("Row", new BoxTagCompiler(BoxFlowDirection.ROW));
+        register("Column", new BoxTagCompiler(BoxFlowDirection.COLUMN));
     }
 
     public static void register(String tagName, TagCompiler handler) {

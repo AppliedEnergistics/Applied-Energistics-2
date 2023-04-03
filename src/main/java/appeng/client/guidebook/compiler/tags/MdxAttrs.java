@@ -96,6 +96,21 @@ public final class MdxAttrs {
         }
     }
 
+    public static int getInt(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el, String name,
+            int defaultValue) {
+        var attrValue = el.getAttributeString(name, null);
+        if (attrValue == null) {
+            return defaultValue;
+        }
+
+        try {
+            return Integer.parseInt(attrValue);
+        } catch (NumberFormatException e) {
+            errorSink.appendError(compiler, "Malformed integer value: '" + attrValue + "'", el);
+            return defaultValue;
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Nullable
     public static <T extends Enum<T> & StringRepresentable> T getEnum(PageCompiler compiler, LytErrorSink errorSink,

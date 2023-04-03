@@ -89,6 +89,21 @@ The following custom tags are supported in our Markdown pages.
 In all custom tags, item and page ids by default inherit the namespace of the page they're on. So if the
 page is in AE2s guidebook, all ids automatically use the `ae2` namespace, unless specified.
 
+#### Column / Row Layout
+
+To lay out other tags (such as item images) in a row or column, use the `<Row></Row>`
+and `<Column></Column>` tags. You can set a custom gap betwen items using the `gap` attribute.
+It defaults to 5.
+
+Example:
+
+```markdown
+<Row>
+  <ItemImage id="interface" />
+  <ItemImage id="stick" />
+</Row>
+```
+
 #### Item Links
 
 To automatically show the translated item name, including an appropriate tooltip, and have the item name link to the

@@ -16,7 +16,8 @@ public final class Layouts {
             LayoutContext context,
             List<LytBlock> children,
             int x, int y, int availableWidth,
-            int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
+            int paddingLeft, int paddingTop, int paddingRight, int paddingBottom,
+            int gap) {
         // Margins have been applied outside
         // Paddings need to be considered here
         var innerX = x + paddingLeft;
@@ -36,7 +37,7 @@ public final class Layouts {
             }
             var blockWidth = Math.max(1, innerWidth - child.getMarginLeft() - child.getMarginRight());
             var childBounds = child.layout(context, innerX + child.getMarginLeft(), innerY, blockWidth);
-            innerY += childBounds.height() + child.getMarginBottom();
+            innerY += childBounds.height() + child.getMarginBottom() + gap;
             contentHeight = Math.max(contentHeight, childBounds.bottom() - y);
             previousBlock = child;
         }
@@ -45,6 +46,52 @@ public final class Layouts {
                 x, y,
                 availableWidth,
                 contentHeight + paddingBottom);
+    }
+
+    /**
+     * Lays out all children along the horizontal axis, and returns the bounding box of the content area.
+     */
+    public static LytRect horizontalLayout(
+            LayoutContext context,
+            List<LytBlock> children,
+            int x, int y, int availableWidth,
+            int paddingLeft, int paddingTop, int paddingRight, int paddingBottom,
+            int gap) {
+        // Margins have been applied outside
+        // Paddings need to be considered here
+        var innerX = x + paddingLeft;
+        var innerY = y + paddingTop;
+        var innerWidth = availableWidth - paddingLeft - paddingRight;
+
+        // Layout children vertically, without padding
+        LytBlock previousBlock = null;
+        var contentWidth = paddingLeft;
+        var contentHeight = 0;
+        for (var child : children) {
+            // Account for margins of the child, and margin collapsing
+            if (previousBlock != null && previousBlock.getMarginBottom() > 0) {
+                innerX += Math.max(previousBlock.getMarginBottom(), child.getMarginTop())
+                        - previousBlock.getMarginBottom();
+            } else {
+                innerX += child.getMarginTop();
+            }
+            var blockWidth = Math.max(1, innerWidth - contentWidth - child.getMarginLeft() - child.getMarginRight());
+            var childBounds = child.layout(context, innerX, innerY + child.getMarginTop(), blockWidth);
+            innerX += childBounds.width() + child.getMarginRight() + gap;
+            contentWidth = Math.max(contentWidth, childBounds.right() - x);
+            contentHeight = Math.max(contentHeight, childBounds.bottom() - y);
+            previousBlock = child;
+
+            if (innerX > innerWidth) {
+                innerX = x + paddingLeft;
+                innerY = y + contentHeight;
+            }
+        }
+
+        return new LytRect(
+                x, y,
+                contentWidth + paddingBottom,
+                contentHeight);
     }
 
 }

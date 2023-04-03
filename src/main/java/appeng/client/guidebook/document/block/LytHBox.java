@@ -7,8 +7,8 @@ import appeng.client.guidebook.layout.Layouts;
 /**
  * Lays out its children vertically.
  */
-public class LytVBox extends LytBox {
-    private int gap = 0;
+public class LytHBox extends LytBox {
+    private int gap;
 
     public int getGap() {
         return gap;
@@ -21,7 +21,7 @@ public class LytVBox extends LytBox {
     @Override
     protected LytRect computeBoxLayout(LayoutContext context, int x, int y, int availableWidth) {
         // Padding is applied through the parent
-        return Layouts.verticalLayout(context,
+        return Layouts.horizontalLayout(context,
                 children,
                 x,
                 y,
