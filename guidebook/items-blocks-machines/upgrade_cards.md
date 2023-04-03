@@ -18,21 +18,22 @@ item_ids:
 - ae2:energy_card
 ---
 # Upgrade Cards
-
-<ItemImage id="redstone_card" scale="2" />   <ItemImage id="capacity_card" scale="2" />   <ItemImage id="void_card" scale="2" />
-   <ItemImage id="fuzzy_card" scale="2" />   <ItemImage id="speed_card" scale="2" />   <ItemImage id="inverter_card" scale="2" />
-   <ItemImage id="crafting_card" scale="2" />   <ItemImage id="equal_distribution_card" scale="2" />   <ItemImage id="energy_card" scale="2" />
+<Row>
+<ItemImage id="redstone_card" scale="2" /><ItemImage id="capacity_card" scale="2" /><ItemImage id="void_card" scale="2" />
+<ItemImage id="fuzzy_card" scale="2" /><ItemImage id="speed_card" scale="2" /><ItemImage id="inverter_card" scale="2" />
+<ItemImage id="crafting_card" scale="2" /><ItemImage id="equal_distribution_card" scale="2" /><ItemImage id="energy_card" scale="2" />
+</Row>
 
 Upgrade cards change the behavior of AE2 [devices](../ae2-mechanics/devices.md) and machines, increasing their speed, improving their
 filter capacity, enabling redstone control, etc.
 
 # Card Components
 
-<ItemImage id="basic_card" scale="2" />   <ItemImage id="advanced_card" scale="2" />
+<Row><ItemImage id="basic_card" scale="2" /><ItemImage id="advanced_card" scale="2" /></Row>
 
 Cards are crafted with either basic or advanced card bases
 
-<RecipeFor id="basic_card" />   <RecipeFor id="advanced_card" />
+<Row><RecipeFor id="basic_card" /><RecipeFor id="advanced_card" /></Row>
 
 # Redstone Card
 

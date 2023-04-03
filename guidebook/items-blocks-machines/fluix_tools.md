@@ -11,18 +11,19 @@ item_ids:
 - ae2:fluix_pickaxe
 - ae2:fluix_sword
 ---
-# Quartz Tools
+# Fluix Tools
 
-<ItemImage id="fluix_axe" scale="4" />   <ItemImage id="fluix_hoe" scale="4" />   <ItemImage id="fluix_shovel" scale="4" />
-   <ItemImage id="fluix_pickaxe" scale="4" />   <ItemImage id="fluix_sword" scale="4" />
+<Row>
+<ItemImage id="fluix_axe" scale="4" /><ItemImage id="fluix_hoe" scale="4" /><ItemImage id="fluix_shovel" scale="4" />
+<ItemImage id="fluix_pickaxe" scale="4" /><ItemImage id="fluix_sword" scale="4" />
+</Row>
 
 [Fluix](fluix_crystal.md) tools are similar to iron tools, having 3x the durability and a slightly higher attack damage and mining speed.
 
 All fluix tools act as if they have at least fortune/looting 1, which is useful before getting access to an enchanting table.
 
 # Recipes
-
-<RecipeFor id="fluix_axe" />   <RecipeFor id="fluix_hoe" />   <RecipeFor id="fluix_shovel" />
-
-<RecipeFor id="fluix_pickaxe" />   <RecipeFor id="fluix_sword" />
-
+<Column>
+<Row><RecipeFor id="fluix_axe" /><RecipeFor id="fluix_hoe" /><RecipeFor id="fluix_shovel" /></Row>
+<Row><RecipeFor id="fluix_pickaxe" /><RecipeFor id="fluix_sword" /></Row>
+</Column>

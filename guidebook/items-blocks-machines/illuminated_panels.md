@@ -16,4 +16,4 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # Recipes
 
-<RecipeFor id="monitor" />   <RecipeFor id="semi_dark_monitor" />   <RecipeFor id="dark_monitor" />
+<Row><RecipeFor id="monitor" /><RecipeFor id="semi_dark_monitor" /><RecipeFor id="dark_monitor" /></Row>

@@ -40,8 +40,10 @@ item_ids:
 - ae2:black_lumen_paint_ball
 ---
 # Paintballs
-<ItemImage id="white_paint_ball" scale="4" />   <ItemImage id="orange_paint_ball" scale="4" />   <ItemImage id="green_paint_ball" scale="4" />
-   <ItemImage id="blue_paint_ball" scale="4" />   <ItemImage id="red_paint_ball" scale="4" />
+<Row gap="-8">
+<ItemImage id="white_paint_ball" scale="4" /><ItemImage id="orange_paint_ball" scale="4" /><ItemImage id="green_paint_ball" scale="4" />
+<ItemImage id="blue_paint_ball" scale="4" /><ItemImage id="red_paint_ball" scale="4" />
+</Row>
 
 Paintballs are used in a <ItemLink id="color_applicator"/> in order to paint colorable blocks like [cables](cables.md),
 wool, terracotta, glass, and concrete. They can also be used in a <ItemLink id="matter_cannon" /> to shoot little splotches of paint.
@@ -49,14 +51,17 @@ wool, terracotta, glass, and concrete. They can also be used in a <ItemLink id="
 # Recipes
 
 8 matter balls around a dye
-
-<RecipeFor id="white_paint_ball" />   <RecipeFor id="orange_paint_ball" />   <RecipeFor id="green_paint_ball" />
-
-<RecipeFor id="blue_paint_ball" />   <RecipeFor id="red_paint_ball" />   <RecipeFor id="black_paint_ball" />
+<Column>
+<Row><RecipeFor id="white_paint_ball" /><RecipeFor id="orange_paint_ball" /><RecipeFor id="green_paint_ball" /></Row>
+<Row><RecipeFor id="blue_paint_ball" /><RecipeFor id="red_paint_ball" /><RecipeFor id="black_paint_ball" /></Row>
+<br/>
+</Column>
 
 # Lumen Paintballs
-<ItemImage id="white_lumen_paint_ball" scale="4" />   <ItemImage id="orange_lumen_paint_ball" scale="4" />   <ItemImage id="green_lumen_paint_ball" scale="4" />
-   <ItemImage id="blue_lumen_paint_ball" scale="4" />   <ItemImage id="red_lumen_paint_ball" scale="4" />
+<Row gap="-8">
+<ItemImage id="white_lumen_paint_ball" scale="4" /><ItemImage id="orange_lumen_paint_ball" scale="4" /><ItemImage id="green_lumen_paint_ball" scale="4" />
+<ItemImage id="blue_lumen_paint_ball" scale="4" /><ItemImage id="red_lumen_paint_ball" scale="4" />
+</Row>
 
 They act identically to regular paintballs but the splotches emit light when shot out of a <ItemLink id="matter_cannon" />.
 Useful as a sort of flaregun I guess.
@@ -65,8 +70,7 @@ Useful as a sort of flaregun I guess.
 
 8 paintballs around a glowstone dust
 
-<RecipeFor id="white_lumen_paint_ball" />   <RecipeFor id="orange_lumen_paint_ball" />   <RecipeFor id="green_lumen_paint_ball" />
-
-<RecipeFor id="blue_lumen_paint_ball" />   <RecipeFor id="red_lumen_paint_ball" />   <RecipeFor id="black_lumen_paint_ball" />
-
-
+<Column>
+<Row><RecipeFor id="white_lumen_paint_ball" /><RecipeFor id="orange_lumen_paint_ball" /><RecipeFor id="green_lumen_paint_ball" /></Row>
+<Row><RecipeFor id="blue_lumen_paint_ball" /><RecipeFor id="red_lumen_paint_ball" /><RecipeFor id="black_lumen_paint_ball" /></Row>
+</Column>
