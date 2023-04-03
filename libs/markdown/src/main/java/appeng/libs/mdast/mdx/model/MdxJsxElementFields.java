@@ -1,5 +1,6 @@
 package appeng.libs.mdast.mdx.model;
 
+import appeng.libs.mdast.model.MdAstAnyContent;
 import appeng.libs.unist.UnistNode;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +12,7 @@ public interface MdxJsxElementFields extends UnistNode {
 
     List<MdxJsxAttributeNode> attributes();
 
-    List<? extends UnistNode> children();
+    List<? extends MdAstAnyContent> children();
 
     default boolean hasAttribute(String name) {
         for (var attributeNode : attributes()) {

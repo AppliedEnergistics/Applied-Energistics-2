@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -65,7 +66,6 @@ import appeng.libs.mdast.model.MdAstInlineCode;
 import appeng.libs.mdast.model.MdAstLink;
 import appeng.libs.mdast.model.MdAstList;
 import appeng.libs.mdast.model.MdAstListItem;
-import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.mdast.model.MdAstParagraph;
 import appeng.libs.mdast.model.MdAstParent;
 import appeng.libs.mdast.model.MdAstPhrasingContent;
@@ -162,8 +162,12 @@ public final class PageCompiler {
     }
 
     public void compileBlockContext(MdAstParent<?> markdownParent, LytBlockContainer layoutParent) {
+        compileBlockContext(markdownParent.children(), layoutParent);
+    }
+
+    public void compileBlockContext(List<? extends MdAstAnyContent> children, LytBlockContainer layoutParent) {
         LytBlock previousLayoutChild = null;
-        for (var child : markdownParent.children()) {
+        for (var child : children) {
             LytBlock layoutChild;
             if (child instanceof MdAstThematicBreak) {
                 layoutChild = new LytThematicBreak();
@@ -194,7 +198,7 @@ public final class PageCompiler {
             } else if (child instanceof MdxJsxFlowElement el) {
                 var compiler = TagCompilers.get(el.name());
                 if (compiler == null) {
-                    layoutChild = createErrorBlock("Unhandled MDX element in block context", (MdAstNode) child);
+                    layoutChild = createErrorBlock("Unhandled MDX element in block context", child);
                 } else {
                     layoutChild = null;
                     compiler.compileBlockContext(this, layoutParent, el);
@@ -210,7 +214,7 @@ public final class PageCompiler {
                     layoutChild = paragraph;
                 }
             } else {
-                layoutChild = createErrorBlock("Unhandled Markdown node in block context", (MdAstNode) child);
+                layoutChild = createErrorBlock("Unhandled Markdown node in block context", child);
             }
 
             if (layoutChild != null) {
@@ -238,7 +242,7 @@ public final class PageCompiler {
                 }
                 list.append(listItem);
             } else {
-                list.append(createErrorBlock("Cannot handle list content", (MdAstNode) listContent));
+                list.append(createErrorBlock("Cannot handle list content", listContent));
             }
         }
         return list;
@@ -329,13 +333,13 @@ public final class PageCompiler {
         } else if (content instanceof MdxJsxTextElement el) {
             var compiler = TagCompilers.get(el.name());
             if (compiler == null) {
-                layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", (MdAstNode) content);
+                layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", content);
             } else {
                 layoutChild = null;
                 compiler.compileFlowContext(this, layoutParent, el);
             }
         } else {
-            layoutChild = createErrorFlowContent("Unhandled Markdown node in flow context", (MdAstNode) content);
+            layoutChild = createErrorFlowContent("Unhandled Markdown node in flow context", content);
         }
 
         if (layoutChild != null) {
