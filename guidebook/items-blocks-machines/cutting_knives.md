@@ -10,7 +10,7 @@ item_ids:
 ---
 # Quartz Tools
 
-<ItemImage id="certus_quartz_cutting_knife" scale="4" />   <ItemImage id="nether_quartz_cutting_knife" scale="4" />
+<Row><ItemImage id="certus_quartz_cutting_knife" scale="4" /><ItemImage id="nether_quartz_cutting_knife" scale="4" /></Row>
 
 Cutting knives are used to make <ItemLink id="name_press" />es and <ItemLink id="cable_anchor" />s.
 
@@ -19,4 +19,4 @@ wish to write onto the plate then simply extract the finished plate.
 
 # Recipes
 
-<RecipeFor id="certus_quartz_cutting_knife" />   <RecipeFor id="nether_quartz_cutting_knife" />
+<Row><RecipeFor id="certus_quartz_cutting_knife" /><RecipeFor id="nether_quartz_cutting_knife" /></Row>

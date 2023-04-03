@@ -18,4 +18,4 @@ One of the primary ingredients for AE2 blocks, devices, and items. Made by throw
 
 # Recipes
 
-<Recipe id="transform/fluix_crystals" />   <Recipe id="transform/fluix_crystal" />   <Recipe id="misc/deconstruction_fluix_block" />
+<Row><Recipe id="transform/fluix_crystals" /><Recipe id="transform/fluix_crystal" /><Recipe id="misc/deconstruction_fluix_block" /></Row>

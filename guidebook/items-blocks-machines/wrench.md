@@ -10,7 +10,7 @@ item_ids:
 ---
 # Wrenches
 
-<ItemImage id="certus_quartz_wrench" scale="4" />   <ItemImage id="nether_quartz_wrench" scale="4" />
+<Row><ItemImage id="certus_quartz_wrench" scale="4" /><ItemImage id="nether_quartz_wrench" scale="4" /></Row>
 
 Wrenches are used to rotate ae2 devices (right-click), and disassemble ae2 blocks (shift-right-click).
 [Subparts](../ae2-mechanics/cable-subparts.md) can be removed from a cable without breaking everything on the cable
@@ -20,4 +20,4 @@ Many ae2 blocks can be rotated, so just because this guide doesn't say you can r
 
 # Recipes
 
-<RecipeFor id="certus_quartz_wrench" />   <RecipeFor id="nether_quartz_wrench" />
+<Row><RecipeFor id="certus_quartz_wrench" /><RecipeFor id="nether_quartz_wrench" /></Row>

@@ -14,7 +14,10 @@ item_ids:
 
 There are 5 different presses used in the <ItemLink id="inscriber" />. 
 
-<ItemImage id="silicon_press" scale="4" />   <ItemImage id="logic_processor_press" scale="4" />   <ItemImage id="calculation_processor_press" scale="4" />   <ItemImage id="engineering_processor_press" scale="4" />
+<Row>
+<ItemImage id="silicon_press" scale="4" /><ItemImage id="logic_processor_press" scale="4" />
+<ItemImage id="calculation_processor_press" scale="4" /><ItemImage id="engineering_processor_press" scale="4" />
+</Row>
 
 <ItemImage id="name_press" scale="4" />
 
@@ -24,9 +27,10 @@ The Silicon, Logic, Calculation, and Engineering presses are used in the product
 These 4 presses are obtained by breaking a <ItemLink id="mysterious_cube" /> in a [meteorite](./features/meteorites.md).
 They can also be duplicated in an <ItemLink id="inscriber" />.
 
-<RecipeFor id="silicon_press" />   <RecipeFor id="logic_processor_press" />
-
-<RecipeFor id="calculation_processor_press" />   <RecipeFor id="engineering_processor_press" />
+<Column>
+<Row><RecipeFor id="silicon_press" /><RecipeFor id="logic_processor_press" /></Row>
+<Row><RecipeFor id="calculation_processor_press" /><RecipeFor id="engineering_processor_press" /></Row>
+</Column>
 
 # Name Press
 

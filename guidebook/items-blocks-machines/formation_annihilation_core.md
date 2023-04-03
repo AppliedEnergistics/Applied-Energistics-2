@@ -9,7 +9,7 @@ item_ids:
 ---
 # Formation and Annihilation Cores
 
-<ItemImage id="formation_core" scale="4" />   <ItemImage id="annihilation_core" scale="4" />
+<Row><ItemImage id="formation_core" scale="4" /><ItemImage id="annihilation_core" scale="4" /></Row>
 
 These are the primary components of AE2 input and output devices. Using the power of <ItemLink id="fluix_crystal" /> and
 a [logic processor](processors.md) it allows devices to input and output items, blocks, fluids, etc. (No actual function, just
