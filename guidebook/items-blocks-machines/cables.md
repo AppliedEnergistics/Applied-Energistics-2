@@ -113,8 +113,6 @@ It will show how channels are routed through your network, making their behavior
 **These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
 into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
 
----
-
 # Glass Cable
 
 ![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
@@ -137,8 +135,6 @@ your [Channels](channels.md).
 <RecipeFor id="fluix_glass_cable" />
 <RecipeFor id="blue_glass_cable" />
 
----
-
 # Covered Cable
 
 ![A picture of covered cables.](../assets/blocks/fluix_covered_cable.png)
@@ -156,8 +152,6 @@ id="fluix_covered_dense_cable"/>.
 <Recipe id="network/cables/covered_fluix" />
 <RecipeFor id="blue_covered_cable" />
 
----
-
 # Dense Cable
 
 ![A picture of dense cable.](../assets/blocks/fluix_covered_dense_cable.png)
@@ -173,8 +167,6 @@ dense cable, and then the shortest path through that dense cable to a controller
 
 <Recipe id="network/cables/dense_covered_fluix" />
 <RecipeFor id="blue_covered_dense_cable" />
-
----
 
 # Smart Cable
 
