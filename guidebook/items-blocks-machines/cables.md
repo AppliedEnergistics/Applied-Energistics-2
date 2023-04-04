@@ -111,7 +111,7 @@ It will show how channels are routed through your network, making their behavior
 # Another Note
 
 **These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
-into them, all they do is connect AE2 devices together into a network.
+into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
 
 # Glass Cable
 

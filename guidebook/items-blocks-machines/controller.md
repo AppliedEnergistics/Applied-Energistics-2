@@ -12,7 +12,7 @@ item_ids:
 <BlockImage id="controller" p:state="online" scale="8" /> 
 
 The controller is the routing hub of a [ME Network](../me-network.md).
-Without it, a network is "ad-hoc" and can only have a max of 8 channel-using devices total.
+Without it, a network is "ad-hoc" and can only have a max of 8 channel-using [devices](../ae2-mechanics/devices.md) total.
 
 It is not possible to have 2 controllers in one [ME Network](../me-network.md).
 

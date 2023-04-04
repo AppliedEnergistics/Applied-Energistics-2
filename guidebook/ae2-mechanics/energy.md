@@ -6,7 +6,7 @@ navigation:
 ---
 # Energy
 
-Your network will require energy to run. Networks have a pool of energy that devices directly pull from, and
+Your network will require energy to run. Networks have a pool of energy that [devices](../ae2-mechanics/devices.md) directly pull from, and
 <ItemLink id="vibration_chamber"/>s, <ItemLink id="energy_acceptor"/>s (and <ItemLink id="controller"/>s) add to. You can
 see the energy statistics for a network by right-clicking anywhere on it with a <ItemLink id="network_tool"/> or by 
 right-clicking the network's controller, if it has one. This network-wide storage and distribution  means that
@@ -32,7 +32,7 @@ The ratios for conversion of Forge Energy and Techreborn Energy are
 # Energy Storage
 
 For relatively obvious reasons, a network cannot intake or consume more energy in a gametick than it can store. If a network
-can only store 800 AE, when its devices request energy, they will only be able to use up to 800 AE (assuming the storage is full)
+can only store 800 AE, when its [devices](../ae2-mechanics/devices.md) request energy, they will only be able to use up to 800 AE (assuming the storage is full)
 and an energy acceptor will only be able to insert up to 800 AE into the network (assuming the storage is empty). 
 
 This is a common cause for odd behavior, where one makes a small network with just an energy acceptor, drive, terminal, and

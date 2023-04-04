@@ -13,7 +13,7 @@ item_ids:
 *"Fluix Crystals possess the unique ability to absorb and convert energy from one form to another, and are the foundation of
 all Matter Energy technology"*
 
-One of the primary ingredients for AE2 blocks, devices, and items. Made by throwing nether quartz, redstone, and 
+One of the primary ingredients for AE2 blocks, [devices](../ae2-mechanics/devices.md), and items. Made by throwing nether quartz, redstone, and 
 <ItemLink id="charged_certus_quartz_crystal" /> in water.
 
 # Recipes

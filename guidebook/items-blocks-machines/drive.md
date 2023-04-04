@@ -11,7 +11,7 @@ item_ids:
 
 ![A Drive](../assets/blocks/drive.png)
 
-The Drive is the device you plug your [storage cells](storage_cells.md) into in order to use them for
+The Drive is the [device](../ae2-mechanics/devices.md) you plug your [storage cells](storage_cells.md) into in order to use them for
 [network storage](../ae2-mechanics/import-export-storage.md). It has 10 slots which each accept a cell.
 
 If for some reason you want to, you can push and pull the cells from its inventory with any item logistics like hoppers or ae2 busses.

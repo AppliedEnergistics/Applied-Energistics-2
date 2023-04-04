@@ -15,9 +15,9 @@ Ever wanted to *keep* your chest monster instead of replacing it with something 
 
 The storage bus turns the inventory it's touching into [network storage](../ae2-mechanics/import-export-storage.md).
 It does this by allowing the network to see the contents of that inventory, and by pushing to and pulling from that
-inventory in order to fulfill devices pushing to and pulling from network storage.
+inventory in order to fulfill [devices](../ae2-mechanics/devices.md) pushing to and pulling from network storage.
 
-Due to AE2's philosophy of emergent mechanics through interaction of the functions of the devices, you don't
+Due to AE2's philosophy of emergent mechanics through interaction of the functions of the [devices](../ae2-mechanics/devices.md), you don't
 necessarily *have* to use a storage bus for *storage*. By using [subnetworks](../ae2-mechanics/subnetworks.md)
 to make a storage bus (or handful of storage busses) the *only* storage on a network, you can use it as a source or destination
 for item transfer. (see ["pipe subnet"](../example-setups/pipe-subnet.md))

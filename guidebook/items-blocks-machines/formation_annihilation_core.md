@@ -11,7 +11,7 @@ item_ids:
 
 <Row><ItemImage id="formation_core" scale="4" /><ItemImage id="annihilation_core" scale="4" /></Row>
 
-These are the primary components of AE2 input and output devices. Using the power of <ItemLink id="fluix_crystal" /> and
+These are the primary components of AE2 input and output [devices](../ae2-mechanics/devices.md). Using the power of <ItemLink id="fluix_crystal" /> and
 a [logic processor](processors.md) it allows devices to input and output items, blocks, fluids, etc. (No actual function, just
 a crafting intermediate)
 

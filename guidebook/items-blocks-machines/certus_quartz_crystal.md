@@ -12,7 +12,7 @@ item_ids:
 
 *"Certus Quartz Crystals possess the unique trait of accepting large quantities of energy into their crystalline matrix"*
 
-One of the primary ingredients for AE2 blocks, devices, and items. Made by growing it from [budding certus](../ae2-mechanics/farming-certus.md).
+One of the primary ingredients for AE2 blocks, [devices](../ae2-mechanics/devices.md), and items. Made by growing it from [budding certus](../ae2-mechanics/farming-certus.md).
 
 # Some Alternate Recipes
 

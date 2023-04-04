@@ -9,7 +9,7 @@ navigation:
 
 "Subnetwork" is a rather loosely-defined term, but one might say that a subnetwork is any network that supports your
 main network or does some small task. They are typically small enough to not require controllers. Their main 2 uses tend to be:
-- To restrict what devices have access to what (you don't want the import bus on a "pipe" subnet to have access to your main net
+- To restrict what [devices](../ae2-mechanics/devices.md) have access to what storage (you don't want the import bus on a "pipe" subnet to have access to your main net
 storage, or it will put the items in your storage cells instead of in the destination inventory).
 - To save channels on your main network, like having a pattern provider output to an interface connected to several storage
 busses on several machines, using 1 channel, instead of putting a pattern provider on each machine, using several channels.

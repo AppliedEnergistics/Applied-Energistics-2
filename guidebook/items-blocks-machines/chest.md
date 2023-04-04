@@ -16,7 +16,7 @@ While it can be used as a tiny storage network, its capacity for just one single
 means it has limited utility as such.
 
 Instead, it is useful for interacting with specifically the storage cell mounted inside it. Its integrated terminal can only see and access
-the items in the mounted drive, while devices on the general network can access items in any [network storage](../ae2-mechanics/import-export-storage.md),
+the items in the mounted drive, while [devices](../ae2-mechanics/devices.md) on the general network can access items in any [network storage](../ae2-mechanics/import-export-storage.md),
 including ME chests.
 
 It has 2 different GUIs and is sided for item transport. Interacting with the top terminal opens the integrated terminal. Items can be inserted into
