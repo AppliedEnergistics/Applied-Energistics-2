@@ -69,7 +69,7 @@ your smelting setup every operation instead of one at a time.
 
 # The Most General Form of "Pattern"
 
-There is actually an even more "general" form of "pattern" than a processing pattern. A level emitter with a crafting card can be set
+There is actually an even more "general" form of "pattern" than a processing pattern. A <ItemLink id="level_emitter" /> with a crafting card can be set
 to emit a redstone signal in order to craft something. This "pattern" does not define, or even care about ingredients.
 All it says is "If you emit redstone from this level emitter, the ME system will recieve this item at some point in the
 near or distant future". This is usually used to activate and deactivate infinite farms which require no input ingredients,

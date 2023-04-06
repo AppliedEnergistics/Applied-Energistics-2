@@ -30,7 +30,7 @@ Items can be dragged into the slots from JEI/REI even if you don't actually have
 
 The import bus supports the following upgrades:
 
-- <ItemLink id="capacity_card" /> increases the amount of filter slots
+- <ItemLink id="capacity_card" /> increases the amount of filter slots, and brings up a setting on what order to export what is filtered.
 - <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
 - <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
 - <ItemLink id="crafting_card" /> lets the bus send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)

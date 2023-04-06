@@ -36,7 +36,7 @@ can only store 800 AE, when its [devices](../ae2-mechanics/devices.md) request e
 and an energy acceptor will only be able to insert up to 800 AE into the network (assuming the storage is empty). 
 
 This is a common cause for odd behavior, where one makes a small network with just an energy acceptor, drive, terminal, and
-some devices and tries to dump 18 stacks of cobblestone from their inventory into the network. Inserting that cobble all at once in a
+some devices and tries to dump an inventory full of cobblestone from their inventory into the network. Inserting that cobble all at once in a
 single gametick requires more energy than the network has in storage, so not all of the cobble is inserted, the network
 runs out of energy, and thus reboots.
 
