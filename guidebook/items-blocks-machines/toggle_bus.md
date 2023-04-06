@@ -9,7 +9,6 @@ item_ids:
 - ae2:inverted_toggle_bus
 ---
 
-
 # The Toggle Bus
 
 A bus which functions similarly to <ItemLink

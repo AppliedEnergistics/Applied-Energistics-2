@@ -21,6 +21,8 @@ Of note, **both sides must get power to initiate the connection**, then one side
 Additionally, **both sides must be chunkloaded** so a <ItemLink id="spatial_anchor"/> or other chunkloader must be used
 if the 2 sides are far apart.
 
+---
+
 # Quantum Ring
 
 Eight of these blocks placed around a <ItemLink id="quantum_link"/> will create a
@@ -31,6 +33,8 @@ the 4 corner blocks cannot connect to cables.
 # Recipe
 
 <RecipeFor id="quantum_ring" />
+
+---
 
 # Quantum Link Chamber
 
