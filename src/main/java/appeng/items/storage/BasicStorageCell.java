@@ -44,9 +44,11 @@ import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.UpgradeInventories;
+import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
+import appeng.util.ActionBar;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 
@@ -179,6 +181,8 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
                     playerInventory.placeItemBackInInventory(new ItemStack(housingItem));
 
                     return true;
+                } else {
+                    ActionBar.send(player, PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text());
                 }
             }
         }
