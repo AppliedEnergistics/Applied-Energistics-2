@@ -25,7 +25,7 @@ or from storage to the cell.
 
 # Upgrades
 
-The IO Port supports the following upgrades:
+The IO Port supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
 - <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse

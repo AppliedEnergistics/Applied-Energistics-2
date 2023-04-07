@@ -28,7 +28,7 @@ Unlike other [devices](../ae2-mechanics/devices.md), level emitters *do not* req
 
 # Upgrades
 
-The level emitter supports the following upgrades:
+The level emitter supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="fuzzy_card" /> lets the emitter filter by damage level and/or ignore item NBT
 - <ItemLink id="crafting_card" /> enables the crafting functionality

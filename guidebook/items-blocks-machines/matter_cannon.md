@@ -25,13 +25,13 @@ the cannon in the storage cell slot in a <ItemLink id="chest" />
 
 # Upgrades
 
-Matter cannons support the following upgrades, inserted via a <ItemLink id="cell_workbench" />:
+Matter cannons support the following [upgrades](upgrade_cards.md), inserted via a <ItemLink id="cell_workbench" />:
 
 - <ItemLink id="fuzzy_card" /> lets the cell be partitioned by damage level and/or ignore item NBT
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 - <ItemLink id="speed_card" /> increases the energy used each shot, making it fire with more power.
 - <ItemLink id="void_card" /> voids items inserted if the cell is full. Be careful to partition this!
-- <ItemLink id="energy_card" /> in order to increase their battery capacity
+- <ItemLink id="energy_card" /> in order to increase the battery capacity
 
 # Recipe
 
