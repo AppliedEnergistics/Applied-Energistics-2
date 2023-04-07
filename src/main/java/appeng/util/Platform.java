@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
@@ -336,8 +337,7 @@ public class Platform {
     }
 
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
-        // no usage of the tag, but we keep it for compatibility
-        return Component.translatable(getDescriptionId(fluid));
+        return FluidVariantAttributes.getName(FluidVariant.of(fluid, tag));
     }
 
     // tag copy is not necessary, as the tag is not modified.
