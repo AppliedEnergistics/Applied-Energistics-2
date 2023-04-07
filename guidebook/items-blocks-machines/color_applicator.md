@@ -23,7 +23,7 @@ To use a color applicator, right click to apply, and shift-scroll to cycle throu
 
 # Upgrades
 
-Color Applicators support the following upgrades, inserted via a <ItemLink id="cell_workbench" />:
+Color Applicators support the following [upgrades](upgrade_cards.md), inserted via a <ItemLink id="cell_workbench" />:
 
 - <ItemLink id="equal_distribution_card" /> allocates the same amount of cell byte space to each type, so one type cannot fill up the entire cell
 - <ItemLink id="void_card" /> voids items inserted if the cell is full (or that specific type's allocated space in the

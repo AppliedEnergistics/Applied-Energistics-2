@@ -20,6 +20,8 @@ When redstone signal supplied the part enables the connection, <ItemLink
 id="inverted_toggle_bus"/> provides the reverse
 behavior by disabling the connection instead.
 
+Of note, toggling these may cause the network to reboot and recalculate the connected devices.
+
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # Recipes

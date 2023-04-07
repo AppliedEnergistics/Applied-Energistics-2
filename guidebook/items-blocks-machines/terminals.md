@@ -32,9 +32,13 @@ and request things from your [autocrafting](../ae2-mechanics/autocrafting.md) se
 There are several sections of a basic terminal's UI
 
 The center section gives access to your network's storage. You can put things in and take things out. There are several
-mouse/key shortcuts: Left-click grabs a stack, right-click grabs half a stack, if an item or fluid or etc. is able to be [autocrafted](../ae2-mechanics/autocrafting.md),
-whatever you have bound to "pick block" (usually middle-click) brings up a UI to specify the amount to be crafted.
-Holding shift will freeze the displayed items in-place, stopping them from re-organizing themselves when quantities change or new items enter the system.
+mouse/key shortcuts: 
+  - Left-click grabs a stack, right-click grabs half a stack. 
+  - If an item or fluid or etc. is able to be [autocrafted](../ae2-mechanics/autocrafting.md), 
+    whatever you have bound to "pick block" (usually middle-click) brings up a UI to specify the amount to be crafted.
+  - Holding shift will freeze the displayed items in-place, stopping them from re-organizing themselves when quantities change or new items enter the system.
+  - Right-clicking with a bucket or other fluid container will deposit the fluid, left-clicking a fluid in the terminal with
+    an empty fluid container will withdraw the fluid.
 
 The left section has settings buttons to:
   - Sort by different attributes like name, mod, and quantity

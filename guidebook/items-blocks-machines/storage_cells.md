@@ -78,7 +78,7 @@ Items can be dragged into the slots from JEI/REI even if you don't actually have
 
 # Upgrades
 
-Storage cells support the following upgrades, inserted via a <ItemLink id="cell_workbench" />:
+Storage cells support the following [upgrades](upgrade_cards.md), inserted via a <ItemLink id="cell_workbench" />:
 
 - <ItemLink id="fuzzy_card" /> (not available on fluid cells) lets the cell be partitioned by damage level and/or ignore item NBT
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist

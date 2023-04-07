@@ -57,7 +57,7 @@ Or just pipe into and out of the inscriber when in non-sided mode.
 
 # Upgrades
 
-The inscriber supports the following upgrades:
+The inscriber supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="speed_card" />
 

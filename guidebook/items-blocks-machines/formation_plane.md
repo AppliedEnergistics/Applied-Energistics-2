@@ -43,7 +43,7 @@ Items entering the network will start at the highest priority storage.
 
 # Upgrades
 
-The formation plane supports the following upgrades:
+The formation plane supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
 - <ItemLink id="fuzzy_card" /> lets the plane filter by damage level and/or ignore item NBT
