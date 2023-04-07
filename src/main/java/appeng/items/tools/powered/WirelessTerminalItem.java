@@ -63,6 +63,7 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
+import appeng.util.ActionBar;
 import appeng.util.ConfigManager;
 
 public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem, IUpgradeableItem {
@@ -187,18 +188,18 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
         var key = getGridKey(item);
         if (key.isEmpty()) {
-            player.sendSystemMessage(PlayerMessages.DeviceNotLinked.text());
+            ActionBar.send(player, PlayerMessages.DeviceNotLinked.text());
             return false;
         }
 
         var securityStation = Locatables.securityStations().get(level, key.getAsLong());
         if (securityStation == null) {
-            player.sendSystemMessage(PlayerMessages.StationCanNotBeLocated.text());
+            ActionBar.send(player, PlayerMessages.StationCanNotBeLocated.text());
             return false;
         }
 
         if (!hasPower(player, 0.5, item)) {
-            player.sendSystemMessage(PlayerMessages.DeviceNotPowered.text());
+            ActionBar.send(player, PlayerMessages.DeviceNotPowered.text());
             return false;
         }
         return true;

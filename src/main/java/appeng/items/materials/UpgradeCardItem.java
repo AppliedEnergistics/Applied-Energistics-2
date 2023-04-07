@@ -42,6 +42,7 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.ActionBar;
 import appeng.util.InteractionUtil;
 
 public class UpgradeCardItem extends AEBaseItem implements AEToolItem {
@@ -91,17 +92,17 @@ public class UpgradeCardItem extends AEBaseItem implements AEToolItem {
                     }
                 }
                 if (isFull) {
-                    player.sendSystemMessage(PlayerMessages.MaxUpgradesInstalled.text());
+                    ActionBar.send(player, PlayerMessages.MaxUpgradesInstalled.text());
                     return InteractionResult.FAIL;
                 }
 
                 var maxInstalled = upgrades.getMaxInstalled(heldStack.getItem());
                 var installed = upgrades.getInstalledUpgrades(heldStack.getItem());
                 if (maxInstalled <= 0) {
-                    player.sendSystemMessage(PlayerMessages.UnsupportedUpgrade.text());
+                    ActionBar.send(player, PlayerMessages.UnsupportedUpgrade.text());
                     return InteractionResult.FAIL;
                 } else if (installed >= maxInstalled) {
-                    player.sendSystemMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.text());
+                    ActionBar.send(player, PlayerMessages.MaxUpgradesOfTypeInstalled.text());
                     return InteractionResult.FAIL;
                 }
 

@@ -62,6 +62,7 @@ import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
+import appeng.util.ActionBar;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
@@ -138,10 +139,10 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
 
         if (player != null && !player.getCommandSenderWorld().isClientSide()) {
             if (imported.isEmpty()) {
-                player.sendSystemMessage(PlayerMessages.InvalidMachine.text());
+                ActionBar.send(player, PlayerMessages.InvalidMachine.text());
             } else {
                 var restored = Tooltips.conjunction(imported.stream().map(SettingsCategory::getLabel).toList());
-                player.sendSystemMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored));
+                ActionBar.send(player, PlayerMessages.InvalidMachinePartiallyRestored.text(restored));
             }
         }
     }
@@ -264,7 +265,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
                 }
 
                 if (missingAmount > 0 && !player.level.isClientSide()) {
-                    player.sendSystemMessage(
+                    ActionBar.send(player,
                             PlayerMessages.MissingUpgrades.text(entry.getKey().getDescription(), missingAmount));
                 }
             }
@@ -362,11 +363,11 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         }
 
         switch (msg) {
-            case SETTINGS_CLEARED -> player.sendSystemMessage(PlayerMessages.SettingCleared.text());
-            case INVALID_MACHINE -> player.sendSystemMessage(PlayerMessages.InvalidMachine.text());
-            case SETTINGS_LOADED -> player.sendSystemMessage(PlayerMessages.LoadedSettings.text());
-            case SETTINGS_SAVED -> player.sendSystemMessage(PlayerMessages.SavedSettings.text());
-            case SETTINGS_RESET -> player.sendSystemMessage(PlayerMessages.ResetSettings.text());
+            case SETTINGS_CLEARED -> ActionBar.send(player, PlayerMessages.SettingCleared.text());
+            case INVALID_MACHINE -> ActionBar.send(player, PlayerMessages.InvalidMachine.text());
+            case SETTINGS_LOADED -> ActionBar.send(player, PlayerMessages.LoadedSettings.text());
+            case SETTINGS_SAVED -> ActionBar.send(player, PlayerMessages.SavedSettings.text());
+            case SETTINGS_RESET -> ActionBar.send(player, PlayerMessages.ResetSettings.text());
             default -> {
             }
         }

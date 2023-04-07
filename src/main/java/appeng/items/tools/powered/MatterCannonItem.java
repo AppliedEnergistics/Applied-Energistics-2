@@ -80,6 +80,7 @@ import appeng.items.misc.PaintBallItem;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.util.ActionBar;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.LookDirection;
@@ -139,7 +140,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         var req = itemList.getFirstEntry(AEItemKey.class);
         if (req == null || !(req.getKey() instanceof AEItemKey itemKey)) {
             if (!level.isClientSide()) {
-                player.sendSystemMessage(PlayerMessages.AmmoDepleted.text());
+                ActionBar.send(player, PlayerMessages.AmmoDepleted.text());
             }
             return true;
         }
