@@ -45,7 +45,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.render.BlockEntityRenderHelper;
 import appeng.core.localization.PlayerMessages;
-import appeng.util.ActionBar;
 import appeng.util.Platform;
 
 /**
@@ -190,8 +189,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         if (player.getItemInHand(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
-            ActionBar.send(player,
-                    (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text());
+            player.displayClientMessage(
+                    (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text(), true);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
         }

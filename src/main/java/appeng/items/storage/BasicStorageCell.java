@@ -48,7 +48,6 @@ import appeng.core.localization.PlayerMessages;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
-import appeng.util.ActionBar;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 
@@ -182,7 +181,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
                     return true;
                 } else {
-                    ActionBar.send(player, PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text());
+                    player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
                 }
             }
         }

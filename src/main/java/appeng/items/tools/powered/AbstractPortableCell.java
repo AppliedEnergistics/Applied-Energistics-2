@@ -42,7 +42,6 @@ import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import appeng.util.ActionBar;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractPortableCell extends AEBasePoweredItem
@@ -174,7 +173,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
                 playerInventory.placeItemBackInInventory(upgrade);
             }
         } else {
-            ActionBar.send(player, PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text());
+            player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
         }
 
         return true;

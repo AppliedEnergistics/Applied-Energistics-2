@@ -39,7 +39,6 @@ import appeng.api.storage.cells.CellState;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.storage.ChestBlockEntity;
 import appeng.core.localization.PlayerMessages;
-import appeng.util.ActionBar;
 import appeng.util.InteractionUtil;
 
 public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
@@ -82,7 +81,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
             if (!level.isClientSide()) {
                 if (hit.getDirection() == be.getTop()) {
                     if (!be.openGui(p)) {
-                        ActionBar.send(p, PlayerMessages.ChestCannotReadStorageCell.text());
+                        p.displayClientMessage(PlayerMessages.ChestCannotReadStorageCell.text(), true);
                     }
                 } else {
                     be.openCellInventoryMenu(p);

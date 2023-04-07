@@ -43,7 +43,6 @@ import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.menu.ISubMenu;
-import appeng.util.ActionBar;
 
 public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableTerminal, IActionHost {
 
@@ -165,7 +164,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     private boolean checkWirelessRange(AbstractContainerMenu menu) {
         if (!rangeCheck()) {
             if (!isClientSide()) {
-                ActionBar.send(getPlayer(), PlayerMessages.OutOfRange.text());
+                getPlayer().displayClientMessage(PlayerMessages.OutOfRange.text(), true);
             }
             return false;
         }
