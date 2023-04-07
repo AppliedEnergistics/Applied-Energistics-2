@@ -25,12 +25,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.PaletteColor;
 
 /**
@@ -57,7 +59,7 @@ public abstract class AbstractTableRenderer<T> {
     private final float lineHeight;
     private final int x;
     private final int y;
-    private GenericStack hoveredStack;
+    private StackWithBounds hoveredStack;
 
     public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y) {
         this.screen = screen;
@@ -73,7 +75,7 @@ public abstract class AbstractTableRenderer<T> {
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<Component> tooltipLines = null;
-        GenericStack hovered = null;
+        StackWithBounds hovered = null;
 
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLS; col++) {
@@ -128,7 +130,10 @@ public abstract class AbstractTableRenderer<T> {
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
                         && mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
                     tooltipLines = getEntryTooltip(entry);
-                    hovered = new GenericStack(entryStack, 0);
+                    hovered = new StackWithBounds(
+                            new GenericStack(entryStack, 0),
+                            new Rect2i(screen.getGuiLeft() + cellX, screen.getGuiTop() + cellY, CELL_WIDTH,
+                                    CELL_HEIGHT));
                 }
             }
         }
@@ -139,7 +144,7 @@ public abstract class AbstractTableRenderer<T> {
         }
     }
 
-    public GenericStack getHoveredStack() {
+    public StackWithBounds getHoveredStack() {
         return hoveredStack;
     }
 

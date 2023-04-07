@@ -7,8 +7,10 @@ import org.jetbrains.annotations.Nullable;
 
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.runtime.IIngredientManager;
 
 import appeng.api.integrations.jei.IngredientConverter;
 import appeng.api.integrations.jei.IngredientConverters;
@@ -31,24 +33,40 @@ public final class GenericEntryStackHelper {
     }
 
     @Nullable
-    public static <T> GenericStack ingredientToStack(ITypedIngredient<T> ingredient) {
-        var converter = IngredientConverters.getConverter(ingredient.getType());
+    public static <T> GenericStack ingredientToStack(IIngredientType<T> type, T ingredient) {
+        var converter = IngredientConverters.getConverter(type);
         if (converter != null) {
-            return converter.getStackFromIngredient(ingredient.getIngredient());
+            return converter.getStackFromIngredient(ingredient);
         }
         return null;
     }
 
     @Nullable
-    public static Object stackToIngredient(GenericStack stack) {
+    public static <T> GenericStack ingredientToStack(ITypedIngredient<T> ingredient) {
+        return ingredientToStack(ingredient.getType(), ingredient.getIngredient());
+    }
+
+    @Nullable
+    public static ITypedIngredient<?> stackToIngredient(IIngredientManager manager, GenericStack stack) {
         for (var converter : IngredientConverters.getConverters()) {
-            var ingredient = converter.getIngredientFromStack(stack);
+            var ingredient = makeTypedIngredient(manager, converter, stack);
             if (ingredient != null) {
                 return ingredient;
             }
         }
 
         return null;
+    }
+
+    @Nullable
+    private static <T> ITypedIngredient<T> makeTypedIngredient(IIngredientManager manager,
+            IngredientConverter<T> converter, GenericStack stack) {
+        var ingredient = converter.getIngredientFromStack(stack);
+        if (ingredient != null) {
+            return manager.createTypedIngredient(converter.getIngredientType(), ingredient).orElse(null);
+        } else {
+            return null;
+        }
     }
 
     public static List<List<GenericStack>> ofInputs(IRecipeSlotsView recipeLayout) {
@@ -79,5 +97,18 @@ public final class GenericEntryStackHelper {
             return converter.getStackFromIngredient(ingredientClass.cast(ingredient));
         }
         return null;
+    }
+
+    @Nullable
+    private static <T, U> GenericStack tryConvertTypedToStack(IngredientConverter<T> converter,
+            IIngredientType<U> ingredientType, U ingredient) {
+        if (converter.getIngredientType().equals(ingredientType)) {
+            return converter.getIngredientType()
+                    .castIngredient(ingredient)
+                    .map(converter::getStackFromIngredient)
+                    .orElse(null);
+        } else {
+            return null;
+        }
     }
 }

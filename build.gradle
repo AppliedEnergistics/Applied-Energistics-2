@@ -82,6 +82,9 @@ dependencies {
     }
 
     if (project.runtime_itemlist_mod == "jei") {
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
         modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
         }

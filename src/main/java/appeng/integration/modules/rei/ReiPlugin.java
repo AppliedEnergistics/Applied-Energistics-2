@@ -158,7 +158,7 @@ public class ReiPlugin implements REIClientPlugin {
                 var stack = aeScreen.getStackUnderMouse(mouse.x, mouse.y);
                 if (stack != null) {
                     for (var converter : IngredientConverters.getConverters()) {
-                        var entryStack = converter.getIngredientFromStack(stack);
+                        var entryStack = converter.getIngredientFromStack(stack.stack());
                         if (entryStack != null) {
                             return CompoundEventResult.interruptTrue(entryStack);
                         }

@@ -880,11 +880,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * The given coordinates are in window space.
      */
     @Nullable
-    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+    public StackWithBounds getStackUnderMouse(double mouseX, double mouseY) {
         // First check the vanilla slots
         if (hoveredSlot != null) {
-            var item = hoveredSlot.getItem();
-            return GenericStack.unwrapItemStack(item);
+            return StackWithBounds.fromSlot(this, hoveredSlot);
         }
 
         return null;
