@@ -150,7 +150,7 @@ class GhostIngredientHandler implements DraggableStackVisitor<AEBaseScreen> {
 
                 // Wrap in a generic stack to set it anyway
                 var wrappedFluid = GenericStack.wrapInItemStack(
-                        new GenericStack(AEFluidKey.of(fluidStack.getFluid()), fluidStack.getAmount()));
+                        new GenericStack(AEFluidKey.of(fluidStack.getFluid(), fluidStack.getTag()), fluidStack.getAmount()));
                 NetworkHandler.instance().sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
                         slot.index, wrappedFluid));
                 return true;
