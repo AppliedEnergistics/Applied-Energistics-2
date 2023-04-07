@@ -17,10 +17,7 @@
  */
 package appeng.util;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public final class ActionBar {
@@ -28,10 +25,6 @@ public final class ActionBar {
     }
 
     public static void send(final Player player, final Component message) {
-        if (player.isControlledByLocalInstance()) {
-            Minecraft.getInstance().execute(() -> Minecraft.getInstance().gui.setOverlayMessage(message, false));
-        } else if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(message));
-        }
+        player.displayClientMessage(message, true);
     }
 }
