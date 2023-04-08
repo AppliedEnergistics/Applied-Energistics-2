@@ -11,8 +11,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class SearchInventoryEvent {
     /**
-     * Event fired when AE2 is looking for potential wireless terminal item stacks in a player inventory.
-     * By default, AE2 only looks at the 36 usual slots of the player inventory, use this event to make AE2 consider more stacks.
+     * Event fired when AE2 is looking for potential wireless terminal item stacks in a player inventory. By default,
+     * AE2 only looks at the 36 usual slots of the player inventory, use this event to make AE2 consider more stacks.
      * The stacks don't need to contain a wireless terminal, AE2 will check after the event.
      */
     public static final Event<BiConsumer<List<ItemStack>, Player>> EVENT = EventFactory.createArrayBacked(
@@ -23,7 +23,7 @@ public class SearchInventoryEvent {
                 }
             });
 
-    static  {
+    static {
         EVENT.register((stacks, player) -> stacks.addAll(player.getInventory().items));
     }
 
