@@ -1,19 +1,13 @@
 package appeng.client.gui.me.common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.client.AEKeyRendering;
@@ -22,6 +16,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.util.WirelessTerminalEvent;
 
 /**
  * Tracks pending crafting jobs started by this player.
@@ -69,9 +64,7 @@ public final class PendingCraftingJobs {
     }
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
-        List<ItemStack> inventories = new ArrayList<>();
-        WirelessTerminalEvent.invoker().accept(inventories, player);
-        for (ItemStack stack : inventories) {
+        for (ItemStack stack : WirelessTerminalEvent.getItems(player)) {
             if (!stack.isEmpty()
                     && stack.getItem() instanceof WirelessTerminalItem wirelessTerminal
                     // Should have some power
@@ -86,12 +79,4 @@ public final class PendingCraftingJobs {
 
     record PendingJob(UUID jobId, AEKey what, long requestedAmount, long remainingAmount) {
     }
-
-    public static Event<BiConsumer<List<ItemStack>, Player>> WirelessTerminalEvent = EventFactory.createArrayBacked(
-            BiConsumer.class,
-            (events) -> (items, player) -> {
-                for (var event : events) {
-                    event.accept(items, player);
-                }
-            });
 }
