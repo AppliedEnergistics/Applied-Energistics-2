@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Utilities
-item_ids:
-  - ae2:condenser
 navigation:
   parent: website/index.md
   title: Matter Condenser

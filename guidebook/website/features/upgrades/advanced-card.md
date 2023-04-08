@@ -1,8 +1,6 @@
 ---
 categories:
   - Upgrades
-item_ids:
-  - ae2:advanced_card
 navigation:
   parent: website/index.md
   title: Advanced Card

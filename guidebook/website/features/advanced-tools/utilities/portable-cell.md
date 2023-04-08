@@ -1,15 +1,6 @@
 ---
 categories:
   - Advanced Tools/Utilities
-item_ids:
-  - ae2:portable_item_cell_1k
-  - ae2:portable_item_cell_4k
-  - ae2:portable_item_cell_16k
-  - ae2:portable_item_cell_64k
-  - ae2:portable_fluid_cell_1k
-  - ae2:portable_fluid_cell_4k
-  - ae2:portable_fluid_cell_16k
-  - ae2:portable_fluid_cell_64k
 related:
   - Possible Upgrades
 navigation:

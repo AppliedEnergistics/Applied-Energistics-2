@@ -9,7 +9,6 @@ item_ids:
 - ae2:inverted_toggle_bus
 ---
 
-
 # The Toggle Bus
 
 A bus which functions similarly to <ItemLink
@@ -20,6 +19,8 @@ off a section of a [ME Network](../me-network.md).
 When redstone signal supplied the part enables the connection, <ItemLink
 id="inverted_toggle_bus"/> provides the reverse
 behavior by disabling the connection instead.
+
+Of note, toggling these may cause the network to reboot and recalculate the connected devices.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 

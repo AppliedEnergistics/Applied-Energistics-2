@@ -30,6 +30,8 @@ skipping the interface and not filling it with recipe batches, and more importan
 
 Multiple pattern providers with identical patterns are supported and work in parallel.
 
+Pattern providers with processing patterns will attempt to round-robin their batches to all of their faces.
+
 # Variants
 
 Pattern Providers come in 3 different variants: normal, directional, and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides they push

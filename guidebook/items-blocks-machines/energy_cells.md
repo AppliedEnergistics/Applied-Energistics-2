@@ -12,7 +12,7 @@ item_ids:
 
 # Energy Cells
 
-<BlockImage id="energy_cell" scale="8" p:fullness="4" />   <BlockImage id="dense_energy_cell" scale="8" p:fullness="4" />   <BlockImage id="creative_energy_cell" scale="8" />
+<Row gap="20"><BlockImage id="energy_cell" scale="8" p:fullness="4" /><BlockImage id="dense_energy_cell" scale="8" p:fullness="4" /><BlockImage id="creative_energy_cell" scale="8" /></Row>
 
 Energy cells give a network more [energy](../ae2-mechanics/energy.md) storage. Some amount of energy buffer helps to smooth
 out spikes in energy draw when large amounts of items are inserted or extracted, and larger amounts of energy storage
@@ -42,4 +42,4 @@ handle the massive instantaneous energy draw of large [spatial storage](spatial-
 
 # Recipes
 
-<RecipeFor id="energy_cell" />   <RecipeFor id="dense_energy_cell" />
+<Row><RecipeFor id="energy_cell" /><RecipeFor id="dense_energy_cell" /></Row>

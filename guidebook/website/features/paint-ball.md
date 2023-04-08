@@ -1,6 +1,4 @@
 ---
-item_ids:
-  - ae2:white_paint_ball
 navigation:
   parent: website/index.md
   title: Paint Ball

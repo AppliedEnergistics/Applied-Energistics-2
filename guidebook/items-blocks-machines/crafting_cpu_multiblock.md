@@ -18,7 +18,10 @@ item_ids:
 
 ![Crafting CPUs](../assets/assemblies/crafting_cpus.png)
 
-<BlockImage id="1k_crafting_storage" scale="4"  />   <BlockImage id="crafting_accelerator" scale="4" />   <BlockImage id="crafting_monitor" scale="4" />   <BlockImage id="crafting_unit" scale="4" />
+<Row>
+<BlockImage id="1k_crafting_storage" scale="4"  /><BlockImage id="crafting_accelerator" scale="4" />
+<BlockImage id="crafting_monitor" scale="4" /><BlockImage id="crafting_unit" scale="4" />
+</Row>
 
 Crafting CPUs manage crafting requests/jobs. They store the intermediate ingredients while crafting jobs with multiple steps are
 being carried out, and affect how big jobs can be, and to some degree how fast they are completed. See [autocrafting](../ae2-mechanics/autocrafting.md)
@@ -29,9 +32,13 @@ for more details.
 - The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />ses with
   <ItemLink id="crafting_card" />s), or both.
 
+---
+
 # Components
 
 Crafting CPUs are multiblocks, and must be solid rectangular prisms with no gaps. They are made out of several components:
+
+---
 
 # Crafting Unit
 
@@ -42,18 +49,25 @@ of the other components. They are also a base ingredient in the other components
 
 <RecipeFor id="crafting_unit" />
 
+---
+
 # Crafting Storage
 
-<BlockImage id="1k_crafting_storage" scale="4"  />   <BlockImage id="4k_crafting_storage" scale="4"  />   <BlockImage id="16k_crafting_storage" scale="4"  />   
-<BlockImage id="64k_crafting_storage" scale="4"  />   <BlockImage id="256k_crafting_storage" scale="4"  />
+<Row>
+<BlockImage id="1k_crafting_storage" scale="4"  /><BlockImage id="4k_crafting_storage" scale="4"  /><BlockImage id="16k_crafting_storage" scale="4"  />
+<BlockImage id="64k_crafting_storage" scale="4"  /><BlockImage id="256k_crafting_storage" scale="4"  />
+</Row>
 
 Crafting storages are available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k). They store the ingredients and
 intermediate ingredients involved in a craft, so larger or more storages are required for the CPU to handle crafting jobs
 with more ingredients.
 
-<RecipeFor id="1k_crafting_storage" />   <RecipeFor id="4k_crafting_storage" />   <RecipeFor id="16k_crafting_storage" />
+<Column>
+<Row><RecipeFor id="1k_crafting_storage" /><RecipeFor id="4k_crafting_storage" /><RecipeFor id="16k_crafting_storage" /></Row>
+<Row><RecipeFor id="64k_crafting_storage" /><RecipeFor id="256k_crafting_storage" /></Row>
+</Column>
 
-<RecipeFor id="64k_crafting_storage" />   <RecipeFor id="256k_crafting_storage" />
+---
 
 # Crafting Co-Processing Unit
 
@@ -65,6 +79,8 @@ This allows them to keep up with machines that process quickly. An example of th
 distributing the ingredient batches between the surrounding assemblers.
 
 <RecipeFor id="crafting_accelerator" />
+
+---
 
 # Crafting Monitor
 

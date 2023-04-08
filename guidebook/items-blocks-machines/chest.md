@@ -16,7 +16,7 @@ While it can be used as a tiny storage network, its capacity for just one single
 means it has limited utility as such.
 
 Instead, it is useful for interacting with specifically the storage cell mounted inside it. Its integrated terminal can only see and access
-the items in the mounted drive, while devices on the general network can access items in any [network storage](../ae2-mechanics/import-export-storage.md),
+the items in the mounted drive, while [devices](../ae2-mechanics/devices.md) on the general network can access items in any [network storage](../ae2-mechanics/import-export-storage.md),
 including ME chests.
 
 It has 2 different GUIs and is sided for item transport. Interacting with the top terminal opens the integrated terminal. Items can be inserted into
@@ -61,7 +61,7 @@ Priorities can be set by clicking the wrench in the top-right of the cell slot G
 Items entering the network will start at the highest priority storage as
 their first destination. In the case of two storages or cells have the same priority,
 if one already contains the item, they will prefer that storage over any
-other. Any partitioned cells will be treated as already containing the item
+other. Any [partitioned](cell_workbench.md) cells will be treated as already containing the item
 when in the same priority group as other storages. Items being removed from storage will
 be removed from the storage with the lowest priority. This priority system means as items are inserted and removed
 from network storage, higher priority storages will be filled and lower priority storages will be emptied.

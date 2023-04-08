@@ -39,5 +39,5 @@ in water with one or more <ItemLink id="charged_certus_quartz_crystal" />.
 
 Flawless budding certus cannot be crafted, only found in the world.
 
-<RecipeFor id="damaged_budding_quartz" />   <RecipeFor id="chipped_budding_quartz" />   <RecipeFor id="flawed_budding_quartz" />
+<Row><RecipeFor id="damaged_budding_quartz" /><RecipeFor id="chipped_budding_quartz" /><RecipeFor id="flawed_budding_quartz" /></Row>
 

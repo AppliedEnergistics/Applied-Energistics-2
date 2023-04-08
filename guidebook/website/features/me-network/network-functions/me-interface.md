@@ -1,9 +1,6 @@
 ---
 categories:
   - ME Network/Network Functions
-item_ids:
-  - ae2:interface
-  - ae2:cable_interface
 related:
   - Possible Upgrades
 navigation:

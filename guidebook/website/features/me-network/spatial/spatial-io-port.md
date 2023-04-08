@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Spatial
-item_ids:
-  - ae2:spatial_io_port
 navigation:
   parent: website/index.md
   title: Spatial IO Port

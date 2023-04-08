@@ -17,16 +17,15 @@ inserts them into different slots in its inventory. To facilitate this, it can b
 It can also be set to push the results of crafts to adjacent inventories.
 
 The 4 circuit presses are used to craft [processors](processors.md)
-  <ItemGrid>
-  <ItemIcon id="silicon_press" />
-  <ItemIcon id="logic_processor_press" />
-  <ItemIcon id="calculation_processor_press" />
-  <ItemIcon id="engineering_processor_press" />
-  </ItemGrid>
+
+<Row>
+<ItemImage id="silicon_press" scale="4" /><ItemImage id="logic_processor_press" scale="4" />
+<ItemImage id="calculation_processor_press" scale="4" /><ItemImage id="engineering_processor_press" scale="4" />
+</Row>
+
 While the name press can be used to name blocks similar to an anvil, useful for labeling things in a <ItemLink id="pattern_access_terminal" />.
-  <ItemGrid>
-  <ItemIcon id="name_press" />
-  </ItemGrid>
+
+<ItemImage id="name_press" scale="4" />
 
 # Settings
 
@@ -58,7 +57,7 @@ Or just pipe into and out of the inscriber when in non-sided mode.
 
 # Upgrades
 
-The inscriber supports the following upgrades:
+The inscriber supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="speed_card" />
 

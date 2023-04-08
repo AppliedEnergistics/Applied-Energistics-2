@@ -3,10 +3,6 @@ navigation:
   parent: website/index.md
   title: Illuminated Panel
   icon: monitor
-item_ids:
-  - ae2:monitor
-  - ae2:dark_monitor
-  - ae2:semi_dark_monitor
 ---
 
 ![A picture of Illuminated Panels.](../../assets/large/illuminated_panel.png)

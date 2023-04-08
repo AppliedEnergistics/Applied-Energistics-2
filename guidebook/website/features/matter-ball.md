@@ -1,6 +1,4 @@
 ---
-item_ids:
-  - ae2:matter_ball
 navigation:
   parent: website/index.md
   title: Matter Ball

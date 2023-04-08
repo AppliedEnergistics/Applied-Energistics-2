@@ -2,12 +2,6 @@
 navigation:
   parent: website/index.md
   title: Wireless Access
-item_ids:
-  - ae2:wireless_receiver
-  - ae2:wireless_booster
-  - ae2:wireless_access_point
-  - ae2:wireless_terminal
-  - ae2:fluix_pearl
 ---
 
 ## Wireless Terminal

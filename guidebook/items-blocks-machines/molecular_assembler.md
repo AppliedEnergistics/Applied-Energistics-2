@@ -31,7 +31,7 @@ is all that is needed to automate crafting patterns.
 
 # Upgrades
 
-The Molecular Assembler supports the following upgrades:
+The Molecular Assembler supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="speed_card" />
 

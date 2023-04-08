@@ -28,7 +28,7 @@ Items can be dragged into the slots from JEI/REI even if you don't actually have
 
 # Upgrades
 
-The import bus supports the following upgrades:
+The import bus supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
 - <ItemLink id="speed_card" /> increases the amount of stuff moved per operation

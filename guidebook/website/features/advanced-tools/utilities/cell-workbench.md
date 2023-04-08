@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Utilities
-item_ids:
-  - ae2:cell_workbench
 navigation:
   parent: website/index.md
   title: Cell Workbench

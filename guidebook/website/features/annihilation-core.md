@@ -1,6 +1,4 @@
 ---
-item_ids:
-  - ae2:annihilation_core
 navigation:
   parent: website/index.md
   title: Annihilation Core

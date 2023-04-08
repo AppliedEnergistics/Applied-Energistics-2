@@ -1,24 +1,6 @@
 ---
 categories:
   - Advanced Tools/Configuration Tools
-item_ids:
-  - ae2:memory_card
-  - ae2:memory_card_white
-  - ae2:memory_card_orange
-  - ae2:memory_card_magenta
-  - ae2:memory_card_light_blue
-  - ae2:memory_card_yellow
-  - ae2:memory_card_lime
-  - ae2:memory_card_pink
-  - ae2:memory_card_gray
-  - ae2:memory_card_light_gray
-  - ae2:memory_card_cyan
-  - ae2:memory_card_purple
-  - ae2:memory_card_blue
-  - ae2:memory_card_brown
-  - ae2:memory_card_green
-  - ae2:memory_card_red
-  - ae2:memory_card_black
 navigation:
   parent: website/index.md
   title: Memory Card
