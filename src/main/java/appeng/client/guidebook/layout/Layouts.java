@@ -26,6 +26,7 @@ public final class Layouts {
 
         // Layout children vertically, without padding
         LytBlock previousBlock = null;
+        var contentWidth = paddingLeft;
         var contentHeight = paddingTop;
         for (var child : children) {
             // Account for margins of the child, and margin collapsing
@@ -38,13 +39,14 @@ public final class Layouts {
             var blockWidth = Math.max(1, innerWidth - child.getMarginLeft() - child.getMarginRight());
             var childBounds = child.layout(context, innerX + child.getMarginLeft(), innerY, blockWidth);
             innerY += childBounds.height() + child.getMarginBottom() + gap;
+            contentWidth = Math.max(contentWidth, childBounds.right() - x);
             contentHeight = Math.max(contentHeight, childBounds.bottom() - y);
             previousBlock = child;
         }
 
         return new LytRect(
                 x, y,
-                availableWidth,
+                contentWidth + paddingRight,
                 contentHeight + paddingBottom);
     }
 
@@ -63,10 +65,10 @@ public final class Layouts {
         var innerY = y + paddingTop;
         var innerWidth = availableWidth - paddingLeft - paddingRight;
 
-        // Layout children vertically, without padding
+        // Layout children horizontally, without padding
         LytBlock previousBlock = null;
         var contentWidth = paddingLeft;
-        var contentHeight = 0;
+        var contentHeight = paddingTop;
         for (var child : children) {
             // Account for margins of the child, and margin collapsing
             if (previousBlock != null && previousBlock.getMarginBottom() > 0) {
@@ -84,14 +86,14 @@ public final class Layouts {
 
             if (innerX > innerWidth) {
                 innerX = x + paddingLeft;
-                innerY = y + contentHeight;
+                innerY = y + contentHeight + gap;
             }
         }
 
         return new LytRect(
                 x, y,
-                contentWidth + paddingBottom,
-                contentHeight);
+                contentWidth + paddingRight,
+                contentHeight + paddingBottom);
     }
 
 }
