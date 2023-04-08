@@ -24,6 +24,7 @@ import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
@@ -38,6 +39,7 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
 public class GuideScreen extends Screen {
@@ -146,7 +148,9 @@ public class GuideScreen extends Screen {
 
         disableScissor();
 
-        // renderHoverOutline(document, context);
+        if (AEConfig.instance().isShowDebugGuiOverlays()) {
+            renderHoverOutline(document, context);
+        }
 
         poseStack.popPose();
 
@@ -224,6 +228,14 @@ public class GuideScreen extends Screen {
                             });
                 }
             }
+
+            // Render the class-name of the hovered node to make it easier to identify
+            var bounds = hoveredElement.node().getBounds();
+            context.renderText(
+                    hoveredElement.node().getClass().getName(),
+                    DefaultStyles.BASE_STYLE,
+                    bounds.x(),
+                    bounds.bottom());
         }
     }
 
