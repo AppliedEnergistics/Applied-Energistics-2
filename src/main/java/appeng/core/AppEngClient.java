@@ -90,7 +90,6 @@ import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.siteexport.SiteExporter;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import appeng.util.WirelessTerminalEvent;
 
 /**
  * Client-specific functionality.
@@ -130,7 +129,6 @@ public class AppEngClient extends AppEngBase {
 
         INSTANCE = this;
         notifyAddons("client");
-        WirelessTerminalEvent.init();
         HotkeyActions.init();
         ClientTickEvents.END_CLIENT_TICK.register(c -> Hotkeys.checkHotkeys());
 

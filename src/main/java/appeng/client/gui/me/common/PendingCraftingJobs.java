@@ -16,7 +16,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
-import appeng.util.WirelessTerminalEvent;
+import appeng.util.SearchInventoryEvent;
 
 /**
  * Tracks pending crafting jobs started by this player.
@@ -64,7 +64,7 @@ public final class PendingCraftingJobs {
     }
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
-        for (ItemStack stack : WirelessTerminalEvent.getItems(player)) {
+        for (ItemStack stack : SearchInventoryEvent.getItems(player)) {
             if (!stack.isEmpty()
                     && stack.getItem() instanceof WirelessTerminalItem wirelessTerminal
                     // Should have some power
