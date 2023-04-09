@@ -38,7 +38,7 @@ class CondenserInventory implements MEStorage {
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
         MEStorage.checkPreconditions(what, amount, mode, source);
         if (mode == Actionable.MODULATE) {
-            this.target.addPower(amount);
+            this.target.addPower(amount / what.getAmountPerOperation());
         }
         return amount;
     }
