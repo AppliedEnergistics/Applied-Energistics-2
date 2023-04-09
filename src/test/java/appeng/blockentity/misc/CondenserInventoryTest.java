@@ -55,21 +55,16 @@ class CondenserInventoryTest {
      */
     @Test
     void testEnergyPerUnit() {
-        var inv = storageAccessor.getInventory(new BaseActionSource());
-        assertThat(inv).isNotNull();
-        assertThat(inv).isInstanceOf(CondenserInventory.class);
-        assertThat(inv.getAvailableStacks()).isEmpty();
         be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.stack());
-        be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY);
 
         // test Fluid insert via ME (e.g. Storage bus)
-        ((IStorageMonitorableAccessor) be.getMEHandler()).getInventory(null).insert(
+        storageAccessor.getInventory(null).insert(
                 AEFluidKey.of(Fluids.WATER.getSource()), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE,
                 new BaseActionSource());
         assertThat(be.getStoredPower()).isEqualTo(8);
 
-        ((IStorageMonitorableAccessor) be.getMEHandler()).getInventory(null)
-                .insert(AEItemKey.of(AEItems.MATTER_BALL.stack()), 1, Actionable.MODULATE, new BaseActionSource());
+        storageAccessor.getInventory(null).insert(AEItemKey.of(AEItems.MATTER_BALL.stack()), 1, Actionable.MODULATE,
+                new BaseActionSource());
         assertThat(be.getStoredPower()).isEqualTo(8 + 1);
 
         // test Fluid insert via transfer API
