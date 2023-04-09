@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -14,6 +15,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.util.SearchInventoryEvent;
 
 /**
  * Tracks pending crafting jobs started by this player.
@@ -61,9 +63,7 @@ public final class PendingCraftingJobs {
     }
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
-        var playerInv = player.getInventory();
-        for (int i = 0; i < playerInv.getContainerSize(); i++) {
-            var stack = playerInv.getItem(i);
+        for (ItemStack stack : SearchInventoryEvent.getItems(player)) {
             if (!stack.isEmpty()
                     && stack.getItem() instanceof WirelessTerminalItem wirelessTerminal
                     // Should have some power
