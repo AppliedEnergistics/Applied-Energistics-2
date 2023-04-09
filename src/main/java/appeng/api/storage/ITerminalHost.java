@@ -31,4 +31,8 @@ import appeng.api.util.IConfigurableObject;
 public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, ISubMenuHost {
     @Nullable
     MEStorage getInventory();
+
+    default String getHotkey() {
+        return "";
+    }
 }

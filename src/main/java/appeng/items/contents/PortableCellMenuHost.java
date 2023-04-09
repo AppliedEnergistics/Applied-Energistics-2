@@ -21,6 +21,9 @@ package appeng.items.contents;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import appeng.api.features.HotkeyAction;
+import appeng.api.stacks.AEKeyType;
+import appeng.api.storage.cells.IBasicCellItem;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -105,5 +108,15 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     @Override
     public ItemStack getMainMenuIcon() {
         return getItemStack();
+    }
+
+    public String getHotkey() {
+        if (((IBasicCellItem) item).getKeyType().equals(AEKeyType.items())) {
+            return HotkeyAction.PORTABLE_ITEM_CELL;
+        } else if (((IBasicCellItem) item).getKeyType().equals(AEKeyType.fluids())) {
+            return HotkeyAction.PORTABLE_FLUID_CELL;
+        } else {
+            return "";//We don't know
+        }
     }
 }

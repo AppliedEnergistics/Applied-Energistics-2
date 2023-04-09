@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.client.Hotkeys;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
@@ -689,18 +690,13 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-
-        ITerminalHost menuHost = this.getMenu().getHost();
-
         if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
             this.searchField.setFocused(false);
             this.setFocused(null);
             return true;
         }
 
-        if (!this.searchField.isFocused()
-                && checkHotkeyForClose(menuHost, keyCode, scanCode)) {
-
+        if (!this.searchField.isFocused() && checkHotkeyForClose(keyCode, scanCode)) {
             this.getPlayer().closeContainer();
             return true;
         }
@@ -794,21 +790,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.init();
     }
 
-    private boolean checkHotkeyForClose(ITerminalHost menuHost, int keyCode, int scanCode) {
-
-        // TODO get hotkeymapping in a better way
-        KeyMapping wirelessTerminalMapping = Hotkeys.getHotkeyMapping("wireless_terminal").mapping();
-        KeyMapping portableStorageCellMapping = Hotkeys.getHotkeyMapping("portable_item_cell").mapping();
-        KeyMapping portableFluidCellMapping = Hotkeys.getHotkeyMapping("portable_fluid_cell").mapping();
-
-        if (menuHost instanceof WirelessCraftingTerminalMenuHost
-                && wirelessTerminalMapping.matches(keyCode, scanCode)) {
-            return true;
-        } else if (menuHost instanceof PortableCellMenuHost && portableStorageCellMapping.matches(keyCode, scanCode)) {
-            return true;
-        }
-        // TODO determine method for distinguishing portable fluid storage cell from portable item storage cell
-        return false;
+    private boolean checkHotkeyForClose(int keyCode, int scanCode) {
+        var hotkey = Hotkeys.getHotkeyMapping(getMenu().getHost().getHotkey());
+        return hotkey.mapping().matches(keyCode, scanCode);
     }
 
     /**
