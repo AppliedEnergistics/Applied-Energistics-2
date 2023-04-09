@@ -150,7 +150,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
      */
     @org.jetbrains.annotations.Nullable
     public ICrankable getCrankable(Direction direction) {
-        if (direction == getTop() || direction == getTop().getOpposite()) {
+        if (direction == getFront() || direction == getFront().getOpposite()) {
             return new Crankable();
         }
         return null;
