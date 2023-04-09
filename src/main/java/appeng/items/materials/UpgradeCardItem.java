@@ -91,17 +91,17 @@ public class UpgradeCardItem extends AEBaseItem implements AEToolItem {
                     }
                 }
                 if (isFull) {
-                    player.sendSystemMessage(PlayerMessages.MaxUpgradesInstalled.text());
+                    player.displayClientMessage(PlayerMessages.MaxUpgradesInstalled.text(), true);
                     return InteractionResult.FAIL;
                 }
 
                 var maxInstalled = upgrades.getMaxInstalled(heldStack.getItem());
                 var installed = upgrades.getInstalledUpgrades(heldStack.getItem());
                 if (maxInstalled <= 0) {
-                    player.sendSystemMessage(PlayerMessages.UnsupportedUpgrade.text());
+                    player.displayClientMessage(PlayerMessages.UnsupportedUpgrade.text(), true);
                     return InteractionResult.FAIL;
                 } else if (installed >= maxInstalled) {
-                    player.sendSystemMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.text());
+                    player.displayClientMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.text(), true);
                     return InteractionResult.FAIL;
                 }
 

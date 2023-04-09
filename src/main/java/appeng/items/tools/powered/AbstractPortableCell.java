@@ -173,7 +173,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
                 playerInventory.placeItemBackInInventory(upgrade);
             }
         } else {
-            player.sendSystemMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text());
+            player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
         }
 
         return true;

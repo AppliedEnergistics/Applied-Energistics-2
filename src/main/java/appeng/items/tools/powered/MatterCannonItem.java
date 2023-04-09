@@ -139,7 +139,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         var req = itemList.getFirstEntry(AEItemKey.class);
         if (req == null || !(req.getKey() instanceof AEItemKey itemKey)) {
             if (!level.isClientSide()) {
-                player.sendSystemMessage(PlayerMessages.AmmoDepleted.text());
+                player.displayClientMessage(PlayerMessages.AmmoDepleted.text(), true);
             }
             return true;
         }

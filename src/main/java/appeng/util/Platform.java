@@ -256,8 +256,8 @@ public class Platform {
             var sg = g.getSecurityService();
             if (!sg.hasPermission(player, requiredPermission)) {
                 if (notifyPlayer) {
-                    player.sendSystemMessage(Component.translatable("ae2.permission_denied")
-                            .withStyle(ChatFormatting.RED));
+                    player.displayClientMessage(Component.translatable("ae2.permission_denied")
+                            .withStyle(ChatFormatting.RED), true);
                 }
                 return false;
             }
