@@ -247,8 +247,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
      */
     @Nullable
     public ICrankable getCrankable(Direction direction) {
-        var up = getTop();
-        if (direction == up || direction == up.getOpposite()) {
+        if (direction != getFront()) {
             return new Crankable();
         }
         return null;
