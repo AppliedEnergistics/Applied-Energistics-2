@@ -92,7 +92,7 @@ public class ItemPickupStrategy implements PickupStrategy {
     }
 
     @Override
-    public Result tryStartPickup(IEnergySource energySource, PickupSink sink) {
+    public Result tryPickup(IEnergySource energySource, PickupSink sink) {
         if (this.isAccepting) {
             var blockState = level.getBlockState(pos);
             if (this.canHandleBlock(level, pos, blockState)) {
@@ -105,6 +105,7 @@ public class ItemPickupStrategy implements PickupStrategy {
                 var canStore = this.canStoreItemStacks(sink, items);
 
                 if (hasPower && canStore) {
+                    this.completePickup(energySource, sink, items, requiredPower, blockState);
                     return Result.PICKED_UP;
                 } else {
                     return Result.CANT_STORE;
@@ -115,17 +116,8 @@ public class ItemPickupStrategy implements PickupStrategy {
         return Result.CANT_PICKUP;
     }
 
-    @Override
-    public void completePickup(IEnergySource energySource, PickupSink sink) {
-
-        var blockState = level.getBlockState(pos);
-        if (!this.canHandleBlock(level, pos, blockState)) {
-            return;
-        }
-
-        var items = this.obtainBlockDrops(level, pos);
-        var requiredPower = this.calculateEnergyUsage(level, pos, items);
-
+    private void completePickup(IEnergySource energySource, PickupSink sink, List<ItemStack> items, float requiredPower,
+            BlockState blockState) {
         if (!this.breakBlockAndStoreExtraItems(sink, level, pos)) {
             // We failed to actually replace the block with air, or it already was the case
             return;
