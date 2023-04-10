@@ -40,9 +40,7 @@ public interface PickupStrategy {
      */
     boolean pickUpEntity(IEnergySource energySource, PickupSink sink, Entity entity);
 
-    Result tryStartPickup(IEnergySource energySource, PickupSink sink);
-
-    void completePickup(IEnergySource energySource, PickupSink sink);
+    Result tryPickup(IEnergySource energySource, PickupSink sink);
 
     enum Result {
         /**

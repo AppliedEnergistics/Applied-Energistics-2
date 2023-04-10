@@ -72,8 +72,6 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     @Nullable
     protected List<PickupStrategy> pickupStrategies;
 
-    private PickupStrategy pendingPickupStrategy;
-
     /**
      * Enchantments found on the plane when it was placed will be used to enchant the fake tool used for picking up
      * blocks.
@@ -287,21 +285,15 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             return TickRateModulation.IDLE;
         }
 
-        if (pendingPickupStrategy != null) {
-            pendingPickupStrategy.completePickup(grid.getEnergyService(), this::insertIntoGrid);
-            pendingPickupStrategy = null;
-        }
-
         // Reset to allow more entity pickups
         for (var pickupStrategy : getPickupStrategies()) {
             pickupStrategy.reset();
         }
 
         for (PickupStrategy pickupStrategy : getPickupStrategies()) {
-            var pickupResult = pickupStrategy.tryStartPickup(grid.getEnergyService(), this::insertIntoGrid);
+            var pickupResult = pickupStrategy.tryPickup(grid.getEnergyService(), this::insertIntoGrid);
 
             if (pickupResult == PickupStrategy.Result.PICKED_UP) {
-                pendingPickupStrategy = pickupStrategy;
                 return TickRateModulation.URGENT;
             } else if (pickupResult == PickupStrategy.Result.CANT_STORE) {
                 // If there's a compatible block, but we can't store it, wait longer
