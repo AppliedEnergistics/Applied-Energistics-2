@@ -336,6 +336,10 @@ public class CachedPlane {
         return this.level;
     }
 
+    public LevelChunk[][] getChunks() {
+        return myChunks;
+    }
+
     private static class BlockStorageData {
         public BlockState state;
     }
