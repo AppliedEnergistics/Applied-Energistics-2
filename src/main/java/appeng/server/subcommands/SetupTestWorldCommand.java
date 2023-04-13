@@ -93,6 +93,7 @@ public class SetupTestWorldCommand implements ISubCommand {
         if (!playerInv.hasAnyOf(Collections.singleton(AEItems.COLOR_APPLICATOR.asItem()))) {
             playerInv.placeItemBackInInventory(fullApplicator);
         }
+        TestPlots.KIT_OUT_PLAYER_EVENT.invoker().accept(player);
     }
 
     /**
