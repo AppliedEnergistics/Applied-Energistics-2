@@ -160,7 +160,7 @@ public final class TestPlots {
         return plots;
     }
 
-    public static void addPlotClass(Class<?> clazz) {
+    public static synchronized void addPlotClass(Class<?> clazz) {
         PLOT_CLASSES.add(clazz);
         plots = null;// reset the plots, in case they are already initialized
     }
