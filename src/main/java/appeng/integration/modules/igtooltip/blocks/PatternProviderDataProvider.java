@@ -1,6 +1,5 @@
 package appeng.integration.modules.igtooltip.blocks;
 
-import appeng.api.stacks.GenericStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -12,6 +11,7 @@ import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.api.stacks.AmountFormat;
+import appeng.api.stacks.GenericStack;
 import appeng.core.localization.InGameTooltip;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 
@@ -40,9 +40,11 @@ public final class PatternProviderDataProvider
                 stackAmount = Component.literal("ERROR");
             } else {
                 stackName = AEKeyRendering.getDisplayName(genericStack.what());
-                stackAmount = Component.literal(genericStack.what().formatAmount(genericStack.amount(), AmountFormat.FULL));
+                stackAmount = Component
+                        .literal(genericStack.what().formatAmount(genericStack.amount(), AmountFormat.FULL));
             }
-            tooltip.addLine(InGameTooltip.CraftingLockedUntilResult.text(stackName, stackAmount).withStyle(ChatFormatting.RED));
+            tooltip.addLine(
+                    InGameTooltip.CraftingLockedUntilResult.text(stackName, stackAmount).withStyle(ChatFormatting.RED));
         }
     }
 
