@@ -26,6 +26,7 @@ import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.server.ISubCommand;
+import appeng.server.testplots.KitOutPlayerEvent;
 import appeng.server.testplots.TestPlots;
 import appeng.server.testworld.TestWorldGenerator;
 
@@ -95,6 +96,7 @@ public class SetupTestWorldCommand implements ISubCommand {
         if (!playerInv.hasAnyOf(Collections.singleton(AEItems.COLOR_APPLICATOR.asItem()))) {
             playerInv.placeItemBackInInventory(fullApplicator);
         }
+        KitOutPlayerEvent.EVENT.invoker().accept(player);
     }
 
     /**
