@@ -77,16 +77,19 @@ import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
 
 public final class TestPlots {
-    private static final Class<?>[] PLOT_CLASSES = {
-            TestPlots.class,
-            AutoCraftingTestPlots.class,
-            P2PTestPlots.class,
-            MemoryCardTestPlots.class,
-            PatternProviderLockModePlots.class
-    };
+    private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
 
     @Nullable
     private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
+
+    static {
+        PLOT_CLASSES.addAll(List.of(
+                TestPlots.class,
+                AutoCraftingTestPlots.class,
+                P2PTestPlots.class,
+                MemoryCardTestPlots.class,
+                PatternProviderLockModePlots.class));
+    }
 
     private TestPlots() {
     }
@@ -144,6 +147,11 @@ public final class TestPlots {
         }
 
         return plots;
+    }
+
+    public static synchronized void addPlotClass(Class<?> clazz) {
+        PLOT_CLASSES.add(clazz);
+        plots = null;// reset the plots, in case they are already initialized
     }
 
     public static List<ResourceLocation> getPlotIds() {
