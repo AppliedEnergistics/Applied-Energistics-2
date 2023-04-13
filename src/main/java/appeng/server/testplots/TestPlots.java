@@ -17,15 +17,12 @@ import com.google.common.collect.Sets;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -84,14 +81,6 @@ public final class TestPlots {
 
     @Nullable
     private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
-
-    public static final Event<Consumer<ServerPlayer>> KIT_OUT_PLAYER_EVENT = EventFactory.createArrayBacked(
-            Consumer.class,
-            (events) -> (player) -> {
-                for (var event : events) {
-                    event.accept(player);
-                }
-            });
 
     static {
         PLOT_CLASSES.addAll(List.of(
