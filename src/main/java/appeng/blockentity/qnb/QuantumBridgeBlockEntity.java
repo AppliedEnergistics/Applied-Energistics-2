@@ -84,6 +84,10 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
                 this.cluster.updateStatus(true);
             }
             this.markForUpdate();
+
+            // big hack: markForUpdate will generally send a block update that will cause the cluster to initialize
+            // correctly after it's been unloaded, however sometimes it doesn't so we manually rescan...
+            neighborUpdate(getBlockPos());
         }
     }
 
