@@ -367,8 +367,11 @@ public class TickHandler {
                             info.callInit();
                         } catch (Throwable t) {
                             CrashReport crashReport = CrashReport.forThrowable(t, "Readying AE2 block entity");
-                            info.blockEntity()
-                                    .fillCrashReportCategory(crashReport.addCategory("Block entity being readied"));
+
+                            var category = crashReport.addCategory("Block entity being readied");
+                            category.setDetail("World", () -> level.dimension().location().toString());
+                            info.blockEntity().fillCrashReportCategory(category);
+
                             throw new ReportedException(crashReport);
                         }
                     }
