@@ -285,6 +285,14 @@ public final class AEConfig {
     public void save() {
     }
 
+    public void reload() {
+        clientConfigManager.load();
+        commonConfigManager.load();
+
+        syncClientConfig();
+        syncCommonConfig();
+    }
+
     public PowerUnits getSelectedPowerUnit() {
         return this.CLIENT.selectedPowerUnit.get();
     }
