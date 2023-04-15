@@ -312,7 +312,7 @@ public final class AutoCraftingTestPlots {
                         for (var pos : inscriberPos) {
                             var inscriber = (InscriberBlockEntity) helper.getBlockEntity(pos);
                             helper.check(inscriber.getInternalInventory().getStackInSlot(2).getCount() == 5,
-                                    "Furnace should have 5 = 10/2 items", pos);
+                                    "Inscriber should have 5 = 10/2 items", pos);
                         }
                     })
                     .thenSucceed();
