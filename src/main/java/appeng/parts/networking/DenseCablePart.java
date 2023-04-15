@@ -98,8 +98,14 @@ public abstract class DenseCablePart extends CablePart {
     }
 
     private boolean isDense(Direction of) {
-        var adjacentHost = GridHelper.getNodeHost(getBlockEntity().getLevel(),
-                getBlockEntity().getBlockPos().relative(of));
+        var adjacentPos = getBlockEntity().getBlockPos().relative(of);
+
+        if (!getLevel().hasChunkAt(adjacentPos)) {
+            // Avoid loading chunk for this.
+            return false;
+        }
+
+        var adjacentHost = GridHelper.getNodeHost(getBlockEntity().getLevel(), adjacentPos);
 
         if (adjacentHost != null) {
             var t = adjacentHost.getCableConnectionType(of.getOpposite());
