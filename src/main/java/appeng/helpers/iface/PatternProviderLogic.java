@@ -146,6 +146,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
         this.returnInv = new PatternProviderReturnInventory(() -> {
             this.mainNode.ifPresent((grid, node) -> grid.getTickManager().alertDevice(node));
+            this.host.saveChanges();
         });
     }
 
