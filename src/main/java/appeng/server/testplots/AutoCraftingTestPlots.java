@@ -15,8 +15,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
-import appeng.api.config.Settings;
-import appeng.api.config.YesNo;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -287,9 +285,7 @@ public final class AutoCraftingTestPlots {
             provider.getLogic().getPatternInv().addItems(pattern);
         });
         for (var pos : inscriberPos) {
-            plot.blockEntity(pos, AEBlocks.INSCRIBER, inscriber -> {
-                inscriber.getConfigManager().putSetting(Settings.AUTO_EXPORT, YesNo.YES);
-            });
+            plot.block(pos, AEBlocks.INSCRIBER);
         }
         plot.cable("0 0 -4");
         {
@@ -310,7 +306,7 @@ public final class AutoCraftingTestPlots {
                         for (var pos : inscriberPos) {
                             var inscriber = (InscriberBlockEntity) helper.getBlockEntity(pos);
                             helper.check(inscriber.getInternalInventory().getStackInSlot(2).getCount() == 5,
-                                    "Furnace should have 5 = 10/2 items", pos);
+                                    "Furnace should have 5 = 10/2 items");
                         }
                     })
                     .thenSucceed();
