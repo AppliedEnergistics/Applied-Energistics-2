@@ -109,13 +109,15 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                 @Override
                 public void buildSlots(IRecipeLayoutBuilder builder) {
-                    builder.addSlot(RecipeIngredientRole.CATALYST, centerX - 40, 25)
+                    var slot1 = builder.addSlot(RecipeIngredientRole.CATALYST, centerX - 40, 25)
                             .setBackground(slotBackground, -1, -1)
                             .addItemStacks(BUDDING_QUARTZ_VARIANTS);
 
-                    builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 25)
+                    var slot2 = builder.addSlot(RecipeIngredientRole.OUTPUT, centerX + 40 - 18, 25)
                             .setBackground(slotBackground, -1, -1)
                             .addItemStacks(BUD_GROWTH_STAGES);
+
+                    builder.createFocusLink(slot1, slot2);
                 }
             };
             /*
