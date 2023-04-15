@@ -10,6 +10,7 @@ import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.abstraction.REIFacade;
+import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.MEStorageMenu;
 
 public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C, MEStorageScreen<C>> {
@@ -74,6 +75,14 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
                 GuiText.SearchSettingsClearExternal.text(externalSearchMod), this::save);
 
         updateState();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        // The screen JSON includes the toolbox, but we don't actually have a need for it here
+        setSlotsHidden(SlotSemantics.TOOLBOX, true);
     }
 
     private void switchToAeSearch() {
