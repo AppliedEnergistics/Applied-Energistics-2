@@ -32,7 +32,7 @@ plugins {
     id "maven-publish"
     id "com.diffplug.spotless" version "5.12.4"
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.modrinth.minotaur" version "1.2.1"
+    id "com.modrinth.minotaur" version "2.+"
     id "com.github.johnrengelman.shadow" version "7.0.0"
     id "idea"
 }
@@ -536,9 +536,6 @@ spotless {
     }
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
-import com.modrinth.minotaur.request.VersionType
-
 ////////////////
 // Crowdin
 task uploadToCrowdin(type: JavaExec) {
@@ -589,19 +586,15 @@ if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.ver
 ////////////////
 // Modrinth
 
-if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
-    def mrVersionType = VersionType.RELEASE
+if (System.getenv("MODRINTH") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
+    def mrVersionType = "release"
     if (ext.isAlpha) {
-        mrVersionType = VersionType.ALPHA
+        mrVersionType = "alpha"
     } else if (ext.isBeta) {
-        mrVersionType = VersionType.BETA
+        mrVersionType = "beta"
     }
 
-    task publishModrinth(type: TaskModrinthUpload) {
-        onlyIf {
-            System.getenv("MODRINTH")
-        }
-
+    modrinth {
         token = System.getenv("MODRINTH")
         changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
         projectId = 'XxWD5pD3'
@@ -609,10 +602,9 @@ if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
         versionNumber = "forge-" + project.version
         versionType = mrVersionType
         uploadFile = jar
-        addGameVersion(project.minecraft_version)
-        addLoader('forge')
+        gameVersions = [ project.minecraft_version ]
+        loaders = [ "forge" ]
     }
-    publishModrinth.dependsOn jar
 }
 
 ////////////////
