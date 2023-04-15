@@ -48,6 +48,7 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
     private static final float POWER_DRAIN = 2.0f;
     private static final P2PModels MODELS = new P2PModels("part/p2p/p2p_tunnel_items");
     private boolean partVisited = false;
+    private int depth;
 
     @PartModels
     public static List<IPartModel> getModels() {
@@ -195,7 +196,13 @@ public class PartP2PItems extends PartP2PTunnel<PartP2PItems> implements IItemHa
 
     @Override
     public ItemStack insertItem(final int slot, final ItemStack stack, boolean simulate) {
-        return this.getDestination().insertItem(slot, stack, simulate);
+        if (depth == 1) {
+            return stack;
+        }
+        this.depth += 1;
+        ItemStack ret = this.getDestination().insertItem(slot, stack, simulate);
+        this.depth -= 1;
+        return ret;
     }
 
     @Override
