@@ -537,7 +537,8 @@ public class Platform {
             return null;
         }
 
-        if (!serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
+        // Note: chunk could be in ticking range but not loaded, this checks for both!
+        if (!serverLevel.getChunkSource().isPositionTicking(ChunkPos.asLong(pos))) {
             return null;
         }
 
