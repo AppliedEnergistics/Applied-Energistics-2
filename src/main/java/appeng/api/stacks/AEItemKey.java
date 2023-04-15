@@ -122,7 +122,7 @@ public final class AEItemKey extends AEKey {
     }
 
     private static AEItemKey of(ItemLike item, @Nullable CompoundTag tag, @Nullable CompoundTag caps) {
-        return new AEItemKey(item.asItem(), InternedTag.of(tag, false), InternedTag.of(tag, false));
+        return new AEItemKey(item.asItem(), InternedTag.of(tag, false), InternedTag.of(caps, false));
     }
 
     public boolean matches(ItemStack stack) {
