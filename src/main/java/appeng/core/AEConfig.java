@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
+import net.fabricmc.loader.api.FabricLoader;
+
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
@@ -677,7 +679,8 @@ public final class AEConfig {
         public CommonConfig(ConfigSection root) {
 
             ConfigSection general = root.subsection("general");
-            debugTools = general.addBoolean("unsupportedDeveloperTools", false);
+            debugTools = general.addBoolean("unsupportedDeveloperTools",
+                    FabricLoader.getInstance().isDevelopmentEnvironment());
             matterCannonBlockDamage = general.addBoolean("matterCannonBlockDamage", true,
                     "Enables the ability of the Matter Cannon to break blocks.");
             tinyTntBlockDamage = general.addBoolean("tinyTntBlockDamage", true,
