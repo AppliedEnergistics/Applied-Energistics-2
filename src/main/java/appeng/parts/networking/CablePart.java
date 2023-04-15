@@ -25,6 +25,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.netty.buffer.Unpooled;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -40,6 +42,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
+import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.BusSupport;
@@ -225,6 +228,29 @@ public class CablePart extends AEBasePart implements ICablePart {
         }
     }
 
+    /**
+     * Tries connecting to adjacent machines visually.
+     */
+    public void autoConnectClientSide() {
+        if (!isClientSide()) {
+            throw new IllegalStateException("This method should not be used server-side");
+        }
+
+        var connectedSides = EnumSet.noneOf(Direction.class);
+        var location = getHost().getLocation();
+        var pos = location.getPos();
+        var level = location.getLevel();
+
+        for (var side : Direction.values()) {
+            var be = level.getBlockEntity(pos.relative(side));
+            if (be instanceof IInWorldGridNodeHost gridNodeHost) {
+                connectedSides.add(side);
+            }
+        }
+
+        setConnections(connectedSides);
+    }
+
     protected void updateConnections() {
         if (!isClientSide()) {
             var n = this.getGridNode();
@@ -243,7 +269,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         boolean[] writeChannels = new boolean[Direction.values().length];
         byte[] channelsPerSide = new byte[Direction.values().length];
 
-        for (Direction thisSide : Direction.values()) {
+        for (var thisSide : Direction.values()) {
             var part = this.getHost().getPart(thisSide);
             if (part != null) {
                 int channels = 0;
@@ -350,7 +376,13 @@ public class CablePart extends AEBasePart implements ICablePart {
     public void writeVisualStateToNBT(CompoundTag data) {
         super.writeVisualStateToNBT(data);
 
-        updateConnections();
+        // Hacky hacky hacky, but it works. Refreshes the client-side state even if we're on the server
+        if (!isClientSide()) {
+            updateConnections();
+            var packet = new FriendlyByteBuf(Unpooled.buffer());
+            writeToStream(packet);
+            readFromStream(packet);
+        }
 
         for (var side : Direction.values()) {
             if (connections.contains(side)) {

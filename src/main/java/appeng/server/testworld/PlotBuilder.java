@@ -139,11 +139,11 @@ public interface PlotBuilder {
         var leverPos = pos.relative(side);
         AttachFace face = AttachFace.WALL;
         if (side == Direction.UP) {
-            face = AttachFace.CEILING;
-            side = Direction.EAST;
-        } else if (side == Direction.DOWN) {
             face = AttachFace.FLOOR;
-            side = Direction.EAST;
+            side = Direction.NORTH;
+        } else if (side == Direction.DOWN) {
+            face = AttachFace.CEILING;
+            side = Direction.NORTH;
         }
         var state = Blocks.POLISHED_BLACKSTONE_BUTTON.defaultBlockState()
                 .setValue(ButtonBlock.FACE, face)

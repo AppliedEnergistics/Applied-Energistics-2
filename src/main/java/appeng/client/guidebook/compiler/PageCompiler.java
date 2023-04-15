@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -460,7 +461,7 @@ public final class PageCompiler {
         return pages;
     }
 
-    public byte[] loadAsset(ResourceLocation imageId) {
+    public byte @Nullable [] loadAsset(ResourceLocation imageId) {
         return pages.loadAsset(imageId);
     }
 
