@@ -73,7 +73,6 @@ import appeng.util.Platform;
 public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject {
 
     public static final int NUMBER_OF_SLOTS = 9;
-
     @Nullable
     private InterfaceInventory localInvHandler;
     @Nullable
@@ -105,8 +104,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is) {
         this.host = host;
-        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig, false);
-        this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::updatePlan);
+        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::onConfigRowChanged, false);
+        this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::onStorageChanged);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
@@ -524,6 +523,16 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
         // Update plan in case fuzzy card was inserted or removed
         updatePlan();
+    }
+
+    private void onConfigRowChanged() {
+        this.host.saveChanges();
+        this.readConfig();
+    }
+
+    private void onStorageChanged() {
+        this.host.saveChanges();
+        this.updatePlan();
     }
 
     public void addDrops(List<ItemStack> drops, boolean remove) {
