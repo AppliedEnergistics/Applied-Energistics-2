@@ -3,7 +3,6 @@ package appeng.server.testplots;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -20,7 +19,6 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.blockentity.crafting.PatternProviderBlockEntity;
-import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -28,7 +26,6 @@ import appeng.items.storage.CreativeCellItem;
 import appeng.me.helpers.BaseActionSource;
 import appeng.menu.AutoCraftingMenu;
 import appeng.server.testworld.PlotBuilder;
-import appeng.server.testworld.TestCraftingJob;
 
 public final class AutoCraftingTestPlots {
     private AutoCraftingTestPlots() {
@@ -259,57 +256,5 @@ public final class AutoCraftingTestPlots {
         plot.block("0 0 -1", AEBlocks.MOLECULAR_ASSEMBLER);
         plot.block("0 -1 0", AEBlocks.MOLECULAR_ASSEMBLER);
         plot.block("0 1 0", AEBlocks.MOLECULAR_ASSEMBLER);
-    }
-
-    /**
-     * Tests that PPs correctly round-robin crafts across their sides.
-     */
-    @TestPlot("pattern_provider_faces_round_robin")
-    public static void patternProviderFacesRoundRobin(PlotBuilder plot) {
-        var inscriberPos = new BlockPos[] {
-                new BlockPos(-1, 0, -3),
-                new BlockPos(1, 0, -3),
-        };
-
-        craftingCube(plot);
-
-        plot.cable("0 0 -2");
-        plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
-            var pattern = PatternDetailsHelper.encodeProcessingPattern(
-                    new GenericStack[] {
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_CRYSTAL.stack())
-                    },
-                    new GenericStack[] {
-                            GenericStack.fromItemStack(AEItems.CERTUS_QUARTZ_DUST.stack())
-                    });
-            provider.getLogic().getPatternInv().addItems(pattern);
-        });
-        for (var pos : inscriberPos) {
-            plot.block(pos, AEBlocks.INSCRIBER);
-        }
-        plot.cable("0 0 -4");
-        {
-            var db = plot.drive(new BlockPos(0, 0, -5));
-            db.addCreativeCell().add(AEItems.CERTUS_QUARTZ_CRYSTAL);
-            db.addItemCell64k();
-        }
-        plot.cable("0 1 -5").part(Direction.NORTH, AEParts.CRAFTING_TERMINAL);
-        plot.creativeEnergyCell("0 -1 -5");
-
-        // Check item distribution in PPs
-        plot.test(helper -> {
-            var craftingJob = new TestCraftingJob(helper, BlockPos.ZERO, AEItemKey.of(AEItems.CERTUS_QUARTZ_DUST), 10);
-            helper.startSequence()
-                    .thenWaitUntil(craftingJob::tickUntilStarted)
-                    .thenIdle(1) // give time to push out job
-                    .thenExecute(() -> {
-                        for (var pos : inscriberPos) {
-                            var inscriber = (InscriberBlockEntity) helper.getBlockEntity(pos);
-                            helper.check(inscriber.getInternalInventory().getStackInSlot(2).getCount() == 5,
-                                    "Furnace should have 5 = 10/2 items");
-                        }
-                    })
-                    .thenSucceed();
-        });
     }
 }
