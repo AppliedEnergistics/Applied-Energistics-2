@@ -7,9 +7,9 @@ import com.mojang.logging.LogUtils;
 
 import org.slf4j.Logger;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.saveddata.SavedData;
 
 /**
@@ -28,7 +28,7 @@ public abstract class AESavedData extends SavedData {
 
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.put("data", this.save(new CompoundTag()));
-        NbtUtils.addCurrentDataVersion(compoundTag);
+        compoundTag.putInt("DataVersion", SharedConstants.getCurrentVersion().getWorldVersion());
         try {
             // Write to temp file first.
             NbtIo.writeCompressed(compoundTag, tempFile);
