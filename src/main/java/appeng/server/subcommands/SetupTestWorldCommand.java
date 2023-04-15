@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
+import net.minecraftforge.common.MinecraftForge;
 
 import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
@@ -94,7 +95,7 @@ public class SetupTestWorldCommand implements ISubCommand {
         if (!playerInv.hasAnyOf(Collections.singleton(AEItems.COLOR_APPLICATOR.asItem()))) {
             playerInv.placeItemBackInInventory(fullApplicator);
         }
-        KitOutPlayerEvent.EVENT.invoker().accept(player);
+        MinecraftForge.EVENT_BUS.post(new KitOutPlayerEvent(player));
     }
 
     /**
