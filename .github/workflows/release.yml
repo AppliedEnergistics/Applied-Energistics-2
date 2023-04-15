@@ -169,4 +169,4 @@ jobs:
         env:
           CHANGELOG: ${{ github.event.release.body }}
           MODRINTH: ${{ secrets.MODRINTH }}
-        run: ./gradlew publishModrinth --no-daemon --max-workers 1
+        run: ./gradlew modrinth --no-daemon --max-workers 1
