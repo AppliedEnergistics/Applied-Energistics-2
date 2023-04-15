@@ -70,7 +70,7 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .define('a', AEBlocks.CUT_QUARTZ_BLOCK)
                 .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(consumer, AppEng.makeId("decorative/certus_quartz_pillar"));
-        ShapedRecipeBuilder.shaped(AEBlocks.CHISELED_QUARTZ_BLOCK, 2)
+        ShapedRecipeBuilder.shaped(AEBlocks.CHISELED_QUARTZ_BLOCK, 1)
                 .pattern("a")
                 .pattern("a")
                 .define('a', AEBlocks.CUT_QUARTZ_SLAB)
