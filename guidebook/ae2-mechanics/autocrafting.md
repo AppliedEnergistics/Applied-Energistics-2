@@ -133,7 +133,7 @@ skipping the interface and not filling it with recipe batches, and more importan
 
 Multiple pattern providers with identical patterns are supported and work in parallel.
 
-Pattern providers with processing patterns will attempt to round-robin their batches to all of their faces.
+Pattern providers will attempt to round-robin their batches to all of their faces, thus using all attached machines in parallel.
 
 # Variants
 
