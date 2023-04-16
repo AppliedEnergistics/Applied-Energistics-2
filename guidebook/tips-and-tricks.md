@@ -15,3 +15,6 @@ in patterns sometimes works, but using the same wood type everywhere greatly red
 - Arrange your [patterns](items-blocks-machines/patterns.md) vertically in the <ItemLink id="pattern_access_terminal" />/
 distribute your patterns between your [providers](items-blocks-machines/pattern_provider.md) so that recipes can be performed in parallel.
 - Add an [energy cell](items-blocks-machines/energy_cells.md) so that your network can handle power spikes.
+- You can use water in the <ItemLink id="condenser" />
+- The best way to keep your network clean is to not put random mob loot like swords and armor in. Each unique combination of
+enchantment and durability is another [type](ae2-mechanics/bytes-and-types.md).
