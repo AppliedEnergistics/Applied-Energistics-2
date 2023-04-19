@@ -171,7 +171,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     protected int availableSlots() {
-        return Math.min(1 + getInstalledUpgrades(AEItems.CAPACITY_CARD) * 4, this.getConfig().size());
+        return Math.min(9, this.getConfig().size());
     }
 
     protected int getOperationsPerTick() {
