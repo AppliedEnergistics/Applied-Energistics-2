@@ -144,6 +144,10 @@ public final class InitUpgrades {
 
         // Inscriber
         Upgrades.add(AEItems.SPEED_CARD, AEBlocks.INSCRIBER, 4);
+
+        // Vibration Chamber
+        Upgrades.add(AEItems.ENERGY_CARD, AEBlocks.VIBRATION_CHAMBER, 3);
+        Upgrades.add(AEItems.SPEED_CARD, AEBlocks.VIBRATION_CHAMBER, 3);
     }
 
 }

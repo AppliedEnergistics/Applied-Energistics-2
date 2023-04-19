@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
-import appeng.menu.AEBaseMenu;
+import appeng.core.definitions.AEItems;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
@@ -31,16 +31,16 @@ import appeng.menu.slot.RestrictedInputSlot;
 /**
  * @see appeng.client.gui.implementations.VibrationChamberScreen
  */
-public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvider {
+public class VibrationChamberMenu extends UpgradeableMenu<VibrationChamberBlockEntity> implements IProgressProvider {
 
     public static final MenuType<VibrationChamberMenu> TYPE = MenuTypeBuilder
             .create(VibrationChamberMenu::new, VibrationChamberBlockEntity.class)
             .build("vibrationchamber");
 
     private final VibrationChamberBlockEntity vibrationChamber;
-    @GuiSync(0)
+    @GuiSync(2)
     public double currentFuelTicksPerTick = 0;
-    @GuiSync(1)
+    @GuiSync(3)
     public int remainingBurnTime = 0;
 
     public VibrationChamberMenu(int id, Inventory ip,
@@ -50,8 +50,6 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
         this.addSlot(new RestrictedInputSlot(RestrictedInputSlot.PlacableItemType.FUEL,
                 vibrationChamber.getInternalInventory(), 0), SlotSemantics.MACHINE_INPUT);
-
-        this.createPlayerInventorySlots(ip);
     }
 
     @Override
@@ -81,13 +79,17 @@ public class VibrationChamberMenu extends AEBaseMenu implements IProgressProvide
 
     @Override
     public int getMaxProgress() {
-        return (int) (vibrationChamber.getMaxFuelTicksPerTick() * 100);
+        return (int) (this.vibrationChamber.getMaxFuelTicksPerTick() * 100);
     }
 
     /**
      * Current amount of power being generated.
      */
     public double getPowerPerTick() {
-        return currentFuelTicksPerTick * vibrationChamber.getEnergyPerFuelTick();
+        return currentFuelTicksPerTick * this.vibrationChamber.getEnergyPerFuelTick();
+    }
+
+    public double getFuelEfficiency() {
+        return 100 + this.vibrationChamber.getInstalledUpgrades(AEItems.ENERGY_CARD) * 50;
     }
 }

@@ -506,8 +506,8 @@ public final class AEConfig {
         CLIENT.clearGridOnClose.set(enabled);
     }
 
-    public double getVibrationChamberEnergyPerFuelTick() {
-        return COMMON.vibrationChamberEnergyPerFuelTick.get();
+    public double getVibrationChamberBaseEnergyPerFuelTick() {
+        return COMMON.vibrationChamberBaseEnergyPerFuelTick.get();
     }
 
     public int getVibrationChamberMinEnergyPerGameTick() {
@@ -672,7 +672,7 @@ public final class AEConfig {
         public final DoubleOption powerUsageMultiplier;
 
         // Vibration Chamber
-        public final DoubleOption vibrationChamberEnergyPerFuelTick;
+        public final DoubleOption vibrationChamberBaseEnergyPerFuelTick;
         public final IntegerOption vibrationChamberMinEnergyPerTick;
         public final IntegerOption vibrationChamberMaxEnergyPerTick;
 
@@ -778,11 +778,11 @@ public final class AEConfig {
 
             ConfigSection vibrationChamber = root.subsection("vibrationChamber",
                     "Settings for the Vibration Chamber");
-            vibrationChamberEnergyPerFuelTick = vibrationChamber.addDouble("energyPerFuelTick", 5, 0.1, 1000,
+            vibrationChamberBaseEnergyPerFuelTick = vibrationChamber.addDouble("baseEnergyPerFuelTick", 5, 0.1, 1000,
                     "AE energy produced per fuel burn tick (reminder: coal = 1600, block of coal = 16000, lava bucket = 20000 burn ticks)");
             vibrationChamberMinEnergyPerTick = vibrationChamber.addInt("minEnergyPerGameTick", 4, 0, 1000,
                     "Minimum amount of AE/t the vibration chamber can slow down to when energy is being wasted.");
-            vibrationChamberMaxEnergyPerTick = vibrationChamber.addInt("maxEnergyPerGameTick", 40, 1, 1000,
+            vibrationChamberMaxEnergyPerTick = vibrationChamber.addInt("baseMaxEnergyPerGameTick", 40, 1, 1000,
                     "Maximum amount of AE/t the vibration chamber can speed up to when generated energy is being fully consumed.");
         }
 
