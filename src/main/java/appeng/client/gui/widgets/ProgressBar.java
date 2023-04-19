@@ -66,6 +66,10 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
             int max = this.source.getMaxProgress();
             int current = this.source.getCurrentProgress();
 
+            if (current > max) {
+                current = max;
+            }
+
             int srcX = sourceRect.getX();
             int srcY = sourceRect.getY();
             int srcW = sourceRect.getWidth();

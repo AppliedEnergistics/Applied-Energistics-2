@@ -18,46 +18,64 @@
 
 package appeng.blockentity.misc;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import appeng.api.config.Actionable;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
+import appeng.api.upgrades.IUpgradeInventory;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.AEConfig;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
-public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable {
+public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity implements IGridTickable, IUpgradeableObject {
     private final AppEngInternalInventory inv = new AppEngInternalInventory(this, 1);
     private final InternalInventory invExt = new FilteredInternalInventory(this.inv, new FuelSlotFilter());
+
+    private final IUpgradeInventory upgrades;
 
     private double currentFuelTicksPerTick;
     private double remainingFuelTicks = 0;
     private double fuelItemFuelTicks = 0;
 
+    private double minFuelTicksPerTick;
+    private double maxFuelTicksPerTick;
+    private double initialFuelTicksPerTick;
+
     // client side.. (caches last sent state on server)
     public boolean isOn;
 
-    private final double minFuelTicksPerTick;
-    private final double maxFuelTicksPerTick;
-    private final double initialFuelTicksPerTick;
+    private final double minEnergyRate;
+    private final double baseMaxEnergyRate;
+    private final double initialEnergyRate;
 
     public VibrationChamberBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -66,16 +84,18 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 .setFlags()
                 .addService(IGridTickable.class, this);
 
+        this.upgrades = UpgradeInventories.forMachine(AEBlocks.VIBRATION_CHAMBER, 3, this::saveChanges);
+
         // Compute the original burn rate parameters from the config
-        var minEnergyRate = AEConfig.instance().getVibrationChamberMinEnergyPerGameTick();
-        var maxEnergyRate = AEConfig.instance().getVibrationChamberMaxEnergyPerGameTick();
-        var initialEnergyRate = Mth.clamp(
-                AEConfig.instance().getVibrationChamberEnergyPerFuelTick(),
+        minEnergyRate = AEConfig.instance().getVibrationChamberMinEnergyPerGameTick();
+        baseMaxEnergyRate = AEConfig.instance().getVibrationChamberMaxEnergyPerGameTick();
+        initialEnergyRate = Mth.clamp(
+                AEConfig.instance().getVibrationChamberBaseEnergyPerFuelTick(),
                 minEnergyRate,
-                maxEnergyRate);
+                baseMaxEnergyRate);
 
         minFuelTicksPerTick = minEnergyRate / getEnergyPerFuelTick();
-        maxFuelTicksPerTick = maxEnergyRate / getEnergyPerFuelTick();
+        maxFuelTicksPerTick = baseMaxEnergyRate / getEnergyPerFuelTick();
         initialFuelTicksPerTick = initialEnergyRate / getEnergyPerFuelTick();
         currentFuelTicksPerTick = initialFuelTicksPerTick;
     }
@@ -105,6 +125,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putDouble("burnTime", this.getRemainingFuelTicks());
         data.putDouble("maxBurnTime", this.getFuelItemFuelTicks());
         // Save as percentage of max-speed
@@ -115,9 +136,39 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
+        this.upgrades.readFromNBT(data, "upgrades");
         this.setRemainingFuelTicks(data.getDouble("burnTime"));
         this.setFuelItemFuelTicks(data.getDouble("maxBurnTime"));
         this.setCurrentFuelTicksPerTick(data.getInt("burnSpeed") * maxFuelTicksPerTick / 100.0);
+    }
+
+    @Override
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+        super.addAdditionalDrops(level, pos, drops, remove);
+
+        for (var upgrade : upgrades) {
+            drops.add(upgrade);
+        }
+        if (remove) {
+            upgrades.clear();
+        }
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades() {
+        return this.upgrades;
+    }
+
+    @Nullable
+    @Override
+    public InternalInventory getSubInventory(ResourceLocation id) {
+        if (id.equals(ISegmentedInventory.STORAGE)) {
+            return this.getInternalInventory();
+        } else if (id.equals(ISegmentedInventory.UPGRADES)) {
+            return this.upgrades;
+        }
+
+        return super.getSubInventory(id);
     }
 
     @Override
@@ -162,6 +213,12 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
 
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
+
+        // Recalculate fuel tick rate min and max
+        this.minFuelTicksPerTick = minEnergyRate / getEnergyPerFuelTick();
+        this.maxFuelTicksPerTick = getMaxFuelTicksPerTick();
+        this.initialFuelTicksPerTick = initialEnergyRate / getEnergyPerFuelTick();
+
         if (this.getRemainingFuelTicks() <= 0) {
             this.eatFuel();
 
@@ -169,7 +226,7 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 return TickRateModulation.URGENT;
             }
 
-            this.setCurrentFuelTicksPerTick(initialFuelTicksPerTick);
+            this.setCurrentFuelTicksPerTick(this.initialFuelTicksPerTick);
             return TickRateModulation.SLEEP;
         }
 
@@ -181,8 +238,8 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
         }
 
         // The full range should scale in 5 seconds (=100 ticks)
-        var speedScalingPerTick = (maxFuelTicksPerTick - minFuelTicksPerTick) / 100;
-        int speedStep = (int) Math.max(1, ticksSinceLastCall * speedScalingPerTick);
+        var speedScalingPerTick = (this.maxFuelTicksPerTick - this.minFuelTicksPerTick) / 100;
+        double speedStep = (double) ticksSinceLastCall * speedScalingPerTick;
 
         var grid = node.getGrid();
         var energy = grid.getEnergyService();
@@ -261,7 +318,8 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     private void setCurrentFuelTicksPerTick(double currentFuelTicksPerTick) {
-        this.currentFuelTicksPerTick = Mth.clamp(currentFuelTicksPerTick, minFuelTicksPerTick, maxFuelTicksPerTick);
+        this.currentFuelTicksPerTick = Mth.clamp(currentFuelTicksPerTick, this.minFuelTicksPerTick,
+                this.maxFuelTicksPerTick);
     }
 
     public double getFuelItemFuelTicks() {
@@ -284,21 +342,26 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
      * AE Power generated per consumed fuel-tick.
      */
     public double getEnergyPerFuelTick() {
-        return AEConfig.instance().getVibrationChamberEnergyPerFuelTick();
+        return AEConfig.instance().getVibrationChamberBaseEnergyPerFuelTick()
+                * (1 + this.upgrades.getInstalledUpgrades(AEItems.ENERGY_CARD) / 2.0f);
     }
 
     /**
      * Lowest fuel-ticks per game-tick when power is not being consumed fast enough.
      */
     public double getMinFuelTicksPerTick() {
-        return minFuelTicksPerTick;
+        return this.minFuelTicksPerTick;
     }
 
     /**
      * Highest fuel-ticks per game-tick when all power is being consumed.
      */
     public double getMaxFuelTicksPerTick() {
-        return maxFuelTicksPerTick;
+        return getMaxEnergyRate() / getEnergyPerFuelTick();
+    }
+
+    public double getMaxEnergyRate() {
+        return baseMaxEnergyRate + baseMaxEnergyRate * this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD) / 2.0f;
     }
 
     private static class FuelSlotFilter implements IAEItemFilter {
