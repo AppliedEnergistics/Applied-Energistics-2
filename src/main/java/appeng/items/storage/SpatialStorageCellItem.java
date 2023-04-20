@@ -117,7 +117,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         final int targetY = max.getY() - min.getY() - 1;
         final int targetZ = max.getZ() - min.getZ() - 1;
         final int maxSize = this.getMaxStoredDim(is);
-        if (targetX > maxSize && targetY > maxSize && targetZ > maxSize) {
+        if (targetX > maxSize || targetY > maxSize || targetZ > maxSize) {
             AELog.info(
                     "Failing spatial transition because the transfer area (%dx%dx%d) exceeds the cell capacity (%s).",
                     targetX, targetY, targetZ, maxSize);
