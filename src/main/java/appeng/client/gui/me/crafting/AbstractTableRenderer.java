@@ -43,7 +43,6 @@ public abstract class AbstractTableRenderer<T> {
     private static final int CELL_WIDTH = 67;
     private static final int CELL_HEIGHT = 22;
 
-    private static final int ROWS = 5;
     private static final int COLS = 3;
 
     // This border is only shown in-between cells, not around
