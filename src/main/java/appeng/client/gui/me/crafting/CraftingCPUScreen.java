@@ -107,7 +107,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         setTextContent(TEXT_ID_DIALOG_TITLE, title);
 
         final int size = this.status != null ? this.status.getEntries().size() : 0;
-        scrollbar.setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
+        scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
 
         this.schedulingModeButton.set(this.menu.getSchedulingMode());
     }

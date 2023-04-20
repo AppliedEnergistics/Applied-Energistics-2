@@ -33,7 +33,7 @@ import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
 public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPlanSummaryEntry> {
 
     public CraftConfirmTableRenderer(AEBaseScreen<?> screen, int x, int y) {
-        super(screen, x, y);
+        super(screen, x, y, 5);
     }
 
     @Override
