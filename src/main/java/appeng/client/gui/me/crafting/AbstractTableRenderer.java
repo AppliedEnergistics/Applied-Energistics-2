@@ -59,14 +59,16 @@ public abstract class AbstractTableRenderer<T> {
     private final float lineHeight;
     private final int x;
     private final int y;
+    private final int rows;
     private StackWithBounds hoveredStack;
 
-    public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y) {
+    public AbstractTableRenderer(AEBaseScreen<?> screen, int x, int y, int rows) {
         this.screen = screen;
         this.x = x;
         this.y = y;
         this.fontRenderer = Minecraft.getInstance().font;
         this.lineHeight = this.fontRenderer.lineHeight * TEXT_SCALE;
+        this.rows = rows;
     }
 
     public final void render(PoseStack poseStack, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
@@ -77,7 +79,7 @@ public abstract class AbstractTableRenderer<T> {
         List<Component> tooltipLines = null;
         StackWithBounds hovered = null;
 
-        for (int row = 0; row < ROWS; row++) {
+        for (int row = 0; row < this.rows; row++) {
             for (int col = 0; col < COLS; col++) {
                 int i = (row + scrollOffset) * COLS + col;
                 if (i >= entries.size()) {
@@ -151,8 +153,12 @@ public abstract class AbstractTableRenderer<T> {
     /**
      * @return The number of rows that are off-screen given a number of entries.
      */
-    public static int getScrollableRows(int size) {
-        return (size + COLS - 1) / COLS - ROWS;
+    public int getScrollableRows(int size) {
+        return getScrollableRows(size, this.rows);
+    }
+
+    protected static int getScrollableRows(int size, int rows) {
+        return (size + COLS - 1) / COLS - rows;
     }
 
     /**

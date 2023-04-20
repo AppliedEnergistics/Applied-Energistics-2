@@ -37,7 +37,7 @@ public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingS
     private static final int BACKGROUND_ALPHA = 0x5A000000;
 
     public CraftingStatusTableRenderer(AEBaseScreen<?> screen, int x, int y) {
-        super(screen, x, y);
+        super(screen, x, y, 6);
     }
 
     @Override

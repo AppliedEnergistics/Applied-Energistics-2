@@ -103,7 +103,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         setTextContent("cpu_status", cpuDetails);
 
         final int size = plan != null ? plan.getEntries().size() : 0;
-        scrollbar.setRange(0, AbstractTableRenderer.getScrollableRows(size), 1);
+        scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
     }
 
     private Component getNextCpuButtonLabel() {
