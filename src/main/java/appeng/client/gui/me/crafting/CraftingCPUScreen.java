@@ -176,6 +176,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         }
 
         List<CraftingStatusEntry> sortedEntries = new ArrayList<>(entries.values());
+        Collections.sort(sortedEntries);
         this.status = new CraftingStatus(
                 true,
                 status.getElapsedTime(),
