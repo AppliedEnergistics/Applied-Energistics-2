@@ -32,8 +32,7 @@ import appeng.api.stacks.AEKey;
  */
 public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
     private static final Comparator<CraftingStatusEntry> COMPARATOR = Comparator
-            .comparing(CraftingStatusEntry::getActiveAmount)
-            .thenComparing(CraftingStatusEntry::getPendingAmount)
+            .comparing((CraftingStatusEntry e) -> e.getActiveAmount() + e.getPendingAmount())
             .thenComparing(CraftingStatusEntry::getStoredAmount)
             .reversed();
 
