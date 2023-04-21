@@ -30,6 +30,7 @@ In the case of a crafting table recipe (a "crafting pattern") this will be a <It
 In the case of a non-crafting recipe (a "processing pattern") this will be some other block or machine or elaborate redstone-controlled setup.
 
 4. The result of the craft is returned to the system somehow, be it by import bus, interface, or pushing the result back into a pattern provider.
+**Note that an "item entering system" event must occur, you can't just pipe the result into a chest with a <ItemLink id="storage_bus" /> on it.**
 
 5. If that craft is a prerequisite for another craft in the request, the items are stored in that crafting CPU and then used in that craft.
 

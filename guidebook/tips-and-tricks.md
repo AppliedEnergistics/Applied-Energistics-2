@@ -18,3 +18,6 @@ distribute your patterns between your [providers](items-blocks-machines/pattern_
 - You can use water in the <ItemLink id="condenser" />
 - The best way to keep your network clean is to not put random mob loot like swords and armor in. Each unique combination of
 enchantment and durability is another [type](ae2-mechanics/bytes-and-types.md).
+- An "item entering system" event must occur when returning the result of a [processing pattern](items-blocks-machines/patterns.md),
+like through an <ItemLink id="importbus" />, <ItemLink id="interface" />, or <ItemLink id="pattern_provider" /> return slot,
+you can't just pipe the result into a chest with a <ItemLink id="storage_bus" /> on it.
