@@ -39,42 +39,36 @@ import appeng.core.AEConfig;
  */
 public class StackSizeRenderer {
     public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text) {
-        renderSizeLabel(fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
+        renderSizeLabel(fontRenderer, xPos, yPos, text, AEConfig.instance().getTerminalFont().getFontSize());
     }
 
-    public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text, boolean largeFonts) {
-        final float scaleFactor = largeFonts ? 0.85f : 0.5f;
-
+    public static void renderSizeLabel(Font fontRenderer, float xPos, float yPos, String text, float fontSize) {
         Transformation tm = new Transformation(new Vector3f(0, 0, 300), // Taken from
                 // ItemRenderer.renderItemOverlayIntoGUI
-                null, new Vector3f(scaleFactor, scaleFactor, scaleFactor), null);
-        renderSizeLabel(tm.getMatrix(), fontRenderer, xPos, yPos, text, largeFonts);
+                null, new Vector3f(fontSize, fontSize, fontSize), null);
+        renderSizeLabel(tm.getMatrix(), fontRenderer, xPos, yPos, text, fontSize);
     }
 
-    public static void renderSizeLabel(Matrix4f matrix, Font fontRenderer, float xPos, float yPos, String text,
-            boolean largeFonts) {
-        final float scaleFactor = largeFonts ? 0.85f : 0.5f;
-        final float inverseScaleFactor = 1.0f / scaleFactor;
-        final int offset = largeFonts ? 0 : -1;
+    public static void renderSizeLabel(Matrix4f matrix, Font fontRenderer, float xPos, float yPos, String text, float fontSize) {
+        System.out.println(fontSize);
+        final float inverseScaleFactor = 1.0f / fontSize;
+        final float offset = fontSize * 2 - 2;
 
         RenderSystem.disableBlend();
-        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.width(text) * scaleFactor)
+        final int X = (int) ((xPos + offset + 16.0f - fontRenderer.width(text) * fontSize)
                 * inverseScaleFactor);
-        final int Y = (int) ((yPos + offset + 16.0f - 7.0f * scaleFactor) * inverseScaleFactor);
+        final int Y = (int) ((yPos + offset + 16.0f - 7.0f * fontSize) * inverseScaleFactor);
         BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         fontRenderer.drawInBatch(text, X, Y, 0xffffff, true, matrix, buffer, false, 0, 15728880);
         buffer.endBatch();
         RenderSystem.enableBlend();
     }
 
-    public static void renderSizeLabel(PoseStack stack, Font fontRenderer, float xPos, float yPos, String text,
-            boolean largeFonts) {
-        final float scaleFactor = largeFonts ? 0.85f : 0.5f;
-
+    public static void renderSizeLabel(PoseStack stack, Font fontRenderer, float xPos, float yPos, String text, float fontSize) {
         stack.pushPose();
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
+        stack.scale(fontSize, fontSize, fontSize);
 
-        renderSizeLabel(stack.last().pose(), fontRenderer, xPos, yPos, text, largeFonts);
+        renderSizeLabel(stack.last().pose(), fontRenderer, xPos, yPos, text, fontSize);
 
         stack.popPose();
     }

@@ -23,6 +23,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import appeng.util.TerminalFont;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
@@ -155,7 +156,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         super.renderSlot(poseStack, s);
 
         if (shouldShowCraftableIndicatorForSlot(s)) {
-            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", false);
+            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", TerminalFont.DEFAULT_SIZE);
         }
     }
 

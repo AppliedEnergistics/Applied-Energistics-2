@@ -583,18 +583,18 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     // regardless of stack size
                     long storedAmount = entry.getStoredAmount();
                     boolean craftable = entry.isCraftable();
-                    var useLargeFonts = config.isUseLargeFonts();
+                    var terminalFont = config.getTerminalFont();
                     if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
-                        var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
+                        var craftLabelText = terminalFont.isUseLargeFonts() ? GuiText.LargeFontCraft.getLocal()
                                 : GuiText.SmallFontCraft.getLocal();
                         StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, craftLabelText);
                     } else {
-                        AmountFormat format = useLargeFonts ? AmountFormat.PREVIEW_LARGE_FONT
+                        AmountFormat format = terminalFont.isUseLargeFonts() ? AmountFormat.PREVIEW_LARGE_FONT
                                 : AmountFormat.PREVIEW_REGULAR;
                         var text = entry.getWhat().formatAmount(storedAmount, format);
-                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, useLargeFonts);
+                        StackSizeRenderer.renderSizeLabel(this.font, s.x, s.y, text, terminalFont.getFontSize());
                         if (craftable) {
-                            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", false);
+                            StackSizeRenderer.renderSizeLabel(this.font, s.x - 11, s.y - 11, "+", terminalFont.getFontSize());
                         }
                     }
                 }

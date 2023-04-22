@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import appeng.util.TerminalFont;
 import com.google.common.base.Strings;
 
 import net.minecraft.core.Registry;
@@ -130,7 +131,7 @@ public final class AEConfig {
     // Misc
     private int formationPlaneEntityLimit;
     private boolean enableEffects;
-    private boolean useLargeFonts;
+    private TerminalFont terminalFont;
     private boolean useColoredCraftingStatus;
     private boolean disableColoredCableRecipesInJEI;
     private boolean isEnableFacadesInJEI;
@@ -170,7 +171,7 @@ public final class AEConfig {
         this.isEnableFacadesInJEI = CLIENT.enableFacadesInJEI.get();
         this.isEnableFacadeRecipesInJEI = CLIENT.enableFacadeRecipesInJEI.get();
         this.enableEffects = CLIENT.enableEffects.get();
-        this.useLargeFonts = CLIENT.useLargeFonts.get();
+        this.terminalFont = new TerminalFont(CLIENT.terminalFontSize.get());
         this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
     }
 
@@ -330,8 +331,8 @@ public final class AEConfig {
         return this.enableEffects;
     }
 
-    public boolean isUseLargeFonts() {
-        return this.useLargeFonts;
+    public TerminalFont getTerminalFont() {
+        return this.terminalFont;
     }
 
     public boolean isUseColoredCraftingStatus() {
@@ -553,7 +554,7 @@ public final class AEConfig {
 
         // Misc
         public final BooleanOption enableEffects;
-        public final BooleanOption useLargeFonts;
+        public final DoubleOption terminalFontSize;
         public final BooleanOption useColoredCraftingStatus;
         public final BooleanOption disableColoredCableRecipesInJEI;
         public final BooleanOption enableFacadesInJEI;
@@ -590,7 +591,7 @@ public final class AEConfig {
             this.enableFacadeRecipesInJEI = client.addBoolean("enableFacadeRecipesInJEI", true,
                     "Show facade recipes in JEI for supported blocks");
             this.enableEffects = client.addBoolean("enableEffects", true);
-            this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
+            this.terminalFontSize = client.addDouble("terminalFontSize", 0.5, "Font size on each slot in AE UIs");
             this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);
             this.selectedPowerUnit = client.addEnum("PowerUnit", PowerUnits.AE, "Power unit shown in AE UIs");
             this.debugGuiOverlays = client.addBoolean("showDebugGuiOverlays", false, "Show debugging GUI overlays");

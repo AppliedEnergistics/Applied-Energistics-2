@@ -139,7 +139,7 @@ public final class Tooltips {
     public static boolean shouldShowAmountTooltip(AEKey what, long amount) {
         // TODO: Now that we can show fractional numbers, this approach of detecting whether the formatted amount has
         // been abbreviated or rounded no longer works
-        var bigNumber = AEConfig.instance().isUseLargeFonts() ? 999L : 9999L;
+        var bigNumber = AEConfig.instance().getTerminalFont().isUseLargeFonts() ? 999L : 9999L;
         return amount > bigNumber * what.getAmountPerUnit()
                 // Unit symbols are never shown in slots and must be shown in the tooltip instead
                 || what.getUnitSymbol() != null

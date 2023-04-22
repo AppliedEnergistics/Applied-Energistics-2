@@ -1,5 +1,6 @@
 package appeng.client.render;
 
+import appeng.util.TerminalFont;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 
@@ -103,7 +104,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
             xoff = 0;
             for (var stack : content) {
                 var amtText = stack.what().formatAmount(stack.amount(), AmountFormat.PREVIEW_REGULAR);
-                StackSizeRenderer.renderSizeLabel(poseStack, font, x + xoff, y, amtText, false);
+                StackSizeRenderer.renderSizeLabel(poseStack, font, x + xoff, y, amtText, TerminalFont.DEFAULT_SIZE);
                 xoff += 17;
             }
             poseStack.popPose();

@@ -17,6 +17,7 @@
  */
 package appeng.hooks;
 
+import appeng.util.TerminalFont;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
@@ -80,7 +81,7 @@ public final class ItemRendererHooks {
             if (unwrapped.amount() > 0) {
                 String amtText = unwrapped.what().formatAmount(unwrapped.amount(), AmountFormat.PREVIEW_REGULAR);
                 Font font = minecraft.font;
-                StackSizeRenderer.renderSizeLabel(font, x, y, amtText, false);
+                StackSizeRenderer.renderSizeLabel(font, x, y, amtText, TerminalFont.DEFAULT_SIZE);
             }
 
             return true;
