@@ -1,5 +1,8 @@
 package appeng.util;
 
+/**
+ * {@link appeng.core.AEConfig.terminalFont AEConfig.terminalFont }
+ */
 public class TerminalFont {
     public static final float DEFAULT_SIZE = 0.5f;
     private final float fontSize;
