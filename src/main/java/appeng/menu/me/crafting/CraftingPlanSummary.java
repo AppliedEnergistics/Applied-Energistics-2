@@ -18,6 +18,8 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -126,7 +128,7 @@ public class CraftingPlanSummary {
             }
         }
 
-        var entries = ImmutableList.<CraftingPlanSummaryEntry>builder();
+        var entries = new ArrayList<CraftingPlanSummaryEntry>();
 
         var storage = grid.getStorageService().getInventory();
         var crafting = grid.getCraftingService();
@@ -151,7 +153,9 @@ public class CraftingPlanSummary {
 
         }
 
-        return new CraftingPlanSummary(job.bytes(), job.simulation(), entries.build());
+        Collections.sort(entries);
+
+        return new CraftingPlanSummary(job.bytes(), job.simulation(), List.copyOf(entries));
 
     }
 
