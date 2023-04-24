@@ -14,6 +14,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Optional;
 
 public class PacketTerminalUse extends AppEngPacket {
     Terminal terminal;
@@ -43,6 +45,13 @@ public class PacketTerminalUse extends AppEngPacket {
 
             }
         }
+        if (Loader.isModLoaded("baubles")) {
+            tryOpenBauble(player);
+        }
+    }
+
+    @Optional.Method(modid = "baubles")
+    void tryOpenBauble(EntityPlayer player) {
         for (int i = 0; i < BaublesApi.getBaublesHandler(player).getSlots(); i++) {
             ItemStack is = BaublesApi.getBaublesHandler(player).getStackInSlot(i);
             if (terminal.getItemDefinition().isSameAs(is)) {
