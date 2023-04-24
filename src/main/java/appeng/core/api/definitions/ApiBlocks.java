@@ -521,6 +521,10 @@ public final class ApiBlocks implements IBlocks {
                 .disableItem()
                 .build();
 
+        if (!doubleSlabDef.maybeBlock().isPresent()) {
+            return new BlockDefinition(slabId, null, null);
+        }
+
         Verify.verify(doubleSlabDef.maybeBlock().isPresent());
 
         BlockSlab doubleSlabBlock = (BlockSlab) doubleSlabDef.maybeBlock().get();
@@ -529,6 +533,10 @@ public final class ApiBlocks implements IBlocks {
         IItemDefinition itemDef = registry.item(slabId, () -> new ItemSlab(slabBlock, slabBlock, doubleSlabBlock))
                 .features(AEFeature.DECORATIVE_BLOCKS)
                 .build();
+
+        if (!itemDef.maybeItem().isPresent()) {
+            return new BlockDefinition(slabId, null, null);
+        }
 
         Verify.verify(itemDef.maybeItem().isPresent());
 
