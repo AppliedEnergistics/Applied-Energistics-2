@@ -74,8 +74,8 @@ public class TileIOPort extends AENetworkInvTile implements IUpgradeableHost, IC
 
     private final ConfigManager manager;
 
-    private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
-    private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS);
+    private final AppEngInternalInventory inputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS, 1);
+    private final AppEngInternalInventory outputCells = new AppEngInternalInventory(this, NUMBER_OF_CELL_SLOTS, 1);
     private final IItemHandler combinedInventory = new WrapperChainedItemHandler(this.inputCells, this.outputCells);
 
     private final IItemHandler inputCellsExt = new WrapperFilteredItemHandler(this.inputCells, AEItemFilters.INSERT_ONLY);
