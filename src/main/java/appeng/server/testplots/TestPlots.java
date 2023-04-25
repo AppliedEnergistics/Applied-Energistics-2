@@ -87,7 +87,8 @@ public final class TestPlots {
                 AutoCraftingTestPlots.class,
                 P2PTestPlots.class,
                 MemoryCardTestPlots.class,
-                PatternProviderLockModePlots.class));
+                PatternProviderLockModePlots.class,
+                SpatialTestPlots.class));
     }
 
     private TestPlots() {

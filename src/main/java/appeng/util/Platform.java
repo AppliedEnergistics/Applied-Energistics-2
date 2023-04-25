@@ -538,24 +538,24 @@ public class Platform {
      */
     @Nullable
     public static BlockEntity getTickingBlockEntity(@Nullable Level level, BlockPos pos) {
-        if (!(level instanceof ServerLevel serverLevel)) {
+        if (!areBlockEntitiesTicking(level, pos)) {
             return null;
         }
 
-        // Note: chunk could be in ticking range but not loaded, this checks for both!
-        if (!serverLevel.getChunkSource().isPositionTicking(ChunkPos.asLong(pos))) {
-            return null;
-        }
-
-        return serverLevel.getBlockEntity(pos);
+        return level.getBlockEntity(pos);
     }
 
     /**
      * Checks that the chunk at the given position in the given level is in a state where block entities would tick.
-     * Vanilla does this check in {@link Level#tickBlockEntities}
+     * This means that it must both be fully loaded, and close enough to a ticking ticket.
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
-        return level instanceof ServerLevel serverLevel && serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos));
+        return areBlockEntitiesTicking(level, ChunkPos.asLong(pos));
+    }
+
+    public static boolean areBlockEntitiesTicking(@Nullable Level level, long chunkPos) {
+        // isPositionTicking checks both that the chunk is loaded, and that it's in ticking range...
+        return level instanceof ServerLevel serverLevel && serverLevel.getChunkSource().isPositionTicking(chunkPos);
     }
 
     public static boolean canItemStacksStack(ItemStack a, ItemStack b) {
