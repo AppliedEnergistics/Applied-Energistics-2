@@ -86,7 +86,8 @@ public final class TestPlots {
                 TestPlots.class,
                 AutoCraftingTestPlots.class,
                 P2PTestPlots.class,
-                PatternProviderLockModePlots.class));
+                PatternProviderLockModePlots.class,
+                SpatialTestPlots.class));
     }
 
     private TestPlots() {
