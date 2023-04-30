@@ -371,12 +371,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_crystals/certus", has(ConventionTags.ALL_CERTUS_QUARTZ))
                 .save(consumer, AppEng.makeId("network/blocks/energy_energy_cell"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.VIBRATION_CHAMBER)
-                .pattern("aaa")
+                .pattern("ded")
                 .pattern("aba")
                 .pattern("aca")
                 .define('a', ConventionTags.IRON_INGOT)
                 .define('b', Items.FURNACE)
                 .define('c', AEBlocks.ENERGY_ACCEPTOR)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .define('e', ConventionTags.FLUIX_CRYSTAL)
                 .unlockedBy("has_energy_acceptor", has(AEBlocks.ENERGY_ACCEPTOR))
                 .save(consumer, AppEng.makeId("network/blocks/energy_vibration_chamber"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.INSCRIBER)
