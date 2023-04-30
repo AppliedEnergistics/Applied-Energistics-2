@@ -18,6 +18,8 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.Comparator;
+
 import net.minecraft.network.FriendlyByteBuf;
 
 import appeng.api.stacks.AEKey;
@@ -26,7 +28,13 @@ import appeng.api.stacks.AEKey;
  * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in the
  * network, or have to be crafted.
  */
-public class CraftingPlanSummaryEntry {
+public class CraftingPlanSummaryEntry implements Comparable<CraftingPlanSummaryEntry> {
+    private static final Comparator<CraftingPlanSummaryEntry> COMPARATOR = Comparator
+            .comparing(CraftingPlanSummaryEntry::getMissingAmount)
+            .thenComparing(CraftingPlanSummaryEntry::getCraftAmount)
+            .thenComparing(CraftingPlanSummaryEntry::getStoredAmount)
+            .reversed();
+
     private final AEKey what;
     private final long missingAmount;
     private final long storedAmount;
@@ -53,6 +61,11 @@ public class CraftingPlanSummaryEntry {
 
     public long getCraftAmount() {
         return craftAmount;
+    }
+
+    @Override
+    public int compareTo(final CraftingPlanSummaryEntry o) {
+        return COMPARATOR.compare(this, o);
     }
 
     public void write(FriendlyByteBuf buffer) {

@@ -18,6 +18,8 @@
 
 package appeng.menu.me.crafting;
 
+import java.util.Comparator;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -28,7 +30,12 @@ import appeng.api.stacks.AEKey;
  * Describes an entry in a crafting job, which describes how many items of one type are yet to be crafted, or currently
  * scheduled to be crafted.
  */
-public class CraftingStatusEntry {
+public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
+    private static final Comparator<CraftingStatusEntry> COMPARATOR = Comparator
+            .comparing((CraftingStatusEntry e) -> e.getActiveAmount() + e.getPendingAmount())
+            .thenComparing(CraftingStatusEntry::getStoredAmount)
+            .reversed();
+
     private final long serial;
     @Nullable
     private final AEKey what;
@@ -89,4 +96,8 @@ public class CraftingStatusEntry {
         return storedAmount == 0 && activeAmount == 0 && pendingAmount == 0;
     }
 
+    @Override
+    public int compareTo(final CraftingStatusEntry o) {
+        return COMPARATOR.compare(this, o);
+    }
 }
