@@ -228,6 +228,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/vibration_chamber_front"),
                 makeId("block/vibration_chamber_back"),
                 makeId("block/vibration_chamber"),
+                makeId("block/vibration_chamber"),
                 makeId("block/vibration_chamber"));
         var onModel = models().cube(
                 modelPath(AEBlocks.VIBRATION_CHAMBER) + "_on",
@@ -235,6 +236,7 @@ public class BlockModelProvider extends AE2BlockStateProvider {
                 makeId("block/vibration_chamber_top_on"),
                 makeId("block/vibration_chamber_front_on"),
                 makeId("block/vibration_chamber_back_on"),
+                makeId("block/vibration_chamber_on"),
                 makeId("block/vibration_chamber_on"),
                 makeId("block/vibration_chamber_on"));
 
