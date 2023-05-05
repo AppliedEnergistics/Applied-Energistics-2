@@ -4,10 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Objects;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -21,22 +19,12 @@ import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.core.definitions.AEItems;
-import appeng.init.InitItems;
-import appeng.init.internal.InitStorageCells;
-import appeng.init.internal.InitUpgrades;
 import appeng.me.helpers.BaseActionSource;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 public class BasicInventoryTest {
     private static final IActionSource SRC = new BaseActionSource();
-
-    @BeforeAll
-    static void initCells() {
-        InitItems.init(BuiltInRegistries.ITEM);
-        InitStorageCells.init();
-        InitUpgrades.init();
-    }
 
     /**
      * Check that we can extract more than MAX_INT fluid at once from a cell. Regression test for

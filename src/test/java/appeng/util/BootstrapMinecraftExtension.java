@@ -11,35 +11,43 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import net.fabricmc.loader.impl.launch.LauncherAccessor;
+import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.fabricmc.loader.impl.entrypoint.EntrypointUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 
+import appeng.client.guidebook.Guide;
 import appeng.core.AEConfig;
 import appeng.core.AppEngBootstrap;
-import appeng.init.client.InitKeyTypes;
 
 public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback, AfterAllCallback {
 
-    private static boolean keyTypesInitialized;
+    private static boolean modInitialized;
 
     Path configDir;
 
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
-        LauncherAccessor.init();
-
         SharedConstants.tryDetectVersion();
         Bootstrap.bootStrap();
         AppEngBootstrap.runEarlyStartup();
-        if (!keyTypesInitialized) {
-            InitKeyTypes.init();
-            keyTypesInitialized = true;
-        }
 
         configDir = Files.createTempDirectory("ae2config");
         if (AEConfig.instance() == null) {
             AEConfig.load(configDir);
+        }
+
+        if (!modInitialized) {
+            modInitialized = true;
+
+            EntrypointUtils.invoke("preLaunch", PreLaunchEntrypoint.class, PreLaunchEntrypoint::onPreLaunch);
+            EntrypointUtils.invoke("main", ModInitializer.class, ModInitializer::onInitialize);
+            EntrypointUtils.invoke("server", DedicatedServerModInitializer.class,
+                    DedicatedServerModInitializer::onInitializeServer);
+
+            Guide.runDatapackReload();
         }
     }
 

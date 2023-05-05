@@ -42,7 +42,7 @@ public final class MockResourceManager {
 
     public static ReloadableResourceManager create() {
 
-        var testResourceBasePath = AppEng.class.getResource("/fabric.mod.json");
+        var testResourceBasePath = AppEng.class.getResource("/ae2.mixins.json");
         if (testResourceBasePath == null) {
             throw new IllegalStateException("Couldn't find root of assets");
         }

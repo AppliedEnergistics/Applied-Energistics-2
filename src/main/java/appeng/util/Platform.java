@@ -109,7 +109,7 @@ public class Platform {
     public static RegistryAccess fallbackClientRegistryAccess;
 
     public static RegistryAccess getClientRegistryAccess() {
-        if (Minecraft.getInstance().level != null) {
+        if (Minecraft.getInstance() != null && Minecraft.getInstance().level != null) {
             return Minecraft.getInstance().level.registryAccess();
         }
         return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
