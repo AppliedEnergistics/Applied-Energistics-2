@@ -226,6 +226,15 @@ The `ImportScene` tag can be used multiple times within a game scene, with the s
 
 ##### Block
 
+Example that shows a lit furnace next to an unlit one:
+
+```
+<GameScene>
+    <Block id="minecraft:furnace" />
+    <Block x="1" id="minecraft:furnace" p:lit="true" />
+</GameScene>
+```
+
 This tag allows a single block to be set in the scene. When used with `id="minecraft:air"`, it can also be used
 to clear blocks previously set by importing a structure (to hide certain blocks, for example a creative energy cell 
 used to power a setup).
