@@ -2,8 +2,9 @@ package appeng.client.guidebook.command;
 
 import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -109,9 +110,8 @@ public class GuidebookStructureCommands {
                                 return null;
                             }
                         } else {
-                            compound = NbtIo.read(new File(selectedPath));
-                            if (compound == null) {
-                                throw new FileNotFoundException("File not found: " + selectedPath);
+                            try (var is = new BufferedInputStream(new FileInputStream(selectedPath))) {
+                                compound = NbtIo.readCompressed(is);
                             }
                         }
                         var structure = manager.readStructure(compound);
@@ -126,7 +126,7 @@ public class GuidebookStructureCommands {
                         } else {
                             player.sendSystemMessage(Component.literal("Placed structure"));
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         player.sendSystemMessage(Component.literal(e.toString()));
                     }
 
@@ -207,7 +207,7 @@ public class GuidebookStructureCommands {
                                     NbtUtils.structureToSnbt(compound),
                                     StandardCharsets.UTF_8);
                         } else {
-                            NbtIo.write(compound, new File(selectedPath));
+                            NbtIo.writeCompressed(compound, new File(selectedPath));
                         }
 
                         player.sendSystemMessage(Component.literal("Saved structure"));
