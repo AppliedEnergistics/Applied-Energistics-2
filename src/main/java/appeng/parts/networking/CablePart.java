@@ -42,7 +42,6 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.api.parts.BusSupport;
@@ -226,29 +225,6 @@ public class CablePart extends AEBasePart implements ICablePart {
                 }
             }
         }
-    }
-
-    /**
-     * Tries connecting to adjacent machines visually.
-     */
-    public void autoConnectClientSide() {
-        if (!isClientSide()) {
-            throw new IllegalStateException("This method should not be used server-side");
-        }
-
-        var connectedSides = EnumSet.noneOf(Direction.class);
-        var location = getHost().getLocation();
-        var pos = location.getPos();
-        var level = location.getLevel();
-
-        for (var side : Direction.values()) {
-            var be = level.getBlockEntity(pos.relative(side));
-            if (be instanceof IInWorldGridNodeHost gridNodeHost) {
-                connectedSides.add(side);
-            }
-        }
-
-        setConnections(connectedSides);
     }
 
     protected void updateConnections() {

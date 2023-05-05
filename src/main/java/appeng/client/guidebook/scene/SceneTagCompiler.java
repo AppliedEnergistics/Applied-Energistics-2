@@ -8,8 +8,6 @@ import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
 import appeng.client.guidebook.compiler.tags.MdxAttrs;
 import appeng.client.guidebook.document.block.LytBlockContainer;
-import appeng.client.guidebook.scene.element.AutoConnectElementCompiler;
-import appeng.client.guidebook.scene.element.CableElementCompiler;
 import appeng.client.guidebook.scene.element.ImportStructureElementCompiler;
 import appeng.client.guidebook.scene.element.SceneBlockElementCompiler;
 import appeng.client.guidebook.scene.element.SceneElementTagCompiler;
@@ -22,8 +20,6 @@ public class SceneTagCompiler extends BlockTagCompiler {
 
     public SceneTagCompiler() {
         elementTagCompilers.put("Block", new SceneBlockElementCompiler());
-        elementTagCompilers.put("Cable", new CableElementCompiler());
-        elementTagCompilers.put("AutoConnect", new AutoConnectElementCompiler());
         elementTagCompilers.put("ImportStructure", new ImportStructureElementCompiler());
     }
 
