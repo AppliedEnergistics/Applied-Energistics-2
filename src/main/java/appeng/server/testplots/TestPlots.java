@@ -89,7 +89,9 @@ public final class TestPlots {
                 P2PTestPlots.class,
                 MemoryCardTestPlots.class,
                 PatternProviderLockModePlots.class,
-                SpatialTestPlots.class));
+                SpatialTestPlots.class,
+                PatternProviderLockModePlots.class,
+                GuidebookPlot.class));
     }
 
     private TestPlots() {

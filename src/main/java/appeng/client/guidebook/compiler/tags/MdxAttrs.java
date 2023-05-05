@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ResourceLocationException;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.LytErrorSink;
-import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
@@ -129,7 +129,7 @@ public final class MdxAttrs {
         return null;
     }
 
-    public static BlockState applyBlockStateProperties(PageCompiler compiler, LytBlockContainer parent,
+    public static BlockState applyBlockStateProperties(PageCompiler compiler, LytErrorSink errorSink,
             MdxJsxElementFields el, BlockState state) {
         for (var attrNode : el.attributes()) {
             if (!(attrNode instanceof MdxJsxAttribute attr)) {
@@ -143,10 +143,10 @@ public final class MdxAttrs {
             var stateDefinition = state.getBlock().getStateDefinition();
             var property = stateDefinition.getProperty(statePropertyName);
             if (property == null) {
-                parent.appendError(compiler, "block doesn't have property " + statePropertyName, el);
+                errorSink.appendError(compiler, "block doesn't have property " + statePropertyName, el);
                 continue;
             }
-            state = applyProperty(compiler, parent, el, state, property, attr.getStringValue());
+            state = applyProperty(compiler, errorSink, el, state, property, attr.getStringValue());
         }
         return state;
     }
@@ -164,5 +164,12 @@ public final class MdxAttrs {
         }
 
         return state.setValue(property, propertyValue.get());
+    }
+
+    public static BlockPos getPos(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el) {
+        var x = getInt(compiler, errorSink, el, "x", 0);
+        var y = getInt(compiler, errorSink, el, "y", 0);
+        var z = getInt(compiler, errorSink, el, "z", 0);
+        return new BlockPos(x, y, z);
     }
 }

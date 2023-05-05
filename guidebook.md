@@ -185,6 +185,70 @@ The tag also supports the following attributes:
 | perspective | Allows the orientation of the block to be changed. By default, the north-east corner of the block will be facing forward. Allowed values: isometric-north-east (default), isometric-north-west. |
 | `p:<name>`  | Allows setting arbitrary block state properties on the rendered block, where <name> is the name of a block state property.                                                                      |
 
+#### Game Scenes
+
+To show a real-time renderered in-game scene, use:
+
+```
+<GameScene>
+  ...
+</GameScene>
+```
+
+The tag also supports the following attributes:
+
+| Attribute   | Description                                                    |
+|-------------|----------------------------------------------------------------|
+| zoom        | Allows the scene to be shown at a bigger scale. Defaults to 1. |
+
+To add actual content to the scene, add additional tags to the scene tag. The most important
+tag will be `<ImportStructure />` to place a structure from a NBT or SNBT file in the scene.
+
+In the following example, the structure from the `test.snbt` file located next to the page will be shown:
+
+```
+<GameScene zoom="4">
+  <ImportStructure id="test.snbt" />
+</GameScene>
+```
+
+The following subsections explain the different available tags within a `<GameScene />` tag.
+
+##### ImportStructure
+
+As explained above, this tag will load a structure from the file supplied in the `id` attribute and
+place it in the scene. Both `.nbt` and `.snbt` structure files are supported.
+
+To easily create such structure files, use the AE2 test-world (use `/ae2 setuptestworld` in a single-player creative void-world).
+It has a plot that provides LOAD/SAVE/CLEAR functionality in a 16x16 space to more easily author structures for the guidebook.
+
+The `ImportScene` tag can be used multiple times within a game scene, with the same or different structure files.
+
+##### Block
+
+Example that shows a lit furnace next to an unlit one:
+
+```
+<GameScene>
+    <Block id="minecraft:furnace" />
+    <Block x="1" id="minecraft:furnace" p:lit="true" />
+</GameScene>
+```
+
+This tag allows a single block to be set in the scene. When used with `id="minecraft:air"`, it can also be used
+to clear blocks previously set by importing a structure (to hide certain blocks, for example a creative energy cell 
+used to power a setup).
+
+The tag also supports the following attributes:
+
+| Attribute  | Description                                                                                                       |
+|------------|-------------------------------------------------------------------------------------------------------------------|
+| id         | Id of the block to place.                                                                                         |
+| x          | x coordinate of the block. Defaults to 0.                                                                         |
+| y          | y coordinate of the block. Defaults to 0.                                                                         |
+| z          | z coordinate of the block. Defaults to 0.                                                                         |
+| `p:<name>` | Allows setting arbitrary block state properties on the block, where <name> is the name of a block state property. |
+
 ## For Addon Authors
 
 The guidebook will automatically load all pages that are in the `ae2guide` subfolder of all resource packs across

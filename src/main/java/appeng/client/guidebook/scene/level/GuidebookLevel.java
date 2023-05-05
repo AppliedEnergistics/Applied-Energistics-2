@@ -1,6 +1,11 @@
 package appeng.client.guidebook.scene.level;
 
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
@@ -133,6 +139,16 @@ public class GuidebookLevel extends Level {
                     mutablePos.set(pos);
                     return mutablePos;
                 });
+    }
+
+    /**
+     * @return All block entities in the level.
+     */
+    public Set<BlockEntity> getBlockEntities() {
+        return getFilledBlocks()
+                .map(this::getBlockEntity)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(() -> Collections.newSetFromMap(new IdentityHashMap<>())));
     }
 
     @Override
