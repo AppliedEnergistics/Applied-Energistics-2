@@ -330,7 +330,8 @@ public class StorageBusPart extends UpgradeablePart
             this.updateStatus = PendingUpdateStatus.SLOW_UPDATE;
         }
 
-        if (!forceFullUpdate && this.handler.getDelegate() instanceof CompositeStorage compositeStorage
+        if (!forceFullUpdate && this.handler.getDelegate() instanceof VoidHandlingMEInventory voidHandlingWrapper
+                && voidHandlingWrapper.getDelegate() instanceof CompositeStorage compositeStorage
                 && !foundExternalApi.isEmpty()) {
             // Just update the inventory reference, the ticking monitor will take care of the rest.
             compositeStorage.setStorages(foundExternalApi);
@@ -554,6 +555,11 @@ public class StorageBusPart extends UpgradeablePart
     private class VoidHandlingMEInventory extends DelegatingMEInventory {
         public VoidHandlingMEInventory(MEStorage wrapper) {
             super(wrapper);
+        }
+
+        @Override
+        protected MEStorage getDelegate() {
+            return super.getDelegate();
         }
 
         @Override
