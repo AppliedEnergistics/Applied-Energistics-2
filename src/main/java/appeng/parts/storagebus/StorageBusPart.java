@@ -123,7 +123,6 @@ public class StorageBusPart extends UpgradeablePart
 
     private PendingUpdateStatus updateStatus = PendingUpdateStatus.FAST_UPDATE;
     private ITickingMonitor monitor = null;
-    private boolean voidUpgrade;
 
     public StorageBusPart(IPartItem<?> partItem) {
         super(partItem);
