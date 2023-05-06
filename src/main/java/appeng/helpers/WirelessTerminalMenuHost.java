@@ -119,12 +119,21 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
         if (this.targetGrid != null) {
             if (this.myWap != null) {
-                return this.myWap.getGrid() == this.targetGrid && this.testWap(this.myWap);
+                if (this.myWap.getGrid() != this.targetGrid) {
+                    return false;
+                }
+                if (this.testWap(this.myWap)) {
+                    return true;
+                }
             }
 
             for (var wap : this.targetGrid.getMachines(WirelessBlockEntity.class)) {
+                if (wap == this.myWap) {
+                    continue;
+                }
                 if (this.testWap(wap)) {
                     this.myWap = wap;
+                    break;
                 }
             }
 
