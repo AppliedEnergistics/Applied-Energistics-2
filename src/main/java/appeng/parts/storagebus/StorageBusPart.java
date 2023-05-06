@@ -297,8 +297,6 @@ public class StorageBusPart extends UpgradeablePart
             return; // Part is not part of level yet or its client-side
         }
 
-        this.voidUpgrade = isUpgradedWith(AEItems.VOID_CARD);
-
         MEStorage foundMonitor = null;
         Map<AEKeyType, MEStorage> foundExternalApi = Collections.emptyMap();
 
@@ -330,8 +328,7 @@ public class StorageBusPart extends UpgradeablePart
             this.updateStatus = PendingUpdateStatus.SLOW_UPDATE;
         }
 
-        if (!forceFullUpdate && this.handler.getDelegate() instanceof VoidHandlingMEInventory voidHandlingWrapper
-                && voidHandlingWrapper.getDelegate() instanceof CompositeStorage compositeStorage
+        if (!forceFullUpdate && this.handler.getDelegate() instanceof CompositeStorage compositeStorage
                 && !foundExternalApi.isEmpty()) {
             // Just update the inventory reference, the ticking monitor will take care of the rest.
             compositeStorage.setStorages(foundExternalApi);
@@ -358,7 +355,6 @@ public class StorageBusPart extends UpgradeablePart
             newInventory = NullInventory.of();
             handlerDescription = null;
         }
-        newInventory = new VoidHandlingMEInventory(newInventory);
         this.handler.setDelegate(newInventory);
 
         // Apply other settings.
@@ -367,6 +363,7 @@ public class StorageBusPart extends UpgradeablePart
                 : IncludeExclude.WHITELIST);
 
         this.handler.setPartitionList(createFilter());
+        this.handler.setVoidOverflow(this.isUpgradedWith(AEItems.VOID_CARD));
 
         // Ensure we apply the partition list to the available items.
         boolean filterOnExtract = this.getConfigManager().getSetting(Settings.FILTER_ON_EXTRACT) == YesNo.YES;
@@ -550,22 +547,5 @@ public class StorageBusPart extends UpgradeablePart
          * Indicates that no update is required at the moment.
          */
         NO_UPDATE;
-    }
-
-    private class VoidHandlingMEInventory extends DelegatingMEInventory {
-        public VoidHandlingMEInventory(MEStorage wrapper) {
-            super(wrapper);
-        }
-
-        @Override
-        protected MEStorage getDelegate() {
-            return super.getDelegate();
-        }
-
-        @Override
-        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-            final var inserted = super.insert(what, amount, mode, source);
-            return StorageBusPart.this.voidUpgrade ? amount : inserted;
-        }
     }
 }
