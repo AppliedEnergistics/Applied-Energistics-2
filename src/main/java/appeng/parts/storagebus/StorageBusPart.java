@@ -359,6 +359,7 @@ public class StorageBusPart extends UpgradeablePart
                 : IncludeExclude.WHITELIST);
 
         this.handler.setPartitionList(createFilter());
+        this.handler.setVoidOverflow(this.isUpgradedWith(AEItems.VOID_CARD));
 
         // Ensure we apply the partition list to the available items.
         boolean filterOnExtract = this.getConfigManager().getSetting(Settings.FILTER_ON_EXTRACT) == YesNo.YES;
@@ -542,5 +543,5 @@ public class StorageBusPart extends UpgradeablePart
          * Indicates that no update is required at the moment.
          */
         NO_UPDATE;
-    };
+    }
 }

@@ -121,6 +121,7 @@ public final class InitUpgrades {
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.STORAGE_BUS, 1);
         Upgrades.add(AEItems.INVERTER_CARD, AEParts.STORAGE_BUS, 1);
         Upgrades.add(AEItems.CAPACITY_CARD, AEParts.STORAGE_BUS, 5);
+        Upgrades.add(AEItems.VOID_CARD, AEParts.STORAGE_BUS, 1);
 
         // Formation Plane
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.FORMATION_PLANE, 1);
