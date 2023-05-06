@@ -38,6 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;
 import appeng.api.config.Setting;
@@ -55,6 +56,7 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
@@ -72,6 +74,7 @@ import appeng.helpers.InterfaceLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.me.storage.CompositeStorage;
+import appeng.me.storage.DelegatingMEInventory;
 import appeng.me.storage.ITickingMonitor;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.NullInventory;
@@ -123,6 +126,7 @@ public class StorageBusPart extends UpgradeablePart
 
     private PendingUpdateStatus updateStatus = PendingUpdateStatus.FAST_UPDATE;
     private ITickingMonitor monitor = null;
+    private boolean voidUpgrade;
 
     public StorageBusPart(IPartItem<?> partItem) {
         super(partItem);
@@ -293,6 +297,8 @@ public class StorageBusPart extends UpgradeablePart
             return; // Part is not part of level yet or its client-side
         }
 
+        this.voidUpgrade = isUpgradedWith(AEItems.VOID_CARD);
+
         MEStorage foundMonitor = null;
         Map<AEKeyType, MEStorage> foundExternalApi = Collections.emptyMap();
 
@@ -351,6 +357,7 @@ public class StorageBusPart extends UpgradeablePart
             newInventory = NullInventory.of();
             handlerDescription = null;
         }
+        newInventory = new VoidHandlingMEInventory(newInventory);
         this.handler.setDelegate(newInventory);
 
         // Apply other settings.
@@ -542,5 +549,17 @@ public class StorageBusPart extends UpgradeablePart
          * Indicates that no update is required at the moment.
          */
         NO_UPDATE;
-    };
+    }
+
+    private class VoidHandlingMEInventory extends DelegatingMEInventory {
+        public VoidHandlingMEInventory(MEStorage wrapper) {
+            super(wrapper);
+        }
+
+        @Override
+        public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+            final var inserted = super.insert(what, amount, mode, source);
+            return StorageBusPart.this.voidUpgrade ? amount : inserted;
+        }
+    }
 }
