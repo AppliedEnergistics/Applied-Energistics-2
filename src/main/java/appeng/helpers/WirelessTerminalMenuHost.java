@@ -119,20 +119,24 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
         if (this.targetGrid != null) {
             if (this.myWap != null) {
+                // If the grid changed, give up
                 if (this.myWap.getGrid() != this.targetGrid) {
                     return false;
                 }
+
                 if (this.testWap(this.myWap)) {
+                    // Still in range of current AP
                     return true;
                 }
             }
 
+            // else: Did not have an AP yet, or no longer in range of current AP. Try to find one we are in range of.
+
             for (var wap : this.targetGrid.getMachines(WirelessBlockEntity.class)) {
-                if (wap == this.myWap) {
-                    continue;
-                }
-                if (this.testWap(wap)) {
+                // `this.myWap` either already returned false for `this.testWap(this.myWap)`, or is null. no need to check it again
+                if (wap != this.myWap && this.testWap(wap)) {
                     this.myWap = wap;
+                    // break now, if multiple APs are in range we just take the first one we find
                     break;
                 }
             }
