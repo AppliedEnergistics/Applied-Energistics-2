@@ -239,7 +239,7 @@ public final class Blitter {
         return color(r, g, b);
     }
   
-    public void blit(PoseStack poseStack, int zIndex) {
+    public void blit(PoseStack poseStack) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.texture);
 
