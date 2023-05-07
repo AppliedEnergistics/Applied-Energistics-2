@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -115,7 +116,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     private final Map<IGridNode, StackWatcher<ICraftingWatcherNode>> craftingWatchers = new HashMap<>();
     private final IGrid grid;
     private final NetworkCraftingProviders craftingProviders = new NetworkCraftingProviders();
-    private final Map<String, CraftingLinkNexus> craftingLinks = new HashMap<>();
+    private final Map<UUID, CraftingLinkNexus> craftingLinks = new HashMap<>();
     private final Multimap<AEKey, StackWatcher<ICraftingWatcherNode>> interests = HashMultimap.create();
     private final InterestManager<StackWatcher<ICraftingWatcherNode>> interestManager = new InterestManager<>(
             this.interests);

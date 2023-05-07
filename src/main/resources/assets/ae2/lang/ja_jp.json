@@ -513,7 +513,6 @@
   "gui.tooltips.ae2.SupportedBy": "対応:",
   "gui.tooltips.ae2.TerminalSettings": "ターミナル設定",
   "gui.tooltips.ae2.TerminalStyle": "ターミナルスタイル",
-  "gui.tooltips.ae2.TerminalStyle_Full": "フルスクリーンターミナル",
   "gui.tooltips.ae2.TerminalStyle_Small": "ウインドウターミナル小",
   "gui.tooltips.ae2.TerminalStyle_Tall": "ウインドウターミナル大",
   "gui.tooltips.ae2.TransferDirection": "転送方向",

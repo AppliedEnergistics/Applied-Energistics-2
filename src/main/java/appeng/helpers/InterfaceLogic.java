@@ -73,7 +73,6 @@ import appeng.util.Platform;
 public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject {
 
     public static final int NUMBER_OF_SLOTS = 9;
-
     @Nullable
     private InterfaceInventory localInvHandler;
     @Nullable
@@ -105,8 +104,8 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is) {
         this.host = host;
-        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::readConfig, false);
-        this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::updatePlan);
+        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::onConfigRowChanged, false);
+        this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::onStorageChanged);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
@@ -187,6 +186,11 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         return src.context(InterfaceRequestContext.class)
                 .map(ctx -> OptionalInt.of(ctx.getPriority()))
                 .orElseGet(OptionalInt::empty);
+    }
+
+    protected final boolean isSameGrid(IActionSource src) {
+        var otherGrid = src.machine().map(IActionHost::getActionableNode).map(IGridNode::getGrid).orElse(null);
+        return otherGrid == mainNode.getGrid();
     }
 
     protected final boolean hasWorkToDo() {
@@ -521,6 +525,16 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         updatePlan();
     }
 
+    private void onConfigRowChanged() {
+        this.host.saveChanges();
+        this.readConfig();
+    }
+
+    private void onStorageChanged() {
+        this.host.saveChanges();
+        this.updatePlan();
+    }
+
     public void addDrops(List<ItemStack> drops, boolean remove) {
         for (var is : this.upgrades) {
             if (!is.isEmpty()) {
@@ -565,7 +579,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             // Prevents other interfaces from injecting their items into this interface when they push
             // their local inventory into the network. This prevents items from bouncing back and forth
             // between interfaces.
-            if (getRequestInterfacePriority(source).isPresent()) {
+            if (getRequestInterfacePriority(source).isPresent() && isSameGrid(source)) {
                 return 0;
             }
 
@@ -578,7 +592,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
             // Otherwise we'd see a "ping-pong" effect where two interfaces could start pulling items back and
             // forth of they wanted to stock the same item and happened to have storage buses on them.
             var requestPriority = getRequestInterfacePriority(source);
-            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority()) {
+            if (requestPriority.isPresent() && requestPriority.getAsInt() <= getPriority() && isSameGrid(source)) {
                 return 0;
             }
 

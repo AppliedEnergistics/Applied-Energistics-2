@@ -53,10 +53,10 @@ public class FacadePart implements IFacadePart {
     public void getBoxes(IPartCollisionHelper ch, boolean itemEntity) {
         if (itemEntity) {
             // the box is 15.9 for annihilation planes to pick up collision events.
-            ch.addBox(0.0, 0.0, 14, 16.0, 16.0, 15.9);
+            ch.addBox(0.0, 0.0, 15, 16.0, 16.0, 15.9);
         } else {
             // prevent weird snag behavior
-            ch.addBox(0.0, 0.0, 14, 16.0, 16.0, 16.0);
+            ch.addBox(0.0, 0.0, 15, 16.0, 16.0, 16.0);
         }
     }
 

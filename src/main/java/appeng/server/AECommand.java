@@ -32,11 +32,8 @@ public final class AECommand {
 
     public void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
-        LiteralArgumentBuilder<CommandSourceStack> builder = literal("ae2");
-        for (Commands command : Commands.values()) {
-            if (command.test && !AEConfig.instance().isDebugToolsEnabled()) {
-                continue;
-            }
+        var builder = literal("ae2");
+        for (var command : Commands.values()) {
             add(builder, command);
         }
 
@@ -44,8 +41,13 @@ public final class AECommand {
     }
 
     private void add(LiteralArgumentBuilder<CommandSourceStack> builder, Commands subCommand) {
-        LiteralArgumentBuilder<CommandSourceStack> subCommandBuilder = literal(subCommand.literal())
-                .requires(src -> src.hasPermission(subCommand.level));
+        var subCommandBuilder = literal(subCommand.literal())
+                .requires(src -> {
+                    if (subCommand.test && !AEConfig.instance().isDebugToolsEnabled()) {
+                        return false;
+                    }
+                    return src.hasPermission(subCommand.level);
+                });
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {
             subCommand.command.call(AppEng.instance().getCurrentServer(), ctx, ctx.getSource());

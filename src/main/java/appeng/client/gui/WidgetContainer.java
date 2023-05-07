@@ -163,7 +163,7 @@ public class WidgetContainer {
         for (var entry : widgets.entrySet()) {
             var widget = entry.getValue();
             if (widget.isFocused()) {
-                widget.changeFocus(false); // Minecraft already cleared focus on the screen
+                widget.setFocused(false); // Minecraft already cleared focus on the screen
             }
 
             // Position the widget
@@ -224,23 +224,23 @@ public class WidgetContainer {
     }
 
     /**
-     * @see ICompositeWidget#drawBackgroundLayer(PoseStack, int, Rect2i, Point)
+     * @see ICompositeWidget#drawBackgroundLayer(PoseStack, Rect2i, Point)
      */
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
-                widget.drawBackgroundLayer(poseStack, zIndex, bounds, mouse);
+                widget.drawBackgroundLayer(poseStack, bounds, mouse);
             }
         }
     }
 
     /**
-     * @see ICompositeWidget#drawForegroundLayer(PoseStack, int, Rect2i, Point)
+     * @see ICompositeWidget#drawForegroundLayer(PoseStack, Rect2i, Point)
      */
-    public void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
-                widget.drawForegroundLayer(poseStack, zIndex, bounds, mouse);
+                widget.drawForegroundLayer(poseStack, bounds, mouse);
             }
         }
     }
@@ -397,7 +397,7 @@ public class WidgetContainer {
         searchField.setBordered(false);
         searchField.setMaxLength(25);
         searchField.setTextColor(0xFFFFFF);
-        searchField.setSelectionColor(0xFF008000);
+        searchField.setSelectionColor(0xFF000080);
         searchField.setVisible(true);
         add(id, searchField);
         return searchField;

@@ -137,7 +137,7 @@ public interface RenderContext {
         }
 
         font().drawInBatch(Component.literal(text).withStyle(effectiveStyle), x, y, resolveColor(style.color()), false,
-                matrix, buffers, false, 0, LightTexture.FULL_BRIGHT);
+                matrix, buffers, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
     }
 
     default void fillRect(int x, int y, int width, int height, ColorRef color) {
@@ -180,12 +180,12 @@ public interface RenderContext {
         var key = AEFluidKey.of(fluid, tag);
         FluidBlitter.create(key)
                 .dest(x, y, width, height)
-                .blit(poseStack(), 100 + z);
+                .blit(poseStack());
     }
 
     void renderItem(ItemStack stack, int x, int y, int z, float width, float height);
 
     default void renderPanel(LytRect bounds) {
-        BackgroundGenerator.draw(bounds.width(), bounds.height(), poseStack(), 0, bounds.x(), bounds.y());
+        BackgroundGenerator.draw(bounds.width(), bounds.height(), poseStack(), bounds.x(), bounds.y());
     }
 }

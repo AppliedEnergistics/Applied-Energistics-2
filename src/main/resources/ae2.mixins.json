@@ -5,8 +5,12 @@
   "compatibilityLevel": "JAVA_11",
   "plugin": "appeng.mixins.ConfigPlugin",
   "mixins": [
+    "chunkloading.ChunkMapMixin",
+    "chunkloading.MinecraftServerMixin",
+    "chunkloading.ServerLevelMixin",
     "spatial.MinecraftServerMixin",
     "feature.LevelLightEngineMixin",
+    "AnvilMenuMixin",
     "EarlyStartupMixin",
     "EnchantmentHelperMixin",
     "DynamicLadderMixin",
@@ -15,7 +19,8 @@
     "BreakSpeedMixin",
     "AnnihilationPlaneEnchantmentMixin",
     "tests.StructureUtilsMixin",
-    "StructureTemplateMixin"
+    "StructureTemplateMixin",
+    "UnbreakingMixin"
   ],
   "client": [
     "spatial.SkyRenderMixin",

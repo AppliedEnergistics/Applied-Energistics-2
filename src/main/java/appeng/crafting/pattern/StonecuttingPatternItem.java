@@ -80,7 +80,7 @@ public class StonecuttingPatternItem extends EncodedPatternItem {
 
         // Try to find the output in the potential recipe list
         for (var potentialRecipe : potentialRecipes) {
-            if (AEItemKey.matches(output, potentialRecipe.getResultItem())) {
+            if (AEItemKey.matches(output, potentialRecipe.getResultItem(level.registryAccess()))) {
                 // Yay we found a match, reencode the pattern
                 AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, potentialRecipe.getId());
                 StonecuttingPatternEncoding.encode(tag, potentialRecipe, input, output,

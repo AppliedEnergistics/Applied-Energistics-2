@@ -37,9 +37,13 @@ public abstract class BaseInternalInventory implements InternalInventory {
     @Override
     public final Storage<ItemVariant> toStorage() {
         if (platformWrapper == null) {
-            platformWrapper = new InternalInventoryStorage(this);
+            platformWrapper = createStorage();
         }
         return platformWrapper;
+    }
+
+    protected Storage<ItemVariant> createStorage() {
+        return new InternalInventoryStorage(this);
     }
 
 }

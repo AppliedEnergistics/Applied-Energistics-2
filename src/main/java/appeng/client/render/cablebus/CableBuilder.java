@@ -435,8 +435,8 @@ class CableBuilder {
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForDenseChannels(channels);
+        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForDenseChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);
@@ -460,7 +460,7 @@ class CableBuilder {
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_COVERED).get(cableColor);
         cubeBuilder.setTexture(texture);
 
-        setStraightCableUVs(cubeBuilder, facing, 5, 11);
+        setStraightCableUVs(cubeBuilder, facing, 3, 13);
 
         addStraightDenseCableSizedCube(facing, cubeBuilder);
     }
@@ -472,15 +472,15 @@ class CableBuilder {
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
-        setStraightCableUVs(cubeBuilder, facing, 5, 11);
+        setStraightCableUVs(cubeBuilder, facing, 3, 13);
 
         addStraightDenseCableSizedCube(facing, cubeBuilder);
 
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForDenseChannels(channels);
+        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForDenseChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);
@@ -512,23 +512,25 @@ class CableBuilder {
     // connection and spans the entire block
     // for the given direction
     private static void addStraightDenseCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
+        // Go slightly beyond the block (-0.01f and 16.01f) to prevent z-fighting with facades.
+        // See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6889
         switch (facing) {
             case DOWN, UP -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
-                cubeBuilder.addCube(3, 0, 3, 13, 16, 13);
+                cubeBuilder.addCube(3, -0.01f, 3, 13, 16.01f, 13);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
             }
             case EAST, WEST -> {
                 cubeBuilder.setUvRotation(Direction.SOUTH, 3);
                 cubeBuilder.setUvRotation(Direction.NORTH, 3);
-                cubeBuilder.addCube(0, 3, 3, 16, 13, 13);
+                cubeBuilder.addCube(-0.01f, 3, 3, 16.01f, 13, 13);
                 cubeBuilder.setUvRotation(Direction.SOUTH, 0);
                 cubeBuilder.setUvRotation(Direction.NORTH, 0);
             }
             case NORTH, SOUTH -> {
                 cubeBuilder.setUvRotation(Direction.EAST, 3);
                 cubeBuilder.setUvRotation(Direction.WEST, 3);
-                cubeBuilder.addCube(3, 3, 0, 13, 13, 16);
+                cubeBuilder.addCube(3, 3, -0.01f, 13, 13, 16.01f);
                 cubeBuilder.setUvRotation(Direction.EAST, 0);
                 cubeBuilder.setUvRotation(Direction.WEST, 0);
             }

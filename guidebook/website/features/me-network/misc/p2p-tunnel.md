@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Misc
-item_ids:
-  - ae2:me_p2p_tunnel
 navigation:
   parent: website/index.md
   title: P2P Tunnel

@@ -90,7 +90,8 @@ public class CraftingPatternItem extends EncodedPatternItem {
                 .orElse(null);
 
         // Check that it matches the expected output
-        if (potentialRecipe != null && ItemStack.isSameItemSameTags(product, potentialRecipe.assemble(testInventory))) {
+        if (potentialRecipe != null && ItemStack.isSameItemSameTags(product,
+                potentialRecipe.assemble(testInventory, level.registryAccess()))) {
             // Yay we found a match, reencode the pattern
             AELog.debug("Re-Encoding pattern from %s -> %s", currentRecipeId, potentialRecipe.getId());
             ItemStack[] in = Arrays.stream(ingredients)

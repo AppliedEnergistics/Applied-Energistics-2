@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Misc
-item_ids:
-  - ae2:io_port
 related:
   - Possible Upgrades
 navigation:

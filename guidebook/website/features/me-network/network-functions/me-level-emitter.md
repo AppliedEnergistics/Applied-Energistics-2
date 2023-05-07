@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Network Functions
-item_ids:
-  - ae2:level_emitter
 related:
   - Possible Upgrades
 navigation:

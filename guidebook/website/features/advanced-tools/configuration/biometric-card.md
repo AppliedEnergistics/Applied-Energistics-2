@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Configuration Tools
-item_ids:
-  - ae2:biometric_card
 navigation:
   parent: website/index.md
   title: Biometric Card

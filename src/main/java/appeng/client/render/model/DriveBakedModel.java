@@ -220,4 +220,8 @@ public class DriveBakedModel extends ForwardingBakedModel implements FabricBaked
         return meshBuilder.build();
     }
 
+    @Override
+    public boolean isVanillaAdapter() {
+        return false;
+    }
 }

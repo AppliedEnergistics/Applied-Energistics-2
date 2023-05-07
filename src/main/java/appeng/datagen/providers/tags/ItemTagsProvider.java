@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -42,7 +41,7 @@ import appeng.datagen.providers.IAE2DataProvider;
 public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
 
     public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
-            TagsProvider<Block> blockTagsProvider) {
+            CompletableFuture<TagLookup<Block>> blockTagsProvider) {
         super(packOutput, registries, blockTagsProvider);
     }
 
@@ -93,7 +92,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
             tag(ConventionTags.GLASS_CABLE).add(AEParts.GLASS_CABLE.item(color));
             tag(ConventionTags.COVERED_CABLE).add(AEParts.COVERED_CABLE.item(color));
             tag(ConventionTags.COVERED_DENSE_CABLE).add(AEParts.COVERED_DENSE_CABLE.item(color));
-            tag(ConventionTags.MEMORY_CARDS).add(AEItems.MEMORY_CARDS.item(color));
         }
 
         tag(ConventionTags.INSCRIBER_PRESSES)
@@ -294,9 +292,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
     // Copy the entries AE2 added to certain block tags over to item tags of the same name
     // Assumes that items or item tags generally have the same name as the block equivalent.
     private void copyBlockTags() {
-        mirrorBlockTag(new ResourceLocation("c:ores"));
-        mirrorBlockTag(new ResourceLocation("c:certus_quartz_ores"));
-
         mirrorBlockTag(new ResourceLocation("c:storage_blocks"));
         mirrorBlockTag(new ResourceLocation("c:certus_quartz_blocks"));
     }

@@ -1,7 +1,4 @@
 ---
-item_ids:
-  - ae2:item_cell_housing
-  - ae2:fluid_cell_housing
 related:
   - Storage Cell Parts
   - Storage Cells

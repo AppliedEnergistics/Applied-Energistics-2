@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Powered Machines
-item_ids:
-  - ae2:molecular_assembler
 navigation:
   parent: website/index.md
   title: Molecular Assembler

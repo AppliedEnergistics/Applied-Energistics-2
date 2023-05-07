@@ -1,8 +1,6 @@
 ---
 categories:
   - Upgrades
-item_ids:
-  - ae2:fuzzy_card
 navigation:
   parent: website/index.md
   title: Fuzzy Card

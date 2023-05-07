@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.core.localization.GuiText;
@@ -75,39 +75,38 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
         if (!content.isEmpty()) {
             var xoff = content.size() * 17;
             if (tooltipComponent.hasMoreContent()) {
-                font.drawInBatch("\u2026", x + xoff + 2, y + 2, -1, false, matrix4f, bufferSource, false, 0,
-                        LightTexture.FULL_BRIGHT);
+                font.drawInBatch("\u2026", x + xoff + 2, y + 2, -1, false, matrix4f, bufferSource,
+                        Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
             }
             y += 17;
         }
 
         var upgrades = tooltipComponent.upgrades();
         if (!upgrades.isEmpty()) {
-            font.drawInBatch(upgradesLabel, x, y + yoff, 0x7E7E7E, false, matrix4f, bufferSource, false, 0,
-                    LightTexture.FULL_BRIGHT);
+            font.drawInBatch(upgradesLabel, x, y + yoff, 0x7E7E7E, false, matrix4f, bufferSource,
+                    Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
         }
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
+    public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = 0;
             for (var stack : content) {
-                AEStackRendering.drawInGui(Minecraft.getInstance(), poseStack, x + xoff, y, blitOffset, stack.what());
+                AEKeyRendering.drawInGui(Minecraft.getInstance(), poseStack, x + xoff, y, stack.what());
                 xoff += 17;
             }
 
             // Now render the amounts on top of the items
-            poseStack.pushPose();
-            poseStack.translate(0, 0, blitOffset + 500);
-            xoff = 0;
-            for (var stack : content) {
-                var amtText = stack.what().formatAmount(stack.amount(), AmountFormat.SLOT);
-                StackSizeRenderer.renderSizeLabel(poseStack, font, x + xoff, y, amtText, false);
-                xoff += 17;
+            if (tooltipComponent.showAmounts()) {
+                xoff = 0;
+                for (var stack : content) {
+                    var amtText = stack.what().formatAmount(stack.amount(), AmountFormat.SLOT);
+                    StackSizeRenderer.renderSizeLabel(poseStack, font, x + xoff, y, amtText, false);
+                    xoff += 17;
+                }
             }
-            poseStack.popPose();
             y += 17;
         }
 
@@ -115,7 +114,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
         if (!upgrades.isEmpty()) {
             var xoff = font.width(upgradesLabel) + 2;
             for (ItemStack upgrade : upgrades) {
-                itemRenderer.renderGuiItem(upgrade, x + xoff, y);
+                itemRenderer.renderGuiItem(poseStack, upgrade, x + xoff, y);
                 xoff += 17;
             }
         }

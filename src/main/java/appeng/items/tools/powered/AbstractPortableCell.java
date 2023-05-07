@@ -3,6 +3,7 @@ package appeng.items.tools.powered;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -43,13 +45,15 @@ import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
 public abstract class AbstractPortableCell extends AEBasePoweredItem
-        implements ICellWorkbenchItem, IMenuItem, AEToolItem {
+        implements ICellWorkbenchItem, IMenuItem, AEToolItem, DyeableLeatherItem {
 
     private final MenuType<?> menuType;
+    private final int defaultColor;
 
-    public AbstractPortableCell(MenuType<?> menuType, Properties props) {
+    public AbstractPortableCell(MenuType<?> menuType, Properties props, int defaultColor) {
         super(AEConfig.instance().getPortableCellBattery(), props);
         this.menuType = menuType;
+        this.defaultColor = defaultColor;
     }
 
     /**
@@ -90,6 +94,16 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
     public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack,
             ItemStack newStack) {
         return false;
+    }
+
+    // Override to change the default color
+    @Override
+    public int getColor(ItemStack stack) {
+        CompoundTag compoundTag = stack.getTagElement(TAG_DISPLAY);
+        if (compoundTag != null && compoundTag.contains(TAG_COLOR, 99)) {
+            return compoundTag.getInt(TAG_COLOR);
+        }
+        return defaultColor;
     }
 
     @Override
@@ -159,7 +173,7 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
                 playerInventory.placeItemBackInInventory(upgrade);
             }
         } else {
-            player.sendSystemMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text());
+            player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
         }
 
         return true;
@@ -297,6 +311,8 @@ public abstract class AbstractPortableCell extends AEBasePoweredItem
             var cellInv = StorageCells.getCellInventory(stack, null);
             var cellStatus = cellInv != null ? cellInv.getStatus() : CellState.EMPTY;
             return cellStatus.getStateColor();
+        } else if (tintIndex == 2 && stack.getItem() instanceof AbstractPortableCell portableCell) {
+            return portableCell.getColor(stack);
         } else {
             // White
             return 0xFFFFFF;

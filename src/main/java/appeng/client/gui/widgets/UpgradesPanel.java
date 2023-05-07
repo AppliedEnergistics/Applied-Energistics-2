@@ -126,7 +126,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
         int slotCount = getUpgradeSlotCount();
         if (slotCount <= 0) {
             return;
@@ -152,11 +152,11 @@ public final class UpgradesPanel implements ICompositeWidget {
             boolean borderBottom = lastRow || lastSlot;
             boolean borderRight = i >= slotCount - MAX_ROWS;
 
-            drawSlot(poseStack, zIndex, x, y, borderLeft, borderTop, borderRight, borderBottom);
+            drawSlot(poseStack, x, y, borderLeft, borderTop, borderRight, borderBottom);
 
             // Cover up the inner corner when we just drew a rather ugly "inner corner"
             if (col > 0 && lastSlot && !lastRow) {
-                INNER_CORNER.dest(x, y + SLOT_SIZE).blit(poseStack, zIndex);
+                INNER_CORNER.dest(x, y + SLOT_SIZE).blit(poseStack);
             }
         }
     }
@@ -212,7 +212,7 @@ public final class UpgradesPanel implements ICompositeWidget {
         return new Tooltip(tooltip);
     }
 
-    private static void drawSlot(PoseStack poseStack, int zIndex, int x, int y,
+    private static void drawSlot(PoseStack poseStack, int x, int y,
             boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;
@@ -238,7 +238,7 @@ public final class UpgradesPanel implements ICompositeWidget {
 
         BACKGROUND.src(srcX, srcY, srcWidth, srcHeight)
                 .dest(x, y)
-                .blit(poseStack, zIndex);
+                .blit(poseStack);
     }
 
     /**

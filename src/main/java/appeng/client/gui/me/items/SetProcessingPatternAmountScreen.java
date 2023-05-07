@@ -20,9 +20,10 @@ package appeng.client.gui.me.items;
 
 import java.util.function.Consumer;
 
+import com.google.common.primitives.Longs;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.util.Mth;
 
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AESubScreen;
@@ -86,7 +87,7 @@ public class SetProcessingPatternAmountScreen<C extends PatternEncodingTermMenu>
 
     private void confirm() {
         this.amount.getLongValue().ifPresent(newAmount -> {
-            newAmount = Mth.clamp(newAmount, 0, getMaxAmount());
+            newAmount = Longs.constrainToRange(newAmount, 0, getMaxAmount());
 
             if (newAmount <= 0) {
                 setter.accept(null);

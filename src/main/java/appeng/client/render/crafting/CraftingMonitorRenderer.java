@@ -58,7 +58,7 @@ public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMoni
                     jobProgress.amount(),
                     0.3f,
                     -0.18f,
-                    be.getColor().contrastTextColor);
+                    be.getColor().contrastTextColor, be.getLevel());
 
             poseStack.popPose();
         }

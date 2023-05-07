@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import appeng.client.guidebook.compiler.tags.ATagCompiler;
+import appeng.client.guidebook.compiler.tags.BoxFlowDirection;
+import appeng.client.guidebook.compiler.tags.BoxTagCompiler;
 import appeng.client.guidebook.compiler.tags.BreakCompiler;
 import appeng.client.guidebook.compiler.tags.CategoryIndexCompiler;
 import appeng.client.guidebook.compiler.tags.DivTagCompiler;
@@ -12,6 +14,9 @@ import appeng.client.guidebook.compiler.tags.FloatingImageCompiler;
 import appeng.client.guidebook.compiler.tags.ItemGridCompiler;
 import appeng.client.guidebook.compiler.tags.ItemLinkCompiler;
 import appeng.client.guidebook.compiler.tags.RecipeCompiler;
+import appeng.client.guidebook.scene.BlockImageTagCompiler;
+import appeng.client.guidebook.scene.ItemImageTagCompiler;
+import appeng.client.guidebook.scene.SceneTagCompiler;
 
 /**
  * Maintains a mapping between MDX Tag-Names to handlers for compiling these tags.
@@ -29,6 +34,12 @@ public final class TagCompilers {
         register("Recipe", new RecipeCompiler());
         register("ItemGrid", new ItemGridCompiler());
         register("CategoryIndex", new CategoryIndexCompiler());
+        register("BlockImage", new BlockImageTagCompiler());
+        register("ItemImage", new ItemImageTagCompiler());
+        register("Scene", new BlockImageTagCompiler());
+        register("Row", new BoxTagCompiler(BoxFlowDirection.ROW));
+        register("Column", new BoxTagCompiler(BoxFlowDirection.COLUMN));
+        register("GameScene", new SceneTagCompiler());
     }
 
     public static void register(String tagName, TagCompiler handler) {

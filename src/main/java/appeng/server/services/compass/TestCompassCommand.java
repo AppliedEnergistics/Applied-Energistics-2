@@ -33,7 +33,7 @@ public class TestCompassCommand implements ISubCommand {
     @Override
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
         var level = sender.getLevel();
-        var chunkPos = new ChunkPos(new BlockPos(sender.getPosition()));
+        var chunkPos = new ChunkPos(BlockPos.containing(sender.getPosition()));
         var compassRegion = CompassRegion.get(level, chunkPos);
 
         for (var i = 0; i <= level.getSectionsCount(); i++) {

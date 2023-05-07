@@ -18,7 +18,6 @@
 
 package appeng.items.tools.powered;
 
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +51,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
                             new LightningPacket(dx, dy, dz));
                 }
             }
-            target.hurt(DamageSource.MAGIC, 6);
+            target.hurt(target.level.damageSources().magic(), 6);
             return true;
         }
 

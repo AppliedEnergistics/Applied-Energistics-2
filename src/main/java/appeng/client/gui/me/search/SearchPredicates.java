@@ -7,12 +7,14 @@ import java.util.regex.PatternSyntaxException;
 
 import appeng.core.AEConfig;
 import appeng.menu.me.common.GridInventoryEntry;
+import appeng.util.Platform;
 
 final class SearchPredicates {
 
     static Predicate<GridInventoryEntry> fromString(String searchString, RepoSearch repoSearch) {
         if (searchString.startsWith("@")) {
-            return createModIdPredicate(searchString.substring(1));
+            return createModIdPredicate(searchString.substring(1))
+                    .or(createModNamePredicate(searchString.substring(1)));
         } else if (searchString.startsWith("*")) {
             return createIdPredicate(searchString.substring(1));
         } else if (searchString.startsWith("#")) {
@@ -35,6 +37,14 @@ final class SearchPredicates {
         return entry -> {
             var what = Objects.requireNonNull(entry.getWhat());
             return searchPattern.matcher(what.getModId()).find();
+        };
+    }
+
+    private static Predicate<GridInventoryEntry> createModNamePredicate(String searchText) {
+        var searchPattern = createPattern(searchText);
+        return entry -> {
+            var what = Objects.requireNonNull(entry.getWhat());
+            return searchPattern.matcher(Platform.getModName(what.getModId())).find();
         };
     }
 

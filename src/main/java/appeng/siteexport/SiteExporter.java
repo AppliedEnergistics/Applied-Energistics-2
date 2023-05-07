@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -235,7 +236,7 @@ public final class SiteExporter {
                 Files.createDirectories(iconPath.getParent());
 
                 itemRenderer.captureAsPng(() -> {
-                    client.getItemRenderer().renderAndDecorateFakeItem(stack, 0, 0);
+                    client.getItemRenderer().renderAndDecorateFakeItem(new PoseStack(), stack, 0, 0);
                 }, iconPath);
 
                 String absIconUrl = "/" + assetFolder.relativize(iconPath).toString().replace('\\', '/');
@@ -267,8 +268,8 @@ public final class SiteExporter {
                 continue;
             }
 
-            if (!recipe.getResultItem().isEmpty()) {
-                addVanillaItem(vanillaItems, recipe.getResultItem());
+            if (!recipe.getResultItem(null).isEmpty()) {
+                addVanillaItem(vanillaItems, recipe.getResultItem(null));
             }
             for (Ingredient ingredient : recipe.getIngredients()) {
                 for (ItemStack item : ingredient.getItems()) {

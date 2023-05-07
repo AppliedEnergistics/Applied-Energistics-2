@@ -327,7 +327,6 @@
   "gui.tooltips.ae2.SubstitutionsOff": "Ersättningar inaktiverades",
   "gui.tooltips.ae2.SubstitutionsOn": "Ersättningar aktiverades",
   "gui.tooltips.ae2.TerminalStyle": "Terminalstil",
-  "gui.tooltips.ae2.TerminalStyle_Full": "Helskärmsterminal",
   "gui.tooltips.ae2.TerminalStyle_Small": "Liten centrerad terminal",
   "gui.tooltips.ae2.TerminalStyle_Tall": "Lång centrerad terminal",
   "gui.tooltips.ae2.TransferDirection": "Överförningsriktning",

@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -130,8 +131,8 @@ class CraftingPatternItemTest {
         }
 
         @Override
-        public ItemStack assemble(CraftingContainer container) {
-            return getResultItem();
+        public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+            return getResultItem(registryAccess);
         }
 
         @Override
@@ -140,7 +141,7 @@ class CraftingPatternItemTest {
         }
 
         @Override
-        public ItemStack getResultItem() {
+        public ItemStack getResultItem(RegistryAccess registryAccess) {
             return new ItemStack(Items.STICK);
         }
 

@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Utilities
-item_ids:
-  - ae2:entropy_manipulator
 navigation:
   parent: website/index.md
   title: Entropy Manipulator

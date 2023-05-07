@@ -3,9 +3,6 @@ categories:
   - Simple Tools/Skystone Chests
   - World Gen
   - Decorative Blocks/Skystone Blocks
-item_ids:
-  - ae2:sky_stone_chest
-  - ae2:smooth_sky_stone_chest
 navigation:
   parent: website/index.md
   title: Sky Stone Chest

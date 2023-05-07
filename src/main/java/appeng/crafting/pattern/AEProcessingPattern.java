@@ -28,6 +28,7 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
+import appeng.api.stacks.KeyCounter;
 
 public class AEProcessingPattern implements IPatternDetails {
     public static final int MAX_INPUT_SLOTS = 9 * 9;
@@ -85,6 +86,39 @@ public class AEProcessingPattern implements IPatternDetails {
 
     public GenericStack[] getSparseOutputs() {
         return sparseOutputs;
+    }
+
+    @Override
+    public void pushInputsToExternalInventory(KeyCounter[] inputHolder, PatternInputSink inputSink) {
+        if (sparseInputs.length == inputs.length) {
+            // No compression -> no need to reorder
+            IPatternDetails.super.pushInputsToExternalInventory(inputHolder, inputSink);
+            return;
+        }
+
+        var allInputs = new KeyCounter();
+        for (var counter : inputHolder) {
+            allInputs.addAll(counter);
+        }
+
+        // Push according to sparse input order
+        for (var sparseInput : sparseInputs) {
+            if (sparseInput == null) {
+                continue;
+            }
+
+            var key = sparseInput.what();
+            var amount = sparseInput.amount();
+            long available = allInputs.get(key);
+
+            if (available < amount) {
+                throw new RuntimeException("Expected at least %d of %s when pushing pattern, but only %d available"
+                        .formatted(amount, key, available));
+            }
+
+            inputSink.pushInput(key, amount);
+            allInputs.remove(key, amount);
+        }
     }
 
     private static class Input implements IInput {

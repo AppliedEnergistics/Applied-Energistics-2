@@ -21,6 +21,9 @@ package appeng.server.services;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 
 public class ChunkLoadingService {
 
@@ -28,11 +31,6 @@ public class ChunkLoadingService {
 
     // Flag to ignore a server after it is stopping as grid nodes might reevaluate their grids during a shutdown.
     private boolean running = true;
-
-    public static void register() {
-        // FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//        ForgeChunkManager.setForcedChunkLoadingCallback(AppEng.MOD_ID, INSTANCE);
-    }
 
     public void onServerAboutToStart() {
         this.running = true;
@@ -45,41 +43,47 @@ public class ChunkLoadingService {
     public static ChunkLoadingService getInstance() {
         return INSTANCE;
     }
-// FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//    @Override
-//    public void validateTickets(ServerLevel level, TicketHelper ticketHelper) {
-//        // Iterate over all blockpos registered as chunk loader to initialize them
-//        ticketHelper.getBlockTickets().forEach((blockPos, chunks) -> {
-//            BlockEntity blockEntity = level.getBlockEntity(blockPos);
-//
-//            // Add all persisted chunks to the list of handled ones by each anchor.
-//            // Or remove all in case the anchor no longer exists.
-//            if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
-//                for (Long chunk : chunks.getSecond()) {
-//                    anchor.registerChunk(new ChunkPos(chunk.longValue()));
-//                }
-//            } else {
-//                ticketHelper.removeAllTickets(blockPos);
-//            }
-//        });
-//    }
 
-    public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
-// FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//        if (running) {
-//            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, true, true);
-//        }
+    public void validateTickets(ServerLevel level) {
+        var state = ChunkLoadState.get(level);
+
+        for (var entry : state.getAllBlocks().entrySet()) {
+            var blockPos = entry.getKey();
+            var chunks = entry.getValue();
+            BlockEntity blockEntity = level.getBlockEntity(blockPos);
+
+            // Add all persisted chunks to the list of handled ones by each anchor.
+            // Or remove all in case the anchor no longer exists.
+            if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
+                for (long chunk : chunks) {
+                    anchor.registerChunk(new ChunkPos(chunk));
+                }
+            } else {
+                state.releaseAll(blockPos);
+            }
+        }
+    }
+
+    public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
+        if (running) {
+            ChunkLoadState.get(level).forceChunk(position, owner);
+            return true;
+        }
 
         return false;
     }
 
-    public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position, boolean ticking) {
-// FIXME FABRIC 117 NO CHUNKLOADING SERVICE
-//        if (running) {
-//            return ForgeChunkManager.forceChunk(level, AppEng.MOD_ID, owner, position.x, position.z, false, true);
-//        }
+    public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
+        if (running) {
+            ChunkLoadState.get(level).releaseChunk(position, owner);
+            return true;
+        }
 
         return false;
+    }
+
+    public boolean isChunkForced(ServerLevel level, int chunkX, int chunkZ) {
+        return ChunkLoadState.get(level).isForceLoaded(chunkX, chunkZ);
     }
 
 }

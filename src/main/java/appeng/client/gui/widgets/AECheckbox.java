@@ -81,7 +81,7 @@ public class AECheckbox extends AbstractButton {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         Blitter icon;
         if (isRadio()) {
             if (isFocused() || isMouseOver(mouseX, mouseY)) {
@@ -103,7 +103,7 @@ public class AECheckbox extends AbstractButton {
         var textColor = isActive() ? PaletteColor.DEFAULT_TEXT_COLOR : PaletteColor.MUTED_TEXT_COLOR;
         var opacity = isActive() ? 1 : 0.5f;
 
-        icon.dest(getX(), getY()).opacity(opacity).blit(poseStack, getBlitOffset());
+        icon.dest(getX(), getY()).opacity(opacity).blit(poseStack);
         var lines = font.split(getMessage(), width - SIZE - 2);
         // try to vertically center if it's just one line
         var lineY = getY() + (lines.size() <= 1 ? 4 : 1);

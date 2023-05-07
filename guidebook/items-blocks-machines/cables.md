@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Cables
   icon: fluix_glass_cable
+  position: 110
 item_ids:
 - ae2:white_glass_cable
 - ae2:orange_glass_cable
@@ -101,9 +102,18 @@ Differently colored cables can be used to ensure adjacent cables do not connecte
 allowing [channels](../ae2-mechanics/channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
 so you don't have to have all your terminals be purple. Fluix cables connect to every other color.
 
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**
+
 # An Important Note
 **If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
 It will show how channels are routed through your network, making their behavior more understandable.**
+
+# Another Note
+
+**These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
+into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
+
+---
 
 # Glass Cable
 
@@ -127,6 +137,8 @@ your [Channels](channels.md).
 <RecipeFor id="fluix_glass_cable" />
 <RecipeFor id="blue_glass_cable" />
 
+---
+
 # Covered Cable
 
 ![A picture of covered cables.](../assets/blocks/fluix_covered_cable.png)
@@ -144,6 +156,8 @@ id="fluix_covered_dense_cable"/>.
 <Recipe id="network/cables/covered_fluix" />
 <RecipeFor id="blue_covered_cable" />
 
+---
+
 # Dense Cable
 
 ![A picture of dense cable.](../assets/blocks/fluix_covered_dense_cable.png)
@@ -151,14 +165,16 @@ id="fluix_covered_dense_cable"/>.
 Higher Capacity cable, can carry 32 channels unlike standard cable which can only carry 8,
 however it doesn't support buses so you must first step down from dense to a
 smaller cable (such as <ItemLink
-id="fluix_glass_cable"/> or <ItemLink
-id="fluix_smart_cable"/>) before using buses or
-panels. Shows load similarly to <ItemLink
-id="fluix_smart_cable"/>, with each line lit
-representing four channels in use.
+id="fluix_glass_cable"/> or <ItemLink id="fluix_smart_cable"/>) before using buses or
+panels.
+
+Dense cables slightly override the "shortest path" behavior of channels, channels will take the shortest path to a
+dense cable, and then the shortest path through that dense cable to a controller.
 
 <Recipe id="network/cables/dense_covered_fluix" />
 <RecipeFor id="blue_covered_dense_cable" />
+
+---
 
 # Smart Cable
 
@@ -168,8 +184,12 @@ While bearing some similarity to <ItemLink id="fluix_covered_cable"/> in appeara
 provide diagnostic function by visualizing the channel usage on the cables,
 the channels appear as lit colored lines that run along the black stripe on
 the cables giving you an understanding of how your channels are being used on
-your network. The first four channels show as lines matching the color of the
-cable, the next four show as white lines.
+your network. For regular smart cables, the first four channels show as lines matching the color of the
+cable, the next four show as white lines. For dense smart cable, each stripe represents 4 channels.
+
+On networks with a <ItemLink id="controller"/>, the lines on the cables show the exact path the channels take.
+
+Smart cables on ad-hoc networks will instead show the number of channels in use network-wide instead of the number of channels flowing through that specific cable.
 
 These can also be colored in the same manner as <ItemLink
 id="fluix_glass_cable"/>.

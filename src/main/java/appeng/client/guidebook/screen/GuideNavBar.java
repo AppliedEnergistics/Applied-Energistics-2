@@ -7,8 +7,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
@@ -24,6 +27,7 @@ import appeng.client.guidebook.navigation.NavigationTree;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
+import appeng.sounds.AppEngSounds;
 
 public class GuideNavBar extends AbstractWidget {
     private static final int WIDTH_CLOSED = 15;
@@ -61,8 +65,17 @@ public class GuideNavBar extends AbstractWidget {
             row.expanded = !row.expanded;
             updateLayout();
 
-            screen.navigateTo(row.node.pageId());
+            var handler = Minecraft.getInstance().getSoundManager();
+            handler.play(SimpleSoundInstance.forUI(AppEngSounds.GUIDE_CLICK_EVENT, 1.0F));
+            if (row.node.pageId() != null) {
+                screen.navigateTo(row.node.pageId());
+            }
         }
+    }
+
+    @Override
+    public void playDownSound(SoundManager handler) {
+        // Mute default sound
     }
 
     @Override
@@ -87,15 +100,16 @@ public class GuideNavBar extends AbstractWidget {
 
     private void setScrollOffset(int offset) {
         var maxScrollOffset = 0;
-        if (!rows.isEmpty()) {
-            var contentHeight = rows.get(rows.size() - 1).bottom - rows.get(0).top;
+        var visibleRows = rows.stream().filter(Row::isVisible).toList();
+        if (!visibleRows.isEmpty()) {
+            var contentHeight = visibleRows.get(visibleRows.size() - 1).bottom - visibleRows.get(0).top;
             maxScrollOffset = Math.max(0, contentHeight - height);
         }
         scrollOffset = Mth.clamp(offset, 0, maxScrollOffset);
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         var viewport = new LytRect(0, scrollOffset, width, height);
         var renderContext = new SimpleRenderContext(viewport, poseStack, LightDarkMode.LIGHT_MODE);
 

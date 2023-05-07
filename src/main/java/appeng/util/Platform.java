@@ -1,3 +1,4 @@
+
 /*
  * This file is part of Applied Energistics 2.
  * Copyright (c) 2013 - 2015, AlgorithmX2, All rights reserved.
@@ -30,12 +31,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -106,6 +109,14 @@ public class Platform {
 
     // This hack is used to allow tests and the guidebook to provide a recipe manager before the client loads a world
     public static RecipeManager fallbackClientRecipeManager;
+    public static RegistryAccess fallbackClientRegistryAccess;
+
+    public static RegistryAccess getClientRegistryAccess() {
+        if (Minecraft.getInstance().level != null) {
+            return Minecraft.getInstance().level.registryAccess();
+        }
+        return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
+    }
 
     public static RecipeManager getClientRecipeManager() {
         var minecraft = Minecraft.getInstance();
@@ -245,8 +256,8 @@ public class Platform {
             var sg = g.getSecurityService();
             if (!sg.hasPermission(player, requiredPermission)) {
                 if (notifyPlayer) {
-                    player.sendSystemMessage(Component.translatable("ae2.permission_denied")
-                            .withStyle(ChatFormatting.RED));
+                    player.displayClientMessage(Component.translatable("ae2.permission_denied")
+                            .withStyle(ChatFormatting.RED), true);
                 }
                 return false;
             }
@@ -312,8 +323,7 @@ public class Platform {
     }
 
     public static Component getFluidDisplayName(Fluid fluid, @Nullable CompoundTag tag) {
-        // no usage of the tag, but we keep it for compatibility
-        return Component.translatable(getDescriptionId(fluid));
+        return FluidVariantAttributes.getName(FluidVariant.of(fluid, tag));
     }
 
     // tag copy is not necessary, as the tag is not modified.
@@ -482,7 +492,8 @@ public class Platform {
                     if (x.getKey() instanceof AEItemKey itemKey) {
                         if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
                             ci.setItem(slot, itemKey.toStack());
-                            if (r.matches(ci, level) && ItemStack.isSame(r.assemble(ci), output)) {
+                            if (r.matches(ci, level)
+                                    && ItemStack.isSame(r.assemble(ci, level.registryAccess()), output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
                                     var ex = src.extract(itemKey, 1, realForFake, mySrc);
                                     if (ex > 0) {
@@ -518,23 +529,24 @@ public class Platform {
      */
     @Nullable
     public static BlockEntity getTickingBlockEntity(@Nullable Level level, BlockPos pos) {
-        if (!(level instanceof ServerLevel serverLevel)) {
+        if (!areBlockEntitiesTicking(level, pos)) {
             return null;
         }
 
-        if (!serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos))) {
-            return null;
-        }
-
-        return serverLevel.getBlockEntity(pos);
+        return level.getBlockEntity(pos);
     }
 
     /**
      * Checks that the chunk at the given position in the given level is in a state where block entities would tick.
-     * Vanilla does this check in {@link Level#tickBlockEntities}
+     * This means that it must both be fully loaded, and close enough to a ticking ticket.
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
-        return level instanceof ServerLevel serverLevel && serverLevel.shouldTickBlocksAt(ChunkPos.asLong(pos));
+        return areBlockEntitiesTicking(level, ChunkPos.asLong(pos));
+    }
+
+    public static boolean areBlockEntitiesTicking(@Nullable Level level, long chunkPos) {
+        // isPositionTicking checks both that the chunk is loaded, and that it's in ticking range...
+        return level instanceof ServerLevel serverLevel && serverLevel.getChunkSource().isPositionTicking(chunkPos);
     }
 
     public static Transaction openOrJoinTx() {

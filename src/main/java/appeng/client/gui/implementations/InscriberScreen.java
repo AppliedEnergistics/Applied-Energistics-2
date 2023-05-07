@@ -21,14 +21,20 @@ package appeng.client.gui.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.config.Settings;
+import appeng.api.config.YesNo;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
+import appeng.client.gui.widgets.ServerSettingToggleButton;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.implementations.InscriberMenu;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
     private final ProgressBar pb;
+    private final SettingToggleButton<YesNo> separateSidesBtn;
+    private final SettingToggleButton<YesNo> autoExportBtn;
 
     public InscriberScreen(InscriberMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
@@ -36,6 +42,12 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
         this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
         widgets.add("progressBar", this.pb);
+
+        this.separateSidesBtn = new ServerSettingToggleButton<>(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO);
+        this.addToLeftToolbar(separateSidesBtn);
+
+        this.autoExportBtn = new ServerSettingToggleButton<>(Settings.AUTO_EXPORT, YesNo.NO);
+        this.addToLeftToolbar(autoExportBtn);
     }
 
     @Override
@@ -44,6 +56,9 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
         int progress = this.menu.getCurrentProgress() * 100 / this.menu.getMaxProgress();
         this.pb.setFullMsg(Component.literal(progress + "%"));
+
+        this.separateSidesBtn.set(getMenu().getSeparateSides());
+        this.autoExportBtn.set(getMenu().getAutoExport());
     }
 
 }

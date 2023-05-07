@@ -34,7 +34,7 @@ public final class BackgroundGenerator {
     private BackgroundGenerator() {
     }
 
-    public static void draw(int width, int height, PoseStack poseStack, int zIndex, int x, int y) {
+    public static void draw(int width, int height, PoseStack poseStack, int x, int y) {
         if (width < 2 * BORDER || height < 2 * BORDER) {
             return;
         }
@@ -43,10 +43,10 @@ public final class BackgroundGenerator {
         var bottom = y + height;
 
         // Corners first
-        TOP_LEFT.dest(x, y).blit(poseStack, zIndex);
-        TOP_RIGHT.dest(right - BORDER, y).blit(poseStack, zIndex);
-        BOTTOM_LEFT.dest(x, bottom - BORDER).blit(poseStack, zIndex);
-        BOTTOM_RIGHT.dest(right - BORDER, bottom - BORDER).blit(poseStack, zIndex);
+        TOP_LEFT.dest(x, y).blit(poseStack);
+        TOP_RIGHT.dest(right - BORDER, y).blit(poseStack);
+        BOTTOM_LEFT.dest(x, bottom - BORDER).blit(poseStack);
+        BOTTOM_RIGHT.dest(right - BORDER, bottom - BORDER).blit(poseStack);
 
         var innerWidth = width - 2 * BORDER;
         var innerHeight = height - 2 * BORDER;
@@ -57,11 +57,11 @@ public final class BackgroundGenerator {
             TOP_MIDDLE.copy()
                     .srcWidth(tileWidth)
                     .dest(x + BORDER + cx, y)
-                    .blit(poseStack, zIndex);
+                    .blit(poseStack);
             BOTTOM_MIDDLE.copy()
                     .srcWidth(tileWidth)
                     .dest(x + BORDER + cx, y + height - BORDER)
-                    .blit(poseStack, zIndex);
+                    .blit(poseStack);
 
             // Both horziontally and vertically tiled
             for (var cy = 0; cy < innerHeight; cy += TILED_SIZE) {
@@ -70,7 +70,7 @@ public final class BackgroundGenerator {
                         .srcWidth(tileWidth)
                         .srcHeight(tileHeight)
                         .dest(x + BORDER + cx, y + BORDER + cy)
-                        .blit(poseStack, zIndex);
+                        .blit(poseStack);
             }
         }
 
@@ -80,11 +80,11 @@ public final class BackgroundGenerator {
             LEFT.copy()
                     .srcHeight(tileHeight)
                     .dest(x, y + BORDER + cy)
-                    .blit(poseStack, zIndex);
+                    .blit(poseStack);
             RIGHT.copy()
                     .srcHeight(tileHeight)
                     .dest(right - BORDER, y + BORDER + cy)
-                    .blit(poseStack, zIndex);
+                    .blit(poseStack);
         }
     }
 

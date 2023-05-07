@@ -2,8 +2,6 @@
 navigation:
   parent: website/index.md
   title: Quartz Fixtures
-item_ids:
-  - ae2:quartz_fixture
 ---
 
 ### Quartz Fixtures

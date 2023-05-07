@@ -36,8 +36,8 @@ import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.Settings;
-import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -107,7 +107,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         setTextContent(TEXT_ID_DIALOG_TITLE, title);
 
         final int size = this.status != null ? this.status.getEntries().size() : 0;
-        scrollbar.setRange(0, CraftingStatusTableRenderer.getScrollableRows(size), 1);
+        scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
 
         this.schedulingModeButton.set(this.menu.getSchedulingMode());
     }
@@ -134,7 +134,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public GenericStack getStackUnderMouse(double mouseX, double mouseY) {
+    public StackWithBounds getStackUnderMouse(double mouseX, double mouseY) {
         var hovered = table.getHoveredStack();
         if (hovered != null) {
             return hovered;
@@ -176,6 +176,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         }
 
         List<CraftingStatusEntry> sortedEntries = new ArrayList<>(entries.values());
+        Collections.sort(sortedEntries);
         this.status = new CraftingStatus(
                 true,
                 status.getElapsedTime(),

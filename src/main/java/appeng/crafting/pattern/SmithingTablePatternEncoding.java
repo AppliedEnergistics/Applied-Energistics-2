@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 
 import appeng.api.stacks.AEItemKey;
 
@@ -64,7 +64,7 @@ class SmithingTablePatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
-    public static void encode(CompoundTag tag, UpgradeRecipe recipe, AEItemKey base, AEItemKey addition,
+    public static void encode(CompoundTag tag, LegacyUpgradeRecipe recipe, AEItemKey base, AEItemKey addition,
             AEItemKey output, boolean allowSubstitution) {
         tag.put(NBT_BASE, base.toTag());
         tag.put(NBT_ADDITION, addition.toTag());

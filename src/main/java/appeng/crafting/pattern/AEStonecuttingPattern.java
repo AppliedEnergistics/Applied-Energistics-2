@@ -83,7 +83,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
             throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testFrame);
+        this.output = this.recipe.assemble(testFrame, level.registryAccess());
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -151,7 +151,8 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         var previousStack = testFrame.removeItemNoUpdate(0);
         testFrame.setItem(0, key.toStack());
 
-        var newResult = recipe.matches(testFrame, level) && ItemStack.matches(output, recipe.assemble(testFrame));
+        var newResult = recipe.matches(testFrame, level)
+                && ItemStack.matches(output, recipe.assemble(testFrame, level.registryAccess()));
 
         setTestResult(key, newResult);
 
@@ -192,7 +193,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
         testContainer.setItem(0, container.getItem(CRAFTING_GRID_SLOT));
 
         if (recipe.matches(testContainer, level)) {
-            return recipe.assemble(testContainer);
+            return recipe.assemble(testContainer, level.registryAccess());
         }
         return ItemStack.EMPTY;
     }

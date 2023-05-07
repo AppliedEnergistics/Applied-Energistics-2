@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Misc
-item_ids:
-  - ae2:security_station
 navigation:
   parent: website/index.md
   title: ME Security Terminal

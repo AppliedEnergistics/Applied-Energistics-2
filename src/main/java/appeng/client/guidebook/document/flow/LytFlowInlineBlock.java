@@ -61,9 +61,9 @@ public class LytFlowInlineBlock extends LytFlowContent implements InteractiveEle
     }
 
     @Override
-    public Optional<GuideTooltip> getTooltip() {
+    public Optional<GuideTooltip> getTooltip(float x, float y) {
         if (block instanceof InteractiveElement interactiveElement) {
-            return interactiveElement.getTooltip();
+            return interactiveElement.getTooltip(x, y);
         }
         return Optional.empty();
     }

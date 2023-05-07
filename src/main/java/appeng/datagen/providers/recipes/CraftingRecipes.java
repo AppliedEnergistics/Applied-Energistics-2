@@ -3,15 +3,19 @@ package appeng.datagen.providers.recipes;
 
 import java.util.function.Consumer;
 
+import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
-import appeng.api.ids.AEItemIds;
 import appeng.api.ids.AETags;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
@@ -367,12 +371,14 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_crystals/certus", has(ConventionTags.ALL_CERTUS_QUARTZ))
                 .save(consumer, AppEng.makeId("network/blocks/energy_energy_cell"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.VIBRATION_CHAMBER)
-                .pattern("aaa")
+                .pattern("ded")
                 .pattern("aba")
                 .pattern("aca")
                 .define('a', ConventionTags.IRON_INGOT)
                 .define('b', Items.FURNACE)
                 .define('c', AEBlocks.ENERGY_ACCEPTOR)
+                .define('d', ConventionTags.COPPER_INGOT)
+                .define('e', ConventionTags.FLUIX_CRYSTAL)
                 .unlockedBy("has_energy_acceptor", has(AEBlocks.ENERGY_ACCEPTOR))
                 .save(consumer, AppEng.makeId("network/blocks/energy_vibration_chamber"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.INSCRIBER)
@@ -896,7 +902,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))
                 .save(consumer, AppEng.makeId("tools/network_color_applicator"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.MEMORY_CARDS.item(AEColor.TRANSPARENT))
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.MEMORY_CARD)
                 .pattern("abb")
                 .pattern("cdc")
                 .define('a', AEItems.CALCULATION_PROCESSOR)
@@ -905,22 +911,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('d', ConventionTags.REDSTONE)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
                 .save(consumer, AppEng.makeId("tools/network_memory_card"));
-
-        for (var entry : AEItemIds.MEMORY_CARDS.entrySet()) {
-            if (entry.getKey().dye != null) {
-                ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.MEMORY_CARDS.item(entry.getKey()))
-                        .requires(ConventionTags.MEMORY_CARDS)
-                        .requires(ConventionTags.dye(entry.getKey().dye))
-                        .unlockedBy("has_memory_card", has(ConventionTags.MEMORY_CARDS))
-                        .save(consumer, AppEng.makeId("tools/network_memory_card_" + entry.getKey().registryPrefix));
-            }
-        }
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.MEMORY_CARDS.item(AEColor.TRANSPARENT))
-                .requires(ConventionTags.MEMORY_CARDS)
-                .requires(ConventionTags.CAN_REMOVE_COLOR)
-                .unlockedBy("has_memory_card", has(ConventionTags.MEMORY_CARDS))
-                .save(consumer, AppEng.makeId("network/cables/network_memory_card_clean"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.NETWORK_TOOL)
                 .requires(ConventionTags.ILLUMINATED_PANEL)
@@ -1388,7 +1378,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         }
         // Remove color from any colored cable
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.COVERED_CABLE.item(AEColor.TRANSPARENT))
-                .requires(ConventionTags.COVERED_CABLE)
+                .requires(tagExcept(ConventionTags.COVERED_CABLE, AEParts.COVERED_CABLE.item(AEColor.TRANSPARENT)))
                 .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_covered_cable", has(ConventionTags.COVERED_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/covered_fluix_clean"));
@@ -1419,7 +1409,8 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_fluix_covered_cable", has(AEParts.COVERED_CABLE.item(AEColor.TRANSPARENT)))
                 .save(consumer, AppEng.makeId("network/cables/dense_covered_fluix"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.COVERED_DENSE_CABLE.item(AEColor.TRANSPARENT))
-                .requires(ConventionTags.COVERED_DENSE_CABLE)
+                .requires(tagExcept(ConventionTags.COVERED_DENSE_CABLE,
+                        AEParts.COVERED_DENSE_CABLE.item(AEColor.TRANSPARENT)))
                 .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_covered_dense_cable", has(ConventionTags.COVERED_DENSE_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/dense_covered_fluix_clean"));
@@ -1451,7 +1442,8 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_fluix_smart_cable", has(AEParts.SMART_CABLE.item(AEColor.TRANSPARENT)))
                 .save(consumer, AppEng.makeId("network/cables/dense_smart_from_smart"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT))
-                .requires(ConventionTags.SMART_DENSE_CABLE)
+                .requires(tagExcept(ConventionTags.SMART_DENSE_CABLE,
+                        AEParts.SMART_DENSE_CABLE.item(AEColor.TRANSPARENT)))
                 .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_smart_dense_cable", has(ConventionTags.SMART_DENSE_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/dense_smart_fluix_clean"));
@@ -1476,7 +1468,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_crystals/fluix", has(ConventionTags.ALL_FLUIX))
                 .save(consumer, AppEng.makeId("network/cables/glass_fluix"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT))
-                .requires(ConventionTags.GLASS_CABLE)
+                .requires(tagExcept(ConventionTags.GLASS_CABLE, AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT)))
                 .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_glass_cable", has(ConventionTags.GLASS_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/glass_fluix_clean"));
@@ -1502,7 +1494,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_fluix_covered_cable", has(AEParts.COVERED_CABLE.item(AEColor.TRANSPARENT)))
                 .save(consumer, AppEng.makeId("network/cables/smart_fluix"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEParts.SMART_CABLE.item(AEColor.TRANSPARENT))
-                .requires(ConventionTags.SMART_CABLE)
+                .requires(tagExcept(ConventionTags.SMART_CABLE, AEParts.SMART_CABLE.item(AEColor.TRANSPARENT)))
                 .requires(ConventionTags.CAN_REMOVE_COLOR)
                 .unlockedBy("has_smart_cable", has(ConventionTags.SMART_CABLE))
                 .save(consumer, AppEng.makeId("network/cables/smart_fluix_clean"));
@@ -1530,4 +1522,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
         }
     }
 
+    private static Ingredient tagExcept(TagKey<Item> tag, ItemLike exception) {
+        return DefaultCustomIngredients.difference(Ingredient.of(tag), Ingredient.of(exception));
+    }
 }

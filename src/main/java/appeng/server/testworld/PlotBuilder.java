@@ -55,7 +55,7 @@ public interface PlotBuilder {
     }
 
     default CableBuilder cable(String bb) {
-        return cable(bb, AEParts.GLASS_CABLE, AEColor.TRANSPARENT);
+        return cable(bb, AEParts.SMART_CABLE, AEColor.TRANSPARENT);
     }
 
     default CableBuilder cable(String bb, ColoredItemDefinition<? extends IPartItem<?>> definition) {
@@ -139,11 +139,11 @@ public interface PlotBuilder {
         var leverPos = pos.relative(side);
         AttachFace face = AttachFace.WALL;
         if (side == Direction.UP) {
-            face = AttachFace.CEILING;
-            side = Direction.EAST;
-        } else if (side == Direction.DOWN) {
             face = AttachFace.FLOOR;
-            side = Direction.EAST;
+            side = Direction.NORTH;
+        } else if (side == Direction.DOWN) {
+            face = AttachFace.CEILING;
+            side = Direction.NORTH;
         }
         var state = Blocks.POLISHED_BLACKSTONE_BUTTON.defaultBlockState()
                 .setValue(ButtonBlock.FACE, face)

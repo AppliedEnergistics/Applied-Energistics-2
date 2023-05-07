@@ -2,17 +2,6 @@
 navigation:
   parent: website/index.md
   title: Quartz Tools
-item_ids:
-  - ae2:certus_quartz_pickaxe
-  - ae2:certus_quartz_axe
-  - ae2:certus_quartz_shovel
-  - ae2:certus_quartz_hoe
-  - ae2:certus_quartz_sword
-  - ae2:nether_quartz_pickaxe
-  - ae2:nether_quartz_axe
-  - ae2:nether_quartz_shovel
-  - ae2:nether_quartz_hoe
-  - ae2:nether_quartz_sword
 ---
 
 Basic tools can be made from both <ItemLink id="certus_quartz_crystal" /> and <ItemLink id="minecraft:quartz" />.

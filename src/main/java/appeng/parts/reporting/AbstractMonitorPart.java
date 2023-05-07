@@ -189,8 +189,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         if (player.getItemInHand(hand).isEmpty()) {
             this.isLocked = !this.isLocked;
-            player.sendSystemMessage(
-                    (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text());
+            player.displayClientMessage(
+                    (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text(), true);
             this.getHost().markForSave();
             this.getHost().markForUpdate();
         }
@@ -246,7 +246,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         poseStack.translate(0, 0.05, 0.5);
 
         BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,
-                0.4f, -0.23f, getColor().contrastTextColor);
+                0.4f, -0.23f, getColor().contrastTextColor, getLevel());
 
         poseStack.popPose();
 

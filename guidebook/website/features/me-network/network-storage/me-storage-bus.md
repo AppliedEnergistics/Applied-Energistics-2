@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Network Storage
-item_ids:
-  - ae2:storage_bus
 related:
   - Other Networked Storage
   - Storage Cells

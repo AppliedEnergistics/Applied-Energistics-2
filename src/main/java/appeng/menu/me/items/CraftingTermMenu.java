@@ -135,7 +135,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer));
+            this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer, level.registryAccess()));
         }
     }
 

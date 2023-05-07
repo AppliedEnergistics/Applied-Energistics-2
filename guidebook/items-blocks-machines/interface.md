@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Interface
   icon: interface
+  position: 210
 item_ids:
 - ae2:interface
 - ae2:cable_interface
@@ -15,10 +16,11 @@ Interfaces act like a small chest that fills itself from and empties to [network
 depending on what you set it to keep a stock of in its slots. It tries to complete this in a single gametick, so it can fill itself with
 or empty itself from up to 9 stacks per gametick, making it a fast method of import or export if you have fast item pipes.
 
-Interfaces also have a few special functionalities with other AE2 devices:
+Interfaces also have a few special functionalities with other AE2 [devices](../ae2-mechanics/devices.md):
 
 A <ItemLink id="storage_bus" /> on an unconfigured interface will present the entirety of the [network storage](../ae2-mechanics/import-export-storage.md)
 of its network to the storage bus' network, as if the interface's network was one big chest the storage bus was placed on.
+Setting an item to be stocked in the interface's filter slots disables this.
 
 ![Storage Bus On Interface](../assets/assemblies/interface_storage.png)
 
@@ -30,7 +32,7 @@ skipping the interface and not filling it with recipe batches, and more importan
 
 # Variants
 
-Interfaces come in 2 different variants: normal and flat. This affects which specific sides their inventories can be accessed
+Interfaces come in 2 different variants: normal and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides their inventories can be accessed
 from and that they provide a network connection to.
 
 - Normal interfaces allow things to push to, pull from, and access their inventory from all sides and, like most AE2 machines, act
@@ -48,11 +50,11 @@ them or dragged from JEI/REI, a wrench appears that lets you set the quantity.
 
 # Upgrades
 
-The interface supports the following upgrades:
+The interface supports the following [upgrades](upgrade_cards.md):
 
-- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level
+- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
 - <ItemLink id="crafting_card" /> lets the interface send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)
-  system to get the items it desires. It will pull the items from storage if possible, before maing a request
+  system to get the items it desires. It will pull the items from storage if possible, before making a request
   for a new item to be crafted.
 
 # Priority
@@ -60,7 +62,7 @@ The interface supports the following upgrades:
 Priorities can be set by clicking the wrench in the top-right of the GUI. Interfaces with higher priority will get their items
 before those with lower priority, 
 
-# Recipe
+# Recipes
 
 <Recipe id="network/blocks/interfaces_interface" />
 <RecipeFor id="cable_interface" />

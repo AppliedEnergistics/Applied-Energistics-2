@@ -4,9 +4,9 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.UpgradeRecipe;
 
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {
@@ -52,7 +52,7 @@ public final class CraftingRecipeUtil {
 
     private static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
         // Special handling for upgrade recipes since those do not override getIngredients
-        if (recipe instanceof UpgradeRecipe upgradeRecipe) {
+        if (recipe instanceof LegacyUpgradeRecipe upgradeRecipe) {
             var ingredients = NonNullList.withSize(2, Ingredient.EMPTY);
             ingredients.set(0, upgradeRecipe.base);
             ingredients.set(1, upgradeRecipe.addition);

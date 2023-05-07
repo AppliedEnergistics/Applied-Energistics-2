@@ -9,14 +9,14 @@ item_ids:
 ---
 # Quartz Glass
 
-![Quartz Glass](../assets/blocks/quartz_glass.png)
+<BlockImage id="quartz_glass" scale="8" />
 
 Mostly clear glass made with <ItemLink id="certus_quartz_dust"/>.
 Used to make many AE2 machines and items.
 
 There is a variant, vibrant quartz glass, that emits light.
 
-# Recipe
+# Recipes
 
 <RecipeFor id="quartz_glass" />
 <RecipeFor id="quartz_vibrant_glass" />

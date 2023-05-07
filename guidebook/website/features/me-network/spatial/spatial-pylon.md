@@ -1,8 +1,6 @@
 ---
 categories:
   - ME Network/Spatial
-item_ids:
-  - ae2:spatial_pylon
 navigation:
   parent: website/index.md
   title: Spatial Pylon

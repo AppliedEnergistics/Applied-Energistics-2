@@ -129,10 +129,6 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
         Objects.requireNonNull(player);
         Objects.requireNonNull(perm);
 
-        if (AEConfig.instance().serverOpsIgnoreSecurity() && player.hasPermissions(4)) {
-            return true;
-        }
-
         if (player instanceof ServerPlayer serverPlayer) {
             var playerID = IPlayerRegistry.getPlayerId(serverPlayer);
             return this.hasPermission(playerID, perm);
@@ -143,6 +139,19 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
 
     @Override
     public boolean hasPermission(int playerID, SecurityPermissions perm) {
+        Objects.requireNonNull(perm);
+
+        if (AEConfig.instance().serverOpsIgnoreSecurity()) {
+            var player = IPlayerRegistry.getConnected(myGrid.getPivot().getLevel().getServer(), playerID);
+            if (player != null && player.hasPermissions(4)) {
+                return true;
+            }
+        }
+
+        return innerHasPermission(playerID, perm);
+    }
+
+    private boolean innerHasPermission(int playerID, SecurityPermissions perm) {
         if (this.isAvailable()) {
             var perms = this.playerPerms.get(playerID);
 
@@ -150,7 +159,7 @@ public class SecurityService implements ISecurityService, IGridServiceProvider {
                 if (playerID == -1) {
                     return true; // no default permission -> allow!
                 } else {
-                    return this.hasPermission(-1, perm);
+                    return innerHasPermission(-1, perm);
                 }
             }
 

@@ -62,7 +62,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
             var icon = this.getIcon();
@@ -81,7 +81,15 @@ public abstract class IconButton extends Button implements ITooltip {
             RenderSystem.enableBlend(); // FIXME: This should be the _default_ state, but some vanilla widget disables
 
             if (isFocused()) {
-                fill(poseStack, getX() - 1, getY() - 1, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
+                // Draw 1px border with 4 quads, don't rely on the background as it can be disabled.
+                // top
+                fill(poseStack, getX() - 1, getY() - 1, getX() + width + 1, getY(), 0xFFFFFFFF);
+                // left
+                fill(poseStack, getX() - 1, getY(), getX(), getY() + height, 0xFFFFFFFF);
+                // right
+                fill(poseStack, getX() + width, getY(), getX() + width + 1, getY() + height, 0xFFFFFFFF);
+                // bottom
+                fill(poseStack, getX() - 1, getY() + height, getX() + width + 1, getY() + height + 1, 0xFFFFFFFF);
             }
 
             if (this.halfSize) {
@@ -90,21 +98,21 @@ public abstract class IconButton extends Button implements ITooltip {
                 poseStack.scale(0.5f, 0.5f, 1.f);
 
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(poseStack, getBlitOffset());
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(0, 0).blit(poseStack);
                 }
-                blitter.dest(0, 0).blit(poseStack, getBlitOffset());
+                blitter.dest(0, 0).blit(poseStack);
                 poseStack.popPose();
             } else {
                 if (!disableBackground) {
-                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
+                    Icon.TOOLBAR_BUTTON_BACKGROUND.getBlitter().dest(getX(), getY()).blit(poseStack);
                 }
-                icon.getBlitter().dest(getX(), getY()).blit(poseStack, getBlitOffset());
+                icon.getBlitter().dest(getX(), getY()).blit(poseStack);
             }
             RenderSystem.enableDepthTest();
 
             var item = this.getItemOverlay();
             if (item != null) {
-                Minecraft.getInstance().getItemRenderer().renderGuiItem(new ItemStack(item), getX(), getY());
+                Minecraft.getInstance().getItemRenderer().renderGuiItem(poseStack, new ItemStack(item), getX(), getY());
             }
         }
     }

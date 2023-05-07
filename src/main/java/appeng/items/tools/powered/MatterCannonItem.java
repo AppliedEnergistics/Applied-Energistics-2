@@ -32,7 +32,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Sheep;
@@ -72,6 +71,7 @@ import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEDamageTypes;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.packets.MatterCannonPacket;
@@ -118,7 +118,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
         var stack = p.getItemInHand(hand);
 
-        var direction = InteractionUtil.getPlayerRay(p, 32);
+        var direction = InteractionUtil.getPlayerRay(p, 255);
 
         if (fireCannon(level, stack, p, direction)) {
             return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
@@ -129,9 +129,6 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     public boolean fireCannon(Level level, ItemStack stack, Player player, LookDirection dir) {
-        if (getAECurrentPower(stack) < ENERGY_PER_SHOT) {
-            return false;
-        }
 
         var inv = StorageCells.getCellInventory(stack, null);
         if (inv == null) {
@@ -142,51 +139,55 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         var req = itemList.getFirstEntry(AEItemKey.class);
         if (req == null || !(req.getKey() instanceof AEItemKey itemKey)) {
             if (!level.isClientSide()) {
-                player.sendSystemMessage(PlayerMessages.AmmoDepleted.text());
+                player.displayClientMessage(PlayerMessages.AmmoDepleted.text(), true);
             }
             return true;
         }
 
-        int shots = 1;
+        int shotPower = 1;
         var cu = getUpgrades(stack);
         if (cu != null) {
-            shots += cu.getInstalledUpgrades(AEItems.SPEED_CARD);
+            shotPower += cu.getInstalledUpgrades(AEItems.SPEED_CARD);
         }
-        shots = Math.min(shots, (int) req.getLongValue());
+        shotPower = Math.min(shotPower, (int) req.getLongValue());
 
-        for (int sh = 0; sh < shots; sh++) {
-            extractAEPower(stack, ENERGY_PER_SHOT, Actionable.MODULATE);
+        if (getAECurrentPower(stack) < ENERGY_PER_SHOT) {
+            return false;
+        }
 
-            if (level.isClientSide()) {
-                // Up until this point, we can simulate on the client, after this,
-                // we need to run the server-side version
+        shotPower = Math.min(shotPower, (int) getAECurrentPower(stack) / ENERGY_PER_SHOT);
+
+        extractAEPower(stack, ENERGY_PER_SHOT * shotPower, Actionable.MODULATE);
+
+        if (level.isClientSide()) {
+            // Up until this point, we can simulate on the client, after this,
+            // we need to run the server-side version
+            return true;
+        }
+
+        var aeAmmo = inv.extract(req.getKey(), 1, Actionable.MODULATE, new PlayerSource(player));
+        if (aeAmmo == 0) {
+            return true;
+        }
+
+        var rayFrom = dir.getA();
+        var rayTo = dir.getB();
+        var direction = rayTo.subtract(rayFrom);
+        direction.normalize();
+
+        var x = rayFrom.x;
+        var y = rayFrom.y;
+        var z = rayFrom.z;
+
+        var ammoStack = itemKey.toStack();
+        var penetration = getPenetration(ammoStack) * shotPower; // 196.96655f;
+        if (penetration <= 0) {
+            if (ammoStack.getItem() instanceof PaintBallItem) {
+                shootPaintBalls(ammoStack, level, player, rayFrom, rayTo, direction, x, y, z);
                 return true;
             }
-
-            var aeAmmo = inv.extract(req.getKey(), 1, Actionable.MODULATE, new PlayerSource(player));
-            if (aeAmmo == 0) {
-                return true;
-            }
-
-            var rayFrom = dir.getA();
-            var rayTo = dir.getB();
-            var direction = rayTo.subtract(rayFrom);
-            direction.normalize();
-
-            var x = rayFrom.x;
-            var y = rayFrom.y;
-            var z = rayFrom.z;
-
-            var ammoStack = itemKey.toStack();
-            var penetration = getPenetration(ammoStack); // 196.96655f;
-            if (penetration <= 0) {
-                if (ammoStack.getItem() instanceof PaintBallItem) {
-                    shootPaintBalls(ammoStack, level, player, rayFrom, rayTo, direction, x, y, z);
-                    return true;
-                }
-            } else {
-                standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
-            }
+        } else {
+            standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
         }
 
         return true;
@@ -238,7 +239,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         try {
-            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, level,
+            AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
                     new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
                             (byte) (pos.getType() == Type.MISS ? 32
                                     : pos.getLocation().distanceToSqr(vec) + 1)));
@@ -258,7 +259,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     sh.setColor(col.dye);
                 }
 
-                entityHit.hurt(DamageSource.playerAttack(p), 0);
+                entityHit.hurt(level.damageSources().playerAttack(p), 0);
             } else if (pos instanceof BlockHitResult blockResult) {
                 final Direction side = blockResult.getDirection();
                 final BlockPos hitPos = blockResult.getBlockPos().relative(side);
@@ -330,7 +331,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             }
 
             try {
-                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 128, level,
+                AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
                         new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
                                 (float) direction.z, (byte) (pos.getType() == Type.MISS ? 32
                                         : pos.getLocation().distanceToSqr(vec) + 1)));
@@ -339,7 +340,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             }
 
             if (pos.getType() != Type.MISS) {
-                final DamageSource dmgSrc = new EntityDamageSource("matter_cannon", p);
+                final DamageSource dmgSrc = level.damageSources().source(AEDamageTypes.MATTER_CANNON, p);
 
                 if (pos instanceof EntityHitResult entityResult) {
                     Entity entityHit = entityResult.getEntity();

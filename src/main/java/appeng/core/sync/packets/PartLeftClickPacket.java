@@ -20,8 +20,11 @@ package appeng.core.sync.packets;
 
 import io.netty.buffer.Unpooled;
 
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.parts.IPartHost;
@@ -50,6 +53,12 @@ public class PartLeftClickPacket extends BasePacket {
 
     @Override
     public void serverPacketData(ServerPlayer player) {
+        // Fire event on the server to give protection mods a chance to cancel the interaction
+        if (AttackBlockCallback.EVENT.invoker().interact(player, player.getLevel(), InteractionHand.MAIN_HAND,
+                hitResult.getBlockPos(), hitResult.getDirection()) != InteractionResult.PASS) {
+            return;
+        }
+
         var localPos = hitResult.getLocation().subtract(
                 hitResult.getBlockPos().getX(),
                 hitResult.getBlockPos().getY(),

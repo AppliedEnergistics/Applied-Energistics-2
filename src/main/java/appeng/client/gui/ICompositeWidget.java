@@ -101,22 +101,20 @@ public interface ICompositeWidget {
      *
      * @param poseStack The current matrix stack. Is NOT transformed to the screen, but rather is at the origin of the
      *                  window.
-     * @param zIndex    The z-index to draw at.
      * @param bounds    The bounds of the current dialog in window coordinates.
      * @param mouse     The current mouse position relative to the dialogs origin.
      */
-    default void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    default void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
     }
 
     /**
      * Draw this composite widget on the foreground layer of the screen.
      *
      * @param poseStack The current matrix stack. Is transformed such that 0,0 is at the dialogs origin.
-     * @param zIndex    The z-index to draw at.
      * @param bounds    The bounds of the current dialog in dialog coordinates (x,y are 0).
      * @param mouse     The current mouse position relative to the dialogs origin.
      */
-    default void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    default void drawForegroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
     }
 
     /**

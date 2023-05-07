@@ -76,6 +76,7 @@ class InternalInventoryStorage extends SnapshotParticipant<InternalInventoryStor
             }
 
             currentSlot++;
+            int slot = currentSlot;
 
             return new StorageView<>() {
                 @Override
@@ -89,28 +90,27 @@ class InternalInventoryStorage extends SnapshotParticipant<InternalInventoryStor
 
                     updateSnapshots(transaction);
 
-                    return inventory.extractItem(currentSlot, (int) Math.min(Integer.MAX_VALUE, maxAmount), false)
-                            .getCount();
+                    return inventory.extractItem(slot, (int) Math.min(Integer.MAX_VALUE, maxAmount), false).getCount();
                 }
 
                 @Override
                 public boolean isResourceBlank() {
-                    return inventory.getStackInSlot(currentSlot).isEmpty();
+                    return inventory.getStackInSlot(slot).isEmpty();
                 }
 
                 @Override
                 public ItemVariant getResource() {
-                    return ItemVariant.of(inventory.getStackInSlot(currentSlot));
+                    return ItemVariant.of(inventory.getStackInSlot(slot));
                 }
 
                 @Override
                 public long getAmount() {
-                    return inventory.getStackInSlot(currentSlot).getCount();
+                    return inventory.getStackInSlot(slot).getCount();
                 }
 
                 @Override
                 public long getCapacity() {
-                    return inventory.getSlotLimit(currentSlot);
+                    return inventory.getSlotLimit(slot);
                 }
             };
         }

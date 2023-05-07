@@ -240,7 +240,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return false;
             }
 
-            ItemStack result = recipe.get().assemble(tempInv);
+            ItemStack result = recipe.get().assemble(tempInv, level.registryAccess());
             if (result.getItem() instanceof BlockItem) {
                 Block smeltedBlock = Block.byItem(result.getItem());
                 if (smeltedBlock == block) {

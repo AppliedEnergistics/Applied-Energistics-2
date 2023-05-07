@@ -2,9 +2,6 @@
 navigation:
   parent: website/index.md
   title: Cutting Knife
-item_ids:
-  - ae2:certus_quartz_cutting_knife
-  - ae2:nether_quartz_cutting_knife
 ---
 
 A cutting knife made out of <ItemLink id="certus_quartz_crystal"/> or <ItemLink id="minecraft:quartz"/>.

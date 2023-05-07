@@ -17,6 +17,8 @@
  */
 package appeng.mixins;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,9 +38,10 @@ import appeng.hooks.ItemRendererHooks;
 public abstract class ItemRendererMixin {
 
     @SuppressWarnings("ConstantConditions")
-    @Inject(method = "renderGuiItem(Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V", at = @At("HEAD"), cancellable = true)
-    protected void renderGuiItem(ItemStack stack, int x, int y, BakedModel model, CallbackInfo ci) {
-        if (ItemRendererHooks.onRenderGuiItemModel((ItemRenderer) (Object) this, stack, x, y)) {
+    @Inject(method = "renderGuiItem(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V", at = @At("HEAD"), cancellable = true)
+    protected void renderGuiItem(PoseStack poseStack, ItemStack stack, int x, int y, BakedModel model,
+            CallbackInfo ci) {
+        if (ItemRendererHooks.onRenderGuiItemModel((ItemRenderer) (Object) this, poseStack, stack, x, y)) {
             ci.cancel();
         }
     }

@@ -21,7 +21,7 @@ plugins {
     id 'maven-publish'
     id "com.diffplug.spotless" version "5.12.4"
     id "com.matthewprenger.cursegradle" version "1.4.0"
-    id "com.modrinth.minotaur" version "1.2.1"
+    id "com.modrinth.minotaur" version "2.+"
     id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
@@ -31,6 +31,7 @@ configurations {
         transitive = false
     }
     portaforgyImplementation.extendsFrom(compileClasspath)
+    buildtoolsImplementation.extendsFrom(compileClasspath)
 
     internal {
         visible = false
@@ -55,7 +56,7 @@ dependencies {
     internal("io.methvin:directory-watcher:${directory_watcher_version}") {
         transitive = false
     }
-    internal("org.yaml:snakeyaml:${snakeyaml_version}")  {
+    internal("org.yaml:snakeyaml:${snakeyaml_version}") {
         transitive = false
     }
 
@@ -63,7 +64,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
+        parchment("org.parchmentmc.data:parchment-1.19.3:2023.02.05@zip")
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -81,6 +82,9 @@ dependencies {
     }
 
     if (project.runtime_itemlist_mod == "jei") {
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
         modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
         }
@@ -266,7 +270,7 @@ sourceSets {
         compileClasspath += sourceSets.portaforgy.output
         runtimeClasspath += sourceSets.portaforgy.output
     }
-    crowdin
+    buildtools
 }
 
 test {
@@ -274,8 +278,8 @@ test {
 }
 
 dependencies {
-    crowdinImplementation 'de.siegmar:fastcsv:2.1.0'
-    crowdinImplementation 'com.google.code.gson:gson:2.8.9'
+    buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
+    buildtoolsImplementation 'com.google.code.gson:gson:2.8.9'
 }
 
 ////////////////////
@@ -345,13 +349,13 @@ shadowJar {
 
     manifest {
         attributes([
-                "Specification-Title"     : "Applied Energistics 2",
-                "Specification-Vendor"    : "TeamAppliedEnergistics",
-                "Specification-Version"   : "${project.version}",
-                "Implementation-Title"    : "${project.name}",
-                "Implementation-Version"  : "${project.version}",
-                "Implementation-Vendor"   : "TeamAppliedEnergistics",
-                "MixinConfigs"            : "ae2.mixins.json"
+                "Specification-Title"   : "Applied Energistics 2",
+                "Specification-Vendor"  : "TeamAppliedEnergistics",
+                "Specification-Version" : "${project.version}",
+                "Implementation-Title"  : "${project.name}",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" : "TeamAppliedEnergistics",
+                "MixinConfigs"          : "ae2.mixins.json"
         ])
     }
 
@@ -482,24 +486,22 @@ spotless {
     }
 }
 
-import com.modrinth.minotaur.TaskModrinthUpload
-
 ////////////////
 // Crowdin
 task uploadToCrowdin(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_source'
     workingDir "."
 }
 task uploadTranslations(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'upload_translations'
     workingDir "."
 }
 task downloadFromCrowdin(type: JavaExec) {
-    classpath = sourceSets.crowdin.runtimeClasspath
+    classpath = sourceSets.buildtools.runtimeClasspath
     mainClass = 'Crowdin'
     args 'update_translations'
     workingDir "."
@@ -540,21 +542,15 @@ if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.ver
 ////////////////
 // Modrinth
 
-import com.modrinth.minotaur.request.VersionType
-
-if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
-    def mrVersionType = VersionType.RELEASE
+if (System.getenv("MODRINTH") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
+    def mrVersionType = "release"
     if (ext.isAlpha) {
-        mrVersionType = VersionType.ALPHA
+        mrVersionType = "alpha"
     } else if (ext.isBeta) {
-        mrVersionType = VersionType.BETA
+        mrVersionType = "beta"
     }
 
-    task publishModrinth(type: TaskModrinthUpload) {
-        onlyIf {
-            System.getenv("MODRINTH")
-        }
-
+    modrinth {
         token = System.getenv("MODRINTH")
         changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
         projectId = 'XxWD5pD3'
@@ -562,10 +558,9 @@ if (!version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
         versionNumber = "fabric-" + project.version
         versionType = mrVersionType
         uploadFile = remapJar
-        addGameVersion(project.minecraft_version)
-        addLoader('fabric')
+        gameVersions = [ project.minecraft_version ]
+        loaders = [ "fabric" ]
     }
-    publishModrinth.dependsOn remapJar
 }
 
 ////////////////
@@ -584,4 +579,12 @@ if (System.getProperty("idea.sync.active") == "true") {
 // Gradle module metadata contains mapped dependencies, making our artifacts unconsumable
 tasks.withType(GenerateModuleMetadata) {
     enabled = false
+}
+
+check.dependsOn tasks.register('validateResources', JavaExec) {
+    group = "verification"
+    classpath = sourceSets.buildtools.runtimeClasspath
+    mainClass = 'ValidateResourceIds'
+    workingDir "."
+    args "guidebook"
 }

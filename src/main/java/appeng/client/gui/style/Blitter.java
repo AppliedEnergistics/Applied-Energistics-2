@@ -104,8 +104,8 @@ public final class Blitter {
      */
     public static Blitter sprite(TextureAtlasSprite sprite) {
         // We use this convoluted method to convert from UV in the range of [0,1] back to pixel values with a
-        // fictitious reference size of Integer.MAX_VALUE. This is converted back to UV later when we actually blit.
-        final int refSize = Integer.MAX_VALUE;
+        // fictitious reference size of a large integer. This is converted back to UV later when we actually blit.
+        final int refSize = Integer.MAX_VALUE / 2; // Don't use max int to prevent overflows after inexact conversions.
 
         return new Blitter(sprite.atlasLocation(), refSize, refSize)
                 .src(
@@ -238,13 +238,7 @@ public final class Blitter {
 
         return color(r, g, b);
     }
-
-    public void blit(int zIndex) {
-        // If we're not using a specific pose stack for transforms, we pass an empty
-        // one to just get an identity transform
-        blit(new PoseStack(), zIndex);
-    }
-
+  
     public void blit(PoseStack poseStack, int zIndex) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.texture);
@@ -278,19 +272,19 @@ public final class Blitter {
 
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex(matrix, x1, y2, zIndex)
+        bufferbuilder.vertex(matrix, x1, y2, 0)
                 .uv(minU, maxV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x2, y2, zIndex)
+        bufferbuilder.vertex(matrix, x2, y2, 0)
                 .uv(maxU, maxV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x2, y1, zIndex)
+        bufferbuilder.vertex(matrix, x2, y1, 0)
                 .uv(maxU, minV)
                 .color(r, g, b, a)
                 .endVertex();
-        bufferbuilder.vertex(matrix, x1, y1, zIndex)
+        bufferbuilder.vertex(matrix, x1, y1, 0)
                 .uv(minU, minV)
                 .color(r, g, b, a)
                 .endVertex();
@@ -301,7 +295,6 @@ public final class Blitter {
         } else {
             RenderSystem.disableBlend();
         }
-        RenderSystem.enableTexture();
         BufferUploader.drawWithShader(bufferbuilder.end());
     }
 

@@ -337,8 +337,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
         if (target.getType() != Type.BLOCK) {
             return false;
         }
-        BlockPos blockPos = new BlockPos(target.getLocation().x, target.getLocation().y,
-                target.getLocation().z);
+        BlockPos blockPos = BlockPos.containing(target.getLocation().x, target.getLocation().y, target.getLocation().z);
 
         ICableBusContainer cb = cb(level, blockPos);
 

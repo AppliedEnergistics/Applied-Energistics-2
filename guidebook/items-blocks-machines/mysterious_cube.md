@@ -9,7 +9,7 @@ item_ids:
 ---
 # The Mysterious Cube
 
-![Mysterious Cube](../assets/blocks/mysterious_cube.png)
+<BlockImage id="mysterious_cube" scale="8" />
 
 Remember when you had to find a bunch of meteors to find all the presses? No more! Now meteorites come with a Mysterious Cube.
 

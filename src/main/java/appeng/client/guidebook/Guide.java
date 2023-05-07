@@ -150,6 +150,7 @@ public final class Guide implements PageCollection {
                     Runnable::run).get();
             stuff.updateRegistryTags(layeredAccess.compositeAccess());
             Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
+            Platform.fallbackClientRegistryAccess = layeredAccess.compositeAccess();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

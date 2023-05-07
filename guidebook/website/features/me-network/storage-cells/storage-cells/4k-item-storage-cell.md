@@ -1,8 +1,6 @@
 ---
 categories:
   - Storage Cells/Storage Cells
-item_ids:
-  - ae2:item_storage_cell_4k
 related:
   - Storage Cell Parts
   - Storage Cells

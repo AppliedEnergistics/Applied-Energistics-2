@@ -41,11 +41,9 @@ final class TooltipFrame extends GuiComponent {
                 q);
 
         RenderSystem.enableDepthTest();
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         BufferUploader.drawWithShader(bufferBuilder.end());
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 }

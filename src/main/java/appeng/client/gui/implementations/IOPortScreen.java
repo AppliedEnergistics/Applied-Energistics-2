@@ -60,6 +60,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
         super.updateBeforeRender();
 
         this.redstoneMode.set(this.menu.getRedStoneMode());
+        this.redstoneMode.setVisibility(menu.hasUpgrade(AEItems.REDSTONE_CARD));
         this.operationMode.set(this.menu.getOperationMode());
         this.fullMode.set(this.menu.getFullMode());
     }
@@ -69,8 +70,8 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
             int mouseY, float partialTicks) {
         super.drawBG(poseStack, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        this.drawItem(offsetX + 66 - 8, offsetY + 17, AEItems.ITEM_CELL_1K.stack());
-        this.drawItem(offsetX + 94 + 8, offsetY + 17, AEBlocks.DRIVE.stack());
+        this.drawItem(poseStack, offsetX + 66 - 8, offsetY + 17, AEItems.ITEM_CELL_1K.stack());
+        this.drawItem(poseStack, offsetX + 94 + 8, offsetY + 17, AEBlocks.DRIVE.stack());
     }
 
 }

@@ -3,30 +3,39 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Inscriber
   icon: inscriber
+  position: 310
 item_ids:
 - ae2:inscriber
 ---
 # The Inscriber
 
-![A picture of an inscriber.](../assets/blocks/inscriber.png)
+<BlockImage id="inscriber" scale="8" />
 
 The inscriber is used to inscribe circuits and [processors](processors.md) using [presses](presses.md), and to crush various items into dust.
-It can accept either AE2's power (AE) or Fabric/Forge Energy (E/FE). It is sided, so inserting items from different sides
-inserts them into different slots in its inventory. To facilitate this, it can be rotated with a <ItemLink id="certus_quartz_wrench" />.
+It can accept either AE2's power (AE) or Fabric/Forge Energy (E/FE). It can be sided, such that inserting items from different sides
+inserts them into different slots in its inventory. To facilitate this, it can be rotated with a <ItemLink id="certus_quartz_wrench" />. 
+It can also be set to push the results of crafts to adjacent inventories.
 
 The 4 circuit presses are used to craft [processors](processors.md)
-  <ItemGrid>
-  <ItemIcon id="silicon_press" />
-  <ItemIcon id="logic_processor_press" />
-  <ItemIcon id="calculation_processor_press" />
-  <ItemIcon id="engineering_processor_press" />
-  </ItemGrid>
+
+<Row>
+<ItemImage id="silicon_press" scale="4" /><ItemImage id="logic_processor_press" scale="4" />
+<ItemImage id="calculation_processor_press" scale="4" /><ItemImage id="engineering_processor_press" scale="4" />
+</Row>
+
 While the name press can be used to name blocks similar to an anvil, useful for labeling things in a <ItemLink id="pattern_access_terminal" />.
-  <ItemGrid>
-  <ItemIcon id="name_press" />
-  </ItemGrid>
+
+<ItemImage id="name_press" scale="4" />
+
+# Settings
+
+- The inscriber can be set to be sided (as explained below) or allow inputs to any slot from any side, with an internal filter deciding
+what goes where. While in non-sided mode, items cannot be extracted from the top and bottom slots.
+- The inscriber can be set to push items into adjacent inventories.
 
 # The GUI And Sidedness
+
+When in sided mode, the inscriber filters what goes where by which side you insert or extract from.
 
 ![Inscriber GUI](../assets/diagrams/inscriber_gui.png) ![Inscriber Sides](../assets/diagrams/inscriber_sides.png)
 
@@ -44,9 +53,11 @@ As an example, the sidedness and rotateability mean you can semi-automate inscri
 
 ![Press and Dust Automation](../assets/assemblies/inscriber_hopper_1.png) ![Final Processor Assembly Automation](../assets/assemblies/inscriber_hopper_2.png)
 
+Or just pipe into and out of the inscriber when in non-sided mode.
+
 # Upgrades
 
-The inscriber supports the following upgrades:
+The inscriber supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="speed_card" />
 

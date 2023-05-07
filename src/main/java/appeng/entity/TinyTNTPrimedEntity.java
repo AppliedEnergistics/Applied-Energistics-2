@@ -29,7 +29,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -149,7 +148,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
         final List<Entity> list = this.level.getEntities(this, area);
 
         for (Entity e : list) {
-            e.hurt(DamageSource.explosion(ex), 6);
+            e.hurt(level.damageSources().explosion(ex), 6);
         }
 
         if (AEConfig.instance().isTinyTntBlockDamageEnabled()) {

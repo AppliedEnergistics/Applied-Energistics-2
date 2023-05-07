@@ -47,11 +47,14 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
 
     private final StorageTier tier;
     private final AEKeyType keyType;
+    private final int totalTypes;
 
-    public PortableCellItem(AEKeyType keyType, MenuType<?> menuType, StorageTier tier, Properties props) {
-        super(menuType, props);
+    public PortableCellItem(AEKeyType keyType, int totalTypes, MenuType<?> menuType, StorageTier tier,
+            Properties props, int defaultColor) {
+        super(menuType, props, defaultColor);
         this.tier = tier;
         this.keyType = keyType;
+        this.totalTypes = totalTypes;
     }
 
     @Override
@@ -89,7 +92,7 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
 
     @Override
     public int getTotalTypes(ItemStack cellItem) {
-        return 63 - this.tier.index() * 9;
+        return this.totalTypes;
     }
 
     @Override

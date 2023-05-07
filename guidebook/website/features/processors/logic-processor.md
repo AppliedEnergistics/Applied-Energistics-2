@@ -1,6 +1,4 @@
 ---
-item_ids:
-  - ae2:logic_processor
 categories:
   - Processors
   - Processor Press Plates

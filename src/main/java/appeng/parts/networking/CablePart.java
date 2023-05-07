@@ -25,6 +25,8 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.netty.buffer.Unpooled;
+
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -243,7 +245,7 @@ public class CablePart extends AEBasePart implements ICablePart {
         boolean[] writeChannels = new boolean[Direction.values().length];
         byte[] channelsPerSide = new byte[Direction.values().length];
 
-        for (Direction thisSide : Direction.values()) {
+        for (var thisSide : Direction.values()) {
             var part = this.getHost().getPart(thisSide);
             if (part != null) {
                 int channels = 0;
@@ -350,7 +352,13 @@ public class CablePart extends AEBasePart implements ICablePart {
     public void writeVisualStateToNBT(CompoundTag data) {
         super.writeVisualStateToNBT(data);
 
-        updateConnections();
+        // Hacky hacky hacky, but it works. Refreshes the client-side state even if we're on the server
+        if (!isClientSide()) {
+            updateConnections();
+            var packet = new FriendlyByteBuf(Unpooled.buffer());
+            writeToStream(packet);
+            readFromStream(packet);
+        }
 
         for (var side : Direction.values()) {
             if (connections.contains(side)) {

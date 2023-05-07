@@ -188,7 +188,7 @@ public class QuantumCluster implements IAECluster, IActionHost {
             return false;
         }
 
-        return this.center.isPowered() && this.hasQES();
+        return this.hasQES();
     }
 
     private IGridNode getNode() {

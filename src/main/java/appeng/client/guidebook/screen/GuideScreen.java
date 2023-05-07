@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
@@ -23,6 +24,7 @@ import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
@@ -37,6 +39,7 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
 public class GuideScreen extends Screen {
@@ -116,7 +119,7 @@ public class GuideScreen extends Screen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         updateNavigationButtons();
 
-        renderBackground(poseStack);
+        renderSkyStoneBackground(poseStack);
 
         // Set scissor rectangle to rect that we show the document in
         var documentRect = getDocumentRect();
@@ -145,12 +148,14 @@ public class GuideScreen extends Screen {
 
         disableScissor();
 
-        // renderHoverOutline(document, context);
+        if (AEConfig.instance().isShowDebugGuiOverlays()) {
+            renderHoverOutline(document, context);
+        }
 
         poseStack.popPose();
 
         poseStack.pushPose();
-        poseStack.translate(0, 0, 100);
+        poseStack.translate(0, 0, 200);
 
         super.render(poseStack, mouseX, mouseY, partialTick);
 
@@ -163,17 +168,24 @@ public class GuideScreen extends Screen {
 
     }
 
+    private void renderSkyStoneBackground(PoseStack poseStack) {
+        RenderSystem.setShaderTexture(0, AppEng.makeId("textures/block/sky_stone_block.png"));
+        RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1.0F);
+        blit(poseStack, 0, 0, 0, 0.0F, 0.0F, this.width, this.height, 32, 32);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
     private void renderTooltip(PoseStack poseStack, int x, int y) {
         var docPos = getDocumentPoint(x, y);
         if (docPos == null) {
             return;
         }
 
-        var tooltip = dispatchInteraction(docPos.getX(), docPos.getY(), InteractiveElement::getTooltip)
-                .orElse(null);
-        if (tooltip != null) {
-            renderTooltip(poseStack, tooltip, x, y);
-        }
+        dispatchInteraction(
+                docPos.getX(),
+                docPos.getY(),
+                el -> el.getTooltip(docPos.getX(), docPos.getY()))
+                        .ifPresent(tooltip -> renderTooltip(poseStack, tooltip, x, y));
     }
 
     private static void renderHoverOutline(LytDocument document, SimpleRenderContext context) {
@@ -216,6 +228,14 @@ public class GuideScreen extends Screen {
                             });
                 }
             }
+
+            // Render the class-name of the hovered node to make it easier to identify
+            var bounds = hoveredElement.node().getBounds();
+            context.renderText(
+                    hoveredElement.node().getClass().getName(),
+                    DefaultStyles.BASE_STYLE,
+                    bounds.x(),
+                    bounds.bottom());
         }
     }
 
@@ -477,9 +497,6 @@ public class GuideScreen extends Screen {
 
         TooltipFrame.render(poseStack, x, y, frameWidth, frameHeight, zOffset);
 
-        float prevZOffset = itemRenderer.blitOffset;
-        itemRenderer.blitOffset = zOffset;
-
         if (!tooltip.getIcon().isEmpty()) {
             x += 18;
         }
@@ -497,20 +514,22 @@ public class GuideScreen extends Screen {
         }
 
         bufferSource.endBatch();
-        poseStack.popPose();
 
         // Then render tooltip decorations, items, etc.
         currentY = y;
         if (!tooltip.getIcon().isEmpty()) {
-            itemRenderer.renderGuiItem(tooltip.getIcon(), x - 18, y);
+            poseStack.pushPose();
+            poseStack.translate(0, 0, zOffset);
+            itemRenderer.renderGuiItem(poseStack, tooltip.getIcon(), x - 18, y);
+            poseStack.popPose();
         }
 
         for (int i = 0; i < clientLines.size(); ++i) {
             var line = clientLines.get(i);
-            line.renderImage(minecraft.font, x, currentY, poseStack, this.itemRenderer, zOffset);
+            line.renderImage(minecraft.font, x, currentY, poseStack, this.itemRenderer);
             currentY += line.getHeight() + (i == 0 ? 2 : 0);
         }
-        this.itemRenderer.blitOffset = prevZOffset;
+        poseStack.popPose();
     }
 
     private void updatePageLayout() {

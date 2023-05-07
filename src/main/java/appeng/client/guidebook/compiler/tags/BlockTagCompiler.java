@@ -3,6 +3,7 @@ package appeng.client.guidebook.compiler.tags;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.TagCompiler;
 import appeng.client.guidebook.document.block.LytBlockContainer;
+import appeng.client.guidebook.document.flow.InlineBlockAlignment;
 import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
@@ -19,8 +20,16 @@ public abstract class BlockTagCompiler implements TagCompiler {
     @Override
     public final void compileFlowContext(PageCompiler compiler, LytFlowParent parent, MdxJsxTextElement el) {
         compile(compiler, node -> {
+            var alignmentAttr = el.getAttributeString("float", "none");
+            var alignment = switch (alignmentAttr) {
+                case "left" -> InlineBlockAlignment.FLOAT_LEFT;
+                case "right" -> InlineBlockAlignment.FLOAT_RIGHT;
+                default -> InlineBlockAlignment.INLINE;
+            };
+
             var inlineBlock = new LytFlowInlineBlock();
             inlineBlock.setBlock(node);
+            inlineBlock.setAlignment(alignment);
             parent.append(inlineBlock);
         }, el);
     }

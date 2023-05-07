@@ -34,9 +34,9 @@ public enum ItemModText implements LocalizationEnum {
     FORTUNE_APPLIES("Fortune enchantment applies"),
     IMPERFECT_BUDDING_QUARTZ_DECAYS("Imperfect budding quartz has a chance to decay when buds grow."),
     DECAY_CHANCE("%d%% chance"),
-    BUDDING_QUARTZ_DECAYS_WHEN_BROKEN("Budding quartz decays into quartz when broken."),
-    SILK_TOUCH_CAUSES_LESS_DECAY("Silk touch causes less decay"),
-    SPATIAL_IO_CAUSES_NONE("Spatial I/O causes none"),
+    BUDDING_QUARTZ_DECAYS_WHEN_BROKEN("Budding quartz decays when broken."),
+    SILK_TOUCH_PREVENTS_DECAY_FOR_IMPERFECT("Silk touch prevents decay for imperfect budding quartz."),
+    SPATIAL_IO_NEVER_CAUSES_ANY_DECAY("Spatial I/O never causes any decay."),
     BUDDING_QUARTZ_CREATION_AND_WORLDGEN(
             "Budding quartz can be found in meteorites, or be regenerated using charged quartz in water."),
     FLAWLESS_BUDDING_QUARTZ_DESCRIPTION(

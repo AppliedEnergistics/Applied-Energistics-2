@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Cable Anchor
   icon: cable_anchor
+  position: 110
 item_ids:
 - ae2:cable_anchor
 ---

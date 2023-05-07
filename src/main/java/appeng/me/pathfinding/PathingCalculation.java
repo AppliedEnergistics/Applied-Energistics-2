@@ -41,9 +41,14 @@ public class PathingCalculation {
      */
     private final Set<IPathItem> multiblocksWithChannel = new HashSet<>();
     /**
-     * The BFS queue: all the path items that need to be visited on the next tick.
+     * The BFS queues: all the path items that need to be visited on the next tick. Dense queue is prioritized to have
+     * the behavior of dense cables extending the controller faces, then cables, then normal devices.
      */
-    private List<IPathItem> queue = new ArrayList<>();
+    private List<IPathItem>[] queues = new List[] {
+            new ArrayList<>(), // 0: dense cable queue
+            new ArrayList<>(), // 1: normal cable queue
+            new ArrayList<>() // 2: non-cable queue
+    };
     /**
      * Path items that are either in the queue, or have been processed already.
      */
@@ -67,18 +72,48 @@ public class PathingCalculation {
             for (var gcc : node.getConnections()) {
                 var gc = (GridConnection) gcc;
                 if (!(gc.getOtherSide(node).getOwner() instanceof ControllerBlockEntity)) {
-                    visited.add(gc);
-                    queue.add(gc);
+                    enqueue(gc, 0);
                     gc.setControllerRoute((GridNode) node);
                 }
             }
         }
     }
 
-    public void step() {
-        final List<IPathItem> oldOpen = this.queue;
-        this.queue = new ArrayList<>();
+    private void enqueue(IPathItem pathItem, int queueIndex) {
+        visited.add(pathItem);
 
+        int possibleIndex;
+
+        if (pathItem instanceof GridConnection) {
+            // Grid connection does not have flags, allow any queue.
+            possibleIndex = 0;
+        } else if (pathItem.hasFlag(GridFlags.DENSE_CAPACITY)) {
+            // Dense queue if possible.
+            possibleIndex = 0;
+        } else if (pathItem.hasFlag(GridFlags.PREFERRED)) {
+            // Cable queue if possible.
+            possibleIndex = 1;
+        } else {
+            possibleIndex = 2;
+        }
+
+        int index = Math.max(possibleIndex, queueIndex);
+        queues[index].add(pathItem);
+    }
+
+    public void step() {
+        // Keep processing dense queue as long as it's not empty.
+        for (int i = 0; i < 3; ++i) {
+            if (!queues[i].isEmpty()) {
+                List<IPathItem> oldOpen = queues[i];
+                queues[i] = new ArrayList<>();
+                processQueue(oldOpen, i);
+                break;
+            }
+        }
+    }
+
+    private void processQueue(List<IPathItem> oldOpen, int queueIndex) {
         for (IPathItem i : oldOpen) {
             for (IPathItem pi : i.getPossibleOptions()) {
                 if (!this.visited.contains(pi)) {
@@ -110,8 +145,7 @@ public class PathingCalculation {
                         }
                     }
 
-                    this.visited.add(pi);
-                    this.queue.add(pi);
+                    enqueue(pi, queueIndex);
                 }
             }
         }
@@ -152,7 +186,12 @@ public class PathingCalculation {
     }
 
     public boolean isFinished() {
-        return queue.isEmpty();
+        for (List<IPathItem> queue : queues) {
+            if (!queue.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int getChannelsInUse() {

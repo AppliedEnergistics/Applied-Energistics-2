@@ -3,14 +3,6 @@ navigation:
   parent: website/index.md
   title: Network Energy
   icon: energy_cell
-item_ids:
-  - ae2:energy_acceptor
-  - ae2:cable_energy_acceptor
-  - ae2:creative_energy_cell
-  - ae2:energy_cell
-  - ae2:dense_energy_cell
-  - ae2:vibration_chamber
-  - ae2:quartz_fiber
 ---
 
 The ME Network needs energy to function. This energy is measured in AE per tick.

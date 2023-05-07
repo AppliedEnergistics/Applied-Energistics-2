@@ -89,10 +89,13 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
         if (this.terminal != null) {
+            final double extracted = Math.min(amt, this.terminal.getAECurrentPower(getItemStack()));
+
             if (mode == Actionable.SIMULATE) {
-                return this.terminal.hasPower(getPlayer(), amt, getItemStack()) ? amt : 0;
+                return extracted;
             }
-            return this.terminal.usePower(getPlayer(), amt, getItemStack()) ? amt : 0;
+
+            return this.terminal.usePower(getPlayer(), extracted, getItemStack()) ? extracted : 0;
         }
         return 0.0;
     }
@@ -116,12 +119,26 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
         if (this.targetGrid != null) {
             if (this.myWap != null) {
-                return this.myWap.getGrid() == this.targetGrid && this.testWap(this.myWap);
+                // If the grid changed, give up
+                if (this.myWap.getGrid() != this.targetGrid) {
+                    return false;
+                }
+
+                if (this.testWap(this.myWap)) {
+                    // Still in range of current AP
+                    return true;
+                }
             }
 
+            // else: Did not have an AP yet, or no longer in range of current AP. Try to find one we are in range of.
+
             for (var wap : this.targetGrid.getMachines(WirelessBlockEntity.class)) {
-                if (this.testWap(wap)) {
+                // `this.myWap` either already returned false for `this.testWap(this.myWap)`, or is null. no need to
+                // check it again
+                if (wap != this.myWap && this.testWap(wap)) {
                     this.myWap = wap;
+                    // break now, if multiple APs are in range we just take the first one we find
+                    break;
                 }
             }
 
@@ -164,7 +181,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     private boolean checkWirelessRange(AbstractContainerMenu menu) {
         if (!rangeCheck()) {
             if (!isClientSide()) {
-                getPlayer().sendSystemMessage(PlayerMessages.OutOfRange.text());
+                getPlayer().displayClientMessage(PlayerMessages.OutOfRange.text(), true);
             }
             return false;
         }

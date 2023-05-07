@@ -110,7 +110,7 @@ public class SpatialStorageCommand implements ISubCommand {
             throw new CommandRuntimeException(PlayerMessages.NotInSpatialStorageLevel.text());
         }
 
-        BlockPos playerPos = new BlockPos(source.getPosition());
+        BlockPos playerPos = BlockPos.containing(source.getPosition());
         int x = playerPos.getX();
         int z = playerPos.getZ();
 
@@ -338,7 +338,7 @@ public class SpatialStorageCommand implements ISubCommand {
             throw new CommandRuntimeException(PlayerMessages.NotInSpatialStorageLevel.text());
         }
 
-        BlockPos playerPos = new BlockPos(source.getPosition());
+        BlockPos playerPos = BlockPos.containing(source.getPosition());
         int x = playerPos.getX();
         int z = playerPos.getZ();
 

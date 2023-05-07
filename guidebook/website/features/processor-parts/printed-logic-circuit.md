@@ -1,8 +1,6 @@
 ---
 categories:
   - Processor Parts
-item_ids:
-  - ae2:printed_logic_processor
 related:
   - Processors
   - Processor Press Plates

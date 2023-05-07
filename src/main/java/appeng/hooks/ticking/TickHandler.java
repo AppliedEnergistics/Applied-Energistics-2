@@ -348,7 +348,7 @@ public class TickHandler {
         for (long packedChunkPos : workSet) {
             // Readies all of our block entities in this chunk as soon as it can tick BEs
             // The following test is equivalent to ServerLevel#isPositionTickingWithEntitiesLoaded
-            if (level.shouldTickBlocksAt(packedChunkPos)) {
+            if (Platform.areBlockEntitiesTicking(level, packedChunkPos)) {
                 // Take the currently waiting block entities for this chunk and ready them all. Should more block
                 // entities be added to this chunk while we're working on it, a new list will be added automatically and
                 // we'll work on this chunk again next tick.
@@ -367,8 +367,11 @@ public class TickHandler {
                             info.callInit();
                         } catch (Throwable t) {
                             CrashReport crashReport = CrashReport.forThrowable(t, "Readying AE2 block entity");
-                            info.blockEntity()
-                                    .fillCrashReportCategory(crashReport.addCategory("Block entity being readied"));
+
+                            var category = crashReport.addCategory("Block entity being readied");
+                            category.setDetail("World", () -> level.dimension().location().toString());
+                            info.blockEntity().fillCrashReportCategory(category);
+
                             throw new ReportedException(crashReport);
                         }
                     }

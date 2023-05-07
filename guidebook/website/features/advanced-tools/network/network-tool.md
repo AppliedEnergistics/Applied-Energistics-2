@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Network Tools
-item_ids:
-  - ae2:network_tool
 navigation:
   parent: website/index.md
   title: Network Tool

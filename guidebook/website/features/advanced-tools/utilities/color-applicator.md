@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Utilities
-item_ids:
-  - ae2:color_applicator
 navigation:
   parent: website/index.md
   title: Color Applicator

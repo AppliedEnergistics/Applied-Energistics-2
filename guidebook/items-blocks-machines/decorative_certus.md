@@ -35,11 +35,21 @@ item_ids:
 <ItemLink id="quartz_block" />s can be crafted, smelted, and stonecut into some decorative building blocks
 
 # Recipes
-
-<RecipeFor id="cut_quartz_block" /> <RecipeFor id="smooth_quartz_block" /> <RecipeFor id="quartz_bricks" /> <RecipeFor id="quartz_pillar" /> <RecipeFor id="chiseled_quartz_block" />
-
-<RecipeFor id="quartz_stairs" /> <RecipeFor id="cut_quartz_stairs" /> <RecipeFor id="smooth_quartz_stairs" /> <RecipeFor id="quartz_brick_stairs" /> <RecipeFor id="quartz_pillar_stairs" /> <RecipeFor id="chiseled_quartz_stairs" />
-
-<RecipeFor id="quartz_wall" /> <RecipeFor id="cut_quartz_wall" /> <RecipeFor id="smooth_quartz_wall" /> <RecipeFor id="quartz_brick_wall" /> <RecipeFor id="quartz_pillar_wall" /> <RecipeFor id="chiseled_quartz_wall" />
-
-<RecipeFor id="quartz_slab" /> <RecipeFor id="cut_quartz_slab" /> <RecipeFor id="smooth_quartz_slab" /> <RecipeFor id="quartz_brick_slab" /> <RecipeFor id="quartz_pillar_slab" /> <RecipeFor id="chiseled_quartz_slab" />
+<Column>
+  <Row gap="0">
+  <RecipeFor id="cut_quartz_block" /><RecipeFor id="smooth_quartz_block" /><RecipeFor id="quartz_bricks" />
+  <RecipeFor id="quartz_pillar" /><RecipeFor id="chiseled_quartz_block" />
+  </Row>
+  
+  <Row><RecipeFor id="quartz_stairs" /><RecipeFor id="cut_quartz_stairs" /><RecipeFor id="smooth_quartz_stairs" /></Row>
+  
+  <Row><RecipeFor id="quartz_brick_stairs" /><RecipeFor id="quartz_pillar_stairs" /><RecipeFor id="chiseled_quartz_stairs" /></Row>
+  
+  <Row><RecipeFor id="quartz_wall" /><RecipeFor id="cut_quartz_wall" /><RecipeFor id="smooth_quartz_wall" /></Row>
+  
+  <Row><RecipeFor id="quartz_brick_wall" /><RecipeFor id="quartz_pillar_wall" /><RecipeFor id="chiseled_quartz_wall" /></Row>
+  
+  <Row><RecipeFor id="quartz_slab" /><RecipeFor id="cut_quartz_slab" /><RecipeFor id="smooth_quartz_slab" /></Row>
+  
+  <Row><RecipeFor id="quartz_brick_slab" /><RecipeFor id="quartz_pillar_slab" /><RecipeFor id="chiseled_quartz_slab" /></Row>
+</Column>

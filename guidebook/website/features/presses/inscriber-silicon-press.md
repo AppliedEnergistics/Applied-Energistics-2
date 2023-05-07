@@ -2,8 +2,6 @@
 categories:
   - Presses
   - Processor Press Plates
-item_ids:
-  - ae2:silicon_press
 related:
   - Processors
   - Processor Press Plates

@@ -77,16 +77,21 @@ import appeng.server.testworld.TestCraftingJob;
 import appeng.util.CraftingRecipeUtil;
 
 public final class TestPlots {
-    private static final Class<?>[] PLOT_CLASSES = {
-            TestPlots.class,
-            AutoCraftingTestPlot.class,
-            P2PTestPlots.class,
-            MemoryCardTestPlots.class,
-            PatternProviderLockModePlots.class
-    };
+    private static final List<Class<?>> PLOT_CLASSES = new ArrayList<>();
 
     @Nullable
     private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
+
+    static {
+        PLOT_CLASSES.addAll(List.of(
+                TestPlots.class,
+                AutoCraftingTestPlots.class,
+                P2PTestPlots.class,
+                MemoryCardTestPlots.class,
+                PatternProviderLockModePlots.class,
+                SpatialTestPlots.class,
+                GuidebookPlot.class));
+    }
 
     private TestPlots() {
     }
@@ -144,6 +149,11 @@ public final class TestPlots {
         }
 
         return plots;
+    }
+
+    public static synchronized void addPlotClass(Class<?> clazz) {
+        PLOT_CLASSES.add(clazz);
+        plots = null;// reset the plots, in case they are already initialized
     }
 
     public static List<ResourceLocation> getPlotIds() {
@@ -636,7 +646,7 @@ public final class TestPlots {
                     craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
                             recipe,
                             ingredients,
-                            recipe.getResultItem(),
+                            recipe.getResultItem(node.getLevel().registryAccess()),
                             false,
                             false);
 
@@ -646,8 +656,8 @@ public final class TestPlots {
                             neededIngredients.add(key);
                         }
                     }
-                    if (!recipe.getResultItem().isEmpty()) {
-                        providedResults.add(AEItemKey.of(recipe.getResultItem()));
+                    if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
+                        providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
                     }
                 } catch (Exception e) {
                     AELog.warn(e);
@@ -981,6 +991,46 @@ public final class TestPlots {
                         "Expected 64 sticks total, but found: " + stickCount);
             });
         });
+    }
+
+    /**
+     * Tests that the priority checks for interface -> interface restocking don't apply when the source interface is on
+     * another network. Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6847.
+     */
+    @TestPlot("interface_to_interface_different_networks")
+    public static void interfaceToInterfaceDifferentNetworks(PlotBuilder plot) {
+        var o = BlockPos.ZERO;
+        plot.cable(o)
+                .part(Direction.NORTH, AEParts.STORAGE_BUS);
+        plot.blockEntity(o.north(), AEBlocks.INTERFACE, iface -> {
+            // Need something in the config to not expose the full network...
+            iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
+            iface.getStorage().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE, 64)));
+        });
+        plot.block(o.north().north(), AEBlocks.CREATIVE_ENERGY_CELL);
+        plot.block(o.east(), AEBlocks.CREATIVE_ENERGY_CELL);
+        plot.blockEntity(o.south(), AEBlocks.INTERFACE, iface -> {
+            iface.getConfig().setStack(0, GenericStack.fromItemStack(new ItemStack(Items.APPLE)));
+        });
+
+        plot.test(helper -> helper.startSequence()
+                // Test interface restock
+                .thenWaitUntil(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    var apples = iface.getStorage().getStack(0);
+                    helper.check(apples != null && apples.amount() == 1, "Expected 1 apple", o.south());
+                })
+                // Test interface pushing items away to subnet
+                .thenExecute(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    iface.getStorage().setStack(1, GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)));
+                })
+                .thenWaitUntil(() -> {
+                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.north());
+                    var diamonds = iface.getStorage().getStack(1);
+                    helper.check(diamonds != null && diamonds.amount() == 1, "Expected 1 diamond", o.north());
+                })
+                .thenSucceed());
     }
 
 }

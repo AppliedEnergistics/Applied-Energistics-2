@@ -1,8 +1,6 @@
 ---
 categories:
   - Simple Tools/Misc
-item_ids:
-  - ae2:tiny_tnt
 navigation:
   parent: website/index.md
   title: Tiny TNT

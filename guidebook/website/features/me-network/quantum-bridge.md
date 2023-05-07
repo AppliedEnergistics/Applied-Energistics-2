@@ -3,10 +3,6 @@ navigation:
   parent: website/index.md
   title: Quantum Bridge
   icon: singularity
-item_ids:
-  - ae2:quantum_link
-  - ae2:quantum_ring
-  - ae2:quantum_entangled_singularity
 ---
 
 ![A formed Quantum Network Bridge](../../large/qnb.png)

@@ -1,8 +1,6 @@
 ---
 categories:
   - Advanced Tools/Weapons
-item_ids:
-  - ae2:matter_cannon
 related:
   - Possible Projectiles
   - Possible Upgrades

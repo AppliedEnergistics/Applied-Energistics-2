@@ -74,6 +74,7 @@ public final class Tooltips {
             case RIGHT -> ButtonToolTips.SideRight.text();
             case FRONT -> ButtonToolTips.SideFront.text();
             case BACK -> ButtonToolTips.SideBack.text();
+            case ANY -> ButtonToolTips.SideAny.text();
         };
     }
 

@@ -2,8 +2,6 @@
 navigation:
   parent: website/index.md
   title: Fluix
-item_ids:
-  - ae2:fluix_block
 ---
 
 ![A picture of a fluix block.](../../assets/large/fluix_block.png)

@@ -183,8 +183,9 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     public void onMainNodeStateChanged(IGridNodeListener.State reason) {
         if (reason != IGridNodeListener.State.GRID_BOOT) {
             this.markForUpdate();
-            this.wakeUp();
         }
+
+        this.wakeUp();
     }
 
     @Override
@@ -226,12 +227,16 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         // Initialize once the network is ready and there are no entries marked as loaded.
-        if (!this.initialized && this.getMainNode().isOnline()) {
-            this.forceAll();
-            this.initialized = true;
-        } else {
-            this.cleanUp();
+        if (!this.initialized) {
+            if (!this.getMainNode().hasGridBooted()) {
+                // Wait for the end of pathing to give time for the network to load the first time...
+                return TickRateModulation.SAME;
+            } else {
+                this.initialized = true;
+            }
         }
+
+        this.cleanUp();
 
         // Be a bit lenient to not unload all chunks immediately upon power loss
         if (this.powerlessTicks > 200) {
@@ -329,7 +334,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         }
 
         ServerLevel level = this.getServerLevel();
-        boolean forced = ChunkLoadingService.getInstance().forceChunk(level, this.getBlockPos(), chunkPos, true);
+        boolean forced = ChunkLoadingService.getInstance().forceChunk(level, this.getBlockPos(), chunkPos);
 
         if (forced) {
             this.chunks.add(chunkPos);
@@ -343,7 +348,7 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
 
     private boolean release(ChunkPos chunkPos, boolean remove) {
         ServerLevel level = this.getServerLevel();
-        boolean removed = ChunkLoadingService.getInstance().releaseChunk(level, this.getBlockPos(), chunkPos, true);
+        boolean removed = ChunkLoadingService.getInstance().releaseChunk(level, this.getBlockPos(), chunkPos);
 
         if (removed && remove) {
             this.chunks.remove(chunkPos);
@@ -353,16 +358,6 @@ public class SpatialAnchorBlockEntity extends AENetworkBlockEntity
         this.markForUpdate();
 
         return removed;
-    }
-
-    private void forceAll() {
-        getMainNode().ifPresent(grid -> {
-            var statistics = grid.getService(StatisticsService.class);
-            for (ChunkPos chunkPos : statistics.getChunks().get(this.getServerLevel())
-                    .elementSet()) {
-                this.force(chunkPos);
-            }
-        });
     }
 
     void releaseAll() {

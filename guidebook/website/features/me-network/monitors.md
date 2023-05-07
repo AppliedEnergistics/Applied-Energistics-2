@@ -2,9 +2,6 @@
 navigation:
   parent: website/index.md
   title: Storage Monitors
-item_ids:
-  - ae2:conversion_monitor
-  - ae2:storage_monitor
 ---
 
 ## Storage Monitor

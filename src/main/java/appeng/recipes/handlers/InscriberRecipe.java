@@ -19,6 +19,7 @@
 package appeng.recipes.handlers;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -59,8 +60,8 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inv) {
-        return getResultItem().copy();
+    public ItemStack assemble(Container inv, RegistryAccess registryAccess) {
+        return getResultItem(registryAccess).copy();
     }
 
     @Override
@@ -69,6 +70,10 @@ public class InscriberRecipe implements Recipe<Container> {
     }
 
     @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return getResultItem();
+    }
+
     public ItemStack getResultItem() {
         return this.output;
     }

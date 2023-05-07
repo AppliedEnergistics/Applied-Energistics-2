@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Formation Plane
   icon: formation_plane
+  position: 210
 item_ids:
 - ae2:formation_plane
 ---
@@ -11,12 +12,12 @@ item_ids:
 ![A picture of a formation plane.](../assets/blocks/formation_plane.png)
 
 The Formation Plane places blocks and drops items. It works similarly to an insert-only <ItemLink id="storage_bus" />,
-placing/dropping when things are "stored" in it by devices inserting into [network storage](../ae2-mechanics/import-export-storage.md).
+placing/dropping when things are "stored" in it by [devices](../ae2-mechanics/devices.md) inserting into [network storage](../ae2-mechanics/import-export-storage.md).
 
-This device makes use of the mechanics used by storage busses in things like [pipe subnets](../example_setups/pipe-subnet.md),
+This [device](../ae2-mechanics/devices.md) makes use of the mechanics used by storage busses in things like [pipe subnets](../example_setups/pipe-subnet.md),
 and can replace storage busses in those setups if you want to drop items/place blocks instead of transport items.
 
-They are [cable subparts](../ae2-mechanics/cable-subparts.md)
+They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # A bug that might have been fixed
 
@@ -42,10 +43,10 @@ Items entering the network will start at the highest priority storage.
 
 # Upgrades
 
-The formation plane supports the following upgrades:
+The formation plane supports the following [upgrades](upgrade_cards.md):
 
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
-- <ItemLink id="fuzzy_card" /> lets the plane filter by damage level
+- <ItemLink id="fuzzy_card" /> lets the plane filter by damage level and/or ignore item NBT
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 
 # Recipe

@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
-import appeng.api.client.AEStackRendering;
+import appeng.api.client.AEKeyRendering;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
@@ -55,7 +55,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
         var menu = screen.getMenu();
 
         Icon icon;
@@ -70,7 +70,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
                     .withStyle(ChatFormatting.DARK_RED);
         }
 
-        icon.getBlitter().dest(x, y).blit(poseStack, zIndex);
+        icon.getBlitter().dest(x, y).blit(poseStack);
         Minecraft.getInstance().font.draw(poseStack, lockStatusText, x + 15, y + 5, -1);
     }
 
@@ -88,7 +88,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
                 Component stackName;
                 Component stackAmount;
                 if (stack != null) {
-                    stackName = AEStackRendering.getDisplayName(stack.what());
+                    stackName = AEKeyRendering.getDisplayName(stack.what());
                     stackAmount = Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
                 } else {
                     stackName = Component.literal("ERROR");

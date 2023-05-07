@@ -158,7 +158,7 @@ public class ReiPlugin implements REIClientPlugin {
                 var stack = aeScreen.getStackUnderMouse(mouse.x, mouse.y);
                 if (stack != null) {
                     for (var converter : IngredientConverters.getConverters()) {
-                        var entryStack = converter.getIngredientFromStack(stack);
+                        var entryStack = converter.getIngredientFromStack(stack.stack());
                         if (entryStack != null) {
                             return CompoundEventResult.interruptTrue(entryStack);
                         }
@@ -201,7 +201,6 @@ public class ReiPlugin implements REIClientPlugin {
             predicates.add(stack -> stack.getItem() == AEParts.GLASS_CABLE.item(color));
             predicates.add(stack -> stack.getItem() == AEParts.SMART_CABLE.item(color));
             predicates.add(stack -> stack.getItem() == AEParts.SMART_DENSE_CABLE.item(color));
-            predicates.add(stack -> stack.getItem() == AEItems.MEMORY_CARDS.item(color));
         }
         coloredCables = ImmutableList.copyOf(predicates);
 

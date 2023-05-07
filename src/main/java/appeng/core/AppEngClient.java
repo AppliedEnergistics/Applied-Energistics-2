@@ -38,6 +38,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -60,6 +61,7 @@ import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.command.GuidebookStructureCommands;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
@@ -156,6 +158,11 @@ public class AppEngClient extends AppEngBase {
     }
 
     private Guide loadGuidePages() {
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            var dispatcher = server.getCommands().getDispatcher();
+            GuidebookStructureCommands.register(dispatcher);
+        });
+
         return Guide.builder(MOD_ID, "ae2guide").build();
     }
 

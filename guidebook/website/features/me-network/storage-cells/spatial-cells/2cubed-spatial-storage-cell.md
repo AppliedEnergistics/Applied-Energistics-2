@@ -1,8 +1,6 @@
 ---
 categories:
   - Storage Cells/Spatial Cells
-item_ids:
-  - ae2:spatial_storage_cell_2
 navigation:
   parent: website/index.md
   title: 2Cubed Spatial Storage Cell

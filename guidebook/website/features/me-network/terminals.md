@@ -1,9 +1,4 @@
 ---
-item_ids:
-  - ae2:crafting_terminal
-  - ae2:terminal
-  - ae2:pattern_access_terminal
-  - ae2:pattern_encoding_terminal
 navigation:
   parent: website/index.md
   title: Terminals

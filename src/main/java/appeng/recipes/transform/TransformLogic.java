@@ -95,7 +95,8 @@ public final class TransformLogic {
                 final double ySpeed = random.nextDouble() * .25 - 0.125;
                 final double zSpeed = random.nextDouble() * .25 - 0.125;
 
-                final ItemEntity newEntity = new ItemEntity(level, x, y, z, recipe.assemble(recipeContainer));
+                final ItemEntity newEntity = new ItemEntity(level, x, y, z,
+                        recipe.assemble(recipeContainer, level.registryAccess()));
 
                 newEntity.setDeltaMovement(xSpeed, ySpeed, zSpeed);
                 level.addFreshEntity(newEntity);

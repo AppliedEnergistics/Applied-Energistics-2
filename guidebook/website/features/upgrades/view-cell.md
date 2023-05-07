@@ -1,8 +1,6 @@
 ---
 categories:
   - Upgrades
-item_ids:
-  - ae2:view_cell
 navigation:
   parent: website/index.md
   title: View Cell

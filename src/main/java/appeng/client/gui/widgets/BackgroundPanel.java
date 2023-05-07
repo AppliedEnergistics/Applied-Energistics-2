@@ -39,7 +39,7 @@ public class BackgroundPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
-        background.dest(bounds.getX() + x, bounds.getY() + y).blit(poseStack, zIndex);
+    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+        background.dest(bounds.getX() + x, bounds.getY() + y).blit(poseStack);
     }
 }

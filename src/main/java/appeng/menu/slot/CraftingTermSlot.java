@@ -210,7 +210,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                     return ItemStack.EMPTY;
                 }
 
-                is = r.assemble(ic);
+                is = r.assemble(ic, level.registryAccess());
 
                 if (inv != null) {
                     var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());

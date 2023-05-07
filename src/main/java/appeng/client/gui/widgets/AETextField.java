@@ -24,11 +24,7 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +33,6 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -143,7 +138,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
             var yOffset = 0;
             if (!this.isEditable()) {
@@ -156,16 +151,16 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
             BLITTER.src(0, yOffset, 1, 12)
                     .dest(bounds.left, bounds.top)
-                    .blit(poseStack, getBlitOffset());
+                    .blit(poseStack);
             var backgroundWidth = Math.min(126, bounds.right - bounds.left - 2);
             BLITTER.src(1, yOffset, backgroundWidth, 12)
                     .dest(bounds.left + 1, bounds.top)
-                    .blit(poseStack, getBlitOffset());
+                    .blit(poseStack);
             BLITTER.src(127, yOffset, 1, 12)
                     .dest(bounds.right - 1, bounds.top)
-                    .blit(poseStack, getBlitOffset());
+                    .blit(poseStack);
 
-            super.renderButton(poseStack, mouseX, mouseY, partial);
+            super.renderWidget(poseStack, mouseX, mouseY, partial);
 
             // Render a placeholder value if the text field isn't focused and is empty
             if (placeholder != null && !isFocused() && getValue().isEmpty()) {
@@ -177,7 +172,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     }
 
     @Override
-    public void renderHighlight(int startX, int startY, int endX, int endY) {
+    public void renderHighlight(PoseStack pose, int startX, int startY, int endX, int endY) {
         if (!this.isFocused()) {
             return;
         }
@@ -199,26 +194,12 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
         startY -= PADDING;
 
-        endX = Mth.clamp(endX, getX(), getY() + this.width);
+        endX = Mth.clamp(endX, getX(), getX() + this.width);
         startX = Mth.clamp(startX, getX(), getX() + this.width);
 
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-
-        float red = (this.selectionColor >> 16 & 255) / 255.0F;
-        float blue = (this.selectionColor >> 8 & 255) / 255.0F;
-        float green = (this.selectionColor & 255) / 255.0F;
-        float alpha = (this.selectionColor >> 24 & 255) / 255.0F;
-
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferbuilder.vertex(startX, endY, 0.0D).color(red, green, blue, alpha).endVertex();
-        bufferbuilder.vertex(endX, endY, 0.0D).color(red, green, blue, alpha).endVertex();
-        bufferbuilder.vertex(endX, startY, 0.0D).color(red, green, blue, alpha).endVertex();
-        bufferbuilder.vertex(startX, startY, 0.0D).color(red, green, blue, alpha).endVertex();
-        tessellator.end();
+        fill(pose, startX, startY, endX, endY, this.selectionColor);
         RenderSystem.disableColorLogicOp();
     }
 

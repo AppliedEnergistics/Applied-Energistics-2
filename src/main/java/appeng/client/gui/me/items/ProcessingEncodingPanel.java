@@ -69,8 +69,8 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, int zIndex, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack, zIndex);
+    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack);
     }
 
     @Override
