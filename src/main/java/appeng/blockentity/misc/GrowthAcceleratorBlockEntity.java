@@ -42,7 +42,7 @@ import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.core.AEConfig;
 
-public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity implements IPowerChannelState {
+public class GrowthAcceleratorBlockEntity extends AENetworkBlockEntity implements IPowerChannelState {
 
     // Allow storage of up to 10 cranks
     public static final int MAX_STORED_POWER = 10 * CrankBlockEntity.POWER_PER_CRANK_TURN;
@@ -53,7 +53,7 @@ public class QuartzGrowthAcceleratorBlockEntity extends AENetworkBlockEntity imp
     // For cranking!
     private float storedPower;
 
-    public QuartzGrowthAcceleratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public GrowthAcceleratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         getMainNode().setFlags();
         getMainNode().setIdlePowerUsage(POWER_PER_TICK);

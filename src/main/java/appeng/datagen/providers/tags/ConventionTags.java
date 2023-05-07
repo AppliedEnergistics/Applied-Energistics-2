@@ -27,6 +27,7 @@ import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -125,6 +126,10 @@ public final class ConventionTags {
     public static final TagKey<Block> BUDDING_BLOCKS_BLOCKS = blockTag("c:budding_blocks");
     public static final TagKey<Block> BUDS_BLOCKS = blockTag("c:buds");
     public static final TagKey<Block> CLUSTERS_BLOCKS = blockTag("c:clusters");
+
+    // For Growth Accelerator
+    public static final TagKey<Block> CROPS = BlockTags.CROPS;
+    public static final TagKey<Block> SAPLINGS = BlockTags.SAPLINGS;
 
     /**
      * Platform tags for blocks that should not be moved, i.e. some pipes, chunk loaders, etc...

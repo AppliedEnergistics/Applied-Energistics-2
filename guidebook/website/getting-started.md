@@ -50,7 +50,7 @@ You can create <ItemLink id="charged_certus_quartz_crystal"/> in a Charger, whic
 by a <ItemLink id="vibration_chamber" /> full of coal.
 
 Since growing crystals without any accelerators takes a long time, you should invest your first fluix crystals into
-building as many <ItemLink id="quartz_growth_accelerator" /> as you can.
+building as many <ItemLink id="growth_accelerator" /> as you can.
 
 After this, you're set to start on the next level of tech with an <ItemLink id="inscriber" />.
 

@@ -73,7 +73,7 @@ public final class AEBlockIds {
     public static final ResourceLocation CONDENSER = id("condenser");
     public static final ResourceLocation ENERGY_ACCEPTOR = id("energy_acceptor");
     public static final ResourceLocation VIBRATION_CHAMBER = id("vibration_chamber");
-    public static final ResourceLocation QUARTZ_GROWTH_ACCELERATOR = id("quartz_growth_accelerator");
+    public static final ResourceLocation GROWTH_ACCELERATOR = id("growth_accelerator");
     public static final ResourceLocation ENERGY_CELL = id("energy_cell");
     public static final ResourceLocation DENSE_ENERGY_CELL = id("dense_energy_cell");
     public static final ResourceLocation CABLE_BUS = id("cable_bus");

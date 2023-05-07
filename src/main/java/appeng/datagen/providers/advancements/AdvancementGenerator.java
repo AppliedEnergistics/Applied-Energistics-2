@@ -325,7 +325,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
 
         var growthAccelerator = Advancement.Builder.advancement()
                 .display(
-                        AEBlocks.QUARTZ_GROWTH_ACCELERATOR,
+                        AEBlocks.GROWTH_ACCELERATOR,
                         localization.component("achievement.ae2.CrystalGrowthAccelerator",
                                 "Accelerator is an understatement"),
                         localization.component("achievement.ae2.CrystalGrowthAccelerator.desc",
@@ -338,7 +338,7 @@ public class AdvancementGenerator implements IAE2DataProvider {
                 )
                 .parent(fluix)
                 .addCriterion("certus",
-                        InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.QUARTZ_GROWTH_ACCELERATOR))
+                        InventoryChangeTrigger.TriggerInstance.hasItems(AEBlocks.GROWTH_ACCELERATOR))
                 .save(consumer, "ae2:main/growth_accelerator");
 
         var network1 = Advancement.Builder.advancement()

@@ -1,15 +1,15 @@
 ---
 navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
-  title: Crystal Growth Accelerator
-  icon: quartz_growth_accelerator
+  title: Growth Accelerator
+  icon: growth_accelerator
   position: 310
 item_ids:
-- ae2:quartz_growth_accelerator
+- ae2:growth_accelerator
 ---
 # The Crystal Growth Accelerator
 
-<BlockImage id="quartz_growth_accelerator" p:powered="true" scale="8" perspective="up" />
+<BlockImage id="growth_accelerator" p:powered="true" scale="8" perspective="up" />
 
 The Crystal Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/farming-certus.md) certus or amethyst when placed adjacent to the budding block.
 
@@ -23,4 +23,4 @@ It only connects to cables on its ends where the pink fluix greebles are.
 
 # Recipe
 
-<RecipeFor id="quartz_growth_accelerator" />
+<RecipeFor id="growth_accelerator" />
