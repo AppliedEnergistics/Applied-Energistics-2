@@ -110,6 +110,8 @@ public enum ButtonToolTips implements LocalizationEnum {
     NumberOfItems("Number of items"),
     Off("Off"),
     On("On"),
+    OpenGuide("Open Guide"),
+    OpenGuideDetail("Get help from the AE2 guide"),
     OperationMode("Operation Mode"),
     OverlayMode("Overlay Mode"),
     OverlayModeNo("Loaded area is hidden."),

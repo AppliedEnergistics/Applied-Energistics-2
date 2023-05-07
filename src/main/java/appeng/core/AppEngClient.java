@@ -20,8 +20,10 @@ package appeng.core;
 
 import java.util.Objects;
 
+import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +44,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -108,7 +109,7 @@ public class AppEngClient extends AppEngBase {
      */
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
-    private Guide guidePages;
+    private final Guide guidePages;
 
     public AppEngClient() {
         this.registerParticleFactories();
@@ -384,12 +385,33 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public void openGuide(ResourceLocation initialPage) {
+    public void openGuideAtPreviousPage(ResourceLocation initialPage) {
         try {
-            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage));
-            Minecraft.getInstance().setScreen(screen);
+            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage), GlobalInMemoryHistory.INSTANCE);
+
+            openGuideScreen(screen);
         } catch (Exception e) {
             LOGGER.error("Failed to open guide.", e);
         }
+    }
+
+    @Override
+    public void openGuideAtAnchor(PageAnchor anchor) {
+        try {
+            var screen = GuideScreen.openNew(guidePages, anchor, GlobalInMemoryHistory.INSTANCE);
+
+            openGuideScreen(screen);
+        } catch (Exception e) {
+            LOGGER.error("Failed to open guide at {}.", anchor, e);
+        }
+    }
+
+    private static void openGuideScreen(GuideScreen screen) {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.screen != null) {
+            screen.setReturnToOnClose(minecraft.screen);
+        }
+
+        minecraft.setScreen(screen);
     }
 }

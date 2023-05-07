@@ -18,6 +18,9 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.PageCollection;
+import appeng.core.AppEng;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -31,6 +34,7 @@ import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.localization.GuiText;
 import appeng.menu.implementations.CondenserMenu;
+import org.jetbrains.annotations.Nullable;
 
 public class CondenserScreen extends AEBaseScreen<CondenserMenu> {
 
@@ -53,4 +57,8 @@ public class CondenserScreen extends AEBaseScreen<CondenserMenu> {
         this.mode.set(this.menu.getOutput());
     }
 
+    @Override
+    protected @Nullable PageAnchor getHelpTopic() {
+        return PageAnchor.page(AppEng.makeId("items-blocks-machines/condenser.md"));
+    }
 }

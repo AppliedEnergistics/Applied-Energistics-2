@@ -18,6 +18,8 @@
 
 package appeng.client.gui.implementations;
 
+import appeng.client.guidebook.PageAnchor;
+import appeng.core.AppEng;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -29,6 +31,7 @@ import appeng.client.gui.widgets.ProgressBar.Direction;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.menu.implementations.InscriberMenu;
+import org.jetbrains.annotations.Nullable;
 
 public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
 
@@ -61,4 +64,8 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
         this.autoExportBtn.set(getMenu().getAutoExport());
     }
 
+    @Override
+    protected @Nullable PageAnchor getHelpTopic() {
+        return PageAnchor.page(AppEng.makeId("items-blocks-machines/inscriber.md"));
+    }
 }

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -516,7 +517,7 @@ public final class Guide implements PageCollection {
                 if (startupPage != null) {
                     reloadFuture = reloadFuture.thenRun(() -> {
                         var client = Minecraft.getInstance();
-                        client.setScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage)));
+                        client.setScreen(GuideScreen.openNew(guide, PageAnchor.page(startupPage), GlobalInMemoryHistory.INSTANCE));
                     });
                 }
                 reloadFuture.whenComplete((unused, throwable) -> {

@@ -18,42 +18,6 @@
 
 package appeng.client.gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
-import com.google.common.base.Stopwatch;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.lwjgl.glfw.GLFW;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.client.AEKeyRendering;
@@ -67,7 +31,9 @@ import appeng.client.gui.style.Text;
 import appeng.client.gui.style.TextAlignment;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
+import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.VerticalButtonBar;
+import appeng.client.guidebook.PageAnchor;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
@@ -87,8 +53,43 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
 import appeng.util.ConfigMenuInventory;
+import com.google.common.base.Stopwatch;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
+    private static final Logger LOG = LoggerFactory.getLogger(AEBaseScreen.class);
 
     private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 
@@ -98,6 +99,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public static final String TEXT_ID_DIALOG_TITLE = "dialog_title";
 
     private final VerticalButtonBar verticalToolbar;
+    private final OpenGuideButton helpButton;
 
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
@@ -128,6 +130,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.style = Objects.requireNonNull(style, "style");
         this.widgets = new WidgetContainer(style);
         this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
+
+        // Add a help-button to the vertical button bar
+        this.helpButton = addToLeftToolbar(new OpenGuideButton(btn -> openHelp()));
 
         if (style.getGeneratedBackground() != null) {
             this.imageWidth = style.getGeneratedBackground().getWidth();
@@ -219,6 +224,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      */
     @OverridingMethodsMustInvokeSuper
     protected void updateBeforeRender() {
+        helpButton.setVisibility(getHelpTopic() != null);
     }
 
     @Override
@@ -462,7 +468,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     protected final void renderBg(PoseStack poseStack, float f, int x,
-            int y) {
+                                  int y) {
 
         this.drawBG(poseStack, leftPos, topPos, x, y, f);
 
@@ -717,7 +723,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY,
-            float partialTicks) {
+                       float partialTicks) {
 
         var generatedBackground = style.getGeneratedBackground();
         if (generatedBackground != null) {
@@ -981,5 +987,19 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             slot.x = x;
             slot.y = y;
         }
+    }
+
+    protected void openHelp() {
+        var topic = getHelpTopic();
+        if (topic != null) {
+            AppEng.instance().openGuideAtAnchor(topic);
+        } else {
+            LOG.warn("No topic assigned to screen {}, but button was clicked", this);
+        }
+    }
+
+    @org.jetbrains.annotations.Nullable
+    protected PageAnchor getHelpTopic() {
+        return null;
     }
 }

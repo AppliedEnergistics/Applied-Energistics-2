@@ -35,6 +35,6 @@ public class GuideItem extends AEBaseItem {
     }
 
     private static void openGuide() {
-        AppEng.instance().openGuide(AppEng.makeId("index.md"));
+        AppEng.instance().openGuideAtPreviousPage(AppEng.makeId("index.md"));
     }
 }
