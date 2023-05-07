@@ -13,6 +13,9 @@ public enum SymbolicColor {
     CRAFTING_RECIPE_TYPE(Colors.argb(255, 64, 64, 64), Colors.argb(255, 64, 64, 64)),
     THEMATIC_BREAK(Colors.argb(255, 55, 55, 55), Colors.argb(255, 155, 155, 155)),
 
+    HEADER1_SEPARATOR(Colors.argb(127, 255, 255, 255), Colors.argb(127, 255, 255, 255)),
+    HEADER2_SEPARATOR(Colors.argb(127, 174, 174, 174), Colors.argb(127, 174, 174, 174)),
+
     NAVBAR_BG_TOP(Colors.argb(255, 0, 0, 0), Colors.argb(255, 0, 0, 0)),
     NAVBAR_BG_BOTTOM(Colors.argb(127, 0, 0, 0), Colors.argb(127, 0, 0, 0)),
     NAVBAR_ROW_HOVER(Colors.argb(255, 33, 33, 33), Colors.argb(255, 33, 33, 33)),
