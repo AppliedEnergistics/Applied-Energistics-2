@@ -208,7 +208,7 @@ In the following example, the structure from the `test.snbt` file located next t
 
 ```
 <GameScene zoom="4">
-  <ImportStructure id="test.snbt" />
+  <ImportStructure src="test.snbt" />
 </GameScene>
 ```
 
@@ -216,8 +216,9 @@ The following subsections explain the different available tags within a `<GameSc
 
 ##### ImportStructure
 
-As explained above, this tag will load a structure from the file supplied in the `id` attribute and
-place it in the scene. Both `.nbt` and `.snbt` structure files are supported.
+As explained above, this tag will load a structure from the file supplied in the `src` attribute and
+place it in the scene. Both `.nbt` and `.snbt` structure files are supported. The path given in `src`
+can be relative to the current page.
 
 To easily create such structure files, use the AE2 test-world (use `/ae2 setuptestworld` in a single-player creative void-world).
 It has a plot that provides LOAD/SAVE/CLEAR functionality in a 16x16 space to more easily author structures for the guidebook.

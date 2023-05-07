@@ -14,8 +14,8 @@ import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
+import appeng.client.guidebook.compiler.IdUtils;
 import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.tags.MdxAttrs;
 import appeng.client.guidebook.document.LytErrorSink;
 import appeng.client.guidebook.scene.GuidebookScene;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
@@ -29,12 +29,14 @@ public class ImportStructureElementCompiler implements SceneElementTagCompiler {
             PageCompiler compiler,
             LytErrorSink errorSink,
             MdxJsxElementFields el) {
-        var structureId = MdxAttrs.getRequiredId(compiler, errorSink, el, "id");
-        if (structureId == null) {
+        var structureSrc = el.getAttributeString("src", null);
+        if (structureSrc == null) {
+            errorSink.appendError(compiler, "Missing src attribute", el);
             return;
         }
+        var absStructureSrc = IdUtils.resolveLink(structureSrc, compiler.getId());
 
-        var structureNbtData = compiler.loadAsset(structureId);
+        var structureNbtData = compiler.loadAsset(absStructureSrc);
         if (structureNbtData == null) {
             errorSink.appendError(compiler, "Missing structure file", el);
             return;
@@ -42,7 +44,7 @@ public class ImportStructureElementCompiler implements SceneElementTagCompiler {
 
         CompoundTag compoundTag;
         try {
-            if (structureId.getPath().toLowerCase(Locale.ROOT).endsWith(".snbt")) {
+            if (absStructureSrc.getPath().toLowerCase(Locale.ROOT).endsWith(".snbt")) {
                 compoundTag = NbtUtils.snbtToStructure(
                         new String(structureNbtData, StandardCharsets.UTF_8));
             } else {
