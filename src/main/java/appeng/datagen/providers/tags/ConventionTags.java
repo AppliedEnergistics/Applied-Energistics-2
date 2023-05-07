@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -95,7 +96,8 @@ public final class ConventionTags {
 
     public static final TagKey<Item> STONE = tag("c:stone");
     public static final TagKey<Item> COBBLESTONE = tag("c:cobblestone");
-    public static final TagKey<Item> GLASS = tag("c:glass");
+    public static final TagKey<Item> GLASS = ConventionalItemTags.GLASS_BLOCKS;
+    public static final TagKey<Block> GLASS_BLOCK = ConventionalBlockTags.GLASS_BLOCKS;
 
     public static final TagKey<Item> GLASS_CABLE = tag("ae2:glass_cable");
     public static final TagKey<Item> SMART_CABLE = tag("ae2:smart_cable");
@@ -149,22 +151,14 @@ public final class ConventionTags {
     public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values())
             .collect(Collectors.toMap(
                     Function.identity(),
-                    dye -> tag("c:" + dye.getSerializedName() + "_dye")));
+                    dye -> tag("c:" + dye.getSerializedName() + "_dyes")));
 
-    public static final TagKey<Block> STAINED_GLASS_BLOCK = blockTag("c:stained_glass");
-
-    public static final TagKey<Block> TERRACOTTA_BLOCK = blockTag("c:terracotta");
-
-    public static final TagKey<Item> dye(DyeColor color) {
+    public static TagKey<Item> dye(DyeColor color) {
         return DYES.get(color);
     }
 
     private static TagKey<Item> tag(String name) {
         return TagKey.create(Registries.ITEM, new ResourceLocation(name));
-    }
-
-    private static TagKey<Biome> biomeTag(String name) {
-        return TagKey.create(Registries.BIOME, new ResourceLocation(name));
     }
 
     private static TagKey<Block> blockTag(String name) {

@@ -52,10 +52,8 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                 .addOptionalTag(ConventionTags.IMMOVABLE_BLOCKS.location());
         tag(AETags.ANNIHILATION_PLANE_BLOCK_BLACKLIST);
         tag(AETags.FACADE_BLOCK_WHITELIST)
-                .add(Blocks.GLASS,
-                        AEBlocks.QUARTZ_GLASS.block(),
-                        AEBlocks.QUARTZ_VIBRANT_GLASS.block())
-                .addTag(ConventionTags.STAINED_GLASS_BLOCK);
+                .add(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block())
+                .addOptionalTag(ConventionTags.GLASS_BLOCK.location());
         tag(AETags.GROWTH_ACCELERATABLE)
                 // TODO: Should all be in some conventional tag
                 .add(Blocks.BAMBOO_SAPLING, Blocks.SUGAR_CANE, Blocks.SUGAR_CANE)
@@ -82,25 +80,6 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
         tag("c:storage_blocks")
                 .addTag(ConventionTags.CERTUS_QUARTZ_STORAGE_BLOCK_BLOCK);
 
-        tag(ConventionTags.TERRACOTTA_BLOCK).add(
-                Blocks.TERRACOTTA,
-                Blocks.WHITE_TERRACOTTA,
-                Blocks.ORANGE_TERRACOTTA,
-                Blocks.MAGENTA_TERRACOTTA,
-                Blocks.LIGHT_BLUE_TERRACOTTA,
-                Blocks.YELLOW_TERRACOTTA,
-                Blocks.LIME_TERRACOTTA,
-                Blocks.PINK_TERRACOTTA,
-                Blocks.GRAY_TERRACOTTA,
-                Blocks.LIGHT_GRAY_TERRACOTTA,
-                Blocks.CYAN_TERRACOTTA,
-                Blocks.PURPLE_TERRACOTTA,
-                Blocks.BLUE_TERRACOTTA,
-                Blocks.BROWN_TERRACOTTA,
-                Blocks.GREEN_TERRACOTTA,
-                Blocks.RED_TERRACOTTA,
-                Blocks.BLACK_TERRACOTTA);
-
         // Special behavior is associated with this tag, so our walls need to be added to it
         tag(BlockTags.WALLS).add(
                 AEBlocks.SKY_STONE_WALL.block(),
@@ -119,8 +98,6 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
         tag(BlockTags.WALL_POST_OVERRIDE).add(AEBlocks.QUARTZ_FIXTURE.block(), AEBlocks.LIGHT_DETECTOR.block());
 
         addEffectiveTools();
-
-        addConventionTags();
     }
 
     /**
@@ -160,30 +137,6 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
             }
         }
 
-    }
-
-    /**
-     * Add convention tags that would normally be provided by the Platform but need to be added manually on Fabric.
-     */
-    private void addConventionTags() {
-        tag(ConventionTags.STAINED_GLASS_BLOCK)
-                .add(
-                        Blocks.WHITE_STAINED_GLASS,
-                        Blocks.ORANGE_STAINED_GLASS,
-                        Blocks.MAGENTA_STAINED_GLASS,
-                        Blocks.LIGHT_BLUE_STAINED_GLASS,
-                        Blocks.YELLOW_STAINED_GLASS,
-                        Blocks.LIME_STAINED_GLASS,
-                        Blocks.PINK_STAINED_GLASS,
-                        Blocks.GRAY_STAINED_GLASS,
-                        Blocks.LIGHT_GRAY_STAINED_GLASS,
-                        Blocks.CYAN_STAINED_GLASS,
-                        Blocks.PURPLE_STAINED_GLASS,
-                        Blocks.BLUE_STAINED_GLASS,
-                        Blocks.BROWN_STAINED_GLASS,
-                        Blocks.GREEN_STAINED_GLASS,
-                        Blocks.RED_STAINED_GLASS,
-                        Blocks.BLACK_STAINED_GLASS);
     }
 
     private TagsProvider.TagAppender<Block> tag(String name) {
