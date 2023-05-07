@@ -17,7 +17,7 @@ item_ids:
 - ae2:chiseled_quartz_stairs
 - ae2:quartz_wall
 - ae2:cut_quartz_wall
-- ae2:_smooth_quartz_wall
+- ae2:smooth_quartz_wall
 - ae2:quartz_brick_wall
 - ae2:quartz_pillar_wall
 - ae2:chiseled_quartz_wall

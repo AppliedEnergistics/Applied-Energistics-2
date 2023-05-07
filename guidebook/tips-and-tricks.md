@@ -21,3 +21,7 @@ enchantment and durability is another [type](ae2-mechanics/bytes-and-types.md).
 - An "item entering system" event must occur when returning the result of a [processing pattern](items-blocks-machines/patterns.md),
 like through an <ItemLink id="importbus" />, <ItemLink id="interface" />, or <ItemLink id="pattern_provider" /> return slot,
 you can't just pipe the result into a chest with a <ItemLink id="storage_bus" /> on it.
+- The <ItemLink id="pattern_provider" /> will only push complete recipe batches and only through a single side. This is useful
+for making sure machines don't get partial batches, but sometimes you want the ingredients to go to multiple places.
+You can achieve this using an <ItemLink id="interface" />, either as a ["pipe" subnet](example-setups/pipe-subnet.md) or using
+its ability to hold multiple different item stacks, fluids, chemicals, etc. all at once, to use it as a sort of intermediate chest/tank.
