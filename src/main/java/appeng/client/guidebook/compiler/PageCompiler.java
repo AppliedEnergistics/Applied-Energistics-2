@@ -107,7 +107,10 @@ public final class PageCompiler {
 
     public static ParsedGuidePage parse(String sourcePack, ResourceLocation id, InputStream in) throws IOException {
         String pageContent = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+        return parse(sourcePack, id, pageContent);
+    }
 
+    public static ParsedGuidePage parse(String sourcePack, ResourceLocation id, String pageContent) {
         // Normalize line ending
         pageContent = pageContent.replaceAll("\\r\\n?", "\n");
 

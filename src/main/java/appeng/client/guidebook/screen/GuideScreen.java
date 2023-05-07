@@ -24,12 +24,12 @@ import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
-import appeng.client.guidebook.document.block.LytHeading;
-import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
@@ -39,12 +39,17 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.client.guidebook.render.SymbolicColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import appeng.libs.mdast.model.MdAstHeading;
+import appeng.libs.mdast.model.MdAstRoot;
 
 public class GuideScreen extends Screen {
     private static final int HISTORY_SIZE = 100;
     private static final List<PageAnchor> history = new ArrayList<>();
+    // 20 virtual px margin around the document
+    public static final int DOCUMENT_RECT_MARGIN = 20;
     private static int historyPosition;
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
@@ -52,9 +57,12 @@ public class GuideScreen extends Screen {
 
     private final GuideScrollbar scrollbar;
     private GuidePage currentPage;
+    private LytDocument currentDocument;
 
     private Button backButton;
     private Button forwardButton;
+    @Nullable
+    private String pageTitle;
 
     private GuideScreen(PageCollection pages, PageAnchor anchor) {
         super(Component.literal("AE2 Guidebook"));
@@ -106,11 +114,20 @@ public class GuideScreen extends Screen {
         GuideNavBar navbar = new GuideNavBar(this);
         addRenderableWidget(navbar);
 
-        backButton = Button.builder(Component.literal("<"),
-                button -> navigateBack()).bounds(docRect.right() - 40, docRect.y() - 15, 20, 15).build();
+        int navButtonsY = docRect.y() - DOCUMENT_RECT_MARGIN;
+        // Center them vertically in the margin
+        navButtonsY += (DOCUMENT_RECT_MARGIN - HistoryNavigationButton.HEIGHT) / 2;
+        backButton = new HistoryNavigationButton(
+                docRect.right() - HistoryNavigationButton.WIDTH * 2 - 5,
+                navButtonsY,
+                HistoryNavigationButton.Direction.BACK,
+                this::navigateBack);
         addRenderableWidget(backButton);
-        forwardButton = Button.builder(Component.literal(">"),
-                button -> navigateForward()).bounds(docRect.right() - 20, docRect.y() - 15, 20, 15).build();
+        forwardButton = new HistoryNavigationButton(
+                docRect.right() - HistoryNavigationButton.WIDTH,
+                navButtonsY,
+                HistoryNavigationButton.Direction.FORWARD,
+                this::navigateForward);
         addRenderableWidget(forwardButton);
         updateNavigationButtons();
     }
@@ -156,6 +173,23 @@ public class GuideScreen extends Screen {
 
         poseStack.pushPose();
         poseStack.translate(0, 0, 200);
+
+        if (pageTitle != null) {
+            var titleStyle = DefaultStyles.HEADING1.mergeWith(DefaultStyles.BASE_STYLE);
+            var lineHeight = new MinecraftFontMetrics(font).getLineHeight(titleStyle);
+            context.renderText(
+                    pageTitle,
+                    titleStyle,
+                    // Same 5px default padding as document content
+                    documentRect.x() + 5,
+                    documentRect.y() - DOCUMENT_RECT_MARGIN + (DOCUMENT_RECT_MARGIN - lineHeight) / 2f);
+            context.fillRect(
+                    documentRect.x(),
+                    documentRect.y() - 1,
+                    documentRect.width(),
+                    1,
+                    SymbolicColor.HEADER1_SEPARATOR.ref());
+        }
 
         super.render(poseStack, mouseX, mouseY, partialTick);
 
@@ -318,12 +352,17 @@ public class GuideScreen extends Screen {
 
     private void loadPage(PageAnchor anchor) {
         GuidePageTexture.releaseUsedTextures();
-        currentPage = pages.getPage(anchor.pageId());
+        var page = pages.getParsedPage(anchor.pageId());
 
-        if (currentPage == null) {
+        if (page == null) {
             // Build a "not found" page dynamically
-            currentPage = buildNotFoundPage(anchor);
+            page = buildNotFoundPage(anchor);
         }
+
+        pageTitle = extractPageTitle(page.getAstRoot());
+
+        currentPage = PageCompiler.compile(pages, page);
+        currentDocument = currentPage.getDocument();
 
         scrollbar.setScrollAmount(0);
         updatePageLayout();
@@ -331,20 +370,28 @@ public class GuideScreen extends Screen {
         // TODO ANCHOR
     }
 
-    private GuidePage buildNotFoundPage(PageAnchor anchor) {
-        var document = new LytDocument();
-        var title = new LytHeading();
-        title.appendText("Page not Found");
-        title.setDepth(1);
-        document.append(title);
-        var body = new LytParagraph();
-        body.appendText("Page " + anchor.pageId() + " could not be found.");
-        document.append(body);
+    private String extractPageTitle(MdAstRoot astRoot) {
+        for (var child : astRoot.children()) {
+            if (child instanceof MdAstHeading heading && heading.depth == 1) {
+                astRoot.replaceChild(heading, null);
 
-        return new GuidePage(
-                AppEng.MOD_ID,
+                var textCollector = new StringBuilder();
+                heading.toText(textCollector);
+                return textCollector.toString();
+            }
+        }
+        return null;
+    }
+
+    private ParsedGuidePage buildNotFoundPage(PageAnchor anchor) {
+        String pageSource = "# Page not Found\n" +
+                "\n" +
+                "Page \"" + anchor.pageId() + "\" could not be found.";
+
+        return PageCompiler.parse(
+                anchor.pageId().getNamespace(),
                 anchor.pageId(),
-                document);
+                pageSource);
     }
 
     @Override
@@ -375,7 +422,7 @@ public class GuideScreen extends Screen {
     }
 
     private <T> Optional<T> dispatchInteraction(int x, int y, Function<InteractiveElement, Optional<T>> invoker) {
-        var underCursor = currentPage.getDocument().pick(x, y);
+        var underCursor = currentDocument.pick(x, y);
         if (underCursor != null) {
             // Iterate through content ancestors
             for (var el = underCursor.content(); el != null; el = el.getFlowParent()) {
@@ -405,8 +452,6 @@ public class GuideScreen extends Screen {
     public void afterMouseMove() {
         super.afterMouseMove();
 
-        var document = currentPage.getDocument();
-
         var mouseHandler = minecraft.mouseHandler;
         var scale = (double) minecraft.getWindow().getGuiScaledWidth()
                 / (double) minecraft.getWindow().getScreenWidth();
@@ -415,16 +460,16 @@ public class GuideScreen extends Screen {
 
         // If there's a widget under the cursor, ignore document hit-testing
         if (getChildAt(x, y).isPresent()) {
-            document.setHoveredElement(null);
+            currentDocument.setHoveredElement(null);
             return;
         }
 
         var docPoint = getDocumentPoint(x, y);
         if (docPoint != null) {
-            var hoveredEl = document.pick(docPoint.getX(), docPoint.getY());
-            document.setHoveredElement(hoveredEl);
+            var hoveredEl = currentDocument.pick(docPoint.getX(), docPoint.getY());
+            currentDocument.setHoveredElement(hoveredEl);
         } else {
-            document.setHoveredElement(null);
+            currentDocument.setHoveredElement(null);
         }
     }
 
@@ -443,8 +488,7 @@ public class GuideScreen extends Screen {
     }
 
     private LytRect getDocumentRect() {
-        // 20 virtual px margin
-        var margin = 20;
+        var margin = DOCUMENT_RECT_MARGIN;
 
         return new LytRect(margin, margin, width - 2 * margin, height - 2 * margin);
     }
@@ -537,9 +581,8 @@ public class GuideScreen extends Screen {
         var context = new LayoutContext(new MinecraftFontMetrics(), docViewport);
 
         // Build layout if needed
-        var document = currentPage.getDocument();
-        document.updateLayout(context, docViewport.width());
-        scrollbar.setContentHeight(document.getContentHeight());
+        currentDocument.updateLayout(context, docViewport.width());
+        scrollbar.setContentHeight(currentDocument.getContentHeight());
     }
 
     public ResourceLocation getCurrentPageId() {

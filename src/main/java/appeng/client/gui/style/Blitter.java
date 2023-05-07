@@ -18,6 +18,8 @@
 
 package appeng.client.gui.style;
 
+import java.util.Objects;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -35,6 +37,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 import appeng.core.AppEng;
@@ -64,6 +67,7 @@ public final class Blitter {
     private Rect2i srcRect;
     private Rect2i destRect = new Rect2i(0, 0, 0, 0);
     private boolean blending = true;
+    private TextureTransform transform = TextureTransform.NONE;
 
     Blitter(ResourceLocation texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
@@ -210,6 +214,14 @@ public final class Blitter {
         return this;
     }
 
+    public Blitter colorArgb(int packedArgb) {
+        this.a = FastColor.ARGB32.alpha(packedArgb);
+        this.r = FastColor.ARGB32.red(packedArgb);
+        this.g = FastColor.ARGB32.green(packedArgb);
+        this.b = FastColor.ARGB32.blue(packedArgb);
+        return this;
+    }
+
     public Blitter opacity(float a) {
         this.a = (int) (Mth.clamp(a, 0, 1) * 255);
         return this;
@@ -217,6 +229,11 @@ public final class Blitter {
 
     public Blitter color(float r, float g, float b, float a) {
         return color(r, g, b).opacity(a);
+    }
+
+    public Blitter transform(TextureTransform transform) {
+        this.transform = Objects.requireNonNull(transform);
+        return this;
     }
 
     /**
@@ -253,6 +270,20 @@ public final class Blitter {
             minV = srcRect.getY() / (float) referenceHeight;
             maxU = (srcRect.getX() + srcRect.getWidth()) / (float) referenceWidth;
             maxV = (srcRect.getY() + srcRect.getHeight()) / (float) referenceHeight;
+        }
+
+        // Transform the UV
+        switch (transform) {
+            case MIRROR_H -> {
+                var tmp = minU;
+                minU = maxU;
+                maxU = tmp;
+            }
+            case MIRROR_V -> {
+                var tmp = minV;
+                minV = maxV;
+                maxV = tmp;
+            }
         }
 
         // It's possible to not set a destination rectangle size, in which case the

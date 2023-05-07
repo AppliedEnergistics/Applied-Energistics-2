@@ -8,7 +8,7 @@ public class GuidePage {
     private final String sourcePack;
     private final ResourceLocation id;
 
-    private LytDocument document;
+    private final LytDocument document;
 
     public GuidePage(String sourcePack, ResourceLocation id, LytDocument document) {
         this.sourcePack = sourcePack;

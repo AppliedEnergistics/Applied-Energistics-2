@@ -182,8 +182,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     StoreAction("%s: Store %s"),
     SetAction("%s: Set %s"),
     ModifyAmountAction("%s: Modify Amount"),
-    SupportedBy("Supported by:"),
-    ;
+    SupportedBy("Supported by:");
 
     private final String englishText;
 

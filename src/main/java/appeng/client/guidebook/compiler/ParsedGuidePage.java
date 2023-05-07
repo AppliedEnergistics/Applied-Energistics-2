@@ -32,6 +32,10 @@ public class ParsedGuidePage {
         return frontmatter;
     }
 
+    public MdAstRoot getAstRoot() {
+        return astRoot;
+    }
+
     @Override
     public String toString() {
         if (id.getNamespace().equals(sourcePack)) {

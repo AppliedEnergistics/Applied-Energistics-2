@@ -10,7 +10,7 @@ navigation:
 
 # Getting Started
 
-# Getting The Initial Materials
+## Getting The Initial Materials
 
 ![The interior of a meteor](assets/assemblies/meteor_interior.png)
 
@@ -25,7 +25,7 @@ Do not break any flawless budding certus, as even with silk touch they will degr
 
 Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscriber presses.
 
-# Growing Quartz
+## Growing Quartz
 
 ![A Flawless Budding Certus with a small certus bud on top](assets/assemblies/budding_certus_1.png)
 
@@ -56,12 +56,12 @@ you can make a <ItemLink id="crank" /> and stick it on the end of your accelerat
 
 Harvesting the certus automatically is "left as an exercise for the reader". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)
 
-# A Quick Aside on Fluix
+## A Quick Aside on Fluix
 Another material you will need is Fluix, which you have already encountered in making growth accelerators. It is made by throwing charged certus, redstone, and nether quartz in water. Doing this automatically is "left as an exercise for the reader."
 
 The <ItemLink id="charger" /> is required to produce <ItemLink id="charged_certus_quartz_crystal" />., if you haven't made one already.
 
-# Inscribing Some Processors
+## Inscribing Some Processors
 In your looting of a meteorite, you will have found four "presses" from breaking the Mysterious Cube. These are used in the <ItemLink id="inscriber" /> to make the three types of processor.
   <ItemGrid>
   <ItemIcon id="silicon_press" />
@@ -76,7 +76,7 @@ To facilitate automation with hoppers (and possibly reduce pipe spaghetti), insc
 
 Produce a few of each type of processor in preparation for the next step, making a very basic ME system. Automating processor production is "left as an exercise for the reader".
 
-# Matter Energy Tech: ME Networks and Storage
+## Matter Energy Tech: ME Networks and Storage
 
 ### What is ME Storage?
 
@@ -101,7 +101,7 @@ While the <ItemLink id="chest"/> is a great way to get introduced to the concept
 take advantage you need to set up an [ME Network](features/me-network.md).
 
 
-# Your Very First ME System
+## Your Very First ME System
 Now that you have all of the basic materials and machines for Applied Energistics 2, you can make your first ME (Matter Energy) system. This will be a very basic one, no autocrafting, no logistics, just nice, simple, searchable storage.
 
 ![A Small ME System](assets/assemblies/tiny_me_system.png)
