@@ -20,6 +20,7 @@ package appeng.core;
 
 import java.util.Objects;
 
+import appeng.client.guidebook.indices.MultiValuedIndex;
 import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
@@ -164,7 +165,9 @@ public class AppEngClient extends AppEngBase {
             GuidebookStructureCommands.register(dispatcher);
         });
 
-        return Guide.builder(MOD_ID, "ae2guide").build();
+        return Guide.builder(MOD_ID, "ae2guide")
+                .index(MultiValuedIndex.)
+                .build();
     }
 
     private void tickPinnedKeys(Minecraft minecraft) {
@@ -413,5 +416,9 @@ public class AppEngClient extends AppEngBase {
         }
 
         minecraft.setScreen(screen);
+    }
+
+    public Guide getGuidePages() {
+        return guidePages;
     }
 }
