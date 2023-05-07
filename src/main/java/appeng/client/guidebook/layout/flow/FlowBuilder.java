@@ -132,4 +132,14 @@ public class FlowBuilder {
         }
         return false;
     }
+
+    public Iterable<LytFlowContent> getContent() {
+        return rootContent;
+    }
+
+    public void clear() {
+        this.lines.clear();
+        this.rootContent.clear();
+        this.floats.clear();
+    }
 }
