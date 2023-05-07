@@ -57,10 +57,13 @@ public class GuideScreen extends Screen {
 
     private final GuideScrollbar scrollbar;
     private GuidePage currentPage;
-    private LytDocument currentDocument;
 
     private Button backButton;
     private Button forwardButton;
+
+    /**
+     * Page title extracted from the first h1 heading on the page
+     */
     @Nullable
     private String pageTitle;
 
@@ -362,7 +365,6 @@ public class GuideScreen extends Screen {
         pageTitle = extractPageTitle(page.getAstRoot());
 
         currentPage = PageCompiler.compile(pages, page);
-        currentDocument = currentPage.getDocument();
 
         scrollbar.setScrollAmount(0);
         updatePageLayout();
@@ -422,7 +424,7 @@ public class GuideScreen extends Screen {
     }
 
     private <T> Optional<T> dispatchInteraction(int x, int y, Function<InteractiveElement, Optional<T>> invoker) {
-        var underCursor = currentDocument.pick(x, y);
+        var underCursor = currentPage.getDocument().pick(x, y);
         if (underCursor != null) {
             // Iterate through content ancestors
             for (var el = underCursor.content(); el != null; el = el.getFlowParent()) {
@@ -459,17 +461,18 @@ public class GuideScreen extends Screen {
         var y = mouseHandler.ypos() * scale;
 
         // If there's a widget under the cursor, ignore document hit-testing
+        var document = currentPage.getDocument();
         if (getChildAt(x, y).isPresent()) {
-            currentDocument.setHoveredElement(null);
+            document.setHoveredElement(null);
             return;
         }
 
         var docPoint = getDocumentPoint(x, y);
         if (docPoint != null) {
-            var hoveredEl = currentDocument.pick(docPoint.getX(), docPoint.getY());
-            currentDocument.setHoveredElement(hoveredEl);
+            var hoveredEl = document.pick(docPoint.getX(), docPoint.getY());
+            document.setHoveredElement(hoveredEl);
         } else {
-            currentDocument.setHoveredElement(null);
+            document.setHoveredElement(null);
         }
     }
 
@@ -581,8 +584,9 @@ public class GuideScreen extends Screen {
         var context = new LayoutContext(new MinecraftFontMetrics(), docViewport);
 
         // Build layout if needed
-        currentDocument.updateLayout(context, docViewport.width());
-        scrollbar.setContentHeight(currentDocument.getContentHeight());
+        var document = currentPage.getDocument();
+        document.updateLayout(context, docViewport.width());
+        scrollbar.setContentHeight(document.getContentHeight());
     }
 
     public ResourceLocation getCurrentPageId() {
