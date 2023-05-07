@@ -85,7 +85,8 @@ public final class TransformRecipe implements Recipe<Container> {
         return TYPE;
     }
 
-    public ResourceLocation id() {
-        return id;
+    @Override
+    public boolean isSpecial() {
+        return true;
     }
 }
