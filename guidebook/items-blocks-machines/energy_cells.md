@@ -9,7 +9,6 @@ item_ids:
 - ae2:dense_energy_cell
 - ae2:creative_energy_cell
 ---
-
 # Energy Cells
 
 <Row gap="20"><BlockImage id="energy_cell" scale="8" p:fullness="4" /><BlockImage id="dense_energy_cell" scale="8" p:fullness="4" /><BlockImage id="creative_energy_cell" scale="8" /></Row>

@@ -18,8 +18,6 @@ If the monitor is on the floor or ceiling, you can rotate it with a <ItemLink id
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
----
-
 # Storage Monitor
 
 Will show an item or fluid and its quantity. Put them next to your farms or something...
@@ -34,8 +32,6 @@ Keybinds:
 # Recipe
 
 <RecipeFor id="storage_monitor" />
-
----
 
 # Conversion Monitor
 

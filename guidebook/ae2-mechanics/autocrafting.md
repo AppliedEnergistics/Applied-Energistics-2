@@ -5,7 +5,7 @@ navigation:
   icon: pattern_provider
 ---
 # Autocrafting
-# The Big One
+### The Big One
 
 ![Some neat looking devices](../assets/assemblies/autocraft_setup_greebles.png)
 
@@ -34,7 +34,7 @@ In the case of a non-crafting recipe (a "processing pattern") this will be some 
 
 5. If that craft is a prerequisite for another craft in the request, the items are stored in that crafting CPU and then used in that craft.
 
----
+
 
 # Patterns
 
@@ -76,9 +76,8 @@ Multiple <ItemLink id="pattern_provider" />s with identical patterns are support
 for example, 8 cobblestone = 8 stone instead of 1 cobblestone = 1 stone, and the pattern provider will insert 8 cobblestone into
 your smelting setup every operation instead of one at a time.
 
----
 
-# The Most General Form of "Pattern"
+## The Most General Form of "Pattern"
 
 There is actually an even more "general" form of "pattern" than a processing pattern. A <ItemLink id="level_emitter" /> with a crafting card can be set
 to emit a redstone signal in order to craft something. This "pattern" does not define, or even care about ingredients.
@@ -86,8 +85,6 @@ All it says is "If you emit redstone from this level emitter, the ME system will
 near or distant future". This is usually used to activate and deactivate infinite farms which require no input ingredients,
 or to activate a system that handles recursive recipes (which standard autocafting cannot understand) like, for example, "1 cobblestone = 2 cobblestone"
 if you have a machine that duplicates cobblestone.
-
----
 
 # The Crafting CPU
 
@@ -109,8 +106,6 @@ This allows, say, a pattern provider surrounded by 6 molecular assemblers to sen
 Each crafting CPU handles 1 request or job, so if you want to request both a calculation processor and 256 smooth stone at once, you need 2 CPU multiblocks.
 
 They can be set to handle requests from players, automation (export busses and interfaces), or both.
-
----
 
 # Pattern Providers
 
@@ -136,7 +131,7 @@ Multiple pattern providers with identical patterns are supported and work in par
 
 Pattern providers will attempt to round-robin their batches to all of their faces, thus using all attached machines in parallel.
 
-# Variants
+## Variants
 
 Pattern Providers come in 3 different variants: normal, directional, and flat. This affects which specific sides they push
 ingredients to, receive items from, and provide a network connection to.
@@ -154,7 +149,7 @@ ingredients to, receive items from, and provide a network connection to.
 
 Pattern providers can be swapped between normal and flat in a crafting grid.
 
-# Settings
+## Settings
 
 Pattern providers have a variety of modes:
 
@@ -164,13 +159,11 @@ Pattern providers have a variety of modes:
   previous craft is inserted into that specific pattern provider.
 - The provider can be shown or hidden on <ItemLink id="pattern_access_terminal" />s.
 
-# Priority
+## Priority
 
 Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](../items-blocks-machines/patterns.md)
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
-
----
 
 # Molecular Assemblers
 

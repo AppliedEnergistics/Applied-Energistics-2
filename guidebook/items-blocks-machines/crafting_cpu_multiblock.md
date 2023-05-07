@@ -32,13 +32,9 @@ for more details.
 - The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />ses with
   <ItemLink id="crafting_card" />s), or both.
 
----
-
 # Components
 
 Crafting CPUs are multiblocks, and must be solid rectangular prisms with no gaps. They are made out of several components:
-
----
 
 # Crafting Unit
 
@@ -48,8 +44,6 @@ Crafting units simply fill space in a CPU in order to make it a solid rectangula
 of the other components. They are also a base ingredient in the other components.
 
 <RecipeFor id="crafting_unit" />
-
----
 
 # Crafting Storage
 
@@ -67,8 +61,6 @@ with more ingredients.
 <Row><RecipeFor id="64k_crafting_storage" /><RecipeFor id="256k_crafting_storage" /></Row>
 </Column>
 
----
-
 # Crafting Co-Processing Unit
 
 <BlockImage id="crafting_accelerator" scale="4"  />
@@ -79,8 +71,6 @@ This allows them to keep up with machines that process quickly. An example of th
 distributing the ingredient batches between the surrounding assemblers.
 
 <RecipeFor id="crafting_accelerator" />
-
----
 
 # Crafting Monitor
 
