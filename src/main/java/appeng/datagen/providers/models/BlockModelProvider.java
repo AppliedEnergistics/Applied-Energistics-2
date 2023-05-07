@@ -23,7 +23,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.PatternProviderBlock;
-import appeng.block.misc.QuartzGrowthAcceleratorBlock;
+import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.block.misc.SecurityStationBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.EnergyCellBlock;
@@ -150,12 +150,12 @@ public class BlockModelProvider extends AE2BlockStateProvider {
     }
 
     private void quartzGrowthAccelerator() {
-        var unpoweredModel = getExistingModel("block/quartz_growth_accelerator_off");
-        var poweredModel = getExistingModel("block/quartz_growth_accelerator_on");
+        var unpoweredModel = getExistingModel("block/growth_accelerator_off");
+        var poweredModel = getExistingModel("block/growth_accelerator_on");
 
-        multiVariantGenerator(AEBlocks.QUARTZ_GROWTH_ACCELERATOR)
+        multiVariantGenerator(AEBlocks.GROWTH_ACCELERATOR)
                 .with(createFacingDispatch(90, 0))
-                .with(PropertyDispatch.property(QuartzGrowthAcceleratorBlock.POWERED)
+                .with(PropertyDispatch.property(GrowthAcceleratorBlock.POWERED)
                         .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
                         .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
     }

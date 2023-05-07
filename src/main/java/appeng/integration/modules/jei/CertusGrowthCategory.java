@@ -311,7 +311,7 @@ public class CertusGrowthCategory extends ViewBasedCategory<CertusGrowthCategory
 
                     builder.addSlot(RecipeIngredientRole.CATALYST, centerX + 8, 40)
                             .setBackground(slotBackground, -1, -1)
-                            .addItemStack(AEBlocks.QUARTZ_GROWTH_ACCELERATOR.stack());
+                            .addItemStack(AEBlocks.GROWTH_ACCELERATOR.stack());
                 }
             };
         };

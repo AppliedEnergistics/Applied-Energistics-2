@@ -34,24 +34,24 @@ import net.minecraft.world.level.material.Material;
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
+import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
 import appeng.util.Platform;
 
-public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowthAcceleratorBlockEntity> {
+public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorBlockEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public QuartzGrowthAcceleratorBlock() {
+    public GrowthAcceleratorBlock() {
         super(defaultProps(Material.STONE).sound(SoundType.METAL));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
     @Override
     protected BlockState updateBlockStateFromBlockEntity(BlockState currentState,
-            QuartzGrowthAcceleratorBlockEntity be) {
+            GrowthAcceleratorBlockEntity be) {
         return currentState.setValue(POWERED, be.isPowered());
     }
 
@@ -73,7 +73,7 @@ public class QuartzGrowthAcceleratorBlock extends AEBaseEntityBlock<QuartzGrowth
             return;
         }
 
-        final QuartzGrowthAcceleratorBlockEntity cga = this.getBlockEntity(level, pos);
+        final GrowthAcceleratorBlockEntity cga = this.getBlockEntity(level, pos);
 
         if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
             final double d0 = r.nextFloat() - 0.5F;

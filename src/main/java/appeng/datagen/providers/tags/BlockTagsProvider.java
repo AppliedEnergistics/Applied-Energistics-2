@@ -57,6 +57,10 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                         AEBlocks.QUARTZ_VIBRANT_GLASS.block())
                 .addTag(ConventionTags.STAINED_GLASS_BLOCK);
         tag(AETags.GROWTH_ACCELERATABLE)
+                // TODO: Should all be in some conventional tag
+                .add(Blocks.BAMBOO_SAPLING, Blocks.SUGAR_CANE, Blocks.SUGAR_CANE)
+                .addOptionalTag(ConventionTags.CROPS.location())
+                .addOptionalTag(ConventionTags.SAPLINGS.location())
                 .addTag(ConventionTags.BUDDING_BLOCKS_BLOCKS);
 
         // Only provide amethyst in the budding tag since that's the one we use; the other tags are for other mods

@@ -45,11 +45,11 @@ import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.CondenserBlockEntity;
 import appeng.blockentity.misc.CrankBlockEntity;
+import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
-import appeng.blockentity.misc.QuartzGrowthAcceleratorBlockEntity;
 import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -118,9 +118,9 @@ public final class AEBlockEntities {
             EnergyAcceptorBlockEntity.class, EnergyAcceptorBlockEntity::new, AEBlocks.ENERGY_ACCEPTOR);
     public static final BlockEntityType<VibrationChamberBlockEntity> VIBRATION_CHAMBER = create("vibration_chamber",
             VibrationChamberBlockEntity.class, VibrationChamberBlockEntity::new, AEBlocks.VIBRATION_CHAMBER);
-    public static final BlockEntityType<QuartzGrowthAcceleratorBlockEntity> QUARTZ_GROWTH_ACCELERATOR = create(
-            "quartz_growth_accelerator", QuartzGrowthAcceleratorBlockEntity.class,
-            QuartzGrowthAcceleratorBlockEntity::new, AEBlocks.QUARTZ_GROWTH_ACCELERATOR);
+    public static final BlockEntityType<GrowthAcceleratorBlockEntity> GROWTH_ACCELERATOR = create(
+            "growth_accelerator", GrowthAcceleratorBlockEntity.class,
+            GrowthAcceleratorBlockEntity::new, AEBlocks.GROWTH_ACCELERATOR);
     public static final BlockEntityType<EnergyCellBlockEntity> ENERGY_CELL = create("energy_cell",
             EnergyCellBlockEntity.class, EnergyCellBlockEntity::new, AEBlocks.ENERGY_CELL);
     public static final BlockEntityType<EnergyCellBlockEntity> DENSE_ENERGY_CELL = create("dense_energy_cell",
