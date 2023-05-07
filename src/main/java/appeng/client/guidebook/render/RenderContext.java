@@ -130,8 +130,8 @@ public interface RenderContext {
         if (style.fontScale() != 1) {
             matrix = new Matrix4f(matrix);
 
-            matrix.translate(style.fontScale(), style.fontScale(), 1);
-            matrix.translate(new Vector3f(x, y, 0));
+            matrix.scale(style.fontScale(), style.fontScale(), 1);
+            matrix.translate(new Vector3f(x / style.fontScale(), y / style.fontScale(), 0));
             x = 0;
             y = 0;
         }
