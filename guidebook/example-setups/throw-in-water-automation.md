@@ -28,8 +28,7 @@ which avoids issues with the input of one recipe being the output of another, ca
 ![Flawed Budding Pattern](../assets/diagrams/flawed_budding_pattern.png)
 
 - The <ItemLink id="interface" /> (2) is in its default configuration
-- The <ItemLink id="formation_plane" /> (3) is set to drop inputs as items, which may require you to set something in the filter slots
-for the button to show up. you can remove the filter after you toggle the button.
+- The <ItemLink id="formation_plane" /> (3) is set to drop inputs as items.
 - The <ItemLink id="annihilation_plane" /> (4) has no GUI and cannot be configured
 - The <ItemLink id="storage_bus" /> (5) is filtered to the outputs of the patterns
 

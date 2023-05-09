@@ -7,11 +7,13 @@ navigation:
 item_ids:
 - ae2:growth_accelerator
 ---
-# The Crystal Growth Accelerator
+# The Growth Accelerator
 
 <BlockImage id="growth_accelerator" p:powered="true" scale="8" perspective="up" />
 
-The Crystal Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/farming-certus.md) certus or amethyst when placed adjacent to the budding block.
+The Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/farming-certus.md) certus or amethyst when placed adjacent to the budding block.
+
+Curiously, it can *also* accelerate the growth of various plants.
 
 ![A Flawless Budding Certus with a growth accelerator](../assets/assemblies/budding_certus_2.png)
 
