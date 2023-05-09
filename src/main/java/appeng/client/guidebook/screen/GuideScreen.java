@@ -1,5 +1,23 @@
 package appeng.client.guidebook.screen;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
@@ -27,21 +45,6 @@ import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 public class GuideScreen extends Screen {
     private static final int HISTORY_SIZE = 100;
@@ -213,7 +216,7 @@ public class GuideScreen extends Screen {
                 docPos.getX(),
                 docPos.getY(),
                 el -> el.getTooltip(docPos.getX(), docPos.getY()))
-                .ifPresent(tooltip -> renderTooltip(poseStack, tooltip, x, y));
+                        .ifPresent(tooltip -> renderTooltip(poseStack, tooltip, x, y));
     }
 
     private static void renderHoverOutline(LytDocument document, SimpleRenderContext context) {
@@ -383,7 +386,7 @@ public class GuideScreen extends Screen {
                     page.document().removeChild(heading);
                     return heading.getContent();
                 } else {
-                    break;  // Any heading other than depth 1 cancels this algo
+                    break; // Any heading other than depth 1 cancels this algo
                 }
             }
         }
@@ -495,15 +498,13 @@ public class GuideScreen extends Screen {
         // The page title may need more space than the default margin provides
         var marginTop = Math.max(
                 margin,
-                5 + pageTitle.getBounds().height()
-        );
+                5 + pageTitle.getBounds().height());
 
         return new LytRect(
                 margin,
                 marginTop,
                 width - 2 * margin,
-                height - margin - marginTop
-        );
+                height - margin - marginTop);
     }
 
     private LytRect getDocumentViewport() {
