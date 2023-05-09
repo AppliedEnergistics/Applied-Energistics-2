@@ -2,6 +2,7 @@ package appeng.client.guidebook.document;
 
 import net.minecraft.client.Minecraft;
 
+import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 import appeng.client.guidebook.style.TextAlignment;
@@ -32,4 +33,31 @@ public class DefaultStyles {
             .color(SymbolicColor.CRAFTING_RECIPE_TYPE.ref())
             .build();
 
+    public static final TextStyle HEADING1 = TextStyle.builder()
+            .fontScale(1.3f)
+            .bold(true).font(Minecraft.DEFAULT_FONT)
+            .color(ColorRef.WHITE)
+            .build();
+    public static final TextStyle HEADING2 = TextStyle.builder()
+            .fontScale(1.1f)
+            .font(Minecraft.DEFAULT_FONT)
+            .build();
+    public static final TextStyle HEADING3 = TextStyle.builder()
+            .fontScale(1f)
+            .font(Minecraft.DEFAULT_FONT)
+            .build();
+    public static final TextStyle HEADING4 = TextStyle.builder()
+            .fontScale(1.1f)
+            .bold(true)
+            .font(Minecraft.UNIFORM_FONT)
+            .build();
+    public static final TextStyle HEADING5 = TextStyle.builder()
+            .fontScale(1f)
+            .bold(true)
+            .font(Minecraft.UNIFORM_FONT)
+            .build();
+    public static final TextStyle HEADING6 = TextStyle.builder()
+            .fontScale(1f)
+            .font(Minecraft.UNIFORM_FONT)
+            .build();
 }

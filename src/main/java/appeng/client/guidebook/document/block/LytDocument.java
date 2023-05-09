@@ -53,6 +53,9 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     @Override
     public void removeChild(LytNode node) {
         if (node instanceof LytBlock block) {
+            if (block.parent == this) {
+                block.parent = null;
+            }
             blocks.remove(block);
         }
     }

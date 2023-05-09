@@ -5,22 +5,26 @@ package appeng.client.guidebook.render;
  * "D7BBEC", "macros": { "$(item)": "$(#582E70)", "$(thing)": "$(#582E70)", "$(todo)": "$(#FF0000)" },
  */
 public enum SymbolicColor {
-    LINK(Colors.argb(255, 0, 213, 255), Colors.argb(255, 0, 213, 255)),
-    BODY_TEXT(Colors.argb(255, 174, 174, 174), Colors.argb(255, 174, 174, 174)),
+    LINK(Colors.rgb(0, 213, 255), Colors.rgb(0, 213, 255)),
+    BODY_TEXT(Colors.rgb(174, 174, 174), Colors.rgb(174, 174, 174)),
     /**
      * Color used for the type of crafting shown in recipe blocks.
      */
-    CRAFTING_RECIPE_TYPE(Colors.argb(255, 64, 64, 64), Colors.argb(255, 64, 64, 64)),
-    THEMATIC_BREAK(Colors.argb(255, 55, 55, 55), Colors.argb(255, 155, 155, 155)),
+    CRAFTING_RECIPE_TYPE(Colors.rgb(64, 64, 64), Colors.rgb(64, 64, 64)),
+    THEMATIC_BREAK(Colors.rgb(55, 55, 55), Colors.rgb(155, 155, 155)),
 
     HEADER1_SEPARATOR(Colors.argb(127, 255, 255, 255), Colors.argb(127, 255, 255, 255)),
     HEADER2_SEPARATOR(Colors.argb(127, 174, 174, 174), Colors.argb(127, 174, 174, 174)),
 
-    NAVBAR_BG_TOP(Colors.argb(255, 0, 0, 0), Colors.argb(255, 0, 0, 0)),
+    NAVBAR_BG_TOP(Colors.rgb(0, 0, 0), Colors.rgb(0, 0, 0)),
     NAVBAR_BG_BOTTOM(Colors.argb(127, 0, 0, 0), Colors.argb(127, 0, 0, 0)),
-    NAVBAR_ROW_HOVER(Colors.argb(255, 33, 33, 33), Colors.argb(255, 33, 33, 33)),
-    NAVBAR_EXPAND_ARROW(Colors.argb(255, 238, 238, 238), Colors.argb(255, 238, 238, 238)),
-    TABLE_BORDER(Colors.argb(255, 124, 124, 124), Colors.argb(255, 124, 124, 124));
+    NAVBAR_ROW_HOVER(Colors.rgb(33, 33, 33), Colors.rgb(33, 33, 33)),
+    NAVBAR_EXPAND_ARROW(Colors.rgb(238, 238, 238), Colors.rgb(238, 238, 238)),
+    TABLE_BORDER(Colors.rgb(124, 124, 124), Colors.rgb(124, 124, 124)),
+
+    ICON_BUTTON_NORMAL(Colors.mono(200), Colors.mono(200)),
+    ICON_BUTTON_DISABLED(Colors.mono(64), Colors.mono(64)),
+    ICON_BUTTON_HOVER(Colors.rgb(0, 213, 255), Colors.rgb(0, 213, 255));
 
     final int lightMode;
     final int darkMode;

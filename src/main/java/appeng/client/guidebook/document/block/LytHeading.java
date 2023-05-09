@@ -1,11 +1,8 @@
 package appeng.client.guidebook.document.block;
 
-import net.minecraft.client.Minecraft;
-
-import appeng.client.guidebook.render.ColorRef;
+import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SymbolicColor;
-import appeng.client.guidebook.style.TextStyle;
 
 public class LytHeading extends LytParagraph {
     private int depth = 1;
@@ -21,20 +18,16 @@ public class LytHeading extends LytParagraph {
 
     public void setDepth(int depth) {
         this.depth = depth;
-        modifyStyle(this::customizeStyle);
-    }
-
-    private void customizeStyle(TextStyle.Builder builder) {
-        switch (depth) {
-            case 1 -> builder.fontScale(1.3f).bold(true).font(Minecraft.DEFAULT_FONT).color(ColorRef.WHITE);
-            case 2 -> builder.fontScale(1.1f).font(Minecraft.DEFAULT_FONT);
-            case 3 -> builder.fontScale(1f).font(Minecraft.DEFAULT_FONT);
-            case 4 -> builder.fontScale(1.1f).bold(true).font(Minecraft.UNIFORM_FONT);
-            case 5 -> builder.fontScale(1f).bold(true).font(Minecraft.UNIFORM_FONT);
-            case 6 -> builder.fontScale(1f).font(Minecraft.UNIFORM_FONT);
-            default -> {
-            }
-        }
+        var style = switch (depth) {
+            case 1 -> DefaultStyles.HEADING1;
+            case 2 -> DefaultStyles.HEADING2;
+            case 3 -> DefaultStyles.HEADING3;
+            case 4 -> DefaultStyles.HEADING4;
+            case 5 -> DefaultStyles.HEADING5;
+            case 6 -> DefaultStyles.HEADING6;
+            default -> DefaultStyles.BODY_TEXT;
+        };
+        setStyle(style);
     }
 
     @Override

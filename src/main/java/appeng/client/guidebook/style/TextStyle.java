@@ -75,6 +75,40 @@ public record TextStyle(
         private WhiteSpaceMode whiteSpace;
         private TextAlignment alignment;
 
+        public Builder apply(TextStyle style) {
+            if (style.fontScale() != null) {
+                fontScale = style.fontScale();
+            }
+            if (style.bold() != null) {
+                bold = style.bold();
+            }
+            if (style.italic() != null) {
+                italic = style.italic();
+            }
+            if (style.underlined() != null) {
+                underlined = style.underlined();
+            }
+            if (style.strikethrough() != null) {
+                strikethrough = style.strikethrough();
+            }
+            if (style.obfuscated() != null) {
+                obfuscated = style.obfuscated();
+            }
+            if (style.font() != null) {
+                font = style.font();
+            }
+            if (style.color() != null) {
+                color = style.color();
+            }
+            if (style.whiteSpace() != null) {
+                whiteSpace = style.whiteSpace();
+            }
+            if (style.alignment() != null) {
+                alignment = style.alignment();
+            }
+            return this;
+        }
+
         public Builder fontScale(Float fontScale) {
             this.fontScale = fontScale;
             return this;

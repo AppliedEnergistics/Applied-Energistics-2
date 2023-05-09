@@ -2,6 +2,7 @@ package appeng.libs.mdast.model;
 
 import appeng.libs.unist.UnistParent;
 import com.google.gson.stream.JsonWriter;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,12 +54,16 @@ public abstract class MdAstParent<T extends MdAstAnyContent> extends MdAstNode i
         }
     }
 
-    public void replaceChild(MdAstNode child, MdAstNode replacement) {
-        var replacementChild = childClass().cast(replacement);
+    public void replaceChild(MdAstNode child, @Nullable MdAstNode replacement) {
+        var replacementChild = replacement != null ? childClass().cast(replacement) : null;
 
         for (int i = 0; i < children.size(); i++) {
             if (children.get(i) == child) {
-                children.set(i, replacementChild);
+                if (replacement == null) {
+                    children.remove(i);
+                } else {
+                    children.set(i, replacementChild);
+                }
                 return;
             }
         }

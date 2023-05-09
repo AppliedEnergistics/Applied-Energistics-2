@@ -1,7 +1,5 @@
 package appeng.libs.mdast.model;
 
-import java.util.List;
-
 /**
  * Emphasis (Parent) represents stress emphasis of its contents.
  * Emphasis can be used where phrasing content is expected. Its content model is transparent content.

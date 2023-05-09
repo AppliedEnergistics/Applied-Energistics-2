@@ -24,6 +24,8 @@ import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
@@ -31,6 +33,7 @@ import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.block.LytHeading;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
+import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.layout.LayoutContext;
@@ -39,12 +42,15 @@ import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.client.guidebook.render.SymbolicColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
 public class GuideScreen extends Screen {
     private static final int HISTORY_SIZE = 100;
     private static final List<PageAnchor> history = new ArrayList<>();
+    // 20 virtual px margin around the document
+    public static final int DOCUMENT_RECT_MARGIN = 20;
     private static int historyPosition;
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
@@ -52,6 +58,7 @@ public class GuideScreen extends Screen {
 
     private final GuideScrollbar scrollbar;
     private GuidePage currentPage;
+    private final LytParagraph pageTitle;
 
     private Button backButton;
     private Button forwardButton;
@@ -60,7 +67,9 @@ public class GuideScreen extends Screen {
         super(Component.literal("AE2 Guidebook"));
         this.pages = pages;
         this.scrollbar = new GuideScrollbar();
-        loadPage(anchor);
+        this.pageTitle = new LytParagraph();
+        this.pageTitle.setStyle(DefaultStyles.HEADING1);
+        loadPageAndScrollTo(anchor);
     }
 
     /**
@@ -96,23 +105,31 @@ public class GuideScreen extends Screen {
         updatePageLayout();
 
         // Add and re-position scrollbar
-        var docRect = getDocumentRect();
         addRenderableWidget(scrollbar);
-        scrollbar.move(
-                docRect.right(),
-                docRect.y(),
-                docRect.height());
+        updateScrollbarPosition();
 
         GuideNavBar navbar = new GuideNavBar(this);
         addRenderableWidget(navbar);
 
-        backButton = Button.builder(Component.literal("<"),
-                button -> navigateBack()).bounds(docRect.right() - 40, docRect.y() - 15, 20, 15).build();
+        // Center them vertically in the margin
+        backButton = new HistoryNavigationButton(
+                width - DOCUMENT_RECT_MARGIN - HistoryNavigationButton.WIDTH * 2 - 5,
+                2,
+                HistoryNavigationButton.Direction.BACK,
+                this::navigateBack);
         addRenderableWidget(backButton);
-        forwardButton = Button.builder(Component.literal(">"),
-                button -> navigateForward()).bounds(docRect.right() - 20, docRect.y() - 15, 20, 15).build();
+        forwardButton = new HistoryNavigationButton(
+                width - DOCUMENT_RECT_MARGIN - HistoryNavigationButton.WIDTH,
+                2,
+                HistoryNavigationButton.Direction.FORWARD,
+                this::navigateForward);
         addRenderableWidget(forwardButton);
         updateNavigationButtons();
+    }
+
+    private void updateScrollbarPosition() {
+        var docRect = getDocumentRect();
+        scrollbar.move(docRect.right(), docRect.y(), docRect.height());
     }
 
     @Override
@@ -131,7 +148,7 @@ public class GuideScreen extends Screen {
         poseStack.pushPose();
         poseStack.translate(documentRect.x() - documentViewport.x(), documentRect.y() - documentViewport.y(), 0);
 
-        var document = currentPage.getDocument();
+        var document = currentPage.document();
         var context = new SimpleRenderContext(
                 documentViewport,
                 poseStack,
@@ -157,6 +174,8 @@ public class GuideScreen extends Screen {
         poseStack.pushPose();
         poseStack.translate(0, 0, 200);
 
+        renderTitle(documentRect, context);
+
         super.render(poseStack, mouseX, mouseY, partialTick);
 
         poseStack.popPose();
@@ -166,6 +185,18 @@ public class GuideScreen extends Screen {
             renderTooltip(poseStack, mouseX, mouseY);
         }
 
+    }
+
+    private void renderTitle(LytRect documentRect, SimpleRenderContext context) {
+        var buffers = context.beginBatch();
+        pageTitle.renderBatch(context, buffers);
+        context.endBatch(buffers);
+        context.fillRect(
+                documentRect.x(),
+                documentRect.y() - 1,
+                documentRect.width(),
+                1,
+                SymbolicColor.HEADER1_SEPARATOR.ref());
     }
 
     private void renderSkyStoneBackground(PoseStack poseStack) {
@@ -282,12 +313,12 @@ public class GuideScreen extends Screen {
     }
 
     public void navigateTo(PageAnchor anchor) {
-        if (currentPage.getId().equals(anchor.pageId())) {
+        if (currentPage.id().equals(anchor.pageId())) {
             // TODO -> scroll up (?)
             return;
         }
 
-        loadPage(anchor);
+        loadPageAndScrollTo(anchor);
 
         // Remove anything from the history after the current page when we navigate to a new one
         if (historyPosition + 1 < history.size()) {
@@ -305,25 +336,19 @@ public class GuideScreen extends Screen {
     // Navigate to next page in history (only possible if we've navigated back previously)
     private void navigateForward() {
         if (historyPosition + 1 < history.size()) {
-            loadPage(history.get(++historyPosition));
+            loadPageAndScrollTo(history.get(++historyPosition));
         }
     }
 
     // Navigate to previous page in history
     private void navigateBack() {
         if (historyPosition > 0) {
-            loadPage(history.get(--historyPosition));
+            loadPageAndScrollTo(history.get(--historyPosition));
         }
     }
 
-    private void loadPage(PageAnchor anchor) {
-        GuidePageTexture.releaseUsedTextures();
-        currentPage = pages.getPage(anchor.pageId());
-
-        if (currentPage == null) {
-            // Build a "not found" page dynamically
-            currentPage = buildNotFoundPage(anchor);
-        }
+    private void loadPageAndScrollTo(PageAnchor anchor) {
+        loadPage(anchor.pageId());
 
         scrollbar.setScrollAmount(0);
         updatePageLayout();
@@ -331,32 +356,58 @@ public class GuideScreen extends Screen {
         // TODO ANCHOR
     }
 
-    private GuidePage buildNotFoundPage(PageAnchor anchor) {
-        var document = new LytDocument();
-        var title = new LytHeading();
-        title.appendText("Page not Found");
-        title.setDepth(1);
-        document.append(title);
-        var body = new LytParagraph();
-        body.appendText("Page " + anchor.pageId() + " could not be found.");
-        document.append(body);
+    public void reloadPage() {
+        loadPage(currentPage.id());
+        updatePageLayout();
+    }
 
-        return new GuidePage(
-                AppEng.MOD_ID,
-                anchor.pageId(),
-                document);
+    private void loadPage(ResourceLocation pageId) {
+        GuidePageTexture.releaseUsedTextures();
+        var page = pages.getParsedPage(pageId);
+
+        if (page == null) {
+            // Build a "not found" page dynamically
+            page = buildNotFoundPage(pageId);
+        }
+
+        currentPage = PageCompiler.compile(pages, page);
+
+        // Find and pull out the first heading
+        pageTitle.clearContent();
+        for (var flowContent : extractPageTitle(currentPage)) {
+            pageTitle.append(flowContent);
+        }
+    }
+
+    private Iterable<LytFlowContent> extractPageTitle(GuidePage page) {
+        for (var block : page.document().getBlocks()) {
+            if (block instanceof LytHeading heading) {
+                if (heading.getDepth() == 1) {
+                    page.document().removeChild(heading);
+                    return heading.getContent();
+                } else {
+                    break; // Any heading other than depth 1 cancels this algo
+                }
+            }
+        }
+        return List.of();
+    }
+
+    private ParsedGuidePage buildNotFoundPage(ResourceLocation pageId) {
+        String pageSource = "# Page not Found\n" +
+                "\n" +
+                "Page \"" + pageId + "\" could not be found.";
+
+        return PageCompiler.parse(
+                pageId.getNamespace(),
+                pageId,
+                pageSource);
     }
 
     @Override
     public void removed() {
         super.removed();
         GuidePageTexture.releaseUsedTextures();
-    }
-
-    public void reloadPage() {
-        GuidePageTexture.releaseUsedTextures();
-        currentPage = pages.getPage(currentPage.getId());
-        updatePageLayout();
     }
 
     @FunctionalInterface
@@ -375,7 +426,7 @@ public class GuideScreen extends Screen {
     }
 
     private <T> Optional<T> dispatchInteraction(int x, int y, Function<InteractiveElement, Optional<T>> invoker) {
-        var underCursor = currentPage.getDocument().pick(x, y);
+        var underCursor = currentPage.document().pick(x, y);
         if (underCursor != null) {
             // Iterate through content ancestors
             for (var el = underCursor.content(); el != null; el = el.getFlowParent()) {
@@ -405,8 +456,6 @@ public class GuideScreen extends Screen {
     public void afterMouseMove() {
         super.afterMouseMove();
 
-        var document = currentPage.getDocument();
-
         var mouseHandler = minecraft.mouseHandler;
         var scale = (double) minecraft.getWindow().getGuiScaledWidth()
                 / (double) minecraft.getWindow().getScreenWidth();
@@ -414,6 +463,7 @@ public class GuideScreen extends Screen {
         var y = mouseHandler.ypos() * scale;
 
         // If there's a widget under the cursor, ignore document hit-testing
+        var document = currentPage.document();
         if (getChildAt(x, y).isPresent()) {
             document.setHoveredElement(null);
             return;
@@ -443,10 +493,18 @@ public class GuideScreen extends Screen {
     }
 
     private LytRect getDocumentRect() {
-        // 20 virtual px margin
-        var margin = 20;
+        var margin = DOCUMENT_RECT_MARGIN;
 
-        return new LytRect(margin, margin, width - 2 * margin, height - 2 * margin);
+        // The page title may need more space than the default margin provides
+        var marginTop = Math.max(
+                margin,
+                5 + pageTitle.getBounds().height());
+
+        return new LytRect(
+                margin,
+                marginTop,
+                width - 2 * margin,
+                height - margin - marginTop);
     }
 
     private LytRect getDocumentViewport() {
@@ -533,17 +591,51 @@ public class GuideScreen extends Screen {
     }
 
     private void updatePageLayout() {
+        // Update layout of page title, since it's used for the document rectangle
+        updateTitleLayout();
+
         var docViewport = getDocumentViewport();
         var context = new LayoutContext(new MinecraftFontMetrics(), docViewport);
 
         // Build layout if needed
-        var document = currentPage.getDocument();
+        var document = currentPage.document();
         document.updateLayout(context, docViewport.width());
         scrollbar.setContentHeight(document.getContentHeight());
     }
 
+    private void updateTitleLayout() {
+        var context = new LayoutContext(new MinecraftFontMetrics(), LytRect.empty());
+        // Compute the fake layout to find out how high it would be
+        int availableWidth = width;
+
+        // Remove the document viewport margin
+        availableWidth -= 2 * DOCUMENT_RECT_MARGIN;
+
+        // Account for the navigation buttons on the right
+        availableWidth -= HistoryNavigationButton.WIDTH * 2 + 5;
+
+        // Remove 2 * 5 as margin
+        availableWidth -= 10;
+
+        if (availableWidth < 0) {
+            availableWidth = 0;
+        }
+
+        pageTitle.layout(context, 0, 0, availableWidth);
+        var height = pageTitle.getBounds().height();
+
+        // Now compute the real layout
+        var documentRect = getDocumentRect();
+
+        int titleY = (documentRect.y() - height) / 2;
+
+        pageTitle.layout(context, documentRect.x() + 5, titleY, availableWidth);
+
+        updateScrollbarPosition();
+    }
+
     public ResourceLocation getCurrentPageId() {
-        return currentPage.getId();
+        return currentPage.id();
     }
 
     private void updateNavigationButtons() {
