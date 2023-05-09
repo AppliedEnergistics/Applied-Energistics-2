@@ -1,12 +1,5 @@
 package appeng.libs.micromark.html;
 
-import appeng.libs.micromark.ListUtils;
-import appeng.libs.micromark.NamedCharacterEntities;
-import appeng.libs.micromark.NormalizeIdentifier;
-import appeng.libs.micromark.Token;
-import appeng.libs.micromark.Tokenizer;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -15,28 +8,33 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import org.jetbrains.annotations.Nullable;
+
+import appeng.libs.micromark.ListUtils;
+import appeng.libs.micromark.NamedCharacterEntities;
+import appeng.libs.micromark.NormalizeIdentifier;
+import appeng.libs.micromark.Token;
+import appeng.libs.micromark.Tokenizer;
+
 /**
- * While micromark is a lexer/tokenizer, the common case of going from markdown
- * to html is currently built in as this module, even though the parts can be
- * used separately to build ASTs, CSTs, or many other output formats.
+ * While micromark is a lexer/tokenizer, the common case of going from markdown to html is currently built in as this
+ * module, even though the parts can be used separately to build ASTs, CSTs, or many other output formats.
  * <p>
- * Having an HTML compiler built in is useful because it allows us to check for
- * compliancy to CommonMark, the de facto norm of markdown, specified in roughly
- * 600 input/output cases.
+ * Having an HTML compiler built in is useful because it allows us to check for compliancy to CommonMark, the de facto
+ * norm of markdown, specified in roughly 600 input/output cases.
  * <p>
- * This module has an interface that accepts lists of events instead of the
- * whole at once, however, because markdown can’t be truly streaming, we buffer
- * events before processing and outputting the final result.
+ * This module has an interface that accepts lists of events instead of the whole at once, however, because markdown
+ * can’t be truly streaming, we buffer events before processing and outputting the final result.
  */
 public class HtmlCompiler {
 
     /**
-     * These two are allowlists of safe protocols for full URLs in respectively the
-     * `href` (on `<a>`) and `src` (on `<img>`) attributes.
-     * They are based on what is allowed on GitHub,
+     * These two are allowlists of safe protocols for full URLs in respectively the `href` (on `<a>`) and `src` (on
+     * `<img>`) attributes. They are based on what is allowed on GitHub,
      * <https://github.com/syntax-tree/hast-util-sanitize/blob/9275b21/lib/github.json#L31>
      */
-    private static final Pattern protocolHref = Pattern.compile("^(https?|ircs?|mailto|xmpp)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern protocolHref = Pattern.compile("^(https?|ircs?|mailto|xmpp)$",
+            Pattern.CASE_INSENSITIVE);
     private static final Pattern protocolSrc = Pattern.compile("^https?$", Pattern.CASE_INSENSITIVE);
     private final CompileOptions options;
 
@@ -50,36 +48,32 @@ public class HtmlCompiler {
     }
 
     /**
-     * Tags is needed because according to markdown, links and emphasis and
-     * whatnot can exist in images, however, as HTML doesn’t allow content in
-     * images, the tags are ignored in the `alt` attribute, but the content
-     * remains.
+     * Tags is needed because according to markdown, links and emphasis and whatnot can exist in images, however, as
+     * HTML doesn’t allow content in images, the tags are ignored in the `alt` attribute, but the content remains.
      */
     private boolean tags = true;
 
     /**
-     * An object to track identifiers to media (URLs and titles) defined with
-     * definitions.
+     * An object to track identifiers to media (URLs and titles) defined with definitions.
      */
     private final Map<String, Media> definitions = new HashMap<>();
 
     /**
-     * A lot of the handlers need to capture some of the output data, modify it
-     * somehow, and then deal with it.
-     * We do that by tracking a stack of buffers, that can be opened (with
-     * `buffer`) and closed (with `resume`) to access them.
+     * A lot of the handlers need to capture some of the output data, modify it somehow, and then deal with it. We do
+     * that by tracking a stack of buffers, that can be opened (with `buffer`) and closed (with `resume`) to access
+     * them.
      */
     private final List<List<String>> buffers = new ArrayList<>(List.of(new ArrayList<>()));
 
     /**
-     * As we can have links in images and the other way around, where the deepest
-     * ones are closed first, we need to track which one we’re in.
+     * As we can have links in images and the other way around, where the deepest ones are closed first, we need to
+     * track which one we’re in.
      */
     private final List<Media> mediaStack = new ArrayList<>();
 
     /**
-     * Same as `mediaStack` for tightness, which is specific to lists.
-     * We need to track if we’re currently in a tight or loose container.
+     * Same as `mediaStack` for tightness, which is specific to lists. We need to track if we’re currently in a tight or
+     * loose container.
      */
     private final List<Boolean> tightStack = new ArrayList<Boolean>();
 
@@ -162,18 +156,15 @@ public class HtmlCompiler {
             .build();
 
     /**
-     * Combine the HTML extensions with the default handlers.
-     * An HTML extension is an object whose fields are either `enter` or `exit`
-     * (reflecting whether a token is entered or exited).
-     * The values at such objects are names of tokens mapping to handlers.
-     * Handlers are called, respectively when a token is opener or closed, with
-     * that token, and a context as `this`.
+     * Combine the HTML extensions with the default handlers. An HTML extension is an object whose fields are either
+     * `enter` or `exit` (reflecting whether a token is entered or exited). The values at such objects are names of
+     * tokens mapping to handlers. Handlers are called, respectively when a token is opener or closed, with that token,
+     * and a context as `this`.
      */
     HtmlExtension handlers;
 
     /**
-     * Handlers do often need to keep track of some state.
-     * That state is provided here as a key-value store (an object).
+     * Handlers do often need to keep track of some state. That state is provided here as a key-value store (an object).
      *
      * @type {CompileData}
      */
@@ -196,13 +187,13 @@ public class HtmlCompiler {
     }
 
     /**
-     * Generally, micromark copies line endings (`"\r"`, `"\n"`, `"\r\n"`) in the
-     * markdown document over to the compiled HTML.
-     * In some cases, such as `> a`, CommonMark requires that extra line endings
-     * are added: `<blockquote>\n<p>a</p>\n</blockquote>`.
-     * This variable hold the default line ending when given (or `undefined`),
-     * and in the latter case will be updated to the first found line ending if
-     * there is one.
+     * Generally, micromark copies line endings (`"\r"`, `"\n"`, `"\r\n"`) in the markdown document over to the compiled
+     * HTML. In some cases, such as `> a`, CommonMark requires that extra line endings are added: `<blockquote>\n
+     * <p>
+     * a
+     * </p>
+     * \n</blockquote>`. This variable hold the default line ending when given (or `undefined`), and in the latter case
+     * will be updated to the first found line ending if there is one.
      */
     String lineEndingStyle;
 
@@ -236,9 +227,8 @@ public class HtmlCompiler {
     }
 
     /**
-     * Deal w/ a slice of events.
-     * Return either the empty string if there’s nothing of note to return, or the
-     * result when done.
+     * Deal w/ a slice of events. Return either the empty string if there’s nothing of note to return, or the result
+     * when done.
      */
     public String compile(List<Tokenizer.Event> events) {
         int index = -1;
@@ -330,7 +320,7 @@ public class HtmlCompiler {
 
         @Override
         public <T> void set(HtmlContextProperty<T> property, T value) {
-            if ( extensionData == null) {
+            if (extensionData == null) {
                 extensionData = new IdentityHashMap<>();
             }
             extensionData.put(property, value);
@@ -409,32 +399,33 @@ public class HtmlCompiler {
                 } else {
                     containerBalance--;
                 }
-            } else switch (token.type) {
-                case "listItemPrefix": {
-                    if (event.isExit()) {
-                        atMarker = true;
-                    }
-                    break;
-                }
-                case "linePrefix": {
-                    // Ignore
-
-                    break;
-                }
-                case "lineEndingBlank": {
-                    if (event.isEnter() && containerBalance == 0) {
-                        if (atMarker) {
-                            atMarker = false;
-                        } else {
-                            loose = true;
+            } else
+                switch (token.type) {
+                    case "listItemPrefix": {
+                        if (event.isExit()) {
+                            atMarker = true;
                         }
+                        break;
                     }
-                    break;
+                    case "linePrefix": {
+                        // Ignore
+
+                        break;
+                    }
+                    case "lineEndingBlank": {
+                        if (event.isEnter() && containerBalance == 0) {
+                            if (atMarker) {
+                                atMarker = false;
+                            } else {
+                                loose = true;
+                            }
+                        }
+                        break;
+                    }
+                    default: {
+                        atMarker = false;
+                    }
                 }
-                default: {
-                    atMarker = false;
-                }
-            }
         }
         slice.get(0).token()._loose = loose;
     }
@@ -449,7 +440,8 @@ public class HtmlCompiler {
     }
 
     private void tag(String value) {
-        if (!tags) return;
+        if (!tags)
+            return;
         data.lastWasTag = true;
         buffers.get(buffers.size() - 1).add(value);
     }
@@ -612,7 +604,8 @@ public class HtmlCompiler {
             lineEndingIfNeeded();
         }
         tag("</code></pre>");
-        if (count != null && count < 2) lineEndingIfNeeded();
+        if (count != null && count < 2)
+            lineEndingIfNeeded();
         data.flowCodeSeenData = false;
         data.fencesCount = null;
         data.slurpOneLineEnding = false;
@@ -675,11 +668,13 @@ public class HtmlCompiler {
             }
         }
         if (media.image) {
-            tag("<img src=\"" + SanitizeUri.sanitizeUri(context.destination, options.isAllowDangerousProtocol() ? null : protocolSrc) + "\" alt=\"");
+            tag("<img src=\"" + SanitizeUri.sanitizeUri(context.destination,
+                    options.isAllowDangerousProtocol() ? null : protocolSrc) + "\" alt=\"");
             raw(media.label);
             tag("\"");
         } else {
-            tag("<a href=\"" + SanitizeUri.sanitizeUri(context.destination, options.isAllowDangerousProtocol() ? null : protocolHref) + "\"");
+            tag("<a href=\"" + SanitizeUri.sanitizeUri(context.destination,
+                    options.isAllowDangerousProtocol() ? null : protocolHref) + "\"");
         }
         tag(context.title != null ? " title=\"" + context.title + "\"" : "");
         if (media.image) {
@@ -733,7 +728,8 @@ public class HtmlCompiler {
 
     private void onexitatxheadingsequence(HtmlContext context, Token token) {
         // Exit for further sequences.
-        if (data.headingRank != 0) return;
+        if (data.headingRank != 0)
+            return;
         data.headingRank = context.sliceSerialize(token).length();
         lineEndingIfNeeded();
         tag("<h" + data.headingRank + ">");
@@ -851,14 +847,18 @@ public class HtmlCompiler {
         // @ts-expect-error `decodeNamedCharacterReference` can return false for
         // invalid named character references, but everything we’ve tokenized is
         // valid.
-        value = data.characterReferenceType != null ? NumericCharacterReference.decodeNumericCharacterReference(value, data.characterReferenceType.equals("characterReferenceMarkerNumeric") ? 10 : 16) : NamedCharacterEntities.decodeNamedCharacterReference(value);
+        value = data.characterReferenceType != null
+                ? NumericCharacterReference.decodeNumericCharacterReference(value,
+                        data.characterReferenceType.equals("characterReferenceMarkerNumeric") ? 10 : 16)
+                : NamedCharacterEntities.decodeNamedCharacterReference(value);
         raw(encode(value));
         data.characterReferenceType = null;
     }
 
     private void onexitautolinkprotocol(HtmlContext context, Token token) {
         var uri = context.sliceSerialize(token);
-        tag("<a href=\"" + SanitizeUri.sanitizeUri(uri, options.isAllowDangerousProtocol() ? null : protocolHref) + "\">");
+        tag("<a href=\"" + SanitizeUri.sanitizeUri(uri, options.isAllowDangerousProtocol() ? null : protocolHref)
+                + "\">");
         raw(encode(uri));
         tag("</a>");
     }

@@ -24,15 +24,18 @@ public final class ListConstruct {
         list.name = "list";
         list.tokenize = (context, effects, ok, nok) -> new StartStateMachine(context, effects, ok, nok)::start;
         list.continuation = new Construct();
-        list.continuation.tokenize = (context, effects, ok, nok) -> new ContinuationStateMachine(context, effects, ok, nok).start;
+        list.continuation.tokenize = (context, effects, ok,
+                nok) -> new ContinuationStateMachine(context, effects, ok, nok).start;
         list.exit = (context, effects) -> effects.exit((String) context.getContainerState().get("type"));
 
         listItemPrefixWhitespaceConstruct = new Construct();
-        listItemPrefixWhitespaceConstruct.tokenize = (context, effects, ok, nok) -> new ItemPrefixWhitespaceStateMachine(context, effects, ok, nok).start;
+        listItemPrefixWhitespaceConstruct.tokenize = (context, effects, ok,
+                nok) -> new ItemPrefixWhitespaceStateMachine(context, effects, ok, nok).start;
         listItemPrefixWhitespaceConstruct.partial = true;
 
         indentConstruct = new Construct();
-        indentConstruct.tokenize = (context, effects, ok, nok) -> new IndentStateMachine(context, effects, ok, nok).start;
+        indentConstruct.tokenize = (context, effects, ok,
+                nok) -> new IndentStateMachine(context, effects, ok, nok).start;
         indentConstruct.partial = true;
     }
 
@@ -54,27 +57,24 @@ public final class ListConstruct {
 
             var tail = context.getLastEvent();
             initialSize = tail != null && tail.token().type.equals(Types.linePrefix)
-                            ? tail.context().sliceSerialize(tail.token(), true).length()
-                            : 0;
+                    ? tail.context().sliceSerialize(tail.token(), true).length()
+                    : 0;
         }
 
-        
         private State start(int code) {
-            var kind = (String)
-                    context.getContainerState().getOrDefault("type",
-                            (code == Codes.asterisk || code == Codes.plusSign || code == Codes.dash
-                                    ? Types.listUnordered
-                                    : Types.listOrdered));
+            var kind = (String) context.getContainerState().getOrDefault("type",
+                    (code == Codes.asterisk || code == Codes.plusSign || code == Codes.dash
+                            ? Types.listUnordered
+                            : Types.listOrdered));
 
-            if (
-                    kind.equals(Types.listUnordered)
-                            ? !context.getContainerState().containsKey("marker") || code == (int) context.getContainerState().get("marker")
-                            : CharUtil.asciiDigit(code)
-            ) {
+            if (kind.equals(Types.listUnordered)
+                    ? !context.getContainerState().containsKey("marker")
+                            || code == (int) context.getContainerState().get("marker")
+                    : CharUtil.asciiDigit(code)) {
                 if (!context.getContainerState().containsKey("type")) {
                     context.getContainerState().put("type", kind);
-                            var tokenFields = new Token();
-                            tokenFields._container = true;
+                    var tokenFields = new Token();
+                    tokenFields._container = true;
                     effects.enter(kind, tokenFields);
                 }
 
@@ -82,7 +82,7 @@ public final class ListConstruct {
                     effects.enter(Types.listItemPrefix);
                     return code == Codes.asterisk || code == Codes.dash
                             ? effects.check.hook(ThematicBreak.thematicBreak, nok, this::atMarker).step(code)
-          : atMarker(code);
+                            : atMarker(code);
                 }
 
                 if (!context.isInterrupt() || code == Codes.digit1) {
@@ -95,19 +95,16 @@ public final class ListConstruct {
             return nok.step(code);
         }
 
-        
         private State inside(int code) {
             if (CharUtil.asciiDigit(code) && ++size < Constants.listItemValueSizeMax) {
                 effects.consume(code);
                 return this::inside;
             }
 
-            if (
-                    (!context.isInterrupt() || size < 2) &&
-                            (context.getContainerState().containsKey("marker")
-                                    ? code == (int) context.getContainerState().get("marker")
-                                    : code == Codes.rightParenthesis || code == Codes.dot)
-            ) {
+            if ((!context.isInterrupt() || size < 2) &&
+                    (context.getContainerState().containsKey("marker")
+                            ? code == (int) context.getContainerState().get("marker")
+                            : code == Codes.rightParenthesis || code == Codes.dot)) {
                 effects.exit(Types.listItemValue);
                 return atMarker(code);
             }
@@ -131,19 +128,15 @@ public final class ListConstruct {
                     effects.attempt.hook(
                             listItemPrefixWhitespaceConstruct,
                             this::endOfPrefix,
-                            this::otherPrefix
-                    )
-            );
+                            this::otherPrefix));
         }
 
-        
         private State onBlank(int code) {
             context.getContainerState().put("initialBlankLine", true);
             initialSize++;
             return endOfPrefix(code);
         }
 
-        
         private State otherPrefix(int code) {
             if (CharUtil.markdownSpace(code)) {
                 effects.enter(Types.listItemPrefixWhitespace);
@@ -155,12 +148,10 @@ public final class ListConstruct {
             return nok.step(code);
         }
 
-        
         private State endOfPrefix(int code) {
             context.getContainerState().put("size",
                     initialSize +
-                            context.sliceSerialize(effects.exit(Types.listItemPrefix), true).length()
-            );
+                            context.sliceSerialize(effects.exit(Types.listItemPrefix), true).length());
             return ok.step(code);
         }
     }
@@ -185,7 +176,8 @@ public final class ListConstruct {
         }
 
         private State onBlank(int code) {
-            context.getContainerState().putIfAbsent("furtherBlankLines", context.getContainerState().getOrDefault("initialBlankLine", false));
+            context.getContainerState().putIfAbsent("furtherBlankLines",
+                    context.getContainerState().getOrDefault("initialBlankLine", false));
 
             // We have a blank line.
             // Still, try to consume at most the items size.
@@ -193,13 +185,12 @@ public final class ListConstruct {
                     effects,
                     ok,
                     Types.listItemIndent,
-                    (int) context.getContainerState().getOrDefault("size", 0) + 1
-            ).step(code);
+                    (int) context.getContainerState().getOrDefault("size", 0) + 1).step(code);
         }
 
-        
         private State notBlank(int code) {
-            if ((boolean) context.getContainerState().getOrDefault("furtherBlankLines", false) || !CharUtil.markdownSpace(code)) {
+            if ((boolean) context.getContainerState().getOrDefault("furtherBlankLines", false)
+                    || !CharUtil.markdownSpace(code)) {
                 context.getContainerState().remove("furtherBlankLines");
                 context.getContainerState().remove("initialBlankLine");
                 return notInCurrentItem(code);
@@ -210,7 +201,6 @@ public final class ListConstruct {
             return effects.attempt.hook(indentConstruct, ok, this::notInCurrentItem).step(code);
         }
 
-        
         private State notInCurrentItem(int code) {
             // While we do continue, we signal that the flow should be closed.
             context.getContainerState().put("_closeFlow", true);
@@ -221,9 +211,9 @@ public final class ListConstruct {
                     effects.attempt.hook(list, ok, nok),
                     Types.linePrefix,
                     context.getParser().constructs.nullDisable.contains("codeIndented")
-                    ? null
-                    : Constants.tabSize
-    ).step(code);
+                            ? null
+                            : Constants.tabSize)
+                    .step(code);
         }
 
     }
@@ -246,19 +236,17 @@ public final class ListConstruct {
                     effects,
                     this::afterPrefix,
                     Types.listItemIndent,
-                    (int) context.getContainerState().getOrDefault("size", 0) + 1
-            );
+                    (int) context.getContainerState().getOrDefault("size", 0) + 1);
         }
 
-
-        
         private State afterPrefix(int code) {
-    var tail = context.getLastEvent();
+            var tail = context.getLastEvent();
             return tail != null &&
                     tail.token().type.equals(Types.listItemIndent) &&
-                    tail.context().sliceSerialize(tail.token(), true).length() == (int) context.getContainerState().getOrDefault("size", 0)
-                    ? ok.step(code)
-                    : nok.step(code);
+                    tail.context().sliceSerialize(tail.token(), true)
+                            .length() == (int) context.getContainerState().getOrDefault("size", 0)
+                                    ? ok.step(code)
+                                    : nok.step(code);
         }
 
     }
@@ -270,7 +258,8 @@ public final class ListConstruct {
         private final State nok;
         public final State start;
 
-        public ItemPrefixWhitespaceStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
+        public ItemPrefixWhitespaceStateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok,
+                State nok) {
 
             this.context = context;
             this.effects = effects;
@@ -281,23 +270,19 @@ public final class ListConstruct {
                     this::afterPrefix,
                     Types.listItemPrefixWhitespace,
                     context.getParser().constructs.nullDisable.contains("codeIndented")
-                    ? null
-                    : Constants.tabSize + 1
-            );
+                            ? null
+                            : Constants.tabSize + 1);
         }
 
-
-        
         private State afterPrefix(int code) {
-    var tail = context.getLastEvent();
+            var tail = context.getLastEvent();
 
             return !CharUtil.markdownSpace(code) &&
-                    tail  != null &&
+                    tail != null &&
                     tail.token().type.equals(Types.listItemPrefixWhitespace)
-                    ? ok.step(code)
-                    : nok.step(code);
+                            ? ok.step(code)
+                            : nok.step(code);
         }
     }
-
 
 }

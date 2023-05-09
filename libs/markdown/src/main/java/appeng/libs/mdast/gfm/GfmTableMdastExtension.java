@@ -1,5 +1,8 @@
 package appeng.libs.mdast.gfm;
 
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
+
 import appeng.libs.mdast.MdastContext;
 import appeng.libs.mdast.MdastContextProperty;
 import appeng.libs.mdast.MdastExtension;
@@ -9,9 +12,6 @@ import appeng.libs.mdast.gfm.model.GfmTableRow;
 import appeng.libs.mdast.model.MdAstInlineCode;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
-
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 
 public final class GfmTableMdastExtension {
 

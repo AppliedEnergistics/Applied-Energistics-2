@@ -1,6 +1,5 @@
 package appeng.libs.mdast.gfm.model;
 
-
 import appeng.libs.mdast.model.MdAstAnyContent;
 import appeng.libs.mdast.model.MdAstParent;
 

@@ -1,5 +1,7 @@
 package appeng.libs.micromark.commonmark;
 
+import java.util.function.IntPredicate;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
@@ -10,8 +12,6 @@ import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-
-import java.util.function.IntPredicate;
 
 public final class CharacterReference {
     private CharacterReference() {
@@ -42,7 +42,6 @@ public final class CharacterReference {
             this.nok = nok;
         }
 
-
         /**
          * Start of a character reference.
          *
@@ -55,7 +54,7 @@ public final class CharacterReference {
          *      ^
          * </pre>
          *
-          */
+         */
         private State start(int code) {
             Assert.check(code == Codes.ampersand, "expected `&`");
             effects.enter(Types.characterReference);
@@ -66,8 +65,9 @@ public final class CharacterReference {
         }
 
         /**
-         * Inside a character reference, after `&`, before `#` for numeric references
-         * or an alphanumeric for named references.
+         * Inside a character reference, after `&`, before `#` for numeric references or an alphanumeric for named
+         * references.
+         * 
          * <pre>
          * > | a&amp;b
          *       ^
@@ -77,7 +77,7 @@ public final class CharacterReference {
          *       ^
          * </pre>
          *
-          */
+         */
         private State open(int code) {
             if (code == Codes.numberSign) {
                 effects.enter(Types.characterReferenceMarkerNumeric);
@@ -93,8 +93,8 @@ public final class CharacterReference {
         }
 
         /**
-         * Inside a numeric character reference, right before `x` for hexadecimals,
-         * or a digit for decimals.
+         * Inside a numeric character reference, right before `x` for hexadecimals, or a digit for decimals.
+         * 
          * <pre>
          * > | a&#123;b
          *        ^
@@ -102,7 +102,7 @@ public final class CharacterReference {
          *        ^
          * </pre>
          *
-          */
+         */
         private State numeric(int code) {
             if (code == Codes.uppercaseX || code == Codes.lowercaseX) {
                 effects.enter(Types.characterReferenceMarkerHexadecimal);
@@ -121,11 +121,10 @@ public final class CharacterReference {
         }
 
         /**
-         * Inside a character reference value, after the markers (`&#x`, `&#`, or
-         * `&`) that define its kind, but before the `;`.
+         * Inside a character reference value, after the markers (`&#x`, `&#`, or `&`) that define its kind, but before
+         * the `;`.
          *
-         * The character reference kind defines what and how many characters are
-         * allowed.
+         * The character reference kind defines what and how many characters are allowed.
          *
          * <pre>
          * > | a&amp;b
@@ -136,15 +135,13 @@ public final class CharacterReference {
          *         ^
          * </pre>
          *
-          */
+         */
         private State value(int code) {
             if (code == Codes.semicolon && size != 0) {
-            var token = effects.exit(Types.characterReferenceValue);
+                var token = effects.exit(Types.characterReferenceValue);
 
-                if (
-                        type == RefType.ALPHANUMERIC &&
-                                !NamedCharacterEntities.isNamedReference(context.sliceSerialize(token))
-                ) {
+                if (type == RefType.ALPHANUMERIC &&
+                        !NamedCharacterEntities.isNamedReference(context.sliceSerialize(token))) {
                     return nok.step(code);
                 }
 
@@ -167,6 +164,7 @@ public final class CharacterReference {
             ALPHANUMERIC(CharUtil::asciiAlphanumeric),
             NUMERIC(CharUtil::asciiDigit),
             HEX_NUMERIC(CharUtil::asciiHexDigit);
+
             public final IntPredicate test;
 
             RefType(IntPredicate test) {

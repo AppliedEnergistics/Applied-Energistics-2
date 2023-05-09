@@ -1,12 +1,14 @@
 package appeng.libs.mdast.model;
 
-import appeng.libs.unist.UnistParent;
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.libs.unist.UnistParent;
 
 /**
  * Parent (UnistParent) represents an abstract public interface in mdast containing other nodes (said to be children).

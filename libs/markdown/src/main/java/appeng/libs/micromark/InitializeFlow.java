@@ -39,12 +39,8 @@ public final class InitializeFlow {
                                     effects.attempt.hook(
                                             context.getParser().constructs.flow,
                                             this::afterConstruct,
-                                            effects.attempt.hook(Content.content, this::afterConstruct, null)
-                                    ),
-                                    Types.linePrefix
-                            )
-                    )
-            );
+                                            effects.attempt.hook(Content.content, this::afterConstruct, null)),
+                                    Types.linePrefix)));
         }
 
         private State atBlankEnding(int code) {

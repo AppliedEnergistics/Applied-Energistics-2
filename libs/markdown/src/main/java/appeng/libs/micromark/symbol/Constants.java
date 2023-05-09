@@ -3,10 +3,9 @@ package appeng.libs.micromark.symbol;
 /**
  * This module is compiled away!
  * <p>
- * Parsing markdown comes with a couple of constants, such as minimum or maximum
- * sizes of certain sequences.
- * Additionally, there are a couple symbols used inside micromark.
- * These are all defined here, but compiled away by scripts.
+ * Parsing markdown comes with a couple of constants, such as minimum or maximum sizes of certain sequences.
+ * Additionally, there are a couple symbols used inside micromark. These are all defined here, but compiled away by
+ * scripts.
  */
 public final class Constants {
     private Constants() {
@@ -34,7 +33,9 @@ public final class Constants {
     public static final int htmlBasic = 6; // Symbol for `<div`
     public static final int htmlComplete = 7; // Symbol for `<x>`
     public static final int htmlRawSizeMax = 8; // Length of `textarea`.
-    public static final int linkResourceDestinationBalanceMax = 32; // See: <https://spec.commonmark.org/0.30/#link-destination>, <https://github.com/remarkjs/react-markdown/issues/658#issuecomment-984345577>
+    public static final int linkResourceDestinationBalanceMax = 32; // See:
+                                                                    // <https://spec.commonmark.org/0.30/#link-destination>,
+                                                                    // <https://github.com/remarkjs/react-markdown/issues/658#issuecomment-984345577>
     public static final int linkReferenceSizeMax = 999; // See: <https://spec.commonmark.org/0.30/#link-label>
     public static final int listItemValueSizeMax = 10; // See: <https://spec.commonmark.org/0.30/#ordered-list-marker>
     public static final int numericBaseDecimal = 10;

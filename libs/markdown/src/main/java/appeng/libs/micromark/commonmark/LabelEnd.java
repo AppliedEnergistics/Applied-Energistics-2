@@ -1,9 +1,14 @@
 package appeng.libs.micromark.commonmark;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
-import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.Construct;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.NormalizeIdentifier;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
@@ -16,10 +21,6 @@ import appeng.libs.micromark.factory.FactoryTitle;
 import appeng.libs.micromark.factory.FactoryWhitespace;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class LabelEnd {
     private LabelEnd() {
@@ -38,13 +39,16 @@ public final class LabelEnd {
         labelEnd.resolveAll = LabelEnd::resolveAll;
 
         resourceConstruct = new Construct();
-        resourceConstruct.tokenize = (context, effects, ok, nok) -> new ResourceStateMachine(context, effects, ok, nok)::start;
+        resourceConstruct.tokenize = (context, effects, ok,
+                nok) -> new ResourceStateMachine(context, effects, ok, nok)::start;
 
         fullReferenceConstruct = new Construct();
-        fullReferenceConstruct.tokenize = (context, effects, ok, nok) -> new FullReferenceStateMachine(context, effects, ok, nok)::start;
+        fullReferenceConstruct.tokenize = (context, effects, ok,
+                nok) -> new FullReferenceStateMachine(context, effects, ok, nok)::start;
 
         collapsedReferenceConstruct = new Construct();
-        collapsedReferenceConstruct.tokenize = (context, effects, ok, nok) -> new CollapsedReferenceStateMachine(context, effects, ok, nok)::start;
+        collapsedReferenceConstruct.tokenize = (context, effects, ok,
+                nok) -> new CollapsedReferenceStateMachine(context, effects, ok, nok)::start;
     }
 
     public static List<Tokenizer.Event> resolveAll(List<Tokenizer.Event> events, TokenizeContext context) {
@@ -53,11 +57,9 @@ public final class LabelEnd {
         while (++index < events.size()) {
             var token = events.get(index).token();
 
-            if (
-                    token.type.equals(Types.labelImage) ||
-                            token.type.equals(Types.labelLink) ||
-                            token.type.equals(Types.labelEnd)
-            ) {
+            if (token.type.equals(Types.labelImage) ||
+                    token.type.equals(Types.labelLink) ||
+                    token.type.equals(Types.labelEnd)) {
                 // Remove the marker.
                 ListUtils.splice(events, index + 1, token.type.equals(Types.labelImage) ? 4 : 2);
                 token.type = Types.data;
@@ -82,10 +84,8 @@ public final class LabelEnd {
 
             if (open != null) {
                 // If we see another link, or inactive link label, we’ve been here before.
-                if (
-                        token.type.equals(Types.link) ||
-                                (token.type.equals(Types.labelLink) && token._inactive)
-                ) {
+                if (token.type.equals(Types.link) ||
+                        (token.type.equals(Types.labelLink) && token._inactive)) {
                     break;
                 }
 
@@ -95,11 +95,9 @@ public final class LabelEnd {
                     token._inactive = true;
                 }
             } else if (close != null) {
-                if (
-                        events.get(index).isEnter() &&
-                                (token.type.equals(Types.labelImage) || token.type.equals(Types.labelLink)) &&
-                                !token._balanced
-                ) {
+                if (events.get(index).isEnter() &&
+                        (token.type.equals(Types.labelImage) || token.type.equals(Types.labelLink)) &&
+                        !token._balanced) {
                     open = index;
 
                     if (!token.type.equals(Types.labelLink)) {
@@ -146,17 +144,14 @@ public final class LabelEnd {
                 Construct.resolveAll(
                         context.getParser().constructs.nullInsideSpan,
                         ListUtils.slice(events, open + offset + 4, close - 3),
-                        context
-                )
-        );
+                        context));
 
         // Text close, marker close, label close.
         media = ListUtils.push(media, List.of(
                 Tokenizer.Event.exit(text, context),
                 events.get(close - 2),
                 events.get(close - 1),
-                Tokenizer.Event.exit(label, context)
-        ));
+                Tokenizer.Event.exit(label, context)));
 
         // Reference, resource, or so.
         media = ListUtils.push(media, events.subList(close + 1, events.size()));
@@ -190,17 +185,14 @@ public final class LabelEnd {
 
             // Find an opening.
             while (index-- > 0) {
-                if (
-                        (context.getEvents().get(index).token().type.equals(Types.labelImage) ||
-                                context.getEvents().get(index).token().type.equals(Types.labelLink)) &&
-                                !context.getEvents().get(index).token()._balanced
-                ) {
+                if ((context.getEvents().get(index).token().type.equals(Types.labelImage) ||
+                        context.getEvents().get(index).token().type.equals(Types.labelLink)) &&
+                        !context.getEvents().get(index).token()._balanced) {
                     labelStart = context.getEvents().get(index).token();
                     break;
                 }
             }
         }
-
 
         /**
          * Start of label end.
@@ -223,13 +215,12 @@ public final class LabelEnd {
             }
 
             // It’s a balanced bracket, but contains a link.
-            if (labelStart._inactive) return balanced(code);
+            if (labelStart._inactive)
+                return balanced(code);
 
             defined = context.getParser().defined.contains(
                     NormalizeIdentifier.normalizeIdentifier(
-                            context.sliceSerialize(labelStart.end, context.now())
-                    )
-            );
+                            context.sliceSerialize(labelStart.end, context.now())));
             effects.enter(Types.labelEnd);
             effects.enter(Types.labelMarker);
             effects.consume(code);
@@ -258,8 +249,7 @@ public final class LabelEnd {
                 return effects.attempt.hook(
                         resourceConstruct,
                         ok,
-                        defined ? ok : this::balanced
-                ).step(code);
+                        defined ? ok : this::balanced).step(code);
             }
 
             // Full (`[asd][fgh]`) or collapsed (`[asd][]`) reference?
@@ -269,8 +259,8 @@ public final class LabelEnd {
                         ok,
                         defined
                                 ? effects.attempt.hook(collapsedReferenceConstruct, ok, this::balanced)
-                                : this::balanced
-                ).step(code);
+                                : this::balanced)
+                        .step(code);
             }
 
             // Shortcut (`[asd]`) reference?
@@ -311,7 +301,6 @@ public final class LabelEnd {
             this.nok = nok;
         }
 
-
         /**
          * Before a resource, at `(`.
          *
@@ -351,8 +340,7 @@ public final class LabelEnd {
                     Types.resourceDestinationLiteralMarker,
                     Types.resourceDestinationRaw,
                     Types.resourceDestinationString,
-                    Constants.linkResourceDestinationBalanceMax
-            ).step(code);
+                    Constants.linkResourceDestinationBalanceMax).step(code);
         }
 
         /**
@@ -378,19 +366,16 @@ public final class LabelEnd {
          * </pre>
          */
         private State between(int code) {
-            if (
-                    code == Codes.quotationMark ||
-                            code == Codes.apostrophe ||
-                            code == Codes.leftParenthesis
-            ) {
+            if (code == Codes.quotationMark ||
+                    code == Codes.apostrophe ||
+                    code == Codes.leftParenthesis) {
                 return FactoryTitle.create(
                         effects,
                         FactoryWhitespace.create(effects, this::end),
                         nok,
                         Types.resourceTitle,
                         Types.resourceTitleMarker,
-                        Types.resourceTitleString
-                ).step(code);
+                        Types.resourceTitleString).step(code);
             }
 
             return end(code);
@@ -448,8 +433,7 @@ public final class LabelEnd {
                     nok,
                     Types.reference,
                     Types.referenceMarker,
-                    Types.referenceString
-            ).step(code);
+                    Types.referenceString).step(code);
         }
 
         /**
@@ -464,11 +448,9 @@ public final class LabelEnd {
             var lastTokenText = context.sliceSerialize(context.getLastEvent().token());
             return context.getParser().defined.contains(
                     NormalizeIdentifier.normalizeIdentifier(
-                            lastTokenText.substring(1, lastTokenText.length() - 1)
-                    )
-            )
-                    ? ok.step(code)
-                    : nok.step(code);
+                            lastTokenText.substring(1, lastTokenText.length() - 1)))
+                                    ? ok.step(code)
+                                    : nok.step(code);
         }
     }
 

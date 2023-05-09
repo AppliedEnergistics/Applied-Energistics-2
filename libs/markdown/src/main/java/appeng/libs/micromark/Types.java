@@ -1,12 +1,9 @@
 package appeng.libs.micromark;
 
 /**
- * Here is the list of all types of tokens exposed by micromark, with a short
- * explanation of what they include and where they are found.
- * In picking names, generally, the rule is to be as explicit as possible
- * instead of reusing names.
- * For example, there is a `definitionDestination` and a `resourceDestination`,
- * instead of one shared name.
+ * Here is the list of all types of tokens exposed by micromark, with a short explanation of what they include and where
+ * they are found. In picking names, generally, the rule is to be as explicit as possible instead of reusing names. For
+ * example, there is a `definitionDestination` and a `resourceDestination`, instead of one shared name.
  */
 public final class Types {
     private Types() {
@@ -120,7 +117,7 @@ public final class Types {
     // Whole indented code:
     //
     // ```markdown
-    //     alert(1)
+    // alert(1)
     // ```
     //
     // Includes `lineEnding`, `linePrefix`, and `codeFlowValue`.
@@ -226,7 +223,7 @@ public final class Types {
     // Note = does not include the line ending.
     public static final String hardBreakEscape = "hardBreakEscape";
 
-    // A hard break created with trailing spaces (`  \n`).
+    // A hard break created with trailing spaces (` \n`).
     // Does not include the line ending.
     public static final String hardBreakTrailing = "hardBreakTrailing";
 
@@ -409,10 +406,10 @@ public final class Types {
     //
     // ```markdown
     // - a
-    //   b
+    // b
     // ```
     //
-    // Includes `listItemPrefix`, flow, and optionally  `listItemIndent` on further
+    // Includes `listItemPrefix`, flow, and optionally `listItemIndent` on further
     // lines.
     public static final String listOrdered = "listOrdered";
 
@@ -420,10 +417,10 @@ public final class Types {
     //
     // ```markdown
     // 1. a
-    //    b
+    // b
     // ```
     //
-    // Includes `listItemPrefix`, flow, and optionally  `listItemIndent` on further
+    // Includes `listItemPrefix`, flow, and optionally `listItemIndent` on further
     // lines.
     public static final String listUnordered = "listUnordered";
 

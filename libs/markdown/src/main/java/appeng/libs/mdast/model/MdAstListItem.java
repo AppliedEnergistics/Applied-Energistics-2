@@ -1,9 +1,8 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-
 import java.io.IOException;
-import java.util.List;
+
+import com.google.gson.stream.JsonWriter;
 
 /**
  * An item in a {@link MdAstList}.
@@ -16,14 +15,7 @@ import java.util.List;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'listItem',
- * spread: false,
- * children: [{
- * type: 'paragraph',
- * children: [{type: 'text', value: 'bar'}]
- * }]
- * }
+ * { type: 'listItem', spread: false, children: [{ type: 'paragraph', children: [{type: 'text', value: 'bar'}] }] }
  */
 public class MdAstListItem extends MdAstParent<MdAstFlowContent> implements MdAstListContent {
     public MdAstListItem() {
@@ -31,8 +23,8 @@ public class MdAstListItem extends MdAstParent<MdAstFlowContent> implements MdAs
     }
 
     /**
-     * Represents that the item contains two or more children separated by a blank line (when true),
-     * or not (when false).
+     * Represents that the item contains two or more children separated by a blank line (when true), or not (when
+     * false).
      */
     public boolean spread;
 

@@ -1,9 +1,10 @@
 package appeng.libs.mdast.model;
 
-import appeng.libs.unist.UnistLiteral;
+import java.io.IOException;
+
 import com.google.gson.stream.JsonWriter;
 
-import java.io.IOException;
+import appeng.libs.unist.UnistLiteral;
 
 /**
  * Literal (UnistLiteral) represents an abstract public interface in mdast containing a value.

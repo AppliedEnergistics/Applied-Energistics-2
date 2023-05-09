@@ -1,12 +1,13 @@
 package appeng.libs.micromark.text;
 
-import appeng.libs.micromark.TestUtil;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.List;
+import appeng.libs.micromark.TestUtil;
 
 public class LinkReferenceTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -76,10 +77,8 @@ public class LinkReferenceTest {
     public void testShouldPreferHTMLOverLinkReferences() {
         TestUtil.assertGeneratedDangerousHtml(
                 "[ref]: /uri^n^n[foo <bar attr=\"][ref]\">",
-                "<p>[foo <bar attr=\"][ref]\"></p>"
-        );
+                "<p>[foo <bar attr=\"][ref]\"></p>");
     }
-
 
     @Test
     @DisplayName("should properly handle labels w/ character references and -escapes, and phrasing")
@@ -100,8 +99,7 @@ public class LinkReferenceTest {
                         "[;]: delta",
                         "[*f*&semi;]: echo",
                         "[*f*\\;]: foxtrot",
-                        "[*f*;]: golf"
-                ),
+                        "[*f*;]: golf"),
                 List.of(
                         "<p><a href=\"alpha\"><em>f</em></a>",
                         "<a href=\"bravo\">;</a>",
@@ -110,8 +108,7 @@ public class LinkReferenceTest {
                         "<a href=\"echo\"><em>f</em>;</a>",
                         "<a href=\"foxtrot\"><em>f</em>;</a>",
                         "<a href=\"golf\"><em>f</em>;</a></p>",
-                        ""
-                ));
+                        ""));
     }
 
     @Test
@@ -120,21 +117,21 @@ public class LinkReferenceTest {
         TestUtil.assertGeneratedHtml(
                 "[" + max + "]: a^n[y][" + max + "]",
                 "<p><a href=\"a\">y</a></p>",
-                "should support 999 characters in reference"
-        );
+                "should support 999 characters in reference");
 
         TestUtil.assertGeneratedHtml(
                 "[" + max + "x]: a^n[y][" + max + "x]",
                 "<p>[" + max + "x]: a^n[y][" + max + "x]</p>",
-                "should not support 1000 characters in reference"
-        );
+                "should not support 1000 characters in reference");
     }
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("[x]()", "<p>[x]()</p>", "should support turning off label start (link)", "labelStartLink");
+        TestUtil.assertGeneratedHtmlWithDisabled("[x]()", "<p>[x]()</p>",
+                "should support turning off label start (link)", "labelStartLink");
 
-        TestUtil.assertGeneratedHtmlWithDisabled("[x]()", "<p>[x]()</p>", "should support turning off label end", "labelEnd");
+        TestUtil.assertGeneratedHtmlWithDisabled("[x]()", "<p>[x]()</p>", "should support turning off label end",
+                "labelEnd");
     }
 
 }

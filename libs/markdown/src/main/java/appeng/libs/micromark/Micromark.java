@@ -1,10 +1,10 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.commonmark.Subtokenize;
-import appeng.libs.micromark.html.ParseOptions;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import appeng.libs.micromark.commonmark.Subtokenize;
+import appeng.libs.micromark.html.ParseOptions;
 
 public final class Micromark {
     private Micromark() {

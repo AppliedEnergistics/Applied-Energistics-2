@@ -1,9 +1,10 @@
 package appeng.libs.micromark.misc;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
 
 public class UrlTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -50,7 +51,6 @@ public class UrlTest {
 
         TestUtil.assertGeneratedHtml(
                 "[](<" + ascii + ">)",
-                "<p><a href=\"%EF%BF%BD%01%02%03%04%05%06%07%08%09%0B%0C%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%20!%22#$%25&amp;'()*+,-./0123456789:;%3C=%3E?@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~%7F\"></a></p>"
-        );
+                "<p><a href=\"%EF%BF%BD%01%02%03%04%05%06%07%08%09%0B%0C%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%20!%22#$%25&amp;'()*+,-./0123456789:;%3C=%3E?@ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E_%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D~%7F\"></a></p>");
     }
 }

@@ -1,5 +1,10 @@
 package appeng.libs.mdx;
 
+import static appeng.libs.mdx.EcmaScriptIdentifiers.isCont;
+import static appeng.libs.mdx.EcmaScriptIdentifiers.isStart;
+
+import java.util.Locale;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
@@ -12,11 +17,6 @@ import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-
-import java.util.Locale;
-
-import static appeng.libs.mdx.EcmaScriptIdentifiers.isCont;
-import static appeng.libs.mdx.EcmaScriptIdentifiers.isStart;
 
 public final class FactoryTag {
     private FactoryTag() {
@@ -60,8 +60,7 @@ public final class FactoryTag {
             String tagAttributeValueLiteralValueType,
             String tagAttributeValueExpressionType,
             String tagAttributeValueExpressionMarkerType,
-            String tagAttributeValueExpressionValueType
-    ) {
+            String tagAttributeValueExpressionValueType) {
 
         class StateMachine {
             State returnState;
@@ -120,8 +119,7 @@ public final class FactoryTag {
                         "a character that can start a name, such as a letter, `$`, or `_`" +
                                 (code == Codes.exclamationMark
                                         ? " (note: to create a comment in MDX, use `{/* text */}`)"
-                                        : "")
-                );
+                                        : ""));
             }
 
             // At the start of a closing tag, right after `</`.
@@ -145,8 +143,7 @@ public final class FactoryTag {
                         "a character that can start a name, such as a letter, `$`, or `_`" +
                                 (code == Codes.asterisk || code == Codes.slash
                                         ? " (note: JS comments in JSX tags are not supported in MDX)"
-                                        : "")
-                );
+                                        : ""));
             }
 
             // Inside the primary name.
@@ -158,15 +155,13 @@ public final class FactoryTag {
                 }
 
                 // End of name.
-                if (
-                        code == Codes.dot ||
-                                code == Codes.slash ||
-                                code == Codes.colon ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                CharUtil.markdownLineEndingOrSpace(code) ||
-                                CharUtil.unicodeWhitespace(code)
-                ) {
+                if (code == Codes.dot ||
+                        code == Codes.slash ||
+                        code == Codes.colon ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        CharUtil.markdownLineEndingOrSpace(code) ||
+                        CharUtil.unicodeWhitespace(code)) {
                     effects.exit(tagNamePrimaryType);
                     returnState = this::afterPrimaryName;
                     return optionalEsWhitespace(code);
@@ -175,11 +170,11 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "in name",
-                        "a name character such as letters, digits, `$`, or `_`; whitespace before attributes; or the end of the tag" +
+                        "a name character such as letters, digits, `$`, or `_`; whitespace before attributes; or the end of the tag"
+                                +
                                 (code == Codes.atSign
                                         ? " (note: to create a link in MDX, use `[text](url)`)"
-                                        : "")
-                );
+                                        : ""));
             }
 
             // After a name.
@@ -203,12 +198,10 @@ public final class FactoryTag {
                 }
 
                 // End of name.
-                if (
-                        code == Codes.slash ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                (code != Codes.eof && isStart(code))
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        (code != Codes.eof && isStart(code))) {
                     effects.exit(tagNameType);
                     return beforeAttribute(code);
                 }
@@ -216,8 +209,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "after name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag");
             }
 
             // We’ve seen a `.` and are expecting a member name.
@@ -232,8 +224,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "before member name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag");
             }
 
             // Inside the member name.
@@ -245,14 +236,12 @@ public final class FactoryTag {
                 }
 
                 // End of member name (note that namespaces and members can’t be combined).
-                if (
-                        code == Codes.dot ||
-                                code == Codes.slash ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                CharUtil.markdownLineEndingOrSpace(code) ||
-                                CharUtil.unicodeWhitespace(code)
-                ) {
+                if (code == Codes.dot ||
+                        code == Codes.slash ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        CharUtil.markdownLineEndingOrSpace(code) ||
+                        CharUtil.unicodeWhitespace(code)) {
                     effects.exit(tagNameMemberType);
                     returnState = this::afterMemberName;
                     return optionalEsWhitespace(code);
@@ -261,11 +250,11 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "in member name",
-                        "a name character such as letters, digits, `$`, or `_`; whitespace before attributes; or the end of the tag" +
+                        "a name character such as letters, digits, `$`, or `_`; whitespace before attributes; or the end of the tag"
+                                +
                                 (code == Codes.atSign
                                         ? " (note: to create a link in MDX, use `[text](url)`)"
-                                        : "")
-                );
+                                        : ""));
             }
 
             // After a member name: this is the same as `afterPrimaryName` but we don’t
@@ -281,12 +270,10 @@ public final class FactoryTag {
                 }
 
                 // End of name.
-                if (
-                        code == Codes.slash ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                (code != Codes.eof && isStart(code))
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        (code != Codes.eof && isStart(code))) {
                     effects.exit(tagNameType);
                     return beforeAttribute(code);
                 }
@@ -294,8 +281,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "after member name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag");
             }
 
             // We’ve seen a `:`, and are expecting a local name.
@@ -314,9 +300,8 @@ public final class FactoryTag {
                                 (code == Codes.plusSign ||
                                         (code > Codes.dot &&
                                                 code < Codes.colon) /* `/` - `9` */
-                                        ? " (note: to create a link in MDX, use `[text](url)`)"
-                                        : "")
-                );
+                                                        ? " (note: to create a link in MDX, use `[text](url)`)"
+                                                        : ""));
             }
 
             // Inside the local name.
@@ -328,13 +313,11 @@ public final class FactoryTag {
                 }
 
                 // End of local name (note that we don’t expect another colon, or a member).
-                if (
-                        code == Codes.slash ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                CharUtil.markdownLineEndingOrSpace(code) ||
-                                CharUtil.unicodeWhitespace(code)
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        CharUtil.markdownLineEndingOrSpace(code) ||
+                        CharUtil.unicodeWhitespace(code)) {
                     effects.exit(tagNameLocalType);
                     returnState = this::afterLocalName;
                     return optionalEsWhitespace(code);
@@ -343,20 +326,17 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "in local name",
-                        "a name character such as letters, digits, `$`, or `_`; whitespace before attributes; or the end of the tag"
-                );
+                        "a name character such as letters, digits, `$`, or `_`; whitespace before attributes; or the end of the tag");
             }
 
             // After a local name: this is the same as `afterPrimaryName` but we don’t
             // expect colons or periods.
             State afterLocalName(int code) {
                 // End of name.
-                if (
-                        code == Codes.slash ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                (code != Codes.eof && isStart(code))
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        (code != Codes.eof && isStart(code))) {
                     effects.exit(tagNameType);
                     return beforeAttribute(code);
                 }
@@ -364,8 +344,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "after local name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag");
             }
 
             State beforeAttribute(int code) {
@@ -394,8 +373,7 @@ public final class FactoryTag {
                             tagExpressionAttributeMarkerType,
                             tagExpressionAttributeValueType,
                             allowLazy,
-                            startPoint.column()
-                    ).step(code);
+                            startPoint.column()).step(code);
                 }
 
                 // Start of an attribute name.
@@ -410,8 +388,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "before attribute name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; whitespace before attributes; or the end of the tag");
             }
 
             // At the start of an attribute expression.
@@ -429,15 +406,13 @@ public final class FactoryTag {
                 }
 
                 // End of attribute name or tag.
-                if (
-                        code == Codes.slash ||
-                                code == Codes.colon ||
-                                code == Codes.equalsTo ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                CharUtil.markdownLineEndingOrSpace(code) ||
-                                CharUtil.unicodeWhitespace(code)
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.colon ||
+                        code == Codes.equalsTo ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        CharUtil.markdownLineEndingOrSpace(code) ||
+                        CharUtil.unicodeWhitespace(code)) {
                     effects.exit(tagAttributeNamePrimaryType);
                     returnState = this::afterAttributePrimaryName;
                     return optionalEsWhitespace(code);
@@ -446,8 +421,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "in attribute name",
-                        "an attribute name character such as letters, digits, `$`, or `_`; `=` to initialize a value; whitespace before attributes; or the end of the tag"
-                );
+                        "an attribute name character such as letters, digits, `$`, or `_`; `=` to initialize a value; whitespace before attributes; or the end of the tag");
             }
 
             // After an attribute name, probably finding an equals.
@@ -472,14 +446,12 @@ public final class FactoryTag {
                 }
 
                 // End of tag / new attribute.
-                if (
-                        code == Codes.slash ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                CharUtil.markdownLineEndingOrSpace(code) ||
-                                CharUtil.unicodeWhitespace(code) ||
-                                (code != Codes.eof && isStart(code))
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        CharUtil.markdownLineEndingOrSpace(code) ||
+                        CharUtil.unicodeWhitespace(code) ||
+                        (code != Codes.eof && isStart(code))) {
                     effects.exit(tagAttributeNameType);
                     effects.exit(tagAttributeType);
                     returnState = this::beforeAttribute;
@@ -489,8 +461,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "after attribute name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; `=` to initialize a value; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; `=` to initialize a value; or the end of the tag");
             }
 
             // We’ve seen a `:`, and are expecting a local name.
@@ -505,8 +476,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "before local attribute name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; `=` to initialize a value; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; `=` to initialize a value; or the end of the tag");
             }
 
             // In the local attribute name.
@@ -518,14 +488,12 @@ public final class FactoryTag {
                 }
 
                 // End of tag / attribute name.
-                if (
-                        code == Codes.slash ||
-                                code == Codes.equalsTo ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                CharUtil.markdownLineEndingOrSpace(code) ||
-                                CharUtil.unicodeWhitespace(code)
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.equalsTo ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        CharUtil.markdownLineEndingOrSpace(code) ||
+                        CharUtil.unicodeWhitespace(code)) {
                     effects.exit(tagAttributeNameLocalType);
                     effects.exit(tagAttributeNameType);
                     returnState = this::afterAttributeLocalName;
@@ -535,8 +503,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "in local attribute name",
-                        "an attribute name character such as letters, digits, `$`, or `_`; `=` to initialize a value; whitespace before attributes; or the end of the tag"
-                );
+                        "an attribute name character such as letters, digits, `$`, or `_`; `=` to initialize a value; whitespace before attributes; or the end of the tag");
             }
 
             // After a local attribute name, expecting an equals.
@@ -551,12 +518,10 @@ public final class FactoryTag {
                 }
 
                 // End of tag / new attribute.
-                if (
-                        code == Codes.slash ||
-                                code == Codes.greaterThan ||
-                                code == Codes.leftCurlyBrace ||
-                                (code != Codes.eof && isStart(code))
-                ) {
+                if (code == Codes.slash ||
+                        code == Codes.greaterThan ||
+                        code == Codes.leftCurlyBrace ||
+                        (code != Codes.eof && isStart(code))) {
                     effects.exit(tagAttributeType);
                     return beforeAttribute(code);
                 }
@@ -564,8 +529,7 @@ public final class FactoryTag {
                 return crash(
                         code,
                         "after local attribute name",
-                        "a character that can start an attribute name, such as a letter, `$`, or `_`; `=` to initialize a value; or the end of the tag"
-                );
+                        "a character that can start an attribute name, such as a letter, `$`, or `_`; `=` to initialize a value; or the end of the tag");
             }
 
             // After an attribute value initializer, expecting quotes and such.
@@ -591,8 +555,7 @@ public final class FactoryTag {
                             tagAttributeValueExpressionMarkerType,
                             tagAttributeValueExpressionValueType,
                             allowLazy,
-                            startPoint.column()
-                    ).step(code);
+                            startPoint.column()).step(code);
                 }
 
                 return crash(
@@ -601,8 +564,7 @@ public final class FactoryTag {
                         "a character that can start an attribute value, such as `\"`, `'`, or `{`" +
                                 (code == Codes.lessThan
                                         ? " (note: to use an element or fragment as a prop value in MDX, use `{<element />}`)"
-                                        : "")
-                );
+                                        : ""));
             }
 
             State afterAttributeValueExpression(int code) {
@@ -619,8 +581,7 @@ public final class FactoryTag {
                     crash(
                             code,
                             "in attribute value",
-                            "a corresponding closing quote `" + (char) marker.intValue() + '`'
-                    );
+                            "a corresponding closing quote `" + (char) marker.intValue() + '`');
                 }
 
                 if (code == marker) {
@@ -668,8 +629,7 @@ public final class FactoryTag {
                         "`>` to end the tag" +
                                 (code == Codes.asterisk || code == Codes.slash
                                         ? " (note: JS comments in JSX tags are not supported in MDX)"
-                                        : "")
-                );
+                                        : ""));
             }
 
             // At a `>`.
@@ -693,8 +653,7 @@ public final class FactoryTag {
                                 effects,
                                 this::optionalEsWhitespace,
                                 Types.linePrefix,
-                                Constants.tabSize
-                        );
+                                Constants.tabSize);
                     }
 
                     return effects.attempt.hook(
@@ -703,10 +662,8 @@ public final class FactoryTag {
                                     effects,
                                     this::optionalEsWhitespace,
                                     Types.linePrefix,
-                                    Constants.tabSize
-                            ),
-                            this::crashEol
-                    ).step(code);
+                                    Constants.tabSize),
+                            this::crashEol).step(code);
                 }
 
                 if (CharUtil.markdownSpace(code) || CharUtil.unicodeWhitespace(code)) {
@@ -719,10 +676,8 @@ public final class FactoryTag {
 
             // Continue optional whitespace.
             State optionalEsWhitespaceContinue(int code) {
-                if (
-                        CharUtil.markdownLineEnding(code) ||
-                                !(CharUtil.markdownSpace(code) || CharUtil.unicodeWhitespace(code))
-                ) {
+                if (CharUtil.markdownLineEnding(code) ||
+                        !(CharUtil.markdownSpace(code) || CharUtil.unicodeWhitespace(code))) {
                     effects.exit("esWhitespace");
                     return optionalEsWhitespace(code);
                 }
@@ -735,8 +690,7 @@ public final class FactoryTag {
                 throw new ParseException(
                         "Unexpected lazy line in container, expected line to be prefixed with `>` when in a block quote, whitespace when in a list, etc",
                         context.now(),
-                        "micromark-extension-mdx-jsx:unexpected-eof"
-                );
+                        "micromark-extension-mdx-jsx:unexpected-eof");
             }
 
             // Crash at a nonconforming character.
@@ -746,20 +700,21 @@ public final class FactoryTag {
                                 (code == Codes.eof
                                         ? "end of file"
                                         : "character `" +
-                                        (code == Codes.graveAccent
-                                                ? "` ` `"
-                                                : String.valueOf((char) code)) +
-                                        "` (" +
-                                        serializeCharCode(code) +
-                                        ')') +
+                                                (code == Codes.graveAccent
+                                                        ? "` ` `"
+                                                        : String.valueOf((char) code))
+                                                +
+                                                "` (" +
+                                                serializeCharCode(code) +
+                                                ')')
+                                +
                                 ' ' +
                                 at +
                                 ", expected " +
                                 expect,
                         context.now(),
                         "micromark-extension-mdx-jsx:unexpected-" +
-                                (code == Codes.eof ? "eof" : "character")
-                );
+                                (code == Codes.eof ? "eof" : "character"));
             }
         }
 

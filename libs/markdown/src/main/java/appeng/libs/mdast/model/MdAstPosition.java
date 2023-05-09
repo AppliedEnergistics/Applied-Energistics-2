@@ -1,12 +1,13 @@
 package appeng.libs.mdast.model;
 
-import appeng.libs.micromark.Point;
-import appeng.libs.unist.UnistPoint;
-import appeng.libs.unist.UnistPosition;
+import java.io.IOException;
+
 import com.google.gson.stream.JsonWriter;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
+import appeng.libs.unist.UnistPoint;
+import appeng.libs.unist.UnistPosition;
 
 public class MdAstPosition implements UnistPosition {
     public UnistPoint start;
@@ -31,7 +32,7 @@ public class MdAstPosition implements UnistPosition {
 
     public static String stringify(UnistPoint start, UnistPoint end) {
         var result = new StringBuilder();
-        if (start != null ) {
+        if (start != null) {
             result.append(start.line()).append(":").append(start.column());
         }
         if (end != null) {

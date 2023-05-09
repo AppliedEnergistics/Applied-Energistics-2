@@ -40,6 +40,7 @@ public final class BlankLine {
         /**
          * After zero or more spaces or tabs, before a line ending or EOF.
          * <p>
+         * 
          * <pre>
          * > | ␠␠␊
          *       ^

@@ -1,10 +1,10 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
-import java.util.List;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Link includes Resource
@@ -21,12 +21,7 @@ import java.util.List;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'link',
- * url: 'https://example.com',
- * title: 'bravo',
- * children: [{type: 'text', value: 'alpha'}]
- * }
+ * { type: 'link', url: 'https://example.com', title: 'bravo', children: [{type: 'text', value: 'alpha'}] }
  */
 public class MdAstLink extends MdAstParent<MdAstStaticPhrasingContent> implements MdAstPhrasingContent, MdAstResource {
     public String url = "";

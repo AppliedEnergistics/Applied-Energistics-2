@@ -23,7 +23,8 @@ public final class CodeIndented {
         codeIndented.tokenize = (context, effects, ok, nok) -> new StateMachine(context, effects, ok, nok)::start;
 
         indentedContent = new Construct();
-        indentedContent.tokenize = (context, effects, ok, nok) -> new IndentedContentStateMachine(context,  effects, ok, nok)::start;
+        indentedContent.tokenize = (context, effects, ok,
+                nok) -> new IndentedContentStateMachine(context, effects, ok, nok)::start;
         indentedContent.partial = true;
     }
 
@@ -41,29 +42,24 @@ public final class CodeIndented {
             this.nok = nok;
         }
 
-
-        
         private State start(int code) {
             effects.enter(Types.codeIndented);
             return FactorySpace.create(
                     effects,
                     this::afterStartPrefix,
                     Types.linePrefix,
-                    Constants.tabSize + 1
-            ).step(code);
+                    Constants.tabSize + 1).step(code);
         }
 
-        
         private State afterStartPrefix(int code) {
-    var tail = context.getLastEvent();
+            var tail = context.getLastEvent();
             return tail != null &&
                     tail.token().type.equals(Types.linePrefix) &&
                     tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
-                    ? afterPrefix(code)
-                    : nok.step(code);
+                            ? afterPrefix(code)
+                            : nok.step(code);
         }
 
-        
         private State afterPrefix(int code) {
             if (code == Codes.eof) {
                 return after(code);
@@ -77,7 +73,6 @@ public final class CodeIndented {
             return content(code);
         }
 
-        
         private State content(int code) {
             if (code == Codes.eof || CharUtil.markdownLineEnding(code)) {
                 effects.exit(Types.codeFlowValue);
@@ -88,14 +83,12 @@ public final class CodeIndented {
             return this::content;
         }
 
-        
         private State after(int code) {
             effects.exit(Types.codeIndented);
             return ok.step(code);
         }
 
     }
-
 
     private static class IndentedContentStateMachine {
         private final TokenizeContext context;
@@ -111,8 +104,6 @@ public final class CodeIndented {
             this.nok = nok;
         }
 
-
-        
         private State start(int code) {
             // If this is a lazy line, it can’t be code.
             if (context.isOnLazyLine()) {
@@ -130,20 +121,18 @@ public final class CodeIndented {
                     effects,
                     this::afterPrefix,
                     Types.linePrefix,
-                    Constants.tabSize + 1
-            ).step(code);
+                    Constants.tabSize + 1).step(code);
         }
 
-        
         private State afterPrefix(int code) {
             var tail = context.getLastEvent();
             return tail != null &&
                     tail.token().type.equals(Types.linePrefix) &&
                     tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
-                    ? ok.step(code)
-                    : CharUtil.markdownLineEnding(code)
-                    ? start(code)
-                    : nok.step(code);
+                            ? ok.step(code)
+                            : CharUtil.markdownLineEnding(code)
+                                    ? start(code)
+                                    : nok.step(code);
         }
     }
 }

@@ -1,20 +1,22 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.html.CompileOptions;
-import appeng.libs.micromark.html.HtmlCompiler;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+
 import org.junit.jupiter.api.DynamicContainer;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import appeng.libs.micromark.html.CompileOptions;
+import appeng.libs.micromark.html.HtmlCompiler;
 
 /**
  * Uses the Commonmark Testcases from https://spec.commonmark.org/0.30/spec.json.
@@ -59,8 +61,7 @@ public class CommonmarkTest {
 
                                 assertEquals(html, actualHtml);
                             });
-                        }))
-                )
+                        })))
                 .toList();
     }
 

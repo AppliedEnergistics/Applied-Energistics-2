@@ -1,16 +1,17 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.html.HtmlContext;
-import appeng.libs.micromark.html.CompileOptions;
-import appeng.libs.micromark.html.HtmlCompiler;
-import appeng.libs.micromark.html.HtmlExtension;
-import appeng.libs.micromark.html.ParseOptions;
-import appeng.libs.micromark.symbol.Codes;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import appeng.libs.micromark.html.CompileOptions;
+import appeng.libs.micromark.html.HtmlCompiler;
+import appeng.libs.micromark.html.HtmlContext;
+import appeng.libs.micromark.html.HtmlExtension;
+import appeng.libs.micromark.html.ParseOptions;
+import appeng.libs.micromark.symbol.Codes;
 
 public class ExtensionTest {
 
@@ -44,22 +45,19 @@ public class ExtensionTest {
         assertEquals(
                 micromark("///", new ParseOptions().withSyntaxExtension(syntax)),
                 "<hr />",
-                "should support syntax extensions (slash)"
-        );
+                "should support syntax extensions (slash)");
 
         assertEquals(
                 micromark("<<<", new ParseOptions().withSyntaxExtension(syntax)),
                 "<hr />",
-                "should support syntax extensions for an existing hook (less than)"
-        );
+                "should support syntax extensions for an existing hook (less than)");
 
         assertEquals(micromark("///"), "<p>///</p>", "should not taint (slash)");
 
         assertEquals(
                 micromark("<<<"),
                 "<p>&lt;&lt;&lt;</p>",
-                "should not taint (less than)"
-        );
+                "should not taint (less than)");
 
         var tokenizeLessThanExtension = new Extension();
         var tokenizeLessThanConstruct = new Construct();
@@ -69,11 +67,9 @@ public class ExtensionTest {
         assertEquals(
                 micromark("a <i> b, 1 < 3",
                         new CompileOptions().allowDangerousHtml(),
-                        new ParseOptions().withSyntaxExtension(tokenizeLessThanExtension)
-                ),
+                        new ParseOptions().withSyntaxExtension(tokenizeLessThanExtension)),
                 "<p>a i&gt; b, 1  3</p>",
-                "should precede over previously attached constructs by default"
-        );
+                "should precede over previously attached constructs by default");
 
         var tokenizeLessThanExtensionAfter = new Extension();
         var tokenizeLessThanConstructAfter = new Construct();
@@ -85,8 +81,7 @@ public class ExtensionTest {
                         new CompileOptions().allowDangerousHtml(),
                         new ParseOptions().withSyntaxExtension(tokenizeLessThanExtensionAfter)),
                 "<p>a <i> b, 1  3</p>",
-                "should go after previously attached constructs w/ `add: after`"
-        );
+                "should go after previously attached constructs w/ `add: after`");
     }
 
     @Test
@@ -106,17 +101,14 @@ public class ExtensionTest {
         assertEquals(
                 micromark("// a\n//\rb",
                         new CompileOptions().withExtension(html),
-                        new ParseOptions().withSyntaxExtension(syntax)
-                ),
+                        new ParseOptions().withSyntaxExtension(syntax)),
                 "<p>b</p>",
-                "should support html extensions"
-        );
+                "should support html extensions");
 
         assertEquals(
                 micromark("// a\n//\rb"),
                 "<p>// a\n//\rb</p>",
-                "should not taint"
-        );
+                "should not taint");
 
         var htmlDocExtension = HtmlExtension.builder()
                 .enterDocument(this::enterDocument)
@@ -125,17 +117,14 @@ public class ExtensionTest {
 
         assertEquals(
                 micromark("!",
-                        new CompileOptions().withExtension(htmlDocExtension)
-                ),
+                        new CompileOptions().withExtension(htmlDocExtension)),
                 "+\n<p>!</p>-",
-                "should support html extensions for documents"
-        );
+                "should support html extensions for documents");
 
         assertEquals(
                 micromark("", new CompileOptions().withExtension(htmlDocExtension)),
                 "+-",
-                "should support html extensions for empty documents"
-        );
+                "should support html extensions for empty documents");
     }
 
     private Construct createFunkyThematicBreak(int marker) {
@@ -144,7 +133,8 @@ public class ExtensionTest {
                 tokenize = this::tokenizeFunkyThematicBreak;
             }
 
-            private State tokenizeFunkyThematicBreak(TokenizeContext tokenizeContext, Tokenizer.Effects effects, State ok, State nok) {
+            private State tokenizeFunkyThematicBreak(TokenizeContext tokenizeContext, Tokenizer.Effects effects,
+                    State ok, State nok) {
                 class StateMachine {
                     private int size = 0;
 
@@ -171,9 +161,7 @@ public class ExtensionTest {
                         }
 
                         // Eol or eof.
-                        if (
-                                size >= 3 && (code == Codes.eof || code == -5 || code == -4 || code == -3)
-                        ) {
+                        if (size >= 3 && (code == Codes.eof || code == -5 || code == -4 || code == -3)) {
                             effects.exit("thematicBreak");
                             return ok.step(code);
                         }

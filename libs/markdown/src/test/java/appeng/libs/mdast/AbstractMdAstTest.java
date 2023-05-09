@@ -1,21 +1,23 @@
 package appeng.libs.mdast;
 
-import appeng.libs.mdast.model.MdAstNode;
-import appeng.libs.mdast.model.MdAstParent;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.internal.bind.JsonTreeWriter;
-import org.intellij.lang.annotations.Language;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.bind.JsonTreeWriter;
+
+import org.intellij.lang.annotations.Language;
+
+import appeng.libs.mdast.model.MdAstNode;
+import appeng.libs.mdast.model.MdAstParent;
 
 public class AbstractMdAstTest {
     protected static final Gson GSON = new GsonBuilder()
@@ -96,12 +98,12 @@ public class AbstractMdAstTest {
             var props = new ArrayList<>(element.getAsJsonObject().entrySet());
             props.sort(
                     // Sort type always first
-                    Comparator.<Map.Entry<String, JsonElement>, Boolean>comparing(e -> e.getKey().equals("type")).reversed()
+                    Comparator.<Map.Entry<String, JsonElement>, Boolean>comparing(e -> e.getKey().equals("type"))
+                            .reversed()
                             // Children always last
                             .thenComparing(e -> e.getKey().equals("children"))
                             // The rest alphabetically in-between
-                            .thenComparing(Map.Entry::getKey, Comparator.naturalOrder())
-            );
+                            .thenComparing(Map.Entry::getKey, Comparator.naturalOrder()));
             var sortedObj = new JsonObject();
             for (var prop : props) {
                 sortedObj.add(prop.getKey(), normalizeTree(prop.getValue()));
@@ -114,7 +116,7 @@ public class AbstractMdAstTest {
 
     protected static MdAstNode removePosition(MdAstNode node) {
         node.position = null;
-        if (node instanceof MdAstParent<?> parent) {
+        if (node instanceof MdAstParent<?>parent) {
             for (var child : parent.children()) {
                 if (child instanceof MdAstNode childNode) {
                     removePosition(childNode);

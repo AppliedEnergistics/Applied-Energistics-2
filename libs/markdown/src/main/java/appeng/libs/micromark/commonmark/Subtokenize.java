@@ -1,17 +1,17 @@
 package appeng.libs.micromark.commonmark;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public final class Subtokenize {
     private Subtokenize() {
@@ -37,26 +37,20 @@ public final class Subtokenize {
 
             // Add a hook for the GFM tasklist extension, which needs to know if text
             // is in the first content of a list item.
-            if (
-                    index != 0 &&
-                            event.token().type.equals(Types.chunkFlow) &&
-                            events.get(index - 1).token().type.equals(Types.listItemPrefix)
-            ) {
+            if (index != 0 &&
+                    event.token().type.equals(Types.chunkFlow) &&
+                    events.get(index - 1).token().type.equals(Types.listItemPrefix)) {
                 Assert.check(event.token()._tokenizer != null, "expected '_tokenizer' on subtokens");
                 subevents = event.token()._tokenizer.getEvents();
                 otherIndex = 0;
 
-                if (
-                        otherIndex < subevents.size() &&
-                                subevents.get(otherIndex).token().type.equals(Types.lineEndingBlank)
-                ) {
+                if (otherIndex < subevents.size() &&
+                        subevents.get(otherIndex).token().type.equals(Types.lineEndingBlank)) {
                     otherIndex += 2;
                 }
 
-                if (
-                        otherIndex < subevents.size() &&
-                                subevents.get(otherIndex).token().type.equals(Types.content)
-                ) {
+                if (otherIndex < subevents.size() &&
+                        subevents.get(otherIndex).token().type.equals(Types.content)) {
                     while (++otherIndex < subevents.size()) {
                         if (subevents.get(otherIndex).token().type.equals(Types.content)) {
                             break;
@@ -86,10 +80,8 @@ public final class Subtokenize {
                 while (otherIndex-- != 0) {
                     var otherEvent = events.get(otherIndex);
 
-                    if (
-                            otherEvent.token().type.equals(Types.lineEnding) ||
-                                    otherEvent.token().type.equals(Types.lineEndingBlank)
-                    ) {
+                    if (otherEvent.token().type.equals(Types.lineEnding) ||
+                            otherEvent.token().type.equals(Types.lineEndingBlank)) {
                         if (otherEvent.isEnter()) {
                             if (lineIndex != null) {
                                 events.get(lineIndex).token().type = Types.lineEndingBlank;
@@ -131,7 +123,8 @@ public final class Subtokenize {
         var startPosition = eventIndex - 1;
         List<Integer> startPositions = new ArrayList<>();
         Assert.check(token.contentType != null, "expected 'contentType' on subtokens");
-        var tokenizer = Objects.requireNonNullElse(token._tokenizer, context.getParser().get(token.contentType).create(token.start));
+        var tokenizer = Objects.requireNonNullElse(token._tokenizer,
+                context.getParser().get(token.contentType).create(token.start));
         var childEvents = tokenizer.getEvents();
         List<Jump> jumps = new ArrayList<>();
         Map<Integer, Integer> gaps = new HashMap<>();
@@ -153,8 +146,7 @@ public final class Subtokenize {
 
             Assert.check(
                     previous == null || current.previous == previous,
-                    "expected previous to match"
-            );
+                    "expected previous to match");
             Assert.check(previous == null || previous.next == current, "expected next to match");
 
             startPositions.add(startPosition);
@@ -193,12 +185,11 @@ public final class Subtokenize {
         while (++index < childEvents.size()) {
             var childEvent = childEvents.get(index);
             if (
-                // Find a void token that includes a break.
-                    childEvent.isExit() &&
-                            childEvents.get(index - 1).isEnter() &&
-                            childEvent.token().type.equals(childEvents.get(index - 1).token().type) &&
-                            childEvent.token().start.line() != childEvent.token().end.line()
-            ) {
+            // Find a void token that includes a break.
+            childEvent.isExit() &&
+                    childEvents.get(index - 1).isEnter() &&
+                    childEvent.token().type.equals(childEvents.get(index - 1).token().type) &&
+                    childEvent.token().start.line() != childEvent.token().end.line()) {
                 Assert.check(current != null, "expected a current token");
                 breaks.add(index + 1);
                 // Help GC.

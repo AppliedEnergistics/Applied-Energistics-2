@@ -36,8 +36,7 @@ public final class FactoryWhitespace {
                 return FactorySpace.create(
                         effects,
                         this::start,
-                        seen ? Types.linePrefix : Types.lineSuffix
-                ).step(code);
+                        seen ? Types.linePrefix : Types.lineSuffix).step(code);
             }
 
             return ok.step(code);

@@ -1,8 +1,9 @@
 package appeng.libs.mdast;
 
+import org.junit.jupiter.api.Test;
+
 import appeng.libs.mdast.model.MdAstRoot;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
-import org.junit.jupiter.api.Test;
 
 class YamlFrontmatterExtensionTest extends AbstractMdAstTest {
 
@@ -23,7 +24,7 @@ class YamlFrontmatterExtensionTest extends AbstractMdAstTest {
     @Test
     void shouldNotSupportAPrefixIndentBeforeAYamlOpeningFence() {
         assertJsonEquals(fromMarkdown(" ---\n---"),
-                """                        
+                """
                             {
                                 "type": "root",
                                         "children": [{"type": "thematicBreak"}, {"type": "thematicBreak"}]

@@ -1,8 +1,8 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-
 import java.io.IOException;
+
+import com.google.gson.stream.JsonWriter;
 
 /**
  * List (Parent) represents a list of items.
@@ -16,25 +16,13 @@ import java.io.IOException;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'list',
- * ordered: true,
- * start: 1,
- * spread: false,
- * children: [{
- * type: 'listItem',
- * spread: false,
- * children: [{
- * type: 'paragraph',
- * children: [{type: 'text', value: 'foo'}]
- * }]
- * }]
- * }
+ * { type: 'list', ordered: true, start: 1, spread: false, children: [{ type: 'listItem', spread: false, children: [{
+ * type: 'paragraph', children: [{type: 'text', value: 'foo'}] }] }] }
  */
 public class MdAstList extends MdAstParent<MdAstListContent> implements MdAstFlowContent {
     /**
-     * Represents that the items have been intentionally ordered (when true),
-     * or that the order of items is not important (when false).
+     * Represents that the items have been intentionally ordered (when true), or that the order of items is not
+     * important (when false).
      */
     public boolean ordered;
     /**
@@ -42,8 +30,8 @@ public class MdAstList extends MdAstParent<MdAstListContent> implements MdAstFlo
      */
     public int start = 1;
     /**
-     * Represents that one or more of its children are separated with a
-     * blank line from its siblings (when true), or not (when false).
+     * Represents that one or more of its children are separated with a blank line from its siblings (when true), or not
+     * (when false).
      */
     public boolean spread;
 

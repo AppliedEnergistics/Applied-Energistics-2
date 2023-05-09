@@ -1,11 +1,16 @@
 package appeng.libs.mdast.mdx;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.libs.mdast.MdastContext;
 import appeng.libs.mdast.MdastContextProperty;
 import appeng.libs.mdast.MdastExtension;
 import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
 import appeng.libs.mdast.mdx.model.MdxJsxAttributeNode;
-import appeng.libs.mdast.mdx.model.MdxJsxAttributeValueExpression;
 import appeng.libs.mdast.mdx.model.MdxJsxExpressionAttribute;
 import appeng.libs.mdast.mdx.model.MdxJsxFlowElement;
 import appeng.libs.mdast.mdx.model.MdxJsxTextElement;
@@ -15,11 +20,6 @@ import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.ParseException;
 import appeng.libs.micromark.Point;
 import appeng.libs.micromark.Token;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public final class MdxMdastExtension {
     private static final MdastContextProperty<List<Tag>> TAG_STACK = new MdastContextProperty<>();
@@ -99,8 +99,7 @@ public final class MdxMdastExtension {
             throw new ParseException(
                     "Unexpected closing slash `/` in tag, expected an open tag first",
                     token.start, token.end,
-                    "mdast-util-mdx-jsx:unexpected-closing-slash"
-            );
+                    "mdast-util-mdx-jsx:unexpected-closing-slash");
         }
     }
 
@@ -111,8 +110,7 @@ public final class MdxMdastExtension {
             throw new ParseException(
                     "Unexpected attribute in closing tag, expected the end of the tag",
                     token.start, token.end,
-                    "mdast-util-mdx-jsx:unexpected-attribute"
-            );
+                    "mdast-util-mdx-jsx:unexpected-attribute");
         }
     }
 
@@ -123,8 +121,7 @@ public final class MdxMdastExtension {
             throw new ParseException(
                     "Unexpected self-closing slash `/` in closing tag, expected the end of the tag",
                     token.start, token.end,
-                    "mdast-util-mdx-jsx:unexpected-self-closing-slash"
-            );
+                    "mdast-util-mdx-jsx:unexpected-self-closing-slash");
         }
     }
 
@@ -220,8 +217,7 @@ public final class MdxMdastExtension {
                             MdAstPosition.stringify(tail.position()) +
                             ')',
                     token.start, token.end,
-                    "mdast-util-mdx-jsx:end-tag-mismatch"
-            );
+                    "mdast-util-mdx-jsx:end-tag-mismatch");
         }
 
         // End of a tag, so drop the buffer.
@@ -240,8 +236,7 @@ public final class MdxMdastExtension {
             context.enter(
                     node,
                     token,
-                    MdxMdastExtension::onErrorRightIsTag
-            );
+                    MdxMdastExtension::onErrorRightIsTag);
         }
 
         if (tag.selfClosing || tag.close) {
@@ -267,8 +262,7 @@ public final class MdxMdastExtension {
                         ')' +
                         place,
                 position,
-                "mdast-util-mdx-jsx:end-tag-mismatch"
-        );
+                "mdast-util-mdx-jsx:end-tag-mismatch");
     }
 
     private static void onErrorLeftIsTag(MdastContext context, @Nullable Token a, Token b) {
@@ -286,13 +280,11 @@ public final class MdxMdastExtension {
                         MdAstPosition.stringify(b.start) +
                         ')',
                 a != null ? a.start : null, a != null ? a.end : null,
-                "mdast-util-mdx-jsx:end-tag-mismatch"
-        );
+                "mdast-util-mdx-jsx:end-tag-mismatch");
     }
 
     /**
-     * Serialize a tag, excluding attributes.
-     * `self-closing` is not supported, because we don’t need it yet.
+     * Serialize a tag, excluding attributes. `self-closing` is not supported, because we don’t need it yet.
      */
     private static String serializeAbbreviatedTag(Tag tag) {
         return "<" + (tag.close ? '/' : "") + (Objects.requireNonNullElse(tag.name, "")) + ">";

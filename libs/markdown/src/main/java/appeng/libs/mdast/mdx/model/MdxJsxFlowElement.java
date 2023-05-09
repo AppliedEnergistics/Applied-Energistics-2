@@ -1,13 +1,15 @@
 package appeng.libs.mdast.mdx.model;
 
-import appeng.libs.mdast.model.MdAstFlowContent;
-import appeng.libs.mdast.model.MdAstParent;
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.libs.mdast.model.MdAstFlowContent;
+import appeng.libs.mdast.model.MdAstParent;
 
 public class MdxJsxFlowElement extends MdAstParent<MdAstFlowContent> implements MdxJsxElementFields, MdAstFlowContent {
     public String name;

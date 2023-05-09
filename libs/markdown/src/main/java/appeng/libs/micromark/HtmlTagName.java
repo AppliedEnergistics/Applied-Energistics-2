@@ -7,14 +7,12 @@ public final class HtmlTagName {
     }
 
     /**
-     * List of lowercase HTML tag names which when parsing HTML (flow), result
-     * in more relaxed rules (condition 6): because they are known blocks, the
-     * HTML-like syntax doesn’t have to be strictly parsed.
-     * For tag names not in this list, a more strict algorithm (condition 7) is used
-     * to detect whether the HTML-like syntax is seen as HTML (flow) or not.
+     * List of lowercase HTML tag names which when parsing HTML (flow), result in more relaxed rules (condition 6):
+     * because they are known blocks, the HTML-like syntax doesn’t have to be strictly parsed. For tag names not in this
+     * list, a more strict algorithm (condition 7) is used to detect whether the HTML-like syntax is seen as HTML (flow)
+     * or not.
      * <p>
-     * This is copied from:
-     * <https://spec.commonmark.org/0.30/#html-blocks>.
+     * This is copied from: <https://spec.commonmark.org/0.30/#html-blocks>.
      */
     public static final Set<String> htmlBlockNames = Set.of(
             "address",
@@ -77,16 +75,13 @@ public final class HtmlTagName {
             "title",
             "tr",
             "track",
-            "ul"
-    );
+            "ul");
 
     /**
-     * List of lowercase HTML tag names which when parsing HTML (flow), result in
-     * HTML that can include lines w/o exiting, until a closing tag also in this
-     * list is found (condition 1).
+     * List of lowercase HTML tag names which when parsing HTML (flow), result in HTML that can include lines w/o
+     * exiting, until a closing tag also in this list is found (condition 1).
      * <p>
-     * This module is copied from:
-     * <https://spec.commonmark.org/0.30/#html-blocks>.
+     * This module is copied from: <https://spec.commonmark.org/0.30/#html-blocks>.
      * <p>
      * Note that `textarea` was added in `CommonMark@0.30`.
      */

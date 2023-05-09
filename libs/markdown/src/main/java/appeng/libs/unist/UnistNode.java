@@ -1,6 +1,5 @@
 package appeng.libs.unist;
 
-import appeng.libs.mdast.model.MdAstRoot;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -19,8 +18,7 @@ public interface UnistNode {
     Object data();
 
     /**
-     * The location in the source document.
-     * Null if this node is generated.
+     * The location in the source document. Null if this node is generated.
      */
     @Nullable
     UnistPosition position();

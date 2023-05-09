@@ -1,11 +1,12 @@
 package appeng.libs.micromark.text;
 
-import appeng.libs.micromark.TestUtil;
-import appeng.libs.micromark.html.CompileOptions;
-import appeng.libs.micromark.html.ParseOptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
+import appeng.libs.micromark.html.CompileOptions;
+import appeng.libs.micromark.html.ParseOptions;
 
 public class AutolinkTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -65,6 +66,7 @@ public class AutolinkTest {
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("<a@b.co>", "<p>&lt;a@b.co&gt;</p>", "should support turning off autolinks", "autolink");
+        TestUtil.assertGeneratedHtmlWithDisabled("<a@b.co>", "<p>&lt;a@b.co&gt;</p>",
+                "should support turning off autolinks", "autolink");
     }
 }

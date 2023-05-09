@@ -1,13 +1,12 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.Micromark;
-import appeng.libs.micromark.Tokenizer;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import appeng.libs.micromark.commonmark.Subtokenize;
 import appeng.libs.micromark.html.CompileOptions;
 import appeng.libs.micromark.html.HtmlCompiler;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 public class EventsTest {
 
@@ -31,10 +30,9 @@ public class EventsTest {
             var type = event.type();
             var token = event.token();
             System.out.println(
-                    "  " + type + " " + token.type + ",start=" + token.start.line() + ":" + token.start.column() + ",end=" + token.end.line() + ":" + token.end.column()
-            );
+                    "  " + type + " " + token.type + ",start=" + token.start.line() + ":" + token.start.column()
+                            + ",end=" + token.end.line() + ":" + token.end.column());
         }
     }
-
 
 }

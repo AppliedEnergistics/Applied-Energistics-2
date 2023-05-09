@@ -1,11 +1,5 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.symbol.Codes;
-import appeng.libs.unist.UnistPoint;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,14 +7,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import appeng.libs.micromark.symbol.Codes;
+import appeng.libs.unist.UnistPoint;
+
 /**
- * Create a tokenizer.
- * Tokenizers deal with one type of data (e.g., containers, flow, text).
- * The parser is the object dealing with it all.
- * `initialize` works like other constructs, except that only its `tokenize`
- * function is used, in which case it doesn’t receive an `ok` or `nok`.
- * `from` can be given to set the point before the first character, although
- * when further lines are indented, they must be set with `defineSkip`.
+ * Create a tokenizer. Tokenizers deal with one type of data (e.g., containers, flow, text). The parser is the object
+ * dealing with it all. `initialize` works like other constructs, except that only its `tokenize` function is used, in
+ * which case it doesn’t receive an `ok` or `nok`. `from` can be given to set the point before the first character,
+ * although when further lines are indented, they must be set with `defineSkip`.
  */
 public class Tokenizer {
     private static final Logger LOGGER = LoggerFactory.getLogger(Tokenizer.class);
@@ -101,18 +99,15 @@ public class Tokenizer {
 
             Assert.check(
                     !consumed,
-                    "expected code to not have been consumed: this might be because `return x(code)` instead of `return x` was used"
-            );
+                    "expected code to not have been consumed: this might be because `return x(code)` instead of `return x` was used");
             if (code == Codes.eof) {
                 Assert.check(
                         context.getEvents().size() == 0 || context.getLastEvent().isExit(),
-                        "expected last token to be open"
-                );
+                        "expected last token to be open");
             } else {
                 Assert.check(
                         context.getLastEvent().isEnter(),
-                        "expected last token to be open"
-                );
+                        "expected last token to be open");
             }
 
             if (CharUtil.markdownLineEnding(code)) {
@@ -181,12 +176,9 @@ public class Tokenizer {
             Assert.check(type.equals(token.type), "expected exit token to match current token");
 
             Assert.check(
-                    !(
-                            token.start._index() == token.end._index() &&
-                                    token.start._bufferIndex() == token.end._bufferIndex()
-                    ),
-                    "expected non-empty token (`" + type + "`)"
-            );
+                    !(token.start._index() == token.end._index() &&
+                            token.start._bufferIndex() == token.end._bufferIndex()),
+                    "expected non-empty token (`" + type + "`)");
 
             LOGGER.trace("exit: '{}'", token.type);
             context.getEvents().add(Event.exit(token, context));
@@ -221,8 +213,7 @@ public class Tokenizer {
                 pointColumn,
                 pointOffset,
                 pointIndex,
-                pointBufferIndex
-        );
+                pointBufferIndex);
     }
 
     //
@@ -230,12 +221,9 @@ public class Tokenizer {
     //
 
     /**
-     * Main loop (note that `_index` and `_bufferIndex` in `point` are modified by
-     * `consume`).
-     * Here is where we walk through the chunks, which either include strings of
-     * several characters, or numerical character Codes.
-     * The reason to do this in a loop instead of a call is so the stack can
-     * drain.
+     * Main loop (note that `_index` and `_bufferIndex` in `point` are modified by `consume`). Here is where we walk
+     * through the chunks, which either include strings of several characters, or numerical character Codes. The reason
+     * to do this in a loop instead of a call is so the stack can drain.
      */
     void main() {
         int chunkIndex;
@@ -251,10 +239,8 @@ public class Tokenizer {
                     pointBufferIndex = 0;
                 }
 
-                while (
-                        pointIndex == chunkIndex &&
-                                pointBufferIndex < textChunk.length()
-                ) {
+                while (pointIndex == chunkIndex &&
+                        pointBufferIndex < textChunk.length()) {
                     go(textChunk.charAt(pointBufferIndex));
                 }
             } else {
@@ -345,7 +331,8 @@ public class Tokenizer {
         private final State bogusState;
         private final ReturnHandle onreturn;
 
-        public HookStateMachineFactory(ReturnHandle onreturn, List<Construct> constructs, State returnState, State bogusState, @Nullable Map<String, Object> fields) {
+        public HookStateMachineFactory(ReturnHandle onreturn, List<Construct> constructs, State returnState,
+                State bogusState, @Nullable Map<String, Object> fields) {
             this.constructs = constructs;
             this.fields = fields;
             this.constructIndex = 0;
@@ -376,7 +363,8 @@ public class Tokenizer {
                     context.setCurrentConstruct(construct);
                 }
 
-                if (currentConstruct.name != null && context.getParser().constructs.nullDisable.contains(currentConstruct.name)) {
+                if (currentConstruct.name != null
+                        && context.getParser().constructs.nullDisable.contains(currentConstruct.name)) {
                     return nok(code);
                 }
 
@@ -392,8 +380,7 @@ public class Tokenizer {
                         useContext,
                         effects,
                         this::ok,
-                        this::nok
-                ).step(code);
+                        this::nok).step(code);
             };
         }
 
@@ -430,19 +417,16 @@ public class Tokenizer {
                     context.getEvents(),
                     from,
                     context.getEvents().size() - from,
-                    construct.resolve.resolve(ListUtils.slice(context.getEvents(), from), context)
-            );
+                    construct.resolve.resolve(ListUtils.slice(context.getEvents(), from), context));
         }
 
         if (construct.resolveTo != null) {
             context.setEvents(construct.resolveTo.resolve(context.getEvents(), context));
         }
 
-        if (
-                !construct.partial &&
-                        !context.getEvents().isEmpty() &&
-                        context.getEvents().get(context.getEvents().size() - 1).type() != EventType.EXIT
-        ) {
+        if (!construct.partial &&
+                !context.getEvents().isEmpty() &&
+                context.getEvents().get(context.getEvents().size() - 1).type() != EventType.EXIT) {
             throw new IllegalStateException("expected last token to end");
         }
     }
@@ -474,13 +458,11 @@ public class Tokenizer {
                     accountForPotentialSkip();
                     LOGGER.trace("position: restore: '{}'", now());
                 },
-                startEventsIndex
-        );
+                startEventsIndex);
     }
 
     /**
-     * Move the current point a bit forward in the line when it’s on a column
-     * skip.
+     * Move the current point a bit forward in the line when it’s on a column skip.
      */
     void accountForPotentialSkip() {
         if (columnStart.containsKey(pointLine) && pointColumn < 2) {

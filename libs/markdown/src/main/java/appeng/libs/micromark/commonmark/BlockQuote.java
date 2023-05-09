@@ -30,8 +30,7 @@ public final class BlockQuote {
                     Types.linePrefix,
                     context.getParser().constructs.nullDisable.contains("codeIndented")
                             ? Integer.MAX_VALUE
-                            : Constants.tabSize
-            );
+                            : Constants.tabSize);
         };
         blockQuote.exit = BlockQuote::exit;
     }

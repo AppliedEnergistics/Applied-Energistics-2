@@ -1,10 +1,12 @@
 package appeng.libs.mdast.mdx.model;
 
-import appeng.libs.mdast.model.MdAstNode;
+import java.io.IOException;
+
 import com.google.gson.stream.JsonWriter;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
+import appeng.libs.mdast.model.MdAstNode;
 
 public class MdxJsxAttribute extends MdAstNode implements MdxJsxAttributeNode {
     public String name = "";

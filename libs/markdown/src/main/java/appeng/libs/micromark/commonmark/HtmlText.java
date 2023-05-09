@@ -1,5 +1,9 @@
 package appeng.libs.micromark.commonmark;
 
+import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
@@ -10,9 +14,6 @@ import appeng.libs.micromark.Types;
 import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public final class HtmlText {
     private HtmlText() {
@@ -34,7 +35,7 @@ public final class HtmlText {
         Integer marker;
         String buffer;
         private int index;
-        
+
         State returnState;
 
         public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
@@ -53,7 +54,7 @@ public final class HtmlText {
          *       ^
          * </pre>
          *
-         
+         * 
          */
         private State start(int code) {
             Assert.check(code == Codes.lessThan, "expected `<`");
@@ -75,7 +76,7 @@ public final class HtmlText {
          *        ^
          * </pre>
          *
-         
+         * 
          */
         private State open(int code) {
             if (code == Codes.exclamationMark) {
@@ -113,7 +114,7 @@ public final class HtmlText {
          *         ^
          * </pre>
          *
-         
+         * 
          */
         private State declarationOpen(int code) {
             if (code == Codes.dash) {
@@ -144,7 +145,7 @@ public final class HtmlText {
          *          ^
          * </pre>
          *
-         
+         * 
          */
         private State commentOpenInside(int code) {
             if (code == Codes.dash) {
@@ -158,17 +159,15 @@ public final class HtmlText {
         /**
          * After `<!--`, inside a comment
          * <p>
-         * > 👉 **Note**: html (flow) does allow `<!-->` or `<!--->` as empty
-         * > comments.
-         * > This is prohibited in html (text).
-         * > See: <https://github.com/commonmark/commonmark-spec/issues/712>.
+         * > 👉 **Note**: html (flow) does allow `<!-->` or `<!--->` as empty > comments. > This is prohibited in html
+         * (text). > See: <https://github.com/commonmark/commonmark-spec/issues/712>.
          *
          * <pre>
          * > | a <!--b--> c
          *           ^
          * </pre>
          *
-         
+         * 
          */
         private State commentStart(int code) {
             if (code == Codes.greaterThan) {
@@ -186,17 +185,15 @@ public final class HtmlText {
         /**
          * After `<!---`, inside a comment
          * <p>
-         * > 👉 **Note**: html (flow) does allow `<!-->` or `<!--->` as empty
-         * > comments.
-         * > This is prohibited in html (text).
-         * > See: <https://github.com/commonmark/commonmark-spec/issues/712>.
+         * > 👉 **Note**: html (flow) does allow `<!-->` or `<!--->` as empty > comments. > This is prohibited in html
+         * (text). > See: <https://github.com/commonmark/commonmark-spec/issues/712>.
          *
          * <pre>
          * > | a <!---b--> c
          *            ^
          * </pre>
          *
-         
+         * 
          */
         private State commentStartDash(int code) {
             if (code == Codes.greaterThan) {
@@ -214,7 +211,7 @@ public final class HtmlText {
          *           ^
          * </pre>
          *
-         
+         * 
          */
         private State comment(int code) {
             if (code == Codes.eof) {
@@ -243,7 +240,7 @@ public final class HtmlText {
          *             ^
          * </pre>
          *
-         
+         * 
          */
         private State commentClose(int code) {
             if (code == Codes.dash) {
@@ -262,7 +259,7 @@ public final class HtmlText {
          *          ^^^^^^
          * </pre>
          *
-         
+         * 
          */
         private State cdataOpenInside(int code) {
             if (code == buffer.charAt(index++)) {
@@ -281,7 +278,7 @@ public final class HtmlText {
          *                ^^^
          * </pre>
          *
-         
+         * 
          */
         private State cdata(int code) {
             if (code == Codes.eof) {
@@ -310,7 +307,7 @@ public final class HtmlText {
          *                    ^
          * </pre>
          *
-         
+         * 
          */
         private State cdataClose(int code) {
             if (code == Codes.rightSquareBracket) {
@@ -329,7 +326,7 @@ public final class HtmlText {
          *                     ^
          * </pre>
          *
-         
+         * 
          */
         private State cdataEnd(int code) {
             if (code == Codes.greaterThan) {
@@ -352,7 +349,7 @@ public final class HtmlText {
          *          ^
          * </pre>
          *
-         
+         * 
          */
         private State declaration(int code) {
             if (code == Codes.eof || code == Codes.greaterThan) {
@@ -376,7 +373,7 @@ public final class HtmlText {
          *         ^
          * </pre>
          *
-         
+         * 
          */
         private State instruction(int code) {
             if (code == Codes.eof) {
@@ -405,7 +402,7 @@ public final class HtmlText {
          *           ^
          * </pre>
          *
-         
+         * 
          */
         private State instructionClose(int code) {
             return code == Codes.greaterThan ? end(code) : instruction(code);
@@ -415,11 +412,10 @@ public final class HtmlText {
          * After `</`, in a closing tag, before a tag name.
          *
          * <pre>
-         * > | a </b> c
-         *         ^
+         * > | a </b> c ^
          * </pre>
          *
-         
+         * 
          */
         private State tagCloseStart(int code) {
             if (CharUtil.asciiAlpha(code)) {
@@ -434,11 +430,10 @@ public final class HtmlText {
          * After `</x`, in a tag name.
          *
          * <pre>
-         * > | a </b> c
-         *          ^
+         * > | a </b> c ^
          * </pre>
          *
-         
+         * 
          */
         private State tagClose(int code) {
             if (code == Codes.dash || CharUtil.asciiAlphanumeric(code)) {
@@ -457,7 +452,7 @@ public final class HtmlText {
          *          ^
          * </pre>
          *
-         
+         * 
          */
         private State tagCloseBetween(int code) {
             if (CharUtil.markdownLineEnding(code)) {
@@ -481,7 +476,7 @@ public final class HtmlText {
          *         ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpen(int code) {
             if (code == Codes.dash || CharUtil.asciiAlphanumeric(code)) {
@@ -489,11 +484,9 @@ public final class HtmlText {
                 return this::tagOpen;
             }
 
-            if (
-                    code == Codes.slash ||
-                            code == Codes.greaterThan ||
-                            CharUtil.markdownLineEndingOrSpace(code)
-            ) {
+            if (code == Codes.slash ||
+                    code == Codes.greaterThan ||
+                    CharUtil.markdownLineEndingOrSpace(code)) {
                 return tagOpenBetween(code);
             }
 
@@ -508,7 +501,7 @@ public final class HtmlText {
          *         ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpenBetween(int code) {
             if (code == Codes.slash) {
@@ -542,16 +535,14 @@ public final class HtmlText {
          *          ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpenAttributeName(int code) {
-            if (
-                    code == Codes.dash ||
-                            code == Codes.dot ||
-                            code == Codes.colon ||
-                            code == Codes.underscore ||
-                            CharUtil.asciiAlphanumeric(code)
-            ) {
+            if (code == Codes.dash ||
+                    code == Codes.dot ||
+                    code == Codes.colon ||
+                    code == Codes.underscore ||
+                    CharUtil.asciiAlphanumeric(code)) {
                 effects.consume(code);
                 return this::tagOpenAttributeName;
             }
@@ -560,15 +551,14 @@ public final class HtmlText {
         }
 
         /**
-         * After an attribute name, before an attribute initializer, the end of the
-         * tag, or whitespace.
+         * After an attribute name, before an attribute initializer, the end of the tag, or whitespace.
          *
          * <pre>
          * > | a <b c> d
          *           ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpenAttributeNameAfter(int code) {
             if (code == Codes.equalsTo) {
@@ -590,24 +580,21 @@ public final class HtmlText {
         }
 
         /**
-         * Before an unquoted, double quoted, or single quoted attribute value,
-         * allowing whitespace.
+         * Before an unquoted, double quoted, or single quoted attribute value, allowing whitespace.
          *
          * <pre>
          * > | a <b c=d> e
          *            ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpenAttributeValueBefore(int code) {
-            if (
-                    code == Codes.eof ||
-                            code == Codes.lessThan ||
-                            code == Codes.equalsTo ||
-                            code == Codes.greaterThan ||
-                            code == Codes.graveAccent
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.lessThan ||
+                    code == Codes.equalsTo ||
+                    code == Codes.greaterThan ||
+                    code == Codes.graveAccent) {
                 return nok.step(code);
             }
 
@@ -640,7 +627,7 @@ public final class HtmlText {
          *             ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpenAttributeValueQuoted(int code) {
             if (Objects.equals(code, marker)) {
@@ -669,25 +656,21 @@ public final class HtmlText {
          *            ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpenAttributeValueUnquoted(int code) {
-            if (
-                    code == Codes.eof ||
-                            code == Codes.quotationMark ||
-                            code == Codes.apostrophe ||
-                            code == Codes.lessThan ||
-                            code == Codes.equalsTo ||
-                            code == Codes.graveAccent
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.quotationMark ||
+                    code == Codes.apostrophe ||
+                    code == Codes.lessThan ||
+                    code == Codes.equalsTo ||
+                    code == Codes.graveAccent) {
                 return nok.step(code);
             }
 
-            if (
-                    code == Codes.greaterThan ||
-                            code == Codes.slash ||
-                            CharUtil.markdownLineEndingOrSpace(code)
-            ) {
+            if (code == Codes.greaterThan ||
+                    code == Codes.slash ||
+                    CharUtil.markdownLineEndingOrSpace(code)) {
                 return tagOpenBetween(code);
             }
 
@@ -696,22 +679,19 @@ public final class HtmlText {
         }
 
         /**
-         * After a double or single quoted attribute value, before whitespace or the
-         * end of the tag.
+         * After a double or single quoted attribute value, before whitespace or the end of the tag.
          *
          * <pre>
          * > | a <b c="d"> e
          *               ^
          * </pre>
          *
-         
+         * 
          */
         private State tagOpenAttributeValueQuotedAfter(int code) {
-            if (
-                    code == Codes.greaterThan ||
-                            code == Codes.slash ||
-                            CharUtil.markdownLineEndingOrSpace(code)
-            ) {
+            if (code == Codes.greaterThan ||
+                    code == Codes.slash ||
+                    CharUtil.markdownLineEndingOrSpace(code)) {
                 return tagOpenBetween(code);
             }
 
@@ -726,7 +706,7 @@ public final class HtmlText {
          *               ^
          * </pre>
          *
-         
+         * 
          */
         private State end(int code) {
             if (code == Codes.greaterThan) {
@@ -742,8 +722,7 @@ public final class HtmlText {
         /**
          * At an allowed line ending.
          * <p>
-         * > 👉 **Note**: we can’t have blank lines in text, so no need to worry about
-         * > empty tokens.
+         * > 👉 **Note**: we can’t have blank lines in text, so no need to worry about > empty tokens.
          *
          * <pre>
          * > | a <!--a
@@ -751,7 +730,7 @@ public final class HtmlText {
          *   | b-->
          * </pre>
          *
-         
+         * 
          */
         private State atLineEnding(int code) {
             Assert.check(returnState != null, "expected return state");
@@ -765,16 +744,14 @@ public final class HtmlText {
                     this::afterPrefix,
                     Types.linePrefix,
                     context.getParser().constructs.nullDisable.contains("codeIndented")
-                    ? null
-                    : Constants.tabSize
-    );
+                            ? null
+                            : Constants.tabSize);
         }
 
         /**
          * After a line ending.
          * <p>
-         * > 👉 **Note**: we can’t have blank lines in text, so no need to worry about
-         * > empty tokens.
+         * > 👉 **Note**: we can’t have blank lines in text, so no need to worry about > empty tokens.
          *
          * <pre>
          *   | a <!--a
@@ -782,7 +759,7 @@ public final class HtmlText {
          *     ^
          * </pre>
          *
-         
+         * 
          */
         private State afterPrefix(int code) {
             effects.enter(Types.htmlTextData);

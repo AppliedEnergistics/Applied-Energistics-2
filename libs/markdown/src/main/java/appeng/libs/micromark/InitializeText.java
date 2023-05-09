@@ -1,11 +1,11 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.symbol.Codes;
-import appeng.libs.micromark.symbol.Constants;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import appeng.libs.micromark.symbol.Codes;
+import appeng.libs.micromark.symbol.Constants;
 
 final class InitializeText {
     private InitializeText() {
@@ -22,8 +22,8 @@ final class InitializeText {
         private final State text;
 
         public TextTokenizer(TokenizeContext context,
-                             Map<Integer, List<Construct>> constructs,
-                             Tokenizer.Effects effects) {
+                Map<Integer, List<Construct>> constructs,
+                Tokenizer.Effects effects) {
             this.context = context;
             this.constructs = constructs;
             this.effects = effects;
@@ -129,25 +129,19 @@ final class InitializeText {
         };
     }
 
-
     /**
-     * A rather ugly set of instructions which again looks at chunks in the input
-     * stream.
-     * The reason to do this here is that it is *much* faster to parse in reverse.
-     * And that we can’t hook into `null` to split the line suffix before an EOF.
-     * To do: figure out if we can make this into a clean utility, or even in core.
-     * As it will be useful for GFMs literal autolink extension (and maybe even
-     * tables?)
+     * A rather ugly set of instructions which again looks at chunks in the input stream. The reason to do this here is
+     * that it is *much* faster to parse in reverse. And that we can’t hook into `null` to split the line suffix before
+     * an EOF. To do: figure out if we can make this into a clean utility, or even in core. As it will be useful for
+     * GFMs literal autolink extension (and maybe even tables?)
      */
     static List<Tokenizer.Event> resolveAllLineSuffixes(List<Tokenizer.Event> events, TokenizeContext context) {
         var eventIndex = 0; // Skip first.
 
         while (++eventIndex <= events.size()) {
-            if (
-                    (eventIndex == events.size() ||
-                            events.get(eventIndex).token().type.equals(Types.lineEnding)) &&
-                            events.get(eventIndex - 1).token().type.equals(Types.data)
-            ) {
+            if ((eventIndex == events.size() ||
+                    events.get(eventIndex).token().type.equals(Types.lineEnding)) &&
+                    events.get(eventIndex - 1).token().type.equals(Types.data)) {
                 var data = events.get(eventIndex - 1).token();
                 var chunks = context.sliceStream(data);
                 var index = chunks.size();
@@ -190,8 +184,8 @@ final class InitializeText {
                     token.type = eventIndex == events.size() ||
                             tabs ||
                             size < Constants.hardBreakPrefixSizeMin
-                            ? Types.lineSuffix
-                            : Types.hardBreakTrailing;
+                                    ? Types.lineSuffix
+                                    : Types.hardBreakTrailing;
 
                     token.start = new Point(
                             data.end.line(),
@@ -200,8 +194,7 @@ final class InitializeText {
                             data.start._index() + index,
                             index != 0
                                     ? bufferIndex
-                                    : data.start._bufferIndex() + bufferIndex
-                    );
+                                    : data.start._bufferIndex() + bufferIndex);
 
                     token.end = data.end;
 

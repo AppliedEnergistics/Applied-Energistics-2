@@ -35,7 +35,6 @@ public final class LineEnding {
             this.nok = nok;
         }
 
-
         private State start(int code) {
             Assert.check(CharUtil.markdownLineEnding(code), "expected eol");
             effects.enter(Types.lineEnding);

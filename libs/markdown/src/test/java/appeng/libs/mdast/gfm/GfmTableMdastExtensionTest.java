@@ -1,11 +1,12 @@
 package appeng.libs.mdast.gfm;
 
+import org.junit.jupiter.api.Test;
+
 import appeng.libs.mdast.AbstractMdAstTest;
 import appeng.libs.mdast.MdAst;
 import appeng.libs.mdast.MdastOptions;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
-import org.junit.jupiter.api.Test;
 
 class GfmTableMdastExtensionTest extends AbstractMdAstTest {
 
@@ -24,54 +25,53 @@ class GfmTableMdastExtensionTest extends AbstractMdAstTest {
     void shouldSupportTables() {
         assertJsonEquals(
                 parseWithPosition("| a\n| -"),
-        """
-                      {
-                      "type": "root",
-                              "children": [
-                      {
-                          "type": "table",
-                                  "align": [null],
-                          "children": [
-                          {
-                              "type": "tableRow",
+                """
+                              {
+                              "type": "root",
                                       "children": [
                               {
-                                  "type": "tableCell",
-                                          "children": [
+                                  "type": "table",
+                                          "align": [null],
+                                  "children": [
                                   {
-                                      "type": "text",
-                                              "value": "a",
+                                      "type": "tableRow",
+                                              "children": [
+                                      {
+                                          "type": "tableCell",
+                                                  "children": [
+                                          {
+                                              "type": "text",
+                                                      "value": "a",
+                                                  "position": {
+                                              "start": {"line": 1, "column": 3, "offset": 2},
+                                              "end": {"line": 1, "column": 4, "offset": 3}
+                                          }
+                                          }
+                                    ],
                                           "position": {
-                                      "start": {"line": 1, "column": 3, "offset": 2},
-                                      "end": {"line": 1, "column": 4, "offset": 3}
-                                  }
+                                              "start": {"line": 1, "column": 1, "offset": 0},
+                                              "end": {"line": 1, "column": 4, "offset": 3}
+                                          }
+                                      }
+                                ],
+                                      "position": {
+                                          "start": {"line": 1, "column": 1, "offset": 0},
+                                          "end": {"line": 1, "column": 4, "offset": 3}
+                                      }
                                   }
                             ],
                                   "position": {
                                       "start": {"line": 1, "column": 1, "offset": 0},
-                                      "end": {"line": 1, "column": 4, "offset": 3}
+                                      "end": {"line": 2, "column": 4, "offset": 7}
                                   }
                               }
                         ],
                               "position": {
                                   "start": {"line": 1, "column": 1, "offset": 0},
-                                  "end": {"line": 1, "column": 4, "offset": 3}
+                                  "end": {"line": 2, "column": 4, "offset": 7}
                               }
                           }
-                    ],
-                          "position": {
-                              "start": {"line": 1, "column": 1, "offset": 0},
-                              "end": {"line": 2, "column": 4, "offset": 7}
-                          }
-                      }
-                ],
-                      "position": {
-                          "start": {"line": 1, "column": 1, "offset": 0},
-                          "end": {"line": 2, "column": 4, "offset": 7}
-                      }
-                  }
-                  """
-        );
+                          """);
     }
 
     @Test
@@ -99,10 +99,8 @@ class GfmTableMdastExtensionTest extends AbstractMdAstTest {
                                 }
                           ]
                             }
-                        """
-        );
+                        """);
     }
-
 
     @Test
     void shouldSupportAnEscapedPipeInCodeInATableCell() {
@@ -129,8 +127,7 @@ class GfmTableMdastExtensionTest extends AbstractMdAstTest {
                               }
                         ]
                           }
-                          """
-        );
+                          """);
     }
 
     @Test
@@ -144,8 +141,7 @@ class GfmTableMdastExtensionTest extends AbstractMdAstTest {
                                         {"type": "paragraph", "children": [{"type": "inlineCode", "value": "\\\\|"}]}
                                   ]
                                     }
-                        """
-        );
+                        """);
     }
 
     @Test
@@ -177,9 +173,8 @@ class GfmTableMdastExtensionTest extends AbstractMdAstTest {
                                     }
                               ]
                                 }
-                                
-                        """
-        );
+
+                        """);
     }
 
 }

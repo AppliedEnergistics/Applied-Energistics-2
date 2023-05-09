@@ -1,13 +1,13 @@
 package appeng.libs.mdast;
 
-import appeng.libs.mdast.model.MdAstRoot;
-import appeng.libs.micromark.Token;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import appeng.libs.mdast.model.MdAstRoot;
+import appeng.libs.micromark.Token;
 
 /**
  * An mdast extension changes how markdown tokens are turned into mdast.
@@ -29,15 +29,14 @@ public class MdastExtension {
     public final Map<String, Handler> exit;
 
     public MdastExtension(List<String> canContainEols,
-                          List<Transform> transforms,
-                          Map<String, Handler> enter,
-                          Map<String, Handler> exit) {
+            List<Transform> transforms,
+            Map<String, Handler> enter,
+            Map<String, Handler> exit) {
         this.canContainEols = List.copyOf(canContainEols);
         this.transforms = List.copyOf(transforms);
         this.enter = Map.copyOf(enter);
         this.exit = Map.copyOf(exit);
     }
-
 
     public static Builder builder() {
         return new Builder();

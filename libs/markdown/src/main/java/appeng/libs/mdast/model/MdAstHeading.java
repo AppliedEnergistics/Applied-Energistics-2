@@ -1,8 +1,8 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-
 import java.io.IOException;
+
+import com.google.gson.stream.JsonWriter;
 
 /**
  * Heading (Parent) represents a heading of a section.
@@ -15,16 +15,11 @@ import java.io.IOException;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'heading',
- * depth: 1,
- * children: [{type: 'text', value: 'Alpha'}]
- * }
+ * { type: 'heading', depth: 1, children: [{type: 'text', value: 'Alpha'}] }
  */
 public class MdAstHeading extends MdAstParent<MdAstPhrasingContent> implements MdAstFlowContent {
     /**
-     * Ranges from 1 to 6.
-     * 1 is the highest level heading, 6 the lowest.
+     * Ranges from 1 to 6. 1 is the highest level heading, 6 the lowest.
      */
     public int depth;
 
