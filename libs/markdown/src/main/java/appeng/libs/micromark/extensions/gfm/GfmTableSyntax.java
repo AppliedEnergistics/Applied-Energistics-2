@@ -1,5 +1,8 @@
 package appeng.libs.micromark.extensions.gfm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import appeng.libs.micromark.Assert;
 import appeng.libs.micromark.CharUtil;
 import appeng.libs.micromark.Construct;
@@ -16,16 +19,12 @@ import appeng.libs.micromark.factory.FactorySpace;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GfmTableSyntax extends Extension {
     public static final TokenProperty<List<Align>> ALIGN = new TokenProperty<>();
 
     public static final Extension INSTANCE = new GfmTableSyntax();
 
     private final Construct nextPrefixedOrBlank;
-
 
     public GfmTableSyntax() {
         var construct = new Construct();
@@ -49,8 +48,8 @@ public class GfmTableSyntax extends Extension {
         boolean seenCellInRow = false;
 
         while (++index < events.size()) {
-             var event = events.get(index);
-             var token = event.token();
+            var event = events.get(index);
+            var token = event.token();
 
             if (inRow) {
                 if (token.type.equals("temporaryTableCellContent")) {
@@ -61,29 +60,26 @@ public class GfmTableSyntax extends Extension {
                 }
 
                 if (
-                    // Combine separate content parts into one.
-                        (token.type.equals("tableCellDivider") || token.type.equals("tableRow")) &&
-                                contentEnd != -1
-                ) {
+                // Combine separate content parts into one.
+                (token.type.equals("tableCellDivider") || token.type.equals("tableRow")) &&
+                        contentEnd != -1) {
                     Assert.check(
                             contentStart != -1,
-                    "expected `contentStart` to be defined if `contentEnd` is"
-        );
-        var content = new Token();
-        content.type =  "tableContent";
-        content.start = events.get(contentStart).token().start;
-        content.end = events.get(contentEnd).token().end;
-        
-        var text = new Token();
-        text.type = Types.chunkText;
-        text.start = content.start;
-        text.end = content.end;
-        text.contentType = ContentType.TEXT;
+                            "expected `contentStart` to be defined if `contentEnd` is");
+                    var content = new Token();
+                    content.type = "tableContent";
+                    content.start = events.get(contentStart).token().start;
+                    content.end = events.get(contentEnd).token().end;
+
+                    var text = new Token();
+                    text.type = Types.chunkText;
+                    text.start = content.start;
+                    text.end = content.end;
+                    text.contentType = ContentType.TEXT;
 
                     Assert.check(
                             contentStart != -1,
-                            "expected `contentStart` to be defined if `contentEnd` is"
-                    );
+                            "expected `contentStart` to be defined if `contentEnd` is");
 
                     ListUtils.splice(events,
                             contentStart,
@@ -92,9 +88,7 @@ public class GfmTableSyntax extends Extension {
                                     Tokenizer.Event.enter(content, context),
                                     Tokenizer.Event.enter(text, context),
                                     Tokenizer.Event.exit(text, context),
-                                    Tokenizer.Event.exit(content, context)
-                            )
-                    );
+                                    Tokenizer.Event.exit(content, context)));
 
                     index -= contentEnd - contentStart - 3;
                     contentStart = -1;
@@ -102,15 +96,13 @@ public class GfmTableSyntax extends Extension {
                 }
             }
 
-            if (
-                    events.get(index).isExit() &&
-                            cellStart != -1 &&
-                            cellStart + (seenCellInRow ? 0 : 1) < index &&
-                            (token.type.equals("tableCellDivider") ||
-                                    (token.type.equals("tableRow") &&
-                                            (cellStart + 3 < index ||
-                                                    !events.get(cellStart).token().type.equals(Types.whitespace))))
-            ) {
+            if (events.get(index).isExit() &&
+                    cellStart != -1 &&
+                    cellStart + (seenCellInRow ? 0 : 1) < index &&
+                    (token.type.equals("tableCellDivider") ||
+                            (token.type.equals("tableRow") &&
+                                    (cellStart + 3 < index ||
+                                            !events.get(cellStart).token().type.equals(Types.whitespace))))) {
 
                 var cell = new Token();
                 cell.type = inDelimiterRow ? "tableDelimiter" : inHead ? "tableHeader" : "tableData";
@@ -118,17 +110,15 @@ public class GfmTableSyntax extends Extension {
                 cell.end = events.get(index).token().end;
 
                 ListUtils.splice(
-                    events,
-                    index + (token.type.equals("tableCellDivider") ? 1 : 0),
-                    0,
-                    List.of(Tokenizer.Event.exit(cell, context))
-                );
+                        events,
+                        index + (token.type.equals("tableCellDivider") ? 1 : 0),
+                        0,
+                        List.of(Tokenizer.Event.exit(cell, context)));
                 ListUtils.splice(
                         events,
                         cellStart,
                         0,
-                        List.of(Tokenizer.Event.enter(cell, context))
-                );
+                        List.of(Tokenizer.Event.enter(cell, context)));
                 index += 2;
                 cellStart = index + 1;
                 seenCellInRow = true;
@@ -181,12 +171,12 @@ public class GfmTableSyntax extends Extension {
                 tableHeaderCount++;
                 effects.enter("temporaryTableCellContent");
                 // Can’t be space or eols at the start of a construct, so we’re in a cell.
-                Assert.check(!CharUtil.markdownLineEndingOrSpace(code),"expected non-space");
+                Assert.check(!CharUtil.markdownLineEndingOrSpace(code), "expected non-space");
                 return inCellContentHead(code);
             }
 
             State cellDividerHead(int code) {
-                Assert.check(code == Codes.verticalBar,"expected `|`");
+                Assert.check(code == Codes.verticalBar, "expected `|`");
                 effects.enter("tableCellDivider");
                 effects.consume(code);
                 effects.exit("tableCellDivider");
@@ -231,11 +221,9 @@ public class GfmTableSyntax extends Extension {
 
             State inCellContentHead(int code) {
                 // EOF, whitespace, pipe
-                if (
-                        code == Codes.eof ||
-                                code == Codes.verticalBar ||
-                                CharUtil.markdownLineEndingOrSpace(code)
-                ) {
+                if (code == Codes.eof ||
+                        code == Codes.verticalBar ||
+                        CharUtil.markdownLineEndingOrSpace(code)) {
                     effects.exit("temporaryTableCellContent");
                     return cellBreakHead(code);
                 }
@@ -261,7 +249,7 @@ public class GfmTableSyntax extends Extension {
                     return nok.step(code);
                 }
 
-                Assert.check(CharUtil.markdownLineEnding(code),"expected eol");
+                Assert.check(CharUtil.markdownLineEnding(code), "expected eol");
                 effects.exit("tableRow");
                 effects.exit("tableHead");
                 var originalInterrupt = context.isInterrupt();
@@ -273,16 +261,15 @@ public class GfmTableSyntax extends Extension {
 
                 return effects.attempt.hook(
                         construct,
-                c -> {
-                    context.setInterrupt(originalInterrupt);
-                    effects.enter("tableDelimiterRow");
-                    return atDelimiterRowBreak(c);
-                },
-                c -> {
-                    context.setInterrupt(originalInterrupt);
-                    return nok.step(c);
-                }
-                ).step(code);
+                        c -> {
+                            context.setInterrupt(originalInterrupt);
+                            effects.enter("tableDelimiterRow");
+                            return atDelimiterRowBreak(c);
+                        },
+                        c -> {
+                            context.setInterrupt(originalInterrupt);
+                            return nok.step(c);
+                        }).step(code);
             }
 
             State atDelimiterRowBreak(int code) {
@@ -346,7 +333,6 @@ public class GfmTableSyntax extends Extension {
                     effects.consume(code);
                     effects.exit("tableDelimiterAlignment");
 
-
                     align.set(align.size() - 1,
                             align.get(align.size() - 1) == Align.LEFT ? Align.CENTER : Align.RIGHT);
 
@@ -403,7 +389,7 @@ public class GfmTableSyntax extends Extension {
                     return tableClose(code);
                 }
 
-                Assert.check(CharUtil.markdownLineEnding(code),"expected eol");
+                Assert.check(CharUtil.markdownLineEnding(code), "expected eol");
 
                 var construct = new Construct();
                 construct.tokenize = this::tokenizeRowEnd;
@@ -415,9 +401,8 @@ public class GfmTableSyntax extends Extension {
                         effects.attempt.hook(
                                 construct,
                                 FactorySpace.create(effects, this::bodyStart, Types.linePrefix, Constants.tabSize),
-                                this::tableClose
-                        )
-                ).step(code);
+                                this::tableClose))
+                        .step(code);
             }
 
             State tableClose(int code) {
@@ -444,7 +429,7 @@ public class GfmTableSyntax extends Extension {
             }
 
             State cellDividerBody(int code) {
-                Assert.check(code == Codes.verticalBar,"expected `|`");
+                Assert.check(code == Codes.verticalBar, "expected `|`");
                 effects.enter("tableCellDivider");
                 effects.consume(code);
                 effects.exit("tableCellDivider");
@@ -484,11 +469,9 @@ public class GfmTableSyntax extends Extension {
 
             State inCellContentBody(int code) {
                 // EOF, whitespace, pipe
-                if (
-                        code == Codes.eof ||
-                                code == Codes.verticalBar ||
-                                CharUtil.markdownLineEndingOrSpace(code)
-                ) {
+                if (code == Codes.eof ||
+                        code == Codes.verticalBar ||
+                        CharUtil.markdownLineEndingOrSpace(code)) {
                     effects.exit("temporaryTableCellContent");
                     return cellBreakBody(code);
                 }
@@ -525,15 +508,13 @@ public class GfmTableSyntax extends Extension {
                         this::tableBodyClose,
                         effects.attempt.hook(
                                 construct,
-                FactorySpace.create(
-                        effects,
-                        this::rowStartBody,
-                        Types.linePrefix,
-                        Constants.tabSize
-                ),
-                        this::tableBodyClose
-      )
-    ).step(code);
+                                FactorySpace.create(
+                                        effects,
+                                        this::rowStartBody,
+                                        Types.linePrefix,
+                                        Constants.tabSize),
+                                this::tableBodyClose))
+                        .step(code);
             }
 
             State tableBodyClose(int code) {
@@ -544,7 +525,7 @@ public class GfmTableSyntax extends Extension {
             State tokenizeRowEnd(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok) {
                 class RowEndStateMachine {
                     State start(int code) {
-                        Assert.check(CharUtil.markdownLineEnding(code),"expected eol");
+                        Assert.check(CharUtil.markdownLineEnding(code), "expected eol");
                         effects.enter(Types.lineEnding);
                         effects.consume(code);
                         effects.exit(Types.lineEnding);
@@ -553,23 +534,19 @@ public class GfmTableSyntax extends Extension {
 
                     State prefixed(int code) {
                         // Blank or interrupting line.
-                        if (
-                                context.isOnLazyLine() ||
-                                        code == Codes.eof ||
-                                        CharUtil.markdownLineEnding(code)
-                        ) {
+                        if (context.isOnLazyLine() ||
+                                code == Codes.eof ||
+                                CharUtil.markdownLineEnding(code)) {
                             return nok.step(code);
                         }
 
                         var tail = context.getLastEvent();
 
                         // Indented code can interrupt delimiter and body rows.
-                        if (
-                                !context.getParser().constructs.nullDisable.contains("codeIndented") &&
+                        if (!context.getParser().constructs.nullDisable.contains("codeIndented") &&
                                 tail != null &&
-                                        tail.token().type.equals(Types.linePrefix) &&
-                                tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize
-                   ) {
+                                tail.token().type.equals(Types.linePrefix) &&
+                                tail.context().sliceSerialize(tail.token(), true).length() >= Constants.tabSize) {
                             return nok.step(code);
                         }
 
@@ -584,8 +561,7 @@ public class GfmTableSyntax extends Extension {
                                 c -> {
                                     context.setGfmTableDynamicInterruptHack(false);
                                     return ok.step(c);
-                                }
-                        ).step(code);
+                                }).step(code);
                     }
                 }
 
@@ -630,4 +606,3 @@ public class GfmTableSyntax extends Extension {
     }
 
 }
-

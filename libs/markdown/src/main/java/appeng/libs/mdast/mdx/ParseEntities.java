@@ -1,10 +1,10 @@
 package appeng.libs.mdast.mdx;
 
-import appeng.libs.micromark.CharUtil;
-import appeng.libs.micromark.NamedCharacterEntities;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import appeng.libs.micromark.CharUtil;
+import appeng.libs.micromark.NamedCharacterEntities;
 
 /**
  * Reduced functionality port of https://github.com/wooorm/parse-entities/
@@ -31,14 +31,12 @@ final class ParseEntities {
             int following = value.charAt(index + 1);
 
             // The behavior depends on the identity of the next character.
-            if (
-                    following == '\t' ||
-                            following == '\n' ||
-                            following == '\f' ||
-                            following == ' ' ||
-                            following == '&' ||
-                            following == '<'
-            ) {
+            if (following == '\t' ||
+                    following == '\n' ||
+                    following == '\f' ||
+                    following == ' ' ||
+                    following == '&' ||
+                    following == '<') {
                 // Not a character reference.
                 // No characters are consumed, and nothing is returned.
                 // This is not an error, either.
@@ -108,8 +106,7 @@ final class ParseEntities {
                             charBuffer,
                             0,
                             charBuffer.length(),
-                            type == CharRefType.hexadecimal ? 16 : 10
-                    );
+                            type == CharRefType.hexadecimal ? 16 : 10);
 
                     // Emit a warning when the parsed number is prohibited, and replace with
                     // replacement character.
@@ -176,7 +173,7 @@ final class ParseEntities {
      */
     private static final Map<Integer, String> characterReferenceInvalid;
     static {
-        var codes = new HashMap<Integer,String>();
+        var codes = new HashMap<Integer, String>();
         codes.put(0, "�");
         codes.put(128, "€");
         codes.put(130, "‚");
@@ -207,6 +204,5 @@ final class ParseEntities {
         codes.put(159, "Ÿ");
         characterReferenceInvalid = Map.copyOf(codes);
     }
-
 
 }

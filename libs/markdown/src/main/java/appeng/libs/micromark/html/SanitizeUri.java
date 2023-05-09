@@ -1,14 +1,15 @@
 package appeng.libs.micromark.html;
 
-import appeng.libs.micromark.CharUtil;
-import appeng.libs.micromark.symbol.Codes;
-import org.jetbrains.annotations.Nullable;
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.libs.micromark.CharUtil;
+import appeng.libs.micromark.symbol.Codes;
 
 public final class SanitizeUri {
     private SanitizeUri() {
@@ -17,17 +18,13 @@ public final class SanitizeUri {
     /**
      * Make a value safe for injection as a URL.
      * <p>
-     * This encodes unsafe characters with percent-encoding and skips already
-     * encoded sequences (see `normalizeUri` below).
-     * Further unsafe characters are encoded as character references (see
-     * `micromark-util-encode`).
+     * This encodes unsafe characters with percent-encoding and skips already encoded sequences (see `normalizeUri`
+     * below). Further unsafe characters are encoded as character references (see `micromark-util-encode`).
      * <p>
-     * Then, a regex of allowed protocols can be given, in which case the URL is
-     * sanitized.
-     * For example, `/^(https?|ircs?|mailto|xmpp)$/i` can be used for `a[href]`,
-     * or `/^https?$/i` for `img[src]`.
-     * If the URL includes an unknown protocol (one not matched by `protocol`, such
-     * as a dangerous example, `javascript:`), the value is ignored.
+     * Then, a regex of allowed protocols can be given, in which case the URL is sanitized. For example,
+     * `/^(https?|ircs?|mailto|xmpp)$/i` can be used for `a[href]`, or `/^https?$/i` for `img[src]`. If the URL includes
+     * an unknown protocol (one not matched by `protocol`, such as a dangerous example, `javascript:`), the value is
+     * ignored.
      *
      * @param {string|undefined} url
      * @param {RegExp}           [protocol]
@@ -46,15 +43,14 @@ public final class SanitizeUri {
         var slash = value.indexOf('/');
 
         if (
-            // If there is no protocol, it’s relative.
-                colon < 0 ||
-                        // If the first colon is after a `?`, `#`, or `/`, it’s not a protocol.
-                        (slash > -1 && colon > slash) ||
-                        (questionMark > -1 && colon > questionMark) ||
-                        (numberSign > -1 && colon > numberSign) ||
-                        // It is a protocol, it should be allowed.
-                        protocol.matcher(value.substring(0, colon)).matches()
-        ) {
+        // If there is no protocol, it’s relative.
+        colon < 0 ||
+        // If the first colon is after a `?`, `#`, or `/`, it’s not a protocol.
+                (slash > -1 && colon > slash) ||
+                (questionMark > -1 && colon > questionMark) ||
+                (numberSign > -1 && colon > numberSign) ||
+                // It is a protocol, it should be allowed.
+                protocol.matcher(value.substring(0, colon)).matches()) {
             return value;
         }
 
@@ -66,8 +62,7 @@ public final class SanitizeUri {
     /**
      * Normalize a URL (such as used in definitions).
      * <p/>
-     * Encode unsafe characters with percent-encoding, skipping already encoded
-     * sequences.
+     * Encode unsafe characters with percent-encoding, skipping already encoded sequences.
      */
     public static String normalizeUri(String value) {
         var result = new StringBuilder();
@@ -80,12 +75,10 @@ public final class SanitizeUri {
             String replace = null;
 
             // A correct percent encoded value.
-            if (
-                    code == Codes.percentSign &&
-                            index + 2 < value.length() &&
-                            CharUtil.asciiAlphanumeric(value.charAt(index + 1)) &&
-                            CharUtil.asciiAlphanumeric(value.charAt(index + 2))
-            ) {
+            if (code == Codes.percentSign &&
+                    index + 2 < value.length() &&
+                    CharUtil.asciiAlphanumeric(value.charAt(index + 1)) &&
+                    CharUtil.asciiAlphanumeric(value.charAt(index + 2))) {
                 skip = 2;
             }
             // ASCII.
@@ -100,7 +93,7 @@ public final class SanitizeUri {
 
                 // A correct surrogate pair.
                 if (code < 56320 && next > 56319 && next < 57344) {
-                    replace = String.valueOf(new char[]{code, next});
+                    replace = String.valueOf(new char[] { code, next });
                     skip = 1;
                 }
                 // Lone surrogate.

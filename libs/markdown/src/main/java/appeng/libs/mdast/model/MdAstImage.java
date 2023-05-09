@@ -1,9 +1,10 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Image (Node) represents an image.
@@ -18,12 +19,7 @@ import java.io.IOException;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'image',
- * url: 'https://example.com/favicon.ico',
- * title: 'bravo',
- * alt: 'alpha'
- * }
+ * { type: 'image', url: 'https://example.com/favicon.ico', title: 'bravo', alt: 'alpha' }
  */
 public class MdAstImage extends MdAstNode implements MdAstResource, MdAstAlternative, MdAstStaticPhrasingContent {
     public String alt;

@@ -7,6 +7,14 @@ pluginManagement {
         }
         gradlePluginPortal()
     }
+    plugins {
+        id 'fabric-loom' version '1.0-SNAPSHOT'
+        id 'com.diffplug.spotless' version '5.12.4'
+        id 'com.matthewprenger.cursegradle' version '1.4.0'
+        id 'com.modrinth.minotaur' version '2.+'
+        id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
+        id 'com.github.johnrengelman.shadow' version '7.0.0'
+    }
 }
 
 include 'libs:markdown'

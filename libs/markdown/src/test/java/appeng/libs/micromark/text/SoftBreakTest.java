@@ -1,8 +1,9 @@
 package appeng.libs.micromark.text;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
 
 public class SoftBreakTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -13,6 +14,5 @@ public class SoftBreakTest {
     public void testGeneratedHtml(String markdown, String expectedHtml, String message) {
         TestUtil.assertGeneratedHtml(markdown, expectedHtml);
     }
-
 
 }

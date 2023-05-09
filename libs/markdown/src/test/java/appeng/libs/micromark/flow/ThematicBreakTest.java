@@ -1,9 +1,10 @@
 package appeng.libs.micromark.flow;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
 
 public class ThematicBreakTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -42,6 +43,7 @@ public class ThematicBreakTest {
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("***", "<p>***</p>", "should support turning off thematic breaks", "thematicBreak");
+        TestUtil.assertGeneratedHtmlWithDisabled("***", "<p>***</p>", "should support turning off thematic breaks",
+                "thematicBreak");
     }
 }

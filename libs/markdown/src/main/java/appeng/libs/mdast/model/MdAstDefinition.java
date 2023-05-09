@@ -1,10 +1,10 @@
 package appeng.libs.mdast.model;
 
-import appeng.libs.unist.UnistNode;
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a resource.
@@ -19,13 +19,7 @@ import java.io.IOException;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'definition',
- * identifier: 'alpha',
- * label: 'Alpha',
- * url: 'https://example.com',
- * title: null
- * }
+ * { type: 'definition', identifier: 'alpha', label: 'Alpha', url: 'https://example.com', title: null }
  */
 public class MdAstDefinition extends MdAstNode implements MdAstAssociation, MdAstResource, MdAstContent {
     public String identifier = "";

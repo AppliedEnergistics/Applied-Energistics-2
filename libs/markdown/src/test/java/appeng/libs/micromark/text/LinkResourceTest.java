@@ -1,11 +1,12 @@
 package appeng.libs.micromark.text;
 
-import appeng.libs.micromark.TestUtil;
-import appeng.libs.micromark.html.CompileOptions;
-import appeng.libs.micromark.html.ParseOptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
+import appeng.libs.micromark.html.CompileOptions;
+import appeng.libs.micromark.html.ParseOptions;
 
 public class LinkResourceTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -106,7 +107,6 @@ public class LinkResourceTest {
                 "<p><a href=\"foo):\">link</a></p>",
                 "should support links w/ escapes in destinations",
                 new ParseOptions(),
-                opts
-        );
+                opts);
     }
 }

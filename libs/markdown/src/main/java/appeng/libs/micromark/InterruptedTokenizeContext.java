@@ -1,9 +1,9 @@
 package appeng.libs.micromark;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * A context object that helps w/ tokenizing markdown constructs.

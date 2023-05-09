@@ -1,9 +1,10 @@
 package appeng.libs.micromark.text;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
 
 public class HtmlTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -86,7 +87,8 @@ public class HtmlTest {
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("a <x>", "<p>a &lt;x&gt;</p>", "should support turning off html (text)", "htmlText");
+        TestUtil.assertGeneratedHtmlWithDisabled("a <x>", "<p>a &lt;x&gt;</p>",
+                "should support turning off html (text)", "htmlText");
     }
 
 }

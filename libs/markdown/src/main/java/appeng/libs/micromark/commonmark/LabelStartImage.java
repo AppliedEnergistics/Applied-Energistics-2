@@ -72,17 +72,17 @@ public final class LabelStartImage {
             return nok.step(code);
         }
 
-
         private State after(int code) {
-            /* To do: remove in the future once we’ve switched from
-             * `micromark-extension-footnote` to `micromark-extension-gfm-footnote`,
-             * which doesn’t need this */
+            /*
+             * To do: remove in the future once we’ve switched from `micromark-extension-footnote` to
+             * `micromark-extension-gfm-footnote`, which doesn’t need this
+             */
             /* Hidden footnotes hook */
             /* c8 ignore next 3 */
             return code == Codes.caret &&
                     context.getParser().constructs._hiddenFootnoteSupport
-                    ? nok.step(code)
-                    : ok.step(code);
+                            ? nok.step(code)
+                            : ok.step(code);
         }
     }
 }

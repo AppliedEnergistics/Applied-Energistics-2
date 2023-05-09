@@ -1,9 +1,10 @@
 package appeng.libs.mdast.mdx.model;
 
-import appeng.libs.unist.UnistNode;
+import java.io.IOException;
+
 import com.google.gson.stream.JsonWriter;
 
-import java.io.IOException;
+import appeng.libs.unist.UnistNode;
 
 /**
  * Potential attributes of {@link MdxJsxElementFields}

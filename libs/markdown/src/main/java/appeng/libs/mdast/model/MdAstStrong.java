@@ -1,7 +1,5 @@
 package appeng.libs.mdast.model;
 
-import java.util.List;
-
 /**
  * Strong (Parent) represents strong importance, seriousness, or urgency for its contents.
  * <p>
@@ -13,21 +11,9 @@ import java.util.List;
  * <p>
  * Yields:
  * <p>
+ * 
  * <pre>
- * {
- * type: 'paragraph',
- * children: [
- * {
- * type: 'strong',
- * children: [{type: 'text', value: 'alpha'}]
- * },
- * {type: 'text', value: ' '},
- * {
- * type: 'strong',
- * children: [{type: 'text', value: 'bravo'}]
- * }
- * ]
- * }
+ * {type:'paragraph',children:[{type:'strong',children:[{type:'text',value:'alpha'}]},{type:'text',value:' '},{type:'strong',children:[{type:'text',value:'bravo'}]}]}
  * </pre>
  */
 public class MdAstStrong extends MdAstParent<MdAstPhrasingContent> implements MdAstStaticPhrasingContent {

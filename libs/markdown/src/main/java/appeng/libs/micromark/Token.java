@@ -1,38 +1,28 @@
 package appeng.libs.micromark;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
- * A token: a span of chunks.
- * Tokens are what the core of micromark produces: the built-in HTML compiler
- * or other tools can turn them into different things.
+ * A token: a span of chunks. Tokens are what the core of micromark produces: the built-in HTML compiler or other tools
+ * can turn them into different things.
  * <p>
- * Tokens are essentially names attached to a slice of chunks, such as
- * `lineEndingBlank` for certain line endings, or `codeFenced` for a whole
- * fenced code.
+ * Tokens are essentially names attached to a slice of chunks, such as `lineEndingBlank` for certain line endings, or
+ * `codeFenced` for a whole fenced code.
  * <p>
- * Sometimes, more info is attached to tokens, such as `_open` and `_close`
- * by `attention` (strong, emphasis) to signal whether the sequence can open
- * or close an attention run.
+ * Sometimes, more info is attached to tokens, such as `_open` and `_close` by `attention` (strong, emphasis) to signal
+ * whether the sequence can open or close an attention run.
  * <p>
- * Linked tokens are used because outer constructs are parsed first.
- * Take for example:
+ * Linked tokens are used because outer constructs are parsed first. Take for example:
  * <p>
- * ```markdown
- * > *a
- * b*.
- * ```
+ * ```markdown > *a b*. ```
  * <p>
- * 1.  The block quote marker and the space after it is parsed first
- * 2.  The rest of the line is a `chunkFlow` token
- * 3.  The two spaces on the second line are a `linePrefix`
- * 4.  The rest of the line is another `chunkFlow` token
+ * 1. The block quote marker and the space after it is parsed first 2. The rest of the line is a `chunkFlow` token 3.
+ * The two spaces on the second line are a `linePrefix` 4. The rest of the line is another `chunkFlow` token
  * <p>
- * The two `chunkFlow` tokens are linked together.
- * The chunks they span are then passed through the flow tokenizer.
+ * The two `chunkFlow` tokens are linked together. The chunks they span are then passed through the flow tokenizer.
  */
 public class Token {
     private static final boolean DEBUG_TOKEN_CREATION = false;
@@ -63,28 +53,26 @@ public class Token {
     public ContentType contentType;
 
     /**
-     * Used when dealing with linked tokens.
-     * A child tokenizer is needed to tokenize them, which is stored on those
+     * Used when dealing with linked tokens. A child tokenizer is needed to tokenize them, which is stored on those
      * tokens.
      */
     @Nullable
     public TokenizeContext _tokenizer;
 
     /**
-     * A marker used to parse attention, depending on the characters before
-     * sequences (`**`), the sequence can open, close, both, or none
+     * A marker used to parse attention, depending on the characters before sequences (`**`), the sequence can open,
+     * close, both, or none
      */
     public boolean _open;
 
     /**
-     * A marker used to parse attention, depending on the characters after
-     * sequences (`**`), the sequence can open, close, both, or none
+     * A marker used to parse attention, depending on the characters after sequences (`**`), the sequence can open,
+     * close, both, or none
      */
     public boolean _close;
 
     /**
-     * A boolean used internally to figure out if a token is in the first content
-     * of a list item construct.
+     * A boolean used internally to figure out if a token is in the first content of a list item construct.
      */
     public boolean _isInFirstContentOfListItem;
 
@@ -99,14 +87,13 @@ public class Token {
     public boolean _loose;
 
     /**
-     * A boolean used internally to figure out if a link opening can’t be used
-     * (because links in links are incorrect).
+     * A boolean used internally to figure out if a link opening can’t be used (because links in links are incorrect).
      */
     public boolean _inactive;
 
     /**
-     * A boolean used internally to figure out if a link opening is balanced: it’s
-     * not a link opening but has a balanced closing.
+     * A boolean used internally to figure out if a link opening is balanced: it’s not a link opening but has a balanced
+     * closing.
      */
     public boolean _balanced;
 

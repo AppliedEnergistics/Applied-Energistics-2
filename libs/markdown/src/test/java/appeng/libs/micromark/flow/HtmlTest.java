@@ -1,12 +1,13 @@
 package appeng.libs.micromark.flow;
 
-import appeng.libs.micromark.TestUtil;
+import java.util.List;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.List;
+import appeng.libs.micromark.TestUtil;
 
 public class HtmlTest {
 
@@ -45,8 +46,7 @@ public class HtmlTest {
                             "main :: IO ()",
                             "main = print $ parseTags tags",
                             "</code></pre>",
-                            "okay"
-                    ),
+                            "okay"),
                     List.of(
                             "<pre language=\"haskell\"><code>",
                             "import Text.HTML.TagSoup",
@@ -54,10 +54,9 @@ public class HtmlTest {
                             "main :: IO ()",
                             "main = print $ parseTags tags",
                             "</code></pre>",
-                            "<p>okay</p>"
-                    )
-            );
+                            "<p>okay</p>"));
         }
+
         @Test
         public void testShouldSupportRawScriptTags() {
             TestUtil.assertGeneratedHtmlLinesUnsafe(
@@ -67,18 +66,16 @@ public class HtmlTest {
                             "",
                             "document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";",
                             "</script>",
-                            "okay"
-                    ),
+                            "okay"),
                     List.of(
                             "<script type=\"text/javascript\">",
                             "// JavaScript example",
                             "",
                             "document.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";",
                             "</script>",
-                            "<p>okay</p>"
-                    )
-            );
+                            "<p>okay</p>"));
         }
+
         @Test
         public void testShouldSupportRawStyleTags() {
             TestUtil.assertGeneratedHtmlLinesUnsafe(
@@ -89,8 +86,7 @@ public class HtmlTest {
                             "",
                             "p {color:blue;}",
                             "</style>",
-                            "okay"
-                    ),
+                            "okay"),
                     List.of(
                             "<style",
                             "  type=\"text/css\">",
@@ -98,9 +94,7 @@ public class HtmlTest {
                             "",
                             "p {color:blue;}",
                             "</style>",
-                            "<p>okay</p>"
-                    )
-            );
+                            "<p>okay</p>"));
         }
     }
 
@@ -308,7 +302,8 @@ public class HtmlTest {
     @Test
     public void testDisabled() {
 
-        TestUtil.assertGeneratedHtmlWithDisabled("<x>", "<p>&lt;x&gt;</p>", "should support turning off html (flow)", "htmlFlow");
+        TestUtil.assertGeneratedHtmlWithDisabled("<x>", "<p>&lt;x&gt;</p>", "should support turning off html (flow)",
+                "htmlFlow");
     }
 
 }

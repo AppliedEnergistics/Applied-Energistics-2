@@ -5,8 +5,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Represents the location of a node in a source file.
  * <p>
- * If the syntactic unit represented by a node is not present in the source file at the time of parsing, the
- * node is said to be generated, and it must not have positional information.
+ * If the syntactic unit represented by a node is not present in the source file at the time of parsing, the node is
+ * said to be generated, and it must not have positional information.
  */
 public interface UnistPosition {
     /**

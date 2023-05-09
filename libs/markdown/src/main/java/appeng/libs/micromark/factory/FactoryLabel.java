@@ -15,7 +15,8 @@ public final class FactoryLabel {
     private FactoryLabel() {
     }
 
-    public static State create(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
+    public static State create(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type,
+            String markerType, String stringType) {
         return new StateMachine(context, effects, ok, nok, type, markerType, stringType)::start;
     }
 
@@ -31,7 +32,8 @@ public final class FactoryLabel {
         private int size = 0;
         private boolean data;
 
-        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type, String markerType, String stringType) {
+        public StateMachine(TokenizeContext context, Tokenizer.Effects effects, State ok, State nok, String type,
+                String markerType, String stringType) {
             this.context = context;
             this.effects = effects;
             this.ok = ok;
@@ -52,20 +54,20 @@ public final class FactoryLabel {
         }
 
         private State atBreak(int code) {
-            if (
-                    code == Codes.eof ||
-                            code == Codes.leftSquareBracket ||
-                            (code == Codes.rightSquareBracket && !data) ||
-                            /* To do: remove in the future once we’ve switched from
-                             * `micromark-extension-footnote` to `micromark-extension-gfm-footnote`,
-                             * which doesn’t need this */
-                            /* Hidden footnotes hook */
-                            /* c8 ignore next 3 */
-                            (code == Codes.caret &&
-                                    size == 0 &&
-                                    context.getParser().constructs._hiddenFootnoteSupport) ||
-            size > Constants.linkReferenceSizeMax
-    ) {
+            if (code == Codes.eof ||
+                    code == Codes.leftSquareBracket ||
+                    (code == Codes.rightSquareBracket && !data) ||
+                    /*
+                     * To do: remove in the future once we’ve switched from `micromark-extension-footnote` to
+                     * `micromark-extension-gfm-footnote`, which doesn’t need this
+                     */
+                    /* Hidden footnotes hook */
+                    /* c8 ignore next 3 */
+                    (code == Codes.caret &&
+                            size == 0 &&
+                            context.getParser().constructs._hiddenFootnoteSupport)
+                    ||
+                    size > Constants.linkReferenceSizeMax) {
                 return nok.step(code);
             }
 
@@ -92,13 +94,11 @@ public final class FactoryLabel {
         }
 
         private State label(int code) {
-            if (
-                    code == Codes.eof ||
-                            code == Codes.leftSquareBracket ||
-                            code == Codes.rightSquareBracket ||
-                            CharUtil.markdownLineEnding(code) ||
-                            size++ > Constants.linkReferenceSizeMax
-            ) {
+            if (code == Codes.eof ||
+                    code == Codes.leftSquareBracket ||
+                    code == Codes.rightSquareBracket ||
+                    CharUtil.markdownLineEnding(code) ||
+                    size++ > Constants.linkReferenceSizeMax) {
                 effects.exit(Types.chunkString);
                 return atBreak(code);
             }
@@ -109,11 +109,9 @@ public final class FactoryLabel {
         }
 
         private State labelEscape(int code) {
-            if (
-                    code == Codes.leftSquareBracket ||
-                            code == Codes.backslash ||
-                            code == Codes.rightSquareBracket
-            ) {
+            if (code == Codes.leftSquareBracket ||
+                    code == Codes.backslash ||
+                    code == Codes.rightSquareBracket) {
                 effects.consume(code);
                 size++;
                 return this::label;

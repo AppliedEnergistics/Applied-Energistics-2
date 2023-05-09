@@ -1,9 +1,10 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Code (Literal) represents a block of preformatted text, such as ASCII art or computer code.
@@ -18,29 +19,15 @@ import java.io.IOException;
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'code',
- * lang: null,
- * meta: null,
- * value: 'foo()'
- * }
+ * { type: 'code', lang: null, meta: null, value: 'foo()' }
  * <p>
  * And the following markdown:
  * <p>
- * ```js highlight-line="2"
- * foo()
- * bar()
- * baz()
- * ```
+ * ```js highlight-line="2" foo() bar() baz() ```
  * <p>
  * Yields:
  * <p>
- * {
- * type: 'code',
- * lang: 'javascript',
- * meta: 'highlight-line="2"',
- * value: 'foo()\nbar()\nbaz()'
- * }
+ * { type: 'code', lang: 'javascript', meta: 'highlight-line="2"', value: 'foo()\nbar()\nbaz()' }
  */
 public class MdAstCode extends MdAstLiteral implements MdAstFlowContent {
     public MdAstCode() {

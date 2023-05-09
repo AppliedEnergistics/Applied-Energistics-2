@@ -1,10 +1,11 @@
 package appeng.libs.mdast;
 
-import appeng.libs.mdast.model.MdAstNode;
-import appeng.libs.micromark.Token;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import appeng.libs.mdast.model.MdAstNode;
+import appeng.libs.micromark.Token;
 
 /**
  * mdast compiler context
@@ -63,7 +64,6 @@ public interface MdastContext {
      */
     String sliceSerialize(Token token);
 
-
     default boolean has(MdastContextProperty<?> property) {
         return get(property) != null;
     }
@@ -71,7 +71,8 @@ public interface MdastContext {
     /**
      * Get data from the key-value store.
      */
-    @Nullable <T> T get(MdastContextProperty<T> property);
+    @Nullable
+    <T> T get(MdastContextProperty<T> property);
 
     /**
      * Set data in the extension data.

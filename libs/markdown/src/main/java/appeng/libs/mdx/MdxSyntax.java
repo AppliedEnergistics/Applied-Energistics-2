@@ -1,10 +1,10 @@
 package appeng.libs.mdx;
 
-import appeng.libs.micromark.Extension;
-import appeng.libs.micromark.symbol.Codes;
-
 import java.util.Collections;
 import java.util.List;
+
+import appeng.libs.micromark.Extension;
+import appeng.libs.micromark.symbol.Codes;
 
 public class MdxSyntax {
 
@@ -17,8 +17,7 @@ public class MdxSyntax {
         // See https://github.com/micromark/micromark-extension-mdx-md/blob/main/index.js
         Collections.addAll(
                 INSTANCE.nullDisable,
-                "autolink", "codeIndented", "htmlFlow", "htmlText"
-        );
+                "autolink", "codeIndented", "htmlFlow", "htmlText");
     }
 
 }

@@ -5,16 +5,11 @@ package appeng.libs.micromark.symbol;
  * <p>
  * This module is compiled away!
  * <p>
- * micromark works based on character codes.
- * This module contains constants for the ASCII block and the replacement
- * character.
- * A couple of them are handled in a special way, such as the line endings
- * (CR, LF, and CR+LF, commonly known as end-of-line: EOLs), the tab (horizontal
- * tab) and its expansion based on what column it’s at (virtual space),
- * and the end-of-file (eof) character.
- * As values are preprocessed before handling them, the actual characters LF,
- * CR, HT, and NUL (which is present as the replacement character), are
- * guaranteed to not exist.
+ * micromark works based on character codes. This module contains constants for the ASCII block and the replacement
+ * character. A couple of them are handled in a special way, such as the line endings (CR, LF, and CR+LF, commonly known
+ * as end-of-line: EOLs), the tab (horizontal tab) and its expansion based on what column it’s at (virtual space), and
+ * the end-of-file (eof) character. As values are preprocessed before handling them, the actual characters LF, CR, HT,
+ * and NUL (which is present as the replacement character), are guaranteed to not exist.
  * <p>
  * Unicode basic latin block.
  */

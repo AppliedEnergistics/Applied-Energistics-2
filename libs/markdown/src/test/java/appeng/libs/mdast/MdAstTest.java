@@ -1,5 +1,18 @@
 package appeng.libs.mdast;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
+import org.intellij.lang.annotations.Language;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+
 import appeng.libs.mdast.model.MdAstBreak;
 import appeng.libs.mdast.model.MdAstEmphasis;
 import appeng.libs.mdast.model.MdAstNode;
@@ -7,29 +20,6 @@ import appeng.libs.mdast.model.MdAstParagraph;
 import appeng.libs.mdast.model.MdAstStrong;
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.Types;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.internal.bind.JsonTreeWriter;
-import org.intellij.lang.annotations.Language;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestFactory;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MdAstTest extends AbstractMdAstTest {
 
@@ -45,8 +35,7 @@ public class MdAstTest extends AbstractMdAstTest {
                             "start": {"line": 1, "column": 1, "offset": 0},
                             "end": {"line": 1, "column": 1, "offset": 0}
                          }}
-                         """
-        );
+                         """);
     }
 
     @Test
@@ -128,8 +117,7 @@ public class MdAstTest extends AbstractMdAstTest {
                                     "end": {"line": 2, "column": 2, "offset": 3}
                                 }
                             }
-                        """)
-        );
+                        """));
     }
 
     @Test
@@ -180,8 +168,7 @@ public class MdAstTest extends AbstractMdAstTest {
                                             "end": {"line": 2, "column": 2, "offset": 3}
                                         }
                                     }
-                        """)
-        );
+                        """));
     }
 
     @Test
@@ -340,7 +327,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseAnAutolinkEmail() {
         assertJsonEqualsOnFirstNode("<aa@bb.cc>", """
@@ -375,7 +361,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseABlockQuote() {
         assertJsonEqualsOnFirstNode("> a", """
@@ -408,7 +393,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseACharacterEscape() {
         assertJsonEqualsOnFirstNode("a\\*b", """
@@ -431,7 +415,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseACharacterReference() {
@@ -456,7 +439,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseCodeFenced() {
         assertJsonEqualsOnFirstNode("```a b\nc\n```", """
@@ -473,7 +455,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseCodeIndented() {
         assertJsonEqualsOnFirstNode("    a", """
@@ -489,7 +470,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseCodeText() {
@@ -514,7 +494,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseADefinition() {
         assertJsonEqualsOnFirstNode("[a]: b \"c\"", """
@@ -531,7 +510,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseEmphasis() {
@@ -564,7 +542,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseAHardBreakEscape() {
@@ -604,7 +581,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseAHardBreakPrefix() {
         assertJsonEqualsOnFirstNode("a  \nb", """
@@ -643,7 +619,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseAHeadingAtx() {
         assertJsonEqualsOnFirstNode("## a", """
@@ -667,7 +642,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseAHeadingSetext() {
@@ -693,7 +667,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseHtmlFlow() {
         assertJsonEqualsOnFirstNode("<a>\nb\n</a>", """
@@ -707,7 +680,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseHtmlText() {
@@ -748,7 +720,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseAnImageShortcutReference() {
         assertJsonEqualsOnFirstNode("![a]\n\n[a]: b", """
@@ -774,7 +745,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseAnImageCollapsedReference() {
@@ -802,7 +772,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseAnImageFullReference() {
         assertJsonEqualsOnFirstNode("![a][b]\n\n[b]: c", """
@@ -829,7 +798,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseAnImageResource() {
         assertJsonEqualsOnFirstNode("![a](b \"c\")", """
@@ -854,7 +822,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseALinkShortcutReference() {
@@ -891,7 +858,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseALinkCollapsedReference() {
         assertJsonEqualsOnFirstNode("[a][]\n\n[a]: b", """
@@ -926,7 +892,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     @Test
     void shouldParseALinkCollapsedReferenceWithInlineCodeInTheLabel() {
@@ -963,7 +928,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseALinkFullReference() {
         assertJsonEqualsOnFirstNode("[a][b]\n\n[b]: c", """
@@ -999,7 +963,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseALinkResource() {
         assertJsonEqualsOnFirstNode("[a](b \"c\")", """
@@ -1033,7 +996,6 @@ public class MdAstTest extends AbstractMdAstTest {
                     }
                 """);
     }
-
 
     // List.
 
@@ -1069,7 +1031,6 @@ public class MdAstTest extends AbstractMdAstTest {
                 """);
     }
 
-
     @Test
     void shouldParseAThematicBreak() {
         assertJsonEqualsOnFirstNode("***", """
@@ -1103,7 +1064,8 @@ public class MdAstTest extends AbstractMdAstTest {
     private void runFixtureTest(Path markdownPath, Path jsonPath) throws Exception {
         var markdown = Files.readString(markdownPath);
         markdown = markdown.replace("\r\n", "\n");
-        @Language("json") var expectedJson = Files.readString(jsonPath);
+        @Language("json")
+        var expectedJson = Files.readString(jsonPath);
 
         assertJsonEquals(markdown, expectedJson);
     }

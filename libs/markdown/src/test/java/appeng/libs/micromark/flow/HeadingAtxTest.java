@@ -1,9 +1,10 @@
 package appeng.libs.micromark.flow;
 
-import appeng.libs.micromark.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import appeng.libs.micromark.TestUtil;
 
 public class HeadingAtxTest {
     @ParameterizedTest(name = "[{index}] {2}")
@@ -47,7 +48,8 @@ public class HeadingAtxTest {
 
     @Test
     public void testDisabled() {
-        TestUtil.assertGeneratedHtmlWithDisabled("# a", "<p># a</p>", "should support turning off heading (atx)", "headingAtx");
+        TestUtil.assertGeneratedHtmlWithDisabled("# a", "<p># a</p>", "should support turning off heading (atx)",
+                "headingAtx");
     }
 
 }

@@ -1,11 +1,11 @@
 package appeng.libs.micromark;
 
-import appeng.libs.micromark.symbol.Codes;
-import appeng.libs.micromark.symbol.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import appeng.libs.micromark.symbol.Codes;
+import appeng.libs.micromark.symbol.Constants;
 
 final class Preprocessor {
     private static final Pattern SEARCH = Pattern.compile("[\0\t\n\r]");
@@ -50,11 +50,9 @@ final class Preprocessor {
             endPosition = matcher.start();
             code = value.charAt(endPosition);
 
-            if (
-                    code == Codes.lf &&
-                            startPosition == endPosition &&
-                            atCarriageReturn
-            ) {
+            if (code == Codes.lf &&
+                    startPosition == endPosition &&
+                    atCarriageReturn) {
                 chunks.add(Codes.carriageReturnLineFeed);
                 atCarriageReturn = false;
             } else {
@@ -76,7 +74,8 @@ final class Preprocessor {
                     case Codes.ht -> {
                         var next = (column + (Constants.tabSize - 1)) / Constants.tabSize * Constants.tabSize;
                         chunks.add(Codes.horizontalTab);
-                        while (column++ < next) chunks.add(Codes.virtualSpace);
+                        while (column++ < next)
+                            chunks.add(Codes.virtualSpace);
                     }
                     case Codes.lf -> {
                         chunks.add(Codes.lineFeed);

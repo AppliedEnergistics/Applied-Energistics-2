@@ -1,11 +1,12 @@
 package appeng.libs.micromark;
 
-import appeng.libs.unist.UnistPoint;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jetbrains.annotations.Nullable;
+
+import appeng.libs.unist.UnistPoint;
 
 /**
  * A context object that helps w/ parsing markdown.
@@ -25,15 +26,15 @@ public class ParseContext {
     public java.util.List<String> defined = new ArrayList<>();
 
     /**
-     * Map of line numbers to whether they are lazy (as opposed to the line before
-     * them).
+     * Map of line numbers to whether they are lazy (as opposed to the line before them).
      * <p>
      * Take for example:
      * <p>
+     * 
      * <pre>
      *   > a
      *   b
-     *   </pre>
+     * </pre>
      * <p>
      * L1 here is not lazy, L2 is.
      */

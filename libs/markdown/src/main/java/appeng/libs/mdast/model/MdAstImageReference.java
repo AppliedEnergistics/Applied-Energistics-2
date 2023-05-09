@@ -1,14 +1,16 @@
 package appeng.libs.mdast.model;
 
-import com.google.gson.stream.JsonWriter;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * ImageReference (Node) represents an image through association, or its original source if there is no association.
  * <p>
- * ImageReference can be used where phrasing content is expected. It has no content model, but is described by its alt field.
+ * ImageReference can be used where phrasing content is expected. It has no content model, but is described by its alt
+ * field.
  * <p>
  * ImageReference should be associated with a Definition.
  * <p>
@@ -18,6 +20,7 @@ import java.io.IOException;
  * <p>
  * Yields:
  * <p>
+ * 
  * <pre>
  * {
  * type: 'imageReference',
@@ -28,7 +31,8 @@ import java.io.IOException;
  * }
  * </pre>
  */
-public class MdAstImageReference extends MdAstNode implements MdAstReference, MdAstAlternative, MdAstStaticPhrasingContent {
+public class MdAstImageReference extends MdAstNode
+        implements MdAstReference, MdAstAlternative, MdAstStaticPhrasingContent {
     public String alt;
     public String identifier;
     public String label;

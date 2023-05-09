@@ -1,13 +1,13 @@
 package appeng.libs.micromark.extensions.gfm;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import appeng.libs.micromark.Token;
 import appeng.libs.micromark.html.HtmlContext;
 import appeng.libs.micromark.html.HtmlContextProperty;
 import appeng.libs.micromark.html.HtmlExtension;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class GfmTableHtml {
 
@@ -154,7 +154,6 @@ public final class GfmTableHtml {
         context.lineEndingIfNeeded();
         context.tag("</tr>");
     }
-
 
     private static String getAlignmentAttr(Align align) {
         return switch (align) {

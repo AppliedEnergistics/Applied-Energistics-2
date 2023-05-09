@@ -1,8 +1,11 @@
 package appeng.libs.micromark.commonmark;
 
-import appeng.libs.micromark.ListUtils;
+import java.util.ArrayList;
+import java.util.List;
+
 import appeng.libs.micromark.ClassifyCharacter;
 import appeng.libs.micromark.Construct;
+import appeng.libs.micromark.ListUtils;
 import appeng.libs.micromark.Point;
 import appeng.libs.micromark.State;
 import appeng.libs.micromark.Token;
@@ -11,9 +14,6 @@ import appeng.libs.micromark.Tokenizer;
 import appeng.libs.micromark.Types;
 import appeng.libs.micromark.symbol.Codes;
 import appeng.libs.micromark.symbol.Constants;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class Attention {
     private Attention() {
@@ -50,11 +50,9 @@ public final class Attention {
             var event = events.get(index);
 
             // Find a token that can close.
-            if (
-                    event.type() == Tokenizer.EventType.ENTER &&
-                            event.token().type.equals("attentionSequence") &&
-                            event.token()._close
-            ) {
+            if (event.type() == Tokenizer.EventType.ENTER &&
+                    event.token().type.equals("attentionSequence") &&
+                    event.token()._close) {
                 open = index;
 
                 // Now walk back to find an opener.
@@ -62,36 +60,29 @@ public final class Attention {
                     var openEvent = events.get(open);
 
                     // Find a token that can open the closer.
-                    if (
-                            openEvent.type() == Tokenizer.EventType.EXIT &&
-                                    openEvent.token().type.equals("attentionSequence") &&
-                                    openEvent.token()._open &&
-                                    // If the markers are the same:
-                                    context.sliceSerialize(openEvent.token()).charAt(0) ==
-                                            context.sliceSerialize(event.token()).charAt(0)
-                    ) {
+                    if (openEvent.type() == Tokenizer.EventType.EXIT &&
+                            openEvent.token().type.equals("attentionSequence") &&
+                            openEvent.token()._open &&
+                            // If the markers are the same:
+                            context.sliceSerialize(openEvent.token()).charAt(0) == context.sliceSerialize(event.token())
+                                    .charAt(0)) {
                         // If the opening can close or the closing can open,
                         // and the close size *is not* a multiple of three,
                         // but the sum of the opening and closing size *is* multiple of three,
                         // then don’t match.
-                        if (
-                                (openEvent.token()._close || event.token()._open) &&
-                                        (event.token().end.offset() - event.token().start.offset()) % 3 != 0 &&
-                                        (
-                                                (openEvent.token().end.offset() -
-                                                        openEvent.token().start.offset() +
-                                                        event.token().end.offset() -
-                                                        event.token().start.offset()) %
-                                                        3
-                                        ) == 0
-                        ) {
+                        if ((openEvent.token()._close || event.token()._open) &&
+                                (event.token().end.offset() - event.token().start.offset()) % 3 != 0 &&
+                                ((openEvent.token().end.offset() -
+                                        openEvent.token().start.offset() +
+                                        event.token().end.offset() -
+                                        event.token().start.offset()) %
+                                        3) == 0) {
                             continue;
                         }
 
                         // Number of markers to use from the sequence.
-                        use =
-                                openEvent.token().end.offset() - openEvent.token().start.offset() > 1 &&
-                                        event.token().end.offset() - event.token().start.offset() > 1
+                        use = openEvent.token().end.offset() - openEvent.token().start.offset() > 1 &&
+                                event.token().end.offset() - event.token().start.offset() > 1
                                         ? 2
                                         : 1;
 
@@ -129,8 +120,7 @@ public final class Attention {
                         if (openEvent.token().end.offset() - openEvent.token().start.offset() != 0) {
                             nextEvents = ListUtils.push(nextEvents, List.of(
                                     Tokenizer.Event.enter(openEvent.token(), context),
-                                    Tokenizer.Event.exit(openEvent.token(), context)
-                            ));
+                                    Tokenizer.Event.exit(openEvent.token(), context)));
                         }
 
                         // Opening.
@@ -138,8 +128,7 @@ public final class Attention {
                                 Tokenizer.Event.enter(group, context),
                                 Tokenizer.Event.enter(openingSequence, context),
                                 Tokenizer.Event.exit(openingSequence, context),
-                                Tokenizer.Event.enter(text, context)
-                        ));
+                                Tokenizer.Event.enter(text, context)));
 
                         // Between.
                         nextEvents = ListUtils.push(
@@ -147,25 +136,21 @@ public final class Attention {
                                 Construct.resolveAll(
                                         context.getParser().constructs.nullInsideSpan,
                                         ListUtils.slice(events, open + 1, index),
-                                        context
-                                )
-                        );
+                                        context));
 
                         // Closing.
                         nextEvents = ListUtils.push(nextEvents, List.of(
                                 Tokenizer.Event.exit(text, context),
                                 Tokenizer.Event.enter(closingSequence, context),
                                 Tokenizer.Event.exit(closingSequence, context),
-                                Tokenizer.Event.exit(group, context)
-                        ));
+                                Tokenizer.Event.exit(group, context)));
 
                         // If there are more markers in the closing, add them after.
                         if (event.token().end.offset() - event.token().start.offset() != 0) {
                             offset = 2;
                             nextEvents = ListUtils.push(nextEvents, List.of(
                                     Tokenizer.Event.enter(event.token(), context),
-                                    Tokenizer.Event.exit(event.token(), context)
-                            ));
+                                    Tokenizer.Event.exit(event.token(), context)));
                         } else {
                             offset = 0;
                         }
@@ -195,8 +180,8 @@ public final class Attention {
     /**
      * Move a point a bit.
      * <p>
-     * Note: `move` only works inside lines! It’s not possible to move past other
-     * chunks (replacement characters, tabs, or line endings).
+     * Note: `move` only works inside lines! It’s not possible to move past other chunks (replacement characters, tabs,
+     * or line endings).
      */
     private static Point movePoint(Point point, int offset) {
         return new Point(
@@ -204,8 +189,7 @@ public final class Attention {
                 point.column() + offset,
                 point.offset() + offset,
                 point._index(),
-                point._bufferIndex() + offset
-        );
+                point._bufferIndex() + offset);
     }
 
     static class StateMachine {
@@ -229,9 +213,9 @@ public final class Attention {
 
         }
 
-
         /**
          * Before a sequence.
+         * 
          * <pre>
          * > | **
          *     ^
@@ -248,6 +232,7 @@ public final class Attention {
 
         /**
          * In a sequence.
+         * 
          * <pre>
          * > | **
          *     ^^
@@ -262,14 +247,12 @@ public final class Attention {
             var token = effects.exit("attentionSequence");
             var after = ClassifyCharacter.classifyCharacter(code);
 
-            var open =
-                    after == 0 ||
-                            (after == Constants.characterGroupPunctuation && before != 0) ||
-                            attentionMarkers.contains(code);
-            var close =
-                    before == 0 ||
-                            (before == Constants.characterGroupPunctuation && after != 0) ||
-                            attentionMarkers.contains(previous);
+            var open = after == 0 ||
+                    (after == Constants.characterGroupPunctuation && before != 0) ||
+                    attentionMarkers.contains(code);
+            var close = before == 0 ||
+                    (before == Constants.characterGroupPunctuation && after != 0) ||
+                    attentionMarkers.contains(previous);
 
             token._open = marker == Codes.asterisk ? open : open && (before != 0 || !close);
             token._close = marker == Codes.asterisk ? close : close && (after != 0 || !open);

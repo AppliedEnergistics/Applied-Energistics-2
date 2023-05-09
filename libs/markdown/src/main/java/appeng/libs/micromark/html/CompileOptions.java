@@ -1,10 +1,9 @@
 package appeng.libs.micromark.html;
 
-import appeng.libs.micromark.Extension;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 
 public class CompileOptions {
     private List<HtmlExtension> extensions = new ArrayList<>();
