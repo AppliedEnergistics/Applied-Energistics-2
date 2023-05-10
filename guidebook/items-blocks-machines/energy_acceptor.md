@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:energy_acceptor
 ---
+
 # The Energy Acceptor
 
 <BlockImage id="energy_acceptor" scale="8" />
@@ -17,8 +18,8 @@ acceptor instead.
 
 The ratios for conversion of Forge Energy and Techreborn Energy are
 
-- 2 FE = 1 AE (Forge)
-- 1 E  = 2 AE (Fabric)
+*   2 FE = 1 AE (Forge)
+*   1 E  = 2 AE (Fabric)
 
 The speed of conversion is entirely dependent on how much AE your network can store, for reasons that are explained on
 [this page](../ae2-mechanics/energy.md).

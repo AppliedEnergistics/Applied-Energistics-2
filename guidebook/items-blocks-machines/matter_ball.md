@@ -6,6 +6,7 @@ navigation:
 item_ids:
 - ae2:matter_ball
 ---
+
 # Matter Balls
 
 <ItemImage id="matter_ball" scale="4" />

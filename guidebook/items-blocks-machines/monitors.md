@@ -8,6 +8,7 @@ item_ids:
 - ae2:storage_monitor
 - ae2:conversion_monitor
 ---
+
 # Monitors
 
 Monitors allow visualization and interaction with a single item or fluid type, without opening a GUI.
@@ -25,9 +26,10 @@ Will show an item or fluid and its quantity. Put them next to your farms or some
 Does *not* require a [channel](../ae2-mechanics/channels.md).
 
 Keybinds:
-- Right-click with an item or double-right-click with a fluid container to set the monitor to that item/fluid.
-- Right-click with an empty hand to clear the monitor.
-- Shift-right-click with an empty hand to lock the monitor.
+
+*   Right-click with an item or double-right-click with a fluid container to set the monitor to that item/fluid.
+*   Right-click with an empty hand to clear the monitor.
+*   Shift-right-click with an empty hand to lock the monitor.
 
 # Recipe
 
@@ -40,9 +42,10 @@ The Conversion Monitor is similar to a storage monitor, but allows you to insert
 *Does* require a [channel](../ae2-mechanics/channels.md).
 
 Additional keybinds:
-- Left-click to extract a stack of the configured item.
-- Right-click with any item to insert that item.
-- Right-click with an empty hand to insert all of the configured item from your inventory.
+
+*   Left-click to extract a stack of the configured item.
+*   Right-click with any item to insert that item.
+*   Right-click with an empty hand to insert all of the configured item from your inventory.
 
 # Recipe
 

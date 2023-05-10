@@ -8,6 +8,7 @@ item_ids:
 - ae2:wireless_booster
 - ae2:wireless_access_point
 ---
+
 # The Wireless Access Point
 
 ![A picture of a wireless access point.](../assets/blocks/wireless_access_point.png)
@@ -25,6 +26,6 @@ Requires a [channel](channels.md).
 
 <RecipeFor id="wireless_access_point" />
 
-Used to increase the range of the <ItemLink id="wireless_access_point"/>.
+Used to increase the range of the <ItemLink id="wireless_access_point" />.
 
 <RecipeFor id="wireless_booster" />

@@ -7,6 +7,7 @@ item_ids:
 - ae2:quartz_fixture
 - ae2:light_detector
 ---
+
 # Quartz Fixtures
 
 ![Quartz Fixtures](../assets/assemblies/quartz_fixtures.png)
@@ -18,4 +19,5 @@ The light detecting fixture instead emits a redstone signal according to the lig
 # Recipes
 
 <RecipeFor id="quartz_fixture" />
+
 <RecipeFor id="light_detector" />

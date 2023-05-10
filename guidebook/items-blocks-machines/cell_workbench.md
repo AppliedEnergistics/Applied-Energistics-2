@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:cell_workbench
 ---
+
 # The Cell Workbench
 
 <BlockImage id="cell_workbench" scale="8" />
@@ -21,9 +22,9 @@ Items can be dragged into the slots from JEI/REI even if you don't actually have
 
 The cell workbench has a few buttons on the top-left:
 
-- You can partition a cell based on its existing contents
-- You can clear the cell's partitioning
-- The workbench can be set to retain the partition settings when the cell is removed, allowing you to copy settings between cells.
+*   You can partition a cell based on its existing contents
+*   You can clear the cell's partitioning
+*   The workbench can be set to retain the partition settings when the cell is removed, allowing you to copy settings between cells.
 
 # Recipe
 

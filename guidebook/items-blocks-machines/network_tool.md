@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:network_tool
 ---
+
 # Network Tool
 
 <ItemImage id="network_tool" scale="4" />
@@ -20,11 +21,12 @@ is anywhere in your inventory.
 
 Right-clicking any part of a network will show a diagnostic info window, similar to right-clicking a <ItemLink id="controller" />.
 This window shows
-- The amount of channels in-use on the network
-- A toggle for the global setting to view energy in AE or E/FE
-- The amount of [energy](../ae2-mechanics/energy.md) stored in the network, and the network's maximum energy capacity
-- The amount of energy entering and being used by the network
-- A list of all the [devices](../ae2-mechanics/devices.md) and components on the network
+
+*   The amount of channels in-use on the network
+*   A toggle for the global setting to view energy in AE or E/FE
+*   The amount of [energy](../ae2-mechanics/energy.md) stored in the network, and the network's maximum energy capacity
+*   The amount of energy entering and being used by the network
+*   A list of all the [devices](../ae2-mechanics/devices.md) and components on the network
 
 This window is also helpful for figuring out if two different cables or devices are part of the same network when messing around with
 [Subnetworks](../ae2-mechanics/subnetworks.md).

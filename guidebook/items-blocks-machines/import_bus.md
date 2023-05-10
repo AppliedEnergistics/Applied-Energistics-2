@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:import_bus
 ---
+
 # The Import Bus
 
 ![A picture of an import bus.](../assets/blocks/import_bus.png)
@@ -30,11 +31,11 @@ Items can be dragged into the slots from JEI/REI even if you don't actually have
 
 The import bus supports the following [upgrades](upgrade_cards.md):
 
-- <ItemLink id="capacity_card" /> increases the amount of filter slots
-- <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
-- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
-- <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
-- <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
+*   <ItemLink id="capacity_card" /> increases the amount of filter slots
+*   <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
+*   <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
+*   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
+*   <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
 
 # Recipe
 

@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:charged_staff
 ---
+
 # The Charged Staff
 
 <ItemImage id="charged_staff" scale="4" />

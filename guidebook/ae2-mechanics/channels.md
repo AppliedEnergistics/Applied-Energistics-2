@@ -4,6 +4,7 @@ navigation:
   title: Channels
   icon: controller
 ---
+
 # Channels
 
 Applied Energistics 2's [ME Networks](../me-network.md) require
@@ -18,14 +19,14 @@ the bundle, which obviously means that "wire" isn't available further down the l
 An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
 
 Channels will consume 1⁄128 ae/t per node they transverse, this means that by
-adding a <ItemLink id="controller"/> for a
+adding a <ItemLink id="controller" /> for a
 network with 8 devices and over 96 nodes your power usage might actually
 decrease power consumption because it changes how channels are allocated.
 
-When using a <ItemLink id="controller"/>,
+When using a <ItemLink id="controller" />,
 channels route via 3 steps. They first take the shortest path through adjacent machines to the nearest [normal cable](../items-blocks-machines/cables.md)
 (glass, covered, or smart). They then take the shortest path through that normal cable to the nearest [dense cable](../items-blocks-machines/cables.md)
-(dense or dense smart). They then take the shortest path through that dense cable to the <ItemLink id="controller"/>. 
+(dense or dense smart). They then take the shortest path through that dense cable to the <ItemLink id="controller" />.
 If the shortest path is already maxed out, some [devices](devices.md) may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your channels go in the path you desire.
 
@@ -33,17 +34,16 @@ Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does 
 
 # Ad-Hoc Networks
 
-A Network without a <ItemLink id="controller"/>
+A Network without a <ItemLink id="controller" />
 is considered to be Ad-Hoc, and can support up to 8 channel using devices.
 Once you exceed 8 devices the networks channel using devices will shutdown,
-you can either remove devices, or add a <ItemLink id="controller"/>.
+you can either remove devices, or add a <ItemLink id="controller" />.
 
 Unlike with controllered networks, [smart cables](../items-blocks-machines/cables.md) on ad-hoc networks will show the number
 of channels in use network-wide instead of the number of channels flowing through that specific cable.
 
 While using [Ad-Hoc](ad-hoc-networks.md) networks each device will
-use 1 channel network wide, this is very different from how <ItemLink
-id="controller"/> allocate channels based on
+use 1 channel network wide, this is very different from how <ItemLink id="controller" /> allocate channels based on
 shortest route.
 
 # A Visual Example
@@ -69,7 +69,7 @@ The following table lists the available modes in both the configuration file and
 | `x2`       | All channel capacities are doubled (16 on normal cable, 64 on dense cable, ad-hoc networks support 16 channels)                                                                                                                           |
 | `x3`       | All channel capacities are tripled (24 on normal cable, 92 on dense cable, ad-hoc networks support 24 channels)                                                                                                                           |
 | `x4`       | All channel capacities are quadrupled (32 on normal cable, 128 on dense cable, ad-hoc networks support 32 channels)                                                                                                                       |
-| `infinite` | All channel restrictions are removed. Controllers still reduce the power consumption of grids _significantly_. Smart cables will only toggle between completely off (no channels carried) and completely on (1 or more channels carried). |
+| `infinite` | All channel restrictions are removed. Controllers still reduce the power consumption of grids *significantly*. Smart cables will only toggle between completely off (no channels carried) and completely on (1 or more channels carried). |
 
 # Design
 

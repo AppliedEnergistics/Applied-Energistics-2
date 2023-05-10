@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:growth_accelerator
 ---
+
 # The Growth Accelerator
 
 <BlockImage id="growth_accelerator" p:powered="true" scale="8" perspective="up" />
@@ -17,7 +18,7 @@ Curiously, it can *also* accelerate the growth of various plants.
 
 ![A Flawless Budding Certus with a growth accelerator](../assets/assemblies/budding_certus_2.png)
 
-To power it manually, place a <ItemLink id="crank"/> on the top or bottom and right-click it.
+To power it manually, place a <ItemLink id="crank" /> on the top or bottom and right-click it.
 
 It also acts as the workstation for the AE2 villager.
 

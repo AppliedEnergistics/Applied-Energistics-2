@@ -3,7 +3,9 @@ navigation:
   parent: ae2-mechanics/ae2-mechanics-index.md
   title: Import, Export, and Storage
 ---
+
 # Import, Export, and Storage
+
 **your ME system and the world**
 
 An important concept in AE2 is the idea of Network Storage. It is the place in which the contents of a network are stored,
@@ -11,12 +13,13 @@ usually [storage cells](../items-blocks-machines/storage_cells.md) or whatever i
 is connected to. Most AE2 [devices](../ae2-mechanics/devices.md) interact with it in one way or another.
 
 For example,
-- <ItemLink id="import_bus" />ses push things into network storage
-- <ItemLink id="export_bus" />ses pull things from network storage
-- <ItemLink id="interface" />s both pull from and push to network storage
-- Terminals both push to and pull from network storage when you insert or take items, or to refill the crafting slots
-- <ItemLink id="storage_bus" />ses don't really push to or pull from storage, they push to or pull from the connected inventory
-in order to use it as network storage (so really other devices push to or pull from *them*)
+
+*   <ItemLink id="import_bus" />ses push things into network storage
+*   <ItemLink id="export_bus" />ses pull things from network storage
+*   <ItemLink id="interface" />s both pull from and push to network storage
+*   Terminals both push to and pull from network storage when you insert or take items, or to refill the crafting slots
+*   <ItemLink id="storage_bus" />ses don't really push to or pull from storage, they push to or pull from the connected inventory
+    in order to use it as network storage (so really other devices push to or pull from *them*)
 
 The actions/events of pushing to and pulling from network storage are important to keep in mind when designing automation
 and logistics setups.

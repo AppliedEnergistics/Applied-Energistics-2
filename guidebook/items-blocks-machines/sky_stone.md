@@ -8,6 +8,7 @@ item_ids:
 - ae2:smooth_sky_stone_block
 - ae2:sky_dust
 ---
+
 # Sky Stone
 
 <BlockImage id="sky_stone_block" scale="8" />
@@ -20,4 +21,5 @@ The material [meteorites](./features/meteorites.md) are made out of, used in the
 place an annihilation plane facing up at max worldheight to get sky stone dust
 
 <RecipeFor id="sky_stone_block" />
+
 <RecipeFor id="smooth_sky_stone_block" />

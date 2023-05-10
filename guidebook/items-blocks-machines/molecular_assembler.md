@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:molecular_assembler
 ---
+
 # The Molecular Assembler
 
 <BlockImage id="molecular_assembler" scale="8" />
@@ -24,7 +25,7 @@ the assembler crafts and spits oak planks into the lower hopper.
 
 However, their main use is next to a <ItemLink id="pattern_provider" />. Pattern providers have special behavior in this case,
 and will send information about the relevant pattern along with the ingredients to adjacent assemblers. Since assemblers auto-eject the results of
-crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider 
+crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider
 is all that is needed to automate crafting patterns.
 
 ![Assembler Tower](../assets/assemblies/assembler_tower.png)
@@ -33,7 +34,7 @@ is all that is needed to automate crafting patterns.
 
 The Molecular Assembler supports the following [upgrades](upgrade_cards.md):
 
-- <ItemLink id="speed_card" />
+*   <ItemLink id="speed_card" />
 
 # Recipe
 

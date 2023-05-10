@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:spatial_anchor
 ---
+
 # The Spatial Anchor
 
 <BlockImage id="spatial_anchor" p:powered="true" scale="8" perspective="up" />
@@ -24,14 +25,14 @@ It can be rotated with a <ItemLink id="certus_quartz_wrench" /> if for some reas
 
 # Settings
 
-- The spatial anchor provides access to the global setting to view energy in AE or E/FE.
-- An in-world hologram can be displayed showing the chunks being loaded.
+*   The spatial anchor provides access to the global setting to view energy in AE or E/FE.
+*   An in-world hologram can be displayed showing the chunks being loaded.
 
 # Energy
 
 The spatial anchor will use [energy](../ae2-mechanics/energy.md) according to this equation:
 
-e = 80 + (x*(x+1))/2
+e = 80 + (x\*(x+1))/2
 
 where x is the number of chunks being loaded
 

@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:sky_stone_tank
 ---
+
 # The Sky Stone Tank
 
 <BlockImage id="sky_stone_tank" scale="8" />

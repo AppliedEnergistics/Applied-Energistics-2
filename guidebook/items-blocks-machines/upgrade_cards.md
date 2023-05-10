@@ -17,11 +17,27 @@ item_ids:
 - ae2:equal_distribution_card
 - ae2:energy_card
 ---
+
 # Upgrade Cards
+
 <Row>
-<ItemImage id="redstone_card" scale="2" /><ItemImage id="capacity_card" scale="2" /><ItemImage id="void_card" scale="2" />
-<ItemImage id="fuzzy_card" scale="2" /><ItemImage id="speed_card" scale="2" /><ItemImage id="inverter_card" scale="2" />
-<ItemImage id="crafting_card" scale="2" /><ItemImage id="equal_distribution_card" scale="2" /><ItemImage id="energy_card" scale="2" />
+  <ItemImage id="redstone_card" scale="2" />
+
+  <ItemImage id="capacity_card" scale="2" />
+
+  <ItemImage id="void_card" scale="2" />
+
+  <ItemImage id="fuzzy_card" scale="2" />
+
+  <ItemImage id="speed_card" scale="2" />
+
+  <ItemImage id="inverter_card" scale="2" />
+
+  <ItemImage id="crafting_card" scale="2" />
+
+  <ItemImage id="equal_distribution_card" scale="2" />
+
+  <ItemImage id="energy_card" scale="2" />
 </Row>
 
 Upgrade cards change the behavior of AE2 [devices](../ae2-mechanics/devices.md) and machines, increasing their speed, improving their
@@ -29,11 +45,19 @@ filter capacity, enabling redstone control, etc.
 
 # Card Components
 
-<Row><ItemImage id="basic_card" scale="2" /><ItemImage id="advanced_card" scale="2" /></Row>
+<Row>
+  <ItemImage id="basic_card" scale="2" />
+
+  <ItemImage id="advanced_card" scale="2" />
+</Row>
 
 Cards are crafted with either basic or advanced card bases
 
-<Row><RecipeFor id="basic_card" /><RecipeFor id="advanced_card" /></Row>
+<Row>
+  <RecipeFor id="basic_card" />
+
+  <RecipeFor id="advanced_card" />
+</Row>
 
 # Redstone Card
 
@@ -55,7 +79,7 @@ Capacity cards increase the amount of filter slots in import, export, and storag
 
 <ItemImage id="void_card" scale="2" />
 
-Overflow destruction cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench"/>
+Overflow destruction cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench" />
 and will delete incoming items if the cell is full. (make sure to [partition](cell_workbench.md) your cells!) Combined with an equal distribution card,
 items will be voided if that specific item's section of the cell is full, even if other items' sections are empty.
 
@@ -73,28 +97,28 @@ bus config, top is the compared item.
 
 | 25%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
 | ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | \*\*\*\*            | \*\*\*\*            | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            | ✅                  | ✅                  | ✅                  |
+| Nearly Broken Pickaxe  | ✅                   | \*\*\*\*            | \*\*\*\*            | \*\*\*\*            |
+| Fully Repaired Pickaxe | \*\*\*\*            | ✅                   | ✅                   | ✅                   |
 
 | 50%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
 | ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | \*\*\*\*            | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            | \*\*\*\*            | ✅                  | ✅                  |
+| Nearly Broken Pickaxe  | ✅                   | ✅                   | \*\*\*\*            | \*\*\*\*            |
+| Fully Repaired Pickaxe | \*\*\*\*            | \*\*\*\*            | ✅                   | ✅                   |
 
 | 75%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
 | ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | \*\*\*\*            | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            |                     | ✅                  | ✅                  |
+| Nearly Broken Pickaxe  | ✅                   | ✅                   | \*\*\*\*            | \*\*\*\*            |
+| Fully Repaired Pickaxe | \*\*\*\*            |                     | ✅                   | ✅                   |
 
 | 99%                    | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
 | ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | ✅                  | \*\*\*\*            |
-| Fully Repaired Pickaxe | \*\*\*\*            | \*\*\*\*            | \*\*\*\*            | ✅                  |
+| Nearly Broken Pickaxe  | ✅                   | ✅                   | ✅                   | \*\*\*\*            |
+| Fully Repaired Pickaxe | \*\*\*\*            | \*\*\*\*            | \*\*\*\*            | ✅                   |
 
 | Ignore                 | 10% Damaged Pickaxe | 30% Damaged Pickaxe | 80% Damaged Pickaxe | Full Repair Pickaxe |
 | ---------------------- | ------------------- | ------------------- | ------------------- | ------------------- |
-| Nearly Broken Pickaxe  | ✅                  | ✅                  | ✅                  | **✅**              |
-| Fully Repaired Pickaxe | **✅**              | **✅**              | **✅**              | ✅                  |
+| Nearly Broken Pickaxe  | ✅                   | ✅                   | ✅                   | **✅**               |
+| Fully Repaired Pickaxe | **✅**               | **✅**               | **✅**               | ✅                   |
 
 <RecipeFor id="fuzzy_card" />
 
@@ -128,7 +152,7 @@ system to get the items it desires.
 
 <ItemImage id="equal_distribution_card" scale="2" />
 
-Equal distribution cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench"/> and
+Equal distribution cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench" /> and
 split the cell into equally-sized sections based on what the card is [partitioned](cell_workbench.md) to. This prevents one item type from completely
 filling the cell.
 

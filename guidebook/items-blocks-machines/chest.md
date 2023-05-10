@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:chest
 ---
+
 # The ME Chest
 
 ![A Drive](../assets/blocks/chest.png)
@@ -42,18 +43,18 @@ It, however, does not support <ItemLink id="view_cell" />s.
 The cells in the drive have an LED on them which shows their status:
 
 | Color  | Status                                                                           |
-|:-------|:---------------------------------------------------------------------------------|
+| :----- | :------------------------------------------------------------------------------- |
 | Green  | Empty                                                                            |
 | Blue   | Has some contents                                                                |
 | Orange | [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added     |
 | Red    | [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted |
 | Black  | No power or drive has no [channel](../ae2-mechanics/channels.md)                 |
 
-- Green  - Empty
-- Blue   - Has some contents
-- Orange - [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added
-- Red    - [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted
-- Black  - No power or drive has no [channel](../ae2-mechanics/channels.md)
+*   Green  - Empty
+*   Blue   - Has some contents
+*   Orange - [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added
+*   Red    - [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted
+*   Black  - No power or drive has no [channel](../ae2-mechanics/channels.md)
 
 # Priority
 

@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:entropy_manipulator
 ---
+
 # The Entropy Manipulator
 
 <ItemImage id="entropy_manipulator" scale="4" />

@@ -6,6 +6,7 @@ navigation:
 item_ids:
 - ae2:fluix_pearl
 ---
+
 # Fluix Pearl
 
 <ItemImage id="fluix_pearl" scale="4" />

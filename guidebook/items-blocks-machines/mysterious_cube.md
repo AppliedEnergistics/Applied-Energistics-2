@@ -7,6 +7,7 @@ item_ids:
 - ae2:mysterious_cube
 - ae2:not_so_mysterious_cube
 ---
+
 # The Mysterious Cube
 
 <BlockImage id="mysterious_cube" scale="8" />
