@@ -4,9 +4,10 @@ navigation:
   title: Bytes and Types
   icon: creative_item_cell
 ---
+
 # Bytes and Types
 
-[Storage Cells](../items-blocks-machines/storage_cells.md) are defined by both *bytes* and *types*. Bytes, like in 
+[Storage Cells](../items-blocks-machines/storage_cells.md) are defined by both *bytes* and *types*. Bytes, like in
 your actual computer, are a measure of the total amount of "stuff" in a storage cell. Types are a measure of how many different,
 well, *types* of things are stored in a cell. Each type represents a unique item, so 4,096 cobblestone is 1 type but 16 different
 swords with different enchantments are 16 types.
@@ -41,7 +42,7 @@ a rough estimate of their cost.
 # Storage Cell Contents Vs Cost
 
 | Cell                                     |   Bytes | Types | Bytes Per Type | Certus | Redstone | Gold | Glowstone |
-|------------------------------------------|--------:|------:|---------------:|-------:|---------:|-----:|----------:|
+| ---------------------------------------- | ------: | ----: | -------------: | -----: | -------: | ---: | --------: |
 | <ItemLink id="item_storage_cell_1k" />   |   1,024 |    63 |              8 |      4 |        5 |    1 |         0 |
 | <ItemLink id="item_storage_cell_4k" />   |   4,096 |    63 |             32 |  14.25 |       20 |    3 |         0 |
 | <ItemLink id="item_storage_cell_16k" />  |  16,384 |    63 |            128 |     45 |       61 |    9 |         4 |
@@ -53,7 +54,7 @@ a rough estimate of their cost.
 The upfront cost of types is such that a cell holding 1 type can hold 2x as much as a cell with all 63 types in use.
 
 | Cell                                     | Total Capacity of Cell With 1 Type In Use | Total Capacity of Cell With 63 Types In Use |
-|------------------------------------------|------------------------------------------:|--------------------------------------------:|
+| ---------------------------------------- | ----------------------------------------: | ------------------------------------------: |
 | <ItemLink id="item_storage_cell_1k" />   |                                     8,128 |                                       4,160 |
 | <ItemLink id="item_storage_cell_4k" />   |                                    32,512 |                                      16,640 |
 | <ItemLink id="item_storage_cell_16k" />  |                                   130,048 |                                      66,560 |

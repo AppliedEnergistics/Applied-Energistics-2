@@ -3,6 +3,7 @@ navigation:
   title: Index/Table of Contents
   position: 0
 ---
+
 # What is Applied Energistics 2?
 
 Applied Energistics 2 adds components and mechanics to provide logistics and storage solutions. You can replace your
@@ -13,8 +14,8 @@ quantities of items in stock, crafting more as needed, or simply transfer items 
 
 # Getting Started
 
-- [Getting Started](getting-started.md)
-- [AE2 Mechanics](ae2-mechanics/ae2-mechanics-index.md)
-- [Example Setups](example-setups/example-setups-index.md)
-- [Miscellaneous Tips](miscellaneous-tips.md)
-- [Old Website](./website/index.md)
+*   [Getting Started](getting-started.md)
+*   [AE2 Mechanics](ae2-mechanics/ae2-mechanics-index.md)
+*   [Example Setups](example-setups/example-setups-index.md)
+*   [Miscellaneous Tips](miscellaneous-tips.md)
+*   [Old Website](./website/index.md)

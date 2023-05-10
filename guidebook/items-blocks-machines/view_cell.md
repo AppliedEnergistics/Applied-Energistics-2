@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:view_cell
 ---
+
 # View Cell
 
 <ItemImage id="view_cell" scale="2" />
@@ -22,4 +23,5 @@ both planks and cobblestone.
 # Recipe
 
 <Recipe id="network/cells/view_cell_storage" />
+
 <Recipe id="network/cells/view_cell" />

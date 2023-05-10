@@ -6,6 +6,7 @@ navigation:
 item_ids:
 - ae2:guide
 ---
+
 # The Guide
 
 <ItemImage id="guide" scale="8" />

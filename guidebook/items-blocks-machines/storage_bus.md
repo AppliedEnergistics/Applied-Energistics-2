@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:storage_bus
 ---
+
 # The Storage Bus
 
 ![A picture of a storage bus.](../assets/blocks/storage_bus.png)
@@ -45,20 +46,20 @@ from network storage, higher priority storages will be filled and lower priority
 
 # Settings
 
-- The bus can be partitioned (filtered) to what is currently in the adjacent inventory
-- The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract
-  (for example, a storage bus cannot extract items from the middle input slot) of an <ItemLink id="inscriber" />)
-- The bus can filter on both insertion and extraction or just insertion
-- The bus can be bi-directional, insert-only, or extract-only
+*   The bus can be partitioned (filtered) to what is currently in the adjacent inventory
+*   The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract
+    (for example, a storage bus cannot extract items from the middle input slot) of an <ItemLink id="inscriber" />)
+*   The bus can filter on both insertion and extraction or just insertion
+*   The bus can be bi-directional, insert-only, or extract-only
 
 # Upgrades
 
 The storage bus supports the following [upgrades](upgrade_cards.md):
 
-- <ItemLink id="capacity_card" /> increases the amount of filter slots
-- <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
-- <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
-- <ItemLink id="void_card" /> voids items inserted if the attached inventory is full, useful for stopping farms from backing up. Be careful to partition this!
+*   <ItemLink id="capacity_card" /> increases the amount of filter slots
+*   <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
+*   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
+*   <ItemLink id="void_card" /> voids items inserted if the attached inventory is full, useful for stopping farms from backing up. Be careful to partition this!
 
 # Recipe
 

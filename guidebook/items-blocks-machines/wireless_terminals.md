@@ -8,12 +8,17 @@ item_ids:
 - ae2:wireless_terminal
 - ae2:wireless_crafting_terminal
 ---
+
 # Wireless Terminals
 
-<Row><ItemImage id="wireless_terminal" scale="4" /><ItemImage id="wireless_crafting_terminal" scale="4" /></Row>
+<Row>
+  <ItemImage id="wireless_terminal" scale="4" />
+
+  <ItemImage id="wireless_crafting_terminal" scale="4" />
+</Row>
 
 Wireless terminals are portable versions of the regular wired [terminals](terminals.md). They have the exact same UIs as their
-wired counterparts, except instead of slots for <ItemLink id="view_cell"/>s, they have slots for [upgrade cards](upgrade_cards.md)
+wired counterparts, except instead of slots for <ItemLink id="view_cell" />s, they have slots for [upgrade cards](upgrade_cards.md)
 
 In order to pair them with a network, insert the terminal in the top-right slot of a <ItemLink id="security_terminal" />
 connected to that network. (The slot with a picture of a wireless terminal on it and an arrow below it)
@@ -38,7 +43,7 @@ See [terminals](terminals.md)
 
 The Wireless Terminal supports the following [upgrades](upgrade_cards.md):
 
-- <ItemLink id="energy_card" /> in order to increase the battery capacity
+*   <ItemLink id="energy_card" /> in order to increase the battery capacity
 
 # Recipe
 
@@ -59,7 +64,7 @@ See [terminals](terminals.md)
 
 The Wireless Crafting Terminal supports the following [upgrades](upgrade_cards.md):
 
-- <ItemLink id="energy_card" /> in order to increase the battery capacity
+*   <ItemLink id="energy_card" /> in order to increase the battery capacity
 
 # Recipe
 

@@ -6,6 +6,7 @@ navigation:
 item_ids:
 - ae2:certus_quartz_crystal
 ---
+
 # The Certus Quartz Crystal
 
 <ItemImage id="certus_quartz_crystal" scale="4" />
@@ -17,4 +18,5 @@ One of the primary ingredients for AE2 blocks, [devices](../ae2-mechanics/device
 # Some Alternate Recipes
 
 <Recipe id="misc/deconstruction_certus_quartz_block" />
+
 <Recipe id="transform/certus_quartz_crystals" />

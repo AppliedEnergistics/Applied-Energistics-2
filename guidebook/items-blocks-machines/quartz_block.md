@@ -6,6 +6,7 @@ navigation:
 item_ids:
 - ae2:quartz_block
 ---
+
 # The Certus Quartz Block
 
 <BlockImage id="quartz_block" scale="8" />

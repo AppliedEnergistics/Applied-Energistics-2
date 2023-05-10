@@ -6,6 +6,7 @@ navigation:
 item_ids:
 - ae2:fluix_block
 ---
+
 # The Fluix Block
 
 <BlockImage id="fluix_block" scale="8" />

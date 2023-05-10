@@ -6,6 +6,7 @@ navigation:
 item_ids:
 - ae2:meteorite_compass
 ---
+
 # The Meteorite Compass
 
 <ItemImage id="meteorite_compass" scale="4" />

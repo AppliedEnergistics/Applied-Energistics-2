@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:crank
 ---
+
 # The Crank
 
 ![A picture of a crank on multiple different machines.](../assets/assemblies/crank_on_stuff.png)

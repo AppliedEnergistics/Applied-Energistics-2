@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:quartz_fiber
 ---
+
 # The Quartz Fiber
 
 ![A picture of a quartz fiber separating some smart cables](../assets/assemblies/quartz_fiber.png)

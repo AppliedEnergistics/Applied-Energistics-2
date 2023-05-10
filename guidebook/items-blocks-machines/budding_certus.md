@@ -13,7 +13,9 @@ item_ids:
 - ae2:large_quartz_bud
 - ae2:quartz_cluster
 ---
+
 # Budding Certus Quartz
+
 (also see [Farming Certus](../ae2-mechanics/farming-certus.md))
 
 ![The budding certus blocks](../assets/assemblies/budding_blocks.png)
@@ -39,5 +41,10 @@ in water with one or more <ItemLink id="charged_certus_quartz_crystal" />.
 
 Flawless budding certus cannot be crafted, only found in the world.
 
-<Row><RecipeFor id="damaged_budding_quartz" /><RecipeFor id="chipped_budding_quartz" /><RecipeFor id="flawed_budding_quartz" /></Row>
+<Row>
+  <RecipeFor id="damaged_budding_quartz" />
 
+  <RecipeFor id="chipped_budding_quartz" />
+
+  <RecipeFor id="flawed_budding_quartz" />
+</Row>

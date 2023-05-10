@@ -7,9 +7,10 @@ navigation:
 item_ids:
 - ae2:controller
 ---
+
 # The Controller
 
-<BlockImage id="controller" p:state="online" scale="8" /> 
+<BlockImage id="controller" p:state="online" scale="8" />
 
 The controller is the routing hub of a [ME Network](../me-network.md).
 Without it, a network is "ad-hoc" and can only have a max of 8 channel-using [devices](../ae2-mechanics/devices.md) total.
@@ -28,16 +29,16 @@ Multiblock Controllers can be built in a fairly free form.
 
 However, there are a few rules that must be followed:
 
-1. All controller blocks on a [ME Network](../me-network.md) must be connected; else the blocks will turn red.
-2. The size of the controller must be within 7x7x7; else it will turn red.
-3. A controller can have 2 adjacent blocks in at most 1 axis; if a block violates this rule, it will disable and turn red.
+1.  All controller blocks on a [ME Network](../me-network.md) must be connected; else the blocks will turn red.
+2.  The size of the controller must be within 7x7x7; else it will turn red.
+3.  A controller can have 2 adjacent blocks in at most 1 axis; if a block violates this rule, it will disable and turn red.
 
 ![The rules](../assets/assemblies/controller_rules.png)
 
 As long as all rules are followed and powered, the controller should glow and
 cycle colors.
 
-You can right-click on a controller to get the same GUI as a <ItemLink id="network_tool"/>
+You can right-click on a controller to get the same GUI as a <ItemLink id="network_tool" />
 
 # Recipe
 

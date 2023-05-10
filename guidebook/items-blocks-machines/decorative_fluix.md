@@ -8,6 +8,7 @@ item_ids:
 - ae2:fluix_wall
 - ae2:fluix_slab
 ---
+
 # Decorative Fluix
 
 ![Decorative fluix blocks](../assets/assemblies/decorative_fluix.png)
@@ -16,4 +17,10 @@ item_ids:
 
 # Recipes
 
-<Row><RecipeFor id="fluix_stairs" /><RecipeFor id="fluix_wall" /><RecipeFor id="fluix_slab" /></Row>
+<Row>
+  <RecipeFor id="fluix_stairs" />
+
+  <RecipeFor id="fluix_wall" />
+
+  <RecipeFor id="fluix_slab" />
+</Row>

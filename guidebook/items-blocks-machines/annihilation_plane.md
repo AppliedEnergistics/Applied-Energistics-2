@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:annihilation_plane
 ---
+
 # The Annihilation Plane
 
 ![A picture of an annihilation plane.](../assets/blocks/annihilation_plane.png)

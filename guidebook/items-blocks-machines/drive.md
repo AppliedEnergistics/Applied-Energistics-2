@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:drive
 ---
+
 # The ME Drive
 
 ![A Drive](../assets/blocks/drive.png)
@@ -23,18 +24,18 @@ It can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 The cells in the drive have an LED on them which shows their status:
 
 | Color  | Status                                                                           |
-|:-------|:---------------------------------------------------------------------------------|
+| :----- | :------------------------------------------------------------------------------- |
 | Green  | Empty                                                                            |
 | Blue   | Has some contents                                                                |
 | Orange | [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added     |
 | Red    | [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted |
 | Black  | No power or drive has no [channel](../ae2-mechanics/channels.md)                 |
 
-- Green  - Empty
-- Blue   - Has some contents
-- Orange - [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added
-- Red    - [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted
-- Black  - No power or drive has no [channel](../ae2-mechanics/channels.md)
+*   Green  - Empty
+*   Blue   - Has some contents
+*   Orange - [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added
+*   Red    - [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted
+*   Black  - No power or drive has no [channel](../ae2-mechanics/channels.md)
 
 # Priority
 

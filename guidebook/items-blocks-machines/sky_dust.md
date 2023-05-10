@@ -6,14 +6,15 @@ navigation:
 item_ids:
 - ae2:sky_dust
 ---
+
 # Sky Stone Dust
 
 <ItemImage id="sky_dust" scale="4" />
 
-A <ItemLink id="sky_stone_block"/> block that has been crushed by an <ItemLink id="inscriber"/>. Used in the production of
-<ItemLink id="cell_component_256k"/> and <ItemLink id="sky_stone_block"/>.
+A <ItemLink id="sky_stone_block" /> block that has been crushed by an <ItemLink id="inscriber" />. Used in the production of
+<ItemLink id="cell_component_256k" /> and <ItemLink id="sky_stone_block" />.
 
-Can also be obtained by pointing an <ItemLink id="annihilation_plane"/> upward at world height limit.
+Can also be obtained by pointing an <ItemLink id="annihilation_plane" /> upward at world height limit.
 
 # Recipe
 

@@ -7,6 +7,7 @@ navigation:
 item_ids:
 - ae2:formation_plane
 ---
+
 # The Formation Plane
 
 ![A picture of a formation plane.](../assets/blocks/formation_plane.png)
@@ -33,15 +34,15 @@ Items entering the network will start at the highest priority storage.
 
 # Settings
 
-- The plane can be set to place blocks in-world or drop items
+*   The plane can be set to place blocks in-world or drop items
 
 # Upgrades
 
 The formation plane supports the following [upgrades](upgrade_cards.md):
 
-- <ItemLink id="capacity_card" /> increases the amount of filter slots
-- <ItemLink id="fuzzy_card" /> lets the plane filter by damage level and/or ignore item NBT
-- <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
+*   <ItemLink id="capacity_card" /> increases the amount of filter slots
+*   <ItemLink id="fuzzy_card" /> lets the plane filter by damage level and/or ignore item NBT
+*   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 
 # Recipe
 
