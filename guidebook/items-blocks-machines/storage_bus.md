@@ -58,6 +58,7 @@ The storage bus supports the following [upgrades](upgrade_cards.md):
 - <ItemLink id="capacity_card" /> increases the amount of filter slots
 - <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
 - <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
+- <ItemLink id="void_card" /> voids items inserted if the attached inventory is full, useful for stopping farms from backing up. Be careful to partition this!
 
 # Recipe
 

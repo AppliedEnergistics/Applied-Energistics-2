@@ -20,8 +20,6 @@ Terminals will inherit the color of the [cable](cables.md) they are mounted on.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
----
-
 # Terminal
 
 Your basic terminal, allowing you to view and access the contents of your [network's storage](../ae2-mechanics/import-export-storage.md)
@@ -57,8 +55,6 @@ UI, allowing you to see the progress of your autocrafts and what each [crafting 
 
 <RecipeFor id="terminal" />
 
----
-
 # Crafting Terminal
 
 The Crafting Terminal is similar to a regular terminal, with all the same settings and sections, but with an added crafting grid that will be automatically
@@ -75,8 +71,6 @@ There are 2 additional buttons, to empty the crafting grid into network storage 
 # Recipe
 
 <RecipeFor id="crafting_terminal" />
-
----
 
 # Pattern Encoding Terminal
 
@@ -127,8 +121,6 @@ The central UI changes depending on the type of pattern to be encoded:
 # Recipe
 
 <RecipeFor id="pattern_encoding_terminal" />
-
----
 
 # Pattern Access Terminal
 

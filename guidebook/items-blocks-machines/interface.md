@@ -12,7 +12,7 @@ item_ids:
 
 ![Interfaces](../assets/assemblies/interface_variants.png)
 
-Interfaces act like a small chest that fills itself from and empties to [network storage](../ae2-mechanics/import-export-storage.md)
+Interfaces act like a small chest and fluid tank that fills itself from and empties to [network storage](../ae2-mechanics/import-export-storage.md)
 depending on what you set it to keep a stock of in its slots. It tries to complete this in a single gametick, so it can fill itself with
 or empty itself from up to 9 stacks per gametick, making it a fast method of import or export if you have fast item pipes.
 
@@ -29,6 +29,11 @@ the provider will skip the interface entirely and push directly to that subnet's
 skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
 
 ![Interfaces!](../assets/assemblies/interface_storage_pipe_furnace.png)
+
+Another useful trait is that while most fluid tanks can only store 1 type of fluid, interfaces can store up to 9, as well as items.
+They're essentially just chests/multi-fluid tanks with some extra functionality, and you can prevent that extra functionality by keeping
+them disconnected from any networks.
+Thus, they are useful in some niche cases where you want to store a small amount of a bunch of different stuff.
 
 # Variants
 

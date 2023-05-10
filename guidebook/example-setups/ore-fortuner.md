@@ -6,6 +6,10 @@ navigation:
 ---
 # Automation of Ore Fortuning
 
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
+</GameScene>
+
 The <ItemLink id="annihilation_plane" /> can be enchanted with any pickaxe enchantment, including fortune, so an obvious use case is to
 apply fortune to a few, and have <ItemLink id="formation_plane" />s and <ItemLink id="annihilation_plane" />s rapidly place and
 break ores.

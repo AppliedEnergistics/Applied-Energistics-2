@@ -19,12 +19,6 @@ and can replace storage busses in those setups if you want to drop items/place b
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# A bug that might have been fixed
-
-There may or may not be a bug where the button to swap between placing blocks and dropping items does not show up
-until you set something in the formation plane's filter. After you toggle the button to what you want you can remove the item
-from the filter.
-
 # Filtering
 
 By default the plane will place/drop anything. Items inserted into its filter slots will act as a whitelist, only

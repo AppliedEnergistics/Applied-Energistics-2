@@ -22,9 +22,7 @@ They must be within range of a <ItemLink id="wireless_access_point" /> to functi
 
 Their energy can be recharged in a <ItemLink id="charger" />.
 
----
-
-# Wireless Terminal
+## Wireless Terminal
 
 <ItemImage id="wireless_terminal" scale="4" />
 
@@ -46,9 +44,7 @@ The Wireless Terminal supports the following [upgrades](upgrade_cards.md):
 
 <RecipeFor id="wireless_terminal" />
 
----
-
-# Wireless Crafting Terminal
+## Wireless Crafting Terminal
 
 <ItemImage id="wireless_crafting_terminal" scale="4" />
 
