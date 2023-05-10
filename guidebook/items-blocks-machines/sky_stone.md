@@ -6,7 +6,6 @@ navigation:
 item_ids:
 - ae2:sky_stone_block
 - ae2:smooth_sky_stone_block
-- ae2:sky_dust
 ---
 
 # Sky Stone

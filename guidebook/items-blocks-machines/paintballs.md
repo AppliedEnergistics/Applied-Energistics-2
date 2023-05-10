@@ -7,7 +7,6 @@ item_ids:
 - ae2:white_paint_ball
 - ae2:orange_paint_ball
 - ae2:magenta_paint_ball
-- ae2:white_paint_ball
 - ae2:light_blue_paint_ball
 - ae2:yellow_paint_ball
 - ae2:lime_paint_ball
@@ -24,7 +23,6 @@ item_ids:
 - ae2:white_lumen_paint_ball
 - ae2:orange_lumen_paint_ball
 - ae2:magenta_lumen_paint_ball
-- ae2:white_lumen_paint_ball
 - ae2:light_blue_lumen_paint_ball
 - ae2:yellow_lumen_paint_ball
 - ae2:lime_lumen_paint_ball
