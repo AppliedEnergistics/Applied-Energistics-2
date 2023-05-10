@@ -29,7 +29,7 @@ big automation challenges. There are three types of processor, made with gold, <
 and diamond respectively. They are made using [presses](presses.md) in an <ItemLink id="inscriber" />, in a multi-step
 process (usually achieved via a series of inscribers and filtered piping).
 
-# Production Steps
+## Production Steps
 
 <Column gap="5">
   1.  Gather/make the required ingredients: silicon, redstone, gold, <ItemLink id="certus_quartz_crystal" />, diamond.

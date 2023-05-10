@@ -7,7 +7,7 @@ navigation:
 
 # Farming Certus
 
-# Basically just copy-pasted from the getting started page
+## Basically just copy-pasted from the getting started page
 
 ![A Flawless Budding Certus with a small certus bud on top](../assets/assemblies/budding_certus_1.png)
 

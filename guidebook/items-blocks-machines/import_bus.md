@@ -20,14 +20,14 @@ For purposes of lag reduction, if the import bus has not imported something rece
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Filtering
+## Filtering
 
 By default the bus will import anything it has access to. Items inserted into its filter slots will act as a whitelist, only
 allowing those specific items to be imported.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
 
-# Upgrades
+## Upgrades
 
 The import bus supports the following [upgrades](upgrade_cards.md):
 
@@ -37,6 +37,6 @@ The import bus supports the following [upgrades](upgrade_cards.md):
 *   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 *   <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
 
-# Recipe
+## Recipe
 
 <RecipeFor id="import_bus" />

@@ -40,6 +40,6 @@ cycle colors.
 
 You can right-click on a controller to get the same GUI as a <ItemLink id="network_tool" />
 
-# Recipe
+## Recipe
 
 <RecipeFor id="controller" />

@@ -19,6 +19,6 @@ although using cables of differing colors, or using <ItemLink id="cable_anchor" 
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Recipe
+## Recipe
 
 <RecipeFor id="quartz_fiber" />

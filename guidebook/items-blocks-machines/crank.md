@@ -14,6 +14,6 @@ item_ids:
 
 The crank is used to power other machines when you don't otherwise have access to power (or an <ItemLink id="energy_acceptor" />). Early-game struggles, am I right?
 
-# Recipe
+## Recipe
 
 <RecipeFor id="crank" />

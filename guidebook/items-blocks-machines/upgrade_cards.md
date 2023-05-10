@@ -43,7 +43,7 @@ item_ids:
 Upgrade cards change the behavior of AE2 [devices](../ae2-mechanics/devices.md) and machines, increasing their speed, improving their
 filter capacity, enabling redstone control, etc.
 
-# Card Components
+## Card Components
 
 <Row>
   <ItemImage id="basic_card" scale="2" />
@@ -59,7 +59,7 @@ Cards are crafted with either basic or advanced card bases
   <RecipeFor id="advanced_card" />
 </Row>
 
-# Redstone Card
+## Redstone Card
 
 <ItemImage id="redstone_card" scale="2" />
 
@@ -67,7 +67,7 @@ Redstone cards add redstone control, adding a toggle button in the device's GUI 
 
 <RecipeFor id="redstone_card" />
 
-# Capacity Card
+## Capacity Card
 
 <ItemImage id="capacity_card" scale="2" />
 
@@ -75,7 +75,7 @@ Capacity cards increase the amount of filter slots in import, export, and storag
 
 <RecipeFor id="capacity_card" />
 
-# Overflow Destruction Card
+## Overflow Destruction Card
 
 <ItemImage id="void_card" scale="2" />
 
@@ -85,7 +85,7 @@ items will be voided if that specific item's section of the cell is full, even i
 
 <RecipeFor id="void_card" />
 
-# Fuzzy Card
+## Fuzzy Card
 
 <ItemImage id="fuzzy_card" scale="2" />
 
@@ -122,7 +122,7 @@ bus config, top is the compared item.
 
 <RecipeFor id="fuzzy_card" />
 
-# Acceleration Card
+## Acceleration Card
 
 <ItemImage id="speed_card" scale="2" />
 
@@ -131,7 +131,7 @@ and assemblers work faster.
 
 <RecipeFor id="speed_card" />
 
-## Inverter Card
+### Inverter Card
 
 <ItemImage id="inverter_card" scale="2" />
 
@@ -139,7 +139,7 @@ Inverter cards swap filters in devices and tools from whitelist to blacklist.
 
 <RecipeFor id="inverter_card" />
 
-## Crafting Card
+### Crafting Card
 
 <ItemImage id="inverter_card" scale="2" />
 
@@ -148,7 +148,7 @@ system to get the items it desires.
 
 <RecipeFor id="inverter_card" />
 
-## Equal Distribution Card
+### Equal Distribution Card
 
 <ItemImage id="equal_distribution_card" scale="2" />
 
@@ -158,7 +158,7 @@ filling the cell.
 
 <RecipeFor id="equal_distribution_card" />
 
-## Energy Card
+### Energy Card
 
 <ItemImage id="energy_card" scale="2" />
 

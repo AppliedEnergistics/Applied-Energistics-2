@@ -14,6 +14,6 @@ item_ids:
 A <ItemLink id="certus_quartz_crystal" /> that has been run through a <ItemLink id="charger" />. Used in the production of
 <ItemLink id="fluix_crystal" /> and [budding certus blocks](../items-blocks-machines/budding_certus.md).
 
-# Recipe
+## Recipe
 
 <RecipeFor id="charged_certus_quartz_crystal" />

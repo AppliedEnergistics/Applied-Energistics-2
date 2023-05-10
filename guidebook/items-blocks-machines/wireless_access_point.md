@@ -22,7 +22,7 @@ and range by altering your setup.
 
 Requires a [channel](channels.md).
 
-# Recipes
+## Recipes
 
 <RecipeFor id="wireless_access_point" />
 

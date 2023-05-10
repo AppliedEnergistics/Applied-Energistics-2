@@ -25,7 +25,7 @@ for item transfer. (see ["pipe subnet"](../example-setups/pipe-subnet.md))
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Filtering
+## Filtering
 
 By default the bus will store everything. Items inserted into its filter slots will act as a whitelist, only
 allowing those specific items to be stored. It has a LOT of slots, so it can be used as a large filter if you're using it for
@@ -33,7 +33,7 @@ item transfer.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
 
-# Priority
+## Priority
 
 Priorities can be set by clicking the wrench in the top-right of the GUI.
 Items entering the network will start at the highest priority storage as
@@ -44,7 +44,7 @@ when in the same priority group as other storages. Items being removed from stor
 be removed from the storage with the lowest priority. This priority system means as items are inserted and removed
 from network storage, higher priority storages will be filled and lower priority storages will be emptied.
 
-# Settings
+## Settings
 
 *   The bus can be partitioned (filtered) to what is currently in the adjacent inventory
 *   The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract
@@ -52,7 +52,7 @@ from network storage, higher priority storages will be filled and lower priority
 *   The bus can filter on both insertion and extraction or just insertion
 *   The bus can be bi-directional, insert-only, or extract-only
 
-# Upgrades
+## Upgrades
 
 The storage bus supports the following [upgrades](upgrade_cards.md):
 
@@ -61,6 +61,6 @@ The storage bus supports the following [upgrades](upgrade_cards.md):
 *   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 *   <ItemLink id="void_card" /> voids items inserted if the attached inventory is full, useful for stopping farms from backing up. Be careful to partition this!
 
-# Recipe
+## Recipe
 
 <RecipeFor id="storage_bus" />

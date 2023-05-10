@@ -20,23 +20,23 @@ and can replace storage busses in those setups if you want to drop items/place b
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Filtering
+## Filtering
 
 By default the plane will place/drop anything. Items inserted into its filter slots will act as a whitelist, only
 allowing those specific items to be placed.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
 
-# Priority
+## Priority
 
 Priorities can be set by clicking the wrench in the top-right of the GUI.
 Items entering the network will start at the highest priority storage.
 
-# Settings
+## Settings
 
 *   The plane can be set to place blocks in-world or drop items
 
-# Upgrades
+## Upgrades
 
 The formation plane supports the following [upgrades](upgrade_cards.md):
 
@@ -44,6 +44,6 @@ The formation plane supports the following [upgrades](upgrade_cards.md):
 *   <ItemLink id="fuzzy_card" /> lets the plane filter by damage level and/or ignore item NBT
 *   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
 
-# Recipe
+## Recipe
 
 <RecipeFor id="formation_plane" />

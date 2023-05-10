@@ -19,7 +19,7 @@ If for some reason you want to, you can push and pull the cells from its invento
 
 It can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 
-# Cell Status LEDs
+## Cell Status LEDs
 
 The cells in the drive have an LED on them which shows their status:
 
@@ -37,7 +37,7 @@ The cells in the drive have an LED on them which shows their status:
 *   Red    - [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted
 *   Black  - No power or drive has no [channel](../ae2-mechanics/channels.md)
 
-# Priority
+## Priority
 
 Priorities can be set by clicking the wrench in the top-right of the GUI.
 Items entering the network will start at the highest priority storage as
@@ -48,6 +48,6 @@ when in the same priority group as other storages. Items being removed from stor
 be removed from the storage with the lowest priority. This priority system means as items are inserted and removed
 from network storage, higher priority storages will be filled and lower priority storages will be emptied.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="drive" />

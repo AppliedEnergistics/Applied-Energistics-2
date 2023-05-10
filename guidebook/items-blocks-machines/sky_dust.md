@@ -16,6 +16,6 @@ A <ItemLink id="sky_stone_block" /> block that has been crushed by an <ItemLink 
 
 Can also be obtained by pointing an <ItemLink id="annihilation_plane" /> upward at world height limit.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="sky_dust" />

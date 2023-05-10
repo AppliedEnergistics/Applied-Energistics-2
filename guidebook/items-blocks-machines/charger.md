@@ -27,12 +27,12 @@ To power it manually, place a <ItemLink id="crank" /> on the top or bottom and r
 
 It also acts as the workstation for the AE2 villager.
 
-# Simple Automation
+## Simple Automation
 
 As an example, the rotateability lets you semi-automate chargers like so:
 
 ![Charger Automation](../assets/assemblies/charger_hopper.png)
 
-# Recipe
+## Recipe
 
 <RecipeFor id="charger" />

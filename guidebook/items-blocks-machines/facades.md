@@ -18,7 +18,7 @@ protrude though.
 
 Be clever with them to improve your base aesthetic or make blocks with different textures on each side.
 
-# Recipe
+## Recipe
 
 Place the block you want the texture of in the middle of 4 <ItemLink id="cable_anchor" />s.
 

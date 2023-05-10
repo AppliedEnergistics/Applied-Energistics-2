@@ -27,7 +27,7 @@ They must be within range of a <ItemLink id="wireless_access_point" /> to functi
 
 Their energy can be recharged in a <ItemLink id="charger" />.
 
-## Wireless Terminal
+### Wireless Terminal
 
 <ItemImage id="wireless_terminal" scale="4" />
 
@@ -35,37 +35,37 @@ Your basic terminal, now portable! View and access the contents of your [network
 and request things from your [autocrafting](../ae2-mechanics/autocrafting.md) setup from anywhere within the range of a
 <ItemLink id="wireless_access_point" />.
 
-# The UI
+## The UI
 
 See [terminals](terminals.md)
 
-# Upgrades
+## Upgrades
 
 The Wireless Terminal supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="energy_card" /> in order to increase the battery capacity
 
-# Recipe
+## Recipe
 
 <RecipeFor id="wireless_terminal" />
 
-## Wireless Crafting Terminal
+### Wireless Crafting Terminal
 
 <ItemImage id="wireless_crafting_terminal" scale="4" />
 
 The Wireless Crafting Terminal is similar to a regular wireless terminal, with all the same settings and sections, but with an added crafting grid that will be automatically
 refilled from [network storage](../ae2-mechanics/import-export-storage.md). Be careful when shift-clicking the output!
 
-# The UI
+## The UI
 
 See [terminals](terminals.md)
 
-# Upgrades
+## Upgrades
 
 The Wireless Crafting Terminal supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="energy_card" /> in order to increase the battery capacity
 
-# Recipe
+## Recipe
 
 <RecipeFor id="wireless_crafting_terminal" />

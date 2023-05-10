@@ -17,20 +17,20 @@ The IO Port allows you to rapidly fill or empty [storage cells](../items-blocks-
 
 It can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 
-# Settings
+## Settings
 
 *   The IO Port can be set to move the cell to the output slots when the cell is empty, full, or when the work is done.
 *   If a <ItemLink id="redstone_card" /> is inserted, there will be options for various redstone conditions
 *   In the center of the GUI, there is an arrow to set which direction to transfer items, from the cell to [network storage](../ae2-mechanics/import-export-storage.md),
     or from storage to the cell.
 
-# Upgrades
+## Upgrades
 
 The IO Port supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
 *   <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
 
-# Recipe
+## Recipe
 
 <RecipeFor id="io_port" />

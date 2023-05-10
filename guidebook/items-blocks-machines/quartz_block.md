@@ -14,6 +14,6 @@ item_ids:
 The storage block for <ItemLink id="certus_quartz_crystal" />. Can be used to make [budding certus blocks](budding_certus.md)
 or [decorative certus blocks](decorative_certus.md).
 
-# Recipe
+## Recipe
 
 <RecipeFor id="quartz_block" />

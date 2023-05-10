@@ -19,6 +19,6 @@ If there is not a specific thing it can do to a block, it will act as a flint-an
 
 Its energy can be recharged in a <ItemLink id="charger" />.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="entropy_manipulator" />

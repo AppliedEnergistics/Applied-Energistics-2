@@ -22,18 +22,18 @@ Of note, **both sides must get power to initiate the connection**, then one side
 Additionally, **both sides must be chunkloaded** so a <ItemLink id="spatial_anchor" /> or other chunkloader must be used
 if the 2 sides are far apart.
 
-# Quantum Ring
+## Quantum Ring
 
 Eight of these blocks placed around a <ItemLink id="quantum_link" /> will create a
 Quantum Network Bridge. Only the 4 <ItemLink id="quantum_ring" /> blocks adjacent to
 the <ItemLink id="quantum_link" /> will accept network connections,
 the 4 corner blocks cannot connect to cables.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="quantum_ring" />
 
-# Quantum Link Chamber
+## Quantum Link Chamber
 
 One of these blocks surrounded by a <ItemLink id="quantum_ring" />
 will create a Quantum Network Bridge. This block doesn't connect to any cables and only registers
@@ -42,6 +42,6 @@ as part of the network with the full bridge is made.
 This block's inventory can only hold a single <ItemLink id="quantum_entangled_singularity" /> and is
 automation accessible.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="quantum_link" />

@@ -39,7 +39,7 @@ lategame, as they have tradeoffs.
 Below is a table comparing the different tiers of storage cells, how much they store, and
 a rough estimate of their cost.
 
-# Storage Cell Contents Vs Cost
+## Storage Cell Contents Vs Cost
 
 | Cell                                     |   Bytes | Types | Bytes Per Type | Certus | Redstone | Gold | Glowstone |
 | ---------------------------------------- | ------: | ----: | -------------: | -----: | -------: | ---: | --------: |
@@ -49,7 +49,7 @@ a rough estimate of their cost.
 | <ItemLink id="item_storage_cell_64k" />  |  65,536 |    63 |            512 | 137.25 |      184 |   27 |        16 |
 | <ItemLink id="item_storage_cell_256k" /> | 262,144 |    63 |           2048 |    414 |      553 |   81 |        48 |
 
-# Storage Capacity with Varying Type Count
+## Storage Capacity with Varying Type Count
 
 The upfront cost of types is such that a cell holding 1 type can hold 2x as much as a cell with all 63 types in use.
 

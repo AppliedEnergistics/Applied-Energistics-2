@@ -14,6 +14,6 @@ item_ids:
 A <ItemLink id="certus_quartz_crystal" /> that has been crushed by an <ItemLink id="inscriber" />. Used in the production of
 several AE2 materials and components.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="certus_quartz_dust" />

@@ -15,18 +15,18 @@ item_ids:
 While the primary intended method of providing [energy](../ae2-mechanics/energy.md) to your network is an
 <ItemLink id="energy_acceptor" />, the vibration chamber can directly generate small to middling amounts of AE.
 
-# Settings
+## Settings
 
 *   The vibration chamber provides access to the global setting to view energy in AE or E/FE.
 
-# Upgrades
+## Upgrades
 
 The vibration chamber supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="energy_card" /> increases the efficiency of the chamber by +50%, for a max of +150%, or 250% of the base efficiency.
 *   <ItemLink id="speed_card" /> increases the burn rate of the chamber by +50%, for a max of +150%, or 250% of the base power output.
 
-# Config
+## Config
 
 The properties of the vibration chamber can be edited in common.json in the ae2 folder in the config folder of your .minecraft\
 directory.
@@ -36,6 +36,6 @@ directory.
     requires no energy).
 *   maxEnergyPerGameTick sets the un-upgraded max output (and speed) of the vibration chamber.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="vibration_chamber" />

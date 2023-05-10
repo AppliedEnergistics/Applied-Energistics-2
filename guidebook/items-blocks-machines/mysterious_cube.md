@@ -18,6 +18,6 @@ I wonder what happens when you break it (without silk touch)...
 
 You can also make a replica, the Not So Mysterious Cube
 
-# Recipe
+## Recipe
 
 <RecipeFor id="not_so_mysterious_cube" />

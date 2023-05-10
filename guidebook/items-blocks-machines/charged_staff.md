@@ -17,6 +17,6 @@ per attack.
 
 Its energy can be recharged in a <ItemLink id="charger" />.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="charged_staff" />

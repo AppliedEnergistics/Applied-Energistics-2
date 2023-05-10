@@ -33,7 +33,7 @@ Multiple pattern providers with identical patterns are supported and work in par
 
 Pattern providers will attempt to round-robin their batches to all of their faces, thus using all attached machines in parallel.
 
-# Variants
+## Variants
 
 Pattern Providers come in 3 different variants: normal, directional, and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides they push
 ingredients to, receive items from, and provide a network connection to.
@@ -51,7 +51,7 @@ ingredients to, receive items from, and provide a network connection to.
 
 Pattern providers can be swapped between normal and flat in a crafting grid.
 
-# Settings
+## Settings
 
 Pattern providers have a variety of modes:
 
@@ -61,13 +61,13 @@ Pattern providers have a variety of modes:
     previous craft is inserted into that specific pattern provider.
 *   The provider can be shown or hidden on <ItemLink id="pattern_access_terminal" />s.
 
-# Priority
+## Priority
 
 Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](patterns.md)
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
 
-# Recipes
+## Recipes
 
 <RecipeFor id="pattern_provider" />
 

@@ -18,6 +18,6 @@ The Memory Card is used to copy-and paste settings between AE2 [devices](../ae2-
 *   Shift-right-click to copy settings or generate a new P2P linking code.
 *   Right-click to paste the settings or linking code.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="memory_card" />

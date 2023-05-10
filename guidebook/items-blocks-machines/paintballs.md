@@ -57,7 +57,7 @@ item_ids:
 Paintballs are used in a <ItemLink id="color_applicator" /> in order to paint colorable blocks like [cables](cables.md),
 wool, terracotta, glass, and concrete. They can also be used in a <ItemLink id="matter_cannon" /> to shoot little splotches of paint.
 
-# Recipes
+## Recipes
 
 8 matter balls around a dye
 
@@ -81,7 +81,7 @@ wool, terracotta, glass, and concrete. They can also be used in a <ItemLink id="
   <br />
 </Column>
 
-# Lumen Paintballs
+## Lumen Paintballs
 
 <Row gap="-8">
   <ItemImage id="white_lumen_paint_ball" scale="4" />
@@ -98,7 +98,7 @@ wool, terracotta, glass, and concrete. They can also be used in a <ItemLink id="
 They act identically to regular paintballs but the splotches emit light when shot out of a <ItemLink id="matter_cannon" />.
 Useful as a sort of flaregun I guess.
 
-# Recipes
+## Recipes
 
 8 paintballs around a glowstone dust
 

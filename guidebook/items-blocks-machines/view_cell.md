@@ -20,7 +20,7 @@ materials and place it in a terminal, and only those items will be shown.
 View cells are additive, if you have a view cell for oak planks and a view cell for cobblestone, putting both in will show
 both planks and cobblestone.
 
-# Recipe
+## Recipe
 
 <Recipe id="network/cells/view_cell_storage" />
 

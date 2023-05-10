@@ -24,7 +24,7 @@ For example,
 The actions/events of pushing to and pulling from network storage are important to keep in mind when designing automation
 and logistics setups.
 
-# Storage Priority
+## Storage Priority
 
 Priorities can be set by clicking the wrench in the top-right of some GUIs.
 Items entering the network will start at the highest priority storage, as

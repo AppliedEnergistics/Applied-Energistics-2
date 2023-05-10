@@ -33,13 +33,13 @@ While the name press can be used to name blocks similar to an anvil, useful for 
 
 <ItemImage id="name_press" scale="4" />
 
-# Settings
+## Settings
 
 *   The inscriber can be set to be sided (as explained below) or allow inputs to any slot from any side, with an internal filter deciding
     what goes where. While in non-sided mode, items cannot be extracted from the top and bottom slots.
 *   The inscriber can be set to push items into adjacent inventories.
 
-# The GUI And Sidedness
+## The GUI And Sidedness
 
 When in sided mode, the inscriber filters what goes where by which side you insert or extract from.
 
@@ -53,7 +53,7 @@ C. **Bottom Input** accessed via the bottom side of the inscriber (items can be 
 
 D. **Output** pulled from via the left, right, front, and rear sides of the inscriber (items can only be pulled from this slot, not pushed to)
 
-# Simple Automation
+## Simple Automation
 
 As an example, the sidedness and rotateability mean you can semi-automate inscribers like so:
 
@@ -61,12 +61,12 @@ As an example, the sidedness and rotateability mean you can semi-automate inscri
 
 Or just pipe into and out of the inscriber when in non-sided mode.
 
-# Upgrades
+## Upgrades
 
 The inscriber supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="speed_card" />
 
-# Recipe
+## Recipe
 
 <RecipeFor id="inscriber" />

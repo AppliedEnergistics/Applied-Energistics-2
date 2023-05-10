@@ -30,7 +30,7 @@ item_ids:
 
 All fluix tools act as if they have at least fortune/looting 1, which is useful before getting access to an enchanting table.
 
-# Recipes
+## Recipes
 
 <Column>
   <Row>

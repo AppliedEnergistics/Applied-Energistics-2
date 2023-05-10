@@ -20,14 +20,14 @@ For purposes of lag reduction, if the export bus has not exported something rece
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Filtering
+## Filtering
 
 By default the bus will not export anything. Items inserted into its filter slots will act as a whitelist,
 allowing those specific items to be exported.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
 
-# Upgrades
+## Upgrades
 
 The import bus supports the following [upgrades](upgrade_cards.md):
 
@@ -39,6 +39,6 @@ The import bus supports the following [upgrades](upgrade_cards.md):
     for a new item to be crafted.
 *   <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
 
-# Recipe
+## Recipe
 
 <RecipeFor id="import_bus" />

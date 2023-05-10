@@ -24,6 +24,6 @@ It also acts as the workstation for the AE2 villager.
 
 It only connects to cables on its ends where the pink fluix greebles are.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="growth_accelerator" />
