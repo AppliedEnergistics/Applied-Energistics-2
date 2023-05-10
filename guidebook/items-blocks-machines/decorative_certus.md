@@ -35,7 +35,7 @@ item_ids:
 
 <ItemLink id="quartz_block" />s can be crafted, smelted, and stonecut into some decorative building blocks
 
-# Recipes
+## Recipes
 
 <Column>
   <Row gap="0">

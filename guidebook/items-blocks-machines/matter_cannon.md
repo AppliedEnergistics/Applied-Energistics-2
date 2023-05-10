@@ -24,7 +24,7 @@ Its energy can be recharged in a <ItemLink id="charger" />.
 Matter cannons act like [storage cells](storage_cells.md), and their ammunition magazine can most easily be filled by sticking
 the cannon in the storage cell slot in a <ItemLink id="chest" />
 
-# Upgrades
+## Upgrades
 
 Matter cannons support the following [upgrades](upgrade_cards.md), inserted via a <ItemLink id="cell_workbench" />:
 
@@ -34,6 +34,6 @@ Matter cannons support the following [upgrades](upgrade_cards.md), inserted via 
 *   <ItemLink id="void_card" /> voids items inserted if the cell is full. Be careful to partition this!
 *   <ItemLink id="energy_card" /> in order to increase the battery capacity
 
-# Recipe
+## Recipe
 
 <RecipeFor id="matter_cannon" />

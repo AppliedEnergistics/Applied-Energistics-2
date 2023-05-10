@@ -23,12 +23,12 @@ By default it will also enable random ticks in its loaded chunks, this can be tu
 
 It can be rotated with a <ItemLink id="certus_quartz_wrench" /> if for some reason you want to do that.
 
-# Settings
+## Settings
 
 *   The spatial anchor provides access to the global setting to view energy in AE or E/FE.
 *   An in-world hologram can be displayed showing the chunks being loaded.
 
-# Energy
+## Energy
 
 The spatial anchor will use [energy](../ae2-mechanics/energy.md) according to this equation:
 
@@ -36,6 +36,6 @@ e = 80 + (x\*(x+1))/2
 
 where x is the number of chunks being loaded
 
-# Recipe
+## Recipe
 
 <RecipeFor id="spatial_anchor" />

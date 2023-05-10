@@ -15,7 +15,7 @@ item_ids:
 
 One of the primary ingredients for AE2 blocks, [devices](../ae2-mechanics/devices.md), and items. Made by growing it from [budding certus](../ae2-mechanics/farming-certus.md).
 
-# Some Alternate Recipes
+## Some Alternate Recipes
 
 <Recipe id="misc/deconstruction_certus_quartz_block" />
 

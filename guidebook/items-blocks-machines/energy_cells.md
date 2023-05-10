@@ -25,7 +25,7 @@ out spikes in energy draw when large amounts of items are inserted or extracted,
 allow the network to run while energy isn't being generated (like at night with solar panels) or handle the massive instantaneous
 energy draw of [spatial storage](spatial-io.md).
 
-# Fill Bars
+## Fill Bars
 
 <BlockImage id="energy_cell" scale="4" p:fullness="0" />**0** <BlockImage id="energy_cell" scale="4" p:fullness="1" />**1**
 <BlockImage id="energy_cell" scale="4" p:fullness="2" />**2** <BlockImage id="energy_cell" scale="4" p:fullness="3" />**3** <BlockImage id="energy_cell" scale="4" p:fullness="4" />**4**
@@ -38,7 +38,7 @@ The bars on the side of a cell correspond to how much energy it has.
 *   3 when between 75% and 99% charge
 *   4 when above 99% charge
 
-# Types Of Cell
+## Types Of Cell
 
 *   The <ItemLink id="energy_cell" /> can store 200k AE, and just one should be sufficient for most use cases, handling the power surges
     of normal network use with ease.
@@ -46,7 +46,7 @@ The bars on the side of a cell correspond to how much energy it has.
     handle the massive instantaneous energy draw of large [spatial storage](spatial-io.md) setups.
 *   The <ItemLink id="creative_energy_cell" /> is a creative item for testing, providing UNLIMITED POWAHHHH or whatever.
 
-# Recipes
+## Recipes
 
 <Row>
   <RecipeFor id="energy_cell" />

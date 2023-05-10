@@ -16,7 +16,7 @@ infrastructure (this is essentially 2 modified [pipe subnets](pipe-subnet.md)).
 ![The setup](../assets/assemblies/throw_in_water_2.png)
 ![The setup](../assets/assemblies/throw_in_water_1.png)
 
-# Configurations and Patterns
+## Configurations and Patterns
 
 *   The <ItemLink id="pattern_provider" /> (1) is in its default state, with the relevant <ItemLink id="processing_pattern" />s
 *   For <ItemLink id="fluix_crystal" /> the default recipe from JEI/REI works fine:
@@ -33,7 +33,7 @@ infrastructure (this is essentially 2 modified [pipe subnets](pipe-subnet.md)).
 *   The <ItemLink id="annihilation_plane" /> (4) has no GUI and cannot be configured
 *   The <ItemLink id="storage_bus" /> (5) is filtered to the outputs of the patterns
 
-# How It Works
+## How It Works
 
 1.  The <ItemLink id="pattern_provider" /> pushes the ingredients into the <ItemLink id="interface" /> on its side, on the green subnet
 2.  The interface (being configured to not store anything by default) attempts to push its contents into [network storage](../ae2-mechanics/import-export-storage.md)

@@ -22,7 +22,7 @@ Of note, toggling these may cause the network to reboot and recalculate the conn
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Recipes
+## Recipes
 
 <RecipeFor id="toggle_bus" />
 

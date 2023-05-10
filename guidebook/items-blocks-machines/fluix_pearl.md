@@ -14,6 +14,6 @@ item_ids:
 An ender pearl coated in <ItemLink id="fluix_crystal" />, used in the production of
 several AE2 components.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="fluix_pearl" />

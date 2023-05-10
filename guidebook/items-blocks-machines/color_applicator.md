@@ -22,7 +22,7 @@ the applicator in the storage cell slot in a <ItemLink id="chest" />
 
 To use a color applicator, right click to apply, and shift-scroll to cycle through the stored paintballs and dyes.
 
-# Upgrades
+## Upgrades
 
 Color Applicators support the following [upgrades](upgrade_cards.md), inserted via a <ItemLink id="cell_workbench" />:
 
@@ -31,6 +31,6 @@ Color Applicators support the following [upgrades](upgrade_cards.md), inserted v
     case of an equal distribution card). Be careful to partition this!
 *   <ItemLink id="energy_card" /> in order to increase their battery capacity
 
-# Recipe
+## Recipe
 
 <RecipeFor id="color_applicator" />

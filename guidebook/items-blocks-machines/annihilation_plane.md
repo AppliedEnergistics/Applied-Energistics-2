@@ -22,7 +22,7 @@ you'd expect it to, efficiency reduces the energy cost of breaking a block, and 
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Filtering
+## Filtering
 
 The annihilation plane will only break a block or pick up an item if it can store the resulting drops/items
 in its network. this means to filter one, *you must restrict what can be stored on its network*, most likely by putting
@@ -35,6 +35,6 @@ Again, it filters *by the item drops* so, for example, if you want to filter bre
 you need a plane enchanted with silk touch, otherwise every tier of budding block drops <ItemLink id="quartz_block" /> and so
 the drops cannot be differentiated.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="annihilation_plane" />

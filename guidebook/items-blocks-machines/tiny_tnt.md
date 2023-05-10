@@ -16,6 +16,6 @@ Small TNT for small explosions. Useful for making <ItemLink id="quantum_entangle
 It can have its block damage disabled in the config to allow making singularities without the possibility
 of griefing, if you want to disable TNT and creepers on your server.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="tiny_tnt" />

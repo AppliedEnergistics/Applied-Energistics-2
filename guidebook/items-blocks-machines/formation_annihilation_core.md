@@ -20,7 +20,7 @@ These are the primary components of AE2 input and output [devices](../ae2-mechan
 a [logic processor](processors.md) it allows devices to input and output items, blocks, fluids, etc. (No actual function, just
 a crafting intermediate)
 
-# Recipes
+## Recipes
 
 <RecipeFor id="formation_core" />
 

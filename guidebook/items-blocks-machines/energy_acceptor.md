@@ -24,12 +24,12 @@ The ratios for conversion of Forge Energy and Techreborn Energy are
 The speed of conversion is entirely dependent on how much AE your network can store, for reasons that are explained on
 [this page](../ae2-mechanics/energy.md).
 
-# Variants
+## Variants
 
 Energy acceptors come in 2 different variants: normal and flat/[subpart](../ae2-mechanics/cable-subparts.md). This allows you to make some setups more compact.
 
 Energy acceptors can be swapped between normal and flat in a crafting grid.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="energy_acceptor" />

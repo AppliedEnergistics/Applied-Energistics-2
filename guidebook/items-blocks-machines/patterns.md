@@ -52,6 +52,6 @@ Multiple <ItemLink id="pattern_provider" />s with identical patterns are support
 for example, 8 cobblestone = 8 stone instead of 1 cobblestone = 1 stone, and the pattern provider will insert 8 cobblestone into
 your smelting setup every operation instead of one at a time.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="blank_pattern" />

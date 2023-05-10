@@ -15,7 +15,7 @@ Illuminated panels are a decorative light source that is also used in the produc
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-# Recipes
+## Recipes
 
 <Row>
   <RecipeFor id="monitor" />

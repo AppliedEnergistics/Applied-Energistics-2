@@ -12,7 +12,7 @@ Applied Energistics is meant to work with and allow automation of other mods in 
 with a single click, craft all of the prerequisites (and the final result) of a complex crafting chain, or keep certain
 quantities of items in stock, crafting more as needed, or simply transfer items around your base.
 
-# Getting Started
+## Getting Started
 
 *   [Getting Started](getting-started.md)
 *   [AE2 Mechanics](ae2-mechanics/ae2-mechanics-index.md)

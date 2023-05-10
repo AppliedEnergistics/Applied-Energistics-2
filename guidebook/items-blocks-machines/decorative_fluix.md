@@ -15,7 +15,7 @@ item_ids:
 
 <ItemLink id="fluix_block" />s can be crafted and stonecut into some decorative building blocks.
 
-# Recipes
+## Recipes
 
 <Row>
   <RecipeFor id="fluix_stairs" />

@@ -16,7 +16,7 @@ The charged quartz fixture is a little greeble that emits light.
 
 The light detecting fixture instead emits a redstone signal according to the light level of its block.
 
-# Recipes
+## Recipes
 
 <RecipeFor id="quartz_fixture" />
 

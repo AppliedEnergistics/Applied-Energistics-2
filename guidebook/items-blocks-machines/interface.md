@@ -36,7 +36,7 @@ They're essentially just chests/multi-fluid tanks with some extra functionality,
 them disconnected from any networks.
 Thus, they are useful in some niche cases where you want to store a small amount of a bunch of different stuff.
 
-# Variants
+## Variants
 
 Interfaces come in 2 different variants: normal and flat/[subpart](../ae2-mechanics/cable-subparts.md). This affects which specific sides their inventories can be accessed
 from and that they provide a network connection to.
@@ -49,12 +49,12 @@ from and that they provide a network connection to.
 
 Interfaces can be swapped between normal and flat in a crafting grid.
 
-# Settings
+## Settings
 
 The upper slots in the interface determine what the interface is set to stock inside itself. When something is placed in
 them or dragged from JEI/REI, a wrench appears that lets you set the quantity.
 
-# Upgrades
+## Upgrades
 
 The interface supports the following [upgrades](upgrade_cards.md):
 
@@ -63,12 +63,12 @@ The interface supports the following [upgrades](upgrade_cards.md):
     system to get the items it desires. It will pull the items from storage if possible, before making a request
     for a new item to be crafted.
 
-# Priority
+## Priority
 
 Priorities can be set by clicking the wrench in the top-right of the GUI. Interfaces with higher priority will get their items
 before those with lower priority,
 
-# Recipes
+## Recipes
 
 <Recipe id="network/blocks/interfaces_interface" />
 

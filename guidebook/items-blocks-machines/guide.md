@@ -15,7 +15,7 @@ This guide that you are reading now, for all your AE2 guiding needs.
 
 guide.
 
-# Recipe
+## Recipe
 
 How are you even seeing this if you don't know how to craft the guidebook?
 

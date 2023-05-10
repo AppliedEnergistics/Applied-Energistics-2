@@ -31,6 +31,6 @@ This window shows
 This window is also helpful for figuring out if two different cables or devices are part of the same network when messing around with
 [Subnetworks](../ae2-mechanics/subnetworks.md).
 
-# Recipe
+## Recipe
 
 <RecipeFor id="network_tool" />

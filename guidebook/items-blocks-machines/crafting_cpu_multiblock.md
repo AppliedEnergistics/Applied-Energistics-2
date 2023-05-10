@@ -33,16 +33,16 @@ Crafting CPUs manage crafting requests/jobs. They store the intermediate ingredi
 being carried out, and affect how big jobs can be, and to some degree how fast they are completed. See [autocrafting](../ae2-mechanics/autocrafting.md)
 for more details.
 
-# Settings
+## Settings
 
 *   The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />ses with
     <ItemLink id="crafting_card" />s), or both.
 
-# Components
+## Components
 
 Crafting CPUs are multiblocks, and must be solid rectangular prisms with no gaps. They are made out of several components:
 
-# Crafting Unit
+## Crafting Unit
 
 <BlockImage id="crafting_unit" scale="4" />
 
@@ -51,7 +51,7 @@ of the other components. They are also a base ingredient in the other components
 
 <RecipeFor id="crafting_unit" />
 
-# Crafting Storage
+## Crafting Storage
 
 <Row>
   <BlockImage id="1k_crafting_storage" scale="4" />
@@ -85,7 +85,7 @@ with more ingredients.
   </Row>
 </Column>
 
-# Crafting Co-Processing Unit
+## Crafting Co-Processing Unit
 
 <BlockImage id="crafting_accelerator" scale="4" />
 
@@ -96,7 +96,7 @@ distributing the ingredient batches between the surrounding assemblers.
 
 <RecipeFor id="crafting_accelerator" />
 
-# Crafting Monitor
+## Crafting Monitor
 
 <BlockImage id="crafting_monitor" scale="4" />
 

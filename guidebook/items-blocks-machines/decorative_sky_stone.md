@@ -26,7 +26,7 @@ item_ids:
 
 <ItemLink id="sky_stone_block" /> blocks can be crafted and stonecut into some decorative building blocks
 
-# Recipes
+## Recipes
 
 <Column gap="5">
   <Row>

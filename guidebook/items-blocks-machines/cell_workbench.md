@@ -18,7 +18,7 @@ You can add upgrade cards and configure "partitions" to filter what the cell wil
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
 
-# Settings
+## Settings
 
 The cell workbench has a few buttons on the top-left:
 
@@ -26,6 +26,6 @@ The cell workbench has a few buttons on the top-left:
 *   You can clear the cell's partitioning
 *   The workbench can be set to retain the partition settings when the cell is removed, allowing you to copy settings between cells.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="cell_workbench" />

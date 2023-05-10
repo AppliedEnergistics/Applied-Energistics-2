@@ -23,7 +23,7 @@ Wrenches are used to rotate ae2 devices (right-click), and disassemble ae2 block
 
 Many ae2 blocks can be rotated, so just because this guide doesn't say you can rotate something doesn't mean you can't.
 
-# Recipes
+## Recipes
 
 <Row>
   <RecipeFor id="certus_quartz_wrench" />

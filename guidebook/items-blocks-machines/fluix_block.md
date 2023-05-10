@@ -13,6 +13,6 @@ item_ids:
 
 The storage block for <ItemLink id="fluix_crystal" />. It is also used in the recipes for a few machines.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="fluix_block" />

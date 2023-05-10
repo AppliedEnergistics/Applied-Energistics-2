@@ -13,6 +13,6 @@ item_ids:
 
 A <ItemLink id="fluix_pearl" /> in a reflector dish, a component of short-range wireless ME technology.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="wireless_receiver" />

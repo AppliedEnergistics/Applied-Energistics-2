@@ -46,7 +46,7 @@ item_ids:
 Quartz tools are functionally identical to iron tools, with the same damage, durability, mining speed, etc.
 There are nether quartz and [certus quartz](fluix_crystal.md) variants.
 
-# Recipes
+## Recipes
 
 <Column>
   <Row>

@@ -21,7 +21,7 @@ the assembler crafts and spits oak planks into the lower hopper.
 
 ![Standalone Assembler](../assets/assemblies/standalone_assembler.png)
 
-# The Main Use Of The Molecular Assembler
+## The Main Use Of The Molecular Assembler
 
 However, their main use is next to a <ItemLink id="pattern_provider" />. Pattern providers have special behavior in this case,
 and will send information about the relevant pattern along with the ingredients to adjacent assemblers. Since assemblers auto-eject the results of
@@ -30,12 +30,12 @@ is all that is needed to automate crafting patterns.
 
 ![Assembler Tower](../assets/assemblies/assembler_tower.png)
 
-# Upgrades
+## Upgrades
 
 The Molecular Assembler supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="speed_card" />
 
-# Recipe
+## Recipe
 
 <RecipeFor id="molecular_assembler" />

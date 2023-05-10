@@ -17,6 +17,6 @@ connected to the walls around it. Also used to craft <ItemLink id="facade" />.
 
 Cable anchors prevent connections from forming on the side they're mounted on.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="cable_anchor" />

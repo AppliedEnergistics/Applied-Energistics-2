@@ -21,20 +21,20 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 Unlike other [devices](../ae2-mechanics/devices.md), level emitters *do not* require a [channel](../ae2-mechanics/channels.md).
 
-# Settings
+## Settings
 
 *   The Level Emitter can be set to either "greater than/equal to" or "less than" mode
 *   When a <ItemLink id="crafting_card" /> is inserted, it can be set to "emit redstone while item is crafting" or
     "emit redstone to craft item"
 
-# Upgrades
+## Upgrades
 
 The level emitter supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="fuzzy_card" /> lets the emitter filter by damage level and/or ignore item NBT
 *   <ItemLink id="crafting_card" /> enables the crafting functionality
 
-# Crafting Functionality
+## Crafting Functionality
 
 If a <ItemLink id="crafting_card" /> is inserted, the emitter will be switched into crafting mode.
 
@@ -56,7 +56,7 @@ near or distant future". This is usually used to activate and deactivate infinit
 or to activate a system that handles recursive recipes (which standard autocafting cannot understand) like, for example, "1 cobblestone = 2 cobblestone"
 if you have a machine that duplicates cobblestone.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="level_emitter" />
 

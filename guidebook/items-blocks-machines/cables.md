@@ -105,17 +105,17 @@ so you don't have to have all your terminals be purple. Fluix cables connect to 
 
 Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**
 
-# An Important Note
+## An Important Note
 
 **If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
 It will show how channels are routed through your network, making their behavior more understandable.**
 
-# Another Note
+## Another Note
 
 **These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
 into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
 
-# Glass Cable
+## Glass Cable
 
 ![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
 
@@ -137,7 +137,7 @@ your [Channels](channels.md).
 
 <RecipeFor id="blue_glass_cable" />
 
-# Covered Cable
+## Covered Cable
 
 ![A picture of covered cables.](../assets/blocks/fluix_covered_cable.png)
 
@@ -151,7 +151,7 @@ redstone and glowstone to make <ItemLink id="fluix_covered_dense_cable" />.
 
 <RecipeFor id="blue_covered_cable" />
 
-# Dense Cable
+## Dense Cable
 
 ![A picture of dense cable.](../assets/blocks/fluix_covered_dense_cable.png)
 
@@ -167,7 +167,7 @@ dense cable, and then the shortest path through that dense cable to a controller
 
 <RecipeFor id="blue_covered_dense_cable" />
 
-# Smart Cable
+## Smart Cable
 
 ![A picture of smart cable.](../assets/blocks/fluix_smart_cable.png)![A picture of smart cable.](../assets/blocks/fluix_smart_dense_cable.png)
 

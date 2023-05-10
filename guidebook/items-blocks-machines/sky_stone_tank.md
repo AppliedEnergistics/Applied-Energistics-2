@@ -14,6 +14,6 @@ item_ids:
 
 It's a fluid tank that stores 16 buckets of fluid. Does not retain its contents when picked up. Not much else to say.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="sky_stone_tank" />

@@ -32,7 +32,7 @@ colored cables, cable anchors and tunnels to your advantage to make sure your ch
 
 Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does is make cables not connect.
 
-# Ad-Hoc Networks
+## Ad-Hoc Networks
 
 A Network without a <ItemLink id="controller" />
 is considered to be Ad-Hoc, and can support up to 8 channel using devices.
@@ -46,11 +46,11 @@ While using [Ad-Hoc](ad-hoc-networks.md) networks each device will
 use 1 channel network wide, this is very different from how <ItemLink id="controller" /> allocate channels based on
 shortest route.
 
-# A Visual Example
+## A Visual Example
 
 WAITING UNTIL 3D SCENES ARE IMPLEMENTED
 
-# Channel Modes
+## Channel Modes
 
 AE2 10.0.0 for Minecraft 1.18 introduces new options to change how AE2 channels behave in your world.
 There's a new configuration option in the general section (`channels`) which controls this option, and a new in-game
@@ -71,7 +71,7 @@ The following table lists the available modes in both the configuration file and
 | `x4`       | All channel capacities are quadrupled (32 on normal cable, 128 on dense cable, ad-hoc networks support 32 channels)                                                                                                                       |
 | `infinite` | All channel restrictions are removed. Controllers still reduce the power consumption of grids *significantly*. Smart cables will only toggle between completely off (no channels carried) and completely on (1 or more channels carried). |
 
-# Design
+## Design
 
 It's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
 branching out from the dense, and [devices](../ae2-mechanics/devices.md) in clusters of 8 or fewer on the regular cables.

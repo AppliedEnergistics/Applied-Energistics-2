@@ -14,6 +14,6 @@ item_ids:
 An ender pearl that has been crushed by an <ItemLink id="inscriber" />. Used in the production of <ItemLink id="wireless_booster" />s
 and <ItemLink id="quantum_entangled_singularity" /> pairs.
 
-# Recipe
+## Recipe
 
 <RecipeFor id="ender_dust" />
