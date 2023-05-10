@@ -11,6 +11,9 @@
 !gradle.properties
 !.travis.yml
 
+# Scripts
+!/scripts
+
 # include markdowns
 !*.md
 !LICENSE
