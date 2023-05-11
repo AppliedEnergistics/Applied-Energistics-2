@@ -131,7 +131,7 @@ and assemblers work faster.
 
 <RecipeFor id="speed_card" />
 
-### Inverter Card
+## Inverter Card
 
 <ItemImage id="inverter_card" scale="2" />
 
@@ -139,7 +139,7 @@ Inverter cards swap filters in devices and tools from whitelist to blacklist.
 
 <RecipeFor id="inverter_card" />
 
-### Crafting Card
+## Crafting Card
 
 <ItemImage id="inverter_card" scale="2" />
 
@@ -148,7 +148,7 @@ system to get the items it desires.
 
 <RecipeFor id="inverter_card" />
 
-### Equal Distribution Card
+## Equal Distribution Card
 
 <ItemImage id="equal_distribution_card" scale="2" />
 
@@ -158,10 +158,11 @@ filling the cell.
 
 <RecipeFor id="equal_distribution_card" />
 
-### Energy Card
+## Energy Card
 
 <ItemImage id="energy_card" scale="2" />
 
-Energy cards add more energy storage to certain tools like portable terminals.
+Energy cards add more energy storage to certain tools like portable terminals, and make <ItemLink id="vibration_chamber" />s
+more efficient.
 
 <RecipeFor id="energy_card" />

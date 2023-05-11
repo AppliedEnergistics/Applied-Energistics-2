@@ -42,7 +42,7 @@ for more details.
 
 Crafting CPUs are multiblocks, and must be solid rectangular prisms with no gaps. They are made out of several components:
 
-## Crafting Unit
+# Crafting Unit
 
 <BlockImage id="crafting_unit" scale="4" />
 
@@ -51,7 +51,7 @@ of the other components. They are also a base ingredient in the other components
 
 <RecipeFor id="crafting_unit" />
 
-## Crafting Storage
+# Crafting Storage
 
 <Row>
   <BlockImage id="1k_crafting_storage" scale="4" />
@@ -85,7 +85,7 @@ with more ingredients.
   </Row>
 </Column>
 
-## Crafting Co-Processing Unit
+# Crafting Co-Processing Unit
 
 <BlockImage id="crafting_accelerator" scale="4" />
 
@@ -96,7 +96,7 @@ distributing the ingredient batches between the surrounding assemblers.
 
 <RecipeFor id="crafting_accelerator" />
 
-## Crafting Monitor
+# Crafting Monitor
 
 <BlockImage id="crafting_monitor" scale="4" />
 

@@ -59,7 +59,29 @@ See [Bytes and Types](../ae2-mechanics/bytes-and-types.md) for an explanation of
 
 Storage components can be removed from the housing if the cell is empty by shift-right clicking with the cell in your hand.
 
-## Housings
+## Partitioning
+
+Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />ses can be filtered. This is
+done in a <ItemLink id="cell_workbench" />.
+
+Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
+
+## Upgrades
+
+Storage cells support the following [upgrades](upgrade_cards.md), inserted via a <ItemLink id="cell_workbench" />:
+
+*   <ItemLink id="fuzzy_card" /> (not available on fluid cells) lets the cell be partitioned by damage level and/or ignore item NBT
+*   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
+*   <ItemLink id="equal_distribution_card" /> allocates the same amount of cell byte space to each type, so one type cannot fill up the entire cell
+*   <ItemLink id="void_card" /> voids items inserted if the cell is full (or that specific type's allocated space in the
+    case of an equal distribution card), useful for stopping farms from backing up. Be careful to partition this!
+*   Portable cells can accept <ItemLink id="energy_card" /> in order to increase their battery capacity
+
+## Coloring
+
+Portable item and fluid cells can be colored similar to leather armor, by crafting them together with dyes.
+
+# Housings
 
 Cells can be made with a storage component and a housing or with the housing recipe around a storage component:
 
@@ -77,7 +99,7 @@ Housings by themselves are crafted like so:
   <RecipeFor id="fluid_cell_housing" />
 </Row>
 
-## Storage Components
+# Storage Components
 
 Storage Components are the core of all AE2 cells, determining the capacity of the cells. Each tier increases the capacity
 by 4x and costs 3 of the previous tier.
@@ -98,25 +120,7 @@ by 4x and costs 3 of the previous tier.
   </Row>
 </Column>
 
-## Partitioning
-
-Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />ses can be filtered. This is
-done in a <ItemLink id="cell_workbench" />.
-
-Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
-
-## Upgrades
-
-Storage cells support the following [upgrades](upgrade_cards.md), inserted via a <ItemLink id="cell_workbench" />:
-
-*   <ItemLink id="fuzzy_card" /> (not available on fluid cells) lets the cell be partitioned by damage level and/or ignore item NBT
-*   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
-*   <ItemLink id="equal_distribution_card" /> allocates the same amount of cell byte space to each type, so one type cannot fill up the entire cell
-*   <ItemLink id="void_card" /> voids items inserted if the cell is full (or that specific type's allocated space in the
-    case of an equal distribution card), useful for stopping farms from backing up. Be careful to partition this!
-*   Portable cells can accept <ItemLink id="energy_card" /> in order to increase their battery capacity
-
-## Item Storage Cells
+# Item Storage Cells
 
 Item storage cells can hold up to 63 distinct types of items, and are available in all the standard capacities.
 
@@ -161,7 +165,7 @@ In addition to the upgrade cards all cells can receive, these also accept <ItemL
   </Row>
 </Column>
 
-## Fluid Storage Cells
+# Fluid Storage Cells
 
 Fluid storage cells can hold up to 5 distinct types of fluids, and are available in all the standard capacities.
 
@@ -206,11 +210,7 @@ In addition to the upgrade cards all cells can receive, these also accept <ItemL
   </Row>
 </Column>
 
-## Coloring
-
-Portable item and fluid cells can be colored similar to leather armor, by crafting them together with dyes.
-
-## Creative Item and Fluid Cells
+# Creative Item and Fluid Cells
 
 <Row>
   <ItemImage id="creative_item_cell" scale="2" />

@@ -33,3 +33,5 @@ Energy acceptors can be swapped between normal and flat in a crafting grid.
 ## Recipe
 
 <RecipeFor id="energy_acceptor" />
+
+<RecipeFor id="cable_energy_acceptor" />
