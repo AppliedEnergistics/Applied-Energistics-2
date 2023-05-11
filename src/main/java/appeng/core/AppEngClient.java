@@ -20,11 +20,8 @@ package appeng.core;
 
 import java.util.Objects;
 
-import appeng.client.guidebook.indices.MultiValuedIndex;
-import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
-import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +42,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -64,6 +62,7 @@ import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
+import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
@@ -166,7 +165,6 @@ public class AppEngClient extends AppEngBase {
         });
 
         return Guide.builder(MOD_ID, "ae2guide")
-                .index(MultiValuedIndex.)
                 .build();
     }
 
@@ -390,7 +388,8 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void openGuideAtPreviousPage(ResourceLocation initialPage) {
         try {
-            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage), GlobalInMemoryHistory.INSTANCE);
+            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage),
+                    GlobalInMemoryHistory.INSTANCE);
 
             openGuideScreen(screen);
         } catch (Exception e) {
@@ -418,7 +417,7 @@ public class AppEngClient extends AppEngBase {
         minecraft.setScreen(screen);
     }
 
-    public Guide getGuidePages() {
+    public Guide getGuide() {
         return guidePages;
     }
 }

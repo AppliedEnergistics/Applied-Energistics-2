@@ -18,11 +18,12 @@
 
 package appeng.client.gui.implementations;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.menu.implementations.QNBMenu;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 
 public class QNBScreen extends AEBaseScreen<QNBMenu> {
 

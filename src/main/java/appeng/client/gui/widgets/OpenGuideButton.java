@@ -1,10 +1,11 @@
 package appeng.client.gui.widgets;
 
-import appeng.client.gui.Icon;
-import appeng.core.localization.ButtonToolTips;
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
+import appeng.client.gui.Icon;
+import appeng.core.localization.ButtonToolTips;
 
 public class OpenGuideButton extends IconButton {
     public OpenGuideButton(OnPress onPress) {
@@ -15,8 +16,7 @@ public class OpenGuideButton extends IconButton {
     public List<Component> getTooltipMessage() {
         return List.of(
                 ButtonToolTips.OpenGuide.text(),
-                ButtonToolTips.OpenGuideDetail.text()
-        );
+                ButtonToolTips.OpenGuideDetail.text());
     }
 
     @Override

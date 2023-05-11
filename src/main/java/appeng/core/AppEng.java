@@ -22,7 +22,6 @@ import java.util.Collection;
 
 import javax.annotation.Nullable;
 
-import appeng.client.guidebook.PageAnchor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,6 +32,7 @@ import net.minecraft.world.phys.HitResult;
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
+import appeng.client.guidebook.PageAnchor;
 import appeng.core.sync.BasePacket;
 
 public interface AppEng {
@@ -104,8 +104,8 @@ public interface AppEng {
     }
 
     /**
-     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page,
-     * if no page has ever been opened yet.
+     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page, if no page has ever
+     * been opened yet.
      */
     default void openGuideAtAnchor(PageAnchor anchor) {
     }

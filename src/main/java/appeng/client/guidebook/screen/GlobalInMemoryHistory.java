@@ -1,10 +1,10 @@
 package appeng.client.guidebook.screen;
 
-import appeng.client.guidebook.PageAnchor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import appeng.client.guidebook.PageAnchor;
 
 public class GlobalInMemoryHistory implements GuideScreenHistory {
     public static final GuideScreenHistory INSTANCE = new GlobalInMemoryHistory();

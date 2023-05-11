@@ -18,9 +18,51 @@
 
 package appeng.client.gui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
+import com.google.common.base.Stopwatch;
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.client.AEKeyRendering;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.parts.IPart;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
@@ -34,9 +76,11 @@ import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.indices.ItemIndex;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.Tooltips;
 import appeng.core.sync.network.NetworkHandler;
@@ -53,40 +97,6 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
 import appeng.util.ConfigMenuInventory;
-import com.google.common.base.Stopwatch;
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AEBaseScreen.class);
@@ -468,7 +478,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     protected final void renderBg(PoseStack poseStack, float f, int x,
-                                  int y) {
+            int y) {
 
         this.drawBG(poseStack, leftPos, topPos, x, y, f);
 
@@ -723,7 +733,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY,
-                       float partialTicks) {
+            float partialTicks) {
 
         var generatedBackground = style.getGeneratedBackground();
         if (generatedBackground != null) {
@@ -1000,6 +1010,24 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @org.jetbrains.annotations.Nullable
     protected PageAnchor getHelpTopic() {
+        // Try finding the help topic automatically via the guidebook item index
+        var guide = AppEngClient.instance().getGuide();
+        var itemIndex = guide.getIndex(ItemIndex.class);
+
+        Object target = getMenu().getTarget();
+        if (target instanceof BlockEntity be) {
+            var block = be.getBlockState().getBlock();
+            var blockId = BuiltInRegistries.BLOCK.getKey(block);
+            return itemIndex.get(blockId);
+        } else if (target instanceof IPart part) {
+            var item = part.getPartItem().asItem();
+            var itemId = BuiltInRegistries.ITEM.getKey(item);
+            return itemIndex.get(itemId);
+        } else if (target instanceof ItemMenuHost menuHost) {
+            var item = menuHost.getItemStack().getItem();
+            var itemId = BuiltInRegistries.ITEM.getKey(item);
+            return itemIndex.get(itemId);
+        }
         return null;
     }
 }
