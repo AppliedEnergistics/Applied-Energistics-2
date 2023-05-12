@@ -60,5 +60,4 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
         this.separateSidesBtn.set(getMenu().getSeparateSides());
         this.autoExportBtn.set(getMenu().getAutoExport());
     }
-
 }

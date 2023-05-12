@@ -36,6 +36,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -45,6 +47,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -53,10 +56,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.client.AEKeyRendering;
+import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.parts.IPart;
 import appeng.api.stacks.GenericStack;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
@@ -67,10 +73,14 @@ import appeng.client.gui.style.Text;
 import appeng.client.gui.style.TextAlignment;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
+import appeng.client.gui.widgets.OpenGuideButton;
 import appeng.client.gui.widgets.VerticalButtonBar;
+import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.indices.ItemIndex;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.AppEngClient;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.Tooltips;
 import appeng.core.sync.network.NetworkHandler;
@@ -89,6 +99,7 @@ import appeng.menu.slot.ResizableSlot;
 import appeng.util.ConfigMenuInventory;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
+    private static final Logger LOG = LoggerFactory.getLogger(AEBaseScreen.class);
 
     private static final Point HIDDEN_SLOT_POS = new Point(-9999, -9999);
 
@@ -98,6 +109,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public static final String TEXT_ID_DIALOG_TITLE = "dialog_title";
 
     private final VerticalButtonBar verticalToolbar;
+    private final OpenGuideButton helpButton;
 
     // drag y
     private final Set<Slot> drag_click = new HashSet<>();
@@ -128,6 +140,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         this.style = Objects.requireNonNull(style, "style");
         this.widgets = new WidgetContainer(style);
         this.widgets.add("verticalToolbar", this.verticalToolbar = new VerticalButtonBar());
+
+        // Add a help-button to the vertical button bar
+        this.helpButton = addToLeftToolbar(new OpenGuideButton(btn -> openHelp()));
 
         if (style.getGeneratedBackground() != null) {
             this.imageWidth = style.getGeneratedBackground().getWidth();
@@ -219,6 +234,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      */
     @OverridingMethodsMustInvokeSuper
     protected void updateBeforeRender() {
+        helpButton.setVisibility(getHelpTopic() != null);
     }
 
     @Override
@@ -981,5 +997,37 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             slot.x = x;
             slot.y = y;
         }
+    }
+
+    protected void openHelp() {
+        var topic = getHelpTopic();
+        if (topic != null) {
+            AppEng.instance().openGuideAtAnchor(topic);
+        } else {
+            LOG.warn("No topic assigned to screen {}, but button was clicked", this);
+        }
+    }
+
+    @org.jetbrains.annotations.Nullable
+    protected PageAnchor getHelpTopic() {
+        // Try finding the help topic automatically via the guidebook item index
+        var guide = AppEngClient.instance().getGuide();
+        var itemIndex = guide.getIndex(ItemIndex.class);
+
+        Object target = getMenu().getTarget();
+        if (target instanceof BlockEntity be) {
+            var block = be.getBlockState().getBlock();
+            var blockId = BuiltInRegistries.BLOCK.getKey(block);
+            return itemIndex.get(blockId);
+        } else if (target instanceof IPart part) {
+            var item = part.getPartItem().asItem();
+            var itemId = BuiltInRegistries.ITEM.getKey(item);
+            return itemIndex.get(itemId);
+        } else if (target instanceof ItemMenuHost menuHost) {
+            var item = menuHost.getItemStack().getItem();
+            var itemId = BuiltInRegistries.ITEM.getKey(item);
+            return itemIndex.get(itemId);
+        }
+        return null;
     }
 }

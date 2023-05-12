@@ -52,5 +52,4 @@ public class CondenserScreen extends AEBaseScreen<CondenserMenu> {
 
         this.mode.set(this.menu.getOutput());
     }
-
 }

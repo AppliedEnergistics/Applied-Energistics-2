@@ -1,6 +1,5 @@
 package appeng.client.guidebook.screen;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -47,24 +46,25 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
 public class GuideScreen extends Screen {
-    private static final int HISTORY_SIZE = 100;
-    private static final List<PageAnchor> history = new ArrayList<>();
     // 20 virtual px margin around the document
     public static final int DOCUMENT_RECT_MARGIN = 20;
-    private static int historyPosition;
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
     private final PageCollection pages;
 
     private final GuideScrollbar scrollbar;
+    private final GuideScreenHistory history;
     private GuidePage currentPage;
     private final LytParagraph pageTitle;
 
     private Button backButton;
     private Button forwardButton;
+    @Nullable
+    private Screen returnToOnClose;
 
-    private GuideScreen(PageCollection pages, PageAnchor anchor) {
+    private GuideScreen(GuideScreenHistory history, PageCollection pages, PageAnchor anchor) {
         super(Component.literal("AE2 Guidebook"));
+        this.history = history;
         this.pages = pages;
         this.scrollbar = new GuideScrollbar();
         this.pageTitle = new LytParagraph();
@@ -75,27 +75,24 @@ public class GuideScreen extends Screen {
     /**
      * Opens and resets history.
      */
-    public static GuideScreen openNew(PageCollection pages, PageAnchor anchor) {
-        // Append to history if it's not already appended
-        if (history.lastIndexOf(anchor) != history.size()) {
-            historyPosition = history.size();
-            history.add(anchor);
-        }
+    public static GuideScreen openNew(PageCollection pages, PageAnchor anchor, GuideScreenHistory history) {
+        history.push(anchor);
 
-        return new GuideScreen(pages, anchor);
+        return new GuideScreen(history, pages, anchor);
     }
 
     /**
      * Opens at current history position and only falls back to the index if the history is empty.
      */
-    public static GuideScreen openAtPreviousPage(PageCollection pages, PageAnchor anchor) {
-        if (historyPosition < history.size()) {
-            anchor = history.get(historyPosition);
+    public static GuideScreen openAtPreviousPage(PageCollection pages,
+            PageAnchor fallbackPage,
+            GuideScreenHistory history) {
+        var historyPage = history.current();
+        if (historyPage.isPresent()) {
+            return new GuideScreen(history, pages, historyPage.get());
         } else {
-            return openNew(pages, anchor);
+            return openNew(pages, fallbackPage, history);
         }
-
-        return new GuideScreen(pages, anchor);
     }
 
     @Override
@@ -320,31 +317,17 @@ public class GuideScreen extends Screen {
 
         loadPageAndScrollTo(anchor);
 
-        // Remove anything from the history after the current page when we navigate to a new one
-        if (historyPosition + 1 < history.size()) {
-            history.subList(historyPosition + 1, history.size()).clear();
-        }
-        // Clamp history length
-        if (history.size() >= HISTORY_SIZE) {
-            history.subList(0, history.size() - HISTORY_SIZE).clear();
-        }
-        // Append to history
-        historyPosition = history.size();
-        history.add(anchor);
+        history.push(anchor);
     }
 
     // Navigate to next page in history (only possible if we've navigated back previously)
     private void navigateForward() {
-        if (historyPosition + 1 < history.size()) {
-            loadPageAndScrollTo(history.get(++historyPosition));
-        }
+        history.forward().ifPresent(this::loadPageAndScrollTo);
     }
 
     // Navigate to previous page in history
     private void navigateBack() {
-        if (historyPosition > 0) {
-            loadPageAndScrollTo(history.get(--historyPosition));
-        }
+        history.back().ifPresent(this::loadPageAndScrollTo);
     }
 
     private void loadPageAndScrollTo(PageAnchor anchor) {
@@ -408,6 +391,13 @@ public class GuideScreen extends Screen {
     public void removed() {
         super.removed();
         GuidePageTexture.releaseUsedTextures();
+    }
+
+    /**
+     * Sets a screen to return to when closing this guide.
+     */
+    public void setReturnToOnClose(@Nullable Screen screen) {
+        this.returnToOnClose = screen;
     }
 
     @FunctionalInterface
@@ -639,11 +629,21 @@ public class GuideScreen extends Screen {
     }
 
     private void updateNavigationButtons() {
-        backButton.active = historyPosition > 0;
-        forwardButton.active = historyPosition + 1 < history.size();
+        backButton.active = history.peekBack().isPresent();
+        forwardButton.active = history.peekForward().isPresent();
     }
 
     public PageCollection getPages() {
         return pages;
+    }
+
+    @Override
+    public void onClose() {
+        if (minecraft != null && minecraft.screen == this && this.returnToOnClose != null) {
+            minecraft.setScreen(this.returnToOnClose);
+            this.returnToOnClose = null;
+            return;
+        }
+        super.onClose();
     }
 }

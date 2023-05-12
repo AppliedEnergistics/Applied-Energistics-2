@@ -32,6 +32,7 @@ import net.minecraft.world.phys.HitResult;
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
 import appeng.client.EffectType;
+import appeng.client.guidebook.PageAnchor;
 import appeng.core.sync.BasePacket;
 
 public interface AppEng {
@@ -99,6 +100,13 @@ public interface AppEng {
     /**
      * Opens the guidebook (if this is a client) on the last opened page, or the given initial page.
      */
-    default void openGuide(ResourceLocation initialPage) {
+    default void openGuideAtPreviousPage(ResourceLocation initialPage) {
+    }
+
+    /**
+     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page, if no page has ever
+     * been opened yet.
+     */
+    default void openGuideAtAnchor(PageAnchor anchor) {
     }
 }

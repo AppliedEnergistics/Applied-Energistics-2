@@ -42,6 +42,7 @@ public enum Icon {
     LOCKED(144, 0),
     // UNLOCKED
     UNLOCKED(160, 0),
+    HELP(176, 0),
     BACKGROUND_PRIMARY_OUTPUT(224, 0),
     BACKGROUND_STORAGE_CELL(240, 0),
 

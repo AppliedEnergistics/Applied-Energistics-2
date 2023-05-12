@@ -9,7 +9,9 @@ import appeng.client.guidebook.style.TextAlignment;
 import appeng.client.guidebook.style.TextStyle;
 import appeng.client.guidebook.style.WhiteSpaceMode;
 
-public class DefaultStyles {
+public final class DefaultStyles {
+    private DefaultStyles() {
+    }
 
     public static final ResolvedTextStyle BASE_STYLE = new ResolvedTextStyle(
             1,

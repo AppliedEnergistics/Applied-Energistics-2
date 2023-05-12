@@ -62,6 +62,7 @@ import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
+import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
@@ -108,7 +109,7 @@ public class AppEngClient extends AppEngBase {
      */
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
-    private Guide guidePages;
+    private final Guide guidePages;
 
     public AppEngClient() {
         this.registerParticleFactories();
@@ -163,7 +164,8 @@ public class AppEngClient extends AppEngBase {
             GuidebookStructureCommands.register(dispatcher);
         });
 
-        return Guide.builder(MOD_ID, "ae2guide").build();
+        return Guide.builder(MOD_ID, "ae2guide")
+                .build();
     }
 
     private void tickPinnedKeys(Minecraft minecraft) {
@@ -384,12 +386,38 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public void openGuide(ResourceLocation initialPage) {
+    public void openGuideAtPreviousPage(ResourceLocation initialPage) {
         try {
-            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage));
-            Minecraft.getInstance().setScreen(screen);
+            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage),
+                    GlobalInMemoryHistory.INSTANCE);
+
+            openGuideScreen(screen);
         } catch (Exception e) {
             LOGGER.error("Failed to open guide.", e);
         }
+    }
+
+    @Override
+    public void openGuideAtAnchor(PageAnchor anchor) {
+        try {
+            var screen = GuideScreen.openNew(guidePages, anchor, GlobalInMemoryHistory.INSTANCE);
+
+            openGuideScreen(screen);
+        } catch (Exception e) {
+            LOGGER.error("Failed to open guide at {}.", anchor, e);
+        }
+    }
+
+    private static void openGuideScreen(GuideScreen screen) {
+        var minecraft = Minecraft.getInstance();
+        if (minecraft.screen != null) {
+            screen.setReturnToOnClose(minecraft.screen);
+        }
+
+        minecraft.setScreen(screen);
+    }
+
+    public Guide getGuide() {
+        return guidePages;
     }
 }
