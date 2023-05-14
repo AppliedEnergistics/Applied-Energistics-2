@@ -13,6 +13,7 @@
 
 # Scripts
 !/scripts
+/scripts/node_modules
 
 # include markdowns
 !*.md
