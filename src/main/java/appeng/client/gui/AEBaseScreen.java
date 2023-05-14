@@ -1010,6 +1010,22 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @org.jetbrains.annotations.Nullable
     protected PageAnchor getHelpTopic() {
+        // Help topic may be overridden via screen style
+        String helpTopic = style.getHelpTopic();
+        if (helpTopic != null) {
+            var sep = helpTopic.indexOf('#');
+            String fragment = null;
+            if (sep != -1) {
+                fragment = helpTopic.substring(sep + 1);
+                helpTopic = helpTopic.substring(0, sep);
+            }
+            try {
+                return new PageAnchor(AppEng.makeId(helpTopic), fragment);
+            } catch (Exception e) {
+                LOG.warn("Invalid helpTopic for screen {}: {}", this, helpTopic);
+            }
+        }
+
         // Try finding the help topic automatically via the guidebook item index
         var guide = AppEngClient.instance().getGuide();
         var itemIndex = guide.getIndex(ItemIndex.class);

@@ -7,6 +7,7 @@
     "encoding/smithing_table.json",
     "encoding/stonecutting.json"
   ],
+  "helpTopic": "items-blocks-machines/terminals.md#pattern-encoding-terminal-ui",
   "slots": {
     "BLANK_PATTERN": {
       "left": 147,

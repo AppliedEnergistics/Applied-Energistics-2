@@ -190,7 +190,8 @@ public final class InitScreens {
                 PatternEncodingTermScreen::new,
                 "/screens/terminals/pattern_encoding_terminal.json");
         InitScreens.<PatternAccessTermMenu, PatternAccessTermScreen<PatternAccessTermMenu>>register(
-                PatternAccessTermMenu.TYPE, PatternAccessTermScreen::new, "/screens/pattern_access_terminal.json");
+                PatternAccessTermMenu.TYPE, PatternAccessTermScreen::new,
+                "/screens/terminals/pattern_access_terminal.json");
     }
 
     /**

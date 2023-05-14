@@ -47,6 +47,13 @@ public class ScreenStyle {
             .create();
 
     /**
+     * Overrides the default help topic for this screen. This will be resolved as a link to a page in the guidebook and
+     * may contain an optional fragment (#some-heading) to directly link to a heading or anchor in the page.
+     */
+    @org.jetbrains.annotations.Nullable
+    private String helpTopic;
+
+    /**
      * Positioning information for groups of slots.
      */
     private final Map<String, SlotPosition> slots = new HashMap<>();
@@ -109,6 +116,10 @@ public class ScreenStyle {
     @org.jetbrains.annotations.Nullable
     public GeneratedBackground getGeneratedBackground() {
         return generatedBackground;
+    }
+
+    public String getHelpTopic() {
+        return helpTopic;
     }
 
     public WidgetStyle getWidget(String id) {

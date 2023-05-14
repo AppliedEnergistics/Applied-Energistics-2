@@ -1,5 +1,6 @@
 package appeng.client.guidebook.screen;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -9,9 +10,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -23,6 +28,7 @@ import appeng.client.gui.DashedRectangle;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.compiler.AnchorIndexer;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.DefaultStyles;
@@ -31,6 +37,7 @@ import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.block.LytHeading;
 import appeng.client.guidebook.document.block.LytParagraph;
+import appeng.client.guidebook.document.flow.LytFlowAnchor;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
@@ -46,6 +53,8 @@ import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
 public class GuideScreen extends Screen {
+    private static final Logger LOG = LoggerFactory.getLogger(GuideScreen.class);
+
     // 20 virtual px margin around the document
     public static final int DOCUMENT_RECT_MARGIN = 20;
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
@@ -61,6 +70,14 @@ public class GuideScreen extends Screen {
     private Button forwardButton;
     @Nullable
     private Screen returnToOnClose;
+
+    /**
+     * When the guidebook is initially opened, it does not do a proper layout due to missing width/height info. When we
+     * should scroll to a point in the page, we have to "stash" that and do it after the initial proper layout has been
+     * done.
+     */
+    @Nullable
+    private String pendingScrollToAnchor;
 
     private GuideScreen(GuideScreenHistory history, PageCollection pages, PageAnchor anchor) {
         super(Component.literal("AE2 Guidebook"));
@@ -109,19 +126,25 @@ public class GuideScreen extends Screen {
         addRenderableWidget(navbar);
 
         // Center them vertically in the margin
-        backButton = new HistoryNavigationButton(
-                width - DOCUMENT_RECT_MARGIN - HistoryNavigationButton.WIDTH * 2 - 5,
+        backButton = new TopNavButton(
+                width - DOCUMENT_RECT_MARGIN - TopNavButton.WIDTH * 3 - 10,
                 2,
-                HistoryNavigationButton.Direction.BACK,
+                TopNavButton.Role.BACK,
                 this::navigateBack);
         addRenderableWidget(backButton);
-        forwardButton = new HistoryNavigationButton(
-                width - DOCUMENT_RECT_MARGIN - HistoryNavigationButton.WIDTH,
+        forwardButton = new TopNavButton(
+                width - DOCUMENT_RECT_MARGIN - TopNavButton.WIDTH * 2 - 5,
                 2,
-                HistoryNavigationButton.Direction.FORWARD,
+                TopNavButton.Role.FORWARD,
                 this::navigateForward);
         addRenderableWidget(forwardButton);
-        updateNavigationButtons();
+        var closeButton = new TopNavButton(
+                width - DOCUMENT_RECT_MARGIN - TopNavButton.WIDTH,
+                2,
+                TopNavButton.Role.CLOSE,
+                this::onClose);
+        addRenderableWidget(closeButton);
+        updateTopNavButtons();
     }
 
     private void updateScrollbarPosition() {
@@ -130,8 +153,40 @@ public class GuideScreen extends Screen {
     }
 
     @Override
+    public void tick() {
+        processPendingScrollTo();
+    }
+
+    /**
+     * If a scroll-to command is queued, this processes that.
+     */
+    private void processPendingScrollTo() {
+        if (pendingScrollToAnchor == null) {
+            return;
+        }
+
+        var anchor = pendingScrollToAnchor;
+        pendingScrollToAnchor = null;
+
+        var indexer = new AnchorIndexer(currentPage.document());
+
+        var targetAnchor = indexer.get(anchor);
+        if (targetAnchor == null) {
+            LOG.warn("Failed to find anchor {} in page {}", anchor, currentPage);
+            return;
+        }
+
+        if (targetAnchor.flowContent() instanceof LytFlowAnchor flowAnchor && flowAnchor.getLayoutY().isPresent()) {
+            scrollbar.setScrollAmount(flowAnchor.getLayoutY().getAsInt());
+        } else {
+            var bounds = targetAnchor.blockNode().getBounds();
+            scrollbar.setScrollAmount(bounds.y());
+        }
+    }
+
+    @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        updateNavigationButtons();
+        updateTopNavButtons();
 
         renderSkyStoneBackground(poseStack);
 
@@ -311,12 +366,14 @@ public class GuideScreen extends Screen {
 
     public void navigateTo(PageAnchor anchor) {
         if (currentPage.id().equals(anchor.pageId())) {
-            // TODO -> scroll up (?)
+            pendingScrollToAnchor = anchor.anchor();
+            if (anchor.anchor() != null) {
+                history.push(anchor);
+            }
             return;
         }
 
         loadPageAndScrollTo(anchor);
-
         history.push(anchor);
     }
 
@@ -336,7 +393,7 @@ public class GuideScreen extends Screen {
         scrollbar.setScrollAmount(0);
         updatePageLayout();
 
-        // TODO ANCHOR
+        pendingScrollToAnchor = anchor.anchor();
     }
 
     public void reloadPage() {
@@ -398,6 +455,36 @@ public class GuideScreen extends Screen {
      */
     public void setReturnToOnClose(@Nullable Screen screen) {
         this.returnToOnClose = screen;
+    }
+
+    public void openUrl(String href) {
+        URI uri;
+        try {
+            uri = URI.create(href);
+        } catch (IllegalArgumentException ignored) {
+            LOG.debug("Can't parse '{}' as URL in '{}'", href, currentPage);
+            return;
+        }
+
+        // Treat it as an external URL if it has a scheme
+        if (uri.getScheme() != null) {
+            if (minecraft.options.chatLinksPrompt().get().booleanValue()) {
+                this.minecraft.setScreen(new ConfirmLinkScreen(doOpen -> {
+                    if (doOpen) {
+                        Util.getPlatform().openUri(uri);
+                    }
+                    this.minecraft.setScreen(this);
+                }, href, false));
+            } else {
+                Util.getPlatform().openUri(uri);
+            }
+        } else {
+            // Otherwise treat it as a page anchor
+            var pageId = AppEng.makeId(uri.getSchemeSpecificPart());
+            PageAnchor anchor = new PageAnchor(pageId, uri.getFragment());
+            history.push(anchor);
+            loadPageAndScrollTo(anchor);
+        }
     }
 
     @FunctionalInterface
@@ -602,7 +689,7 @@ public class GuideScreen extends Screen {
         availableWidth -= 2 * DOCUMENT_RECT_MARGIN;
 
         // Account for the navigation buttons on the right
-        availableWidth -= HistoryNavigationButton.WIDTH * 2 + 5;
+        availableWidth -= TopNavButton.WIDTH * 2 + 5;
 
         // Remove 2 * 5 as margin
         availableWidth -= 10;
@@ -628,7 +715,7 @@ public class GuideScreen extends Screen {
         return currentPage.id();
     }
 
-    private void updateNavigationButtons() {
+    private void updateTopNavButtons() {
         backButton.active = history.peekBack().isPresent();
         forwardButton.active = history.peekForward().isPresent();
     }
