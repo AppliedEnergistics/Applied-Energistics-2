@@ -7,7 +7,6 @@ import appeng.client.guidebook.document.flow.LytTooltipSpan;
 import appeng.client.guidebook.document.interaction.ItemTooltip;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
-import appeng.libs.mdast.model.MdAstNode;
 
 public class ItemLinkCompiler extends FlowTagCompiler {
     @Override
@@ -23,7 +22,7 @@ public class ItemLinkCompiler extends FlowTagCompiler {
         // We'll error out for item-links to our own mod because we expect them to have a page
         // while we don't have pages for Vanilla items or items from other mods.
         if (linksTo == null && id.getNamespace().equals(compiler.getId().getNamespace())) {
-            parent.append(compiler.createErrorFlowContent("No page found for item " + id, (MdAstNode) el));
+            parent.append(compiler.createErrorFlowContent("No page found for item " + id, el));
             return;
         }
 

@@ -26,7 +26,9 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 Your basic terminal, allowing you to view and access the contents of your [network's storage](../ae2-mechanics/import-export-storage.md)
 and request things from your [autocrafting](../ae2-mechanics/autocrafting.md) setup.
 
-## The UI
+<a name="terminal-ui"></a>
+
+### The UI
 
 There are several sections of a basic terminal's UI
 
@@ -54,7 +56,7 @@ On the right there are slots for <ItemLink id="view_cell" />s
 The top-right of the center section (hammer button) brings up the [autocrafting](../ae2-mechanics/autocrafting.md) management
 UI, allowing you to see the progress of your autocrafts and what each [crafting CPU](crafting_cpu_multiblock.md) is doing.
 
-## Recipe
+### Recipe
 
 <RecipeFor id="terminal" />
 
@@ -65,13 +67,15 @@ refilled from [network storage](../ae2-mechanics/import-export-storage.md). Be c
 
 You should upgrade your terminal into a crafting terminal ASAP.
 
-## The UI
+<a name="crafting-terminal-ui"></a>
+
+### The UI
 
 The crafting terminal has the same UI as the regular terminal, but with an added crafting grid in the middle.
 
 There are 2 additional buttons, to empty the crafting grid into network storage or your inventory.
 
-## Recipe
+### Recipe
 
 <RecipeFor id="crafting_terminal" />
 
@@ -83,7 +87,9 @@ perform crafts.
 
 You should have one of these in addition to a crafting terminal.
 
-## The UI
+<a name="pattern-encoding-terminal-ui"></a>
+
+### The UI
 
 The crafting terminal has the same UI as the regular terminal, added [pattern](patterns.md) encoding interface.
 
@@ -122,7 +128,7 @@ The central UI changes depending on the type of pattern to be encoded:
 
 *   The smithing and stonecutting mode UIs work similarly to a smithing table and stonecutter respectively.
 
-## Recipe
+### Recipe
 
 <RecipeFor id="pattern_encoding_terminal" />
 
@@ -133,7 +139,9 @@ and <ItemLink id="molecular_assembler" />s, you can't physically access the prov
 perhaps you're lazy and don't want to walk across your base to insert a [pattern](patterns.md). The pattern access terminal
 allows access to all pattern providers on the network.
 
-## The UI
+<a name="pattern-access-terminal-ui"></a>
+
+### The UI
 
 This terminal has a different UI to all the other terminals.
 
@@ -142,6 +150,6 @@ It has settings for terminal height and which pattern providers to show.
 Pattern providers in the terminal are sorted by what blocks they are connected to, or what name you have given them (in an anvil or
 with a <ItemLink id="name_press" />).
 
-## Recipe
+### Recipe
 
 <RecipeFor id="pattern_access_terminal" />

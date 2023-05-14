@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.InlineBlockAlignment;
+import appeng.client.guidebook.document.flow.LytFlowAnchor;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
@@ -61,6 +62,9 @@ class LineBuilder implements Consumer<LytFlowContent> {
             appendBreak(content);
         } else if (content instanceof LytFlowInlineBlock inlineBlock) {
             appendInlineBlock(inlineBlock);
+        } else if (content instanceof LytFlowAnchor anchor) {
+            // Simply set the current layout position for the anchor
+            anchor.setLayoutY(lineBoxY);
         } else {
             throw new IllegalArgumentException("Don't know how to layout flow content: " + content);
         }

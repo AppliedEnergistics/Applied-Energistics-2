@@ -114,6 +114,19 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
         return this.content.enumerateContentBounds(content);
     }
 
+    @Override
+    protected LytVisitor.Result visitChildren(LytVisitor visitor) {
+        if (super.visitChildren(visitor) == LytVisitor.Result.STOP) {
+            return LytVisitor.Result.STOP;
+        }
+
+        for (var flowContent : getContent()) {
+            flowContent.visit(visitor);
+        }
+
+        return LytVisitor.Result.CONTINUE;
+    }
+
     public Iterable<LytFlowContent> getContent() {
         return content.getContent();
     }

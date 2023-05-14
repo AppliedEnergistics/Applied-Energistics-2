@@ -5,6 +5,7 @@ import java.util.Optional;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
+import appeng.client.guidebook.document.block.LytVisitor;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.layout.LayoutContext;
@@ -66,5 +67,12 @@ public class LytFlowInlineBlock extends LytFlowContent implements InteractiveEle
             return interactiveElement.getTooltip(x, y);
         }
         return Optional.empty();
+    }
+
+    @Override
+    protected void visitChildren(LytVisitor visitor) {
+        if (block != null) {
+            block.visit(visitor);
+        }
     }
 }

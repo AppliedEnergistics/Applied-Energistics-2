@@ -39,6 +39,12 @@ public abstract class MdAstNode implements UnistNode {
 
     public abstract void toText(StringBuilder buffer);
 
+    public final String toText() {
+        var builder = new StringBuilder();
+        toText(builder);
+        return builder.toString();
+    }
+
     public final void toJson(JsonWriter writer) throws IOException {
         writer.beginObject();
         writer.name("type").value(type());

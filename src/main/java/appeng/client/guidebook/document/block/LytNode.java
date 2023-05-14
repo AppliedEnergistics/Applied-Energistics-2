@@ -53,6 +53,41 @@ public abstract class LytNode implements Styleable {
         return this;
     }
 
+    public final String getTextContent() {
+        var visitor = new LytVisitor() {
+            final StringBuilder builder = new StringBuilder();
+
+            @Override
+            public void text(String text) {
+                builder.append(text);
+            }
+        };
+        visit(visitor);
+        return visitor.builder.toString();
+    }
+
+    public final LytVisitor.Result visit(LytVisitor visitor) {
+        var result = visitor.beforeNode(this);
+        if (result == LytVisitor.Result.STOP) {
+            return result;
+        }
+        if (result != LytVisitor.Result.SKIP_CHILDREN) {
+            if (visitChildren(visitor) == LytVisitor.Result.STOP) {
+                return LytVisitor.Result.STOP;
+            }
+        }
+        return visitor.afterNode(this);
+    }
+
+    protected LytVisitor.Result visitChildren(LytVisitor visitor) {
+        for (var child : getChildren()) {
+            if (child.visit(visitor) == LytVisitor.Result.STOP) {
+                return LytVisitor.Result.STOP;
+            }
+        }
+        return LytVisitor.Result.CONTINUE;
+    }
+
     @Override
     public TextStyle getStyle() {
         return style;

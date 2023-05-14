@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,9 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.ResourceLocationException;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.document.LytErrorSink;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytDocument;
@@ -300,7 +299,11 @@ public final class PageCompiler {
     }
 
     public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {
-        for (var child : markdownParent.children()) {
+        compileFlowContext(markdownParent.children(), layoutParent);
+    }
+
+    public void compileFlowContext(Collection<? extends MdAstAnyContent> children, LytFlowParent layoutParent) {
+        for (var child : children) {
             compileFlowContent(layoutParent, child);
         }
     }
@@ -329,7 +332,7 @@ public final class PageCompiler {
         } else if (content instanceof MdAstBreak) {
             layoutChild = new LytFlowBreak();
         } else if (content instanceof MdAstLink astLink) {
-            layoutChild = compileLink(astLink);
+            layoutChild = compileLink(astLink, layoutParent);
         } else if (content instanceof MdAstImage astImage) {
             var inlineBlock = new LytFlowInlineBlock();
             inlineBlock.setBlock(compileImage(astImage));
@@ -351,43 +354,28 @@ public final class PageCompiler {
         }
     }
 
-    private LytFlowContent compileLink(MdAstLink astLink) {
+    private LytFlowContent compileLink(MdAstLink astLink, LytErrorSink errorSink) {
         var link = new LytFlowLink();
         if (astLink.title != null && !astLink.title.isEmpty()) {
             link.setTooltip(new TextTooltip(astLink.title));
         }
+        if (astLink.url != null && !astLink.url.isEmpty()) {
+            LinkParser.parseLink(this, astLink.url, new LinkParser.Visitor() {
+                @Override
+                public void handlePage(PageAnchor page) {
+                    link.setPageLink(page);
+                }
 
-        // Internal vs. external links
-        var uri = URI.create(astLink.url);
-        if (uri.isAbsolute()) {
-            link.setClickCallback(screen -> {
-                var mc = Minecraft.getInstance();
-                mc.setScreen(new ConfirmLinkScreen(yes -> {
-                    if (yes) {
-                        Util.getPlatform().openUri(uri);
-                    }
+                @Override
+                public void handleExternal(URI uri) {
+                    link.setExternalUrl(uri);
+                }
 
-                    mc.setScreen(screen);
-                }, astLink.url, false));
+                @Override
+                public void handleError(String error) {
+                    errorSink.appendError(PageCompiler.this, error, astLink);
+                }
             });
-        } else {
-
-            // Determine the page id, account for relative paths
-            ResourceLocation pageId;
-            try {
-                pageId = IdUtils.resolveLink(uri.getPath(), id);
-            } catch (ResourceLocationException ignored) {
-                return createErrorFlowContent("Invalid page link", astLink);
-            }
-
-            if (!pages.pageExists(pageId)) {
-                LOGGER.error("Broken link to page '{}' in page {}", astLink.url, id);
-            } else {
-                var anchor = new PageAnchor(pageId, uri.getFragment());
-                link.setClickCallback(screen -> {
-                    screen.navigateTo(anchor);
-                });
-            }
         }
 
         compileFlowContext(astLink, link);

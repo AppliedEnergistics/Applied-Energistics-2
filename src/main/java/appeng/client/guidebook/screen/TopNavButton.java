@@ -14,22 +14,25 @@ import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SymbolicColor;
 import appeng.core.AppEng;
 
-public class HistoryNavigationButton extends Button {
+/**
+ * Button found in the toolbar at the top of {@link GuideScreen}.
+ */
+class TopNavButton extends Button {
     public static final int WIDTH = 16;
     public static final int HEIGHT = 16;
 
-    private final Direction direction;
+    private final Role role;
 
-    public HistoryNavigationButton(int x, int y, Direction direction, Runnable callback) {
+    public TopNavButton(int x, int y, Role role, Runnable callback) {
         super(
                 x,
                 y,
                 WIDTH,
                 HEIGHT,
-                direction.actionText,
+                role.actionText,
                 btn -> callback.run(),
                 Supplier::get);
-        this.direction = direction;
+        this.role = role;
         setTooltip(Tooltip.create(getMessage()));
     }
 
@@ -45,22 +48,23 @@ public class HistoryNavigationButton extends Button {
 
         var resolved = color.resolve(LightDarkMode.LIGHT_MODE);
 
-        Blitter.texture(AppEng.makeId("textures/guide/arrow.png"), 32, 16)
-                .src(direction.iconSrcX, 0, 16, 16)
+        Blitter.texture(AppEng.makeId("textures/guide/topnav_buttons.png"), 64, 16)
+                .src(role.iconSrcX, 0, 16, 16)
                 .dest(getX(), getY(), 16, 16)
                 .colorArgb(resolved)
                 .blit(poseStack);
     }
 
-    enum Direction {
+    enum Role {
         BACK(GuidebookText.GuidebookHistoryGoBack.text(), 0),
-        FORWARD(GuidebookText.GuidebookHistoryGoForward.text(), 16);
+        FORWARD(GuidebookText.GuidebookHistoryGoForward.text(), 16),
+        CLOSE(GuidebookText.GuidebookClose.text(), 32);
 
         final Component actionText;
 
         final int iconSrcX;
 
-        Direction(Component actionText, int iconSrcX) {
+        Role(Component actionText, int iconSrcX) {
             this.actionText = actionText;
             this.iconSrcX = iconSrcX;
         }

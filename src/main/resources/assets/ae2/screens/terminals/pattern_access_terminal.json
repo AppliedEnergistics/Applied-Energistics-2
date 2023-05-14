@@ -1,6 +1,7 @@
 {
-  "$schema": "schema.json",
-  "includes": ["common/common.json", "common/player_inventory.json"],
+  "$schema": "../schema.json",
+  "includes": ["../common/common.json", "../common/player_inventory.json"],
+  "helpTopic": "items-blocks-machines/terminals.md#pattern-access-terminal-ui",
   "text": {
     "dialog_title": {
       "text": {
