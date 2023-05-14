@@ -21,12 +21,12 @@ Terminals will inherit the color of the [cable](cables.md) they are mounted on.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
+<a name="terminal-ui"></a>
+
 # Terminal
 
 Your basic terminal, allowing you to view and access the contents of your [network's storage](../ae2-mechanics/import-export-storage.md)
 and request things from your [autocrafting](../ae2-mechanics/autocrafting.md) setup.
-
-<a name="terminal-ui"></a>
 
 ### The UI
 
@@ -53,12 +53,14 @@ The left section has settings buttons to:
 
 On the right there are slots for <ItemLink id="view_cell" />s
 
-The top-right of the center section (hammer button) brings up the [autocrafting](../ae2-mechanics/autocrafting.md) management
+The top-right of the center section (hammer button) brings up the [autocrafting](../ae2-mechanics/autocrafting.md) status
 UI, allowing you to see the progress of your autocrafts and what each [crafting CPU](crafting_cpu_multiblock.md) is doing.
 
 ### Recipe
 
 <RecipeFor id="terminal" />
+
+<a name="crafting-terminal-ui"></a>
 
 # Crafting Terminal
 
@@ -66,8 +68,6 @@ The Crafting Terminal is similar to a regular terminal, with all the same settin
 refilled from [network storage](../ae2-mechanics/import-export-storage.md). Be careful when shift-clicking the output!
 
 You should upgrade your terminal into a crafting terminal ASAP.
-
-<a name="crafting-terminal-ui"></a>
 
 ### The UI
 
@@ -79,6 +79,8 @@ There are 2 additional buttons, to empty the crafting grid into network storage 
 
 <RecipeFor id="crafting_terminal" />
 
+<a name="pattern-encoding-terminal-ui"></a>
+
 # Pattern Encoding Terminal
 
 The Pattern Encoding Terminal is similar to a regular terminal, with all the same settings and sections, but with an added
@@ -86,8 +88,6 @@ The Pattern Encoding Terminal is similar to a regular terminal, with all the sam
 perform crafts.
 
 You should have one of these in addition to a crafting terminal.
-
-<a name="pattern-encoding-terminal-ui"></a>
 
 ### The UI
 
@@ -132,14 +132,14 @@ The central UI changes depending on the type of pattern to be encoded:
 
 <RecipeFor id="pattern_encoding_terminal" />
 
+<a name="pattern-access-terminal-ui"></a>
+
 # Pattern Access Terminal
 
 The Pattern Access Terminal serves to solve a specific issue: in a dense tower of <ItemLink id="pattern_provider" />s
 and <ItemLink id="molecular_assembler" />s, you can't physically access the providers to insert new patterns. Additionally,
 perhaps you're lazy and don't want to walk across your base to insert a [pattern](patterns.md). The pattern access terminal
 allows access to all pattern providers on the network.
-
-<a name="pattern-access-terminal-ui"></a>
 
 ### The UI
 

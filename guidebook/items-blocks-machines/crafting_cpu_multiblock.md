@@ -33,6 +33,8 @@ Crafting CPUs manage crafting requests/jobs. They store the intermediate ingredi
 being carried out, and affect how big jobs can be, and to some degree how fast they are completed. See [autocrafting](../ae2-mechanics/autocrafting.md)
 for more details.
 
+Right-clicking one brings up a crafting status UI where you can check the progress on the crafting job the CPU is handling.
+
 ## Settings
 
 *   The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />ses with
