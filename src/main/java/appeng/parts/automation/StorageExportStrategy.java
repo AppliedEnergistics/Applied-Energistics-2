@@ -83,10 +83,17 @@ public class StorageExportStrategy<V extends TransferVariant<?>> implements Stac
 
             try (var tx = Platform.openOrJoinTx()) {
                 wasInserted = adjacentStorage.insert(variant, extracted, tx);
-                if (wasInserted < extracted) {
-                    LOGGER.error("Storage export issue, voided {}x{}", extracted - wasInserted, what);
-                }
                 tx.commit();
+            }
+
+            if (wasInserted < extracted) {
+                // Be nice and try to give the overflow back
+                long leftover = extracted - wasInserted;
+                leftover -= inv.getInventory().insert(what, leftover, Actionable.MODULATE, context.getActionSource());
+                if (leftover > 0) {
+                    LOGGER.error("Storage export: adjacent block unexpectedly refused insert, voided {}x{}", leftover,
+                            what);
+                }
             }
         }
 
