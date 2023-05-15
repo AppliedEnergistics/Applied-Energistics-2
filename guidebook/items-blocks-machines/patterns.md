@@ -16,7 +16,8 @@ item_ids:
 
 <ItemImage id="crafting_pattern" scale="4" />
 
-Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of blank patterns.
+Patterns are made in a <ItemLink id="pattern_encoding_terminal" /> out of blank patterns, and inserted in <ItemLink id="pattern_provider" />s
+or <ItemLink id="molecular_assembler" />s.
 
 There are several different types of pattern for different things:
 

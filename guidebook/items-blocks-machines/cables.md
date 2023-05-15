@@ -120,7 +120,7 @@ into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) tog
 ![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
 
 <ItemLink id="fluix_glass_cable" /> is the simplest cable to make, transfers power
-and up to 8 [Channels](channels.md). It comes in 17 diffrent colors, the default
+and up to 8 [channels](../ae2-mechanics/channels.md). It comes in 17 diffrent colors, the default
 being Fluix, and can be dyed any color using any of the 16 dyes.
 
 To craft colored cables surround a dye of any type with 8 cables of the same
@@ -131,7 +131,7 @@ brush in world.
 You can craft any colored cable with a water bucket to remove the dye.
 
 You can cover the cable with wool to create <ItemLink id="fluix_covered_cable" />, and craft <ItemLink id="fluix_smart_cable" /> to get a better idea of what is going on with
-your [Channels](channels.md).
+your [channels](../ae2-mechanics/channels.md).
 
 <RecipeFor id="fluix_glass_cable" />
 

@@ -10,7 +10,7 @@ item_ids:
 
 # The ME Chest
 
-![A Drive](../assets/blocks/chest.png)
+![A Chest](../assets/blocks/chest.png)
 
 The ME Chest acts like a miniature network with a <ItemLink id="terminal" />, <ItemLink id="drive" />, and <ItemLink id="energy_acceptor" />.
 While it can be used as a tiny storage network, its capacity for just one single [storage cell](../items-blocks-machines/storage_cells.md)
