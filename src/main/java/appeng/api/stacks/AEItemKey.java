@@ -13,6 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -31,7 +32,6 @@ public final class AEItemKey extends AEKey {
     private final int cachedDamage;
 
     private AEItemKey(Item item, InternedTag internedTag) {
-        super(Platform.getItemDisplayName(item, internedTag.tag));
         this.item = item;
         this.internedTag = internedTag;
         this.hashCode = item.hashCode() * 31 + internedTag.hashCode;
@@ -215,6 +215,11 @@ public final class AEItemKey extends AEKey {
             amount -= taken;
             drops.add(toStack((int) taken));
         }
+    }
+
+    @Override
+    protected Component computeDisplayName() {
+        return Platform.getItemDisplayName(item, internedTag.tag);
     }
 
     @SuppressWarnings("unchecked")
