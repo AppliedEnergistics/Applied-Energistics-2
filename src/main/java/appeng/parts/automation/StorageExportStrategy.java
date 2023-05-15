@@ -69,7 +69,14 @@ public class StorageExportStrategy<C, S> implements StackExportStrategy {
                 wasInserted = handlerStrategy.insert(adjacentStorage, what, extracted, Actionable.MODULATE);
 
                 if (wasInserted < extracted) {
-                    LOGGER.error("Storage export issue, voided {}x{}", extracted - wasInserted, what);
+                    // Be nice and try to give the overflow back
+                    long leftover = extracted - wasInserted;
+                    leftover -= inv.getInventory().insert(what, leftover, Actionable.MODULATE,
+                            context.getActionSource());
+                    if (leftover > 0) {
+                        LOGGER.error("Storage export: adjacent block unexpectedly refused insert, voided {}x{}",
+                                leftover, what);
+                    }
                 }
             }
 
