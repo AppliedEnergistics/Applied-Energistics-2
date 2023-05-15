@@ -570,8 +570,13 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 return false;
             }
 
-            return inv == InscriberBlockEntity.this.topItemHandler || inv == InscriberBlockEntity.this.bottomItemHandler
-                    || slot == 1;
+            if (slot == 1) {
+                return true; // Can always extract from output slot
+            }
+
+            // Can only extract from top and bottom in separated sides mode
+            return isSeparateSides() && (inv == InscriberBlockEntity.this.topItemHandler
+                    || inv == InscriberBlockEntity.this.bottomItemHandler);
         }
 
         @Override
