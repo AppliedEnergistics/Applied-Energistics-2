@@ -29,7 +29,9 @@ in its network. this means to filter one, *you must restrict what can be stored 
 it on a [subnetwork](../ae2-mechanics/subnetworks.md). A <ItemLink id="storage_bus" /> or [cell](../items-blocks-machines/storage_cells.md)
 can be [partitioned](cell_workbench.md) to achieve this.
 
-![Annihilation Plane Subnet](../assets/assemblies/annihilation_filtering.png)
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/annihilation_filtering.snbt" />
+</GameScene>
 
 Again, it filters *by the item drops* so, for example, if you want to filter breaking of [budding certus blocks](../items-blocks-machines/budding_certus.md)
 you need a plane enchanted with silk touch, otherwise every tier of budding block drops <ItemLink id="quartz_block" /> and so

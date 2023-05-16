@@ -1,0 +1,23 @@
+{
+    DataVersion: 3337,
+    size: [5, 2, 2],
+    data: [
+        {pos: [0, 0, 0], state: "minecraft:oak_wall_sign{facing:north,waterlogged:false}", nbt: {Color: "black", GlowingText: 0b, Text1: '{"text":"Some Machine"}', Text2: '{"text":""}', Text3: '{"text":""}', Text4: '{"text":""}', id: "minecraft:sign"}},
+        {pos: [0, 0, 1], state: "minecraft:blast_furnace{facing:north,lit:false}", nbt: {BurnTime: 0s, CookTime: 0s, CookTimeTotal: 0s, Items: [], RecipesUsed: {}, id: "minecraft:blast_furnace"}},
+        {pos: [1, 0, 1], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 25593L, k: -1L, p: 1}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [2, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25593L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsUp: 0, channelsWest: 1, connections: ["up", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25593L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 0, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 25593L, k: -1L, p: 1}, visual: {}}},
+        {pos: [0, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25601L, k: -1L, p: 1}, id: "ae2:green_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 1b}}, down: {fuzzy_mode: "IGNORE_ALL", gn: {g: 25601L, k: -1L, p: 1}, id: "ae2:import_bus", redstone_controlled: "IGNORE", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25601L, k: -1L, p: 1}, id: "ae2:green_smart_cable", visual: {channelsEast: 2, channelsWest: 2, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, down: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 25601L, k: -1L, p: 1}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25593L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsDown: 0, connections: ["down"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {gn: {g: 25593L, k: -1L, p: 1}, id: "ae2:quartz_fiber", outer: {g: 25601L, k: -1L, p: 1}, visual: {missingChannel: 0b, powered: 1b}}}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:oak_wall_sign{facing:north,waterlogged:false}",
+        "minecraft:blast_furnace{facing:north,lit:false}",
+        "ae2:pattern_provider{push_direction:all}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:controller{state:online,type:block}"
+    ]
+}

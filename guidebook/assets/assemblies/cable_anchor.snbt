@@ -1,0 +1,19 @@
+{
+    DataVersion: 3337,
+    size: [4, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25561L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 1, channelsUp: 1, connections: ["up", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25561L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {id: "ae2:cable_anchor", visual: {}}, visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25561L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", up: {id: "ae2:cable_anchor", visual: {}}, visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25561L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsWest: 1, connections: ["west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 25561L, k: -1L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [1, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 273L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 0, connections: ["east"], missingChannel: 0b, powered: 0b}}, down: {id: "ae2:cable_anchor", visual: {}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {id: "ae2:cable_anchor", visual: {}}}},
+        {pos: [2, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 273L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 273L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 0b}}, down: {id: "ae2:cable_anchor", visual: {}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:pattern_provider{push_direction:all}"
+    ]
+}

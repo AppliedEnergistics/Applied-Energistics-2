@@ -1,0 +1,13 @@
+{
+    DataVersion: 3337,
+    size: [1, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:flawless_budding_quartz"},
+        {pos: [0, 1, 0], state: "ae2:small_quartz_bud{facing:up,waterlogged:false}"}
+    ],
+    entities: [],
+    palette: [
+        "ae2:flawless_budding_quartz",
+        "ae2:small_quartz_bud{facing:up,waterlogged:false}"
+    ]
+}

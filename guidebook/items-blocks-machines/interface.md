@@ -30,7 +30,9 @@ A <ItemLink id="storage_bus" /> on an unconfigured interface will present the en
 of its network to the storage bus' network, as if the interface's network was one big chest the storage bus was placed on.
 Setting an item to be stocked in the interface's filter slots disables this.
 
-![Storage Bus On Interface](../assets/assemblies/interface_storage.png)
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/interface_storage.snbt" />
+</GameScene>
 
 Pattern providers have a special interaction with interfaces on [subnets](../ae2-mechanics/subnetworks.md): if the interface is unconfigured
 the provider will skip the interface entirely and push directly to that subnet's [storage](../ae2-mechanics/import-export-storage.md),

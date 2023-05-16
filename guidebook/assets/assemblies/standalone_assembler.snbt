@@ -1,0 +1,16 @@
+{
+    DataVersion: 3337,
+    size: [2, 2, 2],
+    data: [
+        {pos: [0, 0, 0], state: "minecraft:hopper{enabled:true,facing:down}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [0, 1, 0], state: "ae2:molecular_assembler{powered:true}", nbt: {id: "ae2:molecular_assembler", inv: {item0: {}, item1: {}, item10: {}, item2: {}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, proxy: {g: 206L, k: -1L, p: 0}, upgrades: [{Count: 1b, Slot: 0, id: "ae2:speed_card"}, {Count: 1b, Slot: 1, id: "ae2:speed_card"}, {Count: 1b, Slot: 2, id: "ae2:speed_card"}, {Count: 1b, Slot: 3, id: "ae2:speed_card"}, {Count: 1b, Slot: 4, id: "ae2:speed_card"}], visual: {}}},
+        {pos: [1, 1, 0], state: "minecraft:hopper{enabled:true,facing:west}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:hopper{enabled:true,facing:down}",
+        "ae2:molecular_assembler{powered:true}",
+        "ae2:creative_energy_cell",
+        "minecraft:hopper{enabled:true,facing:west}"
+    ]
+}

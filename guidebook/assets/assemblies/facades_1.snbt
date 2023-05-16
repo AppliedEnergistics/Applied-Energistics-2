@@ -1,0 +1,16 @@
+{
+    DataVersion: 3337,
+    size: [6, 1, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4135L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, connections: ["east"], missingChannel: 0b, powered: 0b}}, facadeUp: {Count: 1b, id: "ae2:facade", tag: {item: "ae2:mysterious_cube"}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4135L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, facadeUp: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:deepslate_diamond_ore"}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4135L, k: -1L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, facadeUp: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:crafting_table"}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4135L, k: -1L, p: 1}, id: "ae2:blue_smart_dense_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, facadeUp: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:magma_block"}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4135L, k: -1L, p: 1}, id: "ae2:blue_smart_dense_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, facadeUp: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:glass"}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 4135L, k: -1L, p: 1}, id: "ae2:blue_smart_dense_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 0b}}, facadeUp: {Count: 1b, id: "ae2:facade", tag: {item: "minecraft:smooth_stone"}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    DataVersion: 3337,
+    size: [6, 3, 2],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:16k_crafting_storage{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_storage", proxy: {g: 25355L, k: -1L, p: 0}, visual: {}}},
+        {pos: [0, 0, 1], state: "ae2:16k_crafting_storage{formed:true,powered:true}", nbt: {core: 1b, crafting_scheduling_mode: "ANY", id: "ae2:crafting_storage", inventory: [], proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:16k_crafting_storage{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_storage", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [1, 0, 1], state: "ae2:16k_crafting_storage{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_storage", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [3, 0, 1], state: "ae2:1k_crafting_storage{formed:true,powered:true}", nbt: {core: 1b, crafting_scheduling_mode: "ANY", id: "ae2:crafting_storage", inventory: [], proxy: {g: 83501L, k: -1L, p: 1}, visual: {}}},
+        {pos: [5, 0, 1], state: "ae2:1k_crafting_storage{formed:true,powered:true}", nbt: {core: 1b, crafting_scheduling_mode: "ANY", id: "ae2:crafting_storage", inventory: [], proxy: {g: 83507L, k: -1L, p: 1}, visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:crafting_unit{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_unit", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [0, 1, 1], state: "ae2:crafting_accelerator{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_unit", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [1, 1, 0], state: "ae2:crafting_unit{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_unit", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [1, 1, 1], state: "ae2:crafting_accelerator{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_unit", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [3, 1, 1], state: "ae2:crafting_accelerator{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_unit", proxy: {g: 83501L, k: -1L, p: 1}, visual: {}}},
+        {pos: [0, 2, 0], state: "ae2:crafting_accelerator{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_unit", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [0, 2, 1], state: "ae2:crafting_accelerator{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_unit", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [1, 2, 0], state: "ae2:crafting_monitor{facing:north,formed:true,powered:true,spin:0}", nbt: {core: 0b, id: "ae2:crafting_monitor", paintedColor: 16b, proxy: {g: 296L, k: -1L, p: 0}, visual: {}}},
+        {pos: [1, 2, 1], state: "ae2:1k_crafting_storage{formed:true,powered:true}", nbt: {core: 0b, id: "ae2:crafting_storage", proxy: {g: 296L, k: -1L, p: 0}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:16k_crafting_storage{formed:true,powered:true}",
+        "ae2:1k_crafting_storage{formed:true,powered:true}",
+        "ae2:crafting_unit{formed:true,powered:true}",
+        "ae2:crafting_accelerator{formed:true,powered:true}",
+        "ae2:crafting_monitor{facing:north,formed:true,powered:true,spin:0}"
+    ]
+}

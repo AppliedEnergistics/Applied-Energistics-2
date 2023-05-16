@@ -9,7 +9,9 @@ navigation:
 
 ### The Big One
 
-![Some neat looking devices](../assets/assemblies/autocraft_setup_greebles.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/autocraft_setup_greebles.snbt" />
+</GameScene>
 
 Autocrafting is one of the primary functions of AE2. Instead of manually having to craft the correct number of each sub-ingredient
 and labor away like some sort of *plebian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.

@@ -1,0 +1,21 @@
+{
+    DataVersion: 3337,
+    size: [5, 3, 1],
+    data: [
+        {pos: [1, 0, 0], state: "minecraft:hopper{enabled:true,facing:down}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [4, 0, 0], state: "minecraft:hopper{enabled:true,facing:down}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [0, 1, 0], state: "minecraft:hopper{enabled:true,facing:east}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [1, 1, 0], state: "ae2:inscriber{facing:north,spin:1,waterlogged:false}", nbt: {auto_export: "NO", id: "ae2:inscriber", inscriber_separate_sides: "NO", internalCurrentPower: 0.0d, inv: {item0: {}, item1: {}, item2: {}, item3: {}}, proxy: {g: 297L, k: -1L, p: 0}, visual: {smash: 0b}}},
+        {pos: [2, 1, 0], state: "minecraft:hopper{enabled:true,facing:west}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [4, 1, 0], state: "ae2:inscriber{facing:north,spin:1,waterlogged:false}", nbt: {auto_export: "NO", id: "ae2:inscriber", inscriber_separate_sides: "NO", internalCurrentPower: 0.0d, inv: {item0: {}, item1: {}, item2: {}, item3: {}}, proxy: {g: 298L, k: -1L, p: 0}, visual: {smash: 0b}}},
+        {pos: [1, 2, 0], state: "minecraft:hopper{enabled:true,facing:down}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [4, 2, 0], state: "minecraft:hopper{enabled:true,facing:down}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:hopper{enabled:true,facing:down}",
+        "minecraft:hopper{enabled:true,facing:east}",
+        "ae2:inscriber{facing:north,spin:1,waterlogged:false}",
+        "minecraft:hopper{enabled:true,facing:west}"
+    ]
+}

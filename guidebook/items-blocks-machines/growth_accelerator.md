@@ -16,7 +16,9 @@ The Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/fa
 
 Curiously, it can *also* accelerate the growth of various plants.
 
-![A Flawless Budding Certus with a growth accelerator](../assets/assemblies/budding_certus_2.png)
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/growth_accelerator.snbt" />
+</GameScene>
 
 To power it manually, place a <ItemLink id="crank" /> on the top or bottom and right-click it.
 

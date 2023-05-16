@@ -1,0 +1,38 @@
+{
+    DataVersion: 3337,
+    size: [4, 3, 3],
+    data: [
+        {pos: [0, 0, 1], state: "minecraft:farmland{moisture:4}"},
+        {pos: [1, 0, 0], state: "minecraft:dirt"},
+        {pos: [1, 0, 1], state: "ae2:creative_energy_cell", nbt: {id: "ae2:creative_energy_cell", proxy: {g: 1215L, k: -1L, p: 1}, visual: {}}},
+        {pos: [1, 0, 2], state: "minecraft:dirt"},
+        {pos: [2, 0, 1], state: "minecraft:smooth_stone"},
+        {pos: [0, 1, 1], state: "minecraft:wheat{age:7}"},
+        {pos: [1, 1, 0], state: "minecraft:oak_sapling{stage:1}"},
+        {pos: [1, 1, 1], state: "ae2:growth_accelerator{facing:up,powered:true}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 1215L, k: -1L, p: 1}, visual: {}}},
+        {pos: [1, 1, 2], state: "minecraft:bamboo{age:0,leaves:none,stage:0}"},
+        {pos: [2, 1, 0], state: "ae2:quartz_cluster{facing:north,waterlogged:false}"},
+        {pos: [2, 1, 1], state: "ae2:flawless_budding_quartz"},
+        {pos: [2, 1, 2], state: "ae2:quartz_cluster{facing:south,waterlogged:false}"},
+        {pos: [3, 1, 1], state: "ae2:quartz_cluster{facing:east,waterlogged:false}"},
+        {pos: [1, 2, 2], state: "minecraft:bamboo{age:0,leaves:small,stage:0}"},
+        {pos: [2, 2, 1], state: "ae2:quartz_cluster{facing:up,waterlogged:false}"}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:dirt",
+        "minecraft:smooth_stone",
+        "ae2:flawless_budding_quartz",
+        "minecraft:farmland{moisture:4}",
+        "minecraft:wheat{age:7}",
+        "minecraft:oak_sapling{stage:1}",
+        "minecraft:bamboo{age:0,leaves:none,stage:0}",
+        "ae2:quartz_cluster{facing:north,waterlogged:false}",
+        "ae2:quartz_cluster{facing:south,waterlogged:false}",
+        "ae2:quartz_cluster{facing:east,waterlogged:false}",
+        "minecraft:bamboo{age:0,leaves:small,stage:0}",
+        "ae2:quartz_cluster{facing:up,waterlogged:false}",
+        "ae2:creative_energy_cell",
+        "ae2:growth_accelerator{facing:up,powered:true}"
+    ]
+}
