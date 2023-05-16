@@ -35,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.IStackWatcher;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.orientation.BlockOrientation;
@@ -63,6 +64,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     @Nullable
     private AEKey configuredItem;
     private long amount;
+    private boolean canCraft;
     private String lastHumanReadableText;
     private boolean isLocked;
     private IStackWatcher myWatcher;
@@ -102,6 +104,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         if (this.configuredItem != null) {
             AEKey.writeKey(data, this.configuredItem);
             data.writeVarLong(this.amount);
+            data.writeBoolean(this.canCraft);
         }
     }
 
@@ -118,9 +121,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         if (data.readBoolean()) {
             this.configuredItem = AEKey.readKey(data);
             this.amount = data.readVarLong();
+            this.canCraft = data.readBoolean();
         } else {
             this.configuredItem = null;
             this.amount = 0;
+            this.canCraft = false;
         }
 
         return needRedraw;
@@ -130,12 +135,14 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public void writeVisualStateToNBT(CompoundTag data) {
         super.writeVisualStateToNBT(data);
         data.putLong("amount", this.amount);
+        data.putBoolean("canCraft", this.canCraft);
     }
 
     @Override
     public void readVisualStateFromNBT(CompoundTag data) {
         super.readVisualStateFromNBT(data);
         this.amount = data.getLong("amount");
+        this.canCraft = data.getBoolean("canCraft");
     }
 
     @Override
@@ -209,18 +216,18 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
                 this.myWatcher.add(this.configuredItem);
             }
 
-            getMainNode().ifPresent(grid -> {
-                this.updateReportingValue(grid.getStorageService());
-            });
+            getMainNode().ifPresent(grid -> updateReportingValue(grid.getStorageService(), grid.getCraftingService()));
         }
     }
 
-    private void updateReportingValue(IStorageService storageService) {
+    private void updateReportingValue(IStorageService storageService, ICraftingService craftingService) {
         this.lastHumanReadableText = null;
         if (this.configuredItem != null) {
             this.amount = storageService.getCachedInventory().get(this.configuredItem);
+            this.canCraft = craftingService.isCraftable(this.configuredItem);
         } else {
             this.amount = 0;
+            this.canCraft = false;
         }
     }
 
@@ -245,7 +252,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         BlockEntityRenderHelper.rotateToFace(poseStack, orientation);
         poseStack.translate(0, 0.05, 0.5);
 
-        BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,
+        BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount, canCraft,
                 0.4f, -0.23f, getColor().contrastTextColor, getLevel());
 
         poseStack.popPose();
@@ -273,6 +280,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         return amount;
     }
 
+    public boolean canCraft() {
+        return canCraft;
+    }
+
     @Override
     public boolean isLocked() {
         return this.isLocked;
@@ -294,7 +305,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         if (what.equals(this.configuredItem)) {
             this.amount = amount;
 
-            var humanReadableText = what.formatAmount(amount, AmountFormat.SLOT);
+            var humanReadableText = amount == 0 && canCraft ? "Craft" : what.formatAmount(amount, AmountFormat.SLOT);
 
             // Try throttling to only relevant updates
             if (!humanReadableText.equals(this.lastHumanReadableText)) {

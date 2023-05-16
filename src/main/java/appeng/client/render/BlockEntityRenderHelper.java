@@ -81,13 +81,13 @@ public final class BlockEntityRenderHelper {
     public static void renderItem2dWithAmount(PoseStack poseStack,
             MultiBufferSource buffers,
             AEKey what,
-            long amount,
+            long amount, boolean canCraft,
             float itemScale,
             float spacing,
             int textColor, Level level) {
         renderItem2d(poseStack, buffers, what, itemScale, LightTexture.FULL_BRIGHT, level);
 
-        var renderedStackSize = what.formatAmount(amount, AmountFormat.SLOT);
+        var renderedStackSize = amount == 0 && canCraft ? "Craft" : what.formatAmount(amount, AmountFormat.SLOT);
 
         // Render the item count
         var fr = Minecraft.getInstance().font;
@@ -100,6 +100,5 @@ public final class BlockEntityRenderHelper {
         fr.drawInBatch(renderedStackSize, 0, 0, textColor, false, poseStack.last().pose(), buffers,
                 Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
         poseStack.popPose();
-
     }
 }
