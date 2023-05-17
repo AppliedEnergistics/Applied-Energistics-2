@@ -1,15 +1,14 @@
 package appeng.client.guidebook.scene;
 
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import net.minecraft.util.Mth;
-
 public class CameraSettings {
 
-    private float zoom;
+    private float zoom = 1;
 
     private final Vector3f center = new Vector3f();
 
@@ -44,6 +43,20 @@ public class CameraSettings {
                 baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 120));
                 baseViewMatrix.rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 45));
             }
+        }
+    }
+
+    public void setIsometricYawPitchRoll(float yawDeg, float pitchDeg, float rollDeg) {
+        baseViewMatrix.identity();
+
+        if (Math.abs(rollDeg) >= 0.1f) {
+            baseViewMatrix.rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * rollDeg));
+        }
+        if (Math.abs(pitchDeg) >= 0.1f) {
+            baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * pitchDeg));
+        }
+        if (Math.abs(yawDeg) >= 0.1f) {
+            baseViewMatrix.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * yawDeg));
         }
     }
 

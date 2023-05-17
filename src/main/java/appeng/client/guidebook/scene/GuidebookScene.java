@@ -1,16 +1,6 @@
 package appeng.client.guidebook.scene;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.joml.Intersectionf;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
-
+import appeng.client.guidebook.scene.level.GuidebookLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -21,8 +11,16 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
+import org.joml.Intersectionf;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
-import appeng.client.guidebook.scene.level.GuidebookLevel;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class GuidebookScene {
 
@@ -87,7 +85,7 @@ public class GuidebookScene {
                 screenX, screenY,
                 // We already expect normalized device coordinates,
                 // so the viewport is set in such a way as to leave the coordinates alone
-                new int[] {
+                new int[]{
                         -1, -1,
                         2, 2
                 },
@@ -142,6 +140,9 @@ public class GuidebookScene {
         return level;
     }
 
+    /**
+     * The camera settings affect layout so this should be called before layout is done (or relayout should be triggered).
+     */
     public CameraSettings getCameraSettings() {
         return cameraSettings;
     }
