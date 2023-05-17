@@ -13,10 +13,22 @@ item_ids:
 Facades can be used to make your base appear more clean. They can cover up both sizes of cable, and be made out of many
 kinds of blocks.
 
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/facades_1.snbt" />
+</GameScene>
+
 They can cover all sides of a cable, but will let [subparts](../ae2-mechanics/cable-subparts.md) and cable connections
 protrude though.
 
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/facades_2.snbt" />
+</GameScene>
+
 Be clever with them to improve your base aesthetic or make blocks with different textures on each side.
+
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/facades_3.snbt" />
+</GameScene>
 
 ## Recipe
 
