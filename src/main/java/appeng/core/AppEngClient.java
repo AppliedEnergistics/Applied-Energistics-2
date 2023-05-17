@@ -62,6 +62,7 @@ import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
+import appeng.client.guidebook.hotkey.OpenGuideHotkey;
 import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
@@ -127,6 +128,7 @@ public class AppEngClient extends AppEngBase {
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
         guidePages = loadGuidePages();
+        OpenGuideHotkey.init();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
 

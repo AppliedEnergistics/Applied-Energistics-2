@@ -282,6 +282,10 @@ public final class AEConfig {
         CLIENT.terminalStyle.set(setting);
     }
 
+    public boolean isGuideHotkeyEnabled() {
+        return CLIENT.enableGuideHotkey.get();
+    }
+
     public void save() {
     }
 
@@ -557,6 +561,7 @@ public final class AEConfig {
         public final BooleanOption tooltipShowCellUpgrades;
         public final BooleanOption tooltipShowCellContent;
         public final IntegerOption tooltipMaxCellContentShown;
+        public final BooleanOption enableGuideHotkey;
 
         public ClientConfig(ConfigSection root) {
             var client = root.subsection("client");
@@ -608,6 +613,8 @@ public final class AEConfig {
                     "Show a preview of the content in the tooltips of storage cells, color applicators and matter cannons");
             this.tooltipMaxCellContentShown = tooltips.addInt("maxCellContentShown", 5, 1, 32,
                     "The maximum number of content entries to show in the tooltip of storage cells, color applicators and matter cannons");
+            this.enableGuideHotkey = tooltips.addBoolean("enableGuideHotkey", true,
+                    "Enables the 'hold key to show guide' functionality in tooltips");
         }
 
     }
