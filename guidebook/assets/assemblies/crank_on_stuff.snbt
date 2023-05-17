@@ -1,0 +1,19 @@
+{
+    DataVersion: 3337,
+    size: [5, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:growth_accelerator{facing:up,powered:false}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 25589L, k: -1L, p: 1}, visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:inscriber{facing:north,spin:0,waterlogged:false}", nbt: {auto_export: "NO", id: "ae2:inscriber", inscriber_separate_sides: "NO", internalCurrentPower: 640.0d, inv: {item0: {}, item1: {}, item2: {}, item3: {}}, proxy: {g: 312L, k: -1L, p: 0}, visual: {smash: 0b}}},
+        {pos: [4, 0, 0], state: "ae2:charger{facing:north,spin:0}", nbt: {id: "ae2:charger", internalCurrentPower: 0.0d, inv: {item0: {}}, proxy: {g: 286L, k: -1L, p: 0}, visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:crank{facing:up}", nbt: {id: "ae2:crank", visual: {}}},
+        {pos: [2, 1, 0], state: "ae2:crank{facing:up}", nbt: {id: "ae2:crank", visual: {}}},
+        {pos: [4, 1, 0], state: "ae2:crank{facing:up}", nbt: {id: "ae2:crank", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:growth_accelerator{facing:up,powered:false}",
+        "ae2:inscriber{facing:north,spin:0,waterlogged:false}",
+        "ae2:charger{facing:north,spin:0}",
+        "ae2:crank{facing:up}"
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    DataVersion: 3337,
+    size: [3, 2, 3],
+    data: [
+        {pos: [0, 0, 1], state: "ae2:growth_accelerator{facing:up,powered:true}", nbt: {id: "ae2:growth_accelerator", proxy: {g: 1215L, k: -1L, p: 1}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:quartz_cluster{facing:north,waterlogged:false}"},
+        {pos: [1, 0, 1], state: "ae2:flawless_budding_quartz"},
+        {pos: [1, 0, 2], state: "ae2:quartz_cluster{facing:south,waterlogged:false}"},
+        {pos: [2, 0, 1], state: "ae2:quartz_cluster{facing:east,waterlogged:false}"},
+        {pos: [1, 1, 1], state: "ae2:quartz_cluster{facing:up,waterlogged:false}"}
+    ],
+    entities: [],
+    palette: [
+        "ae2:flawless_budding_quartz",
+        "ae2:quartz_cluster{facing:north,waterlogged:false}",
+        "ae2:quartz_cluster{facing:south,waterlogged:false}",
+        "ae2:quartz_cluster{facing:east,waterlogged:false}",
+        "ae2:quartz_cluster{facing:up,waterlogged:false}",
+        "ae2:growth_accelerator{facing:up,powered:true}"
+    ]
+}

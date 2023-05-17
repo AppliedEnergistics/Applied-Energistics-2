@@ -79,7 +79,7 @@ wool, terracotta, glass, and concrete. They can also be used in a <ItemLink id="
   <br />
 </Column>
 
-## Lumen Paintballs
+# Lumen Paintballs
 
 <Row gap="-8">
   <ItemImage id="white_lumen_paint_ball" scale="4" />

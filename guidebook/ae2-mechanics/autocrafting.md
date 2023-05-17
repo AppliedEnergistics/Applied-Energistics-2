@@ -9,7 +9,9 @@ navigation:
 
 ### The Big One
 
-![Some neat looking devices](../assets/assemblies/autocraft_setup_greebles.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/autocraft_setup_greebles.snbt" />
+</GameScene>
 
 Autocrafting is one of the primary functions of AE2. Instead of manually having to craft the correct number of each sub-ingredient
 and labor away like some sort of *plebian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.
@@ -116,7 +118,7 @@ their [patterns](../items-blocks-machines/patterns.md) to adjacent inventories, 
 a channel can be saved by piping the output of a machine back into a nearby pattern provider (often the one that pushed the ingredients)
 instead of using an <ItemLink id="import_bus" /> to pull the output of the machine into the network.
 
-Of note, since they push the ingredients directly from the [crafting storage](../items-blocks-machines/crafting_cpu_multiblock.md) in a crafting CPU, they
+Of note, since they push the ingredients directly from the [crafting storage](../items-blocks-machines/crafting_cpu_multiblock.md#crafting-storage) in a crafting CPU, they
 never actually contain the ingredients in their inventory, so you cannot pipe out from them. You have to have the provider push
 to another inventory (like a barrel) then pipe from that.
 

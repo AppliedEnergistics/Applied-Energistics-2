@@ -1,0 +1,19 @@
+{
+    DataVersion: 3337,
+    size: [4, 1, 4],
+    data: [
+        {pos: [0, 0, 0], state: "minecraft:barrel{facing:north,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 435L, k: -1L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {freq: -25591s, gn: {g: 435L, k: -1L, p: 0}, id: "ae2:item_p2p_tunnel", output: 1b, visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [1, 0, 3], state: "minecraft:barrel{facing:up,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 435L, k: -1L, p: 0}, id: "ae2:orange_smart_cable", visual: {channelsWest: 2, connections: ["west"], missingChannel: 0b, powered: 1b}}, east: {freq: -25591s, gn: {g: 435L, k: -1L, p: 0}, id: "ae2:item_p2p_tunnel", output: 0b, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 0, 3], state: "minecraft:hopper{enabled:true,facing:west}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [3, 0, 0], state: "minecraft:hopper{enabled:true,facing:west}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:barrel{facing:north,open:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "minecraft:barrel{facing:up,open:false}",
+        "minecraft:hopper{enabled:true,facing:west}"
+    ]
+}

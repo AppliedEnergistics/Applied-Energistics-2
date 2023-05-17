@@ -19,7 +19,7 @@ If the monitor is on the floor or ceiling, you can rotate it with a <ItemLink id
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
-## Storage Monitor
+# Storage Monitor
 
 Will show an item or fluid and its quantity. Put them next to your farms or something...
 
@@ -35,7 +35,7 @@ Keybinds:
 
 <RecipeFor id="storage_monitor" />
 
-## Conversion Monitor
+# Conversion Monitor
 
 The Conversion Monitor is similar to a storage monitor, but allows you to insert or extract its configured item.
 

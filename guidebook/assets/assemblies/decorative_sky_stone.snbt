@@ -1,0 +1,41 @@
+{
+    DataVersion: 3337,
+    size: [7, 1, 7],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:sky_stone_small_brick_slab{type:bottom,waterlogged:false}"},
+        {pos: [0, 0, 2], state: "ae2:sky_stone_small_brick_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}"},
+        {pos: [0, 0, 4], state: "ae2:sky_stone_small_brick_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}"},
+        {pos: [0, 0, 6], state: "ae2:sky_stone_small_brick"},
+        {pos: [2, 0, 0], state: "ae2:sky_stone_brick_slab{type:bottom,waterlogged:false}"},
+        {pos: [2, 0, 2], state: "ae2:sky_stone_brick_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}"},
+        {pos: [2, 0, 4], state: "ae2:sky_stone_brick_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}"},
+        {pos: [2, 0, 6], state: "ae2:sky_stone_brick"},
+        {pos: [4, 0, 0], state: "ae2:smooth_sky_stone_slab{type:bottom,waterlogged:false}"},
+        {pos: [4, 0, 2], state: "ae2:smooth_sky_stone_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}"},
+        {pos: [4, 0, 4], state: "ae2:smooth_sky_stone_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}"},
+        {pos: [4, 0, 6], state: "ae2:smooth_sky_stone_block"},
+        {pos: [6, 0, 0], state: "ae2:sky_stone_slab{type:bottom,waterlogged:false}"},
+        {pos: [6, 0, 2], state: "ae2:sky_stone_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}"},
+        {pos: [6, 0, 4], state: "ae2:sky_stone_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}"},
+        {pos: [6, 0, 6], state: "ae2:sky_stone_block"}
+    ],
+    entities: [],
+    palette: [
+        "ae2:sky_stone_small_brick",
+        "ae2:sky_stone_brick",
+        "ae2:smooth_sky_stone_block",
+        "ae2:sky_stone_block",
+        "ae2:sky_stone_small_brick_slab{type:bottom,waterlogged:false}",
+        "ae2:sky_stone_small_brick_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}",
+        "ae2:sky_stone_small_brick_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}",
+        "ae2:sky_stone_brick_slab{type:bottom,waterlogged:false}",
+        "ae2:sky_stone_brick_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}",
+        "ae2:sky_stone_brick_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}",
+        "ae2:smooth_sky_stone_slab{type:bottom,waterlogged:false}",
+        "ae2:smooth_sky_stone_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}",
+        "ae2:smooth_sky_stone_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}",
+        "ae2:sky_stone_slab{type:bottom,waterlogged:false}",
+        "ae2:sky_stone_wall{east:none,north:none,south:none,up:true,waterlogged:false,west:none}",
+        "ae2:sky_stone_stairs{facing:south,half:bottom,shape:straight,waterlogged:false}"
+    ]
+}

@@ -10,7 +10,7 @@ item_ids:
 
 # The ME Chest
 
-![A Drive](../assets/blocks/chest.png)
+![A Chest](../assets/blocks/chest.png)
 
 The ME Chest acts like a miniature network with a <ItemLink id="terminal" />, <ItemLink id="drive" />, and <ItemLink id="energy_acceptor" />.
 While it can be used as a tiny storage network, its capacity for just one single [storage cell](../items-blocks-machines/storage_cells.md)
@@ -22,7 +22,7 @@ including ME chests.
 
 It has 2 different GUIs and is sided for item transport. Interacting with the top terminal opens the integrated terminal. Items can be inserted into
 the mounted storage cell through this face, but not extracted. Interacting with any other face opens the GUI with the slot for the storage cell
-and the priority settings. The cell can be inserted anr removed by item logistics only through the face with the cell slot.
+and the priority settings. The cell can be inserted and removed by item logistics only through the face with the cell slot.
 
 It can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 
@@ -49,12 +49,6 @@ The cells in the drive have an LED on them which shows their status:
 | Orange | [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added     |
 | Red    | [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted |
 | Black  | No power or drive has no [channel](../ae2-mechanics/channels.md)                 |
-
-*   Green  - Empty
-*   Blue   - Has some contents
-*   Orange - [Types](../ae2-mechanics/bytes-and-types.md) full, no new types can be added
-*   Red    - [Bytes](../ae2-mechanics/bytes-and-types.md) full, no more items can be inserted
-*   Black  - No power or drive has no [channel](../ae2-mechanics/channels.md)
 
 ## Priority
 

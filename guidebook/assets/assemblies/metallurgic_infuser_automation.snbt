@@ -1,0 +1,26 @@
+{
+    DataVersion: 3337,
+    size: [6, 3, 2],
+    data: [
+        {pos: [0, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 272L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsUp: 3, connections: ["up"], missingChannel: 0b, powered: 1b}}, east: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 272L, k: -1L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 1, 0], state: "minecraft:oak_wall_sign{facing:north,waterlogged:false}", nbt: {Color: "black", GlowingText: 0b, Text1: '{"text":"METALLURGIC"}', Text2: '{"text":"INFUSER"}', Text3: '{"text":""}', Text4: '{"text":""}', id: "minecraft:sign"}},
+        {pos: [1, 1, 1], state: "minecraft:blast_furnace{facing:north,lit:false}", nbt: {BurnTime: 0s, CookTime: 0s, CookTimeTotal: 0s, Items: [], RecipesUsed: {}, id: "minecraft:blast_furnace"}},
+        {pos: [2, 1, 1], state: "ae2:pattern_provider{push_direction:up}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 83646L, k: -1L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [3, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 83646L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsUp: 0, channelsWest: 1, connections: ["up", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 83646L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 1, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83646L, k: -1L, p: 1}, visual: {}}},
+        {pos: [0, 2, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 272L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsDown: 3, channelsEast: 3, connections: ["down", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 2, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 272L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 3, channelsWest: 3, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, down: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 272L, k: -1L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 2, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 272L, k: -1L, p: 0}, id: "ae2:green_smart_cable", visual: {channelsEast: 3, channelsWest: 3, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, down: {fuzzy_mode: "IGNORE_ALL", gn: {g: 272L, k: -1L, p: 0}, id: "ae2:cable_interface", priority: 0, visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 2, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 271L, k: -1L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 0, connections: ["down"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {gn: {g: 271L, k: -1L, p: 0}, id: "ae2:quartz_fiber", outer: {g: 272L, k: -1L, p: 0}, visual: {missingChannel: 0b, powered: 1b}}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "minecraft:oak_wall_sign{facing:north,waterlogged:false}",
+        "minecraft:blast_furnace{facing:north,lit:false}",
+        "ae2:pattern_provider{push_direction:up}",
+        "ae2:controller{state:online,type:block}",
+        "ae2:creative_energy_cell"
+    ]
+}

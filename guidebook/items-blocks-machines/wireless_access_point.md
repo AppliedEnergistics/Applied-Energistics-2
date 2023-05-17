@@ -22,10 +22,14 @@ and range by altering your setup.
 
 Requires a [channel](channels.md).
 
+## Wireless Booster
+
+<ItemImage id="wireless_booster" scale="2" />
+
+Used to increase the range of the <ItemLink id="wireless_access_point" />.
+
 ## Recipes
 
 <RecipeFor id="wireless_access_point" />
-
-Used to increase the range of the <ItemLink id="wireless_access_point" />.
 
 <RecipeFor id="wireless_booster" />

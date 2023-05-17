@@ -1,0 +1,25 @@
+{
+    DataVersion: 3337,
+    size: [4, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:flawless_budding_quartz"},
+        {pos: [1, 0, 0], state: "ae2:flawed_budding_quartz"},
+        {pos: [2, 0, 0], state: "ae2:chipped_budding_quartz"},
+        {pos: [3, 0, 0], state: "ae2:damaged_budding_quartz"},
+        {pos: [0, 1, 0], state: "ae2:quartz_cluster{facing:up,waterlogged:false}"},
+        {pos: [1, 1, 0], state: "ae2:large_quartz_bud{facing:up,waterlogged:false}"},
+        {pos: [2, 1, 0], state: "ae2:medium_quartz_bud{facing:up,waterlogged:false}"},
+        {pos: [3, 1, 0], state: "ae2:small_quartz_bud{facing:up,waterlogged:false}"}
+    ],
+    entities: [],
+    palette: [
+        "ae2:flawless_budding_quartz",
+        "ae2:flawed_budding_quartz",
+        "ae2:chipped_budding_quartz",
+        "ae2:damaged_budding_quartz",
+        "ae2:quartz_cluster{facing:up,waterlogged:false}",
+        "ae2:large_quartz_bud{facing:up,waterlogged:false}",
+        "ae2:medium_quartz_bud{facing:up,waterlogged:false}",
+        "ae2:small_quartz_bud{facing:up,waterlogged:false}"
+    ]
+}

@@ -13,10 +13,10 @@ item_ids:
 <ItemImage id="memory_card" scale="4" />
 
 The Memory Card is used to copy-and paste settings between AE2 [devices](../ae2-mechanics/devices.md), and link
-[P2P tunnels](p2p_tunnels.md).
+[P2P tunnels](p2p_tunnels.md). It can also paste [upgrade cards](upgrade_cards.md) into devices.
 
-*   Shift-right-click to copy settings or generate a new P2P linking code.
-*   Right-click to paste the settings or linking code.
+- Shift-right-click to copy settings or generate a new P2P linking frequency.
+- Right-click to paste the settings, upgrade cards, or linking frequency.
 
 ## Recipe
 

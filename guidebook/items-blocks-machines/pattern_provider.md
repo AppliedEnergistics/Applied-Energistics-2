@@ -13,12 +13,12 @@ item_ids:
 
 ![Pattern Providers](../assets/assemblies/pattern_provider_variants.png)
 
-Pattern providers are the primary way in which your autocrafting system interacts with the world. They push the ingredients in
+Pattern providers are the primary way in which your [autocrafting](../ae2-mechanics/autocrafting.md) system interacts with the world. They push the ingredients in
 their [patterns](patterns.md) to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often
 a channel can be saved by piping the output of a machine back into a nearby pattern provider (often the one that pushed the ingredients)
 instead of using an <ItemLink id="import_bus" /> to pull the output of the machine into the network.
 
-Of note, since they push the ingredients directly from the [crafting storage](./items-blocks-machines/crafting-storages.md) in a crafting CPU, they
+Of note, since they push the ingredients directly from the [crafting storage](crafting_cpu_multiblock.md#crafting-storage) in a crafting CPU, they
 never actually contain the ingredients in their inventory, so you cannot pipe out from them. You have to have the provider push
 to another inventory (like a barrel) then pipe from that.
 
