@@ -5,7 +5,8 @@ import appeng.core.localization.LocalizationEnum;
 public enum GuidebookText implements LocalizationEnum {
     GuidebookHistoryGoBack("Go back one page"),
     GuidebookHistoryGoForward("Go forward one page"),
-    GuidebookClose("Close");
+    GuidebookClose("Close"),
+    GuidebookHoldToShow("Hold [%s] to open guide");
 
     private final String englishText;
 
