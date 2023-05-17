@@ -259,7 +259,7 @@ This tag allows more fine-grained control over the isometric camera used to rend
 ```
 <GameScene>
     <Block id="minecraft:furnace" />
-    <IsometricCamera yaw="30" roll="60" pitch="90">
+    <IsometricCamera yaw="30" roll="60" pitch="90" />
 </GameScene>
 ```
 
