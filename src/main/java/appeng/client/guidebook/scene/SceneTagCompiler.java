@@ -9,6 +9,7 @@ import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
 import appeng.client.guidebook.compiler.tags.MdxAttrs;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.scene.element.ImportStructureElementCompiler;
+import appeng.client.guidebook.scene.element.IsometricCameraElementCompiler;
 import appeng.client.guidebook.scene.element.SceneBlockElementCompiler;
 import appeng.client.guidebook.scene.element.SceneElementTagCompiler;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
@@ -21,6 +22,7 @@ public class SceneTagCompiler extends BlockTagCompiler {
     public SceneTagCompiler() {
         elementTagCompilers.put("Block", new SceneBlockElementCompiler());
         elementTagCompilers.put("ImportStructure", new ImportStructureElementCompiler());
+        elementTagCompilers.put("IsometricCamera", new IsometricCameraElementCompiler());
     }
 
     @Override

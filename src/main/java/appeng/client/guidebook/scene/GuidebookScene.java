@@ -142,6 +142,10 @@ public class GuidebookScene {
         return level;
     }
 
+    /**
+     * The camera settings affect layout so this should be called before layout is done (or relayout should be
+     * triggered).
+     */
     public CameraSettings getCameraSettings() {
         return cameraSettings;
     }
