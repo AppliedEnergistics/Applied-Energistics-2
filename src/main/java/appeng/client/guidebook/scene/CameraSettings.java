@@ -1,10 +1,11 @@
 package appeng.client.guidebook.scene;
 
-import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+
+import net.minecraft.util.Mth;
 
 public class CameraSettings {
 
