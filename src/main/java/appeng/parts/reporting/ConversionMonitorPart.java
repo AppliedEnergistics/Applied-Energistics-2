@@ -100,28 +100,28 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
             return true;
         }
 
-        if (!getMainNode().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(getHost().getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
-        var eq = player.getItemInHand(hand);
+        final ItemStack eq = player.getItemInHand(hand);
 
-        if (isLocked()) {
+        if (this.isLocked()) {
             if (eq.isEmpty()) {
-                insertItem(player, hand, true);
+                this.insertItem(player, hand, true);
             } else if (InteractionUtil.canWrenchRotate(eq)
-                    && (getDisplayed() == null || !AEItemKey.matches(getDisplayed(), eq))) {
+                    && (this.getDisplayed() == null || !AEItemKey.matches(getDisplayed(), eq))) {
                 // wrench it
                 return super.onPartActivate(player, hand, pos);
             } else {
-                insertItem(player, hand, false);
+                this.insertItem(player, hand, false);
             }
-        } else if (getDisplayed() != null && AEItemKey.matches(getDisplayed(), eq)) {
-            insertItem(player, hand, false);
+        } else if (this.getDisplayed() != null && AEItemKey.matches(getDisplayed(), eq)) {
+            this.insertItem(player, hand, false);
         } else {
             return super.onPartActivate(player, hand, pos);
         }
@@ -135,21 +135,21 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
             return true;
         }
 
-        if (!getMainNode().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(getHost().getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
-        if (getDisplayed() instanceof AEItemKey itemKey) {
+        if (this.getDisplayed() instanceof AEItemKey itemKey) {
             if (getAmount() == 0 && canCraft()) {
                 CraftAmountMenu.open((ServerPlayer) player, MenuLocators.forPart(this), itemKey,
                         itemKey.getAmountPerUnit());
             }
 
-            extractItem(player, itemKey.getItem().getMaxStackSize());
+            this.extractItem(player, itemKey.getItem().getMaxStackSize());
         }
 
         return true;
@@ -161,16 +161,16 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
             return true;
         }
 
-        if (!getMainNode().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return false;
         }
 
-        if (!Platform.hasPermissions(getHost().getLocation(), player)) {
+        if (!Platform.hasPermissions(this.getHost().getLocation(), player)) {
             return false;
         }
 
-        if (getDisplayed() != null) {
-            extractItem(player, 1);
+        if (this.getDisplayed() != null) {
+            this.extractItem(player, 1);
         }
 
         return true;
@@ -187,10 +187,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
 
                     for (int x = 0; x < inv.size(); x++) {
                         var targetStack = inv.getStackInSlot(x);
-
                         if (itemKey.matches(targetStack)) {
                             var canExtract = inv.extractItem(x, targetStack.getCount(), true);
-
                             if (!canExtract.isEmpty()) {
                                 var inserted = StorageHelper.poweredInsert(energy, cell, itemKey, canExtract.getCount(),
                                         new PlayerSource(player, this));
@@ -201,7 +199,6 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
                 }
             } else {
                 var input = player.getItemInHand(hand);
-
                 if (!input.isEmpty()) {
                     var inserted = StorageHelper.poweredInsert(energy, cell, AEItemKey.of(input), input.getCount(),
                             new PlayerSource(player, this));
@@ -212,11 +209,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
     }
 
     private void extractItem(Player player, int count) {
-        if (!(getDisplayed() instanceof AEItemKey itemKey)) {
+        if (!(this.getDisplayed() instanceof AEItemKey itemKey)) {
             return;
         }
 
-        if (!getMainNode().isActive()) {
+        if (!this.getMainNode().isActive()) {
             return;
         }
 
@@ -226,10 +223,8 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
 
             var retrieved = StorageHelper.poweredExtraction(energy, cell, itemKey, count,
                     new PlayerSource(player, this));
-
             if (retrieved != 0) {
                 var newItems = itemKey.toStack((int) retrieved);
-
                 if (!player.getInventory().add(newItems)) {
                     player.drop(newItems, false);
                 }
