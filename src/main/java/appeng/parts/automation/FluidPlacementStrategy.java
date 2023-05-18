@@ -39,7 +39,8 @@ public class FluidPlacementStrategy implements PlacementStrategy {
      */
     private long lastEffect;
 
-    public FluidPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host) {
+    public FluidPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
+            int owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;

@@ -157,8 +157,9 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
+            var owner = getMainNode().getNode().getOwningPlayerId();
             pickupStrategies = StackWorldBehaviors.createPickupStrategies((ServerLevel) self.getLevel(),
-                    pos, side, self, enchantments);
+                    pos, side, self, enchantments, owner);
         }
         return pickupStrategies;
     }

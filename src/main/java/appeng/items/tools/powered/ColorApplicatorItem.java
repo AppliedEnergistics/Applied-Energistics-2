@@ -142,7 +142,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         Direction side = context.getClickedFace();
         Player p = context.getPlayer(); // This can be null
         if (p == null && level instanceof ServerLevel) {
-            p = Platform.getPlayer((ServerLevel) level);
+            p = Platform.getFakePlayer((ServerLevel) level, null);
         }
 
         final Block blk = level.getBlockState(pos).getBlock();

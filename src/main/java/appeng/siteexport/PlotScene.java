@@ -35,7 +35,7 @@ public class PlotScene extends Scene {
 
     @Override
     public void setUp(ServerLevel level) {
-        this.plot.build(level, Platform.getPlayer(level), BlockPos.ZERO);
+        this.plot.build(level, Platform.getFakePlayer(level, null), BlockPos.ZERO);
 
         if (this.postSetup != null) {
             this.postSetup.accept(level);

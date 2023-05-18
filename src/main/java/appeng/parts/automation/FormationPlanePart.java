@@ -92,8 +92,9 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
+            var owningPlayerId = getMainNode().getNode().getOwningPlayerId();
             placementStrategies = StackWorldBehaviors.createPlacementStrategies(
-                    (ServerLevel) self.getLevel(), pos, side, self);
+                    (ServerLevel) self.getLevel(), pos, side, self, owningPlayerId);
         }
         return placementStrategies;
     }

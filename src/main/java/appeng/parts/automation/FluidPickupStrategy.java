@@ -32,7 +32,7 @@ public class FluidPickupStrategy implements PickupStrategy {
     private long lastEffect;
 
     public FluidPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            Map<?, ?> enchantments) {
+            Map<?, ?> enchantments, int owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;

@@ -124,7 +124,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             if (level.isClientSide) {
                 return InteractionResult.FAIL;
             }
-            p = Platform.getPlayer((ServerLevel) level);
+            p = Platform.getFakePlayer((ServerLevel) level, null);
             // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
             tryBoth = true;
         }
