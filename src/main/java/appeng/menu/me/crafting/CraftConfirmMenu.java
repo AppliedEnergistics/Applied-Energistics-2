@@ -47,7 +47,6 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ISubMenuHost;
-import appeng.api.storage.ITerminalHost;
 import appeng.core.AELog;
 import appeng.core.sync.packets.CraftConfirmPlanPacket;
 import appeng.crafting.execution.CraftingSubmitResult;
@@ -74,7 +73,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     private static final SyncableSubmitResult NO_ERROR = new SyncableSubmitResult((ICraftingSubmitResult) null);
 
     public static final MenuType<CraftConfirmMenu> TYPE = MenuTypeBuilder
-            .create(CraftConfirmMenu::new, ITerminalHost.class)
+            .create(CraftConfirmMenu::new, ISubMenuHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftconfirm");
     private final CraftingCPUCycler cpuCycler;
@@ -106,7 +105,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     private CraftingPlanSummary plan;
 
-    private final ITerminalHost host;
+    private final ISubMenuHost host;
 
     /**
      * List of stacks to craft, once this request is through. This is currently used when requesting multiple
@@ -119,7 +118,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     private List<IMenuCraftingPacket.AutoCraftEntry> autoCraftingQueue;
     private List<Integer> requestedSlots;
 
-    public CraftConfirmMenu(int id, Inventory ip, ITerminalHost te) {
+    public CraftConfirmMenu(int id, Inventory ip, ISubMenuHost te) {
         super(TYPE, id, ip, te);
         this.host = te;
         this.cpuCycler = new CraftingCPUCycler(this::cpuMatches, this::onCPUSelectionChanged);

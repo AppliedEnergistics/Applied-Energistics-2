@@ -118,11 +118,6 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
         }
 
         if (this.getDisplayed() instanceof AEItemKey itemKey) {
-            if (getAmount() == 0 && canCraft()) {
-                CraftAmountMenu.open((ServerPlayer) player, MenuLocators.forPart(this), itemKey,
-                        itemKey.getAmountPerUnit());
-            }
-
             this.extractItem(player, itemKey.getItem().getMaxStackSize());
         }
 
@@ -191,6 +186,12 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
             return;
         }
 
+        if (getAmount() == 0 && canCraft()) {
+            CraftAmountMenu.open((ServerPlayer) player, MenuLocators.forPart(this), itemKey,
+                    itemKey.getAmountPerUnit());
+            return;
+        }
+
         getMainNode().ifPresent(grid -> {
             var energy = grid.getEnergyService();
             var cell = grid.getStorageService().getInventory();
@@ -203,7 +204,9 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
                     player.drop(newItems, false);
                 }
 
-                player.containerMenu.broadcastChanges();
+                if (player.containerMenu != null) {
+                    player.containerMenu.broadcastChanges();
+                }
             }
         });
     }
