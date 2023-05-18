@@ -34,8 +34,9 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IStackWatcher;
-import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPartItem;
@@ -59,18 +60,59 @@ import appeng.util.Platform;
  * @since rv3
  */
 public abstract class AbstractMonitorPart extends AbstractDisplayPart
-        implements IStorageMonitorPart, IStorageWatcherNode {
+        implements IStorageMonitorPart {
     @Nullable
     private AEKey configuredItem;
     private long amount;
+    private boolean canCraft;
     private String lastHumanReadableText;
     private boolean isLocked;
-    private IStackWatcher myWatcher;
+    private IStackWatcher storageWatcher;
+    private IStackWatcher craftingWatcher;
 
     public AbstractMonitorPart(IPartItem<?> partItem, boolean requireChannel) {
         super(partItem, requireChannel);
 
-        getMainNode().addService(IStorageWatcherNode.class, this);
+        getMainNode().addService(IStorageWatcherNode.class, new IStorageWatcherNode() {
+            @Override
+            public void updateWatcher(IStackWatcher newWatcher) {
+                storageWatcher = newWatcher;
+                configureWatchers();
+            }
+
+            @Override
+            public void onStackChange(AEKey what, long amount) {
+                if (what.equals(configuredItem)) {
+                    AbstractMonitorPart.this.amount = amount;
+
+                    var humanReadableText = amount == 0 && canCraft ? "Craft"
+                            : what.formatAmount(amount, AmountFormat.SLOT);
+
+                    // Try throttling to only relevant updates
+                    if (!humanReadableText.equals(lastHumanReadableText)) {
+                        lastHumanReadableText = humanReadableText;
+                        getHost().markForUpdate();
+                    }
+                }
+            }
+        });
+
+        getMainNode().addService(ICraftingWatcherNode.class, new ICraftingWatcherNode() {
+            @Override
+            public void updateWatcher(IStackWatcher newWatcher) {
+                craftingWatcher = newWatcher;
+                configureWatchers();
+            }
+
+            @Override
+            public void onRequestChange(AEKey what) {
+            }
+
+            @Override
+            public void onCraftableChange(AEKey what) {
+                getMainNode().ifPresent(AbstractMonitorPart.this::updateReportingValue);
+            }
+        });
     }
 
     @Override
@@ -102,6 +144,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         if (this.configuredItem != null) {
             AEKey.writeKey(data, this.configuredItem);
             data.writeVarLong(this.amount);
+            data.writeBoolean(this.canCraft);
         }
     }
 
@@ -118,9 +161,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         if (data.readBoolean()) {
             this.configuredItem = AEKey.readKey(data);
             this.amount = data.readVarLong();
+            this.canCraft = data.readBoolean();
         } else {
             this.configuredItem = null;
             this.amount = 0;
+            this.canCraft = false;
         }
 
         return needRedraw;
@@ -130,12 +175,14 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public void writeVisualStateToNBT(CompoundTag data) {
         super.writeVisualStateToNBT(data);
         data.putLong("amount", this.amount);
+        data.putBoolean("canCraft", this.canCraft);
     }
 
     @Override
     public void readVisualStateFromNBT(CompoundTag data) {
         super.readVisualStateFromNBT(data);
         this.amount = data.getLong("amount");
+        this.canCraft = data.getBoolean("canCraft");
     }
 
     @Override
@@ -199,29 +246,38 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     // update the system...
-    private void configureWatchers() {
-        if (this.myWatcher != null) {
-            this.myWatcher.reset();
+    protected void configureWatchers() {
+        if (this.storageWatcher != null) {
+            this.storageWatcher.reset();
+        }
+
+        if (this.craftingWatcher != null) {
+            this.craftingWatcher.reset();
         }
 
         if (this.configuredItem != null) {
-            if (this.myWatcher != null) {
-                this.myWatcher.add(this.configuredItem);
+            if (this.storageWatcher != null) {
+                this.storageWatcher.add(this.configuredItem);
             }
 
-            getMainNode().ifPresent(grid -> {
-                this.updateReportingValue(grid.getStorageService());
-            });
+            if (this.craftingWatcher != null) {
+                this.craftingWatcher.add(this.configuredItem);
+            }
+
+            getMainNode().ifPresent(this::updateReportingValue);
         }
     }
 
-    private void updateReportingValue(IStorageService storageService) {
+    protected void updateReportingValue(IGrid grid) {
         this.lastHumanReadableText = null;
         if (this.configuredItem != null) {
-            this.amount = storageService.getCachedInventory().get(this.configuredItem);
+            this.amount = grid.getStorageService().getCachedInventory().get(this.configuredItem);
+            this.canCraft = grid.getCraftingService().isCraftable(this.configuredItem);
         } else {
             this.amount = 0;
+            this.canCraft = false;
         }
+        getHost().markForUpdate();
     }
 
     @Override
@@ -245,7 +301,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         BlockEntityRenderHelper.rotateToFace(poseStack, orientation);
         poseStack.translate(0, 0.05, 0.5);
 
-        BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount,
+        BlockEntityRenderHelper.renderItem2dWithAmount(poseStack, buffers, getDisplayed(), amount, canCraft,
                 0.4f, -0.23f, getColor().contrastTextColor, getLevel());
 
         poseStack.popPose();
@@ -273,6 +329,10 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
         return amount;
     }
 
+    public boolean canCraft() {
+        return canCraft;
+    }
+
     @Override
     public boolean isLocked() {
         return this.isLocked;
@@ -281,27 +341,6 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public void setLocked(boolean locked) {
         isLocked = locked;
         getHost().markForUpdate();
-    }
-
-    @Override
-    public void updateWatcher(IStackWatcher newWatcher) {
-        this.myWatcher = newWatcher;
-        this.configureWatchers();
-    }
-
-    @Override
-    public void onStackChange(AEKey what, long amount) {
-        if (what.equals(this.configuredItem)) {
-            this.amount = amount;
-
-            var humanReadableText = what.formatAmount(amount, AmountFormat.SLOT);
-
-            // Try throttling to only relevant updates
-            if (!humanReadableText.equals(this.lastHumanReadableText)) {
-                this.lastHumanReadableText = humanReadableText;
-                this.getHost().markForUpdate();
-            }
-        }
     }
 
     @Override

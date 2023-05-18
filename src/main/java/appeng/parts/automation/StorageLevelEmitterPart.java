@@ -36,7 +36,6 @@ import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IStackWatcher;
 import appeng.api.networking.crafting.ICraftingProvider;
-import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.parts.IPartItem;
@@ -117,8 +116,12 @@ public class StorageLevelEmitterPart extends AbstractLevelEmitterPart
         }
 
         @Override
-        public void onRequestChange(ICraftingService craftingGrid, AEKey what) {
+        public void onRequestChange(AEKey what) {
             updateState();
+        }
+
+        @Override
+        public void onCraftableChange(AEKey what) {
         }
     };
 
