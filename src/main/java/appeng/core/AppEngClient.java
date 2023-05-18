@@ -30,6 +30,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -54,6 +55,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
+import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.render.StorageCellClientTooltipComponent;
@@ -127,6 +129,10 @@ public class AppEngClient extends AppEngBase {
         ClientTickEvents.END_CLIENT_TICK.register(c -> Hotkeys.checkHotkeys());
 
         ClientTickEvents.END_CLIENT_TICK.register(this::tickPinnedKeys);
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            PendingCraftingJobs.clearPendingJobs();
+            PinnedKeys.clearPinnedKeys();
+        });
 
         registerTests();
 
