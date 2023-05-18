@@ -36,6 +36,7 @@ import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IStackWatcher;
+import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPartItem;
@@ -59,19 +60,59 @@ import appeng.util.Platform;
  * @since rv3
  */
 public abstract class AbstractMonitorPart extends AbstractDisplayPart
-        implements IStorageMonitorPart, IStorageWatcherNode {
+        implements IStorageMonitorPart {
     @Nullable
     private AEKey configuredItem;
     private long amount;
     private boolean canCraft;
     private String lastHumanReadableText;
     private boolean isLocked;
-    private IStackWatcher myWatcher;
+    private IStackWatcher storageWatcher;
+    private IStackWatcher craftingWatcher;
 
     public AbstractMonitorPart(IPartItem<?> partItem, boolean requireChannel) {
         super(partItem, requireChannel);
 
-        getMainNode().addService(IStorageWatcherNode.class, this);
+        getMainNode().addService(IStorageWatcherNode.class, new IStorageWatcherNode() {
+            @Override
+            public void updateWatcher(IStackWatcher newWatcher) {
+                storageWatcher = newWatcher;
+                configureWatchers();
+            }
+
+            @Override
+            public void onStackChange(AEKey what, long amount) {
+                if (what.equals(configuredItem)) {
+                    AbstractMonitorPart.this.amount = amount;
+
+                    var humanReadableText = amount == 0 && canCraft ? "Craft"
+                            : what.formatAmount(amount, AmountFormat.SLOT);
+
+                    // Try throttling to only relevant updates
+                    if (!humanReadableText.equals(lastHumanReadableText)) {
+                        lastHumanReadableText = humanReadableText;
+                        getHost().markForUpdate();
+                    }
+                }
+            }
+        });
+
+        getMainNode().addService(ICraftingWatcherNode.class, new ICraftingWatcherNode() {
+            @Override
+            public void updateWatcher(IStackWatcher newWatcher) {
+                craftingWatcher = newWatcher;
+                configureWatchers();
+            }
+
+            @Override
+            public void onRequestChange(AEKey what) {
+            }
+
+            @Override
+            public void onCraftableChange(AEKey what) {
+                getMainNode().ifPresent(AbstractMonitorPart.this::updateReportingValue);
+            }
+        });
     }
 
     @Override
@@ -206,13 +247,21 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
     // update the system...
     protected void configureWatchers() {
-        if (this.myWatcher != null) {
-            this.myWatcher.reset();
+        if (this.storageWatcher != null) {
+            this.storageWatcher.reset();
+        }
+
+        if (this.craftingWatcher != null) {
+            this.craftingWatcher.reset();
         }
 
         if (this.configuredItem != null) {
-            if (this.myWatcher != null) {
-                this.myWatcher.add(this.configuredItem);
+            if (this.storageWatcher != null) {
+                this.storageWatcher.add(this.configuredItem);
+            }
+
+            if (this.craftingWatcher != null) {
+                this.craftingWatcher.add(this.configuredItem);
             }
 
             getMainNode().ifPresent(this::updateReportingValue);
@@ -292,27 +341,6 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     public void setLocked(boolean locked) {
         isLocked = locked;
         getHost().markForUpdate();
-    }
-
-    @Override
-    public void updateWatcher(IStackWatcher newWatcher) {
-        this.myWatcher = newWatcher;
-        this.configureWatchers();
-    }
-
-    @Override
-    public void onStackChange(AEKey what, long amount) {
-        if (what.equals(this.configuredItem)) {
-            this.amount = amount;
-
-            var humanReadableText = amount == 0 && canCraft ? "Craft" : what.formatAmount(amount, AmountFormat.SLOT);
-
-            // Try throttling to only relevant updates
-            if (!humanReadableText.equals(this.lastHumanReadableText)) {
-                this.lastHumanReadableText = humanReadableText;
-                this.getHost().markForUpdate();
-            }
-        }
     }
 
     @Override
