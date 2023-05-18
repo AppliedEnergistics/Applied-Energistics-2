@@ -43,7 +43,10 @@ and the export bus can't export, so nothing happens.
 
 ## A Pipe-Like Subnet
 
-![Interfaces!](../assets/assemblies/interface_storage_pipe_furnace.png)
+<GameScene zoom="6">
+<ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 It turns out there are [devices](../ae2-mechanics/devices.md) besides import busses that push items into [network storage](../ae2-mechanics/import-export-storage.md)!
 Of relevance here is the <ItemLink id="interface" />. If an item is inserted that the interface is not set to stock, the interface will

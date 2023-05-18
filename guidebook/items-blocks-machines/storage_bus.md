@@ -10,7 +10,9 @@ item_ids:
 
 # The Storage Bus
 
-![A picture of a storage bus.](../assets/blocks/storage_bus.png)
+<GameScene zoom="8">
+<ImportStructure src="../assets/blocks/storage_bus.snbt" />
+</GameScene>
 
 Ever wanted to *keep* your chest monster instead of replacing it with something sensible? We present the Storage Bus!
 

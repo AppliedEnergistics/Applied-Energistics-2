@@ -18,13 +18,17 @@ Curiously, it can *also* accelerate the growth of various plants.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/growth_accelerator.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 To power it manually, place a <ItemLink id="crank" /> on the top or bottom and right-click it.
 
-It also acts as the workstation for the AE2 villager.
-
 It only connects to cables on its ends where the pink fluix greebles are.
+
+<GameScene zoom="6">
+<ImportStructure src="../assets/assemblies/accelerator_connections.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 ## Recipe
 

@@ -10,7 +10,9 @@ item_ids:
 
 # The Import Bus
 
-![A picture of an import bus.](../assets/blocks/import_bus.png)
+<GameScene zoom="8">
+<ImportStructure src="../assets/blocks/import_bus.snbt" />
+</GameScene>
 
 The import bus pulls items and fluids (and whatever else, given addons) from the inventory it's touching and pushes them into
 [network storage](../ae2-mechanics/import-export-storage.md).

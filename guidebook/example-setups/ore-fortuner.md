@@ -7,8 +7,11 @@ navigation:
 
 # Automation of Ore Fortuning
 
+NEEDS ANNOTATON FUNCTIONALITY
+
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 The <ItemLink id="annihilation_plane" /> can be enchanted with any pickaxe enchantment, including fortune, so an obvious use case is to

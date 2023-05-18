@@ -36,9 +36,9 @@ can be [partitioned](cell_workbench.md) to achieve this.
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-Again, it filters *by the item drops* so, for example, if you want to filter breaking of [budding certus blocks](../items-blocks-machines/budding_certus.md)
-you need a plane enchanted with silk touch, otherwise every tier of budding block drops <ItemLink id="quartz_block" /> and so
-the drops cannot be differentiated.
+Again, it filters *by the item drops* so, for example, if you want to filter breaking of <ItemLink id="minecraft:amethyst_cluster" />s,
+you need a plane enchanted with silk touch, otherwise every previous growth stage drops nothing and so the plane will break them no matter
+what, as the network can always store "nothing".
 
 ## Recipe
 
