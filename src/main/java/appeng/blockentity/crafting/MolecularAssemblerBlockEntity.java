@@ -359,14 +359,11 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
-        super.addAdditionalDrops(level, pos, drops, remove);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
 
         for (var upgrade : upgrades) {
             drops.add(upgrade);
-        }
-        if (remove) {
-            clearContent();
         }
     }
 

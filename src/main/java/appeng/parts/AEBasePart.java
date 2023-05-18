@@ -411,7 +411,7 @@ public abstract class AEBasePart
             if (nodeOwner.getHost().getPart(nodeOwner.getSide()) == nodeOwner) {
                 var items = new ArrayList<ItemStack>();
                 nodeOwner.addPartDrop(items, false);
-                nodeOwner.addAdditionalDrops(items, false, false);
+                nodeOwner.addAdditionalDrops(items, false);
                 nodeOwner.getHost().removePartFromSide(nodeOwner.getSide());
                 if (!items.isEmpty()) {
                     var be = nodeOwner.getHost().getBlockEntity();

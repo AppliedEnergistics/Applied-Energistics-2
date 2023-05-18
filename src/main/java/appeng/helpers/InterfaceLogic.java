@@ -535,7 +535,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.updatePlan();
     }
 
-    public void addDrops(List<ItemStack> drops, boolean remove) {
+    public void addDrops(List<ItemStack> drops) {
         for (var is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);
@@ -549,10 +549,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                 stack.what().addDrops(stack.amount(), drops, this.host.getBlockEntity().getLevel(),
                         this.host.getBlockEntity().getBlockPos());
             }
-        }
-
-        if (remove) {
-            clearContent();
         }
     }
 

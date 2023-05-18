@@ -538,7 +538,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         }
     }
 
-    public void addDrops(List<ItemStack> drops, boolean remove) {
+    public void addDrops(List<ItemStack> drops) {
         for (var stack : this.patternInventory) {
             drops.add(stack);
         }
@@ -549,10 +549,6 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         }
 
         this.returnInv.addDrops(drops, this.host.getBlockEntity().getLevel(), this.host.getBlockEntity().getBlockPos());
-
-        if (remove) {
-            clearContent();
-        }
     }
 
     public void clearContent() {

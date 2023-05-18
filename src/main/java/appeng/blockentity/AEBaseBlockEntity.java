@@ -342,13 +342,12 @@ public class AEBaseBlockEntity extends BlockEntity
      * Ensure you also clear the inventories that contribute to additional drops in {@link #clearContent()} when you
      * override this method.
      *
-     * @param level  level
-     * @param pos    block position
-     * @param drops  drops of block entity
-     * @param remove Remove the drops from the block entity, so they don't drop again when it is broken.
+     * @param level level
+     * @param pos   block position
+     * @param drops drops of block entity
      */
     @MustBeInvokedByOverriders
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
     }
 
     /**
@@ -450,7 +449,8 @@ public class AEBaseBlockEntity extends BlockEntity
             }
 
             // Add and remove extra block entity inventory
-            addAdditionalDrops(level, pos, drops, true);
+            addAdditionalDrops(level, pos, drops);
+            clearContent();
 
             for (var item : drops) {
                 player.getInventory().placeItemBackInInventory(item);

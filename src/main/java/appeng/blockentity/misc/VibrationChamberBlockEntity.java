@@ -143,14 +143,11 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
-        super.addAdditionalDrops(level, pos, drops, remove);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
 
         for (var upgrade : upgrades) {
             drops.add(upgrade);
-        }
-        if (remove) {
-            clearContent();
         }
     }
 

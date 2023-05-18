@@ -880,16 +880,12 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return drops;
     }
 
-    public void addAdditionalDrops(List<ItemStack> drops, boolean remove) {
+    public void addAdditionalDrops(List<ItemStack> drops) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(side);
             if (part != null) {
-                part.addAdditionalDrops(drops, false, remove);
+                part.addAdditionalDrops(drops, false);
             }
-        }
-
-        if (remove) {
-            clearContent();
         }
     }
 
