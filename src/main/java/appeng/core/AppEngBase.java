@@ -21,9 +21,9 @@ package appeng.core;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.annotation.Nullable;
-
 import com.mojang.brigadier.CommandDispatcher;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;

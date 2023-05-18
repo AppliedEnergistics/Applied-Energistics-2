@@ -33,12 +33,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 /**
  * A registry of grid services to extend grid functionality.
  */
-@ThreadSafe
 public final class GridServices {
 
     private GridServices() {

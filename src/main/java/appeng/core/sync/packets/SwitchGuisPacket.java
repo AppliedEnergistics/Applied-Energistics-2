@@ -18,7 +18,7 @@
 
 package appeng.core.sync.packets;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 

@@ -25,10 +25,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Strings;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;

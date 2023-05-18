@@ -26,13 +26,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -829,7 +829,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     /**
      * Can be overridden in subclasses to be notified of GUI data updates sent by the server.
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void onServerDataSync() {
     }
 

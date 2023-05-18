@@ -18,7 +18,7 @@
 
 package appeng.util.helpers;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;

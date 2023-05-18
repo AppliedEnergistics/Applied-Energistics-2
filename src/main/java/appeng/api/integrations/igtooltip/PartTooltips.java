@@ -2,8 +2,6 @@ package appeng.api.integrations.igtooltip;
 
 import static appeng.api.integrations.igtooltip.TooltipProvider.DEFAULT_PRIORITY;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
@@ -17,7 +15,6 @@ import appeng.integration.modules.igtooltip.parts.PartTooltipProviders;
  * (Jade, TOP, WTHIT).
  */
 @ApiStatus.Experimental
-@ThreadSafe
 public final class PartTooltips {
 
     private PartTooltips() {

@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.base.SingleStackStorage;
@@ -51,7 +49,6 @@ import appeng.parts.p2p.P2PTunnelPart;
 /**
  * A Registry for how p2p Tunnels are attuned
  */
-@ThreadSafe
 public final class P2PTunnelAttunement {
     private static final int INITIAL_CAPACITY = 40;
 

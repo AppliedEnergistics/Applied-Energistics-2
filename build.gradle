@@ -133,8 +133,6 @@ dependencies {
     // Include No Indium? https://github.com/Luligabi1/NoIndium
     include "me.luligabi:NoIndium:${project.no_indium_version}"
 
-    internal 'com.google.code.findbugs:jsr305:3.0.2'
-
     // unit test dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")

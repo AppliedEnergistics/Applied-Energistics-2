@@ -26,11 +26,10 @@ package appeng.api.inventories;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;

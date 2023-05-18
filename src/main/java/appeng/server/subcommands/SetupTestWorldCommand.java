@@ -4,12 +4,12 @@ import static net.minecraft.commands.Commands.literal;
 
 import java.util.Collections;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Stopwatch;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;

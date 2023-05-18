@@ -20,7 +20,7 @@ package appeng.menu.me.crafting;
 
 import java.util.Comparator;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 

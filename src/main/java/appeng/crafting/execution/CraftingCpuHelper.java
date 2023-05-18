@@ -21,9 +21,9 @@ package appeng.crafting.execution;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.Iterables;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

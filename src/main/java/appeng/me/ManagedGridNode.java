@@ -23,13 +23,12 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MutableClassToInstanceMap;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -274,6 +273,8 @@ public class ManagedGridNode implements IManagedGridNode {
 
     @Override
     public ManagedGridNode setIdlePowerUsage(double usagePerTick) {
+        Preconditions.checkArgument(usagePerTick >= 0, "usagePerTick must be >= 0");
+
         if (node == null) {
             getInitData().idlePowerUsage = usagePerTick;
         } else {
@@ -302,7 +303,6 @@ public class ManagedGridNode implements IManagedGridNode {
         return this;
     }
 
-    @Nonnegative
     public double getIdlePowerUsage() {
         return node != null ? node.getIdlePowerUsage() : getInitData().idlePowerUsage;
     }

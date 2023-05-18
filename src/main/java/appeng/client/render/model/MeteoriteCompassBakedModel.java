@@ -21,8 +21,7 @@ package appeng.client.render.model;
 import java.util.List;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 

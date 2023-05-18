@@ -18,7 +18,7 @@
 
 package appeng.menu.me.common;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.stacks.AEKey;
 

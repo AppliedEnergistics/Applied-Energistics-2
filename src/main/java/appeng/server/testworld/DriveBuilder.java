@@ -2,7 +2,7 @@ package appeng.server.testworld;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;

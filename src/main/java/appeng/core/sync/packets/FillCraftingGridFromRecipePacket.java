@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
+
+import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 

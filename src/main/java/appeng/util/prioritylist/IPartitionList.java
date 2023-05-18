@@ -18,7 +18,7 @@
 
 package appeng.util.prioritylist;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.IncludeExclude;

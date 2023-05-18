@@ -18,9 +18,9 @@
 
 package appeng.client.gui.widgets;
 
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.Rect2i;

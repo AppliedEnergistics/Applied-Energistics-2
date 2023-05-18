@@ -27,10 +27,9 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-
 import com.google.common.base.Preconditions;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -42,7 +41,6 @@ import net.minecraft.world.level.ItemLike;
  * This can be used by items like wireless terminals to encode the network security key in their NBT. This security key
  * can then be used to locate the grid for that security key later, when the item wants to interact with the grid.
  */
-@ThreadSafe
 public final class GridLinkables {
 
     private static final Map<Item, IGridLinkableHandler> registry = new IdentityHashMap<>();

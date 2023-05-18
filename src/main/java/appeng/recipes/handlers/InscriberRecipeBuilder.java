@@ -3,9 +3,9 @@ package appeng.recipes.handlers;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;

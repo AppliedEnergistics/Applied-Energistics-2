@@ -25,8 +25,6 @@ package appeng.api.stacks;
 
 import java.util.Objects;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -35,7 +33,6 @@ import net.minecraft.resources.ResourceLocation;
  * AE2 has built-in {@link AEKeyType#items() item} and {@link AEKeyType#fluids() fluid} key types. Addons can register
  * additional key types during initialization using {@link #register(AEKeyType)}.
  */
-@ThreadSafe
 public final class AEKeyTypes {
     private AEKeyTypes() {
     }

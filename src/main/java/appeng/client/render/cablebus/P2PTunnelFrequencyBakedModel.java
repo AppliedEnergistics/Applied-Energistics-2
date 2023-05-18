@@ -21,10 +21,10 @@ package appeng.client.render.cablebus;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
-import javax.annotation.Nullable;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;

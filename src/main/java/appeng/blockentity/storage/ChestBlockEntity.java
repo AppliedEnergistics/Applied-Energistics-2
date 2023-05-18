@@ -23,8 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

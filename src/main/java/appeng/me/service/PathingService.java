@@ -21,7 +21,7 @@ package appeng.me.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;

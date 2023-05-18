@@ -1,6 +1,6 @@
 package appeng.api.integrations.rei;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.EntryType;

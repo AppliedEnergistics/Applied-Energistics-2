@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
@@ -293,14 +291,16 @@ public abstract class AEBasePart
      * @param input  compound of source
      * @param player the optional player who is importing the settings
      */
-    @OverridingMethodsMustInvokeSuper
+    @Override
+    @MustBeInvokedByOverriders
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         this.customName = CustomNameUtil.getCustomName(input);
 
         MemoryCardItem.importGenericSettings(this, input, player);
     }
 
-    @OverridingMethodsMustInvokeSuper
+    @Override
+    @MustBeInvokedByOverriders
     public void exportSettings(SettingsFrom mode, CompoundTag output) {
         CustomNameUtil.setCustomName(output, this.customName);
 
@@ -393,7 +393,7 @@ public abstract class AEBasePart
 
     @Nullable
     @Override
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public InternalInventory getSubInventory(ResourceLocation id) {
         return null;
     }

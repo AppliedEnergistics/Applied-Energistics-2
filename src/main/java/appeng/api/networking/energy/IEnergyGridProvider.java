@@ -25,8 +25,6 @@ package appeng.api.networking.energy;
 
 import java.util.Collection;
 
-import javax.annotation.Nonnegative;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridNodeService;
 
@@ -58,8 +56,7 @@ public interface IEnergyGridProvider extends IGridNodeService {
      *
      * @return the used amount
      */
-    @Nonnegative
-    double extractProviderPower(@Nonnegative double amt, Actionable mode);
+    double extractProviderPower(double amt, Actionable mode);
 
     /**
      * Injects the offered amount into the provider.
@@ -71,8 +68,7 @@ public interface IEnergyGridProvider extends IGridNodeService {
      *
      * @return the leftover amount
      */
-    @Nonnegative
-    double injectProviderPower(@Nonnegative double amt, Actionable mode);
+    double injectProviderPower(double amt, Actionable mode);
 
     /**
      * internal use only
@@ -86,8 +82,7 @@ public interface IEnergyGridProvider extends IGridNodeService {
      * @param d the max amount offered, the demand should never exceed it.
      * @return the total amount demanded
      */
-    @Nonnegative
-    double getProviderEnergyDemand(@Nonnegative double d);
+    double getProviderEnergyDemand(double d);
 
     /**
      * internal use only
@@ -103,7 +98,6 @@ public interface IEnergyGridProvider extends IGridNodeService {
      *
      *
      */
-    @Nonnegative
     double getProviderStoredEnergy();
 
     /**
@@ -118,6 +112,5 @@ public interface IEnergyGridProvider extends IGridNodeService {
      *
      * @return the maximum amount stored.
      */
-    @Nonnegative
     double getProviderMaxEnergy();
 }
