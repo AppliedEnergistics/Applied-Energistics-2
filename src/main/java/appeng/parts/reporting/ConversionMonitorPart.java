@@ -18,8 +18,6 @@
 
 package appeng.parts.reporting;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -30,10 +28,8 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.storage.ITerminalHost;
-import appeng.api.storage.MEStorage;
+import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.StorageHelper;
-import appeng.api.util.IConfigManager;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
@@ -45,7 +41,7 @@ import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
 
-public class ConversionMonitorPart extends AbstractMonitorPart implements ITerminalHost {
+public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMenuHost {
 
     @PartModels
     public static final ResourceLocation MODEL_OFF = new ResourceLocation(AppEng.MOD_ID,
@@ -220,27 +216,11 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
 
     @Override
     public void returnToMainMenu(Player player, ISubMenu subMenu) {
+        player.closeContainer();
     }
 
     @Override
     public ItemStack getMainMenuIcon() {
         return new ItemStack(getPartItem());
-    }
-
-    @Nullable
-    @Override
-    public MEStorage getInventory() {
-        var grid = getMainNode().getGrid();
-
-        if (grid != null) {
-            return grid.getStorageService().getInventory();
-        }
-
-        return null;
-    }
-
-    @Override
-    public IConfigManager getConfigManager() {
-        return null;
     }
 }

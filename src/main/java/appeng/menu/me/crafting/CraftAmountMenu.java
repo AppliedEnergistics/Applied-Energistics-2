@@ -32,7 +32,7 @@ import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.ISubMenuHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.ConfirmAutoCraftPacket;
 import appeng.menu.AEBaseMenu;
@@ -51,7 +51,7 @@ import appeng.util.inv.AppEngInternalInventory;
 public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<CraftAmountMenu> TYPE = MenuTypeBuilder
-            .create(CraftAmountMenu::new, ITerminalHost.class)
+            .create(CraftAmountMenu::new, ISubMenuHost.class)
             .requirePermission(SecurityPermissions.CRAFT)
             .build("craftamount");
 
@@ -65,9 +65,9 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      */
     private AEKey whatToCraft;
 
-    private final ITerminalHost host;
+    private final ISubMenuHost host;
 
-    public CraftAmountMenu(int id, Inventory ip, ITerminalHost host) {
+    public CraftAmountMenu(int id, Inventory ip, ISubMenuHost host) {
         super(TYPE, id, ip, host);
         this.host = host;
         this.craftingItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
@@ -76,7 +76,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
     }
 
     @Override
-    public ITerminalHost getHost() {
+    public ISubMenuHost getHost() {
         return host;
     }
 
