@@ -57,7 +57,7 @@ import appeng.blockentity.networking.ControllerBlockEntity;
 import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
 import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
-import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.blockentity.spatial.SpatialAnchorBlockEntity;
 import appeng.blockentity.spatial.SpatialIOPortBlockEntity;
@@ -82,8 +82,9 @@ public final class AEBlockEntities {
     public static final BlockEntityType<InscriberBlockEntity> INSCRIBER = create("inscriber",
             InscriberBlockEntity.class,
             InscriberBlockEntity::new, AEBlocks.INSCRIBER);
-    public static final BlockEntityType<WirelessBlockEntity> WIRELESS_ACCESS_POINT = create("wireless_access_point",
-            WirelessBlockEntity.class, WirelessBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
+    public static final BlockEntityType<WirelessAccessPointBlockEntity> WIRELESS_ACCESS_POINT = create(
+            "wireless_access_point",
+            WirelessAccessPointBlockEntity.class, WirelessAccessPointBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
     public static final BlockEntityType<ChargerBlockEntity> CHARGER = create("charger", ChargerBlockEntity.class,
             ChargerBlockEntity::new, AEBlocks.CHARGER);
     public static final BlockEntityType<SecurityStationBlockEntity> SECURITY_STATION = create("security_station",

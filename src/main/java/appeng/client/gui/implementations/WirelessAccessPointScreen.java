@@ -25,15 +25,17 @@ import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.core.localization.GuiText;
-import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.implementations.WirelessAccessPointMenu;
 import appeng.util.Platform;
 
-public class WirelessScreen extends AEBaseScreen<WirelessMenu> {
+public class WirelessAccessPointScreen extends AEBaseScreen<WirelessAccessPointMenu> {
 
-    public WirelessScreen(WirelessMenu menu, Inventory playerInventory, Component title,
+    public WirelessAccessPointScreen(WirelessAccessPointMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.addToLeftToolbar(CommonButtons.togglePowerUnit());
+
+        widgets.addBackgroundPanel("linkPanel");
     }
 
     @Override

@@ -27,7 +27,7 @@ import appeng.block.misc.GrowthAcceleratorBlock;
 import appeng.block.misc.SecurityStationBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.EnergyCellBlock;
-import appeng.block.networking.WirelessBlock;
+import appeng.block.networking.WirelessAccessPointBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
 import appeng.block.spatial.SpatialIOPortBlock;
 import appeng.block.storage.ChestBlock;
@@ -209,14 +209,19 @@ public class BlockModelProvider extends AE2BlockStateProvider {
 
             addModel.apply(chassis).end();
 
-            addModel.apply(antennaOff).condition(WirelessBlock.STATE, WirelessBlock.State.OFF).end();
-            addModel.apply(statusOff).condition(WirelessBlock.STATE, WirelessBlock.State.OFF).end();
+            addModel.apply(antennaOff).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.OFF)
+                    .end();
+            addModel.apply(statusOff).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.OFF)
+                    .end();
 
-            addModel.apply(antennaOff).condition(WirelessBlock.STATE, WirelessBlock.State.ON).end();
-            addModel.apply(statusOn).condition(WirelessBlock.STATE, WirelessBlock.State.ON).end();
+            addModel.apply(antennaOff).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.ON)
+                    .end();
+            addModel.apply(statusOn).condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.ON).end();
 
-            addModel.apply(antennaOn).condition(WirelessBlock.STATE, WirelessBlock.State.HAS_CHANNEL).end();
-            addModel.apply(statusOn).condition(WirelessBlock.STATE, WirelessBlock.State.HAS_CHANNEL).end();
+            addModel.apply(antennaOn)
+                    .condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.HAS_CHANNEL).end();
+            addModel.apply(statusOn)
+                    .condition(WirelessAccessPointBlock.STATE, WirelessAccessPointBlock.State.HAS_CHANNEL).end();
         }
     }
 

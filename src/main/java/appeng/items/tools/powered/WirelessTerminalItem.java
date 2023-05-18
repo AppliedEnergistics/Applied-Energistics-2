@@ -19,17 +19,24 @@
 package appeng.items.tools.powered;
 
 import java.util.List;
-import java.util.OptionalLong;
 import java.util.function.DoubleSupplier;
 
+import com.mojang.datafixers.util.Pair;
+
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -47,9 +54,10 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
 import appeng.api.features.IGridLinkableHandler;
-import appeng.api.features.Locatables;
+import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.networking.IGrid;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
@@ -67,9 +75,11 @@ import appeng.util.ConfigManager;
 
 public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem, IUpgradeableItem {
 
+    private static final Logger LOG = LoggerFactory.getLogger(WirelessTerminalItem.class);
+
     public static final IGridLinkableHandler LINKABLE_HANDLER = new LinkableHandler();
 
-    private static final String TAG_GRID_KEY = "gridKey";
+    private static final String TAG_ACCESS_POINT_POS = "accessPoint";
 
     public WirelessTerminalItem(DoubleSupplier powerCapacity, Item.Properties props) {
         super(powerCapacity, props);
@@ -128,7 +138,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
             TooltipFlag advancedTooltips) {
         super.appendHoverText(stack, level, lines, advancedTooltips);
 
-        if (getGridKey(stack).isEmpty()) {
+        if (getLinkedPosition(stack) == null) {
             lines.add(Tooltips.of(GuiText.Unlinked, Tooltips.RED));
         } else {
             lines.add(Tooltips.of(GuiText.Linked, Tooltips.GREEN));
@@ -136,18 +146,67 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
     }
 
     /**
-     * Gets the key of the grid that the wireless terminal is linked to. This can be empty to signal that the terminal
-     * screen should be closed or be otherwise unavailable. The grid will be looked up using
-     * {@link Locatables#securityStations()}. To support setting the grid key using the standard security station slot,
-     * register a {@link IGridLinkableHandler} for your item.
+     * Gets the position of the wireless access point that this terminal is linked to. This can be empty to signal that
+     * the terminal screen should be closed or be otherwise unavailable. To support linking your item with a wireless
+     * access point, register a {@link IGridLinkableHandler}.
      */
-    public OptionalLong getGridKey(ItemStack item) {
+    @Nullable
+    public GlobalPos getLinkedPosition(ItemStack item) {
         CompoundTag tag = item.getTag();
-        if (tag != null && tag.contains(TAG_GRID_KEY, Tag.TAG_LONG)) {
-            return OptionalLong.of(tag.getLong(TAG_GRID_KEY));
+        if (tag != null && tag.contains(TAG_ACCESS_POINT_POS, Tag.TAG_COMPOUND)) {
+            return GlobalPos.CODEC.decode(NbtOps.INSTANCE, tag.get(TAG_ACCESS_POINT_POS))
+                    .resultOrPartial(Util.prefix("Linked position", LOG::error))
+                    .map(Pair::getFirst)
+                    .orElse(null);
         } else {
-            return OptionalLong.empty();
+            return null;
         }
+    }
+
+    @Nullable
+    public IGrid getLinkedGrid(ItemStack item, Level level, @Nullable Player sendMessagesTo) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return null;
+        }
+
+        var linkedPos = getLinkedPosition(item);
+        if (linkedPos == null) {
+            if (sendMessagesTo != null) {
+                sendMessagesTo.displayClientMessage(PlayerMessages.DeviceNotLinked.text(), true);
+            }
+            return null;
+        }
+
+        var linkedLevel = serverLevel.getServer().getLevel(linkedPos.dimension());
+        if (linkedLevel == null) {
+            if (sendMessagesTo != null) {
+                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
+            }
+            return null;
+        }
+
+        if (!linkedLevel.isLoaded(linkedPos.pos())) {
+            if (sendMessagesTo != null) {
+                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
+            }
+            return null;
+        }
+
+        var be = linkedLevel.getBlockEntity(linkedPos.pos());
+        if (!(be instanceof IWirelessAccessPoint accessPoint)) {
+            if (sendMessagesTo != null) {
+                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
+            }
+            return null;
+        }
+
+        var grid = accessPoint.getGrid();
+        if (grid == null) {
+            if (sendMessagesTo != null) {
+                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
+            }
+        }
+        return grid;
     }
 
     /**
@@ -172,7 +231,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
 
     /**
      * Checks if a player can open a particular wireless terminal.
-     * 
+     *
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
     protected boolean checkPreconditions(ItemStack item, Player player) {
@@ -181,19 +240,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         }
 
         var level = player.getCommandSenderWorld();
-        if (level.isClientSide()) {
-            return false;
-        }
-
-        var key = getGridKey(item);
-        if (key.isEmpty()) {
-            player.displayClientMessage(PlayerMessages.DeviceNotLinked.text(), true);
-            return false;
-        }
-
-        var securityStation = Locatables.securityStations().get(level, key.getAsLong());
-        if (securityStation == null) {
-            player.displayClientMessage(PlayerMessages.StationCanNotBeLocated.text(), true);
+        if (getLinkedGrid(item, player.level, player) == null) {
             return false;
         }
 
@@ -259,13 +306,15 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         }
 
         @Override
-        public void link(ItemStack itemStack, long securityKey) {
-            itemStack.getOrCreateTag().putLong(TAG_GRID_KEY, securityKey);
+        public void link(ItemStack itemStack, GlobalPos pos) {
+            GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, pos)
+                    .result()
+                    .ifPresent(tag -> itemStack.getOrCreateTag().put(TAG_ACCESS_POINT_POS, tag));
         }
 
         @Override
         public void unlink(ItemStack itemStack) {
-            itemStack.removeTagKey(TAG_GRID_KEY);
+            itemStack.removeTagKey(TAG_ACCESS_POINT_POS);
         }
     }
 }

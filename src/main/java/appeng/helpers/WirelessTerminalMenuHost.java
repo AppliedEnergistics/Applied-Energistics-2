@@ -28,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.features.Locatables;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -38,7 +37,7 @@ import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
-import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.WirelessTerminalItem;
@@ -66,18 +65,9 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
         this.terminal = wirelessTerminalItem;
         this.returnToMainMenu = returnToMainMenu;
 
-        var gridKey = terminal.getGridKey(itemStack);
-        if (gridKey.isEmpty()) {
-            return;
-        }
-
-        var actionHost = Locatables.securityStations().get(player.level, gridKey.getAsLong());
-        if (actionHost != null) {
-            var n = actionHost.getActionableNode();
-            if (n != null) {
-                this.targetGrid = n.getGrid();
-                this.sg = this.targetGrid.getStorageService();
-            }
+        this.targetGrid = wirelessTerminalItem.getLinkedGrid(itemStack, player.level, player);
+        if (this.targetGrid != null) {
+            this.sg = this.targetGrid.getStorageService();
         }
     }
 
@@ -132,7 +122,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
             // else: Did not have an AP yet, or no longer in range of current AP. Try to find one we are in range of.
 
-            for (var wap : this.targetGrid.getMachines(WirelessBlockEntity.class)) {
+            for (var wap : this.targetGrid.getMachines(WirelessAccessPointBlockEntity.class)) {
                 // `this.myWap` either already returned false for `this.testWap(this.myWap)`, or is null. no need to
                 // check it again
                 if (wap != this.myWap && this.testWap(wap)) {

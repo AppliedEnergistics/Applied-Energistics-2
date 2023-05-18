@@ -55,7 +55,7 @@ import appeng.client.gui.implementations.SpatialIOPortScreen;
 import appeng.client.gui.implementations.StorageBusScreen;
 import appeng.client.gui.implementations.StorageLevelEmitterScreen;
 import appeng.client.gui.implementations.VibrationChamberScreen;
-import appeng.client.gui.implementations.WirelessScreen;
+import appeng.client.gui.implementations.WirelessAccessPointScreen;
 import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.me.crafting.CraftAmountScreen;
 import appeng.client.gui.me.crafting.CraftConfirmScreen;
@@ -94,7 +94,7 @@ import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
-import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.implementations.WirelessAccessPointMenu;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
@@ -122,7 +122,7 @@ public final class InitScreens {
         register(QNBMenu.TYPE, QNBScreen::new, "/screens/qnb.json");
         register(SkyChestMenu.TYPE, SkyChestScreen::new, "/screens/sky_chest.json");
         register(ChestMenu.TYPE, ChestScreen::new, "/screens/chest.json");
-        register(WirelessMenu.TYPE, WirelessScreen::new, "/screens/wireless.json");
+        register(WirelessAccessPointMenu.TYPE, WirelessAccessPointScreen::new, "/screens/wireless_access_point.json");
         register(NetworkStatusMenu.NETWORK_TOOL_TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
         register(NetworkStatusMenu.CONTROLLER_TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
         InitScreens.<CraftingCPUMenu, CraftingCPUScreen<CraftingCPUMenu>>register(

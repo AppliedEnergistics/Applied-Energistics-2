@@ -44,7 +44,8 @@ import appeng.core.definitions.AEItems;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.AEItemDefinitionFilter;
 
-public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWirelessAccessPoint, IPowerChannelState {
+public class WirelessAccessPointBlockEntity extends AENetworkInvBlockEntity
+        implements IWirelessAccessPoint, IPowerChannelState {
 
     public static final int POWERED_FLAG = 1;
     public static final int CHANNEL_FLAG = 2;
@@ -53,7 +54,7 @@ public class WirelessBlockEntity extends AENetworkInvBlockEntity implements IWir
 
     private int clientFlags = 0;
 
-    public WirelessBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
+    public WirelessAccessPointBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
         this.inv.setFilter(new AEItemDefinitionFilter(AEItems.WIRELESS_BOOSTER));
         this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);

@@ -49,7 +49,7 @@ import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.implementations.StorageLevelEmitterMenu;
 import appeng.menu.implementations.VibrationChamberMenu;
-import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.implementations.WirelessAccessPointMenu;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
@@ -108,7 +108,7 @@ public final class InitMenuTypes {
                 StorageLevelEmitterMenu.TYPE,
                 VibrationChamberMenu.TYPE,
                 WirelessCraftingTermMenu.TYPE,
-                WirelessMenu.TYPE);
+                WirelessAccessPointMenu.TYPE);
     }
 
     private static void registerAll(Registry<MenuType<?>> registry, MenuType<?>... types) {

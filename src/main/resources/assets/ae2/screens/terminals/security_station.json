@@ -5,14 +5,6 @@
     "BIOMETRIC_CARD": {
       "left": 37,
       "bottom": 115
-    },
-    "MACHINE_INPUT": {
-      "left": 212,
-      "top": 10
-    },
-    "MACHINE_OUTPUT": {
-      "left": 212,
-      "top": 68
     }
   },
   "text": {
@@ -58,12 +50,6 @@
       "srcRect": [0, 71, 195, 130]
     }
   },
-  "images": {
-    "encodingPanel": {
-      "texture": "guis/security_station.png",
-      "srcRect": [198, 0, 44, 98]
-    }
-  },
   "widgets": {
     "permissionInject": {
       "left": 56,
@@ -84,10 +70,6 @@
     "permissionSecurity": {
       "left": 128,
       "bottom": 116
-    },
-    "encodingPanel": {
-      "right": -3,
-      "top": 0
     }
   }
 }

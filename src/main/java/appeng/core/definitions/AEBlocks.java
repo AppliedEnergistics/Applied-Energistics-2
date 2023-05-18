@@ -72,7 +72,7 @@ import appeng.block.networking.CreativeEnergyCellBlock;
 import appeng.block.networking.EnergyAcceptorBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.EnergyCellBlockItem;
-import appeng.block.networking.WirelessBlock;
+import appeng.block.networking.WirelessAccessPointBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.block.qnb.QuantumLinkChamberBlock;
 import appeng.block.qnb.QuantumRingBlock;
@@ -156,7 +156,7 @@ public final class AEBlocks {
     public static final BlockDefinition<NotSoMysteriousCubeBlock> NOT_SO_MYSTERIOUS_CUBE = block("Not So Mysterious Cube", AEBlockIds.NOT_SO_MYSTERIOUS_CUBE, NotSoMysteriousCubeBlock::new);
 
     public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.METAL).noOcclusion()));
-    public static final BlockDefinition<WirelessBlock> WIRELESS_ACCESS_POINT = block("ME Wireless Access Point", AEBlockIds.WIRELESS_ACCESS_POINT, WirelessBlock::new);
+    public static final BlockDefinition<WirelessAccessPointBlock> WIRELESS_ACCESS_POINT = block("ME Wireless Access Point", AEBlockIds.WIRELESS_ACCESS_POINT, WirelessAccessPointBlock::new);
     public static final BlockDefinition<ChargerBlock> CHARGER = block("Charger", AEBlockIds.CHARGER, ChargerBlock::new);
 
     public static final BlockDefinition<TinyTNTBlock> TINY_TNT = block("Tiny TNT", AEBlockIds.TINY_TNT, () -> new TinyTNTBlock(defaultProps(Material.EXPLOSIVE).sound(SoundType.GRAVEL).strength(0).noOcclusion()));
