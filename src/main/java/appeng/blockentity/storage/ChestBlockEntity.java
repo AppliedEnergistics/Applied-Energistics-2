@@ -258,13 +258,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return clientPowered;
         }
 
-        boolean gridPowered = this.getAECurrentPower() > 64;
-
-        if (!gridPowered) {
-            gridPowered = this.getMainNode().isPowered();
+        if (getMainNode().isPowered()) {
+            return true;
         }
 
-        return super.getAECurrentPower() > 1 || gridPowered;
+        return getAECurrentPower() > 1;
     }
 
     @Override
@@ -292,19 +290,11 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public void serverTick() {
         var grid = getMainNode().getGrid();
-        if (grid != null) {
-            if (!grid.getEnergyService().isNetworkPowered()) {
-                final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE,
-                        PowerMultiplier.CONFIG); // drain
-                if (powerUsed + 0.1 >= idlePowerUsage != clientPowered) {
-                    this.recalculateDisplay();
-                }
-            }
-        } else {
-            final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
-            if (powerUsed + 0.1 >= idlePowerUsage != clientPowered) {
-                this.recalculateDisplay();
-            }
+
+        // Handle energy-use when not grid-powered
+        if (grid == null || !grid.getEnergyService().isNetworkPowered()) {
+            this.extractAEPower(idlePowerUsage, Actionable.MODULATE, PowerMultiplier.CONFIG);
+            this.recalculateDisplay();
         }
 
         if (!this.inputInventory.isEmpty()) {
