@@ -6,7 +6,6 @@ import com.google.common.base.Strings;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
-import appeng.client.Hotkey;
 import appeng.client.guidebook.GuidebookText;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.indices.ItemIndex;
@@ -40,9 +38,6 @@ public final class OpenGuideHotkey {
     private static final Logger LOG = LoggerFactory.getLogger(OpenGuideHotkey.class);
 
     private static final int TICKS_TO_OPEN = 10;
-    private static final String ID_OPEN_FOR_ITEM = "open_guide_for_item";
-    private static final Hotkey HOTKEY = new Hotkey(ID_OPEN_FOR_ITEM,
-            new KeyMapping("key.ae2." + ID_OPEN_FOR_ITEM, GLFW.GLFW_KEY_W, "key.ae2.category"));
     private static final ResourceLocation TOOLTIP_PHASE = AppEng.makeId("open_guide_for_item");
 
     private static boolean newTick = true;
@@ -61,7 +56,6 @@ public final class OpenGuideHotkey {
 
     public static void init() {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            KeyBindingHelper.registerKeyBinding(HOTKEY.mapping());
             ItemTooltipCallback.EVENT.register(TOOLTIP_PHASE, OpenGuideHotkey::handleTooltip);
             ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, TOOLTIP_PHASE);
             ClientTickEvents.START_CLIENT_TICK.register(client -> newTick = true);
@@ -106,11 +100,13 @@ public final class OpenGuideHotkey {
     }
 
     private static Component makeProgressBar(float progress) {
+        var minecraft = Minecraft.getInstance();
+
         var holdW = GuidebookText.GuidebookHoldToShow
-                .text(HOTKEY.mapping().getTranslatedKeyMessage().copy().withStyle(ChatFormatting.GRAY))
+                .text(getHotkey().getTranslatedKeyMessage().copy().withStyle(ChatFormatting.GRAY))
                 .withStyle(ChatFormatting.DARK_GRAY);
 
-        var fontRenderer = Minecraft.getInstance().font;
+        var fontRenderer = minecraft.font;
         var charWidth = fontRenderer.width("|");
         var tipWidth = fontRenderer.width(holdW);
 
@@ -169,10 +165,14 @@ public final class OpenGuideHotkey {
      * This circumvents any current UI key handling.
      */
     private static boolean isKeyHeld() {
-        var boundKey = KeyBindingHelper.getBoundKeyOf(HOTKEY.mapping());
+        var boundKey = KeyBindingHelper.getBoundKeyOf(getHotkey());
         int keyCode = boundKey.getValue();
         var window = Minecraft.getInstance().getWindow().getWindow();
 
         return InputConstants.isKeyDown(window, keyCode);
+    }
+
+    private static KeyMapping getHotkey() {
+        return Minecraft.getInstance().options.keyUp;
     }
 }
