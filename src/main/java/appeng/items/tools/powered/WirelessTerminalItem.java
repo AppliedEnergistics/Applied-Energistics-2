@@ -21,6 +21,7 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import appeng.util.Platform;
 import com.mojang.datafixers.util.Pair;
 
 import org.jetbrains.annotations.Nullable;
@@ -185,14 +186,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
             return null;
         }
 
-        if (!linkedLevel.isLoaded(linkedPos.pos())) {
-            if (sendMessagesTo != null) {
-                sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
-            }
-            return null;
-        }
-
-        var be = linkedLevel.getBlockEntity(linkedPos.pos());
+        var be = Platform.getTickingBlockEntity(linkedLevel, linkedPos.pos());
         if (!(be instanceof IWirelessAccessPoint accessPoint)) {
             if (sendMessagesTo != null) {
                 sendMessagesTo.displayClientMessage(PlayerMessages.LinkedNetworkNotFound.text(), true);
