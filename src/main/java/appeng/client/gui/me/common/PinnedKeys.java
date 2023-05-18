@@ -43,6 +43,10 @@ public final class PinnedKeys {
         return pinned.get(key);
     }
 
+    public static void clearPinnedKeys() {
+        pinned.clear();
+    }
+
     public static void pinKey(AEKey key, PinReason reason) {
         // Refresh timer for existing pinned keys if they're re-pinned
         var info = pinned.get(key);
