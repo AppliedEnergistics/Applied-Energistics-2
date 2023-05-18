@@ -18,6 +18,7 @@ like <ItemLink id="import_bus" />ses and <ItemLink id="interface" />s.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/formation_plane_demonstration.snbt" />
+  <IsometricCamera yaw="255" pitch="30" />
 </GameScene>
 
 This [device](../ae2-mechanics/devices.md) makes use of the mechanics used by storage busses in things like [pipe subnets](../example-setups/pipe-subnet.md),

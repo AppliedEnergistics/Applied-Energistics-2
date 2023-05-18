@@ -18,7 +18,10 @@ item_ids:
 
 (also see [Farming Certus](../ae2-mechanics/farming-certus.md))
 
-![The budding certus blocks](../assets/assemblies/budding_blocks.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/budding_blocks.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 Certus quartz buds will sprout from budding certus blocks, similar to amethyst. These are found in [meteorites](../ae2-mechanics/meteorites.md).
 There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged. They can be most easily identified

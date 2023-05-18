@@ -31,6 +31,7 @@ can be [partitioned](cell_workbench.md) to achieve this.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/annihilation_filtering.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 Again, it filters *by the item drops* so, for example, if you want to filter breaking of [budding certus blocks](../items-blocks-machines/budding_certus.md)

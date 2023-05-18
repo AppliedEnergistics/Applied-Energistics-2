@@ -6,7 +6,10 @@ navigation:
 
 # Subnetworks
 
-![A few subnetworks](../assets/assemblies/subnetworks.png)
+<GameScene zoom="4">
+<ImportStructure src="../assets/assemblies/subnet_demonstration.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 "Subnetwork" is a rather loosely-defined term, but one might say that a subnetwork is any network that supports your
 main network or does some small task. They are typically small enough to not require controllers. Their main 2 uses tend to be:

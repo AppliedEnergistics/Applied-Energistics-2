@@ -7,7 +7,10 @@ icon: fluix_glass_cable
 
 # Cable Subparts
 
-![Some Subparts](../assets/assemblies/subparts_demonstration.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/subparts_demonstration.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 In AE2, certain [devices](devices.md) and components can be placed on cables in the same block. This is useful for compact setups.
 Shift-right-clicking with a <ItemLink id="certus_quartz_wrench" /> or <ItemLink id="network_tool" /> can break a single

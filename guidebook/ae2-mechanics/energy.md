@@ -16,6 +16,18 @@ energy acceptors can intake at functionally unlimited speed, only limited by you
 
 ## Energy Accepting
 
+<Row>
+  <BlockImage id="energy_acceptor" scale="4" />
+
+  <GameScene zoom="4">
+  <ImportStructure src="../assets/blocks/cable_energy_acceptor.snbt" />
+  </GameScene>
+
+  <BlockImage id="controller" p:state="online" scale="4" />
+
+  <BlockImage id="vibration_chamber" p:active="true" scale="4" />
+</Row>
+
 AE2 does not use Forge Energy (on Forge) or TechReborn Energy (on Fabric) internally. Instead it converts them to
 its own unit, AE. This conversion is one-way. Energy can be converted by <ItemLink id="energy_acceptor" />s and
 <ItemLink id="controller" />s, though controller faces are better used for more [channels](../ae2-mechanics/channels.md).
@@ -31,6 +43,14 @@ The ratios for conversion of Forge Energy and Techreborn Energy are
 *   1 E  = 2 AE (Fabric)
 
 ## Energy Storage
+
+<Row >
+  <BlockImage id="energy_cell" scale="4" p:fullness="4" />
+
+  <BlockImage id="dense_energy_cell" scale="4" p:fullness="4" />
+
+  <BlockImage id="creative_energy_cell" scale="4" />
+</Row>
 
 For relatively obvious reasons, a network cannot intake or consume more energy in a gametick than it can store. If a network
 can only store 800 AE, when its [devices](../ae2-mechanics/devices.md) request energy, they will only be able to use up to 800 AE (assuming the storage is full)

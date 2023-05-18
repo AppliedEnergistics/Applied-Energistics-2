@@ -13,7 +13,7 @@ services. Think of channels like USB cables to all your devices. A computer only
 so many devices connected to it. Most machines, full-block devices, and standard cables can only pass through
 up to 8 channels. You can think of full-block devices and standard cables as a bundle of 8 "channel wires". However, [dense cables](../items-blocks-machines/cables.md) can support up
 to 32 channels. The only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
-and the [Quantum Network Bridge](quantum-bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
+and the [Quantum Network Bridge](../items-blocks-machines/quantum_bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
 the bundle, which obviously means that "wire" isn't available further down the line.
 
 An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
@@ -76,4 +76,7 @@ The following table lists the available modes in both the configuration file and
 It's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
 branching out from the dense, and [devices](../ae2-mechanics/devices.md) in clusters of 8 or fewer on the regular cables.
 
-ILLUSTRATION IN-PROGRESS
+<GameScene zoom="3">
+  <ImportStructure src="../assets/assemblies/treelike_network_structure.snbt" />
+  <IsometricCamera yaw="315" pitch="30" />
+</GameScene>
