@@ -21,7 +21,6 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
-import appeng.util.Platform;
 import com.mojang.datafixers.util.Pair;
 
 import org.jetbrains.annotations.Nullable;
@@ -73,6 +72,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.util.ConfigManager;
+import appeng.util.Platform;
 
 public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem, IUpgradeableItem {
 
