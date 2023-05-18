@@ -18,32 +18,6 @@
 
 package appeng.blockentity.storage;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.BlankVariantView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -73,7 +47,6 @@ import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.cells.CellState;
-import appeng.api.storage.cells.ICellHandler;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AEColor;
 import appeng.api.util.IConfigManager;
@@ -92,16 +65,40 @@ import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.BlankVariantView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 public class ChestBlockEntity extends AENetworkPowerBlockEntity
         implements IMEChest, ITerminalHost, IPriorityHost, IColorableBlockEntity,
         ServerTickingBlockEntity, IStorageProvider {
 
-    private static final int BIT_POWER_MASK = Byte.MIN_VALUE;
-    private static final int BIT_STATE_MASK = 0b111;
-
-    private static final int BIT_CELL_STATE_MASK = 0b111;
-    private static final int BIT_CELL_STATE_BITS = 3;
+    private static final Logger LOG = LoggerFactory.getLogger(ChestBlockEntity.class);
 
     private final AppEngInternalInventory inputInventory = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory cellInventory = new AppEngInternalInventory(this, 1);
@@ -111,17 +108,19 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private final IActionSource mySrc = new MachineSource(this);
     private final IConfigManager config = new ConfigManager(this::saveChanges);
     private int priority = 0;
-    private int state = 0;
+    // Client-side cell state or last cell-state sent to client (for update-checking)
+    private CellState clientCellState = CellState.ABSENT;
+    // Client-side cached powered state or last powered state sent to client
+    private boolean clientPowered;
+    // This is only used on the client to display the right cell model without
+    // synchronizing the entire cell's inventory when a chest comes into view.
+    private Item cellItem = Items.AIR;
     private boolean wasOnline = false;
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isCached = false;
     private ChestMonitorHandler cellHandler;
     private Accessor accessor;
     private Storage<FluidVariant> fluidHandler;
-    // This is only used on the client to display the right cell model without
-    // synchronizing the entire
-    // cell's inventory when a chest comes into view.
-    private Item cellItem = Items.AIR;
     private double idlePowerUsage;
 
     public ChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -161,20 +160,21 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     private void recalculateDisplay() {
-        var oldState = this.state;
+        boolean changed = false;
 
-        var state = 0;
-
-        for (int x = 0; x < this.getCellCount(); x++) {
-            state |= this.getCellStatus(x).ordinal() << BIT_CELL_STATE_BITS * x;
+        var cellState = this.getCellStatus(0);
+        if (clientCellState != cellState) {
+            clientCellState = cellState;
+            changed = true;
         }
 
-        if (this.isPowered()) {
-            state |= BIT_POWER_MASK;
+        var powered = isPowered();
+        if (clientPowered != powered) {
+            clientPowered = powered;
+            changed = true;
         }
 
-        if (oldState != state) {
-            this.state = state;
+        if (changed) {
             this.markForUpdate();
         }
     }
@@ -220,13 +220,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public CellState getCellStatus(int slot) {
         if (isClientSide()) {
-            return CellState.values()[this.state >> slot * BIT_CELL_STATE_BITS & BIT_CELL_STATE_MASK];
+            return clientCellState;
         }
 
         this.updateHandler();
 
-        final ItemStack cell = this.getCell();
-        final ICellHandler ch = StorageCells.getHandler(cell);
+        var cell = this.getCell();
+        var ch = StorageCells.getHandler(cell);
 
         if (this.cellHandler != null && ch != null) {
             return this.cellHandler.cellInventory.getStatus();
@@ -252,7 +252,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public boolean isPowered() {
         if (isClientSide()) {
-            return (this.state & BIT_POWER_MASK) == BIT_POWER_MASK;
+            return clientPowered;
         }
 
         boolean gridPowered = this.getAECurrentPower() > 64;
@@ -293,13 +293,13 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             if (!grid.getEnergyService().isNetworkPowered()) {
                 final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE,
                         PowerMultiplier.CONFIG); // drain
-                if (powerUsed + 0.1 >= idlePowerUsage != (this.state & BIT_POWER_MASK) > 0) {
+                if (powerUsed + 0.1 >= idlePowerUsage != clientPowered) {
                     this.recalculateDisplay();
                 }
             }
         } else {
             final double powerUsed = this.extractAEPower(idlePowerUsage, Actionable.MODULATE, PowerMultiplier.CONFIG); // drain
-            if (powerUsed + 0.1 >= idlePowerUsage != (this.state & BIT_POWER_MASK) > 0) {
+            if (powerUsed + 0.1 >= idlePowerUsage != clientPowered) {
                 this.recalculateDisplay();
             }
         }
@@ -313,18 +313,9 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
 
-        this.state = 0;
-
-        for (int x = 0; x < this.getCellCount(); x++) {
-            this.state |= this.getCellStatus(x).ordinal() << 3 * x;
-        }
-
-        if (this.isPowered()) {
-            this.state |= BIT_POWER_MASK;
-        }
-
-        data.writeByte(this.state);
-        data.writeByte(this.paintedColor.ordinal());
+        data.writeEnum(clientCellState = getCellStatus(0));
+        data.writeBoolean(clientPowered = isPowered());
+        data.writeByte(paintedColor.ordinal());
 
         // Note that we trust that the change detection in recalculateDisplay will trip
         // when it changes from
@@ -337,14 +328,60 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
 
-        final int oldState = this.state;
+        var oldCellState = clientCellState;
+        var oldPowered = clientPowered;
+        var oldColor = paintedColor;
+        var oldCellItem = cellItem;
 
-        this.state = data.readByte();
-        final AEColor oldPaintedColor = this.paintedColor;
-        this.paintedColor = AEColor.values()[data.readByte()];
-        this.cellItem = Item.byId(data.readVarInt());
+        clientCellState = data.readEnum(CellState.class);
+        clientPowered = data.readBoolean();
+        paintedColor = data.readEnum(AEColor.class);
+        cellItem = Item.byId(data.readVarInt());
 
-        return oldPaintedColor != this.paintedColor || (this.state & 0xDB6DB6DB) != (oldState & 0xDB6DB6DB) || c;
+        return c
+                || oldCellState != clientCellState
+                || oldPowered != clientPowered
+                || oldColor != paintedColor
+                || oldCellItem != cellItem;
+    }
+
+    @Override
+    protected void saveVisualState(CompoundTag data) {
+        super.saveVisualState(data);
+
+        data.putBoolean("powered", isPowered());
+        data.putString("cellStatus", getCellStatus(0).name());
+        var itemId = BuiltInRegistries.ITEM.getKey(getCell().getItem());
+        data.putString("cellId", itemId.toString());
+        data.putString("color", paintedColor.name());
+    }
+
+    @Override
+    protected void loadVisualState(CompoundTag data) {
+        super.loadVisualState(data);
+
+        this.clientPowered = data.getBoolean("powered");
+
+        try {
+            this.clientCellState = CellState.valueOf(data.getString("cellStatus"));
+        } catch (Exception e) {
+            this.clientCellState = CellState.ABSENT;
+            LOG.warn("Couldn't read cell status for {} from {}", this, data);
+        }
+
+        try {
+            this.cellItem = BuiltInRegistries.ITEM.get(new ResourceLocation(data.getString("cellId")));
+        } catch (Exception e) {
+            LOG.warn("Couldn't read cell item for {} from {}", this, data);
+            this.cellItem = Items.AIR;
+        }
+
+        try {
+            this.paintedColor = AEColor.valueOf(data.getString("color"));
+        } catch (IllegalArgumentException ignore) {
+            LOG.warn("Invalid painted color in visual data for {}: {}", this, data);
+            this.paintedColor = AEColor.TRANSPARENT;
+        }
     }
 
     @Override
