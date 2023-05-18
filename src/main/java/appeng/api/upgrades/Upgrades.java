@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -28,7 +27,6 @@ import appeng.items.materials.UpgradeCardItem;
 /**
  * Manages available upgrades for AE machines, parts and items.
  */
-@ThreadSafe
 public final class Upgrades {
     // Key is the upgrade cards item
     private static final Map<Item, List<Association>> ASSOCIATIONS = new IdentityHashMap<>();

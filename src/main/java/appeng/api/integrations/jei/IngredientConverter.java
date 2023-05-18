@@ -1,6 +1,6 @@
 package appeng.api.integrations.jei;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import mezz.jei.api.ingredients.IIngredientType;
 

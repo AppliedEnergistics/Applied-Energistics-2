@@ -1,6 +1,6 @@
 package appeng.api.networking.crafting;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.security.IActionHost;

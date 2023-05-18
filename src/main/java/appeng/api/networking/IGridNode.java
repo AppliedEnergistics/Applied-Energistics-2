@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
@@ -163,9 +162,8 @@ public interface IGridNode {
     int getOwningPlayerId();
 
     /**
-     * @return The power in AE/t that will be drained by this node.
+     * @return The power in AE/t that will be drained by this node. Non-negative.
      */
-    @Nonnegative
     double getIdlePowerUsage();
 
     /**

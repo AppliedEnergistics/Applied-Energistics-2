@@ -24,11 +24,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
@@ -185,7 +183,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * Deferred initialization when block entities actually start first ticking in a chunk. The block entity needs to
      * override {@link #clearRemoved()} and call {@link #scheduleInit()} to make this work.
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void onReady() {
         readyInvoked++;
 
@@ -310,7 +308,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param mode   source of settings
      * @param player The (optional) player, who is exporting the settings
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void exportSettings(SettingsFrom mode, CompoundTag output, @Nullable Player player) {
         CustomNameUtil.setCustomName(output, customName);
 
@@ -325,7 +323,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * @param input  source of settings
      * @param player The (optional) player, who is importing the settings
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void importSettings(SettingsFrom mode, CompoundTag input, @Nullable Player player) {
         var customName = CustomNameUtil.getCustomName(input);
         if (customName != null) {
@@ -402,7 +400,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     @Nullable
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public InternalInventory getSubInventory(ResourceLocation id) {
         return null;
     }

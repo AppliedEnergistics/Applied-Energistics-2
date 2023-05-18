@@ -20,10 +20,10 @@ package appeng.me;
 
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 

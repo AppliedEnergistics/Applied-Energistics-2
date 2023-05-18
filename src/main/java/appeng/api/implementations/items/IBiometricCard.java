@@ -25,11 +25,10 @@ package appeng.api.implementations.items;
 
 import java.util.EnumSet;
 
-import javax.annotation.Nullable;
-
 import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 

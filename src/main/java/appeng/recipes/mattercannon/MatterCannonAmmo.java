@@ -21,10 +21,10 @@ package appeng.recipes.mattercannon;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.fabric.api.resource.conditions.v1.ConditionJsonProvider;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;

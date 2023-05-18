@@ -1,6 +1,6 @@
 package appeng.crafting.pattern;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;

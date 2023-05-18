@@ -2,9 +2,8 @@ package appeng.api.stacks;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.BlockPos;

@@ -18,9 +18,9 @@
 
 package appeng.recipes.mattercannon;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonObject;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

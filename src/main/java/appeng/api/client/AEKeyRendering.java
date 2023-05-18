@@ -29,11 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -50,7 +49,6 @@ import appeng.api.stacks.AEKeyType;
  * query the render handler first.
  */
 @Environment(EnvType.CLIENT)
-@ThreadSafe
 public class AEKeyRendering {
     private static volatile Map<AEKeyType, AEKeyRenderHandler<?>> renderers = new IdentityHashMap<>();
 

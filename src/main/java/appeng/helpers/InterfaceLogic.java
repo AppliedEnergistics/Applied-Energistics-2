@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

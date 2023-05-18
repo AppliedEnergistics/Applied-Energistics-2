@@ -25,9 +25,9 @@ package appeng.api.features;
 
 import java.util.UUID;
 
-import javax.annotation.Nullable;
-
 import com.mojang.authlib.GameProfile;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;

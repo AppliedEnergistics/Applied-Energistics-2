@@ -24,9 +24,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

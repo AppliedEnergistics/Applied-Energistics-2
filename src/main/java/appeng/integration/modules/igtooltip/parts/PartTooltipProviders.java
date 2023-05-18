@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.annotation.concurrent.GuardedBy;
-
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.api.integrations.igtooltip.providers.IconProvider;
 import appeng.api.integrations.igtooltip.providers.NameProvider;
@@ -85,8 +83,10 @@ public final class PartTooltipProviders {
         return providers;
     }
 
+    /**
+     * Guarded by {@link #writeLock}.
+     */
     @SuppressWarnings("unchecked")
-    @GuardedBy("writeLock")
     private static <U> CachedProviders<U> createProviderLists(Class<U> clazz) {
 
         var compatibleNameProviders = new ArrayList<NameProvider<? super U>>();

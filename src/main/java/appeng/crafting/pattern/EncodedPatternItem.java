@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

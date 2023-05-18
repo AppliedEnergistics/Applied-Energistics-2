@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.blockentities;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.security.IActionHost;

@@ -23,8 +23,6 @@
 
 package appeng.api.upgrades;
 
-import javax.annotation.Nonnegative;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ItemLike;
 
@@ -50,13 +48,11 @@ public interface IUpgradeInventory extends InternalInventory {
     /**
      * determine how many of an upgrade are installed.
      */
-    @Nonnegative
     int getInstalledUpgrades(ItemLike u);
 
     /**
      * determine how many of an upgrade can be installed.
      */
-    @Nonnegative
     int getMaxInstalled(ItemLike u);
 
     /**

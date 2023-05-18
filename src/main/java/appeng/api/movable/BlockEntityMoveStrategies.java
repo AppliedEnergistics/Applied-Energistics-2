@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -40,7 +38,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
  * To blacklist blocks or block entities from being moved in and out of spatial storage, see
  * {@link appeng.api.ids.AETags#SPATIAL_BLACKLIST the blacklist tag for blocks}.
  */
-@ThreadSafe
 public final class BlockEntityMoveStrategies {
 
     private static final IBlockEntityMoveStrategy DEFAULT_STRATEGY = new DefaultBlockEntityMoveStrategy() {

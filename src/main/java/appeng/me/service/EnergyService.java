@@ -305,6 +305,8 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     @Override
     public double extractProviderPower(double amt, Actionable mode) {
+        Preconditions.checkArgument(amt >= 0, "amt must be >= 0");
+
         double extractedPower = 0;
 
         final Iterator<IAEPowerStorage> it = this.providers.iterator();
@@ -342,6 +344,8 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     @Override
     public double injectProviderPower(double amt, Actionable mode) {
+        Preconditions.checkArgument(amt >= 0, "amt must be >= 0");
+
         final double originalAmount = amt;
 
         final Iterator<IAEPowerStorage> it = this.requesters.iterator();
@@ -371,6 +375,8 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     @Override
     public double getProviderEnergyDemand(double maxRequired) {
+        Preconditions.checkArgument(maxRequired >= 0, "maxRequired must be >= 0");
+
         double required = 0;
 
         final Iterator<IAEPowerStorage> it = this.requesters.iterator();

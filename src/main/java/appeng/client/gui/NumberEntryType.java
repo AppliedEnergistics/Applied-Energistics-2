@@ -18,7 +18,7 @@
 
 package appeng.client.gui;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.config.PowerUnits;
 import appeng.api.stacks.AEKey;

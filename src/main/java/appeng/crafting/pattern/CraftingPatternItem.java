@@ -2,7 +2,7 @@ package appeng.crafting.pattern;
 
 import java.util.Arrays;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

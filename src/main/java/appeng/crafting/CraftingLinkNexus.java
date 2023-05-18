@@ -20,7 +20,7 @@ package appeng.crafting;
 
 import java.util.UUID;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingRequester;

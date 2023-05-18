@@ -23,8 +23,6 @@
 
 package appeng.api.networking.energy;
 
-import javax.annotation.Nonnegative;
-
 import appeng.api.config.Actionable;
 import appeng.api.networking.IGridService;
 
@@ -38,26 +36,22 @@ public interface IEnergyService extends IGridService, IEnergySource {
      * the sum of the {@linkplain #getChannelPowerUsage() idle channel power usage} and the idle usages of the machines
      * in the network.
      */
-    @Nonnegative
     double getIdlePowerUsage();
 
     /**
      * @return the current idle power usage of channels
      */
-    @Nonnegative
     double getChannelPowerUsage();
 
     /**
      * @return the average power drain over the past 10 ticks, includes idle usage during this time, and all use of
      *         extractPower.
      */
-    @Nonnegative
     double getAvgPowerUsage();
 
     /**
      * @return the average energy injected into the system per tick, for the last 10 ticks.
      */
-    @Nonnegative
     double getAvgPowerInjection();
 
     /**
@@ -87,15 +81,13 @@ public interface IEnergyService extends IGridService, IEnergySource {
      * @param mode should the action be simulated or performed?
      * @return the amount of power that the network has OVER the limit.
      */
-    @Nonnegative
-    double injectPower(@Nonnegative double amt, Actionable mode);
+    double injectPower(double amt, Actionable mode);
 
     /**
      * this is should be considered an estimate, and not relied upon for real calculations.
      *
      * @return estimated available power.
      */
-    @Nonnegative
     double getStoredPower();
 
     /**
@@ -103,7 +95,6 @@ public interface IEnergyService extends IGridService, IEnergySource {
      *
      * @return estimated available power.
      */
-    @Nonnegative
     double getMaxStoredPower();
 
     /**
@@ -112,6 +103,5 @@ public interface IEnergyService extends IGridService, IEnergySource {
      *
      * @return Amount of power required to charge the grid, in AE.
      */
-    @Nonnegative
-    double getEnergyDemand(@Nonnegative double maxRequired);
+    double getEnergyDemand(double maxRequired);
 }

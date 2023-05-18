@@ -23,7 +23,7 @@
 
 package appeng.api.implementations.parts;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import appeng.api.parts.IPart;
 import appeng.api.stacks.AEKey;

@@ -28,13 +28,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.MutableClassToInstanceMap;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReportCategory;
 import net.minecraft.core.Direction;
@@ -244,7 +243,7 @@ public class GridNode implements IGridNode, IPathItem {
     /**
      * @param usagePerTick The power in AE/t that will be drained by this node.
      */
-    public void setIdlePowerUsage(@Nonnegative double usagePerTick) {
+    public void setIdlePowerUsage(double usagePerTick) {
         this.idlePowerUsage = usagePerTick;
         if (myGrid != null && ready) {
             myGrid.postEvent(new GridPowerIdleChange(this));

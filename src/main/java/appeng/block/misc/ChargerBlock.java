@@ -18,8 +18,7 @@
 
 package appeng.block.misc;
 
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.fabricmc.api.EnvType;

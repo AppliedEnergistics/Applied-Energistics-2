@@ -25,10 +25,10 @@ import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Iterators;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;

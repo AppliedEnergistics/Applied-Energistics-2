@@ -27,14 +27,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Nullable;
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,7 +153,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     protected void init() {
         super.init();
         positionSlots();
@@ -232,7 +231,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * This method is called directly before rendering the screen, and should be used to perform layout, and other
      * rendering-related updates.
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     protected void updateBeforeRender() {
         helpButton.setVisibility(getHelpTopic() != null);
     }

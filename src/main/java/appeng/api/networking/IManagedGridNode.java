@@ -27,8 +27,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -128,7 +127,7 @@ public interface IManagedGridNode {
     /**
      * @param usagePerTick The power in AE/t that will be drained by this node.
      */
-    IManagedGridNode setIdlePowerUsage(@Nonnegative double usagePerTick);
+    IManagedGridNode setIdlePowerUsage(double usagePerTick);
 
     /**
      * Sets an itemstack that will only be used to represent this grid node in user interfaces. Can be set to
