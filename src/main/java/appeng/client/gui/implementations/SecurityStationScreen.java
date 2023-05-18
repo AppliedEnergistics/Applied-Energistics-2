@@ -41,8 +41,6 @@ public class SecurityStationScreen extends MEStorageScreen<SecurityStationMenu> 
             Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        widgets.addBackgroundPanel("encodingPanel");
-
         this.inject = new ToggleButton(Icon.PERMISSION_INJECT, Icon.PERMISSION_INJECT_DISABLED,
                 SecurityPermissions.INJECT.getDisplayName(), SecurityPermissions.INJECT.getDisplayHint(),
                 btn -> menu.toggleSetting(SecurityPermissions.INJECT));

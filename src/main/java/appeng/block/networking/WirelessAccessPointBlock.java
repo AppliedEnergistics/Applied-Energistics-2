@@ -52,14 +52,15 @@ import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
-import appeng.blockentity.networking.WirelessBlockEntity;
+import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.helpers.AEMaterials;
 import appeng.menu.MenuOpener;
-import appeng.menu.implementations.WirelessMenu;
+import appeng.menu.implementations.WirelessAccessPointMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.InteractionUtil;
 
-public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implements SimpleWaterloggedBlock {
+public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPointBlockEntity>
+        implements SimpleWaterloggedBlock {
 
     public enum State implements StringRepresentable {
         OFF, ON, HAS_CHANNEL;
@@ -74,14 +75,14 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implem
 
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public WirelessBlock() {
+    public WirelessAccessPointBlock() {
         super(defaultProps(AEMaterials.GLASS).noOcclusion());
         this.registerDefaultState(this.defaultBlockState().setValue(STATE, State.OFF)
                 .setValue(WATERLOGGED, false));
     }
 
     @Override
-    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, WirelessBlockEntity be) {
+    protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, WirelessAccessPointBlockEntity be) {
         State teState = State.OFF;
 
         if (be.isActive()) {
@@ -103,12 +104,12 @@ public class WirelessBlock extends AEBaseEntityBlock<WirelessBlockEntity> implem
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
             BlockHitResult hit) {
-        final WirelessBlockEntity tg = this.getBlockEntity(level, pos);
+        final WirelessAccessPointBlockEntity tg = this.getBlockEntity(level, pos);
 
         if (tg != null && !InteractionUtil.isInAlternateUseMode(player)) {
             if (!level.isClientSide()) {
                 hit.getDirection();
-                MenuOpener.open(WirelessMenu.TYPE, player,
+                MenuOpener.open(WirelessAccessPointMenu.TYPE, player,
                         MenuLocators.forBlockEntity(tg));
             }
             return InteractionResult.sidedSuccess(level.isClientSide());

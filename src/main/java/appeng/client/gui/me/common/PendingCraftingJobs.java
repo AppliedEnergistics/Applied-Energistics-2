@@ -74,7 +74,7 @@ public final class PendingCraftingJobs {
                     // Should have some power
                     && wirelessTerminal.getAECurrentPower(stack) > 0
                     // Should be linked (we don't know if it's linked to the grid for which we get notifications)
-                    && wirelessTerminal.getGridKey(stack).isPresent()) {
+                    && wirelessTerminal.getLinkedPosition(stack) != null) {
                 return true;
             }
         }

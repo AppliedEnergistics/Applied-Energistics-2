@@ -50,6 +50,10 @@ public final class Tooltips {
     private Tooltips() {
     }
 
+    public static List<Component> slotTooltip(MutableComponent text) {
+        return List.of(text.withStyle(MUTED_COLOR));
+    }
+
     public static List<Component> inputSlot(Side... sides) {
         var sidesText = Arrays.stream(sides).map(Tooltips::side).toList();
 

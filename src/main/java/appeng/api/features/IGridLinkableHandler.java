@@ -23,26 +23,25 @@
 
 package appeng.api.features;
 
+import net.minecraft.core.GlobalPos;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Handles the linking of items to specific grids when they're put into the security terminal linking slot.
+ * Handles the linking of items to specific grids when they're put into the wireless access point linking slot.
  *
  * @see GridLinkables
  */
 public interface IGridLinkableHandler {
 
     /**
-     * Tests if the given item stack supports being linked to a grid.
+     * Tests if the given item stack supports being linked with a wireless access point.
      */
     boolean canLink(ItemStack stack);
 
     /**
-     * Link the given stack to the given grid security key.
-     * <p/>
-     * The security key can be used to obtain the security station using {@link Locatables#securityStations()}.
+     * Link the given stack to the access point at the given position.
      */
-    void link(ItemStack itemStack, long securityKey);
+    void link(ItemStack itemStack, GlobalPos pos);
 
     /**
      * Unlink the given stack from any previously linked grid.

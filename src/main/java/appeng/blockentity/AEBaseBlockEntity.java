@@ -33,6 +33,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -112,6 +113,13 @@ public class AEBaseBlockEntity extends BlockEntity
 
     public boolean notLoaded() {
         return !this.level.hasChunkAt(this.worldPosition);
+    }
+
+    public final GlobalPos getGlobalPos() {
+        if (level == null) {
+            throw new IllegalStateException("Block entity is not in a level");
+        }
+        return GlobalPos.of(level.dimension(), getBlockPos());
     }
 
     public BlockEntity getBlockEntity() {
