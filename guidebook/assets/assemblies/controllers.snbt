@@ -28,7 +28,6 @@
         {pos: [10, 0, 2], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83483L, k: -1L, p: 0}, visual: {}}},
         {pos: [11, 0, 0], state: "ae2:controller{state:online,type:column_x}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83483L, k: -1L, p: 0}, visual: {}}},
         {pos: [11, 0, 2], state: "ae2:controller{state:online,type:column_x}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83483L, k: -1L, p: 0}, visual: {}}},
-        {pos: [11, 0, 4], state: "ae2:creative_energy_cell", nbt: {id: "ae2:creative_energy_cell", proxy: {g: 69L, k: -1L, p: 1}, visual: {}}},
         {pos: [12, 0, 0], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83483L, k: -1L, p: 0}, visual: {}}},
         {pos: [12, 0, 1], state: "ae2:controller{state:online,type:column_z}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 83483L, k: -1L, p: 0}, visual: {}}},
         {pos: [12, 0, 2], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 70L, k: -1L, p: 0}, visual: {}}},

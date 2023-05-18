@@ -11,7 +11,10 @@ item_ids:
 
 # Decorative Fluix
 
-![Decorative fluix blocks](../assets/assemblies/decorative_fluix.png)
+<GameScene zoom="4">
+<ImportStructure src="../assets/assemblies/decorative_fluix.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 <ItemLink id="fluix_block" />s can be crafted and stonecut into some decorative building blocks.
 

@@ -10,7 +10,9 @@ item_ids:
 
 # The Annihilation Plane
 
-![A picture of an annihilation plane.](../assets/blocks/annihilation_plane.png)
+<GameScene zoom="8">
+<ImportStructure src="../assets/blocks/annihilation_plane.snbt" />
+</GameScene>
 
 The Annihilation Plane breaks blocks and picks up items. It works similarly to an <ItemLink id="import_bus" />, pushing things
 into [network storage](../ae2-mechanics/import-export-storage.md). For items to be picked up, they must collide with the

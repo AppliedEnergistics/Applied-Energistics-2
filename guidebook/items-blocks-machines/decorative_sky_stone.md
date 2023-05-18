@@ -22,7 +22,14 @@ item_ids:
 
 # Decorative Sky Stone
 
-<Row>![Decorative skystone blocks](../assets/assemblies/decorative_sky_stone.png) <BlockImage id="sky_stone_chest" scale="4" /><BlockImage id="smooth_sky_stone_chest" scale="4" /></Row>
+<Row>
+  <GameScene zoom="3">
+    <ImportStructure src="../assets/assemblies/decorative_sky_stone.snbt" />
+    <IsometricCamera yaw="195" pitch="30" />
+  </GameScene>
+  <BlockImage id="sky_stone_chest" scale="4" />
+  <BlockImage id="smooth_sky_stone_chest" scale="4" />
+</Row>
 
 <ItemLink id="sky_stone_block" /> blocks can be crafted and stonecut into some decorative building blocks
 

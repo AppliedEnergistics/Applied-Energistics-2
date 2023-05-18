@@ -10,7 +10,10 @@ item_ids:
 
 # The Quartz Fiber
 
-![A picture of a quartz fiber separating some smart cables](../assets/assemblies/quartz_fiber.png)
+<GameScene zoom="8">
+<ImportStructure src="../assets/assemblies/quartz_fiber.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 The quartz fiber is used to share power between networks, while keeping them separate. This allows you to power
 [subnetworks](../ae2-mechanics/subnetworks.md)

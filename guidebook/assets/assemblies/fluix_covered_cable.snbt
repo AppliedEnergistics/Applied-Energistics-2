@@ -1,0 +1,12 @@
+{
+    DataVersion: 3337,
+    size: [2, 1, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 135994L, k: -1L, p: 0}, id: "ae2:fluix_covered_cable", visual: {channelsEast: 0, connections: ["east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 135994L, k: -1L, p: 0}, id: "ae2:fluix_covered_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}

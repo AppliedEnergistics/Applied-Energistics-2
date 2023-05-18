@@ -17,15 +17,17 @@ item_ids:
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/p2p_tunnels.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 P2P tunnels are a way to move things like items, fluids, redstone signals, power, light, and [channels](../ae2-mechanics/channels.md)
-around a network without them directly interacting with the network. They essentially act like portals that directly connect
-two block faces at range.
+around a network without them directly interacting with the network. There are many variants of P2P tunnel but each
+only transports its specific type of thing. They essentially act like portals that directly connect
+two block faces at range. They are not bi-directional, there are defined inputs and outputs.
 
 ![Portal](../assets/assemblies/p2p_portal.png)
 
-For example, the hopper will act as if it is directly connected to the barrel, and items will flow.
+For example, the hopper facing the Item P2P will act as if it is directly connected to the barrel, and items will flow.
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/p2p_hopper_barrel.snbt" />
@@ -37,7 +39,7 @@ However, two barrels next to each other will not transfer items between each oth
   <ImportStructure src="../assets/assemblies/p2p_barrel_barrel.snbt" />
 </GameScene>
 
-There are also redstone p2p.
+There are also other variants like Redstone P2P.
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/p2p_redstone.snbt" />
@@ -45,7 +47,12 @@ There are also redstone p2p.
 
 ## Types Of P2P Tunnel And Attunement
 
-There are many types of P2P tunnel. Only the ME P2P tunnel is directly crafable, the others are made by right-clicking other
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/p2p_tunnels.snbt" />
+  <IsometricCamera yaw="180" pitch="90" />
+</GameScene>
+
+There are many types of P2P tunnel. Only the ME P2P tunnel is directly craftable, the others are made by right-clicking other
 P2P tunnels with certain items:
 - ME P2P tunnels are selected by right-clicking with any [cable](../items-blocks-machines/cables.md).
 - Redstone P2P tunnels are selected by right-clicking with a variety of redstone components.
@@ -71,6 +78,7 @@ against a controller, a [dense smart cable](../items-blocks-machines/cables.md#s
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/p2p_compact_channels.snbt" />
+  <IsometricCamera yaw="225" pitch="30" />
 </GameScene>
 
 ## Nesting
@@ -82,12 +90,14 @@ as seen by the Redstone P2P tunnels working fine.
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/p2p_nesting.snbt" />
+  <IsometricCamera yaw="225" pitch="30" />
 </GameScene>
 
 ## Linking
 
-<GameScene zoom="4">
+<GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/p2p_linking_frequency.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 The ends of a P2P tunnel connection can be linked using a <ItemLink id="memory_card" />. The frequency will be displayed

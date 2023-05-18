@@ -11,6 +11,11 @@ item_ids:
 
 # Monitors
 
+<GameScene zoom="8">
+<ImportStructure src="../assets/assemblies/monitors.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
 Monitors allow visualization and interaction with a single item or fluid type, without opening a GUI.
 
 Monitors will inherit the color of the [cable](cables.md) they are mounted on.

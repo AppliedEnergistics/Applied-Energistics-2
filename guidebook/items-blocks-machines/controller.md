@@ -21,11 +21,14 @@ The controller provides 32 [Channels](../ae2-mechanics/channels.md) per face.
 
 The controller requires 6 AE/t per controller block to
 function. Each controller block can store 8000 AE, so larger networks might require additional
-energy storage. See [network energy](network-energy.md) for details.
+energy storage. See [energy](../ae2-mechanics/energy.md) for details.
 
 Multiblock Controllers can be built in a fairly free form.
 
-![A picture of some controllers.](../assets/assemblies/controllers.png)
+<GameScene zoom="2">
+  <ImportStructure src="../assets/assemblies/controllers.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 However, there are a few rules that must be followed:
 
@@ -33,7 +36,10 @@ However, there are a few rules that must be followed:
 2.  The size of the controller must be within 7x7x7; else it will turn red.
 3.  A controller can have 2 adjacent blocks in at most 1 axis; if a block violates this rule, it will disable and turn red.
 
-![The rules](../assets/assemblies/controller_rules.png)
+<GameScene zoom="2">
+  <ImportStructure src="../assets/assemblies/controller_rules.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 As long as all rules are followed and powered, the controller should glow and
 cycle colors.
