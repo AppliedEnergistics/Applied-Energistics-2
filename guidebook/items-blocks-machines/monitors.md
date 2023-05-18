@@ -44,11 +44,14 @@ Keybinds:
 
 The Conversion Monitor is similar to a storage monitor, but allows you to insert or extract its configured item.
 
+If the configured item is [autocraftable](../ae2-mechanics/autocrafting.md) and none are in storage, attemping to take an
+item will instead open a UI to specify the amount to be crafted.
+
 *Does* require a [channel](../ae2-mechanics/channels.md).
 
 Additional keybinds:
 
-*   Left-click to extract a stack of the configured item.
+*   Left-click to extract a stack of the configured item, or request craft of that item if none are in storage.
 *   Right-click with any item to insert that item.
 *   Right-click with an empty hand to insert all of the configured item from your inventory.
 
