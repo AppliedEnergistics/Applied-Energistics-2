@@ -188,10 +188,17 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
 
         if (!this.cell.getStackInSlot(0).isEmpty()) {
             drops.add(this.cell.getStackInSlot(0));
-            if (remove) {
-                this.cell.setItemDirect(0, ItemStack.EMPTY);
-            }
         }
+
+        if (remove) {
+            clearContent();
+        }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.cell.clear();
     }
 
     @Override

@@ -61,12 +61,20 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
 
     @Override
     public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
+        super.addAdditionalDrops(drops, wrenched, remove);
         for (var is : this.logic.getBlankPatternInv()) {
             drops.add(is);
         }
         for (var is : this.logic.getEncodedPatternInv()) {
             drops.add(is);
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.logic.getBlankPatternInv().clear();
+        this.logic.getEncodedPatternInv().clear();
     }
 
     @Override

@@ -88,8 +88,14 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
         }
 
         if (remove) {
-            inv.clear();
+            clearContent();
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        getInternalInventory().clear();
     }
 
     @Override

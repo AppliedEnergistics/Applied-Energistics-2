@@ -880,7 +880,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         return drops;
     }
 
-    public List<ItemStack> addAdditionalDrops(List<ItemStack> drops, boolean remove) {
+    public void addAdditionalDrops(List<ItemStack> drops, boolean remove) {
         for (var side : Platform.DIRECTIONS_WITH_NULL) {
             var part = this.getPart(side);
             if (part != null) {
@@ -888,7 +888,18 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             }
         }
 
-        return drops;
+        if (remove) {
+            clearContent();
+        }
+    }
+
+    public void clearContent() {
+        for (var s : Platform.DIRECTIONS_WITH_NULL) {
+            var part = getPart(s);
+            if (part != null) {
+                part.clearContent();
+            }
+        }
     }
 
     @Override
@@ -1100,5 +1111,4 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
             });
         }
     }
-
 }

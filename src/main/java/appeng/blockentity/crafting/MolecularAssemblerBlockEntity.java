@@ -366,8 +366,14 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
             drops.add(upgrade);
         }
         if (remove) {
-            drops.clear();
+            clearContent();
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        upgrades.clear();
     }
 
     @Override

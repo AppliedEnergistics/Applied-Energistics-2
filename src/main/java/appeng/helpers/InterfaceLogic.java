@@ -552,9 +552,13 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         }
 
         if (remove) {
-            this.upgrades.clear();
-            this.storage.clear();
+            clearContent();
         }
+    }
+
+    public void clearContent() {
+        this.upgrades.clear();
+        this.storage.clear();
     }
 
     public AECableType getCableConnectionType(Direction dir) {

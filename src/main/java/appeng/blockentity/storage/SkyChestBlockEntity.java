@@ -220,6 +220,12 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
+    public void clearContent() {
+        super.clearContent();
+        this.lootTable = null; // Prevent loot from being generated on break
+    }
+
+    @Override
     public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult,
             ItemStack wrench) {
         return InteractionResult.FAIL;

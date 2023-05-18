@@ -42,6 +42,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -73,7 +74,7 @@ import appeng.util.helpers.ItemComparisonHelper;
 
 public class AEBaseBlockEntity extends BlockEntity
         implements Nameable, ISegmentedInventory,
-        RenderAttachmentBlockEntity {
+        RenderAttachmentBlockEntity, Clearable {
 
     static {
         DeferredBlockEntityUnloader.register();
@@ -336,14 +337,26 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     /**
-     * returns the contents of the block entity but not the block itself, to drop into the world
+     * returns the contents of the block entity but not the block itself, to drop into the world.
+     * <p>
+     * Ensure you also clear the inventories that contribute to additional drops in {@link #clearContent()} when you
+     * override this method.
      *
      * @param level  level
      * @param pos    block position
      * @param drops  drops of block entity
-     * @param remove Remove the drops from the block entity so they don't drop again when it is broken.
+     * @param remove Remove the drops from the block entity, so they don't drop again when it is broken.
      */
+    @MustBeInvokedByOverriders
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+    }
+
+    /**
+     * Clears the contents of this block-entity, which would otherwise be dropped by {@link #addAdditionalDrops}.
+     */
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void clearContent() {
     }
 
     @Override

@@ -84,7 +84,14 @@ public class PatternProviderBlockEntity extends AENetworkBlockEntity implements 
 
     @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+        super.addAdditionalDrops(level, pos, drops, remove);
         this.logic.addDrops(drops, remove);
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.logic.clearContent();
     }
 
     @Override

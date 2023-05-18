@@ -62,11 +62,18 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
 
     @Override
     public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
-        for (ItemStack is : this.craftingGrid) {
+        super.addAdditionalDrops(drops, wrenched, remove);
+        for (var is : this.craftingGrid) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        craftingGrid.clear();
     }
 
     @Override

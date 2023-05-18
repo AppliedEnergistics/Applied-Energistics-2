@@ -157,7 +157,14 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
 
     @Override
     public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+        super.addAdditionalDrops(level, pos, drops, remove);
         this.getCableBus().addAdditionalDrops(drops, remove);
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.getCableBus().clearContent();
     }
 
     @Override

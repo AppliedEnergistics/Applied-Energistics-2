@@ -40,6 +40,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -56,7 +57,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.util.SettingsFrom;
 
-public interface IPart extends ICustomCableConnection {
+public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * Gets the item from which this part was created. Will be used to save and load this part from NBT Data or to
@@ -343,7 +344,16 @@ public interface IPart extends ICustomCableConnection {
      * @param wrenched control flag for wrenched vs broken
      * @param remove   remove the items being dropped from the inventory
      */
+    @OverridingMethodsMustInvokeSuper
     default void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
+    }
+
+    /**
+     * Clears the contents of the part, which would otherwise be dropped by {@link #addAdditionalDrops}.
+     */
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    default void clearContent() {
     }
 
     /**

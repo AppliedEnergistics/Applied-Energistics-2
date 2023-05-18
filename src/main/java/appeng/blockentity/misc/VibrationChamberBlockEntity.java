@@ -150,8 +150,14 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
             drops.add(upgrade);
         }
         if (remove) {
-            upgrades.clear();
+            clearContent();
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        upgrades.clear();
     }
 
     @Override
