@@ -228,6 +228,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             this.amount = 0;
             this.canCraft = false;
         }
+        getHost().markForUpdate();
     }
 
     @Override

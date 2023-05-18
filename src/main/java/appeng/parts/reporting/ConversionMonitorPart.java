@@ -241,8 +241,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
 
     @Override
     protected void configureWatchers() {
-        super.configureWatchers();
-
+        // Determine whether our configured item is craftable for requesting crafting jobs via the monitor
         if (craftingWatcher != null) {
             craftingWatcher.reset();
         }
@@ -251,9 +250,10 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
             if (craftingWatcher != null) {
                 craftingWatcher.add(getDisplayed());
             }
-
-            getMainNode().ifPresent(this::updateReportingValue);
         }
+
+        // Update base storage watcher and reported item amount via super call
+        super.configureWatchers();
     }
 
     @Override
