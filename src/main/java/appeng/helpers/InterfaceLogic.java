@@ -535,7 +535,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.updatePlan();
     }
 
-    public void addDrops(List<ItemStack> drops, boolean remove) {
+    public void addDrops(List<ItemStack> drops) {
         for (var is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);
@@ -550,11 +550,11 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
                         this.host.getBlockEntity().getBlockPos());
             }
         }
+    }
 
-        if (remove) {
-            this.upgrades.clear();
-            this.storage.clear();
-        }
+    public void clearContent() {
+        this.upgrades.clear();
+        this.storage.clear();
     }
 
     public AECableType getCableConnectionType(Direction dir) {

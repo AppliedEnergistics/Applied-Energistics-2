@@ -99,7 +99,8 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
         if (!this.getConfigSlot().isEmpty()) {
             drops.add(this.getConfigSlot().getStackInSlot(0));
         }
@@ -107,9 +108,12 @@ public class SecurityStationBlockEntity extends AENetworkBlockEntity implements 
         for (var key : this.inventory.getStoredItems()) {
             drops.add(key.toStack());
         }
-        if (remove) {
-            this.inventory.getStoredItems().clear();
-        }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.inventory.getStoredItems().clear();
     }
 
     @Override

@@ -72,7 +72,7 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
         var inv = getInternalInventory();
         for (var stack : inv) {
             var genericStack = GenericStack.unwrapItemStack(stack);
@@ -86,10 +86,12 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
                 drops.add(stack);
             }
         }
+    }
 
-        if (remove) {
-            inv.clear();
-        }
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        getInternalInventory().clear();
     }
 
     @Override

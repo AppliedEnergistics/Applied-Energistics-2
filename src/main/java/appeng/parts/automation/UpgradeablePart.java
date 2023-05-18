@@ -100,12 +100,19 @@ public abstract class UpgradeablePart extends BasicStatePart
     }
 
     @Override
-    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
+    public void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+        super.addAdditionalDrops(drops, wrenched);
         for (var is : this.upgrades) {
             if (!is.isEmpty()) {
                 drops.add(is);
             }
         }
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        upgrades.clear();
     }
 
     @Override
@@ -134,5 +141,4 @@ public abstract class UpgradeablePart extends BasicStatePart
 
     protected void onSettingChanged(IConfigManager manager, Setting<?> setting) {
     }
-
 }

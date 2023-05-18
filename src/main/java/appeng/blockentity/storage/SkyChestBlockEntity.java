@@ -214,9 +214,15 @@ public class SkyChestBlockEntity extends AEBaseInvBlockEntity implements ClientT
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
         unpackLootTable(null);
-        super.addAdditionalDrops(level, pos, drops, remove);
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.lootTable = null; // Prevent loot from being generated on break
     }
 
     @Override

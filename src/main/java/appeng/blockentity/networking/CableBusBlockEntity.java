@@ -156,8 +156,15 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     }
 
     @Override
-    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops, boolean remove) {
-        this.getCableBus().addAdditionalDrops(drops, remove);
+    public void addAdditionalDrops(Level level, BlockPos pos, List<ItemStack> drops) {
+        super.addAdditionalDrops(level, pos, drops);
+        this.getCableBus().addAdditionalDrops(drops);
+    }
+
+    @Override
+    public void clearContent() {
+        super.clearContent();
+        this.getCableBus().clearContent();
     }
 
     @Override
@@ -318,7 +325,10 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             // SelectedPart contains either a facade or a part. Never both.
             if (sp.part != null) {
                 sp.part.addPartDrop(is, true);
-                sp.part.addAdditionalDrops(is, true, remove);
+                sp.part.addAdditionalDrops(is, true);
+                if (remove) {
+                    sp.part.clearContent();
+                }
 
                 // All facades will be dropped to the ground when the cable is removed,
                 // do it manually here, so they are moved to the player inv too

@@ -29,6 +29,7 @@ import java.util.Set;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
@@ -40,6 +41,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -56,7 +58,7 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.util.SettingsFrom;
 
-public interface IPart extends ICustomCableConnection {
+public interface IPart extends ICustomCableConnection, Clearable {
 
     /**
      * Gets the item from which this part was created. Will be used to save and load this part from NBT Data or to
@@ -341,9 +343,17 @@ public interface IPart extends ICustomCableConnection {
      * Add additional drops to the drop list (the contents of the part, but not the part itself).
      *
      * @param wrenched control flag for wrenched vs broken
-     * @param remove   remove the items being dropped from the inventory
      */
-    default void addAdditionalDrops(List<ItemStack> drops, boolean wrenched, boolean remove) {
+    @MustBeInvokedByOverriders
+    default void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
+    }
+
+    /**
+     * Clears the contents of the part, which would otherwise be dropped by {@link #addAdditionalDrops}.
+     */
+    @Override
+    @MustBeInvokedByOverriders
+    default void clearContent() {
     }
 
     /**

@@ -128,7 +128,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
             var be = this.getBlockEntity(level, pos);
             if (be != null) {
                 var drops = new ArrayList<ItemStack>();
-                be.addAdditionalDrops(level, pos, drops, false);
+                be.addAdditionalDrops(level, pos, drops);
                 Platform.spawnDrops(level, pos, drops);
             }
         }
