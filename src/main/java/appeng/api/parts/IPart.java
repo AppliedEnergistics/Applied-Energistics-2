@@ -29,6 +29,7 @@ import java.util.Set;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
@@ -343,7 +344,7 @@ public interface IPart extends ICustomCableConnection, Clearable {
      *
      * @param wrenched control flag for wrenched vs broken
      */
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     default void addAdditionalDrops(List<ItemStack> drops, boolean wrenched) {
     }
 
@@ -351,7 +352,7 @@ public interface IPart extends ICustomCableConnection, Clearable {
      * Clears the contents of the part, which would otherwise be dropped by {@link #addAdditionalDrops}.
      */
     @Override
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     default void clearContent() {
     }
 

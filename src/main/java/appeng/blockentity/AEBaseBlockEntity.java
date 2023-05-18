@@ -354,7 +354,7 @@ public class AEBaseBlockEntity extends BlockEntity
      * Clears the contents of this block-entity, which would otherwise be dropped by {@link #addAdditionalDrops}.
      */
     @Override
-    @OverridingMethodsMustInvokeSuper
+    @MustBeInvokedByOverriders
     public void clearContent() {
     }
 
