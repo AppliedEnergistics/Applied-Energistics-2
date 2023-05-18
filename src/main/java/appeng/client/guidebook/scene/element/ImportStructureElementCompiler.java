@@ -5,11 +5,13 @@ import java.util.Locale;
 
 import com.google.common.io.ByteStreams;
 
+import net.minecraft.ResourceLocationException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -34,7 +36,14 @@ public class ImportStructureElementCompiler implements SceneElementTagCompiler {
             errorSink.appendError(compiler, "Missing src attribute", el);
             return;
         }
-        var absStructureSrc = IdUtils.resolveLink(structureSrc, compiler.getId());
+
+        ResourceLocation absStructureSrc;
+        try {
+            absStructureSrc = IdUtils.resolveLink(structureSrc, compiler.getId());
+        } catch (ResourceLocationException e) {
+            errorSink.appendError(compiler, "Invalid structure path: " + structureSrc, el);
+            return;
+        }
 
         var structureNbtData = compiler.loadAsset(absStructureSrc);
         if (structureNbtData == null) {
