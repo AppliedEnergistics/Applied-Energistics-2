@@ -36,6 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -58,6 +59,7 @@ import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
 import appeng.client.commands.ClientCommands;
+import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.guidebook.Guide;
@@ -145,6 +147,10 @@ public class AppEngClient extends AppEngBase {
                 tickPinnedKeys(Minecraft.getInstance());
                 Hotkeys.checkHotkeys();
             }
+        });
+        MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingIn e) -> {
+            PendingCraftingJobs.clearPendingJobs();
+            PinnedKeys.clearPinnedKeys();
         });
     }
 

@@ -31,6 +31,10 @@ public final class PendingCraftingJobs {
         return jobs.entrySet().stream().anyMatch(s -> s.getValue().what.equals(what));
     }
 
+    public static void clearPendingJobs() {
+        jobs.clear();
+    }
+
     public static void jobStatus(String id,
             AEKey what,
             long requestedAmount,
