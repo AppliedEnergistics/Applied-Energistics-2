@@ -44,8 +44,9 @@ public interface ICraftingWatcherNode extends IGridNodeService {
     /**
      * Called when a crafting status changes.
      *
-     * @param craftingGrid current crafting grid
-     * @param what         changed key
+     * @param what changed key
      */
-    void onRequestChange(ICraftingService craftingGrid, AEKey what);
+    void onRequestChange(AEKey what);
+
+    void onCraftableChange(AEKey what);
 }

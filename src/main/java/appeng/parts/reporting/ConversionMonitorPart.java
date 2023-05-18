@@ -27,9 +27,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.networking.IStackWatcher;
+import appeng.api.networking.crafting.ICraftingWatcherNode;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKey;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
@@ -68,8 +71,27 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
     public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
             MODEL_STATUS_HAS_CHANNEL);
 
+    private IStackWatcher craftingWatcher;
+
     public ConversionMonitorPart(IPartItem<?> partItem) {
         super(partItem, true);
+
+        getMainNode().addService(ICraftingWatcherNode.class, new ICraftingWatcherNode() {
+            @Override
+            public void updateWatcher(IStackWatcher newWatcher) {
+                craftingWatcher = newWatcher;
+                configureWatchers();
+            }
+
+            @Override
+            public void onRequestChange(AEKey what) {
+            }
+
+            @Override
+            public void onCraftableChange(AEKey what) {
+                getMainNode().ifPresent(ConversionMonitorPart.this::updateReportingValue);
+            }
+        });
     }
 
     @Override
@@ -215,6 +237,23 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ITermi
                 player.containerMenu.broadcastChanges();
             }
         });
+    }
+
+    @Override
+    protected void configureWatchers() {
+        super.configureWatchers();
+
+        if (craftingWatcher != null) {
+            craftingWatcher.reset();
+        }
+
+        if (getDisplayed() != null) {
+            if (craftingWatcher != null) {
+                craftingWatcher.add(getDisplayed());
+            }
+
+            getMainNode().ifPresent(this::updateReportingValue);
+        }
     }
 
     @Override

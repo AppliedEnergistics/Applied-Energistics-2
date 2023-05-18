@@ -122,6 +122,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             this.interests);
     private final IEnergyService energyGrid;
     private final Set<AEKey> currentlyCrafting = new HashSet<>();
+    private final Set<AEKey> currentlyCraftable = new HashSet<>();
     private boolean updateList = false;
 
     public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyService energyGrid) {
@@ -141,12 +142,15 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         this.craftingLinks.values().removeIf(nexus -> nexus.isDead(this.grid, this));
 
         var previouslyCrafting = new HashSet<>(currentlyCrafting);
+        var previouslyCraftable = new HashSet<>(currentlyCraftable);
         this.currentlyCrafting.clear();
+        this.currentlyCraftable.clear();
+
         for (CraftingCPUCluster cpu : this.craftingCPUClusters) {
             cpu.craftingLogic.tickCraftingLogic(energyGrid, this);
-
             cpu.craftingLogic.getAllWaitingFor(this.currentlyCrafting);
         }
+        currentlyCraftable.addAll(getCraftables(k -> true));
 
         // Notify watchers about items no longer being crafted
         var changed = new HashSet<AEKey>();
@@ -154,10 +158,23 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
         changed.addAll(Sets.difference(currentlyCrafting, previouslyCrafting));
         for (var what : changed) {
             for (var watcher : interestManager.get(what)) {
-                watcher.getHost().onRequestChange(this, what);
+                watcher.getHost().onRequestChange(what);
             }
             for (var watcher : interestManager.getAllStacksWatchers()) {
-                watcher.getHost().onRequestChange(this, what);
+                watcher.getHost().onRequestChange(what);
+            }
+        }
+
+        // Notify watchers about items no longer craftable
+        var changedCraftable = new HashSet<AEKey>();
+        changedCraftable.addAll(Sets.difference(previouslyCraftable, currentlyCraftable));
+        changedCraftable.addAll(Sets.difference(currentlyCraftable, previouslyCraftable));
+        for (var what : changedCraftable) {
+            for (var watcher : interestManager.get(what)) {
+                watcher.getHost().onCraftableChange(what);
+            }
+            for (var watcher : interestManager.getAllStacksWatchers()) {
+                watcher.getHost().onCraftableChange(what);
             }
         }
     }

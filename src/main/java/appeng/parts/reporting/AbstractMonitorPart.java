@@ -34,9 +34,8 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.implementations.parts.IStorageMonitorPart;
+import appeng.api.networking.IGrid;
 import appeng.api.networking.IStackWatcher;
-import appeng.api.networking.crafting.ICraftingService;
-import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.storage.IStorageWatcherNode;
 import appeng.api.orientation.BlockOrientation;
 import appeng.api.parts.IPartItem;
@@ -206,7 +205,7 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     // update the system...
-    private void configureWatchers() {
+    protected void configureWatchers() {
         if (this.myWatcher != null) {
             this.myWatcher.reset();
         }
@@ -216,15 +215,15 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
                 this.myWatcher.add(this.configuredItem);
             }
 
-            getMainNode().ifPresent(grid -> updateReportingValue(grid.getStorageService(), grid.getCraftingService()));
+            getMainNode().ifPresent(this::updateReportingValue);
         }
     }
 
-    private void updateReportingValue(IStorageService storageService, ICraftingService craftingService) {
+    protected void updateReportingValue(IGrid grid) {
         this.lastHumanReadableText = null;
         if (this.configuredItem != null) {
-            this.amount = storageService.getCachedInventory().get(this.configuredItem);
-            this.canCraft = craftingService.isCraftable(this.configuredItem);
+            this.amount = grid.getStorageService().getCachedInventory().get(this.configuredItem);
+            this.canCraft = grid.getCraftingService().isCraftable(this.configuredItem);
         } else {
             this.amount = 0;
             this.canCraft = false;
