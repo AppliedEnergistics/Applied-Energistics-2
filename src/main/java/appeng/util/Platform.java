@@ -23,13 +23,16 @@ import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.Iterables;
+import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -345,10 +348,14 @@ public class Platform {
         return false;
     }
 
-    public static Player getPlayer(ServerLevel level) {
+    public static Player getFakePlayer(ServerLevel level, @Nullable UUID playerUuid) {
         Objects.requireNonNull(level);
 
-        return FakePlayer.getOrCreate(level);
+        if (playerUuid == null) {
+            playerUuid = FakePlayer.DEFAULT_UUID;
+        }
+
+        return FakePlayer.get(level, new GameProfile(playerUuid, "[AE2]"));
     }
 
     /**

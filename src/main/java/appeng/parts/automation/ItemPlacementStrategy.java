@@ -1,5 +1,9 @@
 package appeng.parts.automation;
 
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -19,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.behaviors.PlacementStrategy;
 import appeng.api.config.Actionable;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
@@ -30,13 +35,17 @@ public class ItemPlacementStrategy implements PlacementStrategy {
     private final BlockPos pos;
     private final Direction side;
     private final BlockEntity host;
+    @Nullable
+    private final UUID ownerUuid;
     private boolean blocked = false;
 
-    public ItemPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host) {
+    public ItemPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
+            int owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;
         this.host = host;
+        this.ownerUuid = IPlayerRegistry.getMapping(level.getServer()).getProfileId(owningPlayerId);
     }
 
     public void clearBlocked() {
@@ -76,7 +85,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
                     }
                 }
             } else {
-                final var player = Platform.getPlayer(level);
+                final var player = Platform.getFakePlayer(level, ownerUuid);
                 Platform.configurePlayer(player, side, host);
 
                 maxStorage = is.getCount();

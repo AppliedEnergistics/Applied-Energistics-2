@@ -96,7 +96,7 @@ public class GameTestPlotAdapter {
             var level = (ServerLevel) structureBlock.getLevel();
             plot.build(
                     level,
-                    Platform.getPlayer(level),
+                    Platform.getFakePlayer(level, null),
                     origin);
         }
     }

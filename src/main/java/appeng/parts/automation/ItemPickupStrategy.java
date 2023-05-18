@@ -3,7 +3,10 @@ package appeng.parts.automation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,6 +33,7 @@ import appeng.api.behaviors.PickupSink;
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
@@ -50,15 +54,18 @@ public class ItemPickupStrategy implements PickupStrategy {
     private final BlockPos pos;
     private final Direction side;
     private final Map<Enchantment, Integer> enchantments;
+    @Nullable
+    private final UUID ownerUuid;
 
     private boolean isAccepting = true;
 
     public ItemPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            Map<Enchantment, Integer> enchantments) {
+            Map<Enchantment, Integer> enchantments, int owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;
         this.enchantments = enchantments;
+        this.ownerUuid = IPlayerRegistry.getMapping(level.getServer()).getProfileId(owningPlayerId);
     }
 
     @Override
@@ -214,11 +221,11 @@ public class ItemPickupStrategy implements PickupStrategy {
         var ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
 
         return !ignoreAirAndFluids && hardness >= 0f && level.isLoaded(pos)
-                && level.mayInteract(Platform.getPlayer(level), pos);
+                && level.mayInteract(Platform.getFakePlayer(level, ownerUuid), pos);
     }
 
     protected List<ItemStack> obtainBlockDrops(ServerLevel level, BlockPos pos) {
-        var fakePlayer = Platform.getPlayer(level);
+        var fakePlayer = Platform.getFakePlayer(level, ownerUuid);
         var state = level.getBlockState(pos);
         var blockEntity = level.getBlockEntity(pos);
 

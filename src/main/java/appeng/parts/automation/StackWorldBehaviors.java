@@ -112,19 +112,19 @@ public final class StackWorldBehaviors {
     }
 
     public static PlacementStrategy createPlacementStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host) {
+            BlockEntity host, int owningPlayerId) {
         var strategies = new IdentityHashMap<AEKeyType, PlacementStrategy>(placementStrategies.getMap().size());
         for (var entry : placementStrategies.getMap().entrySet()) {
-            strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide, host));
+            strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide, host, owningPlayerId));
         }
         return new PlacementStrategyFacade(strategies);
     }
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, Map<Enchantment, Integer> enchantments) {
+            BlockEntity host, Map<Enchantment, Integer> enchantments, int owningPlayerId) {
         return pickupStrategies.getMap().values()
                 .stream()
-                .map(f -> f.create(level, fromPos, fromSide, host, enchantments))
+                .map(f -> f.create(level, fromPos, fromSide, host, enchantments, owningPlayerId))
                 .toList();
     }
 

@@ -20,7 +20,8 @@ public interface PlacementStrategy {
 
     @FunctionalInterface
     interface Factory {
-        PlacementStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host);
+        PlacementStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host,
+                int owningPlayerId);
     }
 
     static void register(AEKeyType type, Factory factory) {
