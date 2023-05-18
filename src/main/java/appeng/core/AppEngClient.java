@@ -29,6 +29,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -46,6 +47,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
 import appeng.client.EffectType;
 import appeng.client.Hotkeys;
+import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
 import appeng.client.gui.style.StyleManager;
 import appeng.client.render.StorageCellClientTooltipComponent;
@@ -122,6 +124,10 @@ public class AppEngClient extends AppEngBase {
                 tickPinnedKeys(Minecraft.getInstance());
                 Hotkeys.checkHotkeys();
             }
+        });
+        MinecraftForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggedInEvent e) -> {
+            PendingCraftingJobs.clearPendingJobs();
+            PinnedKeys.clearPinnedKeys();
         });
 
         registerTests();
