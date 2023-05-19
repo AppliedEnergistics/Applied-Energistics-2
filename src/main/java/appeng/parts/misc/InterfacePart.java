@@ -30,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -45,10 +46,9 @@ import appeng.helpers.InterfaceLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class InterfacePart extends BasicStatePart implements InterfaceLogicHost {
+public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
 
@@ -77,6 +77,7 @@ public class InterfacePart extends BasicStatePart implements InterfaceLogicHost 
     public InterfacePart(IPartItem<?> partItem) {
         super(partItem);
         this.logic = new InterfaceLogic(this.getMainNode(), this, partItem.asItem());
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     @Override
