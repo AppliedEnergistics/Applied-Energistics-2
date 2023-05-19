@@ -45,10 +45,9 @@ import appeng.helpers.InterfaceLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import appeng.parts.BasicStatePart;
 import appeng.parts.PartModel;
 
-public class InterfacePart extends BasicStatePart implements InterfaceLogicHost {
+public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID, "part/interface_base");
 

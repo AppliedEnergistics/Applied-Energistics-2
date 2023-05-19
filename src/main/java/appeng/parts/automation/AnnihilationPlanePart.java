@@ -34,6 +34,7 @@ import net.minecraft.world.level.BlockGetter;
 
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
+import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.security.IActionSource;
@@ -51,11 +52,11 @@ import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
-import appeng.parts.BasicStatePart;
+import appeng.parts.AEBasePart;
 import appeng.util.EnchantmentUtil;
 import appeng.util.SettingsFrom;
 
-public class AnnihilationPlanePart extends BasicStatePart implements IGridTickable {
+public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane",
             "part/annihilation_plane_on");
@@ -86,6 +87,7 @@ public class AnnihilationPlanePart extends BasicStatePart implements IGridTickab
     public AnnihilationPlanePart(IPartItem<?> partItem) {
         super(partItem);
         getMainNode().addService(IGridTickable.class, this);
+        getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     @Override

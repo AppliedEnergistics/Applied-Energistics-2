@@ -29,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.networking.GridFlags;
 import appeng.api.parts.IPartItem;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableObject;
@@ -36,11 +37,10 @@ import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.core.definitions.AEItems;
-import appeng.parts.BasicStatePart;
+import appeng.parts.AEBasePart;
 import appeng.util.ConfigManager;
 
-public abstract class UpgradeablePart extends BasicStatePart
-        implements IConfigurableObject, IUpgradeableObject {
+public abstract class UpgradeablePart extends AEBasePart implements IConfigurableObject, IUpgradeableObject {
     private final IConfigManager config;
     private final IUpgradeInventory upgrades;
 
@@ -52,6 +52,7 @@ public abstract class UpgradeablePart extends BasicStatePart
             onSettingChanged(manager, setting);
             getHost().markForSave();
         });
+        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     private void onUpgradesChanged() {

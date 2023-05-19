@@ -45,11 +45,11 @@ import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
 import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
-import appeng.parts.BasicStatePart;
+import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 import appeng.util.SettingsFrom;
 
-public class PatternProviderPart extends BasicStatePart implements PatternProviderLogicHost {
+public class PatternProviderPart extends AEBasePart implements PatternProviderLogicHost {
 
     public static final ResourceLocation MODEL_BASE = new ResourceLocation(AppEng.MOD_ID,
             "part/pattern_provider_base");
