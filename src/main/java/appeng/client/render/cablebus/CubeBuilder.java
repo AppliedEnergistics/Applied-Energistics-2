@@ -360,9 +360,9 @@ public class CubeBuilder {
         emitter.normal(vertexIndex, face.getStepX(), face.getStepY(), face.getStepZ());
 
         // Color format is RGBA
-        emitter.spriteColor(vertexIndex, 0, this.color);
+        emitter.color(vertexIndex, this.color);
 
-        emitter.sprite(vertexIndex, 0, u, v);
+        emitter.uv(vertexIndex, u, v);
 
         vertexIndex++;
     }

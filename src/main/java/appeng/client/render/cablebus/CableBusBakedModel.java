@@ -172,7 +172,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
                 } else if (bakedModel instanceof FabricBakedModel) {
                     ((FabricBakedModel) bakedModel).emitBlockQuads(blockView, state, pos, randomSupplier, context);
                 } else {
-                    context.fallbackConsumer().accept(bakedModel);
+                    context.bakedModelConsumer().accept(bakedModel);
                 }
                 context.popTransform();
             }

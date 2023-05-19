@@ -52,7 +52,7 @@ class MemoryCardBakedModel extends ForwardingBakedModel implements FabricBakedMo
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
 
-        context.fallbackConsumer().accept(wrapped);
+        context.bakedModelConsumer().accept(wrapped);
 
         AEColor[] colorCode = getColorCode(stack);
 
@@ -71,8 +71,7 @@ class MemoryCardBakedModel extends ForwardingBakedModel implements FabricBakedMo
     }
 
     private static AEColor[] getColorCode(ItemStack stack) {
-        if (stack.getItem() instanceof IMemoryCard) {
-            final IMemoryCard memoryCard = (IMemoryCard) stack.getItem();
+        if (stack.getItem() instanceof IMemoryCard memoryCard) {
             return memoryCard.getColorCode(stack);
         }
 
