@@ -80,7 +80,7 @@ public class ToggleBusPart extends AEBasePart {
         super(partItem);
 
         this.getMainNode().setIdlePowerUsage(0.0);
-        this.getMainNode().setFlags(GridFlags.PREFERRED, GridFlags.REQUIRE_CHANNEL);
+        this.getMainNode().setFlags(GridFlags.PREFERRED);
     }
 
     @Override
