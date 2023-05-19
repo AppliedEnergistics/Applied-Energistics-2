@@ -22,6 +22,8 @@ and range by altering your setup.
 
 Requires a [channel](../ae2-mechanics/channels.md).
 
+Also used to bind [wireless terminals](wireless_terminals.md)
+
 # Wireless Booster
 
 <ItemImage id="wireless_booster" scale="2" />
