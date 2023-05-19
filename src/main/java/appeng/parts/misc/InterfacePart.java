@@ -30,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -77,7 +76,6 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     public InterfacePart(IPartItem<?> partItem) {
         super(partItem);
         this.logic = new InterfaceLogic(this.getMainNode(), this, partItem.asItem());
-        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     @Override

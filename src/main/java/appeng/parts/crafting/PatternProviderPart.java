@@ -33,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
@@ -72,7 +71,6 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
 
     public PatternProviderPart(IPartItem<?> partItem) {
         super(partItem);
-        this.getMainNode().setFlags(GridFlags.REQUIRE_CHANNEL);
     }
 
     protected PatternProviderLogic createLogic() {
