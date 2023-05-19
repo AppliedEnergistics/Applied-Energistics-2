@@ -66,7 +66,7 @@ class BiometricCardBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
-        context.fallbackConsumer().accept(this.baseModel);
+        context.bakedModelConsumer().accept(this.baseModel);
 
         // Get the player's name hash from the card
         int hash = getHash(stack);

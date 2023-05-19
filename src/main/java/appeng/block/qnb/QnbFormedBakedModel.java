@@ -115,7 +115,7 @@ class QnbFormedBakedModel implements BakedModel, FabricBakedModel {
         QnbFormedState formedState = getState(blockView, pos);
 
         if (formedState == null) {
-            context.fallbackConsumer().accept(this.baseModel);
+            context.bakedModelConsumer().accept(this.baseModel);
             return;
         }
 

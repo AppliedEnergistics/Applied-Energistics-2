@@ -106,7 +106,7 @@ public class FacadeBuilder {
                 RenderContext.QuadTransform rotator = QuadRotator.get(facing, 0);
 
                 for (BakedQuad quad : partQuads) {
-                    emitter.fromVanilla(quad.getVertices(), 0, false);
+                    emitter.fromVanilla(quad.getVertices(), 0);
                     emitter.cullFace(null);
                     emitter.nominalFace(quad.getDirection());
                     if (!rotator.transform(emitter)) {
@@ -151,7 +151,7 @@ public class FacadeBuilder {
                     Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
                     List<BakedQuad> quads = model.getQuads(null, cullFace, RandomSource.create());
                     for (BakedQuad quad : quads) {
-                        emitter.fromVanilla(quad.getVertices(), 0, false);
+                        emitter.fromVanilla(quad.getVertices(), 0);
                         emitter.cullFace(cullFace);
                         emitter.nominalFace(quad.getDirection());
                         if (!rotator.transform(emitter)) {
@@ -366,7 +366,7 @@ public class FacadeBuilder {
                     quadTinter = new QuadTinter(itemColors.getColor(textureItem, quad.getTintIndex()));
                 }
 
-                emitter.fromVanilla(quad.getVertices(), 0, false);
+                emitter.fromVanilla(quad.getVertices(), 0);
                 emitter.cullFace(cullFace);
                 emitter.nominalFace(quad.getDirection());
                 interpolator.setInputQuad(emitter);

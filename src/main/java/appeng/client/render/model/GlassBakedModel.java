@@ -36,6 +36,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -72,7 +73,8 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
     // Frame texture
     static final net.minecraft.client.resources.model.Material[] TEXTURES_FRAME = generateTexturesFrame();
     private final RenderMaterial material = RendererAccess.INSTANCE.getRenderer().materialFinder()
-            .disableDiffuse(0, true).disableAo(0, true).disableColorIndex(0, true).blendMode(0, BlendMode.TRANSLUCENT)
+            .disableDiffuse(true).ambientOcclusion(TriState.FALSE).disableColorIndex(true)
+            .blendMode(BlendMode.TRANSLUCENT)
             .find();
 
     // Generates the required textures for the frame
@@ -229,11 +231,11 @@ class GlassBakedModel implements BakedModel, FabricBakedModel {
         emitter.nominalFace(side);
         emitter.cullFace(side);
         emitter.material(material);
-        emitter.pos(0, c1).sprite(0, 0, u1, v1);
-        emitter.pos(1, c2).sprite(1, 0, u1, v2);
-        emitter.pos(2, c3).sprite(2, 0, u2, v2);
-        emitter.pos(3, c4).sprite(3, 0, u2, v1);
-        emitter.spriteColor(0, -1, -1, -1, -1);
+        emitter.pos(0, c1).uv(0, u1, v1);
+        emitter.pos(1, c2).uv(1, u1, v2);
+        emitter.pos(2, c3).uv(2, u2, v2);
+        emitter.pos(3, c4).uv(3, u2, v1);
+        emitter.color(-1, -1, -1, -1);
         emitter.emit();
     }
 

@@ -111,9 +111,9 @@ public final class SkyStoneTankBlockEntityRenderer implements BlockEntityRendere
                 emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
             }
 
-            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
-            vc.putBulkData(ps.last(), emitter.toBakedQuad(0, sprite, false), r, g, b, FULL_LIGHT,
+            emitter.spriteBake(sprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.color(-1, -1, -1, -1);
+            vc.putBulkData(ps.last(), emitter.toBakedQuad(sprite), r, g, b, FULL_LIGHT,
                     OverlayTexture.NO_OVERLAY);
         }
     }

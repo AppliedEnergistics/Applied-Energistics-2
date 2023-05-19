@@ -107,9 +107,9 @@ public class QuadRotator implements RenderContext.QuadTransform {
         // The vanilla lighting engine expects the vertices of each quad
         // in a specific order for each cardinal direction.
         var data = new int[DefaultVertexFormat.BLOCK.getIntegerSize() * 4];
-        quad.toVanilla(0, data, 0, false);
+        quad.toVanilla(data, 0);
         BlockModel.FACE_BAKERY.recalculateWinding(data, rotatedNominalFace);
-        quad.fromVanilla(data, 0, false);
+        quad.fromVanilla(data, 0);
 
         return true;
     }

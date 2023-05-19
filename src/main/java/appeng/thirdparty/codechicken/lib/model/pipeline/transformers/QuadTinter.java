@@ -37,9 +37,9 @@ public class QuadTinter implements RenderContext.QuadTransform {
         // Nuke tintIndex.
         quad.colorIndex(-1);
         for (int i = 0; i < 4; i++) {
-            int color = quad.spriteColor(i, 0);
+            int color = quad.color(i);
             color = multiplyColor(color, argb);
-            quad.spriteColor(i, 0, color);
+            quad.color(i, color);
         }
         return true;
     }
