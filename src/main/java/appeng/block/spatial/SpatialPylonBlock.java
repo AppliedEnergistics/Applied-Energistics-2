@@ -48,8 +48,8 @@ public class SpatialPylonBlock extends AEBaseEntityBlock<SpatialPylonBlockEntity
 
     @Override
     protected BlockState updateBlockStateFromBlockEntity(BlockState currentState, SpatialPylonBlockEntity be) {
-        var poweredOn = (be.getDisplayBits() & SpatialPylonBlockEntity.DISPLAY_POWERED_ENABLED) != 0;
-        return currentState.setValue(SpatialPylonBlock.POWERED_ON, poweredOn);
+        var state = be.getClientState();
+        return currentState.setValue(SpatialPylonBlock.POWERED_ON, state.powered());
     }
 
     @SuppressWarnings("deprecation")

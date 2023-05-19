@@ -26,6 +26,7 @@ import com.google.common.collect.Iterators;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,22 +44,9 @@ import appeng.me.cluster.implementations.SpatialPylonCluster;
 import appeng.util.iterators.ChainedIterator;
 
 public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAEMultiBlock<SpatialPylonCluster> {
-
-    public static final int DISPLAY_END_MIN = 0x01;
-    public static final int DISPLAY_END_MAX = 0x02;
-    public static final int DISPLAY_MIDDLE = 0x01 + 0x02;
-    public static final int DISPLAY_X = 0x04;
-    public static final int DISPLAY_Y = 0x08;
-    public static final int DISPLAY_Z = 0x04 + 0x08;
-    public static final int MB_STATUS = 0x01 + 0x02 + 0x04 + 0x08;
-
-    public static final int DISPLAY_ENABLED = 0x10;
-    public static final int DISPLAY_POWERED_ENABLED = 0x20;
-    public static final int NET_STATUS = 0x10 + 0x20;
-
     private final SpatialPylonCalculator calc = new SpatialPylonCalculator(this);
-    private int displayBits = 0;
     private SpatialPylonCluster cluster;
+    private ClientState clientState = ClientState.DEFAULT;
 
     public SpatialPylonBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -132,36 +120,38 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     }
 
     public void recalculateDisplay() {
-        final int oldBits = this.displayBits;
-
-        this.displayBits = 0;
-
+        var pos = AxisPosition.NONE;
+        var axis = Direction.Axis.X;
+        var powered = false;
+        var online = false;
         if (this.cluster != null) {
             if (this.cluster.getBoundsMin().equals(this.worldPosition)) {
-                this.displayBits = DISPLAY_END_MIN;
+                pos = AxisPosition.START;
             } else if (this.cluster.getBoundsMax().equals(this.worldPosition)) {
-                this.displayBits = DISPLAY_END_MAX;
+                pos = AxisPosition.END;
             } else {
-                this.displayBits = DISPLAY_MIDDLE;
+                pos = AxisPosition.MIDDLE;
             }
 
-            switch (this.cluster.getCurrentAxis()) {
-                case X -> this.displayBits |= DISPLAY_X;
-                case Y -> this.displayBits |= DISPLAY_Y;
-                case Z -> this.displayBits |= DISPLAY_Z;
-                default -> this.displayBits = 0;
-            }
+            axis = switch (this.cluster.getCurrentAxis()) {
+                case X -> Direction.Axis.X;
+                case Y -> Direction.Axis.Y;
+                case Z -> Direction.Axis.Z;
+                default -> axis;
+            };
 
             if (this.getMainNode().isPowered()) {
-                this.displayBits |= DISPLAY_POWERED_ENABLED;
+                powered = true;
             }
 
             if (this.cluster.isValid() && this.getMainNode().isOnline()) {
-                this.displayBits |= DISPLAY_ENABLED;
+                online = true;
             }
         }
 
-        if (oldBits != this.displayBits) {
+        var state = new ClientState(powered, online, pos, axis);
+        if (!clientState.equals(state)) {
+            this.clientState = state;
             this.markForUpdate();
         }
     }
@@ -169,15 +159,30 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
     @Override
     protected boolean readFromStream(FriendlyByteBuf data) {
         final boolean c = super.readFromStream(data);
-        final int old = this.displayBits;
-        this.displayBits = data.readByte();
-        return old != this.displayBits || c;
+        var state = ClientState.readFromStream(data);
+        if (!clientState.equals(state)) {
+            clientState = state;
+            return true;
+        }
+        return c;
     }
 
     @Override
     protected void writeToStream(FriendlyByteBuf data) {
         super.writeToStream(data);
-        data.writeByte(this.displayBits);
+        clientState.writeToStream(data);
+    }
+
+    @Override
+    protected void saveVisualState(CompoundTag data) {
+        super.saveVisualState(data);
+        clientState.writeToNbt(data);
+    }
+
+    @Override
+    protected void loadVisualState(CompoundTag data) {
+        super.loadVisualState(data);
+        clientState = ClientState.readFromNbt(data);
     }
 
     @Override
@@ -187,13 +192,13 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
         }
     }
 
-    public int getDisplayBits() {
-        return this.displayBits;
+    public ClientState getClientState() {
+        return clientState;
     }
 
     @Override
     public Object getRenderAttachmentData() {
-        return getDisplayBits();
+        return getClientState();
     }
 
     private Iterator<IGridNode> getMultiblockNodes() {
@@ -201,5 +206,67 @@ public class SpatialPylonBlockEntity extends AENetworkBlockEntity implements IAE
             return new ChainedIterator<>();
         }
         return Iterators.transform(this.getCluster().getBlockEntities(), SpatialPylonBlockEntity::getGridNode);
+    }
+
+    public record ClientState(boolean powered,
+            boolean online,
+
+            AxisPosition axisPosition,
+            Direction.Axis axis) {
+
+        public static final ClientState DEFAULT = new ClientState(false, false, AxisPosition.NONE, Direction.Axis.X);
+
+        public void writeToStream(FriendlyByteBuf buf) {
+            buf.writeBoolean(powered);
+            buf.writeBoolean(online);
+            buf.writeEnum(axisPosition);
+            buf.writeEnum(axis);
+        }
+
+        public static ClientState readFromStream(FriendlyByteBuf buf) {
+            return new ClientState(
+                    buf.readBoolean(),
+                    buf.readBoolean(),
+                    buf.readEnum(AxisPosition.class),
+                    buf.readEnum(Direction.Axis.class));
+        }
+
+        public void writeToNbt(CompoundTag tag) {
+            tag.putBoolean("powered", powered);
+            tag.putBoolean("online", online);
+            tag.putString("axisPosition", axisPosition.name());
+            tag.putString("axis", axis.name());
+        }
+
+        public static ClientState readFromNbt(CompoundTag tag) {
+            var powered = tag.getBoolean("powered");
+            var online = tag.getBoolean("online");
+            var axisPositionName = tag.getString("axisPosition");
+            AxisPosition axisPosition;
+            try {
+                axisPosition = Enum.valueOf(AxisPosition.class, axisPositionName);
+            } catch (IllegalArgumentException ignored) {
+                axisPosition = DEFAULT.axisPosition;
+            }
+            var axisName = tag.getString("axis");
+            Direction.Axis axis;
+            try {
+                axis = Enum.valueOf(Direction.Axis.class, axisName);
+            } catch (IllegalArgumentException ignored) {
+                axis = DEFAULT.axis;
+            }
+            return new ClientState(
+                    powered,
+                    online,
+                    axisPosition,
+                    axis);
+        }
+    }
+
+    public enum AxisPosition {
+        NONE,
+        START,
+        MIDDLE,
+        END
     }
 }
