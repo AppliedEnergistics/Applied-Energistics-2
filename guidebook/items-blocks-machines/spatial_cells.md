@@ -23,7 +23,7 @@ item_ids:
     <ItemImage id="spatial_storage_cell_128" scale="4" />
   </Row>
 
-Spatial Storage Cells are used to [store physical volumes of space](../ae2-mechanics/spatial_io.md). 
+Spatial Storage Cells are used to [store physical volumes of space](../ae2-mechanics/spatial-io.md). 
 They are used in a <ItemLink id="spatial_io_port" />.
 
 Unlike [Storage Cells](../items-blocks-machines/storage_cells.md), spatial cells cannot be reformatted.

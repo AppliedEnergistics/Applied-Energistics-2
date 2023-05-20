@@ -12,7 +12,7 @@ item_ids:
 
 <BlockImage id="spatial_pylon" p:powered_on="true" scale="8" />
 
-The Spatial Pylon is used in [spatial IO](../ae2-mechanics/spatial_io.md) to generate the spatial field and define the volume
+The Spatial Pylon is used in [spatial IO](../ae2-mechanics/spatial-io.md) to generate the spatial field and define the volume
 to be affected.
 
 Each continuous line of pylons uses 1 [channel](../ae2-mechanics/channels.md)

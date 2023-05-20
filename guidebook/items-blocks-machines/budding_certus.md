@@ -34,7 +34,7 @@ Flawless budding certus will not degrade from growing buds, and act as an infini
 
 If broken with a regular pickaxe, budding certus blocks will degrade by 1 tier. If broken with a pickaxe
 enchanted with silk touch, they will not degrade, unless they were flawless. **This means that flawless budding certus blocks cannot
-be picked up and moved with a pickaxe**. Instead, [Spatial Storage](../ae2-mechanics/spatial-storage.md) can be used to
+be picked up and moved with a pickaxe**. Instead, [Spatial Storage](../ae2-mechanics/spatial-io.md) can be used to
 cut-and-paste the flawless budding blocks around.
 
 ## Recipes
