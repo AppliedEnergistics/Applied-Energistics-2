@@ -86,7 +86,6 @@ public class P2PTunnelFrequencyBakedModel implements IDynamicPartBakedModel {
         final CubeBuilder cb = new CubeBuilder(meshBuilder.getEmitter());
 
         cb.setTexture(this.texture);
-        cb.useStandardUV();
         cb.setEmissiveMaterial(active);
 
         for (int i = 0; i < 4; ++i) {

@@ -72,46 +72,42 @@ class SpatialPylonBakedModel implements BakedModel, FabricBakedModel {
             Direction ori = null;
             var displayAxis = state.axis();
             var axisPos = state.axisPosition();
-            if (displayAxis == Direction.Axis.X) {
-                ori = Direction.EAST;
 
-                if (axisPos == SpatialPylonBlockEntity.AxisPosition.END) {
-                    builder.setUvRotation(Direction.SOUTH, 1);
-                    builder.setUvRotation(Direction.NORTH, 1);
-                    builder.setUvRotation(Direction.UP, 2);
-                    builder.setUvRotation(Direction.DOWN, 2);
-                } else {
-                    if (axisPos == SpatialPylonBlockEntity.AxisPosition.START) {
-                        builder.setUvRotation(Direction.SOUTH, 2);
-                        builder.setUvRotation(Direction.NORTH, 2);
-                    } else {
-                        builder.setUvRotation(Direction.SOUTH, 1);
-                        builder.setUvRotation(Direction.NORTH, 1);
-                    }
-                    builder.setUvRotation(Direction.UP, 1);
-                    builder.setUvRotation(Direction.DOWN, 1);
-                }
-            } else if (displayAxis == Direction.Axis.Y) {
+            if (displayAxis == Direction.Axis.Y) {
                 ori = Direction.UP;
                 if (axisPos == SpatialPylonBlockEntity.AxisPosition.END) {
-                    builder.setUvRotation(Direction.NORTH, 3);
-                    builder.setUvRotation(Direction.SOUTH, 3);
-                    builder.setUvRotation(Direction.EAST, 3);
-                    builder.setUvRotation(Direction.WEST, 3);
+                    builder.setFlipV(Direction.NORTH, true);
+                    builder.setFlipV(Direction.SOUTH, true);
+                    builder.setFlipV(Direction.WEST, true);
+                    builder.setFlipV(Direction.EAST, true);
+                }
+            } else if (displayAxis == Direction.Axis.X) {
+                ori = Direction.EAST;
+
+                builder.setUvRotation(Direction.NORTH, 1);
+                builder.setUvRotation(Direction.SOUTH, 1);
+                builder.setUvRotation(Direction.UP, 3);
+                builder.setUvRotation(Direction.DOWN, 3);
+
+                if (axisPos == SpatialPylonBlockEntity.AxisPosition.START) {
+                    builder.setFlipV(Direction.UP, true);
+                    builder.setFlipV(Direction.DOWN, true);
+                    builder.setFlipV(Direction.NORTH, true);
+                } else if (axisPos == SpatialPylonBlockEntity.AxisPosition.END) {
+                    builder.setFlipV(Direction.SOUTH, true);
                 }
             } else if (displayAxis == Direction.Axis.Z) {
                 ori = Direction.NORTH;
-                if (axisPos == SpatialPylonBlockEntity.AxisPosition.END) {
-                    builder.setUvRotation(Direction.EAST, 2);
-                    builder.setUvRotation(Direction.WEST, 1);
-                } else if (axisPos == SpatialPylonBlockEntity.AxisPosition.START) {
-                    builder.setUvRotation(Direction.EAST, 1);
-                    builder.setUvRotation(Direction.WEST, 2);
-                    builder.setUvRotation(Direction.UP, 3);
-                    builder.setUvRotation(Direction.DOWN, 3);
-                } else {
-                    builder.setUvRotation(Direction.EAST, 1);
-                    builder.setUvRotation(Direction.WEST, 2);
+
+                builder.setUvRotation(Direction.WEST, 1);
+                builder.setUvRotation(Direction.EAST, 1);
+
+                if (axisPos == SpatialPylonBlockEntity.AxisPosition.START) {
+                    builder.setFlipV(Direction.UP, true);
+                    builder.setFlipV(Direction.EAST, true);
+                } else if (axisPos == SpatialPylonBlockEntity.AxisPosition.END) {
+                    builder.setFlipV(Direction.DOWN, true);
+                    builder.setFlipV(Direction.WEST, true);
                 }
             }
 
