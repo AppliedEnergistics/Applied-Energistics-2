@@ -3,6 +3,7 @@ package appeng.api.behaviors;
 import java.util.UUID;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,7 +34,7 @@ public interface PlacementStrategy {
     @FunctionalInterface
     interface Factory {
         PlacementStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host,
-                UUID owningPlayerId);
+                @Nullable UUID owningPlayerId);
     }
 
     static void register(AEKeyType type, Factory factory) {
