@@ -69,6 +69,7 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     private static final Mesh EMPTY_MESH = consumer -> {
     };
 
+    @Nullable
     private static final Renderer RENDERER = RendererAccess.INSTANCE.getRenderer();
 
     // The number of meshes overall that will be cached
@@ -218,6 +219,10 @@ public class CableBusBakedModel implements BakedModel, FabricBakedModel {
     }
 
     private Mesh buildCableModel(CableBusRenderState renderState) {
+        if (RENDERER == null) {
+            return null;
+        }
+
         AECableType cableType = renderState.getCableType();
         if (cableType == AECableType.NONE) {
             return null;
