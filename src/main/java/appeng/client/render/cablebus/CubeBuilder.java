@@ -21,11 +21,8 @@ package appeng.client.render.cablebus;
 import java.util.EnumMap;
 import java.util.EnumSet;
 
-import appeng.core.AppEng;
 import com.google.common.base.Preconditions;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import org.joml.Vector4f;
 
 import net.fabricmc.api.EnvType;
@@ -48,6 +45,10 @@ public class CubeBuilder {
     private final EnumMap<Direction, Vector4f> customUv = new EnumMap<>(Direction.class);
 
     private final byte[] uvRotations = new byte[Direction.values().length];
+
+    private final boolean[] flipU = new boolean[Direction.values().length];
+
+    private final boolean[] flipV = new boolean[Direction.values().length];
 
     private int color = 0xFFFFFFFF;
 
@@ -76,6 +77,14 @@ public class CubeBuilder {
         this.putFace(face, x1, y1, z1, x2, y2, z2);
     }
 
+    public void setFlipU(Direction side, boolean enable) {
+        flipU[side.ordinal()] = enable;
+    }
+
+    public void setFlipV(Direction side, boolean enable) {
+        flipV[side.ordinal()] = enable;
+    }
+
     private static final class UvVector {
         float u1;
         float u2;
@@ -86,7 +95,8 @@ public class CubeBuilder {
     private void putFace(Direction face, float x1, float y1, float z1, float x2, float y2, float z2) {
 
         TextureAtlasSprite texture = this.textures.get(face);
-//        texture = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AppEng.makeId("block/test"));
+        // texture =
+        // Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AppEng.makeId("block/test"));
 
         QuadEmitter emitter = this.emitter;
         emitter.colorIndex(-1);
@@ -94,7 +104,7 @@ public class CubeBuilder {
         UvVector uv = new UvVector();
 
         // The user might have set specific UV coordinates for this face
-        Vector4f customUv = this.customUv.get(face);
+        var customUv = this.customUv.get(face);
         if (customUv != null) {
             uv.u1 = texture.getU(customUv.x());
             uv.v1 = texture.getV(customUv.y());
@@ -131,19 +141,32 @@ public class CubeBuilder {
         emitter.emit();
     }
 
-    private static void setFaceUV(Direction face, QuadEmitter emitter, UvVector uv) {
+    private void setFaceUV(Direction face, QuadEmitter emitter, UvVector uv) {
+        var rotation = uvRotations[face.ordinal()];
+
+        if (flipU[face.ordinal()]) {
+            var tmp = uv.u1;
+            uv.u1 = uv.u2;
+            uv.u2 = tmp;
+        }
+        if (flipV[face.ordinal()]) {
+            var tmp = uv.v1;
+            uv.v1 = uv.v2;
+            uv.v2 = tmp;
+        }
+
         switch (face) {
             case DOWN, UP -> {
-                emitter.uv(0, uv.u1, uv.v1);
-                emitter.uv(1, uv.u1, uv.v2);
-                emitter.uv(2, uv.u2, uv.v2);
-                emitter.uv(3, uv.u2, uv.v1);
+                emitter.uv((0 + 4 - rotation) % 4, uv.u1, uv.v1);
+                emitter.uv((1 + 4 - rotation) % 4, uv.u1, uv.v2);
+                emitter.uv((2 + 4 - rotation) % 4, uv.u2, uv.v2);
+                emitter.uv((3 + 4 - rotation) % 4, uv.u2, uv.v1);
             }
             case NORTH, SOUTH, WEST, EAST -> {
-                emitter.uv(0, uv.u1, uv.v2);
-                emitter.uv(1, uv.u1, uv.v1);
-                emitter.uv(2, uv.u2, uv.v1);
-                emitter.uv(3, uv.u2, uv.v2);
+                emitter.uv((0 + 4 - rotation) % 4, uv.u1, uv.v2);
+                emitter.uv((1 + 4 - rotation) % 4, uv.u1, uv.v1);
+                emitter.uv((2 + 4 - rotation) % 4, uv.u2, uv.v1);
+                emitter.uv((3 + 4 - rotation) % 4, uv.u2, uv.v2);
             }
         }
     }
@@ -178,6 +201,7 @@ public class CubeBuilder {
                 uv.u2 = texture.getU(16 - z1 * 16);
             }
         }
+
         return uv;
     }
 
@@ -229,11 +253,6 @@ public class CubeBuilder {
     }
 
     public void setUvRotation(Direction facing, int rotation) {
-        if (rotation == 2) {
-            rotation = 3;
-        } else if (rotation == 3) {
-            rotation = 2;
-        }
         Preconditions.checkArgument(rotation >= 0 && rotation <= 3, "rotation");
         this.uvRotations[facing.ordinal()] = (byte) rotation;
     }
