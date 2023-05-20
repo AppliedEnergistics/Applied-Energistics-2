@@ -20,6 +20,7 @@ import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.AEKeyFilter;
 import appeng.util.CowMap;
+import org.jetbrains.annotations.Nullable;
 
 public final class StackWorldBehaviors {
     private static final CowMap<AEKeyType, StackImportStrategy.Factory> importStrategies = CowMap.identityHashMap();
@@ -113,7 +114,7 @@ public final class StackWorldBehaviors {
     }
 
     public static PlacementStrategy createPlacementStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, UUID owningPlayerId) {
+            BlockEntity host, @Nullable UUID owningPlayerId) {
         var strategies = new IdentityHashMap<AEKeyType, PlacementStrategy>(placementStrategies.getMap().size());
         for (var entry : placementStrategies.getMap().entrySet()) {
             strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide, host, owningPlayerId));
@@ -122,7 +123,7 @@ public final class StackWorldBehaviors {
     }
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, Map<Enchantment, Integer> enchantments, UUID owningPlayerId) {
+            BlockEntity host, Map<Enchantment, Integer> enchantments, @Nullable UUID owningPlayerId) {
         return pickupStrategies.getMap().values()
                 .stream()
                 .map(f -> f.create(level, fromPos, fromSide, host, enchantments, owningPlayerId))
