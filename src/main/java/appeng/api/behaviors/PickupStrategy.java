@@ -1,6 +1,7 @@
 package appeng.api.behaviors;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.jetbrains.annotations.ApiStatus;
 
@@ -60,7 +61,7 @@ public interface PickupStrategy {
     @FunctionalInterface
     interface Factory {
         PickupStrategy create(ServerLevel level, BlockPos fromPos, Direction fromSide, BlockEntity host,
-                Map<Enchantment, Integer> enchantments, int owningPlayerId);
+                Map<Enchantment, Integer> enchantments, UUID owningPlayerId);
     }
 
     static void register(AEKeyType type, Factory factory) {

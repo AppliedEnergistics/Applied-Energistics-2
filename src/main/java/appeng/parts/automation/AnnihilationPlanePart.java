@@ -156,10 +156,15 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     protected List<PickupStrategy> getPickupStrategies() {
         if (pickupStrategies == null) {
+            // Don't initialize if the node is not initialized yet
+            var node = getMainNode().getNode();
+            if (node == null) {
+                return List.of();
+            }
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
-            var owner = getMainNode().getNode().getOwningPlayerId();
+            var owner = node.getOwningPlayerProfileId();
             pickupStrategies = StackWorldBehaviors.createPickupStrategies((ServerLevel) self.getLevel(),
                     pos, side, self, enchantments, owner);
         }

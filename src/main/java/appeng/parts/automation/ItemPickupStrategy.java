@@ -33,7 +33,6 @@ import appeng.api.behaviors.PickupSink;
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.AppEng;
@@ -60,12 +59,12 @@ public class ItemPickupStrategy implements PickupStrategy {
     private boolean isAccepting = true;
 
     public ItemPickupStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            Map<Enchantment, Integer> enchantments, int owningPlayerId) {
+            Map<Enchantment, Integer> enchantments, @Nullable UUID owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;
         this.enchantments = enchantments;
-        this.ownerUuid = IPlayerRegistry.getMapping(level.getServer()).getProfileId(owningPlayerId);
+        this.ownerUuid = owningPlayerId;
     }
 
     @Override

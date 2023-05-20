@@ -26,6 +26,7 @@ package appeng.api.networking;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -160,6 +161,13 @@ public interface IGridNode {
      * @see appeng.api.features.IPlayerRegistry
      */
     int getOwningPlayerId();
+
+    /**
+     * @return the UUID of the owners game profile. null if not known.
+     * @see appeng.api.features.IPlayerRegistry
+     */
+    @Nullable
+    UUID getOwningPlayerProfileId();
 
     /**
      * @return The power in AE/t that will be drained by this node. Non-negative.
