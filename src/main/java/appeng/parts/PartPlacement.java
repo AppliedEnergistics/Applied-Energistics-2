@@ -11,12 +11,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
+import appeng.block.networking.CableBusBlock;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
+import appeng.items.parts.PartItem;
+import appeng.parts.networking.CablePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -28,7 +32,7 @@ public class PartPlacement {
         var level = context.getLevel();
         var pos = context.getClickedPos();
         var partStack = context.getItemInHand();
-        var side = context.getClickedFace();
+        var side = getSideForPartPlacement(context);
 
         if (!(partStack.getItem() instanceof IPartItem<?>partItem)) {
             return InteractionResult.PASS;
@@ -59,6 +63,50 @@ public class PartPlacement {
         }
 
         return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    /**
+     * Determines what side of a block to place a part on. This is mainly used for special behaviour such as placing a
+     * cable attachment like an anchor in between two connected cable segments.
+     */
+    private static Direction getSideForPartPlacement(UseOnContext context) {
+        var block = context.getLevel().getBlockState(context.getClickedPos());
+        var item = context.getItemInHand().getItem();
+
+        if (block.getBlock() instanceof CableBusBlock cable && item instanceof PartItem<?>part) {
+            // We're not placing a cable attachment but an actual cable, don't do anything special
+            if (CablePart.class.isAssignableFrom(part.getPartClass())) {
+                return context.getClickedFace();
+            }
+
+            var clickPos = context.getClickedPos();
+            var relative = context.getClickLocation()
+                    .subtract(new Vec3(clickPos.getX(), clickPos.getY(), clickPos.getZ()))
+                    .subtract(new Vec3(0.5, 0.5, 0.5));
+            var denseThickness = 0.3125;
+
+            if (relative.x > denseThickness) {
+                return Direction.EAST;
+            } else if (relative.x < -denseThickness) {
+                return Direction.WEST;
+            }
+
+            if (relative.y > denseThickness) {
+                return Direction.UP;
+            } else if (relative.y < -denseThickness) {
+                return Direction.DOWN;
+            }
+
+            if (relative.z > denseThickness) {
+                return Direction.SOUTH;
+            } else if (relative.z < -denseThickness) {
+                return Direction.NORTH;
+            }
+
+            return context.getClickedFace();
+        }
+
+        return context.getClickedFace();
     }
 
     /**
