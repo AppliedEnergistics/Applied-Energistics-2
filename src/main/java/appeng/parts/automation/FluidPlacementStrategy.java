@@ -2,6 +2,9 @@ package appeng.parts.automation;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +43,7 @@ public class FluidPlacementStrategy implements PlacementStrategy {
     private long lastEffect;
 
     public FluidPlacementStrategy(ServerLevel level, BlockPos pos, Direction side, BlockEntity host,
-            int owningPlayerId) {
+            @Nullable UUID owningPlayerId) {
         this.level = level;
         this.pos = pos;
         this.side = side;

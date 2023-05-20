@@ -89,10 +89,15 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
     protected final PlacementStrategy getPlacementStrategies() {
         if (placementStrategies == null) {
+            // Defer initialization until the grid exists
+            var node = getMainNode().getNode();
+            if (node == null) {
+                return PlacementStrategy.noop();
+            }
             var self = this.getHost().getBlockEntity();
             var pos = self.getBlockPos().relative(this.getSide());
             var side = getSide().getOpposite();
-            var owningPlayerId = getMainNode().getNode().getOwningPlayerId();
+            var owningPlayerId = getMainNode().getNode().getOwningPlayerProfileId();
             placementStrategies = StackWorldBehaviors.createPlacementStrategies(
                     (ServerLevel) self.getLevel(), pos, side, self, owningPlayerId);
         }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ClassToInstanceMap;
@@ -44,6 +45,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridConnection;
@@ -473,6 +475,15 @@ public class GridNode implements IGridNode, IPathItem {
     @Override
     public int getOwningPlayerId() {
         return this.owningPlayerId;
+    }
+
+    @Override
+    public UUID getOwningPlayerProfileId() {
+        if (owningPlayerId == -1) {
+            return null;
+        }
+        IPlayerRegistry mapping = IPlayerRegistry.getMapping(level);
+        return mapping != null ? mapping.getProfileId(owningPlayerId) : null;
     }
 
     protected void findInWorldConnections() {

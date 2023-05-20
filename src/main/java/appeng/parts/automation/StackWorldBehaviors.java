@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -112,7 +115,7 @@ public final class StackWorldBehaviors {
     }
 
     public static PlacementStrategy createPlacementStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, int owningPlayerId) {
+            BlockEntity host, @Nullable UUID owningPlayerId) {
         var strategies = new IdentityHashMap<AEKeyType, PlacementStrategy>(placementStrategies.getMap().size());
         for (var entry : placementStrategies.getMap().entrySet()) {
             strategies.put(entry.getKey(), entry.getValue().create(level, fromPos, fromSide, host, owningPlayerId));
@@ -121,7 +124,7 @@ public final class StackWorldBehaviors {
     }
 
     public static List<PickupStrategy> createPickupStrategies(ServerLevel level, BlockPos fromPos, Direction fromSide,
-            BlockEntity host, Map<Enchantment, Integer> enchantments, int owningPlayerId) {
+            BlockEntity host, Map<Enchantment, Integer> enchantments, @Nullable UUID owningPlayerId) {
         return pickupStrategies.getMap().values()
                 .stream()
                 .map(f -> f.create(level, fromPos, fromSide, host, enchantments, owningPlayerId))
