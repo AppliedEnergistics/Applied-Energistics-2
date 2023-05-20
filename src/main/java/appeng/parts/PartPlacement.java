@@ -1,5 +1,9 @@
 package appeng.parts;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -11,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPart;
@@ -69,38 +74,53 @@ public class PartPlacement {
      * Determines what side of a block to place a part on. This is mainly used for special behaviour such as placing a
      * cable attachment like an anchor in between two connected cable segments.
      */
-    private static Direction getSideForPartPlacement(UseOnContext context) {
+    private static Direction getSideForPartPlacement(@NotNull UseOnContext context) {
         var block = context.getLevel().getBlockState(context.getClickedPos());
         var item = context.getItemInHand().getItem();
 
-        if (block.getBlock() instanceof CableBusBlock cable && item instanceof PartItem<?>part) {
+        if (block.getBlock() instanceof CableBusBlock cableBus && item instanceof PartItem<?>part) {
             // We're not placing a cable attachment but an actual cable, don't do anything special
             if (CablePart.class.isAssignableFrom(part.getPartClass())) {
                 return context.getClickedFace();
             }
 
-            var clickPos = context.getClickedPos();
-            var relative = context.getClickLocation()
-                    .subtract(new Vec3(clickPos.getX(), clickPos.getY(), clickPos.getZ()))
-                    .subtract(new Vec3(0.5, 0.5, 0.5));
-            var denseThickness = 0.3125;
+            // Make sure we're placing the part against an actual cable for any special behaviour
+            var cablePart = Objects.requireNonNull(cableBus.getBlockEntity(context.getLevel(), context.getClickedPos()))
+                    .getPart(null);
 
-            if (relative.x > denseThickness) {
-                return Direction.EAST;
-            } else if (relative.x < -denseThickness) {
-                return Direction.WEST;
-            }
+            if (cablePart != null) {
+                // Determine the thickness at the center of the cable so we know how far out we need to go to place a
+                // part in between
+                var boxes = new ArrayList<AABB>();
+                var helper = new BusCollisionHelper(boxes, context.getClickedFace(), false);
+                cablePart.getBoxes(helper);
 
-            if (relative.y > denseThickness) {
-                return Direction.UP;
-            } else if (relative.y < -denseThickness) {
-                return Direction.DOWN;
-            }
+                var cableCenter = boxes.get(0);
+                var cableThickness = (cableCenter.maxX - cableCenter.minX);
 
-            if (relative.z > denseThickness) {
-                return Direction.SOUTH;
-            } else if (relative.z < -denseThickness) {
-                return Direction.NORTH;
+                // Determine where the part is being placed relative to the midpoint of our cable bus's block space
+                var clickPos = context.getClickedPos();
+                var relative = context.getClickLocation()
+                        .subtract(new Vec3(clickPos.getX(), clickPos.getY(), clickPos.getZ()))
+                        .subtract(new Vec3(0.5, 0.5, 0.5));
+
+                if (relative.x > cableThickness) {
+                    return Direction.EAST;
+                } else if (relative.x < -cableThickness) {
+                    return Direction.WEST;
+                }
+
+                if (relative.y > cableThickness) {
+                    return Direction.UP;
+                } else if (relative.y < -cableThickness) {
+                    return Direction.DOWN;
+                }
+
+                if (relative.z > cableThickness) {
+                    return Direction.SOUTH;
+                } else if (relative.z < -cableThickness) {
+                    return Direction.NORTH;
+                }
             }
 
             return context.getClickedFace();
