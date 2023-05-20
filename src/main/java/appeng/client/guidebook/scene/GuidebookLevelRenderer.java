@@ -93,7 +93,9 @@ public class GuidebookLevelRenderer {
 
         var buffers = renderBuffers.bufferSource();
 
-        renderBlocks(level, buffers);
+        renderBlocks(level, buffers, false);
+        renderBlocks(level, buffers, true);
+        renderBlockEntities(level, buffers);
 
         for (var highlight : highlights) {
             BlockHighlightRenderer.render(buffers, highlight.pos(), highlight.r(), highlight.g(), highlight.b(),
@@ -130,7 +132,7 @@ public class GuidebookLevelRenderer {
         RenderSystem.restoreProjectionMatrix();
     }
 
-    private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers) {
+    private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers, boolean translucent) {
         var randomSource = level.random;
         var blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
         var poseStack = new PoseStack();
@@ -140,26 +142,37 @@ public class GuidebookLevelRenderer {
             var fluidState = blockState.getFluidState();
             if (!fluidState.isEmpty()) {
                 var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
-                var bufferBuilder = buffers.getBuffer(renderType);
+                if (renderType != RenderType.translucent() || translucent) {
+                    var bufferBuilder = buffers.getBuffer(renderType);
 
-                var sectionPos = SectionPos.of(pos);
-                var liquidVertexConsumer = new LiquidVertexConsumer(bufferBuilder, sectionPos);
-                blockRenderDispatcher.renderLiquid(pos, level, liquidVertexConsumer, blockState, fluidState);
+                    var sectionPos = SectionPos.of(pos);
+                    var liquidVertexConsumer = new LiquidVertexConsumer(bufferBuilder, sectionPos);
+                    blockRenderDispatcher.renderLiquid(pos, level, liquidVertexConsumer, blockState, fluidState);
 
-                markFluidSpritesActive(fluidState);
+                    markFluidSpritesActive(fluidState);
+                }
             }
 
             if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
                 var renderType = ItemBlockRenderTypes.getChunkRenderType(blockState);
-                var bufferBuilder = buffers.getBuffer(renderType);
+                if (renderType != RenderType.translucent() || translucent) {
+                    var bufferBuilder = buffers.getBuffer(renderType);
 
-                poseStack.pushPose();
-                poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                blockRenderDispatcher.renderBatched(blockState, pos, level, poseStack, bufferBuilder, true,
-                        randomSource);
-                poseStack.popPose();
+                    poseStack.pushPose();
+                    poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+                    blockRenderDispatcher.renderBatched(blockState, pos, level, poseStack, bufferBuilder, true,
+                            randomSource);
+                    poseStack.popPose();
+                }
             }
+        });
+    }
 
+    private void renderBlockEntities(GuidebookLevel level, MultiBufferSource buffers) {
+        var poseStack = new PoseStack();
+
+        level.getFilledBlocks().forEach(pos -> {
+            var blockState = level.getBlockState(pos);
             if (blockState.hasBlockEntity()) {
                 var blockEntity = level.getBlockEntity(pos);
                 if (blockEntity != null) {
