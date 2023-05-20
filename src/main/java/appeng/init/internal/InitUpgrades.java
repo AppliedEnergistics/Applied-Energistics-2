@@ -57,14 +57,14 @@ public final class InitUpgrades {
         // Import Bus
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.IMPORT_BUS, 1, itemIoBusGroup);
         Upgrades.add(AEItems.REDSTONE_CARD, AEParts.IMPORT_BUS, 1, itemIoBusGroup);
-        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.IMPORT_BUS, 2, itemIoBusGroup);
+        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.IMPORT_BUS, 5, itemIoBusGroup);
         Upgrades.add(AEItems.SPEED_CARD, AEParts.IMPORT_BUS, 4, itemIoBusGroup);
         Upgrades.add(AEItems.INVERTER_CARD, AEParts.IMPORT_BUS, 1, itemIoBusGroup);
 
         // Export Bus
         Upgrades.add(AEItems.FUZZY_CARD, AEParts.EXPORT_BUS, 1, itemIoBusGroup);
         Upgrades.add(AEItems.REDSTONE_CARD, AEParts.EXPORT_BUS, 1, itemIoBusGroup);
-        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.EXPORT_BUS, 2, itemIoBusGroup);
+        Upgrades.add(AEItems.CAPACITY_CARD, AEParts.EXPORT_BUS, 5, itemIoBusGroup);
         Upgrades.add(AEItems.SPEED_CARD, AEParts.EXPORT_BUS, 4, itemIoBusGroup);
         Upgrades.add(AEItems.CRAFTING_CARD, AEParts.EXPORT_BUS, 1, itemIoBusGroup);
 
