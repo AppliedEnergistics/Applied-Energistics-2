@@ -94,14 +94,12 @@ public class CubeBuilder {
 
     private void putFace(Direction face, float x1, float y1, float z1, float x2, float y2, float z2) {
 
-        TextureAtlasSprite texture = this.textures.get(face);
-        // texture =
-        // Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AppEng.makeId("block/test"));
+        var texture = this.textures.get(face);
 
-        QuadEmitter emitter = this.emitter;
+        var emitter = this.emitter;
         emitter.colorIndex(-1);
 
-        UvVector uv = new UvVector();
+        var uv = new UvVector();
 
         // The user might have set specific UV coordinates for this face
         var customUv = this.customUv.get(face);
