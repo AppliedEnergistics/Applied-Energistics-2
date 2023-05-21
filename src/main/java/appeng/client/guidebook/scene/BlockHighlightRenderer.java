@@ -1,9 +1,12 @@
 package appeng.client.guidebook.scene;
 
-import appeng.core.AppEng;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,8 +18,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
-import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
+
+import appeng.core.AppEng;
 
 final class BlockHighlightRenderer {
     private static final float THICKNESS = 0.5f / 16f;
@@ -35,8 +38,7 @@ final class BlockHighlightRenderer {
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(new RenderStateShard.DepthTestStateShard(">", GL11.GL_GREATER))
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                    .createCompositeState(true)
-    );
+                    .createCompositeState(true));
 
     private BlockHighlightRenderer() {
     }
@@ -44,7 +46,8 @@ final class BlockHighlightRenderer {
     public static void render(MultiBufferSource.BufferSource buffers, Iterable<BlockHighlight> highlights) {
         var occludedConsumer = buffers.getBuffer(OCCLUDED);
         for (var highlight : highlights) {
-            var h = new BlockHighlight(highlight.pos(), highlight.r() * 0.25f, highlight.g() * 0.25f, highlight.b() * 0.25f, 0.25f * highlight.a());
+            var h = new BlockHighlight(highlight.pos(), highlight.r() * 0.25f, highlight.g() * 0.25f,
+                    highlight.b() * 0.25f, 0.25f * highlight.a());
             render(occludedConsumer, h);
         }
         buffers.endBatch(OCCLUDED);
@@ -59,7 +62,8 @@ final class BlockHighlightRenderer {
 
     public static void render(VertexConsumer consumer, BlockHighlight highlight) {
         for (var face : Direction.values()) {
-            makeFace(consumer, highlight.pos(), face, THICKNESS, highlight.r(), highlight.g(), highlight.b(), highlight.a());
+            makeFace(consumer, highlight.pos(), face, THICKNESS, highlight.r(), highlight.g(), highlight.b(),
+                    highlight.a());
         }
     }
 
@@ -67,10 +71,10 @@ final class BlockHighlightRenderer {
      * from and to are in the center of the strut.
      */
     private static void makeFace(VertexConsumer consumer,
-                                 BlockPos pos,
-                                 Direction face,
-                                 float thickness,
-                                 float r, float g, float b, float a) {
+            BlockPos pos,
+            Direction face,
+            float thickness,
+            float r, float g, float b, float a) {
         var blockCenter = new Vector3f(
                 pos.getX() + 0.5f,
                 pos.getY() + 0.5f,
@@ -110,7 +114,8 @@ final class BlockHighlightRenderer {
         var right = rightDir.step().mul(1.05f);
         var rightHalf = right.mul(0.5f);
 
-        int color = FastColor.ARGB32.color(Mth.floor(a * 255f), Mth.floor(r * 255f), Mth.floor(g * 255f), Mth.floor(b * 255f));
+        int color = FastColor.ARGB32.color(Mth.floor(a * 255f), Mth.floor(r * 255f), Mth.floor(g * 255f),
+                Mth.floor(b * 255f));
 
         var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
                 .apply(AppEng.makeId("block/noise"));
@@ -141,7 +146,7 @@ final class BlockHighlightRenderer {
     }
 
     private static void quad(VertexConsumer consumer, Direction face, int color, Vector3f v1, Vector3f v2,
-                             Vector3f offset, TextureAtlasSprite sprite) {
+            Vector3f offset, TextureAtlasSprite sprite) {
         vertex(consumer, face, color, v2, sprite.getU0(), sprite.getV0());
         vertex(consumer, face, color, v1, sprite.getV0(), sprite.getV1());
         vertex(consumer, face, color, new Vector3f(v1).add(offset), sprite.getV1(), sprite.getV1());
@@ -149,10 +154,10 @@ final class BlockHighlightRenderer {
     }
 
     private static void vertex(VertexConsumer consumer,
-                               Direction face,
-                               int color,
-                               Vector3f bottomLeft,
-                               float u, float v) {
+            Direction face,
+            int color,
+            Vector3f bottomLeft,
+            float u, float v) {
         consumer.vertex(bottomLeft.x, bottomLeft.y, bottomLeft.z)
                 .color(color)
                 .uv(u, v)
