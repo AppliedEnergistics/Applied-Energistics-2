@@ -303,7 +303,7 @@ public class StorageBusPart extends UpgradeablePart
             // Prioritize a handler to directly link to another ME network
             foundMonitor = adjacentStorageAccessor.find();
 
-            if (foundMonitor != null) {
+            if (foundMonitor == null) {
                 // Query all available external APIs
                 // TODO: If a filter is configured, we might want to only query external APIs for compatible key spaces
                 foundExternalApi = new IdentityHashMap<>(2);
