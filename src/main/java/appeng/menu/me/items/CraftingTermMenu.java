@@ -39,7 +39,6 @@ import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
@@ -67,7 +66,6 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     public static final MenuType<CraftingTermMenu> TYPE = MenuTypeBuilder
             .create(CraftingTermMenu::new, ITerminalHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("craftingterm");
 
     private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";

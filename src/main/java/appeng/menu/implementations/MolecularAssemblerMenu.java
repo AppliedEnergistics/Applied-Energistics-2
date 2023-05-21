@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.menu.SlotSemantics;
@@ -82,8 +81,6 @@ public class MolecularAssemblerMenu extends UpgradeableMenu<MolecularAssemblerBl
 
     @Override
     public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
         this.craftProgress = this.molecularAssembler.getCraftingProgress();
 
         this.standardDetectAndSendChanges();

@@ -169,12 +169,7 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
                 if (!evt.isTransitionPrevented()) {
                     // Prefer player id from security system, but if unavailable, use the
                     // player who placed the grid node (if any)
-                    int playerId;
-                    if (grid.getSecurityService().isAvailable()) {
-                        playerId = grid.getSecurityService().getOwner();
-                    } else {
-                        playerId = node.getOwningPlayerId();
-                    }
+                    int playerId = node.getOwningPlayerId();
 
                     boolean success = sc.doSpatialTransition(cell, serverLevel, spc.getMin(), spc.getMax(),
                             playerId);

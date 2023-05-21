@@ -50,7 +50,6 @@ import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
-import appeng.blockentity.misc.SecurityStationBlockEntity;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.blockentity.networking.ControllerBlockEntity;
@@ -87,8 +86,6 @@ public final class AEBlockEntities {
             WirelessAccessPointBlockEntity.class, WirelessAccessPointBlockEntity::new, AEBlocks.WIRELESS_ACCESS_POINT);
     public static final BlockEntityType<ChargerBlockEntity> CHARGER = create("charger", ChargerBlockEntity.class,
             ChargerBlockEntity::new, AEBlocks.CHARGER);
-    public static final BlockEntityType<SecurityStationBlockEntity> SECURITY_STATION = create("security_station",
-            SecurityStationBlockEntity.class, SecurityStationBlockEntity::new, AEBlocks.SECURITY_STATION);
     public static final BlockEntityType<QuantumBridgeBlockEntity> QUANTUM_BRIDGE = create("quantum_ring",
             QuantumBridgeBlockEntity.class, QuantumBridgeBlockEntity::new, AEBlocks.QUANTUM_RING,
             AEBlocks.QUANTUM_LINK);

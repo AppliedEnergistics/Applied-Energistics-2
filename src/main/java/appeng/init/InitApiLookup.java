@@ -10,7 +10,7 @@ import appeng.api.implementations.blockentities.ICraftingMachine;
 import appeng.api.implementations.blockentities.ICrankable;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.inventories.PartApiLookup;
-import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.MEStorage;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
@@ -98,10 +98,10 @@ public final class InitApiLookup {
         GenericInternalInventory.SIDED.registerForBlockEntity(
                 (blockEntity, context) -> blockEntity.getInterfaceLogic().getStorage(), AEBlockEntities.INTERFACE);
 
-        PartApiLookup.register(IStorageMonitorableAccessor.SIDED,
-                (part, context) -> part.getInterfaceLogic().getGridStorageAccessor(), InterfacePart.class);
-        IStorageMonitorableAccessor.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getInterfaceLogic().getGridStorageAccessor();
+        PartApiLookup.register(MEStorage.SIDED,
+                (part, context) -> part.getInterfaceLogic().getInventory(), InterfacePart.class);
+        MEStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
+            return blockEntity.getInterfaceLogic().getInventory();
         }, AEBlockEntities.INTERFACE);
     }
 
@@ -121,15 +121,14 @@ public final class InitApiLookup {
         FluidStorage.SIDED.registerForBlockEntity(((blockEntity, context) -> {
             return blockEntity.getFluidHandler();
         }), AEBlockEntities.CONDENSER);
-        IStorageMonitorableAccessor.SIDED.registerForBlockEntity((blockEntity, context) -> {
-            return blockEntity.getMEHandler();
+        MEStorage.SIDED.registerForBlockEntity((blockEntity, context) -> {
+            return blockEntity.getMEStorage();
         }, AEBlockEntities.CONDENSER);
     }
 
     private static void initMEChest() {
         FluidStorage.SIDED.registerForBlockEntity(ChestBlockEntity::getFluidHandler, AEBlockEntities.CHEST);
-        IStorageMonitorableAccessor.SIDED.registerForBlockEntity(ChestBlockEntity::getMEHandler,
-                AEBlockEntities.CHEST);
+        MEStorage.SIDED.registerForBlockEntity(ChestBlockEntity::getMEStorage, AEBlockEntities.CHEST);
     }
 
     private static void initMisc() {

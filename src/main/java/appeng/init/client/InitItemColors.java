@@ -41,7 +41,6 @@ public final class InitItemColors {
     }
 
     public static void init(Registry itemColors) {
-        itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.SECURITY_STATION.asItem());
         // I checked, the ME chest doesn't keep its color in item form
         itemColors.register(new StaticItemColor(AEColor.TRANSPARENT), AEBlocks.CHEST.asItem());
 

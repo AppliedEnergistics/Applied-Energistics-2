@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.helpers.IPriorityHost;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
@@ -35,7 +34,6 @@ public class PriorityMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<PriorityMenu> TYPE = MenuTypeBuilder
             .create(PriorityMenu::new, IPriorityHost.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarInt(host.getPriority());
             }, (host, menu, buffer) -> {
@@ -67,12 +65,6 @@ public class PriorityMenu extends AEBaseMenu implements ISubMenu {
                 this.priorityValue = newValue;
             }
         }
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
     }
 
     public int getPriorityValue() {

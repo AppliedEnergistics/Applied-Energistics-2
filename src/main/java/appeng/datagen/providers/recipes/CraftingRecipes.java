@@ -470,17 +470,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_logic_processor", has(AEItems.LOGIC_PROCESSOR))
                 .unlockedBy("has_engineering_processor", has(AEItems.ENGINEERING_PROCESSOR))
                 .save(consumer, AppEng.makeId("network/blocks/quantum_ring"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.SECURITY_STATION)
-                .pattern("aba")
-                .pattern("cdc")
-                .pattern("aea")
-                .define('a', ConventionTags.IRON_INGOT)
-                .define('b', AEBlocks.CHEST)
-                .define('c', AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT))
-                .define('d', AEItems.CELL_COMPONENT_16K)
-                .define('e', AEItems.ENGINEERING_PROCESSOR)
-                .unlockedBy("has_engineering_processor", has(AEItems.ENGINEERING_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/blocks/security_station"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.SPATIAL_ANCHOR)
                 .pattern("aaa")
                 .pattern("bcb")
@@ -881,15 +870,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
         portableCell(consumer, AEItems.PORTABLE_FLUID_CELL64K);
         portableCell(consumer, AEItems.PORTABLE_FLUID_CELL256K);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.BIOMETRIC_CARD)
-                .pattern("abb")
-                .pattern("cdc")
-                .define('a', AEItems.ENGINEERING_PROCESSOR)
-                .define('b', ConventionTags.IRON_INGOT)
-                .define('c', ConventionTags.GOLD_INGOT)
-                .define('d', ConventionTags.REDSTONE)
-                .unlockedBy("has_security_station", has(AEBlocks.SECURITY_STATION))
-                .save(consumer, AppEng.makeId("tools/network_biometric_card"));
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEItems.COLOR_APPLICATOR)
                 .pattern("ab ")
                 .pattern("bc ")

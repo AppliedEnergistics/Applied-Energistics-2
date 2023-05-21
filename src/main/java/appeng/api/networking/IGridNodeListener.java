@@ -30,12 +30,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  */
 public interface IGridNodeListener<T> {
     /**
-     * Called by the {@link IGridNode} to notify the host that the node is violating security rules and it needs to be
-     * removed. Break or remove the host and drop it.
-     */
-    void onSecurityBreak(T nodeOwner, IGridNode node);
-
-    /**
      * Called by the {@link IGridNode} when it's persistent state has changed and the host needs to ensure it is saved.
      * Can be implemented on block entities by delegating to {@link BlockEntity#setChanged()} for example.
      */

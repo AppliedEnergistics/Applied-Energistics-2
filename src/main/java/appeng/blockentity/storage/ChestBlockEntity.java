@@ -51,7 +51,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -69,7 +68,6 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.ITerminalHost;
@@ -121,7 +119,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isCached = false;
     private ChestMonitorHandler cellHandler;
-    private Accessor accessor;
     private Storage<FluidVariant> fluidHandler;
     private double idlePowerUsage;
 
@@ -189,7 +186,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private void updateHandler() {
         if (!this.isCached) {
             this.cellHandler = null;
-            this.accessor = null;
             this.fluidHandler = null;
 
             var is = this.getCell();
@@ -201,7 +197,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
                     this.cellHandler = this.wrap(newCell);
 
                     this.getMainNode().setIdlePowerUsage(idlePowerUsage);
-                    this.accessor = new Accessor();
 
                     if (this.cellHandler != null) {
                         this.fluidHandler = new FluidHandler();
@@ -560,9 +555,6 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
         @Override
         public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
-            if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.INJECT)).orElse(false)) {
-                return 0;
-            }
             var inserted = super.insert(what, amount, mode, source);
             if (inserted > 0 && mode == Actionable.MODULATE) {
                 blinkCell(0);
@@ -570,15 +562,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return inserted;
         }
 
-        private boolean securityCheck(Player player, SecurityPermissions requiredPermission) {
-            return Platform.checkPermissions(player, ChestBlockEntity.this, requiredPermission, false, false);
-        }
-
         @Override
         public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-            if (source.player().map(player -> !this.securityCheck(player, SecurityPermissions.EXTRACT)).orElse(false)) {
-                return 0;
-            }
             var extracted = super.extract(what, amount, mode, source);
             if (extracted > 0 && mode == Actionable.MODULATE) {
                 blinkCell(0);
@@ -597,21 +582,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Nullable
-    public IStorageMonitorableAccessor getMEHandler(Direction side) {
+    public MEStorage getMEStorage(Direction side) {
         if (side != getFront()) {
-            return accessor;
+            return getInventory();
         } else {
-            return null;
-        }
-    }
-
-    private class Accessor implements IStorageMonitorableAccessor {
-        @Nullable
-        @Override
-        public MEStorage getInventory(IActionSource src) {
-            if (Platform.canAccess(ChestBlockEntity.this.getMainNode(), src)) {
-                return ChestBlockEntity.this.getInventory();
-            }
             return null;
         }
     }

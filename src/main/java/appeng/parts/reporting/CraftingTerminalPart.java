@@ -26,16 +26,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.parts.PartModel;
-import appeng.util.Platform;
 import appeng.util.inv.AppEngInternalInventory;
 
 public class CraftingTerminalPart extends AbstractTerminalPart {
@@ -90,10 +87,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
 
     @Override
     public MenuType<?> getMenuType(Player p) {
-        if (Platform.checkPermissions(p, this, SecurityPermissions.CRAFT, false, false)) {
-            return CraftingTermMenu.TYPE;
-        }
-        return MEStorageMenu.TYPE;
+        return CraftingTermMenu.TYPE;
     }
 
     @Override

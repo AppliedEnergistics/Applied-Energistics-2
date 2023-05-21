@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
 import appeng.parts.automation.EnergyLevelEmitterPart;
@@ -32,7 +31,6 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu<EnergyLevelEmitterPa
 
     public static final MenuType<EnergyLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(EnergyLevelEmitterMenu::new, EnergyLevelEmitterPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 buffer.writeVarLong(host.getReportingValue());
             }, (host, menu, buffer) -> {

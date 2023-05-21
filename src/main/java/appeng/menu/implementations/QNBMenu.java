@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
@@ -34,7 +33,6 @@ public class QNBMenu extends AEBaseMenu {
 
     public static final MenuType<QNBMenu> TYPE = MenuTypeBuilder
             .create(QNBMenu::new, QuantumBridgeBlockEntity.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("qnb");
 
     public QNBMenu(int id, Inventory ip, QuantumBridgeBlockEntity quantumBridge) {

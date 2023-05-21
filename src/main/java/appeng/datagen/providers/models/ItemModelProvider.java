@@ -10,7 +10,6 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import appeng.api.ids.AEItemIds;
 import appeng.api.util.AEColor;
-import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.MemoryCardModel;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
@@ -29,8 +28,6 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
     protected void registerModels() {
         registerPaintballs();
 
-        flatSingleLayer(BiometricCardModel.MODEL_BASE, "item/biometric_card");
-        builtInItemModel("biometric_card");
         flatSingleLayer(MemoryCardModel.MODEL_BASE, "item/memory_card_pins")
                 .texture("layer1", "item/memory_card_base");
         builtInItemModel("memory_card");

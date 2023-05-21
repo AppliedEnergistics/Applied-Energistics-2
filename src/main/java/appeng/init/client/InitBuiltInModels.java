@@ -35,7 +35,6 @@ import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.cablebus.P2PTunnelFrequencyModel;
 import appeng.client.render.crafting.CraftingCubeModel;
 import appeng.client.render.crafting.CraftingUnitModelProvider;
-import appeng.client.render.model.BiometricCardModel;
 import appeng.client.render.model.ColorApplicatorModel;
 import appeng.client.render.model.DriveModel;
 import appeng.client.render.model.GlassModel;
@@ -55,7 +54,6 @@ public final class InitBuiltInModels {
         addBuiltInModel("block/quartz_glass", GlassModel::new);
         addBuiltInModel("item/meteorite_compass", MeteoriteCompassModel::new);
         addBuiltInModel("item/memory_card", MemoryCardModel::new);
-        addBuiltInModel("item/biometric_card", BiometricCardModel::new);
         addBuiltInModel("block/drive", DriveModel::new);
         addBuiltInModel("color_applicator", ColorApplicatorModel::new);
         addBuiltInModel("block/spatial_pylon", SpatialPylonModel::new);

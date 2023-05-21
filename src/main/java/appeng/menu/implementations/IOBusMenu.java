@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.client.gui.implementations.IOBusScreen;
 import appeng.menu.SlotSemantics;
 import appeng.menu.slot.FakeSlot;
@@ -39,12 +38,10 @@ public class IOBusMenu extends UpgradeableMenu<IOBusPart> {
 
     public static final MenuType<IOBusMenu> EXPORT_TYPE = MenuTypeBuilder
             .create(IOBusMenu::new, ExportBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("export_bus");
 
     public static final MenuType<IOBusMenu> IMPORT_TYPE = MenuTypeBuilder
             .create(IOBusMenu::new, ImportBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("import_bus");
 
     public IOBusMenu(MenuType<?> menuType, int id, Inventory ip, IOBusPart host) {

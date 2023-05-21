@@ -38,15 +38,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
-import appeng.api.networking.security.IActionHost;
 import appeng.core.AppEng;
 import appeng.init.InitMenuTypes;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocator;
 import appeng.menu.locator.MenuLocators;
-import appeng.util.Platform;
 
 /**
  * Builder that allows creation of menu types which can be opened from multiple types of hosts.
@@ -61,9 +58,6 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     private final MenuFactory<M, I> factory;
 
     private Function<I, Component> menuTitleStrategy = this::getDefaultMenuTitle;
-
-    @Nullable
-    private SecurityPermissions requiredPermission;
 
     @Nullable
     private InitialDataSerializer<I> initialDataSerializer;
@@ -92,14 +86,6 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     public static <C extends AEBaseMenu, I> MenuTypeBuilder<C, I> create(TypedMenuFactory<C, I> factory,
             Class<I> hostInterface) {
         return new MenuTypeBuilder<>(hostInterface, factory);
-    }
-
-    /**
-     * Requires that the player has a certain permission on the block entity to open the menu.
-     */
-    public MenuTypeBuilder<M, I> requirePermission(SecurityPermissions permission) {
-        this.requiredPermission = permission;
-        return this;
     }
 
     /**
@@ -156,10 +142,6 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         var accessInterface = locator.locate(player, hostInterface);
 
         if (accessInterface == null) {
-            return false;
-        }
-
-        if (!checkPermission(player, accessInterface)) {
             return false;
         }
 
@@ -262,16 +244,6 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     @FunctionalInterface
     public interface InitialDataDeserializer<C, I> {
         void deserializeInitialData(I host, C menu, FriendlyByteBuf buffer);
-    }
-
-    private boolean checkPermission(Player player, Object accessInterface) {
-
-        if (requiredPermission != null && accessInterface instanceof IActionHost actionHost) {
-            return Platform.checkPermissions(player, actionHost, requiredPermission, false, true);
-        }
-
-        return true;
-
     }
 
     private Component getDefaultMenuTitle(I accessInterface) {

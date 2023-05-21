@@ -24,7 +24,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -44,7 +43,6 @@ public class StorageLevelEmitterMenu extends UpgradeableMenu<StorageLevelEmitter
 
     public static final MenuType<StorageLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(StorageLevelEmitterMenu::new, StorageLevelEmitterPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .withInitialData((host, buffer) -> {
                 GenericStack.writeBuffer(host.getConfig().getStack(0), buffer);
                 buffer.writeVarLong(host.getReportingValue());

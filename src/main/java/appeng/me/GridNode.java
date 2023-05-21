@@ -87,7 +87,6 @@ public class GridNode implements IGridNode, IPathItem {
     private AEItemKey visualRepresentation = null;
 
     private AEColor gridColor = AEColor.TRANSPARENT;
-    private long lastSecurityKey = -1;
     private int owningPlayerId = -1;
     private GridStorage myStorage = null;
     private Grid myGrid;
@@ -420,14 +419,12 @@ public class GridNode implements IGridNode, IPathItem {
         if (nodeData.contains(name, Tag.TAG_COMPOUND)) {
             final CompoundTag node = nodeData.getCompound(name);
             this.owningPlayerId = node.getInt("p");
-            this.setLastSecurityKey(node.getLong("k"));
 
             final long storageID = node.getLong("g");
             final GridStorage gridStorage = IGridStorageSaveData.get(getLevel()).getGridStorage(storageID);
             this.setGridStorage(gridStorage);
         } else {
             this.owningPlayerId = -1; // Unknown owner
-            setLastSecurityKey(-1);
             setGridStorage(null);
         }
     }
@@ -437,7 +434,6 @@ public class GridNode implements IGridNode, IPathItem {
             final CompoundTag node = new CompoundTag();
 
             node.putInt("p", this.owningPlayerId);
-            node.putLong("k", this.getLastSecurityKey());
             node.putLong("g", this.myStorage.getID());
 
             nodeData.put(name, node);
@@ -611,14 +607,6 @@ public class GridNode implements IGridNode, IPathItem {
                 notifyStatusChange(IGridNodeListener.State.CHANNEL);
             }
         }
-    }
-
-    public long getLastSecurityKey() {
-        return this.lastSecurityKey;
-    }
-
-    public void setLastSecurityKey(long lastSecurityKey) {
-        this.lastSecurityKey = lastSecurityKey;
     }
 
     public double getPreviousDraw() {

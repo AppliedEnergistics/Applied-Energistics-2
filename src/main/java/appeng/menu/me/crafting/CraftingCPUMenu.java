@@ -26,7 +26,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.CpuSelectionMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.ICraftingCPU;
 import appeng.api.networking.security.IActionHost;
@@ -49,7 +48,6 @@ public class CraftingCPUMenu extends AEBaseMenu {
 
     public static final MenuType<CraftingCPUMenu> TYPE = MenuTypeBuilder
             .create(CraftingCPUMenu::new, CraftingBlockEntity.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .withMenuTitle(craftingBlockEntity -> {
                 // Use the cluster's custom name instead of the right-clicked block entities one
                 CraftingCPUCluster cluster = craftingBlockEntity.getCluster();

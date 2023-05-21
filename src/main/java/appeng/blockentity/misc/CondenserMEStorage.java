@@ -27,10 +27,10 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 
-class CondenserInventory implements MEStorage {
+class CondenserMEStorage implements MEStorage {
     private final CondenserBlockEntity target;
 
-    CondenserInventory(CondenserBlockEntity te) {
+    CondenserMEStorage(CondenserBlockEntity te) {
         this.target = te;
     }
 

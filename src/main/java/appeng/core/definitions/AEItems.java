@@ -62,7 +62,6 @@ import appeng.items.storage.CreativeCellItem;
 import appeng.items.storage.SpatialStorageCellItem;
 import appeng.items.storage.StorageTier;
 import appeng.items.storage.ViewCellItem;
-import appeng.items.tools.BiometricCardItem;
 import appeng.items.tools.GuideItem;
 import appeng.items.tools.MemoryCardItem;
 import appeng.items.tools.NetworkToolItem;
@@ -171,7 +170,6 @@ public final class AEItems {
     /// NETWORK RELATED TOOLS
     ///
 
-    public static final ItemDefinition<BiometricCardItem> BIOMETRIC_CARD = item("Biometric Card", AEItemIds.BIOMETRIC_CARD, p -> new BiometricCardItem(p.stacksTo(1)));
     public static final ItemDefinition<NetworkToolItem> NETWORK_TOOL = item("Network Tool", AEItemIds.NETWORK_TOOL, p -> new NetworkToolItem(p.stacksTo(1)));
     public static final ItemDefinition<MemoryCardItem> MEMORY_CARD = item("Memory Card", AEItemIds.MEMORY_CARD, p -> new MemoryCardItem(p.stacksTo(1)));
 

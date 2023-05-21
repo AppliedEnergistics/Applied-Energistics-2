@@ -61,7 +61,6 @@ public final class AEBlockIds {
     public static final ResourceLocation INSCRIBER = id("inscriber");
     public static final ResourceLocation WIRELESS_ACCESS_POINT = id("wireless_access_point");
     public static final ResourceLocation CHARGER = id("charger");
-    public static final ResourceLocation SECURITY_STATION = id("security_station");
     public static final ResourceLocation QUANTUM_RING = id("quantum_ring");
     public static final ResourceLocation QUANTUM_LINK = id("quantum_link");
     public static final ResourceLocation CONTROLLER = id("controller");

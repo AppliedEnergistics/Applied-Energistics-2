@@ -21,8 +21,6 @@ package appeng.blockentity.misc;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -40,10 +38,8 @@ import appeng.api.config.Settings;
 import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
@@ -68,7 +64,13 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
     private final InternalInventory inputSlot = new CondenseItemHandler();
     private final Storage<FluidVariant> fluidHandler = new FluidHandler();
-    private final MEHandler meHandler = new MEHandler();
+
+    /**
+     * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
+     * enable the condenser to override the {@link appeng.api.storage.MEStorage#isPreferredStorageFor} method to make
+     * sure a condenser is only ever used if an item can't go anywhere else.
+     */
+    private final CondenserMEStorage meStorage = new CondenserMEStorage(this);
 
     private final InternalInventory externalInv = new CombinedInternalInventory(this.inputSlot,
             new FilteredInternalInventory(this.outputSlot, AEItemFilters.EXTRACT_ONLY));
@@ -187,8 +189,8 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return fluidHandler;
     }
 
-    public MEHandler getMEHandler() {
-        return meHandler;
+    public MEStorage getMEStorage() {
+        return meStorage;
     }
 
     private class CondenseItemHandler extends BaseInternalInventory {
@@ -260,21 +262,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         protected void onFinalCommit() {
             CondenserBlockEntity.this.addPower(pendingEnergy);
             pendingEnergy = 0;
-        }
-    }
-
-    /**
-     * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
-     * enable the condenser to override the {@link appeng.api.storage.MEStorage#isPreferredStorageFor} method to make
-     * sure a condenser is only ever used if an item can't go anywhere else.
-     */
-    private class MEHandler implements IStorageMonitorableAccessor {
-        private final CondenserInventory itemInventory = new CondenserInventory(CondenserBlockEntity.this);
-
-        @Nullable
-        @Override
-        public MEStorage getInventory(IActionSource src) {
-            return this.itemInventory;
         }
     }
 }

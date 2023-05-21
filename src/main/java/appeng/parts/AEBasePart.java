@@ -18,7 +18,6 @@
 
 package appeng.parts;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Objects;
 
@@ -62,7 +61,6 @@ import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
 import appeng.util.CustomNameUtil;
 import appeng.util.InteractionUtil;
-import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
 public abstract class AEBasePart
@@ -404,21 +402,6 @@ public abstract class AEBasePart
     public static class NodeListener<T extends AEBasePart> implements IGridNodeListener<T> {
 
         public static final NodeListener<AEBasePart> INSTANCE = new NodeListener<>();
-
-        @Override
-        public void onSecurityBreak(T nodeOwner, IGridNode node) {
-            // Only drop items if the part is still attached at that side
-            if (nodeOwner.getHost().getPart(nodeOwner.getSide()) == nodeOwner) {
-                var items = new ArrayList<ItemStack>();
-                nodeOwner.addPartDrop(items, false);
-                nodeOwner.addAdditionalDrops(items, false);
-                nodeOwner.getHost().removePartFromSide(nodeOwner.getSide());
-                if (!items.isEmpty()) {
-                    var be = nodeOwner.getHost().getBlockEntity();
-                    Platform.spawnDrops(be.getLevel(), be.getBlockPos(), items);
-                }
-            }
-        }
 
         @Override
         public void onSaveChanges(T nodeOwner, IGridNode node) {

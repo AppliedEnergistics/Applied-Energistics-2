@@ -48,7 +48,6 @@ import appeng.client.gui.implementations.PatternProviderScreen;
 import appeng.client.gui.implementations.PriorityScreen;
 import appeng.client.gui.implementations.QNBScreen;
 import appeng.client.gui.implementations.QuartzKnifeScreen;
-import appeng.client.gui.implementations.SecurityStationScreen;
 import appeng.client.gui.implementations.SkyChestScreen;
 import appeng.client.gui.implementations.SpatialAnchorScreen;
 import appeng.client.gui.implementations.SpatialIOPortScreen;
@@ -86,7 +85,6 @@ import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
-import appeng.menu.implementations.SecurityStationMenu;
 import appeng.menu.implementations.SetStockAmountMenu;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
@@ -174,9 +172,6 @@ public final class InitScreens {
                 MEStorageMenu.WIRELESS_TYPE,
                 MEStorageScreen::new,
                 "/screens/terminals/wireless_terminal.json");
-        register(SecurityStationMenu.TYPE,
-                SecurityStationScreen::new,
-                "/screens/terminals/security_station.json");
         InitScreens.<CraftingTermMenu, CraftingTermScreen<CraftingTermMenu>>register(
                 CraftingTermMenu.TYPE,
                 CraftingTermScreen::new,

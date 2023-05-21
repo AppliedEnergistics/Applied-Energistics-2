@@ -17,7 +17,7 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
-import appeng.api.storage.IStorageMonitorableAccessor;
+import appeng.api.storage.MEStorage;
 import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -25,16 +25,15 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
-class CondenserInventoryTest {
+class CondenserMEStorageTest {
     CondenserBlockEntity be = new CondenserBlockEntity(AEBlockEntities.CONDENSER, BlockPos.ZERO,
             AEBlocks.CONDENSER.block().defaultBlockState());
-    IStorageMonitorableAccessor storageAccessor = be.getMEHandler();
+    MEStorage inv = be.getMEStorage();
 
     @Test
     void testSingularityProductionAndPriority() {
-        var inv = storageAccessor.getInventory(new BaseActionSource());
         assertThat(inv).isNotNull();
-        assertThat(inv).isInstanceOf(CondenserInventory.class);
+        assertThat(inv).isInstanceOf(CondenserMEStorage.class);
         assertThat(inv.getAvailableStacks()).isEmpty();
 
         be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.SINGULARITY);
@@ -58,13 +57,11 @@ class CondenserInventoryTest {
         be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_64K.stack());
 
         // test Fluid insert via ME (e.g. Storage bus)
-        storageAccessor.getInventory(null).insert(
-                AEFluidKey.of(Fluids.WATER.getSource()), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE,
+        inv.insert(AEFluidKey.of(Fluids.WATER.getSource()), AEFluidKey.AMOUNT_BUCKET, Actionable.MODULATE,
                 new BaseActionSource());
         assertThat(be.getStoredPower()).isEqualTo(8);
 
-        storageAccessor.getInventory(null).insert(AEItemKey.of(AEItems.MATTER_BALL.stack()), 1, Actionable.MODULATE,
-                new BaseActionSource());
+        inv.insert(AEItemKey.of(AEItems.MATTER_BALL.stack()), 1, Actionable.MODULATE, new BaseActionSource());
         assertThat(be.getStoredPower()).isEqualTo(8 + 1);
 
         // test Fluid insert via transfer API

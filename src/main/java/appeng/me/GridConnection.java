@@ -29,14 +29,12 @@ import net.minecraft.core.Direction;
 
 import appeng.api.exceptions.ExistingConnectionException;
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.me.pathfinding.IPathItem;
-import appeng.util.Platform;
 
 public class GridConnection implements IGridConnection, IPathItem {
 
@@ -209,10 +207,6 @@ public class GridConnection implements IGridConnection, IPathItem {
         if (a.hasConnection(b) || b.hasConnection(a)) {
             throw new ExistingConnectionException(String
                     .format("Connection between node [%s] and [%s] on [%s] already exists.", a, b, externalDirection));
-        }
-
-        if (!Platform.securityCheck(a, b)) {
-            throw new SecurityConnectionException();
         }
 
         // Create the actual connection

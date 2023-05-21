@@ -31,7 +31,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.StorageFilter;
 import appeng.api.config.YesNo;
@@ -54,7 +53,6 @@ public class StorageBusMenu extends UpgradeableMenu<StorageBusPart> {
 
     public static final MenuType<StorageBusMenu> TYPE = MenuTypeBuilder
             .create(StorageBusMenu::new, StorageBusPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("storagebus");
 
     @GuiSync(3)

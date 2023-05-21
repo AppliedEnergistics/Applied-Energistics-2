@@ -41,7 +41,6 @@ import appeng.menu.implementations.PatternProviderMenu;
 import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
-import appeng.menu.implementations.SecurityStationMenu;
 import appeng.menu.implementations.SetStockAmountMenu;
 import appeng.menu.implementations.SkyChestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
@@ -99,7 +98,6 @@ public final class InitMenuTypes {
                 PriorityMenu.TYPE,
                 QNBMenu.TYPE,
                 QuartzKnifeMenu.TYPE,
-                SecurityStationMenu.TYPE,
                 SetStockAmountMenu.TYPE,
                 SkyChestMenu.TYPE,
                 SpatialAnchorMenu.TYPE,

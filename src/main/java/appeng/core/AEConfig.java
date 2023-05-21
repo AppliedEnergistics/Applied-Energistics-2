@@ -420,10 +420,6 @@ public final class AEConfig {
         return COMMON.growthAcceleratorSpeed.get();
     }
 
-    public boolean isSecurityAuditLogEnabled() {
-        return COMMON.securityAuditLog.get();
-    }
-
     public boolean isBlockUpdateLogEnabled() {
         return COMMON.blockUpdateLog.get();
     }
@@ -434,10 +430,6 @@ public final class AEConfig {
 
     public boolean isChunkLoggerTraceEnabled() {
         return COMMON.chunkLoggerTrace.get();
-    }
-
-    public boolean serverOpsIgnoreSecurity() {
-        return COMMON.serverOpsIgnoreSecurity.get();
     }
 
     public ChannelMode getChannelMode() {
@@ -629,7 +621,6 @@ public final class AEConfig {
         public final BooleanOption debugTools;
         public final BooleanOption matterCannonBlockDamage;
         public final BooleanOption tinyTntBlockDamage;
-        public final BooleanOption serverOpsIgnoreSecurity;
         public final EnumOption<ChannelMode> channels;
         public final IntegerOption pathfindingStepsPerTick;
         public final BooleanOption spatialAnchorEnableRandomTicks;
@@ -642,7 +633,6 @@ public final class AEConfig {
         public final DoubleOption spatialPowerMultiplier;
 
         // Logging
-        public final BooleanOption securityAuditLog;
         public final BooleanOption blockUpdateLog;
         public final BooleanOption packetLog;
         public final BooleanOption craftingLog;
@@ -698,8 +688,6 @@ public final class AEConfig {
                     "Enables the ability of the Matter Cannon to break blocks.");
             tinyTntBlockDamage = general.addBoolean("tinyTntBlockDamage", true,
                     "Enables the ability of Tiny TNT to break blocks.");
-            serverOpsIgnoreSecurity = general.addBoolean("serverOpsIgnoreSecurity", true,
-                    "Server operators are not restricted by ME security terminal settings.");
             channels = general.addEnum("channels", ChannelMode.DEFAULT,
                     "Changes the channel capacity that cables provide in AE2.");
             pathfindingStepsPerTick = general.addInt("pathfindingStepsPerTick", 4,
@@ -731,7 +719,6 @@ public final class AEConfig {
             this.spatialPowerExponent = spatialio.addDouble("spatialPowerExponent", 1.35);
 
             var logging = root.subsection("logging");
-            securityAuditLog = logging.addBoolean("securityAuditLog", false);
             blockUpdateLog = logging.addBoolean("blockUpdateLog", false);
             packetLog = logging.addBoolean("packetLog", false);
             craftingLog = logging.addBoolean("craftingLog", false);

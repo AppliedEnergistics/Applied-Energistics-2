@@ -32,7 +32,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.crafting.CalculationStrategy;
@@ -74,7 +73,6 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<CraftConfirmMenu> TYPE = MenuTypeBuilder
             .create(CraftConfirmMenu::new, ISubMenuHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("craftconfirm");
     private final CraftingCPUCycler cpuCycler;
 
@@ -240,7 +238,6 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
             this.job = null;
         }
-        this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 
     private IGrid getGrid() {

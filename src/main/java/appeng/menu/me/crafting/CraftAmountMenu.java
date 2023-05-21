@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -52,7 +51,6 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<CraftAmountMenu> TYPE = MenuTypeBuilder
             .create(CraftAmountMenu::new, ISubMenuHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("craftamount");
 
     /**
@@ -90,12 +88,6 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             cca.setWhatToCraft(whatToCraft, initialAmount);
             cca.broadcastChanges();
         }
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        this.verifyPermissions(SecurityPermissions.CRAFT, false);
     }
 
     public Level getLevel() {

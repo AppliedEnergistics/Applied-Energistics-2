@@ -87,7 +87,7 @@ public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
 
         @Override
         protected Icon getIcon() {
-            return isHoveredOrFocused() ? Icon.PERMISSION_BUILD : Icon.PERMISSION_BUILD_DISABLED;
+            return isHoveredOrFocused() ? Icon.WRENCH : Icon.WRENCH_DISABLED;
         }
     }
 }

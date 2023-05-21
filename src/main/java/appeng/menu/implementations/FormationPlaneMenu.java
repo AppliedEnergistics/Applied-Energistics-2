@@ -21,7 +21,6 @@ package appeng.menu.implementations;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.stacks.AEKey;
@@ -38,7 +37,6 @@ public class FormationPlaneMenu extends UpgradeableMenu<FormationPlanePart> {
 
     public static final MenuType<FormationPlaneMenu> TYPE = MenuTypeBuilder
             .create(FormationPlaneMenu::new, FormationPlanePart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("formationplane");
 
     @GuiSync(7)

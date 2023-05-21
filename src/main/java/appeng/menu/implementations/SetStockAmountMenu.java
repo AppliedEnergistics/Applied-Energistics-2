@@ -12,7 +12,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.helpers.InterfaceLogicHost;
@@ -34,7 +33,6 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public static final MenuType<SetStockAmountMenu> TYPE = MenuTypeBuilder
             .create(SetStockAmountMenu::new, InterfaceLogicHost.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("set_stock_amount");
 
     public static final String ACTION_SET_STOCK_AMOUNT = "setStockAmount";
@@ -84,12 +82,6 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
             cca.setWhatToStock(slot, whatToStock, initialAmount);
             cca.broadcastChanges();
         }
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
     }
 
     public Level getLevel() {

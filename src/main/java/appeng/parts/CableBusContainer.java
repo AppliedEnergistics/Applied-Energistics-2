@@ -50,7 +50,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.config.YesNo;
 import appeng.api.exceptions.FailedConnectionException;
-import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -203,9 +202,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                             try {
                                 GridConnection.create(cableNode, existingPartNode, null);
                             } catch (FailedConnectionException e) {
-                                if (!(e instanceof SecurityConnectionException)) {
-                                    AELog.warn(e); // Security check failures are already logged in the security check
-                                }
+                                AELog.warn(e);
 
                                 cablePart.removeFromWorld();
                                 this.storage.setCenter(null);
@@ -241,9 +238,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                     try {
                         GridConnection.create(cableNode, partNode, null);
                     } catch (FailedConnectionException e) {
-                        if (!(e instanceof SecurityConnectionException)) {
-                            AELog.warn(e); // Security check failures are already logged in the security check
-                        }
+                        AELog.warn(e);
 
                         part.removeFromWorld();
                         this.storage.removePart(side);
