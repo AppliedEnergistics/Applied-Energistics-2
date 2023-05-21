@@ -96,7 +96,7 @@ public class PartPlacement {
                 cablePart.getBoxes(helper);
 
                 var cableCenter = boxes.get(0);
-                var cableThickness = (cableCenter.maxX - cableCenter.minX);
+                var cableOffset = (cableCenter.maxX - cableCenter.minX) / 2;
 
                 // Determine where the part is being placed relative to the midpoint of our cable bus's block space
                 var clickPos = context.getClickedPos();
@@ -104,21 +104,21 @@ public class PartPlacement {
                         .subtract(new Vec3(clickPos.getX(), clickPos.getY(), clickPos.getZ()))
                         .subtract(new Vec3(0.5, 0.5, 0.5));
 
-                if (relative.x > cableThickness) {
+                if (relative.x > cableOffset) {
                     return Direction.EAST;
-                } else if (relative.x < -cableThickness) {
+                } else if (relative.x < -cableOffset) {
                     return Direction.WEST;
                 }
 
-                if (relative.y > cableThickness) {
+                if (relative.y > cableOffset) {
                     return Direction.UP;
-                } else if (relative.y < -cableThickness) {
+                } else if (relative.y < -cableOffset) {
                     return Direction.DOWN;
                 }
 
-                if (relative.z > cableThickness) {
+                if (relative.z > cableOffset) {
                     return Direction.SOUTH;
-                } else if (relative.z < -cableThickness) {
+                } else if (relative.z < -cableOffset) {
                     return Direction.NORTH;
                 }
             }
