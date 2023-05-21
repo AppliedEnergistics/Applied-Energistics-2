@@ -81,7 +81,7 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     private StackExportStrategy exportStrategy;
 
     public ExportBusPart(IPartItem<?> partItem) {
-        super(TickRates.ExportBus, partItem);
+        super(TickRates.ExportBus, StackWorldBehaviors.hasExportStrategyFilter(), partItem);
         getMainNode().addService(ICraftingRequester.class, this);
 
         this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
