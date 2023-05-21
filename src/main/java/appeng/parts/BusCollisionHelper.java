@@ -20,6 +20,8 @@ package appeng.parts;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 
@@ -44,7 +46,7 @@ public class BusCollisionHelper implements IPartCollisionHelper {
         this.isVisual = visual;
     }
 
-    public BusCollisionHelper(List<AABB> boxes, Direction s, boolean visual) {
+    public BusCollisionHelper(List<AABB> boxes, @Nullable Direction s, boolean visual) {
         this.boxes = boxes;
         this.isVisual = visual;
 

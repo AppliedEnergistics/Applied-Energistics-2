@@ -1,5 +1,8 @@
 package appeng.parts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -11,12 +14,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.PartHelper;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
+import appeng.parts.networking.CablePart;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
 
@@ -35,7 +41,7 @@ public class PartPlacement {
         }
 
         // Determine where the part would be placed
-        var placement = getPartPlacement(player, level, partStack, pos, side);
+        var placement = getPartPlacement(player, level, partStack, pos, side, context.getClickLocation());
         if (placement == null) {
             return InteractionResult.FAIL;
         }
@@ -121,7 +127,14 @@ public class PartPlacement {
             Level level,
             ItemStack partStack,
             BlockPos pos,
-            Direction side) {
+            Direction side,
+            Vec3 clickLocation) {
+
+        // If a cable segment was clicked, try replacing that cable segment by the part
+        var replaceCablePlacement = tryReplaceCableSegment(level, partStack, pos, clickLocation);
+        if (replaceCablePlacement != null) {
+            return replaceCablePlacement;
+        }
 
         if (canPlacePartOnBlock(player, level, partStack, pos, side)) {
             return new Placement(pos, side);
@@ -137,6 +150,43 @@ public class PartPlacement {
 
         // Can't place the part
         return null;
+    }
+
+    @Nullable
+    private static Placement tryReplaceCableSegment(Level level, ItemStack partStack, BlockPos pos,
+            Vec3 clickLocation) {
+        // Check if there exists a host with a cable in its center
+        var host = PartHelper.getPartHost(level, pos);
+        if (host == null) {
+            return null;
+        }
+        var cable = host.getPart(null);
+        if (!(cable instanceof CablePart cablePart)) {
+            return null;
+        }
+
+        // Find hit side
+        Direction hitSide = null;
+
+        var localClickLocation = clickLocation.subtract(pos.getX(), pos.getY(), pos.getZ());
+        sideLoop: for (var side : Direction.values()) {
+            List<AABB> boxes = new ArrayList<>();
+            var bch = new BusCollisionHelper(boxes, null, true);
+            cablePart.getBoxes(bch, boxSide -> boxSide == side);
+
+            for (var box : boxes) {
+                if (box.inflate(0.02).contains(localClickLocation)) {
+                    hitSide = side;
+                    break sideLoop;
+                }
+            }
+        }
+
+        if (host.canAddPart(partStack, hitSide)) {
+            return new Placement(pos, hitSide);
+        } else {
+            return null;
+        }
     }
 
     /**
