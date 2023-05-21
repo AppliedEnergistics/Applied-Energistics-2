@@ -120,17 +120,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("gui.ae2.PatternEncoding.secondary_processing_result_hint",
                 "Can not be directly requested through the automated crafting system, but will be used before stored items in multi-step recipes.");
         add("gui.ae2.PatternEncoding.secondary_processing_result_tooltip", "Secondary Processing Result");
-        add("gui.ae2.security.build.name", "Build");
-        add("gui.ae2.security.build.tip",
-                "User can modify the physical structure of the network, and make configuration changes.");
-        add("gui.ae2.security.craft.name", "Craft");
-        add("gui.ae2.security.craft.tip", "User can initiate new crafting jobs.");
-        add("gui.ae2.security.extract.name", "Withdraw");
-        add("gui.ae2.security.extract.tip", "User is allowed to remove items from storage.");
-        add("gui.ae2.security.inject.name", "Deposit");
-        add("gui.ae2.security.inject.tip", "User is allowed to store new items into storage.");
-        add("gui.ae2.security.security.name", "Security");
-        add("gui.ae2.security.security.tip", "User can access and modify the security terminal of the network.");
         add("itemGroup.ae2.facades", "Applied Energistics 2 - Facades");
         add("itemGroup.ae2.main", "Applied Energistics 2");
         add("key.ae2.category", "Applied Energistics 2");
