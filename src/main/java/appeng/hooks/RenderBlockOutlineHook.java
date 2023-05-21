@@ -141,7 +141,8 @@ public class RenderBlockOutlineHook {
                     player.level,
                     itemInHand,
                     blockHitResult.getBlockPos(),
-                    blockHitResult.getDirection());
+                    blockHitResult.getDirection(),
+                    blockHitResult.getLocation());
 
             if (placement != null) {
                 var part = partItem.createPart();

@@ -22,8 +22,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
 
@@ -53,7 +55,7 @@ import appeng.items.parts.ColoredPartItem;
 import appeng.items.tools.powered.ColorApplicatorItem;
 import appeng.parts.AEBasePart;
 
-public class CablePart extends AEBasePart implements ICablePart {
+public abstract class CablePart extends AEBasePart implements ICablePart {
 
     private static final IGridNodeListener<CablePart> NODE_LISTENER = new NodeListener<>() {
         @Override
@@ -96,8 +98,61 @@ public class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public AECableType getCableConnectionType() {
-        return AECableType.GLASS;
+    public final void getBoxes(IPartCollisionHelper bch) {
+        getBoxes(bch, dir -> true);
+    }
+
+    /**
+     * @param filterConnections Only add boxes for connections towards sides matching this. Use null to check for
+     *                          center.
+     */
+    public abstract void getBoxes(IPartCollisionHelper bch, Predicate<@Nullable Direction> filterConnections);
+
+    protected static void addConnectionBox(IPartCollisionHelper bch, Direction direction, double min, double max,
+            double distanceFromEnd) {
+        switch (direction) {
+            case DOWN -> bch.addBox(min, distanceFromEnd, min, max, min, max);
+            case EAST -> bch.addBox(max, min, min, 16.0 - distanceFromEnd, max, max);
+            case NORTH -> bch.addBox(min, min, distanceFromEnd, max, max, min);
+            case SOUTH -> bch.addBox(min, min, max, max, max, 16.0 - distanceFromEnd);
+            case UP -> bch.addBox(min, max, min, max, 16.0 - distanceFromEnd, max);
+            case WEST -> bch.addBox(distanceFromEnd, min, min, min, max, max);
+        }
+    }
+
+    protected void addNonDenseBoxes(IPartCollisionHelper bch, Predicate<@Nullable Direction> filterConnections,
+            double min, double max) {
+        if (filterConnections.test(null)) {
+            bch.addBox(min, min, min, max, max, max);
+        }
+
+        var ph = this.getHost();
+        if (ph != null) {
+            for (var dir : Direction.values()) {
+                if (!filterConnections.test(dir)) {
+                    continue;
+                }
+
+                var p = ph.getPart(dir);
+                if (p != null) {
+                    var dist = p.getCableConnectionLength(this.getCableConnectionType());
+
+                    if (dist > 8) {
+                        continue;
+                    }
+
+                    addConnectionBox(bch, dir, min, max, dist);
+                }
+            }
+        }
+
+        for (var of : this.getConnections()) {
+            if (!filterConnections.test(of)) {
+                continue;
+            }
+
+            addConnectionBox(bch, of, min, max, 0.0);
+        }
     }
 
     @Override
@@ -172,51 +227,6 @@ public class CablePart extends AEBasePart implements ICablePart {
 
     public void markForUpdate() {
         this.getHost().markForUpdate();
-    }
-
-    @Override
-    public void getBoxes(IPartCollisionHelper bch) {
-        updateConnections();
-
-        bch.addBox(6.0, 6.0, 6.0, 10.0, 10.0, 10.0);
-
-        var ph = this.getHost();
-        if (ph != null) {
-            for (var dir : Direction.values()) {
-                var p = ph.getPart(dir);
-                if (p != null) {
-                    var dist = p.getCableConnectionLength(this.getCableConnectionType());
-
-                    if (dist > 8) {
-                        continue;
-                    }
-
-                    switch (dir) {
-                        case DOWN -> bch.addBox(6.0, dist, 6.0, 10.0, 6.0, 10.0);
-                        case EAST -> bch.addBox(10.0, 6.0, 6.0, 16.0 - dist, 10.0, 10.0);
-                        case NORTH -> bch.addBox(6.0, 6.0, dist, 10.0, 10.0, 6.0);
-                        case SOUTH -> bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0 - dist);
-                        case UP -> bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0 - dist, 10.0);
-                        case WEST -> bch.addBox(dist, 6.0, 6.0, 6.0, 10.0, 10.0);
-                        default -> {
-                        }
-                    }
-                }
-            }
-        }
-
-        for (var of : this.getConnections()) {
-            switch (of) {
-                case DOWN -> bch.addBox(6.0, 0.0, 6.0, 10.0, 6.0, 10.0);
-                case EAST -> bch.addBox(10.0, 6.0, 6.0, 16.0, 10.0, 10.0);
-                case NORTH -> bch.addBox(6.0, 6.0, 0.0, 10.0, 10.0, 6.0);
-                case SOUTH -> bch.addBox(6.0, 6.0, 10.0, 10.0, 10.0, 16.0);
-                case UP -> bch.addBox(6.0, 10.0, 6.0, 10.0, 16.0, 10.0);
-                case WEST -> bch.addBox(0.0, 6.0, 6.0, 6.0, 10.0, 10.0);
-                default -> {
-                }
-            }
-        }
     }
 
     protected void updateConnections() {
