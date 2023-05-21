@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import appeng.api.exceptions.ExistingConnectionException;
+import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 
 class GridConnectionTest extends AbstractGridNodeTest {
@@ -21,27 +21,27 @@ class GridConnectionTest extends AbstractGridNodeTest {
     void testConnectionsToSelfArePrevented() {
         var a = makeReadyNode();
 
-        assertThrows(Exception.class, () -> GridConnection.create(a, a, null));
+        assertThrows(Exception.class, () -> GridHelper.createConnection(a, a));
     }
 
     @Test
-    void testDuplicateConnectionsArePrevented() throws Exception {
+    void testDuplicateConnectionsArePrevented() {
         var a = makeReadyNode();
         var b = makeReadyNode();
-        GridConnection.create(a, b, null);
+        GridHelper.createConnection(a, b);
 
-        assertThrows(ExistingConnectionException.class, () -> GridConnection.create(a, b, null));
-        assertThrows(ExistingConnectionException.class, () -> GridConnection.create(b, a, null));
+        assertThrows(IllegalStateException.class, () -> GridHelper.createConnection(a, b));
+        assertThrows(IllegalStateException.class, () -> GridHelper.createConnection(b, a));
     }
 
     /**
      * When disconnecting nodes while they're being destroyed, listeners on such nodes should not be called.
      */
     @Test
-    void destroyConnectionDoesNotNotifyDestroyedNodes() throws Exception {
+    void destroyConnectionDoesNotNotifyDestroyedNodes() {
         var a = makeReadyNode();
         var b = makeNode();
-        var con = GridConnection.create(a, b, null);
+        var con = GridHelper.createConnection(a, b);
         reset(listener);
         con.destroy();
         verify(listener, never()).onGridChanged(owner, a);
@@ -54,47 +54,47 @@ class GridConnectionTest extends AbstractGridNodeTest {
     @Nested
     class GridPropagation {
         @Test
-        void testGridlessToGridless() throws Exception {
+        void testGridlessToGridless() {
             var a = makeNode();
             var b = makeNode();
-            GridConnection.create(a, b, null);
+            GridHelper.createConnection(a, b);
             assertOnlyConnection(a, b);
         }
 
         @Test
-        void testGridAToGridless() throws Exception {
+        void testGridAToGridless() {
             var a = makeNode();
             var g = Grid.create(a);
             var b = makeNode();
-            GridConnection.create(a, b, null);
+            GridHelper.createConnection(a, b);
             assertSame(g, a.getGrid());
             assertSame(g, b.getGrid());
             assertOnlyConnection(a, b);
         }
 
         @Test
-        void testGridBToGridless() throws Exception {
+        void testGridBToGridless() {
             var a = makeNode();
             var b = makeNode();
             var g = Grid.create(b);
-            GridConnection.create(a, b, null);
+            GridHelper.createConnection(a, b);
             assertSame(g, a.getGrid());
             assertSame(g, b.getGrid());
             assertOnlyConnection(a, b);
         }
 
         @Test
-        void testAlreadyOnSameGrid() throws Exception {
+        void testAlreadyOnSameGrid() {
             // Create a triangle connection
             var a = makeNode();
             var b = makeNode();
             var c = makeNode();
             var g = Grid.create(a);
-            GridConnection.create(a, b, null);
-            GridConnection.create(b, c, null);
+            GridHelper.createConnection(a, b);
+            GridHelper.createConnection(b, c);
 
             // Complete the triangle. The grid should not change
-            GridConnection.create(a, c, null);
+            GridHelper.createConnection(a, c);
             assertThat(a.getConnections()).hasSize(2);
             assertThat(b.getConnections()).hasSize(2);
             assertThat(c.getConnections()).hasSize(2);
@@ -108,19 +108,19 @@ class GridConnectionTest extends AbstractGridNodeTest {
          * <code>a-b c-d</code>, connecting b to c should form a single grid.
          */
         @Test
-        void testMergeGrids() throws Exception {
+        void testMergeGrids() {
             // Create a triangle connection
             var a = makeNode();
             var b = makeNode();
             var c = makeNode();
             var d = makeNode();
-            GridConnection.create(a, b, null);
-            GridConnection.create(c, d, null);
+            GridHelper.createConnection(a, b);
+            GridHelper.createConnection(c, d);
 
             var leftGrid = a.getGrid();
 
             // Complete the triangle. The grid should not change
-            GridConnection.create(a, c, null);
+            GridHelper.createConnection(a, c);
             assertSame(leftGrid, a.getGrid());
             assertSame(leftGrid, b.getGrid());
             assertSame(leftGrid, c.getGrid());
@@ -131,14 +131,14 @@ class GridConnectionTest extends AbstractGridNodeTest {
          * Test that when two grids are merged, the one that is powered is preferred.
          */
         @Test
-        void testMergeGridsPreferPoweredGridA() throws Exception {
+        void testMergeGridsPreferPoweredGridA() {
             var a = makePoweredNode();
             var gridA = a.getInternalGrid();
             var b = makePoweredNode();
             b.getInternalGrid();
             assertNotNull(b.getGrid());
 
-            GridConnection.create(a, b, null);
+            GridHelper.createConnection(a, b);
             assertSame(gridA, a.getGrid());
             assertSame(gridA, b.getGrid());
         }
@@ -147,14 +147,14 @@ class GridConnectionTest extends AbstractGridNodeTest {
          * Test that when two grids are merged, the one that is powered is preferred.
          */
         @Test
-        void testMergeGridsPreferPoweredGridB() throws Exception {
+        void testMergeGridsPreferPoweredGridB() {
             var a = makeNode();
             a.getInternalGrid();
             assertNotNull(a.getGrid());
             var b = makePoweredNode();
             var gridB = b.getInternalGrid();
 
-            GridConnection.create(a, b, null);
+            GridHelper.createConnection(a, b);
             assertSame(gridB, a.getGrid());
             assertSame(gridB, b.getGrid());
         }
@@ -164,22 +164,22 @@ class GridConnectionTest extends AbstractGridNodeTest {
          * one propagates to the other nodes.
          */
         @Test
-        void testMergeGridsUsesSizeAsTieBreaker() throws Exception {
+        void testMergeGridsUsesSizeAsTieBreaker() {
             var a = makeReadyNode();
             var b = makeReadyNode();
             var c = makeReadyNode();
-            GridConnection.create(a, b, null);
+            GridHelper.createConnection(a, b);
             var largerGrid = b.getInternalGrid();
             assertEquals(2, largerGrid.size());
             var smallerGrid = c.getInternalGrid();
             assertEquals(1, smallerGrid.size());
 
-            var con = GridConnection.create(b, c, null);
+            var con = GridHelper.createConnection(b, c);
             assertSame(largerGrid, c.getGrid());
 
             // Now try the other way
             con.destroy();
-            GridConnection.create(c, b, null);
+            GridHelper.createConnection(c, b);
             assertSame(largerGrid, c.getGrid());
         }
 

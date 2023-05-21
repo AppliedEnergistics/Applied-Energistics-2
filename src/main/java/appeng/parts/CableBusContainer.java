@@ -49,7 +49,6 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.api.config.YesNo;
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -73,7 +72,6 @@ import appeng.helpers.AEMultiBlockEntity;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.items.parts.FacadeItem;
-import appeng.me.GridConnection;
 import appeng.me.InWorldGridNode;
 import appeng.parts.networking.CablePart;
 import appeng.util.InteractionUtil;
@@ -199,15 +197,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                     if (existingPart != null) {
                         var existingPartNode = existingPart.getGridNode();
                         if (existingPartNode != null) {
-                            try {
-                                GridConnection.create(cableNode, existingPartNode, null);
-                            } catch (FailedConnectionException e) {
-                                AELog.warn(e);
-
-                                cablePart.removeFromWorld();
-                                this.storage.setCenter(null);
-                                return null;
-                            }
+                            GridHelper.createConnection(cableNode, existingPartNode);
                         }
                     }
                 }
@@ -235,15 +225,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                 var partNode = part.getGridNode();
 
                 if (cableNode != null && partNode != null) {
-                    try {
-                        GridConnection.create(cableNode, partNode, null);
-                    } catch (FailedConnectionException e) {
-                        AELog.warn(e);
-
-                        part.removeFromWorld();
-                        this.storage.removePart(side);
-                        return null;
-                    }
+                    GridHelper.createConnection(cableNode, partNode);
                 }
             }
         }
@@ -544,12 +526,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
                         if (center != null) {
                             final IGridNode cn = center.getGridNode();
                             if (cn != null) {
-                                try {
-                                    GridHelper.createGridConnection(cn, sn);
-                                } catch (FailedConnectionException e) {
-                                    // ekk
-                                    AELog.debug(e);
-                                }
+                                GridHelper.createConnection(cn, sn);
                             }
                         }
                     }
