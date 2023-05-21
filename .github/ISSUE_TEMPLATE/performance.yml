@@ -24,12 +24,6 @@ body:
         Then, post a link to the generated profile. Without a profile, we can't do anything about your performance issue.
     validations:
       required: true
-  - type: textarea
-    id: additional
-    attributes:
-      label: Additional details
-      description: |
-        In case you want to optionally provide further informations, which will not fit anywhere else.
   - type: dropdown
     id: minecraft
     attributes:
@@ -56,11 +50,9 @@ body:
         - Fabric
     validations:
       required: true
-  - type: input
-    id: crashlog
+  - type: textarea
+    id: additional
     attributes:
-      label: Crash log
+      label: Additional details
       description: |
-        Provide a link to a crashlog. E.g. on [Gist](https://gist.github.com/), [pastebin](https://pastebin.com/), or similar.
-        You can hold F3+C for over 10 seconds to force one. This provides with more details to reproduce it without needing to manually acquire them.
-        Please do not have it expire after some time. We might have to go back to it in the future to compare it with other bug reports, or simply have to delay it when being pretty minor.
+        In case you want to optionally provide further informations, which will not fit anywhere else.
