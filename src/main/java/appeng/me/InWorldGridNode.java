@@ -26,7 +26,6 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -91,9 +90,7 @@ public class InWorldGridNode extends GridNode {
                 }
             }
 
-            if (!connectTo(direction, adjacentNode)) {
-                return;
-            }
+            GridConnection.create(this, adjacentNode, direction);
         }
     }
 
@@ -130,18 +127,6 @@ public class InWorldGridNode extends GridNode {
         var ourColor = getGridColor();
         var theirColor = otherNode.getGridColor();
         return ourColor == AEColor.TRANSPARENT || theirColor == AEColor.TRANSPARENT || ourColor == theirColor;
-    }
-
-    // construct a new connection between this and another nodes.
-    private boolean connectTo(Direction direction, IGridNode adjacentNode) {
-        try {
-            GridConnection.create(adjacentNode, this, direction.getOpposite());
-            return true;
-        } catch (FailedConnectionException e) {
-            AELog.debug(e);
-
-            return false;
-        }
     }
 
     public BlockPos getLocation() {

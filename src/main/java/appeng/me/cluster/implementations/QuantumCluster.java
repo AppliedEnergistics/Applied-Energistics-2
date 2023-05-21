@@ -32,7 +32,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.features.Locatables;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
@@ -131,23 +130,18 @@ public class QuantumCluster implements IAECluster, IActionHost {
                     }
                 }
 
-                try {
-                    if (sideA.connection != null && sideA.connection.getConnection() != null) {
-                        sideA.connection.getConnection().destroy();
-                        sideA.connection = new ConnectionWrapper(null);
-                    }
-
-                    if (sideB.connection != null && sideB.connection.getConnection() != null) {
-                        sideB.connection.getConnection().destroy();
-                        sideB.connection = new ConnectionWrapper(null);
-                    }
-
-                    sideA.connection = sideB.connection = new ConnectionWrapper(
-                            GridHelper.createGridConnection(sideA.getNode(), sideB.getNode()));
-                } catch (FailedConnectionException e) {
-                    // :(
-                    AELog.debug(e);
+                if (sideA.connection != null && sideA.connection.getConnection() != null) {
+                    sideA.connection.getConnection().destroy();
+                    sideA.connection = new ConnectionWrapper(null);
                 }
+
+                if (sideB.connection != null && sideB.connection.getConnection() != null) {
+                    sideB.connection.getConnection().destroy();
+                    sideB.connection = new ConnectionWrapper(null);
+                }
+
+                sideA.connection = sideB.connection = new ConnectionWrapper(
+                        GridHelper.createConnection(sideA.getNode(), sideB.getNode()));
             } else {
                 shutdown = true;
             }

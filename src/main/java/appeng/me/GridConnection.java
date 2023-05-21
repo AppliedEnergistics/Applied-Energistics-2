@@ -27,8 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
 
-import appeng.api.exceptions.ExistingConnectionException;
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGridConnection;
 import appeng.api.networking.IGridNode;
@@ -194,9 +192,11 @@ public class GridConnection implements IGridConnection, IPathItem {
         this.visitorIterationNumber = visitorIterationNumber;
     }
 
+    /**
+     * @throws IllegalStateException If the nodes are already connected.
+     */
     public static GridConnection create(IGridNode aNode, IGridNode bNode,
-            @Nullable Direction externalDirection)
-            throws FailedConnectionException {
+            @Nullable Direction fromAtoB) {
         Objects.requireNonNull(aNode, "aNode");
         Objects.requireNonNull(bNode, "bNode");
         Preconditions.checkArgument(aNode != bNode, "Cannot connect node to itself");
@@ -205,12 +205,12 @@ public class GridConnection implements IGridConnection, IPathItem {
         var b = (GridNode) bNode;
 
         if (a.hasConnection(b) || b.hasConnection(a)) {
-            throw new ExistingConnectionException(String
-                    .format("Connection between node [%s] and [%s] on [%s] already exists.", a, b, externalDirection));
+            throw new IllegalStateException("Connection between node [%s] and [%s] on [%s] already exists.".formatted(
+                    a, b, fromAtoB));
         }
 
         // Create the actual connection
-        var connection = new GridConnection(a, b, externalDirection);
+        var connection = new GridConnection(a, b, fromAtoB);
 
         mergeGrids(a, b);
 

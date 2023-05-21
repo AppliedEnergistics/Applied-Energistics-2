@@ -29,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.exceptions.FailedConnectionException;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridConnection;
@@ -40,7 +39,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
@@ -186,13 +184,8 @@ public class ToggleBusPart extends AEBasePart {
         if (intention == (this.connection == null)
                 && this.getMainNode().getNode() != null && this.getOuterNode().getNode() != null) {
             if (intention) {
-                try {
-                    this.connection = GridHelper.createGridConnection(this.getMainNode().getNode(),
-                            this.getOuterNode().getNode());
-                } catch (FailedConnectionException e) {
-                    // :(
-                    AELog.debug(e);
-                }
+                this.connection = GridHelper.createConnection(this.getMainNode().getNode(),
+                        this.getOuterNode().getNode());
             } else {
                 this.connection.destroy();
                 this.connection = null;
