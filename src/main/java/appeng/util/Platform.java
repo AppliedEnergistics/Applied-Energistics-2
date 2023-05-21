@@ -66,14 +66,9 @@ import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnits;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IGridNode;
-import appeng.api.networking.IManagedGridNode;
 import appeng.api.networking.energy.IEnergySource;
-import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
@@ -84,7 +79,6 @@ import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
-import appeng.me.GridNode;
 import appeng.util.helpers.P2PHelper;
 import appeng.util.prioritylist.IPartitionList;
 
@@ -241,34 +235,6 @@ public class Platform {
         return player.level.mayInteract(player, dc.getPos());
     }
 
-    public static boolean checkPermissions(Player player,
-            IActionHost actionHost,
-            SecurityPermissions requiredPermission,
-            boolean requirePower,
-            boolean notifyPlayer) {
-        var gn = actionHost.getActionableNode();
-        if (gn != null) {
-            var g = gn.getGrid();
-            if (requirePower) {
-                var eg = g.getEnergyService();
-                if (!eg.isNetworkPowered()) {
-                    return false;
-                }
-            }
-
-            var sg = g.getSecurityService();
-            if (!sg.hasPermission(player, requiredPermission)) {
-                if (notifyPlayer) {
-                    player.displayClientMessage(Component.translatable("ae2.permission_denied")
-                            .withStyle(ChatFormatting.RED), true);
-                }
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /*
      * Generates Item entities in the level similar to how items are generally dropped.
      */
@@ -381,50 +347,6 @@ public class Platform {
         return Objects.requireNonNull(Direction.fromNormal(new BlockPos(newForward)));
     }
 
-    public static boolean securityCheck(GridNode a, GridNode b) {
-        if (a.getLastSecurityKey() == -1 && b.getLastSecurityKey() == -1
-                || a.getLastSecurityKey() == b.getLastSecurityKey()) {
-            return true;
-        }
-
-        // If the node has no grid, it counts as unpowered
-        final boolean a_isSecure = a.isPowered() && a.getLastSecurityKey() != -1;
-        final boolean b_isSecure = b.isPowered() && b.getLastSecurityKey() != -1;
-
-        if (AEConfig.instance().isSecurityAuditLogEnabled()) {
-            AELog.info(
-                    "Audit: Node A [isSecure=%b, key=%d, playerID=%d, %s] vs Node B[isSecure=%b, key=%d, playerID=%d, %s]",
-                    a_isSecure, a.getLastSecurityKey(), a.getOwningPlayerId(), a, b_isSecure, b.getLastSecurityKey(),
-                    b.getOwningPlayerId(), b);
-        }
-
-        // can't do that son...
-        if (a_isSecure && b_isSecure) {
-            return false;
-        }
-
-        if (!a_isSecure && b_isSecure) {
-            // NOTE: b cannot be powered/secure if b has no grid, so b.getGrid() should succeed
-            return checkPlayerPermissions(b.getGrid(), a.getOwningPlayerId());
-        }
-
-        if (a_isSecure && !b_isSecure) {
-            // NOTE: a cannot be powered/secure if a has no grid, so a.getGrid() should succeed
-            return checkPlayerPermissions(a.getGrid(), b.getOwningPlayerId());
-        }
-
-        return true;
-    }
-
-    private static boolean checkPlayerPermissions(IGrid grid, int playerID) {
-        if (grid == null) {
-            return true;
-        }
-
-        var gs = grid.getSecurityService();
-        return !gs.isAvailable() || gs.hasPermission(playerID, SecurityPermissions.BUILD);
-    }
-
     public static void configurePlayer(Player player, Direction side, BlockEntity blockEntity) {
         float pitch = 0.0f;
         float yaw = 0.0f;
@@ -441,28 +363,6 @@ public class Platform {
         player.moveTo(blockEntity.getBlockPos().getX() + 0.5, blockEntity.getBlockPos().getY() + 0.5,
                 blockEntity.getBlockPos().getZ() + 0.5,
                 yaw, pitch);
-    }
-
-    public static boolean canAccess(IManagedGridNode gridProxy, IActionSource src) {
-        var grid = gridProxy.getGrid();
-        if (grid == null) {
-            return false;
-        }
-
-        if (src.player().isPresent()) {
-            return grid.getSecurityService().hasPermission(src.player().get(), SecurityPermissions.BUILD);
-        } else if (src.machine().isPresent()) {
-            final IActionHost te = src.machine().get();
-            final IGridNode n = te.getActionableNode();
-            if (n == null) {
-                return false;
-            }
-
-            final int playerID = n.getOwningPlayerId();
-            return grid.getSecurityService().hasPermission(playerID, SecurityPermissions.BUILD);
-        } else {
-            return grid.getSecurityService().hasPermission(-1, SecurityPermissions.BUILD);
-        }
     }
 
     public static ItemStack extractItemsByRecipe(IEnergySource energySrc,

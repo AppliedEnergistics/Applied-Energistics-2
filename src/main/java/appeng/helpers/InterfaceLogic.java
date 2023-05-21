@@ -49,7 +49,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -84,7 +83,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     protected final IActionSource interfaceRequestSource;
     private final MultiCraftingTracker craftingTracker;
     private final IUpgradeInventory upgrades;
-    private final IStorageMonitorableAccessor accessor = this::getMonitorable;
     private final ConfigManager cm = new ConfigManager(this::onConfigChanged);
     /**
      * Work planned by {@link #updatePlan()} to be performed by {@link #usePlan}. Positive amounts mean restocking from
@@ -154,10 +152,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.cm.readFromNBT(tag);
         this.readConfig();
         this.priority = tag.getInt("priority");
-    }
-
-    public IStorageMonitorableAccessor getGridStorageAccessor() {
-        return accessor;
     }
 
     private class Ticker implements IGridTickable {
@@ -235,16 +229,6 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         return config;
     }
 
-    private MEStorage getMonitorable(IActionSource src) {
-        // If the given action source can access the grid, return the real inventory
-        if (Platform.canAccess(mainNode, src)) {
-            return getInventory();
-        }
-
-        // Otherwise, return a fallback that only exposes the local interface inventory
-        return getLocalInventory();
-    }
-
     /**
      * Gets the inventory that is exposed to an ME compatible API user if they have access to the grid this interface is
      * a part of. This is normally accessed by storage buses.
@@ -252,7 +236,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
      * If the interface has configured slots, it will <b>always</b> expose its local inventory instead of the grid's
      * inventory.
      */
-    private MEStorage getInventory() {
+    public MEStorage getInventory() {
         if (hasConfig) {
             return getLocalInventory();
         }

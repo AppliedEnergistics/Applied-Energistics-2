@@ -60,7 +60,6 @@ final class SiteExportScenes {
                 singleBlock(AEBlocks.QUANTUM_LINK),
                 singleBlock(AEBlocks.QUANTUM_RING),
                 singleBlock(AEBlocks.QUARTZ_GLASS),
-                singleBlock(AEBlocks.SECURITY_STATION),
                 singleBlock(AEBlocks.SKY_STONE_BLOCK),
                 singleBlock(AEBlocks.SMOOTH_SKY_STONE_CHEST),
                 singleBlock(AEBlocks.SKY_STONE_BRICK),

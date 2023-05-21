@@ -24,7 +24,6 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.block.crafting.AbstractCraftingUnitBlock;
 import appeng.block.crafting.PatternProviderBlock;
 import appeng.block.misc.GrowthAcceleratorBlock;
-import appeng.block.misc.SecurityStationBlock;
 import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessAccessPointBlock;
@@ -68,7 +67,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         wirelessAccessPoint();
         craftingMonitor();
         quartzGrowthAccelerator();
-        securityStation();
         meChest();
         patternProvider();
         vibrationChamber();
@@ -156,17 +154,6 @@ public class BlockModelProvider extends AE2BlockStateProvider {
         multiVariantGenerator(AEBlocks.GROWTH_ACCELERATOR)
                 .with(createFacingDispatch(90, 0))
                 .with(PropertyDispatch.property(GrowthAcceleratorBlock.POWERED)
-                        .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
-                        .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
-    }
-
-    private void securityStation() {
-        var unpoweredModel = getExistingModel("block/security_station_off");
-        var poweredModel = getExistingModel("block/security_station_on");
-
-        multiVariantGenerator(AEBlocks.SECURITY_STATION)
-                .with(createFacingSpinDispatch())
-                .with(PropertyDispatch.property(SecurityStationBlock.POWERED)
                         .select(false, Variant.variant().with(VariantProperties.MODEL, unpoweredModel))
                         .select(true, Variant.variant().with(VariantProperties.MODEL, poweredModel)));
     }

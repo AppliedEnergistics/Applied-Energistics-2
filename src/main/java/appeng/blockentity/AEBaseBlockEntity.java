@@ -377,10 +377,6 @@ public class AEBaseBlockEntity extends BlockEntity
         return this.customName;
     }
 
-    public void securityBreak() {
-        this.level.destroyBlock(this.worldPosition, true);
-    }
-
     /**
      * Checks if this block entity is remote (we are running on the logical client side).
      */

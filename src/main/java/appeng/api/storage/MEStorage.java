@@ -27,6 +27,8 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,6 +36,7 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
+import appeng.core.AppEng;
 
 /**
  * AE's Equivalent to IInventory, used to reading contents, and manipulating contents of ME Inventories.
@@ -41,11 +44,18 @@ import appeng.api.stacks.KeyCounter;
  * Implementations should COMPLETELY ignore stack size limits from an external view point, Meaning that you can inject
  * Integer.MAX_VALUE items and it should work as defined, or be able to extract Integer.MAX_VALUE and have it work as
  * defined, Translations to MC's max stack size are external to the AE API.
- * <p/>
+ * <p>
  * If you want to request at most a stack of an item, you need to use {@link ItemStack#getMaxStackSize()} before
  * extracting from this inventory.
+ * <p>
+ * As of 1.20, this is also directly used as a capability / API Lookup for storage busses and pattern providers to
+ * request access to another ME network so it can be used as a subnetwork. Can also be offered by addon mods if they
+ * want to control their {@code MEStorage}.
  */
 public interface MEStorage {
+    BlockApiLookup<MEStorage, Direction> SIDED = BlockApiLookup.get(
+            AppEng.makeId("storage"), MEStorage.class, Direction.class);
+
     /**
      * Returns whether this inventory is the preferred storage location for the given stack when being compared to other
      * inventories of the same overall priority.

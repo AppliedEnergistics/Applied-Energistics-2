@@ -38,8 +38,6 @@ import appeng.api.networking.security.IActionHost;
  */
 public final class Locatables {
 
-    private static final Type<IActionHost> SECURITY_STATIONS = new Type<>();
-
     private static final Type<IActionHost> QUANTUM_NETWORK_BRIDGES = new Type<>();
 
     public static class Type<T> {
@@ -101,13 +99,6 @@ public final class Locatables {
     }
 
     private Locatables() {
-    }
-
-    /**
-     * @return The registry that can be used to locate security stations using their unique key.
-     */
-    public static Type<IActionHost> securityStations() {
-        return SECURITY_STATIONS;
     }
 
     /**

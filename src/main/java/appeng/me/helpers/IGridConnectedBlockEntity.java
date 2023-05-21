@@ -83,12 +83,6 @@ public interface IGridConnectedBlockEntity extends IActionHost, IOwnerAwareBlock
     }
 
     /**
-     * Used to break the block entity when the grid detects a security violation. Implemented in
-     * {@link AEBaseBlockEntity#securityBreak()}
-     */
-    void securityBreak();
-
-    /**
      * Used to save changes in the grid nodes contained in the block entity to disk. Implemented in
      * {@link AEBaseBlockEntity#saveChanges()}
      */

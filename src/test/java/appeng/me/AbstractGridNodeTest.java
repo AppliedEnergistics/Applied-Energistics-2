@@ -47,7 +47,6 @@ abstract class AbstractGridNodeTest {
     @BeforeEach
     public void setupStaticMocks() {
         platform.when(Platform::isServer).thenReturn(true);
-        platform.when(() -> Platform.securityCheck(any(), any())).thenReturn(true);
         gridStorageSaveData.when(() -> IGridStorageSaveData.get(any())).thenReturn(new GridStorageSaveData());
     }
 

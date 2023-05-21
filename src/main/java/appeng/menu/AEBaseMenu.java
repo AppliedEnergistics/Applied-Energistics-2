@@ -47,7 +47,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
@@ -72,7 +71,6 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.InaccessibleSlot;
 import appeng.menu.slot.RestrictedInputSlot;
 import appeng.util.ConfigMenuInventory;
-import appeng.util.Platform;
 
 public abstract class AEBaseMenu extends AbstractContainerMenu {
     private static final int MAX_STRING_LENGTH = 32767;
@@ -93,7 +91,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
     private boolean menuValid = true;
     private MenuLocator locator;
-    private int ticksSinceCheck = 900;
     // Slots that are only present on the client-side
     private final Set<Slot> clientSideSlot = new HashSet<>();
     /**
@@ -154,33 +151,6 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
 
     public IActionSource getActionSource() {
         return this.mySrc;
-    }
-
-    public void verifyPermissions(SecurityPermissions security, boolean requirePower) {
-        if (isClientSide()) {
-            return;
-        }
-
-        this.ticksSinceCheck++;
-        if (this.ticksSinceCheck < 20) {
-            return;
-        }
-
-        this.ticksSinceCheck = 0;
-        this.setValidMenu(this.isValidMenu() && this.hasAccess(security, requirePower));
-    }
-
-    protected final boolean hasAccess(SecurityPermissions perm, boolean requirePower) {
-        if (!isActionHost() && !requirePower) {
-            return true; // Hosts that are not grid connected always give access
-        }
-
-        var host = this.getActionHost();
-        if (host != null) {
-            return Platform.checkPermissions(getPlayer(), host, perm, requirePower, false);
-        } else {
-            return false;
-        }
     }
 
     public Inventory getPlayerInventory() {

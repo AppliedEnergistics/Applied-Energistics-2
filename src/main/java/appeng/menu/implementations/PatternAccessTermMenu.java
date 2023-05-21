@@ -35,7 +35,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
@@ -73,7 +72,6 @@ public class PatternAccessTermMenu extends AEBaseMenu {
 
     public static final MenuType<PatternAccessTermMenu> TYPE = MenuTypeBuilder
             .create(PatternAccessTermMenu::new, PatternAccessTerminalPart.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("patternaccessterminal");
 
     /**

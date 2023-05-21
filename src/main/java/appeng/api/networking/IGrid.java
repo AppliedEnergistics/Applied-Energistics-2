@@ -29,7 +29,6 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.events.GridEvent;
 import appeng.api.networking.pathing.IPathingService;
-import appeng.api.networking.security.ISecurityService;
 import appeng.api.networking.spatial.ISpatialService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.networking.ticking.ITickManager;
@@ -157,16 +156,6 @@ public interface IGrid {
 
     default ICraftingService getCraftingService() {
         return getService(ICraftingService.class);
-    }
-
-    /**
-     * Get this grids {@link ISecurityService}.
-     *
-     * @see #getService(Class)
-     */
-
-    default ISecurityService getSecurityService() {
-        return getService(ISecurityService.class);
     }
 
     /**

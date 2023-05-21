@@ -17,7 +17,7 @@ relevant during mod initialization:
 | `appeng.api.movable.BlockEntityMoveStrategies` | Allows mods to register custom strategies for moving block entities in and out of spatial storage.              |
 | `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station.                          |
 | `appeng.api.storage.StorageCells` | For working with and adding items that serve as storage cells for grids.                                         |
-| `appeng.api.features.Locatables` | For discovering security stations and quantum network bridges based on their unique keys, regardless of location. |
+| `appeng.api.features.Locatables` | For discovering quantum network bridges based on their unique keys, regardless of location. |
 | `appeng.api.parts.PartModels` | For registering JSON block models used by custom cable bus parts.                                                |
 | `appeng.api.features.P2PTunnelAttunement` | For registering new items that attune P2P tunnels to specific types when right-clicked.                |
 | `appeng.api.client.StorageCellModels` | For customizing the models of storage cells when they're inserted into drives or ME chests.                      |
@@ -192,10 +192,6 @@ It also implements `IStorageMonitorable` to allow changes to the grid's inventor
 #### Auto-Crafting
 
 **Service Interface**: `ICraftingService`
-
-#### Security
-
-**Service Interface**: `ISecurityService`
 
 #### Pathing
 

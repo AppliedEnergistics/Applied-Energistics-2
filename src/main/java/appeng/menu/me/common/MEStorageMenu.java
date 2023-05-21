@@ -40,7 +40,6 @@ import net.minecraft.world.item.Items;
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -111,8 +110,6 @@ public class MEStorageMenu extends AEBaseMenu
     private final IConfigManager clientCM;
     private final ToolboxMenu toolboxMenu;
     private final ITerminalHost host;
-    @GuiSync(99)
-    public boolean canEditViewCells;
     @GuiSync(98)
     public boolean hasPower = false;
     /**
@@ -206,7 +203,6 @@ public class MEStorageMenu extends AEBaseMenu
         } else {
             this.viewCellSlots = Collections.emptyList();
         }
-        updateViewCellPermission();
 
         this.toolboxMenu = new ToolboxMenu(this);
 
@@ -300,8 +296,6 @@ public class MEStorageMenu extends AEBaseMenu
 
             this.updatePowerStatus();
 
-            updateViewCellPermission();
-
             super.broadcastChanges();
         }
 
@@ -327,20 +321,6 @@ public class MEStorageMenu extends AEBaseMenu
         return Collections.emptySet();
     }
 
-    /**
-     * The player's permission w.r.t. editing the terminal can change while it is open. Update the view cell permissions
-     * accordingly.
-     */
-    private void updateViewCellPermission() {
-        final boolean oldAccessible = this.canEditViewCells;
-        this.canEditViewCells = this.hasAccess(SecurityPermissions.BUILD, false);
-        if (this.canEditViewCells != oldAccessible) {
-            for (RestrictedInputSlot slot : viewCellSlots) {
-                slot.setAllowEdit(this.canEditViewCells);
-            }
-        }
-    }
-
     protected void updatePowerStatus() {
         if (this.networkNode != null) {
             this.hasPower = this.networkNode.isActive();
@@ -350,17 +330,6 @@ public class MEStorageMenu extends AEBaseMenu
             this.hasPower = this.powerSource.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.8;
         } else {
             this.hasPower = false;
-        }
-    }
-
-    @Override
-    public void onServerDataSync() {
-        super.onServerDataSync();
-
-        // When the canEditViewCells field changes on the client-side after a data sync from the server,
-        // update the associated slots accordingly
-        for (RestrictedInputSlot slot : viewCellSlots) {
-            slot.setAllowEdit(this.canEditViewCells);
         }
     }
 

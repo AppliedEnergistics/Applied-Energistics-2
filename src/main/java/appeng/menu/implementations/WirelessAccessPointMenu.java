@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.features.GridLinkables;
 import appeng.api.inventories.InternalInventory;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
@@ -46,7 +45,6 @@ public class WirelessAccessPointMenu extends AEBaseMenu implements InternalInven
 
     public static final MenuType<WirelessAccessPointMenu> TYPE = MenuTypeBuilder
             .create(WirelessAccessPointMenu::new, WirelessAccessPointBlockEntity.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("wireless_access_point");
 
     private final WirelessAccessPointBlockEntity accessPoint;

@@ -36,7 +36,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -145,14 +144,7 @@ public class CablePart extends AEBasePart implements ICablePart {
                 newPart = AEParts.SMART_DENSE_CABLE.item(newColor);
             }
 
-            boolean hasPermission = true;
-
-            var grid = getMainNode().getGrid();
-            if (grid != null) {
-                hasPermission = grid.getSecurityService().hasPermission(who, SecurityPermissions.BUILD);
-            }
-
-            if (newPart != null && hasPermission) {
+            if (newPart != null) {
                 if (isClientSide()) {
                     return true;
                 }

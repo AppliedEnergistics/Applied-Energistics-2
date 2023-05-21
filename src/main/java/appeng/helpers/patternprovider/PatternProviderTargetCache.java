@@ -16,19 +16,18 @@ import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.MEStorage;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
 
 class PatternProviderTargetCache {
-    private final BlockApiCache<IStorageMonitorableAccessor, Direction> cache;
+    private final BlockApiCache<MEStorage, Direction> cache;
     private final Direction direction;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
 
     PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src) {
-        this.cache = BlockApiCache.create(IStorageMonitorableAccessor.SIDED, l, pos);
+        this.cache = BlockApiCache.create(MEStorage.SIDED, l, pos);
         this.direction = direction;
         this.src = src;
         this.strategies = StackWorldBehaviors.createExternalStorageStrategies(l, pos, direction);
@@ -37,9 +36,9 @@ class PatternProviderTargetCache {
     @Nullable
     PatternProviderTarget find() {
         // our capability first: allows any storage channel
-        var accessor = cache.find(direction);
-        if (accessor != null) {
-            return wrapStorageMonitorable(accessor);
+        var meStorage = cache.find(direction);
+        if (meStorage != null) {
+            return wrapMeStorage(meStorage);
         }
 
         // otherwise fall back to the platform capability
@@ -57,15 +56,6 @@ class PatternProviderTargetCache {
         }
 
         return null;
-    }
-
-    private PatternProviderTarget wrapStorageMonitorable(IStorageMonitorableAccessor accessor) {
-        var storage = accessor.getInventory(src);
-        if (storage == null) {
-            return null;
-        } else {
-            return wrapMeStorage(storage);
-        }
     }
 
     private PatternProviderTarget wrapMeStorage(MEStorage storage) {

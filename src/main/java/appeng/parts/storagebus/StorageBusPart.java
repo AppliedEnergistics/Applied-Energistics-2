@@ -56,7 +56,6 @@ import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.IStorageMonitorableAccessor;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.MEStorage;
@@ -115,7 +114,7 @@ public class StorageBusPart extends UpgradeablePart
     private final StorageBusInventory handler = new StorageBusInventory(NullInventory.of());
     @Nullable
     private Component handlerDescription;
-    private final PartAdjacentApi<IStorageMonitorableAccessor> adjacentStorageAccessor;
+    private final PartAdjacentApi<MEStorage> adjacentStorageAccessor;
     @Nullable
     private Map<AEKeyType, ExternalStorageStrategy> externalStorageStrategies;
     private boolean wasOnline = false;
@@ -126,7 +125,7 @@ public class StorageBusPart extends UpgradeablePart
 
     public StorageBusPart(IPartItem<?> partItem) {
         super(partItem);
-        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, IStorageMonitorableAccessor.SIDED);
+        this.adjacentStorageAccessor = new PartAdjacentApi<>(this, MEStorage.SIDED);
         this.getConfigManager().registerSetting(Settings.ACCESS, AccessRestriction.READ_WRITE);
         this.getConfigManager().registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
         this.getConfigManager().registerSetting(Settings.STORAGE_FILTER, StorageFilter.EXTRACTABLE_ONLY);
@@ -302,18 +301,9 @@ public class StorageBusPart extends UpgradeablePart
             this.updateStatus = PendingUpdateStatus.NO_UPDATE;
 
             // Prioritize a handler to directly link to another ME network
-            IStorageMonitorableAccessor accessor = adjacentStorageAccessor.find();
+            foundMonitor = adjacentStorageAccessor.find();
 
-            if (accessor != null) {
-                var inventory = accessor.getInventory(this.source);
-                if (inventory != null) {
-                    foundMonitor = inventory;
-                }
-
-                // So this could / can be a design decision. If the block entity does support our custom capability,
-                // but it does not return an inventory for the action source, we do NOT fall back to using the external
-                // API, as that might circumvent the security settings, and might also cause performance issues.
-            } else {
+            if (foundMonitor == null) {
                 // Query all available external APIs
                 // TODO: If a filter is configured, we might want to only query external APIs for compatible key spaces
                 foundExternalApi = new IdentityHashMap<>(2);

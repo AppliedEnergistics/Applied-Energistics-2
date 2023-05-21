@@ -13,9 +13,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import appeng.api.exceptions.ExistingConnectionException;
-import appeng.api.exceptions.SecurityConnectionException;
 import appeng.api.networking.IGridNode;
-import appeng.util.Platform;
 
 class GridConnectionTest extends AbstractGridNodeTest {
 
@@ -34,15 +32,6 @@ class GridConnectionTest extends AbstractGridNodeTest {
 
         assertThrows(ExistingConnectionException.class, () -> GridConnection.create(a, b, null));
         assertThrows(ExistingConnectionException.class, () -> GridConnection.create(b, a, null));
-    }
-
-    @Test
-    void testConnectionsBetweenDifferentlySecuredGridsAreForbidden() throws Exception {
-        var a = makeReadyNode();
-        var b = makeReadyNode();
-
-        platform.when(() -> Platform.securityCheck(a, b)).thenReturn(false);
-        assertThrows(SecurityConnectionException.class, () -> GridConnection.create(a, b, null));
     }
 
     /**

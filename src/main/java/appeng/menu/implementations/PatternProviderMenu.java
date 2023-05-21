@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.LockCraftingMode;
-import appeng.api.config.SecurityPermissions;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
 import appeng.api.stacks.GenericStack;
@@ -44,7 +43,6 @@ public class PatternProviderMenu extends AEBaseMenu {
     public static final MenuType<PatternProviderMenu> TYPE = MenuTypeBuilder
             .create((id, inv, host) -> new PatternProviderMenu(id, inv, host),
                     PatternProviderLogicHost.class)
-            .requirePermission(SecurityPermissions.BUILD)
             .build("pattern_provider");
 
     protected final PatternProviderLogic logic;
@@ -89,8 +87,6 @@ public class PatternProviderMenu extends AEBaseMenu {
 
     @Override
     public void broadcastChanges() {
-        this.verifyPermissions(SecurityPermissions.BUILD, false);
-
         if (isServerSide()) {
             blockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE);
             showInAccessTerminal = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);

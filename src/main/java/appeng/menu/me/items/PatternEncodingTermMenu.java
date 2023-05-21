@@ -42,7 +42,6 @@ import net.minecraft.world.item.crafting.StonecutterRecipe;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
-import appeng.api.config.SecurityPermissions;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
@@ -84,9 +83,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
     private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
 
-    public static MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
+    public static final MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
             .create(PatternEncodingTermMenu::new, IPatternTerminalMenuHost.class)
-            .requirePermission(SecurityPermissions.CRAFT)
             .build("patternterm");
 
     private final PatternEncodingLogic encodingLogic;

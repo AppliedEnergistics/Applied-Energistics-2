@@ -45,7 +45,6 @@ public final class AEItemIds {
     public static final ResourceLocation PROCESSING_PATTERN = id("processing_pattern");
     public static final ResourceLocation SMITHING_TABLE_PATTERN = id("smithing_table_pattern");
     public static final ResourceLocation STONECUTTING_PATTERN = id("stonecutting_pattern");
-    public static final ResourceLocation BIOMETRIC_CARD = id("biometric_card");
     public static final ResourceLocation ENTROPY_MANIPULATOR = id("entropy_manipulator");
     public static final ResourceLocation MATTER_CANNON = id("matter_cannon");
     public static final ResourceLocation CHARGED_STAFF = id("charged_staff");
