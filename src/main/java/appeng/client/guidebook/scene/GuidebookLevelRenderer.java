@@ -7,6 +7,7 @@ import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import com.mojang.blaze3d.vertex.Tesselator;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FluidState;
 
 import appeng.client.guidebook.scene.level.GuidebookLevel;
+import org.lwjgl.opengl.GL11;
 
 public class GuidebookLevelRenderer {
 
@@ -97,11 +99,6 @@ public class GuidebookLevelRenderer {
         renderBlocks(level, buffers, true);
         renderBlockEntities(level, buffers);
 
-        for (var highlight : highlights) {
-            BlockHighlightRenderer.render(buffers, highlight.pos(), highlight.r(), highlight.g(), highlight.b(),
-                    highlight.a());
-        }
-
         buffers.endLastBatch();
 
         // The order comes from LevelRenderer#renderLevel
@@ -126,6 +123,8 @@ public class GuidebookLevelRenderer {
         buffers.endBatch(Sheets.hangingSignSheet());
         buffers.endBatch(Sheets.chestSheet());
         buffers.endBatch();
+
+        BlockHighlightRenderer.render(buffers, highlights);
 
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();

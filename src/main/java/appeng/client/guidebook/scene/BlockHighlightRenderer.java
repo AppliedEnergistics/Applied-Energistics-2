@@ -1,32 +1,65 @@
 package appeng.client.guidebook.scene;
 
+import appeng.core.AppEng;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import org.joml.Vector3f;
-
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
-
-import appeng.core.AppEng;
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 final class BlockHighlightRenderer {
     private static final float THICKNESS = 0.5f / 16f;
 
+    private static final RenderType OCCLUDED = RenderType.create(
+            "highlight_occluded",
+            DefaultVertexFormat.BLOCK,
+            VertexFormat.Mode.QUADS,
+            0x100000,
+            true,
+            true,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(RenderType.LIGHTMAP)
+                    .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_SHADER)
+                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(new RenderStateShard.DepthTestStateShard(">", GL11.GL_GREATER))
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                    .createCompositeState(true)
+    );
+
     private BlockHighlightRenderer() {
     }
 
-    public static void render(MultiBufferSource buffers, BlockPos block, float r, float g, float b, float a) {
-        var consumer = buffers.getBuffer(RenderType.solid());
+    public static void render(MultiBufferSource.BufferSource buffers, Iterable<BlockHighlight> highlights) {
+        var occludedConsumer = buffers.getBuffer(OCCLUDED);
+        for (var highlight : highlights) {
+            var h = new BlockHighlight(highlight.pos(), highlight.r() * 0.25f, highlight.g() * 0.25f, highlight.b() * 0.25f, 0.25f * highlight.a());
+            render(occludedConsumer, h);
+        }
+        buffers.endBatch(OCCLUDED);
 
+        var consumer = buffers.getBuffer(RenderType.translucent());
+        for (var highlight : highlights) {
+            render(consumer, highlight);
+        }
+        buffers.endBatch(RenderType.translucent());
+        buffers.endBatch();
+    }
+
+    public static void render(VertexConsumer consumer, BlockHighlight highlight) {
         for (var face : Direction.values()) {
-            makeFace(consumer, block, face, THICKNESS, r, g, b, a);
+            makeFace(consumer, highlight.pos(), face, THICKNESS, highlight.r(), highlight.g(), highlight.b(), highlight.a());
         }
     }
 
@@ -34,10 +67,10 @@ final class BlockHighlightRenderer {
      * from and to are in the center of the strut.
      */
     private static void makeFace(VertexConsumer consumer,
-            BlockPos pos,
-            Direction face,
-            float thickness,
-            float r, float g, float b, float a) {
+                                 BlockPos pos,
+                                 Direction face,
+                                 float thickness,
+                                 float r, float g, float b, float a) {
         var blockCenter = new Vector3f(
                 pos.getX() + 0.5f,
                 pos.getY() + 0.5f,
@@ -77,7 +110,7 @@ final class BlockHighlightRenderer {
         var right = rightDir.step().mul(1.05f);
         var rightHalf = right.mul(0.5f);
 
-        int color = Mth.color(r, g, b) | 0xFF000000;
+        int color = FastColor.ARGB32.color(Mth.floor(a * 255f), Mth.floor(r * 255f), Mth.floor(g * 255f), Mth.floor(b * 255f));
 
         var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
                 .apply(AppEng.makeId("block/noise"));
@@ -108,7 +141,7 @@ final class BlockHighlightRenderer {
     }
 
     private static void quad(VertexConsumer consumer, Direction face, int color, Vector3f v1, Vector3f v2,
-            Vector3f offset, TextureAtlasSprite sprite) {
+                             Vector3f offset, TextureAtlasSprite sprite) {
         vertex(consumer, face, color, v2, sprite.getU0(), sprite.getV0());
         vertex(consumer, face, color, v1, sprite.getV0(), sprite.getV1());
         vertex(consumer, face, color, new Vector3f(v1).add(offset), sprite.getV1(), sprite.getV1());
@@ -116,10 +149,10 @@ final class BlockHighlightRenderer {
     }
 
     private static void vertex(VertexConsumer consumer,
-            Direction face,
-            int color,
-            Vector3f bottomLeft,
-            float u, float v) {
+                               Direction face,
+                               int color,
+                               Vector3f bottomLeft,
+                               float u, float v) {
         consumer.vertex(bottomLeft.x, bottomLeft.y, bottomLeft.z)
                 .color(color)
                 .uv(u, v)
