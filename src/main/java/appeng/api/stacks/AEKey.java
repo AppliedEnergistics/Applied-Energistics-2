@@ -1,7 +1,6 @@
 package appeng.api.stacks;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -36,24 +35,23 @@ import appeng.core.AELog;
 public abstract class AEKey {
 
     /**
-     * The display name, which is used to sort by name in client terminal
+     * The display name, which is used to sort by name in client terminal. Lazily initialized to avoid unnecessary work
+     * on the server. Volatile ensures that this cache is thread-safe (but can be initialized multiple times).
      */
-    private final Component displayName;
+    private volatile Component cachedDisplayName;
 
-    /**
-     * @deprecated It has been deprecated because we should cache the display name in the initialization to speed up the
-     *             sorting process.
-     */
-    @Deprecated
+    // Need an explicit noargs constructor since there is already another constructor.
     public AEKey() {
-        this.displayName = null;
     }
 
     /**
      * @param displayName the display name, which is used to sort by name in client terminal
+     * @deprecated Use {@link #AEKey()} instead and override {@link #computeDisplayName()} instead to lazily compute the
+     *             display name for better performance.
      */
+    @Deprecated(forRemoval = true)
     public AEKey(Component displayName) {
-        this.displayName = displayName;
+        this.cachedDisplayName = displayName;
     }
 
     @Nullable
@@ -265,7 +263,21 @@ public abstract class AEKey {
     }
 
     public Component getDisplayName() {
-        return Objects.requireNonNull(this.displayName);
+        var ret = cachedDisplayName;
+
+        if (ret == null) {
+            cachedDisplayName = ret = computeDisplayName();
+        }
+
+        return ret;
+    }
+
+    /**
+     * Compute the display name, which is used to sort by name in client terminal. Will be cached by
+     * {@link #getDisplayName()}.
+     */
+    protected Component computeDisplayName() {
+        throw new UnsupportedOperationException("Must be overriden for lazy display name computation.");
     }
 
     /**
