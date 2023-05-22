@@ -338,15 +338,18 @@ public interface InternalInventory extends Iterable<ItemStack>, ItemTransfer {
         }
 
         var inSlot = getStackInSlot(slot);
-        if (!inSlot.isEmpty() && !ItemStack.isSameItemSameTags(inSlot, stack)) {
-            return stack;
-        }
 
         // Calculate how much free space there is in the targeted slot, considering
         // an item-dependent maximum stack size, as well as a potential slot-based limit
         int maxSpace = Math.min(getSlotLimit(slot), stack.getMaxStackSize());
         int freeSpace = maxSpace - inSlot.getCount();
         if (freeSpace <= 0) {
+            return stack;
+        }
+
+        // Check merging stacks after checking if the slot is full, as NBT comparisons are expensive and cap comparisons
+        // even more so.
+        if (!inSlot.isEmpty() && !ItemStack.isSameItemSameTags(inSlot, stack)) {
             return stack;
         }
 
