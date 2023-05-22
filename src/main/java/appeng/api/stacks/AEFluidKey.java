@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +31,6 @@ public final class AEFluidKey extends AEKey {
     private final int hashCode;
 
     private AEFluidKey(Fluid fluid, @Nullable CompoundTag tag) {
-        super(Platform.getFluidDisplayName(fluid, tag));
         this.fluid = fluid;
         this.tag = tag;
         this.hashCode = Objects.hash(fluid, tag);
@@ -132,6 +132,11 @@ public final class AEFluidKey extends AEKey {
     @Override
     public void addDrops(long amount, List<ItemStack> drops, Level level, BlockPos pos) {
         // Fluids are voided
+    }
+
+    @Override
+    protected Component computeDisplayName() {
+        return Platform.getFluidDisplayName(fluid, tag);
     }
 
     @SuppressWarnings("unchecked")
