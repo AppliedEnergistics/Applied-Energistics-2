@@ -15,7 +15,7 @@ item_ids:
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-The quartz fiber is used to share power between networks, while keeping them separate. This allows you to power
+The quartz fiber is used to share power between [networks](../ae2-mechanics/me-network.md), while keeping them separate. This allows you to power
 [subnetworks](../ae2-mechanics/subnetworks.md)
 without needing to put energy acceptors and power cables everywhere. It can also be used to keep cables from connecting,
 although using cables of differing colors, or using <ItemLink id="cable_anchor" /> is cheaper and more effective.

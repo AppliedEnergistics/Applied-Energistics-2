@@ -1,0 +1,27 @@
+{
+    DataVersion: 3337,
+    size: [7, 3, 3],
+    data: [
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsUp: 0, connections: ["up"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsUp: 0, connections: ["up"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsEast: 0, connections: ["east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsDown: 0, channelsEast: 0, channelsSouth: 0, channelsUp: 0, channelsWest: 0, connections: ["down", "up", "south", "west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsNorth: 0, channelsSouth: 0, connections: ["north", "south"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 1, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsEast: 0, channelsNorth: 0, connections: ["north", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 1, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsEast: 0, connections: ["east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 1, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsEast: 0, channelsWest: 0, connections: ["west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsDown: 0, channelsEast: 0, channelsSouth: 0, channelsUp: 0, channelsWest: 0, connections: ["down", "up", "south", "west", "east"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsNorth: 0, channelsSouth: 0, connections: ["north", "south"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 1, 2], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsNorth: 0, channelsWest: 0, connections: ["north", "west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [6, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsWest: 0, connections: ["west"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 2, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsDown: 0, connections: ["down"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 2, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332733L, p: 0}, id: "ae2:blue_smart_dense_cable", visual: {channelsDown: 0, connections: ["down"], missingChannel: 0b, powered: 0b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}
