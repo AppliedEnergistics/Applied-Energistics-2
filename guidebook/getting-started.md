@@ -114,7 +114,7 @@ can add and remove items from it as if it were a <ItemLink id="minecraft:chest" 
 actually stored in the Storage cells, and not the <ItemLink id="chest" /> itself.
 
 While the <ItemLink id="chest" /> is a great way to get introduced to the concept of ME, to really
-take advantage you need to set up an [ME Network](ae2-mechanics/me-network.md).
+take advantage you need to set up an [ME Network](ae2-mechanics/me-network-connections.md).
 
 ## Your Very First ME System
 

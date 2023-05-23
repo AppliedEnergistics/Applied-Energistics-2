@@ -27,7 +27,7 @@ dimensions.
 
 Spatial IO requires a specific arrangement of its components in order to function, and define the volume to be cut-and-pasted.
 
-All of the components must be on the same [network](me-network.md) in order to function, and you can have only one
+All of the components must be on the same [network](me-network-connections.md) in order to function, and you can have only one
 spatial IO setup on a network. Thus, a [subnetwork](subnetworks.md) is recommended.
 
 ## The Spatial IO Port
