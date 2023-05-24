@@ -45,7 +45,7 @@ import java.util.Map.Entry;
 
 public class CableBusBakedModel implements IBakedModel {
 
-    private static final Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
+    static final Map<CableBusRenderState, List<BakedQuad>> CABLE_MODEL_CACHE = new HashMap<>();
 
     private final CableBuilder cableBuilder;
 

@@ -27,21 +27,26 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 
 /**
  * The built-in model for the cable bus block.
  */
-public class CableBusModel implements IModel {
+public class CableBusModel implements IModel, ISelectiveResourceReloadListener {
 
     private final PartModels partModels;
 
@@ -101,4 +106,12 @@ public class CableBusModel implements IModel {
     public IModelState getDefaultState() {
         return TRSRTransformation.identity();
     }
+
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+        if (resourcePredicate.test(VanillaResourceType.MODELS)) {
+            CableBusBakedModel.CABLE_MODEL_CACHE.clear();
+        }
+    }
+
 }

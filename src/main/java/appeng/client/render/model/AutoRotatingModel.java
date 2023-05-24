@@ -33,6 +33,8 @@ import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
@@ -46,7 +48,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AutoRotatingModel implements IBakedModel {
+public class AutoRotatingModel implements IBakedModel, IResourceManagerReloadListener {
 
     private final IBakedModel parent;
     private final LoadingCache<AutoRotatingCacheKey, List<BakedQuad>> quadCache;
@@ -150,6 +152,11 @@ public class AutoRotatingModel implements IBakedModel {
         AutoRotatingCacheKey key = new AutoRotatingCacheKey(extState.getClean(), forward, up, side);
 
         return this.quadCache.getUnchecked(key);
+    }
+
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager) {
+        this.quadCache.invalidateAll();
     }
 
     public static class VertexRotator extends QuadGatheringTransformer {

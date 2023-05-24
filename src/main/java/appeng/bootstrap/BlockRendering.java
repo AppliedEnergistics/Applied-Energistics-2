@@ -25,21 +25,31 @@ import appeng.bootstrap.components.StateMapperComponent;
 import appeng.bootstrap.components.TesrComponent;
 import appeng.client.render.model.AutoRotatingModel;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.resource.IResourceType;
+import net.minecraftforge.client.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.client.resource.VanillaResourceType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 
-class BlockRendering implements IBlockRendering {
+class BlockRendering implements IBlockRendering, ISelectiveResourceReloadListener {
 
     @SideOnly(Side.CLIENT)
     private BiFunction<ModelResourceLocation, IBakedModel, IBakedModel> modelCustomizer;
@@ -55,6 +65,13 @@ class BlockRendering implements IBlockRendering {
 
     @SideOnly(Side.CLIENT)
     private final Map<String, IModel> builtInModels = new HashMap<>();
+
+    @SideOnly(Side.CLIENT)
+    private final List<IResourceManagerReloadListener> reloads = new ArrayList<>();
+
+    BlockRendering() {
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -103,7 +120,11 @@ class BlockRendering implements IBlockRendering {
         } else if (block instanceof AEBaseTileBlock) {
             // This is a default rotating model if the base-block uses an AE tile entity which exposes UP/FRONT as
             // extended props
-            factory.addModelOverride(block.getRegistryName().getResourcePath(), (l, m) -> new AutoRotatingModel(m));
+            factory.addModelOverride(block.getRegistryName().getResourcePath(), (l, m) -> {
+                AutoRotatingModel model = new AutoRotatingModel(m);
+                BlockRendering.this.reloads.add(model);
+                return model;
+            });
         }
 
         // TODO : 1.12
@@ -117,4 +138,13 @@ class BlockRendering implements IBlockRendering {
             factory.addBootstrapComponent(new StateMapperComponent(block, this.stateMapper));
         }
     }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+        if (resourcePredicate.test(VanillaResourceType.MODELS)) {
+            this.reloads.forEach(listener -> listener.onResourceManagerReload(resourceManager));
+        }
+    }
+
 }
