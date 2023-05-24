@@ -63,6 +63,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.stream.StreamSupport;
 
 
 public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper, ICellProvider, IMEInventoryHandler<IAEItemStack> {
@@ -285,14 +286,16 @@ public class CraftingGridCache implements ICraftingGrid, ICraftingProviderHelper
     private void updateCPUClusters() {
         this.craftingCPUClusters.clear();
 
-        for (final IGridNode cst : this.grid.getMachines(TileCraftingStorageTile.class)) {
-            final TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
-            final CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
-            if (cluster != null) {
-                this.craftingCPUClusters.add(cluster);
+        for (Object cls: StreamSupport.stream(grid.getMachinesClasses().spliterator(), false).filter(TileCraftingStorageTile.class::isAssignableFrom).toArray()) {
+            for (final IGridNode cst : this.grid.getMachines((Class<? extends IGridHost>) cls)) {
+                final TileCraftingStorageTile tile = (TileCraftingStorageTile) cst.getMachine();
+                final CraftingCPUCluster cluster = (CraftingCPUCluster) tile.getCluster();
+                if (cluster != null) {
+                    this.craftingCPUClusters.add(cluster);
 
-                if (cluster.getLastCraftingLink() != null) {
-                    this.addLink((CraftingLink) cluster.getLastCraftingLink());
+                    if (cluster.getLastCraftingLink() != null) {
+                        this.addLink((CraftingLink) cluster.getLastCraftingLink());
+                    }
                 }
             }
         }
