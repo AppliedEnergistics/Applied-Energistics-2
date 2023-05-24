@@ -86,6 +86,8 @@ public class ContainerWirelessCraftingTerminal extends ContainerMEPortableTermin
 
             this.outputSlot.putStack(craftingResult);
         }
+        
+        this.saveChanges();
     }
 
     @Override
