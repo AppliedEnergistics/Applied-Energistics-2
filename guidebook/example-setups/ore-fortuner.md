@@ -9,7 +9,6 @@ navigation:
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
-  <HighlightBlock x="2" color="#990000" />
 </GameScene>
 
 The <ItemLink id="annihilation_plane" /> can be enchanted with any pickaxe enchantment, including fortune, so an obvious use case is to

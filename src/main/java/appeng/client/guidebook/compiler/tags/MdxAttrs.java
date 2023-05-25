@@ -1,26 +1,23 @@
 package appeng.client.guidebook.compiler.tags;
 
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector4f;
-import org.joml.Vector4fc;
-
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.document.LytErrorSink;
+import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
+import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.document.LytErrorSink;
-import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
-import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import java.util.regex.Pattern;
 
 /**
  * utilities for dealing with attributes of {@link MdxJsxElementFields}.
@@ -34,7 +31,7 @@ public final class MdxAttrs {
 
     @Nullable
     public static ResourceLocation getRequiredId(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-            String attribute) {
+                                                 String attribute) {
         var id = el.getAttributeString(attribute, null);
         if (id == null) {
             errorSink.appendError(compiler, "Missing " + attribute + " attribute.", el);
@@ -54,7 +51,7 @@ public final class MdxAttrs {
 
     @Nullable
     public static Pair<ResourceLocation, Block> getRequiredBlockAndId(PageCompiler compiler, LytErrorSink errorSink,
-            MdxJsxElementFields el, String attribute) {
+                                                                      MdxJsxElementFields el, String attribute) {
         var itemId = getRequiredId(compiler, errorSink, el, attribute);
 
         var resultItem = BuiltInRegistries.BLOCK.getOptional(itemId).orElse(null);
@@ -67,7 +64,7 @@ public final class MdxAttrs {
 
     @Nullable
     public static Pair<ResourceLocation, Item> getRequiredItemAndId(PageCompiler compiler, LytErrorSink errorSink,
-            MdxJsxElementFields el, String attribute) {
+                                                                    MdxJsxElementFields el, String attribute) {
         var itemId = getRequiredId(compiler, errorSink, el, attribute);
 
         var resultItem = BuiltInRegistries.ITEM.getOptional(itemId).orElse(null);
@@ -79,7 +76,7 @@ public final class MdxAttrs {
     }
 
     public static Item getRequiredItem(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-            String attribute) {
+                                       String attribute) {
         var result = getRequiredItemAndId(compiler, errorSink, el, attribute);
         if (result != null) {
             return result.getRight();
@@ -88,7 +85,7 @@ public final class MdxAttrs {
     }
 
     public static float getFloat(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el, String name,
-            float defaultValue) {
+                                 float defaultValue) {
         var attrValue = el.getAttributeString(name, null);
         if (attrValue == null) {
             return defaultValue;
@@ -103,7 +100,7 @@ public final class MdxAttrs {
     }
 
     public static int getInt(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el, String name,
-            int defaultValue) {
+                             int defaultValue) {
         var attrValue = el.getAttributeString(name, null);
         if (attrValue == null) {
             return defaultValue;
@@ -120,7 +117,7 @@ public final class MdxAttrs {
     @SuppressWarnings("unchecked")
     @Nullable
     public static <T extends Enum<T> & StringRepresentable> T getEnum(PageCompiler compiler, LytErrorSink errorSink,
-            MdxJsxElementFields el, String name, T defaultValue) {
+                                                                      MdxJsxElementFields el, String name, T defaultValue) {
 
         var stringValue = el.getAttributeString(name, defaultValue.getSerializedName());
 
@@ -136,7 +133,7 @@ public final class MdxAttrs {
     }
 
     public static BlockState applyBlockStateProperties(PageCompiler compiler, LytErrorSink errorSink,
-            MdxJsxElementFields el, BlockState state) {
+                                                       MdxJsxElementFields el, BlockState state) {
         for (var attrNode : el.attributes()) {
             if (!(attrNode instanceof MdxJsxAttribute attr)) {
                 continue;
@@ -158,11 +155,11 @@ public final class MdxAttrs {
     }
 
     private static <T extends Comparable<T>> BlockState applyProperty(PageCompiler compiler,
-            LytErrorSink errorSink,
-            MdxJsxElementFields el,
-            BlockState state,
-            Property<T> property,
-            String stringValue) {
+                                                                      LytErrorSink errorSink,
+                                                                      MdxJsxElementFields el,
+                                                                      BlockState state,
+                                                                      Property<T> property,
+                                                                      String stringValue) {
         var propertyValue = property.getValue(stringValue);
         if (propertyValue.isEmpty()) {
             errorSink.appendError(compiler, "Invalid value  for property " + property + ": " + stringValue, el);
@@ -179,29 +176,32 @@ public final class MdxAttrs {
         return new BlockPos(x, y, z);
     }
 
-    public static Vector4fc getColor(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
-            String name) {
-        var color = new Vector4f(1, 1, 1, 1);
+    public static int getColor(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
+                               String name, int defaultColor) {
         var colorStr = el.getAttributeString(name, null);
         if (colorStr != null) {
             var m = COLOR_PATTERN.matcher(colorStr);
             if (!m.matches()) {
                 errorSink.appendError(compiler, "Color must have format #AARRGGBB", el);
-                return color;
+                return defaultColor;
             }
 
+            int r, g, b;
+            int a = 255;
             if (colorStr.length() == 7) {
-                color.x = Integer.valueOf(colorStr.substring(1, 3), 16) / 255f;
-                color.y = Integer.valueOf(colorStr.substring(3, 5), 16) / 255f;
-                color.z = Integer.valueOf(colorStr.substring(5, 7), 16) / 255f;
+                r = Integer.valueOf(colorStr.substring(1, 3), 16);
+                g = Integer.valueOf(colorStr.substring(3, 5), 16);
+                b = Integer.valueOf(colorStr.substring(5, 7), 16);
             } else {
-                color.w = Integer.valueOf(colorStr.substring(1, 3), 16) / 255f;
-                color.x = Integer.valueOf(colorStr.substring(3, 5), 16) / 255f;
-                color.y = Integer.valueOf(colorStr.substring(5, 7), 16) / 255f;
-                color.z = Integer.valueOf(colorStr.substring(7, 9), 16) / 255f;
+                a = Integer.valueOf(colorStr.substring(1, 3), 16);
+                r = Integer.valueOf(colorStr.substring(3, 5), 16);
+                g = Integer.valueOf(colorStr.substring(5, 7), 16);
+                b = Integer.valueOf(colorStr.substring(7, 9), 16);
             }
+            return FastColor.ARGB32.color(a, r, g, b);
         }
-        return color;
+
+        return defaultColor;
     }
 
 }

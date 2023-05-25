@@ -26,6 +26,8 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
     @Nullable
     private GuidebookScene scene;
     private boolean interactive;
+    @Nullable
+    private HighlightedBox currentHighlight;
 
     public LytGuidebookScene() {
     }
@@ -86,6 +88,11 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public Optional<GuideTooltip> getTooltip(float x, float y) {
+        if (currentHighlight != null && scene != null) {
+            scene.removeHighlight(currentHighlight);
+            currentHighlight = null;
+        }
+
         if (!interactive || scene == null || bounds.isEmpty()) {
             return Optional.empty();
         }
@@ -97,13 +104,12 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             var blockState = scene.getLevel().getBlockState(hitResult.getBlockPos());
 
-            scene.addHighlight(new BlockHighlight(hitResult.getBlockPos(), 0.6f, 0.6f, 0.6f, .8f));
+            currentHighlight = HighlightedBox.forBlock(hitResult.getBlockPos(), 0xcc999999);
+            scene.addHighlight(currentHighlight);
 
             var text = Component.translatable(blockState.getBlock().getDescriptionId());
             return Optional.of(
                     new TextTooltip(text));
-        } else {
-            scene.clearHighlights();
         }
 
         return Optional.of(new TextTooltip(String.format("%f %f", localX, localY)));

@@ -47,7 +47,7 @@ public class GuidebookLevelRenderer {
 
     public void render(GuidebookLevel level,
             CameraSettings cameraSettings,
-            Collection<BlockHighlight> highlights) {
+            Collection<HighlightedBox> highlights) {
         lightmap.update(level);
 
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
@@ -122,7 +122,7 @@ public class GuidebookLevelRenderer {
         buffers.endBatch(Sheets.chestSheet());
         buffers.endBatch();
 
-        BlockHighlightRenderer.render(buffers, highlights);
+        HighlightedBoxRenderer.render(buffers, highlights);
 
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
