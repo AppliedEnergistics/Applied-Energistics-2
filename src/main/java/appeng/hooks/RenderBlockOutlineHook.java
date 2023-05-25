@@ -1,11 +1,22 @@
 package appeng.hooks;
 
+import static net.minecraft.client.renderer.RenderStateShard.COLOR_WRITE;
+import static net.minecraft.client.renderer.RenderStateShard.ITEM_ENTITY_TARGET;
+import static net.minecraft.client.renderer.RenderStateShard.NO_CULL;
+import static net.minecraft.client.renderer.RenderStateShard.RENDERTYPE_LINES_SHADER;
+import static net.minecraft.client.renderer.RenderStateShard.TRANSLUCENT_TRANSPARENCY;
+import static net.minecraft.client.renderer.RenderStateShard.VIEW_OFFSET_Z_LAYERING;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalDouble;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -14,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,6 +51,25 @@ import appeng.parts.PartPlacement;
 public class RenderBlockOutlineHook {
     private RenderBlockOutlineHook() {
     }
+
+    /**
+     * Similar to {@link RenderType#LINES}, but with inverted depth test.
+     */
+    public static final RenderType.CompositeRenderType LINES_BEHIND_BLOCK = RenderType.create(
+            "lines_behind_block",
+            DefaultVertexFormat.POSITION_COLOR_NORMAL,
+            VertexFormat.Mode.LINES,
+            256,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_LINES_SHADER)
+                    .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
+                    .setLayeringState(VIEW_OFFSET_Z_LAYERING)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(new RenderStateShard.DepthTestStateShard(">", GL11.GL_GREATER))
+                    .setOutputState(ITEM_ENTITY_TARGET)
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setCullState(NO_CULL)
+                    .createCompositeState(false));
 
     public static void install() {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((WorldRenderContext context, @Nullable HitResult hitResult) -> {
@@ -75,7 +106,9 @@ public class RenderBlockOutlineHook {
 
         if (AEConfig.instance().isPlacementPreviewEnabled()) {
             var itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
-            showPartPlacementPreview(player, poseStack, buffers, camera, hitResult, itemInHand);
+            // Render without depth test to also have a preview for parts inside blocks.
+            showPartPlacementPreview(player, poseStack, buffers, camera, hitResult, itemInHand, true);
+            showPartPlacementPreview(player, poseStack, buffers, camera, hitResult, itemInHand, false);
         }
 
         // Hit test against all attached parts to highlight the part that is relevant
@@ -86,16 +119,18 @@ public class RenderBlockOutlineHook {
             // If the item in hand is a facade and a block is hit, attempt facade placement
             if (AEConfig.instance().isPlacementPreviewEnabled()) {
                 var itemInHand = player.getItemInHand(InteractionHand.MAIN_HAND);
-                showFacadePlacementPreview(poseStack, buffers, camera, hitResult, partHost, itemInHand);
+                // Use same rendering inside blocks as part preview.
+                showFacadePlacementPreview(poseStack, buffers, camera, hitResult, partHost, itemInHand, true);
+                showFacadePlacementPreview(poseStack, buffers, camera, hitResult, partHost, itemInHand, false);
             }
 
             var selectedPart = partHost.selectPartWorld(hitResult.getLocation());
             if (selectedPart.facade != null) {
-                renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false);
+                renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false, false);
                 return true;
             }
             if (selectedPart.part != null) {
-                renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false);
+                renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false, false);
                 return true;
             }
         }
@@ -108,7 +143,8 @@ public class RenderBlockOutlineHook {
             Camera camera,
             BlockHitResult blockHitResult,
             IPartHost partHost,
-            ItemStack itemInHand) {
+            ItemStack itemInHand,
+            boolean insideBlock) {
         var pos = blockHitResult.getBlockPos();
 
         if (itemInHand.getItem() instanceof IFacadeItem facadeItem) {
@@ -119,10 +155,10 @@ public class RenderBlockOutlineHook {
                 // We would render a cable anchor implicitly
                 if (partHost.getPart(side) == null) {
                     var cableAnchor = AEParts.CABLE_ANCHOR.asItem().createPart();
-                    renderPart(poseStack, buffers, camera, pos, cableAnchor, side, true);
+                    renderPart(poseStack, buffers, camera, pos, cableAnchor, side, true, insideBlock);
                 }
 
-                renderFacade(poseStack, buffers, camera, pos, facade, side, true);
+                renderFacade(poseStack, buffers, camera, pos, facade, side, true, insideBlock);
                 return true;
             }
         }
@@ -135,7 +171,8 @@ public class RenderBlockOutlineHook {
             MultiBufferSource buffers,
             Camera camera,
             BlockHitResult blockHitResult,
-            ItemStack itemInHand) {
+            ItemStack itemInHand,
+            boolean insideBlock) {
         if (itemInHand.getItem() instanceof IPartItem<?>partItem) {
             var placement = PartPlacement.getPartPlacement(player,
                     player.level,
@@ -146,7 +183,7 @@ public class RenderBlockOutlineHook {
 
             if (placement != null) {
                 var part = partItem.createPart();
-                renderPart(poseStack, buffers, camera, placement.pos(), part, placement.side(), true);
+                renderPart(poseStack, buffers, camera, placement.pos(), part, placement.side(), true, insideBlock);
             }
         }
     }
@@ -157,11 +194,12 @@ public class RenderBlockOutlineHook {
             BlockPos pos,
             IPart part,
             Direction side,
-            boolean preview) {
+            boolean preview,
+            boolean insideBlock) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         part.getBoxes(helper);
-        renderBoxes(poseStack, buffers, camera, pos, boxes, preview);
+        renderBoxes(poseStack, buffers, camera, pos, boxes, preview, insideBlock);
     }
 
     private static void renderFacade(PoseStack poseStack,
@@ -170,11 +208,12 @@ public class RenderBlockOutlineHook {
             BlockPos pos,
             IFacadePart facade,
             Direction side,
-            boolean preview) {
+            boolean preview,
+            boolean insideBlock) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         facade.getBoxes(helper, false);
-        renderBoxes(poseStack, buffers, camera, pos, boxes, preview);
+        renderBoxes(poseStack, buffers, camera, pos, boxes, preview, insideBlock);
     }
 
     private static void renderBoxes(PoseStack poseStack,
@@ -182,13 +221,18 @@ public class RenderBlockOutlineHook {
             Camera camera,
             BlockPos pos,
             List<AABB> boxes,
-            boolean preview) {
+            boolean preview,
+            boolean insideBlock) {
+        RenderType renderType = insideBlock ? LINES_BEHIND_BLOCK : RenderType.lines();
+        var buffer = buffers.getBuffer(renderType);
+        float alpha = insideBlock ? 0.2f : preview ? 0.6f : 0.4f;
+
         for (var box : boxes) {
             var shape = Shapes.create(box);
 
             LevelRenderer.renderShape(
                     poseStack,
-                    buffers.getBuffer(RenderType.lines()),
+                    buffer,
                     shape,
                     pos.getX() - camera.getPosition().x,
                     pos.getY() - camera.getPosition().y,
@@ -196,7 +240,7 @@ public class RenderBlockOutlineHook {
                     preview ? 1 : 0,
                     preview ? 1 : 0,
                     preview ? 1 : 0,
-                    0.4f);
+                    alpha);
         }
     }
 }
