@@ -5,9 +5,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEItemKey;
@@ -54,20 +54,22 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
         }
     }
 
-    public ItemStack encode(LegacyUpgradeRecipe recipe, AEItemKey base, AEItemKey addition, AEItemKey out,
-            boolean allowSubstitutes) {
+    public ItemStack encode(SmithingRecipe recipe, AEItemKey template, AEItemKey base, AEItemKey addition,
+            AEItemKey out, boolean allowSubstitutes) {
         var stack = new ItemStack(this);
-        SmithingTablePatternEncoding.encode(stack.getOrCreateTag(), recipe, base, addition, out, allowSubstitutes);
+        SmithingTablePatternEncoding.encode(stack.getOrCreateTag(), recipe, template, base, addition, out,
+                allowSubstitutes);
         return stack;
     }
 
     private boolean attemptRecovery(CompoundTag tag, Level level) {
         RecipeManager recipeManager = level.getRecipeManager();
 
+        var template = SmithingTablePatternEncoding.getTemplate(tag);
         var base = SmithingTablePatternEncoding.getBase(tag);
         var addition = SmithingTablePatternEncoding.getAddition(tag);
         var output = SmithingTablePatternEncoding.getOutput(tag);
-        if (base == null || addition == null || output == null) {
+        if (template == null || base == null || addition == null || output == null) {
             return false; // Either input or output item was removed
         }
 
@@ -80,7 +82,7 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
 
         // Multiple recipes can match for stonecutting
         var recipe = recipeManager.getRecipeFor(RecipeType.SMITHING, testInventory, level).orElse(null);
-        if (!(recipe instanceof LegacyUpgradeRecipe legacyRecipe)) {
+        if (recipe == null) {
             AELog.info("Failed to recover encoded smithing pattern for recipe %s (no recipe for inputs)", recipeId);
             return false;
         }
@@ -93,7 +95,7 @@ public class SmithingTablePatternItem extends EncodedPatternItem {
 
         // Yay we found a match, reencode the pattern
         AELog.debug("Re-Encoding pattern from %s -> %s", recipeId, recipe.getId());
-        SmithingTablePatternEncoding.encode(tag, legacyRecipe, base, addition, output,
+        SmithingTablePatternEncoding.encode(tag, recipe, template, base, addition, output,
                 SmithingTablePatternEncoding.canSubstitute(tag));
         return true;
     }

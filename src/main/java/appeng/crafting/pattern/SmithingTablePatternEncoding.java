@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 
 import appeng.api.stacks.AEItemKey;
 
@@ -30,6 +30,7 @@ import appeng.api.stacks.AEItemKey;
  * Helper functions to work with patterns, mostly related to (de)serialization.
  */
 class SmithingTablePatternEncoding {
+    private static final String NBT_TEMPLATE = "template";
     private static final String NBT_BASE = "base";
     private static final String NBT_ADDITION = "addition";
     // Only used to attempt to recover the recipe in case it's ID has changed
@@ -37,8 +38,13 @@ class SmithingTablePatternEncoding {
     private static final String NBT_SUBSITUTE = "substitute";
     private static final String NBT_RECIPE_ID = "recipe";
 
+    public static AEItemKey getTemplate(CompoundTag nbt) {
+        Objects.requireNonNull(nbt, "Pattern must have a template tag.");
+        return AEItemKey.fromTag(nbt.getCompound(NBT_TEMPLATE));
+    }
+
     public static AEItemKey getBase(CompoundTag nbt) {
-        Objects.requireNonNull(nbt, "Pattern must have an base tag.");
+        Objects.requireNonNull(nbt, "Pattern must have a base tag.");
         return AEItemKey.fromTag(nbt.getCompound(NBT_BASE));
     }
 
@@ -64,8 +70,10 @@ class SmithingTablePatternEncoding {
         return new ResourceLocation(nbt.getString(NBT_RECIPE_ID));
     }
 
-    public static void encode(CompoundTag tag, LegacyUpgradeRecipe recipe, AEItemKey base, AEItemKey addition,
+    public static void encode(CompoundTag tag, SmithingRecipe recipe, AEItemKey template, AEItemKey base,
+            AEItemKey addition,
             AEItemKey output, boolean allowSubstitution) {
+        tag.put(NBT_TEMPLATE, template.toTag());
         tag.put(NBT_BASE, base.toTag());
         tag.put(NBT_ADDITION, addition.toTag());
         tag.put(NBT_OUTPUT, output.toTag());

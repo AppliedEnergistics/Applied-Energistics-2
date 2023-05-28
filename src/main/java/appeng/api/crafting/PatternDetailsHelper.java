@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
+import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.Level;
 
@@ -143,6 +143,7 @@ public final class PatternDetailsHelper {
      * Encodes a smithing table pattern which represents a Vanilla Smithing Table recipe.
      *
      * @param recipe           The Vanilla smithing table recipe to be encoded.
+     * @param template         The template item for the smithing table.
      * @param base             The base item for the smithing table, which is used to determine which item is supplied
      *                         from the ME system to craft using this pattern.
      * @param addition         The additional item for the smithing table, which is used to determine which item is
@@ -152,13 +153,17 @@ public final class PatternDetailsHelper {
      * @param allowSubstitutes Controls whether the ME system will allow the use of equivalent items to craft this
      *                         recipe.
      */
-    public static ItemStack encodeSmithingTablePattern(LegacyUpgradeRecipe recipe, AEItemKey base, AEItemKey addition,
+    public static ItemStack encodeSmithingTablePattern(SmithingRecipe recipe,
+            AEItemKey template,
+            AEItemKey base,
+            AEItemKey addition,
             AEItemKey out,
             boolean allowSubstitutes) {
         Preconditions.checkNotNull(recipe, "recipe");
+        Preconditions.checkNotNull(recipe, "template");
         Preconditions.checkNotNull(base, "base");
         Preconditions.checkNotNull(addition, "addition");
         Preconditions.checkNotNull(out, "out");
-        return AEItems.SMITHING_TABLE_PATTERN.asItem().encode(recipe, base, addition, out, allowSubstitutes);
+        return AEItems.SMITHING_TABLE_PATTERN.asItem().encode(recipe, template, base, addition, out, allowSubstitutes);
     }
 }
