@@ -180,6 +180,7 @@ public final class AEItemIds {
     public static final ResourceLocation NETHER_QUARTZ_WRENCH = id("nether_quartz_wrench");
     public static final ResourceLocation NETHER_QUARTZ_KNIFE = id("nether_quartz_cutting_knife");
 
+    public static final ResourceLocation FLUIX_UPGRADE_SMITHING_TEMPLATE = id("fluix_upgrade_smithing_template");
     public static final ResourceLocation FLUIX_AXE = id("fluix_axe");
     public static final ResourceLocation FLUIX_HOE = id("fluix_hoe");
     public static final ResourceLocation FLUIX_SHOVEL = id("fluix_shovel");

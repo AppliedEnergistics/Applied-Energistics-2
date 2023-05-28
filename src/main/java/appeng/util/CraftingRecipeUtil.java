@@ -7,6 +7,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 
 public final class CraftingRecipeUtil {
     private CraftingRecipeUtil() {
@@ -56,6 +58,23 @@ public final class CraftingRecipeUtil {
             var ingredients = NonNullList.withSize(2, Ingredient.EMPTY);
             ingredients.set(0, upgradeRecipe.base);
             ingredients.set(1, upgradeRecipe.addition);
+            return ingredients;
+        }
+
+        // TODO: is this used anywhere?
+        if (recipe instanceof SmithingTrimRecipe trimRecipe) {
+            var ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
+            ingredients.set(0, trimRecipe.template);
+            ingredients.set(1, trimRecipe.base);
+            ingredients.set(2, trimRecipe.addition);
+            return ingredients;
+        }
+
+        if (recipe instanceof SmithingTransformRecipe transformRecipe) {
+            var ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
+            ingredients.set(0, transformRecipe.template);
+            ingredients.set(1, transformRecipe.base);
+            ingredients.set(2, transformRecipe.addition);
             return ingredients;
         }
 

@@ -78,9 +78,10 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
     public void updateBeforeRender() {
         this.substitutionsBtn.setState(this.menu.substitute);
 
-        var container = new SimpleContainer(2);
-        container.setItem(0, menu.getSmithingTableBaseSlot().getItem());
-        container.setItem(1, menu.getSmithingTableAdditionSlot().getItem());
+        var container = new SimpleContainer(3);
+        container.setItem(0, menu.getSmithingTableTemplateSlot().getItem());
+        container.setItem(1, menu.getSmithingTableBaseSlot().getItem());
+        container.setItem(2, menu.getSmithingTableAdditionSlot().getItem());
 
         var level = menu.getPlayer().level;
         var recipe = level.getRecipeManager()
@@ -100,6 +101,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
         clearBtn.setVisibility(visible);
         substitutionsBtn.setVisibility(visible);
 
+        screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_TEMPLATE, !visible);
         screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_BASE, !visible);
         screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_ADDITION, !visible);
         screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_RESULT, !visible);
