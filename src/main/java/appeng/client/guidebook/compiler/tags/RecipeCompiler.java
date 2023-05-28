@@ -100,8 +100,13 @@ public class RecipeCompiler extends BlockTagCompiler {
         @Nullable
         LytBlock tryCreate(RecipeManager recipeManager, Item resultItem) {
             for (var recipe : recipeManager.byType(recipeType).values()) {
-                if (recipe.getResultItem(null).getItem() == resultItem) {
-                    return factory.apply(recipe);
+                try {
+                    if (recipe.getResultItem(null).getItem() == resultItem) {
+                        return factory.apply(recipe);
+                    }
+                } catch (Exception ignored) {
+                    // :-P
+                    // Happens if the recipe doesn't accept a null RegistryAccess
                 }
             }
 

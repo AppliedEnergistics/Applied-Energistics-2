@@ -2,8 +2,12 @@
   "__comment": "Describes the parts of the pattern encoding terminal that relate to encoding a crafting pattern",
   "$schema": "../../schema.json",
   "slots": {
+    "SMITHING_TABLE_TEMPLATE": {
+      "left": 21,
+      "bottom": 138
+    },
     "SMITHING_TABLE_BASE": {
-      "left": 16,
+      "left": 39,
       "bottom": 138
     },
     "SMITHING_TABLE_ADDITION": {

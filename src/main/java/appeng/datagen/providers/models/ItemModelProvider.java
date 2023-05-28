@@ -76,6 +76,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         flatSingleLayer(AEItems.FLUIX_CRYSTAL, "item/fluix_crystal");
         flatSingleLayer(AEItems.FLUIX_DUST, "item/fluix_dust");
         flatSingleLayer(AEItems.FLUIX_PEARL, "item/fluix_pearl");
+        flatSingleLayer(AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE, "item/fluix_upgrade_smithing_template");
         flatSingleLayer(AEItems.FORMATION_CORE, "item/formation_core");
         flatSingleLayer(AEItems.FUZZY_CARD, "item/card_fuzzy");
         flatSingleLayer(AEItems.INVERTER_CARD, "item/card_inverter");

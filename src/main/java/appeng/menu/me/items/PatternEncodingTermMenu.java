@@ -35,7 +35,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
@@ -92,6 +91,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private final FakeSlot[] processingInputSlots = new FakeSlot[AEProcessingPattern.MAX_INPUT_SLOTS];
     private final FakeSlot[] processingOutputSlots = new FakeSlot[AEProcessingPattern.MAX_OUTPUT_SLOTS];
     private final FakeSlot stonecuttingInputSlot;
+    private final FakeSlot smithingTableTemplateSlot;
     private final FakeSlot smithingTableBaseSlot;
     private final FakeSlot smithingTableAdditionSlot;
     private final PatternTermSlot craftOutputSlot;
@@ -168,10 +168,13 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         this.stonecuttingInputSlot.setHideAmount(true);
 
         // Input for smithing table pattern encoding
-        this.addSlot(this.smithingTableBaseSlot = new FakeSlot(encodedInputs, 0),
+        this.addSlot(this.smithingTableTemplateSlot = new FakeSlot(encodedInputs, 0),
+                SlotSemantics.SMITHING_TABLE_TEMPLATE);
+        this.smithingTableTemplateSlot.setHideAmount(true);
+        this.addSlot(this.smithingTableBaseSlot = new FakeSlot(encodedInputs, 1),
                 SlotSemantics.SMITHING_TABLE_BASE);
         this.smithingTableBaseSlot.setHideAmount(true);
-        this.addSlot(this.smithingTableAdditionSlot = new FakeSlot(encodedInputs, 1),
+        this.addSlot(this.smithingTableAdditionSlot = new FakeSlot(encodedInputs, 2),
                 SlotSemantics.SMITHING_TABLE_ADDITION);
         this.smithingTableAdditionSlot.setHideAmount(true);
 
@@ -370,26 +373,28 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
     @Nullable
     private ItemStack encodeSmithingTablePattern() {
-        if (!(encodedInputsInv.getKey(0) instanceof AEItemKey base)
-                || !(encodedInputsInv.getKey(1) instanceof AEItemKey addition)) {
+        if (!(encodedInputsInv.getKey(0) instanceof AEItemKey template)
+                || !(encodedInputsInv.getKey(1) instanceof AEItemKey base)
+                || !(encodedInputsInv.getKey(2) instanceof AEItemKey addition)) {
             return null;
         }
 
-        var container = new SimpleContainer(2);
-        container.setItem(0, base.toStack());
-        container.setItem(1, addition.toStack());
+        var container = new SimpleContainer(3);
+        container.setItem(0, template.toStack());
+        container.setItem(1, base.toStack());
+        container.setItem(2, addition.toStack());
 
         var level = getPlayer().level;
         var recipe = level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMITHING, container, level)
                 .orElse(null);
-        if (!(recipe instanceof LegacyUpgradeRecipe legacyRecipe)) {
+        if (recipe == null) {
             return null;
         }
 
         var output = AEItemKey.of(recipe.assemble(container, level.registryAccess()));
 
-        return PatternDetailsHelper.encodeSmithingTablePattern(legacyRecipe, base, addition, output,
+        return PatternDetailsHelper.encodeSmithingTablePattern(recipe, template, base, addition, output,
                 encodingLogic.isSubstitution());
     }
 
@@ -647,6 +652,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
 
     public FakeSlot[] getProcessingOutputSlots() {
         return processingOutputSlots;
+    }
+
+    public FakeSlot getSmithingTableTemplateSlot() {
+        return smithingTableTemplateSlot;
     }
 
     public FakeSlot getSmithingTableBaseSlot() {

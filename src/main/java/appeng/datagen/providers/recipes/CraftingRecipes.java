@@ -1340,6 +1340,13 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('a', ConventionTags.NETHER_QUARTZ)
                 .unlockedBy("has_nether_quartz", has(ConventionTags.NETHER_QUARTZ))
                 .save(consumer, AppEng.makeId("tools/nether_quartz_wrench"));
+
+        // Smithing pattern for fluix tools
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEItems.FLUIX_UPGRADE_SMITHING_TEMPLATE)
+                .requires(Items.PAPER)
+                .requires(ConventionTags.FLUIX_CRYSTAL)
+                .unlockedBy("has_fluix_crystal", has(ConventionTags.FLUIX_CRYSTAL))
+                .save(consumer, AppEng.makeId("tools/fluix_upgrade_smithing_template"));
     }
 
     // ====================================================
