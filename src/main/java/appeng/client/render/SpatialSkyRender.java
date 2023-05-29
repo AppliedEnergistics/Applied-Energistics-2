@@ -42,7 +42,7 @@ public class SpatialSkyRender {
     private long cycle = 0;
 
     public SpatialSkyRender() {
-        sparkleBuffer = new VertexBuffer();
+        sparkleBuffer = new VertexBuffer(VertexBuffer.Usage.DYNAMIC);
     }
 
     public static SpatialSkyRender getInstance() {

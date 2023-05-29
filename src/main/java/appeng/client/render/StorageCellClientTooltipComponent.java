@@ -1,15 +1,13 @@
 package appeng.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -89,12 +87,12 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
+    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = 0;
             for (var stack : content) {
-                AEKeyRendering.drawInGui(Minecraft.getInstance(), poseStack, x + xoff, y, stack.what());
+                AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, x + xoff, y, stack.what());
                 xoff += 17;
             }
 
@@ -103,7 +101,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
                 xoff = 0;
                 for (var stack : content) {
                     var amtText = stack.what().formatAmount(stack.amount(), AmountFormat.SLOT);
-                    StackSizeRenderer.renderSizeLabel(poseStack, font, x + xoff, y, amtText, false);
+                    StackSizeRenderer.renderSizeLabel(guiGraphics, font, x + xoff, y, amtText, false);
                     xoff += 17;
                 }
             }
@@ -114,7 +112,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
         if (!upgrades.isEmpty()) {
             var xoff = font.width(upgradesLabel) + 2;
             for (ItemStack upgrade : upgrades) {
-                itemRenderer.renderGuiItem(poseStack, upgrade, x + xoff, y);
+                guiGraphics.renderItem(upgrade, x + xoff, y);
                 xoff += 17;
             }
         }

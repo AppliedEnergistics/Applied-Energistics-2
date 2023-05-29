@@ -94,7 +94,7 @@ public class SpawnEntityPacket extends BasePacket {
     @Override
     @Environment(EnvType.CLIENT)
     public void clientPacketData(Player player) {
-        ClientLevel world = (ClientLevel) player.level;
+        ClientLevel world = (ClientLevel) player.level();
 
         Entity entity = type.create(world);
 

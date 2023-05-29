@@ -24,11 +24,11 @@ import java.util.List;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.world.item.CreativeModeTab;
 
-import appeng.api.ids.AECreativeTabIds;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.ItemDefinition;
+import appeng.core.localization.GuiText;
 import appeng.items.AEBaseItem;
 
 public final class MainCreativeTab {
@@ -38,7 +38,8 @@ public final class MainCreativeTab {
     public static CreativeModeTab INSTANCE;
 
     public static void init() {
-        INSTANCE = FabricItemGroup.builder(AECreativeTabIds.MAIN)
+        INSTANCE = FabricItemGroup.builder()
+                .title(GuiText.CreativeTab.text())
                 .icon(() -> AEBlocks.CONTROLLER.stack(1))
                 .displayItems(MainCreativeTab::buildDisplayItems)
                 .build();

@@ -11,7 +11,6 @@ import java.util.Set;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +22,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -228,6 +228,8 @@ public final class SiteExporter {
         }
 
         try (var itemRenderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
+            var guiGraphics = new GuiGraphics(client, client.renderBuffers().bufferSource());
+
             itemRenderer.setupItemRendering();
 
             for (ItemStack stack : items) {
@@ -236,7 +238,8 @@ public final class SiteExporter {
                 Files.createDirectories(iconPath.getParent());
 
                 itemRenderer.captureAsPng(() -> {
-                    client.getItemRenderer().renderAndDecorateFakeItem(new PoseStack(), stack, 0, 0);
+                    guiGraphics.renderItem(stack, 0, 0);
+                    guiGraphics.renderItemDecorations(client.font, stack, 0, 0, "");
                 }, iconPath);
 
                 String absIconUrl = "/" + assetFolder.relativize(iconPath).toString().replace('\\', '/');

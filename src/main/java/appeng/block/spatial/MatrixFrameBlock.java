@@ -27,9 +27,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -42,11 +39,8 @@ import appeng.block.AEBaseBlock;
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    private static final Material MATERIAL = new Material(MaterialColor.NONE, false, true, true, false, false, false,
-            PushReaction.PUSH_ONLY);
-
     public MatrixFrameBlock() {
-        super(BlockBehaviour.Properties.of(MATERIAL).strength(-1.0F, 6000000.0F).noOcclusion().noLootTable());
+        super(BlockBehaviour.Properties.of().strength(-1.0F, 6000000.0F).noOcclusion().noLootTable());
     }
 
     @Override

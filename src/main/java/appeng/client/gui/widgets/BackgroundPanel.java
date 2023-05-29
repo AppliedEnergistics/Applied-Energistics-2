@@ -1,7 +1,6 @@
 package appeng.client.gui.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
@@ -39,7 +38,7 @@ public class BackgroundPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
-        background.dest(bounds.getX() + x, bounds.getY() + y).blit(poseStack);
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+        background.dest(bounds.getX() + x, bounds.getY() + y).blit(guiGraphics);
     }
 }

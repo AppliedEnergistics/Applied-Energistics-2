@@ -94,7 +94,7 @@ public class FluidPlacementStrategy implements PlacementStrategy {
                 liquidBlockContainer.placeLiquid(level, pos, state, ((FlowingFluid) fluid).getSource(false));
                 playEmptySound(level, pos, fluid);
             } else {
-                if (state.canBeReplaced(fluid) && !state.getMaterial().isLiquid()) {
+                if (state.canBeReplaced(fluid) && !state.liquid()) {
                     level.destroyBlock(pos, true);
                 }
 

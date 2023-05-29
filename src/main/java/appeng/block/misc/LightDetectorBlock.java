@@ -30,7 +30,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -44,7 +43,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.LightDetectorBlockEntity;
-import appeng.helpers.AEMaterials;
 import appeng.hooks.INeighborChangeSensitive;
 
 public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEntity>
@@ -74,7 +72,7 @@ public class LightDetectorBlock extends AEBaseEntityBlock<LightDetectorBlockEnti
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public LightDetectorBlock() {
-        super(defaultProps(AEMaterials.FIXTURE).noCollission().noOcclusion().sound(SoundType.GLASS));
+        super(fixtureProps());
 
         this.registerDefaultState(
                 this.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP).setValue(ODD, false)

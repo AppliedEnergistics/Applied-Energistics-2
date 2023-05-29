@@ -16,7 +16,7 @@ import appeng.core.AELog;
 record PartLocator(BlockPos pos, @Nullable Direction side) implements MenuLocator {
     @Override
     public <T> @Nullable T locate(Player player, Class<T> hostInterface) {
-        var part = PartHelper.getPart(player.level, pos, side);
+        var part = PartHelper.getPart(player.level(), pos, side);
         if (hostInterface.isInstance(part)) {
             return hostInterface.cast(part);
         } else if (part != null) {

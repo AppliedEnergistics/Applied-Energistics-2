@@ -26,7 +26,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -41,7 +40,7 @@ import appeng.util.InteractionUtil;
 public class CellWorkbenchBlock extends AEBaseEntityBlock<CellWorkbenchBlockEntity> {
 
     public CellWorkbenchBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 
     @Override

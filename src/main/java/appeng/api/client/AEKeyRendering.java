@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -89,8 +90,8 @@ public class AEKeyRendering {
     }
 
     @SuppressWarnings("unchecked")
-    public static void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, AEKey what) {
-        getUnchecked(what).drawInGui(minecraft, poseStack, x, y, what);
+    public static void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEKey what) {
+        getUnchecked(what).drawInGui(minecraft, guiGraphics, x, y, what);
     }
 
     @SuppressWarnings("unchecked")

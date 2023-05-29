@@ -27,9 +27,9 @@ import org.joml.Matrix4f;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -57,13 +57,13 @@ public class InitStackRenderHandlers {
 
     private static class ItemKeyRenderHandler implements AEKeyRenderHandler<AEItemKey> {
         @Override
-        public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, AEItemKey stack) {
+        public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEItemKey stack) {
+            var poseStack = guiGraphics.pose();
             poseStack.pushPose();
 
             ItemStack displayStack = stack.toStack();
-            ItemRenderer itemRenderer = minecraft.getItemRenderer();
-            itemRenderer.renderGuiItem(poseStack, displayStack, x, y);
-            itemRenderer.renderGuiItemDecorations(poseStack, minecraft.font, displayStack, x, y, "");
+            guiGraphics.renderItem(displayStack, x, y);
+            guiGraphics.renderItemDecorations(minecraft.font, displayStack, x, y, "");
 
             poseStack.popPose();
         }
@@ -102,10 +102,10 @@ public class InitStackRenderHandlers {
 
     private static class FluidKeyRenderHandler implements AEKeyRenderHandler<AEFluidKey> {
         @Override
-        public void drawInGui(Minecraft minecraft, PoseStack poseStack, int x, int y, AEFluidKey what) {
+        public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEFluidKey what) {
             FluidBlitter.create(what)
                     .dest(x, y, 16, 16)
-                    .blit(poseStack);
+                    .blit(guiGraphics);
         }
 
         @Override

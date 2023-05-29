@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -40,15 +38,15 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -59,7 +57,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
-import appeng.api.client.AEKeyRendering;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.parts.IPart;
 import appeng.api.stacks.GenericStack;
@@ -133,7 +130,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
         // in the init method
-        this.itemRenderer = Minecraft.getInstance().getItemRenderer();
         this.font = Minecraft.getInstance().font;
 
         this.style = Objects.requireNonNull(style, "style");
@@ -237,26 +233,26 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
-        super.renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        renderTooltips(poseStack, mouseX, mouseY);
+        renderTooltips(guiGraphics, mouseX, mouseY);
 
         if (AEConfig.instance().isShowDebugGuiOverlays()) {
             // Show a green overlay on exclusion zones
             List<Rect2i> exclusionZones = getExclusionZones();
             for (Rect2i rectangle2d : exclusionZones) {
-                fillRect(poseStack, rectangle2d, 0x7f00FF00);
+                fillRect(guiGraphics, rectangle2d, 0x7f00FF00);
             }
 
-            hLine(poseStack, leftPos, leftPos + imageWidth - 1, topPos, 0xFFFFFFFF);
-            hLine(poseStack, leftPos, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFFFFFFFF);
-            vLine(poseStack, leftPos, topPos, topPos + imageHeight, 0xFFFFFFFF);
-            vLine(poseStack, leftPos + imageWidth - 1, topPos, topPos + imageHeight - 1, 0xFFFFFFFF);
+            guiGraphics.hLine(leftPos, leftPos + imageWidth - 1, topPos, 0xFFFFFFFF);
+            guiGraphics.hLine(leftPos, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFFFFFFFF);
+            guiGraphics.vLine(leftPos, topPos, topPos + imageHeight, 0xFFFFFFFF);
+            guiGraphics.vLine(leftPos + imageWidth - 1, topPos, topPos + imageHeight - 1, 0xFFFFFFFF);
         }
     }
 
@@ -285,12 +281,12 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return null;
     }
 
-    private boolean renderEmptyingTooltip(PoseStack poseStack, int mouseX, int mouseY) {
+    private boolean renderEmptyingTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         // See if we should offer the left-/right-click differentiation for setting a different filter
         var emptyingAction = getEmptyingAction(this.hoveredSlot, menu.getCarried());
         if (emptyingAction != null) {
             drawTooltip(
-                    poseStack,
+                    guiGraphics,
                     mouseX,
                     mouseY,
                     Tooltips.getEmptyingTooltip(ButtonToolTips.SetAction, menu.getCarried(), emptyingAction));
@@ -303,17 +299,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     /**
      * Renders a potential tooltip (from one of the possible tooltip sources)
      */
-    private void renderTooltips(PoseStack poseStack, int mouseX, int mouseY) {
-        if (renderEmptyingTooltip(poseStack, mouseX, mouseY)) {
+    private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (renderEmptyingTooltip(guiGraphics, mouseX, mouseY)) {
             return;
         } else if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
-            var customTooltip = appEngSlot.getCustomTooltip(this::getTooltipFromItem, menu.getCarried());
+            var customTooltip = appEngSlot.getCustomTooltip(menu.getCarried());
             if (customTooltip != null) {
-                drawTooltip(poseStack, mouseX, mouseY, customTooltip);
+                drawTooltip(guiGraphics, mouseX, mouseY, customTooltip);
             }
         }
 
-        this.renderTooltip(poseStack, mouseX, mouseY);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
 
         // The line above should have render a tooltip if this condition is true, and no
         // additional tooltips should be shown
@@ -333,7 +329,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                         && mouseY < area.getY() + area.getHeight()) {
                     var tooltip = new Tooltip(tooltipWidget.getTooltipMessage());
                     if (!tooltip.getContent().isEmpty()) {
-                        drawTooltipWithHeader(poseStack, tooltip, mouseX, mouseY);
+                        drawTooltipWithHeader(guiGraphics, tooltip, mouseX, mouseY);
                     }
                 }
             }
@@ -342,18 +338,18 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         // Widget-container uses screen-relative coordinates while the rest uses window-relative
         Tooltip tooltip = this.widgets.getTooltip(mouseX - leftPos, mouseY - topPos);
         if (tooltip != null) {
-            drawTooltipWithHeader(poseStack, tooltip, mouseX, mouseY);
+            drawTooltipWithHeader(guiGraphics, tooltip, mouseX, mouseY);
         }
     }
 
-    private void drawTooltipWithHeader(PoseStack poseStack, Tooltip tooltip, int mouseX, int mouseY) {
-        drawTooltipWithHeader(poseStack, mouseX, mouseY, tooltip.getContent());
+    private void drawTooltipWithHeader(GuiGraphics guiGraphics, Tooltip tooltip, int mouseX, int mouseY) {
+        drawTooltipWithHeader(guiGraphics, mouseX, mouseY, tooltip.getContent());
     }
 
     /**
      * Draws a tooltip and word-wraps it to a maximum width.
      */
-    public void drawTooltip(PoseStack poseStack, int x, int y, List<Component> lines) {
+    public void drawTooltip(GuiGraphics guiGraphics, int x, int y, List<Component> lines) {
         if (lines.isEmpty()) {
             return;
         }
@@ -369,14 +365,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         for (Component line : lines) {
             styledLines.addAll(ComponentRenderUtils.wrapComponents(line, maxWidth, font));
         }
-        this.renderTooltip(poseStack, styledLines, x, y);
+        guiGraphics.renderTooltip(font, styledLines, x, y);
 
     }
 
     /**
      * Draws a tooltip and word-wraps it to a maximum width.
      */
-    public void drawTooltipWithHeader(PoseStack poseStack, int x, int y, List<Component> lines) {
+    public void drawTooltipWithHeader(GuiGraphics guiGraphics, int x, int y, List<Component> lines) {
         if (lines.isEmpty()) {
             return;
         }
@@ -389,28 +385,28 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 formattedLines.add(lines.get(i));
             }
         }
-        drawTooltip(poseStack, x, y, formattedLines);
+        drawTooltip(guiGraphics, x, y, formattedLines);
     }
 
     @Override
-    protected final void renderLabels(PoseStack poseStack, int x, int y) {
+    protected final void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         final int ox = this.leftPos;
         final int oy = this.topPos;
 
-        widgets.drawForegroundLayer(poseStack, getBounds(false), new Point(x - ox, y - oy));
+        widgets.drawForegroundLayer(guiGraphics, getBounds(false), new Point(x - ox, y - oy));
 
-        this.drawFG(poseStack, ox, oy, x, y);
+        this.drawFG(guiGraphics, ox, oy, x, y);
 
         if (style != null) {
-            for (Map.Entry<String, Text> entry : style.getText().entrySet()) {
+            for (var entry : style.getText().entrySet()) {
                 // Process text overrides
-                TextOverride override = textOverrides.get(entry.getKey());
-                drawText(poseStack, entry.getValue(), override);
+                var override = textOverrides.get(entry.getKey());
+                drawText(guiGraphics, entry.getValue(), override);
             }
         }
     }
 
-    private void drawText(PoseStack poseStack, Text text, @Nullable TextOverride override) {
+    private void drawText(GuiGraphics guiGraphics, Text text, @Nullable TextOverride override) {
         // Don't draw if the screen decided to hide this
         if (override != null && override.isHidden()) {
             return;
@@ -437,7 +433,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             lines = this.font.split(content, text.getMaxWidth());
         }
 
-        float y = pos.getY();
+        int y = pos.getY();
         for (var line : lines) {
             int lineWidth = this.font.width(line);
             int x = pos.getX();
@@ -450,47 +446,43 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
 
             if (text.getScale() == 1) {
-                this.font.draw(
-                        poseStack,
-                        line,
-                        x,
-                        y,
-                        color);
+                guiGraphics.drawString(font, line, x, y, color, false);
             } else {
-                poseStack.pushPose();
-                poseStack.translate(x, y, 0);
-                poseStack.scale(text.getScale(), text.getScale(), 1);
-                this.font.draw(
-                        poseStack,
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(x, y, 1);
+                guiGraphics.pose().scale(scale, scale, 1);
+                guiGraphics.drawString(
+                        font,
                         line,
                         0,
                         0,
-                        color);
-                poseStack.popPose();
+                        color,
+                        false);
+                guiGraphics.pose().popPose();
             }
             y += text.getScale() * this.font.lineHeight;
         }
     }
 
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY) {
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
     }
 
     @Override
-    protected final void renderBg(PoseStack poseStack, float f, int x,
+    protected final void renderBg(GuiGraphics guiGraphics, float f, int x,
             int y) {
 
-        this.drawBG(poseStack, leftPos, topPos, x, y, f);
+        this.drawBG(guiGraphics, leftPos, topPos, x, y, f);
 
-        widgets.drawBackgroundLayer(poseStack, getBounds(true), new Point(x - leftPos, y - topPos));
+        widgets.drawBackgroundLayer(guiGraphics, getBounds(true), new Point(x - leftPos, y - topPos));
 
         for (Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
-                drawOptionalSlotBackground(poseStack, (IOptionalSlot) slot, false);
+                drawOptionalSlotBackground(guiGraphics, (IOptionalSlot) slot, false);
             }
         }
     }
 
-    private void drawOptionalSlotBackground(PoseStack poseStack, IOptionalSlot slot, boolean alwaysDraw) {
+    private void drawOptionalSlotBackground(GuiGraphics guiGraphics, IOptionalSlot slot, boolean alwaysDraw) {
         // If a slot is optional and doesn't currently render, we still need to provide a background for it
         if (alwaysDraw || slot.isRenderDisabled()) {
             // If the slot is disabled, shade the background overlay
@@ -501,7 +493,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             Icon.SLOT_BACKGROUND.getBlitter()
                     .dest(leftPos + pos.getX(), topPos + pos.getY())
                     .color(1, 1, 1, alpha)
-                    .blit(poseStack);
+                    .blit(guiGraphics);
         }
     }
 
@@ -731,7 +723,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return super.isHovering(slot, x, y);
     }
 
-    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY,
+    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
 
         var generatedBackground = style.getGeneratedBackground();
@@ -739,23 +731,21 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             BackgroundGenerator.draw(
                     generatedBackground.getWidth(),
                     generatedBackground.getHeight(),
-                    poseStack,
+                    guiGraphics,
                     offsetX,
                     offsetY);
         }
 
         var background = style.getBackground();
         if (background != null) {
-            background.dest(offsetX, offsetY).blit(poseStack);
+            background.dest(offsetX, offsetY).blit(guiGraphics);
         }
 
     }
 
-    public void drawItem(PoseStack pose, int x, int y, ItemStack is) {
-        pose.pushPose();
-        pose.translate(0, 0, 100);
-        this.itemRenderer.renderAndDecorateItem(pose, is, x, y);
-        pose.popPose();
+    public void drawItem(GuiGraphics guiGraphics, int x, int y, ItemStack is) {
+        guiGraphics.renderItem(is, x, y);
+        guiGraphics.renderItemDecorations(font, is, x, y);
     }
 
     protected Component getGuiDisplayName(Component in) {
@@ -766,19 +756,19 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    public void renderSlot(PoseStack poseStack, Slot s) {
+    public void renderSlot(GuiGraphics guiGraphics, Slot s) {
         if (s instanceof AppEngSlot appEngSlot) {
             try {
-                renderAppEngSlot(poseStack, appEngSlot);
+                renderAppEngSlot(guiGraphics, appEngSlot);
             } catch (Exception err) {
                 AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
         } else {
-            super.renderSlot(poseStack, s);
+            super.renderSlot(guiGraphics, s);
         }
     }
 
-    private void renderAppEngSlot(PoseStack poseStack, AppEngSlot s) {
+    private void renderAppEngSlot(GuiGraphics guiGraphics, AppEngSlot s) {
         var is = s.getItem();
 
         // If the slot has a background icon, render it, but only if the slot is empty
@@ -787,20 +777,15 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             s.getIcon().getBlitter()
                     .dest(s.x, s.y)
                     .opacity(s.getOpacityOfIcon())
-                    .blit(poseStack);
+                    .blit(guiGraphics);
         }
 
         // Draw a red background for slots that are in an invalid state
         if (!s.isValid()) {
-            fill(poseStack, s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
+            guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
         }
 
-        super.renderSlot(poseStack, s);
-    }
-
-    public void bindTexture(String file) {
-        final ResourceLocation loc = new ResourceLocation(AppEng.MOD_ID, "textures/" + file);
-        RenderSystem.setShaderTexture(0, loc);
+        super.renderSlot(guiGraphics, s);
     }
 
     @Override
@@ -809,7 +794,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         widgets.tick();
 
-        for (GuiEventListener child : children()) {
+        for (var child : children()) {
             if (child instanceof ITickingWidget) {
                 ((ITickingWidget) child).tick();
             }
@@ -843,8 +828,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return result;
     }
 
-    protected void fillRect(PoseStack poseStack, Rect2i rect, int color) {
-        fill(poseStack, rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(), color);
+    protected void fillRect(GuiGraphics guiGraphics, Rect2i rect, int color) {
+        guiGraphics.fill(rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(),
+                color);
     }
 
     private TextOverride getOrCreateTextOverride(String id) {
@@ -927,19 +913,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return a.container == b.container;
     }
 
-    @Override
-    public List<Component> getTooltipFromItem(ItemStack stack) {
-        var unwrapped = GenericStack.unwrapItemStack(stack);
-        if (unwrapped != null) {
-            return AEKeyRendering.getTooltip(unwrapped.what());
-        }
-        return super.getTooltipFromItem(stack);
-    }
-
     /**
      * Used by mixin to render the slot highlight.
      */
-    public void renderCustomSlotHighlight(PoseStack poseStack, int x, int y, int z) {
+    public void renderCustomSlotHighlight(GuiGraphics guiGraphics, int x, int y, int z) {
         int w, h;
         if (this.hoveredSlot instanceof ResizableSlot resizableSlot) {
             w = resizableSlot.getWidth();
@@ -950,11 +927,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // Same as the Vanilla method, just with dynamic width and height
-        RenderSystem.disableDepthTest();
-        RenderSystem.colorMask(true, true, true, false);
-        fillGradient(poseStack, x, y, x + w, y + h, 0x80ffffff, 0x80ffffff, z);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.enableDepthTest();
+        guiGraphics.fillGradient(RenderType.guiOverlay(), x, y, x + w, y + h, 0x80ffffff, 0x80ffffff, z);
     }
 
     protected final void switchToScreen(AEBaseScreen<?> screen) {

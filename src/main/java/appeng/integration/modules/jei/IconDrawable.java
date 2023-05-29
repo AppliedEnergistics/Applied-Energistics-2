@@ -33,6 +33,7 @@ final class IconDrawable implements IDrawable {
 
     @Override
     public void draw(PoseStack poseStack, int xOffset, int yOffset) {
-        blitter.dest(x + xOffset, y + yOffset).blit(poseStack);
+        // TODO 1.20 GuiGraphics
+        // blitter.dest(x + xOffset, y + yOffset).blit(poseStack);
     }
 }

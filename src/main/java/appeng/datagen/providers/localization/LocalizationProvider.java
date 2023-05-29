@@ -120,8 +120,6 @@ public class LocalizationProvider implements IAE2DataProvider {
         add("gui.ae2.PatternEncoding.secondary_processing_result_hint",
                 "Can not be directly requested through the automated crafting system, but will be used before stored items in multi-step recipes.");
         add("gui.ae2.PatternEncoding.secondary_processing_result_tooltip", "Secondary Processing Result");
-        add("itemGroup.ae2.facades", "Applied Energistics 2 - Facades");
-        add("itemGroup.ae2.main", "Applied Energistics 2");
         add("key.ae2.category", "Applied Energistics 2");
         add("key.ae2.portable_fluid_cell", "Open Portable Fluid Cell");
         add("key.ae2.portable_item_cell", "Open Portable Item Cell");

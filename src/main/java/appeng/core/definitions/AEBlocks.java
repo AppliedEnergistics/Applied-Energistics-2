@@ -19,6 +19,9 @@
 package appeng.core.definitions;
 
 import static appeng.block.AEBaseBlock.defaultProps;
+import static appeng.block.AEBaseBlock.glassProps;
+import static appeng.block.AEBaseBlock.metalProps;
+import static appeng.block.AEBaseBlock.stoneProps;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +37,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -41,8 +45,7 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 
 import appeng.api.ids.AEBlockIds;
 import appeng.block.AEBaseBlock;
@@ -105,15 +108,15 @@ import appeng.decorative.solid.QuartzLampBlock;
 public final class AEBlocks {
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
-    private static final Properties QUARTZ_CLUSTER_PROPERTIES = defaultProps(Material.AMETHYST,
-            MaterialColor.COLOR_CYAN).strength(1.5f).requiresCorrectToolForDrops();
-    private static final Properties QUARTZ_PROPERTIES = defaultProps(Material.STONE)
+    private static final Properties QUARTZ_CLUSTER_PROPERTIES = defaultProps(MapColor.COLOR_CYAN,
+            SoundType.AMETHYST_CLUSTER).strength(1.5f).requiresCorrectToolForDrops();
+    private static final Properties QUARTZ_PROPERTIES = stoneProps()
             .strength(3, 5).requiresCorrectToolForDrops();
-    private static final Properties SKYSTONE_PROPERTIES = defaultProps(Material.STONE)
+    private static final Properties SKYSTONE_PROPERTIES = stoneProps()
             .strength(5, 150).requiresCorrectToolForDrops();
     private static final StateArgumentPredicate<EntityType<?>> NEVER_ALLOW_SPAWN = (p1, p2, p3,
             p4) -> false;
-    private static final Properties SKY_STONE_CHEST_PROPS = defaultProps(Material.STONE)
+    private static final Properties SKY_STONE_CHEST_PROPS = stoneProps()
             .strength(5, 150).noOcclusion();
 
     // spotless:off
@@ -135,13 +138,13 @@ public final class AEBlocks {
     public static final BlockDefinition<RotatedPillarBlock> QUARTZ_PILLAR = block("Certus Quartz Pillar", AEBlockIds.QUARTZ_PILLAR, () -> new RotatedPillarBlock(QUARTZ_PROPERTIES));
     public static final BlockDefinition<AEDecorativeBlock> CHISELED_QUARTZ_BLOCK = block("Chiseled Certus Quartz Block", AEBlockIds.CHISELED_QUARTZ_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
 
-    public static final BlockDefinition<QuartzGlassBlock> QUARTZ_GLASS = block("Quartz Glass", AEBlockIds.QUARTZ_GLASS, () -> new QuartzGlassBlock(defaultProps(Material.GLASS).noOcclusion().isValidSpawn(NEVER_ALLOW_SPAWN)));
-    public static final BlockDefinition<QuartzLampBlock> QUARTZ_VIBRANT_GLASS = block("Vibrant Quartz Glass", AEBlockIds.QUARTZ_VIBRANT_GLASS, () -> new QuartzLampBlock(defaultProps(Material.GLASS).lightLevel(b -> 15).noOcclusion()
+    public static final BlockDefinition<QuartzGlassBlock> QUARTZ_GLASS = block("Quartz Glass", AEBlockIds.QUARTZ_GLASS, () -> new QuartzGlassBlock(glassProps().noOcclusion().isValidSpawn(NEVER_ALLOW_SPAWN)));
+    public static final BlockDefinition<QuartzLampBlock> QUARTZ_VIBRANT_GLASS = block("Vibrant Quartz Glass", AEBlockIds.QUARTZ_VIBRANT_GLASS, () -> new QuartzLampBlock(glassProps().lightLevel(b -> 15).noOcclusion()
             .isValidSpawn(NEVER_ALLOW_SPAWN)));
 
     public static final BlockDefinition<QuartzFixtureBlock> QUARTZ_FIXTURE = block("Charged Quartz Fixture", AEBlockIds.QUARTZ_FIXTURE, QuartzFixtureBlock::new);
     public static final BlockDefinition<AEDecorativeBlock> FLUIX_BLOCK = block("Fluix Block", AEBlockIds.FLUIX_BLOCK, () -> new AEDecorativeBlock(QUARTZ_PROPERTIES));
-    public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_BLOCK = block("Sky Stone", AEBlockIds.SKY_STONE_BLOCK, () -> new AEDecorativeBlock(defaultProps(Material.STONE).strength(50, 150).requiresCorrectToolForDrops()));
+    public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_BLOCK = block("Sky Stone", AEBlockIds.SKY_STONE_BLOCK, () -> new AEDecorativeBlock(stoneProps().strength(50, 150).requiresCorrectToolForDrops()));
 
     public static final BlockDefinition<AEDecorativeBlock> SMOOTH_SKY_STONE_BLOCK = block("Sky Stone Block", AEBlockIds.SMOOTH_SKY_STONE_BLOCK, () -> new AEDecorativeBlock(SKYSTONE_PROPERTIES));
     public static final BlockDefinition<AEDecorativeBlock> SKY_STONE_BRICK = block("Sky Stone Brick", AEBlockIds.SKY_STONE_BRICK, () -> new AEDecorativeBlock(SKYSTONE_PROPERTIES));
@@ -154,11 +157,11 @@ public final class AEBlocks {
     public static final BlockDefinition<MysteriousCubeBlock> MYSTERIOUS_CUBE = block("Mysterious Cube", AEBlockIds.MYSTERIOUS_CUBE, MysteriousCubeBlock::new);
     public static final BlockDefinition<NotSoMysteriousCubeBlock> NOT_SO_MYSTERIOUS_CUBE = block("Not So Mysterious Cube", AEBlockIds.NOT_SO_MYSTERIOUS_CUBE, NotSoMysteriousCubeBlock::new);
 
-    public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, () -> new InscriberBlock(defaultProps(Material.METAL).noOcclusion()));
+    public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, () -> new InscriberBlock(metalProps().noOcclusion()));
     public static final BlockDefinition<WirelessAccessPointBlock> WIRELESS_ACCESS_POINT = block("ME Wireless Access Point", AEBlockIds.WIRELESS_ACCESS_POINT, WirelessAccessPointBlock::new);
     public static final BlockDefinition<ChargerBlock> CHARGER = block("Charger", AEBlockIds.CHARGER, ChargerBlock::new);
 
-    public static final BlockDefinition<TinyTNTBlock> TINY_TNT = block("Tiny TNT", AEBlockIds.TINY_TNT, () -> new TinyTNTBlock(defaultProps(Material.EXPLOSIVE).sound(SoundType.GRAVEL).strength(0).noOcclusion()));
+    public static final BlockDefinition<TinyTNTBlock> TINY_TNT = block("Tiny TNT", AEBlockIds.TINY_TNT, () -> new TinyTNTBlock(defaultProps(MapColor.FIRE, SoundType.GRAVEL).strength(0).noOcclusion()));
 
     public static final BlockDefinition<QuantumRingBlock> QUANTUM_RING = block("ME Quantum Ring", AEBlockIds.QUANTUM_RING, QuantumRingBlock::new);
     public static final BlockDefinition<QuantumLinkChamberBlock> QUANTUM_LINK = block("ME Quantum Link Chamber", AEBlockIds.QUANTUM_LINK, QuantumLinkChamberBlock::new);
@@ -178,21 +181,21 @@ public final class AEBlocks {
     public static final BlockDefinition<EnergyCellBlock> DENSE_ENERGY_CELL = block("Dense Energy Cell", AEBlockIds.DENSE_ENERGY_CELL, () -> new EnergyCellBlock(1600000, 1600, 1600), EnergyCellBlockItem::new);
     public static final BlockDefinition<CreativeEnergyCellBlock> CREATIVE_ENERGY_CELL = block("Creative Energy Cell", AEBlockIds.CREATIVE_ENERGY_CELL, CreativeEnergyCellBlock::new);
 
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block("Crafting Unit", AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.UNIT));
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = craftingBlock("Crafting Co-Processing Unit", AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.ACCELERATOR), () -> AEItems.ENGINEERING_PROCESSOR);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_1K = craftingBlock("1k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_1K), () -> AEItems.CELL_COMPONENT_1K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_4K = craftingBlock("4k Crafting Storage",AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_4K), () -> AEItems.CELL_COMPONENT_4K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_16K = craftingBlock("16k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_16K), () -> AEItems.CELL_COMPONENT_16K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_64K = craftingBlock("64k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_64K), () -> AEItems.CELL_COMPONENT_64K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_256K = craftingBlock("256k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_256K, () -> new CraftingUnitBlock(defaultProps(Material.METAL), CraftingUnitType.STORAGE_256K), () -> AEItems.CELL_COMPONENT_256K);
-    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock("Crafting Monitor",AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(defaultProps(Material.METAL), CraftingUnitType.MONITOR), () -> AEParts.STORAGE_MONITOR);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block("Crafting Unit", AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(CraftingUnitType.UNIT));
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = craftingBlock("Crafting Co-Processing Unit", AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(CraftingUnitType.ACCELERATOR), () -> AEItems.ENGINEERING_PROCESSOR);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_1K = craftingBlock("1k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_1K), () -> AEItems.CELL_COMPONENT_1K);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_4K = craftingBlock("4k Crafting Storage",AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_4K), () -> AEItems.CELL_COMPONENT_4K);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_16K = craftingBlock("16k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_16K), () -> AEItems.CELL_COMPONENT_16K);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_64K = craftingBlock("64k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_64K), () -> AEItems.CELL_COMPONENT_64K);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_256K = craftingBlock("256k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_256K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_256K), () -> AEItems.CELL_COMPONENT_256K);
+    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock("Crafting Monitor",AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(CraftingUnitType.MONITOR), () -> AEParts.STORAGE_MONITOR);
 
     private static <T extends Block> BlockDefinition<T> craftingBlock(String englishName, ResourceLocation id, Supplier<T> blockSupplier, Supplier<ItemLike> disassemblyExtra) {
         return block(englishName, id, blockSupplier, (block, props) -> new CraftingBlockItem(block, props, disassemblyExtra));
     }
 
     public static final BlockDefinition<PatternProviderBlock> PATTERN_PROVIDER = block("ME Pattern Provider", AEBlockIds.PATTERN_PROVIDER, PatternProviderBlock::new);
-    public static final BlockDefinition<MolecularAssemblerBlock> MOLECULAR_ASSEMBLER = block("Molecular Assembler", AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(defaultProps(Material.METAL).noOcclusion()));
+    public static final BlockDefinition<MolecularAssemblerBlock> MOLECULAR_ASSEMBLER = block("Molecular Assembler", AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(metalProps().noOcclusion()));
 
     public static final BlockDefinition<LightDetectorBlock> LIGHT_DETECTOR = block("Light Detecting Fixture", AEBlockIds.LIGHT_DETECTOR, LightDetectorBlock::new);
     public static final BlockDefinition<PaintSplotchesBlock> PAINT = block("Paint", AEBlockIds.PAINT, PaintSplotchesBlock::new);
@@ -247,7 +250,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block("Dev.CubeGen", AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new);
     public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block("Dev.EnergyGen", AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new);
 
-    public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(Material.WOOD).nonOpaque().noCollision()));
+    public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(MapColor.WOOD, SoundType.WOOD).isViewBlocking(Blocks::never).noCollission()));
 
     // spotless:on
 

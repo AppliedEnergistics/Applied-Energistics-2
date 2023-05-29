@@ -76,9 +76,9 @@ class Scene {
         SectionPos.betweenClosedStream(
                 secMin.x(), secMin.y(), secMin.z(),
                 secMax.x(), secMax.y(), secMax.z()).forEach(sectionPos -> {
-                    lightEngine.queueSectionData(LightLayer.SKY, sectionPos, dataLayer, true);
-                    lightEngine.queueSectionData(LightLayer.BLOCK, sectionPos, dataLayer, true);
-                    lightEngine.runUpdates(Integer.MAX_VALUE, true, true);
+                    lightEngine.queueSectionData(LightLayer.SKY, sectionPos, dataLayer);
+                    lightEngine.queueSectionData(LightLayer.BLOCK, sectionPos, dataLayer);
+                    lightEngine.runLightUpdates();
                 });
 
     }

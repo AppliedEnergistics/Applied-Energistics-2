@@ -566,7 +566,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     }
 
     public void importSettings(CompoundTag input, @Nullable Player player) {
-        if (player != null && input.contains(NBT_MEMORY_CARD_PATTERNS) && !player.level.isClientSide) {
+        if (player != null && input.contains(NBT_MEMORY_CARD_PATTERNS) && !player.level().isClientSide) {
             clearPatternInventory(player);
 
             var desiredPatterns = new AppEngInternalInventory(patternInventory.size());

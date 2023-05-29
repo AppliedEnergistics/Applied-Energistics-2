@@ -49,7 +49,7 @@ public final class AESubScreen {
         }
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         TabButton button = new TabButton(icon, label,
-                itemRenderer, btn -> {
+                btn -> {
                     goBack();
                 });
         widgets.add(id, button);

@@ -50,7 +50,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
@@ -251,8 +250,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 // The first smelted drop that could be placed as a block itself will not be dropped, but
                 // rather replace the current block.
                 if (smeltedBlockState == null
-                        && smeltedBlock != Blocks.AIR
-                        && smeltedBlock.defaultBlockState().getMaterial() != Material.AIR) {
+                        && !smeltedBlock.defaultBlockState().isAir()) {
                     smeltedBlockState = smeltedBlock.defaultBlockState();
                     continue;
                 }

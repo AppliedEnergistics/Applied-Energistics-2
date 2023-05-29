@@ -23,9 +23,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -68,7 +67,6 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             var tabButton = new TabButton(
                     panel.getTabIconItem(),
                     panel.getTabTooltip(),
-                    this.itemRenderer,
                     btn -> getMenu().setMode(mode));
             tabButton.setStyle(TabButton.Style.HORIZONTAL);
 
@@ -121,17 +119,17 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
      * When in processing mode, show a hint in the tooltip that middle-click will open the amount entry dialog.
      */
     @Override
-    protected void renderTooltip(PoseStack poseStack, int x, int y) {
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         if (this.menu.getCarried().isEmpty() && menu.canModifyAmountForSlot(this.hoveredSlot)) {
-            var itemTooltip = new ArrayList<>(getTooltipFromItem(this.hoveredSlot.getItem()));
+            var itemTooltip = new ArrayList<>(getTooltipFromContainerItem(this.hoveredSlot.getItem()));
             var unwrapped = GenericStack.fromItemStack(this.hoveredSlot.getItem());
             if (unwrapped != null) {
                 itemTooltip.add(Tooltips.getAmountTooltip(ButtonToolTips.Amount, unwrapped));
             }
             itemTooltip.add(Tooltips.getSetAmountTooltip());
-            drawTooltip(poseStack, x, y, itemTooltip);
+            drawTooltip(guiGraphics, x, y, itemTooltip);
         } else {
-            super.renderTooltip(poseStack, x, y);
+            super.renderTooltip(guiGraphics, x, y);
         }
     }
 
@@ -151,20 +149,21 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     }
 
     @Override
-    public void renderSlot(PoseStack poseStack, Slot s) {
-        super.renderSlot(poseStack, s);
+    public void renderSlot(GuiGraphics guiGraphics, Slot s) {
+        super.renderSlot(guiGraphics, s);
 
         if (shouldShowCraftableIndicatorForSlot(s)) {
+            var poseStack = guiGraphics.pose();
             poseStack.pushPose();
             poseStack.translate(0, 0, 100); // Items are rendered with offset of 100, offset text too.
-            StackSizeRenderer.renderSizeLabel(poseStack, this.font, s.x - 11, s.y - 11, "+", false);
+            StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x - 11, s.y - 11, "+", false);
             poseStack.popPose();
         }
     }
 
     @Override
-    public List<Component> getTooltipFromItem(ItemStack stack) {
-        var lines = super.getTooltipFromItem(stack);
+    protected List<Component> getTooltipFromContainerItem(ItemStack stack) {
+        var lines = super.getTooltipFromContainerItem(stack);
 
         // Append an indication to the tooltip that the item is craftable
         if (hoveredSlot != null && shouldShowCraftableIndicatorForSlot(hoveredSlot)) {
@@ -180,6 +179,9 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         var semantic = menu.getSlotSemantic(s);
         if (semantic == SlotSemantics.CRAFTING_GRID
                 || semantic == SlotSemantics.PROCESSING_INPUTS
+                || semantic == SlotSemantics.SMITHING_TABLE_ADDITION
+                || semantic == SlotSemantics.SMITHING_TABLE_BASE
+                || semantic == SlotSemantics.SMITHING_TABLE_TEMPLATE
                 || semantic == SlotSemantics.STONECUTTING_INPUT) {
             var slotContent = GenericStack.fromItemStack(s.getItem());
             if (slotContent == null) {

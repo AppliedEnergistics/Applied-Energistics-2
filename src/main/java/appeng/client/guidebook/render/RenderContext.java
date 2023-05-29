@@ -9,7 +9,7 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -40,7 +40,11 @@ public interface RenderContext {
         return lightDarkMode() == LightDarkMode.DARK_MODE;
     }
 
-    PoseStack poseStack();
+    GuiGraphics guiGraphics();
+
+    default PoseStack poseStack() {
+        return guiGraphics().pose();
+    }
 
     LytRect viewport();
 
@@ -184,19 +188,19 @@ public interface RenderContext {
         var key = AEFluidKey.of(fluid, tag);
         FluidBlitter.create(key)
                 .dest(x, y, width, height)
-                .blit(poseStack());
+                .blit(guiGraphics());
     }
 
     void renderItem(ItemStack stack, int x, int y, int z, float width, float height);
 
     default void renderPanel(LytRect bounds) {
-        BackgroundGenerator.draw(bounds.width(), bounds.height(), poseStack(), bounds.x(), bounds.y());
+        BackgroundGenerator.draw(bounds.width(), bounds.height(), guiGraphics(), bounds.x(), bounds.y());
     }
 
     default void pushScissor(LytRect bounds) {
         var dest = new Vector3f();
         poseStack().last().pose().transformPosition(bounds.x(), bounds.y(), 0, dest);
-        GuiComponent.enableScissor(
+        guiGraphics().enableScissor(
                 (int) dest.x(),
                 (int) dest.y(),
                 (int) (dest.x() + bounds.width()),
@@ -204,6 +208,6 @@ public interface RenderContext {
     }
 
     default void popScissor() {
-        GuiComponent.disableScissor();
+        guiGraphics().disableScissor();
     }
 }

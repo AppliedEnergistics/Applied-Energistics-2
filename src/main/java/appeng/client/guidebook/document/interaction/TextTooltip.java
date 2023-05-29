@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
@@ -34,7 +33,7 @@ public class TextTooltip implements GuideTooltip {
     }
 
     @Override
-    public List<ClientTooltipComponent> getLines(Screen screen) {
+    public List<ClientTooltipComponent> getLines() {
         return lines;
     }
 }

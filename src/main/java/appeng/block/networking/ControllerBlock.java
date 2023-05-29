@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
@@ -78,7 +77,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
             ControllerRenderType.class);
 
     public ControllerBlock() {
-        super(defaultProps(Material.METAL).strength(6));
+        super(metalProps().strength(6));
         this.registerDefaultState(this.defaultBlockState().setValue(CONTROLLER_STATE, ControllerBlockState.offline)
                 .setValue(CONTROLLER_TYPE, ControllerRenderType.block));
     }

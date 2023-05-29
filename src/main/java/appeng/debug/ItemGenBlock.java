@@ -25,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.block.AEBaseEntityBlock;
@@ -33,7 +32,7 @@ import appeng.block.AEBaseEntityBlock;
 public class ItemGenBlock extends AEBaseEntityBlock<ItemGenBlockEntity> {
 
     public ItemGenBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 
     @Override

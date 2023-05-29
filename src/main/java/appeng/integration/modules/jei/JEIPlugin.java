@@ -318,6 +318,7 @@ public class JEIPlugin implements IModPlugin {
             return;
         }
 
-        screen.renderTooltip(poseStack, textLines, Optional.empty(), x, y);
+        // TODO 1.20 GuiGraphics
+        // screen.renderTooltip(poseStack, textLines, Optional.empty(), x, y);
     }
 }

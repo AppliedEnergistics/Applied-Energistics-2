@@ -192,7 +192,7 @@ public class SpatialStorageCommand implements ISubCommand {
         TransitionInfo lastTransition = plot.getLastTransition();
         if (lastTransition != null) {
             source.sendSuccess(
-                    PlayerMessages.LastTransition.text().withStyle(ChatFormatting.UNDERLINE, ChatFormatting.BOLD),
+                    () -> PlayerMessages.LastTransition.text().withStyle(ChatFormatting.UNDERLINE, ChatFormatting.BOLD),
                     true);
 
             String sourceWorldId = lastTransition.getWorldId().toString();
@@ -204,7 +204,7 @@ public class SpatialStorageCommand implements ISubCommand {
             sendKeyValuePair(source, PlayerMessages.Source.text(), sourceLink);
             sendKeyValuePair(source, PlayerMessages.When.text(), lastTransition.getTimestamp().toString());
         } else {
-            source.sendSuccess(PlayerMessages.LastTransitionUnknown.text(), true);
+            source.sendSuccess(() -> PlayerMessages.LastTransitionUnknown.text(), true);
         }
 
     }
@@ -254,14 +254,14 @@ public class SpatialStorageCommand implements ISubCommand {
         try {
             SpatialStoragePlotManager.INSTANCE.getLevel();
         } catch (IllegalStateException e) {
-            sender.sendSuccess(PlayerMessages.NoSpatialIOLevel.text(e.getMessage()), true);
+            sender.sendSuccess(() -> PlayerMessages.NoSpatialIOLevel.text(e.getMessage()), true);
             return;
         }
 
         List<SpatialStoragePlot> plots = new ArrayList<>(SpatialStoragePlotManager.INSTANCE.getPlots());
 
         if (plots.isEmpty()) {
-            sender.sendSuccess(PlayerMessages.NoSpatialIOPlots.text(), true);
+            sender.sendSuccess(() -> PlayerMessages.NoSpatialIOPlots.text(), true);
             return;
         }
 
@@ -289,7 +289,7 @@ public class SpatialStorageCommand implements ISubCommand {
             MutableComponent message = Component.literal("").append(infoLink).append(" ")
                     .append(PlayerMessages.Size.text()).append(": " + size + " ").append(tpLink);
 
-            sender.sendSuccess(message, true);
+            sender.sendSuccess(() -> message, true);
         }
 
     }
@@ -323,7 +323,7 @@ public class SpatialStorageCommand implements ISubCommand {
     }
 
     private static void sendKeyValuePair(CommandSourceStack source, MutableComponent label, Component value) {
-        source.sendSuccess(label.append(": ").withStyle(ChatFormatting.BOLD).append(value), true);
+        source.sendSuccess(() -> label.append(": ").withStyle(ChatFormatting.BOLD).append(value), true);
     }
 
     private static void sendKeyValuePair(CommandSourceStack source, MutableComponent label, String value) {

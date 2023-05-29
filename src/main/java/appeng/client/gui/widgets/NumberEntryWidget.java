@@ -33,12 +33,11 @@ import java.util.OptionalLong;
 import java.util.function.Consumer;
 
 import com.google.common.primitives.Longs;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
@@ -59,7 +58,7 @@ import appeng.core.localization.GuiText;
  * A utility widget that consists of a text-field to enter a number with attached buttons to increment/decrement the
  * number in fixed intervals.
  */
-public class NumberEntryWidget extends GuiComponent implements ICompositeWidget {
+public class NumberEntryWidget implements ICompositeWidget {
 
     private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
     private static final Component PLUS = Component.literal("+");
@@ -392,15 +391,13 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         if (type.unit() != null) {
             var font = Minecraft.getInstance().font;
-            font.draw(
-                    poseStack,
-                    type.unit(),
-                    bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3,
-                    bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f + 1,
-                    ChatFormatting.DARK_GRAY.getColor());
+            var x = bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3;
+            var y = (int) (bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f
+                    + 1);
+            guiGraphics.drawString(font, type.unit(), x, y, ChatFormatting.DARK_GRAY.getColor(), false);
         }
     }
 

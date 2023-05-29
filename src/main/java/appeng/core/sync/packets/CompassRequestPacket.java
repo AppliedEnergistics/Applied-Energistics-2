@@ -59,7 +59,7 @@ public class CompassRequestPacket extends BasePacket {
     @Override
     public void serverPacketData(ServerPlayer player) {
         var pos = new ChunkPos(this.cx, this.cz);
-        var result = CompassService.getDirection(player.getLevel(), pos, 174);
+        var result = CompassService.getDirection(player.serverLevel(), pos, 174);
 
         var responsePacket = new CompassResponsePacket(this, result.hasResult(), result.spin(), result.radians());
         NetworkHandler.instance().sendTo(responsePacket, player);

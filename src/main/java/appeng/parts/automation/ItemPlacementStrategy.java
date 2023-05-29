@@ -48,7 +48,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
     }
 
     public void clearBlocked() {
-        this.blocked = !level.getBlockState(pos).getMaterial().isReplaceable();
+        this.blocked = !level.getBlockState(pos).canBeReplaced();
     }
 
     public final long placeInWorld(AEKey what, long amount, Actionable type, boolean placeAsEntity) {
@@ -66,7 +66,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
         final var placePos = pos;
 
-        if (level.getBlockState(placePos).getMaterial().isReplaceable()) {
+        if (level.getBlockState(placePos).canBeReplaced()) {
             if (placeAsEntity) {
                 final var sum = this.countEntitesAround(level, placePos);
 
@@ -114,7 +114,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
             }
         }
 
-        this.blocked = !level.getBlockState(placePos).getMaterial().isReplaceable();
+        this.blocked = !level.getBlockState(placePos).canBeReplaced();
 
         if (worked) {
             return maxStorage;

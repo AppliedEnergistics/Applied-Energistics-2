@@ -19,7 +19,6 @@
 package appeng.menu.slot;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
@@ -81,8 +80,7 @@ public class AppEngSlot extends Slot {
      * @return Null if default tooltip should be shown. Empty to suppress tooltip entirely.
      */
     @Nullable
-    public List<Component> getCustomTooltip(Function<ItemStack, List<Component>> getItemTooltip,
-            ItemStack carriedItem) {
+    public List<Component> getCustomTooltip(ItemStack carriedItem) {
         if (getDisplayStack().isEmpty()) {
             var tooltip = emptyTooltip.get();
             if (tooltip != null) {

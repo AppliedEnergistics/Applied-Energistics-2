@@ -42,7 +42,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 
 import appeng.core.AEConfig;
@@ -96,15 +95,15 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
         this.setDeltaMovement(
                 this.getDeltaMovement().multiply(0.9800000190734863D, 0.9800000190734863D, 0.9800000190734863D));
 
-        if (this.onGround) {
+        if (this.onGround()) {
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.699999988079071D, 0.699999988079071D, -0.5D));
         }
 
-        if (this.isInWater() && !this.level.isClientSide()) // put out the fuse.
+        if (this.isInWater() && !this.level().isClientSide()) // put out the fuse.
         {
             ItemStack tntStack = AEBlocks.TINY_TNT.stack();
 
-            final ItemEntity item = new ItemEntity(this.level, this.getX(), this.getY(), this.getZ(),
+            final ItemEntity item = new ItemEntity(this.level(), this.getX(), this.getY(), this.getZ(),
                     tntStack);
 
             item.setDeltaMovement(this.getDeltaMovement());
@@ -112,18 +111,18 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
             item.yo = this.yo;
             item.zo = this.zo;
 
-            this.level.addFreshEntity(item);
+            this.level().addFreshEntity(item);
             this.discard();
         }
 
         if (this.getFuse() <= 0) {
             this.discard();
 
-            if (!this.level.isClientSide) {
+            if (!this.level().isClientSide) {
                 this.explode();
             }
         } else {
-            this.level.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D,
+            this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D,
                     0.0D);
         }
         this.setFuse(this.getFuse() - 1);
@@ -132,23 +131,23 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
     // override :P
     @Override
     protected void explode() {
-        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE,
                 SoundSource.BLOCKS, 4.0F,
-                (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 32.9F);
+                (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 32.9F);
 
         if (this.isInWater()) {
             return;
         }
 
-        final Explosion ex = new Explosion(this.level, this, null, null, this.getX(), this.getY(), this.getZ(),
+        final Explosion ex = new Explosion(this.level(), this, null, null, this.getX(), this.getY(), this.getZ(),
                 0.2f, false, AEConfig.instance().isTinyTntBlockDamageEnabled() ? BlockInteraction.DESTROY_WITH_DECAY
                         : BlockInteraction.KEEP);
         final AABB area = new AABB(this.getX() - 1.5, this.getY() - 1.5f, this.getZ() - 1.5,
                 this.getX() + 1.5, this.getY() + 1.5, this.getZ() + 1.5);
-        final List<Entity> list = this.level.getEntities(this, area);
+        final List<Entity> list = this.level().getEntities(this, area);
 
         for (Entity e : list) {
-            e.hurt(level.damageSources().explosion(ex), 6);
+            e.hurt(level().damageSources().explosion(ex), 6);
         }
 
         if (AEConfig.instance().isTinyTntBlockDamageEnabled()) {
@@ -158,7 +157,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
                 for (int y = (int) (this.getY() - 2); y <= this.getY() + 2; y++) {
                     for (int z = (int) (this.getZ() - 2); z <= this.getZ() + 2; z++) {
                         final BlockPos point = new BlockPos(x, y, z);
-                        final BlockState state = this.level.getBlockState(point);
+                        final BlockState state = this.level().getBlockState(point);
                         final Block block = state.getBlock();
 
                         if (!state.isAir()) {
@@ -174,13 +173,13 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
 
                             strength -= (resistance + 0.3F) * 0.11f;
 
-                            if (strength > 0.01 && state.getMaterial() != Material.AIR) {
+                            if (strength > 0.01 && !state.isAir()) {
                                 if (block.dropFromExplosion(ex)) {
-                                    Block.dropResources(state, this.level, point);
+                                    Block.dropResources(state, this.level(), point);
                                 }
 
-                                level.setBlock(point, Blocks.AIR.defaultBlockState(), 3);
-                                block.wasExploded(this.level, point, ex);
+                                level().setBlock(point, Blocks.AIR.defaultBlockState(), 3);
+                                block.wasExploded(this.level(), point, ex);
                             }
                         }
                     }
@@ -188,7 +187,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements ICustomEntit
             }
         }
 
-        AppEng.instance().sendToAllNearExcept(null, this.getX(), this.getY(), this.getZ(), 64, this.level,
+        AppEng.instance().sendToAllNearExcept(null, this.getX(), this.getY(), this.getZ(), 64, this.level(),
                 new MockExplosionPacket(this.getX(), this.getY(), this.getZ()));
     }
 

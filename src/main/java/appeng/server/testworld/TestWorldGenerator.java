@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -121,18 +121,19 @@ public class TestWorldGenerator {
                 Blocks.OAK_SIGN.defaultBlockState().rotate(Rotation.CLOCKWISE_180),
                 Block.UPDATE_ALL);
         level.getBlockEntity(signPos, BlockEntityType.SIGN).ifPresent(sign -> {
-            sign.setEditable(false);
-            sign.setHasGlowingText(true);
-            sign.setColor(DyeColor.WHITE);
+            var signText = sign.getText(true);
+            sign.setAllowedPlayerEditor(null);
+            signText.setHasGlowingText(true);
+            signText.setColor(DyeColor.WHITE);
 
             var text = new StringBuilder(positionedPlot.plot.getId().getPath());
             int line = 0;
-            while (line < SignBlockEntity.LINES && !text.isEmpty()) {
+            while (line < SignText.LINES && !text.isEmpty()) {
                 var lineLength = Math.min(12, text.length()); // Sign lines should fit roughly 12 chars
                 var lineText = text.substring(0, lineLength);
                 text.delete(0, lineLength);
 
-                sign.setMessage(line++, Component.literal(lineText));
+                signText.setMessage(line++, Component.literal(lineText));
             }
         });
     }
@@ -184,12 +185,14 @@ public class TestWorldGenerator {
             return;
         }
 
+        int sectionId = 0;
         for (var sec : chunk.getSections()) {
             if (!sec.hasOnlyAir()) {
                 var p = new BlockPos.MutableBlockPos();
                 var air = Blocks.AIR.defaultBlockState();
+                int bottomBlock = chunk.getMinBuildHeight() + SectionPos.SECTION_SIZE * sectionId;
                 for (var y = 0; y < SectionPos.SECTION_SIZE; y++) {
-                    p.setY(sec.bottomBlockY() + y);
+                    p.setY(bottomBlock + y);
                     for (var x = 0; x < 16; x++) {
                         p.setX(chunk.getPos().getMinBlockX() + x);
                         for (var z = 0; z < 16; z++) {
@@ -199,6 +202,7 @@ public class TestWorldGenerator {
                     }
                 }
             }
+            sectionId++;
         }
     }
 

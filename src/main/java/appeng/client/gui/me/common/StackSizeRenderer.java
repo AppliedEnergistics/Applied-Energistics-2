@@ -19,12 +19,12 @@
 package appeng.client.gui.me.common;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
 import org.joml.Matrix4f;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 
@@ -52,14 +52,16 @@ public class StackSizeRenderer {
         RenderSystem.enableBlend();
     }
 
-    public static void renderSizeLabel(PoseStack stack, Font fontRenderer, float xPos, float yPos, String text) {
-        renderSizeLabel(stack, fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
+    public static void renderSizeLabel(GuiGraphics guiGraphics, Font fontRenderer, float xPos, float yPos,
+            String text) {
+        renderSizeLabel(guiGraphics, fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
     }
 
-    public static void renderSizeLabel(PoseStack stack, Font fontRenderer, float xPos, float yPos, String text,
+    public static void renderSizeLabel(GuiGraphics guiGraphics, Font fontRenderer, float xPos, float yPos, String text,
             boolean largeFonts) {
         final float scaleFactor = largeFonts ? 0.85f : 0.5f;
 
+        var stack = guiGraphics.pose();
         stack.pushPose();
         // According to ItemRenderer, text is 200 above items.
         stack.translate(0, 0, 200);

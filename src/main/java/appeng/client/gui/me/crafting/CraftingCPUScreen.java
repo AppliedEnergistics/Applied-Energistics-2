@@ -25,11 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -117,18 +116,18 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float btn) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float btn) {
         this.cancel.active = !getVisualEntries().isEmpty();
 
-        super.render(poseStack, mouseX, mouseY, btn);
+        super.render(guiGraphics, mouseX, mouseY, btn);
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        super.drawFG(poseStack, offsetX, offsetY, mouseX, mouseY);
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
 
         if (status != null) {
-            this.table.render(poseStack, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
+            this.table.render(guiGraphics, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
         }
     }
 

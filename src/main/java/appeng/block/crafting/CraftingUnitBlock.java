@@ -18,14 +18,12 @@
 
 package appeng.block.crafting;
 
-import net.minecraft.world.level.block.state.BlockBehaviour;
-
 import appeng.blockentity.crafting.CraftingBlockEntity;
 
 public class CraftingUnitBlock extends AbstractCraftingUnitBlock<CraftingBlockEntity> {
 
-    public CraftingUnitBlock(BlockBehaviour.Properties props, ICraftingUnitType type) {
-        super(props, type);
+    public CraftingUnitBlock(ICraftingUnitType type) {
+        super(metalProps(), type);
     }
 
 }

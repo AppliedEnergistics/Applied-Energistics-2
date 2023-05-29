@@ -35,7 +35,7 @@ public class ChannelModeCommand implements ISubCommand {
     @Override
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
         var mode = AEConfig.instance().getChannelMode();
-        sender.sendSuccess(PlayerMessages.ChannelModeCurrent.text(mode.name().toLowerCase(Locale.ROOT)), true);
+        sender.sendSuccess(() -> PlayerMessages.ChannelModeCurrent.text(mode.name().toLowerCase(Locale.ROOT)), true);
     }
 
     private void setChannelMode(CommandContext<CommandSourceStack> ctx, ChannelMode mode) {
@@ -49,8 +49,9 @@ public class ChannelModeCommand implements ISubCommand {
             grid.getPathingService().repath();
             gridCount++;
         }
+        var finalGridCount = gridCount;
 
         var modeName = mode.name().toLowerCase(Locale.ROOT);
-        ctx.getSource().sendSuccess(PlayerMessages.ChannelModeSet.text(modeName, gridCount), true);
+        ctx.getSource().sendSuccess(() -> PlayerMessages.ChannelModeSet.text(modeName, finalGridCount), true);
     }
 }

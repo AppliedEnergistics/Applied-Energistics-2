@@ -60,7 +60,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -78,7 +78,6 @@ import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.client.render.cablebus.CableBusBakedModel;
 import appeng.client.render.cablebus.CableBusBreakingParticle;
 import appeng.client.render.cablebus.CableBusRenderState;
-import appeng.helpers.AEMaterials;
 import appeng.hooks.ICustomBlockDestroyEffect;
 import appeng.hooks.ICustomBlockHitEffect;
 import appeng.hooks.ICustomPickBlock;
@@ -98,7 +97,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public CableBusBlock() {
-        super(defaultProps(AEMaterials.GLASS).noOcclusion().noLootTable().dynamicShape()
+        super(glassProps().noOcclusion().noLootTable().dynamicShape()
                 .lightLevel(state -> state.getValue(LIGHT_LEVEL)));
         registerDefaultState(defaultBlockState().setValue(LIGHT_LEVEL, 0).setValue(WATERLOGGED, false));
     }
@@ -114,7 +113,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         if (builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY) instanceof CableBusBlockEntity bus) {
             var drops = new ArrayList<ItemStack>();
             bus.getCableBus().addPartDrops(drops);

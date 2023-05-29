@@ -19,7 +19,6 @@
 package appeng.block.crafting;
 
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 
@@ -28,8 +27,8 @@ import appeng.api.orientation.OrientationStrategies;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 
 public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorBlockEntity> {
-    public CraftingMonitorBlock(BlockBehaviour.Properties props, ICraftingUnitType type) {
-        super(props, type);
+    public CraftingMonitorBlock(ICraftingUnitType type) {
+        super(metalProps(), type);
     }
 
     @Override

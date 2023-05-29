@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Objects;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -147,7 +147,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (this.style.isSupportsAutoCrafting()) {
             this.craftingStatusBtn = new TabButton(Icon.CRAFT_HAMMER,
-                    GuiText.CraftingStatus.text(), this.itemRenderer, btn -> showCraftingStatus());
+                    GuiText.CraftingStatus.text(), btn -> showCraftingStatus());
             this.craftingStatusBtn.setStyle(TabButton.Style.CORNER);
             this.widgets.add("craftingStatus", this.craftingStatusBtn);
         }
@@ -404,14 +404,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
         // Render the pinned row decorations
         if (repo.hasPinnedRow()) {
-            renderPinnedRowDecorations(poseStack);
+            renderPinnedRowDecorations(guiGraphics);
         }
 
         // Show the number of active crafting jobs
@@ -421,12 +421,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
             int x = this.craftingStatusBtn.getX() + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.getY() + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
-            StackSizeRenderer.renderSizeLabel(poseStack, font, x - this.leftPos, y - this.topPos,
+            StackSizeRenderer.renderSizeLabel(guiGraphics, font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
     }
 
-    private void renderPinnedRowDecorations(PoseStack poseStack) {
+    private void renderPinnedRowDecorations(GuiGraphics guiGraphics) {
         for (Slot slot : menu.slots) {
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
@@ -437,7 +437,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     Blitter.texture("block/molecular_assembler_lights.png", 16, 192)
                             .src(2, 2 + frame * 16, 12, 12)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
-                            .blit(poseStack);
+                            .blit(guiGraphics);
                 }
             }
         }
@@ -511,15 +511,15 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawBG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
 
         style.getHeader()
                 .dest(offsetX, offsetY)
-                .blit(poseStack);
+                .blit(guiGraphics);
 
         int y = offsetY;
-        style.getHeader().dest(offsetX, y).blit(poseStack);
+        style.getHeader().dest(offsetX, y).blit(guiGraphics);
         y += style.getHeader().getSrcHeight();
 
         // To draw the first/last row, we need to at least draw 2
@@ -531,38 +531,38 @@ public class MEStorageScreen<C extends MEStorageMenu>
             } else if (x + 1 == rowsToDraw) {
                 row = style.getLastRow();
             }
-            row.dest(offsetX, y).blit(poseStack);
+            row.dest(offsetX, y).blit(guiGraphics);
             y += style.getRow().getSrcHeight();
         }
 
-        style.getBottom().dest(offsetX, y).blit(poseStack);
+        style.getBottom().dest(offsetX, y).blit(guiGraphics);
 
         // Draw the overlay for the pinned row
         if (repo.hasPinnedRow()) {
             Blitter.texture("guis/terminal.png")
                     .src(0, 204, 162, 18)
                     .dest(offsetX + 7, offsetY + style.getHeader().getSrcHeight())
-                    .blit(poseStack);
+                    .blit(guiGraphics);
         }
 
         if (this.searchField != null) {
-            this.searchField.render(poseStack, mouseX, mouseY, partialTicks);
+            this.searchField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
     }
 
     @Override
-    public void renderSlot(PoseStack poseStack, Slot s) {
+    public void renderSlot(GuiGraphics guiGraphics, Slot s) {
         if (s instanceof RepoSlot repoSlot) {
             if (!this.repo.hasPower()) {
-                fill(poseStack, s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
+                guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66111111);
             } else {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
                         AEKeyRendering.drawInGui(
                                 minecraft,
-                                poseStack,
+                                guiGraphics,
                                 s.x,
                                 s.y, entry.getWhat());
                     } catch (Exception err) {
@@ -577,14 +577,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     if (craftable && (isViewOnlyCraftable() || storedAmount <= 0)) {
                         var craftLabelText = useLargeFonts ? GuiText.LargeFontCraft.getLocal()
                                 : GuiText.SmallFontCraft.getLocal();
-                        StackSizeRenderer.renderSizeLabel(poseStack, this.font, s.x, s.y, craftLabelText);
+                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, craftLabelText);
                     } else {
                         AmountFormat format = useLargeFonts ? AmountFormat.SLOT_LARGE_FONT
                                 : AmountFormat.SLOT;
                         var text = entry.getWhat().formatAmount(storedAmount, format);
-                        StackSizeRenderer.renderSizeLabel(poseStack, this.font, s.x, s.y, text, useLargeFonts);
+                        StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x, s.y, text, useLargeFonts);
                         if (craftable) {
-                            StackSizeRenderer.renderSizeLabel(poseStack, this.font, s.x - 11, s.y - 11, "+", false);
+                            StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x - 11, s.y - 11, "+", false);
                         }
                     }
                 }
@@ -593,7 +593,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return;
         }
 
-        super.renderSlot(poseStack, s);
+        super.renderSlot(guiGraphics, s);
     }
 
     /**
@@ -604,14 +604,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    protected void renderTooltip(PoseStack poseStack, int x, int y) {
+    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         if (this.hoveredSlot instanceof RepoSlot repoSlot) {
             var carried = menu.getCarried();
             if (!carried.isEmpty()) {
                 var emptyingAction = ContainerItemStrategies.getEmptyingAction(carried);
                 if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
                     drawTooltip(
-                            poseStack,
+                            guiGraphics,
                             x,
                             y,
                             Tooltips.getEmptyingTooltip(ButtonToolTips.StoreAction, carried, emptyingAction));
@@ -625,16 +625,16 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (carried.isEmpty()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
-                    renderGridInventoryEntryTooltip(poseStack, entry, x, y);
+                    renderGridInventoryEntryTooltip(guiGraphics, entry, x, y);
                 }
             }
             return;
         }
 
-        super.renderTooltip(poseStack, x, y);
+        super.renderTooltip(guiGraphics, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(PoseStack poseStack, GridInventoryEntry entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(GuiGraphics guiGraphics, GridInventoryEntry entry, int x, int y) {
 
         var currentToolTip = AEKeyRendering.getTooltip(entry.getWhat());
 
@@ -662,9 +662,9 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Special case to support the Item API of visual tooltip components
         if (entry.getWhat() instanceof AEItemKey itemKey) {
             var stack = itemKey.toStack();
-            this.renderTooltip(poseStack, currentToolTip, stack.getTooltipImage(), x, y);
+            guiGraphics.renderTooltip(font, currentToolTip, stack.getTooltipImage(), x, y);
         } else {
-            this.renderComponentTooltip(poseStack, currentToolTip, x, y);
+            guiGraphics.renderComponentTooltip(font, currentToolTip, x, y);
         }
     }
 

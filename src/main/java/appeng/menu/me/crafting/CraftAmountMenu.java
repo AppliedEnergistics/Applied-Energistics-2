@@ -91,7 +91,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public Level getLevel() {
-        return this.getPlayerInventory().player.level;
+        return this.getPlayerInventory().player.level();
     }
 
     private void setWhatToCraft(AEKey whatToCraft, int initialAmount) {

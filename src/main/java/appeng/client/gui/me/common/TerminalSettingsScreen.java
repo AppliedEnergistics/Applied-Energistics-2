@@ -101,7 +101,7 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         var icon = menu.getHost().getMainMenuIcon();
         var label = icon.getHoverName();
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        TabButton button = new TabButton(icon, label, itemRenderer, btn -> returnToParent());
+        TabButton button = new TabButton(icon, label, btn -> returnToParent());
         widgets.add("back", button);
     }
 

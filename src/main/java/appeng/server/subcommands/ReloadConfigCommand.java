@@ -17,7 +17,7 @@ public class ReloadConfigCommand implements ISubCommand {
     public void call(MinecraftServer srv, CommandContext<CommandSourceStack> ctx, CommandSourceStack sender) {
         AEConfig.instance().reload();
 
-        sender.sendSuccess(Component.literal("AE2 configuration reloaded"), true);
+        sender.sendSuccess(() -> Component.literal("AE2 configuration reloaded"), true);
 
         if (sender.getPlayer() != null) {
             srv.getCommands().sendCommands(sender.getPlayer());

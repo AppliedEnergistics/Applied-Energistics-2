@@ -3,11 +3,10 @@ package appeng.client.guidebook.screen;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -109,9 +108,9 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         var viewport = new LytRect(0, scrollOffset, width, height);
-        var renderContext = new SimpleRenderContext(viewport, poseStack);
+        var renderContext = new SimpleRenderContext(viewport, graphics);
 
         boolean containsMouse = (mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width
                 && mouseY <= getY() + height);
@@ -165,10 +164,11 @@ public class GuideNavBar extends AbstractWidget {
         }
 
         if (state != State.CLOSED) {
-            enableScissor(getX(), getY(), width, height);
+            graphics.enableScissor(getX(), getY(), width, height);
 
-            poseStack.pushPose();
-            poseStack.translate(getX(), getY() - scrollOffset, 0);
+            var pose = graphics.pose();
+            pose.pushPose();
+            pose.translate(getX(), getY() - scrollOffset, 0);
 
             // Draw a backdrop on the hovered row before starting batch rendering
             var hoveredRow = pickRow(mouseX, mouseY);
@@ -221,9 +221,9 @@ public class GuideNavBar extends AbstractWidget {
                 }
             }
 
-            poseStack.popPose();
+            pose.popPose();
 
-            disableScissor();
+            graphics.disableScissor();
         }
     }
 
