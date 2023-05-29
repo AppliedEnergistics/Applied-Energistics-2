@@ -71,11 +71,13 @@ dependencies {
 
     // Always depend on the REI API to compile
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
         exclude group: "org.yaml" // snakeyaml
         exclude group: "blue.endless" // jankson
     }
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:${project.rei_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
         exclude group: "org.yaml" // snakeyaml
         exclude group: "blue.endless" // jankson
@@ -83,6 +85,7 @@ dependencies {
 
     if (project.runtime_itemlist_mod == "jei") {
         modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
         modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
@@ -93,10 +96,12 @@ dependencies {
             exclude group: "mezz.jei"
         }
         modLocalRuntime modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
     } else {
         modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
         modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
@@ -105,21 +110,25 @@ dependencies {
     }
 
     modCompileOnly("mcp.mobius.waila:wthit-api:fabric-${project.wthit_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
     }
 
     if (project.runtime_tooltip_mod == "wthit") {
         modLocalRuntime("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
     }
 
     modCompileOnly("curse.maven:jade-324717:${project.jade_file_id}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
     }
 
     if (project.runtime_tooltip_mod == "jade") {
         modLocalRuntime("curse.maven:jade-324717:${project.jade_file_id}") {
+            exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
     }
@@ -127,6 +136,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     include modImplementation("teamreborn:energy:${project.tr_energy_version}") {
+        exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
     }
 
