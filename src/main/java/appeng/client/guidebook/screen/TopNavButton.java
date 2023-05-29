@@ -2,8 +2,7 @@ package appeng.client.guidebook.screen;
 
 import java.util.function.Supplier;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -37,7 +36,7 @@ class TopNavButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
         var color = SymbolicColor.ICON_BUTTON_NORMAL;
 
         if (!isActive()) {
@@ -52,7 +51,7 @@ class TopNavButton extends Button {
                 .src(role.iconSrcX, 0, 16, 16)
                 .dest(getX(), getY(), 16, 16)
                 .colorArgb(resolved)
-                .blit(poseStack);
+                .blit(guiGraphics);
     }
 
     enum Role {

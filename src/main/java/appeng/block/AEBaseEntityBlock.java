@@ -40,7 +40,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -267,7 +267,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
      * Exports settings of the block entity when it is broken.
      */
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         var drops = super.getDrops(state, builder);
         for (var drop : drops) {
             if (drop.getItem() instanceof BlockItem blockItem && blockItem.getBlock() == this) {

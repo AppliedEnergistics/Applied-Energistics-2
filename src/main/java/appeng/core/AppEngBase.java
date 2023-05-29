@@ -41,6 +41,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -50,6 +51,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
 import appeng.api.IAEAddonEntrypoint;
+import appeng.api.ids.AECreativeTabIds;
 import appeng.api.parts.CableRenderMode;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -130,6 +132,7 @@ public abstract class AppEngBase implements AppEng {
 
         FacadeCreativeTab.init(); // This call has a side-effect (adding it to the creative screen)
 
+        registerCreativeTabs(BuiltInRegistries.CREATIVE_MODE_TAB);
         registerDimension();
         registerBlocks(BuiltInRegistries.BLOCK);
         registerItems(BuiltInRegistries.ITEM);
@@ -220,6 +223,11 @@ public abstract class AppEngBase implements AppEng {
                 SpatialStorageChunkGenerator.CODEC);
     }
 
+    public void registerCreativeTabs(Registry<CreativeModeTab> registry) {
+        Registry.register(registry, AECreativeTabIds.MAIN, MainCreativeTab.INSTANCE);
+        Registry.register(registry, AECreativeTabIds.FACADES, FacadeCreativeTab.getGroup());
+    }
+
     private void onServerAboutToStart(MinecraftServer server) {
         this.currentServer = server;
         ChunkLoadingService.getInstance().onServerAboutToStart();
@@ -254,7 +262,7 @@ public abstract class AppEngBase implements AppEng {
             return;
         }
         for (ServerPlayer o : getPlayers()) {
-            if (o != p && o.level == level) {
+            if (o != p && o.level() == level) {
                 final double dX = x - o.getX();
                 final double dY = y - o.getY();
                 final double dZ = z - o.getZ();

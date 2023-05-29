@@ -2,16 +2,13 @@ package appeng.client.guidebook.document.interaction;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
@@ -46,26 +43,29 @@ public class ContentTooltip implements GuideTooltip {
                     @Override
                     public void renderText(Font font, int x, int y, Matrix4f matrix,
                             MultiBufferSource.BufferSource bufferSource) {
-                        var poseStack = new PoseStack();
+                        var guiGraphics = new GuiGraphics(Minecraft.getInstance(), bufferSource);
+                        var poseStack = guiGraphics.pose();
                         poseStack.mulPoseMatrix(matrix);
                         poseStack.translate(x, y, 0);
-                        var ctx = new SimpleRenderContext(viewport, poseStack);
+
+                        var ctx = new SimpleRenderContext(viewport, guiGraphics);
                         content.renderBatch(ctx, bufferSource);
                     }
 
                     @Override
-                    public void renderImage(Font font, int x, int y, PoseStack poseStack, ItemRenderer itemRenderer) {
-                        poseStack.pushPose();
-                        poseStack.translate(x, y, 0);
-                        var ctx = new SimpleRenderContext(viewport, poseStack);
+                    public void renderImage(Font font, int x, int y, GuiGraphics guiGraphics) {
+                        var pose = guiGraphics.pose();
+                        pose.pushPose();
+                        pose.translate(x, y, 0);
+                        var ctx = new SimpleRenderContext(viewport, guiGraphics);
                         content.render(ctx);
-                        poseStack.popPose();
+                        pose.popPose();
                     }
                 });
     }
 
     @Override
-    public List<ClientTooltipComponent> getLines(Screen screen) {
+    public List<ClientTooltipComponent> getLines() {
         return components;
     }
 }

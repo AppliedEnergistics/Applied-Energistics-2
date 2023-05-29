@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
 import org.jetbrains.annotations.Nullable;
@@ -15,9 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -61,6 +62,7 @@ public class GuideScreen extends Screen {
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
     private static final ColorValue DEBUG_HOVER_OUTLINE_COLOR = new ConstantColor(0x7FFFFF00);
+    private static final ResourceLocation BACKGROUND_TEXTURE = AppEng.makeId("textures/block/sky_stone_block.png");
     private final Guide guide;
 
     private final GuideScrollbar scrollbar;
@@ -188,25 +190,26 @@ public class GuideScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         updateTopNavButtons();
 
-        renderSkyStoneBackground(poseStack);
+        renderSkyStoneBackground(guiGraphics);
 
         // Set scissor rectangle to rect that we show the document in
         var documentRect = getDocumentRect();
 
-        fill(poseStack, documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom(), 0x80333333);
+        guiGraphics.fill(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom(), 0x80333333);
 
         // Move rendering to anchor @ 0,0 in the document rect
         var documentViewport = getDocumentViewport();
+        var poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(documentRect.x() - documentViewport.x(), documentRect.y() - documentViewport.y(), 0);
 
         var document = currentPage.document();
-        var context = new SimpleRenderContext(documentViewport, poseStack);
+        var context = new SimpleRenderContext(documentViewport, guiGraphics);
 
-        enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
+        guiGraphics.enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
 
         // Render all text content in one large batch to improve performance
         var buffers = context.beginBatch();
@@ -215,7 +218,7 @@ public class GuideScreen extends Screen {
 
         document.render(context);
 
-        disableScissor();
+        guiGraphics.disableScissor();
 
         if (AEConfig.instance().isShowDebugGuiOverlays()) {
             renderHoverOutline(document, context);
@@ -228,13 +231,13 @@ public class GuideScreen extends Screen {
 
         renderTitle(documentRect, context);
 
-        super.render(poseStack, mouseX, mouseY, partialTick);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
 
         poseStack.popPose();
 
         // Render tooltip
         if (document.getHoveredElement() != null) {
-            renderTooltip(poseStack, mouseX, mouseY);
+            renderTooltip(guiGraphics, mouseX, mouseY);
         }
 
     }
@@ -251,14 +254,13 @@ public class GuideScreen extends Screen {
                 SymbolicColor.HEADER1_SEPARATOR);
     }
 
-    private void renderSkyStoneBackground(PoseStack poseStack) {
-        RenderSystem.setShaderTexture(0, AppEng.makeId("textures/block/sky_stone_block.png"));
+    private void renderSkyStoneBackground(GuiGraphics guiGraphics) {
         RenderSystem.setShaderColor(0.25F, 0.25F, 0.25F, 1.0F);
-        blit(poseStack, 0, 0, 0, 0.0F, 0.0F, this.width, this.height, 32, 32);
+        guiGraphics.blit(BACKGROUND_TEXTURE, 0, 0, 0, 0.0F, 0.0F, this.width, this.height, 32, 32);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    private void renderTooltip(PoseStack poseStack, int x, int y) {
+    private void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
         var docPos = getDocumentPoint(x, y);
         if (docPos == null) {
             return;
@@ -268,7 +270,7 @@ public class GuideScreen extends Screen {
             dispatchInteraction(
                     hoveredElement,
                     el -> el.getTooltip(docPos.getX(), docPos.getY()))
-                            .ifPresent(tooltip -> renderTooltip(poseStack, tooltip, x, y));
+                            .ifPresent(tooltip -> renderTooltip(guiGraphics, tooltip, x, y));
         }
     }
 
@@ -617,9 +619,9 @@ public class GuideScreen extends Screen {
         return true;
     }
 
-    private void renderTooltip(PoseStack poseStack, GuideTooltip tooltip, int mouseX, int mouseY) {
+    private void renderTooltip(GuiGraphics guiGraphics, GuideTooltip tooltip, int mouseX, int mouseY) {
         var minecraft = Minecraft.getInstance();
-        var clientLines = tooltip.getLines(this);
+        var clientLines = tooltip.getLines();
 
         if (clientLines.isEmpty()) {
             return;
@@ -650,12 +652,13 @@ public class GuideScreen extends Screen {
 
         int zOffset = 400;
 
-        TooltipFrame.render(poseStack, x, y, frameWidth, frameHeight, zOffset);
+        TooltipRenderUtil.renderTooltipBackground(guiGraphics, x, y, frameWidth, frameHeight, zOffset);
 
         if (!tooltip.getIcon().isEmpty()) {
             x += 18;
         }
 
+        var poseStack = guiGraphics.pose();
         var bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         poseStack.pushPose();
         poseStack.translate(0.0, 0.0, zOffset);
@@ -675,13 +678,13 @@ public class GuideScreen extends Screen {
         if (!tooltip.getIcon().isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0, 0, zOffset);
-            itemRenderer.renderGuiItem(poseStack, tooltip.getIcon(), x - 18, y);
+            guiGraphics.renderItem(tooltip.getIcon(), x - 18, y);
             poseStack.popPose();
         }
 
         for (int i = 0; i < clientLines.size(); ++i) {
             var line = clientLines.get(i);
-            line.renderImage(minecraft.font, x, currentY, poseStack, this.itemRenderer);
+            line.renderImage(minecraft.font, x, currentY, guiGraphics);
             currentY += line.getHeight() + (i == 0 ? 2 : 0);
         }
         poseStack.popPose();

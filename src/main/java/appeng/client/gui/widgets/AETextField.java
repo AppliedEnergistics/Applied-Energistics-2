@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +31,7 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -138,7 +138,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
             var yOffset = 0;
             if (!this.isEditable()) {
@@ -151,28 +151,28 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
             BLITTER.src(0, yOffset, 1, 12)
                     .dest(bounds.left, bounds.top)
-                    .blit(poseStack);
+                    .blit(guiGraphics);
             var backgroundWidth = Math.min(126, bounds.right - bounds.left - 2);
             BLITTER.src(1, yOffset, backgroundWidth, 12)
                     .dest(bounds.left + 1, bounds.top)
-                    .blit(poseStack);
+                    .blit(guiGraphics);
             BLITTER.src(127, yOffset, 1, 12)
                     .dest(bounds.right - 1, bounds.top)
-                    .blit(poseStack);
+                    .blit(guiGraphics);
 
-            super.renderWidget(poseStack, mouseX, mouseY, partial);
+            super.renderWidget(guiGraphics, mouseX, mouseY, partial);
 
             // Render a placeholder value if the text field isn't focused and is empty
             if (placeholder != null && !isFocused() && getValue().isEmpty()) {
                 var font = Minecraft.getInstance().font;
-                font.draw(poseStack, placeholder, getX(), getY(),
-                        style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB());
+                guiGraphics.drawString(font, placeholder, getX(), getY(),
+                        style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB(), false);
             }
         }
     }
 
     @Override
-    public void renderHighlight(PoseStack pose, int startX, int startY, int endX, int endY) {
+    public void renderHighlight(GuiGraphics guiGraphics, int startX, int startY, int endX, int endY) {
         if (!this.isFocused()) {
             return;
         }
@@ -199,7 +199,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        fill(pose, startX, startY, endX, endY, this.selectionColor);
+        guiGraphics.fill(startX, startY, endX, endY, this.selectionColor);
         RenderSystem.disableColorLogicOp();
     }
 

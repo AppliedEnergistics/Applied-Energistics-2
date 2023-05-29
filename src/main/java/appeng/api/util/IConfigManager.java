@@ -87,6 +87,7 @@ public interface IConfigManager {
      * Only works after settings have been registered
      *
      * @param src to be read nbt tag
+     * @return true if any configuration was loaded from src
      */
-    void readFromNBT(CompoundTag src);
+    boolean readFromNBT(CompoundTag src);
 }

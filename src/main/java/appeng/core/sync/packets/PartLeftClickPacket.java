@@ -54,7 +54,7 @@ public class PartLeftClickPacket extends BasePacket {
     @Override
     public void serverPacketData(ServerPlayer player) {
         // Fire event on the server to give protection mods a chance to cancel the interaction
-        if (AttackBlockCallback.EVENT.invoker().interact(player, player.getLevel(), InteractionHand.MAIN_HAND,
+        if (AttackBlockCallback.EVENT.invoker().interact(player, player.level(), InteractionHand.MAIN_HAND,
                 hitResult.getBlockPos(), hitResult.getDirection()) != InteractionResult.PASS) {
             return;
         }
@@ -64,7 +64,7 @@ public class PartLeftClickPacket extends BasePacket {
                 hitResult.getBlockPos().getY(),
                 hitResult.getBlockPos().getZ());
 
-        if (player.level.getBlockEntity(hitResult.getBlockPos()) instanceof IPartHost partHost) {
+        if (player.level().getBlockEntity(hitResult.getBlockPos()) instanceof IPartHost partHost) {
             var selectedPart = partHost.selectPartLocal(localPos);
             if (selectedPart.part != null) {
                 if (!alternateUseMode) {

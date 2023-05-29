@@ -18,12 +18,10 @@
 
 package appeng.items.misc;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -36,10 +34,8 @@ import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.items.AEBaseItem;
-import appeng.util.Platform;
 
 /**
  * Wraps a {@link GenericStack} in an {@link ItemStack}. Even stacks that actually represent vanilla {@link Item items}
@@ -100,28 +96,6 @@ public class WrappedGenericStack extends AEBaseItem {
     }
 
     /**
-     * Used to replace the mod id in the tooltip with the appropriate mod id of the wrapped fluid.
-     */
-    public static void modifyTooltip(ItemStack itemStack, List<Component> lines) {
-        if (!(itemStack.getItem() instanceof WrappedGenericStack item)) {
-            return;
-        }
-
-        var key = item.unwrapWhat(itemStack);
-        if (key != null) {
-            for (int i = lines.size() - 1; i >= 0; i--) {
-                var line = lines.get(i);
-                // REI adds a blue formatting code at the start
-                if (line.getString().equals("§9§o" + AppEng.MOD_NAME)) {
-                    var modId = Platform.formatModName(key.getModId());
-                    lines.set(i, Component.literal(modId));
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
      * Allows picking up the contained fluid with a bucket.
      */
     @Override
@@ -142,7 +116,7 @@ public class WrappedGenericStack extends AEBaseItem {
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
 
                 // Check client to avoid duplicate sounds in singleplayer
-                if (player.getLevel().isClientSide) {
+                if (player.level().isClientSide) {
                     heldContainer.playFillSound(player, what);
                 }
 

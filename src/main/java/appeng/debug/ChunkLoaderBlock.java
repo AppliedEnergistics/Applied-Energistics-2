@@ -18,14 +18,12 @@
 
 package appeng.debug;
 
-import net.minecraft.world.level.material.Material;
-
 import appeng.block.AEBaseEntityBlock;
 
 public class ChunkLoaderBlock extends AEBaseEntityBlock<ChunkLoaderBlockEntity> {
 
     public ChunkLoaderBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 
 }

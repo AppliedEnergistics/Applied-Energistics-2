@@ -95,16 +95,19 @@ public final class ConfigManager implements IConfigManager {
      * @param tagCompound to be read from compound
      */
     @Override
-    public void readFromNBT(CompoundTag tagCompound) {
+    public boolean readFromNBT(CompoundTag tagCompound) {
+        boolean anythingRead = false;
         for (var setting : this.settings.keySet()) {
             try {
                 if (tagCompound.contains(setting.getName(), Tag.TAG_STRING)) {
                     String value = tagCompound.getString(setting.getName());
                     setting.setFromString(this, value);
+                    anythingRead = true;
                 }
             } catch (IllegalArgumentException e) {
                 AELog.debug(e);
             }
         }
+        return anythingRead;
     }
 }

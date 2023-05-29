@@ -50,7 +50,7 @@ public final class GuidebookPlot {
         plot.blockState(pos, Blocks.DARK_OAK_SIGN.defaultBlockState().setValue(StandingSignBlock.ROTATION,
                 RotationSegment.convertToSegment(Direction.NORTH)));
         plot.customizeBlockEntity(pos, BlockEntityType.SIGN, sign -> {
-            sign.setMessage(0, Component.literal(label));
+            sign.getFrontText().setMessage(0, Component.literal(label));
         });
 
         pos = pos.north();

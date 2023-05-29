@@ -36,7 +36,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -54,7 +53,6 @@ import appeng.block.AEBaseBlock;
 import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
 import appeng.core.AppEngClient;
-import appeng.helpers.AEMaterials;
 
 public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterloggedBlock {
 
@@ -82,9 +80,7 @@ public class QuartzFixtureBlock extends AEBaseBlock implements SimpleWaterlogged
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public QuartzFixtureBlock() {
-        super(defaultProps(
-                AEMaterials.FIXTURE).noCollission().noOcclusion().strength(0)
-                        .lightLevel(b -> 15).sound(SoundType.GLASS));
+        super(fixtureProps().lightLevel(b -> 15));
 
         this.registerDefaultState(
                 defaultBlockState().setValue(FACING, Direction.UP).setValue(ODD, false).setValue(WATERLOGGED, false));

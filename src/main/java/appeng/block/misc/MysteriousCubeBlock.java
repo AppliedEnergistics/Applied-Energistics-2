@@ -11,8 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 import appeng.block.AEBaseBlock;
 import appeng.core.localization.GuiText;
@@ -20,7 +20,8 @@ import appeng.core.localization.Tooltips;
 import appeng.server.services.compass.CompassService;
 
 public class MysteriousCubeBlock extends AEBaseBlock {
-    public static final Properties PROPERTIES = defaultProps(Material.METAL).strength(10, 1000);
+    // Not a redstone conductor to prevent using it as a facade.
+    public static final Properties PROPERTIES = metalProps().strength(10, 1000).isRedstoneConductor(Blocks::never);
 
     public MysteriousCubeBlock() {
         super(PROPERTIES);

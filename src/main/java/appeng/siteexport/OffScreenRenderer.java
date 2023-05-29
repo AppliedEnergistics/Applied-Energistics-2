@@ -10,6 +10,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexSorting;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -58,7 +59,8 @@ public class OffScreenRenderer implements AutoCloseable {
     public void setupItemRendering() {
         // Set up GL state for GUI rendering where the 16x16 item will fill the entire framebuffer
         RenderSystem.setProjectionMatrix(
-                new Matrix4f().ortho(0, 16, 0, 16, 1000, 3000));
+                new Matrix4f().ortho(0, 16, 0, 16, 1000, 3000),
+                VertexSorting.ORTHOGRAPHIC_Z);
 
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.setIdentity();
@@ -77,7 +79,8 @@ public class OffScreenRenderer implements AutoCloseable {
 
         // Set up GL state for GUI rendering where the 16x16 item will fill the entire framebuffer
         RenderSystem.setProjectionMatrix(
-                new Matrix4f().ortho(-1, 1, 1, -1, 1000, 3000));
+                new Matrix4f().ortho(-1, 1, 1, -1, 1000, 3000),
+                VertexSorting.ORTHOGRAPHIC_Z);
 
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.setIdentity();
@@ -111,7 +114,7 @@ public class OffScreenRenderer implements AutoCloseable {
         }
 
         projMat.mulPoseMatrix(new Matrix4f().perspective(fov, aspectRatio, 0.05F, 16));
-        RenderSystem.setProjectionMatrix(projMat.last().pose());
+        RenderSystem.setProjectionMatrix(projMat.last().pose(), VertexSorting.DISTANCE_TO_ORIGIN);
 
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.setIdentity();

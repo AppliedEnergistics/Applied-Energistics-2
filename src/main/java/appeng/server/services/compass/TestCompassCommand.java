@@ -40,7 +40,8 @@ public class TestCompassCommand implements ISubCommand {
             var hasSkyStone = compassRegion.hasSkyStone(chunkPos.x, chunkPos.z, i);
             var yMin = i * SectionPos.SECTION_SIZE;
             var yMax = (i + 1) * SectionPos.SECTION_SIZE - 1;
-            sender.sendSuccess(PlayerMessages.CompassTestSection.text(yMin, yMax, i, hasSkyStone), false);
+            var iFinal = i;
+            sender.sendSuccess(() -> PlayerMessages.CompassTestSection.text(yMin, yMax, iFinal, hasSkyStone), false);
         }
     }
 }

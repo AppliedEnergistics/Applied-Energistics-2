@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -34,6 +35,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 
+import appeng.api.ids.AECreativeTabIds;
 import appeng.api.ids.AEItemIds;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.upgrades.Upgrades;
@@ -302,12 +304,12 @@ public final class AEItems {
 
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
             Function<FabricItemSettings, T> factory) {
-        return item(name, id, factory, MainCreativeTab.INSTANCE);
+        return item(name, id, factory, AECreativeTabIds.MAIN);
     }
 
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
             Function<FabricItemSettings, T> factory,
-            CreativeModeTab group) {
+            ResourceKey<CreativeModeTab> group) {
 
         FabricItemSettings p = new FabricItemSettings();
 
@@ -315,9 +317,9 @@ public final class AEItems {
 
         ItemDefinition<T> definition = new ItemDefinition<>(name, id, item);
 
-        if (group == MainCreativeTab.INSTANCE) {
+        if (group.equals(AECreativeTabIds.MAIN)) {
             MainCreativeTab.add(definition);
-        } else if (group != null) {
+        } else {
             ItemGroupEvents.modifyEntriesEvent(group).register((entries) -> {
                 entries.addAfter(ItemStack.EMPTY, item);
             });

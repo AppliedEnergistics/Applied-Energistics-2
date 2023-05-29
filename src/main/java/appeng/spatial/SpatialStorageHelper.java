@@ -62,7 +62,7 @@ public class SpatialStorageHelper {
         final ServerLevel newLevel;
 
         try {
-            oldLevel = (ServerLevel) entity.level;
+            oldLevel = (ServerLevel) entity.level();
             newLevel = link.dim;
         } catch (Throwable e) {
             return entity;

@@ -61,7 +61,7 @@ public class SetProcessingPatternAmountScreen<C extends PatternEncodingTermMenu>
 
         var icon = getMenu().getHost().getMainMenuIcon();
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        var button = new TabButton(icon, icon.getHoverName(), itemRenderer, btn -> {
+        var button = new TabButton(icon, icon.getHoverName(), btn -> {
             returnToParent();
         });
         widgets.add("back", button);

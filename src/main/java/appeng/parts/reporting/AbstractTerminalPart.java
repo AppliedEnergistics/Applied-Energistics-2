@@ -114,7 +114,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public boolean onPartActivate(Player player, InteractionHand hand, Vec3 pos) {
-        if (!super.onPartActivate(player, hand, pos) && !player.level.isClientSide) {
+        if (!super.onPartActivate(player, hand, pos) && !player.level().isClientSide) {
             MenuOpener.open(getMenuType(player), player, MenuLocators.forPart(this));
         }
         return true;

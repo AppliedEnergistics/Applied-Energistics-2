@@ -2,11 +2,11 @@ package appeng.client.guidebook.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.world.item.ItemStack;
@@ -18,11 +18,11 @@ import appeng.client.guidebook.document.LytRect;
 
 public record SimpleRenderContext(
         @Override LytRect viewport,
-        @Override PoseStack poseStack,
+        @Override GuiGraphics guiGraphics,
         @Override LightDarkMode lightDarkMode) implements RenderContext {
 
-    public SimpleRenderContext(LytRect viewport, PoseStack poseStack) {
-        this(viewport, poseStack, LightDarkMode.current());
+    public SimpleRenderContext(LytRect viewport, GuiGraphics guiGraphics) {
+        this(viewport, guiGraphics, LightDarkMode.current());
     }
 
     @Override
@@ -39,7 +39,7 @@ public record SimpleRenderContext(
         var tesselator = Tesselator.getInstance();
         var builder = tesselator.getBuilder();
         builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        var matrix = poseStack.last().pose();
+        var matrix = poseStack().last().pose();
         final int z = 0;
         builder.vertex(matrix, rect.right(), rect.y(), z).color(resolveColor(topRight)).endVertex();
         builder.vertex(matrix, rect.x(), rect.y(), z).color(resolveColor(topLeft)).endVertex();
@@ -59,7 +59,7 @@ public record SimpleRenderContext(
         var tesselator = Tesselator.getInstance();
         var builder = tesselator.getBuilder();
         builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        var matrix = poseStack.last().pose();
+        var matrix = poseStack().last().pose();
         final int z = 0;
         builder.vertex(matrix, rect.right(), rect.y(), z).uv(u1, v0).color(resolveColor(topRight)).endVertex();
         builder.vertex(matrix, rect.x(), rect.y(), z).uv(u0, v0).color(resolveColor(topLeft)).endVertex();
@@ -79,7 +79,7 @@ public record SimpleRenderContext(
         var tesselator = Tesselator.getInstance();
         var builder = tesselator.getBuilder();
         builder.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
-        var matrix = poseStack.last().pose();
+        var matrix = poseStack().last().pose();
         final int z = 0;
         builder.vertex(matrix, p1.x, p1.y, z).color(resolvedColor).endVertex();
         builder.vertex(matrix, p2.x, p2.y, z).color(resolvedColor).endVertex();
@@ -91,13 +91,13 @@ public record SimpleRenderContext(
     @Override
     public void renderItem(ItemStack stack, int x, int y, int z, float width, float height) {
         var mc = Minecraft.getInstance();
-        var itemRenderer = mc.getItemRenderer();
 
-        poseStack.pushPose();
-        poseStack.translate(x, y, z + 1);
-        poseStack.scale(width / 16, height / 16, 1);
-        itemRenderer.renderGuiItem(poseStack, stack, 0, 0);
-        itemRenderer.renderGuiItemDecorations(poseStack, mc.font, stack, 0, 0);
-        poseStack.popPose();
+        var pose = poseStack();
+        pose.pushPose();
+        pose.translate(x, y, z + 1);
+        pose.scale(width / 16, height / 16, 1);
+        guiGraphics().renderItem(stack, 0, 0);
+        guiGraphics().renderItemDecorations(mc.font, stack, 0, 0);
+        pose.popPose();
     }
 }

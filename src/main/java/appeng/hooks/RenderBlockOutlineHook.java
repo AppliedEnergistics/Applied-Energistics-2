@@ -175,7 +175,7 @@ public class RenderBlockOutlineHook {
             boolean insideBlock) {
         if (itemInHand.getItem() instanceof IPartItem<?>partItem) {
             var placement = PartPlacement.getPartPlacement(player,
-                    player.level,
+                    player.level(),
                     itemInHand,
                     blockHitResult.getBlockPos(),
                     blockHitResult.getDirection(),

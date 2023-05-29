@@ -21,9 +21,8 @@ package appeng.client.gui.me.networktool;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -80,7 +79,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         int x = 0;
         int y = 0;
@@ -99,9 +98,9 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
             int itemX = cellX + CELL_WIDTH - 17;
             int itemY = cellY + 1;
 
-            drawMachineCount(poseStack, itemX, cellY, entry.getCount());
+            drawMachineCount(guiGraphics, itemX, cellY, entry.getCount());
 
-            AEKeyRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entry.getDisplay());
+            AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, itemX, itemY, entry.getDisplay());
 
             // Update the tooltip based on the calculated cell rectangle and mouse position
             if (isHovering(cellX, cellY, CELL_WIDTH, CELL_HEIGHT, mouseX, mouseY)) {
@@ -123,12 +122,12 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
 
         if (tooltip != null) {
             // We need to relativize the offset because the matrix stack is currently "pushed" to the local coordinates
-            this.drawTooltipWithHeader(poseStack, mouseX - offsetX, mouseY - offsetY, tooltip);
+            this.drawTooltipWithHeader(guiGraphics, mouseX - offsetX, mouseY - offsetY, tooltip);
         }
     }
 
     // x,y is upper left corner of related machine icon (which is 16x16)
-    private void drawMachineCount(PoseStack poseStack, int x, int y, long count) {
+    private void drawMachineCount(GuiGraphics guiGraphics, int x, int y, long count) {
         String str;
         if (count >= 10000) {
             str = Long.toString(count / 1000) + 'k';
@@ -141,14 +140,15 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
         float textHeight = this.font.lineHeight / 2.0f;
 
         // Draw the count at half-size
+        var poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(
                 x - 1 - textWidth,
                 y + (CELL_HEIGHT - textHeight) / 2.0f,
                 0);
         poseStack.scale(0.5f, 0.5f, 0.5f);
-        this.font.draw(poseStack, str, 0, 0,
-                style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB());
+        guiGraphics.drawString(this.font, str, 0, 0,
+                style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB(), false);
         poseStack.popPose();
     }
 

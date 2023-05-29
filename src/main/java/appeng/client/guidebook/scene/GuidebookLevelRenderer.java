@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexSorting;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -57,20 +58,21 @@ public class GuidebookLevelRenderer {
         var chunkPos = new ChunkPos(BlockPos.ZERO);
         var lightEngine = level.getLightEngine();
         lightEngine.retainData(chunkPos, false);
-        lightEngine.enableLightSources(chunkPos, false);
+        lightEngine.setLightEnabled(chunkPos, false);
 
         for (int i = lightEngine.getMinLightSection(); i < lightEngine.getMaxLightSection(); ++i) {
-            lightEngine.queueSectionData(LightLayer.BLOCK, SectionPos.of(chunkPos, i), null, true);
-            lightEngine.queueSectionData(LightLayer.SKY, SectionPos.of(chunkPos, i), null, true);
+            lightEngine.queueSectionData(LightLayer.BLOCK, SectionPos.of(chunkPos, i), null);
+            lightEngine.queueSectionData(LightLayer.SKY, SectionPos.of(chunkPos, i), null);
         }
-        lightEngine.enableLightSources(chunkPos, true);
+        lightEngine.setLightEnabled(chunkPos, true);
 
         level.getLightEngine().updateSectionStatus(BlockPos.ZERO, false);
-        level.getLightEngine().runUpdates(Integer.MAX_VALUE, true, true);
+        level.getLightEngine().runLightUpdates();
 
         var projectionMatrix = cameraSettings.getProjectionMatrix();
         var viewMatrix = cameraSettings.getViewMatrix();
 
+        // Essentially disable level fog
         RenderSystem.setShaderFogColor(1, 1, 1, 0);
         RenderSystem.setShaderFogStart(0);
         RenderSystem.setShaderFogEnd(1000);
@@ -78,10 +80,11 @@ public class GuidebookLevelRenderer {
 
         var modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
+        modelViewStack.setIdentity();
         modelViewStack.mulPoseMatrix(viewMatrix);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.backupProjectionMatrix();
-        RenderSystem.setProjectionMatrix(projectionMatrix);
+        RenderSystem.setProjectionMatrix(projectionMatrix, VertexSorting.ORTHOGRAPHIC_Z);
 
         var lightDirection = new Vector4f(15 / 90f, .35f, 1, 0);
         var lightTransform = new Matrix4f(viewMatrix);
@@ -129,6 +132,8 @@ public class GuidebookLevelRenderer {
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
         RenderSystem.restoreProjectionMatrix();
+
+        RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
     }
 
     private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers, boolean translucent) {

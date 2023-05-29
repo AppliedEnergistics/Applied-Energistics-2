@@ -21,18 +21,16 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.client.gui.Icon;
 
 public class TabButton extends Button implements ITooltip {
-    private final ItemRenderer itemRenderer;
     private Style style = Style.BOX;
     private Icon icon = null;
     private ItemStack item;
@@ -45,12 +43,10 @@ public class TabButton extends Button implements ITooltip {
         HORIZONTAL
     }
 
-    public TabButton(Icon ico, Component message, ItemRenderer ir,
-            OnPress onPress) {
+    public TabButton(Icon ico, Component message, OnPress onPress) {
         super(0, 0, 22, 22, message, onPress, Button.DEFAULT_NARRATION);
 
         this.icon = ico;
-        this.itemRenderer = ir;
     }
 
     /**
@@ -58,17 +54,14 @@ public class TabButton extends Button implements ITooltip {
      *
      * @param ico     used icon
      * @param message mouse over message
-     * @param ir      renderer
      */
-    public TabButton(ItemStack ico, Component message, ItemRenderer ir,
-            OnPress onPress) {
+    public TabButton(ItemStack ico, Component message, OnPress onPress) {
         super(0, 0, 22, 22, message, onPress, Button.DEFAULT_NARRATION);
         this.item = ico;
-        this.itemRenderer = ir;
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int x, int y, float partial) {
+    public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
@@ -86,7 +79,7 @@ public class TabButton extends Button implements ITooltip {
                 }
             };
 
-            backdrop.getBlitter().dest(getX(), getY()).blit(poseStack);
+            backdrop.getBlitter().dest(getX(), getY()).blit(guiGraphics);
 
             var iconX = switch (this.style) {
                 case CORNER -> 4;
@@ -96,14 +89,17 @@ public class TabButton extends Button implements ITooltip {
             var iconY = 3;
 
             if (this.icon != null) {
-                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY).blit(poseStack);
+                this.icon.getBlitter().dest(getX() + iconX, getY() + iconY).blit(guiGraphics);
             }
 
             if (this.item != null) {
-                poseStack.pushPose();
-                poseStack.translate(0, 0, 100);
-                this.itemRenderer.renderAndDecorateItem(poseStack, this.item, getX() + iconX, getY() + iconY);
-                poseStack.popPose();
+                var pose = guiGraphics.pose();
+                pose.pushPose();
+                pose.translate(0, 0, 100);
+                guiGraphics.renderItem(this.item, getX() + iconX, getY() + iconY);
+                var font = Minecraft.getInstance().font;
+                guiGraphics.renderItemDecorations(font, this.item, getX() + iconX, getY() + iconY);
+                pose.popPose();
             }
         }
     }

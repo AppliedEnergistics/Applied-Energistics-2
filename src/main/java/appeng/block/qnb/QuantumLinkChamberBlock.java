@@ -41,7 +41,6 @@ import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.EffectType;
 import appeng.core.AppEng;
 import appeng.core.AppEngClient;
-import appeng.helpers.AEMaterials;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.locator.MenuLocators;
@@ -58,7 +57,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     public QuantumLinkChamberBlock() {
-        super(defaultProps(AEMaterials.GLASS));
+        super(glassProps());
     }
 
     @Override

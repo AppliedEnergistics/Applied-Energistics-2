@@ -115,9 +115,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
         }
 
         if (importTo instanceof IConfigurableObject configurableObject) {
-            // TODO: 1.20 Make it return true if it read any config at all
-            configurableObject.getConfigManager().readFromNBT(input);
-            imported.add(SettingsCategory.SETTINGS);
+            if (configurableObject.getConfigManager().readFromNBT(input)) {
+                imported.add(SettingsCategory.SETTINGS);
+            }
         }
 
         if (importTo instanceof IPriorityHost pHost && input.contains("priority", Tag.TAG_INT)) {
@@ -263,7 +263,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
                     }
                 }
 
-                if (missingAmount > 0 && !player.level.isClientSide()) {
+                if (missingAmount > 0 && !player.level().isClientSide()) {
                     player.displayClientMessage(
                             PlayerMessages.MissingUpgrades.text(entry.getKey().getDescription(), missingAmount), true);
                 }

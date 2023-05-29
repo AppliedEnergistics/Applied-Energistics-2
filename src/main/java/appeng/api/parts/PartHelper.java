@@ -164,7 +164,7 @@ public final class PartHelper {
             return false;
         }
 
-        return level.isEmptyBlock(pos) || level.getBlockState(pos).getMaterial().isReplaceable();
+        return level.isEmptyBlock(pos) || level.getBlockState(pos).canBeReplaced();
     }
 
     /**

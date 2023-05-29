@@ -2,8 +2,7 @@ package appeng.client.gui.me.items;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
@@ -70,8 +69,8 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack);
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(guiGraphics);
     }
 
     @Override
@@ -83,7 +82,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
         container.setItem(1, menu.getSmithingTableBaseSlot().getItem());
         container.setItem(2, menu.getSmithingTableAdditionSlot().getItem());
 
-        var level = menu.getPlayer().level;
+        var level = menu.getPlayer().level();
         var recipe = level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMITHING, container, level)
                 .orElse(null);

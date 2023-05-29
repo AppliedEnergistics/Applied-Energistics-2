@@ -17,14 +17,14 @@
  */
 package appeng.hooks;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AmountFormat;
@@ -32,54 +32,48 @@ import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.crafting.pattern.EncodedPatternItem;
 
-public final class ItemRendererHooks {
-
+public final class GuiGraphicsHooks {
     // Prevents recursion in the hook below
     private static final ThreadLocal<ItemStack> OVERRIDING_FOR = new ThreadLocal<>();
 
-    private ItemRendererHooks() {
+    private GuiGraphicsHooks() {
     }
 
     /**
      * This hook will exchange the rendered item model for encoded patterns to the item being crafted by them if shift
      * is held.
      */
-    public static boolean onRenderGuiItemModel(ItemRenderer renderer, PoseStack poseStack, ItemStack stack, int x,
-            int y) {
+    public static boolean onRenderGuiItem(GuiGraphics guiGraphics, @Nullable LivingEntity livingEntity,
+            @Nullable Level level, ItemStack stack, int x, int y, int seed, int z) {
         var minecraft = Minecraft.getInstance();
 
-        if (stack.getItem() instanceof EncodedPatternItem) {
+        if (stack.getItem() instanceof EncodedPatternItem encodedPattern) {
             if (OVERRIDING_FOR.get() == stack) {
                 return false; // Don't allow recursive model replacements
             }
 
             boolean shiftHeld = Screen.hasShiftDown();
-            var level = minecraft.level;
             if (shiftHeld && level != null) {
-                var encodedPattern = (EncodedPatternItem) stack.getItem();
                 var output = encodedPattern.getOutput(stack);
-                if (!output.isEmpty()) {
-                    var realModel = renderer.getModel(output, level, minecraft.player, 0);
-                    renderInstead(renderer, poseStack, output, x, y, realModel);
+                // If output would be identical to stack, we'd infinitely loop
+                if (!output.isEmpty() && output != stack) {
+                    renderInstead(guiGraphics, livingEntity, level, output, x, y, seed, z);
                     return true;
                 }
             }
-
-            return false;
         }
 
         var unwrapped = GenericStack.unwrapItemStack(stack);
         if (unwrapped != null) {
             AEKeyRendering.drawInGui(
                     minecraft,
-                    poseStack,
+                    guiGraphics,
                     x,
                     y, unwrapped.what());
 
             if (unwrapped.amount() > 0) {
                 String amtText = unwrapped.what().formatAmount(unwrapped.amount(), AmountFormat.SLOT);
-                Font font = minecraft.font;
-                StackSizeRenderer.renderSizeLabel(poseStack, font, x, y, amtText, false);
+                StackSizeRenderer.renderSizeLabel(guiGraphics, minecraft.font, x, y, amtText, false);
             }
 
             return true;
@@ -88,14 +82,13 @@ public final class ItemRendererHooks {
         return false;
     }
 
-    private static void renderInstead(ItemRenderer renderer, PoseStack poseStack, ItemStack stack, int x, int y,
-            BakedModel realModel) {
+    private static void renderInstead(GuiGraphics guiGraphics, @Nullable LivingEntity livingEntity,
+            @Nullable Level level, ItemStack stack, int x, int y, int seed, int z) {
         OVERRIDING_FOR.set(stack);
         try {
-            renderer.renderGuiItem(poseStack, stack, x, y, realModel);
+            guiGraphics.renderItem(livingEntity, level, stack, x, y, seed, z);
         } finally {
             OVERRIDING_FOR.remove();
         }
     }
-
 }

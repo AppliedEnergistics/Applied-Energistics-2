@@ -20,11 +20,9 @@ package appeng.client.gui.me.crafting;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
@@ -70,13 +68,15 @@ public abstract class AbstractTableRenderer<T> {
         this.rows = rows;
     }
 
-    public final void render(PoseStack poseStack, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
+    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<Component> tooltipLines = null;
         StackWithBounds hovered = null;
+
+        var pose = guiGraphics.pose();
 
         for (int row = 0; row < this.rows; row++) {
             for (int col = 0; col < COLS; col++) {
@@ -92,7 +92,7 @@ public abstract class AbstractTableRenderer<T> {
 
                 int background = getEntryBackgroundColor(entry);
                 if (background != 0) {
-                    GuiComponent.fill(poseStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
+                    guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, background);
                 }
 
                 List<Component> lines = getEntryDescription(entry);
@@ -107,25 +107,25 @@ public abstract class AbstractTableRenderer<T> {
                 // Position the item at the right side of the cell with a 3px margin
                 int itemX = cellX + CELL_WIDTH - 19;
 
-                poseStack.pushPose();
-                poseStack.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
+                pose.pushPose();
+                pose.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
                 for (Component line : lines) {
                     final int w = fontRenderer.width(line);
-                    fontRenderer.draw(poseStack, line,
+                    guiGraphics.drawString(fontRenderer, line,
                             (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
-                            textY * INV_TEXT_SCALE, textColor);
+                            (int) (textY * INV_TEXT_SCALE), textColor, false);
                     textY += lineHeight + LINE_SPACING;
                 }
-                poseStack.popPose();
+                pose.popPose();
 
                 var entryStack = getEntryStack(entry);
 
                 int itemY = cellY + (CELL_HEIGHT - 16) / 2;
-                AEKeyRendering.drawInGui(Minecraft.getInstance(), poseStack, itemX, itemY, entryStack);
+                AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, itemX, itemY, entryStack);
 
                 int overlay = getEntryOverlayColor(entry);
                 if (overlay != 0) {
-                    GuiComponent.fill(poseStack, cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
+                    guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
                 }
 
                 if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
@@ -141,7 +141,7 @@ public abstract class AbstractTableRenderer<T> {
         hoveredStack = hovered;
 
         if (tooltipLines != null) {
-            screen.drawTooltipWithHeader(poseStack, mouseX, mouseY, tooltipLines);
+            screen.drawTooltipWithHeader(guiGraphics, mouseX, mouseY, tooltipLines);
         }
     }
 

@@ -147,7 +147,7 @@ public class ChargerBlockEntity extends AENetworkPowerBlockEntity implements IGr
         } else {
             var drops = List.of(myItem);
             this.inv.setItemDirect(0, ItemStack.EMPTY);
-            Platform.spawnDrops(player.level, this.worldPosition.relative(this.getFront()), drops);
+            Platform.spawnDrops(player.level(), this.worldPosition.relative(this.getFront()), drops);
         }
     }
 

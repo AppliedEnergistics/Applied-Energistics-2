@@ -20,10 +20,9 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -122,12 +121,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
 
         CraftingPlanSummary plan = menu.getPlan();
         if (plan != null) {
-            this.table.render(poseStack, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
+            this.table.render(guiGraphics, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
 
     }

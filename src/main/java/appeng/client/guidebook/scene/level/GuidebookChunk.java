@@ -3,7 +3,7 @@ package appeng.client.guidebook.scene.level;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -28,8 +28,8 @@ class GuidebookChunk extends LevelChunk {
         return result;
     }
 
-    public ChunkHolder.FullChunkStatus getFullStatus() {
-        return ChunkHolder.FullChunkStatus.BORDER;
+    public FullChunkStatus getFullStatus() {
+        return FullChunkStatus.FULL;
     }
 
 }

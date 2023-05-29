@@ -26,7 +26,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 
 import appeng.api.behaviors.PickupSink;
@@ -214,10 +213,9 @@ public class ItemPickupStrategy implements PickupStrategy {
             return false;
         }
 
-        var material = state.getMaterial();
         // Note: bedrock, portals, and other unbreakable blocks have a hardness < 0, hence the >= 0 check below.
         var hardness = state.getDestroySpeed(level, pos);
-        var ignoreAirAndFluids = material == Material.AIR || material.isLiquid();
+        var ignoreAirAndFluids = state.isAir() || state.liquid();
 
         return !ignoreAirAndFluids && hardness >= 0f && level.isLoaded(pos)
                 && level.mayInteract(Platform.getFakePlayer(level, ownerUuid), pos);

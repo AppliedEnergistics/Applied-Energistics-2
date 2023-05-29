@@ -18,14 +18,12 @@
 
 package appeng.block.networking;
 
-import net.minecraft.world.level.material.Material;
-
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 
 public class EnergyAcceptorBlock extends AEBaseEntityBlock<EnergyAcceptorBlockEntity> {
 
     public EnergyAcceptorBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 }

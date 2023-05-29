@@ -18,8 +18,7 @@
 
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -75,17 +74,18 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX, int mouseY) {
-        super.drawFG(poseStack, offsetX, offsetY, mouseX, mouseY);
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
+        super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
 
+        var poseStack = guiGraphics.pose();
         poseStack.pushPose();
         poseStack.translate(10, 17, 0);
         poseStack.scale(0.6f, 0.6f, 1);
         var color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
         if (menu.getConnectedTo() != null) {
-            font.draw(poseStack, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB());
+            guiGraphics.drawString(font, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB(), false);
         } else {
-            font.draw(poseStack, GuiText.Unattached.text(), 0, 0, color.toARGB());
+            guiGraphics.drawString(font, GuiText.Unattached.text(), 0, 0, color.toARGB(), false);
         }
         poseStack.popPose();
     }

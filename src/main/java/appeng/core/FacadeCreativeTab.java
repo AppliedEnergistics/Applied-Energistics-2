@@ -26,8 +26,8 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.Items;
 
-import appeng.api.ids.AECreativeTabIds;
 import appeng.core.definitions.AEItems;
+import appeng.core.localization.GuiText;
 
 public final class FacadeCreativeTab {
 
@@ -35,7 +35,8 @@ public final class FacadeCreativeTab {
 
     public static void init() {
         Preconditions.checkState(group == null);
-        group = FabricItemGroup.builder(AECreativeTabIds.FACADES)
+        group = FabricItemGroup.builder()
+                .title(GuiText.CreativeTabFacades.text())
                 .icon(() -> {
                     var items = group.getDisplayItems();
                     return items.stream().findFirst().orElse(Items.CAKE.getDefaultInstance());

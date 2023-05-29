@@ -47,9 +47,11 @@ public class Label extends AbstractWidget implements Widget {
     public void draw(PoseStack stack) {
         for (var line : getLines()) {
             if (shadow) {
-                font.drawShadow(stack, line.text, line.x, line.y, color);
+                // TODO 1.20 GuiGraphics
+                // font.drawShadow(stack, line.text, line.x, line.y, color);
             } else {
-                font.draw(stack, line.text, line.x, line.y, color);
+                // TODO 1.20 GuiGraphics
+                // font.draw(stack, line.text, line.x, line.y, color);
             }
         }
     }

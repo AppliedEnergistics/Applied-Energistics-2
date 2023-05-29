@@ -130,8 +130,9 @@ dependencies {
         exclude group: "net.fabricmc.fabric-api"
     }
 
+    // TODO 1.20
     // Include No Indium? https://github.com/Luligabi1/NoIndium
-    include "me.luligabi:NoIndium:${project.no_indium_version}"
+    //include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     // unit test dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")

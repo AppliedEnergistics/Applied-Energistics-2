@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
@@ -59,10 +58,6 @@ public class LytSmithingRecipe extends LytBox {
                     transformRecipe.template,
                     transformRecipe.base,
                     transformRecipe.addition);
-        } else if (recipe instanceof LegacyUpgradeRecipe legacyUpgradeRecipe) {
-            return List.of(
-                    legacyUpgradeRecipe.base,
-                    legacyUpgradeRecipe.addition);
         } else {
             LOG.warn("Cannot determine ingredients of smithing recipe type {}", recipe.getClass());
             return List.of();

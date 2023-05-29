@@ -53,7 +53,7 @@ public final class MenuOpener {
     }
 
     public static boolean open(MenuType<?> type, Player player, MenuLocator locator, boolean fromSubMenu) {
-        Preconditions.checkArgument(!player.getLevel().isClientSide(), "Menus must be opened on the server.");
+        Preconditions.checkArgument(!player.level().isClientSide(), "Menus must be opened on the server.");
         Opener opener = registry.get(type);
         if (opener == null) {
             AELog.warn("Trying to open menu for unknown menu type {}", type);

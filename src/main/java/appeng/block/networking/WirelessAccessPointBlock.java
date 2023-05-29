@@ -53,7 +53,6 @@ import appeng.api.orientation.OrientationStrategies;
 import appeng.api.orientation.RelativeSide;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
-import appeng.helpers.AEMaterials;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.WirelessAccessPointMenu;
 import appeng.menu.locator.MenuLocators;
@@ -76,7 +75,7 @@ public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPo
     private static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public WirelessAccessPointBlock() {
-        super(defaultProps(AEMaterials.GLASS).noOcclusion());
+        super(glassProps().noOcclusion());
         this.registerDefaultState(this.defaultBlockState().setValue(STATE, State.OFF)
                 .setValue(WATERLOGGED, false));
     }

@@ -25,11 +25,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
@@ -45,7 +43,7 @@ public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorB
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     public GrowthAcceleratorBlock() {
-        super(defaultProps(Material.STONE).sound(SoundType.METAL));
+        super(metalProps());
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 

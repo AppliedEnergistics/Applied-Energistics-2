@@ -30,7 +30,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -46,7 +45,7 @@ public class ChestBlock extends AEBaseEntityBlock<ChestBlockEntity> {
     public final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
     public ChestBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
         this.registerDefaultState(this.defaultBlockState().setValue(LIGHTS_ON, false));
     }
 

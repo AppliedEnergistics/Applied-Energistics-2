@@ -269,7 +269,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 }
 
                 final BlockState whatsThere = level.getBlockState(hitPos);
-                if (whatsThere.getMaterial().isReplaceable() && level.isEmptyBlock(hitPos)) {
+                if (whatsThere.canBeReplaced() && level.isEmptyBlock(hitPos)) {
                     level.setBlock(hitPos, AEBlocks.PAINT.block().defaultBlockState(), 3);
                 }
 

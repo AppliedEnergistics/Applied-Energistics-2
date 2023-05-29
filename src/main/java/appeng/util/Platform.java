@@ -229,10 +229,10 @@ public class Platform {
     }
 
     public static boolean hasPermissions(DimensionalBlockPos dc, Player player) {
-        if (!dc.isInWorld(player.level)) {
+        if (!dc.isInWorld(player.level())) {
             return false;
         }
-        return player.level.mayInteract(player, dc.getPos());
+        return player.level().mayInteract(player, dc.getPos());
     }
 
     /*
@@ -344,7 +344,7 @@ public class Platform {
             return forward;
         }
         var newForward = forward.getNormal().cross(axis.getNormal());
-        return Objects.requireNonNull(Direction.fromNormal(new BlockPos(newForward)));
+        return Objects.requireNonNull(Direction.fromDelta(newForward.getX(), newForward.getY(), newForward.getZ()));
     }
 
     public static void configurePlayer(Player player, Direction side, BlockEntity blockEntity) {
@@ -400,7 +400,7 @@ public class Platform {
                         if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
                             ci.setItem(slot, itemKey.toStack());
                             if (r.matches(ci, level)
-                                    && ItemStack.isSame(r.assemble(ci, level.registryAccess()), output)) {
+                                    && ItemStack.matches(r.assemble(ci, level.registryAccess()), output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
                                     var ex = src.extract(itemKey, 1, realForFake, mySrc);
                                     if (ex > 0) {
@@ -460,18 +460,11 @@ public class Platform {
         return Transaction.openNested(Transaction.getCurrentUnsafe());
     }
 
-    public static boolean canItemStacksStack(ItemStack a, ItemStack b) {
-        if (a.isEmpty() || !a.sameItem(b) || a.hasTag() != b.hasTag())
-            return false;
-
-        return (!a.hasTag() || a.getTag().equals(b.getTag()));
-    }
-
     /**
      * Create a full packet of the chunks data with lighting.
      */
     public static Packet<?> getFullChunkPacket(LevelChunk c) {
-        return new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null, true);
+        return new ClientboundLevelChunkWithLightPacket(c, c.getLevel().getLightEngine(), null, null);
     }
 
     public static ItemStack getInsertionRemainder(ItemStack original, long inserted) {
@@ -497,7 +490,7 @@ public class Platform {
      */
     public static void sendImmediateBlockEntityUpdate(Player player, BlockPos pos) {
         if (player instanceof ServerPlayer serverPlayer) {
-            var be = player.getLevel().getBlockEntity(pos);
+            var be = player.level().getBlockEntity(pos);
             if (be != null) {
                 var packet = be.getUpdatePacket();
                 if (packet != null) {

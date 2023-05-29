@@ -178,7 +178,7 @@ public final class MeteoritePlacer {
                     if (j > h + distanceFrom * 0.02) {
                         BlockState currentBlock = level.getBlockState(blockPos);
 
-                        if (craterType != CraterType.NORMAL && j < y && currentBlock.getMaterial().isSolid()) {
+                        if (craterType != CraterType.NORMAL && j < y && currentBlock.isSolid()) {
                             if (j > h + distanceFrom * 0.02) {
                                 this.putter.put(level, blockPos, filler);
                             }
@@ -285,7 +285,7 @@ public final class MeteoritePlacer {
                     }
 
                     // TODO reconsider
-                    if (state.getMaterial().isReplaceable()) {
+                    if (state.canBeReplaced()) {
                         if (!level.isEmptyBlock(blockPosUp)) {
                             final BlockState stateUp = level.getBlockState(blockPosUp);
                             level.setBlock(blockPos, stateUp, Block.UPDATE_ALL);
@@ -296,7 +296,7 @@ public final class MeteoritePlacer {
                             final double dist = dx * dx + dy * dy + dz * dz;
 
                             final BlockState xf = level.getBlockState(blockPosDown);
-                            if (!xf.getMaterial().isReplaceable()) {
+                            if (!xf.canBeReplaced()) {
                                 final double extraRange = random.nextDouble() * 0.6;
                                 final double height = this.crater * (extraRange + 0.2)
                                         - Math.abs(dist - this.crater * 1.7);

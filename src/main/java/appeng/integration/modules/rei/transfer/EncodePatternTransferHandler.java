@@ -1,7 +1,5 @@
 package appeng.integration.modules.rei.transfer;
 
-import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -152,8 +149,8 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
                         matrices.pushPose();
                         matrices.translate(0, 0, 400);
                         Rectangle innerBounds = slot.getInnerBounds();
-                        GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                                innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
+                        // TODO 1.20 fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                        // innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
                         matrices.popPose();
                     }
                 }

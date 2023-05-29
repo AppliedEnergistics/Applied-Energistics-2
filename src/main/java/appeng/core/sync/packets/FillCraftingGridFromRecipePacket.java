@@ -259,7 +259,7 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
     private NonNullList<Ingredient> getDesiredIngredients(Player player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
-            var recipe = player.getLevel().getRecipeManager().byKey(this.recipeId).orElse(null);
+            var recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
             if (recipe != null) {
                 return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
             }

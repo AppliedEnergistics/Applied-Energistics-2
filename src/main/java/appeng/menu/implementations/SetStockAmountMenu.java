@@ -85,7 +85,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public Level getLevel() {
-        return this.getPlayerInventory().player.level;
+        return this.getPlayerInventory().player.level();
     }
 
     private void setWhatToStock(int slot, AEKey whatToStock, int initialAmount) {

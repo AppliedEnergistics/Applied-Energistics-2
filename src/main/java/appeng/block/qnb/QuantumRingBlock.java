@@ -22,7 +22,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -40,7 +39,7 @@ public class QuantumRingBlock extends QuantumBaseBlock {
     private static final double DEFAULT_MODEL_MAX = 14.0 / 16.0;
 
     public QuantumRingBlock() {
-        super(defaultProps(Material.METAL));
+        super(metalProps());
     }
 
     @Override

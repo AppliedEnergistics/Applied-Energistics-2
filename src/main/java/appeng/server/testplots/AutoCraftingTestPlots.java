@@ -6,7 +6,7 @@ import java.util.Arrays;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -229,7 +229,7 @@ public final class AutoCraftingTestPlots {
                 })
                 .toArray(ItemStack[]::new);
 
-        var c = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        var c = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < stacks.length; i++) {
             c.setItem(i, stacks[i]);
         }

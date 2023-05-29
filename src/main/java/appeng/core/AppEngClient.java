@@ -384,10 +384,10 @@ public class AppEngClient extends AppEngBase {
     private ItemStack onPickBlock(Player player, HitResult hitResult) {
         if (hitResult instanceof BlockHitResult blockHitResult) {
             BlockPos blockPos = blockHitResult.getBlockPos();
-            BlockState blockState = player.level.getBlockState(blockPos);
+            BlockState blockState = player.level().getBlockState(blockPos);
 
             if (blockState.getBlock() instanceof ICustomPickBlock customPickBlock) {
-                return customPickBlock.getPickBlock(blockState, hitResult, player.level, blockPos, player);
+                return customPickBlock.getPickBlock(blockState, hitResult, player.level(), blockPos, player);
             }
         }
         return ItemStack.EMPTY;

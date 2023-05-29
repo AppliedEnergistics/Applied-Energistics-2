@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
-import appeng.helpers.AEMaterials;
 
 public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
 
@@ -44,7 +43,7 @@ public class EnergyCellBlock extends AEBaseEntityBlock<EnergyCellBlockEntity> {
     private final int priority;
 
     public EnergyCellBlock(double maxPower, double chargeRate, int priority) {
-        super(defaultProps(AEMaterials.GLASS));
+        super(glassProps());
         this.maxPower = maxPower;
         this.chargeRate = chargeRate;
         this.priority = priority;

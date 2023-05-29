@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -83,8 +84,8 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         this.recipe = level.getRecipeManager().byType(RecipeType.CRAFTING).get(recipeId);
 
         // Build frame and find output
-        this.testFrame = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
-        this.specialRecipeTestFrame = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        this.testFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
+        this.specialRecipeTestFrame = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int i = 0; i < 9; ++i) {
             if (sparseInputs[i] != null) {
                 var itemKey = (AEItemKey) sparseInputs[i].what();
@@ -459,7 +460,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             // We only support buckets since we can't predict the behavior of other kinds of containers (ender tanks...)
 
             // Check that the remaining item is indeed the emptied container.
-            var testFrameCopy = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+            var testFrameCopy = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
             for (int i = 0; i < 9; ++i) {
                 testFrameCopy.setItem(i, testFrame.getItem(i).copy());
             }

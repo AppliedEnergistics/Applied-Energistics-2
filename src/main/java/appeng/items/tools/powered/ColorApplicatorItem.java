@@ -217,13 +217,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
             if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
-                if (!player.level.isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
+                if (!player.level().isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
                     sheep.setColor(paintBallColor.dye);
-                    sheep.level.playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    sheep.level().playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     this.consumeItem(is, AEItemKey.of(paintBall), false);
                 }
 
-                return InteractionResult.sidedSuccess(player.level.isClientSide);
+                return InteractionResult.sidedSuccess(player.level().isClientSide);
             }
         }
 
