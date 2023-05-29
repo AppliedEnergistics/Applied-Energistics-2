@@ -130,7 +130,7 @@ public final class Guide implements PageCollection {
 
     // Run a fake datapack reload to properly compile the page (Recipes, Tags, etc.)
     // Only used when we try to compile pages before entering a world (validation, show on startup)
-    private static void runDatapackReload() {
+    public static void runDatapackReload() {
         try {
             var layeredAccess = RegistryLayer.createRegistryAccess();
 
