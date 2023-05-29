@@ -1,4 +1,4 @@
-package appeng.client.guidebook.render;
+package appeng.client.guidebook.color;
 
 import net.minecraft.util.FastColor;
 

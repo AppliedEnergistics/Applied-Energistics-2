@@ -1,8 +1,8 @@
 package appeng.client.guidebook.document.block;
 
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.render.RenderContext;
-import appeng.client.guidebook.render.SymbolicColor;
 
 public class LytHeading extends LytParagraph {
     private int depth = 1;
@@ -37,11 +37,11 @@ public class LytHeading extends LytParagraph {
         if (depth == 1) {
             var bounds = getBounds();
             context.fillRect(
-                    bounds.x(), bounds.bottom() - 1, bounds.width(), 1, SymbolicColor.HEADER1_SEPARATOR.ref());
+                    bounds.x(), bounds.bottom() - 1, bounds.width(), 1, SymbolicColor.HEADER1_SEPARATOR);
         } else if (depth == 2) {
             var bounds = getBounds();
             context.fillRect(
-                    bounds.x(), bounds.bottom() - 1, bounds.width(), 1, SymbolicColor.HEADER2_SEPARATOR.ref());
+                    bounds.x(), bounds.bottom() - 1, bounds.width(), 1, SymbolicColor.HEADER2_SEPARATOR);
         }
     }
 }

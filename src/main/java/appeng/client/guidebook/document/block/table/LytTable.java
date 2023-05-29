@@ -5,11 +5,11 @@ import java.util.List;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
-import appeng.client.guidebook.render.SymbolicColor;
 
 public class LytTable extends LytBlock {
     /**
@@ -78,7 +78,7 @@ public class LytTable extends LytBlock {
                 // context.fillRect(column.x - 1, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER.ref());
             }
             var colRight = column.x + column.width;
-            context.fillRect(colRight, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER.ref());
+            context.fillRect(colRight, bounds.y(), 1, bounds.height(), SymbolicColor.TABLE_BORDER);
         }
 
         for (int i = 0; i < rows.size() - 1; i++) {
@@ -88,7 +88,7 @@ public class LytTable extends LytBlock {
                 // context.fillRect(bounds.x(), row.bounds.y() - 1, bounds.width(), 1,
                 // SymbolicColor.TABLE_BORDER.ref());
             }
-            context.fillRect(bounds.x(), row.bounds.bottom(), bounds.width(), 1, SymbolicColor.TABLE_BORDER.ref());
+            context.fillRect(bounds.x(), row.bounds.bottom(), bounds.width(), 1, SymbolicColor.TABLE_BORDER);
         }
 
         for (var row : rows) {

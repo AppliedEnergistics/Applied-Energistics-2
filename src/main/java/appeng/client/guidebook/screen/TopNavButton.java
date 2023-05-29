@@ -10,8 +10,8 @@ import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.style.Blitter;
 import appeng.client.guidebook.GuidebookText;
-import appeng.client.guidebook.render.LightDarkMode;
-import appeng.client.guidebook.render.SymbolicColor;
+import appeng.client.guidebook.color.LightDarkMode;
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.core.AppEng;
 
 /**
@@ -46,7 +46,7 @@ class TopNavButton extends Button {
             color = SymbolicColor.ICON_BUTTON_HOVER;
         }
 
-        var resolved = color.resolve(LightDarkMode.LIGHT_MODE);
+        var resolved = color.resolve(LightDarkMode.current());
 
         Blitter.texture(AppEng.makeId("textures/guide/topnav_buttons.png"), 64, 16)
                 .src(role.iconSrcX, 0, 16, 16)

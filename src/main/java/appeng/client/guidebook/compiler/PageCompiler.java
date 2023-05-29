@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytErrorSink;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBlockContainer;
@@ -43,8 +45,10 @@ import appeng.client.guidebook.document.flow.LytFlowParent;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.document.interaction.TextTooltip;
+import appeng.client.guidebook.extensions.Extension;
+import appeng.client.guidebook.extensions.ExtensionCollection;
+import appeng.client.guidebook.extensions.ExtensionPoint;
 import appeng.client.guidebook.indices.PageIndex;
-import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.style.TextAlignment;
 import appeng.client.guidebook.style.WhiteSpaceMode;
 import appeng.libs.mdast.MdAst;
@@ -89,19 +93,31 @@ public final class PageCompiler {
     private static final int DEFAULT_ELEMENT_SPACING = 5;
 
     private final PageCollection pages;
+    private final ExtensionCollection extensions;
     private final String sourcePack;
     private final ResourceLocation id;
     private final String pageContent;
 
+    private final Map<String, TagCompiler> tagCompilers = new HashMap<>();
+
     public PageCompiler(
             PageCollection pages,
+            ExtensionCollection extensions,
             String sourcePack,
             ResourceLocation id,
             String pageContent) {
         this.pages = pages;
+        this.extensions = extensions;
         this.sourcePack = sourcePack;
         this.id = id;
         this.pageContent = pageContent;
+
+        // Index available tag-compilers
+        for (var tagCompiler : extensions.get(TagCompiler.EXTENSION_POINT)) {
+            for (String tagName : tagCompiler.getTagNames()) {
+                tagCompilers.put(tagName, tagCompiler);
+            }
+        }
     }
 
     public static ParsedGuidePage parse(String sourcePack, ResourceLocation id, InputStream in) throws IOException {
@@ -129,12 +145,16 @@ public final class PageCompiler {
         return new ParsedGuidePage(sourcePack, id, pageContent, astRoot, frontmatter);
     }
 
-    public static GuidePage compile(PageCollection pages, ParsedGuidePage parsedPage) {
+    public static GuidePage compile(PageCollection pages, ExtensionCollection extensions, ParsedGuidePage parsedPage) {
         // Translate page tree over to layout pages
-        var document = new PageCompiler(pages, parsedPage.sourcePack, parsedPage.id, parsedPage.source)
+        var document = new PageCompiler(pages, extensions, parsedPage.sourcePack, parsedPage.id, parsedPage.source)
                 .compile(parsedPage.astRoot);
 
         return new GuidePage(parsedPage.sourcePack, parsedPage.id, document);
+    }
+
+    public <T extends Extension> List<T> getExtensions(ExtensionPoint<T> extensionPoint) {
+        return extensions.get(extensionPoint);
     }
 
     private LytDocument compile(MdAstRoot root) {
@@ -199,7 +219,7 @@ public final class PageCompiler {
             } else if (child instanceof GfmTable astTable) {
                 layoutChild = compileTable(astTable);
             } else if (child instanceof MdxJsxFlowElement el) {
-                var compiler = TagCompilers.get(el.name());
+                var compiler = tagCompilers.get(el.name());
                 if (compiler == null) {
                     layoutChild = createErrorBlock("Unhandled MDX element in block context", child);
                 } else {
@@ -338,7 +358,7 @@ public final class PageCompiler {
             inlineBlock.setBlock(compileImage(astImage));
             layoutChild = inlineBlock;
         } else if (content instanceof MdxJsxTextElement el) {
-            var compiler = TagCompilers.get(el.name());
+            var compiler = tagCompilers.get(el.name());
             if (compiler == null) {
                 layoutChild = createErrorFlowContent("Unhandled MDX element in flow context", content);
             } else {
@@ -411,7 +431,7 @@ public final class PageCompiler {
     public LytFlowContent createErrorFlowContent(String text, UnistNode child) {
         LytFlowSpan span = new LytFlowSpan();
         span.modifyStyle(style -> {
-            style.color(new ColorRef(0xFFFF0000))
+            style.color(SymbolicColor.ERROR_TEXT)
                     .whiteSpace(WhiteSpaceMode.PRE);
         });
 

@@ -5,6 +5,10 @@ import java.util.Optional;
 import appeng.client.guidebook.screen.GuideScreen;
 
 public interface InteractiveElement {
+    default boolean mouseMoved(GuideScreen screen, int x, int y) {
+        return false;
+    }
+
     default boolean mouseClicked(GuideScreen screen, int x, int y, int button) {
         return false;
     }

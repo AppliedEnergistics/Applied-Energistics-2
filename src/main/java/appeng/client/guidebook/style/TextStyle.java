@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
 
-import appeng.client.guidebook.render.ColorRef;
+import appeng.client.guidebook.color.ColorValue;
 
 public record TextStyle(
         @Nullable Float fontScale,
@@ -14,7 +14,7 @@ public record TextStyle(
         @Nullable Boolean strikethrough,
         @Nullable Boolean obfuscated,
         @Nullable ResourceLocation font,
-        @Nullable ColorRef color,
+        @Nullable ColorValue color,
         @Nullable WhiteSpaceMode whiteSpace,
         @Nullable TextAlignment alignment) {
 
@@ -71,7 +71,7 @@ public record TextStyle(
         private Boolean strikethrough;
         private Boolean obfuscated;
         private ResourceLocation font;
-        private ColorRef color;
+        private ColorValue color;
         private WhiteSpaceMode whiteSpace;
         private TextAlignment alignment;
 
@@ -144,7 +144,7 @@ public record TextStyle(
             return this;
         }
 
-        public Builder color(ColorRef color) {
+        public Builder color(ColorValue color) {
             this.color = color;
             return this;
         }

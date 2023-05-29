@@ -1,5 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -7,12 +9,15 @@ import net.minecraft.ResourceLocationException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.ConstantColor;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.LytErrorSink;
 import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
@@ -22,6 +27,8 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
  * utilities for dealing with attributes of {@link MdxJsxElementFields}.
  */
 public final class MdxAttrs {
+
+    private static final Pattern COLOR_PATTERN = Pattern.compile("^#([0-9a-fA-F]{2}){3,4}$");
 
     private MdxAttrs() {
     }
@@ -172,4 +179,33 @@ public final class MdxAttrs {
         var z = getInt(compiler, errorSink, el, "z", 0);
         return new BlockPos(x, y, z);
     }
+
+    public static ColorValue getColor(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
+            String name, ColorValue defaultColor) {
+        var colorStr = el.getAttributeString(name, null);
+        if (colorStr != null) {
+            var m = COLOR_PATTERN.matcher(colorStr);
+            if (!m.matches()) {
+                errorSink.appendError(compiler, "Color must have format #AARRGGBB", el);
+                return defaultColor;
+            }
+
+            int r, g, b;
+            int a = 255;
+            if (colorStr.length() == 7) {
+                r = Integer.valueOf(colorStr.substring(1, 3), 16);
+                g = Integer.valueOf(colorStr.substring(3, 5), 16);
+                b = Integer.valueOf(colorStr.substring(5, 7), 16);
+            } else {
+                a = Integer.valueOf(colorStr.substring(1, 3), 16);
+                r = Integer.valueOf(colorStr.substring(3, 5), 16);
+                g = Integer.valueOf(colorStr.substring(5, 7), 16);
+                b = Integer.valueOf(colorStr.substring(7, 9), 16);
+            }
+            return new ConstantColor(FastColor.ARGB32.color(a, r, g, b));
+        }
+
+        return defaultColor;
+    }
+
 }

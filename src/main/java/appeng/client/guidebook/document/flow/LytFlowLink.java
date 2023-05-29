@@ -14,7 +14,8 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 
 import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.render.SymbolicColor;
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.sounds.AppEngSounds;
 
@@ -28,7 +29,7 @@ public class LytFlowLink extends LytTooltipSpan {
     private SoundEvent clickSound = AppEngSounds.GUIDE_CLICK_EVENT;
 
     public LytFlowLink() {
-        modifyStyle(style -> style.color(SymbolicColor.LINK.ref()));
+        modifyStyle(style -> style.color((ColorValue) SymbolicColor.LINK));
         modifyHoverStyle(style -> style.underlined(true));
     }
 

@@ -1,12 +1,13 @@
-package appeng.client.guidebook.render;
+package appeng.client.guidebook.color;
 
 /**
  * TODO Colors from WIP patchouli book "nameplate_color": "8A5BA4", "link_color": "8A5BA4", "link_hover_color":
  * "D7BBEC", "macros": { "$(item)": "$(#582E70)", "$(thing)": "$(#582E70)", "$(todo)": "$(#FF0000)" },
  */
-public enum SymbolicColor {
+public enum SymbolicColor implements ColorValue {
     LINK(Colors.rgb(0, 213, 255), Colors.rgb(0, 213, 255)),
     BODY_TEXT(Colors.rgb(174, 174, 174), Colors.rgb(174, 174, 174)),
+    ERROR_TEXT(Colors.rgb(255, 0, 0), Colors.rgb(255, 0, 0)),
     /**
      * Color used for the type of crafting shown in recipe blocks.
      */
@@ -24,7 +25,9 @@ public enum SymbolicColor {
 
     ICON_BUTTON_NORMAL(Colors.mono(200), Colors.mono(200)),
     ICON_BUTTON_DISABLED(Colors.mono(64), Colors.mono(64)),
-    ICON_BUTTON_HOVER(Colors.rgb(0, 213, 255), Colors.rgb(0, 213, 255));
+    ICON_BUTTON_HOVER(Colors.rgb(0, 213, 255), Colors.rgb(0, 213, 255)),
+
+    IN_WORLD_BLOCK_HIGHLIGHT(Colors.argb(0xcc, 0x99, 0x99, 0x99), Colors.argb(0xcc, 0x99, 0x99, 0x99));
 
     final int lightMode;
     final int darkMode;
@@ -34,12 +37,7 @@ public enum SymbolicColor {
         this.darkMode = darkMode;
     }
 
-    private final ColorRef ref = new ColorRef(this);
-
-    public ColorRef ref() {
-        return ref;
-    }
-
+    @Override
     public int resolve(LightDarkMode lightDarkMode) {
         return lightDarkMode == LightDarkMode.LIGHT_MODE ? lightMode : darkMode;
     }

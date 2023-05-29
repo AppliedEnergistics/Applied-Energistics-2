@@ -2,8 +2,9 @@ package appeng.client.guidebook.document;
 
 import net.minecraft.client.Minecraft;
 
-import appeng.client.guidebook.render.ColorRef;
-import appeng.client.guidebook.render.SymbolicColor;
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.style.ResolvedTextStyle;
 import appeng.client.guidebook.style.TextAlignment;
 import appeng.client.guidebook.style.TextStyle;
@@ -21,24 +22,24 @@ public final class DefaultStyles {
             false,
             false,
             Minecraft.UNIFORM_FONT,
-            SymbolicColor.BODY_TEXT.ref(),
+            (ColorValue) SymbolicColor.BODY_TEXT,
             WhiteSpaceMode.NORMAL,
             TextAlignment.LEFT);
 
     public static final TextStyle BODY_TEXT = TextStyle.builder()
             .font(Minecraft.UNIFORM_FONT)
-            .color(SymbolicColor.BODY_TEXT.ref())
+            .color((ColorValue) SymbolicColor.BODY_TEXT)
             .build();
 
     public static final TextStyle CRAFTING_RECIPE_TYPE = TextStyle.builder()
             .font(Minecraft.UNIFORM_FONT)
-            .color(SymbolicColor.CRAFTING_RECIPE_TYPE.ref())
+            .color((ColorValue) SymbolicColor.CRAFTING_RECIPE_TYPE)
             .build();
 
     public static final TextStyle HEADING1 = TextStyle.builder()
             .fontScale(1.3f)
             .bold(true).font(Minecraft.DEFAULT_FONT)
-            .color(ColorRef.WHITE)
+            .color(ConstantColor.WHITE)
             .build();
     public static final TextStyle HEADING2 = TextStyle.builder()
             .fontScale(1.1f)

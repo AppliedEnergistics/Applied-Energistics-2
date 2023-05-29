@@ -1,6 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
 import java.net.URI;
+import java.util.Set;
 
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.compiler.LinkParser;
@@ -12,6 +13,11 @@ import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 public class ATagCompiler extends FlowTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("a");
+    }
+
     @Override
     protected void compile(PageCompiler compiler, LytFlowParent parent, MdxJsxElementFields el) {
         var anchorName = el.getAttributeString("name", "");

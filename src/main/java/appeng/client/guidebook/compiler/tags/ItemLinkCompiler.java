@@ -1,5 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.Set;
+
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.flow.LytFlowLink;
 import appeng.client.guidebook.document.flow.LytFlowParent;
@@ -9,6 +11,11 @@ import appeng.client.guidebook.indices.ItemIndex;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 public class ItemLinkCompiler extends FlowTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("ItemLink");
+    }
+
     @Override
     public void compile(PageCompiler compiler, LytFlowParent parent, MdxJsxElementFields el) {
         var itemAndId = MdxAttrs.getRequiredItemAndId(compiler, parent, el, "id");

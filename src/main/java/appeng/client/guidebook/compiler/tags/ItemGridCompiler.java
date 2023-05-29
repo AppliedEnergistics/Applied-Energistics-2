@@ -1,11 +1,18 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.Set;
+
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytItemGrid;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 public class ItemGridCompiler extends BlockTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("ItemGrid");
+    }
+
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
         var itemGrid = new LytItemGrid();

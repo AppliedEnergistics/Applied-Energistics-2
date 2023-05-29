@@ -12,6 +12,8 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.LightDarkMode;
 import appeng.client.guidebook.document.LytRect;
 
 public record SimpleRenderContext(
@@ -19,17 +21,18 @@ public record SimpleRenderContext(
         @Override PoseStack poseStack,
         @Override LightDarkMode lightDarkMode) implements RenderContext {
 
-    @Override
-    public int resolveColor(ColorRef ref) {
-        if (ref.symbolic != null) {
-            return ref.symbolic.resolve(lightDarkMode);
-        } else {
-            return ref.concrete;
-        }
+    public SimpleRenderContext(LytRect viewport, PoseStack poseStack) {
+        this(viewport, poseStack, LightDarkMode.current());
     }
 
     @Override
-    public void fillRect(LytRect rect, ColorRef topLeft, ColorRef topRight, ColorRef bottomRight, ColorRef bottomLeft) {
+    public int resolveColor(ColorValue ref) {
+        return ref.resolve(lightDarkMode);
+    }
+
+    @Override
+    public void fillRect(LytRect rect, ColorValue topLeft, ColorValue topRight, ColorValue bottomRight,
+            ColorValue bottomLeft) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -47,8 +50,8 @@ public record SimpleRenderContext(
     }
 
     @Override
-    public void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorRef topLeft, ColorRef topRight,
-            ColorRef bottomRight, ColorRef bottomLeft, float u0, float v0, float u1, float v1) {
+    public void fillTexturedRect(LytRect rect, AbstractTexture texture, ColorValue topLeft, ColorValue topRight,
+            ColorValue bottomRight, ColorValue bottomLeft, float u0, float v0, float u1, float v1) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
@@ -67,7 +70,7 @@ public record SimpleRenderContext(
     }
 
     @Override
-    public void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorRef color) {
+    public void fillTriangle(Vec2 p1, Vec2 p2, Vec2 p3, ColorValue color) {
         var resolvedColor = resolveColor(color);
 
         RenderSystem.enableBlend();

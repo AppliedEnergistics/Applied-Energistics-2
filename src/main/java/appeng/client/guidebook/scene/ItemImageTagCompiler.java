@@ -1,5 +1,7 @@
 package appeng.client.guidebook.scene;
 
+import java.util.Set;
+
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
 import appeng.client.guidebook.compiler.tags.MdxAttrs;
@@ -7,6 +9,11 @@ import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 public class ItemImageTagCompiler extends BlockTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("ItemImage");
+    }
+
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
         var item = MdxAttrs.getRequiredItem(compiler, parent, el, "id");

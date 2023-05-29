@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FluidState;
 
+import appeng.client.guidebook.scene.annotation.InWorldAnnotation;
+import appeng.client.guidebook.scene.annotation.InWorldAnnotationRenderer;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 
 public class GuidebookLevelRenderer {
@@ -47,7 +49,7 @@ public class GuidebookLevelRenderer {
 
     public void render(GuidebookLevel level,
             CameraSettings cameraSettings,
-            Collection<BlockHighlight> highlights) {
+            Collection<InWorldAnnotation> annotations) {
         lightmap.update(level);
 
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
@@ -97,11 +99,6 @@ public class GuidebookLevelRenderer {
         renderBlocks(level, buffers, true);
         renderBlockEntities(level, buffers);
 
-        for (var highlight : highlights) {
-            BlockHighlightRenderer.render(buffers, highlight.pos(), highlight.r(), highlight.g(), highlight.b(),
-                    highlight.a());
-        }
-
         buffers.endLastBatch();
 
         // The order comes from LevelRenderer#renderLevel
@@ -126,6 +123,8 @@ public class GuidebookLevelRenderer {
         buffers.endBatch(Sheets.hangingSignSheet());
         buffers.endBatch(Sheets.chestSheet());
         buffers.endBatch();
+
+        InWorldAnnotationRenderer.render(buffers, annotations);
 
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
