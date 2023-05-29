@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -206,8 +206,8 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     }
 
     private ItemStack getAndUpdateOutput() {
-        var level = this.getPlayerInventory().player.level;
-        var ic = new CraftingContainer(this, CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
+        var level = this.getPlayerInventory().player.level();
+        var ic = new TransientCraftingContainer(this, CRAFTING_GRID_WIDTH, CRAFTING_GRID_HEIGHT);
 
         boolean invalidIngredients = false;
         for (int x = 0; x < ic.getContainerSize(); x++) {
@@ -251,7 +251,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         var encodedPattern = encodePattern();
         if (encodedPattern != null) {
             var decodedPattern = PatternDetailsHelper.decodePattern(encodedPattern,
-                    this.getPlayerInventory().player.level);
+                    this.getPlayerInventory().player.level());
             if (decodedPattern instanceof AECraftingPattern craftingPattern) {
                 for (int i = 0; i < craftingPattern.getSparseInputs().length; i++) {
                     if (craftingPattern.getValidFluid(i) != null) {
@@ -384,7 +384,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         container.setItem(1, base.toStack());
         container.setItem(2, addition.toStack());
 
-        var level = getPlayer().level;
+        var level = getPlayer().level();
         var recipe = level.getRecipeManager()
                 .getRecipeFor(RecipeType.SMITHING, container, level)
                 .orElse(null);
@@ -412,7 +412,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         SimpleContainer container = new SimpleContainer(1);
         container.setItem(0, input.toStack());
 
-        var level = getPlayer().level;
+        var level = getPlayer().level();
         var recipe = level.getRecipeManager()
                 .getRecipeFor(RecipeType.STONECUTTING, container, level, stonecuttingRecipeId)
                 .map(Pair::getSecond)
@@ -506,7 +506,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private void updateStonecuttingRecipes() {
         stonecuttingRecipes.clear();
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
-            var level = getPlayer().level;
+            var level = getPlayer().level();
             var recipeManager = level.getRecipeManager();
             var inventory = new SimpleContainer(1);
             inventory.setItem(0, itemKey.toStack());

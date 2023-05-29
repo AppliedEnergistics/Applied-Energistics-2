@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -130,7 +131,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 if (!extra.isEmpty()) {
                     final List<ItemStack> drops = new ArrayList<>();
                     drops.add(extra);
-                    Platform.spawnDrops(who.level,
+                    Platform.spawnDrops(who.level(),
                             new BlockPos((int) who.getX(), (int) who.getY(), (int) who.getZ()), drops);
                     return;
                 }
@@ -172,15 +173,15 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         // update crafting matrix...
         var is = this.getItem();
 
-        if (!is.isEmpty() && ItemStack.isSame(request, is)) {
+        if (!is.isEmpty() && ItemStack.isSameItemSameTags(request, is)) {
             final var set = new ItemStack[this.getPattern().size()];
             // Safeguard for empty slots in the inventory for now
             Arrays.fill(set, ItemStack.EMPTY);
 
             // add one of each item to the items on the board...
-            var level = p.level;
+            var level = p.level();
             if (!level.isClientSide()) {
-                final var ic = new CraftingContainer(p.containerMenu, 3, 3);
+                final var ic = new TransientCraftingContainer(p.containerMenu, 3, 3);
                 for (var x = 0; x < 9; x++) {
                     ic.setItem(x, this.getPattern().getStackInSlot(x));
                 }
@@ -272,7 +273,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         }
 
         if (drops.size() > 0) {
-            Platform.spawnDrops(p.level, new BlockPos((int) p.getX(), (int) p.getY(), (int) p.getZ()), drops);
+            Platform.spawnDrops(p.level(), new BlockPos((int) p.getX(), (int) p.getY(), (int) p.getZ()), drops);
         }
     }
 

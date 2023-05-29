@@ -65,7 +65,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
         this.terminal = wirelessTerminalItem;
         this.returnToMainMenu = returnToMainMenu;
 
-        this.targetGrid = wirelessTerminalItem.getLinkedGrid(itemStack, player.level, player);
+        this.targetGrid = wirelessTerminalItem.getLinkedGrid(itemStack, player.level(), player);
         if (this.targetGrid != null) {
             this.sg = this.targetGrid.getStorageService();
         }
@@ -143,7 +143,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
         var dc = wap.getLocation();
 
-        if (dc.getLevel() == this.getPlayer().level) {
+        if (dc.getLevel() == this.getPlayer().level()) {
             var offX = dc.getPos().getX() - this.getPlayer().getX();
             var offY = dc.getPos().getY() - this.getPlayer().getY();
             var offZ = dc.getPos().getZ() - this.getPlayer().getZ();

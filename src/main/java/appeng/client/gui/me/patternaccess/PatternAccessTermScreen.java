@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
@@ -177,7 +178,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
@@ -203,7 +204,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 } else if (row instanceof GroupHeaderRow headerRow) {
                     var group = headerRow.group;
                     if (group.icon() != null) {
-                        var renderContext = new SimpleRenderContext(LytRect.empty(), poseStack,
+                        var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics,
                                 LightDarkMode.LIGHT_MODE);
                         renderContext.renderItem(
                                 group.icon().toStack(),
@@ -227,7 +228,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     var text = Language.getInstance().getVisualOrder(
                             this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 10));
 
-                    this.font.draw(poseStack, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
+                    this.font.draw(guiGraphics, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor);
                 }
             }

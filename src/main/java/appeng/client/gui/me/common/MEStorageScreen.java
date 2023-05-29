@@ -31,6 +31,7 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -404,14 +405,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawFG(PoseStack poseStack, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
         // Render the pinned row decorations
         if (repo.hasPinnedRow()) {
-            renderPinnedRowDecorations(poseStack);
+            renderPinnedRowDecorations(guiGraphics);
         }
 
         // Show the number of active crafting jobs
@@ -421,7 +422,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             int x = this.craftingStatusBtn.getX() + (this.craftingStatusBtn.getWidth() - 16) / 2;
             int y = this.craftingStatusBtn.getY() + (this.craftingStatusBtn.getHeight() - 16) / 2;
 
-            StackSizeRenderer.renderSizeLabel(poseStack, font, x - this.leftPos, y - this.topPos,
+            StackSizeRenderer.renderSizeLabel(guiGraphics, font, x - this.leftPos, y - this.topPos,
                     String.valueOf(menu.activeCraftingJobs));
         }
     }

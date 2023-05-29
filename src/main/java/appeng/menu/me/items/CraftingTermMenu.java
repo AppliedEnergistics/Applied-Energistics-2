@@ -31,6 +31,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -72,7 +73,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
-    private final CraftingContainer recipeTestContainer = new CraftingContainer(this, 3, 3);
+    private final CraftingContainer recipeTestContainer = new TransientCraftingContainer(this, 3, 3);
 
     private final CraftingTermSlot outputSlot;
     private Recipe<CraftingContainer> currentRecipe;
@@ -126,7 +127,7 @@ public class CraftingTermMenu extends MEStorageMenu implements IMenuCraftingPack
             return;
         }
 
-        Level level = this.getPlayerInventory().player.level;
+        Level level = this.getPlayerInventory().player.level();
         this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, recipeTestContainer, level)
                 .orElse(null);
 

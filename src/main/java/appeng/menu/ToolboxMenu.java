@@ -50,7 +50,7 @@ public class ToolboxMenu {
 
             if (currentItem != inv.getItemStack()) {
                 if (!currentItem.isEmpty()) {
-                    if (ItemStack.isSame(inv.getItemStack(), currentItem)) {
+                    if (ItemStack.isSameItemSameTags(inv.getItemStack(), currentItem)) {
                         menu.getPlayerInventory().setItem(slot, inv.getItemStack());
                     } else {
                         menu.setValidMenu(false);

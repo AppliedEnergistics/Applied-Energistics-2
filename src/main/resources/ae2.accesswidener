@@ -4,14 +4,13 @@ accessible class net/minecraft/world/item/CreativeModeTab$Output
 accessible class net/minecraft/client/resources/model/ModelManager$ReloadState
 
 # GUI rendering
-extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen renderSlot (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/inventory/Slot;)V
-extendable method net/minecraft/client/gui/components/EditBox renderHighlight (Lcom/mojang/blaze3d/vertex/PoseStack;IIII)V
+extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen renderSlot (Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V
+extendable method net/minecraft/client/gui/components/EditBox renderHighlight (Lnet/minecraft/client/gui/GuiGraphics;IIII)V
 accessible method net/minecraft/client/gui/components/EditBox getMaxLength ()I
 accessible method net/minecraft/client/gui/components/EditBox isEditable ()Z
 accessible field net/minecraft/client/gui/components/AbstractWidget height I
 extendable method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen isHovering (Lnet/minecraft/world/inventory/Slot;DD)Z
 accessible method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen findSlot (DD)Lnet/minecraft/world/inventory/Slot;
-accessible method net/minecraft/client/gui/GuiComponent fillGradient (Lcom/mojang/blaze3d/vertex/PoseStack;IIIIIII)V
 
 # We need to change yPos of existing slots to resize the container
 mutable field net/minecraft/world/inventory/Slot x I
@@ -38,9 +37,6 @@ accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
 
 # Rendering voxel shape outlines
 accessible method net/minecraft/client/renderer/LevelRenderer renderShape (Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/phys/shapes/VoxelShape;DDDFFFF)V
-
-# For Encoded Pattern Rendering
-accessible method net/minecraft/client/renderer/entity/ItemRenderer renderGuiItem (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/item/ItemStack;IILnet/minecraft/client/resources/model/BakedModel;)V
 
 # Fabric's Attack Block Hook doesn't set the interaction delay
 accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyDelay I
@@ -98,9 +94,6 @@ accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deseria
 accessible field net/minecraft/client/renderer/block/model/ItemTransform$Deserializer DEFAULT_SCALE Lorg/joml/Vector3f;
 accessible field net/minecraft/client/renderer/block/model/BlockModel$GuiLight name Ljava/lang/String;
 accessible method net/minecraft/client/renderer/block/model/BlockElement uvsByFace (Lnet/minecraft/core/Direction;)[F
-
-accessible field net/minecraft/world/item/crafting/LegacyUpgradeRecipe base Lnet/minecraft/world/item/crafting/Ingredient;
-accessible field net/minecraft/world/item/crafting/LegacyUpgradeRecipe addition Lnet/minecraft/world/item/crafting/Ingredient;
 
 accessible method net/minecraft/client/gui/Font getFontSet (Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/client/gui/font/FontSet;
 accessible field net/minecraft/client/gui/screens/LoadingOverlay reload Lnet/minecraft/server/packs/resources/ReloadInstance;

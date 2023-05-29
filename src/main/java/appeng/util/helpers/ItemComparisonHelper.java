@@ -102,7 +102,7 @@ public final class ItemComparisonHelper {
             }
         }
 
-        return a.sameItem(b);
+        return ItemStack.isSameItemSameTags(a, b);
     }
 
 }

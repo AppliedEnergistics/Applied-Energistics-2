@@ -73,7 +73,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
      */
     @Override
     protected void checkTakeAchievements(ItemStack par1ItemStack) {
-        par1ItemStack.onCraftedBy(this.player.level, this.player, this.amountCrafted);
+        par1ItemStack.onCraftedBy(this.player.level(), this.player, this.amountCrafted);
         this.amountCrafted = 0;
     }
 
@@ -89,7 +89,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
             ic.setItem(x, this.craftingGrid.getStackInSlot(x));
         }
 
-        var aitemstack = this.getRemainingItems(ic, playerIn.level);
+        var aitemstack = this.getRemainingItems(ic, playerIn.level());
 
         Inventories.copy(ic, this.craftingGrid, false);
 

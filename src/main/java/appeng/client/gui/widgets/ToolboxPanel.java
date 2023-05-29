@@ -18,11 +18,10 @@
 
 package appeng.client.gui.widgets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
@@ -67,12 +66,12 @@ public class ToolboxPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         background.dest(
                 bounds.getX() + this.bounds.getX(),
                 bounds.getY() + this.bounds.getY(),
                 this.bounds.getWidth(),
-                this.bounds.getHeight()).blit(poseStack);
+                this.bounds.getHeight()).blit(guiGraphics);
     }
 
     @Nullable

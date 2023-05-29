@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Button.OnPress;
@@ -224,20 +224,20 @@ public class WidgetContainer {
     }
 
     /**
-     * @see ICompositeWidget#drawBackgroundLayer(PoseStack, Rect2i, Point)
+     * @see ICompositeWidget#drawBackgroundLayer(GuiGraphics, Rect2i, Point)
      */
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
-                widget.drawBackgroundLayer(poseStack, bounds, mouse);
+                widget.drawBackgroundLayer(guiGraphics, bounds, mouse);
             }
         }
     }
 
     /**
-     * @see ICompositeWidget#drawForegroundLayer(PoseStack, Rect2i, Point)
+     * @see ICompositeWidget#drawForegroundLayer(GuiGraphics, Rect2i, Point)
      */
-    public void drawForegroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(GuiGraphics poseStack, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
                 widget.drawForegroundLayer(poseStack, bounds, mouse);

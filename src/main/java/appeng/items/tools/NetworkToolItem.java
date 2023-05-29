@@ -65,7 +65,7 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem, AEToolItem
 
     @Override
     public NetworkToolMenuHost getMenuHost(Player player, int inventorySlot, ItemStack stack, BlockPos pos) {
-        var level = player.level;
+        var level = player.level();
         if (pos == null) {
             return new NetworkToolMenuHost(player, inventorySlot, stack, null);
         }

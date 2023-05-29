@@ -81,7 +81,7 @@ public class SetupTestWorldCommand implements ISubCommand {
                 player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
             }
 
-            sender.sendSuccess(PlayerMessages.TestWorldSetupComplete.text(sw), true);
+            sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw), true);
         } catch (RuntimeException | CommandSyntaxException e) {
             AELog.error(e);
             sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e));

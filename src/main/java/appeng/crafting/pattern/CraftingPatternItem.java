@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -78,7 +79,7 @@ public class CraftingPatternItem extends EncodedPatternItem {
         ResourceLocation currentRecipeId = CraftingPatternEncoding.getRecipeId(tag);
 
         // Fill a crafting inventory with the ingredients to find a suitable recipe
-        CraftingContainer testInventory = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        CraftingContainer testInventory = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
         for (int x = 0; x < 9; x++) {
             var ais = x < ingredients.length ? ingredients[x] : null;
             if (ais.what() instanceof AEItemKey itemKey) {

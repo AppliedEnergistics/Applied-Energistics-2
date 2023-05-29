@@ -1,11 +1,10 @@
 package appeng.client.gui.implementations;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
@@ -55,7 +54,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
     }
 
     @Override
-    public void drawForegroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         var menu = screen.getMenu();
 
         Icon icon;
@@ -70,8 +69,8 @@ public class PatternProviderLockReason implements ICompositeWidget {
                     .withStyle(ChatFormatting.DARK_RED);
         }
 
-        icon.getBlitter().dest(x, y).blit(poseStack);
-        Minecraft.getInstance().font.draw(poseStack, lockStatusText, x + 15, y + 5, -1);
+        icon.getBlitter().dest(x, y).blit(guiGraphics);
+        Minecraft.getInstance().font.draw(guiGraphics, lockStatusText, x + 15, y + 5, -1);
     }
 
     @Nullable

@@ -3,13 +3,12 @@ package appeng.client.gui.widgets;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -169,14 +168,14 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         var x = bounds.getX() + this.bounds.getX();
         var y = bounds.getY() + this.bounds.getY();
         background.dest(
                 x,
                 y,
                 this.bounds.getWidth(),
-                this.bounds.getHeight()).blit(poseStack);
+                this.bounds.getHeight()).blit(guiGraphics);
 
         // Move to first button
         x += 9;
@@ -193,14 +192,14 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
             }
             buttonBg.dest(x, y)
                     .colorRgb(color)
-                    .blit(poseStack);
+                    .blit(guiGraphics);
 
             var name = getCpuName(cpu);
-            poseStack.pushPose();
-            poseStack.translate(x + 3, y + 3, 0);
-            poseStack.scale(0.8f, 0.8f, 1);
-            font.draw(poseStack, name, 0, 0, textColor.toARGB());
-            poseStack.popPose();
+            guiGraphics.pushPose();
+            guiGraphics.translate(x + 3, y + 3, 0);
+            guiGraphics.scale(0.8f, 0.8f, 1);
+            font.draw(guiGraphics, name, 0, 0, textColor.toARGB());
+            guiGraphics.popPose();
 
             var infoBar = new InfoBar();
 
@@ -216,7 +215,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
 
                 // Draw a bar at the bottom of the button to indicate job progress
                 var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1) / Math.max(1, cpu.totalItems()));
-                fill(poseStack,
+                fill(guiGraphics,
                         x + 1,
                         y + buttonBg.getSrcHeight() - 2,
                         x + progress,
@@ -244,7 +243,7 @@ public class CPUSelectionList extends GuiComponent implements ICompositeWidget {
                 }
             }
 
-            infoBar.render(poseStack, x + 2, y + buttonBg.getSrcHeight() - 12);
+            infoBar.render(guiGraphics, x + 2, y + buttonBg.getSrcHeight() - 12);
 
             y += buttonBg.getSrcHeight() + 1;
         }

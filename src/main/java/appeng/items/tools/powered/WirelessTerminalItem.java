@@ -234,7 +234,7 @@ public class WirelessTerminalItem extends AEBasePoweredItem implements IMenuItem
         }
 
         var level = player.getCommandSenderWorld();
-        if (getLinkedGrid(item, player.level, player) == null) {
+        if (getLinkedGrid(item, player.level(), player) == null) {
             return false;
         }
 

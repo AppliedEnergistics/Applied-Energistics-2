@@ -183,7 +183,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         var cg = grid.getCraftingService();
 
         this.job = cg.beginCraftingCalculation(
-                player.level,
+                player.level(),
                 this::getActionSrc,
                 what,
                 amount,
@@ -314,7 +314,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public Level getLevel() {
-        return this.getPlayerInventory().player.level;
+        return this.getPlayerInventory().player.level();
     }
 
     public boolean isAutoStart() {

@@ -31,6 +31,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -109,7 +110,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
                 .addService(IGridTickable.class, this);
         this.upgrades = UpgradeInventories.forMachine(AEBlocks.MOLECULAR_ASSEMBLER, getUpgradeSlots(),
                 this::saveChanges);
-        this.craftingInv = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+        this.craftingInv = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
 
     }
 
@@ -299,7 +300,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkInvBlockEntity
         boolean reset = true;
 
         if (!is.isEmpty()) {
-            if (ItemStack.isSame(is, this.myPattern)) {
+            if (ItemStack.isSameItemSameTags(is, this.myPattern)) {
                 reset = false;
             } else if (PatternDetailsHelper.decodePattern(is, getLevel(),
                     false) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {

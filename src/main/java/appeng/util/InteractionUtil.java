@@ -76,7 +76,7 @@ public final class InteractionUtil {
     }
 
     public static float getEyeOffset(Player player) {
-        assert player.level.isClientSide : "Valid only on client";
+        assert player.level().isClientSide : "Valid only on client";
         // FIXME: The entire premise of this seems broken
         return (float) (player.getY() + player.getEyeHeight() - /* FIXME player.getDefaultEyeHeight() */ 1.62F);
     }

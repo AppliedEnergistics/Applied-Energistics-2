@@ -5,6 +5,7 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -84,14 +85,14 @@ public class CraftingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(poseStack);
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+        BG.dest(bounds.getX() + 9, bounds.getY() + bounds.getHeight() - 164).blit(guiGraphics);
 
         var absMouseX = bounds.getX() + mouse.getX();
         var absMouseY = bounds.getY() + mouse.getY();
         if (menu.substituteFluids && fluidSubstitutionsBtn.isMouseOver(absMouseX, absMouseY)) {
             for (var slotIndex : menu.slotsSupportingFluidSubstitution) {
-                drawSlotGreenBG(bounds, poseStack, menu.getCraftingGridSlots()[slotIndex]);
+                drawSlotGreenBG(bounds, guiGraphics, menu.getCraftingGridSlots()[slotIndex]);
             }
         }
     }

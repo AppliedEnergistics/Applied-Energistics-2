@@ -263,7 +263,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard, AEToolIte
                     }
                 }
 
-                if (missingAmount > 0 && !player.level.isClientSide()) {
+                if (missingAmount > 0 && !player.level().isClientSide()) {
                     player.displayClientMessage(
                             PlayerMessages.MissingUpgrades.text(entry.getKey().getDescription(), missingAmount), true);
                 }

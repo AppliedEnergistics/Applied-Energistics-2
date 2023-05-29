@@ -33,12 +33,12 @@ import java.util.OptionalLong;
 import java.util.function.Consumer;
 
 import com.google.common.primitives.Longs;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
@@ -392,11 +392,10 @@ public class NumberEntryWidget extends GuiComponent implements ICompositeWidget 
     }
 
     @Override
-    public void drawBackgroundLayer(PoseStack poseStack, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         if (type.unit() != null) {
             var font = Minecraft.getInstance().font;
-            font.draw(
-                    poseStack,
+            font.draw(guiGraphics,
                     type.unit(),
                     bounds.getX() + textFieldBounds.getX() + textFieldBounds.getWidth() + 3,
                     bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f + 1,

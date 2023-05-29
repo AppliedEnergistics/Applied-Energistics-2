@@ -25,7 +25,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -856,7 +856,7 @@ public final class TestPlots {
         var molecularAssemblerPos = new BlockPos(0, 1, 0);
         plot.blockEntity(molecularAssemblerPos, AEBlocks.MOLECULAR_ASSEMBLER, molecularAssembler -> {
             // Get repair recipe
-            var craftingContainer = new CraftingContainer(new AutoCraftingMenu(), 3, 3);
+            var craftingContainer = new TransientCraftingContainer(new AutoCraftingMenu(), 3, 3);
             craftingContainer.setItem(0, undamaged.toStack());
             craftingContainer.setItem(1, undamaged.toStack());
             var level = molecularAssembler.getLevel();

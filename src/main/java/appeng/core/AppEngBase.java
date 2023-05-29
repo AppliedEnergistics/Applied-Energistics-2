@@ -254,7 +254,7 @@ public abstract class AppEngBase implements AppEng {
             return;
         }
         for (ServerPlayer o : getPlayers()) {
-            if (o != p && o.level == level) {
+            if (o != p && o.level() == level) {
                 final double dX = x - o.getX();
                 final double dY = y - o.getY();
                 final double dZ = z - o.getZ();
