@@ -63,7 +63,6 @@ import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
@@ -204,8 +203,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 } else if (row instanceof GroupHeaderRow headerRow) {
                     var group = headerRow.group;
                     if (group.icon() != null) {
-                        var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics,
-                                LightDarkMode.LIGHT_MODE);
+                        var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
                         renderContext.renderItem(
                                 group.icon().toStack(),
                                 GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X,

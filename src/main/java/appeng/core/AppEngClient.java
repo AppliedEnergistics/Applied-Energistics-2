@@ -112,7 +112,7 @@ public class AppEngClient extends AppEngBase {
      */
     private CableRenderMode prevCableRenderMode = CableRenderMode.STANDARD;
 
-    private final Guide guidePages;
+    private final Guide guide;
 
     public AppEngClient() {
         this.registerParticleFactories();
@@ -129,7 +129,7 @@ public class AppEngClient extends AppEngBase {
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        guidePages = loadGuidePages();
+        guide = loadGuidePages();
         OpenGuideHotkey.init();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
@@ -396,7 +396,7 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void openGuideAtPreviousPage(ResourceLocation initialPage) {
         try {
-            var screen = GuideScreen.openAtPreviousPage(guidePages, PageAnchor.page(initialPage),
+            var screen = GuideScreen.openAtPreviousPage(guide, PageAnchor.page(initialPage),
                     GlobalInMemoryHistory.INSTANCE);
 
             openGuideScreen(screen);
@@ -408,7 +408,7 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void openGuideAtAnchor(PageAnchor anchor) {
         try {
-            var screen = GuideScreen.openNew(guidePages, anchor, GlobalInMemoryHistory.INSTANCE);
+            var screen = GuideScreen.openNew(guide, anchor, GlobalInMemoryHistory.INSTANCE);
 
             openGuideScreen(screen);
         } catch (Exception e) {
@@ -426,6 +426,6 @@ public class AppEngClient extends AppEngBase {
     }
 
     public Guide getGuide() {
-        return guidePages;
+        return guide;
     }
 }

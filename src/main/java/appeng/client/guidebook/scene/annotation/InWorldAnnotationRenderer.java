@@ -1,9 +1,12 @@
-package appeng.client.guidebook.scene;
+package appeng.client.guidebook.scene.annotation;
 
-import appeng.core.AppEng;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -13,14 +16,14 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.FastColor;
-import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
 
-final class HighlightedBoxRenderer {
-    private static final float THICKNESS = 0.5f / 16f;
+import appeng.client.guidebook.color.MutableColor;
+import appeng.core.AppEng;
+
+public final class InWorldAnnotationRenderer {
 
     private static final RenderType OCCLUDED = RenderType.create(
-            "highlight_occluded",
+            "annotation_occluded",
             DefaultVertexFormat.BLOCK,
             VertexFormat.Mode.QUADS,
             0x100000,
@@ -35,50 +38,57 @@ final class HighlightedBoxRenderer {
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false));
 
-    private static final RenderType NOT_OCCLUDED = RenderType.create(
-            "highlight",
-            DefaultVertexFormat.BLOCK,
-            VertexFormat.Mode.QUADS,
-            0x100000,
-            false,
-            false,
-            RenderType.CompositeState.builder()
-                    .setLightmapState(RenderType.LIGHTMAP)
-                    .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_NO_CRUMBLING_SHADER)
-                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
-                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
-                    .createCompositeState(false));
-
-    private HighlightedBoxRenderer() {
+    private InWorldAnnotationRenderer() {
     }
 
-    public static void render(MultiBufferSource.BufferSource buffers, Iterable<HighlightedBox> highlights) {
+    public static void render(MultiBufferSource.BufferSource buffers, Iterable<InWorldAnnotation> annotations) {
+        var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                .apply(AppEng.makeId("block/noise"));
+
         var occludedConsumer = buffers.getBuffer(OCCLUDED);
-        for (var highlight : highlights) {
-            var color = FastColor.ARGB32.color(64, 64, 64, 64);
-            var shadedColor = FastColor.ARGB32.multiply(color, highlight.color());
-            render(occludedConsumer, highlight.min(), highlight.max(), shadedColor);
+        for (var annotation : annotations) {
+            if (annotation instanceof InWorldBoxAnnotation boxAnnotation) {
+                var color = MutableColor.of(boxAnnotation.color());
+                color.darker(50).setAlpha(color.alpha() * 0.5f);
+                if (boxAnnotation.isHovered()) {
+                    color.lighter(50);
+                }
+                render(occludedConsumer,
+                        boxAnnotation.min(),
+                        boxAnnotation.max(),
+                        color.toArgb32(),
+                        boxAnnotation.thickness(),
+                        sprite);
+            }
         }
         buffers.endBatch(OCCLUDED);
 
-        var consumer = buffers.getBuffer(NOT_OCCLUDED);
-        for (var highlight : highlights) {
-            render(consumer, highlight.min(), highlight.max(), highlight.color());
+        var consumer = buffers.getBuffer(RenderType.translucent());
+        for (var annotation : annotations) {
+            if (annotation instanceof InWorldBoxAnnotation boxAnnotation) {
+                var color = MutableColor.of(boxAnnotation.color());
+                if (boxAnnotation.isHovered()) {
+                    color.lighter(50);
+                }
+                render(consumer,
+                        boxAnnotation.min(),
+                        boxAnnotation.max(),
+                        color.toArgb32(),
+                        boxAnnotation.thickness(),
+                        sprite);
+            }
         }
-        buffers.endBatch(NOT_OCCLUDED);
+        buffers.endBatch(RenderType.translucent());
         buffers.endBatch();
     }
 
     public static void render(VertexConsumer consumer,
-                              Vector3f min,
-                              Vector3f max,
-                              int color) {
-        var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                .apply(AppEng.makeId("block/noise"));
-
-        var thickHalf = THICKNESS * 0.5f;
+            Vector3f min,
+            Vector3f max,
+            int color,
+            float thickness,
+            TextureAtlasSprite sprite) {
+        var thickHalf = thickness * 0.5f;
 
         var u = new Vector3f(max.x - min.x, 0, 0);
         var v = new Vector3f(0, max.y - min.y, 0);
@@ -99,25 +109,38 @@ final class HighlightedBoxRenderer {
 
         // Along X-Axis
         // Extend these out to cover past the corner (half the extrude thickness)
-        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[0]), new Vector3f(uNorm).mulAdd(thickHalf, corners[1]), color, THICKNESS, true, true, sprite);
-        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[2]), new Vector3f(uNorm).mulAdd(thickHalf, corners[7]), color, THICKNESS, true, true, sprite);
-        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[3]), new Vector3f(uNorm).mulAdd(thickHalf, corners[6]), color, THICKNESS, true, true, sprite);
-        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[5]), new Vector3f(uNorm).mulAdd(thickHalf, corners[4]), color, THICKNESS, true, true, sprite);
+        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[0]),
+                new Vector3f(uNorm).mulAdd(thickHalf, corners[1]), color, thickness, true, true, sprite);
+        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[2]),
+                new Vector3f(uNorm).mulAdd(thickHalf, corners[7]), color, thickness, true, true, sprite);
+        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[3]),
+                new Vector3f(uNorm).mulAdd(thickHalf, corners[6]), color, thickness, true, true, sprite);
+        strut(consumer, new Vector3f(uNorm).mulAdd(-thickHalf, corners[5]),
+                new Vector3f(uNorm).mulAdd(thickHalf, corners[4]), color, thickness, true, true, sprite);
 
         // Along Y-Axis
-        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[0]), new Vector3f(vNorm).mulAdd(-thickHalf, corners[2]), color, THICKNESS, false, false, sprite);
-        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[1]), new Vector3f(vNorm).mulAdd(-thickHalf, corners[7]), color, THICKNESS, false, false, sprite);
-        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[3]), new Vector3f(vNorm).mulAdd(-thickHalf, corners[5]), color, THICKNESS, false, false, sprite);
-        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[6]), new Vector3f(vNorm).mulAdd(-thickHalf, corners[4]), color, THICKNESS, false, false, sprite);
+        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[0]),
+                new Vector3f(vNorm).mulAdd(-thickHalf, corners[2]), color, thickness, false, false, sprite);
+        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[1]),
+                new Vector3f(vNorm).mulAdd(-thickHalf, corners[7]), color, thickness, false, false, sprite);
+        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[3]),
+                new Vector3f(vNorm).mulAdd(-thickHalf, corners[5]), color, thickness, false, false, sprite);
+        strut(consumer, new Vector3f(vNorm).mulAdd(thickHalf, corners[6]),
+                new Vector3f(vNorm).mulAdd(-thickHalf, corners[4]), color, thickness, false, false, sprite);
 
         // Along Z-Axis
-        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[0]), new Vector3f(tNorm).mulAdd(-thickHalf, corners[3]), color, THICKNESS, false, false, sprite);
-        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[1]), new Vector3f(tNorm).mulAdd(-thickHalf, corners[6]), color, THICKNESS, false, false, sprite);
-        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[2]), new Vector3f(tNorm).mulAdd(-thickHalf, corners[5]), color, THICKNESS, false, false, sprite);
-        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[7]), new Vector3f(tNorm).mulAdd(-thickHalf, corners[4]), color, THICKNESS, false, false, sprite);
+        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[0]),
+                new Vector3f(tNorm).mulAdd(-thickHalf, corners[3]), color, thickness, false, false, sprite);
+        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[1]),
+                new Vector3f(tNorm).mulAdd(-thickHalf, corners[6]), color, thickness, false, false, sprite);
+        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[2]),
+                new Vector3f(tNorm).mulAdd(-thickHalf, corners[5]), color, thickness, false, false, sprite);
+        strut(consumer, new Vector3f(tNorm).mulAdd(thickHalf, corners[7]),
+                new Vector3f(tNorm).mulAdd(-thickHalf, corners[4]), color, thickness, false, false, sprite);
     }
 
-    private static void strut(VertexConsumer consumer, Vector3f from, Vector3f to, int color, float thickness, boolean startCap, boolean endCap, TextureAtlasSprite sprite) {
+    private static void strut(VertexConsumer consumer, Vector3f from, Vector3f to, int color, float thickness,
+            boolean startCap, boolean endCap, TextureAtlasSprite sprite) {
         var norm = new Vector3f(to).sub(from).normalize();
         Vector3f upNorm;
         if (Math.abs(from.y - to.y) < 0.01f) {
@@ -139,8 +162,7 @@ final class HighlightedBoxRenderer {
                     new Vector3f(from).sub(up).sub(right),
                     new Vector3f(from).sub(up).add(right),
                     new Vector3f(from).add(up).add(right),
-                    sprite
-            );
+                    sprite);
         }
 
         if (endCap) {
@@ -150,8 +172,7 @@ final class HighlightedBoxRenderer {
                     new Vector3f(to).sub(up).add(right),
                     new Vector3f(to).sub(up).sub(right),
                     new Vector3f(to).add(up).sub(right),
-                    sprite
-            );
+                    sprite);
         }
 
         quad(
@@ -160,36 +181,32 @@ final class HighlightedBoxRenderer {
                 new Vector3f(to).sub(right).add(up),
                 new Vector3f(to).sub(right).sub(up),
                 new Vector3f(from).sub(right).sub(up),
-                sprite
-        );
+                sprite);
         quad(
                 consumer, rightNorm, color,
                 new Vector3f(to).add(right).sub(up),
                 new Vector3f(to).add(right).add(up),
                 new Vector3f(from).add(right).add(up),
                 new Vector3f(from).add(right).sub(up),
-                sprite
-        );
+                sprite);
         quad(
                 consumer, upNorm, color,
                 new Vector3f(from).add(up).sub(right),
                 new Vector3f(from).add(up).add(right),
                 new Vector3f(to).add(up).add(right),
                 new Vector3f(to).add(up).sub(right),
-                sprite
-        );
+                sprite);
         quad(
                 consumer, downNorm, color,
                 new Vector3f(to).sub(up).sub(right),
                 new Vector3f(to).sub(up).add(right),
                 new Vector3f(from).sub(up).add(right),
                 new Vector3f(from).sub(up).sub(right),
-                sprite
-        );
+                sprite);
     }
 
     private static void quad(VertexConsumer consumer, Direction face, int color, Vector3f v1, Vector3f v2,
-                             Vector3f offset, TextureAtlasSprite sprite) {
+            Vector3f offset, TextureAtlasSprite sprite) {
         vertex(consumer, face, color, v2, sprite.getU0(), sprite.getV0());
         vertex(consumer, face, color, v1, sprite.getV0(), sprite.getV1());
         vertex(consumer, face, color, new Vector3f(v1).add(offset), sprite.getV1(), sprite.getV1());
@@ -197,10 +214,10 @@ final class HighlightedBoxRenderer {
     }
 
     private static void vertex(VertexConsumer consumer,
-                               Direction face,
-                               int color,
-                               Vector3f bottomLeft,
-                               float u, float v) {
+            Direction face,
+            int color,
+            Vector3f bottomLeft,
+            float u, float v) {
         consumer.vertex(bottomLeft.x, bottomLeft.y, bottomLeft.z)
                 .color(color)
                 .uv(u, v)
@@ -210,8 +227,8 @@ final class HighlightedBoxRenderer {
     }
 
     private static void quad(VertexConsumer consumer, Vector3f faceNormal, int color,
-                             Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4,
-                             TextureAtlasSprite sprite) {
+            Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4,
+            TextureAtlasSprite sprite) {
         var d = Direction.getNearest(faceNormal.x, faceNormal.y, faceNormal.z);
         var shade = switch (d) {
             case DOWN -> 0.5F;
@@ -221,8 +238,7 @@ final class HighlightedBoxRenderer {
         };
         color = FastColor.ARGB32.multiply(
                 FastColor.ARGB32.color(255, (int) (shade * 255), (int) (shade * 255), (int) (shade * 255)),
-                color
-        );
+                color);
 
         vertex(consumer, faceNormal, color, v1, sprite.getU0(), sprite.getV0());
         vertex(consumer, faceNormal, color, v2, sprite.getV0(), sprite.getV1());
@@ -231,10 +247,10 @@ final class HighlightedBoxRenderer {
     }
 
     private static void vertex(VertexConsumer consumer,
-                               Vector3f faceNormal,
-                               int color,
-                               Vector3f bottomLeft,
-                               float u, float v) {
+            Vector3f faceNormal,
+            int color,
+            Vector3f bottomLeft,
+            float u, float v) {
         consumer.vertex(bottomLeft.x, bottomLeft.y, bottomLeft.z)
                 .color(color)
                 .uv(u, v)

@@ -1,5 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,11 @@ import appeng.libs.mdast.model.MdAstNode;
 
 public class FloatingImageCompiler extends FlowTagCompiler {
     private static final Logger LOGGER = LoggerFactory.getLogger(FloatingImageCompiler.class);
+
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("FloatingImage");
+    }
 
     @Override
     protected void compile(PageCompiler compiler, LytFlowParent parent, MdxJsxElementFields el) {

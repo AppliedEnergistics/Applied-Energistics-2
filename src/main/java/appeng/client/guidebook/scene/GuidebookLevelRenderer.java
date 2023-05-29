@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FluidState;
 
+import appeng.client.guidebook.scene.annotation.InWorldAnnotation;
+import appeng.client.guidebook.scene.annotation.InWorldAnnotationRenderer;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 
 public class GuidebookLevelRenderer {
@@ -47,7 +49,7 @@ public class GuidebookLevelRenderer {
 
     public void render(GuidebookLevel level,
             CameraSettings cameraSettings,
-            Collection<HighlightedBox> highlights) {
+            Collection<InWorldAnnotation> annotations) {
         lightmap.update(level);
 
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
@@ -122,7 +124,7 @@ public class GuidebookLevelRenderer {
         buffers.endBatch(Sheets.chestSheet());
         buffers.endBatch();
 
-        HighlightedBoxRenderer.render(buffers, highlights);
+        InWorldAnnotationRenderer.render(buffers, annotations);
 
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();

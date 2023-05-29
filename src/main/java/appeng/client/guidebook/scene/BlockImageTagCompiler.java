@@ -1,5 +1,7 @@
 package appeng.client.guidebook.scene;
 
+import java.util.Set;
+
 import net.minecraft.core.BlockPos;
 
 import appeng.client.guidebook.compiler.PageCompiler;
@@ -13,6 +15,11 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
  * Handles tags like <code>&lt;BlockImage id="mod:blockid" /&gt;</code> and renders a 3D block image in its place.
  */
 public class BlockImageTagCompiler extends BlockTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("BlockImage");
+    }
+
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
         var pair = MdxAttrs.getRequiredBlockAndId(compiler, parent, el, "id");

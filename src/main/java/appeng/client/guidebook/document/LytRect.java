@@ -78,6 +78,11 @@ public record LytRect(int x, int y, int width, int height) {
                 bottom - y);
     }
 
+    public boolean contains(LytPoint point) {
+        return point.x() >= this.x && point.x() < right() &&
+                point.y() >= this.y && point.y() < bottom();
+    }
+
     public boolean contains(int x, int y) {
         return x >= this.x && x < right() &&
                 y >= this.y && y < bottom();

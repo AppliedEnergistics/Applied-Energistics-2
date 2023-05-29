@@ -2,6 +2,7 @@ package appeng.client.guidebook.document.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -115,7 +116,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
     }
 
     public void setHoveredElement(HitTestResult hoveredElement) {
-        if (hoveredElement != this.hoveredElement) {
+        if (!Objects.equals(hoveredElement, this.hoveredElement)) {
             if (this.hoveredElement != null) {
                 this.hoveredElement.node.onMouseLeave();
             }
