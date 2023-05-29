@@ -114,7 +114,9 @@ public abstract class AppEngBase implements AppEng {
         }
         INSTANCE = this;
 
-        AEConfig.load(FabricLoader.getInstance().getConfigDir());
+        if (AEConfig.instance() == null) {
+            AEConfig.load(FabricLoader.getInstance().getConfigDir());
+        }
 
         InitKeyTypes.init();
 

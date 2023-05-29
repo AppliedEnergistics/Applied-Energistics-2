@@ -68,6 +68,7 @@ dependencies {
     }
 
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
 
     // Always depend on the REI API to compile
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}") {
@@ -145,14 +146,16 @@ dependencies {
     //include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     // unit test dependencies
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation("org.junit.platform:junit-platform-launcher:1.8.1")
+    testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.0.0")
-    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
+
+    compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
 }
 
 archivesBaseName = artifact_basename
@@ -284,6 +287,8 @@ sourceSets {
 
 test {
     useJUnitPlatform()
+    systemProperty "fabric.debug.logLibClassification", "true"
+    systemProperty "fabric.debug.logClassLoad", "true"
 }
 
 dependencies {
