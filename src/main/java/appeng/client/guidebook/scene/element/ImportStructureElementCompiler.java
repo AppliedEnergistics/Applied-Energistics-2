@@ -2,6 +2,7 @@ package appeng.client.guidebook.scene.element;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.Set;
 
 import com.google.common.io.ByteStreams;
 
@@ -26,6 +27,11 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
  * Imports a structure into the scene.
  */
 public class ImportStructureElementCompiler implements SceneElementTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("ImportStructure");
+    }
+
     @Override
     public void compile(GuidebookScene scene,
             PageCompiler compiler,

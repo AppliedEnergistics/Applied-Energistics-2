@@ -323,15 +323,18 @@ class LineBuilder implements Consumer<LytFlowContent> {
         }
 
         // reposition all line elements
+        int actualRight = lineBoxX;
         for (var el = openLineElement; el != null; el = el.next) {
             el.bounds = el.bounds.move(xTranslation, lineBoxY);
             // Ensure that inline blocks update their blocks absolute position
             if (el instanceof LineBlock lineBlock) {
                 lineBlock.getBlock().layout(context, el.bounds.x(), el.bounds.y(), el.bounds.width());
             }
+
+            actualRight = Math.max(actualRight, el.bounds.right());
         }
 
-        var lineBounds = new LytRect(lineBoxX, lineBoxY, lineBoxWidth, lineHeight);
+        var lineBounds = new LytRect(lineBoxX, lineBoxY, actualRight - lineBoxX, lineHeight);
         var line = new Line(lineBounds, openLineElement);
         lines.add(line);
 
@@ -381,9 +384,10 @@ class LineBuilder implements Consumer<LytFlowContent> {
     }
 
     public LytRect getBounds() {
+        var width = lines.stream().mapToInt(l -> l.bounds().width()).max().orElse(0);
         return new LytRect(
                 lineBoxX, startY,
-                lineBoxWidth, lineBoxY - startY);
+                width, lineBoxY - startY);
     }
 
     @FunctionalInterface

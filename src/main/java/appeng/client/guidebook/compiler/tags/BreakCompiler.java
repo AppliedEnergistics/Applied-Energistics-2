@@ -1,5 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.Set;
+
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.flow.LytFlowBreak;
 import appeng.client.guidebook.document.flow.LytFlowParent;
@@ -7,6 +9,11 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
 
 public class BreakCompiler extends FlowTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("br");
+    }
+
     @Override
     protected void compile(PageCompiler compiler, LytFlowParent parent, MdxJsxElementFields el) {
         var br = new LytFlowBreak();

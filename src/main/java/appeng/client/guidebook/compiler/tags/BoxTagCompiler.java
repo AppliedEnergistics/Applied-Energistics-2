@@ -1,5 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.Set;
+
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytBox;
@@ -12,6 +14,11 @@ public class BoxTagCompiler extends BlockTagCompiler {
 
     public BoxTagCompiler(BoxFlowDirection direction) {
         this.direction = direction;
+    }
+
+    @Override
+    public Set<String> getTagNames() {
+        return direction == BoxFlowDirection.ROW ? Set.of("Row") : Set.of("Column");
     }
 
     @Override

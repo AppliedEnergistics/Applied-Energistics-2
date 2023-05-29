@@ -25,9 +25,13 @@ import net.minecraft.resources.ResourceLocation;
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
+import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
+import appeng.client.guidebook.color.ColorValue;
+import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.compiler.AnchorIndexer;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
@@ -44,11 +48,8 @@ import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.MinecraftFontMetrics;
-import appeng.client.guidebook.render.ColorRef;
 import appeng.client.guidebook.render.GuidePageTexture;
-import appeng.client.guidebook.render.LightDarkMode;
 import appeng.client.guidebook.render.SimpleRenderContext;
-import appeng.client.guidebook.render.SymbolicColor;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 
@@ -59,7 +60,8 @@ public class GuideScreen extends Screen {
     public static final int DOCUMENT_RECT_MARGIN = 20;
     private static final DashPattern DEBUG_NODE_OUTLINE = new DashPattern(1f, 4, 3, 0xFFFFFFFF, 500);
     private static final DashPattern DEBUG_CONTENT_OUTLINE = new DashPattern(0.5f, 2, 1, 0x7FFFFFFF, 500);
-    private final PageCollection pages;
+    private static final ColorValue DEBUG_HOVER_OUTLINE_COLOR = new ConstantColor(0x7FFFFF00);
+    private final Guide guide;
 
     private final GuideScrollbar scrollbar;
     private final GuideScreenHistory history;
@@ -79,10 +81,10 @@ public class GuideScreen extends Screen {
     @Nullable
     private String pendingScrollToAnchor;
 
-    private GuideScreen(GuideScreenHistory history, PageCollection pages, PageAnchor anchor) {
+    private GuideScreen(GuideScreenHistory history, Guide guide, PageAnchor anchor) {
         super(Component.literal("AE2 Guidebook"));
         this.history = history;
-        this.pages = pages;
+        this.guide = guide;
         this.scrollbar = new GuideScrollbar();
         this.pageTitle = new LytParagraph();
         this.pageTitle.setStyle(DefaultStyles.HEADING1);
@@ -92,23 +94,24 @@ public class GuideScreen extends Screen {
     /**
      * Opens and resets history.
      */
-    public static GuideScreen openNew(PageCollection pages, PageAnchor anchor, GuideScreenHistory history) {
+    public static GuideScreen openNew(Guide guide, PageAnchor anchor, GuideScreenHistory history) {
         history.push(anchor);
 
-        return new GuideScreen(history, pages, anchor);
+        return new GuideScreen(history, guide, anchor);
     }
 
     /**
      * Opens at current history position and only falls back to the index if the history is empty.
      */
-    public static GuideScreen openAtPreviousPage(PageCollection pages,
+    public static GuideScreen openAtPreviousPage(
+            Guide guide,
             PageAnchor fallbackPage,
             GuideScreenHistory history) {
         var historyPage = history.current();
         if (historyPage.isPresent()) {
-            return new GuideScreen(history, pages, historyPage.get());
+            return new GuideScreen(history, guide, historyPage.get());
         } else {
-            return openNew(pages, fallbackPage, history);
+            return openNew(guide, fallbackPage, history);
         }
     }
 
@@ -201,10 +204,7 @@ public class GuideScreen extends Screen {
         poseStack.translate(documentRect.x() - documentViewport.x(), documentRect.y() - documentViewport.y(), 0);
 
         var document = currentPage.document();
-        var context = new SimpleRenderContext(
-                documentViewport,
-                poseStack,
-                LightDarkMode.LIGHT_MODE);
+        var context = new SimpleRenderContext(documentViewport, poseStack);
 
         enableScissor(documentRect.x(), documentRect.y(), documentRect.right(), documentRect.bottom());
 
@@ -248,7 +248,7 @@ public class GuideScreen extends Screen {
                 documentRect.y() - 1,
                 documentRect.width(),
                 1,
-                SymbolicColor.HEADER1_SEPARATOR.ref());
+                SymbolicColor.HEADER1_SEPARATOR);
     }
 
     private void renderSkyStoneBackground(PoseStack poseStack) {
@@ -263,12 +263,13 @@ public class GuideScreen extends Screen {
         if (docPos == null) {
             return;
         }
-
-        dispatchInteraction(
-                docPos.getX(),
-                docPos.getY(),
-                el -> el.getTooltip(docPos.getX(), docPos.getY()))
-                        .ifPresent(tooltip -> renderTooltip(poseStack, tooltip, x, y));
+        var hoveredElement = currentPage.document().getHoveredElement();
+        if (hoveredElement != null) {
+            dispatchInteraction(
+                    hoveredElement,
+                    el -> el.getTooltip(docPos.getX(), docPos.getY()))
+                            .ifPresent(tooltip -> renderTooltip(poseStack, tooltip, x, y));
+        }
     }
 
     private static void renderHoverOutline(LytDocument document, SimpleRenderContext context) {
@@ -280,22 +281,22 @@ public class GuideScreen extends Screen {
                 if (block.getMarginTop() > 0) {
                     context.fillRect(
                             bounds.withHeight(block.getMarginTop()).move(0, -block.getMarginTop()),
-                            new ColorRef(0x7FFFFF00));
+                            DEBUG_HOVER_OUTLINE_COLOR);
                 }
                 if (block.getMarginBottom() > 0) {
                     context.fillRect(
                             bounds.withHeight(block.getMarginBottom()).move(0, bounds.height()),
-                            new ColorRef(0x7FFFFF00));
+                            DEBUG_HOVER_OUTLINE_COLOR);
                 }
                 if (block.getMarginLeft() > 0) {
                     context.fillRect(
                             bounds.withWidth(block.getMarginLeft()).move(-block.getMarginLeft(), 0),
-                            new ColorRef(0x7FFFFF00));
+                            DEBUG_HOVER_OUTLINE_COLOR);
                 }
                 if (block.getMarginRight() > 0) {
                     context.fillRect(
                             bounds.withWidth(block.getMarginRight()).move(bounds.width(), 0),
-                            new ColorRef(0x7FFFFF00));
+                            DEBUG_HOVER_OUTLINE_COLOR);
                 }
             }
 
@@ -319,6 +320,18 @@ public class GuideScreen extends Screen {
                     DefaultStyles.BASE_STYLE,
                     bounds.x(),
                     bounds.bottom());
+        }
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        super.mouseMoved(mouseX, mouseY);
+
+        var docPoint = getDocumentPoint(mouseX, mouseY);
+        if (docPoint != null) {
+            dispatchEvent(docPoint.getX(), docPoint.getY(), el -> {
+                return el.mouseMoved(this, docPoint.getX(), docPoint.getY());
+            });
         }
     }
 
@@ -403,14 +416,14 @@ public class GuideScreen extends Screen {
 
     private void loadPage(ResourceLocation pageId) {
         GuidePageTexture.releaseUsedTextures();
-        var page = pages.getParsedPage(pageId);
+        var page = guide.getParsedPage(pageId);
 
         if (page == null) {
             // Build a "not found" page dynamically
             page = buildNotFoundPage(pageId);
         }
 
-        currentPage = PageCompiler.compile(pages, page);
+        currentPage = PageCompiler.compile(guide, guide.getExtensions(), page);
 
         // Find and pull out the first heading
         pageTitle.clearContent();
@@ -505,23 +518,30 @@ public class GuideScreen extends Screen {
     private <T> Optional<T> dispatchInteraction(int x, int y, Function<InteractiveElement, Optional<T>> invoker) {
         var underCursor = currentPage.document().pick(x, y);
         if (underCursor != null) {
-            // Iterate through content ancestors
-            for (var el = underCursor.content(); el != null; el = el.getFlowParent()) {
-                if (el instanceof InteractiveElement interactiveEl) {
-                    var result = invoker.apply(interactiveEl);
-                    if (result.isPresent()) {
-                        return result;
-                    }
+            return dispatchInteraction(underCursor, invoker);
+        }
+
+        return Optional.empty();
+    }
+
+    private static <T> Optional<T> dispatchInteraction(LytDocument.HitTestResult receiver,
+            Function<InteractiveElement, Optional<T>> invoker) {
+        // Iterate through content ancestors
+        for (var el = receiver.content(); el != null; el = el.getFlowParent()) {
+            if (el instanceof InteractiveElement interactiveEl) {
+                var result = invoker.apply(interactiveEl);
+                if (result.isPresent()) {
+                    return result;
                 }
             }
+        }
 
-            // Iterate through node ancestors
-            for (var node = underCursor.node(); node != null; node = node.getParent()) {
-                if (node instanceof InteractiveElement interactiveEl) {
-                    var result = invoker.apply(interactiveEl);
-                    if (result.isPresent()) {
-                        return result;
-                    }
+        // Iterate through node ancestors
+        for (var node = receiver.node(); node != null; node = node.getParent()) {
+            if (node instanceof InteractiveElement interactiveEl) {
+                var result = invoker.apply(interactiveEl);
+                if (result.isPresent()) {
+                    return result;
                 }
             }
         }
@@ -720,8 +740,8 @@ public class GuideScreen extends Screen {
         forwardButton.active = history.peekForward().isPresent();
     }
 
-    public PageCollection getPages() {
-        return pages;
+    public PageCollection getGuide() {
+        return guide;
     }
 
     @Override

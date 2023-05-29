@@ -1,6 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +31,6 @@ import appeng.util.Platform;
  * Shows a Recipe-Book-Like representation of the recipe needed to craft a given item.
  */
 public class RecipeCompiler extends BlockTagCompiler {
-
     private final List<RecipeTypeMapping<?, ?>> mappings = List.of(
             new RecipeTypeMapping<>(RecipeType.CRAFTING, LytCraftingRecipe::new),
             new RecipeTypeMapping<>(RecipeType.SMELTING, LytSmeltingRecipe::new),
@@ -38,6 +38,11 @@ public class RecipeCompiler extends BlockTagCompiler {
             new RecipeTypeMapping<>(InscriberRecipe.TYPE, LytInscriberRecipe::new),
             new RecipeTypeMapping<>(ChargerRecipe.TYPE, LytChargerRecipe::new),
             new RecipeTypeMapping<>(TransformRecipe.TYPE, LytTransformRecipe::new));
+
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("Recipe", "RecipeFor");
+    }
 
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {

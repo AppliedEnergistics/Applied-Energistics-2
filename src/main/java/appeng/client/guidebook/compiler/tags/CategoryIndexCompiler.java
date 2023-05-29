@@ -1,5 +1,7 @@
 package appeng.client.guidebook.compiler.tags;
 
+import java.util.Set;
+
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.document.block.LytList;
@@ -10,6 +12,11 @@ import appeng.client.guidebook.indices.CategoryIndex;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 public class CategoryIndexCompiler extends BlockTagCompiler {
+    @Override
+    public Set<String> getTagNames() {
+        return Set.of("CategoryIndex");
+    }
+
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
 

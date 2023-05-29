@@ -17,6 +17,12 @@ public class CameraSettings {
 
     private final Matrix4f baseViewMatrix = new Matrix4f();
 
+    private float rotationX;
+    private float rotationY;
+    private float rotationZ;
+    private float offsetX;
+    private float offsetY;
+
     public Vector4f getViewport() {
         return viewport;
     }
@@ -72,6 +78,12 @@ public class CameraSettings {
     public Matrix4f getViewMatrix() {
         var result = new Matrix4f();
 
+        result.translate(offsetX, offsetY, 0);
+
+        result.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * rotationX));
+        result.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * rotationY));
+        result.rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * rotationZ));
+
         // 0.625f comes from the default block model json GUI transform
         result.scale(0.625f * 16 * zoom, 0.625f * 16 * zoom, 0.625f * 16 * zoom);
 
@@ -94,5 +106,45 @@ public class CameraSettings {
         var projectionMatrix = new Matrix4f();
         projectionMatrix.ortho(viewport.x, viewport.z, viewport.y, viewport.w, -1000, 3000);
         return projectionMatrix;
+    }
+
+    public float getRotationX() {
+        return rotationX;
+    }
+
+    public void setRotationX(float rotationX) {
+        this.rotationX = rotationX;
+    }
+
+    public float getRotationY() {
+        return rotationY;
+    }
+
+    public void setRotationY(float rotationY) {
+        this.rotationY = rotationY;
+    }
+
+    public float getRotationZ() {
+        return rotationZ;
+    }
+
+    public void setRotationZ(float rotationZ) {
+        this.rotationZ = rotationZ;
+    }
+
+    public float getOffsetX() {
+        return offsetX;
+    }
+
+    public void setOffsetX(float offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public float getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetY(float offsetY) {
+        this.offsetY = offsetY;
     }
 }
