@@ -11,7 +11,7 @@ dependencies {
 
     testCompileOnly 'org.jetbrains:annotations:23.0.0'
     testImplementation platform("org.junit:junit-bom:${project.junit_version}")
-    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4.1'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
