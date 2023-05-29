@@ -146,7 +146,7 @@ dependencies {
     //include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     // unit test dependencies
-    testImplementation(platform("org.junit:junit-bom:5.10.0-M1"))
+    testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
