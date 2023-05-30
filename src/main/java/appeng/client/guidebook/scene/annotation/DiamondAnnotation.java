@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 
 import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.ConstantColor;
+import appeng.client.guidebook.color.MutableColor;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.scene.GuidebookScene;
@@ -43,9 +44,16 @@ public class DiamondAnnotation extends OverlayAnnotation {
     public void render(GuidebookScene scene, RenderContext context, LytRect viewport) {
         var rect = getBoundingRect(scene, viewport);
 
+        var outer = outerColor;
+        var inner = color;
+        if (isHovered()) {
+            outer = MutableColor.of(outer).lighter(20);
+            inner = MutableColor.of(inner).lighter(20);
+        }
+
         var texture = Minecraft.getInstance().getTextureManager()
                 .getTexture(AppEng.makeId("textures/guide/diamond.png"));
-        context.fillTexturedRect(rect, texture, outerColor, outerColor, outerColor, outerColor, 0, 0, 0.5f, 1);
-        context.fillTexturedRect(rect, texture, color, color, color, color, 0.5f, 0, 1f, 1);
+        context.fillTexturedRect(rect, texture, outer, outer, outer, outer, 0, 0, 0.5f, 1);
+        context.fillTexturedRect(rect, texture, inner, inner, inner, inner, 0.5f, 0, 1f, 1);
     }
 }
