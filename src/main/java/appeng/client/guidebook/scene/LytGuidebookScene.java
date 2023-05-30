@@ -123,10 +123,10 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
         SceneAnnotation annotation;
         if (hoveredAnnotation != null && transientHoveredAnnotation) {
             scene.removeAnnotation(hoveredAnnotation);
-            annotation = scene.pickAnnotation(docPoint, bounds);
+            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasContent);
             scene.addAnnotation(hoveredAnnotation);
         } else {
-            annotation = scene.pickAnnotation(docPoint, bounds);
+            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasContent);
         }
 
         // Prioritize picking annotation boxes over blocks
