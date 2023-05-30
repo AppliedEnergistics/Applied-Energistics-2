@@ -115,13 +115,15 @@ They can be set to handle requests from players, automation (export busses and i
 
 # Pattern Providers
 
-<row>
+<Row>
 <BlockImage id="pattern_provider" scale="4" />
+
 <BlockImage id="pattern_provider" p:push_direction="up" scale="4" />
+
 <GameScene zoom="4">
   <ImportStructure src="../assets/blocks/cable_pattern_provider.snbt" />
 </GameScene>
-</row>
+</Row>
 
 <ItemLink id="pattern_provider" />s are the primary way in which your autocrafting system interacts with the world. They push the ingredients in
 their [patterns](../items-blocks-machines/patterns.md) to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often

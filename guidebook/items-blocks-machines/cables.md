@@ -181,7 +181,7 @@ dense cable, and then the shortest path through that dense cable to a controller
 
 ## Smart Cable
 
-<row>
+<Row>
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/fluix_smart_cable.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
@@ -190,7 +190,7 @@ dense cable, and then the shortest path through that dense cable to a controller
   <ImportStructure src="../assets/assemblies/fluix_smart_dense_cable.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
-</row>
+</Row>
 
 While bearing some similarity to <ItemLink id="fluix_covered_cable" /> in appearance, they
 provide diagnostic function by visualizing the channel usage on the cables,

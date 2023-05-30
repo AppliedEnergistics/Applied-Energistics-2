@@ -55,7 +55,7 @@ To prevent this (useful for many autocrafting setups involving [subnetworks](../
 you can right-click the provider with a <ItemLink id="certus_quartz_wrench" /> to make it directional, in which case it will
 not pass channels through one side.
 
-<row>
+<Row>
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/pattern_provider_network_connection_2.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
@@ -65,7 +65,7 @@ not pass channels through one side.
   <ImportStructure src="../assets/assemblies/pattern_provider_directional_connection.snbt" />
   <IsometricCamera yaw="255" pitch="30" />
 </GameScene>
-</row>
+</Row>
 
 Other parts that do not provide directional network connections are most [subpart](../ae2-mechanics/cable-subparts.md)
 [devices](../ae2-mechanics/devices.md) like <ItemLink id="import_bus" />ses, <ItemLink id="storage_bus" />ses, and

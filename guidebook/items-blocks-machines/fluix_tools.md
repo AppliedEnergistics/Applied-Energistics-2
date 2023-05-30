@@ -30,6 +30,8 @@ item_ids:
 
 All fluix tools act as if they have at least fortune/looting 1, which is useful before getting access to an enchanting table.
 
+You will need to make a <ItemLink id="fluix_upgrade_smithing_template" />
+
 ## Recipes
 
 <Column>

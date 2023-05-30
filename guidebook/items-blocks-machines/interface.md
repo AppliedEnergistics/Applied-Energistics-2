@@ -11,12 +11,12 @@ item_ids:
 
 # The Interface
 
-<row gap="20">
+<Row gap="20">
 <BlockImage id="interface" scale="8" />
 <GameScene zoom="8">
   <ImportStructure src="../assets/blocks/cable_interface.snbt" />
 </GameScene>
-</row>
+</Row>
 
 Interfaces act like a small chest and fluid tank that fills itself from and empties to [network storage](../ae2-mechanics/import-export-storage.md)
 depending on what you set it to keep a stock of in its slots. It tries to complete this in a single gametick, so it can fill itself with
