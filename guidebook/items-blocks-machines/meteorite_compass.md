@@ -12,7 +12,7 @@ item_ids:
 <ItemImage id="meteorite_compass" scale="4" />
 
 The Meteorite Compass points at the nearest <ItemLink id="mysterious_cube" />, which thus points it at the nearest
-[meteorite](./features/meteorites.md). It's one of the first AE2 items you should make.
+[meteorite](../ae2-mechanics/meteorites.md). It's one of the first AE2 items you should make.
 
 ## Recipe
 
