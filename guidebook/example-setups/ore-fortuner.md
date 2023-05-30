@@ -7,6 +7,12 @@ navigation:
 
 # Automation of Ore Fortuning
 
+The <ItemLink id="annihilation_plane" /> can be enchanted with any pickaxe enchantment, including fortune, so an obvious use case is to
+apply fortune to a few, and have <ItemLink id="formation_plane" />s and <ItemLink id="annihilation_plane" />s rapidly place and
+break ores.
+
+Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup will start slow then reach full speed in a few seconds.
+
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
 
@@ -40,12 +46,6 @@ navigation:
 
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
-
-The <ItemLink id="annihilation_plane" /> can be enchanted with any pickaxe enchantment, including fortune, so an obvious use case is to
-apply fortune to a few, and have <ItemLink id="formation_plane" />s and <ItemLink id="annihilation_plane" />s rapidly place and
-break ores.
-
-Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup will start slow then reach full speed in a few seconds.
 
 ## Configurations
 
