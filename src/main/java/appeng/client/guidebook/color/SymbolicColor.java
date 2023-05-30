@@ -27,7 +27,9 @@ public enum SymbolicColor implements ColorValue {
     ICON_BUTTON_DISABLED(Colors.mono(64), Colors.mono(64)),
     ICON_BUTTON_HOVER(Colors.rgb(0, 213, 255), Colors.rgb(0, 213, 255)),
 
-    IN_WORLD_BLOCK_HIGHLIGHT(Colors.argb(0xcc, 0x99, 0x99, 0x99), Colors.argb(0xcc, 0x99, 0x99, 0x99));
+    IN_WORLD_BLOCK_HIGHLIGHT(Colors.argb(0xcc, 0x99, 0x99, 0x99), Colors.argb(0xcc, 0x99, 0x99, 0x99)),
+
+    SCENE_BACKGROUND(Colors.argb(20, 0, 0, 0), Colors.argb(20, 0, 0, 0));
 
     final int lightMode;
     final int darkMode;

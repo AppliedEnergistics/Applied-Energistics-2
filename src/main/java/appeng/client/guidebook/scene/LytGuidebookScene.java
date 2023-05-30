@@ -38,6 +38,8 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
     private SceneAnnotation hoveredAnnotation;
     // Indicates that hoveredAnnotation should be removed from the scene when it is no longer the hovered annotation
     private boolean transientHoveredAnnotation;
+    @Nullable
+    private ColorValue background;
 
     public LytGuidebookScene() {
     }
@@ -76,6 +78,10 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public void render(RenderContext context) {
+        if (background != null) {
+            context.fillRect(bounds, background);
+        }
+
         if (scene == null) {
             return;
         }
@@ -237,5 +243,9 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
                 this.hoveredAnnotation.setHovered(true);
             }
         }
+    }
+
+    public void setBackground(ColorValue background) {
+        this.background = background;
     }
 }

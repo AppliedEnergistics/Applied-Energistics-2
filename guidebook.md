@@ -197,9 +197,10 @@ To show a real-time renderered in-game scene, use:
 
 The tag also supports the following attributes:
 
-| Attribute | Description                                                    |
-|-----------|----------------------------------------------------------------|
-| zoom      | Allows the scene to be shown at a bigger scale. Defaults to 1. |
+| Attribute  | Description                                                    |
+|------------|----------------------------------------------------------------|
+| zoom       | Allows the scene to be shown at a bigger scale. Defaults to 1. |
+| background | A color value allowing to change the background of the scene.  |
 
 To add actual content to the scene, add additional tags to the scene tag. The most important
 tag will be `<ImportStructure />` to place a structure from a NBT or SNBT file in the scene.

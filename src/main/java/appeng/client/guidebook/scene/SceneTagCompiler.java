@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
 import appeng.client.guidebook.compiler.tags.MdxAttrs;
@@ -26,6 +27,7 @@ public class SceneTagCompiler extends BlockTagCompiler implements Extension {
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
         var zoom = MdxAttrs.getFloat(compiler, parent, el, "zoom", 1.0f);
+        var background = MdxAttrs.getColor(compiler, parent, el, "background", SymbolicColor.SCENE_BACKGROUND);
 
         var level = new GuidebookLevel();
         var cameraSettings = new CameraSettings();
@@ -47,6 +49,7 @@ public class SceneTagCompiler extends BlockTagCompiler implements Extension {
 
         var lytScene = new LytGuidebookScene();
         lytScene.setScene(scene);
+        lytScene.setBackground(background);
         if ("true".equals(el.getAttributeString("interactive", "true"))) {
             lytScene.setInteractive(true);
         }
