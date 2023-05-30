@@ -17,4 +17,3 @@ Some examples include:
 *   <ItemLink id="storage_bus" />
 *   <ItemLink id="pattern_provider" />
 *   <ItemLink id="drive" />
-*   <ItemLink id="security_station" />

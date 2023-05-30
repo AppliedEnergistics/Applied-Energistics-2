@@ -13,7 +13,7 @@ item_ids:
 
 <Row gap="20">
 <BlockImage id="interface" scale="8" />
-<GameScene zoom="8">
+<GameScene zoom="8" interactive="false">
   <ImportStructure src="../assets/blocks/cable_interface.snbt" />
 </GameScene>
 </Row>

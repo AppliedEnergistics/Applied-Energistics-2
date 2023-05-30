@@ -7,7 +7,7 @@ navigation:
 
 # Channels
 
-Applied Energistics 2's [ME Networks](../me-network.md) require
+Applied Energistics 2's [ME Networks](me-network-connections.md) require
 Channels to support [devices](../ae2-mechanics/devices.md) which use networked storage, or other network
 services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
 so many devices connected to it. Most machines, full-block devices, and standard cables can only pass through

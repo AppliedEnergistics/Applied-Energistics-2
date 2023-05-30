@@ -7,6 +7,18 @@ navigation:
 
 # Bytes and Types
 
+<Row>
+    <ItemImage id="item_storage_cell_1k" scale="4" />
+
+    <ItemImage id="item_storage_cell_4k" scale="4" />
+
+    <ItemImage id="item_storage_cell_16k" scale="4" />
+
+    <ItemImage id="item_storage_cell_64k" scale="4" />
+
+    <ItemImage id="item_storage_cell_256k" scale="4" />
+  </Row>
+
 [Storage Cells](../items-blocks-machines/storage_cells.md) are defined by both *bytes* and *types*. Bytes, like in
 your actual computer, are a measure of the total amount of "stuff" in a storage cell. Types are a measure of how many different,
 well, *types* of things are stored in a cell. Each type represents a unique item, so 4,096 cobblestone is 1 type but 16 different

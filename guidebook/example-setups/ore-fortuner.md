@@ -7,10 +7,37 @@ navigation:
 
 # Automation of Ore Fortuning
 
-NEEDS ANNOTATON FUNCTIONALITY
-
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
+
+  <BoxAnnotation color="#dddddd" x1="2.7" x2="3" y1="0" y2="1" z1="2" z2="3">
+        (1) Import Bus: Has a few Acceleration Cards in it.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" x1="0" x2="2" y1="0" y2="1" z1="2" z2="2.3">
+        (2) Formation Planes: In their default configuration.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" x1="0" x2="2" y1="0" y2="1" z1="0.7" z2="1">
+        (3) Annihilation Planes: No GUI to configure, but enchanted with Fortune.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" x1="2.7" x2="3" y1="0" y2="1" z1="0" z2="1">
+        (4) Storage Bus: In its default configuration.
+  </BoxAnnotation>
+
+<DiamondAnnotation x="3.5" y="0.5" z="2.5" color="#00ff00">
+        Input
+    </DiamondAnnotation>
+
+<DiamondAnnotation x="3.5" y="0.5" z="0.5" color="#00ff00">
+        Output
+    </DiamondAnnotation>
+
+<DiamondAnnotation x="4" y="0.5" z="1.5" color="#00ff00">
+        To Main Network
+    </DiamondAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 

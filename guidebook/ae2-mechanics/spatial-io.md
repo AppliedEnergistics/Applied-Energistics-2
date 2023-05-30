@@ -7,9 +7,15 @@ navigation:
 
 # Spatial IO
 
-<GameScene zoom="4">
-<ImportStructure src="../assets/assemblies/spatial_storage_1x1x1.snbt" />
-<IsometricCamera yaw="195" pitch="30" />
+<GameScene zoom="4" interactive="true">
+  <ImportStructure src="../assets/assemblies/spatial_storage_1x1x1.snbt" />
+
+  <BoxAnnotation color="#33dd33" x1="1" x2="2" y1="1" y2="2" z1="1" z2="2">
+        The volume to be moved
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="195" pitch="30" />
+
 </GameScene>
 
 Spatial IO is a way to cut-and-paste physical volumes of space in your world. It can be used to move <ItemLink id="flawless_budding_quartz" />,
@@ -71,6 +77,15 @@ the volume you want to define. They can be in almost any configuration, as long 
 
 <GameScene zoom="4">
 <ImportStructure src="../assets/assemblies/spatial_storage_3x3x3_pylon_demonstration.snbt" />
+
+<BoxAnnotation color="#33dd33" x1="1" x2="4" y1="1" y2="4" z1="1" z2="4">
+        The volume to be moved
+  </BoxAnnotation>
+
+<BoxAnnotation color="#3333ff" x1="5" x2="0" y1="5" y2="0" z1="0" z2="5">
+        The volume the pylons need to be inside
+  </BoxAnnotation>
+
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 

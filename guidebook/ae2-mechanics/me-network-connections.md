@@ -21,6 +21,15 @@ For example, this is 2 separate networks.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/2_networks_1.snbt" />
+
+  <BoxAnnotation color="#915dcd" x1="0" x2="1" y1="0" y2="2" z1="0" z2="2">
+        Network 1
+  </BoxAnnotation>
+
+<BoxAnnotation color="#915dcd" x1="2" x2="3" y1="0" y2="2" z1="0" z2="2">
+        Network 2
+  </BoxAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
@@ -29,6 +38,15 @@ without providing a network connection.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/2_networks_2.snbt" />
+
+  <BoxAnnotation color="#915dcd" x1="0" x2="1" y1="0" y2="2" z1="0" z2="2">
+        Network 1
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#915dcd" x1="1.3" x2="3" y1="0" y2="2" z1="0" z2="2">
+        Network 2
+  </BoxAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
@@ -37,6 +55,11 @@ a wireless [dense cable](../items-blocks-machines/cables.md#dense-cable), so bot
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/actually_1_network.snbt" />
+
+  <BoxAnnotation color="#915dcd" x1="0" x2="7" y1="0" y2="3" z1="0" z2="3">
+        All 1 network
+  </BoxAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
@@ -48,6 +71,11 @@ the provider and inscriber.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/pattern_provider_network_connection_1.snbt" />
+
+  <BoxAnnotation color="#915dcd" x1="0" x2="4" y1="0" y2="2" z1="0" z2="2">
+        All 1 network
+  </BoxAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
@@ -55,14 +83,28 @@ To prevent this (useful for many autocrafting setups involving [subnetworks](../
 you can right-click the provider with a <ItemLink id="certus_quartz_wrench" /> to make it directional, in which case it will
 not pass channels through one side.
 
-<Row>
+<Row gap="40">
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/pattern_provider_network_connection_2.snbt" />
+
+  <BoxAnnotation color="#915dcd" x1="0" x2="2" y1="0" y2="2" z1="0" z2="2">
+        Network 1
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#915dcd" x1="2" x2="4" y1="0" y2="2" z1="0" z2="2">
+        Network 2
+  </BoxAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/pattern_provider_directional_connection.snbt" />
+
+  <BoxAnnotation color="#ee3333" x1="1" x2="1.3" y1=".3" y2=".7" z1=".3" z2=".7">
+        Observe how the cable does not connect
+  </BoxAnnotation>
+
   <IsometricCamera yaw="255" pitch="30" />
 </GameScene>
 </Row>

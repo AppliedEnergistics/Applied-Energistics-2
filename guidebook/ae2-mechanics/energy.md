@@ -19,7 +19,7 @@ energy acceptors can intake at functionally unlimited speed, only limited by you
 <Row>
   <BlockImage id="energy_acceptor" scale="4" />
 
-  <GameScene zoom="4">
+  <GameScene zoom="4" interactive="false">
   <ImportStructure src="../assets/blocks/cable_energy_acceptor.snbt" />
   </GameScene>
 
