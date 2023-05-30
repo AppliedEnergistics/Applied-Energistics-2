@@ -3,6 +3,7 @@ package appeng.client.guidebook.scene;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
@@ -125,22 +126,29 @@ public class GuidebookScene {
      * actually have dimensions in the 3d scene, making it necessary to know the viewport.
      */
     @Nullable
-    public SceneAnnotation pickAnnotation(LytPoint point, LytRect viewport) {
+    public SceneAnnotation pickAnnotation(LytPoint point, LytRect viewport,
+            Predicate<? super SceneAnnotation> predicate) {
         var screenPos = documentToScreen(viewport, point);
 
-        SceneAnnotation annotation = pickOverlayAnnotation(point, viewport);
+        SceneAnnotation annotation = pickOverlayAnnotation(point, viewport, predicate);
 
         if (annotation == null) {
-            annotation = pickInWorldAnnotation(screenPos.x, screenPos.y);
+            annotation = pickInWorldAnnotation(screenPos.x, screenPos.y, predicate);
         }
 
         return annotation;
     }
 
     @Nullable
-    public OverlayAnnotation pickOverlayAnnotation(LytPoint point, LytRect viewport) {
+    public OverlayAnnotation pickOverlayAnnotation(LytPoint point,
+            LytRect viewport,
+            Predicate<? super OverlayAnnotation> predicate) {
         for (int i = overlayAnnotations.size() - 1; i >= 0; i--) {
             var annotation = overlayAnnotations.get(i);
+            if (!predicate.test(annotation)) {
+                continue;
+            }
+
             var bounds = annotation.getBoundingRect(this, viewport);
             if (bounds.contains(point)) {
                 return annotation;
@@ -150,7 +158,9 @@ public class GuidebookScene {
     }
 
     @Nullable
-    public InWorldAnnotation pickInWorldAnnotation(float screenX, float screenY) {
+    public InWorldAnnotation pickInWorldAnnotation(float screenX,
+            float screenY,
+            Predicate<? super InWorldAnnotation> predicate) {
         // Check overlay annotations first
 
         var rayOrigin = new Vector3f();
@@ -160,6 +170,10 @@ public class GuidebookScene {
         float pickDistance = Float.POSITIVE_INFINITY;
         InWorldAnnotation pickedBox = null;
         for (var highlight : inWorldAnnotations) {
+            if (!predicate.test(highlight)) {
+                continue;
+            }
+
             var intersectionDist = highlight.intersect(rayOrigin, rayDir);
             if (intersectionDist.isPresent()) {
                 if (intersectionDist.getAsDouble() < pickDistance) {

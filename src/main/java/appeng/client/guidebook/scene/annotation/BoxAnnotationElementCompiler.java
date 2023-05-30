@@ -25,10 +25,25 @@ public class BoxAnnotationElementCompiler extends AnnotationTagCompiler {
             MdxJsxElementFields el) {
         var x1 = MdxAttrs.getFloat(compiler, errorSink, el, "x1", 0.0f);
         var x2 = MdxAttrs.getFloat(compiler, errorSink, el, "x2", 0.0f);
+        if (x2 < x1) {
+            var tmp = x1;
+            x1 = x2;
+            x2 = tmp;
+        }
         var y1 = MdxAttrs.getFloat(compiler, errorSink, el, "y1", 0.0f);
         var y2 = MdxAttrs.getFloat(compiler, errorSink, el, "y2", 0.0f);
+        if (y2 < y1) {
+            var tmp = y1;
+            y1 = y2;
+            y2 = tmp;
+        }
         var z1 = MdxAttrs.getFloat(compiler, errorSink, el, "z1", 0.0f);
         var z2 = MdxAttrs.getFloat(compiler, errorSink, el, "z2", 0.0f);
+        if (z2 < z1) {
+            var tmp = z1;
+            z1 = z2;
+            z2 = tmp;
+        }
         var color = MdxAttrs.getColor(compiler, errorSink, el, "color", ConstantColor.WHITE);
 
         var min = new Vector3f(x1, y1, z1);

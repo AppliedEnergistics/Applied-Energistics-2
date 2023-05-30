@@ -26,6 +26,10 @@ public abstract class SceneAnnotation {
         this.content = content;
     }
 
+    public boolean hasContent() {
+        return content != null;
+    }
+
     public boolean isHovered() {
         return hovered;
     }
