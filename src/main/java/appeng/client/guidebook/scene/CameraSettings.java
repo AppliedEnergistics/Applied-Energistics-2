@@ -3,6 +3,7 @@ package appeng.client.guidebook.scene;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.joml.Vector4f;
 
 import net.minecraft.util.Mth;
@@ -17,6 +18,7 @@ public class CameraSettings {
 
     private final Matrix4f baseViewMatrix = new Matrix4f();
 
+    private final Vector3f rotationCenter = new Vector3f();
     private float rotationX;
     private float rotationY;
     private float rotationZ;
@@ -80,23 +82,15 @@ public class CameraSettings {
 
         result.translate(offsetX, offsetY, 0);
 
-        result.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * rotationX));
-        result.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * rotationY));
-        result.rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * rotationZ));
+        var rotation = new Quaternionf().rotationYXZ(Mth.DEG_TO_RAD * rotationX, Mth.DEG_TO_RAD * rotationY,
+                Mth.DEG_TO_RAD * rotationZ);
+        result.rotateAround(rotation, rotationCenter.x, rotationCenter.y, rotationCenter.z);
 
         // 0.625f comes from the default block model json GUI transform
         result.scale(0.625f * 16 * zoom, 0.625f * 16 * zoom, 0.625f * 16 * zoom);
 
         result.mul(baseViewMatrix);
 
-//        // Get the center and move the origin there
-//        var bounds = level.getBounds();
-//        var centerX = (bounds.max().getX() + bounds.min().getX()) / 2f;
-//        var centerY = (bounds.max().getY() + bounds.min().getY()) / 2f;
-//        var centerZ = (bounds.max().getZ() + bounds.min().getZ()) / 2f;
-////        modelViewStack.mulPose(new Quaternionf().rotationY(
-////                ((System.currentTimeMillis() % 6000) - 3000) / 3000f * Mth.PI
-//        ));
         result.translate(-center.x, -center.y, -center.z);
 
         return result;
@@ -130,6 +124,10 @@ public class CameraSettings {
 
     public void setRotationZ(float rotationZ) {
         this.rotationZ = rotationZ;
+    }
+
+    public void setRotationCenter(Vector3fc rotationCenter) {
+        this.rotationCenter.set(rotationCenter);
     }
 
     public float getOffsetX() {
