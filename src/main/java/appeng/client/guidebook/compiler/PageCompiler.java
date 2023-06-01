@@ -153,6 +153,10 @@ public final class PageCompiler {
         return new GuidePage(parsedPage.sourcePack, parsedPage.id, document);
     }
 
+    public ExtensionCollection getExtensions() {
+        return extensions;
+    }
+
     public <T extends Extension> List<T> getExtensions(ExtensionPoint<T> extensionPoint) {
         return extensions.get(extensionPoint);
     }

@@ -1,28 +1,5 @@
 package appeng.client.guidebook.screen;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.Tesselator;
-
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.client.Point;
 import appeng.client.gui.DashPattern;
 import appeng.client.gui.DashedRectangle;
@@ -41,6 +18,7 @@ import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.block.LytHeading;
+import appeng.client.guidebook.document.block.LytNode;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowAnchor;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
@@ -53,6 +31,26 @@ import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.SimpleRenderContext;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class GuideScreen extends Screen {
     private static final Logger LOG = LoggerFactory.getLogger(GuideScreen.class);
@@ -160,6 +158,19 @@ public class GuideScreen extends Screen {
     @Override
     public void tick() {
         processPendingScrollTo();
+
+        // Tick all controls on the page
+        if (currentPage != null) {
+            tickNode(currentPage.document());
+        }
+    }
+
+    private static void tickNode(LytNode node) {
+        node.tick();
+
+        for (var child : node.getChildren()) {
+            tickNode(child);
+        }
     }
 
     /**
@@ -270,7 +281,7 @@ public class GuideScreen extends Screen {
             dispatchInteraction(
                     hoveredElement,
                     el -> el.getTooltip(docPos.getX(), docPos.getY()))
-                            .ifPresent(tooltip -> renderTooltip(guiGraphics, tooltip, x, y));
+                    .ifPresent(tooltip -> renderTooltip(guiGraphics, tooltip, x, y));
         }
     }
 
@@ -527,7 +538,7 @@ public class GuideScreen extends Screen {
     }
 
     private static <T> Optional<T> dispatchInteraction(LytDocument.HitTestResult receiver,
-            Function<InteractiveElement, Optional<T>> invoker) {
+                                                       Function<InteractiveElement, Optional<T>> invoker) {
         // Iterate through content ancestors
         for (var el = receiver.content(); el != null; el = el.getFlowParent()) {
             if (el instanceof InteractiveElement interactiveEl) {

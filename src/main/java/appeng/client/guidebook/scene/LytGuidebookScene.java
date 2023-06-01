@@ -1,17 +1,5 @@
 package appeng.client.guidebook.scene;
 
-import java.util.Optional;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.HitResult;
-
 import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytPoint;
@@ -21,11 +9,21 @@ import appeng.client.guidebook.document.interaction.ContentTooltip;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.document.interaction.TextTooltip;
+import appeng.client.guidebook.extensions.ExtensionCollection;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
 import appeng.client.guidebook.scene.annotation.SceneAnnotation;
 import appeng.client.guidebook.screen.GuideScreen;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+
+import java.util.Optional;
 
 /**
  * Shows a pseudo-in-world scene within the guidebook.
@@ -41,7 +39,10 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
     @Nullable
     private ColorValue background;
 
-    public LytGuidebookScene() {
+    private final ExtensionCollection extensions;
+
+    public LytGuidebookScene(ExtensionCollection extensions) {
+        this.extensions = extensions;
     }
 
     @Nullable
@@ -118,7 +119,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public Optional<GuideTooltip> getTooltip(float x, float y) {
-        if (!interactive || scene == null || bounds.isEmpty()) {
+        if (scene == null || bounds.isEmpty()) {
             setHoveredAnnotation(null);
             return Optional.empty();
         }
@@ -145,13 +146,22 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             var blockState = scene.getLevel().getBlockState(hitResult.getBlockPos());
 
-            annotation = InWorldBoxAnnotation.forBlock(hitResult.getBlockPos(),
-                    (ColorValue) SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT);
+            for (var strategy : extensions.get(ImplicitAnnotationStrategy.EXTENSION_POINT)) {
+                annotation = strategy.getAnnotation(scene.getLevel(), blockState, hitResult);
+                if (annotation != null) {
+                    break;
+                }
+            }
+
+            if (annotation == null) {
+                annotation = InWorldBoxAnnotation.forBlock(hitResult.getBlockPos(),
+                        SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT);
+            }
+
             setTransientHoveredAnnotation(annotation);
 
             var text = Component.translatable(blockState.getBlock().getDescriptionId());
-            return Optional.of(
-                    new TextTooltip(text));
+            return Optional.of(new TextTooltip(text));
         }
 
         setHoveredAnnotation(null);
@@ -175,13 +185,15 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public boolean mouseClicked(GuideScreen screen, int x, int y, int button) {
-        if (button == 0 || button == 1) {
-            buttonDown = button;
-            pointDown = new Vector2i(x, y);
-            initialRotX = scene.getCameraSettings().getRotationX();
-            initialRotY = scene.getCameraSettings().getRotationY();
-            initialTransX = scene.getCameraSettings().getOffsetX();
-            initialTransY = scene.getCameraSettings().getOffsetY();
+        if (interactive) {
+            if (button == 0 || button == 1) {
+                buttonDown = button;
+                pointDown = new Vector2i(x, y);
+                initialRotX = scene.getCameraSettings().getRotationX();
+                initialRotY = scene.getCameraSettings().getRotationY();
+                initialTransX = scene.getCameraSettings().getOffsetX();
+                initialTransY = scene.getCameraSettings().getOffsetY();
+            }
         }
         return true;
     }
@@ -194,7 +206,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public boolean mouseMoved(GuideScreen screen, int x, int y) {
-        if (pointDown != null) {
+        if (interactive && pointDown != null) {
             var dx = x - pointDown.x;
             var dy = y - pointDown.y;
             if (buttonDown == 0) {
