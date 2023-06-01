@@ -45,7 +45,7 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
 
         level.setBlockAndUpdate(BlockPos.ZERO, state);
 
-        var lytScene = new LytGuidebookScene();
+        var lytScene = new LytGuidebookScene(compiler.getExtensions());
         lytScene.setScene(scene);
         lytScene.setInteractive(false);
         parent.append(lytScene);

@@ -65,6 +65,8 @@ import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
 import appeng.client.guidebook.hotkey.OpenGuideHotkey;
+import appeng.client.guidebook.scene.ImplicitAnnotationStrategy;
+import appeng.client.guidebook.scene.PartAnnotationStrategy;
 import appeng.client.guidebook.screen.GlobalInMemoryHistory;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.client.render.StorageCellClientTooltipComponent;
@@ -129,7 +131,7 @@ public class AppEngClient extends AppEngBase {
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
-        guide = loadGuidePages();
+        guide = createGuide();
         OpenGuideHotkey.init();
 
         ClientLifecycleEvents.CLIENT_STARTED.register(this::clientSetup);
@@ -166,13 +168,14 @@ public class AppEngClient extends AppEngBase {
         });
     }
 
-    private Guide loadGuidePages() {
+    private Guide createGuide() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             var dispatcher = server.getCommands().getDispatcher();
             GuidebookStructureCommands.register(dispatcher);
         });
 
         return Guide.builder(MOD_ID, "ae2guide")
+                .extension(ImplicitAnnotationStrategy.EXTENSION_POINT, new PartAnnotationStrategy())
                 .build();
     }
 

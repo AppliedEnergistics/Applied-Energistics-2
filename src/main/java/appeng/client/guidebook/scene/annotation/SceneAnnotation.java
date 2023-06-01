@@ -2,7 +2,12 @@ package appeng.client.guidebook.scene.annotation;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.chat.Component;
+
 import appeng.client.guidebook.document.block.LytBlock;
+import appeng.client.guidebook.document.interaction.ContentTooltip;
+import appeng.client.guidebook.document.interaction.GuideTooltip;
+import appeng.client.guidebook.document.interaction.TextTooltip;
 
 /**
  * An annotation to show additional information to the user about content in a
@@ -10,24 +15,28 @@ import appeng.client.guidebook.document.block.LytBlock;
  */
 public abstract class SceneAnnotation {
     @Nullable
-    private LytBlock content;
+    private GuideTooltip tooltip;
 
     private boolean hovered;
 
-    /**
-     * Additional content describing what this annotation means. Will be shown in tooltip.
-     */
-    @Nullable
-    public final LytBlock getContent() {
-        return content;
+    public @Nullable GuideTooltip getTooltip() {
+        return tooltip;
     }
 
-    public final void setContent(@Nullable LytBlock content) {
-        this.content = content;
+    public void setTooltip(@Nullable GuideTooltip tooltip) {
+        this.tooltip = tooltip;
     }
 
-    public boolean hasContent() {
-        return content != null;
+    public void setTooltipContent(LytBlock block) {
+        this.tooltip = new ContentTooltip(block);
+    }
+
+    public void setTooltipContent(Component component) {
+        this.tooltip = new TextTooltip(component);
+    }
+
+    public boolean hasTooltip() {
+        return tooltip != null;
     }
 
     public boolean isHovered() {

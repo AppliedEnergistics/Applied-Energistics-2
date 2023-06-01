@@ -17,10 +17,9 @@ import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytPoint;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
-import appeng.client.guidebook.document.interaction.ContentTooltip;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
-import appeng.client.guidebook.document.interaction.TextTooltip;
+import appeng.client.guidebook.extensions.ExtensionCollection;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
@@ -41,7 +40,10 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
     @Nullable
     private ColorValue background;
 
-    public LytGuidebookScene() {
+    private final ExtensionCollection extensions;
+
+    public LytGuidebookScene(ExtensionCollection extensions) {
+        this.extensions = extensions;
     }
 
     @Nullable
@@ -118,7 +120,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public Optional<GuideTooltip> getTooltip(float x, float y) {
-        if (!interactive || scene == null || bounds.isEmpty()) {
+        if (scene == null || bounds.isEmpty()) {
             setHoveredAnnotation(null);
             return Optional.empty();
         }
@@ -129,29 +131,41 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
         SceneAnnotation annotation;
         if (hoveredAnnotation != null && transientHoveredAnnotation) {
             scene.removeAnnotation(hoveredAnnotation);
-            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasContent);
+            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasTooltip);
             scene.addAnnotation(hoveredAnnotation);
         } else {
-            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasContent);
+            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasTooltip);
         }
 
         // Prioritize picking annotation boxes over blocks
-        if (annotation != null && annotation.getContent() != null) {
+        if (annotation != null && annotation.getTooltip() != null) {
             setHoveredAnnotation(annotation);
-            return Optional.of(new ContentTooltip(annotation.getContent()));
+            return Optional.of(annotation.getTooltip());
         }
 
         var hitResult = scene.pickBlock(docPoint, bounds);
         if (hitResult.getType() == HitResult.Type.BLOCK) {
             var blockState = scene.getLevel().getBlockState(hitResult.getBlockPos());
 
-            annotation = InWorldBoxAnnotation.forBlock(hitResult.getBlockPos(),
-                    (ColorValue) SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT);
+            for (var strategy : extensions.get(ImplicitAnnotationStrategy.EXTENSION_POINT)) {
+                annotation = strategy.getAnnotation(scene.getLevel(), blockState, hitResult);
+                if (annotation != null) {
+                    break;
+                }
+            }
+
+            if (annotation == null) {
+                annotation = InWorldBoxAnnotation.forBlock(hitResult.getBlockPos(),
+                        SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT);
+                annotation.setTooltipContent(Component.translatable(blockState.getBlock().getDescriptionId()));
+            }
             setTransientHoveredAnnotation(annotation);
 
-            var text = Component.translatable(blockState.getBlock().getDescriptionId());
-            return Optional.of(
-                    new TextTooltip(text));
+            if (annotation.getTooltip() != null) {
+                return Optional.of(annotation.getTooltip());
+            } else {
+                return Optional.empty();
+            }
         }
 
         setHoveredAnnotation(null);
@@ -175,13 +189,15 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public boolean mouseClicked(GuideScreen screen, int x, int y, int button) {
-        if (button == 0 || button == 1) {
-            buttonDown = button;
-            pointDown = new Vector2i(x, y);
-            initialRotX = scene.getCameraSettings().getRotationX();
-            initialRotY = scene.getCameraSettings().getRotationY();
-            initialTransX = scene.getCameraSettings().getOffsetX();
-            initialTransY = scene.getCameraSettings().getOffsetY();
+        if (interactive) {
+            if (button == 0 || button == 1) {
+                buttonDown = button;
+                pointDown = new Vector2i(x, y);
+                initialRotX = scene.getCameraSettings().getRotationX();
+                initialRotY = scene.getCameraSettings().getRotationY();
+                initialTransX = scene.getCameraSettings().getOffsetX();
+                initialTransY = scene.getCameraSettings().getOffsetY();
+            }
         }
         return true;
     }
@@ -194,7 +210,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     @Override
     public boolean mouseMoved(GuideScreen screen, int x, int y) {
-        if (pointDown != null) {
+        if (interactive && pointDown != null) {
             var dx = x - pointDown.x;
             var dy = y - pointDown.y;
             if (buttonDown == 0) {
