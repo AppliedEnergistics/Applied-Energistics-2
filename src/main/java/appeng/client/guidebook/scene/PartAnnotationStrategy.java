@@ -1,24 +1,26 @@
 package appeng.client.guidebook.scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
+
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+
 import appeng.api.parts.IPartHost;
 import appeng.client.guidebook.color.SymbolicColor;
-import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
 import appeng.client.guidebook.scene.annotation.SceneAnnotation;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.parts.BusCollisionHelper;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PartAnnotationStrategy implements ImplicitAnnotationStrategy {
     @Override
-    public @Nullable SceneAnnotation getAnnotation(GuidebookLevel level, BlockState blockState, BlockHitResult blockHitResult) {
+    public @Nullable SceneAnnotation getAnnotation(GuidebookLevel level, BlockState blockState,
+            BlockHitResult blockHitResult) {
         var pos = blockHitResult.getBlockPos();
         var be = level.getBlockEntity(pos);
         if (!(be instanceof IPartHost partHost)) {
@@ -54,8 +56,7 @@ public class PartAnnotationStrategy implements ImplicitAnnotationStrategy {
                 var annotation = new InWorldBoxAnnotation(
                         new Vector3f(pos.getX() + (float) minX, pos.getY() + (float) minY, pos.getZ() + (float) minZ),
                         new Vector3f(pos.getX() + (float) maxX, pos.getY() + (float) maxY, pos.getZ() + (float) maxZ),
-                        SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT
-                );
+                        SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT);
                 annotation.setTooltipContent(part.getPartItem().asItem().getDescription());
                 return annotation;
             }

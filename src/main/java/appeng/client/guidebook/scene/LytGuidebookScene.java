@@ -1,5 +1,17 @@
 package appeng.client.guidebook.scene;
 
+import java.util.Optional;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.HitResult;
+
 import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytPoint;
@@ -13,15 +25,6 @@ import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
 import appeng.client.guidebook.scene.annotation.SceneAnnotation;
 import appeng.client.guidebook.screen.GuideScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-
-import java.util.Optional;
 
 /**
  * Shows a pseudo-in-world scene within the guidebook.

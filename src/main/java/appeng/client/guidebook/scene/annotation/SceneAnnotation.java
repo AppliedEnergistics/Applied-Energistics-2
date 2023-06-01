@@ -1,11 +1,13 @@
 package appeng.client.guidebook.scene.annotation;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.network.chat.Component;
+
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.interaction.ContentTooltip;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.TextTooltip;
-import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * An annotation to show additional information to the user about content in a

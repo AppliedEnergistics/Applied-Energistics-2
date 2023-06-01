@@ -1,12 +1,13 @@
 package appeng.client.guidebook.document.flow;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.document.LytErrorSink;
-import appeng.libs.unist.UnistNode;
+import java.util.Optional;
+
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 
-import java.util.Optional;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.document.LytErrorSink;
+import appeng.libs.unist.UnistNode;
 
 public interface LytFlowParent extends LytErrorSink {
     void append(LytFlowContent child);
