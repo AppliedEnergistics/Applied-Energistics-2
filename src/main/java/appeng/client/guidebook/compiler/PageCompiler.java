@@ -305,23 +305,6 @@ public final class PageCompiler {
         return table;
     }
 
-    /**
-     * Converts formatted Minecraft text into our flow content.
-     */
-    public void compileComponentToFlow(FormattedText formattedText, LytFlowParent layoutParent) {
-        formattedText.visit((style, text) -> {
-            if (style.isEmpty()) {
-                layoutParent.appendText(text);
-            } else {
-                var span = new LytFlowSpan();
-                // TODO: Convert style
-                span.appendText(text);
-                layoutParent.append(span);
-            }
-            return Optional.empty();
-        }, Style.EMPTY);
-    }
-
     public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {
         compileFlowContext(markdownParent.children(), layoutParent);
     }

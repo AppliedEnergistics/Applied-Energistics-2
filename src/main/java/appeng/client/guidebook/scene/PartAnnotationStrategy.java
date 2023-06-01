@@ -2,6 +2,7 @@ package appeng.client.guidebook.scene;
 
 import appeng.api.parts.IPartHost;
 import appeng.client.guidebook.color.SymbolicColor;
+import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
 import appeng.client.guidebook.scene.annotation.SceneAnnotation;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
@@ -50,11 +51,13 @@ public class PartAnnotationStrategy implements ImplicitAnnotationStrategy {
                     maxY = Math.max(maxY, box.maxY);
                     maxZ = Math.max(maxZ, box.maxZ);
                 }
-                return new InWorldBoxAnnotation(
+                var annotation = new InWorldBoxAnnotation(
                         new Vector3f(pos.getX() + (float) minX, pos.getY() + (float) minY, pos.getZ() + (float) minZ),
                         new Vector3f(pos.getX() + (float) maxX, pos.getY() + (float) maxY, pos.getZ() + (float) maxZ),
                         SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT
                 );
+                annotation.setTooltipContent(part.getPartItem().asItem().getDescription());
+                return annotation;
             }
         }
         return null;

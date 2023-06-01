@@ -5,10 +5,8 @@ import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytPoint;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
-import appeng.client.guidebook.document.interaction.ContentTooltip;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
-import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.extensions.ExtensionCollection;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
@@ -130,16 +128,16 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
         SceneAnnotation annotation;
         if (hoveredAnnotation != null && transientHoveredAnnotation) {
             scene.removeAnnotation(hoveredAnnotation);
-            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasContent);
+            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasTooltip);
             scene.addAnnotation(hoveredAnnotation);
         } else {
-            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasContent);
+            annotation = scene.pickAnnotation(docPoint, bounds, SceneAnnotation::hasTooltip);
         }
 
         // Prioritize picking annotation boxes over blocks
-        if (annotation != null && annotation.getContent() != null) {
+        if (annotation != null && annotation.getTooltip() != null) {
             setHoveredAnnotation(annotation);
-            return Optional.of(new ContentTooltip(annotation.getContent()));
+            return Optional.of(annotation.getTooltip());
         }
 
         var hitResult = scene.pickBlock(docPoint, bounds);
@@ -156,12 +154,15 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
             if (annotation == null) {
                 annotation = InWorldBoxAnnotation.forBlock(hitResult.getBlockPos(),
                         SymbolicColor.IN_WORLD_BLOCK_HIGHLIGHT);
+                annotation.setTooltipContent(Component.translatable(blockState.getBlock().getDescriptionId()));
             }
-
             setTransientHoveredAnnotation(annotation);
 
-            var text = Component.translatable(blockState.getBlock().getDescriptionId());
-            return Optional.of(new TextTooltip(text));
+            if (annotation.getTooltip() != null) {
+                return Optional.of(annotation.getTooltip());
+            } else {
+                return Optional.empty();
+            }
         }
 
         setHoveredAnnotation(null);

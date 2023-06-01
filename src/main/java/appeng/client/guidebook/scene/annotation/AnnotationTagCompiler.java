@@ -33,7 +33,7 @@ public abstract class AnnotationTagCompiler implements SceneElementTagCompiler {
                 block.setMarginBottom(0);
             }
 
-            annotation.setContent(contentBox);
+            annotation.setTooltipContent(contentBox);
         }
 
         scene.addAnnotation(annotation);
