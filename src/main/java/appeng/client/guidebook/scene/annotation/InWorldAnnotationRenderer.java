@@ -59,6 +59,20 @@ public final class InWorldAnnotationRenderer {
                         color.toArgb32(),
                         boxAnnotation.thickness(),
                         sprite);
+            } else if (annotation instanceof InWorldLineAnnotation lineAnnotation) {
+                var color = MutableColor.of(lineAnnotation.color());
+                color.darker(50).setAlpha(color.alpha() * 0.5f);
+                if (lineAnnotation.isHovered()) {
+                    color.lighter(50);
+                }
+                strut(occludedConsumer,
+                        lineAnnotation.min(),
+                        lineAnnotation.max(),
+                        color.toArgb32(),
+                        lineAnnotation.thickness(),
+                        true,
+                        true,
+                        sprite);
             }
         }
         buffers.endBatch(OCCLUDED);
@@ -75,6 +89,19 @@ public final class InWorldAnnotationRenderer {
                         boxAnnotation.max(),
                         color.toArgb32(),
                         boxAnnotation.thickness(),
+                        sprite);
+            } else if (annotation instanceof InWorldLineAnnotation lineAnnotation) {
+                var color = MutableColor.of(lineAnnotation.color());
+                if (lineAnnotation.isHovered()) {
+                    color.lighter(50);
+                }
+                strut(consumer,
+                        lineAnnotation.min(),
+                        lineAnnotation.max(),
+                        color.toArgb32(),
+                        lineAnnotation.thickness(),
+                        true,
+                        true,
                         sprite);
             }
         }
