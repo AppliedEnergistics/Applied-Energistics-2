@@ -7,6 +7,65 @@ navigation:
 
 # Channels
 
+<GameScene zoom="8">
+  <ImportStructure src="../assets/assemblies/channel_demonstration_1.snbt" />
+
+  <BoxAnnotation color="#33ff33" x1="1" x2="2.4" y1=".4" y2=".4" z1=".7" z2=".7">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="1" x2="2.4" y1=".6" y2=".6" z1=".7" z2=".7">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="1" x2="2.6" y1=".4" y2=".4" z1=".6" z2=".6">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".6" y2=".6" z1=".7" z2="1.5">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".4" y2=".4" z1=".7" z2="1.5">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".6" z1=".6" z2="1.5">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".4" y2=".4" z1=".6" z2="1.5">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#33ff33" x1="2.1" x2="2.4" y1=".6" y2=".6" z1="1.5" z2="1.5">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.9" y1=".4" y2=".4" z1="1.5" z2="1.5">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".57" y2=".9" z1="1.5" z2="1.5">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".1" y2=".43" z1="1.5" z2="1.5">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#33ff33" x1="1" x2="3.5" y1=".6" y2=".6" z1=".4" z2=".4">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="1" x2="3.5" y1=".4" y2=".4" z1=".4" z2=".4">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".57" y2=".9" z1=".4" z2=".4">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".1" y2=".43" z1=".4" z2=".4">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#33ff33" x1="1" x2="1.5" y1=".6" y2=".6" z1=".3" z2=".3">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="1" x2="1.5" y1=".4" y2=".4" z1=".3" z2=".3">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".57" y2=".9" z1=".3" z2=".3">
+  </BoxAnnotation>
+  <BoxAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".1" y2=".43" z1=".3" z2=".3">
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#ff3333" x1="3.5" x2="5.5" y1=".5" y2=".5" z1=".5" z2=".5">
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="15" pitch="30" />
+</GameScene>
+
 Applied Energistics 2's [ME Networks](me-network-connections.md) require
 Channels to support [devices](../ae2-mechanics/devices.md) which use networked storage, or other network
 services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support

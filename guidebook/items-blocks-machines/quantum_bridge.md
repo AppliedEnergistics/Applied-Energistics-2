@@ -24,6 +24,11 @@ acting like a wireless [dense cable](cables.md#dense-cable).
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/quantum_bridge_internal_structure_2.snbt" />
+
+  <BoxAnnotation color="#33dd33" x1="1" x2="6" y1="1" y2="2" z1="1" z2="3">
+        An imaginary cable between the two endpoints
+  </BoxAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 

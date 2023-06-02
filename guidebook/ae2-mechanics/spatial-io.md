@@ -83,7 +83,6 @@ the volume you want to define. They can be in almost any configuration, as long 
   </BoxAnnotation>
 
 <BoxAnnotation color="#3333ff" x1="5" x2="0" y1="5" y2="0" z1="0" z2="5">
-        The volume the pylons need to be inside
   </BoxAnnotation>
 
 <IsometricCamera yaw="195" pitch="30" />

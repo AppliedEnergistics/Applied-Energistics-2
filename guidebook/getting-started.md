@@ -12,7 +12,7 @@ navigation:
 
 ## Getting The Initial Materials)
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000">
   <ImportStructure src="assets/assemblies/meteor_interior.snbt" />
 </GameScene>
 
