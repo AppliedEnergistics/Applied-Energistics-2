@@ -10,73 +10,44 @@ navigation:
 <GameScene zoom="8">
   <ImportStructure src="../assets/assemblies/channel_demonstration_1.snbt" />
 
-  <LineAnnotation color="#33ff33" x1="1" x2="2.4" y1=".4" y2=".4" z1=".7" z2=".7">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="1" x2="2.4" y1=".6" y2=".6" z1=".7" z2=".7">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".4" y2=".4" z1=".6" z2=".6">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
+  <LineAnnotation color="#33ff33" x1="1" x2="2.4" y1=".4" y2=".4" z1=".7" z2=".7" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.4" y1=".6" y2=".6" z1=".7" z2=".7" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".4" y2=".4" z1=".6" z2=".6" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".6" y2=".6" z1=".7" z2="1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".4" y2=".4" z1=".7" z2="1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".6" z1=".6" z2="1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".4" y2=".4" z1=".6" z2="1.5" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" x1="2.1" x2="2.4" y1=".6" y2=".6" z1="1.5" z2="1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.9" y1=".4" y2=".4" z1="1.5" z2="1.5" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".9" z1="1.5" z2="1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".1" y2=".4" z1="1.5" z2="1.5" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" x1="1" x2="3.5" y1=".6" y2=".6" z1=".4" z2=".4" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="1" x2="3.5" y1=".4" y2=".4" z1=".4" z2=".4" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".6" y2=".9" z1=".4" z2=".4" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".1" y2=".4" z1=".4" z2=".4" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" x1="1" x2="1.5" y1=".6" y2=".6" z1=".3" z2=".3" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="1" x2="1.5" y1=".4" y2=".4" z1=".3" z2=".3" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".6" y2=".9" z1=".3" z2=".3" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".1" y2=".4" z1=".3" z2=".3" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#ff3333" x1="3.5" x2="5.5" y1=".5" y2=".5" z1=".5" z2=".5" alwaysOnTop={true}>
+  All 8 channels in the cable have been used, so the Drive does not get one.  
   </LineAnnotation>
 
-  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".6" y2=".6" z1=".7" z2="1.5">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".4" y2=".4" z1=".7" z2="1.5">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".6" z1=".6" z2="1.5">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".4" y2=".4" z1=".6" z2="1.5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#33ff33" x1="2.1" x2="2.4" y1=".6" y2=".6" z1="1.5" z2="1.5">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="2.6" x2="2.9" y1=".4" y2=".4" z1="1.5" z2="1.5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".9" z1="1.5" z2="1.5">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".1" y2=".4" z1="1.5" z2="1.5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#33ff33" x1="1" x2="3.5" y1=".6" y2=".6" z1=".4" z2=".4">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="1" x2="3.5" y1=".4" y2=".4" z1=".4" z2=".4">
-  </LineAnnotation>
-
-  <LineAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".6" y2=".9" z1=".4" z2=".4">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".1" y2=".4" z1=".4" z2=".4">
-  </LineAnnotation>
-
-  <LineAnnotation color="#33ff33" x1="1" x2="1.5" y1=".6" y2=".6" z1=".3" z2=".3">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="1" x2="1.5" y1=".4" y2=".4" z1=".3" z2=".3">
-  </LineAnnotation>
-
-  <LineAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".6" y2=".9" z1=".3" z2=".3">
-  </LineAnnotation>
-  <LineAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".1" y2=".4" z1=".3" z2=".3">
-  </LineAnnotation>
-
-  <LineAnnotation color="#ff3333" x1="3.5" x2="5.5" y1=".5" y2=".5" z1=".5" z2=".5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#663333" x1="1" x2="1.25" y1=".5" y2=".5" z1=".5" z2=".5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#663333" x1="1.5" x2="1.75" y1=".5" y2=".5" z1=".5" z2=".5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#663333" x1="2" x2="2.25" y1=".5" y2=".5" z1=".5" z2=".5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#663333" x1="2.5" x2="2.75" y1=".5" y2=".5" z1=".5" z2=".5">
-  </LineAnnotation>
-
-  <LineAnnotation color="#663333" x1="3" x2="3.25" y1=".5" y2=".5" z1=".5" z2=".5">
-  </LineAnnotation>
+  <LineAnnotation color="#993333" x1="1" x2="1.25" y1=".5" y2=".5" z1=".5" z2=".5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" x1="1.5" x2="1.75" y1=".5" y2=".5" z1=".5" z2=".5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" x1="2" x2="2.25" y1=".5" y2=".5" z1=".5" z2=".5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" x1="2.5" x2="2.75" y1=".5" y2=".5" z1=".5" z2=".5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" x1="3" x2="3.25" y1=".5" y2=".5" z1=".5" z2=".5" alwaysOnTop={true}/>
 
   <DiamondAnnotation x="3.6" y="0.5" z="0.5" color="#ff0000">
         All 8 channels in the cable have been used, so the Drive does not get one.
@@ -114,13 +85,13 @@ Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does 
 
 A Network without a <ItemLink id="controller" />
 is considered to be Ad-Hoc, and can support up to 8 channel using devices.
-Once you exceed 8 devices the networks channel using devices will shutdown,
+Once you exceed 8 devices the network's channel using devices will shutdown,
 you can either remove devices, or add a <ItemLink id="controller" />.
 
 Unlike with controllered networks, [smart cables](../items-blocks-machines/cables.md) on ad-hoc networks will show the number
 of channels in use network-wide instead of the number of channels flowing through that specific cable.
 
-While using [Ad-Hoc](ad-hoc-networks.md) networks each device will
+While using ad-hoc networks each device will
 use 1 channel network wide, this is very different from how <ItemLink id="controller" /> allocate channels based on
 shortest route.
 
