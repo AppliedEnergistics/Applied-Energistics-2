@@ -182,8 +182,8 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
 
     private int buttonDown;
     private Vector2i pointDown;
-    private float initialRotX;
     private float initialRotY;
+    private float initialRotX;
     private float initialTransX;
     private float initialTransY;
 
@@ -214,8 +214,8 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
             var dx = x - pointDown.x;
             var dy = y - pointDown.y;
             if (buttonDown == 0) {
-                scene.getCameraSettings().setRotationX(initialRotX + dy);
                 scene.getCameraSettings().setRotationY(initialRotY + dx);
+                scene.getCameraSettings().setRotationX(initialRotX + dy);
             } else if (buttonDown == 1) {
                 scene.getCameraSettings().setOffsetX(initialTransX + dx);
                 scene.getCameraSettings().setOffsetY(initialTransY - dy);

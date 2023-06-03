@@ -249,11 +249,29 @@ public class GuidebookScene {
         return level.getFilledBlocks();
     }
 
-    public Vector3fc getCenter() {
-        var result = getBounds(cameraSettings.getViewMatrix());
+    public Vector3fc getWorldCenter() {
+        // This is doing more work than needed since touching blocks create unneeded corners
+        var tmpPos = new Vector3f();
+        var min = new Vector3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+        var max = new Vector3f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+        level.getFilledBlocks().forEach(pos -> {
+            var tmp = new Vector3f();
+            for (var xCorner = 0; xCorner <= 1; xCorner++) {
+                for (var yCorner = 0; yCorner <= 1; yCorner++) {
+                    for (var zCorner = 0; zCorner <= 1; zCorner++) {
+                        tmp.set(pos.getX(), pos.getY(), pos.getZ());
+                        min.min(tmp);
+                        max.max(tmp);
 
-        var avg = new Vector3f(result.min);
-        avg.add(result.max);
+                        tmp.add(1, 1, 1);
+                        min.min(tmp);
+                        max.max(tmp);
+                    }
+                }
+            }
+        });
+        var avg = new Vector3f(min);
+        avg.add(max);
         avg.div(2);
         return avg;
     }

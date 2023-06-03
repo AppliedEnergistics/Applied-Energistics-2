@@ -1,7 +1,6 @@
 package appeng.client.guidebook.scene;
 
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.joml.Vector4f;
@@ -12,16 +11,14 @@ public class CameraSettings {
 
     private float zoom = 1;
 
-    private final Vector3f center = new Vector3f();
-
     private final Vector4f viewport = new Vector4f();
 
-    private final Matrix4f baseViewMatrix = new Matrix4f();
+    private Mode mode = Mode.ORTOGRAPHIC;
 
-    private final Vector3f rotationCenter = new Vector3f();
     private float rotationX;
     private float rotationY;
     private float rotationZ;
+    private final Vector3f rotationCenter = new Vector3f();
     private float offsetX;
     private float offsetY;
 
@@ -38,35 +35,24 @@ public class CameraSettings {
     }
 
     public void setPerspectivePreset(PerspectivePreset preset) {
-        baseViewMatrix.identity();
         switch (preset) {
             case ISOMETRIC_NORTH_EAST -> {
-                baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 30));
-                baseViewMatrix.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 225));
+                setIsometricYawPitchRoll(225, 30, 0);
             }
             case ISOMETRIC_NORTH_WEST -> {
-                baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 30));
-                baseViewMatrix.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 135));
+                setIsometricYawPitchRoll(135, 30, 0);
             }
             case UP -> {
-                baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 120));
-                baseViewMatrix.rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 45));
+                setIsometricYawPitchRoll(120, 0, 45);
             }
         }
     }
 
     public void setIsometricYawPitchRoll(float yawDeg, float pitchDeg, float rollDeg) {
-        baseViewMatrix.identity();
-
-        if (Math.abs(rollDeg) >= 0.1f) {
-            baseViewMatrix.rotate(new Quaternionf().rotationZ(Mth.DEG_TO_RAD * rollDeg));
-        }
-        if (Math.abs(pitchDeg) >= 0.1f) {
-            baseViewMatrix.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * pitchDeg));
-        }
-        if (Math.abs(yawDeg) >= 0.1f) {
-            baseViewMatrix.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * yawDeg));
-        }
+        mode = Mode.ORTOGRAPHIC;
+        rotationY = yawDeg;
+        rotationX = pitchDeg;
+        rotationZ = rollDeg;
     }
 
     public void setZoom(float zoom) {
@@ -82,16 +68,16 @@ public class CameraSettings {
 
         result.translate(offsetX, offsetY, 0);
 
-        var rotation = new Quaternionf().rotationYXZ(Mth.DEG_TO_RAD * rotationY, Mth.DEG_TO_RAD * rotationX,
-                Mth.DEG_TO_RAD * rotationZ);
-        result.rotateAround(rotation, rotationCenter.x, rotationCenter.y, rotationCenter.z);
-
         // 0.625f comes from the default block model json GUI transform
         result.scale(0.625f * 16 * zoom, 0.625f * 16 * zoom, 0.625f * 16 * zoom);
 
-        result.mul(baseViewMatrix);
-
-        result.translate(-center.x, -center.y, -center.z);
+        if (mode == Mode.ORTOGRAPHIC) {
+            result.translate(rotationCenter.x, rotationCenter.y, rotationCenter.z);
+            result.rotateZ(Mth.DEG_TO_RAD * rotationZ);
+            result.rotateX(Mth.DEG_TO_RAD * rotationX);
+            result.rotateY(Mth.DEG_TO_RAD * rotationY);
+            result.translate(-rotationCenter.x, -rotationCenter.y, -rotationCenter.z);
+        }
 
         return result;
     }
@@ -144,5 +130,10 @@ public class CameraSettings {
 
     public void setOffsetY(float offsetY) {
         this.offsetY = offsetY;
+    }
+
+    private enum Mode {
+        ORTOGRAPHIC,
+        PERSPECTIVE
     }
 }

@@ -47,7 +47,7 @@ public class SceneTagCompiler extends BlockTagCompiler implements Extension {
             }
         }
 
-        scene.getCameraSettings().setRotationCenter(scene.getCenter());
+        scene.getCameraSettings().setRotationCenter(scene.getWorldCenter());
 
         var lytScene = new LytGuidebookScene(compiler.getExtensions());
         lytScene.setScene(scene);
