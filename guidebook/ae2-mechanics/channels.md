@@ -10,58 +10,77 @@ navigation:
 <GameScene zoom="8">
   <ImportStructure src="../assets/assemblies/channel_demonstration_1.snbt" />
 
-  <BoxAnnotation color="#33ff33" x1="1" x2="2.4" y1=".4" y2=".4" z1=".7" z2=".7">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="1" x2="2.4" y1=".6" y2=".6" z1=".7" z2=".7">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="1" x2="2.6" y1=".4" y2=".4" z1=".6" z2=".6">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.4" y1=".4" y2=".4" z1=".7" z2=".7">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.4" y1=".6" y2=".6" z1=".7" z2=".7">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".4" y2=".4" z1=".6" z2=".6">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="2.6" y1=".6" y2=".6" z1=".6" z2=".6">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".6" y2=".6" z1=".7" z2="1.5">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".4" y2=".4" z1=".7" z2="1.5">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".6" z1=".6" z2="1.5">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".4" y2=".4" z1=".6" z2="1.5">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".6" y2=".6" z1=".7" z2="1.5">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".4" y2=".4" z1=".7" z2="1.5">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".6" z1=".6" z2="1.5">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".4" y2=".4" z1=".6" z2="1.5">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#33ff33" x1="2.1" x2="2.4" y1=".6" y2=".6" z1="1.5" z2="1.5">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.9" y1=".4" y2=".4" z1="1.5" z2="1.5">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.1" x2="2.4" y1=".6" y2=".6" z1="1.5" z2="1.5">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.9" y1=".4" y2=".4" z1="1.5" z2="1.5">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".57" y2=".9" z1="1.5" z2="1.5">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".1" y2=".43" z1="1.5" z2="1.5">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.6" x2="2.6" y1=".6" y2=".9" z1="1.5" z2="1.5">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="2.4" x2="2.4" y1=".1" y2=".4" z1="1.5" z2="1.5">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#33ff33" x1="1" x2="3.5" y1=".6" y2=".6" z1=".4" z2=".4">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="1" x2="3.5" y1=".4" y2=".4" z1=".4" z2=".4">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="3.5" y1=".6" y2=".6" z1=".4" z2=".4">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="3.5" y1=".4" y2=".4" z1=".4" z2=".4">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".57" y2=".9" z1=".4" z2=".4">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".1" y2=".43" z1=".4" z2=".4">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".6" y2=".9" z1=".4" z2=".4">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="3.5" x2="3.5" y1=".1" y2=".4" z1=".4" z2=".4">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#33ff33" x1="1" x2="1.5" y1=".6" y2=".6" z1=".3" z2=".3">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="1" x2="1.5" y1=".4" y2=".4" z1=".3" z2=".3">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="1.5" y1=".6" y2=".6" z1=".3" z2=".3">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="1" x2="1.5" y1=".4" y2=".4" z1=".3" z2=".3">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".57" y2=".9" z1=".3" z2=".3">
-  </BoxAnnotation>
-  <BoxAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".1" y2=".43" z1=".3" z2=".3">
-  </BoxAnnotation>
+  <LineAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".6" y2=".9" z1=".3" z2=".3">
+  </LineAnnotation>
+  <LineAnnotation color="#33ff33" x1="1.5" x2="1.5" y1=".1" y2=".4" z1=".3" z2=".3">
+  </LineAnnotation>
 
-  <BoxAnnotation color="#ff3333" x1="3.5" x2="5.5" y1=".5" y2=".5" z1=".5" z2=".5">
-  </BoxAnnotation>
+  <LineAnnotation color="#ff3333" x1="3.5" x2="5.5" y1=".5" y2=".5" z1=".5" z2=".5">
+  </LineAnnotation>
+
+  <LineAnnotation color="#663333" x1="1" x2="1.25" y1=".5" y2=".5" z1=".5" z2=".5">
+  </LineAnnotation>
+
+  <LineAnnotation color="#663333" x1="1.5" x2="1.75" y1=".5" y2=".5" z1=".5" z2=".5">
+  </LineAnnotation>
+
+  <LineAnnotation color="#663333" x1="2" x2="2.25" y1=".5" y2=".5" z1=".5" z2=".5">
+  </LineAnnotation>
+
+  <LineAnnotation color="#663333" x1="2.5" x2="2.75" y1=".5" y2=".5" z1=".5" z2=".5">
+  </LineAnnotation>
+
+  <LineAnnotation color="#663333" x1="3" x2="3.25" y1=".5" y2=".5" z1=".5" z2=".5">
+  </LineAnnotation>
+
+  <DiamondAnnotation x="3.6" y="0.5" z="0.5" color="#ff0000">
+        All 8 channels in the cable have been used, so the Drive does not get one.
+    </DiamondAnnotation>
 
   <IsometricCamera yaw="15" pitch="30" />
 </GameScene>
