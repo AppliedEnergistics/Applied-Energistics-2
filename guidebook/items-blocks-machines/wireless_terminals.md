@@ -20,7 +20,7 @@ item_ids:
 Wireless terminals are portable versions of the regular wired [terminals](terminals.md). They have the exact same UIs as their
 wired counterparts, except instead of slots for <ItemLink id="view_cell" />s, they have slots for [upgrade cards](upgrade_cards.md)
 
-In order to pair them with a network, insert the terminal in the top-right slot of a <ItemLink id="security_terminal" />
+In order to pair them with a network, insert the terminal in the top-right slot of a <ItemLink id="wireless_access_point" />
 connected to that network. (The slot with a picture of a wireless terminal on it and an arrow below it)
 
 They must be within range of a <ItemLink id="wireless_access_point" /> to function.

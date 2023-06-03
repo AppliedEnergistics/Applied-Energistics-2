@@ -30,7 +30,7 @@ There are 5 different presses used in the <ItemLink id="inscriber" />.
 ## Processor Presses
 
 The Silicon, Logic, Calculation, and Engineering presses are used in the production of [processors](processors.md).
-These 4 presses are obtained by breaking a <ItemLink id="mysterious_cube" /> in a [meteorite](./features/meteorites.md).
+These 4 presses are obtained by breaking a <ItemLink id="mysterious_cube" /> in a [meteorite](../ae2-mechanics/meteorites.md).
 They can also be duplicated in an <ItemLink id="inscriber" />.
 
 <Column>

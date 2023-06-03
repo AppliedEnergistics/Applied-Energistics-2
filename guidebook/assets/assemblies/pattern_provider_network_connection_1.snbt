@@ -1,0 +1,23 @@
+{
+    DataVersion: 3337,
+    size: [4, 2, 2],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:drive{facing:north,spin:0}", nbt: {id: "ae2:drive", inv: {item0: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item1: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item2: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, priority: 0, proxy: {g: 332648L, p: 0}, visual: {cell0: {id: "ae2:item_storage_cell_4k", state: "empty"}, cell1: {id: "ae2:item_storage_cell_4k", state: "empty"}, cell2: {id: "ae2:item_storage_cell_4k", state: "empty"}, online: 1b}}},
+        {pos: [0, 0, 1], state: "minecraft:barrel{facing:east,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [1, 0, 0], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 332648L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:inscriber{facing:north,spin:0,waterlogged:false}", nbt: {auto_export: "NO", id: "ae2:inscriber", inscriber_separate_sides: "NO", internalCurrentPower: 0.0d, inv: {item0: {}, item1: {}, item2: {}, item3: {}}, proxy: {g: 332648L, p: 0}, visual: {smash: 0b}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsSouth: 6, channelsWest: 6, connections: ["south", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {fuzzy_mode: "IGNORE_ALL", gn: {g: 332648L, p: 0}, id: "ae2:import_bus", redstone_controlled: "IGNORE", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [3, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 6, connections: ["north"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", south: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 332648L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 6, channelsSouth: 6, connections: ["down", "south"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {filter_type: "ALL", gn: {g: 332648L, p: 0}, id: "ae2:crafting_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [0, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 6, connections: ["north"], missingChannel: 0b, powered: 1b}}, down: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 332648L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:drive{facing:north,spin:0}",
+        "minecraft:barrel{facing:east,open:false}",
+        "ae2:pattern_provider{push_direction:all}",
+        "ae2:inscriber{facing:north,spin:0,waterlogged:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:cable_bus{light_level:9,waterlogged:false}"
+    ]
+}

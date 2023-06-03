@@ -13,6 +13,11 @@ item_ids:
 
 # Terminals
 
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/terminals.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
 While <ItemLink id="pattern_provider" />s, <ItemLink id="import_bus" />ses, <ItemLink id="storage_bus" />ses, and the et cetera
 are the primary method by which an AE2 network interacts with the world, Terminals are the primary method by which an AE2
 network interacts with *you*. There are several variants with differing functions.
@@ -24,6 +29,11 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 <a name="terminal-ui"></a>
 
 # Terminal
+
+<GameScene zoom="6">
+  <ImportStructure src="../assets/blocks/terminal.snbt" />
+  <IsometricCamera yaw="180" />
+</GameScene>
 
 Your basic terminal, allowing you to view and access the contents of your [network's storage](../ae2-mechanics/import-export-storage.md)
 and request things from your [autocrafting](../ae2-mechanics/autocrafting.md) setup.
@@ -64,6 +74,11 @@ UI, allowing you to see the progress of your autocrafts and what each [crafting 
 
 # Crafting Terminal
 
+<GameScene zoom="6">
+  <ImportStructure src="../assets/blocks/crafting_terminal.snbt" />
+  <IsometricCamera yaw="180" />
+</GameScene>
+
 The Crafting Terminal is similar to a regular terminal, with all the same settings and sections, but with an added crafting grid that will be automatically
 refilled from [network storage](../ae2-mechanics/import-export-storage.md). Be careful when shift-clicking the output!
 
@@ -82,6 +97,11 @@ There are 2 additional buttons, to empty the crafting grid into network storage 
 <a name="pattern-encoding-terminal-ui"></a>
 
 # Pattern Encoding Terminal
+
+<GameScene zoom="6">
+  <ImportStructure src="../assets/blocks/pattern_encoding_terminal.snbt" />
+  <IsometricCamera yaw="180" />
+</GameScene>
 
 The Pattern Encoding Terminal is similar to a regular terminal, with all the same settings and sections, but with an added
 [pattern](patterns.md) encoding interface. It looks similar to a crafting terminal's UI but this crafting grid doesn't actually
@@ -135,6 +155,11 @@ The central UI changes depending on the type of pattern to be encoded:
 <a name="pattern-access-terminal-ui"></a>
 
 # Pattern Access Terminal
+
+<GameScene zoom="6">
+  <ImportStructure src="../assets/blocks/pattern_access_terminal.snbt" />
+  <IsometricCamera yaw="180" />
+</GameScene>
 
 The Pattern Access Terminal serves to solve a specific issue: in a dense tower of <ItemLink id="pattern_provider" />s
 and <ItemLink id="molecular_assembler" />s, you can't physically access the providers to insert new patterns. Additionally,

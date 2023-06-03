@@ -10,7 +10,9 @@ item_ids:
 
 # The Formation Plane
 
-![A picture of a formation plane.](../assets/blocks/formation_plane.png)
+<GameScene zoom="8">
+  <ImportStructure src="../assets/blocks/formation_plane.snbt" />
+</GameScene>
 
 The Formation Plane places blocks and drops items. It works similarly to an insert-only <ItemLink id="storage_bus" />,
 placing/dropping when things are "stored" in it by [devices](../ae2-mechanics/devices.md) inserting into [network storage](../ae2-mechanics/import-export-storage.md),
@@ -18,6 +20,7 @@ like <ItemLink id="import_bus" />ses and <ItemLink id="interface" />s.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/formation_plane_demonstration.snbt" />
+  <IsometricCamera yaw="255" pitch="30" />
 </GameScene>
 
 This [device](../ae2-mechanics/devices.md) makes use of the mechanics used by storage busses in things like [pipe subnets](../example-setups/pipe-subnet.md),

@@ -15,6 +15,7 @@ kinds of blocks.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/facades_1.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 They can cover all sides of a cable, but will let [subparts](../ae2-mechanics/cable-subparts.md) and cable connections
@@ -22,12 +23,14 @@ protrude though.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/facades_2.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 Be clever with them to improve your base aesthetic or make blocks with different textures on each side.
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/facades_3.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 ## Recipe

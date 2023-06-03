@@ -19,7 +19,10 @@ then pushes the result to adjacent inventories.
 This assembler has a crafting pattern that specifies the 1 oak log = 4 oak planks recipe. When oak logs are fed into the upper hopper,
 the assembler crafts and spits oak planks into the lower hopper.
 
-![Standalone Assembler](../assets/assemblies/standalone_assembler.png)
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/standalone_assembler.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 ## The Main Use Of The Molecular Assembler
 
@@ -28,7 +31,10 @@ and will send information about the relevant pattern along with the ingredients 
 crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider
 is all that is needed to automate crafting patterns.
 
-![Assembler Tower](../assets/assemblies/assembler_tower.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/assembler_tower.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 ## Upgrades
 

@@ -6,7 +6,36 @@ navigation:
 
 # Subnetworks
 
-![A few subnetworks](../assets/assemblies/subnetworks.png)
+<GameScene zoom="4">
+<ImportStructure src="../assets/assemblies/subnet_demonstration.snbt" />
+
+<DiamondAnnotation pos="6.5 2.5 0.5" color="#00ff00">
+        Item Pipe Subnet
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="5.5 2.5 0.5" color="#00ff00">
+        Fluid Pipe Subnet
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="4.5 2.5 0.5" color="#00ff00">
+        Filtered Annihilation Plane
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="3.5 2.5 0.5" color="#00ff00">
+        Formation Plane Subnet
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="2.5 2.5 0.5" color="#00ff00">
+        Subnet using the Interface-Storage Bus interaction to act as a local sub-storage that the main
+network can access
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="1.5 1.5 0.5" color="#00ff00">
+        Another item pipe subnet, to return the charged items to the Pattern Provider
+    </DiamondAnnotation>
+
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 "Subnetwork" is a rather loosely-defined term, but one might say that a subnetwork is any network that supports your
 main network or does some small task. They are typically small enough to not require controllers. Their main 2 uses tend to be:

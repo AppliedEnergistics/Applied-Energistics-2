@@ -10,7 +10,11 @@ item_ids:
 
 # Quartz Fixtures
 
-![Quartz Fixtures](../assets/assemblies/quartz_fixtures.png)
+<Row>
+<BlockImage id="quartz_fixture" scale="8" />
+
+<BlockImage id="light_detector" scale="8" />
+</Row>
 
 The charged quartz fixture is a little greeble that emits light.
 

@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Items, Blocks, and Machines
-  position: 30
+  position: 40
 ---
 
 # Items, Blocks, and Machines

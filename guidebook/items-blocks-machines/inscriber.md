@@ -57,7 +57,10 @@ D. **Output** pulled from via the left, right, front, and rear sides of the insc
 
 As an example, the sidedness and rotateability mean you can semi-automate inscribers like so:
 
-![Press and Dust Automation](../assets/assemblies/inscriber_hopper_1.png) ![Final Processor Assembly Automation](../assets/assemblies/inscriber_hopper_2.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/inscriber_hopper_automation.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 Or just pipe into and out of the inscriber when in non-sided mode.
 

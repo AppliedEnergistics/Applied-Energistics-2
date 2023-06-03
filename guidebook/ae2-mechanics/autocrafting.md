@@ -11,6 +11,7 @@ navigation:
 
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/autocraft_setup_greebles.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 Autocrafting is one of the primary functions of AE2. Instead of manually having to craft the correct number of each sub-ingredient
@@ -89,7 +90,10 @@ if you have a machine that duplicates cobblestone.
 
 # The Crafting CPU
 
-![Crafting CPUs](../assets/assemblies/crafting_cpus.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/crafting_cpus.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 Crafting CPUs manage crafting requests/jobs. They store the intermediate ingredients while crafting jobs with multiple steps are
 being carried out, and affect how big jobs can be, and to some degree how fast they are completed. They are multiblocks, and
@@ -111,7 +115,15 @@ They can be set to handle requests from players, automation (export busses and i
 
 # Pattern Providers
 
-![Pattern Providers](../assets/assemblies/pattern_provider_variants.png)
+<Row>
+<BlockImage id="pattern_provider" scale="4" />
+
+<BlockImage id="pattern_provider" p:push_direction="up" scale="4" />
+
+<GameScene zoom="4">
+  <ImportStructure src="../assets/blocks/cable_pattern_provider.snbt" />
+</GameScene>
+</Row>
 
 <ItemLink id="pattern_provider" />s are the primary way in which your autocrafting system interacts with the world. They push the ingredients in
 their [patterns](../items-blocks-machines/patterns.md) to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often
@@ -169,9 +181,9 @@ unless the network does not have the ingredients for the higher priority pattern
 
 # Molecular Assemblers
 
-<BlockImage id="molecular_assembler" scale="8" />
+<BlockImage id="molecular_assembler" scale="4" />
 
-The molecular assembler takes items input into it and carries out the operation defined by an adjacent <ItemLink id="pattern_provider" />,
+The <ItemLink id="molecular_assembler" /> takes items input into it and carries out the operation defined by an adjacent <ItemLink id="pattern_provider" />,
 or the inserted <ItemLink id="crafting_pattern" />, <ItemLink id="smithing_table_pattern" />, or <ItemLink id="stonecutting_pattern" />,
 then pushes the result to adjacent inventories.
 
@@ -180,4 +192,7 @@ and will send information about the relevant pattern along with the ingredients 
 crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider
 is all that is needed to automate crafting patterns.
 
-![Assembler Tower](../assets/assemblies/assembler_tower.png)
+<GameScene zoom="4">
+<ImportStructure src="../assets/assemblies/assembler_tower.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>

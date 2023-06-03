@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Example Setups
-  position: 40
+  position: 30
 ---
 
 # Example Setups
