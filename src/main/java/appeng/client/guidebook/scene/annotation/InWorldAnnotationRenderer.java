@@ -59,6 +59,20 @@ public final class InWorldAnnotationRenderer {
                         color.toArgb32(),
                         boxAnnotation.thickness(),
                         sprite);
+            } else if (annotation instanceof InWorldLineAnnotation lineAnnotation) {
+                var color = MutableColor.of(lineAnnotation.color());
+                color.darker(50).setAlpha(color.alpha() * 0.5f);
+                if (lineAnnotation.isHovered()) {
+                    color.lighter(50);
+                }
+                strut(occludedConsumer,
+                        lineAnnotation.min(),
+                        lineAnnotation.max(),
+                        color.toArgb32(),
+                        lineAnnotation.thickness(),
+                        true,
+                        true,
+                        sprite);
             }
         }
         buffers.endBatch(OCCLUDED);
@@ -75,6 +89,19 @@ public final class InWorldAnnotationRenderer {
                         boxAnnotation.max(),
                         color.toArgb32(),
                         boxAnnotation.thickness(),
+                        sprite);
+            } else if (annotation instanceof InWorldLineAnnotation lineAnnotation) {
+                var color = MutableColor.of(lineAnnotation.color());
+                if (lineAnnotation.isHovered()) {
+                    color.lighter(50);
+                }
+                strut(consumer,
+                        lineAnnotation.min(),
+                        lineAnnotation.max(),
+                        color.toArgb32(),
+                        lineAnnotation.thickness(),
+                        true,
+                        true,
                         sprite);
             }
         }
@@ -142,15 +169,17 @@ public final class InWorldAnnotationRenderer {
     private static void strut(VertexConsumer consumer, Vector3f from, Vector3f to, int color, float thickness,
             boolean startCap, boolean endCap, TextureAtlasSprite sprite) {
         var norm = new Vector3f(to).sub(from).normalize();
-        Vector3f upNorm;
-        if (Math.abs(from.y - to.y) < 0.01f) {
-            upNorm = new Vector3f(0, 1, 0);
+        Vector3f prefUp;
+        if (Math.abs(from.x - to.x) < 0.01f && Math.abs(from.z - to.z) < 0.01f) {
+            prefUp = new Vector3f(1, 0, 0);
         } else {
-            upNorm = new Vector3f(1, 0, 0);
+            prefUp = new Vector3f(0, 1, 0);
         }
-        var rightNorm = new Vector3f(norm).cross(upNorm);
+
+        var rightNorm = new Vector3f(norm).cross(prefUp).normalize();
         var leftNorm = new Vector3f(rightNorm).negate();
-        var downNorm = new Vector3f(norm).negate();
+        var upNorm = new Vector3f(rightNorm).cross(norm).normalize();
+        var downNorm = new Vector3f(upNorm).negate();
 
         var up = new Vector3f(upNorm).mul(thickness * 0.5f);
         var right = new Vector3f(rightNorm).mul(thickness * 0.5f);
@@ -240,10 +269,10 @@ public final class InWorldAnnotationRenderer {
                 FastColor.ARGB32.color(255, (int) (shade * 255), (int) (shade * 255), (int) (shade * 255)),
                 color);
 
-        vertex(consumer, faceNormal, color, v1, sprite.getU0(), sprite.getV0());
-        vertex(consumer, faceNormal, color, v2, sprite.getV0(), sprite.getV1());
-        vertex(consumer, faceNormal, color, v3, sprite.getV1(), sprite.getV1());
-        vertex(consumer, faceNormal, color, v4, sprite.getV1(), sprite.getV0());
+        vertex(consumer, faceNormal, color, v1, sprite.getU0(), sprite.getV1());
+        vertex(consumer, faceNormal, color, v2, sprite.getU0(), sprite.getV0());
+        vertex(consumer, faceNormal, color, v3, sprite.getU1(), sprite.getV0());
+        vertex(consumer, faceNormal, color, v4, sprite.getU1(), sprite.getV1());
     }
 
     private static void vertex(VertexConsumer consumer,

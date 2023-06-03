@@ -14,10 +14,10 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 /**
  * Compiles a <code>&lt;AnnotationBox</code> tag into {@link InWorldBoxAnnotation}.
  */
-public class BoxAnnotationElementCompiler extends AnnotationTagCompiler {
+public class LineAnnotationElementCompiler extends AnnotationTagCompiler {
     @Override
     public Set<String> getTagNames() {
-        return Set.of("BoxAnnotation");
+        return Set.of("LineAnnotation");
     }
 
     @Override
@@ -45,11 +45,13 @@ public class BoxAnnotationElementCompiler extends AnnotationTagCompiler {
             z2 = tmp;
         }
         var color = MdxAttrs.getColor(compiler, errorSink, el, "color", ConstantColor.WHITE);
-        var thickness = MdxAttrs.getFloat(compiler, errorSink, el, "thickness", InWorldBoxAnnotation.DEFAULT_THICKNESS);
+
+        var thickness = MdxAttrs.getFloat(compiler, errorSink, el, "thickness",
+                InWorldLineAnnotation.DEFAULT_THICKNESS);
 
         var min = new Vector3f(x1, y1, z1);
         var max = new Vector3f(x2, y2, z2);
 
-        return new InWorldBoxAnnotation(min, max, color, thickness);
+        return new InWorldLineAnnotation(min, max, color, thickness);
     }
 }

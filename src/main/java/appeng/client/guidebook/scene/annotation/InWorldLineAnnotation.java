@@ -8,52 +8,49 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import net.minecraft.core.BlockPos;
-
 import appeng.client.guidebook.color.ColorValue;
 
-public final class InWorldBoxAnnotation extends InWorldAnnotation {
+public final class InWorldLineAnnotation extends InWorldAnnotation {
     public static final float DEFAULT_THICKNESS = 0.5f / 16f;
-    private final Vector3f minCorner;
-    private final Vector3f maxCorner;
+    private final Vector3f from;
+    private final Vector3f to;
     private final ColorValue color;
     private final float thickness;
 
-    public InWorldBoxAnnotation(Vector3f minCorner, Vector3f maxCorner, ColorValue color, float thickness) {
-        this.minCorner = minCorner;
-        this.maxCorner = maxCorner;
+    public InWorldLineAnnotation(Vector3f from, Vector3f to, ColorValue color, float thickness) {
+        this.from = from;
+        this.to = to;
         this.color = color;
         this.thickness = thickness;
     }
 
-    public InWorldBoxAnnotation(Vector3f minCorner, Vector3f maxCorner, ColorValue color) {
-        this(minCorner, maxCorner, color, DEFAULT_THICKNESS);
-    }
-
-    public static InWorldBoxAnnotation forBlock(BlockPos pos, ColorValue color) {
-        return new InWorldBoxAnnotation(
-                new Vector3f(pos.getX(), pos.getY(), pos.getZ()),
-                new Vector3f(pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1),
-                color);
+    public InWorldLineAnnotation(Vector3f from, Vector3f to, ColorValue color) {
+        this(from, to, color, DEFAULT_THICKNESS);
     }
 
     /**
      * Tests if the given ray intersects this highlighted box.
      */
     public OptionalDouble intersect(Vector3f rayOrigin, Vector3f rayDir) {
-        var minExtruded = new Vector3f(minCorner).sub(thickness, thickness, thickness);
-        var maxExtruded = new Vector3f(maxCorner).add(thickness, thickness, thickness);
-        var intersection = new Vector2f();
+        // Convert the ray to a line segment
+        var rayTo = new Vector3f(rayOrigin).add(rayDir);
 
-        if (Intersectionf.intersectRayAab(
-                rayOrigin,
-                rayDir,
-                minExtruded,
-                maxExtruded,
-                intersection)) {
-            return OptionalDouble.of(intersection.x);
+        var resultA = new Vector3f();
+        var resultB = new Vector3f();
+        var distance = Intersectionf.findClosestPointsLineSegments(
+                from.x, from.y, from.z,
+                to.x, to.y, to.z,
+
+                rayOrigin.x, rayOrigin.y, rayOrigin.z,
+                rayTo.x, rayTo.y, rayTo.z,
+                resultA, resultB);
+
+        if (distance > thickness * thickness / 4) {
+            return OptionalDouble.empty();
         }
-        return OptionalDouble.empty();
+
+        var distanceFromOrigin = resultB.sub(rayOrigin).lengthSquared() / rayDir.lengthSquared();
+        return OptionalDouble.of(distanceFromOrigin);
     }
 
     /**
@@ -70,9 +67,9 @@ public final class InWorldBoxAnnotation extends InWorldAnnotation {
         for (var xCorner = 0; xCorner <= 1; xCorner++) {
             for (var yCorner = 0; yCorner <= 1; yCorner++) {
                 for (var zCorner = 0; zCorner <= 1; zCorner++) {
-                    var x = xCorner == 0 ? (minCorner.x - thickness) : (maxCorner.x + thickness);
-                    var y = yCorner == 0 ? (minCorner.y - thickness) : (maxCorner.y + thickness);
-                    var z = zCorner == 0 ? (minCorner.z - thickness) : (maxCorner.z + thickness);
+                    var x = xCorner == 0 ? (from.x - thickness) : (to.x + thickness);
+                    var y = yCorner == 0 ? (from.y - thickness) : (to.y + thickness);
+                    var z = zCorner == 0 ? (from.z - thickness) : (to.z + thickness);
 
                     viewMatrix.transformPosition(
                             x + xCorner,
@@ -89,11 +86,11 @@ public final class InWorldBoxAnnotation extends InWorldAnnotation {
     }
 
     public Vector3f min() {
-        return minCorner;
+        return from;
     }
 
     public Vector3f max() {
-        return maxCorner;
+        return to;
     }
 
     public ColorValue color() {
