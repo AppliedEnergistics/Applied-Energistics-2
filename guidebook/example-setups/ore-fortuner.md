@@ -16,31 +16,31 @@ Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup wi
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
 
-  <BoxAnnotation color="#dddddd" x1="2.7" x2="3" y1="0" y2="1" z1="2" z2="3">
+  <BoxAnnotation color="#dddddd" min="2.7 0 2" max="3 1 3">
         (1) Import Bus: Has a few Acceleration Cards in it.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#dddddd" x1="0" x2="2" y1="0" y2="1" z1="2" z2="2.3">
+  <BoxAnnotation color="#dddddd" min="0 0 2" max="2 1 2.3">
         (2) Formation Planes: In their default configuration.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#dddddd" x1="0" x2="2" y1="0" y2="1" z1="0.7" z2="1">
+  <BoxAnnotation color="#dddddd" min="0 0 0.7" max="2 1 1">
         (3) Annihilation Planes: No GUI to configure, but enchanted with Fortune.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#dddddd" x1="2.7" x2="3" y1="0" y2="1" z1="0" z2="1">
+  <BoxAnnotation color="#dddddd" min="2.7 0 0" max="3 1 1">
         (4) Storage Bus: In its default configuration.
   </BoxAnnotation>
 
-<DiamondAnnotation x="3.5" y="0.5" z="2.5" color="#00ff00">
+<DiamondAnnotation pos="3.5 0.5 2.5" color="#00ff00">
         Input
     </DiamondAnnotation>
 
-<DiamondAnnotation x="3.5" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="3.5 0.5 0.5" color="#00ff00">
         Output
     </DiamondAnnotation>
 
-<DiamondAnnotation x="4" y="0.5" z="1.5" color="#00ff00">
+<DiamondAnnotation pos="4 0.5 1.5" color="#00ff00">
         To Main Network
     </DiamondAnnotation>
 

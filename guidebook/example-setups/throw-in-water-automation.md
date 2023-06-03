@@ -16,30 +16,30 @@ This setup is meant to be used in combination with [charger automation](charger-
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/throw_in_water.snbt" />
 
-<BoxAnnotation color="#dddddd" x1="2" x2="3" y1="0" y2="1" z1="1" z2="2">
+<BoxAnnotation color="#dddddd" min="2 0 1" max="3 1 2">
         (1) Pattern Provider: In its default configuration, with the relevant processing patterns.
 
         ![Fluix Pattern](../assets/diagrams/fluix_pattern_small.png) ![Flawed Budding Pattern](../assets/diagrams/flawed_budding_pattern_small.png)
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1.7" x2="2" y1="0" y2="1" z1="1" z2="2">
+<BoxAnnotation color="#dddddd" min="1.7 0 1" max="2 1 2">
         (2) Interface: In its default configuration.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="2" y1=".7" y2="1" z1="1" z2="2">
+<BoxAnnotation color="#dddddd" min="1 .7 1" max="2 1 2">
         (3) Formation Plane: Set to drop inputs as items.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="2" y1="2" y2="2.3" z1="1" z2="2">
+<BoxAnnotation color="#dddddd" min="1 2 1" max="2 2.3 2">
         (4) Annihilation Plane: No GUI to configure.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="2" x2="3" y1="1" y2="1.3" z1="1" z2="2">
+<BoxAnnotation color="#dddddd" min="2 1 1" max="3 1.3 2">
         (5) Storage Bus: Filtered to the outputs of the patterns
         <Row><ItemImage id="fluix_crystal" scale="2" /><BlockImage id="flawless_budding_quartz" scale="2" /></Row>
   </BoxAnnotation>
 
-<DiamondAnnotation x="3.9" y="0.5" z="1.5" color="#00ff00">
+<DiamondAnnotation pos="3.9 0.5 1.5" color="#00ff00">
         To Main Network
     </DiamondAnnotation>
 

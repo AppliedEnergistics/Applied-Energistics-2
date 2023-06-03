@@ -22,11 +22,11 @@ For example, this is 2 separate networks.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/2_networks_1.snbt" />
 
-  <BoxAnnotation color="#915dcd" x1="0" x2="1" y1="0" y2="2" z1="0" z2="2">
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="1 2 2">
         Network 1
   </BoxAnnotation>
 
-<BoxAnnotation color="#915dcd" x1="2" x2="3" y1="0" y2="2" z1="0" z2="2">
+<BoxAnnotation color="#915dcd" min="2 0 0" max="3 2 2">
         Network 2
   </BoxAnnotation>
 
@@ -39,11 +39,11 @@ without providing a network connection.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/2_networks_2.snbt" />
 
-  <BoxAnnotation color="#915dcd" x1="0" x2="1" y1="0" y2="2" z1="0" z2="2">
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="1 2 2">
         Network 1
   </BoxAnnotation>
 
-  <BoxAnnotation color="#915dcd" x1="1.3" x2="3" y1="0" y2="2" z1="0" z2="2">
+  <BoxAnnotation color="#915dcd" min="1.3 0 0" max="3 2 2">
         Network 2
   </BoxAnnotation>
 
@@ -56,7 +56,7 @@ a wireless [dense cable](../items-blocks-machines/cables.md#dense-cable), so bot
 <GameScene zoom="4">
   <ImportStructure src="../assets/assemblies/actually_1_network.snbt" />
 
-  <BoxAnnotation color="#915dcd" x1="0" x2="7" y1="0" y2="3" z1="0" z2="3">
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="7 3 3">
         All 1 network
   </BoxAnnotation>
 
@@ -72,7 +72,7 @@ the provider and inscriber.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/pattern_provider_network_connection_1.snbt" />
 
-  <BoxAnnotation color="#915dcd" x1="0" x2="4" y1="0" y2="2" z1="0" z2="2">
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="4 2 2">
         All 1 network
   </BoxAnnotation>
 
@@ -87,11 +87,11 @@ not pass channels through one side.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/pattern_provider_network_connection_2.snbt" />
 
-  <BoxAnnotation color="#915dcd" x1="0" x2="2" y1="0" y2="2" z1="0" z2="2">
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="2 2 2">
         Network 1
   </BoxAnnotation>
 
-  <BoxAnnotation color="#915dcd" x1="2" x2="4" y1="0" y2="2" z1="0" z2="2">
+  <BoxAnnotation color="#915dcd" min="2 0 0" max="4 2 2">
         Network 2
   </BoxAnnotation>
 
@@ -101,7 +101,7 @@ not pass channels through one side.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/pattern_provider_directional_connection.snbt" />
 
-  <BoxAnnotation color="#ee3333" x1="1" x2="1.3" y1=".3" y2=".7" z1=".3" z2=".7">
+  <BoxAnnotation color="#ee3333" min="1 .3 .3" max="1.3 .7 .7">
         Observe how the cable does not connect
   </BoxAnnotation>
 

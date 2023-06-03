@@ -17,20 +17,20 @@ There are generally two different methods of achieving this:
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/import_storage_pipe.snbt" />
 
-<BoxAnnotation color="#dddddd" x1="3.7" x2="4" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="3.7 0 0" max="4 1 1">
         (1) Import Bus: Can be filtered.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="1.3" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 1">
         (2) Storage Bus: Can be filtered. This (and other storage busses you want to be a destination)
         must be the only storage on the network.
   </BoxAnnotation>
 
-<DiamondAnnotation x="4.5" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="4.5 0.5 0.5" color="#00ff00">
         Source
     </DiamondAnnotation>
 
-<DiamondAnnotation x="0.5" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="0.5 0.5 0.5" color="#00ff00">
         Destination
     </DiamondAnnotation>
 
@@ -48,20 +48,20 @@ This setup also works with multiple import busses and multiple storage busses.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/storage_export_pipe.snbt" />
 
-<BoxAnnotation color="#dddddd" x1="3.7" x2="4" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="3.7 0 0" max="4 1 1">
         (1) Storage Bus: Can be filtered. This (and other storage busses you want to be a source)
         must be the only storage on the network.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="1.3" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 1">
         (2) Export Bus: Must be filtered.
   </BoxAnnotation>
 
-<DiamondAnnotation x="4.5" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="4.5 0.5 0.5" color="#00ff00">
         Source
     </DiamondAnnotation>
 
-<DiamondAnnotation x="0.5" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="0.5 0.5 0.5" color="#00ff00">
         Destination
     </DiamondAnnotation>
 
@@ -79,19 +79,19 @@ This setup also works with multiple storage busses and multiple export busses.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/import_export_pipe.snbt" />
 
-<BoxAnnotation color="#dd3333" x1="3.7" x2="4" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dd3333" min="3.7 0 0" max="4 1 1">
         Import Bus: Since the network has no storage, there is nowhere for it to import to.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dd3333" x1="1" x2="1.3" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dd3333" min="1 0 0" max="1.3 1 1">
         (2) Export Bus: Since the network has no storage, there is nothing for it to export.
   </BoxAnnotation>
 
-<DiamondAnnotation x="4.5" y="0.5" z="0.5" color="#ff0000">
+<DiamondAnnotation pos="4.5 0.5 0.5" color="#ff0000">
         Source
     </DiamondAnnotation>
 
-<DiamondAnnotation x="0.5" y="0.5" z="0.5" color="#ff0000">
+<DiamondAnnotation pos="0.5 0.5 0.5" color="#ff0000">
         Destination
     </DiamondAnnotation>
 
@@ -108,16 +108,16 @@ and the export bus can't export, so nothing happens.
 <GameScene zoom="6">
 <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
 
-<BoxAnnotation color="#dddddd" x1="1" x2="2" y1="1" y2="1.3" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 1 0" max="2 1.3 1">
         Interface: Since it is not configured to keep anything in stock, it tries to dump everything in its inventory slots
         into network storage.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="1.3" y1="1" y2="2" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 1 0" max="1.3 2 1">
         Storage Bus: "Network Storage" for the interface to dump into. Can be filtered.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="0" x2="1" y1="2" y2="2.3" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="0 2 0" max="1 2.3 1">
         Storage Bus: "Network Storage" for the interface to dump into. Can be filtered.
   </BoxAnnotation>
 

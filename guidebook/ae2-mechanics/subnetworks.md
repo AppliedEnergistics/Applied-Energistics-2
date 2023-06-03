@@ -9,28 +9,28 @@ navigation:
 <GameScene zoom="4">
 <ImportStructure src="../assets/assemblies/subnet_demonstration.snbt" />
 
-<DiamondAnnotation x="6.5" y="2.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="6.5 2.5 0.5" color="#00ff00">
         Item Pipe Subnet
     </DiamondAnnotation>
 
-<DiamondAnnotation x="5.5" y="2.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="5.5 2.5 0.5" color="#00ff00">
         Fluid Pipe Subnet
     </DiamondAnnotation>
 
-<DiamondAnnotation x="4.5" y="2.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="4.5 2.5 0.5" color="#00ff00">
         Filtered Annihilation Plane
     </DiamondAnnotation>
 
-<DiamondAnnotation x="3.5" y="2.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="3.5 2.5 0.5" color="#00ff00">
         Formation Plane Subnet
     </DiamondAnnotation>
 
-<DiamondAnnotation x="2.5" y="2.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="2.5 2.5 0.5" color="#00ff00">
         Subnet using the Interface-Storage Bus interaction to act as a local sub-storage that the main
 network can access
     </DiamondAnnotation>
 
-<DiamondAnnotation x="1.5" y="1.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="1.5 1.5 0.5" color="#00ff00">
         Another item pipe subnet, to return the charged items to the Pattern Provider
     </DiamondAnnotation>
 

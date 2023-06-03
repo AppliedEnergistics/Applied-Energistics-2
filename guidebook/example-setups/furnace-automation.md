@@ -20,26 +20,26 @@ Here's how you can do it with just 1 channel:
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
 
-<BoxAnnotation color="#dddddd" x1="1" x2="2" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 0 0" max="2 1 1">
         (1) Pattern Provider: The directional variant, via use of a certus quartz wrench, with the relevant processing patterns.
         ![Iron Pattern](../assets/diagrams/furnace_pattern_small.png)
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="2" y1="1" y2="1.3" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 1 0" max="2 1.3 1">
         (2) Interface: In its default configuration.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="1.3" y1="1" y2="2" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 1 0" max="1.3 2 1">
         (3) Storage Bus #1: Filtered to coal.
         <ItemImage id="minecraft:coal" scale="2" />
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="0" x2="1" y1="2" y2="2.3" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="0 2 0" max="1 2.3 1">
         (4) Storage Bus #2: IFiltered to blacklist coal, using an inverter card.
         <Row><ItemImage id="minecraft:coal" scale="2" /><ItemImage id="inverter_card" scale="2" /></Row>
   </BoxAnnotation>
 
-<DiamondAnnotation x="4" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="4 0.5 0.5" color="#00ff00">
         To Main Network
     </DiamondAnnotation>
 

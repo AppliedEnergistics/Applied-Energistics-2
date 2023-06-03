@@ -13,20 +13,20 @@ or other item pipe pushes the result back into the provider.
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/charger_automation.snbt" />
 
-<BoxAnnotation color="#dddddd" x1="1" x2="2" y1="0" y2="1" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 0 0" max="2 1 1">
         (1) Pattern Provider: In its default configuration, with the relevant processing patterns. Also provides the charger with power.
         ![Charger Pattern](../assets/diagrams/charger_pattern_small.png)
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="0" x2="1" y1="1" y2="1.3" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="0 1 0" max="1 1.3 1">
         (2) Import Bus: In its default configuration.
   </BoxAnnotation>
 
-<BoxAnnotation color="#dddddd" x1="1" x2="2" y1="1" y2="1.3" z1="0" z2="1">
+<BoxAnnotation color="#dddddd" min="1 1 0" max="2 1.3 1">
         (3) Storage Bus: In its default configuration.
   </BoxAnnotation>
 
-<DiamondAnnotation x="4" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="4 0.5 0.5" color="#00ff00">
         To Main Network
     </DiamondAnnotation>
 

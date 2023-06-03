@@ -10,7 +10,7 @@ navigation:
 <GameScene zoom="4" interactive="true">
   <ImportStructure src="../assets/assemblies/spatial_storage_1x1x1.snbt" />
 
-  <BoxAnnotation color="#33dd33" x1="1" x2="2" y1="1" y2="2" z1="1" z2="2">
+  <BoxAnnotation color="#33dd33" min="1 1 1" max="2 2 2">
         The volume to be moved
   </BoxAnnotation>
 
@@ -78,11 +78,11 @@ the volume you want to define. They can be in almost any configuration, as long 
 <GameScene zoom="4">
 <ImportStructure src="../assets/assemblies/spatial_storage_3x3x3_pylon_demonstration.snbt" />
 
-<BoxAnnotation color="#33dd33" x1="1" x2="4" y1="1" y2="4" z1="1" z2="4">
+<BoxAnnotation color="#33dd33" min="1 1 1" max="4 4 4">
         The volume to be moved
   </BoxAnnotation>
 
-<BoxAnnotation color="#3333ff" x1="5" x2="0" y1="5" y2="0" z1="0" z2="5">
+<BoxAnnotation color="#3333ff" min="5 5 0" max="0 0 5">
   </BoxAnnotation>
 
 <IsometricCamera yaw="195" pitch="30" />

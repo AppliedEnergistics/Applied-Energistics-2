@@ -23,30 +23,30 @@ Note that due to the directionality of the cluster, there must be a solid block 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/amethyst_farm.snbt" />
 
-  <BoxAnnotation color="#dddddd" x1="2.7" x2="3" y1="1" y2="2" z1="1" z2="2">
+  <BoxAnnotation color="#dddddd" min="2.7 1 1" max="3 2 2">
         (1) Annihilation Plane #1: No GUI to configure, but enchanted with Silk Touch.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#dddddd" x1="2" x2="2.3" y1="1" y2="2" z1="1" z2="2">
+  <BoxAnnotation color="#dddddd" min="2 1 1" max="2.3 2 2">
         (2) Formation Plane: Filtered to Amethyst Cluster.
         <ItemImage id="minecraft:amethyst_cluster" scale="2" />
   </BoxAnnotation>
 
-  <BoxAnnotation color="#dddddd" x1="1.3" x2="2" y1="0.7" y2="1" z1="1" z2="2">
+  <BoxAnnotation color="#dddddd" min="1.3 0.7 1" max="2 1 2">
         (3) Annihilation Plane #2: No GUI to configure, but can be enchanted with Fortune.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#dddddd" x1="1" x2="1.3" y1="0" y2="1" z1="1" z2="2">
+  <BoxAnnotation color="#dddddd" min="1 0 1" max="1.3 1 2">
         (4) Storage Bus #1: Filtered to Amethyst Shard.
         <ItemImage id="minecraft:amethyst_shard" scale="2" />
   </BoxAnnotation>
 
-  <BoxAnnotation color="#dddddd" x1="0" x2="1" y1="0" y2="1" z1=".7" z2="1">
+  <BoxAnnotation color="#dddddd" min="0 0 .7" max="1 1 1">
         (5) Storage Bus #2: Filtered to Amethyst Shard. Has priority set higher than your main storage.
         <ItemImage id="minecraft:amethyst_shard" scale="2" />
   </BoxAnnotation>
 
-<DiamondAnnotation x="0" y="0.5" z="0.5" color="#00ff00">
+<DiamondAnnotation pos="0 0.5 0.5" color="#00ff00">
         To Main Network
     </DiamondAnnotation>
 
