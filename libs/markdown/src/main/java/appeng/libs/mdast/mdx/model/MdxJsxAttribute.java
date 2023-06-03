@@ -27,8 +27,20 @@ public class MdxJsxAttribute extends MdAstNode implements MdxJsxAttributeNode {
         this.value = node;
     }
 
+    public boolean hasExpressionValue() {
+        return value instanceof MdxJsxAttributeValueExpression;
+    }
+
+    public boolean hasStringValue() {
+        return value instanceof String;
+    }
+
     public String getStringValue() {
         return (String) value;
+    }
+
+    public String getExpressionValue() {
+        return ((MdxJsxAttributeValueExpression) value).value;
     }
 
     public void setValue(String value) {

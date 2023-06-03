@@ -38,6 +38,22 @@ public final class InWorldAnnotationRenderer {
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false));
 
+    private static final RenderType ALWAYS_ON_TOP = RenderType.create(
+            "annotation_always_on_top",
+            DefaultVertexFormat.BLOCK,
+            VertexFormat.Mode.QUADS,
+            0x100000,
+            false,
+            false,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(RenderType.LIGHTMAP)
+                    .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_NO_CRUMBLING_SHADER)
+                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
+                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
+                    .createCompositeState(false));
+
     private InWorldAnnotationRenderer() {
     }
 
@@ -47,6 +63,10 @@ public final class InWorldAnnotationRenderer {
 
         var occludedConsumer = buffers.getBuffer(OCCLUDED);
         for (var annotation : annotations) {
+            if (annotation.isAlwaysOnTop()) {
+                continue; // Don't render occlusion for always-on-top annotations
+            }
+
             if (annotation instanceof InWorldBoxAnnotation boxAnnotation) {
                 var color = MutableColor.of(boxAnnotation.color());
                 color.darker(50).setAlpha(color.alpha() * 0.5f);
@@ -77,8 +97,11 @@ public final class InWorldAnnotationRenderer {
         }
         buffers.endBatch(OCCLUDED);
 
-        var consumer = buffers.getBuffer(RenderType.translucent());
+        var normalConsumer = buffers.getBuffer(RenderType.translucent());
+        var alwaysOnTopConsumer = buffers.getBuffer(ALWAYS_ON_TOP);
         for (var annotation : annotations) {
+            var consumer = annotation.isAlwaysOnTop() ? alwaysOnTopConsumer : normalConsumer;
+
             if (annotation instanceof InWorldBoxAnnotation boxAnnotation) {
                 var color = MutableColor.of(boxAnnotation.color());
                 if (boxAnnotation.isHovered()) {
@@ -106,6 +129,7 @@ public final class InWorldAnnotationRenderer {
             }
         }
         buffers.endBatch(RenderType.translucent());
+        buffers.endBatch(ALWAYS_ON_TOP);
         buffers.endBatch();
     }
 

@@ -13,6 +13,11 @@ import org.joml.Vector3f;
 public abstract class InWorldAnnotation extends SceneAnnotation {
 
     /**
+     * If enabled, the annotation cannot be occluded by objects that are already in the scene.
+     */
+    private boolean alwaysOnTop;
+
+    /**
      * Test intersection between a 3D ray and this in-world annotations shape.
      *
      * @return Absent if no intersection exists, otherwise a number between 0 and 1 indicating the distance from the ray
@@ -21,4 +26,12 @@ public abstract class InWorldAnnotation extends SceneAnnotation {
     public abstract OptionalDouble intersect(Vector3f rayOrigin, Vector3f rayDir);
 
     public abstract Pair<Vector2f, Vector2f> getScreenBounds(Matrix4f viewMatrix);
+
+    public boolean isAlwaysOnTop() {
+        return alwaysOnTop;
+    }
+
+    public void setAlwaysOnTop(boolean alwaysOnTop) {
+        this.alwaysOnTop = alwaysOnTop;
+    }
 }

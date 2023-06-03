@@ -44,7 +44,6 @@ public final class MdxAttrs {
 
         id = id.trim(); // Trim leading/trailing whitespace for easier use
 
-        ResourceLocation itemId;
         try {
             return compiler.resolveId(id);
         } catch (ResourceLocationException e) {
@@ -208,4 +207,24 @@ public final class MdxAttrs {
         return defaultColor;
     }
 
+    public static boolean getBoolean(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el, String name,
+            boolean defaultValue) {
+        var attribute = el.getAttribute(name);
+        if (attribute == null) {
+            return defaultValue;
+        }
+
+        if (attribute.hasExpressionValue()) {
+            var expressionValue = attribute.getExpressionValue();
+
+            if (expressionValue.equals("true")) {
+                return true;
+            } else if (expressionValue.equals("false")) {
+                return false;
+            }
+        }
+
+        errorSink.appendError(compiler, name + " should be {true} or {false}", el);
+        return defaultValue;
+    }
 }
