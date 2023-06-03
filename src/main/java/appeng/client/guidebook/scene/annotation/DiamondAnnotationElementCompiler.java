@@ -20,12 +20,8 @@ public class DiamondAnnotationElementCompiler extends AnnotationTagCompiler {
     @Override
     protected @Nullable SceneAnnotation createAnnotation(PageCompiler compiler, LytErrorSink errorSink,
             MdxJsxElementFields el) {
-        var x = MdxAttrs.getFloat(compiler, errorSink, el, "x", 0.0f);
-        var y = MdxAttrs.getFloat(compiler, errorSink, el, "y", 0.0f);
-        var z = MdxAttrs.getFloat(compiler, errorSink, el, "z", 0.0f);
+        var pos = MdxAttrs.getVector3(compiler, errorSink, el, "pos", new Vector3f());
         var color = MdxAttrs.getColor(compiler, errorSink, el, "color", ConstantColor.WHITE);
-
-        var pos = new Vector3f(x, y, z);
 
         return new DiamondAnnotation(pos, color);
     }
