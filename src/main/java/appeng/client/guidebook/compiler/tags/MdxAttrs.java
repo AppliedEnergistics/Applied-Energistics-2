@@ -3,7 +3,12 @@ package appeng.client.guidebook.compiler.tags;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.BlockPos;
@@ -100,6 +105,58 @@ public final class MdxAttrs {
             errorSink.appendError(compiler, "Malformed floating point value: '" + attrValue + "'", el);
             return defaultValue;
         }
+    }
+
+    @Contract("_, _, _, _, !null -> !null")
+    @Nullable
+    public static Vector3f getVector3(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
+            String name,
+            @Nullable Vector3fc defaultValue) {
+
+        var attrValue = el.getAttributeString(name, null);
+        if (attrValue == null) {
+            return defaultValue != null ? new Vector3f(defaultValue) : null;
+        }
+
+        var parts = attrValue.trim().split("\\s+", 3);
+        var result = new Vector3f();
+        try {
+            for (int i = 0; i < parts.length; i++) {
+                float v = Float.parseFloat(parts[i]);
+                result.setComponent(i, v);
+            }
+        } catch (NumberFormatException e) {
+            errorSink.appendError(compiler, "Malformed 3D vector: '" + attrValue + "'", el);
+            return defaultValue != null ? new Vector3f(defaultValue) : null;
+        }
+
+        return result;
+    }
+
+    @Contract("_, _, _, _, !null -> !null")
+    @Nullable
+    public static Vector2f getVector2(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el,
+            String name,
+            @Nullable Vector2fc defaultValue) {
+
+        var attrValue = el.getAttributeString(name, null);
+        if (attrValue == null) {
+            return defaultValue != null ? new Vector2f(defaultValue) : null;
+        }
+
+        var parts = attrValue.trim().split("\\s+", 2);
+        var result = new Vector2f();
+        try {
+            for (int i = 0; i < parts.length; i++) {
+                float v = Float.parseFloat(parts[i]);
+                result.setComponent(i, v);
+            }
+        } catch (NumberFormatException e) {
+            errorSink.appendError(compiler, "Malformed 2D vector: '" + attrValue + "'", el);
+            return defaultValue != null ? new Vector2f(defaultValue) : null;
+        }
+
+        return result;
     }
 
     public static int getInt(PageCompiler compiler, LytErrorSink errorSink, MdxJsxElementFields el, String name,
