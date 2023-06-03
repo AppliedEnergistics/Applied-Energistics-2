@@ -82,7 +82,7 @@ public class CameraSettings {
 
         result.translate(offsetX, offsetY, 0);
 
-        var rotation = new Quaternionf().rotationXYZ(Mth.DEG_TO_RAD * rotationX, Mth.DEG_TO_RAD * rotationY,
+        var rotation = new Quaternionf().rotationYXZ(Mth.DEG_TO_RAD * rotationY, Mth.DEG_TO_RAD * rotationX,
                 Mth.DEG_TO_RAD * rotationZ);
         result.rotateAround(rotation, rotationCenter.x, rotationCenter.y, rotationCenter.z);
 

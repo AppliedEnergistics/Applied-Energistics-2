@@ -45,10 +45,11 @@ public class BoxAnnotationElementCompiler extends AnnotationTagCompiler {
             z2 = tmp;
         }
         var color = MdxAttrs.getColor(compiler, errorSink, el, "color", ConstantColor.WHITE);
+        var thickness = MdxAttrs.getFloat(compiler, errorSink, el, "thickness", InWorldBoxAnnotation.DEFAULT_THICKNESS);
 
         var min = new Vector3f(x1, y1, z1);
         var max = new Vector3f(x2, y2, z2);
 
-        return new InWorldBoxAnnotation(min, max, color);
+        return new InWorldBoxAnnotation(min, max, color, thickness);
     }
 }

@@ -11,7 +11,7 @@ import org.joml.Vector3f;
 import appeng.client.guidebook.color.ColorValue;
 
 public final class InWorldLineAnnotation extends InWorldAnnotation {
-    private static final float DEFAULT_THICKNESS = 0.5f / 16f;
+    public static final float DEFAULT_THICKNESS = 0.5f / 16f;
     private final Vector3f from;
     private final Vector3f to;
     private final ColorValue color;
@@ -45,7 +45,7 @@ public final class InWorldLineAnnotation extends InWorldAnnotation {
                 rayTo.x, rayTo.y, rayTo.z,
                 resultA, resultB);
 
-        if (distance > thickness * thickness) {
+        if (distance > thickness * thickness / 4) {
             return OptionalDouble.empty();
         }
 
