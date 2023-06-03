@@ -1,5 +1,7 @@
 package appeng.client.guidebook.scene.annotation;
 
+import com.mojang.blaze3d.platform.GlConst;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -36,22 +38,6 @@ public final class InWorldAnnotationRenderer {
                     .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                     .setDepthTestState(new RenderStateShard.DepthTestStateShard(">", GL11.GL_GREATER))
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                    .createCompositeState(false));
-
-    private static final RenderType ALWAYS_ON_TOP = RenderType.create(
-            "annotation_always_on_top",
-            DefaultVertexFormat.BLOCK,
-            VertexFormat.Mode.QUADS,
-            0x100000,
-            false,
-            false,
-            RenderType.CompositeState.builder()
-                    .setLightmapState(RenderType.LIGHTMAP)
-                    .setShaderState(RenderType.RENDERTYPE_TRANSLUCENT_NO_CRUMBLING_SHADER)
-                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
-                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-                    .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
-                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
                     .createCompositeState(false));
 
     private InWorldAnnotationRenderer() {
@@ -97,39 +83,47 @@ public final class InWorldAnnotationRenderer {
         }
         buffers.endBatch(OCCLUDED);
 
-        var normalConsumer = buffers.getBuffer(RenderType.translucent());
-        var alwaysOnTopConsumer = buffers.getBuffer(ALWAYS_ON_TOP);
-        for (var annotation : annotations) {
-            var consumer = annotation.isAlwaysOnTop() ? alwaysOnTopConsumer : normalConsumer;
-
-            if (annotation instanceof InWorldBoxAnnotation boxAnnotation) {
-                var color = MutableColor.of(boxAnnotation.color());
-                if (boxAnnotation.isHovered()) {
-                    color.lighter(50);
-                }
-                render(consumer,
-                        boxAnnotation.min(),
-                        boxAnnotation.max(),
-                        color.toArgb32(),
-                        boxAnnotation.thickness(),
-                        sprite);
-            } else if (annotation instanceof InWorldLineAnnotation lineAnnotation) {
-                var color = MutableColor.of(lineAnnotation.color());
-                if (lineAnnotation.isHovered()) {
-                    color.lighter(50);
-                }
-                strut(consumer,
-                        lineAnnotation.min(),
-                        lineAnnotation.max(),
-                        color.toArgb32(),
-                        lineAnnotation.thickness(),
-                        true,
-                        true,
-                        sprite);
+        for (var pass = 1; pass <= 2; pass++) {
+            if (pass == 2) {
+                RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
             }
+
+            var consumer = buffers.getBuffer(RenderType.translucent());
+
+            for (var annotation : annotations) {
+                if (annotation.isAlwaysOnTop() != (pass == 2)) {
+                    continue;
+                }
+
+                if (annotation instanceof InWorldBoxAnnotation boxAnnotation) {
+                    var color = MutableColor.of(boxAnnotation.color());
+                    if (boxAnnotation.isHovered()) {
+                        color.lighter(50);
+                    }
+                    render(consumer,
+                            boxAnnotation.min(),
+                            boxAnnotation.max(),
+                            color.toArgb32(),
+                            boxAnnotation.thickness(),
+                            sprite);
+                } else if (annotation instanceof InWorldLineAnnotation lineAnnotation) {
+                    var color = MutableColor.of(lineAnnotation.color());
+                    if (lineAnnotation.isHovered()) {
+                        color.lighter(50);
+                    }
+                    strut(consumer,
+                            lineAnnotation.min(),
+                            lineAnnotation.max(),
+                            color.toArgb32(),
+                            lineAnnotation.thickness(),
+                            true,
+                            true,
+                            sprite);
+                }
+            }
+
+            buffers.endBatch(RenderType.translucent());
         }
-        buffers.endBatch(RenderType.translucent());
-        buffers.endBatch(ALWAYS_ON_TOP);
         buffers.endBatch();
     }
 
