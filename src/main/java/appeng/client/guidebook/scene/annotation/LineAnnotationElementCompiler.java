@@ -49,9 +49,13 @@ public class LineAnnotationElementCompiler extends AnnotationTagCompiler {
         var thickness = MdxAttrs.getFloat(compiler, errorSink, el, "thickness",
                 InWorldLineAnnotation.DEFAULT_THICKNESS);
 
+        var alwaysOnTop = MdxAttrs.getBoolean(compiler, errorSink, el, "alwaysOnTop", false);
+
         var min = new Vector3f(x1, y1, z1);
         var max = new Vector3f(x2, y2, z2);
 
-        return new InWorldLineAnnotation(min, max, color, thickness);
+        var annotation = new InWorldLineAnnotation(min, max, color, thickness);
+        annotation.setAlwaysOnTop(alwaysOnTop);
+        return annotation;
     }
 }
