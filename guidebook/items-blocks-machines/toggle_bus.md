@@ -18,7 +18,7 @@ item_ids:
 
 A bus which functions similarly to <ItemLink id="fluix_glass_cable" /> or other cables, but it
 allows its connection state to be toggled via redstone. This allows you to cut
-off a section of a [ME Network](../me-network.md).
+off a section of a [ME Network](../ae2-mechanics/me-network-connections.md).
 
 When redstone signal supplied the part enables the connection, <ItemLink id="inverted_toggle_bus" /> provides the reverse
 behavior by disabling the connection instead.

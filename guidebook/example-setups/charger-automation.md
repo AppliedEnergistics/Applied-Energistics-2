@@ -2,7 +2,7 @@
 navigation:
   parent: example-setups/example-setups-index.md
   title: Charger Automation
-  icon: charged_certus_quartz_crystal
+  icon: charger
 ---
 
 # Charger Automation
@@ -15,6 +15,7 @@ or other item pipe pushes the result back into the provider.
 
 <BoxAnnotation color="#dddddd" x1="1" x2="2" y1="0" y2="1" z1="0" z2="1">
         (1) Pattern Provider: In its default configuration, with the relevant processing patterns. Also provides the charger with power.
+        ![Charger Pattern](../assets/diagrams/charger_pattern_small.png)
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" x1="0" x2="1" y1="1" y2="1.3" z1="0" z2="1">
@@ -36,6 +37,9 @@ or other item pipe pushes the result back into the provider.
 
 * The <ItemLink id="pattern_provider" /> (1) is in its default configuration, with the relevant <ItemLink id="processing_pattern" />s.
   It also provides the <ItemLink id="charger" /> with [energy](../ae2-mechanics/energy.md) because it acts like a [cable](../items-blocks-machines/cables.md).
+  
+    ![Charger Pattern](../assets/diagrams/charger_pattern.png)
+
 * The <ItemLink id="import_bus" /> (2) is in its default configuration.
 * The <ItemLink id="storage_bus" /> (3) is in its default configuration.
 
@@ -45,4 +49,4 @@ or other item pipe pushes the result back into the provider.
 2. The charger does its charging thing.
 3. The <ItemLink id="import_bus" /> on the green subnet pulls the result out of the charger and attempts to store it in
    [network storage](../ae2-mechanics/import-export-storage.md).
-4. The only storage on the green subnet is the <ItemLink id="storage_bus" />, which stores the resulting items in the pattern provider, returning them to the network.
+4. The only storage on the green subnet is the <ItemLink id="storage_bus" />, which stores the resulting items in the pattern provider, returning them to the main network.

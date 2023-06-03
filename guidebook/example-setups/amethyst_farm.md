@@ -22,5 +22,55 @@ Note that due to the directionality of the cluster, there must be a solid block 
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/amethyst_farm.snbt" />
+
+  <BoxAnnotation color="#dddddd" x1="2.7" x2="3" y1="1" y2="2" z1="1" z2="2">
+        (1) Annihilation Plane #1: No GUI to configure, but enchanted with Silk Touch.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" x1="2" x2="2.3" y1="1" y2="2" z1="1" z2="2">
+        (2) Formation Plane: Filtered to Amethyst Cluster.
+        <ItemImage id="minecraft:amethyst_cluster" scale="2" />
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" x1="1.3" x2="2" y1="0.7" y2="1" z1="1" z2="2">
+        (3) Annihilation Plane #2: No GUI to configure, but can be enchanted with Fortune.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" x1="1" x2="1.3" y1="0" y2="1" z1="1" z2="2">
+        (4) Storage Bus #1: Filtered to Amethyst Shard.
+        <ItemImage id="minecraft:amethyst_shard" scale="2" />
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" x1="0" x2="1" y1="0" y2="1" z1=".7" z2="1">
+        (5) Storage Bus #2: Filtered to Amethyst Shard. Has priority set higher than your main storage.
+        <ItemImage id="minecraft:amethyst_shard" scale="2" />
+  </BoxAnnotation>
+
+<DiamondAnnotation x="0" y="0.5" z="0.5" color="#00ff00">
+        To Main Network
+    </DiamondAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
+
+## Configurations
+
+* The first <ItemLink id="annihilation_plane" /> (1) has no GUI and cannot be configured, but must be enchanted with silk touch.
+* The <ItemLink id="formation_plane" /> (2) is filtered to <ItemLink id="minecraft:amethyst_cluster" />.
+* The second <ItemLink id="annihilation_plane" /> (3) has no GUI and cannot be configured, but can be enchanted with fortune.
+* The first <ItemLink id="storage_bus" /> (4) is filtered to <ItemLink id="minecraft:amethyst_shard" />.
+* The second <ItemLink id="storage_bus" /> (5) is filtered to <ItemLink id="minecraft:amethyst_shard" />, and has its
+  [priority](../ae2-mechanics/import-export-storage.md#storage-priority) set higher than your main storage.
+
+## How It Works
+
+1. The first <ItemLink id="annihilation_plane" /> attempts to break what is in front of it, but can only break <ItemLink id="minecraft:amethyst_cluster" />
+    because the only storage on the subnet is the <ItemLink id="formation_plane" />, filtered to amethyst cluster. This only works because
+the plane is enchanted with silk touch, otherwise it would be able to break the non-mature buds because they drop nothing.
+2. The <ItemLink id="formation_plane" /> places the cluster on the block opposing it.
+3. The second <ItemLink id="annihilation_plane" /> breaks the cluster, producing <ItemLink id="minecraft:amethyst_shard" />.
+4. The first <ItemLink id="storage_bus" /> stores the shards in the barrel. This technically doesn't need to be filtered because the only
+thing the second annihilation plane should be encountering is fully-grown clusters.
+5. The second <ItemLink id="storage_bus" /> gives the main network access to all of the amethyst shards in the barrel. it is set to
+high [priority](../ae2-mechanics/import-export-storage.md#storage-priority) so that amethyst shards are preferentially
+put back in the barrel instead of in your main storage.

@@ -36,6 +36,7 @@ This setup is meant to be used in combination with [charger automation](charger-
 
 <BoxAnnotation color="#dddddd" x1="2" x2="3" y1="1" y2="1.3" z1="1" z2="2">
         (5) Storage Bus: Filtered to the outputs of the patterns
+        <Row><ItemImage id="fluix_crystal" scale="2" /><BlockImage id="flawless_budding_quartz" scale="2" /></Row>
   </BoxAnnotation>
 
 <DiamondAnnotation x="3.9" y="0.5" z="1.5" color="#00ff00">
