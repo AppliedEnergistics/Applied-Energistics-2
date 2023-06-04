@@ -70,6 +70,10 @@ public class GuidebookScene {
 
     @NotNull
     private Bounds getBounds(Matrix4f viewMatrix) {
+        if (!level.hasFilledBlocks()) {
+            return new Bounds(new Vector3f(), new Vector3f());
+        }
+
         // This is doing more work than needed since touching blocks create unneeded corners
         var tmpPos = new Vector3f();
         var min = new Vector3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
@@ -89,8 +93,7 @@ public class GuidebookScene {
                 }
             }
         });
-        Bounds result = new Bounds(min, max);
-        return result;
+        return new Bounds(min, max);
     }
 
     private record Bounds(Vector3f min, Vector3f max) {

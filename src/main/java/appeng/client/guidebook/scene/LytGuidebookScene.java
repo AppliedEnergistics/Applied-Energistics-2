@@ -68,8 +68,7 @@ public class LytGuidebookScene extends LytBlock implements InteractiveElement {
         var width = (int) Math.ceil(Math.abs(screenBounds.z - screenBounds.x));
         var height = (int) Math.ceil(Math.abs(screenBounds.w - screenBounds.y));
 
-        scene.getCameraSettings().setViewport(
-                screenBounds);
+        scene.getCameraSettings().setViewport(screenBounds);
 
         return new LytRect(x, y, width, height);
     }

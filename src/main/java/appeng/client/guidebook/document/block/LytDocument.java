@@ -14,6 +14,7 @@ import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.document.flow.LytFlowInlineBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.Layouts;
+import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.render.SimpleRenderContext;
 
 /**
@@ -102,7 +103,7 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         }
     }
 
-    public void renderBatch(SimpleRenderContext context, MultiBufferSource buffers) {
+    public void renderBatch(RenderContext context, MultiBufferSource buffers) {
         for (var block : blocks) {
             if (!block.getBounds().intersects(context.viewport())) {
                 continue;

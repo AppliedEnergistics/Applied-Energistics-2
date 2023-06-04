@@ -36,6 +36,7 @@ public final class Layouts {
             } else {
                 innerY += child.getMarginTop();
             }
+            // Block width is the width available for the inner content area of the child
             var blockWidth = Math.max(1, innerWidth - child.getMarginLeft() - child.getMarginRight());
             var childBounds = child.layout(context, innerX + child.getMarginLeft(), innerY, blockWidth);
             innerY += childBounds.height() + child.getMarginBottom() + gap;

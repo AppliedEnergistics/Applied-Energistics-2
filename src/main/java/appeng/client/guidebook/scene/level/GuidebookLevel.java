@@ -131,8 +131,12 @@ public class GuidebookLevel extends Level {
         return levelData;
     }
 
+    public boolean hasFilledBlocks() {
+        return !filledBlocks.isEmpty();
+    }
+
     public Stream<BlockPos> getFilledBlocks() {
-        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+        var mutablePos = new BlockPos.MutableBlockPos();
         return filledBlocks.longStream()
                 .sequential()
                 .mapToObj(pos -> {
