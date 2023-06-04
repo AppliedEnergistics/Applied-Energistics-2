@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -50,8 +51,10 @@ import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
+import appeng.api.storage.ITerminalHost;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.Hotkeys;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.AESubScreen;
@@ -77,6 +80,8 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
+import appeng.helpers.WirelessCraftingTerminalMenuHost;
+import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;
@@ -684,9 +689,19 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
+
+        ITerminalHost menuHost = this.getMenu().getHost();
+
         if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
             this.searchField.setFocused(false);
             this.setFocused(null);
+            return true;
+        }
+
+        if (!this.searchField.isFocused()
+                && checkHotkeyForClose(menuHost, keyCode, scanCode)) {
+
+            this.getPlayer().closeContainer();
             return true;
         }
 
@@ -777,6 +792,23 @@ public class MEStorageScreen<C extends MEStorageMenu>
         storeState();
         new ArrayList<>(this.children()).forEach(this::removeWidget);
         this.init();
+    }
+
+    private boolean checkHotkeyForClose(ITerminalHost menuHost, int keyCode, int scanCode) {
+
+        // TODO get hotkeymapping in a better way
+        KeyMapping wirelessTerminalMapping = Hotkeys.getHotkeyMapping("wireless_terminal").mapping();
+        KeyMapping portableStorageCellMapping = Hotkeys.getHotkeyMapping("portable_item_cell").mapping();
+        KeyMapping portableFluidCellMapping = Hotkeys.getHotkeyMapping("portable_fluid_cell").mapping();
+
+        if (menuHost instanceof WirelessCraftingTerminalMenuHost
+                && wirelessTerminalMapping.matches(keyCode, scanCode)) {
+            return true;
+        } else if (menuHost instanceof PortableCellMenuHost && portableStorageCellMapping.matches(keyCode, scanCode)) {
+            return true;
+        }
+        // TODO determine method for distinguishing portable fluid storage cell from portable item storage cell
+        return false;
     }
 
     /**
