@@ -7,6 +7,15 @@ navigation:
 
 # Channels
 
+Applied Energistics 2's [ME Networks](me-network-connections.md) require
+Channels to support [devices](../ae2-mechanics/devices.md) which use networked storage, or other network
+services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
+so many devices connected to it. Most machines, full-block devices, and standard cables can only pass through
+up to 8 channels. You can think of full-block devices and standard cables as a bundle of 8 "channel wires". However, [dense cables](../items-blocks-machines/cables.md) can support up
+to 32 channels. The only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
+and the [Quantum Network Bridge](../items-blocks-machines/quantum_bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
+the bundle, which obviously means that "wire" isn't available further down the line.
+
 <GameScene zoom="8">
   <ImportStructure src="../assets/assemblies/channel_demonstration_1.snbt" />
 
@@ -55,15 +64,6 @@ navigation:
 
   <IsometricCamera yaw="15" pitch="30" />
 </GameScene>
-
-Applied Energistics 2's [ME Networks](me-network-connections.md) require
-Channels to support [devices](../ae2-mechanics/devices.md) which use networked storage, or other network
-services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
-so many devices connected to it. Most machines, full-block devices, and standard cables can only pass through
-up to 8 channels. You can think of full-block devices and standard cables as a bundle of 8 "channel wires". However, [dense cables](../items-blocks-machines/cables.md) can support up
-to 32 channels. The only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
-and the [Quantum Network Bridge](../items-blocks-machines/quantum_bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
-the bundle, which obviously means that "wire" isn't available further down the line.
 
 An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
 

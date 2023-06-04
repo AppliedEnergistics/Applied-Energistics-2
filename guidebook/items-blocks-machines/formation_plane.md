@@ -10,7 +10,7 @@ item_ids:
 
 # The Formation Plane
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="#00000000" interactive="false">
   <ImportStructure src="../assets/blocks/formation_plane.snbt" />
 </GameScene>
 

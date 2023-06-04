@@ -90,7 +90,7 @@ if you have a machine that duplicates cobblestone.
 
 # The Crafting CPU
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/crafting_cpus.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -120,7 +120,7 @@ They can be set to handle requests from players, automation (export busses and i
 
 <BlockImage id="pattern_provider" p:push_direction="up" scale="4" />
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
   <ImportStructure src="../assets/blocks/cable_pattern_provider.snbt" />
 </GameScene>
 </Row>
@@ -192,7 +192,7 @@ and will send information about the relevant pattern along with the ingredients 
 crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider
 is all that is needed to automate crafting patterns.
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
 <ImportStructure src="../assets/assemblies/assembler_tower.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

@@ -10,7 +10,7 @@ item_ids:
 
 # The Import Bus
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="#00000000" interactive="false">
 <ImportStructure src="../assets/blocks/import_bus.snbt" />
 </GameScene>
 

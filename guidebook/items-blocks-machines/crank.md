@@ -10,7 +10,7 @@ item_ids:
 
 # The Crank
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/crank_on_stuff.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

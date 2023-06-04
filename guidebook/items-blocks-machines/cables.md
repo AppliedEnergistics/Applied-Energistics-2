@@ -94,7 +94,7 @@ item_ids:
 
 # Cables
 
-<GameScene zoom="3">
+<GameScene zoom="3" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/cables.snbt" />
   <IsometricCamera yaw="180" pitch="30" />
 </GameScene>
@@ -120,7 +120,7 @@ into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) tog
 
 ## Glass Cable
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
 <ImportStructure src="../assets/assemblies/fluix_glass_cable.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -145,7 +145,7 @@ your [channels](../ae2-mechanics/channels.md).
 
 ## Covered Cable
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/fluix_covered_cable.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -162,7 +162,7 @@ redstone and glowstone to make <ItemLink id="fluix_covered_dense_cable" />.
 
 ## Dense Cable
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/fluix_covered_dense_cable.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -182,11 +182,11 @@ dense cable, and then the shortest path through that dense cable to a controller
 ## Smart Cable
 
 <Row>
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/fluix_smart_cable.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/fluix_smart_dense_cable.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

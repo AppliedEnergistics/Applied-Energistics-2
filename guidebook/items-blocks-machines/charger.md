@@ -13,7 +13,7 @@ item_ids:
 <BlockImage id="charger" scale="8" />
 
 The Charger provides a way to charge
-supported tools through the [ME Network](../../me-network.md) or manually using a <ItemLink id="crank" />.
+supported tools, and <ItemLink id="certus_quartz_crystal" />.
 
 Power can be provided via the top or bottom, via either AE2's [cables](cables.md), or other mod power cables. It can
 accept either AE2's power (AE) or Forge Energy (FE). Items can be inserted or removed from any side. Only the results can
@@ -31,7 +31,7 @@ It also acts as the workstation for the AE2 villager.
 
 As an example, the rotateability lets you semi-automate chargers like so:
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/charger_hopper.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

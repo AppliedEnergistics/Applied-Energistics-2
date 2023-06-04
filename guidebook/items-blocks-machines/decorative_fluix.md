@@ -11,7 +11,7 @@ item_ids:
 
 # Decorative Fluix
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
 <ImportStructure src="../assets/assemblies/decorative_fluix.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

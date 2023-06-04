@@ -10,7 +10,7 @@ item_ids:
 
 # The Annihilation Plane
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="#00000000" interactive="false">
 <ImportStructure src="../assets/blocks/annihilation_plane.snbt" />
 </GameScene>
 
@@ -33,6 +33,15 @@ can be [partitioned](cell_workbench.md) to achieve this.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/annihilation_filtering.snbt" />
+
+  <DiamondAnnotation pos="1 0.5 0.5" color="#00ff00">
+        Filtered to whatever drops from the thing you want to break.
+  </DiamondAnnotation>
+
+  <DiamondAnnotation pos=".5 0.5 2.5" color="#00ff00">
+        Partitioned to whatever drops from the thing you want to break.
+  </DiamondAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 

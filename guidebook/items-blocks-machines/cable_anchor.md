@@ -10,7 +10,7 @@ item_ids:
 
 # The Cable Anchor
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/cable_anchor.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

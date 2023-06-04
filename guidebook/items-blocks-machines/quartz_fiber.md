@@ -10,7 +10,7 @@ item_ids:
 
 # The Quartz Fiber
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="#00000000" interactive="false">
 <ImportStructure src="../assets/assemblies/quartz_fiber.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

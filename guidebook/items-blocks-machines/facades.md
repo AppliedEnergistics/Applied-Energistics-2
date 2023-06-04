@@ -13,7 +13,7 @@ item_ids:
 Facades can be used to make your base appear more clean. They can cover up both sizes of cable, and be made out of many
 kinds of blocks.
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/facades_1.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

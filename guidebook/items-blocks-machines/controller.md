@@ -12,10 +12,10 @@ item_ids:
 
 <BlockImage id="controller" p:state="online" scale="8" />
 
-The controller is the routing hub of a [ME Network](../me-network.md).
+The controller is the routing hub of a [ME Network](../ae2-mechanics/me-network-connections.md).
 Without it, a network is "ad-hoc" and can only have a max of 8 channel-using [devices](../ae2-mechanics/devices.md) total.
 
-It is not possible to have 2 controllers in one [ME Network](../me-network.md).
+It is not possible to have 2 controllers in one [ME Network](../ae2-mechanics/me-network-connections.md).
 
 The controller provides 32 [Channels](../ae2-mechanics/channels.md) per face.
 
@@ -25,18 +25,18 @@ energy storage. See [energy](../ae2-mechanics/energy.md) for details.
 
 Multiblock Controllers can be built in a fairly free form.
 
-<GameScene zoom="2">
+<GameScene zoom="2" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/controllers.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 However, there are a few rules that must be followed:
 
-1.  All controller blocks on a [ME Network](../me-network.md) must be connected; else the blocks will turn red.
+1.  All controller blocks on a [ME Network](../ae2-mechanics/me-network-connections.md) must be connected; else the blocks will turn red.
 2.  The size of the controller must be within 7x7x7; else it will turn red.
 3.  A controller can have 2 adjacent blocks in at most 1 axis; if a block violates this rule, it will disable and turn red.
 
-<GameScene zoom="2">
+<GameScene zoom="2" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/controller_rules.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

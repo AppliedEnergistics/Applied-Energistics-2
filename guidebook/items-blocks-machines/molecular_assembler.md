@@ -19,7 +19,7 @@ then pushes the result to adjacent inventories.
 This assembler has a crafting pattern that specifies the 1 oak log = 4 oak planks recipe. When oak logs are fed into the upper hopper,
 the assembler crafts and spits oak planks into the lower hopper.
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/standalone_assembler.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -31,7 +31,7 @@ and will send information about the relevant pattern along with the ingredients 
 crafts to adjacent inventories (and thus into the return slots of the pattern provider), an assembler on a pattern provider
 is all that is needed to automate crafting patterns.
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/assembler_tower.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

@@ -17,7 +17,7 @@ item_ids:
 
 # The Crafting CPU
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/crafting_cpus.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

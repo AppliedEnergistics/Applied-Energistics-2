@@ -12,7 +12,7 @@ navigation:
 
 ## Getting The Initial Materials)
 
-<GameScene zoom="4" background="#00000000">
+<GameScene zoom="4" background="#00000000" interactive="false">
   <ImportStructure src="assets/assemblies/meteor_interior.snbt" />
 </GameScene>
 
@@ -29,7 +29,7 @@ Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscr
 
 ## Growing Quartz
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
 <ImportStructure src="assets/assemblies/budding_certus_1.snbt" />
 </GameScene>
 
@@ -39,7 +39,7 @@ growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by for
 
 There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged.
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
 <ImportStructure src="assets/assemblies/budding_blocks.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -56,7 +56,7 @@ with a pickaxe, even with silk touch. (they *can* be moved with [spatial storage
 By themselves, certus quartz buds grow very slowly. Luckily the <ItemLink id="growth_accelerator" /> massively
 accelerates this process when placed adjacent to the budding block. You should build a few of these as your first priority.
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
 <ImportStructure src="assets/assemblies/budding_certus_2.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -120,7 +120,10 @@ take advantage you need to set up an [ME Network](ae2-mechanics/me-network-conne
 
 Now that you have all of the basic materials and machines for Applied Energistics 2, you can make your first ME (Matter Energy) system. This will be a very basic one, no autocrafting, no logistics, just nice, simple, searchable storage.
 
-![A Small ME System](assets/assemblies/tiny_me_system.png)
+<GameScene zoom="6">
+<ImportStructure src="assets/assemblies/tiny_me_system.snbt" />
+
+</GameScene>
 
 *   Your ingredients list:
     * 1x <ItemLink id="drive" />

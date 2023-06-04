@@ -23,7 +23,7 @@ item_ids:
 # Decorative Sky Stone
 
 <Row>
-  <GameScene zoom="3">
+  <GameScene zoom="3" background="#00000000" interactive="false">
     <ImportStructure src="../assets/assemblies/decorative_sky_stone.snbt" />
     <IsometricCamera yaw="195" pitch="30" />
   </GameScene>

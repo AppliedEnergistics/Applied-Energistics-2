@@ -6,7 +6,7 @@ navigation:
 
 # Meteorites
 
-<GameScene zoom="4" interactive={true}>
+<GameScene zoom="4" interactive={false}>
   <ImportStructure src="../assets/assemblies/meteor_interior.snbt" />
 </GameScene>
 

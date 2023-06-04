@@ -7,7 +7,7 @@ navigation:
 
 # Spatial IO
 
-<GameScene zoom="4" interactive={true}>
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/spatial_storage_1x1x1.snbt" />
 
   <BoxAnnotation color="#33dd33" min="1 1 1" max="2 2 2">

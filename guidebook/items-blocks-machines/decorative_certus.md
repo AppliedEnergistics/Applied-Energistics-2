@@ -31,7 +31,7 @@ item_ids:
 
 # Decorative Certus Blocks
 
-<GameScene zoom="3">
+<GameScene zoom="3" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/decorative_certus.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
