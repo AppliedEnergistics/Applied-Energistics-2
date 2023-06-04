@@ -27,4 +27,8 @@ public class Hotkeys {
     public static void checkHotkeys() {
         HOTKEYS.forEach((name, hotkey) -> hotkey.check());
     }
+
+    public static Hotkey getHotkeyMapping(String key) {
+        return HOTKEYS.get(key);
+    }
 }
