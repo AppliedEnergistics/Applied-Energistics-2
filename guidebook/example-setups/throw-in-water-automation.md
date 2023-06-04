@@ -40,7 +40,11 @@ This setup is meant to be used in combination with [charger automation](charger-
   </BoxAnnotation>
 
 <DiamondAnnotation pos="3.9 0.5 1.5" color="#00ff00">
-        To Main Network
+        To Main Network and Charger Automation
+        <GameScene zoom="3">
+          <ImportStructure src="../assets/assemblies/charger_automation.snbt" />
+          <IsometricCamera yaw="195" pitch="30" />
+        </GameScene>
     </DiamondAnnotation>
 
   <IsometricCamera yaw="180" pitch="0" />

@@ -2,6 +2,7 @@
 navigation:
   parent: ae2-mechanics/ae2-mechanics-index.md
   title: Meteorites
+  icon: sky_stone_block
 ---
 
 # Meteorites
