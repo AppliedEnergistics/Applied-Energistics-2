@@ -1,0 +1,20 @@
+{
+    DataVersion: 3460,
+    size: [5, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:charger{facing:north,spin:1}", nbt: {id: "ae2:charger", internalCurrentPower: 1600.0d, inv: {item0: {}}, proxy: {g: 25593L, p: 0}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 281L, p: 1}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 281L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsUp: 0, channelsWest: 1, connections: ["up", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 281L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsEast: 1, channelsWest: 1, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25601L, p: 1}, id: "ae2:green_smart_cable", visual: {channelsEast: 2, connections: ["east"], missingChannel: 0b, powered: 1b}}, down: {fuzzy_mode: "IGNORE_ALL", gn: {g: 25601L, p: 1}, id: "ae2:import_bus", redstone_controlled: "IGNORE", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25601L, p: 1}, id: "ae2:green_smart_cable", visual: {channelsEast: 2, channelsWest: 2, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, down: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 25601L, p: 1}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [2, 1, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 25593L, p: 1}, id: "ae2:blue_smart_cable", visual: {channelsDown: 0, connections: ["down"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {gn: {g: 25593L, p: 1}, id: "ae2:quartz_fiber", outer: {g: 25601L, p: 1}, visual: {missingChannel: 0b, powered: 1b}}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:charger{facing:north,spin:1}",
+        "ae2:pattern_provider{push_direction:all}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:controller{state:online,type:block}"
+    ]
+}

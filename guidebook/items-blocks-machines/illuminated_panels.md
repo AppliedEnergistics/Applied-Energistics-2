@@ -11,6 +11,11 @@ item_ids:
 
 # Illuminated Panels
 
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/illuminated_panels.snbt" />
+  <IsometricCamera yaw="-75" pitch="30" />
+</GameScene>
+
 Illuminated panels are a decorative light source that is also used in the production of [terminals](terminals.md).
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).

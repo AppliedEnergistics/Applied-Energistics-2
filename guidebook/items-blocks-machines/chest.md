@@ -10,7 +10,9 @@ item_ids:
 
 # The ME Chest
 
-![A Chest](../assets/blocks/chest.png)
+<GameScene zoom="8">
+<ImportStructure src="../assets/blocks/chest.snbt" />
+</GameScene>
 
 The ME Chest acts like a miniature network with a <ItemLink id="terminal" />, <ItemLink id="drive" />, and <ItemLink id="energy_acceptor" />.
 While it can be used as a tiny storage network, its capacity for just one single [storage cell](../items-blocks-machines/storage_cells.md)
@@ -31,7 +33,10 @@ inserting or extracting too many items at once may cause it to brown out.
 
 The terminal can be colored with a <ItemLink id="color_applicator" />.
 
-![Colors](../assets/assemblies/chest_color.png)
+<GameScene zoom="6">
+<ImportStructure src="../assets/assemblies/chest_color.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 ## Settings
 
@@ -40,7 +45,7 @@ It, however, does not support <ItemLink id="view_cell" />s.
 
 ## Cell Status LEDs
 
-The cells in the drive have an LED on them which shows their status:
+The cells in the chest have an LED on them which shows their status:
 
 | Color  | Status                                                                           |
 | :----- | :------------------------------------------------------------------------------- |

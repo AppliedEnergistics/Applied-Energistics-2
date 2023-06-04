@@ -10,7 +10,9 @@ item_ids:
 
 # The ME Drive
 
-![A Drive](../assets/blocks/drive.png)
+<GameScene zoom="8">
+  <ImportStructure src="../assets/blocks/drive.snbt" />
+</GameScene>
 
 The Drive is the [device](../ae2-mechanics/devices.md) you plug your [storage cells](storage_cells.md) into in order to use them for
 [network storage](../ae2-mechanics/import-export-storage.md). It has 10 slots which each accept a cell.

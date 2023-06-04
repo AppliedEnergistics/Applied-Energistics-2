@@ -41,6 +41,7 @@ import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
 import appeng.client.guidebook.document.block.LytHeading;
+import appeng.client.guidebook.document.block.LytNode;
 import appeng.client.guidebook.document.block.LytParagraph;
 import appeng.client.guidebook.document.flow.LytFlowAnchor;
 import appeng.client.guidebook.document.flow.LytFlowContainer;
@@ -160,6 +161,19 @@ public class GuideScreen extends Screen {
     @Override
     public void tick() {
         processPendingScrollTo();
+
+        // Tick all controls on the page
+        if (currentPage != null) {
+            tickNode(currentPage.document());
+        }
+    }
+
+    private static void tickNode(LytNode node) {
+        node.tick();
+
+        for (var child : node.getChildren()) {
+            tickNode(child);
+        }
     }
 
     /**

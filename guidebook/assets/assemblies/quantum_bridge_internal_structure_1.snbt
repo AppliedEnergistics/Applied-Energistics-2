@@ -1,0 +1,30 @@
+{
+    DataVersion: 3337,
+    size: [7, 4, 1],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [2, 0, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [4, 0, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363616L, p: 0}, visual: {}}},
+        {pos: [5, 0, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363617L, p: 0}, visual: {}}},
+        {pos: [6, 0, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363618L, p: 0}, visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [1, 1, 0], state: "ae2:quantum_link{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {Count: 1b, id: "ae2:quantum_entangled_singularity", tag: {freq: 168472969113100L}}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [2, 1, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [4, 1, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363619L, p: 0}, visual: {}}},
+        {pos: [5, 1, 0], state: "ae2:quantum_link{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {Count: 1b, id: "ae2:quantum_entangled_singularity", tag: {freq: 168472969113100L}}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [6, 1, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [0, 2, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [1, 2, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [2, 2, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363621L, p: 0}, visual: {}}},
+        {pos: [4, 2, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363619L, p: 0}, visual: {}}},
+        {pos: [5, 2, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363619L, p: 0}, visual: {}}},
+        {pos: [6, 2, 0], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 363619L, p: 0}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:quantum_ring{formed:true,waterlogged:false}",
+        "ae2:quantum_link{formed:true,waterlogged:false}",
+        "ae2:creative_energy_cell"
+    ]
+}

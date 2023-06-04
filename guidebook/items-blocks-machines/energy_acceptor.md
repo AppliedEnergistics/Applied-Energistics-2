@@ -10,7 +10,13 @@ item_ids:
 
 # The Energy Acceptor
 
-<BlockImage id="energy_acceptor" scale="8" />
+<Row gap="20">
+<BlockImage id="energy_acceptor" scale="8" /> 
+
+<GameScene zoom="8" interactive="false">
+  <ImportStructure src="../assets/blocks/cable_energy_acceptor.snbt" />
+</GameScene>
+</Row>
 
 The energy acceptor converts common forms of energy from other tech mods into AE2's internal form of [energy](../ae2-mechanics/energy.md),
 AE. While the <ItemLink id="controller" /> can also do this, controller faces are valuable so it's often better to use an energy

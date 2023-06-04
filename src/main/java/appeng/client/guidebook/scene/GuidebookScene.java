@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Intersectionf;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.joml.Vector4f;
 
 import net.minecraft.core.BlockPos;
@@ -48,6 +50,30 @@ public class GuidebookScene {
     public Vector4f getScreenBounds() {
         var viewMatrix = cameraSettings.getViewMatrix();
 
+        var result = getBounds(viewMatrix);
+
+        // Account for highlights
+        for (var highlight : inWorldAnnotations) {
+            var bounds = highlight.getScreenBounds(viewMatrix);
+            result.min().x = Math.min(result.min().x, bounds.getLeft().x);
+            result.min().y = Math.min(result.min().y, bounds.getLeft().y);
+            result.max().x = Math.max(result.max().x, bounds.getRight().x);
+            result.max().y = Math.max(result.max().y, bounds.getRight().y);
+        }
+
+        return new Vector4f(
+                result.min().x,
+                result.min().y,
+                result.max().x,
+                result.max().y);
+    }
+
+    @NotNull
+    private Bounds getBounds(Matrix4f viewMatrix) {
+        if (!level.hasFilledBlocks()) {
+            return new Bounds(new Vector3f(), new Vector3f());
+        }
+
         // This is doing more work than needed since touching blocks create unneeded corners
         var tmpPos = new Vector3f();
         var min = new Vector3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
@@ -67,21 +93,10 @@ public class GuidebookScene {
                 }
             }
         });
+        return new Bounds(min, max);
+    }
 
-        // Account for highlights
-        for (var highlight : inWorldAnnotations) {
-            var bounds = highlight.getScreenBounds(viewMatrix);
-            min.x = Math.min(min.x, bounds.getLeft().x);
-            min.y = Math.min(min.y, bounds.getLeft().y);
-            max.x = Math.max(max.x, bounds.getRight().x);
-            max.y = Math.max(max.y, bounds.getRight().y);
-        }
-
-        return new Vector4f(
-                min.x,
-                min.y,
-                max.x,
-                max.y);
+    private record Bounds(Vector3f min, Vector3f max) {
     }
 
     public Vector2f worldToScreen(float x, float y, float z) {
@@ -235,6 +250,33 @@ public class GuidebookScene {
 
     public Stream<BlockPos> getFilledBlocks() {
         return level.getFilledBlocks();
+    }
+
+    public Vector3fc getWorldCenter() {
+        // This is doing more work than needed since touching blocks create unneeded corners
+        var tmpPos = new Vector3f();
+        var min = new Vector3f(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+        var max = new Vector3f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
+        level.getFilledBlocks().forEach(pos -> {
+            var tmp = new Vector3f();
+            for (var xCorner = 0; xCorner <= 1; xCorner++) {
+                for (var yCorner = 0; yCorner <= 1; yCorner++) {
+                    for (var zCorner = 0; zCorner <= 1; zCorner++) {
+                        tmp.set(pos.getX(), pos.getY(), pos.getZ());
+                        min.min(tmp);
+                        max.max(tmp);
+
+                        tmp.add(1, 1, 1);
+                        min.min(tmp);
+                        max.max(tmp);
+                    }
+                }
+            }
+        });
+        var avg = new Vector3f(min);
+        avg.add(max);
+        avg.div(2);
+        return avg;
     }
 
     public GuidebookLevel getLevel() {

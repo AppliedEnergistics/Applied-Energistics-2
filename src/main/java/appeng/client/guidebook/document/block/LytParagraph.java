@@ -49,11 +49,8 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
 
         var style = resolveStyle();
 
-        if (style.fontScale() != 1) {
-            availableWidth /= style.fontScale();
-        }
-
         var bounds = content.computeLayout(context, x, y, availableWidth, style.alignment());
+
         if (paddingBottom != 0) {
             return bounds.withHeight(bounds.height() + paddingBottom);
         }

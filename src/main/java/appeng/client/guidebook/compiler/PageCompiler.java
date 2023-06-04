@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -18,8 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.ResourceLocationException;
-import net.minecraft.network.chat.FormattedText;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.client.guidebook.GuidePage;
@@ -151,6 +148,10 @@ public final class PageCompiler {
                 .compile(parsedPage.astRoot);
 
         return new GuidePage(parsedPage.sourcePack, parsedPage.id, document);
+    }
+
+    public ExtensionCollection getExtensions() {
+        return extensions;
     }
 
     public <T extends Extension> List<T> getExtensions(ExtensionPoint<T> extensionPoint) {
@@ -299,23 +300,6 @@ public final class PageCompiler {
         }
 
         return table;
-    }
-
-    /**
-     * Converts formatted Minecraft text into our flow content.
-     */
-    public void compileComponentToFlow(FormattedText formattedText, LytFlowParent layoutParent) {
-        formattedText.visit((style, text) -> {
-            if (style.isEmpty()) {
-                layoutParent.appendText(text);
-            } else {
-                var span = new LytFlowSpan();
-                // TODO: Convert style
-                span.appendText(text);
-                layoutParent.append(span);
-            }
-            return Optional.empty();
-        }, Style.EMPTY);
     }
 
     public void compileFlowContext(MdAstParent<?> markdownParent, LytFlowParent layoutParent) {

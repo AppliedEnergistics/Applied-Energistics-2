@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import appeng.client.guidebook.color.ColorValue;
 
 public final class InWorldBoxAnnotation extends InWorldAnnotation {
-    private static final float DEFAULT_THICKNESS = 0.5f / 16f;
+    public static final float DEFAULT_THICKNESS = 0.5f / 16f;
     private final Vector3f minCorner;
     private final Vector3f maxCorner;
     private final ColorValue color;

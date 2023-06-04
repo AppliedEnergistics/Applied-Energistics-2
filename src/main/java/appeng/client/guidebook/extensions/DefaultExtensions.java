@@ -22,6 +22,7 @@ import appeng.client.guidebook.scene.SceneTagCompiler;
 import appeng.client.guidebook.scene.annotation.BlockAnnotationElementCompiler;
 import appeng.client.guidebook.scene.annotation.BoxAnnotationElementCompiler;
 import appeng.client.guidebook.scene.annotation.DiamondAnnotationElementCompiler;
+import appeng.client.guidebook.scene.annotation.LineAnnotationElementCompiler;
 import appeng.client.guidebook.scene.element.ImportStructureElementCompiler;
 import appeng.client.guidebook.scene.element.IsometricCameraElementCompiler;
 import appeng.client.guidebook.scene.element.SceneBlockElementCompiler;
@@ -76,6 +77,7 @@ public final class DefaultExtensions {
                 new IsometricCameraElementCompiler(),
                 new BlockAnnotationElementCompiler(),
                 new BoxAnnotationElementCompiler(),
+                new LineAnnotationElementCompiler(),
                 new DiamondAnnotationElementCompiler());
     }
 

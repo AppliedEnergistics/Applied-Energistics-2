@@ -12,7 +12,7 @@ item_ids:
 
 <BlockImage id="charger" scale="8" />
 
-The <ItemLink id="charger" /> provides a way to charge
+The Charger provides a way to charge
 supported tools through the [ME Network](../../me-network.md) or manually using a <ItemLink id="crank" />.
 
 Power can be provided via the top or bottom, via either AE2's [cables](cables.md), or other mod power cables. It can
@@ -31,7 +31,10 @@ It also acts as the workstation for the AE2 villager.
 
 As an example, the rotateability lets you semi-automate chargers like so:
 
-![Charger Automation](../assets/assemblies/charger_hopper.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/charger_hopper.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 ## Recipe
 

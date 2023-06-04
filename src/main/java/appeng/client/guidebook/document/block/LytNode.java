@@ -37,6 +37,9 @@ public abstract class LytNode implements Styleable {
     public void onMouseLeave() {
     }
 
+    public void tick() {
+    }
+
     @Nullable
     public LytNode pickNode(int x, int y) {
         if (!getBounds().contains(x, y)) {

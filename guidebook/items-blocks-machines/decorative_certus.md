@@ -31,7 +31,10 @@ item_ids:
 
 # Decorative Certus Blocks
 
-![Decorative certus blocks](../assets/assemblies/decorative_certus.png)
+<GameScene zoom="3">
+  <ImportStructure src="../assets/assemblies/decorative_certus.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 <ItemLink id="quartz_block" />s can be crafted, smelted, and stonecut into some decorative building blocks
 

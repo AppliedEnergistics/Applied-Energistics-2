@@ -1,23 +1,25 @@
 ---
 navigation:
-  title: Getting Started (1.19+)
+  title: Getting Started (1.20+)
   position: 10
 ---
 
 <div class="notification is-info">
-  The following information only applies to Applied Energistics 2 in Minecraft 1.19 and newer.
+  The following information only applies to Applied Energistics 2 in Minecraft 1.20 and newer.
 </div>
 
 # Getting Started
 
-## Getting The Initial Materials
+## Getting The Initial Materials)
 
-![The interior of a meteor](assets/assemblies/meteor_interior.png)
+<GameScene zoom="4" background="#00000000">
+  <ImportStructure src="assets/assemblies/meteor_interior.snbt" />
+</GameScene>
 
-To get started with Applied Energistics 2, one must first find a [meteorite](./features/meteorites.md). These are fairly common and tend to leave massive holes in the terrain, so you've probably encountered one in your travels.
+To get started with Applied Energistics 2, one must first find a [meteorite](ae2-mechanics/meteorites.md). These are fairly common and tend to leave massive holes in the terrain, so you've probably encountered one in your travels.
 If you haven't, you can craft a <ItemLink id="meteorite_compass" />, which will point toward the nearest <ItemLink id="mysterious_cube" />.
 
-Once you have found a meteorite, mine into its center. You will find certus quartz clusters, certus quartz buds, [budding certus blocks](../items-blocks-machines/budding_certus.md) of various types, and a Mysterious Cube in the center.
+Once you have found a meteorite, mine into its center. You will find certus quartz clusters, certus quartz buds, [budding certus blocks](items-blocks-machines/budding_certus.md) of various types, and a Mysterious Cube in the center.
 
 Mine the certus quartz clusters and any certus quartz blocks you find. You can also pick up the budding certus blocks, but without silk touch they will degrade by 1 tier.
 
@@ -27,15 +29,20 @@ Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscr
 
 ## Growing Quartz
 
-![A Flawless Budding Certus with a small certus bud on top](assets/assemblies/budding_certus_1.png)
+<GameScene zoom="4">
+<ImportStructure src="assets/assemblies/budding_certus_1.snbt" />
+</GameScene>
 
-Certus quartz buds will sprout from [budding certus blocks](../items-blocks-machines/budding_certus.md), similar to amethyst. If you break a bud that is not finished
+Certus quartz buds will sprout from [budding certus blocks](items-blocks-machines/budding_certus.md), similar to amethyst. If you break a bud that is not finished
 growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by fortune. If you break a fully grown cluster, it will drop four
 <ItemLink id="certus_quartz_crystal" />s, and fortune will increase this number.
 
 There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged.
 
-![The budding certus blocks](assets/assemblies/budding_blocks.png)
+<GameScene zoom="4">
+<ImportStructure src="assets/assemblies/budding_blocks.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 Every time a bud grows by another stage, the budding block has a chance to degrade by one tier, eventually turning into
 a plain certus quartz block. They can be repaired (and new budding blocks created) by throwing the budding block (or a
@@ -44,12 +51,15 @@ certus quartz block) in water with one or more <ItemLink id="charged_certus_quar
 <RecipeFor id="damaged_budding_quartz" />
 
 Flawless budding certus blocks will not degrade and will generate certus infinitely. However they cannot be crafted or moved
-with a pickaxe, even with silk touch. (they *can* be moved with [spatial storage](../ae2-mechanics/spatial-io.md) though)
+with a pickaxe, even with silk touch. (they *can* be moved with [spatial storage](ae2-mechanics/spatial-io.md) though)
 
 By themselves, certus quartz buds grow very slowly. Luckily the <ItemLink id="growth_accelerator" /> massively
 accelerates this process when placed adjacent to the budding block. You should build a few of these as your first priority.
 
-![A Flawless Budding Certus with a growth accelerator](assets/assemblies/budding_certus_2.png)
+<GameScene zoom="4">
+<ImportStructure src="assets/assemblies/budding_certus_2.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />,
 you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.
@@ -89,13 +99,13 @@ Produce a few of each type of processor in preparation for the next step, making
 Its pronounced Emm-Eee, and stands for Matter Energy.
 
 Matter Energy is the main component of Applied Energistics 2, it's like a mad scientist version of a Multi-Block chest,
-and it can revolutionize your storage situation. ME is extremely different then other storage systems in Minecraft, and
+and it can revolutionize your storage situation. ME is extremely different than other storage systems in Minecraft, and
 it might take a little out of the box thinking to get used to; but once you get started vast amounts of storage in tiny
 space, and multiple access terminals are just the tip of the iceberg of what becomes possible.
 
 ### What do I need to know to get started?
 
-First, ME Stores items inside of other items, called [Storage cells](./features/storage-cells.md); there are 5 tiers with ever increasing amounts of
+First, ME Stores items inside of other items, called [Storage cells](items-blocks-machines/storage_cells.md); there are 5 tiers with ever increasing amounts of
 storage. In order to use a Storage Cell it must be placed inside either an <ItemLink id="chest" />,
 or an <ItemLink id="drive" />.
 
@@ -104,7 +114,7 @@ can add and remove items from it as if it were a <ItemLink id="minecraft:chest" 
 actually stored in the Storage cells, and not the <ItemLink id="chest" /> itself.
 
 While the <ItemLink id="chest" /> is a great way to get introduced to the concept of ME, to really
-take advantage you need to set up an [ME Network](features/me-network.md).
+take advantage you need to set up an [ME Network](ae2-mechanics/me-network-connections.md).
 
 ## Your Very First ME System
 
@@ -113,12 +123,13 @@ Now that you have all of the basic materials and machines for Applied Energistic
 ![A Small ME System](assets/assemblies/tiny_me_system.png)
 
 *   Your ingredients list:
-    *   1x <ItemLink id="drive" />
-    *   1x <ItemLink id="terminal" /> or <ItemLink id="crafting_terminal" />
-    *   1x <ItemLink id="energy_acceptor" />
-    *   A few [cables](./features/me-network/cables.md), either glass, covered, or smart, but not dense
-    *   A few [storage cells](./features/storage-cells.md), recommended of the 4k variety for a good mix of capacity and types (it would be more efficient to [partition](cell_workbench.md) a mix of 4k and 1k but that's a complexity we won't go into now)
-
+    * 1x <ItemLink id="drive" />
+    * 1x <ItemLink id="terminal" /> or <ItemLink id="crafting_terminal" />
+    * 1x <ItemLink id="energy_acceptor" />
+    * A few [cables](items-blocks-machines/cables.md), either glass, covered, or smart, but not dense
+    * A few [storage cells](items-blocks-machines/storage_cells.md), recommended of the 4k variety for a good mix of
+    capacity and types (it would be more efficient to [partition](items-blocks-machines/cell_workbench.md) a mix of 4k and 1k but that's a complexity we won't go into now)
+---
 1.  Place the drive down.
 2.  The energy acceptor (and several other AE2 [devices](ae2-mechanics/devices.md)) comes in 2 modes, cube and flat. They can be switched between in a crafting grid. If your energy acceptor is a cube, place it down next to the drive. If it's a flat square, place a cable on the drive and place the acceptor on that.
 3.  Run energy into the energy acceptor with a cable/pipe/conduit from your favorite energy-generation mod.

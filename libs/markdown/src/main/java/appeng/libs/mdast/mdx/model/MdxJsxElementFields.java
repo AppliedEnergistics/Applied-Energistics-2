@@ -30,16 +30,22 @@ public interface MdxJsxElementFields extends UnistNode {
     }
 
     default String getAttributeString(String name, String defaultValue) {
+        var jsxAttribute = getAttribute(name);
+        return jsxAttribute != null ? jsxAttribute.getStringValue() : defaultValue;
+    }
+
+    @Nullable
+    default MdxJsxAttribute getAttribute(String name) {
         for (var attributeNode : attributes()) {
             if (attributeNode instanceof MdxJsxAttribute jsxAttribute) {
                 if (name.equals(jsxAttribute.name)) {
-                    return jsxAttribute.getStringValue();
+                    return jsxAttribute;
                 }
             } else if (attributeNode instanceof MdxJsxExpressionAttribute jsxExpressionAttribute) {
                 throw new IllegalStateException("Attribute spreads unsupported!");
             }
         }
 
-        return defaultValue;
+        return null;
     }
 }

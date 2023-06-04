@@ -9,7 +9,9 @@ navigation:
 
 ## Basically just copy-pasted from the getting started page
 
-![A Flawless Budding Certus with a small certus bud on top](../assets/assemblies/budding_certus_1.png)
+<GameScene zoom="6">
+<ImportStructure src="../assets/assemblies/budding_certus_1.snbt" />
+</GameScene>
 
 Certus quartz buds will sprout from [budding certus blocks](../items-blocks-machines/budding_certus.md), similar to amethyst. If you break a bud that is not finished
 growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by fortune. If you break a fully grown cluster, it will drop four
@@ -17,7 +19,10 @@ growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by for
 
 There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged.
 
-![The budding certus blocks](../assets/assemblies/budding_blocks.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/budding_blocks.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 Every time a bud grows by another stage, the budding block has a chance to degrade by one tier, eventually turning into
 a plain certus quartz block. They can be repaired (and new budding blocks created) by throwing the budding block (or a
@@ -31,7 +36,10 @@ with a pickaxe, even with silk touch. (they *can* be moved with [spatial storage
 By themselves, certus quartz buds grow very slowly. Luckily the <ItemLink id="growth_accelerator" /> massively
 accelerates this process when placed adjacent to the budding block. You should build a few of these as your first priority.
 
-![A Flawless Budding Certus with a growth accelerator](../assets/assemblies/budding_certus_2.png)
+<GameScene zoom="4">
+  <ImportStructure src="../assets/assemblies/budding_certus_2.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />,
 you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.

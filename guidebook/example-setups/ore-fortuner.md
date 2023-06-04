@@ -7,15 +7,45 @@ navigation:
 
 # Automation of Ore Fortuning
 
-<GameScene zoom="6">
-  <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
-</GameScene>
-
 The <ItemLink id="annihilation_plane" /> can be enchanted with any pickaxe enchantment, including fortune, so an obvious use case is to
 apply fortune to a few, and have <ItemLink id="formation_plane" />s and <ItemLink id="annihilation_plane" />s rapidly place and
 break ores.
 
 Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup will start slow then reach full speed in a few seconds.
+
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
+
+  <BoxAnnotation color="#dddddd" min="2.7 0 2" max="3 1 3">
+        (1) Import Bus: Has a few Acceleration Cards in it.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="0 0 2" max="2 1 2.3">
+        (2) Formation Planes: In their default configuration.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="0 0 0.7" max="2 1 1">
+        (3) Annihilation Planes: No GUI to configure, but enchanted with Fortune.
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="2.7 0 0" max="3 1 1">
+        (4) Storage Bus: In its default configuration.
+  </BoxAnnotation>
+
+<DiamondAnnotation pos="3.5 0.5 2.5" color="#00ff00">
+        Input
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="3.5 0.5 0.5" color="#00ff00">
+        Output
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="4 0.5 1.5" color="#00ff00">
+        To Main Network
+    </DiamondAnnotation>
+
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 ## Configurations
 

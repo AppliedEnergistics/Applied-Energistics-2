@@ -11,7 +11,13 @@ item_ids:
 
 # The Pattern Provider
 
-![Pattern Providers](../assets/assemblies/pattern_provider_variants.png)
+<Row gap="20">
+<BlockImage id="pattern_provider" scale="8" />
+<BlockImage id="pattern_provider" p:push_direction="up" scale="8" />
+<GameScene zoom="8" interactive="false">
+  <ImportStructure src="../assets/blocks/cable_pattern_provider.snbt" />
+</GameScene>
+</Row>
 
 Pattern providers are the primary way in which your [autocrafting](../ae2-mechanics/autocrafting.md) system interacts with the world. They push the ingredients in
 their [patterns](patterns.md) to adjacent inventories, and items can be inserted into them in order to insert them into the network. Often

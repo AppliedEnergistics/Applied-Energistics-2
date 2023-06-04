@@ -94,7 +94,10 @@ item_ids:
 
 # Cables
 
-![Some Cables, Demonstrating Connection Rules](../assets/assemblies/cables.png)
+<GameScene zoom="3">
+  <ImportStructure src="../assets/assemblies/cables.snbt" />
+  <IsometricCamera yaw="180" pitch="30" />
+</GameScene>
 
 While ME networks are also created by adjacent ME-capable machines, cables are the primary way of
 extending an ME network over larger areas.
@@ -117,7 +120,10 @@ into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) tog
 
 ## Glass Cable
 
-![A Picture of Glass Cable](../assets/blocks/fluix_glass_cable.png)
+<GameScene zoom="6">
+<ImportStructure src="../assets/assemblies/fluix_glass_cable.snbt" />
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 <ItemLink id="fluix_glass_cable" /> is the simplest cable to make, transfers power
 and up to 8 [channels](../ae2-mechanics/channels.md). It comes in 17 diffrent colors, the default
@@ -139,7 +145,10 @@ your [channels](../ae2-mechanics/channels.md).
 
 ## Covered Cable
 
-![A picture of covered cables.](../assets/blocks/fluix_covered_cable.png)
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/fluix_covered_cable.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 The covered cable variant offers no gameplay benefits over its <ItemLink id="fluix_glass_cable" /> counterpart. It can however be used
 as an alternate aesthetic choice if you prefer the covered look.
@@ -153,7 +162,10 @@ redstone and glowstone to make <ItemLink id="fluix_covered_dense_cable" />.
 
 ## Dense Cable
 
-![A picture of dense cable.](../assets/blocks/fluix_covered_dense_cable.png)
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/fluix_covered_dense_cable.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 Higher Capacity cable, can carry 32 channels unlike standard cable which can only carry 8,
 however it doesn't support buses so you must first step down from dense to a
@@ -169,7 +181,16 @@ dense cable, and then the shortest path through that dense cable to a controller
 
 ## Smart Cable
 
-![A picture of smart cable.](../assets/blocks/fluix_smart_cable.png)![A picture of smart cable.](../assets/blocks/fluix_smart_dense_cable.png)
+<Row>
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/fluix_smart_cable.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+<GameScene zoom="6">
+  <ImportStructure src="../assets/assemblies/fluix_smart_dense_cable.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+</Row>
 
 While bearing some similarity to <ItemLink id="fluix_covered_cable" /> in appearance, they
 provide diagnostic function by visualizing the channel usage on the cables,

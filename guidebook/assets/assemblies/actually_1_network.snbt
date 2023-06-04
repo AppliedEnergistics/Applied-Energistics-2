@@ -1,0 +1,39 @@
+{
+    DataVersion: 3337,
+    size: [7, 3, 3],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:drive{facing:north,spin:0}", nbt: {id: "ae2:drive", inv: {item0: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item1: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item2: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, priority: 0, proxy: {g: 332648L, p: 0}, visual: {cell0: {id: "ae2:item_storage_cell_4k", state: "empty"}, cell1: {id: "ae2:item_storage_cell_4k", state: "empty"}, cell2: {id: "ae2:item_storage_cell_4k", state: "empty"}, online: 1b}}},
+        {pos: [0, 0, 1], state: "minecraft:barrel{facing:east,open:false}", nbt: {Items: [], id: "minecraft:barrel"}},
+        {pos: [0, 0, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [1, 0, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [2, 0, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [4, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 5, connections: ["east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}, west: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 332648L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}}},
+        {pos: [4, 0, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [5, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsSouth: 5, channelsWest: 5, connections: ["south", "west"], missingChannel: 0b, powered: 1b}}, east: {fuzzy_mode: "IGNORE_ALL", gn: {g: 332648L, p: 0}, id: "ae2:import_bus", redstone_controlled: "IGNORE", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [5, 0, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [6, 0, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 5, channelsSouth: 5, connections: ["down", "south"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {filter_type: "ALL", gn: {g: 332648L, p: 0}, id: "ae2:crafting_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [0, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 332648L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 5, channelsSouth: 5, connections: ["north", "south"], missingChannel: 0b, powered: 1b}}, down: {access: "READ_WRITE", filter_on_extract: "YES", fuzzy_mode: "IGNORE_ALL", gn: {g: 332648L, p: 0}, id: "ae2:storage_bus", priority: 0, storage_filter: "EXTRACTABLE_ONLY", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [1, 1, 2], state: "ae2:quantum_link{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {Count: 1b, id: "ae2:quantum_entangled_singularity", tag: {freq: 168472969113100L}}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [2, 1, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [4, 1, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [5, 1, 2], state: "ae2:quantum_link{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {Count: 1b, id: "ae2:quantum_entangled_singularity", tag: {freq: 168472969113100L}}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [6, 1, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [0, 2, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [1, 2, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [2, 2, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [4, 2, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [5, 2, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}},
+        {pos: [6, 2, 2], state: "ae2:quantum_ring{formed:true,waterlogged:false}", nbt: {id: "ae2:quantum_ring", inv: {item0: {}}, proxy: {g: 332648L, p: 0}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:drive{facing:north,spin:0}",
+        "minecraft:barrel{facing:east,open:false}",
+        "ae2:quantum_ring{formed:true,waterlogged:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:cable_bus{light_level:9,waterlogged:false}",
+        "ae2:quantum_link{formed:true,waterlogged:false}"
+    ]
+}

@@ -6,7 +6,7 @@ package appeng.client.guidebook.color;
  */
 public enum SymbolicColor implements ColorValue {
     LINK(Colors.rgb(0, 213, 255), Colors.rgb(0, 213, 255)),
-    BODY_TEXT(Colors.rgb(174, 174, 174), Colors.rgb(174, 174, 174)),
+    BODY_TEXT(Colors.rgb(210, 210, 210), Colors.rgb(210, 210, 210)),
     ERROR_TEXT(Colors.rgb(255, 0, 0), Colors.rgb(255, 0, 0)),
     /**
      * Color used for the type of crafting shown in recipe blocks.
@@ -15,7 +15,7 @@ public enum SymbolicColor implements ColorValue {
     THEMATIC_BREAK(Colors.rgb(55, 55, 55), Colors.rgb(155, 155, 155)),
 
     HEADER1_SEPARATOR(Colors.argb(127, 255, 255, 255), Colors.argb(127, 255, 255, 255)),
-    HEADER2_SEPARATOR(Colors.argb(127, 174, 174, 174), Colors.argb(127, 174, 174, 174)),
+    HEADER2_SEPARATOR(Colors.argb(127, 210, 210, 210), Colors.argb(127, 210, 210, 210)),
 
     NAVBAR_BG_TOP(Colors.rgb(0, 0, 0), Colors.rgb(0, 0, 0)),
     NAVBAR_BG_BOTTOM(Colors.argb(127, 0, 0, 0), Colors.argb(127, 0, 0, 0)),

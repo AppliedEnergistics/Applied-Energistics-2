@@ -10,7 +10,9 @@ item_ids:
 
 # The Annihilation Plane
 
-![A picture of an annihilation plane.](../assets/blocks/annihilation_plane.png)
+<GameScene zoom="8">
+<ImportStructure src="../assets/blocks/annihilation_plane.snbt" />
+</GameScene>
 
 The Annihilation Plane breaks blocks and picks up items. It works similarly to an <ItemLink id="import_bus" />, pushing things
 into [network storage](../ae2-mechanics/import-export-storage.md). For items to be picked up, they must collide with the
@@ -31,11 +33,12 @@ can be [partitioned](cell_workbench.md) to achieve this.
 
 <GameScene zoom="6">
   <ImportStructure src="../assets/assemblies/annihilation_filtering.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-Again, it filters *by the item drops* so, for example, if you want to filter breaking of [budding certus blocks](../items-blocks-machines/budding_certus.md)
-you need a plane enchanted with silk touch, otherwise every tier of budding block drops <ItemLink id="quartz_block" /> and so
-the drops cannot be differentiated.
+Again, it filters *by the item drops* so, for example, if you want to filter breaking of <ItemLink id="minecraft:amethyst_cluster" />s,
+you need a plane enchanted with silk touch, otherwise every previous growth stage drops nothing and so the plane will break them no matter
+what, as the network can always store "nothing".
 
 ## Recipe
 

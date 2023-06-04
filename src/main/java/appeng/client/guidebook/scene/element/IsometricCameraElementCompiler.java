@@ -21,7 +21,6 @@ public class IsometricCameraElementCompiler implements SceneElementTagCompiler {
         float roll = MdxAttrs.getFloat(compiler, errorSink, el, "roll", 0.0f);
 
         var cameraSettings = scene.getCameraSettings();
-        ;
         cameraSettings.setIsometricYawPitchRoll(yaw, pitch, roll);
     }
 }

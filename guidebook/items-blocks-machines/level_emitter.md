@@ -11,6 +11,10 @@ item_ids:
 
 # The Level Emitter
 
+<GameScene zoom="8">
+  <ImportStructure src="../assets/blocks/level_emitter.snbt" />
+</GameScene>
+
 The Level Emitter emits a redstone signal depending on the quantity of an item in
 [network storage](../ae2-mechanics/import-export-storage.md).
 

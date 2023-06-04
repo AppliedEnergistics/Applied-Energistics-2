@@ -7,13 +7,62 @@ navigation:
 
 # Channels
 
-Applied Energistics 2's [ME Networks](../me-network.md) require
+<GameScene zoom="8">
+  <ImportStructure src="../assets/assemblies/channel_demonstration_1.snbt" />
+
+  <LineAnnotation color="#33ff33" from="1 .4 .7" to="2.4 .4 .7" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="1 .6 .7" to="2.4 .6 .7" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="1 .4 .6" to="2.6 .4 .6" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="1 .6 .6" to="2.6 .6 .6" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="1 .6 .6" to="2.6 .6 .6" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" from="2.4 .6 .7" to="2.4 .6 1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="2.4 .4 .7" to="2.4 .4 1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="2.6 .6 .6" to="2.6 .6 1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="2.6 .4 .6" to="2.6 .4 1.5" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" from="2.1 .6 1.5" to="2.4 .6 1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="2.6 .4 1.5" to="2.9 .4 1.5" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" from="2.6 .6 1.5" to="2.6 .9 1.5" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="2.4 .1 1.5" to="2.4 .4 1.5" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" from="1 .6 .4" to="3.5 .6 .4" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="1 .4 .4" to="3.5 .4 .4" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" from="3.5 .6 .4" to="3.5 .9 .4" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="3.5 .1 .4" to="3.5 .4 .4" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" from="1 .6 .3" to="1.5 .6 .3" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="1 .4 .3" to="1.5 .4 .3" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#33ff33" from="1.5 .6 .3" to="1.5 .9 .3" alwaysOnTop={true}/>
+  <LineAnnotation color="#33ff33" from="1.5 .1 .3" to="1.5 .4 .3" alwaysOnTop={true}/>
+
+  <LineAnnotation color="#ff3333" from="3.5 .5 .5" to="5.5 .5 .5" alwaysOnTop={true}>
+  All 8 channels in the cable have been used, so the Drive does not get one.  
+  </LineAnnotation>
+
+  <LineAnnotation color="#993333" from="1 .5 .5" to="1.25 .5 .5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" from="1.5 .5 .5" to="1.75 .5 .5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" from="2 .5 .5" to="2.25 .5 .5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" from="2.5 .5 .5" to="2.75 .5 .5" alwaysOnTop={true}/>
+  <LineAnnotation color="#993333" from="3 .5 .5" to="3.25 .5 .5" alwaysOnTop={true}/>
+
+  <DiamondAnnotation pos="3.6 0.5 0.5" color="#ff0000">
+        All 8 channels in the cable have been used, so the Drive does not get one.
+    </DiamondAnnotation>
+
+  <IsometricCamera yaw="15" pitch="30" />
+</GameScene>
+
+Applied Energistics 2's [ME Networks](me-network-connections.md) require
 Channels to support [devices](../ae2-mechanics/devices.md) which use networked storage, or other network
 services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
 so many devices connected to it. Most machines, full-block devices, and standard cables can only pass through
 up to 8 channels. You can think of full-block devices and standard cables as a bundle of 8 "channel wires". However, [dense cables](../items-blocks-machines/cables.md) can support up
 to 32 channels. The only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
-and the [Quantum Network Bridge](quantum-bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
+and the [Quantum Network Bridge](../items-blocks-machines/quantum_bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
 the bundle, which obviously means that "wire" isn't available further down the line.
 
 An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
@@ -36,13 +85,13 @@ Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does 
 
 A Network without a <ItemLink id="controller" />
 is considered to be Ad-Hoc, and can support up to 8 channel using devices.
-Once you exceed 8 devices the networks channel using devices will shutdown,
+Once you exceed 8 devices the network's channel using devices will shutdown,
 you can either remove devices, or add a <ItemLink id="controller" />.
 
 Unlike with controllered networks, [smart cables](../items-blocks-machines/cables.md) on ad-hoc networks will show the number
 of channels in use network-wide instead of the number of channels flowing through that specific cable.
 
-While using [Ad-Hoc](ad-hoc-networks.md) networks each device will
+While using ad-hoc networks each device will
 use 1 channel network wide, this is very different from how <ItemLink id="controller" /> allocate channels based on
 shortest route.
 
@@ -76,4 +125,7 @@ The following table lists the available modes in both the configuration file and
 It's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
 branching out from the dense, and [devices](../ae2-mechanics/devices.md) in clusters of 8 or fewer on the regular cables.
 
-ILLUSTRATION IN-PROGRESS
+<GameScene zoom="3">
+  <ImportStructure src="../assets/assemblies/treelike_network_structure.snbt" />
+  <IsometricCamera yaw="315" pitch="30" />
+</GameScene>
