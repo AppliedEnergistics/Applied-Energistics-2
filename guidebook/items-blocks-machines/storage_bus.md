@@ -50,7 +50,7 @@ from network storage, higher priority storages will be filled and lower priority
 
 *   The bus can be partitioned (filtered) to what is currently in the adjacent inventory
 *   The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract
-    (for example, a storage bus cannot extract items from the middle input slot) of an <ItemLink id="inscriber" />)
+    (for example, a storage bus cannot extract items from the middle input slot of an <ItemLink id="inscriber" />)
 *   The bus can filter on both insertion and extraction or just insertion
 *   The bus can be bi-directional, insert-only, or extract-only
 
