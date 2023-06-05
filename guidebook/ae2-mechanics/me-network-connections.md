@@ -63,6 +63,19 @@ a wireless [dense cable](../items-blocks-machines/cables.md#dense-cable), so bot
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
+This is also just 1 network, as [cable](../items-blocks-machines/cables.md) color has nothing to do with network connections other than cables of different colors not
+connecting to each other. All colors connect to fluix (or "uncolored") cables.
+
+<GameScene zoom="6" background="#00000000" interactive="false">
+  <ImportStructure src="../assets/assemblies/actually_1_network_2.snbt" />
+
+  <BoxAnnotation color="#915dcd" min="0 0 0" max="4 2 2">
+        All 1 network
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
 ## Less Intuitive Connections
 
 In this case, this is just 1 network, because the <ItemLink id="pattern_provider" />, being a fullblock device, acts like

@@ -11,7 +11,7 @@ Applied Energistics 2's [ME Networks](me-network-connections.md) require
 Channels to support [devices](../ae2-mechanics/devices.md) which use networked storage, or other network
 services. Think of channels like USB cables to all your devices. A computer only has so many USB ports and can only support
 so many devices connected to it. Most machines, full-block devices, and standard cables can only pass through
-up to 8 channels. You can think of full-block devices and standard cables as a bundle of 8 "channel wires". However, [dense cables](../items-blocks-machines/cables.md) can support up
+up to 8 channels. You can think of full-block devices and standard cables as a bundle of 8 "channel wires". However, [dense cables](../items-blocks-machines/cables.md#dense-cable) can support up
 to 32 channels. The only other devices capable of transmitting 32 are <ItemLink id="me_p2p_tunnel" />
 and the [Quantum Network Bridge](../items-blocks-machines/quantum_bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
 the bundle, which obviously means that "wire" isn't available further down the line.
@@ -72,6 +72,10 @@ adding a <ItemLink id="controller" /> for a
 network with 8 devices and over 96 nodes your power usage might actually
 decrease power consumption because it changes how channels are allocated.
 
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does is make cables not connect.
+
+## Channel Routing
+
 When using a <ItemLink id="controller" />,
 channels route via 3 steps. They first take the shortest path through adjacent machines to the nearest [normal cable](../items-blocks-machines/cables.md)
 (glass, covered, or smart). They then take the shortest path through that normal cable to the nearest [dense cable](../items-blocks-machines/cables.md)
@@ -79,7 +83,50 @@ channels route via 3 steps. They first take the shortest path through adjacent m
 If the shortest path is already maxed out, some [devices](devices.md) may not get their required channels, use
 colored cables, cable anchors and tunnels to your advantage to make sure your channels go in the path you desire.
 
-Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does is make cables not connect.
+For example, in this case some drives don't get channels because although there is enough capacity in the cables, the
+channels try to take the shortest path, overloading some cables while leaving others empty.
+
+<GameScene zoom="4" interactive="true">
+  <ImportStructure src="../assets/assemblies/channel_path_length_issue.snbt" />
+
+  <LineAnnotation color="#33ff33" from="3 .5 1.4" to="0.4 0.5 1.4" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="0.4 .5 1.4" to="0.4 0.5 3.6" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="0.4 0.5 3.6" to="1.4 0.5 3.6" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="1.4 0.5 3.6" to="1.4 0.5 5" alwaysOnTop={true} thickness="0.05"/>
+
+  <LineAnnotation color="#33ff33" from="3 0.5 3.6" to="1.6 0.5 3.6" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="1.6 0.5 3.6" to="1.6 0.5 5" alwaysOnTop={true} thickness="0.05"/>
+
+  <LineAnnotation color="#ff3333" from="3 .5 1.6" to="0.6 .5 1.6" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#ff3333" from="0.6 .5 1.6" to="0.6 .5 3.4" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#ff3333" from="0.6 .5 3.4" to="1.4 .5 3.4" alwaysOnTop={true} thickness="0.05"/>
+
+  <LineAnnotation color="#ff3333" from="3 .5 3.4" to="1.6 .5 3.4" alwaysOnTop={true} thickness="0.05"/>
+
+  <BoxAnnotation color="#dddddd" min="1.2 0.2 3.2" max="1.8 0.8 3.8" alwaysOnTop={true} thickness="0.05">
+        More than 8 channels attempt to route through here so some are cut off.
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="90" pitch="90" />
+
+</GameScene>
+
+This can be fixed by more carefully constraining the paths channels can take. Networks should be treelike (or bushlike).
+Loops and ambiguous channel paths should be minimized.
+
+<GameScene zoom="4" interactive="true">
+  <ImportStructure src="../assets/assemblies/channel_path_length_issue_fix.snbt" />
+
+  <LineAnnotation color="#33ff33" from="3 .5 1.4" to="0.4 0.5 1.4" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="0.4 .5 1.4" to="0.4 0.5 5.6" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="0.4 0.5 5.6" to="1 0.5 5.6" alwaysOnTop={true} thickness="0.05"/>
+
+  <LineAnnotation color="#33ff33" from="3 0.5 3.6" to="1.6 0.5 3.6" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="1.6 0.5 3.6" to="1.6 0.5 5" alwaysOnTop={true} thickness="0.05"/>
+
+  <IsometricCamera yaw="90" pitch="90" />
+
+</GameScene>
 
 ## Ad-Hoc Networks
 
@@ -94,10 +141,6 @@ of channels in use network-wide instead of the number of channels flowing throug
 While using ad-hoc networks each device will
 use 1 channel network wide, this is very different from how <ItemLink id="controller" /> allocate channels based on
 shortest route.
-
-## A Visual Example
-
-WAITING UNTIL 3D SCENES ARE IMPLEMENTED
 
 ## Channel Modes
 
@@ -122,10 +165,24 @@ The following table lists the available modes in both the configuration file and
 
 ## Design
 
-It's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
+As mentioned before in [channel routing](channels.md#channel-routing), it's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
 branching out from the dense, and [devices](../ae2-mechanics/devices.md) in clusters of 8 or fewer on the regular cables.
 
 <GameScene zoom="3">
   <ImportStructure src="../assets/assemblies/treelike_network_structure.snbt" />
+
+    <BoxAnnotation color="#dddddd" min="6.9 0 4.9" max="9.1 4 7.1" thickness="0.05">
+        Notice that the pattern providers are in separate groups of 8.
+    </BoxAnnotation>
+
+    <BoxAnnotation color="#dddddd" min="5 4 4" max="8 5 5" thickness="0.05">
+        Two regular cables full of channels coming together mean you need a dense cable.
+    </BoxAnnotation>
+
+    <BoxAnnotation color="#dddddd" min="5 0 13" max="8 1 14" thickness="0.05">
+        Different cable colors are used to prevent adjacent cables from connecting.
+    </BoxAnnotation>
+
+
   <IsometricCamera yaw="315" pitch="30" />
 </GameScene>
