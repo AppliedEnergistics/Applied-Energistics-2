@@ -138,7 +138,9 @@ public class RestrictedInputSlot extends AppEngSlot {
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:
-                return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack);
+                return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
+                        && stack.hasTag()
+                        && stack.getTag().contains("freq");
 
             case RANGE_BOOSTER:
                 return AEItems.WIRELESS_BOOSTER.isSameAs(stack);
