@@ -15,7 +15,7 @@ break the fully grown <ItemLink id="quartz_cluster" />. They are filtered by tak
 certus buds drop <ItemLink id="certus_quartz_dust" /> instead of dropping nothing.
 
 This farm works fully automatically with <ItemLink id="flawless_budding_quartz" />, but with flawed, chipped, and damaged
-budding certus quartz you will have to replace the budding block manually. Or, as described in [Advanced Certus Farm](advanced-certus-farm),
+budding certus quartz you will have to replace the budding block manually. Or, as described in [Advanced Certus Farm](advanced-certus-farm.md),
 automatically.
 
 <GameScene zoom="6">
