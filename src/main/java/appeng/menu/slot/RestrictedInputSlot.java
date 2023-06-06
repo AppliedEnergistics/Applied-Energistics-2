@@ -37,6 +37,7 @@ import appeng.api.upgrades.Upgrades;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.blockentity.misc.InscriberRecipes;
 import appeng.blockentity.misc.VibrationChamberBlockEntity;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
@@ -139,8 +140,7 @@ public class RestrictedInputSlot extends AppEngSlot {
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:
                 return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
-                        && stack.hasTag()
-                        && stack.getTag().contains("freq");
+                        && QuantumBridgeBlockEntity.hasChannel(stack);
 
             case RANGE_BOOSTER:
                 return AEItems.WIRELESS_BOOSTER.isSameAs(stack);

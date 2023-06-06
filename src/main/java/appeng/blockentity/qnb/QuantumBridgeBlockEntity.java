@@ -43,12 +43,16 @@ import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
 import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.FilteredInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
 
 public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
 
     private final byte corner = 16;
     private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
+    private final FilteredInternalInventory externalInventory = new FilteredInternalInventory(this.internalInventory,
+            new QuantumBridgeFilter());
     private final byte hasSingularity = 32;
     private final byte powered = 64;
 
@@ -130,7 +134,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     @Override
     public InternalInventory getExposedInventoryForSide(Direction side) {
         if (this.isCenter()) {
-            return this.internalInventory;
+            return this.externalInventory;
         }
         return InternalInventory.empty();
     }
@@ -286,6 +290,19 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     @Override
     public QnbFormedState getRenderAttachmentData() {
         return new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered());
+    }
+
+    private class QuantumBridgeFilter implements IAEItemFilter {
+
+        @Override
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            return hasChannel(stack);
+        }
+
+    }
+
+    public static boolean hasChannel(ItemStack singularity) {
+        return singularity.hasTag() && singularity.getTag().contains("freq");
     }
 
 }
