@@ -7,10 +7,11 @@ navigation:
 
 # Interface Autostocking
 
-One might ask "How do I keep a certain amount of item in stock, crafting more as needed?"
+One might ask "How do I keep a certain amount of various items in stock, crafting more as needed?"
 
 One solution is use of an <ItemLink id="interface" /> and <ItemLink id="crafting_card" /> to automatically request new items
-from your network's [autocrafting](../ae2-mechanics/autocrafting.md).
+from your network's [autocrafting](../ae2-mechanics/autocrafting.md). This setup is more suited to maintaining a small quantity of a wide
+variety of items.
 
 This demonstration setup is cut short so it isn't too wide, it is likely most optimal to use 4 <ItemLink id="interface" />s and 4 <ItemLink id="storage_bus" />ses,
 to use all 8 [channels](../ae2-mechanics/channels.md) in a regular [cable](../items-blocks-machines/cables.md).
