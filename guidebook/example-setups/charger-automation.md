@@ -15,6 +15,7 @@ or other item pipe pushes the result back into the provider.
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="2 1 1">
         (1) Pattern Provider: In its default configuration, with the relevant processing patterns. Also provides the charger with power.
+
         ![Charger Pattern](../assets/diagrams/charger_pattern_small.png)
   </BoxAnnotation>
 

@@ -16,7 +16,7 @@ from your network's [autocrafting](../ae2-mechanics/autocrafting.md). This setup
   <ImportStructure src="../assets/assemblies/level_emitter_autostocking.snbt" />
 
   <BoxAnnotation color="#dddddd" min="1 1 0" max="2 1.3 1">
-        (1) Export Bus: Filtered to the desired item. Has a redstone card and crafting card. Redstone mode set to
+        (1) Export Bus: Filtered to the desired item. Has a Redstone Card and Crafting Card. Redstone mode set to
         "Active with signal", Crafting behavior set to "Do not use stocked items".
         <Row><ItemImage id="redstone_card" scale="2" /> <ItemImage id="crafting_card" scale="2" /></Row>
   </BoxAnnotation>

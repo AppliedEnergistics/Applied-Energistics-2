@@ -20,7 +20,7 @@ to use all 8 [channels](../ae2-mechanics/channels.md) in a regular [cable](../it
   <ImportStructure src="../assets/assemblies/interface_autostocking.snbt" />
 
 <BoxAnnotation color="#dddddd" min="0 0 0" max="2 1 1">
-        (1) Interfaces: Set to keep the desired items in themselves. They have crafting cards.
+        (1) Interfaces: Set to keep the desired items in themselves. They have Crafting Cards.
         <ItemImage id="crafting_card" scale="2" />
   </BoxAnnotation>
 
@@ -39,7 +39,7 @@ to use all 8 [channels](../ae2-mechanics/channels.md) in a regular [cable](../it
 
 * The <ItemLink id="interface" />s (1) are set to keep the desired items in themselves, by clicking the desired item into their
    top slots or dragging into the top slots from JEI, then clicking on the wrench icon above the slots to set the amount. They have <ItemLink id="crafting_card" />s.
-* The <ItemLink id="storage_bus" />ses (2) are set  such that "Input/Output Mode" is set to "Extract Only".
+* The <ItemLink id="storage_bus" />ses (2) are set such that "Input/Output Mode" is set to "Extract Only".
 
 ## How It Works
 

@@ -21,7 +21,7 @@ For example,
 *   <ItemLink id="storage_bus" />ses don't really push to or pull from storage, they push to or pull from the connected inventory
     in order to use it as network storage (so really other devices push to or pull from *them*)
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="#00000000" interactive="false">
   <ImportStructure src="../assets/assemblies/import_export_storage.snbt" />
 
   <BoxAnnotation color="#dddddd" min="8 1 1" max="9 1.3 2">

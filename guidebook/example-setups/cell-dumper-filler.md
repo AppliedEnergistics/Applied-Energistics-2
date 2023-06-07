@@ -16,7 +16,7 @@ The answer is use of an <ItemLink id="io_port" /> and some subnetting to restric
 
 <BoxAnnotation color="#dddddd" min="1 1 0" max="2 2 1">
         (1) IO Port: Can be set to either "Transfer data to Network" or "Transfer data to Storage Cell" using the arrow button
-        in the middle of the GUI. Has 3 acceleration cards.
+        in the middle of the GUI. Has 3 Acceleration Cards.
         <ItemImage id="speed_card" scale="2" />
   </BoxAnnotation>
 
