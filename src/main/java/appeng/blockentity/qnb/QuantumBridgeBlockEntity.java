@@ -40,7 +40,6 @@ import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import appeng.items.materials.EntangledSingularityItem;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
@@ -298,9 +297,13 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
 
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
-            return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack) && EntangledSingularityItem.hasChannel(stack);
+            return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack) && hasFrequency(stack);
         }
 
+    }
+
+    public static boolean hasFrequency(ItemStack singularity) {
+        return singularity.hasTag() && singularity.getTag().contains("freq");
     }
 
 }
