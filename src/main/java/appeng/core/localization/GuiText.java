@@ -119,6 +119,7 @@ public enum GuiText implements LocalizationEnum {
     IntrinsicEnchant("Always has at least %s"),
     InvalidNumber("Please enter a number or a mathematical expression e.g. : 3*4"),
     InvalidPattern("Invalid Pattern"),
+    InvalidSingularity("Invalid Singularity"),
     Items("Items"),
     // Used in a terminal to indicate that an item is craftable
     LargeFontCraft("+"),
