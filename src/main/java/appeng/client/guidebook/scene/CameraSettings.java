@@ -7,6 +7,8 @@ import org.joml.Vector4f;
 
 import net.minecraft.util.Mth;
 
+import appeng.client.guidebook.document.LytSize;
+
 public class CameraSettings {
 
     private float zoom = 1;
@@ -21,13 +23,19 @@ public class CameraSettings {
     private final Vector3f rotationCenter = new Vector3f();
     private float offsetX;
     private float offsetY;
+    private LytSize viewportSize = LytSize.empty();
 
-    public Vector4f getViewport() {
-        return viewport;
+    public void setViewportSize(LytSize size) {
+        this.viewportSize = size;
+        var halfWidth = size.width() / 2f;
+        var halfHeight = size.height() / 2f;
+        var renderViewport = new Vector4f(
+                -halfWidth, -halfHeight, halfWidth, halfHeight);
+        this.viewport.set(renderViewport);
     }
 
-    public void setViewport(Vector4f viewport) {
-        this.viewport.set(viewport);
+    public LytSize getViewportSize() {
+        return viewportSize;
     }
 
     public CameraSettings() {
@@ -84,7 +92,13 @@ public class CameraSettings {
 
     public Matrix4f getProjectionMatrix() {
         var projectionMatrix = new Matrix4f();
-        projectionMatrix.ortho(viewport.x, viewport.z, viewport.y, viewport.w, -1000, 3000);
+        projectionMatrix.setOrtho(
+                viewport.x(),
+                viewport.z(),
+                viewport.y(),
+                viewport.w(),
+                -1000,
+                3000);
         return projectionMatrix;
     }
 
@@ -135,5 +149,18 @@ public class CameraSettings {
     private enum Mode {
         ORTOGRAPHIC,
         PERSPECTIVE
+    }
+
+    public SavedCameraSettings save() {
+        return new SavedCameraSettings(rotationX, rotationY, rotationZ, offsetX, offsetY, zoom);
+    }
+
+    public void restore(SavedCameraSettings settings) {
+        rotationX = settings.rotationX();
+        rotationY = settings.rotationY();
+        rotationZ = settings.rotationZ();
+        offsetX = settings.offsetX();
+        offsetY = settings.offsetY();
+        zoom = settings.zoom();
     }
 }

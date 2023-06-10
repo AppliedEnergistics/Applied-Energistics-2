@@ -17,6 +17,8 @@ public abstract class LytNode implements Styleable {
     private TextStyle style = TextStyle.EMPTY;
     private TextStyle hoverStyle = TextStyle.EMPTY;
 
+    private boolean visible = true;
+
     public void removeChild(LytNode node) {
     }
 

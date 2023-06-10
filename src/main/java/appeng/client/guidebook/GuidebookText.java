@@ -3,10 +3,16 @@ package appeng.client.guidebook;
 import appeng.core.localization.LocalizationEnum;
 
 public enum GuidebookText implements LocalizationEnum {
-    GuidebookHistoryGoBack("Go back one page"),
-    GuidebookHistoryGoForward("Go forward one page"),
-    GuidebookClose("Close"),
-    GuidebookHoldToShow("Hold [%s] to open guide");
+    HistoryGoBack("Go back one page"),
+    HistoryGoForward("Go forward one page"),
+    Close("Close"),
+    HoldToShow("Hold [%s] to open guide"),
+    HideAnnotations("Hide Annotations"),
+    ShowAnnotations("Show Annotations"),
+    ZoomIn("Zoom In"),
+    ZoomOut("Zoom Out"),
+    ResetView("Reset View"),
+    Search("Search");
 
     private final String englishText;
 

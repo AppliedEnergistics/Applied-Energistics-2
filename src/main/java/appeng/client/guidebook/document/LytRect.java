@@ -109,4 +109,8 @@ public record LytRect(int x, int y, int width, int height) {
 
         return new LytRect(left, top, width, height);
     }
+
+    public LytSize size() {
+        return new LytSize(width, height);
+    }
 }

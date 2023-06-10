@@ -42,13 +42,22 @@ public class GuidebookScene {
     private final List<InWorldAnnotation> inWorldAnnotations = new ArrayList<>();
     private final List<OverlayAnnotation> overlayAnnotations = new ArrayList<>();
 
+    private int width;
+    private int height;
+
     public GuidebookScene(GuidebookLevel level, CameraSettings cameraSettings) {
         this.level = level;
         this.cameraSettings = cameraSettings;
     }
 
     public Vector4f getScreenBounds() {
+        var offx = cameraSettings.getOffsetX();
+        var offy = cameraSettings.getOffsetY();
+        cameraSettings.setOffsetX(0);
+        cameraSettings.setOffsetY(0);
         var viewMatrix = cameraSettings.getViewMatrix();
+        cameraSettings.setOffsetX(offx);
+        cameraSettings.setOffsetY(offy);
 
         var result = getBounds(viewMatrix);
 
@@ -66,6 +75,14 @@ public class GuidebookScene {
                 result.min().y,
                 result.max().x,
                 result.max().y);
+    }
+
+    public void centerScene() {
+        var bounds = getScreenBounds();
+        var w = -(bounds.z - bounds.x) / 2;
+        var h = -(bounds.w - bounds.y) / 2;
+        cameraSettings.setOffsetX(w - bounds.x);
+        cameraSettings.setOffsetY(h - bounds.y);
     }
 
     @NotNull
@@ -99,6 +116,9 @@ public class GuidebookScene {
     private record Bounds(Vector3f min, Vector3f max) {
     }
 
+    /**
+     * Return the given world position in normalized device coordinates.
+     */
     public Vector2f worldToScreen(float x, float y, float z) {
         var viewMatrix = cameraSettings.getViewMatrix();
         var projectionMatrix = cameraSettings.getProjectionMatrix();
@@ -333,12 +353,20 @@ public class GuidebookScene {
     }
 
     /**
-     * Transforms from document coordinates (layout coordinate system) to coordinates in the screen space used by the
-     * scene.
+     * Transforms from normalized device coordinates to document coordinates based on the given viewport in that
+     * coordinate system.
      */
-    public LytPoint screenToDocument(LytRect viewport, Vector2f screen) {
+    public LytPoint screenToDocument(Vector2f screen, LytRect viewport) {
         var x = viewport.x() + (screen.x + 1) / 2f * viewport.width();
         var y = viewport.y() + (-screen.y + 1) / 2f * viewport.height();
         return new LytPoint(x, y);
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 }

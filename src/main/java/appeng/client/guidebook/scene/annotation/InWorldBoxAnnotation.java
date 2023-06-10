@@ -74,11 +74,7 @@ public final class InWorldBoxAnnotation extends InWorldAnnotation {
                     var y = yCorner == 0 ? (minCorner.y - thickness) : (maxCorner.y + thickness);
                     var z = zCorner == 0 ? (minCorner.z - thickness) : (maxCorner.z + thickness);
 
-                    viewMatrix.transformPosition(
-                            x + xCorner,
-                            y + yCorner,
-                            z + zCorner,
-                            tmpPos);
+                    viewMatrix.transformPosition(x, y, z, tmpPos);
                     minScreen.min(tmpPos);
                     maxScreen.max(tmpPos);
                 }

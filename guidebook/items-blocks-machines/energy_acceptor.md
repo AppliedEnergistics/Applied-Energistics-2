@@ -13,7 +13,7 @@ item_ids:
 <Row gap="20">
 <BlockImage id="energy_acceptor" scale="8" /> 
 
-<GameScene zoom="8" interactive="false">
+<GameScene zoom="8" interactive={false}>
   <ImportStructure src="../assets/blocks/cable_energy_acceptor.snbt" />
 </GameScene>
 </Row>

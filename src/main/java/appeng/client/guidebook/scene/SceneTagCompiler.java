@@ -48,12 +48,16 @@ public class SceneTagCompiler extends BlockTagCompiler implements Extension {
         }
 
         scene.getCameraSettings().setRotationCenter(scene.getWorldCenter());
+        scene.centerScene();
 
         var lytScene = new LytGuidebookScene(compiler.getExtensions());
         lytScene.setScene(scene);
         lytScene.setBackground(background);
-        if ("true".equals(el.getAttributeString("interactive", "true"))) {
+        if (MdxAttrs.getBoolean(compiler, parent, el, "interactive", false)) {
             lytScene.setInteractive(true);
+        }
+        if (MdxAttrs.getBoolean(compiler, parent, el, "fullWidth", false)) {
+            lytScene.setFullWidth(true);
         }
         parent.append(lytScene);
     }

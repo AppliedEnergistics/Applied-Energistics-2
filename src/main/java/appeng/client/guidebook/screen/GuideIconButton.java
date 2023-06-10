@@ -1,5 +1,6 @@
 package appeng.client.guidebook.screen;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,23 +17,35 @@ import appeng.core.AppEng;
 /**
  * Button found in the toolbar at the top of {@link GuideScreen}.
  */
-class TopNavButton extends Button {
+public class GuideIconButton extends Button {
     public static final int WIDTH = 16;
     public static final int HEIGHT = 16;
 
-    private final Role role;
+    private Role role;
 
-    public TopNavButton(int x, int y, Role role, Runnable callback) {
+    public GuideIconButton(int x, int y, Role role, Runnable callback) {
+        this(x, y, role, btn -> callback.run());
+    }
+
+    public GuideIconButton(int x, int y, Role role, Consumer<GuideIconButton> callback) {
         super(
                 x,
                 y,
                 WIDTH,
                 HEIGHT,
                 role.actionText,
-                btn -> callback.run(),
+                btn -> callback.accept((GuideIconButton) btn),
                 Supplier::get);
         this.role = role;
         setTooltip(Tooltip.create(getMessage()));
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
@@ -47,25 +60,33 @@ class TopNavButton extends Button {
 
         var resolved = color.resolve(LightDarkMode.current());
 
-        Blitter.texture(AppEng.makeId("textures/guide/topnav_buttons.png"), 64, 16)
-                .src(role.iconSrcX, 0, 16, 16)
+        Blitter.texture(AppEng.makeId("textures/guide/buttons.png"), 64, 64)
+                .src(role.iconSrcX, role.iconSrcY, 16, 16)
                 .dest(getX(), getY(), 16, 16)
                 .colorArgb(resolved)
                 .blit(guiGraphics);
     }
 
-    enum Role {
-        BACK(GuidebookText.GuidebookHistoryGoBack.text(), 0),
-        FORWARD(GuidebookText.GuidebookHistoryGoForward.text(), 16),
-        CLOSE(GuidebookText.GuidebookClose.text(), 32);
+    public enum Role {
+        BACK(GuidebookText.HistoryGoBack.text(), 0, 0),
+        FORWARD(GuidebookText.HistoryGoForward.text(), 16, 0),
+        CLOSE(GuidebookText.Close.text(), 32, 0),
+        SEARCH(GuidebookText.Search.text(), 48, 0),
+        HIDE_ANNOTATIONS(GuidebookText.HideAnnotations.text(), 0, 16),
+        SHOW_ANNOTATIONS(GuidebookText.ShowAnnotations.text(), 16, 16),
+        ZOOM_OUT(GuidebookText.ZoomOut.text(), 32, 16),
+        ZOOM_IN(GuidebookText.ZoomIn.text(), 48, 16),
+        RESET_VIEW(GuidebookText.ResetView.text(), 0, 32);
 
         final Component actionText;
 
         final int iconSrcX;
+        final int iconSrcY;
 
-        Role(Component actionText, int iconSrcX) {
+        Role(Component actionText, int iconSrcX, int iconSrcY) {
             this.actionText = actionText;
             this.iconSrcX = iconSrcX;
+            this.iconSrcY = iconSrcY;
         }
     }
 }

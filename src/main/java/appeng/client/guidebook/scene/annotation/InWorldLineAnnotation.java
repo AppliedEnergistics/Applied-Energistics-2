@@ -54,8 +54,8 @@ public final class InWorldLineAnnotation extends InWorldAnnotation {
     }
 
     /**
-     * Computes the screen bounding box for this highlighted box, given a view matrix to transform the corners of this
-     * box in to screen space.
+     * Computes the screen bounding box for this line, given a view matrix to transform the start and end of the line
+     * into screen space. Since lines are extruded, we compute the bounds around the 8 corners around both end-points.
      *
      * @return A pair of the min and max screen coordinates.
      */
@@ -64,20 +64,19 @@ public final class InWorldLineAnnotation extends InWorldAnnotation {
         var maxScreen = new Vector3f(Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY);
 
         var tmpPos = new Vector3f();
-        for (var xCorner = 0; xCorner <= 1; xCorner++) {
-            for (var yCorner = 0; yCorner <= 1; yCorner++) {
-                for (var zCorner = 0; zCorner <= 1; zCorner++) {
-                    var x = xCorner == 0 ? (from.x - thickness) : (to.x + thickness);
-                    var y = yCorner == 0 ? (from.y - thickness) : (to.y + thickness);
-                    var z = zCorner == 0 ? (from.z - thickness) : (to.z + thickness);
+        for (var i = 0; i <= 1; i++) {
+            var p = i == 0 ? from : to;
+            for (var xCorner = 0; xCorner <= 1; xCorner++) {
+                for (var yCorner = 0; yCorner <= 1; yCorner++) {
+                    for (var zCorner = 0; zCorner <= 1; zCorner++) {
+                        var x = xCorner == 0 ? (p.x - thickness / 2) : (p.x + thickness / 2);
+                        var y = yCorner == 0 ? (p.y - thickness / 2) : (p.y + thickness / 2);
+                        var z = zCorner == 0 ? (p.z - thickness / 2) : (p.z + thickness / 2);
 
-                    viewMatrix.transformPosition(
-                            x + xCorner,
-                            y + yCorner,
-                            z + zCorner,
-                            tmpPos);
-                    minScreen.min(tmpPos);
-                    maxScreen.max(tmpPos);
+                        viewMatrix.transformPosition(x, y, z, tmpPos);
+                        minScreen.min(tmpPos);
+                        maxScreen.max(tmpPos);
+                    }
                 }
             }
         }
