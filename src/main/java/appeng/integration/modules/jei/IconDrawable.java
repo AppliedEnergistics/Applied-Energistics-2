@@ -1,6 +1,6 @@
 package appeng.integration.modules.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 import mezz.jei.api.gui.drawable.IDrawable;
 
@@ -32,8 +32,7 @@ final class IconDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(PoseStack poseStack, int xOffset, int yOffset) {
-        // TODO 1.20 GuiGraphics
-        // blitter.dest(x + xOffset, y + yOffset).blit(poseStack);
+    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
+        blitter.dest(x + xOffset, y + yOffset).blit(guiGraphics);
     }
 }

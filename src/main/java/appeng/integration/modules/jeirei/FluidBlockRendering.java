@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.BlockPos;
@@ -28,7 +29,7 @@ public final class FluidBlockRendering {
     private FluidBlockRendering() {
     }
 
-    public static void render(PoseStack stack, Fluid fluid, int x, int y, int width, int height) {
+    public static void render(GuiGraphics guiGraphics, Fluid fluid, int x, int y, int width, int height) {
         var fluidState = fluid.defaultFluidState();
 
         var blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -40,7 +41,7 @@ public final class FluidBlockRendering {
 
         var worldMatStack = RenderSystem.getModelViewStack();
         worldMatStack.pushPose();
-        worldMatStack.mulPoseMatrix(stack.last().pose());
+        worldMatStack.mulPoseMatrix(guiGraphics.pose().last().pose());
         worldMatStack.translate(x, y, 0);
 
         FogRenderer.setupNoFog();

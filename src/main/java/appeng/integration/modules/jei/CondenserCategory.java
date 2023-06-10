@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -101,15 +101,15 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public void draw(CondenserOutput recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
+    public void draw(CondenserOutput recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
             double mouseY) {
-        this.progress.draw(stack);
-        this.iconTrash.draw(stack);
-        this.iconButton.draw(stack);
+        this.progress.draw(guiGraphics);
+        this.iconTrash.draw(guiGraphics);
+        this.iconButton.draw(guiGraphics);
 
         var buttonIcon = this.buttonIcons.get(recipe);
         if (buttonIcon != null) {
-            buttonIcon.draw(stack);
+            buttonIcon.draw(guiGraphics);
         }
     }
 

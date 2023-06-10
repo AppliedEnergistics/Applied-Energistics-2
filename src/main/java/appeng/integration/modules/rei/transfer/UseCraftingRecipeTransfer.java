@@ -1,7 +1,9 @@
 package appeng.integration.modules.rei.transfer;
 
 import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
 import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -139,7 +141,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
      * Draw missing slots.
      */
     private static TransferHandlerRenderer createErrorRenderer(CraftingTermMenu.MissingIngredientSlots indices) {
-        return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
+        return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
             int i = 0;
             for (Widget widget : widgets) {
                 if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
@@ -147,12 +149,13 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
                     boolean craftable = indices.craftableSlots().contains(i);
                     i++;
                     if (missing || craftable) {
-                        matrices.pushPose();
-                        matrices.translate(0, 0, 400);
+                        var poseStack = guiGraphics.pose();
+                        poseStack.pushPose();
+                        poseStack.translate(0, 0, 400);
                         Rectangle innerBounds = slot.getInnerBounds();
-                        // TODO 1.20 GuiComponent.fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                        // TODO innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-                        matrices.popPose();
+                        guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                                innerBounds.getMaxY(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
+                        poseStack.popPose();
                     }
                 }
             }

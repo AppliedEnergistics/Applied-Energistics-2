@@ -1,5 +1,7 @@
 package appeng.integration.modules.rei.transfer;
 
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -142,16 +144,17 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
     }
 
     private static TransferHandlerRenderer createErrorRenderer(Set<AEKey> craftableKeys) {
-        return (matrices, mouseX, mouseY, delta, widgets, bounds, display) -> {
+        return (guiGraphics, mouseX, mouseY, delta, widgets, bounds, display) -> {
             for (Widget widget : widgets) {
                 if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
                     if (isCraftable(craftableKeys, slot.getEntries())) {
-                        matrices.pushPose();
-                        matrices.translate(0, 0, 400);
+                        var poseStack = guiGraphics.pose();
+                        poseStack.pushPose();
+                        poseStack.translate(0, 0, 400);
                         Rectangle innerBounds = slot.getInnerBounds();
-                        // TODO 1.20 fill(matrices, innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
-                        // innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
-                        matrices.popPose();
+                        guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
+                                innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
+                        poseStack.popPose();
                     }
                 }
             }
