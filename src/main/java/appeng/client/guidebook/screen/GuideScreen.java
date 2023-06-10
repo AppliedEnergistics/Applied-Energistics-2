@@ -37,6 +37,7 @@ import appeng.client.guidebook.compiler.AnchorIndexer;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.DefaultStyles;
+import appeng.client.guidebook.document.LytPoint;
 import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytDocument;
@@ -132,22 +133,22 @@ public class GuideScreen extends Screen {
         addRenderableWidget(navbar);
 
         // Center them vertically in the margin
-        backButton = new TopNavButton(
-                width - DOCUMENT_RECT_MARGIN - TopNavButton.WIDTH * 3 - 10,
+        backButton = new GuideIconButton(
+                width - DOCUMENT_RECT_MARGIN - GuideIconButton.WIDTH * 3 - 10,
                 2,
-                TopNavButton.Role.BACK,
+                GuideIconButton.Role.BACK,
                 this::navigateBack);
         addRenderableWidget(backButton);
-        forwardButton = new TopNavButton(
-                width - DOCUMENT_RECT_MARGIN - TopNavButton.WIDTH * 2 - 5,
+        forwardButton = new GuideIconButton(
+                width - DOCUMENT_RECT_MARGIN - GuideIconButton.WIDTH * 2 - 5,
                 2,
-                TopNavButton.Role.FORWARD,
+                GuideIconButton.Role.FORWARD,
                 this::navigateForward);
         addRenderableWidget(forwardButton);
-        var closeButton = new TopNavButton(
-                width - DOCUMENT_RECT_MARGIN - TopNavButton.WIDTH,
+        var closeButton = new GuideIconButton(
+                width - DOCUMENT_RECT_MARGIN - GuideIconButton.WIDTH,
                 2,
-                TopNavButton.Role.CLOSE,
+                GuideIconButton.Role.CLOSE,
                 this::onClose);
         addRenderableWidget(closeButton);
         updateTopNavButtons();
@@ -592,7 +593,7 @@ public class GuideScreen extends Screen {
     }
 
     @Nullable
-    private Point getDocumentPoint(double screenX, double screenY) {
+    public Point getDocumentPoint(double screenX, double screenY) {
         var documentRect = getDocumentRect();
 
         if (screenX >= documentRect.x() && screenX < documentRect.right()
@@ -603,6 +604,19 @@ public class GuideScreen extends Screen {
         }
 
         return null; // Outside the document
+    }
+
+    /**
+     * Translate a point from within the document into the screen coordinate system.
+     */
+    public LytPoint getScreenPoint(LytPoint documentPoint) {
+        var documentRect = getDocumentRect();
+        var documentViewport = getDocumentViewport();
+        var x = documentPoint.x() - documentViewport.x();
+        var y = documentPoint.y() - documentViewport.y();
+        return new LytPoint(
+                documentRect.x() + x,
+                documentRect.y() + y);
     }
 
     private LytRect getDocumentRect() {
@@ -726,7 +740,7 @@ public class GuideScreen extends Screen {
         availableWidth -= 2 * DOCUMENT_RECT_MARGIN;
 
         // Account for the navigation buttons on the right
-        availableWidth -= TopNavButton.WIDTH * 2 + 5;
+        availableWidth -= GuideIconButton.WIDTH * 2 + 5;
 
         // Remove 2 * 5 as margin
         availableWidth -= 10;

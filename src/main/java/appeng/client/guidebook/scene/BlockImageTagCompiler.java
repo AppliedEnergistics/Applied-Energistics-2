@@ -42,13 +42,14 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
         cameraSettings.setPerspectivePreset(perspective);
 
         var scene = new GuidebookScene(level, cameraSettings);
-
         level.setBlockAndUpdate(BlockPos.ZERO, state);
+        scene.centerScene();
 
         var lytScene = new LytGuidebookScene(compiler.getExtensions());
         lytScene.setScene(scene);
         lytScene.setInteractive(false);
         parent.append(lytScene);
+
     }
 
 }

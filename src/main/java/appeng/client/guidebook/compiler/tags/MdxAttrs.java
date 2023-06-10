@@ -240,6 +240,10 @@ public final class MdxAttrs {
             String name, ColorValue defaultColor) {
         var colorStr = el.getAttributeString(name, null);
         if (colorStr != null) {
+            if ("transparent".equals(colorStr)) {
+                return new ConstantColor(0);
+            }
+
             var m = COLOR_PATTERN.matcher(colorStr);
             if (!m.matches()) {
                 errorSink.appendError(compiler, "Color must have format #AARRGGBB", el);

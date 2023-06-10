@@ -102,7 +102,7 @@ public final class OpenGuideHotkey {
     private static Component makeProgressBar(float progress) {
         var minecraft = Minecraft.getInstance();
 
-        var holdW = GuidebookText.GuidebookHoldToShow
+        var holdW = GuidebookText.HoldToShow
                 .text(getHotkey().getTranslatedKeyMessage().copy().withStyle(ChatFormatting.GRAY))
                 .withStyle(ChatFormatting.DARK_GRAY);
 

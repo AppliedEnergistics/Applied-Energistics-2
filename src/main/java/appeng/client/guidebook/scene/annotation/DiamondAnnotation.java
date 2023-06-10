@@ -34,7 +34,7 @@ public class DiamondAnnotation extends OverlayAnnotation {
     @Override
     public LytRect getBoundingRect(GuidebookScene scene, LytRect viewport) {
         var screenPos = scene.worldToScreen(pos.x, pos.y, pos.z);
-        var docPoint = scene.screenToDocument(viewport, screenPos);
+        var docPoint = scene.screenToDocument(screenPos, viewport);
         var x = Math.round(docPoint.x());
         var y = Math.round(docPoint.y());
         return new LytRect(x - 8, y - 8, 16, 16);
