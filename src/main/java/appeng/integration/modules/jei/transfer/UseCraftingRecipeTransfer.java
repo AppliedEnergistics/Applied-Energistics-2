@@ -10,8 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -199,8 +198,9 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         }
 
         @Override
-        public void showError(PoseStack poseStack, int mouseX, int mouseY, IRecipeSlotsView slots, int recipeX,
+        public void showError(GuiGraphics guiGraphics, int mouseX, int mouseY, IRecipeSlotsView slots, int recipeX,
                 int recipeY) {
+            var poseStack = guiGraphics.pose();
             poseStack.pushPose();
             poseStack.translate(recipeX, recipeY, 0);
 
@@ -212,7 +212,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
                 boolean craftable = indices.craftableSlots().contains(i);
                 if (missing || craftable) {
                     slotView.drawHighlight(
-                            poseStack,
+                            guiGraphics,
                             missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
                 }
             }
@@ -221,7 +221,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
 
             // 2) draw tooltip
             var tooltip = TransferHelper.createCraftingTooltip(indices, craftMissing);
-            JEIPlugin.drawHoveringText(poseStack, tooltip, mouseX, mouseY);
+            JEIPlugin.drawHoveringText(guiGraphics, tooltip, mouseX, mouseY);
         }
     }
 }

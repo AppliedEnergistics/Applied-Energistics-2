@@ -7,10 +7,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -175,18 +174,19 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         }
 
         @Override
-        public void showError(PoseStack poseStack, int mouseX, int mouseY, IRecipeSlotsView recipeSlotsView,
+        public void showError(GuiGraphics guiGraphics, int mouseX, int mouseY, IRecipeSlotsView recipeSlotsView,
                 int recipeX, int recipeY) {
+            var poseStack = guiGraphics.pose();
             poseStack.pushPose();
             poseStack.translate(recipeX, recipeY, 0);
 
             for (IRecipeSlotView slotView : craftableSlots) {
-                slotView.drawHighlight(poseStack, TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR);
+                slotView.drawHighlight(guiGraphics, TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR);
             }
 
             poseStack.popPose();
 
-            JEIPlugin.drawHoveringText(poseStack, TransferHelper.createEncodingTooltip(!craftableSlots.isEmpty()),
+            JEIPlugin.drawHoveringText(guiGraphics, TransferHelper.createEncodingTooltip(!craftableSlots.isEmpty()),
                     mouseX, mouseY);
         }
     }

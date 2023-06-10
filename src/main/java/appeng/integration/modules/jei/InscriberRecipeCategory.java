@@ -1,7 +1,6 @@
 package appeng.integration.modules.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -83,8 +82,8 @@ class InscriberRecipeCategory implements IRecipeCategory<InscriberRecipe> {
     }
 
     @Override
-    public void draw(InscriberRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX,
+    public void draw(InscriberRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
             double mouseY) {
-        this.progress.draw(stack);
+        this.progress.draw(guiGraphics);
     }
 }

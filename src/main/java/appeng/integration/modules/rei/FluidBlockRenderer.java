@@ -1,8 +1,8 @@
 package appeng.integration.modules.rei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.gui.GuiGraphics;
 
 import dev.architectury.fluid.FluidStack;
 import me.shedaniel.math.Rectangle;
@@ -17,11 +17,11 @@ import appeng.integration.modules.jeirei.FluidBlockRendering;
 
 public class FluidBlockRenderer implements EntryRenderer<FluidStack> {
     @Override
-    public void render(EntryStack<FluidStack> entry, PoseStack matrices, Rectangle bounds, int mouseX, int mouseY,
+    public void render(EntryStack<FluidStack> entry, GuiGraphics guiGraphics, Rectangle bounds, int mouseX, int mouseY,
             float delta) {
         var fluid = entry.getValue().getFluid();
 
-        FluidBlockRendering.render(matrices, fluid, bounds.x, bounds.y, bounds.width, bounds.height);
+        FluidBlockRendering.render(guiGraphics, fluid, bounds.x, bounds.y, bounds.width, bounds.height);
     }
 
     @Override

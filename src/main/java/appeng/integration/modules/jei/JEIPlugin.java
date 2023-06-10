@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -311,14 +311,8 @@ public class JEIPlugin implements IModPlugin {
     }
 
     // Copy-pasted from JEI since it doesn't seem to expose these
-    public static void drawHoveringText(PoseStack poseStack, List<Component> textLines, int x, int y) {
-        var minecraft = Minecraft.getInstance();
-        var screen = minecraft.screen;
-        if (screen == null) {
-            return;
-        }
-
-        // TODO 1.20 GuiGraphics
-        // screen.renderTooltip(poseStack, textLines, Optional.empty(), x, y);
+    public static void drawHoveringText(GuiGraphics guiGraphics, List<Component> textLines, int x, int y) {
+        var font = Minecraft.getInstance().font;
+        guiGraphics.renderTooltip(font, textLines, Optional.empty(), x, y);
     }
 }
