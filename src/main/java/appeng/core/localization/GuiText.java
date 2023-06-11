@@ -92,6 +92,7 @@ public enum GuiText implements LocalizationEnum {
     ExportBus("ME Export Bus"),
     ExportBusFluids("ME Fluid Export Bus"),
     ExternalStorage("External Storage (%s)"),
+    Facade("Facade (%s)"),
     FacadeCrafting("Facade Crafting"),
     Fluids("Fluids"),
     Fluix("Fluix"),

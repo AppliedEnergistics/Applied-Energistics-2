@@ -723,7 +723,7 @@ public class GuideScreen extends Screen {
         updateTitleLayout();
 
         var docViewport = getDocumentViewport();
-        var context = new LayoutContext(new MinecraftFontMetrics(), docViewport);
+        var context = new LayoutContext(new MinecraftFontMetrics());
 
         // Build layout if needed
         var document = currentPage.document();
@@ -732,7 +732,7 @@ public class GuideScreen extends Screen {
     }
 
     private void updateTitleLayout() {
-        var context = new LayoutContext(new MinecraftFontMetrics(), LytRect.empty());
+        var context = new LayoutContext(new MinecraftFontMetrics());
         // Compute the fake layout to find out how high it would be
         int availableWidth = width;
 

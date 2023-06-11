@@ -69,7 +69,7 @@ public class LayoutsTest {
     }
 
     static Stream<Arguments> horizontalLayoutTestCases() {
-        var context = new LayoutContext(new MockFontMetrics(), new LytRect(0, 0, 1000, 1000));
+        var context = new LayoutContext(new MockFontMetrics());
 
         var child1 = new TestBox(30, 20);
         var child2 = new TestBox(40, 15);
@@ -157,7 +157,7 @@ public class LayoutsTest {
     }
 
     static Stream<Arguments> verticalLayoutTestCases() {
-        var context = new LayoutContext(new MockFontMetrics(), new LytRect(0, 0, 1000, 1000));
+        var context = new LayoutContext(new MockFontMetrics());
 
         var child1 = new TestBox(30, 20);
         var child2 = new TestBox(40, 15);

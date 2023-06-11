@@ -81,4 +81,8 @@ public class LytWidget extends LytBlock implements InteractiveElement {
     public Optional<GuideTooltip> getTooltip(float x, float y) {
         return Optional.empty();
     }
+
+    public AbstractWidget getWidget() {
+        return widget;
+    }
 }

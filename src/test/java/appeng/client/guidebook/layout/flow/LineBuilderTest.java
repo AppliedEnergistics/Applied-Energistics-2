@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowSpan;
 import appeng.client.guidebook.document.flow.LytFlowText;
 import appeng.client.guidebook.layout.FontMetrics;
@@ -65,7 +64,7 @@ class LineBuilderTest {
     private static ArrayList<Line> getLines(int charsPerLine, String... textChunks) {
         var lines = new ArrayList<Line>();
         var floats = new ArrayList<LineBlock>();
-        var context = new LayoutContext(new MockFontMetrics(), LytRect.empty());
+        var context = new LayoutContext(new MockFontMetrics());
         var lineBuilder = new LineBuilder(context, 0, 0, charsPerLine * 5, lines, floats, TextAlignment.LEFT);
 
         for (String textChunk : textChunks) {

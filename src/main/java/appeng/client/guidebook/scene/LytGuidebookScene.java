@@ -35,6 +35,7 @@ import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
 import appeng.client.guidebook.scene.annotation.SceneAnnotation;
 import appeng.client.guidebook.screen.GuideIconButton;
 import appeng.client.guidebook.screen.GuideScreen;
+import appeng.core.AEConfig;
 
 /**
  * Shows a pseudo-in-world scene within the guidebook.
@@ -54,44 +55,48 @@ public class LytGuidebookScene extends LytBox {
     private final LytVBox toolbar = new LytVBox();
     private final Viewport viewport = new Viewport();
 
-    private boolean hideAnnotations;
+    private SavedCameraSettings initialCameraSettings = new SavedCameraSettings();
 
-    @Nullable
-    private SavedCameraSettings savedCameraSettings;
+    private final LytWidget hideAnnotationsButton;
+    private final LytWidget zoomInButton;
+    private final LytWidget zoomOutButton;
+    private final LytWidget resetViewButton;
 
     public LytGuidebookScene(ExtensionCollection extensions) {
         this.extensions = extensions;
 
+        setPadding(5); // Default padding
+
         append(viewport);
-        this.toolbar.append(new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.HIDE_ANNOTATIONS, btn -> {
-            hideAnnotations = !hideAnnotations;
-            if (hideAnnotations) {
+
+        // Build the toolbar
+        hideAnnotationsButton = new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.HIDE_ANNOTATIONS, btn -> {
+            viewport.setHideAnnotations(!viewport.isHideAnnotations());
+            if (viewport.isHideAnnotations()) {
                 btn.setRole(GuideIconButton.Role.SHOW_ANNOTATIONS);
             } else {
                 btn.setRole(GuideIconButton.Role.HIDE_ANNOTATIONS);
             }
-        })));
-        this.toolbar.append(new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.ZOOM_IN, () -> {
+        }));
+        zoomInButton = new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.ZOOM_IN, () -> {
             if (scene != null) {
-                saveInitialCameraSettings();
                 var currentZoom = scene.getCameraSettings().getZoom();
                 currentZoom = Mth.clamp(currentZoom + 0.5f, 0.1f, 8f);
                 scene.getCameraSettings().setZoom(currentZoom);
             }
-        })));
-        this.toolbar.append(new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.ZOOM_OUT, () -> {
+        }));
+        zoomOutButton = new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.ZOOM_OUT, () -> {
             if (scene != null) {
-                saveInitialCameraSettings();
                 var currentZoom = scene.getCameraSettings().getZoom();
                 currentZoom = Mth.clamp(currentZoom - 0.5f, 0.1f, 8f);
                 scene.getCameraSettings().setZoom(currentZoom);
             }
-        })));
-        this.toolbar.append(new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.RESET_VIEW, () -> {
-            if (scene != null && savedCameraSettings != null) {
-                scene.getCameraSettings().restore(savedCameraSettings);
+        }));
+        resetViewButton = new LytWidget(new GuideIconButton(0, 0, GuideIconButton.Role.RESET_VIEW, () -> {
+            if (scene != null) {
+                scene.getCameraSettings().restore(initialCameraSettings);
             }
-        })));
+        }));
     }
 
     @Nullable
@@ -102,11 +107,36 @@ public class LytGuidebookScene extends LytBox {
     public void setScene(@Nullable GuidebookScene scene) {
         this.scene = scene;
         viewport.setHoveredAnnotation(null);
+        if (scene != null) {
+            initialCameraSettings = scene.getCameraSettings().save();
+        } else {
+            initialCameraSettings = new SavedCameraSettings();
+        }
+
+        updateToolbar();
+    }
+
+    private void updateToolbar() {
+        toolbar.clearContent();
+        if (scene == null) {
+            return;
+        }
+
+        if (!scene.getInWorldAnnotations().isEmpty() || !scene.getOverlayAnnotations().isEmpty()) {
+            this.toolbar.append(hideAnnotationsButton);
+        }
+        this.toolbar.append(zoomInButton);
+        this.toolbar.append(zoomOutButton);
+        this.toolbar.append(resetViewButton);
     }
 
     @Override
     protected LytRect computeBoxLayout(LayoutContext context, int x, int y, int availableWidth) {
         var prefSceneSize = viewport.getPreferredSize();
+
+        prefSceneSize = new LytSize(
+                prefSceneSize.width() + paddingLeft + paddingRight,
+                prefSceneSize.height() + paddingTop + paddingBottom);
 
         // Clamp width to available width
         var sceneWidth = fullWidth ? availableWidth : Math.min(prefSceneSize.width(), availableWidth);
@@ -162,6 +192,8 @@ public class LytGuidebookScene extends LytBox {
         @Nullable
         private SceneAnnotation hoveredAnnotation;
 
+        private boolean hideAnnotations;
+
         // Indicates that hoveredAnnotation should be removed from the scene when it is no longer the hovered annotation
         private boolean transientHoveredAnnotation;
 
@@ -180,7 +212,6 @@ public class LytGuidebookScene extends LytBox {
 
         @Override
         public void renderBatch(RenderContext context, MultiBufferSource buffers) {
-
         }
 
         @Override
@@ -236,6 +267,10 @@ public class LytGuidebookScene extends LytBox {
          * Render one in 2D space at 0,0. And render one in 3D space at 0,0,0.
          */
         private void renderDebugCrosshairs() {
+            if (!AEConfig.instance().isShowDebugGuiOverlays()) {
+                return;
+            }
+
             RenderSystem.renderCrosshair(16);
 
             RenderSystem.backupProjectionMatrix();
@@ -247,7 +282,7 @@ public class LytGuidebookScene extends LytBox {
             modelViewStack.mulPoseMatrix(scene.getCameraSettings().getViewMatrix());
             RenderSystem.applyModelViewMatrix();
 
-            RenderSystem.renderCrosshair(16);
+            RenderSystem.renderCrosshair(2);
             modelViewStack.popPose();
             RenderSystem.applyModelViewMatrix();
             RenderSystem.restoreProjectionMatrix();
@@ -314,8 +349,6 @@ public class LytGuidebookScene extends LytBox {
             if (interactive) {
                 if (button == 0 || button == 1) {
                     var cameraSettings = scene.getCameraSettings();
-                    saveInitialCameraSettings();
-
                     buttonDown = button;
                     pointDown = new Vector2i(x, y);
                     initialRotX = cameraSettings.getRotationX();
@@ -355,6 +388,14 @@ public class LytGuidebookScene extends LytBox {
         @Override
         public void onMouseLeave() {
             setHoveredAnnotation(null);
+        }
+
+        public boolean isHideAnnotations() {
+            return hideAnnotations;
+        }
+
+        public void setHideAnnotations(boolean hideAnnotations) {
+            this.hideAnnotations = hideAnnotations;
         }
 
         // Sets an annotation as the hovered annotation and adds it to the scene
@@ -397,7 +438,12 @@ public class LytGuidebookScene extends LytBox {
             if (scene == null) {
                 return LytSize.empty();
             }
+
+            // Compute bounds using the *initial* camera settings
+            var current = scene.getCameraSettings().save();
+            scene.getCameraSettings().restore(initialCameraSettings);
             var screenBounds = scene.getScreenBounds();
+            scene.getCameraSettings().restore(current);
 
             var width = (int) Math.ceil(Math.abs(screenBounds.z - screenBounds.x));
             var height = (int) Math.ceil(Math.abs(screenBounds.w - screenBounds.y));
@@ -409,13 +455,6 @@ public class LytGuidebookScene extends LytBox {
                 // Determine where it would be on screen
                 annotation.render(scene, context, bounds);
             }
-        }
-    }
-
-    private void saveInitialCameraSettings() {
-        // Save the initial camera settings before the first user interaction
-        if (savedCameraSettings == null) {
-            savedCameraSettings = scene.getCameraSettings().save();
         }
     }
 }

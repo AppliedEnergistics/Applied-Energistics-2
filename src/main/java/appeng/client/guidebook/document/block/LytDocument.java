@@ -71,6 +71,13 @@ public class LytDocument extends LytNode implements LytBlockContainer {
         blocks.add(block);
     }
 
+    public void clearContent() {
+        for (var block : blocks) {
+            block.parent = null;
+        }
+        blocks.clear();
+    }
+
     public void updateLayout(LayoutContext context, int availableWidth) {
         if (layout != null && layout.availableWidth == availableWidth) {
             return;
