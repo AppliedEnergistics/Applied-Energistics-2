@@ -84,7 +84,7 @@ public class ContentTooltip implements GuideTooltip {
         var currentViewport = new LytRect(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight());
         if (layoutBox == null || !currentViewport.equals(layoutViewport)) {
             layoutViewport = currentViewport;
-            var layoutContext = new LayoutContext(new MinecraftFontMetrics(), layoutViewport);
+            var layoutContext = new LayoutContext(new MinecraftFontMetrics());
             layoutBox = content.layout(layoutContext, 0, 0, window.getGuiScaledWidth() / 2);
         }
         return layoutBox;

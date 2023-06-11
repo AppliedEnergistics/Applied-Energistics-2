@@ -276,7 +276,7 @@ public class GuideNavBar extends AbstractWidget {
     }
 
     private void updateLayout() {
-        var context = new LayoutContext(new MinecraftFontMetrics(), new LytRect(0, 0, WIDTH_OPEN, height));
+        var context = new LayoutContext(new MinecraftFontMetrics());
 
         var currentY = 0;
         for (var row : this.rows) {

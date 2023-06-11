@@ -2,7 +2,6 @@ package appeng.client.guidebook.document.flow;
 
 import java.util.Optional;
 
-import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytVisitor;
@@ -40,7 +39,7 @@ public class LytFlowInlineBlock extends LytFlowContent implements InteractiveEle
         }
 
         // We need to compute the layout
-        var layoutContext = new LayoutContext(new MinecraftFontMetrics(), LytRect.empty());
+        var layoutContext = new LayoutContext(new MinecraftFontMetrics());
         var bounds = block.layout(layoutContext, 0, 0, lineWidth);
         return new LytSize(bounds.right(), bounds.bottom());
     }

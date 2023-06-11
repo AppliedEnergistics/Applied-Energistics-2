@@ -12,26 +12,11 @@ import appeng.client.guidebook.style.ResolvedTextStyle;
 public class LayoutContext implements FontMetrics {
     private final FontMetrics fontMetrics;
 
-    private final LytRect viewport;
-
     private final List<LytRect> leftFloats = new ArrayList<>();
     private final List<LytRect> rightFloats = new ArrayList<>();
 
-    public LayoutContext(FontMetrics fontMetrics, LytRect viewport) {
+    public LayoutContext(FontMetrics fontMetrics) {
         this.fontMetrics = fontMetrics;
-        this.viewport = viewport;
-    }
-
-    public LytRect viewport() {
-        return this.viewport;
-    }
-
-    public int viewportWidth() {
-        return viewport().width();
-    }
-
-    public int viewportHeight() {
-        return viewport().height();
     }
 
     public void addLeftFloat(LytRect bounds) {

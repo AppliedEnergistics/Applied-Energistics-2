@@ -26,6 +26,7 @@ public class SceneTagCompiler extends BlockTagCompiler implements Extension {
 
     @Override
     protected void compile(PageCompiler compiler, LytBlockContainer parent, MdxJsxElementFields el) {
+        var padding = MdxAttrs.getInt(compiler, parent, el, "padding", 5);
         var zoom = MdxAttrs.getFloat(compiler, parent, el, "zoom", 1.0f);
         var background = MdxAttrs.getColor(compiler, parent, el, "background", SymbolicColor.SCENE_BACKGROUND);
 
@@ -53,6 +54,7 @@ public class SceneTagCompiler extends BlockTagCompiler implements Extension {
         var lytScene = new LytGuidebookScene(compiler.getExtensions());
         lytScene.setScene(scene);
         lytScene.setBackground(background);
+        lytScene.setPadding(padding);
         if (MdxAttrs.getBoolean(compiler, parent, el, "interactive", false)) {
             lytScene.setInteractive(true);
         }
