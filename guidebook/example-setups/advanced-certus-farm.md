@@ -22,7 +22,7 @@ in order to refresh them.
 
 **THIS IS A COMPLEX BUILD WITH STUFF HIDDEN BEHIND OTHER STUFF, PAN AROUND TO VIEW IT FROM ALL ANGLES**
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/advanced_certus_farm.snbt" />
 
   <BoxAnnotation color="#ddaaaa" min="3.7 2 1" max="4 3 2">
@@ -77,11 +77,11 @@ in order to refresh them.
 <DiamondAnnotation pos="1.5 0.5 0" color="#00ff00">
         To Main Network, Charger Automation, and Throwing-In-Water Automation
         <Row>
-        <GameScene zoom="3">
+        <GameScene zoom="3" background="transparent">
           <ImportStructure src="../assets/assemblies/charger_automation.snbt" />
           <IsometricCamera yaw="195" pitch="30" />
         </GameScene>
-        <GameScene zoom="3">
+        <GameScene zoom="3" background="transparent">
           <ImportStructure src="../assets/assemblies/throw_in_water.snbt" />
           <IsometricCamera yaw="195" pitch="30" />
         </GameScene>

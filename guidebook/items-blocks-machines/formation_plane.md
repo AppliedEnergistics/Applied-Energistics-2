@@ -10,7 +10,7 @@ item_ids:
 
 # The Formation Plane
 
-<GameScene zoom="8" background="#00000000" interactive="false">
+<GameScene zoom="8" background="transparent">
   <ImportStructure src="../assets/blocks/formation_plane.snbt" />
 </GameScene>
 
@@ -18,7 +18,7 @@ The Formation Plane places blocks and drops items. It works similarly to an inse
 placing/dropping when things are "stored" in it by [devices](../ae2-mechanics/devices.md) inserting into [network storage](../ae2-mechanics/import-export-storage.md),
 like <ItemLink id="import_bus" />ses and <ItemLink id="interface" />s.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/formation_plane_demonstration.snbt" />
   <IsometricCamera yaw="255" pitch="30" />
 </GameScene>

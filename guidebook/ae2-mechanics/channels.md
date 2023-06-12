@@ -16,7 +16,7 @@ to 32 channels. The only other devices capable of transmitting 32 are <ItemLink 
 and the [Quantum Network Bridge](../items-blocks-machines/quantum_bridge.md). Each time a device uses up a channel, imagine pulling off a usb "wire" from
 the bundle, which obviously means that "wire" isn't available further down the line.
 
-<GameScene zoom="7">
+<GameScene zoom="7" interactive={true}>
   <ImportStructure src="../assets/assemblies/channel_demonstration_1.snbt" />
 
   <LineAnnotation color="#33ff33" from="1 .4 .7" to="2.4 .4 .7" alwaysOnTop={true}/>
@@ -86,7 +86,7 @@ colored cables, cable anchors and tunnels to your advantage to make sure your ch
 For example, in this case some drives don't get channels because although there is enough capacity in the cables, the
 channels try to take the shortest path, overloading some cables while leaving others empty.
 
-<GameScene zoom="4" interactive="true">
+<GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/channel_path_length_issue.snbt" />
 
   <LineAnnotation color="#33ff33" from="3 .5 1.4" to="0.4 0.5 1.4" alwaysOnTop={true} thickness="0.05"/>
@@ -114,7 +114,7 @@ channels try to take the shortest path, overloading some cables while leaving ot
 This can be fixed by more carefully constraining the paths channels can take. Networks should be treelike (or bushlike).
 Loops and ambiguous channel paths should be minimized.
 
-<GameScene zoom="4" interactive="true">
+<GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/channel_path_length_issue_fix.snbt" />
 
   <LineAnnotation color="#33ff33" from="3 .5 1.4" to="0.4 0.5 1.4" alwaysOnTop={true} thickness="0.05"/>
@@ -168,7 +168,7 @@ The following table lists the available modes in both the configuration file and
 As mentioned before in [channel routing](channels.md#channel-routing), it's best to design your network in a treelike structure, with dense cables branching out from the controller, regular cables
 branching out from the dense, and [devices](../ae2-mechanics/devices.md) in clusters of 8 or fewer on the regular cables.
 
-<GameScene zoom="2.5">
+<GameScene zoom="2.5" interactive={true}>
   <ImportStructure src="../assets/assemblies/treelike_network_structure.snbt" />
 
     <BoxAnnotation color="#dddddd" min="6.9 0 4.9" max="9.1 4 7.1" thickness="0.05">

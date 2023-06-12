@@ -16,7 +16,7 @@ variety of items.
 This demonstration setup is cut short so it isn't too wide, it is likely most optimal to use 4 <ItemLink id="interface" />s and 4 <ItemLink id="storage_bus" />ses,
 to use all 8 [channels](../ae2-mechanics/channels.md) in a regular [cable](../items-blocks-machines/cables.md).
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/interface_autostocking.snbt" />
 
 <BoxAnnotation color="#dddddd" min="0 0 0" max="2 1 1">

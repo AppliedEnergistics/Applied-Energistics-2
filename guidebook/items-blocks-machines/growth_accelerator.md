@@ -16,7 +16,7 @@ The Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/fa
 
 Curiously, it can *also* accelerate the growth of various plants.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/growth_accelerator.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -25,7 +25,7 @@ To power it manually, place a <ItemLink id="crank" /> on the top or bottom and r
 
 It only connects to cables on its ends where the pink fluix greebles are.
 
-<GameScene zoom="6" background="#00000000" interactive="false">
+<GameScene zoom="6" background="transparent">
 <ImportStructure src="../assets/assemblies/accelerator_connections.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

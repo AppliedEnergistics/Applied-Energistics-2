@@ -11,7 +11,7 @@ item_ids:
 
 # Illuminated Panels
 
-<GameScene zoom="6" background="#00000000" interactive="false">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/illuminated_panels.snbt" />
   <IsometricCamera yaw="-75" pitch="30" />
 </GameScene>

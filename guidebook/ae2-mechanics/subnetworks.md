@@ -6,7 +6,7 @@ navigation:
 
 # Subnetworks
 
-<GameScene zoom="4">
+<GameScene zoom="4" interactive={true}>
 <ImportStructure src="../assets/assemblies/subnet_demonstration.snbt" />
 
 <DiamondAnnotation pos="6.5 2.5 0.5" color="#00ff00">

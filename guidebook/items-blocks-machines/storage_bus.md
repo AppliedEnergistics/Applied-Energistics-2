@@ -10,7 +10,7 @@ item_ids:
 
 # The Storage Bus
 
-<GameScene zoom="8" background="#00000000" interactive="false">
+<GameScene zoom="8" background="transparent">
 <ImportStructure src="../assets/blocks/storage_bus.snbt" />
 </GameScene>
 

@@ -14,7 +14,7 @@ item_ids:
 <Row gap="20">
 <BlockImage id="pattern_provider" scale="8" />
 <BlockImage id="pattern_provider" p:push_direction="up" scale="8" />
-<GameScene zoom="8" interactive={false}>
+<GameScene zoom="8" background="transparent">
   <ImportStructure src="../assets/blocks/cable_pattern_provider.snbt" />
 </GameScene>
 </Row>

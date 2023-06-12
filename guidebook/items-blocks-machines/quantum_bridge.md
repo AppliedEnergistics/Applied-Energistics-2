@@ -17,12 +17,12 @@ Quantum Network Bridges can extend a network over infinite distances and even be
 They can carry 32 channels in total (regardless of how cables are connected to each face), essentially
 acting like a wireless [dense cable](cables.md#dense-cable).
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/quantum_bridge_internal_structure_1.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/quantum_bridge_internal_structure_2.snbt" />
 
   <BoxAnnotation color="#33dd33" min="1 1 1" max="6 2 3">

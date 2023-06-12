@@ -18,7 +18,7 @@ This farm works fully automatically with <ItemLink id="flawless_budding_quartz" 
 budding certus quartz you will have to replace the budding block manually. Or, as described in [Advanced Certus Farm](advanced-certus-farm.md),
 automatically.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/simple_certus_farm.snbt" />
 
   <BoxAnnotation color="#dddddd" min="3.7 1 1" max="4 2 2">

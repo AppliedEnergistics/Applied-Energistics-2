@@ -11,7 +11,7 @@ One might ask "How do I quickly empty a cell into a chest or drawer array or bac
 
 The answer is use of an <ItemLink id="io_port" /> and some subnetting to restrict where it can put the items, or pull items from.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/cell_dumper_filler.snbt" />
 
 <BoxAnnotation color="#dddddd" min="1 1 0" max="2 2 1">

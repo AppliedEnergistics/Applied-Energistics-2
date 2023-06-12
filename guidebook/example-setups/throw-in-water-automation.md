@@ -13,7 +13,7 @@ infrastructure (this is essentially 2 modified [pipe subnets](pipe-subnet.md)).
 
 This setup is meant to be used in combination with [charger automation](charger-automation.md) to provide the <ItemLink id="charged_certus_quartz_crystal" />s.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/throw_in_water.snbt" />
 
 <BoxAnnotation color="#dddddd" min="2 0 1" max="3 1 2">
@@ -41,7 +41,7 @@ This setup is meant to be used in combination with [charger automation](charger-
 
 <DiamondAnnotation pos="3.9 0.5 1.5" color="#00ff00">
         To Main Network and Charger Automation
-        <GameScene zoom="3">
+        <GameScene zoom="3" background="transparent">
           <ImportStructure src="../assets/assemblies/charger_automation.snbt" />
           <IsometricCamera yaw="195" pitch="30" />
         </GameScene>

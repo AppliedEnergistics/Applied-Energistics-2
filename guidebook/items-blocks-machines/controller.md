@@ -25,7 +25,7 @@ energy storage. See [energy](../ae2-mechanics/energy.md) for details.
 
 Multiblock Controllers can be built in a fairly free form.
 
-<GameScene zoom="2" background="#00000000" interactive="false">
+<GameScene zoom="2" background="transparent">
   <ImportStructure src="../assets/assemblies/controllers.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -36,7 +36,7 @@ However, there are a few rules that must be followed:
 2.  The size of the controller must be within 7x7x7; else it will turn red.
 3.  A controller can have 2 adjacent blocks in at most 1 axis; if a block violates this rule, it will disable and turn red.
 
-<GameScene zoom="2" background="#00000000" interactive="false">
+<GameScene zoom="2" background="transparent">
   <ImportStructure src="../assets/assemblies/controller_rules.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

@@ -75,7 +75,7 @@ For example, say you want to define a 3x3x3 volume. Following rule 2, all of the
 the volume you want to define. They can be in almost any configuration, as long as they're contained within that 1-block-thick
 5x5x5 shell.
 
-<GameScene zoom="4">
+<GameScene zoom="4" interactive={true}>
 <ImportStructure src="../assets/assemblies/spatial_storage_3x3x3_pylon_demonstration.snbt" />
 
 <BoxAnnotation color="#33dd33" min="1 1 1" max="4 4 4">

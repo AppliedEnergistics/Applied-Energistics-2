@@ -20,7 +20,7 @@ This happens to be backwards-compatible
 with previous AE2 versions, because even if the <ItemLink id="inscriber" />s are sided, the pipe subnets still insert to and
 extract from the correct faces.
 
-<GameScene zoom="4">
+<GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/processor_automation.snbt" />
 
   <BoxAnnotation color="#dddddd" min="5 1 0" max="6 2 1" thickness=".05">

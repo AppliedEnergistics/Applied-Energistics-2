@@ -17,7 +17,7 @@ the bottom to import the results into the network. However, this uses 3 [channel
 
 Here's how you can do it with just 1 channel:
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="2 1 1">

@@ -13,7 +13,7 @@ item_ids:
 
 <Row gap="20">
 <BlockImage id="interface" scale="8" />
-<GameScene zoom="8" interactive={false}>
+<GameScene zoom="8" background="transparent">
   <ImportStructure src="../assets/blocks/cable_interface.snbt" />
 </GameScene>
 </Row>
@@ -35,7 +35,7 @@ A <ItemLink id="storage_bus" /> on an unconfigured interface will present the en
 of its network to the storage bus' network, as if the interface's network was one big chest the storage bus was placed on.
 Setting an item to be stocked in the interface's filter slots disables this.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/interface_storage.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -44,7 +44,7 @@ Pattern providers have a special interaction with interfaces on [subnets](../ae2
 the provider will skip the interface entirely and push directly to that subnet's [storage](../ae2-mechanics/import-export-storage.md),
 skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
 <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

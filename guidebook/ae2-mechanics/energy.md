@@ -19,7 +19,7 @@ energy acceptors can intake at functionally unlimited speed, only limited by you
 <Row>
   <BlockImage id="energy_acceptor" scale="4" />
 
-  <GameScene zoom="4" interactive={false} background="transparent">
+  <GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/blocks/cable_energy_acceptor.snbt" />
   </GameScene>
 
@@ -44,7 +44,7 @@ The ratios for conversion of Forge Energy and Techreborn Energy are
 
 ## Energy Storage
 
-<Row >
+<Row>
   <BlockImage id="energy_cell" scale="4" p:fullness="4" />
 
   <BlockImage id="dense_energy_cell" scale="4" p:fullness="4" />

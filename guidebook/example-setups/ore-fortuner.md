@@ -13,7 +13,7 @@ break ores.
 
 Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup will start slow then reach full speed in a few seconds.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
 
   <BoxAnnotation color="#dddddd" min="2.7 0 2" max="3 1 3">

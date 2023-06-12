@@ -18,7 +18,7 @@ item_ids:
 
 (also see [Farming Certus](../ae2-mechanics/farming-certus.md))
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/budding_blocks.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

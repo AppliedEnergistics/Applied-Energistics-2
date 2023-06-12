@@ -10,7 +10,7 @@ item_ids:
 
 # The Spatial Anchor
 
-<BlockImage id="spatial_anchor" p:powered="true" scale="8" perspective="up" />
+<BlockImage id="spatial_anchor" p:powered="true" scale="8"/>
 
 An AE2 network needs to be chunkloaded for any of its [devices](../ae2-mechanics/devices.md) to be able to function, and if only some of it is loaded,
 it may not function correctly. The Spatial Anchor solves this problem. It forceloads the chunks that its network occupies.

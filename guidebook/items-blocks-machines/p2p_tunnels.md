@@ -15,7 +15,7 @@ item_ids:
 
 # Point To Point Tunnels
 
-<GameScene zoom="6" background="#00000000" interactive="false">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_tunnels.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -29,28 +29,28 @@ two block faces at range. They are not bi-directional, there are defined inputs 
 
 For example, the hopper facing the Item P2P will act as if it is directly connected to the barrel, and items will flow.
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_hopper_barrel.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 However, two barrels next to each other will not transfer items between each other.
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_barrel_barrel.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 There are also other variants like Redstone P2P.
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_redstone.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
 ## Types Of P2P Tunnel And Attunement
 
-<GameScene zoom="6" background="#00000000" interactive="false">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_tunnels.snbt" />
   <IsometricCamera yaw="180" pitch="90" />
 </GameScene>
@@ -79,7 +79,7 @@ through a thin cable. And since our P2P tunnels are on a dedicated [subnetwork](
 even using up any channels from the main network to do this! Also observe how while the P2P tunnels can be placed directly
 against a controller, a [dense smart cable](../items-blocks-machines/cables.md#smart-cable) can be placed in between to more easily visualize the channels.
 
-<GameScene zoom="4">
+<GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/p2p_compact_channels.snbt" />
 
   <BoxAnnotation color="#dddddd" min="1.3 1.3 6.3" max="2 2.7 6.7">
@@ -96,14 +96,14 @@ pass through another ME P2P tunnel, so you cannot recursively nest them. Observe
 on the red cables are offline. Note that this only applies to ME P2P tunnels, other P2P tunnel types can pass through a ME P2P tunnel,
 as seen by the Redstone P2P tunnels working fine.
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_nesting.snbt" />
   <IsometricCamera yaw="225" pitch="30" />
 </GameScene>
 
 ## Linking
 
-<GameScene zoom="6" background="#00000000" interactive="false">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_linking_frequency.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

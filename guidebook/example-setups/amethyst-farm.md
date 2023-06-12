@@ -20,7 +20,7 @@ re-broken by an <ItemLink id="annihilation_plane" /> without silk touch, in orde
 
 Note that due to the directionality of the cluster, there must be a solid block face directly opposite of the formation plane.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/amethyst_farm.snbt" />
 
   <BoxAnnotation color="#dddddd" min="2.7 1 1" max="3 2 2">
