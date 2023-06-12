@@ -569,12 +569,12 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     public class AutomationFilter implements IAEItemFilter {
         @Override
         public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-            if (isSmash()) {
-                return false;
-            }
-
             if (slot == 1) {
                 return true; // Can always extract from output slot
+            }
+
+            if (isSmash()) {
+                return false;
             }
 
             // Can only extract from top and bottom in separated sides mode
