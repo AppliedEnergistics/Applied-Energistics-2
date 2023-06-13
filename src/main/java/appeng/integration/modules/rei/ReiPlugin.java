@@ -208,7 +208,7 @@ public class ReiPlugin implements REIClientPlugin {
 
         if (AEConfig.instance().isEnableFacadesInJEI()) {
             registry.addEntries(
-                    EntryIngredients.ofItemStacks(FacadeCreativeTab.getGroup().getDisplayItems()));
+                    EntryIngredients.ofItemStacks(FacadeCreativeTab.getDisplayItems()));
         }
     }
 

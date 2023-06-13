@@ -284,7 +284,7 @@ public class JEIPlugin implements IModPlugin {
 
         if (!AEConfig.instance().isEnableFacadesInJEI()) {
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
-                    FacadeCreativeTab.getGroup().getDisplayItems());
+                    FacadeCreativeTab.getDisplayItems());
         }
     }
 

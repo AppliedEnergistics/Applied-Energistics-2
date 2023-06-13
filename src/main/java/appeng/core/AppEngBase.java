@@ -51,7 +51,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 
 import appeng.api.IAEAddonEntrypoint;
-import appeng.api.ids.AECreativeTabIds;
 import appeng.api.parts.CableRenderMode;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
@@ -120,8 +119,6 @@ public abstract class AppEngBase implements AppEng {
 
         InitKeyTypes.init();
 
-        MainCreativeTab.init();
-
         // Initialize items in order
         AEItems.init();
         AEBlocks.init();
@@ -131,8 +128,6 @@ public abstract class AppEngBase implements AppEng {
         InitGridLinkables.init();
         InitStorageCells.init();
         InitVillager.init();
-
-        FacadeCreativeTab.init(); // This call has a side-effect (adding it to the creative screen)
 
         registerCreativeTabs(BuiltInRegistries.CREATIVE_MODE_TAB);
         registerDimension();
@@ -226,8 +221,8 @@ public abstract class AppEngBase implements AppEng {
     }
 
     public void registerCreativeTabs(Registry<CreativeModeTab> registry) {
-        Registry.register(registry, AECreativeTabIds.MAIN, MainCreativeTab.INSTANCE);
-        Registry.register(registry, AECreativeTabIds.FACADES, FacadeCreativeTab.getGroup());
+        MainCreativeTab.init(registry);
+        FacadeCreativeTab.init(registry);
     }
 
     private void onServerAboutToStart(MinecraftServer server) {
