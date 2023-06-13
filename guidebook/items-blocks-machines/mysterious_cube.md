@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Mysterious Cube
   icon: mysterious_cube
+  position: 010
 item_ids:
 - ae2:mysterious_cube
 - ae2:not_so_mysterious_cube

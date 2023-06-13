@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Decorative Sky Stone
   icon: sky_stone_stairs
+  position: 010
 item_ids:
 - ae2:sky_stone_brick
 - ae2:sky_stone_small_brick

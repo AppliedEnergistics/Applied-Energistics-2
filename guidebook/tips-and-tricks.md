@@ -1,7 +1,7 @@
 ---
 navigation:
-title: Tips and Tricks
-position: 20
+  title: Tips and Tricks
+  position: 20
 ---
 
 # Tips and Tricks
@@ -20,7 +20,7 @@ A load of random little recommendations
 *   The best way to keep your network clean is to not put random mob loot like swords and armor in. Each unique combination of
     enchantment and durability is another [type](ae2-mechanics/bytes-and-types.md).
 *   An "item entering system" event must occur when returning the result of a [processing pattern](items-blocks-machines/patterns.md),
-    like through an <ItemLink id="importbus" />, <ItemLink id="interface" />, or <ItemLink id="pattern_provider" /> return slot,
+    like through an <ItemLink id="import_bus" />, <ItemLink id="interface" />, or <ItemLink id="pattern_provider" /> return slot,
     you can't just pipe the result into a chest with a <ItemLink id="storage_bus" /> on it.
 *   The <ItemLink id="pattern_provider" /> will only push complete recipe batches and only through a single side. This is useful
     for making sure machines don't get partial batches, but sometimes you want the ingredients to go to multiple places.

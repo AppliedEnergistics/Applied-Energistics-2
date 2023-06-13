@@ -1,7 +1,7 @@
 ---
 navigation:
   title: AE2 Mechanics
-  position: 20
+  position: 30
 ---
 
 # AE2 Mechanics
@@ -16,6 +16,7 @@ navigation:
 * [Import, Export, and Storage](import-export-storage.md)
 * [Meteorites](meteorites.md)
 * [Network Connections](me-network-connections.md)
-* [Quantum Bridge](quantum-bridge.md)
+* [P2P Tunnels](../items-blocks-machines/p2p_tunnels.md)
+* [Quantum Bridge](../items-blocks-machines/quantum_bridge.md)
 * [Spatial IO](spatial-io.md)
 * [Subnetworks](subnetworks.md)

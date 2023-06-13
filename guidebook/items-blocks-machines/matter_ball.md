@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Matter Ball
   icon: matter_ball
+  position: 010
 item_ids:
 - ae2:matter_ball
 ---

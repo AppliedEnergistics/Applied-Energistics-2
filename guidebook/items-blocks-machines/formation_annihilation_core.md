@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Formation and Annihilation Cores
   icon: formation_core
+  position: 010
 item_ids:
 - ae2:formation_core
 - ae2:annihilation_core

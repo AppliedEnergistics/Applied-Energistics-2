@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Budding Certus Quartz
   icon: flawless_budding_quartz
+  position: 010
 item_ids:
 - ae2:flawless_budding_quartz
 - ae2:flawed_budding_quartz

@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Quartz Fixtures
   icon: quartz_fixture
+  position: 010
 item_ids:
 - ae2:quartz_fixture
 - ae2:light_detector

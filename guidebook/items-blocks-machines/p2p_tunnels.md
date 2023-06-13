@@ -9,7 +9,7 @@ item_ids:
 - ae2:redstone_p2p_tunnel
 - ae2:item_p2p_tunnel
 - ae2:fluid_p2p_tunnel
-- ae2:energy_p2p_tunnel
+- ae2:fe_p2p_tunnel
 - ae2:light_p2p_tunnel
 ---
 

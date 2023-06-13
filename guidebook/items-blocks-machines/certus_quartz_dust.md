@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Certus Quartz Dust
   icon: certus_quartz_dust
+  position: 010
 item_ids:
 - ae2:certus_quartz_dust
 ---
