@@ -10,11 +10,12 @@ navigation:
 Automation of a <ItemLink id="charger" /> is fairly simple. A pattern provider pushes the ingredient into the charger, then a [pipe subnet](pipe-subnet.md)
 or other item pipe pushes the result back into the provider.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/charger_automation.snbt" />
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="2 1 1">
         (1) Pattern Provider: In its default configuration, with the relevant processing patterns. Also provides the charger with power.
+
         ![Charger Pattern](../assets/diagrams/charger_pattern_small.png)
   </BoxAnnotation>
 

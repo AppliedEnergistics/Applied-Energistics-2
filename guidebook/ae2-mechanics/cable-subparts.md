@@ -7,7 +7,7 @@ icon: fluix_glass_cable
 
 # Cable Subparts
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/subparts_demonstration.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

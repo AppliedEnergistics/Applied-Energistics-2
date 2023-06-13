@@ -11,7 +11,7 @@ item_ids:
 
 # Monitors
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="transparent">
 <ImportStructure src="../assets/assemblies/monitors.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

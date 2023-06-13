@@ -17,11 +17,12 @@ the bottom to import the results into the network. However, this uses 3 [channel
 
 Here's how you can do it with just 1 channel:
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="2 1 1">
         (1) Pattern Provider: The directional variant, via use of a certus quartz wrench, with the relevant processing patterns.
+
         ![Iron Pattern](../assets/diagrams/furnace_pattern_small.png)
   </BoxAnnotation>
 

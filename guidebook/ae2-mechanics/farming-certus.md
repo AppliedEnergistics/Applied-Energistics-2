@@ -9,7 +9,7 @@ navigation:
 
 ## Basically just copy-pasted from the getting started page
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
 <ImportStructure src="../assets/assemblies/budding_certus_1.snbt" />
 </GameScene>
 
@@ -19,7 +19,7 @@ growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by for
 
 There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged.
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/budding_blocks.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -36,7 +36,7 @@ with a pickaxe, even with silk touch. (they *can* be moved with [spatial storage
 By themselves, certus quartz buds grow very slowly. Luckily the <ItemLink id="growth_accelerator" /> massively
 accelerates this process when placed adjacent to the budding block. You should build a few of these as your first priority.
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/budding_certus_2.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

@@ -13,11 +13,12 @@ break ores.
 
 Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup will start slow then reach full speed in a few seconds.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
 
   <BoxAnnotation color="#dddddd" min="2.7 0 2" max="3 1 3">
         (1) Import Bus: Has a few Acceleration Cards in it.
+        <ItemImage id="speed_card" scale="2" />
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="0 0 2" max="2 1 2.3">
@@ -51,9 +52,9 @@ Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup wi
 
 *   The <ItemLink id="import_bus" /> (1) has a few <ItemLink id="speed_card" />s in it. More are required the more formation planes
     are in the array, as they make the import bus pull more items at once.
-*   The <ItemLink id="formation_plane" />s (2) are in their default configurations
+*   The <ItemLink id="formation_plane" />s (2) are in their default configurations.
 *   The <ItemLink id="annihilation_plane" />s (3) have no GUI and cannot be configured, but are enchanted with fortune.
-*   The <ItemLink id="storage_bus" /> (4) is in its default configuration
+*   The <ItemLink id="storage_bus" /> (4) is in its default configuration.
 
 ## How It Works
 

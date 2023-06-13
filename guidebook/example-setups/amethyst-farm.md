@@ -20,7 +20,7 @@ re-broken by an <ItemLink id="annihilation_plane" /> without silk touch, in orde
 
 Note that due to the directionality of the cluster, there must be a solid block face directly opposite of the formation plane.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/amethyst_farm.snbt" />
 
   <BoxAnnotation color="#dddddd" min="2.7 1 1" max="3 2 2">
@@ -71,6 +71,6 @@ the plane is enchanted with silk touch, otherwise it would be able to break the 
 3. The second <ItemLink id="annihilation_plane" /> breaks the cluster, producing <ItemLink id="minecraft:amethyst_shard" />.
 4. The first <ItemLink id="storage_bus" /> stores the shards in the barrel. This technically doesn't need to be filtered because the only
 thing the second annihilation plane should be encountering is fully-grown clusters.
-5. The second <ItemLink id="storage_bus" /> gives the main network access to all of the amethyst shards in the barrel. it is set to
+5. The second <ItemLink id="storage_bus" /> gives the main network access to all of the amethyst shards in the barrel. It is set to
 high [priority](../ae2-mechanics/import-export-storage.md#storage-priority) so that amethyst shards are preferentially
 put back in the barrel instead of in your main storage.

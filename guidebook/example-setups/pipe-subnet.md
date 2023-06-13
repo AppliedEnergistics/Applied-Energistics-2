@@ -14,7 +14,7 @@ There are generally two different methods of achieving this:
 
 ## Import Bus -> Storage Bus
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/import_storage_pipe.snbt" />
 
 <BoxAnnotation color="#dddddd" min="3.7 0 0" max="4 1 1">
@@ -45,7 +45,7 @@ This setup also works with multiple import busses and multiple storage busses.
 
 ## Storage Bus -> Export Bus
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/storage_export_pipe.snbt" />
 
 <BoxAnnotation color="#dddddd" min="3.7 0 0" max="4 1 1">
@@ -76,7 +76,7 @@ This setup also works with multiple storage busses and multiple export busses.
 
 ## A Setup That Does Not Work (Import Bus -> Export Bus)
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/import_export_pipe.snbt" />
 
 <BoxAnnotation color="#dd3333" min="3.7 0 0" max="4 1 1">
@@ -105,7 +105,7 @@ and the export bus can't export, so nothing happens.
 
 ## A Pipe-Like Subnet
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
 <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
 
 <BoxAnnotation color="#dddddd" min="1 1 0" max="2 1.3 1">

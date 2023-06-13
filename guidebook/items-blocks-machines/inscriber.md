@@ -57,7 +57,7 @@ D. **Output** pulled from via the left, right, front, and rear sides of the insc
 
 As an example, the sidedness and rotateability mean you can semi-automate inscribers like so:
 
-<GameScene zoom="4">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/inscriber_hopper_automation.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>

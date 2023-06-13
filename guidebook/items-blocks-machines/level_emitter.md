@@ -11,7 +11,7 @@ item_ids:
 
 # The Level Emitter
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="transparent">
   <ImportStructure src="../assets/blocks/level_emitter.snbt" />
 </GameScene>
 

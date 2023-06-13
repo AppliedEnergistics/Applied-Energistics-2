@@ -10,7 +10,7 @@ item_ids:
 
 # The Annihilation Plane
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="transparent">
 <ImportStructure src="../assets/blocks/annihilation_plane.snbt" />
 </GameScene>
 
@@ -31,8 +31,17 @@ in its network. this means to filter one, *you must restrict what can be stored 
 it on a [subnetwork](../ae2-mechanics/subnetworks.md). A <ItemLink id="storage_bus" /> or [cell](../items-blocks-machines/storage_cells.md)
 can be [partitioned](cell_workbench.md) to achieve this.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/annihilation_filtering.snbt" />
+
+  <DiamondAnnotation pos="1 0.5 0.5" color="#00ff00">
+        Filtered to whatever drops from the thing you want to break.
+  </DiamondAnnotation>
+
+  <DiamondAnnotation pos=".5 0.5 2.5" color="#00ff00">
+        Partitioned to whatever drops from the thing you want to break.
+  </DiamondAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 

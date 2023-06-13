@@ -10,7 +10,7 @@ item_ids:
 
 # The ME Drive
 
-<GameScene zoom="8">
+<GameScene zoom="8" background="transparent">
   <ImportStructure src="../assets/blocks/drive.snbt" />
 </GameScene>
 

@@ -13,7 +13,7 @@ item_ids:
 
 # Terminals
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/terminals.snbt" />
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -30,7 +30,7 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 # Terminal
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/blocks/terminal.snbt" />
   <IsometricCamera yaw="180" />
 </GameScene>
@@ -74,7 +74,7 @@ UI, allowing you to see the progress of your autocrafts and what each [crafting 
 
 # Crafting Terminal
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/blocks/crafting_terminal.snbt" />
   <IsometricCamera yaw="180" />
 </GameScene>
@@ -98,7 +98,7 @@ There are 2 additional buttons, to empty the crafting grid into network storage 
 
 # Pattern Encoding Terminal
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/blocks/pattern_encoding_terminal.snbt" />
   <IsometricCamera yaw="180" />
 </GameScene>
@@ -156,7 +156,7 @@ The central UI changes depending on the type of pattern to be encoded:
 
 # Pattern Access Terminal
 
-<GameScene zoom="6">
+<GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/blocks/pattern_access_terminal.snbt" />
   <IsometricCamera yaw="180" />
 </GameScene>

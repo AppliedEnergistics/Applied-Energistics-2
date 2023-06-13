@@ -11,7 +11,7 @@ item_ids:
 
 # The Wireless Access Point
 
-<BlockImage id="wireless_access_point" p:state="has_channel" scale="8" perspective="up" />
+<BlockImage id="wireless_access_point" p:state="has_channel" scale="8" />
 
 Allows wireless access via a <ItemLink id="wireless_terminal" />.
 Range and power usage is determined based on the number of <ItemLink id="wireless_booster" /> installed.

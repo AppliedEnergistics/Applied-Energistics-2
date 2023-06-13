@@ -2,11 +2,12 @@
 navigation:
   parent: ae2-mechanics/ae2-mechanics-index.md
   title: Meteorites
+  icon: sky_stone_block
 ---
 
 # Meteorites
 
-<GameScene zoom="4" interactive={true}>
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/meteor_interior.snbt" />
 </GameScene>
 
