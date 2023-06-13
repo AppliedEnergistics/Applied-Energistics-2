@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import java.nio.file.Files;
 
 import com.google.common.io.MoreFiles;
+import com.google.common.io.RecursiveDeleteOption;
 import com.google.common.reflect.Reflection;
 
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -24,7 +25,6 @@ import net.minecraftforge.registries.RegistryBuilder;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
 import appeng.api.stacks.AEKeyTypesInternal;
-import appeng.client.guidebook.Guide;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.AppEngBootstrap;
@@ -36,7 +36,6 @@ import appeng.init.InitItems;
 
 public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback {
 
-    private static boolean modInitialized;
     private static boolean keyTypesInitialized;
 
     @Override
@@ -54,14 +53,9 @@ public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback
                 AEConfig.load(configDir);
             }
         } finally {
-            MoreFiles.deleteRecursively(configDir);
+            MoreFiles.deleteRecursively(configDir, RecursiveDeleteOption.ALLOW_INSECURE);
         }
 
-        if (!modInitialized) {
-            modInitialized = true;
-
-            Guide.runDatapackReload();
-        }
         if (!keyTypesInitialized) {
             try {
                 InitBlocks.init(ForgeRegistries.BLOCKS);
