@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -115,11 +115,11 @@ public final class PartHostTooltips {
         }
     }
 
-    public static void provideServerData(ServerPlayer player, BlockEntity object, CompoundTag serverData) {
+    public static void provideServerData(Player player, BlockEntity object, CompoundTag serverData) {
         provideServerData(player, (IPartHost) object, serverData);
     }
 
-    public static void provideServerData(ServerPlayer player, IPartHost object, CompoundTag serverData) {
+    public static void provideServerData(Player player, IPartHost object, CompoundTag serverData) {
         var partTag = new CompoundTag();
         for (var location : Platform.DIRECTIONS_WITH_NULL) {
             var part = object.getPart(location);

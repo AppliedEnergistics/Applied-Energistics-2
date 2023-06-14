@@ -28,11 +28,8 @@ class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        // Removes the built-in Forge-Energy progressbar
-        tooltip.remove(Identifiers.FORGE_ENERGY);
-        // Removes the built-in Forge fluid bars, because usually we have 6 tanks...
-        tooltip.remove(Identifiers.FORGE_FLUID);
-        tooltip.remove(Identifiers.FABRIC_FLUID);
+        tooltip.remove(Identifiers.UNIVERSAL_ENERGY_STORAGE_DETAILED);
+        tooltip.remove(Identifiers.UNIVERSAL_FLUID_STORAGE_DETAILED);
 
         var context = ContextHelper.getContext(accessor);
         var tooltipBuilder = new JadeTooltipBuilder(tooltip);

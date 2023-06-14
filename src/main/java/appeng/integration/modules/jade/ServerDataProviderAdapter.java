@@ -2,16 +2,14 @@ package appeng.integration.modules.jade;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
+import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
 
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 import appeng.core.AppEng;
 
-class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockEntity> {
+class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockAccessor> {
     private static final ResourceLocation ID = AppEng.makeId("server_data");
 
     private final ServerDataProvider<? super T> provider;
@@ -29,9 +27,9 @@ class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockEntity> {
     }
 
     @Override
-    public void appendServerData(CompoundTag tag, ServerPlayer player, Level level, BlockEntity blockEntity,
-            boolean showDetails) {
-        var obj = objectClass.cast(blockEntity);
-        provider.provideServerData(player, obj, tag);
+    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
+        var obj = objectClass.cast(blockAccessor.getBlockEntity());
+        var player = blockAccessor.getPlayer();
+        provider.provideServerData(player, obj, compoundTag);
     }
 }

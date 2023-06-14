@@ -3,7 +3,7 @@ package appeng.integration.modules.igtooltip.parts;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import appeng.api.integrations.igtooltip.TooltipBuilder;
 import appeng.api.integrations.igtooltip.TooltipContext;
@@ -45,7 +45,7 @@ public final class ChannelDataProvider
     }
 
     @Override
-    public void provideServerData(ServerPlayer player, IUsedChannelProvider object, CompoundTag serverData) {
+    public void provideServerData(Player player, IUsedChannelProvider object, CompoundTag serverData) {
         var gridNode = object.getGridNode();
         if (gridNode != null) {
             var pathingService = (PathingService) gridNode.getGrid().getPathingService();
