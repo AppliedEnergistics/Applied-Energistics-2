@@ -10,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -54,7 +53,7 @@ public final class DebugProvider {
         DebugProvider.addToTooltip(context.serverData(), tooltip);
     }
 
-    public static void provideBlockEntityData(ServerPlayer player, BlockEntity object, CompoundTag serverData) {
+    public static void provideBlockEntityData(Player player, BlockEntity object, CompoundTag serverData) {
         if (object instanceof IGridConnectedBlockEntity gridConnected && DebugProvider.isVisible(player)) {
             DebugProvider.addServerDataMainNode(serverData, gridConnected.getMainNode());
         }
@@ -64,7 +63,7 @@ public final class DebugProvider {
         DebugProvider.addToTooltip(context.serverData(), tooltip);
     }
 
-    public static void providePartData(ServerPlayer player, AEBasePart part, CompoundTag serverData) {
+    public static void providePartData(Player player, AEBasePart part, CompoundTag serverData) {
         if (DebugProvider.isVisible(player)) {
             DebugProvider.addServerDataMainNode(serverData, part.getMainNode());
             DebugProvider.addServerDataNode(serverData, "External Node", part.getExternalFacingNode());

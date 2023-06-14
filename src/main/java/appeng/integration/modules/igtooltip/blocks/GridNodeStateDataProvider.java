@@ -3,7 +3,7 @@ package appeng.integration.modules.igtooltip.blocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.integrations.igtooltip.TooltipBuilder;
@@ -29,7 +29,7 @@ public final class GridNodeStateDataProvider implements BodyProvider<BlockEntity
     }
 
     @Override
-    public void provideServerData(ServerPlayer player, BlockEntity object, CompoundTag serverData) {
+    public void provideServerData(Player player, BlockEntity object, CompoundTag serverData) {
         if (object instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
             var state = GridNodeState.fromNode(gridConnectedBlockEntity.getActionableNode());
             serverData.putByte(TAG_STATE, (byte) state.ordinal());

@@ -2,7 +2,7 @@ package appeng.integration.modules.igtooltip.blocks;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.integrations.igtooltip.TooltipBuilder;
@@ -39,7 +39,7 @@ public final class PowerStorageDataProvider implements BodyProvider<BlockEntity>
     }
 
     @Override
-    public void provideServerData(ServerPlayer player, BlockEntity object, CompoundTag serverData) {
+    public void provideServerData(Player player, BlockEntity object, CompoundTag serverData) {
         if (object instanceof IAEPowerStorage storage) {
             if (storage.getAEMaxPower() > 0) {
                 serverData.putDouble(TAG_CURRENT_POWER, storage.getAECurrentPower());
