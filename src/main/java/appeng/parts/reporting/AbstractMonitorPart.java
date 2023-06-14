@@ -26,6 +26,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -121,7 +122,11 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
 
         this.isLocked = data.getBoolean("isLocked");
 
-        this.configuredItem = AEKey.fromTagGeneric(data.getCompound("configuredItem"));
+        if (data.contains("configuredItem", Tag.TAG_COMPOUND)) {
+            this.configuredItem = AEKey.fromTagGeneric(data.getCompound("configuredItem"));
+        } else {
+            this.configuredItem = null;
+        }
     }
 
     @Override
