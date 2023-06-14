@@ -12,7 +12,7 @@ navigation:
 
 ## Getting The Initial Materials)
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
   <ImportStructure src="assets/assemblies/meteor_interior.snbt" />
 </GameScene>
 
@@ -27,9 +27,9 @@ Do not break any flawless budding certus, as even with silk touch they will degr
 
 Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscriber presses.
 
-## Growing Quartz
+## Growing Certus Quartz
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
 <ImportStructure src="assets/assemblies/budding_certus_1.snbt" />
 </GameScene>
 
@@ -39,7 +39,7 @@ growing, it will drop one <ItemLink id="certus_quartz_dust" />, unchanged by for
 
 There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged.
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
 <ImportStructure src="assets/assemblies/budding_blocks.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -56,7 +56,7 @@ with a pickaxe, even with silk touch. (they *can* be moved with [spatial storage
 By themselves, certus quartz buds grow very slowly. Luckily the <ItemLink id="growth_accelerator" /> massively
 accelerates this process when placed adjacent to the budding block. You should build a few of these as your first priority.
 
-<GameScene zoom="4" background="#00000000" interactive="false">
+<GameScene zoom="4" background="transparent">
 <ImportStructure src="assets/assemblies/budding_certus_2.snbt" />
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
@@ -64,7 +64,7 @@ accelerates this process when placed adjacent to the budding block. You should b
 If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />,
 you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.
 
-Harvesting the certus automatically is "left as an exercise for the reader". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)
+Harvesting the certus automatically is "[left as an exercise for the reader](example-setups/simple-certus-farm.md)". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)
 
 ## A Quick Aside on Fluix
 
@@ -120,7 +120,7 @@ take advantage you need to set up an [ME Network](ae2-mechanics/me-network-conne
 
 Now that you have all of the basic materials and machines for Applied Energistics 2, you can make your first ME (Matter Energy) system. This will be a very basic one, no autocrafting, no logistics, just nice, simple, searchable storage.
 
-<GameScene zoom="6">
+<GameScene zoom="6" interactive={true}>
 <ImportStructure src="assets/assemblies/tiny_me_system.snbt" />
 
 </GameScene>

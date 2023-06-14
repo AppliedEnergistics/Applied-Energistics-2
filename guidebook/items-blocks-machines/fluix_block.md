@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Fluix Block
   icon: fluix_block
+  position: 010
 item_ids:
 - ae2:fluix_block
 ---

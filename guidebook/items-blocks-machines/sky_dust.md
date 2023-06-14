@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Sky Stone Dust
   icon: sky_dust
+  position: 010
 item_ids:
 - ae2:sky_dust
 ---

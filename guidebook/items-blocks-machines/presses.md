@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Presses
   icon: silicon_press
+  position: 010
 item_ids:
 - ae2:silicon_press
 - ae2:logic_processor_press

@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Meteorite Compass
   icon: meteorite_compass
+  position: 410
 item_ids:
 - ae2:meteorite_compass
 ---

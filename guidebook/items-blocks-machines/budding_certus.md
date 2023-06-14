@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Budding Certus Quartz
   icon: flawless_budding_quartz
+  position: 010
 item_ids:
 - ae2:flawless_budding_quartz
 - ae2:flawed_budding_quartz
@@ -16,7 +17,7 @@ item_ids:
 
 # Budding Certus Quartz
 
-(also see [Farming Certus](../ae2-mechanics/farming-certus.md))
+(also see [Certus Growth](../ae2-mechanics/certus-growth.md))
 
 <GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/budding_blocks.snbt" />

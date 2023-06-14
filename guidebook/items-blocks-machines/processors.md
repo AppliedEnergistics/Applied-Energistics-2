@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Processors
   icon: logic_processor
+  position: 010
 item_ids:
 - ae2:logic_processor
 - ae2:calculation_processor

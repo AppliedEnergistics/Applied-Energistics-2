@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Illuminated Panels
   icon: semi_dark_monitor
+  position: 010
 item_ids:
 - ae2:monitor
 - ae2:semi_dark_monitor

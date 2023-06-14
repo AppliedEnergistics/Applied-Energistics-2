@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Singularities
   icon: singularity
+  position: 010
 item_ids:
 - ae2:singularity
 - ae2:quantum_entangled_singularity

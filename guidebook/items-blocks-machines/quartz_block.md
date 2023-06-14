@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Certus Quartz Block
   icon: quartz_block
+  position: 010
 item_ids:
 - ae2:quartz_block
 ---

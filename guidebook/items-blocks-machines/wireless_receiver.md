@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Wireless Receiver
   icon: wireless_receiver
+  position: 010
 item_ids:
 - ae2:wireless_receiver
 ---

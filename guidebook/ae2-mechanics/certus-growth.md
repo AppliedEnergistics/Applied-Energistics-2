@@ -1,11 +1,11 @@
 ---
 navigation:
   parent: ae2-mechanics/ae2-mechanics-index.md
-  title: Farming Certus
+  title: Certus Growth
   icon: quartz_cluster
 ---
 
-# Farming Certus
+# Certus Growth
 
 ## Basically just copy-pasted from the getting started page
 
@@ -44,4 +44,4 @@ accelerates this process when placed adjacent to the budding block. You should b
 If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />,
 you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.
 
-Harvesting the certus automatically is "left as an exercise for the reader". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)
+Harvesting the certus automatically is "[left as an exercise for the reader](../example-setups/simple-certus-farm.md)". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)

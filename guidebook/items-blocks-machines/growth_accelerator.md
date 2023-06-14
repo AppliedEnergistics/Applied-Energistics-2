@@ -12,7 +12,7 @@ item_ids:
 
 <BlockImage id="growth_accelerator" p:powered="true" scale="8"/>
 
-The Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/farming-certus.md) certus or amethyst when placed adjacent to the budding block.
+The Growth Accelerator massively accelerates [the growth of](../ae2-mechanics/certus-growth.md) certus or amethyst when placed adjacent to the budding block.
 
 Curiously, it can *also* accelerate the growth of various plants.
 

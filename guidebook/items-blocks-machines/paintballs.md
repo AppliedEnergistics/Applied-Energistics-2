@@ -3,6 +3,7 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Paintballs
   icon: green_lumen_paint_ball
+  position: 410
 item_ids:
 - ae2:white_paint_ball
 - ae2:orange_paint_ball

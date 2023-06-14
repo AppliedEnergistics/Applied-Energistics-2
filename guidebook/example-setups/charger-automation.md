@@ -7,7 +7,7 @@ navigation:
 
 # Charger Automation
 
-Automation of a <ItemLink id="charger" /> is fairly simple. A pattern provider pushes the ingredient into the charger, then a [pipe subnet](pipe-subnet.md)
+Automation of a <ItemLink id="charger" /> is fairly simple. A <ItemLink id="pattern_provider" /> pushes the ingredient into the charger, then a [pipe subnet](pipe-subnet.md)
 or other item pipe pushes the result back into the provider.
 
 <GameScene zoom="6" interactive={true}>
