@@ -18,12 +18,13 @@
 
 package appeng.blockentity.qnb;
 
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -39,16 +40,24 @@ import appeng.block.qnb.QnbFormedState;
 import appeng.blockentity.ServerTickingBlockEntity;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.implementations.QuantumCalculator;
 import appeng.me.cluster.implementations.QuantumCluster;
 import appeng.util.inv.AppEngInternalInventory;
+import appeng.util.inv.FilteredInternalInventory;
+import appeng.util.inv.filter.IAEItemFilter;
 
 public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
 
+    private static int singularitySeed = 0;
+
+    public static final String TAG_FREQUENCY = "freq";
     private final byte corner = 16;
     private final AppEngInternalInventory internalInventory = new AppEngInternalInventory(this, 1, 1);
+    private final FilteredInternalInventory externalInventory = new FilteredInternalInventory(this.internalInventory,
+            new EntangledSingularityFilter());
     private final byte hasSingularity = 32;
     private final byte powered = 64;
 
@@ -130,7 +139,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     @Override
     public InternalInventory getExposedInventoryForSide(Direction side) {
         if (this.isCenter()) {
-            return this.internalInventory;
+            return this.externalInventory;
         }
         return InternalInventory.empty();
     }
@@ -231,9 +240,9 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
     public long getQEFrequency() {
         final ItemStack is = this.internalInventory.getStackInSlot(0);
         if (!is.isEmpty()) {
-            final CompoundTag c = is.getTag();
+            var c = is.getTag();
             if (c != null) {
-                return c.getLong("freq");
+                return c.getLong(TAG_FREQUENCY);
             }
         }
         return 0;
@@ -288,4 +297,24 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         return new QnbFormedState(getAdjacentQuantumBridges(), isCorner(), isPowered());
     }
 
+    /**
+     * Allows only valid {@link AEItems#QUANTUM_ENTANGLED_SINGULARITY} with a frequency.
+     */
+    private static class EntangledSingularityFilter implements IAEItemFilter {
+        @Override
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            return isValidEntangledSingularity(stack);
+        }
+    }
+
+    public static boolean isValidEntangledSingularity(ItemStack stack) {
+        return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
+                && stack.getTag() != null
+                && stack.getTag().contains(TAG_FREQUENCY, Tag.TAG_LONG);
+    }
+
+    public static void assignFrequency(ItemStack stack) {
+        var frequency = new Date().getTime() * 100 + singularitySeed++ % 100;
+        stack.getOrCreateTag().putLong(TAG_FREQUENCY, frequency);
+    }
 }
