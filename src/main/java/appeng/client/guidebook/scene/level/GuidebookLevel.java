@@ -1,5 +1,6 @@
 package appeng.client.guidebook.scene.level;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -25,13 +27,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.level.chunk.DataLayer;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.entity.LevelCallback;
 import net.minecraft.world.level.entity.LevelEntityGetter;
@@ -62,6 +67,11 @@ public class GuidebookLevel extends Level {
     private final Holder<Biome> biome;
     private final RegistryAccess registryAccess;
     private final LongSet filledBlocks = new LongOpenHashSet();
+    /**
+     * Sections for which we prepared lighting.
+     */
+    private final LongSet litSections = new LongOpenHashSet();
+    private final DataLayer defaultDataLayer;
 
     public GuidebookLevel() {
         this(Platform.getClientRegistryAccess());
@@ -82,6 +92,10 @@ public class GuidebookLevel extends Level {
         );
         this.registryAccess = registryAccess;
         this.biome = registryAccess.registryOrThrow(Registries.BIOME).getHolderOrThrow(Biomes.PLAINS);
+
+        var nibbles = new byte[DataLayer.SIZE];
+        Arrays.fill(nibbles, (byte) 0xFF);
+        defaultDataLayer = new DataLayer(nibbles);
     }
 
     public Bounds getBounds() {
@@ -117,6 +131,31 @@ public class GuidebookLevel extends Level {
 
     void addFilledBlock(BlockPos pos) {
         filledBlocks.add(pos.asLong());
+    }
+
+    /**
+     * Ensures lighting is set to skylight level 15 in the entire chunk and adjacent chunks whenever a block is first
+     * changed in that chunk.
+     */
+    public void prepareLighting(BlockPos pos) {
+        var minChunk = new ChunkPos(pos.offset(-1, -1, -1));
+        var maxChunk = new ChunkPos(pos.offset(1, 1, 1));
+        ChunkPos.rangeClosed(minChunk, maxChunk).forEach(chunkPos -> {
+            if (litSections.add(chunkPos.toLong())) {
+                var lightEngine = getLightEngine();
+                for (int i = 0; i < getSectionsCount(); ++i) {
+                    int y = getSectionYFromSectionIndex(i);
+                    var sectionPos = SectionPos.of(chunkPos, y);
+                    lightEngine.updateSectionStatus(sectionPos, false);
+                    lightEngine.queueSectionData(LightLayer.BLOCK, sectionPos, defaultDataLayer);
+                    lightEngine.queueSectionData(LightLayer.SKY, sectionPos, defaultDataLayer);
+                }
+
+                lightEngine.setLightEnabled(chunkPos, true);
+                lightEngine.propagateLightSources(chunkPos);
+                lightEngine.retainData(chunkPos, false);
+            }
+        });
     }
 
     public record Bounds(BlockPos min, BlockPos max) {

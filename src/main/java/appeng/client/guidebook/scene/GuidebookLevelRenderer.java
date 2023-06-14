@@ -3,6 +3,7 @@ package appeng.client.guidebook.scene;
 import java.util.Collection;
 
 import com.mojang.blaze3d.platform.GlConst;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,10 +23,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.FluidState;
@@ -55,19 +53,10 @@ public class GuidebookLevelRenderer {
 
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
 
-        var chunkPos = new ChunkPos(BlockPos.ZERO);
         var lightEngine = level.getLightEngine();
-        lightEngine.retainData(chunkPos, false);
-        lightEngine.setLightEnabled(chunkPos, false);
-
-        for (int i = lightEngine.getMinLightSection(); i < lightEngine.getMaxLightSection(); ++i) {
-            lightEngine.queueSectionData(LightLayer.BLOCK, SectionPos.of(chunkPos, i), null);
-            lightEngine.queueSectionData(LightLayer.SKY, SectionPos.of(chunkPos, i), null);
+        while (lightEngine.hasLightWork()) {
+            lightEngine.runLightUpdates();
         }
-        lightEngine.setLightEnabled(chunkPos, true);
-
-        level.getLightEngine().updateSectionStatus(BlockPos.ZERO, false);
-        level.getLightEngine().runLightUpdates();
 
         var projectionMatrix = cameraSettings.getProjectionMatrix();
         var viewMatrix = cameraSettings.getViewMatrix();
@@ -134,6 +123,8 @@ public class GuidebookLevelRenderer {
         RenderSystem.restoreProjectionMatrix();
 
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+
+        Lighting.setupFor3DItems(); // Reset to GUI lighting
     }
 
     private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers, boolean translucent) {
