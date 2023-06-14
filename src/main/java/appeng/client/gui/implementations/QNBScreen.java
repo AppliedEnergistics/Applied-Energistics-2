@@ -18,13 +18,6 @@
 
 package appeng.client.gui.implementations;
 
-import java.util.ArrayList;
-
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
-
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -32,6 +25,12 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.menu.implementations.QNBMenu;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QNBScreen extends AEBaseScreen<QNBMenu> {
 
@@ -40,18 +39,16 @@ public class QNBScreen extends AEBaseScreen<QNBMenu> {
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
-        if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
-            ItemStack hoveredItem = this.hoveredSlot.getItem();
-            if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(hoveredItem)
-                    && !QuantumBridgeBlockEntity.hasFrequency(hoveredItem)) {
-                var itemTooltip = new ArrayList<>(getTooltipFromContainerItem(hoveredItem));
-                itemTooltip.add(Tooltips.of(GuiText.InvalidSingularity, Tooltips.RED));
-                drawTooltip(guiGraphics, x, y, itemTooltip);
-                return;
-            }
+    protected List<Component> getTooltipFromContainerItem(ItemStack stack) {
+        var tooltip = super.getTooltipFromContainerItem(stack);
+
+        if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
+                && !QuantumBridgeBlockEntity.isValidEntangledSingularity(stack)) {
+            tooltip = new ArrayList<>(tooltip);
+            tooltip.add(Tooltips.of(GuiText.InvalidSingularity, Tooltips.RED));
         }
-        super.renderTooltip(guiGraphics, x, y);
+
+        return tooltip;
     }
 
 }
