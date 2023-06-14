@@ -18,6 +18,13 @@
 
 package appeng.client.gui.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.ScreenStyle;
@@ -25,12 +32,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.menu.implementations.QNBMenu;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class QNBScreen extends AEBaseScreen<QNBMenu> {
 

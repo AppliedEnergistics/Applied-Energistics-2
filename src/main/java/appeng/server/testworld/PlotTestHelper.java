@@ -2,6 +2,7 @@ package appeng.server.testworld;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -16,7 +17,6 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
-import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -81,15 +81,18 @@ public class PlotTestHelper extends GameTestHelper {
     /**
      * Find all grids in the area and return the biggest one.
      */
+    @NotNull
     public IGrid getGrid(BlockPos pos) {
         checkAllInitialized();
 
         var be = getBlockEntity(pos);
         if (be instanceof IGridConnectedBlockEntity gridConnectedBlockEntity) {
-            return gridConnectedBlockEntity.getMainNode().getGrid();
+            IGrid grid = gridConnectedBlockEntity.getMainNode().getGrid();
+            check(grid != null, "no grid", pos);
+            return grid;
         }
 
-        IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(getLevel(), this.absolutePos(pos));
+        var nodeHost = GridHelper.getNodeHost(getLevel(), this.absolutePos(pos));
         if (nodeHost != null) {
             for (var side : Direction.values()) {
                 var node = nodeHost.getGridNode(side);
@@ -98,7 +101,8 @@ public class PlotTestHelper extends GameTestHelper {
                 }
             }
         }
-        throw new GameTestAssertException("No grid @ " + pos);
+        fail("no grid", pos);
+        return null;
     }
 
     /**

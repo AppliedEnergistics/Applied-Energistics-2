@@ -90,6 +90,7 @@ public final class TestPlots {
                 MemoryCardTestPlots.class,
                 PatternProviderLockModePlots.class,
                 SpatialTestPlots.class,
+                QnbTestPlots.class,
                 GuidebookPlot.class));
     }
 

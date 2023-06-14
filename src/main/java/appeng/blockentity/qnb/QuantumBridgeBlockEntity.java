@@ -18,12 +18,12 @@
 
 package appeng.blockentity.qnb;
 
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -50,6 +50,8 @@ import appeng.util.inv.filter.IAEItemFilter;
 
 public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         implements IAEMultiBlock<QuantumCluster>, ServerTickingBlockEntity {
+
+    private static int singularitySeed = 0;
 
     public static final String TAG_FREQUENCY = "freq";
     private final byte corner = 16;
@@ -309,5 +311,10 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
         return AEItems.QUANTUM_ENTANGLED_SINGULARITY.isSameAs(stack)
                 && stack.getTag() != null
                 && stack.getTag().contains(TAG_FREQUENCY, Tag.TAG_LONG);
+    }
+
+    public static void assignFrequency(ItemStack stack) {
+        var frequency = new Date().getTime() * 100 + singularitySeed++ % 100;
+        stack.getOrCreateTag().putLong(TAG_FREQUENCY, frequency);
     }
 }
