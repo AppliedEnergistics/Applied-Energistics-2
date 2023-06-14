@@ -8,7 +8,7 @@ navigation:
 
 # Simple Certus Farm
 
-As mentioned in [Farming Certus](../ae2-mechanics/farming-certus.md), automation of <ItemLink id="certus_quartz_crystal" />
+As mentioned in [Certus Growth](../ae2-mechanics/certus-growth.md), automation of <ItemLink id="certus_quartz_crystal" />
 harvesting involves <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses. 
 <ItemLink id="growth_accelerator" />s are used to massively speed up the growth of certus quartz buds, and then the planes
 break the fully grown <ItemLink id="quartz_cluster" />. They are filtered by taking advantage of the suspiciously fortunate trait that non-mature

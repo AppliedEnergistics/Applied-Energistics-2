@@ -27,7 +27,7 @@ Do not break any flawless budding certus, as even with silk touch they will degr
 
 Also mine the Mysterious Cube in the center of the meteorite to gain all 4 inscriber presses.
 
-## Growing Quartz
+## Growing Certus Quartz
 
 <GameScene zoom="4" background="transparent">
 <ImportStructure src="assets/assemblies/budding_certus_1.snbt" />
@@ -64,7 +64,7 @@ accelerates this process when placed adjacent to the budding block. You should b
 If you don't have enough quartz to also make an <ItemLink id="energy_acceptor" /> or <ItemLink id="vibration_chamber" />,
 you can make a <ItemLink id="crank" /> and stick it on the end of your accelerator.
 
-Harvesting the certus automatically is "left as an exercise for the reader". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)
+Harvesting the certus automatically is "[left as an exercise for the reader](example-setups/simple-certus-farm.md)". (as a hint, <ItemLink id="annihilation_plane" />s and <ItemLink id="storage_bus" />ses are involved)
 
 ## A Quick Aside on Fluix
 
