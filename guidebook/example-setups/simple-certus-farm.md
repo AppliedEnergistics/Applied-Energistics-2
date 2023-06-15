@@ -31,7 +31,7 @@ automatically.
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="3 1 .7" max="2 2 1">
-        (3) Storage Bus #2: Filtered to Certus Quartz Crystal. Has priority set higher than your main storage.
+        (3) Storage Bus #2: Filtered to Certus Quartz Crystal. Has priority set higher than the main storage.
         <ItemImage id="certus_quartz_crystal" scale="2" />
   </BoxAnnotation>
 
@@ -47,7 +47,7 @@ automatically.
 * The first <ItemLink id="annihilation_plane" /> (1) has no GUI and cannot be configured, but can be enchanted with fortune.
 * The first <ItemLink id="storage_bus" /> (2) is filtered to <ItemLink id="certus_quartz_crystal" />.
 * The second <ItemLink id="storage_bus" /> (3) is filtered to <ItemLink id="certus_quartz_crystal" />, and has its
-  [priority](../ae2-mechanics/import-export-storage.md#storage-priority) set higher than your main storage.
+  [priority](../ae2-mechanics/import-export-storage.md#storage-priority) set higher than the main storage.
 
 ## How It Works
 
