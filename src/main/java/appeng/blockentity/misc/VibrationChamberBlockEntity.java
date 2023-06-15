@@ -282,7 +282,13 @@ public class VibrationChamberBlockEntity extends AENetworkInvBlockEntity impleme
                 is.shrink(1);
 
                 if (is.isEmpty()) {
-                    this.inv.setItemDirect(0, new ItemStack(fuelItem.getCraftingRemainingItem()));
+                    // fuel was fully consumed. for items like lava-bucket, put the remainder in the slot
+                    var remainder = fuelItem.getCraftingRemainingItem();
+                    if (remainder != null) {
+                        this.inv.setItemDirect(0, new ItemStack(remainder));
+                    } else {
+                        this.inv.setItemDirect(0, ItemStack.EMPTY);
+                    }
                 } else {
                     this.inv.setItemDirect(0, is);
                 }
