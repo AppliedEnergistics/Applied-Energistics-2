@@ -2,6 +2,9 @@ name: 'Build and Test'
 
 on:
   push:
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   build:
@@ -21,8 +24,16 @@ jobs:
         run: ./gradlew runData
       - name: Validate assets
         run: test -d ./src/generated/resources/.cache
-      - name: Build with Gradle
+      # Gradle Step for PRs
+      - name: Build PR with Gradle
         run: ./gradlew build
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        if: github.event_name == 'pull_request'
+      # Gradle Step for normal branch pushes
+      - name: Build PR with Gradle
+        run: ./gradlew build
+        if: github.event_name != 'pull_request'
       - name: Run Game Tests
         run: ./gradlew runGametest
       - name: Upload new Source Text Strings to Crowdin
@@ -31,7 +42,7 @@ jobs:
           GIT_BRANCH: master
           CROWDIN_TOKEN: ${{ secrets.CROWDIN_TOKEN }}
         continue-on-error: true
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
       - uses: actions/upload-artifact@v2
         with:
           name: dist

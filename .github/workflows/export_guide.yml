@@ -33,8 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: Production
     steps:
-      - name: Install Software OpenGL Rendering
-        run: sudo apt-get install xvfb libgl1-mesa-dri
       - uses: actions/download-artifact@v1
         with:
           name: guide
@@ -43,9 +41,13 @@ jobs:
         name: Determine Game and Mod-Version
         run: |
           GAME_VERSION=$(jq -r .gameVersion 'build/guide/!index.json')
+          echo "Game-Version: $GAME_VERSION"
           MOD_VERSION=$(jq -r .modVersion 'build/guide/!index.json')
-          echo 'GAME_VERSION=$GAME_VERSION' >> "$GITHUB_OUTPUT"
-          echo 'MOD_VERSION=$MOD_VERSION' >> "$GITHUB_OUTPUT"
+          echo "Mod-Version: MOD_VERSION"
+          
+          echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_OUTPUT"
+          echo "MOD_VERSION=$MOD_VERSION" >> "$GITHUB_OUTPUT"
+          
           if [ -z "$GAME_VERSION" ]
           then
             exit 1
@@ -60,4 +62,4 @@ jobs:
           AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
           AWS_REGION: 'auto'
           SOURCE_DIR: 'build/guide/'
-          DEST_DIR: minecraft-${{ steps.versions.outputs.GAME_VERSION }}
+          DEST_DIR: "minecraft-${{ steps.versions.outputs.GAME_VERSION }}"
