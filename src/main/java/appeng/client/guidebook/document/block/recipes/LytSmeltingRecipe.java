@@ -6,14 +6,13 @@ import net.minecraft.world.level.block.Blocks;
 
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytSlot;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
 import appeng.util.Platform;
 
-public class LytSmeltingRecipe extends LytBox {
+public class LytSmeltingRecipe extends LytRecipeBox {
     private static final ResourceLocation ARROW_LIGHT = AppEng.makeId("ae2guide/gui/recipe_arrow_light.png");
     private static final ResourceLocation ARROW_DARK = AppEng.makeId("ae2guide/gui/recipe_arrow_dark.png");
 
@@ -24,6 +23,7 @@ public class LytSmeltingRecipe extends LytBox {
     private final LytSlot resultSlot;
 
     public LytSmeltingRecipe(SmeltingRecipe recipe) {
+        super(recipe);
         this.recipe = recipe;
         setPadding(5);
         paddingTop = 15;

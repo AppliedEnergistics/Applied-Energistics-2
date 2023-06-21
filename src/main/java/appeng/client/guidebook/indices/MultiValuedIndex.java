@@ -1,17 +1,17 @@
 package appeng.client.guidebook.indices;
 
+import appeng.client.guidebook.GuidePageChange;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import com.google.gson.stream.JsonWriter;
+import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.resources.ResourceLocation;
-
-import appeng.client.guidebook.GuidePageChange;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 /**
  * A convenient index base-class for indices that map keys to multiple pages.
@@ -21,10 +21,14 @@ public class MultiValuedIndex<K, V> implements PageIndex {
 
     private final String name;
     private final EntryFunction<K, V> entryFunction;
+    private final JsonSerializer<K> keySerializer;
+    private final JsonSerializer<V> valueSerializer;
 
-    public MultiValuedIndex(String name, EntryFunction<K, V> entryFunction) {
+    public MultiValuedIndex(String name, EntryFunction<K, V> entryFunction, JsonSerializer<K> keySerializer, JsonSerializer<V> valueSerializer) {
         this.name = name;
         this.entryFunction = entryFunction;
+        this.keySerializer = keySerializer;
+        this.valueSerializer = valueSerializer;
     }
 
     @Override
@@ -78,6 +82,20 @@ public class MultiValuedIndex<K, V> implements PageIndex {
         }
     }
 
+    @Override
+    public void export(JsonWriter writer) throws IOException {
+        writer.beginArray();
+        for (var entry : index.entrySet()) {
+            keySerializer.write(writer, entry.getKey());
+            writer.beginArray();
+            for (var vRecord : entry.getValue()) {
+                valueSerializer.write(writer, vRecord.value());
+            }
+            writer.endArray();
+        }
+        writer.endArray();
+    }
+
     private void addToIndex(ParsedGuidePage page) {
         for (var entry : entryFunction.getEntry(page)) {
             var key = entry.getKey();
@@ -92,6 +110,6 @@ public class MultiValuedIndex<K, V> implements PageIndex {
         Iterable<Pair<K, V>> getEntry(ParsedGuidePage page);
     }
 
-    private record Record<V> (ResourceLocation pageId, V value) {
+    private record Record<V>(ResourceLocation pageId, V value) {
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import appeng.libs.mdast.model.MdAstNode;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.Container;
@@ -65,6 +66,7 @@ public class RecipeCompiler extends BlockTagCompiler {
             for (var mapping : mappings) {
                 var block = mapping.tryCreate(recipeManager, item);
                 if (block != null) {
+                    block.setSourceNode((MdAstNode) el);
                     parent.append(block);
                     return;
                 }
@@ -87,6 +89,7 @@ public class RecipeCompiler extends BlockTagCompiler {
             for (var mapping : mappings) {
                 var block = mapping.tryCreate(recipe);
                 if (block != null) {
+                    block.setSourceNode((MdAstNode) el);
                     parent.append(block);
                     return;
                 }

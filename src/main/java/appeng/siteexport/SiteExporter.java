@@ -1,28 +1,29 @@
 package appeng.siteexport;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import appeng.api.features.P2PTunnelAttunement;
+import appeng.api.features.P2PTunnelAttunementInternal;
+import appeng.api.util.AEColor;
+import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.CategoryIndex;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.core.AppEngClient;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ColoredItemDefinition;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.siteexport.model.P2PTypeInfo;
+import appeng.util.Platform;
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -30,129 +31,220 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.ItemLike;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import appeng.api.features.P2PTunnelAttunement;
-import appeng.api.features.P2PTunnelAttunementInternal;
-import appeng.api.util.AEColor;
-import appeng.core.AppEng;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ColoredItemDefinition;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.siteexport.model.P2PTypeInfo;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Exports a data package for use by the website.
  */
 @Environment(EnvType.CLIENT)
-public final class SiteExporter {
+public final class SiteExporter implements ResourceExporter {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int ICON_DIMENSION = 128;
 
-    private static volatile SceneExportJob job;
+    private final Minecraft client;
+
+    private final Path outputFolder;
+
+    private final Guide guide;
+
+    private ParsedGuidePage currentPage;
+
+    private final Set<Recipe<?>> recipes = new HashSet<>();
+
+    private final Set<Item> items = new HashSet<>();
+
+    public SiteExporter(Minecraft client, Path outputFolder, Guide guide) {
+        this.client = client;
+        this.outputFolder = outputFolder;
+        this.guide = guide;
+    }
 
     public static void initialize() {
-        WorldRenderEvents.AFTER_SETUP.register(context -> {
-            continueJob(SceneExportJob::render);
-        });
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            continueJob(SceneExportJob::tick);
-        });
+        // Automatically run the export once the client has started and then exit
+        if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
+            Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
+
+            ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                if (client.getOverlay() instanceof LoadingOverlay) {
+                    return; // Do nothing while it's loading
+                }
+
+                var guide = AppEngClient.instance().getGuide();
+                try {
+                    export(client, outputFolder, guide);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.exit(0);
+            });
+        }
     }
 
     public static void export(FabricClientCommandSource source) {
-        source.sendFeedback(Component.literal("AE2 Site-Export started"));
-        job = null;
+        var guide = AppEngClient.instance().getGuide();
         try {
-            startExport(Minecraft.getInstance(), source);
+            Path outputFolder = Paths.get("guide-export").toAbsolutePath();
+            export(Minecraft.getInstance(), outputFolder, guide);
+
+            source.sendFeedback(Component.literal("Guide data exported to ")
+                    .append(Component.literal("[" + outputFolder.getFileName().toString() + "]")
+                            .withStyle(style -> style
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, outputFolder.toString()))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                            Component.literal("Click to open export folder")))
+                                    .applyFormats(ChatFormatting.UNDERLINE, ChatFormatting.GREEN))));
         } catch (Exception e) {
-            LOGGER.error("AE2 site export failed.", e);
+            e.printStackTrace();
             source.sendError(Component.literal(e.toString()));
         }
     }
 
-    @FunctionalInterface
-    interface JobFunction {
-        void accept(SceneExportJob job) throws Exception;
+    private static void export(Minecraft client, Path outputFolder, Guide guide) throws Exception {
+        new SiteExporter(client, outputFolder, guide).export();
     }
 
-    private static void continueJob(JobFunction event) {
-        if (job != null) {
-            try {
-                event.accept(job);
-                if (job.isAtEnd()) {
-                    job.sendFeedback(Component.literal("AE2 game data exported to ")
-                            .append(Component.literal("[site-export]")
-                                    .withStyle(style -> style
-                                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, "site-export"))
-                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.literal("Click to open export folder")))
-                                            .applyFormats(ChatFormatting.UNDERLINE, ChatFormatting.GREEN))));
-                    job = null;
-                }
-            } catch (Exception e) {
-                LOGGER.error("AE2 site export failed.", e);
-                job.sendError(Component.literal(e.toString()));
-                job = null;
+    @Override
+    public void referenceItem(ItemStack stack) {
+        if (!stack.isEmpty()) {
+            items.add(stack.getItem());
+            if (stack.hasTag()) {
+                LOGGER.error("Couldn't handle stack with NBT tag: {}", stack);
             }
         }
     }
 
-    private static void startExport(Minecraft client, FabricClientCommandSource source) throws Exception {
-        if (!client.hasSingleplayerServer()) {
-            throw new IllegalStateException("Only run this command from single-player.");
+    @Override
+    public void referenceRecipe(Recipe<?> recipe) {
+        if (!recipes.add(recipe)) {
+            return; // Already added
         }
 
-        Path outputFolder = Paths.get("site-export").toAbsolutePath();
+        var registryAccess = Platform.getClientRegistryAccess();
+        var resultItem = recipe.getResultItem(registryAccess);
+        if (!resultItem.isEmpty()) {
+            referenceItem(resultItem);
+        }
+        for (var ingredient : recipe.getIngredients()) {
+            for (var item : ingredient.getItems()) {
+                referenceItem(item);
+            }
+        }
+    }
+
+    private void dumpRecipes(SiteExportWriter writer) {
+        for (var recipe : recipes) {
+            if (recipe instanceof CraftingRecipe craftingRecipe) {
+                if (craftingRecipe.isSpecial()) {
+                    continue;
+                }
+                writer.addRecipe(craftingRecipe);
+            } else if (recipe instanceof AbstractCookingRecipe cookingRecipe) {
+                writer.addRecipe(cookingRecipe);
+            } else if (recipe instanceof InscriberRecipe inscriberRecipe) {
+                writer.addRecipe(inscriberRecipe);
+            }
+        }
+    }
+
+    @Override
+    public void copyResource(ResourceLocation id) {
+        try {
+            var pagePath = getPathForWriting(id);
+            byte[] bytes = guide.loadAsset(id);
+            if (bytes == null) {
+                throw new IllegalArgumentException("Couldn't find asset " + id);
+            }
+            Files.write(pagePath, bytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to copy resource " + id, e);
+        }
+    }
+
+    @Override
+    public Path getPathForWriting(ResourceLocation assetId) {
+        try {
+            var path = resolvePath(assetId);
+            Files.createDirectories(path.getParent());
+            return path;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Path getOutputFolder() {
+        return outputFolder;
+    }
+
+    @Override
+    public ResourceLocation getPageSpecificResourceLocation(String suffix) {
+        var path = currentPage.getId().getPath();
+        var idx = path.lastIndexOf('.');
+        if (idx != -1) {
+            path = path.substring(0, idx);
+        }
+        return new ResourceLocation(currentPage.getId().getNamespace(), path + "_" + suffix);
+    }
+
+    private void export() throws Exception {
         if (Files.isDirectory(outputFolder)) {
             MoreFiles.deleteDirectoryContents(outputFolder, RecursiveDeleteOption.ALLOW_INSECURE);
         } else {
             Files.createDirectories(outputFolder);
         }
 
-        var siteExport = new SiteExportWriter();
-
-        var usedVanillaItems = new HashSet<Item>();
-
-        dumpRecipes(client.level.getRecipeManager(), usedVanillaItems, siteExport);
-
-        dumpP2PTypes(usedVanillaItems, siteExport);
-
-        // Used by compass in charger recipe
-        usedVanillaItems.add(Items.COMPASS);
-
-        dumpColoredItems(siteExport);
-
-        // Iterate over all Applied Energistics items
-        var stacks = new ArrayList<ItemStack>();
-        for (Item item : BuiltInRegistries.ITEM) {
-            if (getItemId(item).getNamespace().equals(AppEng.MOD_ID)) {
-                stacks.add(new ItemStack(item));
-            }
+        // Load data packs if needed
+        if (client.level == null) {
+            LOGGER.info("Reloading datapacks to get recipes");
+            Guide.runDatapackReload();
+            LOGGER.info("Completed datapack reload");
         }
 
-        // Also add Vanilla items
-        for (Item usedVanillaItem : usedVanillaItems) {
-            stacks.add(new ItemStack(usedVanillaItem));
+        var indexWriter = new SiteExportWriter(guide);
+
+        for (var page : guide.getPages()) {
+            currentPage = page;
+
+            indexWriter.addPage(page);
+
+            LOGGER.debug("Compiling {}", page);
+            var compiledPage = PageCompiler.compile(guide, guide.getExtensions(), page);
+
+            // Copy the page itself
+            copyResource(page.getId());
+
+            ExportableResourceProvider.visit(compiledPage.document(), SiteExporter.this);
         }
 
-        // All files in this folder will be directly served from the root of the web-site
-        Path assetFolder = outputFolder.resolve("public");
+        dumpRecipes(indexWriter);
 
-        processItems(client, siteExport, stacks, assetFolder);
+        processItems(client, indexWriter, outputFolder);
 
-        Path dataFolder = outputFolder.resolve("data");
-        Files.createDirectories(dataFolder);
-        siteExport.write(dataFolder.resolve("game-data.json"));
+        indexWriter.addIndex(guide, ItemIndex.class);
 
-        job = new SceneExportJob(SiteExportScenes.createScenes(), source, assetFolder);
+        indexWriter.write(outputFolder.resolve("!index.json"));
+//
+//        Path dataFolder = outputFolder.resolve("data");
+//        Files.createDirectories(dataFolder);
+//        siteExport.write(dataFolder.resolve("game-data.json"));
+    }
+
+    private Path resolvePath(ResourceLocation id) {
+        return outputFolder.resolve(id.getNamespace() + "/" + id.getPath());
     }
 
     /**
@@ -160,7 +252,7 @@ public final class SiteExporter {
      */
     private static void dumpP2PTypes(Set<Item> usedVanillaItems, SiteExportWriter siteExport) {
 
-        var tunnelTypes = new ItemLike[] {
+        var tunnelTypes = new ItemLike[]{
                 P2PTunnelAttunement.ME_TUNNEL,
                 P2PTunnelAttunement.ENERGY_TUNNEL,
                 P2PTunnelAttunement.ITEM_TUNNEL,
@@ -218,11 +310,10 @@ public final class SiteExporter {
         }
     }
 
-    private static void processItems(Minecraft client,
-            SiteExportWriter siteExport,
-            List<ItemStack> items,
-            Path assetFolder) throws IOException {
-        Path iconsFolder = assetFolder.resolve("icons");
+    private void processItems(Minecraft client,
+                              SiteExportWriter siteExport,
+                              Path outputFolder) throws IOException {
+        var iconsFolder = outputFolder.resolve("!icons");
         if (Files.exists(iconsFolder)) {
             MoreFiles.deleteRecursively(iconsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
         }
@@ -232,7 +323,10 @@ public final class SiteExporter {
 
             itemRenderer.setupItemRendering();
 
-            for (ItemStack stack : items) {
+            LOGGER.info("Exporting items...");
+            for (var item : items) {
+                var stack = new ItemStack(item);
+
                 String itemId = getItemId(stack.getItem()).toString();
                 var iconPath = iconsFolder.resolve(itemId.replace(':', '/') + ".png");
                 Files.createDirectories(iconPath.getParent());
@@ -242,7 +336,7 @@ public final class SiteExporter {
                     guiGraphics.renderItemDecorations(client.font, stack, 0, 0, "");
                 }, iconPath);
 
-                String absIconUrl = "/" + assetFolder.relativize(iconPath).toString().replace('\\', '/');
+                String absIconUrl = "/" + outputFolder.relativize(iconPath).toString().replace('\\', '/');
                 siteExport.addItem(itemId, stack, absIconUrl);
             }
         }
@@ -250,48 +344,6 @@ public final class SiteExporter {
 
     private static ResourceLocation getItemId(Item item) {
         return BuiltInRegistries.ITEM.getKey(item);
-    }
-
-    private static void addVanillaItem(Set<Item> items, ItemStack stack) {
-        if (stack == null || stack.isEmpty()) {
-            return;
-        }
-
-        var item = stack.getItem();
-        if ("minecraft".equals(BuiltInRegistries.ITEM.getKey(item).getNamespace())) {
-            items.add(item);
-        }
-    }
-
-    private static void dumpRecipes(RecipeManager recipeManager, Set<Item> vanillaItems, SiteExportWriter siteExport) {
-
-        for (Recipe<?> recipe : recipeManager.getRecipes()) {
-            // Only consider our recipes
-            if (!recipe.getId().getNamespace().equals(AppEng.MOD_ID)) {
-                continue;
-            }
-
-            if (!recipe.getResultItem(null).isEmpty()) {
-                addVanillaItem(vanillaItems, recipe.getResultItem(null));
-            }
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                for (ItemStack item : ingredient.getItems()) {
-                    addVanillaItem(vanillaItems, item);
-                }
-            }
-
-            if (recipe instanceof CraftingRecipe craftingRecipe) {
-                if (craftingRecipe.isSpecial()) {
-                    continue;
-                }
-                siteExport.addRecipe(craftingRecipe);
-            } else if (recipe instanceof AbstractCookingRecipe cookingRecipe) {
-                siteExport.addRecipe(cookingRecipe);
-            } else if (recipe instanceof InscriberRecipe inscriberRecipe) {
-                siteExport.addRecipe(inscriberRecipe);
-            }
-        }
-
     }
 
 }

@@ -2,6 +2,7 @@ package appeng.client.guidebook.document.interaction;
 
 import java.util.List;
 
+import appeng.siteexport.ResourceExporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
@@ -20,5 +21,9 @@ public class VanillaTooltipWrapper implements GuideTooltip {
                 .stream()
                 .<ClientTooltipComponent>map(ClientTextTooltip::new)
                 .toList();
+    }
+
+    @Override
+    public void exportResources(ResourceExporter exporter) {
     }
 }

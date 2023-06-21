@@ -11,7 +11,7 @@ import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
 import appeng.recipes.handlers.InscriberRecipe;
 
-public class LytInscriberRecipe extends LytBox {
+public class LytInscriberRecipe extends LytRecipeBox {
 
     private static final ResourceLocation ARROWS_LIGHT = AppEng.makeId("ae2guide/gui/inscriber_arrows_bg_light.png");
     private static final ResourceLocation ARROWS_DARK = AppEng.makeId("ae2guide/gui/inscriber_arrows_bg_dark.png");
@@ -24,6 +24,7 @@ public class LytInscriberRecipe extends LytBox {
     private final LytSlot resultSlot;
 
     public LytInscriberRecipe(InscriberRecipe recipe) {
+        super(recipe);
         this.recipe = recipe;
 
         append(topSlot = new LytSlot(recipe.getTopOptional()));

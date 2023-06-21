@@ -1,8 +1,7 @@
 package appeng.client.guidebook;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Points to a guidebook page with an optional anchor within that page.
@@ -13,5 +12,14 @@ import net.minecraft.resources.ResourceLocation;
 public record PageAnchor(ResourceLocation pageId, @Nullable String anchor) {
     public static PageAnchor page(ResourceLocation pageId) {
         return new PageAnchor(pageId, null);
+    }
+
+    @Override
+    public String toString() {
+        if (anchor != null) {
+            return pageId.toString() + "#" + anchor;
+        } else {
+            return pageId.toString();
+        }
     }
 }

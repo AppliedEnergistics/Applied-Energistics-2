@@ -1,5 +1,8 @@
 package appeng.client.guidebook.scene.annotation;
 
+import appeng.client.gui.Tooltip;
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
@@ -13,7 +16,7 @@ import appeng.client.guidebook.document.interaction.TextTooltip;
  * An annotation to show additional information to the user about content in a
  * {@link appeng.client.guidebook.scene.GuidebookScene}.
  */
-public abstract class SceneAnnotation {
+public abstract class SceneAnnotation implements ExportableResourceProvider {
     @Nullable
     private GuideTooltip tooltip;
 
@@ -45,5 +48,12 @@ public abstract class SceneAnnotation {
 
     public void setHovered(boolean hovered) {
         this.hovered = hovered;
+    }
+
+    @Override
+    public void exportResources(ResourceExporter exporter) {
+        if (tooltip != null) {
+            tooltip.exportResources(exporter);
+        }
     }
 }

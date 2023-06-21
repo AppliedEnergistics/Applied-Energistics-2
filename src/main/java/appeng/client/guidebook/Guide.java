@@ -1,25 +1,18 @@
 package appeng.client.guidebook;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.extensions.DefaultExtensions;
+import appeng.client.guidebook.extensions.Extension;
+import appeng.client.guidebook.extensions.ExtensionCollection;
+import appeng.client.guidebook.extensions.ExtensionPoint;
+import appeng.client.guidebook.indices.CategoryIndex;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.indices.PageIndex;
+import appeng.client.guidebook.navigation.NavigationTree;
+import appeng.client.guidebook.screen.GlobalInMemoryHistory;
+import appeng.client.guidebook.screen.GuideScreen;
+import appeng.util.Platform;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -42,20 +35,26 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.flag.FeatureFlagSet;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.extensions.DefaultExtensions;
-import appeng.client.guidebook.extensions.Extension;
-import appeng.client.guidebook.extensions.ExtensionCollection;
-import appeng.client.guidebook.extensions.ExtensionPoint;
-import appeng.client.guidebook.indices.CategoryIndex;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.client.guidebook.indices.PageIndex;
-import appeng.client.guidebook.navigation.NavigationTree;
-import appeng.client.guidebook.screen.GlobalInMemoryHistory;
-import appeng.client.guidebook.screen.GuideScreen;
-import appeng.util.Platform;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Encapsulates a Guide, which consists of a collection of Markdown pages and associated content, loaded from a
@@ -78,17 +77,21 @@ public final class Guide implements PageCollection {
     private final String developmentSourceNamespace;
 
     private Guide(String defaultNamespace,
-            String folder,
-            @Nullable Path developmentSourceFolder,
-            @Nullable String developmentSourceNamespace,
-            Map<Class<?>, PageIndex> indices,
-            ExtensionCollection extensions) {
+                  String folder,
+                  @Nullable Path developmentSourceFolder,
+                  @Nullable String developmentSourceNamespace,
+                  Map<Class<?>, PageIndex> indices,
+                  ExtensionCollection extensions) {
         this.defaultNamespace = defaultNamespace;
         this.folder = folder;
         this.developmentSourceFolder = developmentSourceFolder;
         this.developmentSourceNamespace = developmentSourceNamespace;
         this.indices = indices;
         this.extensions = extensions;
+    }
+
+    public String getDefaultNamespace() {
+        return defaultNamespace;
     }
 
     @Override
@@ -184,6 +187,16 @@ public final class Guide implements PageCollection {
         return page != null ? PageCompiler.compile(this, extensions, page) : null;
     }
 
+    public Collection<ParsedGuidePage> getPages() {
+        if (pages == null) {
+            throw new IllegalStateException("Pages are not loaded yet.");
+        }
+
+        var pages = new HashMap<>(this.pages);
+        pages.putAll(developmentPages);
+        return pages.values();
+    }
+
     @Override
     public byte[] loadAsset(ResourceLocation id) {
         // Also load images from the development sources folder, if it exists and contains the asset namespace
@@ -259,7 +272,7 @@ public final class Guide implements PageCollection {
 
         @Override
         protected Map<ResourceLocation, ParsedGuidePage> prepare(ResourceManager resourceManager,
-                ProfilerFiller profiler) {
+                                                                 ProfilerFiller profiler) {
             profiler.startTick();
             Map<ResourceLocation, ParsedGuidePage> pages = new HashMap<>();
 
@@ -285,7 +298,7 @@ public final class Guide implements PageCollection {
 
         @Override
         protected void apply(Map<ResourceLocation, ParsedGuidePage> pages, ResourceManager resourceManager,
-                ProfilerFiller profiler) {
+                             ProfilerFiller profiler) {
             profiler.startTick();
             Guide.this.pages = pages;
             profiler.push("indices");

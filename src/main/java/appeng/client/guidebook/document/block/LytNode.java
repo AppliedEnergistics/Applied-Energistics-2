@@ -3,6 +3,8 @@ package appeng.client.guidebook.document.block;
 import java.util.Collections;
 import java.util.List;
 
+import appeng.libs.mdast.model.MdAstNode;
+import appeng.libs.unist.UnistNode;
 import org.jetbrains.annotations.Nullable;
 
 import appeng.client.guidebook.document.LytRect;
@@ -17,11 +19,32 @@ public abstract class LytNode implements Styleable {
     private TextStyle style = TextStyle.EMPTY;
     private TextStyle hoverStyle = TextStyle.EMPTY;
 
+    /**
+     * An optional association of this layout node with the node in the source document.
+     */
+    @Nullable
+    private MdAstNode sourceNode;
+
     public void removeChild(LytNode node) {
     }
 
     public List<? extends LytNode> getChildren() {
         return Collections.emptyList();
+    }
+
+    /**
+     * Get the document we're a part of, if any.
+     */
+    @Nullable
+    public LytDocument getDocument() {
+        var current = this;
+        do {
+            if (current instanceof LytDocument document) {
+                return document;
+            }
+            current = current.parent;
+        } while (current != null);
+        return null;
     }
 
     @Nullable
@@ -114,5 +137,13 @@ public abstract class LytNode implements Styleable {
     @Override
     public @Nullable Styleable getStylingParent() {
         return parent;
+    }
+
+    public @Nullable MdAstNode getSourceNode() {
+        return sourceNode;
+    }
+
+    public void setSourceNode(@Nullable MdAstNode sourceNode) {
+        this.sourceNode = sourceNode;
     }
 }

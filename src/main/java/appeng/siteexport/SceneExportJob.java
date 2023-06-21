@@ -21,11 +21,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.block.RenderShape;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SceneExportJob {
+    private static final Logger LOG = LoggerFactory.getLogger(SceneExportJob.class);
+
     private final Path assetFolder;
     private final List<Scene> scenes;
-    private final FabricClientCommandSource source;
     private final Minecraft client;
     private final ClientLevel clientLevel;
     private final ServerLevel serverLevel;
@@ -40,9 +43,8 @@ public class SceneExportJob {
 
     private SceneRenderingState state;
 
-    public SceneExportJob(List<Scene> scenes, FabricClientCommandSource source, Path assetFolder) {
+    public SceneExportJob(List<Scene> scenes, Path assetFolder) {
         this.scenes = scenes;
-        this.source = source;
         this.assetFolder = assetFolder;
 
         client = Minecraft.getInstance();
@@ -175,13 +177,5 @@ public class SceneExportJob {
                 client.setCameraEntity(client.player);
             }
         }
-    }
-
-    public void sendFeedback(Component text) {
-        source.sendFeedback(text);
-    }
-
-    public void sendError(Component text) {
-        source.sendError(text);
     }
 }

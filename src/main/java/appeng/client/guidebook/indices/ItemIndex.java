@@ -1,19 +1,17 @@
 package appeng.client.guidebook.indices;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.client.guidebook.PageAnchor;
+import appeng.client.guidebook.compiler.IdUtils;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.ResourceLocationException;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-
-import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.compiler.IdUtils;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An index of Minecraft items to the main guidebook page describing it.
@@ -24,7 +22,12 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemIndex.class);
 
     public ItemIndex() {
-        super("Item Index", ItemIndex::getItemAnchors);
+        super(
+                "Item Index",
+                ItemIndex::getItemAnchors,
+                (writer, value) -> writer.value(value.toString()),
+                (writer, value) -> writer.value(value.toString())
+            );
     }
 
     private static List<Pair<ResourceLocation, PageAnchor>> getItemAnchors(ParsedGuidePage page) {
@@ -33,7 +36,7 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
             return List.of();
         }
 
-        if (!(itemIdsNode instanceof List<?>itemIdList)) {
+        if (!(itemIdsNode instanceof List<?> itemIdList)) {
             LOGGER.warn("Page {} contains malformed item_ids frontmatter", page.getId());
             return List.of();
         }

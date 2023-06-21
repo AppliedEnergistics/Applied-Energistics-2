@@ -2,6 +2,8 @@ package appeng.client.guidebook.document.block;
 
 import java.util.Optional;
 
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,7 +19,7 @@ import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.RenderContext;
 
-public class LytImage extends LytBlock implements InteractiveElement {
+public class LytImage extends LytBlock implements InteractiveElement, ExportableResourceProvider {
 
     private ResourceLocation imageId;
     private GuidePageTexture texture = GuidePageTexture.missing();
@@ -95,5 +97,10 @@ public class LytImage extends LytBlock implements InteractiveElement {
             return Optional.of(new TextTooltip(Component.literal(title)));
         }
         return Optional.empty();
+    }
+
+    @Override
+    public void exportResources(ResourceExporter exporter) {
+        exporter.copyResource(imageId);
     }
 }

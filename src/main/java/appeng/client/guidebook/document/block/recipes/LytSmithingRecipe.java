@@ -2,6 +2,9 @@ package appeng.client.guidebook.document.block.recipes;
 
 import java.util.List;
 
+import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +27,7 @@ import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
 import appeng.util.Platform;
 
-public class LytSmithingRecipe extends LytBox {
+public class LytSmithingRecipe extends LytRecipeBox implements ExportableResourceProvider {
     private static final Logger LOG = LoggerFactory.getLogger(LytSmithingRecipe.class);
 
     private static final ResourceLocation ARROW_LIGHT = AppEng.makeId("ae2guide/gui/recipe_arrow_light.png");
@@ -37,6 +40,7 @@ public class LytSmithingRecipe extends LytBox {
     private final LytSlot resultSlot;
 
     public LytSmithingRecipe(SmithingRecipe recipe) {
+        super(recipe);
         this.recipe = recipe;
         setPadding(5);
         paddingTop = 15;
@@ -103,4 +107,5 @@ public class LytSmithingRecipe extends LytBox {
 
         super.render(context);
     }
+
 }

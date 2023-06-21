@@ -3,6 +3,8 @@ package appeng.client.guidebook.document.flow;
 import java.net.URI;
 import java.util.function.Consumer;
 
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,7 @@ public class LytFlowLink extends LytTooltipSpan {
     private SoundEvent clickSound = AppEngSounds.GUIDE_CLICK_EVENT;
 
     public LytFlowLink() {
-        modifyStyle(style -> style.color((ColorValue) SymbolicColor.LINK));
+        modifyStyle(style -> style.color(SymbolicColor.LINK));
         modifyHoverStyle(style -> style.underlined(true));
     }
 

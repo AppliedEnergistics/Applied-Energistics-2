@@ -2,6 +2,7 @@ package appeng.client.guidebook.document.interaction;
 
 import java.util.List;
 
+import appeng.siteexport.ResourceExporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -27,5 +28,10 @@ public class ItemTooltip implements GuideTooltip {
                 .map(Component::getVisualOrderText)
                 .map(ClientTooltipComponent::create)
                 .toList();
+    }
+
+    @Override
+    public void exportResources(ResourceExporter exporter) {
+        exporter.referenceItem(stack);
     }
 }

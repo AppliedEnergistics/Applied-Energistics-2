@@ -16,7 +16,7 @@ import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
 import appeng.util.Platform;
 
-public class LytCraftingRecipe extends LytBox {
+public class LytCraftingRecipe extends LytRecipeBox {
     private static final ResourceLocation ARROW_LIGHT = AppEng.makeId("ae2guide/gui/recipe_arrow_light.png");
     private static final ResourceLocation ARROW_DARK = AppEng.makeId("ae2guide/gui/recipe_arrow_dark.png");
 
@@ -27,6 +27,7 @@ public class LytCraftingRecipe extends LytBox {
     private final LytSlot resultSlot;
 
     public LytCraftingRecipe(CraftingRecipe recipe) {
+        super(recipe);
         this.recipe = recipe;
         setPadding(5);
         paddingTop = 15;

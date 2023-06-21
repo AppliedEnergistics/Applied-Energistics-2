@@ -2,6 +2,9 @@ package appeng.client.guidebook.document.interaction;
 
 import java.util.List;
 
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
+import appeng.siteexport.SiteExporter;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -88,5 +91,10 @@ public class ContentTooltip implements GuideTooltip {
             layoutBox = content.layout(layoutContext, 0, 0, window.getGuiScaledWidth() / 2);
         }
         return layoutBox;
+    }
+
+    @Override
+    public void exportResources(ResourceExporter exporter) {
+        ExportableResourceProvider.visit(content, exporter);
     }
 }

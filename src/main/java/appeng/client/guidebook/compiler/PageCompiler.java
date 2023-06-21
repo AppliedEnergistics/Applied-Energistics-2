@@ -1,24 +1,5 @@
 package appeng.client.guidebook.compiler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.ResourceLocationException;
-import net.minecraft.resources.ResourceLocation;
-
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
@@ -67,6 +48,7 @@ import appeng.libs.mdast.model.MdAstInlineCode;
 import appeng.libs.mdast.model.MdAstLink;
 import appeng.libs.mdast.model.MdAstList;
 import appeng.libs.mdast.model.MdAstListItem;
+import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.mdast.model.MdAstParagraph;
 import appeng.libs.mdast.model.MdAstParent;
 import appeng.libs.mdast.model.MdAstPhrasingContent;
@@ -79,6 +61,24 @@ import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import appeng.libs.unist.UnistNode;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @ApiStatus.Internal
 public final class PageCompiler {
@@ -97,12 +97,11 @@ public final class PageCompiler {
 
     private final Map<String, TagCompiler> tagCompilers = new HashMap<>();
 
-    public PageCompiler(
-            PageCollection pages,
-            ExtensionCollection extensions,
-            String sourcePack,
-            ResourceLocation id,
-            String pageContent) {
+    // Data associated with the current page being compiled, this is used by
+    // compilers to communicate with each other within the current page.
+    private final Map<State<?>, Object> compilerState = new IdentityHashMap<>();
+
+    public PageCompiler(PageCollection pages, ExtensionCollection extensions, String sourcePack, ResourceLocation id, String pageContent) {
         this.pages = pages;
         this.extensions = extensions;
         this.sourcePack = sourcePack;
@@ -144,8 +143,7 @@ public final class PageCompiler {
 
     public static GuidePage compile(PageCollection pages, ExtensionCollection extensions, ParsedGuidePage parsedPage) {
         // Translate page tree over to layout pages
-        var document = new PageCompiler(pages, extensions, parsedPage.sourcePack, parsedPage.id, parsedPage.source)
-                .compile(parsedPage.astRoot);
+        var document = new PageCompiler(pages, extensions, parsedPage.sourcePack, parsedPage.id, parsedPage.source).compile(parsedPage.astRoot);
 
         return new GuidePage(parsedPage.sourcePack, parsedPage.id, document);
     }
@@ -160,6 +158,7 @@ public final class PageCompiler {
 
     private LytDocument compile(MdAstRoot root) {
         var document = new LytDocument();
+        document.setSourceNode(root);
         compileBlockContext(root, document);
         return document;
     }
@@ -242,6 +241,9 @@ public final class PageCompiler {
             }
 
             if (layoutChild != null) {
+                if (child instanceof MdAstNode astNode) {
+                    layoutChild.setSourceNode(astNode);
+                }
                 layoutParent.append(layoutChild);
             }
             previousLayoutChild = layoutChild;
@@ -415,8 +417,7 @@ public final class PageCompiler {
     public LytFlowContent createErrorFlowContent(String text, UnistNode child) {
         LytFlowSpan span = new LytFlowSpan();
         span.modifyStyle(style -> {
-            style.color(SymbolicColor.ERROR_TEXT)
-                    .whiteSpace(WhiteSpaceMode.PRE);
+            style.color(SymbolicColor.ERROR_TEXT).whiteSpace(WhiteSpaceMode.PRE);
         });
 
         // Find the position in the source
@@ -462,5 +463,21 @@ public final class PageCompiler {
 
     public <T extends PageIndex> T getIndex(Class<T> clazz) {
         return pages.getIndex(clazz);
+    }
+
+    public <T> T getCompilerState(State<T> state) {
+        var current = compilerState.getOrDefault(state, state.defaultValue);
+        return state.dataClass.cast(current);
+    }
+
+    public <T> void setCompilerState(State<T> state, T value) {
+        compilerState.put(state, value);
+    }
+
+    public <T> void clearCompilerState(State<T> state) {
+        compilerState.remove(state);
+    }
+
+    public record State<T>(String name, Class<T> dataClass, T defaultValue) {
     }
 }

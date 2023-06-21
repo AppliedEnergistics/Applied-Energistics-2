@@ -26,6 +26,28 @@ plugins {
     id "com.github.johnrengelman.shadow"
 }
 
+sourceSets {
+    portaforgy
+    main {
+        compileClasspath += sourceSets.portaforgy.output
+        runtimeClasspath += sourceSets.portaforgy.output
+        resources {
+            srcDir 'src/generated/resources'
+        }
+    }
+    test {
+        compileClasspath += sourceSets.portaforgy.output
+        runtimeClasspath += sourceSets.portaforgy.output
+    }
+    buildtools
+    guideexport {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+        compileClasspath += sourceSets.portaforgy.output
+        runtimeClasspath += sourceSets.portaforgy.output
+    }
+}
+
 configurations {
     shaded {
         transitive = false
@@ -42,6 +64,8 @@ configurations {
     configurations.runtimeClasspath.extendsFrom(internal)
     configurations.testCompileClasspath.extendsFrom(internal)
     configurations.testRuntimeClasspath.extendsFrom(internal)
+    configurations.guideexportCompileClasspath.extendsFrom(compileClasspath)
+    configurations.guideexportRuntimeClasspath.extendsFrom(runtimeClasspath)
 }
 
 dependencies {
@@ -49,6 +73,8 @@ dependencies {
     shaded project(path: ':libs:markdown', configuration: "archives")
     shaded "io.methvin:directory-watcher:${directory_watcher_version}"
     shaded "org.yaml:snakeyaml:${snakeyaml_version}"
+    compileOnly "de.javagl:jgltf-model-builder:2.0.3"
+    guideexportImplementation "de.javagl:jgltf-model-builder:2.0.3"
 
     internal project(':libs:markdown')
     // Do not inherit any transitive dependencies here since we rely on those dependencies being
@@ -269,22 +295,6 @@ if (ext.tag) {
 ext.isAlpha = project.version.contains("alpha")
 ext.isBeta = project.version.contains("beta")
 
-sourceSets {
-    portaforgy
-    main {
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
-        resources {
-            srcDir 'src/generated/resources'
-        }
-    }
-    test {
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
-    }
-    buildtools
-}
-
 test {
     useJUnitPlatform()
     systemProperty "fabric.debug.logLibClassification", "true"
@@ -319,6 +329,13 @@ loom {
             property "fabric-api.datagen"
             property "fabric-api.datagen.output-dir", file("src/generated/resources").absolutePath
             property "appeng.datagen.existingData", file("src/main/resources").absolutePath
+        }
+        guideexport {
+            client()
+            property "appeng.runGuideExportAndExit", "true"
+            property "appeng.guideExportFolder", file("$buildDir/guide").absolutePath
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+            source sourceSets.guideexport
         }
 
         // Use to run the tests

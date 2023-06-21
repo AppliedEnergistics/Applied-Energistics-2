@@ -1,9 +1,5 @@
 package appeng.siteexport;
 
-import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.nio.file.Path;
-
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
@@ -11,14 +7,16 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexSorting;
-
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 
-import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.util.Mth;
+import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.nio.file.Path;
 
 public class OffScreenRenderer implements AutoCloseable {
     private final NativeImage nativeImage;
@@ -57,17 +55,20 @@ public class OffScreenRenderer implements AutoCloseable {
     }
 
     public void setupItemRendering() {
+        // See GameRenderer
         // Set up GL state for GUI rendering where the 16x16 item will fill the entire framebuffer
-        RenderSystem.setProjectionMatrix(
-                new Matrix4f().ortho(0, 16, 0, 16, 1000, 3000),
-                VertexSorting.ORTHOGRAPHIC_Z);
+        var matrix4f = new Matrix4f().setOrtho(
+                0.0f, 16,
+                16, 0.0f,
+                1000.0f, 21000.0f
+        );
+        RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
 
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.setIdentity();
-        poseStack.translate(0.0F, 0.0F, -2000.0F);
-        Lighting.setupForFlatItems();
-
+        poseStack.translate(0.0f, 0.0f, -11000.0f);
         RenderSystem.applyModelViewMatrix();
+        Lighting.setupFor3DItems();
         FogRenderer.setupNoFog();
     }
 
@@ -145,7 +146,7 @@ public class OffScreenRenderer implements AutoCloseable {
         up.normalize();
 
         var viewMatrix = new Matrix4f();
-        viewMatrix.setTransposed(FloatBuffer.wrap(new float[] {
+        viewMatrix.setTransposed(FloatBuffer.wrap(new float[]{
                 right.x(),
                 right.y(),
                 right.z(),
