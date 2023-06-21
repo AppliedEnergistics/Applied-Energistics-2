@@ -26,3 +26,24 @@ jobs:
         with:
           name: guide
           path: build/guide/
+
+  publish:
+    needs: build
+    name: Publish
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - uses: actions/download-artifact@v1
+        with:
+          name: guide
+          path: build/guide/
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: 'guide-assets'
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
+          AWS_REGION: 'auto'
+          SOURCE_DIR: 'build/guide/'
