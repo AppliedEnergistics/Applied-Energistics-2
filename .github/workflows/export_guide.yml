@@ -10,9 +10,7 @@ jobs:
 
     steps:
       - name: Install Software OpenGL Rendering
-        run: |
-          sudo apt-get update
-          sudo apt install -y libegl1-mesa libgl1-mesa-dri
+        run: sudo apt-get install xvfb libgl1-mesa-dri
       - uses: actions/checkout@v2
       - name: Set up JDK 17
         uses: actions/setup-java@v2
@@ -23,7 +21,7 @@ jobs:
       - name: Generate Assets
         run: ./gradlew runData
       - name: Export Guide
-        run: ./gradlew runGuideexport
+        run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
       - uses: actions/upload-artifact@v2
         with:
           name: guide
