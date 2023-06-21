@@ -1,0 +1,26 @@
+name: 'Export Guide'
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'microsoft'
+          java-version: '17'
+          cache: 'gradle'
+      - name: Generate assets
+        run: ./gradlew runData
+      - name: Build with Gradle
+        run: ./gradlew runGuideexport
+      - uses: actions/upload-artifact@v2
+        with:
+          name: guide
+          path: build/guide/
