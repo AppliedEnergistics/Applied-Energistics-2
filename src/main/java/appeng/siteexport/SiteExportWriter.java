@@ -30,10 +30,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,6 +46,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.Locale;
+import java.util.zip.GZIPOutputStream;
 
 public class SiteExportWriter {
 
@@ -52,9 +54,6 @@ public class SiteExportWriter {
 
     public SiteExportWriter(Guide guide) {
         siteExport.defaultNamespace = guide.getDefaultNamespace();
-        siteExport.modVersion = ModVersion.get();
-        siteExport.generated = Instant.now().toEpochMilli();
-        siteExport.gameVersion = DetectedVersion.tryDetectVersion().getName();
         siteExport.navigationRootNodes = guide.getNavigationTree().getRootNodes()
                 .stream()
                 .map(node -> NavigationNodeJson.of(this, node))
@@ -133,7 +132,9 @@ public class SiteExportWriter {
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .create();
-        try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+
+        try (var out = new GZIPOutputStream(Files.newOutputStream(file));
+             var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
             gson.toJson(siteExport, writer);
         }
     }

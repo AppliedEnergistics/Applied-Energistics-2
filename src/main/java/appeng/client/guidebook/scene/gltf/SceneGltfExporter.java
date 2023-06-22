@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import de.javagl.jgltf.impl.v2.GlTF;
+import de.javagl.jgltf.impl.v2.Image;
 import de.javagl.jgltf.model.AccessorDatas;
 import de.javagl.jgltf.model.ElementType;
 import de.javagl.jgltf.model.GltfConstants;
@@ -28,6 +29,9 @@ import de.javagl.jgltf.model.impl.DefaultSceneModel;
 import de.javagl.jgltf.model.impl.DefaultTextureModel;
 import de.javagl.jgltf.model.io.Buffers;
 import de.javagl.jgltf.model.io.GltfWriter;
+import de.javagl.jgltf.model.io.v2.GltfAssetWriterV2;
+import de.javagl.jgltf.model.io.v2.GltfAssetsV2;
+import de.javagl.jgltf.model.io.v2.GltfModelWriterV2;
 import de.javagl.jgltf.model.v2.GltfCreatorV2;
 import de.javagl.jgltf.model.v2.MaterialModelV2;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -49,6 +53,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
+import java.util.zip.GZIPOutputStream;
 
 public class SceneGltfExporter {
 
@@ -119,11 +124,20 @@ public class SceneGltfExporter {
         images.values().forEach(gltfModel::addImageModel);
 
         // Print the glTF to the console.
-        GlTF gltf = GltfCreatorV2.create(gltfModel);
-        GltfWriter gltfWriter = new GltfWriter();
-        gltfWriter.setIndenting(true);
-        try (var out = Files.newOutputStream(exportPath)) {
-            gltfWriter.write(gltf, out);
+        var actualImages = gltfModel.getImageModels();
+        gltfModel.clearImageModels();
+        var gltf = GltfAssetsV2.createBinary(gltfModel);
+        for (ImageModel actualImage : actualImages) {
+            var image = new Image();
+            image.setName(actualImage.getName());
+            image.setExtensions(actualImage.getExtensions());
+            image.setUri(actualImage.getUri());
+            gltf.getGltf().addImages(image);
+        }
+
+        var gltfWriter = new GltfAssetWriterV2();
+        try (var out = new GZIPOutputStream(Files.newOutputStream(exportPath))) {
+            gltfWriter.writeBinary(gltf, out);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

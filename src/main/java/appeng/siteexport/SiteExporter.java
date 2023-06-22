@@ -6,7 +6,6 @@ import appeng.api.util.AEColor;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.CategoryIndex;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.core.AppEngClient;
 import appeng.core.definitions.AEParts;
@@ -16,11 +15,14 @@ import appeng.siteexport.model.P2PTypeInfo;
 import appeng.util.Platform;
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.ChatFormatting;
+import net.minecraft.DetectedVersion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.LoadingOverlay;
@@ -39,9 +41,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,6 +55,10 @@ import java.util.Set;
 @Environment(EnvType.CLIENT)
 public final class SiteExporter implements ResourceExporter {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .create();
 
     private static final int ICON_DIMENSION = 128;
 
@@ -236,11 +244,32 @@ public final class SiteExporter implements ResourceExporter {
 
         indexWriter.addIndex(guide, ItemIndex.class);
 
-        indexWriter.write(outputFolder.resolve("!index.json"));
+        var guideContent = outputFolder.resolve("guide.json.gz");
+        indexWriter.write(guideContent);
+
+        // Write an uncompressed summary
+        writeSummary();
+
 //
 //        Path dataFolder = outputFolder.resolve("data");
 //        Files.createDirectories(dataFolder);
 //        siteExport.write(dataFolder.resolve("game-data.json"));
+    }
+
+    private void writeSummary() throws IOException {
+        var modVersion = ModVersion.get();
+        var generated = Instant.now().toEpochMilli();
+        var gameVersion = DetectedVersion.tryDetectVersion().getName();
+
+        try (var writer = Files.newBufferedWriter(outputFolder.resolve("index.json"), StandardCharsets.UTF_8)) {
+            var jsonWriter = GSON.newJsonWriter(writer);
+            jsonWriter.beginObject();
+            jsonWriter.name("format").value(1);
+            jsonWriter.name("generated").value(generated);
+            jsonWriter.name("gameVersion").value(gameVersion);
+            jsonWriter.name("modVersion").value(modVersion);
+            jsonWriter.endObject();
+        }
     }
 
     private Path resolvePath(ResourceLocation id) {

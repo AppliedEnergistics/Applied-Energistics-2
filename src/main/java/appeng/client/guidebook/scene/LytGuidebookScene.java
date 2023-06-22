@@ -8,7 +8,6 @@ import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytVBox;
-import appeng.client.guidebook.document.interaction.ContentTooltip;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.document.interaction.LytWidget;
@@ -17,7 +16,6 @@ import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.scene.annotation.InWorldAnnotation;
 import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
-import appeng.client.guidebook.scene.annotation.OverlayAnnotation;
 import appeng.client.guidebook.scene.annotation.SceneAnnotation;
 import appeng.client.guidebook.scene.gltf.SceneGltfExporter;
 import appeng.client.guidebook.screen.GuideIconButton;
@@ -216,6 +214,9 @@ public class LytGuidebookScene extends LytBox implements ExportableResourceProvi
 
         var window = Minecraft.getInstance().getWindow();
         var prefSize = viewport.getPreferredSize();
+        if (prefSize.width() <= 0 || prefSize.height() <= 0) {
+            return;
+        }
         try (var osr = new OffScreenRenderer(prefSize.width(), prefSize.height())) {
             RenderSystem.viewport(0, 0, prefSize.width(), prefSize.height());
             osr.captureAsPng(() -> {
@@ -237,13 +238,19 @@ public class LytGuidebookScene extends LytBox implements ExportableResourceProvi
         }
         SceneGltfExporter.export(
                 scene,
-                exporter.getPathForWriting(exporter.getPageSpecificResourceLocation(exportName + ".gltf")),
+                exporter.getPathForWriting(exporter.getPageSpecificResourceLocation(exportName + ".glb.gz")),
                 assetsFolder
         );
 
         // Export all scenes embedded in annotations
+        for (var annotation : scene.getInWorldAnnotations()) {
+            if (annotation.getTooltip() != null) {
+                annotation.getTooltip().exportResources(exporter);
+            }
+        }
         for (var annotation : scene.getOverlayAnnotations()) {
             if (annotation.getTooltip() != null) {
+                annotation.getTooltip().exportResources(exporter);
             }
         }
     }
