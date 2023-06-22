@@ -2,9 +2,6 @@ package appeng.client.guidebook.document.interaction;
 
 import java.util.List;
 
-import appeng.siteexport.ExportableResourceProvider;
-import appeng.siteexport.ResourceExporter;
-import appeng.siteexport.SiteExporter;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -19,6 +16,8 @@ import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.MinecraftFontMetrics;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
 
 /**
  * A {@link GuideTooltip} that renders a {@link LytBlock} as the tooltip content.

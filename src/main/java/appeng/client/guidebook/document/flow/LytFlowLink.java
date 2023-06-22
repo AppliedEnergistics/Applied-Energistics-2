@@ -3,8 +3,6 @@ package appeng.client.guidebook.document.flow;
 import java.net.URI;
 import java.util.function.Consumer;
 
-import appeng.siteexport.ExportableResourceProvider;
-import appeng.siteexport.ResourceExporter;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +14,6 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 
 import appeng.client.guidebook.PageAnchor;
-import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.sounds.AppEngSounds;

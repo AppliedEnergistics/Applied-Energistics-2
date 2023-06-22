@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-import appeng.libs.mdast.model.MdAstNode;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.Container;
@@ -23,6 +22,7 @@ import appeng.client.guidebook.document.block.recipes.LytSmeltingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytSmithingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytTransformRecipe;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import appeng.libs.mdast.model.MdAstNode;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;

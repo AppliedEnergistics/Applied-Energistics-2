@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytSlot;
 import appeng.client.guidebook.document.block.LytSlotGrid;
 import appeng.client.guidebook.layout.LayoutContext;

@@ -9,20 +9,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.block.RenderShape;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SceneExportJob {
     private static final Logger LOG = LoggerFactory.getLogger(SceneExportJob.class);

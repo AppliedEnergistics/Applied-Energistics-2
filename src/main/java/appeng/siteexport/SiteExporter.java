@@ -1,22 +1,22 @@
 package appeng.siteexport;
 
-import appeng.api.features.P2PTunnelAttunement;
-import appeng.api.features.P2PTunnelAttunementInternal;
-import appeng.api.util.AEColor;
-import appeng.client.guidebook.Guide;
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.core.AppEngClient;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ColoredItemDefinition;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.siteexport.model.P2PTypeInfo;
-import appeng.util.Platform;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -37,17 +37,20 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import appeng.api.features.P2PTunnelAttunement;
+import appeng.api.features.P2PTunnelAttunementInternal;
+import appeng.api.util.AEColor;
+import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.core.AppEngClient;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ColoredItemDefinition;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.siteexport.model.P2PTypeInfo;
+import appeng.util.Platform;
 
 /**
  * Exports a data package for use by the website.
@@ -111,7 +114,8 @@ public final class SiteExporter implements ResourceExporter {
             source.sendFeedback(Component.literal("Guide data exported to ")
                     .append(Component.literal("[" + outputFolder.getFileName().toString() + "]")
                             .withStyle(style -> style
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, outputFolder.toString()))
+                                    .withClickEvent(
+                                            new ClickEvent(ClickEvent.Action.OPEN_FILE, outputFolder.toString()))
                                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                             Component.literal("Click to open export folder")))
                                     .applyFormats(ChatFormatting.UNDERLINE, ChatFormatting.GREEN))));
@@ -281,7 +285,7 @@ public final class SiteExporter implements ResourceExporter {
      */
     private static void dumpP2PTypes(Set<Item> usedVanillaItems, SiteExportWriter siteExport) {
 
-        var tunnelTypes = new ItemLike[]{
+        var tunnelTypes = new ItemLike[] {
                 P2PTunnelAttunement.ME_TUNNEL,
                 P2PTunnelAttunement.ENERGY_TUNNEL,
                 P2PTunnelAttunement.ITEM_TUNNEL,
@@ -340,8 +344,8 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     private void processItems(Minecraft client,
-                              SiteExportWriter siteExport,
-                              Path outputFolder) throws IOException {
+            SiteExportWriter siteExport,
+            Path outputFolder) throws IOException {
         var iconsFolder = outputFolder.resolve("!icons");
         if (Files.exists(iconsFolder)) {
             MoreFiles.deleteRecursively(iconsFolder, RecursiveDeleteOption.ALLOW_INSECURE);

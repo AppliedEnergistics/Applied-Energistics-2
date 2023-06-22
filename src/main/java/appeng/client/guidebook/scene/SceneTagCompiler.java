@@ -1,6 +1,10 @@
 
 package appeng.client.guidebook.scene;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
@@ -12,12 +16,9 @@ import appeng.client.guidebook.scene.element.SceneElementTagCompiler;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 public class SceneTagCompiler extends BlockTagCompiler implements Extension {
-    private static final PageCompiler.State<Integer> SCENE_COUNTER = new PageCompiler.State<>("SCENE_COUNTER", Integer.class, 0);
+    private static final PageCompiler.State<Integer> SCENE_COUNTER = new PageCompiler.State<>("SCENE_COUNTER",
+            Integer.class, 0);
 
     private final Map<String, SceneElementTagCompiler> elementTagCompilers = new HashMap<>();
 

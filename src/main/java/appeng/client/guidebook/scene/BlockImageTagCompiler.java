@@ -1,20 +1,22 @@
 package appeng.client.guidebook.scene;
 
+import java.util.Set;
+
+import net.minecraft.core.BlockPos;
+
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.tags.BlockTagCompiler;
 import appeng.client.guidebook.compiler.tags.MdxAttrs;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
-import net.minecraft.core.BlockPos;
-
-import java.util.Set;
 
 /**
  * Handles tags like <code>&lt;BlockImage id="mod:blockid" /&gt;</code> and renders a 3D block image in its place.
  */
 public class BlockImageTagCompiler extends BlockTagCompiler {
-    private static final PageCompiler.State<Integer> BLOCKIMAGE_COUNTER = new PageCompiler.State<>("BLOCKIMAGE_COUNTER", Integer.class, 0);
+    private static final PageCompiler.State<Integer> BLOCKIMAGE_COUNTER = new PageCompiler.State<>("BLOCKIMAGE_COUNTER",
+            Integer.class, 0);
 
     @Override
     public Set<String> getTagNames() {

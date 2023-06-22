@@ -2,9 +2,6 @@ package appeng.client.guidebook.document.block.recipes;
 
 import java.util.List;
 
-import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
-import appeng.siteexport.ExportableResourceProvider;
-import appeng.siteexport.ResourceExporter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +16,12 @@ import net.minecraft.world.level.block.Blocks;
 
 import appeng.client.guidebook.document.DefaultStyles;
 import appeng.client.guidebook.document.LytRect;
-import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytSlot;
 import appeng.client.guidebook.document.block.LytSlotGrid;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.RenderContext;
 import appeng.core.AppEng;
+import appeng.siteexport.ExportableResourceProvider;
 import appeng.util.Platform;
 
 public class LytSmithingRecipe extends LytRecipeBox implements ExportableResourceProvider {

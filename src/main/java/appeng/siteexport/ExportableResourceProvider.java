@@ -5,9 +5,8 @@ import appeng.client.guidebook.document.block.LytVisitor;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 
 /**
- * Parts of the document tree should implement this interface to export
- * resources for being shown in the guidebook *Web* application.
- * This is used to export item descriptions, item icons, etc.
+ * Parts of the document tree should implement this interface to export resources for being shown in the guidebook *Web*
+ * application. This is used to export item descriptions, item icons, etc.
  */
 public interface ExportableResourceProvider {
     void exportResources(ResourceExporter exporter);

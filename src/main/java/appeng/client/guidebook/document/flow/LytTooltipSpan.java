@@ -2,12 +2,12 @@ package appeng.client.guidebook.document.flow;
 
 import java.util.Optional;
 
-import appeng.siteexport.ExportableResourceProvider;
-import appeng.siteexport.ResourceExporter;
 import org.jetbrains.annotations.Nullable;
 
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
 
 /**
  * An inline span that allows a tooltip to be shown on hover.

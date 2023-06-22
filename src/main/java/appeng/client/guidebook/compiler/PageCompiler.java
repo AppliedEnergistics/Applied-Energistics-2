@@ -1,5 +1,25 @@
 package appeng.client.guidebook.compiler;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.ResourceLocationException;
+import net.minecraft.resources.ResourceLocation;
+
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PageCollection;
@@ -61,24 +81,6 @@ import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import appeng.libs.unist.UnistNode;
-import net.minecraft.ResourceLocationException;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @ApiStatus.Internal
 public final class PageCompiler {
@@ -101,7 +103,8 @@ public final class PageCompiler {
     // compilers to communicate with each other within the current page.
     private final Map<State<?>, Object> compilerState = new IdentityHashMap<>();
 
-    public PageCompiler(PageCollection pages, ExtensionCollection extensions, String sourcePack, ResourceLocation id, String pageContent) {
+    public PageCompiler(PageCollection pages, ExtensionCollection extensions, String sourcePack, ResourceLocation id,
+            String pageContent) {
         this.pages = pages;
         this.extensions = extensions;
         this.sourcePack = sourcePack;
@@ -143,7 +146,8 @@ public final class PageCompiler {
 
     public static GuidePage compile(PageCollection pages, ExtensionCollection extensions, ParsedGuidePage parsedPage) {
         // Translate page tree over to layout pages
-        var document = new PageCompiler(pages, extensions, parsedPage.sourcePack, parsedPage.id, parsedPage.source).compile(parsedPage.astRoot);
+        var document = new PageCompiler(pages, extensions, parsedPage.sourcePack, parsedPage.id, parsedPage.source)
+                .compile(parsedPage.astRoot);
 
         return new GuidePage(parsedPage.sourcePack, parsedPage.id, document);
     }
@@ -478,6 +482,6 @@ public final class PageCompiler {
         compilerState.remove(state);
     }
 
-    public record State<T>(String name, Class<T> dataClass, T defaultValue) {
+    public record State<T> (String name, Class<T> dataClass, T defaultValue) {
     }
 }

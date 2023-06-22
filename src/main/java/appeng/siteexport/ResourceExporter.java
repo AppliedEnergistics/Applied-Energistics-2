@@ -1,11 +1,11 @@
 package appeng.siteexport;
 
+import java.nio.file.Path;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-
-import java.nio.file.Path;
 
 public interface ResourceExporter {
     default void referenceItem(ItemLike item) {

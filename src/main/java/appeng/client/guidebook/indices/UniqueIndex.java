@@ -1,19 +1,22 @@
 package appeng.client.guidebook.indices;
 
-import appeng.client.guidebook.GuidePageChange;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import com.google.gson.stream.JsonWriter;
-import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.gson.stream.JsonWriter;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.resources.ResourceLocation;
+
+import appeng.client.guidebook.GuidePageChange;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
 
 /**
  * Maintains an index for any given page using a mapping function for keys and values of the index.
@@ -31,7 +34,8 @@ public class UniqueIndex<K, V> implements PageIndex {
     // We need to track this to fully rebuild on incremental changes if we had duplicates
     private boolean hadDuplicates;
 
-    public UniqueIndex(String name, EntryFunction<K, V> entryFunction, JsonSerializer<K> keySerializer, JsonSerializer<V> valueSerializer) {
+    public UniqueIndex(String name, EntryFunction<K, V> entryFunction, JsonSerializer<K> keySerializer,
+            JsonSerializer<V> valueSerializer) {
         this.name = name;
         this.entryFunction = entryFunction;
         this.keySerializer = keySerializer;
@@ -117,6 +121,6 @@ public class UniqueIndex<K, V> implements PageIndex {
         Iterable<Pair<K, V>> getEntry(ParsedGuidePage page);
     }
 
-    private record Record<V>(ResourceLocation pageId, V value) {
+    private record Record<V> (ResourceLocation pageId, V value) {
     }
 }
