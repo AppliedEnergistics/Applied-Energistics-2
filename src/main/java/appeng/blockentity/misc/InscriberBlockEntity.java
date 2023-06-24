@@ -523,22 +523,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         return super.getCapability(capability, facing);
     }
 
-    /**
-     * This is an item handler that exposes the inscribers inventory while providing simulation capabilities that do not
-     * reset the progress if there's already an item in a slot. Previously, the progress of the inscriber was reset when
-     * another mod attempted insertion of items when there were already items in the slot.
-     */
     public class BaseFilter implements IAEItemFilter {
-        @Override
-        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
-            if (InscriberBlockEntity.this.isSmash()) {
-                return false;
-            }
-
-            return inv == InscriberBlockEntity.this.topItemHandler || inv == InscriberBlockEntity.this.bottomItemHandler
-                    || slot == 1;
-        }
-
         @Override
         public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
             // output slot
