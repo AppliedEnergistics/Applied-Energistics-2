@@ -4,6 +4,8 @@ navigation:
   title: Sky Stone
   icon: sky_stone_block
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:sky_stone_block
 - ae2:smooth_sky_stone_block

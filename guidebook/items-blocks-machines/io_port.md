@@ -4,6 +4,8 @@ navigation:
   title: ME IO Port
   icon: io_port
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:io_port
 ---

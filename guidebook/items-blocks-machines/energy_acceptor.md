@@ -4,6 +4,8 @@ navigation:
   title: Energy Acceptor
   icon: energy_acceptor
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:energy_acceptor
 ---

@@ -4,6 +4,8 @@ navigation:
   title: Certus Quartz Crystal
   icon: certus_quartz_crystal
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:certus_quartz_crystal
 ---

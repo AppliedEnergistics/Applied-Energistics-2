@@ -4,6 +4,8 @@ navigation:
   title: Fluix Block
   icon: fluix_block
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:fluix_block
 ---

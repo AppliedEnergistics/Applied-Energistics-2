@@ -4,6 +4,8 @@ navigation:
   title: Matter Condenser
   icon: condenser
   position: 310
+categories:
+- machines
 item_ids:
 - ae2:condenser
 ---

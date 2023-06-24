@@ -4,6 +4,8 @@ navigation:
   title: Quartz Glass
   icon: quartz_glass
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:quartz_glass
 - ae2:quartz_vibrant_glass

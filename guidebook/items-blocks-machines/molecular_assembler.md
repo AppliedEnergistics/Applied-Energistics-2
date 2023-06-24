@@ -4,6 +4,8 @@ navigation:
   title: Molecular Assembler
   icon: molecular_assembler
   position: 310
+categories:
+- machines
 item_ids:
 - ae2:molecular_assembler
 ---

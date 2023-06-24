@@ -4,6 +4,8 @@ navigation:
   title: Network Tool
   icon: network_tool
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:network_tool
 ---

@@ -4,6 +4,8 @@ navigation:
   title: Certus Quartz Block
   icon: quartz_block
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:quartz_block
 ---

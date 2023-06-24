@@ -4,6 +4,8 @@ navigation:
   title: Charged Staff
   icon: charged_staff
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:charged_staff
 ---

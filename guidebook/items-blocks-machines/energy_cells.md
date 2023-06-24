@@ -4,6 +4,8 @@ navigation:
   title: Energy Cells
   icon: energy_cell
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:energy_cell
 - ae2:dense_energy_cell
@@ -27,8 +29,13 @@ energy draw of [spatial storage](../ae2-mechanics/spatial-io.md).
 
 ## Fill Bars
 
-<BlockImage id="energy_cell" scale="4" p:fullness="0" />**0** <BlockImage id="energy_cell" scale="4" p:fullness="1" />**1**
-<BlockImage id="energy_cell" scale="4" p:fullness="2" />**2** <BlockImage id="energy_cell" scale="4" p:fullness="3" />**3** <BlockImage id="energy_cell" scale="4" p:fullness="4" />**4**
+<Row>
+<BlockImage id="energy_cell" scale="4" p:fullness="0" />
+<BlockImage id="energy_cell" scale="4" p:fullness="1" />
+<BlockImage id="energy_cell" scale="4" p:fullness="2" />
+<BlockImage id="energy_cell" scale="4" p:fullness="3" />
+<BlockImage id="energy_cell" scale="4" p:fullness="4" />
+</Row>
 
 The bars on the side of a cell correspond to how much energy it has.
 

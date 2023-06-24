@@ -4,6 +4,8 @@ navigation:
   title: Facades
   icon: facade
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:facade
 ---

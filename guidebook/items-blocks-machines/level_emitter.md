@@ -4,6 +4,8 @@ navigation:
   title: Level Emitter
   icon: level_emitter
   position: 220
+categories:
+- devices
 item_ids:
 - ae2:level_emitter
 - ae2:energy_level_emitter

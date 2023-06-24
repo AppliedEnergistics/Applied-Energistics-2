@@ -4,6 +4,8 @@ navigation:
   title: Quartz Fixtures
   icon: quartz_fixture
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:quartz_fixture
 - ae2:light_detector

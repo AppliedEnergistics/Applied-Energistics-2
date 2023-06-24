@@ -4,6 +4,8 @@ navigation:
   title: ME Drive
   icon: drive
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:drive
 ---

@@ -4,6 +4,8 @@ navigation:
   title: Cables
   icon: fluix_glass_cable
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:white_glass_cable
 - ae2:orange_glass_cable

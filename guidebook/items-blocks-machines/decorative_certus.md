@@ -4,6 +4,8 @@ navigation:
   title: Decorative Certus Blocks
   icon: quartz_stairs
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:cut_quartz_block
 - ae2:smooth_quartz_block

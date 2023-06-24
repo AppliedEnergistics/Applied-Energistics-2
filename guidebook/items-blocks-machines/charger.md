@@ -4,6 +4,8 @@ navigation:
   title: Charger
   icon: charger
   position: 310
+categories:
+- machines
 item_ids:
 - ae2:charger
 ---

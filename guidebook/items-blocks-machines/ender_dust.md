@@ -4,6 +4,8 @@ navigation:
   title: Ender Dust
   icon: ender_dust
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:ender_dust
 ---

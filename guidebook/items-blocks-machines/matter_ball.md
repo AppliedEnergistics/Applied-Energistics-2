@@ -4,6 +4,8 @@ navigation:
   title: Matter Ball
   icon: matter_ball
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:matter_ball
 ---

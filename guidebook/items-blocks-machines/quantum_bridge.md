@@ -4,6 +4,8 @@ navigation:
   title: Quantum Bridge
   icon: quantum_ring
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:quantum_link
 - ae2:quantum_ring

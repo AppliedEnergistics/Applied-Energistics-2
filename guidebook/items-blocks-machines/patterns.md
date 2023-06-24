@@ -4,6 +4,8 @@ navigation:
   title: Patterns
   icon: crafting_pattern
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:blank_pattern
 - ae2:crafting_pattern

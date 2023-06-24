@@ -4,6 +4,8 @@ navigation:
   title: Growth Accelerator
   icon: growth_accelerator
   position: 310
+categories:
+- machines
 item_ids:
 - ae2:growth_accelerator
 ---

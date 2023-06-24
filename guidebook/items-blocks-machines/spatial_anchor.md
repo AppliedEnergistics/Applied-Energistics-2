@@ -4,6 +4,8 @@ navigation:
   title: Spatial Anchor
   icon: spatial_anchor
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:spatial_anchor
 ---

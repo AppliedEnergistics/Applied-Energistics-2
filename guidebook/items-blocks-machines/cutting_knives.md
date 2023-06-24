@@ -4,6 +4,8 @@ navigation:
   title: Cutting Knives
   icon: certus_quartz_cutting_knife
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:certus_quartz_cutting_knife
 - ae2:nether_quartz_cutting_knife

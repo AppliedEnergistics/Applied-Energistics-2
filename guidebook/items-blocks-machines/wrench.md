@@ -4,6 +4,8 @@ navigation:
   title: Wrenches
   icon: certus_quartz_wrench
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:certus_quartz_wrench
 - ae2:nether_quartz_wrench

@@ -4,6 +4,8 @@ navigation:
   title: Wireless Terminals
   icon: wireless_crafting_terminal
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:wireless_terminal
 - ae2:wireless_crafting_terminal

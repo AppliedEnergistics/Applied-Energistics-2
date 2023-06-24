@@ -4,6 +4,8 @@ navigation:
   title: Upgrade Cards
   icon: speed_card
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:basic_card
 - ae2:advanced_card

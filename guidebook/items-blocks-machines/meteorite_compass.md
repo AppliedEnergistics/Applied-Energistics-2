@@ -4,6 +4,8 @@ navigation:
   title: Meteorite Compass
   icon: meteorite_compass
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:meteorite_compass
 ---

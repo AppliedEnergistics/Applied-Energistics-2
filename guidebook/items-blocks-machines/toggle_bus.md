@@ -4,6 +4,8 @@ navigation:
   title: Toggle Bus
   icon: toggle_bus
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:toggle_bus
 - ae2:inverted_toggle_bus

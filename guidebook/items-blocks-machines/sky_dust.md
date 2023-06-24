@@ -4,6 +4,8 @@ navigation:
   title: Sky Stone Dust
   icon: sky_dust
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:sky_dust
 ---

@@ -4,6 +4,8 @@ navigation:
   title: Matter Cannon
   icon: matter_cannon
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:matter_cannon
 ---

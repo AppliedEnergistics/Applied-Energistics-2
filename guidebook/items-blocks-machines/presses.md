@@ -4,6 +4,8 @@ navigation:
   title: Presses
   icon: silicon_press
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:silicon_press
 - ae2:logic_processor_press

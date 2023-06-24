@@ -4,6 +4,8 @@ navigation:
   title: Certus Quartz Dust
   icon: certus_quartz_dust
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:certus_quartz_dust
 ---

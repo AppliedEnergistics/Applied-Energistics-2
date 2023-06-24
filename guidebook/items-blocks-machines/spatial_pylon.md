@@ -4,6 +4,8 @@ navigation:
   title: Spatial Pylon
   icon: spatial_pylon
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:spatial_pylon
 ---

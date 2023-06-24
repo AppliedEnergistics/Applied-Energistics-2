@@ -4,6 +4,8 @@ navigation:
   title: Fluix Crystal
   icon: fluix_crystal
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:fluix_crystal
 ---

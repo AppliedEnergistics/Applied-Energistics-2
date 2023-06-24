@@ -4,6 +4,8 @@ navigation:
   title: Storage Cells
   icon: item_storage_cell_1k
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:item_cell_housing
 - ae2:fluid_cell_housing

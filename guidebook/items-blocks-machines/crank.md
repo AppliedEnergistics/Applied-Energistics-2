@@ -4,6 +4,8 @@ navigation:
   title: Crank
   icon: crank
   position: 310
+categories:
+- machines
 item_ids:
 - ae2:crank
 ---

@@ -4,6 +4,8 @@ navigation:
   title: P2P Tunnels
   icon: me_p2p_tunnel
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:me_p2p_tunnel
 - ae2:redstone_p2p_tunnel

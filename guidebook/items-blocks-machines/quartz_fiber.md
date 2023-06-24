@@ -4,6 +4,8 @@ navigation:
   title: Quartz Fiber
   icon: quartz_fiber
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:quartz_fiber
 ---

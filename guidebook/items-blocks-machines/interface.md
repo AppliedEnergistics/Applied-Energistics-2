@@ -4,6 +4,8 @@ navigation:
   title: Interface
   icon: interface
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:interface
 - ae2:cable_interface

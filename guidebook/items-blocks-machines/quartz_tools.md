@@ -4,6 +4,8 @@ navigation:
   title: Quartz Tools
   icon: certus_quartz_pickaxe
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:certus_quartz_axe
 - ae2:certus_quartz_hoe

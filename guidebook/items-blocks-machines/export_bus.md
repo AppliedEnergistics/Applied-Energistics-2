@@ -1,9 +1,11 @@
 ---
 navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
-  title: Export Bus
+  title: ME Export Bus
   icon: export_bus
   position: 220
+categories:
+- devices
 item_ids:
 - ae2:export_bus
 ---

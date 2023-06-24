@@ -4,6 +4,8 @@ navigation:
   title: ME Chest
   icon: chest
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:chest
 ---

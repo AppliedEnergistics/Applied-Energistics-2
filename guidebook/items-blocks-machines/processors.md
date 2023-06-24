@@ -4,6 +4,8 @@ navigation:
   title: Processors
   icon: logic_processor
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:logic_processor
 - ae2:calculation_processor

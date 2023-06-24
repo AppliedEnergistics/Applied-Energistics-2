@@ -4,6 +4,8 @@ navigation:
   title: Decorative Sky Stone
   icon: sky_stone_stairs
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:sky_stone_brick
 - ae2:sky_stone_small_brick

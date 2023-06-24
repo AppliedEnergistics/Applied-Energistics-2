@@ -4,6 +4,8 @@ navigation:
   title: Color Applicator
   icon: color_applicator
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:color_applicator
 ---

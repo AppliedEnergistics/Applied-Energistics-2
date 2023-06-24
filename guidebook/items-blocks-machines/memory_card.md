@@ -4,6 +4,8 @@ navigation:
   title: Memory Card
   icon: memory_card
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:memory_card
 ---

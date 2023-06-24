@@ -3,7 +3,9 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Spatial IO Port
   icon: spatial_io_port
-  position: 210 
+  position: 210
+categories:
+- devices 
 item_ids:
 - ae2:spatial_io_port
 ---

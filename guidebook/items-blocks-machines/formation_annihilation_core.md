@@ -4,6 +4,8 @@ navigation:
   title: Formation and Annihilation Cores
   icon: formation_core
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:formation_core
 - ae2:annihilation_core
