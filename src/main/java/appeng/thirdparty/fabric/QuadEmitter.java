@@ -5,7 +5,6 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.world.phys.Vec2;
 
 /**
  * Specialized {@link MutableQuadView} obtained via {@link MeshBuilder#getEmitter()} to append quads during mesh
@@ -27,14 +26,8 @@ public interface QuadEmitter extends MutableQuadView {
         return this;
     }
 
-    /**
-     * @apiNote The default implementation will be removed in the next breaking release.
-     */
     @Override
-    default QuadEmitter color(int vertexIndex, int color) {
-        MutableQuadView.super.color(vertexIndex, color);
-        return this;
-    }
+    QuadEmitter color(int vertexIndex, int color);
 
     @Override
     default QuadEmitter color(int c0, int c1, int c2, int c3) {
@@ -42,14 +35,8 @@ public interface QuadEmitter extends MutableQuadView {
         return this;
     }
 
-    /**
-     * @apiNote The default implementation will be removed in the next breaking release.
-     */
     @Override
-    default QuadEmitter uv(int vertexIndex, float u, float v) {
-        MutableQuadView.super.uv(vertexIndex, u, v);
-        return this;
-    }
+    QuadEmitter uv(int vertexIndex, float u, float v);
 
     @Override
     default QuadEmitter uv(int vertexIndex, Vector2f uv) {
@@ -57,14 +44,8 @@ public interface QuadEmitter extends MutableQuadView {
         return this;
     }
 
-    /**
-     * @apiNote The default implementation will be removed in the next breaking release.
-     */
     @Override
-    default QuadEmitter spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
-        MutableQuadView.super.spriteBake(sprite, bakeFlags);
-        return this;
-    }
+    QuadEmitter spriteBake(TextureAtlasSprite sprite, int bakeFlags);
 
     default QuadEmitter uvUnitSquare() {
         uv(0, 0, 0);
@@ -83,9 +64,8 @@ public interface QuadEmitter extends MutableQuadView {
         return this;
     }
 
-    // TODO: uncomment right before next breaking release
-    // @Override
-    // QuadEmitter normal(int vertexIndex, float x, float y, float z);
+    @Override
+    QuadEmitter normal(int vertexIndex, float x, float y, float z);
 
     @Override
     default QuadEmitter normal(int vertexIndex, Vector3f normal) {
@@ -105,18 +85,8 @@ public interface QuadEmitter extends MutableQuadView {
     @Override
     QuadEmitter tag(int tag);
 
-    /**
-     * @apiNote The default implementation will be removed in the next breaking release.
-     */
     @Override
-    default QuadEmitter fromVanilla(int[] quadData, int startIndex) {
-        MutableQuadView.super.fromVanilla(quadData, startIndex);
-        return this;
-    }
-
-    // TODO: uncomment right before next breaking release
-    // @Override
-    // QuadEmitter fromVanilla(BakedQuad quad, RenderMaterial material, @Nullable Direction cullFace);
+    QuadEmitter fromVanilla(int[] quadData, int startIndex);
 
     /**
      * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
@@ -191,55 +161,4 @@ public interface QuadEmitter extends MutableQuadView {
      * a new quad to be output to rendering. In both cases, current instance is reset to default values.
      */
     QuadEmitter emit();
-
-    @Override
-    @Deprecated
-    default QuadEmitter spriteColor(int vertexIndex, int spriteIndex, int color) {
-        MutableQuadView.super.spriteColor(vertexIndex, spriteIndex, color);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    default QuadEmitter spriteColor(int spriteIndex, int c0, int c1, int c2, int c3) {
-        MutableQuadView.super.spriteColor(spriteIndex, c0, c1, c2, c3);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    default QuadEmitter sprite(int vertexIndex, int spriteIndex, float u, float v) {
-        MutableQuadView.super.sprite(vertexIndex, spriteIndex, u, v);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    default QuadEmitter sprite(int vertexIndex, int spriteIndex, Vec2 uv) {
-        MutableQuadView.super.sprite(vertexIndex, spriteIndex, uv);
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    default QuadEmitter spriteBake(int spriteIndex, TextureAtlasSprite sprite, int bakeFlags) {
-        MutableQuadView.super.spriteBake(spriteIndex, sprite, bakeFlags);
-        return this;
-    }
-
-    /**
-     * @deprecated Use {@link #uvUnitSquare()} instead.
-     */
-    @Deprecated
-    default QuadEmitter spriteUnitSquare(int spriteIndex) {
-        uvUnitSquare();
-        return this;
-    }
-
-    @Override
-    @Deprecated
-    default QuadEmitter fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-        MutableQuadView.super.fromVanilla(quadData, startIndex, isItem);
-        return this;
-    }
 }
