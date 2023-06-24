@@ -81,6 +81,7 @@ public class AppEngCraftingSlot extends AppEngSlot {
     @Override
     public void onTake(Player playerIn, ItemStack stack) {
         CraftingEvent.fireCraftingEvent(playerIn, stack, this.craftingGrid.toContainer());
+        this.amountCrafted += stack.getCount();
         this.checkTakeAchievements(stack);
         // FIXME FABRIC no crafting hooks
         // ForgeHooks.setCraftingPlayer(playerIn);
