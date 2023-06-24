@@ -20,7 +20,6 @@ import static appeng.thirdparty.fabric.EncodingFormat.HEADER_BITS;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_COLOR_INDEX;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_STRIDE;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_TAG;
-import static appeng.thirdparty.fabric.EncodingFormat.QUAD_STRIDE;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_COLOR;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_LIGHTMAP;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_NORMAL;
@@ -161,8 +160,16 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
     @Override
     public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex) {
-        System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
+        System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, VANILLA_QUAD_STRIDE);
         isGeometryInvalid = true;
+
+        int colorIndex = baseIndex + VERTEX_COLOR;
+
+        for (int i = 0; i < 4; i++) {
+            data[colorIndex] = ColorHelper.fromVanillaColor(data[colorIndex]);
+            colorIndex += VERTEX_STRIDE;
+        }
+
         return this;
     }
 

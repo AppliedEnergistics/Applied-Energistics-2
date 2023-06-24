@@ -196,7 +196,7 @@ public class CableBusBakedModel implements IDynamicBakedModel {
                     for (var partQuad : partQuads) {
                         emitter.fromVanilla(partQuad, null);
                         rotator.transform(emitter);
-                        quads.add(emitter.toBakedQuad(0, partQuad.getSprite(), false));
+                        quads.add(emitter.toBakedQuad(partQuad.getSprite()));
                     }
                 }
             }
