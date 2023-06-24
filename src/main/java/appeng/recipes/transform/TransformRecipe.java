@@ -14,10 +14,11 @@ import net.minecraft.world.level.Level;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
+import appeng.init.InitRecipeTypes;
 
 public final class TransformRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
-    public static RecipeType<TransformRecipe> TYPE;
+    public static final RecipeType<TransformRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     public final NonNullList<Ingredient> ingredients;
