@@ -69,35 +69,21 @@ public interface QuadView {
 
     /**
      * Retrieve vertex color.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
-    default int color(int vertexIndex) {
-        return spriteColor(vertexIndex, 0);
-    }
+    int color(int vertexIndex);
 
     /**
      * Retrieve horizontal texture coordinates.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
-    default float u(int vertexIndex) {
-        return spriteU(vertexIndex, 0);
-    }
+    float u(int vertexIndex);
 
     /**
      * Retrieve vertical texture coordinates.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
-    default float v(int vertexIndex) {
-        return spriteV(vertexIndex, 0);
-    }
+    float v(int vertexIndex);
 
     /**
      * Pass a non-null target to avoid allocation - will be returned with values. Otherwise returns a new instance.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
     default Vector2f copyUv(int vertexIndex, @Nullable Vector2f target) {
         if (target == null) {
@@ -192,16 +178,12 @@ public interface QuadView {
      * Reads baked vertex data and outputs standard {@link BakedQuad#getVertices() baked quad vertex data} in the given
      * array and location.
      *
-     * @apiNote The default implementation will be removed in the next breaking release.
-     *
      * @param target      Target array for the baked quad data.
      *
      * @param targetIndex Starting position in target array - array must have at least 28 elements available at this
      *                    index.
      */
-    default void toVanilla(int[] target, int targetIndex) {
-        toVanilla(0, target, targetIndex, false);
-    }
+    void toVanilla(int[] target, int targetIndex);
 
     /**
      * Generates a new BakedQuad instance with texture coordinates and colors from the given sprite.
@@ -221,46 +203,6 @@ public interface QuadView {
 
     default BakedQuad toBlockBakedQuad() {
         var finder = SpriteFinder.get(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS));
-        return toBakedQuad(finder.find(this, 0));
-    }
-
-    /**
-     * @deprecated Use {@link #color(int)} instead.
-     */
-    @Deprecated
-    default int spriteColor(int vertexIndex, int spriteIndex) {
-        return color(vertexIndex);
-    }
-
-    /**
-     * @deprecated Use {@link #u(int)} instead.
-     */
-    @Deprecated
-    default float spriteU(int vertexIndex, int spriteIndex) {
-        return u(vertexIndex);
-    }
-
-    /**
-     * @deprecated Use {@link #v(int)} instead.
-     */
-    @Deprecated
-    default float spriteV(int vertexIndex, int spriteIndex) {
-        return v(vertexIndex);
-    }
-
-    /**
-     * @deprecated Use {@link #toVanilla(int[], int)} instead.
-     */
-    @Deprecated
-    default void toVanilla(int spriteIndex, int[] target, int targetIndex, boolean isItem) {
-        toVanilla(target, targetIndex);
-    }
-
-    /**
-     * @deprecated Use {@link #toBakedQuad(TextureAtlasSprite)} instead.
-     */
-    @Deprecated
-    default BakedQuad toBakedQuad(int spriteIndex, TextureAtlasSprite sprite, boolean isItem) {
-        return toBakedQuad(sprite);
+        return toBakedQuad(finder.find(this));
     }
 }

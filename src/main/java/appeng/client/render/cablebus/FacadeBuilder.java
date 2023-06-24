@@ -296,7 +296,7 @@ public class FacadeBuilder {
                     }
 
                     for (AABB box : holeStrips) {
-                        emitter.fromVanilla(quad.getVertices(), 0, false);
+                        emitter.fromVanilla(quad.getVertices(), 0);
                         // Keep the cull-face for faces that are flush with the outer block-face on the
                         // side the facade is attached to, but clear it for anything that faces inwards
                         emitter.cullFace(cullFace == side ? side : null);
