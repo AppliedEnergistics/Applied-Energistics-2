@@ -21,6 +21,7 @@ package appeng.recipes.mattercannon;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import appeng.init.InitRecipeTypes;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -54,7 +55,7 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("matter_cannon");
 
-    public static RecipeType<MatterCannonAmmo> TYPE;
+    public static final RecipeType<MatterCannonAmmo> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
 

@@ -21,6 +21,7 @@ package appeng.recipes.entropy;
 import java.util.List;
 import java.util.Objects;
 
+import appeng.init.InitRecipeTypes;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +53,7 @@ public class EntropyRecipe implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
 
-    public static RecipeType<EntropyRecipe> TYPE;
+    public static final RecipeType<EntropyRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
 

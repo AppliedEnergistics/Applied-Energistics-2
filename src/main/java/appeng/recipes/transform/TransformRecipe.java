@@ -1,5 +1,6 @@
 package appeng.recipes.transform;
 
+import appeng.init.InitRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +18,7 @@ import appeng.core.definitions.AEItems;
 
 public final class TransformRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
-    public static RecipeType<TransformRecipe> TYPE;
+    public static final RecipeType<TransformRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     public final NonNullList<Ingredient> ingredients;

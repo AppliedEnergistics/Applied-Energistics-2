@@ -18,6 +18,7 @@
 
 package appeng.recipes.handlers;
 
+import appeng.init.InitRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,7 @@ import appeng.core.AppEng;
 public class InscriberRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("inscriber");
 
-    public static RecipeType<InscriberRecipe> TYPE;
+    public static final RecipeType<InscriberRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
 

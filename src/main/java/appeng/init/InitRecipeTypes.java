@@ -11,26 +11,25 @@ import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.recipes.transform.TransformRecipe;
 
-public class InitRecipeTypes {
+import java.util.ArrayList;
+import java.util.List;
 
-    public static void init(IForgeRegistry<RecipeType<?>> registry) {
-        ChargerRecipe.TYPE = register(registry, ChargerRecipe.TYPE_ID);
-        InscriberRecipe.TYPE = register(registry, InscriberRecipe.TYPE_ID);
-        MatterCannonAmmo.TYPE = register(registry, MatterCannonAmmo.TYPE_ID);
-        EntropyRecipe.TYPE = register(registry, EntropyRecipe.TYPE_ID);
-        TransformRecipe.TYPE = register(registry, TransformRecipe.TYPE_ID);
+public class InitRecipeTypes {
+    private record ToRegister(RecipeType<?> recipeType, ResourceLocation id) {
     }
 
-    private static <T extends Recipe<?>> RecipeType<T> register(IForgeRegistry<RecipeType<?>> registry,
-            ResourceLocation id) {
-        var type = new RecipeType<T>() {
-            @Override
-            public String toString() {
-                return id.toString();
-            }
-        };
-        registry.register(id, type);
+    private static final List<ToRegister> toRegister = new ArrayList<>();
+
+    public static <T extends Recipe<?>> RecipeType<T> register(String id) {
+        RecipeType<T> type = RecipeType.simple(new ResourceLocation(id));
+        toRegister.add(new ToRegister(type, new ResourceLocation(id)));
         return type;
+    }
+
+    public static void init(IForgeRegistry<RecipeType<?>> registry) {
+        for (var toRegister : toRegister) {
+            registry.register(toRegister.id, toRegister.recipeType);
+        }
     }
 
 }

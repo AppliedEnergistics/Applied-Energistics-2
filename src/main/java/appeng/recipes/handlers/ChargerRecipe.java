@@ -1,5 +1,6 @@
 package appeng.recipes.handlers;
 
+import appeng.init.InitRecipeTypes;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -16,7 +17,7 @@ import appeng.core.AppEng;
 public class ChargerRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("charger");
 
-    public static RecipeType<ChargerRecipe> TYPE;
+    public static final RecipeType<ChargerRecipe> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
     public final Ingredient ingredient;
