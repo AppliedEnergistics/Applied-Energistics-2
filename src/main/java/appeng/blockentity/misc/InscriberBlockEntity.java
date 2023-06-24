@@ -158,6 +158,11 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
         super.loadTag(data);
         this.upgrades.readFromNBT(data, "upgrades");
         this.configManager.readFromNBT(data);
+
+        // Update stack tracker
+        lastStacks.put(topItemHandler, topItemHandler.getStackInSlot(0));
+        lastStacks.put(bottomItemHandler, bottomItemHandler.getStackInSlot(0));
+        lastStacks.put(sideItemHandler, sideItemHandler.getStackInSlot(0));
     }
 
     @Override
