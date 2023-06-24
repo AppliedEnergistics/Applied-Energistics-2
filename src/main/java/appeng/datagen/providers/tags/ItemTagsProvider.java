@@ -128,6 +128,32 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.CERTUS_QUARTZ_KNIFE.asItem())
                 .add(AEItems.NETHER_QUARTZ_KNIFE.asItem());
 
+        tag(ItemTags.AXES)
+                .add(AEItems.CERTUS_QUARTZ_AXE.asItem())
+                .add(AEItems.NETHER_QUARTZ_AXE.asItem())
+                .add(AEItems.FLUIX_AXE.asItem());
+        tag(ItemTags.HOES)
+                .add(AEItems.CERTUS_QUARTZ_HOE.asItem())
+                .add(AEItems.NETHER_QUARTZ_HOE.asItem())
+                .add(AEItems.FLUIX_HOE.asItem());
+        tag(ItemTags.PICKAXES)
+                .add(AEItems.CERTUS_QUARTZ_PICK.asItem())
+                .add(AEItems.NETHER_QUARTZ_PICK.asItem())
+                .add(AEItems.FLUIX_PICK.asItem());
+        tag(ItemTags.SHOVELS)
+                .add(AEItems.CERTUS_QUARTZ_SHOVEL.asItem())
+                .add(AEItems.NETHER_QUARTZ_SHOVEL.asItem())
+                .add(AEItems.FLUIX_SHOVEL.asItem());
+        tag(ItemTags.SWORDS)
+                .add(AEItems.CERTUS_QUARTZ_SWORD.asItem())
+                .add(AEItems.NETHER_QUARTZ_SWORD.asItem())
+                .add(AEItems.FLUIX_SWORD.asItem());
+
+        tag(ConventionTags.WRENCH).add(
+                AEItems.CERTUS_QUARTZ_WRENCH.asItem(),
+                AEItems.NETHER_QUARTZ_WRENCH.asItem(),
+                AEItems.NETWORK_TOOL.asItem());
+
         tag(AETags.METAL_INGOTS)
                 .addOptionalTag(ConventionTags.IRON_INGOT.location())
                 .addOptionalTag(ConventionTags.GOLD_INGOT.location())
@@ -171,12 +197,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 .add(AEItems.CERTUS_QUARTZ_CRYSTAL.asItem())
                 .add(AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED.asItem())
                 .add(AEItems.FLUIX_CRYSTAL.asItem());
-
-        // Fabric replacement for ToolActions for now
-        tag(ConventionTags.WRENCH).add(
-                AEItems.CERTUS_QUARTZ_WRENCH.asItem(),
-                AEItems.NETHER_QUARTZ_WRENCH.asItem(),
-                AEItems.NETWORK_TOOL.asItem());
 
         addConventionTags();
 
