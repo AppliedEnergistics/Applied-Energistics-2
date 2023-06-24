@@ -44,7 +44,7 @@ public interface Mesh {
         SpriteFinder finder = SpriteFinder
                 .get(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS));
         var result = new ArrayList<BakedQuad>();
-        forEach(qv -> result.add(qv.toBakedQuad(0, finder.find(qv, 0), false)));
+        forEach(qv -> result.add(qv.toBakedQuad(finder.find(qv))));
         return result;
     }
 }

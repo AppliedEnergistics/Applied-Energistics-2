@@ -41,7 +41,7 @@ public interface SpriteFinder {
      * Should be reliable for any convex quad or triangle. May fail for non-convex quads. Note that all the above refers
      * to u,v coordinates. Geometric vertex does not matter, except to the extent it was used to determine u,v.
      */
-    TextureAtlasSprite find(QuadView quad, int textureIndex);
+    TextureAtlasSprite find(QuadView quad);
 
     /**
      * Alternative to {@link #find(QuadView, int)} when vertex centroid is already known or unsuitable. Expects
