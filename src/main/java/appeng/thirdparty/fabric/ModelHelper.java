@@ -83,12 +83,9 @@ public abstract class ModelHelper {
 
         if (mesh != null) {
             mesh.forEach(q -> {
-                final int limit = 1;
-
-                for (int l = 0; l < limit; l++) {
-                    Direction face = q.cullFace();
-                    builders[face == null ? 6 : face.get3DDataValue()].add(q.toBakedQuad(l, finder.find(q, l), false));
-                }
+                Direction cullFace = q.cullFace();
+                builders[cullFace == null ? NULL_FACE_ID : cullFace.get3DDataValue()]
+                        .add(q.toBakedQuad(finder.find(q)));
             });
         }
 
