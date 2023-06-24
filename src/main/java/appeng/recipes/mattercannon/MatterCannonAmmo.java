@@ -46,6 +46,7 @@ import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
@@ -54,7 +55,7 @@ public class MatterCannonAmmo implements Recipe<Container> {
 
     public static final ResourceLocation TYPE_ID = AppEng.makeId("matter_cannon");
 
-    public static RecipeType<MatterCannonAmmo> TYPE;
+    public static final RecipeType<MatterCannonAmmo> TYPE = InitRecipeTypes.register(TYPE_ID.toString());
 
     private final ResourceLocation id;
 
