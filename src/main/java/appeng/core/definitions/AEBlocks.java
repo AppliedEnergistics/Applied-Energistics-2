@@ -109,7 +109,7 @@ public final class AEBlocks {
 
     private static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
     private static final Properties QUARTZ_CLUSTER_PROPERTIES = defaultProps(MapColor.COLOR_CYAN,
-            SoundType.AMETHYST_CLUSTER).strength(1.5f).requiresCorrectToolForDrops();
+            SoundType.AMETHYST_CLUSTER).forceSolidOn().strength(1.5f).requiresCorrectToolForDrops();
     private static final Properties QUARTZ_PROPERTIES = stoneProps()
             .strength(3, 5).requiresCorrectToolForDrops();
     private static final Properties SKYSTONE_PROPERTIES = stoneProps()

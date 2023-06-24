@@ -67,11 +67,11 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     }
 
     public static BlockBehaviour.Properties stoneProps() {
-        return defaultProps(MapColor.STONE, SoundType.STONE);
+        return defaultProps(MapColor.STONE, SoundType.STONE).forceSolidOn();
     }
 
     public static BlockBehaviour.Properties metalProps() {
-        return defaultProps(MapColor.METAL, SoundType.METAL);
+        return defaultProps(MapColor.METAL, SoundType.METAL).forceSolidOn();
     }
 
     public static BlockBehaviour.Properties glassProps() {
