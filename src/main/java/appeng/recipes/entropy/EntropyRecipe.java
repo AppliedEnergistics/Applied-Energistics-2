@@ -21,7 +21,6 @@ package appeng.recipes.entropy;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.init.InitRecipeTypes;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +43,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 
 /**

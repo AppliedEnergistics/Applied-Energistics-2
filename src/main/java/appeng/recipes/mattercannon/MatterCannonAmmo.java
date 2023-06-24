@@ -21,7 +21,6 @@ package appeng.recipes.mattercannon;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import appeng.init.InitRecipeTypes;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -47,6 +46,7 @@ import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
 
 import appeng.core.AppEng;
+import appeng.init.InitRecipeTypes;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.

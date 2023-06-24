@@ -1,6 +1,5 @@
 package appeng.recipes.transform;
 
-import appeng.init.InitRecipeTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.Level;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
+import appeng.init.InitRecipeTypes;
 
 public final class TransformRecipe implements Recipe<Container> {
     public static final ResourceLocation TYPE_ID = AppEng.makeId("transform");
