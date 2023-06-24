@@ -23,7 +23,6 @@ import org.joml.Vector3f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.world.phys.Vec2;
 
 /**
  * A mutable {@link QuadView} instance. The base interface for {@link QuadEmitter} and for dynamic renders/mesh
@@ -112,12 +111,8 @@ public interface MutableQuadView extends QuadView {
 
     /**
      * Set vertex color.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
-    default MutableQuadView color(int vertexIndex, int color) {
-        return spriteColor(vertexIndex, 0, color);
-    }
+    MutableQuadView color(int vertexIndex, int color);
 
     /**
      * Convenience: set vertex color for all vertices at once.
@@ -132,12 +127,8 @@ public interface MutableQuadView extends QuadView {
 
     /**
      * Set texture coordinates.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
-    default MutableQuadView uv(int vertexIndex, float u, float v) {
-        return sprite(vertexIndex, 0, u, v);
-    }
+    MutableQuadView uv(int vertexIndex, float u, float v);
 
     /**
      * Set texture coordinates.
@@ -154,12 +145,8 @@ public interface MutableQuadView extends QuadView {
      * Assigns sprite atlas u,v coordinates to this quad for the given sprite. Can handle UV locking, rotation,
      * interpolation, etc. Control this behavior by passing additive combinations of the BAKE_ flags defined in this
      * interface.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
-    default MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags) {
-        return spriteBake(0, sprite, bakeFlags);
-    }
+    MutableQuadView spriteBake(TextureAtlasSprite sprite, int bakeFlags);
 
     /**
      * Accept vanilla lightmap values. Input values will override lightmap values computed from world state if input
@@ -260,12 +247,8 @@ public interface MutableQuadView extends QuadView {
      *
      * <p>
      * Calling this method does not emit the quad.
-     *
-     * @apiNote The default implementation will be removed in the next breaking release.
      */
-    default MutableQuadView fromVanilla(int[] quadData, int startIndex) {
-        return fromVanilla(quadData, startIndex, false);
-    }
+    MutableQuadView fromVanilla(int[] quadData, int startIndex);
 
     /**
      * Enables bulk vertex data transfer using the standard Minecraft quad format.
@@ -281,53 +264,4 @@ public interface MutableQuadView extends QuadView {
      * unchanged (it is immutable anyway).
      */
     MutableQuadView fromVanilla(BakedQuad quad, @Nullable Direction cullFace);
-
-    /**
-     * @deprecated Use {@link #color(int, int)} instead.
-     */
-    @Deprecated
-    default MutableQuadView spriteColor(int vertexIndex, int spriteIndex, int color) {
-        return color(vertexIndex, color);
-    }
-
-    /**
-     * @deprecated Use {@link #color(int, int, int, int)} instead.
-     */
-    @Deprecated
-    default MutableQuadView spriteColor(int spriteIndex, int c0, int c1, int c2, int c3) {
-        color(c0, c1, c2, c3);
-        return this;
-    }
-
-    /**
-     * @deprecated Use {@link #uv(int, float, float)} instead.
-     */
-    @Deprecated
-    default MutableQuadView sprite(int vertexIndex, int spriteIndex, float u, float v) {
-        return uv(vertexIndex, u, v);
-    }
-
-    /**
-     * @deprecated Use {@link #uv(int, Vector2f)} instead.
-     */
-    @Deprecated
-    default MutableQuadView sprite(int vertexIndex, int spriteIndex, Vec2 uv) {
-        return uv(vertexIndex, uv.x, uv.y);
-    }
-
-    /**
-     * @deprecated Use {@link #spriteBake(TextureAtlasSprite, int)} instead.
-     */
-    @Deprecated
-    default MutableQuadView spriteBake(int spriteIndex, TextureAtlasSprite sprite, int bakeFlags) {
-        return spriteBake(sprite, bakeFlags);
-    }
-
-    /**
-     * @deprecated Use {@link #fromVanilla(int[], int)} instead.
-     */
-    @Deprecated
-    default MutableQuadView fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-        return fromVanilla(quadData, startIndex);
-    }
 }

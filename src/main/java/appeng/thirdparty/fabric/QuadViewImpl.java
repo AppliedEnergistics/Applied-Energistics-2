@@ -30,8 +30,6 @@ import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_X;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_Y;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_Z;
 
-import com.google.common.base.Preconditions;
-
 import org.joml.Vector3f;
 
 import net.minecraft.core.Direction;
@@ -107,11 +105,6 @@ public class QuadViewImpl implements QuadView {
             data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS],
                     GeometryHelper.computeShapeFlags(this));
         }
-    }
-
-    @Override
-    public final void toVanilla(int textureIndex, int[] target, int targetIndex, boolean isItem) {
-        System.arraycopy(data, baseIndex + VERTEX_X, target, targetIndex, QUAD_STRIDE);
     }
 
     @Override
@@ -239,23 +232,17 @@ public class QuadViewImpl implements QuadView {
     }
 
     @Override
-    public int spriteColor(int vertexIndex, int spriteIndex) {
-        Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+    public int color(int vertexIndex) {
         return data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR];
     }
 
     @Override
-    public float spriteU(int vertexIndex, int spriteIndex) {
-        Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+    public float u(int vertexIndex) {
         return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U]);
     }
 
     @Override
-    public float spriteV(int vertexIndex, int spriteIndex) {
-        Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
-
+    public float v(int vertexIndex) {
         return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_V]);
     }
 
@@ -269,5 +256,20 @@ public class QuadViewImpl implements QuadView {
 
     public void shade(boolean shade) {
         this.shade = shade;
+    }
+
+    @Override
+    public final void toVanilla(int[] target, int targetIndex) {
+        System.arraycopy(data, baseIndex + HEADER_STRIDE, target, targetIndex, QUAD_STRIDE);
+
+        // The color is the fourth integer in each vertex.
+        // EncodingFormat.VERTEX_COLOR is not used because it also
+        // contains the header size; vanilla quads do not have a header.
+        int colorIndex = targetIndex + 3;
+
+        for (int i = 0; i < 4; i++) {
+            target[colorIndex] = ColorHelper.toVanillaColor(target[colorIndex]);
+            colorIndex += VANILLA_VERTEX_STRIDE;
+        }
     }
 }
