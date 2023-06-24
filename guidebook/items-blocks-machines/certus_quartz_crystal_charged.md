@@ -4,6 +4,8 @@ navigation:
   title: Charged Certus Quartz Crystal
   icon: charged_certus_quartz_crystal
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:charged_certus_quartz_crystal
 ---

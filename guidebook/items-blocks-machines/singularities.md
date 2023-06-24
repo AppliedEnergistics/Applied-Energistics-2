@@ -4,6 +4,8 @@ navigation:
   title: Singularities
   icon: singularity
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:singularity
 - ae2:quantum_entangled_singularity

@@ -4,6 +4,8 @@ navigation:
   title: Terminals
   icon: crafting_terminal
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:terminal
 - ae2:crafting_terminal

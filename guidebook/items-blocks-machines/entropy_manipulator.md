@@ -4,6 +4,8 @@ navigation:
   title: Entropy Manipulator
   icon: entropy_manipulator
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:entropy_manipulator
 ---

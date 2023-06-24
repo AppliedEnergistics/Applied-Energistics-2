@@ -4,6 +4,8 @@ navigation:
   title: View Cell
   icon: view_cell
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:view_cell
 ---

@@ -4,6 +4,8 @@ navigation:
   title: Inscriber
   icon: inscriber
   position: 310
+categories:
+- machines
 item_ids:
 - ae2:inscriber
 ---

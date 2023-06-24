@@ -4,6 +4,8 @@ navigation:
   title: Pattern Provider
   icon: pattern_provider
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:pattern_provider
 - ae2:cable_pattern_provider

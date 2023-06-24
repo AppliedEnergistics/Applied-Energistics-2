@@ -4,6 +4,8 @@ navigation:
   title: Monitors
   icon: storage_monitor
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:storage_monitor
 - ae2:conversion_monitor

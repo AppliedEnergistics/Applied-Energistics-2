@@ -4,6 +4,8 @@ navigation:
   title: Cell Workbench
   icon: cell_workbench
   position: 310
+categories:
+- machines
 item_ids:
 - ae2:cell_workbench
 ---

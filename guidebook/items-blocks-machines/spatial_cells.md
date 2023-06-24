@@ -4,6 +4,8 @@ navigation:
   title: Spatial Cells
   icon: spatial_storage_cell_128
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:spatial_storage_cell_2
 - ae2:spatial_storage_cell_16

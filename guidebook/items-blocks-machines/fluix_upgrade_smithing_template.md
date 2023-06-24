@@ -4,6 +4,8 @@ navigation:
   title: Fluix Smithing Template
   icon: fluix_upgrade_smithing_template
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:fluix_upgrade_smithing_template
 ---

@@ -4,6 +4,8 @@ navigation:
   title: Fluix Tools
   icon: fluix_pickaxe
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:fluix_axe
 - ae2:fluix_hoe

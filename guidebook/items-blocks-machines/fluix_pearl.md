@@ -4,6 +4,8 @@ navigation:
   title: Fluix Pearl
   icon: fluix_pearl
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:fluix_pearl
 ---

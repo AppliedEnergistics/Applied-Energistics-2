@@ -4,6 +4,8 @@ navigation:
   title: Crafting CPU Multiblock (Storage, Coprocessor, Monitor, Unit)
   icon: 1k_crafting_storage
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:1k_crafting_storage
 - ae2:4k_crafting_storage

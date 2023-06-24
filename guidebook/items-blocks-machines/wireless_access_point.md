@@ -3,7 +3,9 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Wireless Access Point
   icon: wireless_access_point
-  position: 215
+  position: 210
+categories:
+- devices
 item_ids:
 - ae2:wireless_booster
 - ae2:wireless_access_point

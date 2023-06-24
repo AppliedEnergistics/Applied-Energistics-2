@@ -4,6 +4,8 @@ navigation:
   title: Wireless Receiver
   icon: wireless_receiver
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:wireless_receiver
 ---

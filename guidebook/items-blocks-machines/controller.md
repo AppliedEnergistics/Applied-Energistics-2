@@ -4,6 +4,8 @@ navigation:
   title: Controller
   icon: controller
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:controller
 ---

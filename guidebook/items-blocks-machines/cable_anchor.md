@@ -4,6 +4,8 @@ navigation:
   title: Cable Anchor
   icon: cable_anchor
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:cable_anchor
 ---

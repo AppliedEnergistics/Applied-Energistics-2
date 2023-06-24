@@ -4,6 +4,8 @@ navigation:
   title: Annihilation Plane
   icon: annihilation_plane
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:annihilation_plane
 ---

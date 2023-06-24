@@ -4,6 +4,8 @@ navigation:
   title: Paintballs
   icon: green_lumen_paint_ball
   position: 410
+categories:
+- tools
 item_ids:
 - ae2:white_paint_ball
 - ae2:orange_paint_ball

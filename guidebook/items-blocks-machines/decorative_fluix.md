@@ -4,6 +4,8 @@ navigation:
   title: Decorative Fluix
   icon: fluix_stairs
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:fluix_stairs
 - ae2:fluix_wall

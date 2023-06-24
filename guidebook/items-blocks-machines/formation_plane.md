@@ -4,6 +4,8 @@ navigation:
   title: Formation Plane
   icon: formation_plane
   position: 210
+categories:
+- devices
 item_ids:
 - ae2:formation_plane
 ---

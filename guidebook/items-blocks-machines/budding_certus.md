@@ -4,6 +4,8 @@ navigation:
   title: Budding Certus Quartz
   icon: flawless_budding_quartz
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:flawless_budding_quartz
 - ae2:flawed_budding_quartz

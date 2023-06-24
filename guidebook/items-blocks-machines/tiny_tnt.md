@@ -4,6 +4,8 @@ navigation:
   title: Tiny TNT
   icon: tiny_tnt
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:tiny_tnt
 ---

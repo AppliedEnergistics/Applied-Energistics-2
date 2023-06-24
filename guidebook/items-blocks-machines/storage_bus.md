@@ -1,9 +1,11 @@
 ---
 navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
-  title: Storage Bus
+  title: ME Storage Bus
   icon: storage_bus
   position: 220
+categories:
+- devices
 item_ids:
 - ae2:storage_bus
 ---

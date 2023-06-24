@@ -4,6 +4,8 @@ navigation:
   title: Mysterious Cube
   icon: mysterious_cube
   position: 010
+categories:
+- misc ingredients blocks
 item_ids:
 - ae2:mysterious_cube
 - ae2:not_so_mysterious_cube

@@ -4,6 +4,8 @@ navigation:
   title: Vibration Chamber
   icon: vibration_chamber
   position: 110
+categories:
+- network infrastructure
 item_ids:
 - ae2:vibration_chamber
 ---
