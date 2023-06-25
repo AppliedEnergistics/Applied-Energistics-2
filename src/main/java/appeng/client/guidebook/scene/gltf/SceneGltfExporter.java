@@ -1,34 +1,15 @@
 package appeng.client.guidebook.scene.gltf;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.IntConsumer;
-import java.util.stream.IntStream;
-import java.util.zip.GZIPOutputStream;
-
+import appeng.client.guidebook.scene.CameraSettings;
+import appeng.client.guidebook.scene.GuidebookLevelRenderer;
+import appeng.client.guidebook.scene.GuidebookScene;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-
-import de.javagl.jgltf.impl.v2.Image;
+import com.mojang.blaze3d.vertex.VertexSorting;
+import de.javagl.jgltf.impl.v2.GlTF;
 import de.javagl.jgltf.model.AccessorDatas;
 import de.javagl.jgltf.model.ElementType;
 import de.javagl.jgltf.model.GltfConstants;
@@ -47,13 +28,30 @@ import de.javagl.jgltf.model.impl.DefaultNodeModel;
 import de.javagl.jgltf.model.impl.DefaultSceneModel;
 import de.javagl.jgltf.model.impl.DefaultTextureModel;
 import de.javagl.jgltf.model.io.Buffers;
-import de.javagl.jgltf.model.io.v2.GltfAssetWriterV2;
-import de.javagl.jgltf.model.io.v2.GltfAssetsV2;
+import de.javagl.jgltf.model.io.GltfWriter;
+import de.javagl.jgltf.model.v2.GltfCreatorV2;
 import de.javagl.jgltf.model.v2.MaterialModelV2;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
-import appeng.client.guidebook.scene.CameraSettings;
-import appeng.client.guidebook.scene.GuidebookLevelRenderer;
-import appeng.client.guidebook.scene.GuidebookScene;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
+import java.util.zip.GZIPOutputStream;
 
 public class SceneGltfExporter {
 
@@ -112,40 +110,38 @@ public class SceneGltfExporter {
             }
         };
 
-        GuidebookLevelRenderer.getInstance().render(
-                level,
-                scene.getCameraSettings(),
-                bufferSource,
-                scene.getInWorldAnnotations());
+        // To avoid baking in the projection and camera, we need to reset these here
+        var modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+        modelViewStack.setIdentity();
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.backupProjectionMatrix();
+        RenderSystem.setProjectionMatrix(new Matrix4f(), VertexSorting.ORTHOGRAPHIC_Z);
+
+        GuidebookLevelRenderer.getInstance().renderContent(level, bufferSource);
+
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.restoreProjectionMatrix();
 
         materials.values().forEach(gltfModel::addMaterialModel);
         samplers.values().forEach(gltfModel::addTextureModel);
         images.values().forEach(gltfModel::addImageModel);
 
-        // Print the glTF to the console.
-        var actualImages = gltfModel.getImageModels();
-        gltfModel.clearImageModels();
-        var gltf = GltfAssetsV2.createBinary(gltfModel);
-        for (ImageModel actualImage : actualImages) {
-            var image = new Image();
-            image.setName(actualImage.getName());
-            image.setExtensions(actualImage.getExtensions());
-            image.setUri(actualImage.getUri());
-            gltf.getGltf().addImages(image);
-        }
-
-        var gltfWriter = new GltfAssetWriterV2();
+        GlTF gltf = GltfCreatorV2.create(gltfModel);
+        GltfWriter gltfWriter = new GltfWriter();
+        gltfWriter.setIndenting(true);
         try (var out = new GZIPOutputStream(Files.newOutputStream(exportPath))) {
-            gltfWriter.writeBinary(gltf, out);
+            gltfWriter.write(gltf, out);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private MaterialModelV2 buildMaterial(RenderType renderType,
-            Map<RenderType, MaterialModelV2> materials,
-            Map<SamplerKey, DefaultTextureModel> samplers,
-            Map<Integer, DefaultImageModel> images) {
+                                          Map<RenderType, MaterialModelV2> materials,
+                                          Map<SamplerKey, DefaultTextureModel> samplers,
+                                          Map<Integer, DefaultImageModel> images) {
         var mat = materials.get(renderType);
         if (mat != null) {
             return mat;
@@ -177,8 +173,8 @@ public class SceneGltfExporter {
     }
 
     private TextureModel getOrCreateSampler(SamplerKey samplerKey,
-            Map<SamplerKey, DefaultTextureModel> samplers,
-            Map<Integer, DefaultImageModel> images) {
+                                            Map<SamplerKey, DefaultTextureModel> samplers,
+                                            Map<Integer, DefaultImageModel> images) {
         var textureModel = samplers.get(samplerKey);
         if (textureModel != null) {
             return textureModel;
@@ -251,7 +247,7 @@ public class SceneGltfExporter {
     }
 
     private void addMesh(BufferBuilder.RenderedBuffer buffer, DefaultGltfModel gltfModel, DefaultSceneModel sceneModel,
-            MaterialModelV2 material) {
+                         MaterialModelV2 material) {
         var drawState = buffer.drawState();
         var mode = drawState.mode();
 
@@ -431,7 +427,7 @@ public class SceneGltfExporter {
     }
 
     private GeneratedIndexBuffer generateSequentialIndices(VertexFormat.Mode mode, int vertexCount,
-            int expectedIndexCount) {
+                                                           int expectedIndexCount) {
         var indicesPerPrimitive = switch (mode) {
             case LINES -> 2;
             case DEBUG_LINES -> 2;

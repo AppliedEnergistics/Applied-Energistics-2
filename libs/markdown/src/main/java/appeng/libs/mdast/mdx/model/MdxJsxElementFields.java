@@ -1,15 +1,16 @@
 package appeng.libs.mdast.mdx.model;
 
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import appeng.libs.mdast.model.MdAstAnyContent;
 import appeng.libs.unist.UnistNode;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public interface MdxJsxElementFields extends UnistNode {
     @Nullable
     String name();
+
+    void setName(String name);
 
     List<MdxJsxAttributeNode> attributes();
 
@@ -32,6 +33,10 @@ public interface MdxJsxElementFields extends UnistNode {
     default String getAttributeString(String name, String defaultValue) {
         var jsxAttribute = getAttribute(name);
         return jsxAttribute != null ? jsxAttribute.getStringValue() : defaultValue;
+    }
+
+    default void addAttribute(String name, String value) {
+        attributes().add(new MdxJsxAttribute(name, value));
     }
 
     @Nullable

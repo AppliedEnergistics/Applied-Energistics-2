@@ -91,6 +91,21 @@ public class GuidebookLevelRenderer {
         var transformedLightDirection = new Vector3f(lightDirection.x, lightDirection.y, lightDirection.z);
         RenderSystem.setShaderLights(transformedLightDirection, transformedLightDirection);
 
+        renderContent(level, buffers);
+
+        InWorldAnnotationRenderer.render(buffers, annotations);
+
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.restoreProjectionMatrix();
+
+        Lighting.setupFor3DItems(); // Reset to GUI lighting
+    }
+
+    /**
+     * Render without any setup.
+     */
+    public void renderContent(GuidebookLevel level, MultiBufferSource.BufferSource buffers) {
         renderBlocks(level, buffers, false);
         renderBlocks(level, buffers, true);
         renderBlockEntities(level, buffers);
@@ -119,14 +134,6 @@ public class GuidebookLevelRenderer {
         buffers.endBatch(Sheets.hangingSignSheet());
         buffers.endBatch(Sheets.chestSheet());
         buffers.endBatch();
-
-        InWorldAnnotationRenderer.render(buffers, annotations);
-
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.restoreProjectionMatrix();
-
-        Lighting.setupFor3DItems(); // Reset to GUI lighting
     }
 
     private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers, boolean translucent) {

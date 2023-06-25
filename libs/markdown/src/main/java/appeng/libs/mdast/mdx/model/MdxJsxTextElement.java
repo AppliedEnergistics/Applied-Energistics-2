@@ -15,7 +15,7 @@ import appeng.libs.mdast.model.MdAstStaticPhrasingContent;
 public class MdxJsxTextElement extends MdAstParent<MdAstPhrasingContent>
         implements MdxJsxElementFields, MdAstStaticPhrasingContent {
     private String name;
-    private List<MdxJsxAttributeNode> attributes;
+    private final List<MdxJsxAttributeNode> attributes;
 
     public MdxJsxTextElement() {
         this("", new ArrayList<>());
@@ -30,6 +30,11 @@ public class MdxJsxTextElement extends MdAstParent<MdAstPhrasingContent>
     @Override
     public @Nullable String name() {
         return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

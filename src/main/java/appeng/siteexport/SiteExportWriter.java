@@ -1,5 +1,36 @@
 package appeng.siteexport;
 
+import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.compiler.MdAstNodeAdapter;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.core.AppEng;
+import appeng.libs.mdast.MdAstVisitor;
+import appeng.libs.mdast.model.MdAstNode;
+import appeng.recipes.handlers.InscriberProcessType;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.siteexport.model.CraftingRecipeJson;
+import appeng.siteexport.model.ExportedPageJson;
+import appeng.siteexport.model.InscriberRecipeJson;
+import appeng.siteexport.model.ItemInfoJson;
+import appeng.siteexport.model.NavigationNodeJson;
+import appeng.siteexport.model.P2PTypeInfo;
+import appeng.siteexport.model.SiteExportJson;
+import appeng.siteexport.model.SmeltingRecipeJson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.bind.JsonTreeWriter;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,39 +46,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.Locale;
+import java.util.Map;
 import java.util.zip.GZIPOutputStream;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.internal.bind.JsonTreeWriter;
-
-import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-
-import appeng.client.guidebook.Guide;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.core.AppEng;
-import appeng.recipes.handlers.InscriberProcessType;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.siteexport.model.CraftingRecipeJson;
-import appeng.siteexport.model.ExportedPageJson;
-import appeng.siteexport.model.InscriberRecipeJson;
-import appeng.siteexport.model.ItemInfoJson;
-import appeng.siteexport.model.NavigationNodeJson;
-import appeng.siteexport.model.P2PTypeInfo;
-import appeng.siteexport.model.SiteExportJson;
-import appeng.siteexport.model.SmeltingRecipeJson;
 
 public class SiteExportWriter {
 
@@ -129,13 +129,14 @@ public class SiteExportWriter {
     }
 
     public void write(Path file) throws IOException {
-        Gson gson = new GsonBuilder()
+        var gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
+                .registerTypeHierarchyAdapter(MdAstNode.class, new MdAstNodeAdapter())
                 .create();
 
         try (var out = new GZIPOutputStream(Files.newOutputStream(file));
-                var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
+             var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
             gson.toJson(siteExport, writer);
         }
     }
@@ -151,15 +152,20 @@ public class SiteExportWriter {
         coloredVersions.put(color, coloredItemId);
     }
 
-    public void addPage(ParsedGuidePage page) {
+    public ExportedPageJson addPage(ParsedGuidePage page) {
         var exportedPage = new ExportedPageJson();
+        exportedPage.title = "";
+        exportedPage.astRoot = page.getAstRoot();
+        exportedPage.frontmatter.putAll(page.getFrontmatter().additionalProperties());
+
         siteExport.pages.put(page.getId(), exportedPage);
+        return exportedPage;
     }
 
     public String addItem(ItemStack stack) {
         var itemId = stack.getItem().builtInRegistryHolder().key().location().toString().replace(':', '-');
         if (stack.getTag() == null) {
-            return itemId.toString();
+            return itemId;
         }
 
         MessageDigest digest;

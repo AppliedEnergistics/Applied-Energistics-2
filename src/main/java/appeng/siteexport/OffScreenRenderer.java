@@ -1,9 +1,5 @@
 package appeng.siteexport;
 
-import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.nio.file.Path;
-
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
@@ -11,14 +7,17 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexSorting;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 
-import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.util.Mth;
+import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.nio.file.Path;
 
 public class OffScreenRenderer implements AutoCloseable {
     private final NativeImage nativeImage;
@@ -29,6 +28,7 @@ public class OffScreenRenderer implements AutoCloseable {
     public OffScreenRenderer(int width, int height) {
         this.width = width;
         this.height = height;
+        RenderSystem.viewport(0, 0, width, height);
         nativeImage = new NativeImage(width, height, true);
         fb = new TextureTarget(width, height, true /* with depth */, true /* check error */);
         fb.setClearColor(0, 0, 0, 0);
@@ -39,6 +39,12 @@ public class OffScreenRenderer implements AutoCloseable {
     public void close() {
         nativeImage.close();
         fb.destroyBuffers();
+
+        var minecraft = Minecraft.getInstance();
+        if (minecraft != null) {
+            var window = minecraft.getWindow();
+            RenderSystem.viewport(0, 0, window.getWidth(), window.getHeight());
+        }
     }
 
     public void captureAsPng(Runnable r, Path path) throws IOException {
@@ -147,7 +153,7 @@ public class OffScreenRenderer implements AutoCloseable {
         up.normalize();
 
         var viewMatrix = new Matrix4f();
-        viewMatrix.setTransposed(FloatBuffer.wrap(new float[] {
+        viewMatrix.setTransposed(FloatBuffer.wrap(new float[]{
                 right.x(),
                 right.y(),
                 right.z(),

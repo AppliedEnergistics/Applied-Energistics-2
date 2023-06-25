@@ -31,6 +31,11 @@ public class MdxJsxFlowElement extends MdAstParent<MdAstFlowContent> implements 
     }
 
     @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
     public List<MdxJsxAttributeNode> attributes() {
         return attributes;
     }

@@ -11,9 +11,12 @@ import appeng.client.guidebook.document.LytErrorSink;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 public class BlockAnnotationElementCompiler extends AnnotationTagCompiler {
+
+    public static final String TAG_NAME = "BlockAnnotation";
+
     @Override
     public Set<String> getTagNames() {
-        return Set.of("BlockAnnotation");
+        return Set.of(TAG_NAME);
     }
 
     @Override

@@ -1,11 +1,12 @@
 package appeng.siteexport;
 
-import java.nio.file.Path;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.Nullable;
+
+import java.nio.file.Path;
 
 public interface ResourceExporter {
     default void referenceItem(ItemLike item) {
@@ -18,7 +19,19 @@ public interface ResourceExporter {
 
     Path getPathForWriting(ResourceLocation assetId);
 
+    /**
+     * Generates a resource location for a page specific resource.
+     */
+    Path getPageSpecificPathForWriting(String suffix);
+
+    @Nullable
+    ResourceLocation getCurrentPageId();
+
     Path getOutputFolder();
+
+    default String getPathRelativeFromOutputFolder(Path p) {
+        return getOutputFolder().relativize(p).toString().replace('\\', '/');
+    }
 
     /**
      * Generates a resource location for a page specific resource.

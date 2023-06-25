@@ -1,25 +1,5 @@
 package appeng.client.guidebook.scene;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Optional;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexSorting;
-
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.HitResult;
-
 import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytPoint;
@@ -41,14 +21,27 @@ import appeng.client.guidebook.scene.gltf.SceneGltfExporter;
 import appeng.client.guidebook.screen.GuideIconButton;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AEConfig;
-import appeng.siteexport.ExportableResourceProvider;
 import appeng.siteexport.OffScreenRenderer;
-import appeng.siteexport.ResourceExporter;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexSorting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Shows a pseudo-in-world scene within the guidebook.
  */
-public class LytGuidebookScene extends LytBox implements ExportableResourceProvider {
+public class LytGuidebookScene extends LytBox {
     @Nullable
     private GuidebookScene scene;
     private boolean interactive;
@@ -69,9 +62,6 @@ public class LytGuidebookScene extends LytBox implements ExportableResourceProvi
     private final LytWidget zoomInButton;
     private final LytWidget zoomOutButton;
     private final LytWidget resetViewButton;
-
-    @Nullable
-    private String exportName;
 
     public LytGuidebookScene(ExtensionCollection extensions) {
         this.extensions = extensions;
@@ -125,14 +115,6 @@ public class LytGuidebookScene extends LytBox implements ExportableResourceProvi
         }
 
         updateToolbar();
-    }
-
-    public String getExportName() {
-        return exportName;
-    }
-
-    public void setExportName(String exportName) {
-        this.exportName = exportName;
     }
 
     private void updateToolbar() {
@@ -207,54 +189,40 @@ public class LytGuidebookScene extends LytBox implements ExportableResourceProvi
         this.fullWidth = fullWidth;
     }
 
-    @Override
-    public void exportResources(ResourceExporter exporter) {
-        if (scene == null || exportName == null) {
+    public LytSize getPreferredSize() {
+        return viewport.getPreferredSize();
+    }
+
+    public void exportAsPng(Path path, float scale, boolean hideAnnotations) {
+        if (scene == null) {
             return;
         }
 
-        var exportName = this.exportName.toLowerCase(Locale.ROOT);
-
-        var window = Minecraft.getInstance().getWindow();
         var prefSize = viewport.getPreferredSize();
         if (prefSize.width() <= 0 || prefSize.height() <= 0) {
             return;
         }
-        try (var osr = new OffScreenRenderer(prefSize.width(), prefSize.height())) {
-            RenderSystem.viewport(0, 0, prefSize.width(), prefSize.height());
+
+        // We only scale the viewport, not scaling the view matrix means the scene will still fill it
+        var width = (int) Math.max(1, prefSize.width() * scale);
+        var height = (int) Math.max(1, prefSize.height() * scale);
+
+        try (var osr = new OffScreenRenderer(width, height)) {
             osr.captureAsPng(() -> {
                 var renderer = GuidebookLevelRenderer.getInstance();
                 scene.getCameraSettings().setViewportSize(prefSize);
                 renderer.render(scene.getLevel(), scene.getCameraSettings(), scene.getInWorldAnnotations());
-            }, exporter.getPathForWriting(exporter.getPageSpecificResourceLocation(exportName + ".png")));
+            }, path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        RenderSystem.viewport(0, 0, window.getWidth(), window.getHeight());
-
-        Path assetsFolder = exporter.getOutputFolder().resolve("!textures");
-        try {
-            Files.createDirectories(assetsFolder);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void exportGltfScene(Path assetsFolder, Path outputFile) {
         SceneGltfExporter.export(
                 scene,
-                exporter.getPathForWriting(exporter.getPageSpecificResourceLocation(exportName + ".glb.gz")),
+                outputFile,
                 assetsFolder);
-
-        // Export all scenes embedded in annotations
-        for (var annotation : scene.getInWorldAnnotations()) {
-            if (annotation.getTooltip() != null) {
-                annotation.getTooltip().exportResources(exporter);
-            }
-        }
-        for (var annotation : scene.getOverlayAnnotations()) {
-            if (annotation.getTooltip() != null) {
-                annotation.getTooltip().exportResources(exporter);
-            }
-        }
     }
 
     class Viewport extends LytBlock implements InteractiveElement {

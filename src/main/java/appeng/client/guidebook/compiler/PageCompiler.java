@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import appeng.libs.unist.UnistPosition;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -81,6 +82,8 @@ import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import appeng.libs.unist.UnistNode;
+
+import javax.swing.plaf.nimbus.State;
 
 @ApiStatus.Internal
 public final class PageCompiler {
@@ -425,26 +428,31 @@ public final class PageCompiler {
         });
 
         // Find the position in the source
-        var pos = child.position().start();
-        var startOfLine = pageContent.lastIndexOf('\n', pos.offset()) + 1;
-        var endOfLine = pageContent.indexOf('\n', pos.offset() + 1);
-        if (endOfLine == -1) {
-            endOfLine = pageContent.length();
+        var position = child.position();
+        if (position != null) {
+            var pos = position.start();
+            var startOfLine = pageContent.lastIndexOf('\n', pos.offset()) + 1;
+            var endOfLine = pageContent.indexOf('\n', pos.offset() + 1);
+            if (endOfLine == -1) {
+                endOfLine = pageContent.length();
+            }
+            var line = pageContent.substring(startOfLine, endOfLine);
+
+            text += " " + child.type() + " (" + MdAstPosition.stringify(pos) + ")";
+
+            span.appendText(text);
+            span.appendBreak();
+
+            span.appendText(line);
+            span.appendBreak();
+
+            span.appendText("~".repeat(pos.column() - 1) + "^");
+            span.appendBreak();
+
+            LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
+        } else {
+            LOGGER.warn("{}\n", text);
         }
-        var line = pageContent.substring(startOfLine, endOfLine);
-
-        text += " " + child.type() + " (" + MdAstPosition.stringify(pos) + ")";
-
-        span.appendText(text);
-        span.appendBreak();
-
-        span.appendText(line);
-        span.appendBreak();
-
-        span.appendText("~".repeat(pos.column() - 1) + "^");
-        span.appendBreak();
-
-        LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
 
         return span;
     }

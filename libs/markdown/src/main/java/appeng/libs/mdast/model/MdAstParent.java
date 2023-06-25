@@ -1,14 +1,14 @@
 package appeng.libs.mdast.model;
 
+import appeng.libs.mdast.MdAstVisitor;
+import appeng.libs.unist.UnistParent;
+import com.google.gson.stream.JsonWriter;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.stream.JsonWriter;
-
-import org.jetbrains.annotations.Nullable;
-
-import appeng.libs.unist.UnistParent;
+import java.util.function.Predicate;
 
 /**
  * Parent (UnistParent) represents an abstract public interface in mdast containing other nodes (said to be children).
@@ -35,6 +35,10 @@ public abstract class MdAstParent<T extends MdAstAnyContent> extends MdAstNode i
             throw new IllegalArgumentException("Cannot add a node of type " + node.getClass() + " to " + this);
         }
         children.add(childClass().cast(node));
+    }
+
+    public void removeChild(MdAstNode node) {
+        children.remove(childClass().cast(node));
     }
 
     @Override
@@ -71,5 +75,32 @@ public abstract class MdAstParent<T extends MdAstAnyContent> extends MdAstNode i
         }
 
         throw new IllegalStateException("Child " + child + " not found");
+    }
+
+    @Override
+    protected MdAstVisitor.Result visitChildren(MdAstVisitor visitor) {
+        for (var child : children()) {
+            if (child instanceof MdAstNode childNode && childNode.visit(visitor) == MdAstVisitor.Result.STOP) {
+                return MdAstVisitor.Result.STOP;
+            }
+        }
+        return MdAstVisitor.Result.CONTINUE;
+    }
+
+    /**
+     * Remove children matching the given predicate.
+     */
+    @Override
+    public void removeChildren(Predicate<MdAstNode> predicate, boolean recursive) {
+        for (var it = children.iterator(); it.hasNext(); ) {
+            var child = it.next();
+            if (child instanceof MdAstNode astNode) {
+                if (predicate.test(astNode)) {
+                    it.remove();
+                } else {
+                    astNode.removeChildren(predicate, recursive);
+                }
+            }
+        }
     }
 }

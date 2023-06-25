@@ -74,4 +74,9 @@ public class MdAstPosition implements UnistPosition {
         end.writeJson(writer);
         writer.endObject();
     }
+
+    @Override
+    public String toString() {
+        return stringify(start, end);
+    }
 }
