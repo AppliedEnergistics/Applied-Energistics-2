@@ -78,7 +78,6 @@ public class IOBusScreen extends UpgradeableScreen<IOBusMenu> {
         }
         if (this.schedulingMode != null) {
             this.schedulingMode.set(menu.getSchedulingMode());
-            this.schedulingMode.setVisibility(menu.hasUpgrade(AEItems.CAPACITY_CARD));
         }
     }
 
