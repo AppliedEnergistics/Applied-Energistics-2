@@ -122,10 +122,10 @@ public final class PageExportPostProcessor {
                     // Export the preferred size as width/height attributes
                     var preferredSize = scene.getPreferredSize();
                     if (!elFields.hasAttribute("width")) {
-                        elFields.getAttributeString("width", String.valueOf(preferredSize.width()));
+                        elFields.addAttribute("width", preferredSize.width());
                     }
                     if (!elFields.hasAttribute("height")) {
-                        elFields.getAttributeString("height", String.valueOf(preferredSize.height()));
+                        elFields.addAttribute("height", preferredSize.height());
                     }
 
                     return Result.CONTINUE;
