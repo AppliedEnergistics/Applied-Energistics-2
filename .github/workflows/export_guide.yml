@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Install Software OpenGL Rendering
-        run: sudo apt-get install xvfb libgl1-mesa-dri
+        run: sudo apt-get install xvfb libgl1-mesa-dri pngquant
       - uses: actions/checkout@v2
       - name: Set up JDK 17
         uses: actions/setup-java@v2
@@ -22,6 +22,8 @@ jobs:
         run: ./gradlew runData
       - name: Export Guide
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
+      - name: Optimize PNGs
+        run: find build/guide/ -name '*.png' -exec pngquant --ext .png --force --skip-if-larger --strip {} \;
       - uses: actions/upload-artifact@v2
         with:
           name: guide
