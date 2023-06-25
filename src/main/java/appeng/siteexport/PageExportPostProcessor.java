@@ -1,7 +1,9 @@
 package appeng.siteexport;
 
+import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.block.LytNode;
+import appeng.client.guidebook.document.block.LytVisitor;
 import appeng.client.guidebook.scene.BlockImageTagCompiler;
 import appeng.client.guidebook.scene.LytGuidebookScene;
 import appeng.client.guidebook.scene.SceneTagCompiler;
@@ -10,6 +12,7 @@ import appeng.libs.mdast.MdAstYamlFrontmatter;
 import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,22 @@ public final class PageExportPostProcessor {
 
     public static void postprocess(ResourceExporter exporter,
                                    ParsedGuidePage page,
-                                   Multimap<MdAstNode, LytNode> nodeMapping) {
+                                   GuidePage compiledPage) {
+
+        // Create a mapping from source node -> compiled node to
+        // allow AST postprocessors to attach more exported
+        // info to the AST nodes.
+        Multimap<MdAstNode, LytNode> nodeMapping = ArrayListMultimap.create();
+        compiledPage.document().visit(new LytVisitor() {
+            @Override
+            public Result beforeNode(LytNode node) {
+                if (node.getSourceNode() != null) {
+                    nodeMapping.put(node.getSourceNode(), node);
+                }
+                return Result.CONTINUE;
+            }
+        }, true /* scenes may be nested within tooltips of scenes */);
+
         var astRoot = page.getAstRoot();
 
         // Strip unnecessary frontmatter nodes.

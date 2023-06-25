@@ -290,22 +290,8 @@ public final class SiteExporter implements ResourceExporter {
                              ParsedGuidePage page,
                              GuidePage compiledPage) {
 
-        // Create a mapping from source node -> compiled node to
-        // allow AST postprocessors to attach more exported
-        // info to the AST nodes.
-        Multimap<MdAstNode, LytNode> nodeMapping = ArrayListMultimap.create();
-        compiledPage.document().visit(new LytVisitor() {
-            @Override
-            public Result beforeNode(LytNode node) {
-                if (node.getSourceNode() != null) {
-                    nodeMapping.put(node.getSourceNode(), node);
-                }
-                return Result.CONTINUE;
-            }
-        });
-
         // Run post-processors on the AST
-        PageExportPostProcessor.postprocess(this, page, nodeMapping);
+        PageExportPostProcessor.postprocess(this, page, compiledPage);
 
         exportWriter.addPage(page);
     }

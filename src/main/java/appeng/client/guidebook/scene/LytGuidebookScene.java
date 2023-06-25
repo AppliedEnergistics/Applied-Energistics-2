@@ -8,6 +8,8 @@ import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytVBox;
+import appeng.client.guidebook.document.block.LytVisitor;
+import appeng.client.guidebook.document.interaction.ContentTooltip;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.document.interaction.LytWidget;
@@ -223,6 +225,41 @@ public class LytGuidebookScene extends LytBox {
                 scene,
                 outputFile,
                 assetsFolder);
+    }
+
+    @Override
+    protected LytVisitor.Result visitChildren(LytVisitor visitor, boolean includeOutOfTreeContent) {
+        var result = super.visitChildren(visitor, includeOutOfTreeContent);
+        if (result == LytVisitor.Result.STOP) {
+            return result;
+        }
+
+        // Visit content hidden in tooltips, if requested
+        if (includeOutOfTreeContent && scene != null) {
+            if (visitAnnotations(scene.getInWorldAnnotations(), visitor) == LytVisitor.Result.STOP) {
+                return LytVisitor.Result.STOP;
+            }
+            if (visitAnnotations(scene.getOverlayAnnotations(), visitor) == LytVisitor.Result.STOP) {
+                return LytVisitor.Result.STOP;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Visits the out-of-tree content within the given annotations.
+     */
+    private LytVisitor.Result visitAnnotations(Collection<? extends SceneAnnotation> annotations, LytVisitor visitor) {
+        for (var annotation : annotations) {
+            if (annotation.getTooltip() instanceof ContentTooltip contentTooltip) {
+                if (contentTooltip.getContent().visit(visitor, true) == LytVisitor.Result.STOP) {
+                    return LytVisitor.Result.STOP;
+                }
+            }
+        }
+
+        return LytVisitor.Result.CONTINUE;
     }
 
     class Viewport extends LytBlock implements InteractiveElement {
