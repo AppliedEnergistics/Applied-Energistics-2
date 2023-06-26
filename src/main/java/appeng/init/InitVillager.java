@@ -1,5 +1,7 @@
 package appeng.init;
 
+import java.util.Set;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,7 +29,8 @@ public class InitVillager {
 
     public static final ResourceLocation ID = AppEng.makeId("fluix_researcher");
 
-    public static PoiType POI_TYPE = new PoiType(ImmutableSet.of(AEBlocks.CHARGER.block().defaultBlockState()), 1, 1);
+    public static PoiType POI_TYPE = new PoiType(
+            Set.copyOf(AEBlocks.CHARGER.block().getStateDefinition().getPossibleStates()), 1, 1);
     public static final ResourceKey<PoiType> POI_KEY = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, ID);
 
     public static final VillagerProfession PROFESSION = new VillagerProfession(ID.toString(), e -> e.is(POI_KEY),
