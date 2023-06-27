@@ -30,6 +30,9 @@ They are used in a <ItemLink id="spatial_io_port" />.
 
 Unlike [Storage Cells](../items-blocks-machines/storage_cells.md), spatial cells cannot be reformatted.
 
+Again, **YOU CANNOT RESET, REFORMAT, OR RESIZE A SPATIAL CELL AFTER IT HAS BEEN USED.** Make a new cell if you want to use different dimensions.
+
+
 ## Recipes
 
   <Row>

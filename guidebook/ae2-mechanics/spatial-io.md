@@ -96,8 +96,10 @@ will be very inefficient and possibly require *billions* of AE.
 ## Cell Dimensions
 
 Once a [spatial cell](../items-blocks-machines/spatial_cells.md) has been used, it gains a permanently defined set of XYZ dimensions (eg, 3x4x2)
-and is linked to a volume of space in the spatial storage dimension. These are not the same dimensions in the name of a cell,
-a 16^3 cell can have any dimensions *up to* 16x16x16
+and is linked to a volume of space in the spatial storage dimension. **YOU CANNOT RESET, REFORMAT, OR RESIZE A SPATIAL CELL AFTER
+IT HAS BEEN USED.** Make a new cell if you want to use different dimensions. 
+
+These are not the same dimensions in the name of a cell, a 16^3 cell can have any dimensions *up to* 16x16x16
 
 Note that this volume is directional and cannot be rotated. A 2x2x3 volume is not the same as a 3x2x2 volume, even though they're the
 same size.
