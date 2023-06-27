@@ -1,5 +1,23 @@
 package appeng.client.guidebook.scene;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexSorting;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.HitResult;
+
 import appeng.client.guidebook.color.ColorValue;
 import appeng.client.guidebook.color.SymbolicColor;
 import appeng.client.guidebook.document.LytPoint;
@@ -24,21 +42,6 @@ import appeng.client.guidebook.screen.GuideIconButton;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AEConfig;
 import appeng.siteexport.OffScreenRenderer;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexSorting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
 
 /**
  * Shows a pseudo-in-world scene within the guidebook.

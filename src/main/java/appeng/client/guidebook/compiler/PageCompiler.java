@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import appeng.libs.unist.UnistPosition;
+import javax.swing.plaf.nimbus.State;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,8 +83,6 @@ import appeng.libs.mdx.MdxSyntax;
 import appeng.libs.micromark.extensions.YamlFrontmatterSyntax;
 import appeng.libs.micromark.extensions.gfm.GfmTableSyntax;
 import appeng.libs.unist.UnistNode;
-
-import javax.swing.plaf.nimbus.State;
 
 @ApiStatus.Internal
 public final class PageCompiler {

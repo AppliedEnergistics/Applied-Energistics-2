@@ -1,5 +1,16 @@
 package appeng.siteexport;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.document.block.LytNode;
@@ -12,27 +23,18 @@ import appeng.libs.mdast.MdAstYamlFrontmatter;
 import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Objects;
 
 /**
  * Post-Processes page content before exporting it.
  */
 public final class PageExportPostProcessor {
 
-    private static final int[] BLOCKIMAGE_SCALES = {4, 8};
+    private static final int[] BLOCKIMAGE_SCALES = { 4, 8 };
     private static final int GAMESCENE_PLACEHOLDER_SCALE = 2;
 
     public static void postprocess(ResourceExporter exporter,
-                                   ParsedGuidePage page,
-                                   GuidePage compiledPage) {
+            ParsedGuidePage page,
+            GuidePage compiledPage) {
 
         // Create a mapping from source node -> compiled node to
         // allow AST postprocessors to attach more exported
@@ -85,10 +87,12 @@ public final class PageExportPostProcessor {
                             .toList();
 
                     if (scenes.isEmpty()) {
-                        LOG.warn("Found no layout scenes associated with element {} @ {}:{}", tagName, exporter.getCurrentPageId(), node.position());
+                        LOG.warn("Found no layout scenes associated with element {} @ {}:{}", tagName,
+                                exporter.getCurrentPageId(), node.position());
                         return Result.CONTINUE;
                     } else if (scenes.size() > 1) {
-                        LOG.warn("Found multiple layout scenes associated with element {} @ {}:{}", tagName, exporter.getCurrentPageId(), node.position());
+                        LOG.warn("Found multiple layout scenes associated with element {} @ {}:{}", tagName,
+                                exporter.getCurrentPageId(), node.position());
                     }
 
                     var scene = scenes.get(0);

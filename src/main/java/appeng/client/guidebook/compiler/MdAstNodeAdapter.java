@@ -1,12 +1,13 @@
 package appeng.client.guidebook.compiler;
 
-import appeng.libs.mdast.model.MdAstNode;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import appeng.libs.mdast.model.MdAstNode;
 
 /**
  * Serializes the MdAst nodes to JSON.

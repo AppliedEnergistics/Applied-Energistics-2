@@ -23,7 +23,9 @@ jobs:
       - name: Export Guide
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
       - name: Optimize PNGs
-        run: find build/guide/ -name '*.png' -exec pngquant --ext .png --force --skip-if-larger --strip {} \;
+        # Don't optimize textures since Minecraft makes heavy use of atlases and those contain too many colors
+        # to do this withot major quality loss.
+        run: find build/guide/ -name '*.png' -not -path 'build/guide/!textures/*' -exec pngquant --ext .png --force --skip-if-larger --strip {} \;
       - uses: actions/upload-artifact@v2
         with:
           name: guide
