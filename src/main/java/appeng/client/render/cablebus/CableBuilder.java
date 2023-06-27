@@ -278,22 +278,18 @@ class CableBuilder {
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
         // Flip end or side texture as needed depending on direction
-        switch (facing)
-        {
-            case DOWN ->
-            {
+        switch (facing) {
+            case DOWN -> {
                 cubeBuilder.setFlipU(Direction.EAST, true);
                 cubeBuilder.setFlipU(Direction.NORTH, true);
             }
-            case UP ->
-            {
+            case UP -> {
                 cubeBuilder.setFlipU(Direction.EAST, true);
                 cubeBuilder.setFlipU(Direction.NORTH, true);
                 cubeBuilder.setFlipV(Direction.DOWN, true);
             }
             case SOUTH -> cubeBuilder.setFlipU(Direction.NORTH, true);
-            case WEST ->
-            {
+            case WEST -> {
                 cubeBuilder.setFlipV(Direction.DOWN, true);
                 cubeBuilder.setFlipU(Direction.EAST, true);
             }
@@ -347,8 +343,7 @@ class CableBuilder {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
         // Flip side texture as needed depending on direction
-        switch (facing)
-        {
+        switch (facing) {
             case EAST, WEST -> cubeBuilder.setFlipV(Direction.DOWN, true);
             case UP, DOWN -> cubeBuilder.setFlipU(Direction.NORTH, true);
         }
@@ -392,11 +387,11 @@ class CableBuilder {
         // Flip side texture as needed depending on direction
         switch (facing) {
             case UP, DOWN:
-                cubeBuilder.setFlipU(Direction.EAST,true);
-                cubeBuilder.setFlipU(Direction.NORTH,true);
+                cubeBuilder.setFlipU(Direction.EAST, true);
+                cubeBuilder.setFlipU(Direction.NORTH, true);
                 break;
             case EAST, WEST:
-                cubeBuilder.setFlipV(Direction.DOWN,true);
+                cubeBuilder.setFlipV(Direction.DOWN, true);
                 break;
         }
 
@@ -469,11 +464,9 @@ class CableBuilder {
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
         // Flip end or side texture as needed depending on direction
-        switch (facing)
-        {
+        switch (facing) {
             case WEST, EAST -> cubeBuilder.setFlipV(Direction.DOWN, true);
-            case UP, DOWN ->
-            {
+            case UP, DOWN -> {
                 cubeBuilder.setFlipU(Direction.NORTH, true);
                 cubeBuilder.setFlipU(Direction.EAST, true);
             }
@@ -522,16 +515,13 @@ class CableBuilder {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
         // Flip end or side texture as needed depending on direction
-        switch (facing)
-        {
+        switch (facing) {
             case NORTH -> cubeBuilder.setFlipU(Direction.NORTH, true);
-            case WEST ->
-            {
+            case WEST -> {
                 cubeBuilder.setFlipV(Direction.DOWN, true);
                 cubeBuilder.setFlipU(Direction.EAST, true);
             }
-            case DOWN ->
-            {
+            case DOWN -> {
                 cubeBuilder.setFlipU(Direction.NORTH, true);
                 cubeBuilder.setFlipV(Direction.DOWN, true);
             }
