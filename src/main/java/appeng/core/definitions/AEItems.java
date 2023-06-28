@@ -132,7 +132,7 @@ public final class AEItems {
     public static final ItemDefinition<FluixHoeItem> FLUIX_HOE = item("Fluix Hoe", AEItemIds.FLUIX_HOE, FluixHoeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
     public static final ItemDefinition<FluixSpadeItem> FLUIX_SHOVEL = item("Fluix Shovel", AEItemIds.FLUIX_SHOVEL, FluixSpadeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
     public static final ItemDefinition<FluixPickaxeItem> FLUIX_PICK = item("Fluix Pickaxe", AEItemIds.FLUIX_PICK, FluixPickaxeItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
-    public static final ItemDefinition<FluixSwordItem> FLUIX_SWORD = item("Fluix Sword", AEItemIds.FLUIX_SWORD, FluixSwordItem::new, CreativeModeTabs.TOOLS_AND_UTILITIES);
+    public static final ItemDefinition<FluixSwordItem> FLUIX_SWORD = item("Fluix Sword", AEItemIds.FLUIX_SWORD, FluixSwordItem::new, CreativeModeTabs.COMBAT);
 
     ///
     /// VARIOUS POWERED TOOLS
