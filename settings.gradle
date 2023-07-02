@@ -14,6 +14,7 @@ pluginManagement {
         id 'com.modrinth.minotaur' version '2.+'
         id 'io.github.juuxel.loom-quiltflower' version '1.7.1'
         id 'com.github.johnrengelman.shadow' version '7.0.0'
+        id 'de.undercouch.download' version '5.4.0'
     }
 }
 

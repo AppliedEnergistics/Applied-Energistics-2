@@ -24,6 +24,7 @@ plugins {
     id "com.modrinth.minotaur"
     id 'io.github.juuxel.loom-quiltflower'
     id "com.github.johnrengelman.shadow"
+    id "de.undercouch.download"
 }
 
 sourceSets {
@@ -31,6 +32,9 @@ sourceSets {
     main {
         compileClasspath += sourceSets.portaforgy.output
         runtimeClasspath += sourceSets.portaforgy.output
+        java {
+            srcDir 'src/main/flatbuffers/generated'
+        }
         resources {
             srcDir 'src/generated/resources'
         }
@@ -40,12 +44,6 @@ sourceSets {
         runtimeClasspath += sourceSets.portaforgy.output
     }
     buildtools
-    guideexport {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-        compileClasspath += sourceSets.portaforgy.output
-        runtimeClasspath += sourceSets.portaforgy.output
-    }
 }
 
 configurations {
@@ -64,8 +62,6 @@ configurations {
     configurations.runtimeClasspath.extendsFrom(internal)
     configurations.testCompileClasspath.extendsFrom(internal)
     configurations.testRuntimeClasspath.extendsFrom(internal)
-    configurations.guideexportCompileClasspath.extendsFrom(compileClasspath)
-    configurations.guideexportRuntimeClasspath.extendsFrom(runtimeClasspath)
 }
 
 dependencies {
@@ -73,8 +69,7 @@ dependencies {
     shaded project(path: ':libs:markdown', configuration: "archives")
     shaded "io.methvin:directory-watcher:${directory_watcher_version}"
     shaded "org.yaml:snakeyaml:${snakeyaml_version}"
-    compileOnly "de.javagl:jgltf-model-builder:2.0.3"
-    guideexportImplementation "de.javagl:jgltf-model-builder:2.0.3"
+    shaded "com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}"
 
     internal project(':libs:markdown')
     // Do not inherit any transitive dependencies here since we rely on those dependencies being
@@ -83,6 +78,9 @@ dependencies {
         transitive = false
     }
     internal("org.yaml:snakeyaml:${snakeyaml_version}") {
+        transitive = false
+    }
+    internal("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
         transitive = false
     }
 
@@ -335,7 +333,6 @@ loom {
             property "appeng.runGuideExportAndExit", "true"
             property "appeng.guideExportFolder", file("$buildDir/guide").absolutePath
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
-            source sourceSets.guideexport
         }
 
         // Use to run the tests
@@ -392,6 +389,7 @@ shadowJar {
 
     relocate "io.methvin", "appeng.shaded.methvin"
     relocate "org.yaml.snakeyaml", "appeng.shaded.snakeyaml"
+    relocate "com.google.flatbuffers", "appeng.shaded.flatbuffers"
 
     configurations = [project.configurations.shaded]
     archiveClassifier = jar.archiveClassifier
@@ -589,8 +587,8 @@ if (System.getenv("MODRINTH") && !version.endsWith("-SNAPSHOT") && project.versi
         versionNumber = "fabric-" + project.version
         versionType = mrVersionType
         uploadFile = remapJar
-        gameVersions = [ project.minecraft_version ]
-        loaders = [ "fabric" ]
+        gameVersions = [project.minecraft_version]
+        loaders = ["fabric"]
     }
 }
 
@@ -618,4 +616,89 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     mainClass = 'ValidateResourceIds'
     workingDir "."
     args "guidebook"
+}
+
+/**
+ * This task download the FlatBuffers compiler suitable for the current platform.
+ */
+tasks.register('downloadFlatbufferCompiler', Download) {
+    var os = System.getProperty("os.name").toLowerCase(Locale.ROOT)
+    var arch = System.getProperty("os.arch")
+    if (os.startsWith("windows")) {
+        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Windows.flatc.binary.zip"
+    } else if (os.startsWith("mac")) {
+        if (arch == "aarch64") {
+            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Mac.flatc.binary.zip"
+        } else if (arch == "amd64") {
+            src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/MacIntel.flatc.binary.zip"
+        } else {
+            throw new GradleException("Unknown Mac architecture: $arch")
+        }
+    } else if (os.startsWith("linux")) {
+        src "https://github.com/google/flatbuffers/releases/download/v${flatbuffers_version}/Linux.flatc.binary.clang++-12.zip"
+    } else {
+        throw new GradleException("Unknown OS: $os")
+    }
+    onlyIfModified true
+    dest "${project.buildDir}/flatc.zip"
+}
+
+tasks.register('downloadAndUnzipFlatbufferCompiler', Copy) {
+//    dependsOn downloadFlatbufferCompiler
+    from zipTree(downloadFlatbufferCompiler.dest)
+    into "${project.buildDir}/flatbuffers-bin"
+}
+/**
+ * Update the generated Java Code for our scene export schema.
+ * The code is checked in so this only needs to be run when the schema changes.
+ */
+tasks.register('updateFlatbufferSources', Exec) {
+    group 'build'
+    dependsOn downloadAndUnzipFlatbufferCompiler
+    workingDir project.projectDir
+    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
+            "--gen-mutable",
+            "--java-package-prefix", "appeng.flatbuffers",
+            "--gen-generated",
+            "--java",
+            "-o",
+            "${project.projectDir}/src/main/flatbuffers/generated",
+            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
+
+    doFirst {
+        file("${project.projectDir}/src/main/flatbuffers/generated").deleteDir()
+    }
+    doLast {
+    }
+    doLast {
+        // sadly flatc uses an outdated annotation
+        def folder = file("${project.projectDir}/src/main/flatbuffers/generated")
+        folder.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+            String content = file.text
+            if(content.contains('@javax.annotation.Generated')) {
+                content = content.replace('@javax.annotation.Generated', '@javax.annotation.processing.Generated')
+                file.write(content)
+            }
+        }
+    }
+}
+
+/**
+ * Generate the TypeScript sources for our schema. The sources are manually copied
+ * over to the website repository.
+ */
+tasks.register('updateFlatbufferTypescriptSources', Exec) {
+    group 'build'
+    dependsOn downloadAndUnzipFlatbufferCompiler
+    workingDir project.projectDir
+    commandLine "${project.buildDir}/flatbuffers-bin/flatc",
+            "--ts-flat-files",
+            "--ts",
+            "-o",
+            "${project.buildDir}/scene-ts",
+            "${project.projectDir}/src/main/flatbuffers/scene.fbs"
+
+    doFirst {
+        file("${project.buildDir}/scene-ts").deleteDir()
+    }
 }

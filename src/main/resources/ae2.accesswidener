@@ -121,3 +121,23 @@ accessible field net/minecraft/world/item/crafting/SmithingTrimRecipe addition L
 accessible method net/minecraft/world/level/block/Blocks always (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
 accessible method net/minecraft/world/level/block/Blocks never (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z
 
+# Introspection of RenderType
+accessible field net/minecraft/client/renderer/RenderStateShard name Ljava/lang/String;
+accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState states Lcom/google/common/collect/ImmutableList;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState shaderState Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState transparencyState Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState depthTestState Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState cullState Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState lightmapState Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState overlayState Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState layeringState Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState texturingState Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard mipmap Z
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard blur Z
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard texture Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;

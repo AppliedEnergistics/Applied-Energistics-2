@@ -252,27 +252,6 @@ public final class InWorldAnnotationRenderer {
                 sprite);
     }
 
-    private static void quad(VertexConsumer consumer, Direction face, int color, Vector3f v1, Vector3f v2,
-            Vector3f offset, TextureAtlasSprite sprite) {
-        vertex(consumer, face, color, v2, sprite.getU0(), sprite.getV0());
-        vertex(consumer, face, color, v1, sprite.getV0(), sprite.getV1());
-        vertex(consumer, face, color, new Vector3f(v1).add(offset), sprite.getV1(), sprite.getV1());
-        vertex(consumer, face, color, new Vector3f(v2).add(offset), sprite.getV1(), sprite.getV0());
-    }
-
-    private static void vertex(VertexConsumer consumer,
-            Direction face,
-            int color,
-            Vector3f bottomLeft,
-            float u, float v) {
-        consumer.vertex(bottomLeft.x, bottomLeft.y, bottomLeft.z)
-                .color(color)
-                .uv(u, v)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(face.getStepX(), face.getStepY(), face.getStepZ())
-                .endVertex();
-    }
-
     private static void quad(VertexConsumer consumer, Vector3f faceNormal, int color,
             Vector3f v1, Vector3f v2, Vector3f v3, Vector3f v4,
             TextureAtlasSprite sprite) {

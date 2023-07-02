@@ -1,8 +1,5 @@
 package appeng.siteexport;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Objects;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -18,6 +15,7 @@ import appeng.client.guidebook.document.block.LytVisitor;
 import appeng.client.guidebook.scene.BlockImageTagCompiler;
 import appeng.client.guidebook.scene.LytGuidebookScene;
 import appeng.client.guidebook.scene.SceneTagCompiler;
+import appeng.client.guidebook.scene.export.SceneExporter;
 import appeng.libs.mdast.MdAstVisitor;
 import appeng.libs.mdast.MdAstYamlFrontmatter;
 import appeng.libs.mdast.mdx.model.MdxJsxAttribute;
@@ -139,15 +137,9 @@ public final class PageExportPostProcessor {
         }
 
         private String exportGltfScene(LytGuidebookScene scene, String baseName) {
-            Path assetsFolder = exporter.getOutputFolder().resolve("!textures");
-            try {
-                Files.createDirectories(assetsFolder);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            var scenePath = exporter.getPageSpecificPathForWriting(baseName + ".gltf.gz");
-            scene.exportGltfScene(assetsFolder, scenePath);
+            var scenePath = exporter.getPageSpecificPathForWriting(baseName + ".scene.gz");
+            var gltfExporter = new SceneExporter(exporter);
+            gltfExporter.export(scene.getScene(), scenePath);
 
             return exporter.getPathRelativeFromOutputFolder(scenePath);
         }

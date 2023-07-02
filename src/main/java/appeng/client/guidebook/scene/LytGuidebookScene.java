@@ -37,7 +37,6 @@ import appeng.client.guidebook.render.RenderContext;
 import appeng.client.guidebook.scene.annotation.InWorldAnnotation;
 import appeng.client.guidebook.scene.annotation.InWorldBoxAnnotation;
 import appeng.client.guidebook.scene.annotation.SceneAnnotation;
-import appeng.client.guidebook.scene.gltf.SceneGltfExporter;
 import appeng.client.guidebook.screen.GuideIconButton;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AEConfig;
@@ -221,13 +220,6 @@ public class LytGuidebookScene extends LytBox {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void exportGltfScene(Path assetsFolder, Path outputFile) {
-        SceneGltfExporter.export(
-                scene,
-                outputFile,
-                assetsFolder);
     }
 
     @Override
