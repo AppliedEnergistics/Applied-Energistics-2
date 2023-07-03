@@ -49,7 +49,19 @@ public class OffScreenRenderer implements AutoCloseable {
         }
     }
 
+    public byte[] captureAsPng(Runnable r) throws IOException {
+        renderToBuffer(r);
+
+        return nativeImage.asByteArray();
+    }
+
     public void captureAsPng(Runnable r, Path path) throws IOException {
+        renderToBuffer(r);
+
+        nativeImage.writeToFile(path);
+    }
+
+    private void renderToBuffer(Runnable r) {
         fb.bindWrite(true);
         GlStateManager._clear(GL12.GL_COLOR_BUFFER_BIT | GL12.GL_DEPTH_BUFFER_BIT, false);
         r.run();
@@ -60,8 +72,6 @@ public class OffScreenRenderer implements AutoCloseable {
         nativeImage.downloadTexture(0, false);
         nativeImage.flipY();
         fb.unbindRead();
-
-        nativeImage.writeToFile(path);
     }
 
     public void setupItemRendering() {

@@ -16,7 +16,10 @@ public interface ResourceExporter {
 
     void referenceItem(ItemStack stack);
 
-    void copyResource(ResourceLocation id);
+    /**
+     * @return The new resource id after applying cache busting.
+     */
+    Path copyResource(ResourceLocation id);
 
     Path getPathForWriting(ResourceLocation assetId);
 

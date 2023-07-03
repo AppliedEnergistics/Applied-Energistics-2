@@ -1,13 +1,12 @@
 package appeng.siteexport;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -129,17 +128,19 @@ public class SiteExportWriter {
                 .toArray(String[]::new);
     }
 
-    public void write(Path file) throws IOException {
+    public byte[] toByteArray() throws IOException {
         var gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .registerTypeHierarchyAdapter(MdAstNode.class, new MdAstNodeAdapter())
                 .create();
 
-        try (var out = new GZIPOutputStream(Files.newOutputStream(file));
+        var bout = new ByteArrayOutputStream();
+        try (var out = new GZIPOutputStream(bout);
                 var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
             gson.toJson(siteExport, writer);
         }
+        return bout.toByteArray();
     }
 
     public void addP2PType(P2PTypeInfo typeInfo) {

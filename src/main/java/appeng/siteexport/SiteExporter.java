@@ -52,6 +52,7 @@ import appeng.core.AppEngClient;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.siteexport.mdastpostprocess.PageExportPostProcessor;
 import appeng.siteexport.model.P2PTypeInfo;
 import appeng.util.Platform;
 
@@ -176,14 +177,14 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     @Override
-    public void copyResource(ResourceLocation id) {
+    public Path copyResource(ResourceLocation id) {
         try {
             var pagePath = getPathForWriting(id);
             byte[] bytes = guide.loadAsset(id);
             if (bytes == null) {
                 throw new IllegalArgumentException("Couldn't find asset " + id);
             }
-            Files.write(pagePath, bytes);
+            return CacheBusting.writeAsset(pagePath, bytes);
         } catch (IOException e) {
             throw new RuntimeException("Failed to copy resource " + id, e);
         }
@@ -273,15 +274,12 @@ public final class SiteExporter implements ResourceExporter {
         indexWriter.addIndex(guide, ItemIndex.class);
 
         var guideContent = outputFolder.resolve("guide.json.gz");
-        indexWriter.write(guideContent);
+        byte[] content = indexWriter.toByteArray();
+
+        guideContent = CacheBusting.writeAsset(guideContent, content);
 
         // Write an uncompressed summary
-        writeSummary();
-
-//
-//        Path dataFolder = outputFolder.resolve("data");
-//        Files.createDirectories(dataFolder);
-//        siteExport.write(dataFolder.resolve("game-data.json"));
+        writeSummary(guideContent.getFileName().toString());
     }
 
     private void processPage(SiteExportWriter exportWriter,
@@ -294,11 +292,12 @@ public final class SiteExporter implements ResourceExporter {
         exportWriter.addPage(page);
     }
 
-    private void writeSummary() throws IOException {
+    private void writeSummary(String guideDataFilename) throws IOException {
         var modVersion = ModVersion.get();
         var generated = Instant.now().toEpochMilli();
         var gameVersion = DetectedVersion.tryDetectVersion().getName();
 
+        // This file is not accessed via the CDN and thus doesn't need a cache-busting name
         try (var writer = Files.newBufferedWriter(outputFolder.resolve("index.json"), StandardCharsets.UTF_8)) {
             var jsonWriter = GSON.newJsonWriter(writer);
             jsonWriter.beginObject();
@@ -306,6 +305,7 @@ public final class SiteExporter implements ResourceExporter {
             jsonWriter.name("generated").value(generated);
             jsonWriter.name("gameVersion").value(gameVersion);
             jsonWriter.name("modVersion").value(modVersion);
+            jsonWriter.name("guideDataPath").value(guideDataFilename);
             jsonWriter.endObject();
         }
     }

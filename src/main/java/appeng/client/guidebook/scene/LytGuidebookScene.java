@@ -1,7 +1,6 @@
 package appeng.client.guidebook.scene;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -197,14 +196,14 @@ public class LytGuidebookScene extends LytBox {
         return viewport.getPreferredSize();
     }
 
-    public void exportAsPng(Path path, float scale, boolean hideAnnotations) {
+    public byte[] exportAsPng(float scale, boolean hideAnnotations) {
         if (scene == null) {
-            return;
+            return null;
         }
 
         var prefSize = viewport.getPreferredSize();
         if (prefSize.width() <= 0 || prefSize.height() <= 0) {
-            return;
+            return null;
         }
 
         // We only scale the viewport, not scaling the view matrix means the scene will still fill it
@@ -212,11 +211,11 @@ public class LytGuidebookScene extends LytBox {
         var height = (int) Math.max(1, prefSize.height() * scale);
 
         try (var osr = new OffScreenRenderer(width, height)) {
-            osr.captureAsPng(() -> {
+            return osr.captureAsPng(() -> {
                 var renderer = GuidebookLevelRenderer.getInstance();
                 scene.getCameraSettings().setViewportSize(prefSize);
                 renderer.render(scene.getLevel(), scene.getCameraSettings(), scene.getInWorldAnnotations());
-            }, path);
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

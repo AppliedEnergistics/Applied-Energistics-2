@@ -1,12 +1,12 @@
 package appeng.client.guidebook.scene.export;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -52,6 +52,7 @@ import appeng.flatbuffers.scene.ExpVertexElementType;
 import appeng.flatbuffers.scene.ExpVertexElementUsage;
 import appeng.flatbuffers.scene.ExpVertexFormat;
 import appeng.flatbuffers.scene.ExpVertexFormatElement;
+import appeng.siteexport.CacheBusting;
 import appeng.siteexport.ResourceExporter;
 
 /**
@@ -59,8 +60,9 @@ import appeng.siteexport.ResourceExporter;
  * (we use FlatBuffers to encode the actual data).
  */
 public class SceneExporter {
-
     private static final Logger LOG = LoggerFactory.getLogger(SceneExporter.class);
+
+    private final Map<ResourceLocation, String> exportedTextures = new HashMap<>();
 
     private final ResourceExporter resourceExporter;
 
@@ -68,7 +70,7 @@ public class SceneExporter {
         this.resourceExporter = resourceExporter;
     }
 
-    public void export(GuidebookScene scene, Path exportPath) {
+    public byte[] export(GuidebookScene scene) {
         var level = scene.getLevel();
 
         var bufferSource = new MeshBuildingBufferSource();
@@ -102,15 +104,14 @@ public class SceneExporter {
 
         builder.finish(ExpScene.endExpScene(builder));
 
-        try (var out = new GZIPOutputStream(Files.newOutputStream(exportPath))) {
+        var bout = new ByteArrayOutputStream();
+        try (var out = new GZIPOutputStream(bout)) {
             out.write(builder.sizedByteArray());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        for (var textureId : textures) {
-            exportTexture(textureId);
-        }
+        return bout.toByteArray();
     }
 
     private Map<VertexFormat, Integer> writeVertexFormats(List<Mesh> meshes, FlatBufferBuilder builder) {
@@ -182,14 +183,6 @@ public class SceneExporter {
         return result;
     }
 
-    private Path getTexturePath(ResourceLocation id) {
-        if (!id.getPath().endsWith(".png")) {
-            id = new ResourceLocation(id.getNamespace(), id.getPath() + ".png");
-        }
-
-        return resourceExporter.getPathForWriting(id);
-    }
-
     private int writeMaterial(RenderType type, FlatBufferBuilder builder, Set<ResourceLocation> textures) {
 
         var state = ((RenderType.CompositeRenderType) type).state();
@@ -245,10 +238,13 @@ public class SceneExporter {
                 var texture = textureShard.texture.get();
                 textures.add(texture);
 
-                var texturePath = getTexturePath(texture);
-                var relativePath = resourceExporter.getPathRelativeFromOutputFolder(texturePath);
-
-                var textureOffset = builder.createSharedString(relativePath);
+                String texturePath;
+                try {
+                    texturePath = exportTexture(texture);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                var textureOffset = builder.createSharedString(texturePath);
 
                 var samplerOffset = ExpSampler.createExpSampler(builder, textureOffset, textureShard.blur,
                         textureShard.mipmap);
@@ -426,11 +422,18 @@ public class SceneExporter {
         return new IndexBufferAttributes(effectiveIndices, indexType, indexCount);
     }
 
-    private void exportTexture(ResourceLocation textureId) {
-        var outputPath = getTexturePath(textureId);
-        if (Files.exists(outputPath)) {
-            return;
+    private String exportTexture(ResourceLocation textureId) throws IOException {
+        var exportedPath = exportedTextures.get(textureId);
+        if (exportedPath != null) {
+            return exportedPath;
         }
+
+        ResourceLocation id = textureId;
+        if (!id.getPath().endsWith(".png")) {
+            id = new ResourceLocation(id.getNamespace(), id.getPath() + ".png");
+        }
+
+        var outputPath = resourceExporter.getPathForWriting(id);
 
         var texture = Minecraft.getInstance().getTextureManager().getTexture(textureId);
 
@@ -442,12 +445,18 @@ public class SceneExporter {
         GL11.glGetTexLevelParameteriv(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT, intResult);
         h = intResult[0];
 
+        byte[] imageContent;
         try (var nativeImage = new NativeImage(w, h, false)) {
             nativeImage.downloadTexture(0, false);
-            nativeImage.writeToFile(outputPath);
+            imageContent = nativeImage.asByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        outputPath = CacheBusting.writeAsset(outputPath, imageContent);
+        exportedPath = resourceExporter.getPathRelativeFromOutputFolder(outputPath);
+        exportedTextures.put(textureId, exportedPath);
+        return exportedPath;
     }
 
     private GeneratedIndexBuffer generateSequentialIndices(VertexFormat.Mode mode, int vertexCount,

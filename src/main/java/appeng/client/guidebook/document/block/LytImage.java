@@ -16,10 +16,8 @@ import appeng.client.guidebook.document.interaction.TextTooltip;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.render.GuidePageTexture;
 import appeng.client.guidebook.render.RenderContext;
-import appeng.siteexport.ExportableResourceProvider;
-import appeng.siteexport.ResourceExporter;
 
-public class LytImage extends LytBlock implements InteractiveElement, ExportableResourceProvider {
+public class LytImage extends LytBlock implements InteractiveElement {
 
     private ResourceLocation imageId;
     private GuidePageTexture texture = GuidePageTexture.missing();
@@ -97,10 +95,5 @@ public class LytImage extends LytBlock implements InteractiveElement, Exportable
             return Optional.of(new TextTooltip(Component.literal(title)));
         }
         return Optional.empty();
-    }
-
-    @Override
-    public void exportResources(ResourceExporter exporter) {
-        exporter.copyResource(imageId);
     }
 }

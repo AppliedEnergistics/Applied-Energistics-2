@@ -36,6 +36,17 @@ public interface MdxJsxElementFields extends UnistNode {
         return jsxAttribute != null ? jsxAttribute.getStringValue() : defaultValue;
     }
 
+    default void setAttribute(String name, String value) {
+        for (var attribute : attributes()) {
+            if (attribute instanceof MdxJsxAttribute attr && name.equals(attr.name)) {
+                attr.setValue(value);
+                return;
+            }
+        }
+
+        addAttribute(name, value);
+    }
+
     default void addAttribute(String name, String value) {
         attributes().add(new MdxJsxAttribute(name, value));
     }
