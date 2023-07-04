@@ -29,8 +29,9 @@ jobs:
           oxipng/oxipng -Z -o 4 --strip safe --timeout 10 build/guide/**/*.png
       - name: Recompress the guide json
         run: |
-          gunzip build/guide/*.json.gz
-          zopfli build/guide/*.json
+          gunzip build/guide/guide.*.json.gz
+          zopfli build/guide/guide.*.json
+          rm -f build/guide/guide.*.json
       - uses: actions/upload-artifact@v2
         with:
           name: guide

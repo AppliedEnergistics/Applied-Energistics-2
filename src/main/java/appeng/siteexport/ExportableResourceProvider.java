@@ -28,6 +28,6 @@ public interface ExportableResourceProvider {
                 }
                 return Result.CONTINUE;
             }
-        });
+        }, true);
     }
 }
