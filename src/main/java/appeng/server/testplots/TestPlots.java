@@ -91,7 +91,8 @@ public final class TestPlots {
                 PatternProviderLockModePlots.class,
                 SpatialTestPlots.class,
                 QnbTestPlots.class,
-                GuidebookPlot.class));
+                GuidebookPlot.class,
+                SubnetPlots.class));
     }
 
     private TestPlots() {

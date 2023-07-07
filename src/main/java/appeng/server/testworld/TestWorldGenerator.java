@@ -133,8 +133,10 @@ public class TestWorldGenerator {
                 var lineText = text.substring(0, lineLength);
                 text.delete(0, lineLength);
 
-                signText.setMessage(line++, Component.literal(lineText));
+                signText = signText.setMessage(line++, Component.literal(lineText));
             }
+
+            sign.setText(signText, true);
         });
     }
 
