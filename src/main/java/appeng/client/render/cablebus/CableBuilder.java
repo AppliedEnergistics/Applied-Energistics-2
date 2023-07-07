@@ -277,6 +277,25 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
+        // Flip end or side texture as needed depending on direction
+        switch (facing) {
+            case DOWN -> {
+                cubeBuilder.setFlipU(Direction.EAST, true);
+                cubeBuilder.setFlipU(Direction.NORTH, true);
+            }
+            case UP -> {
+                cubeBuilder.setFlipU(Direction.EAST, true);
+                cubeBuilder.setFlipU(Direction.NORTH, true);
+                cubeBuilder.setFlipV(Direction.DOWN, true);
+            }
+            case SOUTH -> cubeBuilder.setFlipU(Direction.NORTH, true);
+            case WEST -> {
+                cubeBuilder.setFlipV(Direction.DOWN, true);
+                cubeBuilder.setFlipU(Direction.EAST, true);
+            }
+            case EAST -> cubeBuilder.setFlipV(Direction.DOWN, true);
+        }
+
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
@@ -323,6 +342,12 @@ class CableBuilder {
     public void addStraightSmartConnection(Direction facing, AEColor cableColor, int channels, QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
 
+        // Flip side texture as needed depending on direction
+        switch (facing) {
+            case EAST, WEST -> cubeBuilder.setFlipV(Direction.DOWN, true);
+            case UP, DOWN -> cubeBuilder.setFlipU(Direction.NORTH, true);
+        }
+
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
@@ -358,6 +383,17 @@ class CableBuilder {
         }
 
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
+
+        // Flip side texture as needed depending on direction
+        switch (facing) {
+            case UP, DOWN:
+                cubeBuilder.setFlipU(Direction.EAST, true);
+                cubeBuilder.setFlipU(Direction.NORTH, true);
+                break;
+            case EAST, WEST:
+                cubeBuilder.setFlipV(Direction.DOWN, true);
+                break;
+        }
 
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
@@ -427,6 +463,15 @@ class CableBuilder {
         // We render all faces except the one on the connection side
         cubeBuilder.setDrawFaces(EnumSet.complementOf(EnumSet.of(facing)));
 
+        // Flip end or side texture as needed depending on direction
+        switch (facing) {
+            case WEST, EAST -> cubeBuilder.setFlipV(Direction.DOWN, true);
+            case UP, DOWN -> {
+                cubeBuilder.setFlipU(Direction.NORTH, true);
+                cubeBuilder.setFlipU(Direction.EAST, true);
+            }
+        }
+
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
@@ -468,6 +513,19 @@ class CableBuilder {
     public void addStraightDenseSmartConnection(Direction facing, AEColor cableColor, int channels,
             QuadEmitter emitter) {
         CubeBuilder cubeBuilder = new CubeBuilder(emitter);
+
+        // Flip end or side texture as needed depending on direction
+        switch (facing) {
+            case NORTH -> cubeBuilder.setFlipU(Direction.NORTH, true);
+            case WEST -> {
+                cubeBuilder.setFlipV(Direction.DOWN, true);
+                cubeBuilder.setFlipU(Direction.EAST, true);
+            }
+            case DOWN -> {
+                cubeBuilder.setFlipU(Direction.NORTH, true);
+                cubeBuilder.setFlipV(Direction.DOWN, true);
+            }
+        }
 
         TextureAtlasSprite texture = this.connectionTextures.get(AECableType.DENSE_SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
