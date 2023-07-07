@@ -15,11 +15,10 @@ public class SiteExportJson {
 
     public Map<ResourceLocation, ExportedPageJson> pages = new HashMap<>();
     public Map<String, JsonElement> pageIndices = new HashMap<>();
-    public Map<String, CraftingRecipeJson> craftingRecipes = new HashMap<>();
-
-    public Map<String, SmeltingRecipeJson> smeltingRecipes = new HashMap<>();
-
-    public Map<String, InscriberRecipeJson> inscriberRecipes = new HashMap<>();
+    /**
+     * Recipes indexed by their recipe ID.
+     */
+    public Map<String, JsonElement> recipes = new HashMap<>();
 
     public Map<String, ItemInfoJson> items = new HashMap<>();
 
@@ -27,5 +26,7 @@ public class SiteExportJson {
 
     public Map<String, Map<DyeColor, String>> coloredVersions = new HashMap<>();
     public List<NavigationNodeJson> navigationRootNodes = new ArrayList<>();
+
+    public Map<String, FluidInfoJson> fluids = new HashMap<>();
 
 }

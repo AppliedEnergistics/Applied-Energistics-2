@@ -7,17 +7,14 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPOutputStream;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -25,11 +22,9 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexSorting;
 
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -52,7 +47,6 @@ import appeng.flatbuffers.scene.ExpVertexElementType;
 import appeng.flatbuffers.scene.ExpVertexElementUsage;
 import appeng.flatbuffers.scene.ExpVertexFormat;
 import appeng.flatbuffers.scene.ExpVertexFormatElement;
-import appeng.siteexport.CacheBusting;
 import appeng.siteexport.ResourceExporter;
 
 /**
@@ -61,8 +55,6 @@ import appeng.siteexport.ResourceExporter;
  */
 public class SceneExporter {
     private static final Logger LOG = LoggerFactory.getLogger(SceneExporter.class);
-
-    private final Map<ResourceLocation, String> exportedTextures = new HashMap<>();
 
     private final ResourceExporter resourceExporter;
 
@@ -93,8 +85,7 @@ public class SceneExporter {
         var builder = new FlatBufferBuilder(1024);
         var meshes = bufferSource.getMeshes();
         var vertexFormats = writeVertexFormats(meshes, builder);
-        var textures = new HashSet<ResourceLocation>();
-        var materials = writeMaterials(meshes, builder, textures);
+        var materials = writeMaterials(meshes, builder);
         var meshesOffset = writeMeshes(meshes, builder, vertexFormats, materials);
 
         ExpScene.startExpScene(builder);
@@ -172,18 +163,17 @@ public class SceneExporter {
                 && element.getUsage() != VertexFormatElement.Usage.GENERIC;
     }
 
-    private Map<RenderType, Integer> writeMaterials(List<Mesh> meshes, FlatBufferBuilder builder,
-            Set<ResourceLocation> textures) {
+    private Map<RenderType, Integer> writeMaterials(List<Mesh> meshes, FlatBufferBuilder builder) {
         var result = new IdentityHashMap<RenderType, Integer>();
 
         for (var mesh : meshes) {
-            result.computeIfAbsent(mesh.renderType(), type -> writeMaterial(type, builder, textures));
+            result.computeIfAbsent(mesh.renderType(), type -> writeMaterial(type, builder));
         }
 
         return result;
     }
 
-    private int writeMaterial(RenderType type, FlatBufferBuilder builder, Set<ResourceLocation> textures) {
+    private int writeMaterial(RenderType type, FlatBufferBuilder builder) {
 
         var state = ((RenderType.CompositeRenderType) type).state();
 
@@ -236,14 +226,8 @@ public class SceneExporter {
         if (state.textureState instanceof RenderStateShard.TextureStateShard textureShard) {
             if (textureShard.texture.isPresent()) {
                 var texture = textureShard.texture.get();
-                textures.add(texture);
 
-                String texturePath;
-                try {
-                    texturePath = exportTexture(texture);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                var texturePath = resourceExporter.exportTexture(texture);
                 var textureOffset = builder.createSharedString(texturePath);
 
                 var samplerOffset = ExpSampler.createExpSampler(builder, textureOffset, textureShard.blur,
@@ -420,43 +404,6 @@ public class SceneExporter {
 
         // Add raw buffer data for indices
         return new IndexBufferAttributes(effectiveIndices, indexType, indexCount);
-    }
-
-    private String exportTexture(ResourceLocation textureId) throws IOException {
-        var exportedPath = exportedTextures.get(textureId);
-        if (exportedPath != null) {
-            return exportedPath;
-        }
-
-        ResourceLocation id = textureId;
-        if (!id.getPath().endsWith(".png")) {
-            id = new ResourceLocation(id.getNamespace(), id.getPath() + ".png");
-        }
-
-        var outputPath = resourceExporter.getPathForWriting(id);
-
-        var texture = Minecraft.getInstance().getTextureManager().getTexture(textureId);
-
-        texture.bind();
-        int w, h;
-        int[] intResult = new int[1];
-        GL11.glGetTexLevelParameteriv(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH, intResult);
-        w = intResult[0];
-        GL11.glGetTexLevelParameteriv(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT, intResult);
-        h = intResult[0];
-
-        byte[] imageContent;
-        try (var nativeImage = new NativeImage(w, h, false)) {
-            nativeImage.downloadTexture(0, false);
-            imageContent = nativeImage.asByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        outputPath = CacheBusting.writeAsset(outputPath, imageContent);
-        exportedPath = resourceExporter.getPathRelativeFromOutputFolder(outputPath);
-        exportedTextures.put(textureId, exportedPath);
-        return exportedPath;
     }
 
     private GeneratedIndexBuffer generateSequentialIndices(VertexFormat.Mode mode, int vertexCount,

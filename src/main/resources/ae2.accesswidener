@@ -141,3 +141,15 @@ accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShar
 accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard blur Z
 accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard texture Ljava/util/Optional;
 accessible field net/minecraft/client/renderer/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/texture/SpriteContents originalImage Lcom/mojang/blaze3d/platform/NativeImage;
+
+# Introspecting animated sprites
+accessible class net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture
+accessible field net/minecraft/client/renderer/texture/SpriteContents animatedTexture Lnet/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture;
+accessible field net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture frames Ljava/util/List;
+accessible field net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture interpolateFrames Z
+accessible field net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture frameRowSize I
+accessible class net/minecraft/client/renderer/texture/SpriteContents$FrameInfo
+accessible field net/minecraft/client/renderer/texture/SpriteContents$FrameInfo index I
+accessible field net/minecraft/client/renderer/texture/SpriteContents$FrameInfo time I
+accessible field net/minecraft/client/renderer/texture/TextureAtlas sprites Ljava/util/List;

@@ -41,6 +41,7 @@ public final class CacheBusting {
 
         var newPath = originalPath.resolveSibling(filename);
 
+        Files.createDirectories(newPath.getParent());
         Files.write(newPath, content);
 
         return newPath;

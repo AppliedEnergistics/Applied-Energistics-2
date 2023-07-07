@@ -1,26 +1,30 @@
 package appeng.siteexport;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.security.DigestOutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HexFormat;
-import java.util.Locale;
-import java.util.zip.GZIPOutputStream;
-
+import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.compiler.MdAstNodeAdapter;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.libs.mdast.model.MdAstNode;
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.handlers.ChargerRecipe;
+import appeng.recipes.handlers.InscriberProcessType;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.recipes.transform.TransformRecipe;
+import appeng.siteexport.model.ExportedPageJson;
+import appeng.siteexport.model.FluidInfoJson;
+import appeng.siteexport.model.ItemInfoJson;
+import appeng.siteexport.model.NavigationNodeJson;
+import appeng.siteexport.model.P2PTypeInfo;
+import appeng.siteexport.model.SiteExportJson;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import com.google.gson.internal.bind.JsonTreeWriter;
-
-import org.jetbrains.annotations.NotNull;
-
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
@@ -31,26 +35,73 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.material.Fluid;
 
-import appeng.client.guidebook.Guide;
-import appeng.client.guidebook.compiler.MdAstNodeAdapter;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.core.AppEng;
-import appeng.libs.mdast.model.MdAstNode;
-import appeng.recipes.handlers.InscriberProcessType;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.siteexport.model.CraftingRecipeJson;
-import appeng.siteexport.model.ExportedPageJson;
-import appeng.siteexport.model.InscriberRecipeJson;
-import appeng.siteexport.model.ItemInfoJson;
-import appeng.siteexport.model.NavigationNodeJson;
-import appeng.siteexport.model.P2PTypeInfo;
-import appeng.siteexport.model.SiteExportJson;
-import appeng.siteexport.model.SmeltingRecipeJson;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.HexFormat;
+import java.util.Locale;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 public class SiteExportWriter {
 
+    private abstract static class WriteOnlyTypeAdapter<T> extends TypeAdapter<T> {
+        @Override
+        public T read(JsonReader in) throws IOException {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .registerTypeHierarchyAdapter(MdAstNode.class, new MdAstNodeAdapter())
+            // Serialize ResourceLocation as strings
+            .registerTypeAdapter(ResourceLocation.class, new WriteOnlyTypeAdapter<ResourceLocation>() {
+                @Override
+                public void write(JsonWriter out, ResourceLocation value) throws IOException {
+                    out.value(value.toString());
+                }
+            })
+            // Serialize Ingredient as arrays of the corresponding item IDs
+            .registerTypeAdapter(Ingredient.class, new WriteOnlyTypeAdapter<Ingredient>() {
+                @Override
+                public void write(JsonWriter out, Ingredient value) throws IOException {
+                    out.beginArray();
+                    for (var item : value.getItems()) {
+                        var itemId = BuiltInRegistries.ITEM.getKey(item.getItem());
+                        out.value(itemId.toString());
+                    }
+                    out.endArray();
+                }
+            })
+            // Serialize Items & Fluids using their registered ID
+            .registerTypeAdapter(Item.class, new WriteOnlyTypeAdapter<Item>() {
+                @Override
+                public void write(JsonWriter out, Item value) throws IOException {
+                    out.value(BuiltInRegistries.ITEM.getKey(value).toString());
+                }
+            })
+            .registerTypeAdapter(Fluid.class, new WriteOnlyTypeAdapter<Fluid>() {
+                @Override
+                public void write(JsonWriter out, Fluid value) throws IOException {
+                    out.value(BuiltInRegistries.FLUID.getKey(value).toString());
+                }
+            })
+            .create();
     private final SiteExportJson siteExport = new SiteExportJson();
 
     public SiteExportWriter(Guide guide) {
@@ -71,26 +122,35 @@ public class SiteExportWriter {
         siteExport.items.put(itemInfo.id, itemInfo);
     }
 
+    public void addFluid(String id, FluidVariant fluid, String texturePath, float u1, float v1, float u2, float v2) {
+        var fluidInfo = new FluidInfoJson();
+        fluidInfo.id = id;
+        fluidInfo.texture = texturePath;
+        fluidInfo.u1 = u1;
+        fluidInfo.v1 = v1;
+        fluidInfo.u2 = u2;
+        fluidInfo.v2 = v2;
+        fluidInfo.color = "#" + HexFormat.of().toHexDigits(FluidVariantRendering.getColor(fluid), 8);
+        fluidInfo.displayName = FluidVariantRendering.getTooltip(fluid).get(0).getString();
+        siteExport.fluids.put(fluidInfo.id, fluidInfo);
+    }
+
     public void addRecipe(CraftingRecipe recipe) {
-        var json = new CraftingRecipeJson();
-        json.id = recipe.getId().toString();
-        json.shapeless = true;
+        Map<String, Object> fields = new HashMap<>();
         if (recipe instanceof ShapedRecipe shapedRecipe) {
-            json.shapeless = false;
-            json.width = shapedRecipe.getWidth();
-            json.height = shapedRecipe.getHeight();
+            fields.put("shapeless", false);
+            fields.put("width", shapedRecipe.getWidth());
+            fields.put("height", shapedRecipe.getHeight());
+        } else {
+            fields.put("shapeless", true);
         }
 
-        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
-        json.resultCount = recipe.getResultItem(null).getCount();
+        ItemStack resultItem = recipe.getResultItem(null);
+        fields.put("resultItem", resultItem);
+        fields.put("resultCount", resultItem.getCount());
+        fields.put("ingredients", recipe.getIngredients());
 
-        var ingredients = recipe.getIngredients();
-        json.ingredients = new String[ingredients.size()][];
-        for (int i = 0; i < json.ingredients.length; i++) {
-            json.ingredients[i] = convertIngredient(ingredients.get(i));
-        }
-
-        siteExport.craftingRecipes.put(json.id, json);
+        addRecipe(recipe.getId(), fields);
     }
 
     public void addRecipe(InscriberRecipe recipe) {
@@ -98,7 +158,7 @@ public class SiteExportWriter {
         json.id = recipe.getId().toString();
 
         json.top = convertIngredient(recipe.getTopOptional());
-        json.middle = convertIngredient(recipe.getMiddleInput());
+        json.middle = convertIngredie nt(recipe.getMiddleInput());
         json.bottom = convertIngredient(recipe.getBottomOptional());
         json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem().getItem()).toString();
         json.resultCount = recipe.getResultItem().getCount();
@@ -119,26 +179,114 @@ public class SiteExportWriter {
         siteExport.smeltingRecipes.put(json.id, json);
     }
 
-    @NotNull
-    private String[] convertIngredient(Ingredient ingredient) {
-        return Arrays.stream(ingredient.getItems())
-                .map(is -> BuiltInRegistries.ITEM.getKey(is.getItem()))
-                .filter(k -> k.getNamespace().equals(AppEng.MOD_ID) || k.getNamespace().equals("minecraft"))
-                .map(ResourceLocation::toString)
-                .toArray(String[]::new);
+    public void addRecipe(TransformRecipe recipe) {
+        var json = new TransformRecipeJson();
+        json.id = recipe.getId().toString();
+
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
+
+        var ingredients = recipe.getIngredients();
+        json.ingredients = ingredients.stream().map(this::convertIngredient).toArray(String[][]::new);
+
+        json.circumstance = recipe.circumstance.toJson();
+
+        siteExport.transformRecipes.put(json.id, json);
+    }
+
+    public void addRecipe(EntropyRecipe recipe) {
+        var json = new TransformRecipeJson();
+        json.id = recipe.getId().toString();
+
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
+
+        var ingredients = recipe.getIngredients();
+        json.ingredients = ingredients.stream().map(this::convertIngredient).toArray(String[][]::new);
+
+        json.circumstance = recipe.circumstance.toJson();
+
+        siteExport.transformRecipes.put(json.id, json);
+    }
+
+    public void addRecipe(MatterCannonAmmo recipe) {
+        var json = new TransformRecipeJson();
+        json.id = recipe.getId().toString();
+
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
+
+        var ingredients = recipe.getIngredients();
+        json.ingredients = ingredients.stream().map(this::convertIngredient).toArray(String[][]::new);
+
+        json.circumstance = recipe.circumstance.toJson();
+
+        siteExport.transformRecipes.put(json.id, json);
+    }
+
+    public void addRecipe(ChargerRecipe recipe) {
+        var json = new TransformRecipeJson();
+        json.id = recipe.getId().toString();
+
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
+
+        var ingredients = recipe.getIngredients();
+        json.ingredients = ingredients.stream().map(this::convertIngredient).toArray(String[][]::new);
+
+        json.circumstance = recipe.circumstance.toJson();
+
+        siteExport.transformRecipes.put(json.id, json);
+    }
+
+    public void addRecipe(SmithingTransformRecipe recipe) {
+        var json = new SmithingTransformRecipeJson();
+        json.id = recipe.getId().toString();
+        json.resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem()).toString();
+        json.base = convertIngredient(recipe.base);
+        json.addition = convertIngredient(recipe.addition);
+        json.template = convertIngredient(recipe.template);
+        siteExport.smithingTransformRecipes.put(json.id, json);
+    }
+
+    public void addRecipe(SmithingTrimRecipe recipe) {
+        var json = new SmithingTrimRecipeJson();
+        json.id = recipe.getId().toString();
+        json.base = convertIngredient(recipe.base);
+        json.addition = convertIngredient(recipe.addition);
+        json.template = convertIngredient(recipe.template);
+        siteExport.smithingTrimRecipes.put(json.id, json);
+    }
+
+    public void addRecipe(StonecutterRecipe recipe) {
+        var json = new StonecutterRecipeJson();
+        json.id = recipe.getId().toString();
+
+        var resultItem = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(null).getItem());
+
+        var ingredients = recipe.getIngredients();
+        json.ingredient = convertIngredient(ingredients.get(0));
+
+        addRecipe(
+                recipe.getId(),
+                Map.of(
+                    "resultItem", resultItem,
+                    "ingredient", ingredients.get(0)
+                )
+        );
+    }
+
+    public void addRecipe(ResourceLocation id, Map<String, Object> element) {
+        // Auto-transform ingredients
+
+        var jsonElement = GSON.toJsonTree(element);
+
+        if (siteExport.recipes.put(id.toString(), jsonElement) != null) {
+            throw new RuntimeException("Duplicate recipe id " + id);
+        }
     }
 
     public byte[] toByteArray() throws IOException {
-        var gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .registerTypeHierarchyAdapter(MdAstNode.class, new MdAstNodeAdapter())
-                .create();
-
         var bout = new ByteArrayOutputStream();
         try (var out = new GZIPOutputStream(bout);
-                var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
-            gson.toJson(siteExport, writer);
+             var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
+            GSON.toJson(siteExport, writer);
         }
         return bout.toByteArray();
     }
@@ -154,14 +302,13 @@ public class SiteExportWriter {
         coloredVersions.put(color, coloredItemId);
     }
 
-    public ExportedPageJson addPage(ParsedGuidePage page) {
+    public void addPage(ParsedGuidePage page) {
         var exportedPage = new ExportedPageJson();
         exportedPage.title = "";
         exportedPage.astRoot = page.getAstRoot();
         exportedPage.frontmatter.putAll(page.getFrontmatter().additionalProperties());
 
         siteExport.pages.put(page.getId(), exportedPage);
-        return exportedPage;
     }
 
     public String addItem(ItemStack stack) {

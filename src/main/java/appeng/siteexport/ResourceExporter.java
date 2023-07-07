@@ -2,6 +2,7 @@ package appeng.siteexport;
 
 import java.nio.file.Path;
 
+import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +16,10 @@ public interface ResourceExporter {
     }
 
     void referenceItem(ItemStack stack);
+
+    void referenceFluid(Fluid fluid);
+
+    String exportTexture(ResourceLocation texture);
 
     /**
      * @return The new resource id after applying cache busting.
