@@ -596,7 +596,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         if (capabilityClass == Capabilities.GENERIC_INTERNAL_INV) {
             return LazyOptional.of(this::getStorage).cast();
         } else if (capabilityClass == Capabilities.STORAGE) {
-            return LazyOptional.of(this::getStorage).cast();
+            return LazyOptional.of(this::getInventory).cast();
         } else {
             return LazyOptional.empty();
         }
