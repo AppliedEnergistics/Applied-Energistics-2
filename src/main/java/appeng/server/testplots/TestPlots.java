@@ -1035,8 +1035,6 @@ public final class TestPlots {
                 .thenSucceed());
     }
 
-
-
     /**
      * builds a spatial storage setup, including an
      */
@@ -1044,25 +1042,26 @@ public final class TestPlots {
     public static void spatialStorageSetup(PlotBuilder plot) {
         var o = BlockPos.ZERO;
         plot.block(o.below(), AEBlocks.CREATIVE_ENERGY_CELL);
-        plot.blockEntity(o.south(), AEBlocks.SPATIAL_IO_PORT, spatialIOPort -> spatialIOPort.getInternalInventory().addItems(AEItems.SPATIAL_CELL128.stack()));
+        plot.blockEntity(o.south(), AEBlocks.SPATIAL_IO_PORT,
+                spatialIOPort -> spatialIOPort.getInternalInventory().addItems(AEItems.SPATIAL_CELL128.stack()));
         plot.buttonOn(o.south(1), Direction.SOUTH);
 
-        //import the cell bak into the spatial IO Port
+        // import the cell bak into the spatial IO Port
         plot.cable(o.south().east())
                 .part(Direction.WEST, AEParts.IMPORT_BUS);
         plot.cable(o.south().east().above());
         plot.cable(o.south().above())
                 .part(Direction.DOWN, AEParts.STORAGE_BUS);
 
-        //pylons southwards
+        // pylons southwards
         for (int i = 1; i <= 17; i++) {
             plot.block(o.south(i).below(), AEBlocks.SPATIAL_PYLON);
         }
-        //pylons westwards
+        // pylons westwards
         for (int i = 1; i <= 17; i++) {
             plot.block(o.west(i).below(), AEBlocks.SPATIAL_PYLON);
         }
-        //pylons upwards
+        // pylons upwards
         for (int i = 0; i <= 16; i++) {
             plot.block(o.above(i), AEBlocks.SPATIAL_PYLON);
         }

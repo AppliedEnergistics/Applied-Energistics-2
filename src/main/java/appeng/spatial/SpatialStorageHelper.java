@@ -21,7 +21,6 @@ package appeng.spatial;
 import java.util.ArrayList;
 import java.util.List;
 
-import appeng.server.services.ChunkLoadingService;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -39,6 +38,7 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.stats.AdvancementTriggers;
+import appeng.server.services.ChunkLoadingService;
 
 public class SpatialStorageHelper {
 
@@ -165,7 +165,7 @@ public class SpatialStorageHelper {
 
         var blockPosSrc = new BlockPos(srcX, srcY, srcZ);
         var blockPosDst = new BlockPos(srcX, srcY, srcZ);
-        //load all chunks
+        // load all chunks
         for (var a : cSrc.getChunks()) {
             for (var b : a) {
                 ChunkLoadingService.getInstance().forceChunk(srcLevel, blockPosSrc, b.getPos());
@@ -189,7 +189,7 @@ public class SpatialStorageHelper {
             this.teleportEntity(e, new TelDestination(dstLevel, dstBox, e.getX(), e.getY(), e.getZ(),
                     -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
         }
-        //unload all chunks
+        // unload all chunks
         for (var a : cSrc.getChunks()) {
             for (var b : a) {
                 ChunkLoadingService.getInstance().releaseChunk(srcLevel, blockPosSrc, b.getPos());
