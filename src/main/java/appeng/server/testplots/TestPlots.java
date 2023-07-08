@@ -1046,7 +1046,7 @@ public final class TestPlots {
                 spatialIOPort -> spatialIOPort.getInternalInventory().addItems(AEItems.SPATIAL_CELL128.stack()));
         plot.buttonOn(o.south(1), Direction.SOUTH);
 
-        // import the cell bak into the spatial IO Port
+        // import the cell back into the spatial IO Port
         plot.cable(o.south().east())
                 .part(Direction.WEST, AEParts.IMPORT_BUS);
         plot.cable(o.south().east().above());
