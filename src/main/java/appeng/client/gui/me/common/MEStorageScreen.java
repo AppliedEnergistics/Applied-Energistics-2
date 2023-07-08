@@ -23,14 +23,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import appeng.client.Hotkeys;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -52,7 +50,6 @@ import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
-import appeng.api.storage.ITerminalHost;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.Hotkeys;
@@ -81,8 +78,6 @@ import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 import appeng.helpers.InventoryAction;
-import appeng.helpers.WirelessCraftingTerminalMenuHost;
-import appeng.items.contents.PortableCellMenuHost;
 import appeng.items.storage.ViewCellItem;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.GridInventoryEntry;

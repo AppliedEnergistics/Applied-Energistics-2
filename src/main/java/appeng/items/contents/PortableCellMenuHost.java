@@ -21,9 +21,6 @@ package appeng.items.contents;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
-import appeng.api.features.HotkeyAction;
-import appeng.api.stacks.AEKeyType;
-import appeng.api.storage.cells.IBasicCellItem;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
@@ -38,10 +35,13 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
+import appeng.api.features.HotkeyAction;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.menu.ISubMenu;
@@ -116,7 +116,7 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
         } else if (((IBasicCellItem) item).getKeyType().equals(AEKeyType.fluids())) {
             return HotkeyAction.PORTABLE_FLUID_CELL;
         } else {
-            return "";//We don't know
+            return "";// We don't know
         }
     }
 }
