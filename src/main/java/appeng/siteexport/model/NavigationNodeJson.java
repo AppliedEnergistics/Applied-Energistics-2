@@ -19,7 +19,9 @@ public class NavigationNodeJson {
             jsonNode.pageId = node.pageId().toString();
         }
         jsonNode.title = node.title();
-        jsonNode.icon = writer.addItem(node.icon());
+        if (!node.icon().isEmpty()) {
+            jsonNode.icon = writer.addItem(node.icon());
+        }
         jsonNode.children = node.children().stream().map(childNode -> of(writer, childNode)).toList();
         jsonNode.position = node.position();
         jsonNode.hasPage = node.hasPage();
