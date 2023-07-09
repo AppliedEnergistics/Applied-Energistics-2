@@ -1,5 +1,6 @@
 package appeng.recipes.handlers;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -20,12 +21,14 @@ public class ChargerRecipe implements Recipe<Container> {
 
     private final ResourceLocation id;
     public final Ingredient ingredient;
+    public final NonNullList<Ingredient> ingredients;
     public final Item result;
 
     public ChargerRecipe(ResourceLocation id, Ingredient ingredient, Item result) {
         this.id = id;
         this.ingredient = ingredient;
         this.result = result;
+        this.ingredients = NonNullList.of(Ingredient.EMPTY, ingredient);
     }
 
     @Override
@@ -69,5 +72,10 @@ public class ChargerRecipe implements Recipe<Container> {
 
     public Ingredient getIngredient() {
         return ingredient;
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return ingredients;
     }
 }

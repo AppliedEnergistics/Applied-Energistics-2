@@ -48,6 +48,7 @@ import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.compiler.MdAstNodeAdapter;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.indices.ItemIndex;
+import appeng.items.tools.powered.MatterCannonItem;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
@@ -66,7 +67,7 @@ public class SiteExportWriter {
 
     private abstract static class WriteOnlyTypeAdapter<T> extends TypeAdapter<T> {
         @Override
-        public T read(JsonReader in) throws IOException {
+        public T read(JsonReader in) {
             throw new UnsupportedOperationException();
         }
     }
@@ -211,15 +212,20 @@ public class SiteExportWriter {
     }
 
     public void addRecipe(EntropyRecipe recipe) {
-        addRecipe(recipe, Map.of());
+        addRecipe(recipe, Map.of(
+                "mode", recipe.getMode().name().toLowerCase(Locale.ROOT)));
     }
 
     public void addRecipe(MatterCannonAmmo recipe) {
-        addRecipe(recipe, Map.of());
+        addRecipe(recipe, Map.of(
+                "ammo", recipe.getAmmo(),
+                "damage", MatterCannonItem.getDamageFromPenetration(recipe.getWeight())));
     }
 
     public void addRecipe(ChargerRecipe recipe) {
-        addRecipe(recipe, Map.of());
+        addRecipe(recipe, Map.of(
+                "resultItem", recipe.getResultItem(),
+                "ingredient", recipe.getIngredient()));
     }
 
     public void addRecipe(SmithingTransformRecipe recipe) {
