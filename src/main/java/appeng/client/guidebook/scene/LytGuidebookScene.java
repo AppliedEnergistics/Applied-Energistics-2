@@ -213,7 +213,8 @@ public class LytGuidebookScene extends LytBox {
             return osr.captureAsPng(() -> {
                 var renderer = GuidebookLevelRenderer.getInstance();
                 scene.getCameraSettings().setViewportSize(prefSize);
-                var annotations = hideAnnotations ? Collections.<InWorldAnnotation>emptyList() : scene.getInWorldAnnotations();
+                var annotations = hideAnnotations ? Collections.<InWorldAnnotation>emptyList()
+                        : scene.getInWorldAnnotations();
                 renderer.render(scene.getLevel(), scene.getCameraSettings(), annotations);
             });
         }
