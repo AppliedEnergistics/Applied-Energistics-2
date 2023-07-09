@@ -216,8 +216,6 @@ public class LytGuidebookScene extends LytBox {
                 scene.getCameraSettings().setViewportSize(prefSize);
                 renderer.render(scene.getLevel(), scene.getCameraSettings(), scene.getInWorldAnnotations());
             });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

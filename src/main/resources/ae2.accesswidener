@@ -153,3 +153,7 @@ accessible class net/minecraft/client/renderer/texture/SpriteContents$FrameInfo
 accessible field net/minecraft/client/renderer/texture/SpriteContents$FrameInfo index I
 accessible field net/minecraft/client/renderer/texture/SpriteContents$FrameInfo time I
 accessible field net/minecraft/client/renderer/texture/TextureAtlas sprites Ljava/util/List;
+accessible method net/minecraft/client/renderer/texture/TextureAtlas getWidth ()I
+accessible method net/minecraft/client/renderer/texture/TextureAtlas getHeight ()I
+accessible method net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture uploadFrame (III)V
+

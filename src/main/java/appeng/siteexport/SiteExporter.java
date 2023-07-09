@@ -12,15 +12,16 @@ import appeng.core.AppEngClient;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.mattercannon.MatterCannonAmmo;
 import appeng.recipes.transform.TransformRecipe;
 import appeng.siteexport.mdastpostprocess.PageExportPostProcessor;
 import appeng.siteexport.model.P2PTypeInfo;
 import appeng.util.Platform;
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,11 +35,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,6 +54,7 @@ import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.io.FilenameUtils;
@@ -64,8 +69,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -220,6 +228,12 @@ public final class SiteExporter implements ResourceExporter {
                 writer.addRecipe(smithingTrimRecipe);
             } else if (recipe instanceof StonecutterRecipe stonecutterRecipe) {
                 writer.addRecipe(stonecutterRecipe);
+            } else if (recipe instanceof EntropyRecipe entropyRecipe) {
+                writer.addRecipe(entropyRecipe);
+            } else if (recipe instanceof MatterCannonAmmo ammoRecipe) {
+                writer.addRecipe(ammoRecipe);
+            } else if (recipe instanceof ChargerRecipe chargerRecipe) {
+                writer.addRecipe(chargerRecipe);
             } else {
                 LOGGER.warn("Unable to handle recipe {} of type {}", recipe.getId(), recipe.getType());
             }
@@ -431,33 +445,49 @@ public final class SiteExporter implements ResourceExporter {
     private void processItems(Minecraft client,
                               SiteExportWriter siteExport,
                               Path outputFolder) throws IOException {
-        var iconsFolder = outputFolder.resolve("!icons");
+        var iconsFolder = outputFolder.resolve("!items");
         if (Files.exists(iconsFolder)) {
             MoreFiles.deleteRecursively(iconsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
         }
 
-        try (var itemRenderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
+        try (var renderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
             var guiGraphics = new GuiGraphics(client, client.renderBuffers().bufferSource());
 
-            itemRenderer.setupItemRendering();
+            renderer.setupItemRendering();
 
             LOGGER.info("Exporting items...");
             for (var item : items) {
                 var stack = new ItemStack(item);
 
-                String itemId = getItemId(stack.getItem()).toString();
-                var iconPath = iconsFolder.resolve(itemId.replace(':', '/') + ".png");
-                Files.createDirectories(iconPath.getParent());
+                var itemId = getItemId(stack.getItem()).toString();
+                var baseName = "!items/" + itemId.replace(':', '/');
 
-                itemRenderer.captureAsPng(() -> {
+                // Guess used sprites from item model
+                var itemModel = client.getItemRenderer().getModel(stack, null, null, 0);
+                var sprites = guessSprites(Set.of(itemModel));
+
+                var iconPath = renderAndWrite(renderer, baseName, () -> {
                     guiGraphics.renderItem(stack, 0, 0);
                     guiGraphics.renderItemDecorations(client.font, stack, 0, 0, "");
-                }, iconPath);
+                }, sprites, true);
 
                 String absIconUrl = "/" + outputFolder.relativize(iconPath).toString().replace('\\', '/');
                 siteExport.addItem(itemId, stack, absIconUrl);
             }
         }
+    }
+
+    private Set<TextureAtlasSprite> guessSprites(Collection<BakedModel> models) {
+        var result = Collections.newSetFromMap(new IdentityHashMap<TextureAtlasSprite, Boolean>());
+        var randomSource = new SingleThreadedRandomSource(0);
+
+        for (var model : models) {
+            for (var quad : model.getQuads(null, null, randomSource)) {
+                result.add(quad.getSprite());
+            }
+        }
+
+        return result;
     }
 
     private void processFluids(Minecraft client,
@@ -468,17 +498,66 @@ public final class SiteExporter implements ResourceExporter {
             MoreFiles.deleteRecursively(fluidsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
         }
 
-        for (var fluid : fluids) {
-            var fluidVariant = FluidVariant.of(fluid);
-            var stillSprite = FluidVariantRendering.getSprite(fluidVariant);
-            // Ensure the containing atlas is exported as part of the scene exporter
-            var atlasPath = exportTexture(stillSprite.atlasLocation());
+        try (var renderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
+            var guiGraphics = new GuiGraphics(client, client.renderBuffers().bufferSource());
 
-            String fluidId = BuiltInRegistries.FLUID.getKey(fluid).toString();
+            renderer.setupItemRendering();
 
-            siteExport.addFluid(fluidId, fluidVariant, atlasPath,
-                    stillSprite.getU0(), stillSprite.getV0(), stillSprite.getU1(), stillSprite.getV1());
+            LOGGER.info("Exporting fluids...");
+            for (var fluid : fluids) {
+                var fluidVariant = FluidVariant.of(fluid);
+                String fluidId = BuiltInRegistries.FLUID.getKey(fluid).toString();
+
+                var sprites = FluidVariantRendering.getSprites(fluidVariant);
+                var sprite = sprites != null ? sprites[0] : null;
+                var color = FluidVariantRendering.getColor(fluidVariant);
+
+                var baseName = "!fluids/" + fluidId.replace(':', '/');
+                var iconPath = renderAndWrite(
+                        renderer,
+                        baseName,
+                        () -> {
+                            if (sprite != null) {
+                                var r = FastColor.ARGB32.red(color) / 255.f;
+                                var g = FastColor.ARGB32.green(color) / 255.f;
+                                var b = FastColor.ARGB32.blue(color) / 255.f;
+                                var a = FastColor.ARGB32.alpha(color) / 255.f;
+                                guiGraphics.blit(0, 0, 0, 16, 16, sprite, r, g, b, a);
+                            }
+                        },
+                        sprite != null ? Set.of(sprite) : Set.of(),
+                        false /* no alpha for fluids since water is translucent but there's nothing behind it in our icons */
+                );
+
+                String absIconUrl = "/" + outputFolder.relativize(iconPath).toString().replace('\\', '/');
+                siteExport.addFluid(fluidId, fluidVariant, absIconUrl);
+            }
         }
+
+    }
+
+    private Path renderAndWrite(OffScreenRenderer renderer,
+                                String baseName,
+                                Runnable renderRunnable,
+                                Collection<TextureAtlasSprite> sprites,
+                                boolean withAlpha) throws IOException {
+        String extension;
+        byte[] content;
+        if (renderer.isAnimated(sprites)) {
+            extension = ".webp";
+            content = renderer.captureAsWebp(
+                    renderRunnable,
+                    sprites,
+                    withAlpha ? WebPExporter.Format.LOSSLESS_ALPHA : WebPExporter.Format.LOSSLESS
+            );
+        } else {
+            extension = ".png";
+            content = renderer.captureAsPng(renderRunnable);
+        }
+
+        var iconPath = outputFolder.resolve(baseName + extension);
+        Files.createDirectories(iconPath.getParent());
+        return CacheBusting.writeAsset(iconPath, content);
     }
 
     @Override
