@@ -1,28 +1,29 @@
 package appeng.siteexport;
 
-import appeng.client.guidebook.Guide;
-import appeng.client.guidebook.compiler.MdAstNodeAdapter;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.libs.mdast.model.MdAstNode;
-import appeng.recipes.entropy.EntropyRecipe;
-import appeng.recipes.handlers.ChargerRecipe;
-import appeng.recipes.handlers.InscriberProcessType;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.recipes.mattercannon.MatterCannonAmmo;
-import appeng.recipes.transform.TransformRecipe;
-import appeng.siteexport.model.ExportedPageJson;
-import appeng.siteexport.model.FluidInfoJson;
-import appeng.siteexport.model.ItemInfoJson;
-import appeng.siteexport.model.NavigationNodeJson;
-import appeng.siteexport.model.P2PTypeInfo;
-import appeng.siteexport.model.SiteExportJson;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.DigestOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -43,22 +44,23 @@ import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.security.DigestOutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.HexFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
+import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.compiler.MdAstNodeAdapter;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.libs.mdast.model.MdAstNode;
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.handlers.ChargerRecipe;
+import appeng.recipes.handlers.InscriberProcessType;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.recipes.transform.TransformRecipe;
+import appeng.siteexport.model.ExportedPageJson;
+import appeng.siteexport.model.FluidInfoJson;
+import appeng.siteexport.model.ItemInfoJson;
+import appeng.siteexport.model.NavigationNodeJson;
+import appeng.siteexport.model.P2PTypeInfo;
+import appeng.siteexport.model.SiteExportJson;
 
 public class SiteExportWriter {
 
@@ -174,15 +176,13 @@ public class SiteExportWriter {
                 "bottom", recipe.getBottomOptional(),
                 "resultItem", resultItem.getItem(),
                 "resultCount", resultItem.getCount(),
-                "consumesTopAndBottom", recipe.getProcessType() == InscriberProcessType.PRESS
-        ));
+                "consumesTopAndBottom", recipe.getProcessType() == InscriberProcessType.PRESS));
     }
 
     public void addRecipe(AbstractCookingRecipe recipe) {
         addRecipe(recipe, Map.of(
                 "resultItem", recipe.getResultItem(null),
-                "ingredient", recipe.getIngredients().get(0)
-        ));
+                "ingredient", recipe.getIngredients().get(0)));
     }
 
     public void addRecipe(TransformRecipe recipe) {
@@ -207,8 +207,7 @@ public class SiteExportWriter {
         addRecipe(recipe, Map.of(
                 "resultItem", recipe.getResultItem(null),
                 "ingredients", recipe.getIngredients(),
-                "circumstance", circumstanceJson
-        ));
+                "circumstance", circumstanceJson));
     }
 
     public void addRecipe(EntropyRecipe recipe) {
@@ -228,16 +227,14 @@ public class SiteExportWriter {
                 "resultItem", recipe.getResultItem(null),
                 "base", recipe.base,
                 "addition", recipe.addition,
-                "template", recipe.template
-        ));
+                "template", recipe.template));
     }
 
     public void addRecipe(SmithingTrimRecipe recipe) {
         addRecipe(recipe, Map.of(
                 "base", recipe.base,
                 "addition", recipe.addition,
-                "template", recipe.template
-        ));
+                "template", recipe.template));
     }
 
     public void addRecipe(StonecutterRecipe recipe) {
@@ -245,9 +242,7 @@ public class SiteExportWriter {
                 recipe,
                 Map.of(
                         "resultItem", recipe.getResultItem(null),
-                        "ingredient", recipe.getIngredients().get(0)
-                )
-        );
+                        "ingredient", recipe.getIngredients().get(0)));
     }
 
     public void addRecipe(Recipe<?> recipe, Map<String, Object> element) {
@@ -267,7 +262,7 @@ public class SiteExportWriter {
     public byte[] toByteArray() throws IOException {
         var bout = new ByteArrayOutputStream();
         try (var out = new GZIPOutputStream(bout);
-             var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
+                var writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
             GSON.toJson(siteExport, writer);
         }
         return bout.toByteArray();

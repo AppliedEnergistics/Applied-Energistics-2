@@ -1,6 +1,14 @@
 package appeng.siteexport;
 
+import static org.bytedeco.ffmpeg.global.avformat.avio_close_dyn_buf;
+import static org.bytedeco.ffmpeg.global.avformat.avio_get_dyn_buf;
+import static org.bytedeco.ffmpeg.global.avformat.avio_open_dyn_buf;
+import static org.bytedeco.ffmpeg.global.avutil.av_dict_set;
+import static org.bytedeco.ffmpeg.global.avutil.av_dict_set_int;
+import static org.bytedeco.ffmpeg.global.avutil.av_free;
+
 import com.mojang.blaze3d.platform.NativeImage;
+
 import org.bytedeco.ffmpeg.avcodec.AVCodec;
 import org.bytedeco.ffmpeg.avcodec.AVCodecContext;
 import org.bytedeco.ffmpeg.avcodec.AVPacket;
@@ -17,13 +25,6 @@ import org.bytedeco.ffmpeg.global.swscale;
 import org.bytedeco.ffmpeg.swscale.SwsContext;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.DoublePointer;
-
-import static org.bytedeco.ffmpeg.global.avformat.avio_close_dyn_buf;
-import static org.bytedeco.ffmpeg.global.avformat.avio_get_dyn_buf;
-import static org.bytedeco.ffmpeg.global.avformat.avio_open_dyn_buf;
-import static org.bytedeco.ffmpeg.global.avutil.av_dict_set;
-import static org.bytedeco.ffmpeg.global.avutil.av_dict_set_int;
-import static org.bytedeco.ffmpeg.global.avutil.av_free;
 
 /**
  * Uses ffmpeg to write WebP animations.
@@ -99,8 +100,7 @@ public class WebPExporter implements AutoCloseable {
             var codecpar = stream.codecpar();
             check(avcodec.avcodec_parameters_from_context(
                     codecpar,
-                    codecContext
-            ));
+                    codecContext));
             stream.codecpar(codecpar);
 
             stream.time_base(new AVRational());
@@ -163,6 +163,7 @@ public class WebPExporter implements AutoCloseable {
             data.putInt(i * 4L, pixels[i]);
         }
 
+        // Convert from in-memory pixel format to format required by codec
         swscale.sws_scale(swsCtx, rgbFrame.data(),
                 rgbFrame.linesize(), 0, codecContext.height(), frame.data(),
                 frame.linesize());
@@ -175,9 +176,10 @@ public class WebPExporter implements AutoCloseable {
     public byte[] finish() {
         encode(formatContext, codecContext, packet, stream, null);
 
-        // Write the end of the file and free memory
+        // Write the end of the file
         check(avformat.av_write_trailer(formatContext));
 
+        // Get the current output buffer
         var pb = new BytePointer();
         var pbSize = avio_get_dyn_buf(formatContext.pb(), pb);
         var data = new byte[pbSize];
@@ -186,10 +188,12 @@ public class WebPExporter implements AutoCloseable {
         return data;
     }
 
-    private static void encode(AVFormatContext formatContext, AVCodecContext codecContext, AVPacket packet, AVStream stream, AVFrame frame) {
+    private static void encode(AVFormatContext formatContext, AVCodecContext codecContext, AVPacket packet,
+            AVStream stream, AVFrame frame) {
+        // Send frame to codec
         check(avcodec.avcodec_send_frame(codecContext, frame));
 
-        // Get the output packet
+        // Get the output packet, if any (codec may buffer frames)
         while (true) {
             var err = avcodec.avcodec_receive_packet(codecContext, packet);
             if (err == avutil.AVERROR_EAGAIN() || err == avutil.AVERROR_EOF) {
@@ -203,34 +207,47 @@ public class WebPExporter implements AutoCloseable {
 
             // Write packet
             check(avformat.av_interleaved_write_frame(formatContext, packet));
-//            avcodec.av_packet_unref(packet);
         }
     }
 
-    /* Check for error code returned by ffmpeg func and throw error */
-    static void check(int err) {
+    // Helper to check libav* return codes
+    private static void check(int err) {
         if (err < 0) {
-            throw new RuntimeException(my_av_err2str(err) + ":" + err);
+            throw new RuntimeException(getErrorString(err) + " (" + err + ")");
         }
     }
 
     /* Custom implementation of missing av_err2str() ffmpeg function */
-    static String my_av_err2str(int err) {
-        BytePointer e = new BytePointer(512);
-        avutil.av_strerror(err, e, 512);
+    private static String getErrorString(int err) {
+        var e = new BytePointer(512);
+        if (avutil.av_strerror(err, e, 512) < 0) {
+            return "Unknown Error";
+        }
         return e.getString().substring(0, (int) BytePointer.strlen(e));
     }
 
     @Override
     public void close() {
-        avcodec.avcodec_free_context(codecContext);
-        avutil.av_frame_free(frame);
-        avutil.av_frame_free(rgbFrame);
-        codec.close();
-        var pb = new BytePointer();
-        avio_close_dyn_buf(formatContext.pb(), pb);
-        av_free(pb);
-        avformat.avformat_free_context(formatContext);
+        if (codecContext != null) {
+            avcodec.avcodec_free_context(codecContext);
+        }
+        if (frame != null) {
+            avutil.av_frame_free(frame);
+        }
+        if (rgbFrame != null) {
+            avutil.av_frame_free(rgbFrame);
+        }
+        if (codec != null) {
+            codec.close();
+        }
+        if (formatContext != null && !formatContext.pb().isNull()) {
+            var pb = new BytePointer();
+            avio_close_dyn_buf(formatContext.pb(), pb);
+            av_free(pb);
+        }
+        if (formatContext != null) {
+            avformat.avformat_free_context(formatContext);
+        }
     }
 
     public enum Format {

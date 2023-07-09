@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import appeng.siteexport.OffScreenRenderer;
 import com.google.gson.JsonElement;
 
 import net.minecraft.resources.ResourceLocation;

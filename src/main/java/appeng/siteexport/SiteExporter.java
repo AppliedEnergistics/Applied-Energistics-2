@@ -1,28 +1,29 @@
 package appeng.siteexport;
 
-import appeng.api.features.P2PTunnelAttunement;
-import appeng.api.features.P2PTunnelAttunementInternal;
-import appeng.api.util.AEColor;
-import appeng.client.guidebook.Guide;
-import appeng.client.guidebook.GuidePage;
-import appeng.client.guidebook.compiler.PageCompiler;
-import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
-import appeng.core.AppEngClient;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ColoredItemDefinition;
-import appeng.recipes.entropy.EntropyRecipe;
-import appeng.recipes.handlers.ChargerRecipe;
-import appeng.recipes.handlers.InscriberRecipe;
-import appeng.recipes.mattercannon.MatterCannonAmmo;
-import appeng.recipes.transform.TransformRecipe;
-import appeng.siteexport.mdastpostprocess.PageExportPostProcessor;
-import appeng.siteexport.model.P2PTypeInfo;
-import appeng.util.Platform;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
 import com.mojang.blaze3d.platform.NativeImage;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -57,32 +58,33 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
+import appeng.api.features.P2PTunnelAttunement;
+import appeng.api.features.P2PTunnelAttunementInternal;
+import appeng.api.util.AEColor;
+import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.GuidePage;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.core.AppEngClient;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ColoredItemDefinition;
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.handlers.ChargerRecipe;
+import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.recipes.transform.TransformRecipe;
+import appeng.siteexport.mdastpostprocess.PageExportPostProcessor;
+import appeng.siteexport.model.P2PTypeInfo;
+import appeng.util.Platform;
 
 /**
  * Exports a data package for use by the website.
  */
 @Environment(EnvType.CLIENT)
 public final class SiteExporter implements ResourceExporter {
-
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -348,8 +350,8 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     private void processPage(SiteExportWriter exportWriter,
-                             ParsedGuidePage page,
-                             GuidePage compiledPage) {
+            ParsedGuidePage page,
+            GuidePage compiledPage) {
 
         // Run post-processors on the AST
         PageExportPostProcessor.postprocess(this, page, compiledPage);
@@ -384,7 +386,7 @@ public final class SiteExporter implements ResourceExporter {
      */
     private static void dumpP2PTypes(Set<Item> usedVanillaItems, SiteExportWriter siteExport) {
 
-        var tunnelTypes = new ItemLike[]{
+        var tunnelTypes = new ItemLike[] {
                 P2PTunnelAttunement.ME_TUNNEL,
                 P2PTunnelAttunement.ENERGY_TUNNEL,
                 P2PTunnelAttunement.ITEM_TUNNEL,
@@ -443,8 +445,8 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     private void processItems(Minecraft client,
-                              SiteExportWriter siteExport,
-                              Path outputFolder) throws IOException {
+            SiteExportWriter siteExport,
+            Path outputFolder) throws IOException {
         var iconsFolder = outputFolder.resolve("!items");
         if (Files.exists(iconsFolder)) {
             MoreFiles.deleteRecursively(iconsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
@@ -491,8 +493,8 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     private void processFluids(Minecraft client,
-                               SiteExportWriter siteExport,
-                               Path outputFolder) throws IOException {
+            SiteExportWriter siteExport,
+            Path outputFolder) throws IOException {
         var fluidsFolder = outputFolder.resolve("!fluids");
         if (Files.exists(fluidsFolder)) {
             MoreFiles.deleteRecursively(fluidsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
@@ -526,7 +528,10 @@ public final class SiteExporter implements ResourceExporter {
                             }
                         },
                         sprite != null ? Set.of(sprite) : Set.of(),
-                        false /* no alpha for fluids since water is translucent but there's nothing behind it in our icons */
+                        false /*
+                               * no alpha for fluids since water is translucent but there's nothing behind it in our
+                               * icons
+                               */
                 );
 
                 String absIconUrl = "/" + outputFolder.relativize(iconPath).toString().replace('\\', '/');
@@ -537,10 +542,10 @@ public final class SiteExporter implements ResourceExporter {
     }
 
     private Path renderAndWrite(OffScreenRenderer renderer,
-                                String baseName,
-                                Runnable renderRunnable,
-                                Collection<TextureAtlasSprite> sprites,
-                                boolean withAlpha) throws IOException {
+            String baseName,
+            Runnable renderRunnable,
+            Collection<TextureAtlasSprite> sprites,
+            boolean withAlpha) throws IOException {
         String extension;
         byte[] content;
         if (renderer.isAnimated(sprites)) {
@@ -548,8 +553,7 @@ public final class SiteExporter implements ResourceExporter {
             content = renderer.captureAsWebp(
                     renderRunnable,
                     sprites,
-                    withAlpha ? WebPExporter.Format.LOSSLESS_ALPHA : WebPExporter.Format.LOSSLESS
-            );
+                    withAlpha ? WebPExporter.Format.LOSSLESS_ALPHA : WebPExporter.Format.LOSSLESS);
         } else {
             extension = ".png";
             content = renderer.captureAsPng(renderRunnable);

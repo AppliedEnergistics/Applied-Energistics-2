@@ -1,5 +1,12 @@
 package appeng.siteexport;
 
+import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
@@ -7,21 +14,16 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexSorting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.FogRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Mth;
+
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL12;
 
-import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.Mth;
 
 public class OffScreenRenderer implements AutoCloseable {
     private final NativeImage nativeImage;
@@ -95,9 +97,7 @@ public class OffScreenRenderer implements AutoCloseable {
                 .entrySet().stream().collect(
                         Collectors.toMap(
                                 Map.Entry::getKey,
-                                e -> e.getValue().stream().map(TextureAtlasSprite::createTicker).toList()
-                        )
-                );
+                                e -> e.getValue().stream().map(TextureAtlasSprite::createTicker).toList()));
         for (var sprite : animatedSprites) {
             textureManager.getTexture(sprite.atlasLocation()).bind();
             sprite.uploadFirstFrame();
@@ -229,7 +229,7 @@ public class OffScreenRenderer implements AutoCloseable {
         up.normalize();
 
         var viewMatrix = new Matrix4f();
-        viewMatrix.setTransposed(FloatBuffer.wrap(new float[]{
+        viewMatrix.setTransposed(FloatBuffer.wrap(new float[] {
                 right.x(),
                 right.y(),
                 right.z(),

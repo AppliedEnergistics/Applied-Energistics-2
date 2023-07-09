@@ -83,6 +83,8 @@ dependencies {
     internal("com.google.flatbuffers:flatbuffers-java:${flatbuffers_version}") {
         transitive = false
     }
+    // Used for the guide export
+    internal("org.bytedeco:ffmpeg-platform:6.0-1.5.9")
 
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -164,8 +166,6 @@ dependencies {
         exclude group: "net.fabricmc"
         exclude group: "net.fabricmc.fabric-api"
     }
-
-    implementation 'org.bytedeco:ffmpeg-platform:6.0-1.5.9'
 
     // TODO 1.20
     // Include No Indium? https://github.com/Luligabi1/NoIndium
@@ -677,7 +677,7 @@ tasks.register('updateFlatbufferSources', Exec) {
         def folder = file("${project.projectDir}/src/main/flatbuffers/generated")
         folder.eachFileRecurse(groovy.io.FileType.FILES) { file ->
             String content = file.text
-            if(content.contains('@javax.annotation.Generated')) {
+            if (content.contains('@javax.annotation.Generated')) {
                 content = content.replace('@javax.annotation.Generated', '@javax.annotation.processing.Generated')
                 file.write(content)
             }
