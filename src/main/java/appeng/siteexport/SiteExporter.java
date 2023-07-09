@@ -68,6 +68,7 @@ import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.navigation.NavigationNode;
 import appeng.core.AppEngClient;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
@@ -312,6 +313,9 @@ public final class SiteExporter implements ResourceExporter {
             LOGGER.info("Completed datapack reload");
         }
 
+        // Reference all navigation node icons
+        guide.getNavigationTree().getRootNodes().forEach(this::visitNavigationNodeIcons);
+
         var indexWriter = new SiteExportWriter(guide);
 
         for (var page : guide.getPages()) {
@@ -340,6 +344,11 @@ public final class SiteExporter implements ResourceExporter {
 
         // Write an uncompressed summary
         writeSummary(guideContent.getFileName().toString());
+    }
+
+    private void visitNavigationNodeIcons(NavigationNode navigationNode) {
+        referenceItem(navigationNode.icon());
+        navigationNode.children().forEach(this::visitNavigationNodeIcons);
     }
 
     private void processPage(SiteExportWriter exportWriter,

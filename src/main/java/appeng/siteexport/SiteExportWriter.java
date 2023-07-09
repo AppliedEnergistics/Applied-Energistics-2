@@ -99,20 +99,32 @@ public class SiteExportWriter {
             .registerTypeHierarchyAdapter(Item.class, new WriteOnlyTypeAdapter<Item>() {
                 @Override
                 public void write(JsonWriter out, Item value) throws IOException {
-                    out.value(BuiltInRegistries.ITEM.getKey(value).toString());
+                    if (value == null) {
+                        out.nullValue();
+                    } else {
+                        out.value(BuiltInRegistries.ITEM.getKey(value).toString());
+                    }
                 }
             })
             .registerTypeHierarchyAdapter(Fluid.class, new WriteOnlyTypeAdapter<Fluid>() {
                 @Override
                 public void write(JsonWriter out, Fluid value) throws IOException {
-                    out.value(BuiltInRegistries.FLUID.getKey(value).toString());
+                    if (value == null) {
+                        out.nullValue();
+                    } else {
+                        out.value(BuiltInRegistries.FLUID.getKey(value).toString());
+                    }
                 }
             })
             // ItemStacks use the Item, and a normalized NBT format
             .registerTypeAdapter(ItemStack.class, new WriteOnlyTypeAdapter<ItemStack>() {
                 @Override
                 public void write(JsonWriter out, ItemStack value) throws IOException {
-                    out.value(BuiltInRegistries.ITEM.getKey(value.getItem()).toString());
+                    if (value == null || value.isEmpty()) {
+                        out.nullValue();
+                    } else {
+                        out.value(BuiltInRegistries.ITEM.getKey(value.getItem()).toString());
+                    }
                 }
             })
             // Boolean
@@ -129,7 +141,7 @@ public class SiteExportWriter {
         siteExport.defaultNamespace = guide.getDefaultNamespace();
         siteExport.navigationRootNodes = guide.getNavigationTree().getRootNodes()
                 .stream()
-                .map(node -> NavigationNodeJson.of(this, node))
+                .map(NavigationNodeJson::of)
                 .toList();
     }
 
