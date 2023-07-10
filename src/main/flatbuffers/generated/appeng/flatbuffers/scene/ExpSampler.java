@@ -28,29 +28,35 @@ public final class ExpSampler extends Table {
   public void __init(int _i, ByteBuffer _bb) { __reset(_i, _bb); }
   public ExpSampler __assign(int _i, ByteBuffer _bb) { __init(_i, _bb); return this; }
 
-  public String texture() { int o = __offset(4); return o != 0 ? __string(o + bb_pos) : null; }
-  public ByteBuffer textureAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
-  public ByteBuffer textureInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
-  public boolean linearFiltering() { int o = __offset(6); return o != 0 ? 0!=bb.get(o + bb_pos) : false; }
-  public boolean mutateLinearFiltering(boolean linear_filtering) { int o = __offset(6); if (o != 0) { bb.put(o + bb_pos, (byte)(linear_filtering ? 1 : 0)); return true; } else { return false; } }
-  public boolean useMipmaps() { int o = __offset(8); return o != 0 ? 0!=bb.get(o + bb_pos) : false; }
-  public boolean mutateUseMipmaps(boolean use_mipmaps) { int o = __offset(8); if (o != 0) { bb.put(o + bb_pos, (byte)(use_mipmaps ? 1 : 0)); return true; } else { return false; } }
+  public String textureId() { int o = __offset(4); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer textureIdAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
+  public ByteBuffer textureIdInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
+  public String texture() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
+  public ByteBuffer textureAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
+  public ByteBuffer textureInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
+  public boolean linearFiltering() { int o = __offset(8); return o != 0 ? 0!=bb.get(o + bb_pos) : false; }
+  public boolean mutateLinearFiltering(boolean linear_filtering) { int o = __offset(8); if (o != 0) { bb.put(o + bb_pos, (byte)(linear_filtering ? 1 : 0)); return true; } else { return false; } }
+  public boolean useMipmaps() { int o = __offset(10); return o != 0 ? 0!=bb.get(o + bb_pos) : false; }
+  public boolean mutateUseMipmaps(boolean use_mipmaps) { int o = __offset(10); if (o != 0) { bb.put(o + bb_pos, (byte)(use_mipmaps ? 1 : 0)); return true; } else { return false; } }
 
   public static int createExpSampler(FlatBufferBuilder builder,
+      int textureIdOffset,
       int textureOffset,
       boolean linearFiltering,
       boolean useMipmaps) {
-    builder.startTable(3);
+    builder.startTable(4);
     ExpSampler.addTexture(builder, textureOffset);
+    ExpSampler.addTextureId(builder, textureIdOffset);
     ExpSampler.addUseMipmaps(builder, useMipmaps);
     ExpSampler.addLinearFiltering(builder, linearFiltering);
     return ExpSampler.endExpSampler(builder);
   }
 
-  public static void startExpSampler(FlatBufferBuilder builder) { builder.startTable(3); }
-  public static void addTexture(FlatBufferBuilder builder, int textureOffset) { builder.addOffset(0, textureOffset, 0); }
-  public static void addLinearFiltering(FlatBufferBuilder builder, boolean linearFiltering) { builder.addBoolean(1, linearFiltering, false); }
-  public static void addUseMipmaps(FlatBufferBuilder builder, boolean useMipmaps) { builder.addBoolean(2, useMipmaps, false); }
+  public static void startExpSampler(FlatBufferBuilder builder) { builder.startTable(4); }
+  public static void addTextureId(FlatBufferBuilder builder, int textureIdOffset) { builder.addOffset(0, textureIdOffset, 0); }
+  public static void addTexture(FlatBufferBuilder builder, int textureOffset) { builder.addOffset(1, textureOffset, 0); }
+  public static void addLinearFiltering(FlatBufferBuilder builder, boolean linearFiltering) { builder.addBoolean(2, linearFiltering, false); }
+  public static void addUseMipmaps(FlatBufferBuilder builder, boolean useMipmaps) { builder.addBoolean(3, useMipmaps, false); }
   public static int endExpSampler(FlatBufferBuilder builder) {
     int o = builder.endTable();
     return o;

@@ -1,5 +1,41 @@
 package appeng.client.guidebook.scene.export;
 
+import appeng.client.guidebook.document.LytSize;
+import appeng.client.guidebook.scene.CameraSettings;
+import appeng.client.guidebook.scene.GuidebookLevelRenderer;
+import appeng.client.guidebook.scene.GuidebookScene;
+import appeng.flatbuffers.scene.ExpAnimatedTexturePart;
+import appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame;
+import appeng.flatbuffers.scene.ExpCameraSettings;
+import appeng.flatbuffers.scene.ExpDepthTest;
+import appeng.flatbuffers.scene.ExpIndexElementType;
+import appeng.flatbuffers.scene.ExpMaterial;
+import appeng.flatbuffers.scene.ExpMesh;
+import appeng.flatbuffers.scene.ExpPrimitiveType;
+import appeng.flatbuffers.scene.ExpSampler;
+import appeng.flatbuffers.scene.ExpScene;
+import appeng.flatbuffers.scene.ExpTransparency;
+import appeng.flatbuffers.scene.ExpVertexElementType;
+import appeng.flatbuffers.scene.ExpVertexElementUsage;
+import appeng.flatbuffers.scene.ExpVertexFormat;
+import appeng.flatbuffers.scene.ExpVertexFormatElement;
+import appeng.siteexport.CacheBusting;
+import appeng.siteexport.OffScreenRenderer;
+import appeng.siteexport.ResourceExporter;
+import com.google.flatbuffers.FlatBufferBuilder;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.blaze3d.vertex.VertexSorting;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -18,44 +54,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.zip.GZIPOutputStream;
 
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.blaze3d.vertex.VertexSorting;
-
-import org.joml.Matrix4f;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-
-import appeng.client.guidebook.document.LytSize;
-import appeng.client.guidebook.scene.CameraSettings;
-import appeng.client.guidebook.scene.GuidebookLevelRenderer;
-import appeng.client.guidebook.scene.GuidebookScene;
-import appeng.flatbuffers.scene.ExpCameraSettings;
-import appeng.flatbuffers.scene.ExpDepthTest;
-import appeng.flatbuffers.scene.ExpIndexElementType;
-import appeng.flatbuffers.scene.ExpMaterial;
-import appeng.flatbuffers.scene.ExpMesh;
-import appeng.flatbuffers.scene.ExpPrimitiveType;
-import appeng.flatbuffers.scene.ExpSampler;
-import appeng.flatbuffers.scene.ExpScene;
-import appeng.flatbuffers.scene.ExpTransparency;
-import appeng.flatbuffers.scene.ExpVertexElementType;
-import appeng.flatbuffers.scene.ExpVertexElementUsage;
-import appeng.flatbuffers.scene.ExpVertexFormat;
-import appeng.flatbuffers.scene.ExpVertexFormatElement;
-import appeng.siteexport.OffScreenRenderer;
-import appeng.siteexport.ResourceExporter;
-
 /**
  * Exports a game scene 3d rendering to a custom 3d format for rendering it using WebGL in the browser. See scene.fbs
  * (we use FlatBuffers to encode the actual data).
@@ -67,6 +65,12 @@ public class SceneExporter {
 
     public SceneExporter(ResourceExporter resourceExporter) {
         this.resourceExporter = resourceExporter;
+    }
+
+    public static boolean isAnimated(GuidebookScene scene) {
+        return getSprites(scene)
+                .stream()
+                .anyMatch(sprite -> sprite.contents().animatedTexture != null);
     }
 
     public List<Path> exportAsImages(GuidebookScene scene, String exportName, LytSize baseSize, int... scales)
@@ -103,14 +107,12 @@ public class SceneExporter {
     }
 
     private static Set<TextureAtlasSprite> getSprites(GuidebookScene scene) {
-        var textureManager = Minecraft.getInstance().getTextureManager();
-
         var level = scene.getLevel();
         var bufferSource = new MeshBuildingBufferSource();
         GuidebookLevelRenderer.getInstance().renderContent(level, bufferSource);
 
         return bufferSource.getMeshes().stream()
-                .flatMap(mesh -> mesh.getSprites(textureManager))
+                .flatMap(Mesh::getSprites)
                 .collect(Collectors.toSet());
     }
 
@@ -136,6 +138,9 @@ public class SceneExporter {
         // Concat all vertex buffers
         var builder = new FlatBufferBuilder(1024);
         var meshes = bufferSource.getMeshes();
+
+        int animatedTexturesOffset = writeAnimations(builder, meshes);
+
         var vertexFormats = writeVertexFormats(meshes, builder);
         var materials = writeMaterials(meshes, builder);
         var meshesOffset = writeMeshes(meshes, builder, vertexFormats, materials);
@@ -144,6 +149,7 @@ public class SceneExporter {
         ExpScene.addMeshes(builder, meshesOffset);
         var cameraOffset = createCameraModel(scene.getCameraSettings(), builder);
         ExpScene.addCamera(builder, cameraOffset);
+        ExpScene.addAnimatedTextures(builder, animatedTexturesOffset);
 
         builder.finish(ExpScene.endExpScene(builder));
 
@@ -155,6 +161,69 @@ public class SceneExporter {
         }
 
         return bout.toByteArray();
+    }
+
+    private int writeAnimations(FlatBufferBuilder builder, List<Mesh> meshes) {
+        // Find all animations we also need to export
+        var animSprites = meshes.stream().flatMap(Mesh::getSprites)
+                .filter(s -> s.contents().animatedTexture != null)
+                .distinct()
+                .mapToInt(sprite -> writeAnimatedTextureSprite(builder, sprite))
+                .toArray();
+
+        return ExpScene.createAnimatedTexturesVector(builder, animSprites);
+    }
+
+    private int writeAnimatedTextureSprite(FlatBufferBuilder builder, TextureAtlasSprite sprite) {
+        // Get the original name, export it there to reuse if possible
+        var contents = sprite.contents();
+        var name = contents.name();
+        byte[] image;
+        try {
+            image = contents.originalImage.asByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        var path = resourceExporter.getOutputFolder()
+                .resolve("!anims")
+                .resolve(name.getNamespace())
+                .resolve(name.getPath() + ".png");
+        try {
+            path = CacheBusting.writeAsset(path, image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        var relativePath = resourceExporter.getPathRelativeFromOutputFolder(path);
+
+        var textureIdOffset = builder.createSharedString(sprite.atlasLocation().toString());
+        var spritePath = builder.createString(relativePath);
+
+        var animatedTexture = contents.animatedTexture;
+        var frameCount = animatedTexture.getUniqueFrames().count();
+
+        ExpAnimatedTexturePart.startFramesVector(builder, animatedTexture.frames.size());
+        for (var frame : animatedTexture.frames) {
+            ExpAnimatedTexturePartFrame.createExpAnimatedTexturePartFrame(
+                    builder,
+                    frame.index,
+                    frame.time
+            );
+        }
+        var framesOffset = builder.endVector();
+
+        return ExpAnimatedTexturePart.createExpAnimatedTexturePart(
+                builder,
+                textureIdOffset,
+                sprite.getX(),
+                sprite.getY(),
+                contents.width(),
+                contents.height(),
+                spritePath,
+                animatedTexture.interpolateFrames,
+                frameCount,
+                animatedTexture.frameRowSize,
+                framesOffset
+        );
     }
 
     private Map<VertexFormat, Integer> writeVertexFormats(List<Mesh> meshes, FlatBufferBuilder builder) {
@@ -281,9 +350,10 @@ public class SceneExporter {
 
             var texturePath = resourceExporter.exportTexture(sampler.texture());
             var textureOffset = builder.createSharedString(texturePath);
+            var textureIdOffset = builder.createSharedString(sampler.texture().toString());
 
-            var samplerOffset = ExpSampler.createExpSampler(builder, textureOffset, sampler.blur(), sampler.blur());
-            samplersOffset = ExpMaterial.createSamplersVector(builder, new int[] { samplerOffset });
+            var samplerOffset = ExpSampler.createExpSampler(builder, textureIdOffset, textureOffset, sampler.blur(), sampler.blur());
+            samplersOffset = ExpMaterial.createSamplersVector(builder, new int[]{samplerOffset});
         }
 
         return ExpMaterial.createExpMaterial(
@@ -332,9 +402,9 @@ public class SceneExporter {
     }
 
     private int writeMeshes(List<Mesh> meshes,
-            FlatBufferBuilder builder,
-            Map<VertexFormat, Integer> vertexFormats,
-            Map<RenderType, Integer> materials) {
+                            FlatBufferBuilder builder,
+                            Map<VertexFormat, Integer> vertexFormats,
+                            Map<RenderType, Integer> materials) {
         var writtenMeshes = new IntArrayList(meshes.size());
 
         for (var mesh : meshes) {
@@ -452,7 +522,7 @@ public class SceneExporter {
     }
 
     private GeneratedIndexBuffer generateSequentialIndices(VertexFormat.Mode mode, int vertexCount,
-            int expectedIndexCount) {
+                                                           int expectedIndexCount) {
         var indicesPerPrimitive = switch (mode) {
             case LINES -> 2;
             case DEBUG_LINES -> 2;

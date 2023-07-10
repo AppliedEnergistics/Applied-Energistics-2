@@ -1,4 +1,10 @@
 
+/**********************************************************************
+
+When you change this, run gradlew updateFlatbufferSources...
+
+**********************************************************************/
+
 namespace scene;
 
 struct ExpVec3 {
@@ -32,7 +38,26 @@ enum ExpDepthTest : ubyte {
     GREATER
 }
 
+struct ExpAnimatedTexturePartFrame {
+    index: ushort;
+    time: ushort;
+}
+
+table ExpAnimatedTexturePart {
+    texture_id: string;
+    x: int;
+    y: int;
+    width: uint;
+    height: uint;
+    frames_path: string;
+    interpolate: bool;
+    frame_count: uint;
+    frames_per_row: uint;
+    frames: [ExpAnimatedTexturePartFrame];
+}
+
 table ExpSampler {
+    texture_id: string;
     texture: string;
     linear_filtering: bool;
     use_mipmaps: bool;
@@ -107,6 +132,7 @@ table ExpMesh {
 table ExpScene {
   camera:ExpCameraSettings;
   meshes:[ExpMesh];
+  animated_textures: [ExpAnimatedTexturePart];
 }
 
 root_type ExpScene;

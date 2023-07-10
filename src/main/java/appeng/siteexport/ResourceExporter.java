@@ -48,7 +48,7 @@ public interface ResourceExporter {
     Path getOutputFolder();
 
     default String getPathRelativeFromOutputFolder(Path p) {
-        return getOutputFolder().relativize(p).toString().replace('\\', '/');
+        return "/" + getOutputFolder().relativize(p).toString().replace('\\', '/');
     }
 
     /**

@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 
+import net.minecraft.client.Minecraft;
 import org.joml.Vector2f;
 import org.joml.Vector4i;
 
@@ -30,7 +31,9 @@ record Mesh(BufferBuilder.DrawState drawState,
     /**
      * Checks if the mesh contains any texture atlases that are animated.
      */
-    public Stream<TextureAtlasSprite> getSprites(TextureManager textureManager) {
+    public Stream<TextureAtlasSprite> getSprites() {
+
+        var textureManager = Minecraft.getInstance().getTextureManager();
 
         // We only implement this for quads since standard block vertex-format
         // uses BakedQuads

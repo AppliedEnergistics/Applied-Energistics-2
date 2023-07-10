@@ -35,12 +35,20 @@ public final class ExpScene extends Table {
   public int meshesLength() { int o = __offset(6); return o != 0 ? __vector_len(o) : 0; }
   public appeng.flatbuffers.scene.ExpMesh.Vector meshesVector() { return meshesVector(new appeng.flatbuffers.scene.ExpMesh.Vector()); }
   public appeng.flatbuffers.scene.ExpMesh.Vector meshesVector(appeng.flatbuffers.scene.ExpMesh.Vector obj) { int o = __offset(6); return o != 0 ? obj.__assign(__vector(o), 4, bb) : null; }
+  public appeng.flatbuffers.scene.ExpAnimatedTexturePart animatedTextures(int j) { return animatedTextures(new appeng.flatbuffers.scene.ExpAnimatedTexturePart(), j); }
+  public appeng.flatbuffers.scene.ExpAnimatedTexturePart animatedTextures(appeng.flatbuffers.scene.ExpAnimatedTexturePart obj, int j) { int o = __offset(8); return o != 0 ? obj.__assign(__indirect(__vector(o) + j * 4), bb) : null; }
+  public int animatedTexturesLength() { int o = __offset(8); return o != 0 ? __vector_len(o) : 0; }
+  public appeng.flatbuffers.scene.ExpAnimatedTexturePart.Vector animatedTexturesVector() { return animatedTexturesVector(new appeng.flatbuffers.scene.ExpAnimatedTexturePart.Vector()); }
+  public appeng.flatbuffers.scene.ExpAnimatedTexturePart.Vector animatedTexturesVector(appeng.flatbuffers.scene.ExpAnimatedTexturePart.Vector obj) { int o = __offset(8); return o != 0 ? obj.__assign(__vector(o), 4, bb) : null; }
 
-  public static void startExpScene(FlatBufferBuilder builder) { builder.startTable(2); }
+  public static void startExpScene(FlatBufferBuilder builder) { builder.startTable(3); }
   public static void addCamera(FlatBufferBuilder builder, int cameraOffset) { builder.addStruct(0, cameraOffset, 0); }
   public static void addMeshes(FlatBufferBuilder builder, int meshesOffset) { builder.addOffset(1, meshesOffset, 0); }
   public static int createMeshesVector(FlatBufferBuilder builder, int[] data) { builder.startVector(4, data.length, 4); for (int i = data.length - 1; i >= 0; i--) builder.addOffset(data[i]); return builder.endVector(); }
   public static void startMeshesVector(FlatBufferBuilder builder, int numElems) { builder.startVector(4, numElems, 4); }
+  public static void addAnimatedTextures(FlatBufferBuilder builder, int animatedTexturesOffset) { builder.addOffset(2, animatedTexturesOffset, 0); }
+  public static int createAnimatedTexturesVector(FlatBufferBuilder builder, int[] data) { builder.startVector(4, data.length, 4); for (int i = data.length - 1; i >= 0; i--) builder.addOffset(data[i]); return builder.endVector(); }
+  public static void startAnimatedTexturesVector(FlatBufferBuilder builder, int numElems) { builder.startVector(4, numElems, 4); }
   public static int endExpScene(FlatBufferBuilder builder) {
     int o = builder.endTable();
     return o;
