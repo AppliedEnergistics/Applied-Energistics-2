@@ -39,7 +39,7 @@ public class ImageExportVisitor implements MdAstVisitor {
         // rewrite the URL to be relative to the asset base, which is our output folder
         var assetId = IdUtils.resolveLink(url, exporter.getCurrentPageId());
         Path assetPath = exporter.copyResource(assetId);
-        return exporter.getPathRelativeFromOutputFolder(assetPath);
+        return "/" + exporter.getPathRelativeFromOutputFolder(assetPath);
     }
 
 }
