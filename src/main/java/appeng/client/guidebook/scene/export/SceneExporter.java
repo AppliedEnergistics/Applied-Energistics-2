@@ -1,5 +1,40 @@
 package appeng.client.guidebook.scene.export;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.zip.GZIPOutputStream;
+
+import com.google.flatbuffers.FlatBufferBuilder;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.blaze3d.vertex.VertexSorting;
+
+import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.scene.CameraSettings;
 import appeng.client.guidebook.scene.GuidebookLevelRenderer;
@@ -22,37 +57,6 @@ import appeng.flatbuffers.scene.ExpVertexFormatElement;
 import appeng.siteexport.CacheBusting;
 import appeng.siteexport.OffScreenRenderer;
 import appeng.siteexport.ResourceExporter;
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.blaze3d.vertex.VertexSorting;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import org.joml.Matrix4f;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.IntConsumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Exports a game scene 3d rendering to a custom 3d format for rendering it using WebGL in the browser. See scene.fbs
@@ -206,8 +210,7 @@ public class SceneExporter {
             ExpAnimatedTexturePartFrame.createExpAnimatedTexturePartFrame(
                     builder,
                     frame.index,
-                    frame.time
-            );
+                    frame.time);
         }
         var framesOffset = builder.endVector();
 
@@ -222,8 +225,7 @@ public class SceneExporter {
                 animatedTexture.interpolateFrames,
                 frameCount,
                 animatedTexture.frameRowSize,
-                framesOffset
-        );
+                framesOffset);
     }
 
     private Map<VertexFormat, Integer> writeVertexFormats(List<Mesh> meshes, FlatBufferBuilder builder) {
@@ -352,8 +354,9 @@ public class SceneExporter {
             var textureOffset = builder.createSharedString(texturePath);
             var textureIdOffset = builder.createSharedString(sampler.texture().toString());
 
-            var samplerOffset = ExpSampler.createExpSampler(builder, textureIdOffset, textureOffset, sampler.blur(), sampler.blur());
-            samplersOffset = ExpMaterial.createSamplersVector(builder, new int[]{samplerOffset});
+            var samplerOffset = ExpSampler.createExpSampler(builder, textureIdOffset, textureOffset, sampler.blur(),
+                    sampler.blur());
+            samplersOffset = ExpMaterial.createSamplersVector(builder, new int[] { samplerOffset });
         }
 
         return ExpMaterial.createExpMaterial(
@@ -402,9 +405,9 @@ public class SceneExporter {
     }
 
     private int writeMeshes(List<Mesh> meshes,
-                            FlatBufferBuilder builder,
-                            Map<VertexFormat, Integer> vertexFormats,
-                            Map<RenderType, Integer> materials) {
+            FlatBufferBuilder builder,
+            Map<VertexFormat, Integer> vertexFormats,
+            Map<RenderType, Integer> materials) {
         var writtenMeshes = new IntArrayList(meshes.size());
 
         for (var mesh : meshes) {
@@ -522,7 +525,7 @@ public class SceneExporter {
     }
 
     private GeneratedIndexBuffer generateSequentialIndices(VertexFormat.Mode mode, int vertexCount,
-                                                           int expectedIndexCount) {
+            int expectedIndexCount) {
         var indicesPerPrimitive = switch (mode) {
             case LINES -> 2;
             case DEBUG_LINES -> 2;
