@@ -1,29 +1,31 @@
 package appeng.client.guidebook.scene.export;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import org.joml.Vector2f;
-import org.joml.Vector4i;
-
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+
+import org.joml.Vector2f;
+import org.joml.Vector4i;
+
+import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
+
 /**
  * Captured rendering data.
  */
 record Mesh(BufferBuilder.DrawState drawState,
-            ByteBuffer vertexBuffer,
-            ByteBuffer indexBuffer,
-            RenderType renderType) {
+        ByteBuffer vertexBuffer,
+        ByteBuffer indexBuffer,
+        RenderType renderType) {
 
     /**
      * Checks if the mesh contains any texture atlases that are animated.
@@ -49,7 +51,8 @@ record Mesh(BufferBuilder.DrawState drawState,
         var offset = 0;
         VertexFormatElement uvElement = null;
         for (var element : renderType.format().getElements()) {
-            if (element.getUsage() == VertexFormatElement.Usage.UV && element.getIndex() == 0 && element.getCount() == 2) {
+            if (element.getUsage() == VertexFormatElement.Usage.UV && element.getIndex() == 0
+                    && element.getCount() == 2) {
                 uvElement = element;
                 break;
             }
@@ -84,8 +87,7 @@ record Mesh(BufferBuilder.DrawState drawState,
                             indexBuffer.getInt(quadIdx * 4 * 4),
                             indexBuffer.getInt(quadIdx * 4 * 4 + 4),
                             indexBuffer.getInt(quadIdx * 4 * 4 + 8),
-                            indexBuffer.getInt(quadIdx * 4 * 4 + 12)
-                    ));
+                            indexBuffer.getInt(quadIdx * 4 * 4 + 12)));
         } else if (drawState.indexType() == VertexFormat.IndexType.SHORT) {
             var quadCount = drawState.indexCount() / 4;
             return IntStream.range(0, quadCount)
@@ -93,8 +95,7 @@ record Mesh(BufferBuilder.DrawState drawState,
                             indexBuffer.getShort(quadIdx * 4 * 2),
                             indexBuffer.getShort(quadIdx * 4 * 2 + 2),
                             indexBuffer.getShort(quadIdx * 4 * 2 + 4),
-                            indexBuffer.getShort(quadIdx * 4 * 2 + 6)
-                    ));
+                            indexBuffer.getShort(quadIdx * 4 * 2 + 6)));
         } else {
             throw new IllegalArgumentException("Unsupported index type: " + drawState.indexType());
         }
@@ -121,8 +122,7 @@ record Mesh(BufferBuilder.DrawState drawState,
         var dataStart = index * stride + offset;
         return new Vector2f(
                 readFloat(uvElement.getType(), dataStart),
-                readFloat(uvElement.getType(), dataStart + uvElement.getType().getSize())
-        );
+                readFloat(uvElement.getType(), dataStart + uvElement.getType().getSize()));
     }
 
     private float readFloat(VertexFormatElement.Type type, int offset) {

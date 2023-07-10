@@ -545,10 +545,10 @@ public final class SiteExporter implements ResourceExporter {
 
     @Override
     public Path renderAndWrite(OffScreenRenderer renderer,
-                               String baseName,
-                               Runnable renderRunnable,
-                               Collection<TextureAtlasSprite> sprites,
-                               boolean withAlpha) throws IOException {
+            String baseName,
+            Runnable renderRunnable,
+            Collection<TextureAtlasSprite> sprites,
+            boolean withAlpha) throws IOException {
         String extension;
         byte[] content;
         if (renderer.isAnimated(sprites)) {

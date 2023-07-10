@@ -1,5 +1,13 @@
 package appeng.siteexport.mdastpostprocess;
 
+import java.io.IOException;
+import java.util.Objects;
+
+import com.google.common.collect.Multimap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import appeng.client.guidebook.document.block.LytNode;
 import appeng.client.guidebook.scene.BlockImageTagCompiler;
 import appeng.client.guidebook.scene.LytGuidebookScene;
@@ -11,18 +19,12 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.siteexport.CacheBusting;
 import appeng.siteexport.ResourceExporter;
-import com.google.common.collect.Multimap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  * Visits all Markdown AST nodes that have a corresponding {@link LytGuidebookScene} and exports that scene.
  */
 class SceneExportVisitor implements MdAstVisitor {
-    private static final int[] BLOCKIMAGE_SCALES = {2, 4, 8};
+    private static final int[] BLOCKIMAGE_SCALES = { 2, 4, 8 };
     private static final int GAMESCENE_PLACEHOLDER_SCALE = 2;
 
     private static final Logger LOG = LoggerFactory.getLogger(SceneExportVisitor.class);
@@ -58,7 +60,7 @@ class SceneExportVisitor implements MdAstVisitor {
     }
 
     private void handleScene(MdAstNode node, MdxJsxElementFields elFields, String tagName, boolean isBlockImage,
-                             boolean isGameScene) throws IOException {
+            boolean isGameScene) throws IOException {
         var scenes = nodeMapping.get(node)
                 .stream()
                 .map(lytNode -> lytNode instanceof LytGuidebookScene lytScene ? lytScene : null)
@@ -83,7 +85,8 @@ class SceneExportVisitor implements MdAstVisitor {
             if (isBlockImage) {
                 var sceneExporter = new SceneExporter(this.exporter);
                 var imagePath = exporter.getPageSpecificPathForWriting(exportName);
-                var paths = sceneExporter.exportAsImages(scene.getScene(), imagePath.toString(), scene.getPreferredSize(), BLOCKIMAGE_SCALES);
+                var paths = sceneExporter.exportAsImages(scene.getScene(), imagePath.toString(),
+                        scene.getPreferredSize(), BLOCKIMAGE_SCALES);
                 for (int i = 0; i < paths.size(); i++) {
                     var relativeImagePath = "/" + exporter.getPathRelativeFromOutputFolder(paths.get(i));
                     elFields.attributes().add(new MdxJsxAttribute("src@" + BLOCKIMAGE_SCALES[i], relativeImagePath));
