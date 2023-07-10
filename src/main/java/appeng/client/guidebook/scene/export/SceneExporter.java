@@ -1,34 +1,6 @@
 package appeng.client.guidebook.scene.export;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.IntConsumer;
-import java.util.stream.IntStream;
-import java.util.zip.GZIPOutputStream;
-
-import com.google.flatbuffers.FlatBufferBuilder;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.blaze3d.vertex.VertexSorting;
-
-import org.joml.Matrix4f;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-
+import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.scene.CameraSettings;
 import appeng.client.guidebook.scene.GuidebookLevelRenderer;
 import appeng.client.guidebook.scene.GuidebookScene;
@@ -45,7 +17,40 @@ import appeng.flatbuffers.scene.ExpVertexElementType;
 import appeng.flatbuffers.scene.ExpVertexElementUsage;
 import appeng.flatbuffers.scene.ExpVertexFormat;
 import appeng.flatbuffers.scene.ExpVertexFormatElement;
+import appeng.siteexport.OffScreenRenderer;
 import appeng.siteexport.ResourceExporter;
+import com.google.flatbuffers.FlatBufferBuilder;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.blaze3d.vertex.VertexSorting;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import org.joml.Matrix4f;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Exports a game scene 3d rendering to a custom 3d format for rendering it using WebGL in the browser. See scene.fbs
@@ -58,6 +63,51 @@ public class SceneExporter {
 
     public SceneExporter(ResourceExporter resourceExporter) {
         this.resourceExporter = resourceExporter;
+    }
+
+    public List<Path> exportAsImages(GuidebookScene scene, String exportName, LytSize baseSize, int... scales) throws IOException {
+        if (scene == null) {
+            return List.of();
+        }
+
+        var sprites = getSprites(scene);
+
+        // Since block images are non-interactive and have no annotations, we just render them
+        // ahead of time.
+        var paths = new ArrayList<Path>();
+        for (int scale : scales) {
+            // We only scale the viewport, not scaling the view matrix means the scene will still fill it
+            var width = Math.max(1, baseSize.width() * scale);
+            var height = Math.max(1, baseSize.height() * scale);
+
+            try (var renderer = new OffScreenRenderer(width, height)) {
+                var path = resourceExporter.renderAndWrite(
+                        renderer,
+                        exportName + "@" + scale,
+                        () -> {
+                            var sceneRenderer = GuidebookLevelRenderer.getInstance();
+                            scene.getCameraSettings().setViewportSize(baseSize);
+                            sceneRenderer.render(scene.getLevel(), scene.getCameraSettings(), Collections.emptyList());
+                        },
+                        sprites,
+                        true
+                );
+                paths.add(path);
+            }
+        }
+        return paths;
+    }
+
+    private static Set<TextureAtlasSprite> getSprites(GuidebookScene scene) {
+        var textureManager = Minecraft.getInstance().getTextureManager();
+
+        var level = scene.getLevel();
+        var bufferSource = new MeshBuildingBufferSource();
+        GuidebookLevelRenderer.getInstance().renderContent(level, bufferSource);
+
+        return bufferSource.getMeshes().stream()
+                .flatMap(mesh -> mesh.getSprites(textureManager))
+                .collect(Collectors.toSet());
     }
 
     public byte[] export(GuidebookScene scene) {
@@ -221,22 +271,15 @@ public class SceneExporter {
         }
 
         var samplersOffset = 0;
-        if (state.textureState instanceof RenderStateShard.TextureStateShard textureShard) {
-            if (textureShard.texture.isPresent()) {
-                var texture = textureShard.texture.get();
+        var samplers = RenderTypeIntrospection.getSamplers(type);
+        if (samplers.size() > 0) {
+            var sampler = samplers.get(0);
 
-                var texturePath = resourceExporter.exportTexture(texture);
-                var textureOffset = builder.createSharedString(texturePath);
+            var texturePath = resourceExporter.exportTexture(sampler.texture());
+            var textureOffset = builder.createSharedString(texturePath);
 
-                var samplerOffset = ExpSampler.createExpSampler(builder, textureOffset, textureShard.blur,
-                        textureShard.mipmap);
-
-                samplersOffset = ExpMaterial.createSamplersVector(builder, new int[] { samplerOffset });
-            } else {
-                LOG.warn("Render type {} is using dynamic texture", type);
-            }
-        } else if (state.textureState != RenderStateShard.NO_TEXTURE) {
-            LOG.warn("Cannot handle texturing of render-type {}", type);
+            var samplerOffset = ExpSampler.createExpSampler(builder, textureOffset, sampler.blur(), sampler.blur());
+            samplersOffset = ExpMaterial.createSamplersVector(builder, new int[]{samplerOffset});
         }
 
         return ExpMaterial.createExpMaterial(
@@ -285,9 +328,9 @@ public class SceneExporter {
     }
 
     private int writeMeshes(List<Mesh> meshes,
-            FlatBufferBuilder builder,
-            Map<VertexFormat, Integer> vertexFormats,
-            Map<RenderType, Integer> materials) {
+                            FlatBufferBuilder builder,
+                            Map<VertexFormat, Integer> vertexFormats,
+                            Map<RenderType, Integer> materials) {
         var writtenMeshes = new IntArrayList(meshes.size());
 
         for (var mesh : meshes) {
@@ -405,7 +448,7 @@ public class SceneExporter {
     }
 
     private GeneratedIndexBuffer generateSequentialIndices(VertexFormat.Mode mode, int vertexCount,
-            int expectedIndexCount) {
+                                                           int expectedIndexCount) {
         var indicesPerPrimitive = switch (mode) {
             case LINES -> 2;
             case DEBUG_LINES -> 2;

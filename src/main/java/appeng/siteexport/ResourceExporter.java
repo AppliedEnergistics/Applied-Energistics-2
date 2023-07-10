@@ -1,7 +1,10 @@
 package appeng.siteexport;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +21,12 @@ public interface ResourceExporter {
     void referenceItem(ItemStack stack);
 
     void referenceFluid(Fluid fluid);
+
+    Path renderAndWrite(OffScreenRenderer renderer,
+                        String baseName,
+                        Runnable renderRunnable,
+                        Collection<TextureAtlasSprite> sprites,
+                        boolean withAlpha) throws IOException;
 
     String exportTexture(ResourceLocation texture);
 
