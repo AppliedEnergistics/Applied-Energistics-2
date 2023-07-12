@@ -17,11 +17,11 @@ For example,
 *   <ItemLink id="import_bus" />ses push things into network storage
 *   <ItemLink id="export_bus" />ses pull things from network storage
 *   <ItemLink id="interface" />s both pull from and push to network storage
-*   [terminals](../items-blocks-machines/terminals.md) both push to and pull from network storage when you insert or take items, or to refill the crafting slots
+*   [Terminals](../items-blocks-machines/terminals.md) both push to and pull from network storage when you insert or take items, or to refill the crafting slots
 *   <ItemLink id="storage_bus" />ses don't really push to or pull from storage, they push to or pull from the connected inventory
     in order to use it as network storage (so really other devices push to or pull from *them*)
 
-<GameScene zoom="4" background="transparent">
+<GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/import_export_storage.snbt" />
 
   <BoxAnnotation color="#dddddd" min="8 1 1" max="9 1.3 2">

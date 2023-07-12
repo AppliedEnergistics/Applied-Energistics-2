@@ -17,8 +17,9 @@ be possible to make your farm *replace the budding certus for you*.
 This farm is a fair bit more complex than the [simple certus farm](simple-certus-farm.md), because it is actually
 3 separate setups crammmed together.
 
-It will require also constructing [Charger Automation](charger-automation.md) and [Throwing-In-Water Automation](throw-in-water-automation.md)
-in order to refresh them.
+Although you could have a big stockpile of budding blocks in your system and manually refresh them every once in a while,
+constructing [Charger Automation](charger-automation.md) and [Throwing-In-Water Automation](throw-in-water-automation.md)
+to do it automatically is recommended.
 
 **THIS IS A COMPLEX BUILD WITH STUFF HIDDEN BEHIND OTHER STUFF, PAN AROUND TO VIEW IT FROM ALL ANGLES**
 

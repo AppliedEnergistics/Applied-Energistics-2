@@ -6,8 +6,6 @@ navigation:
 
 # Example Setups
 
-"Left as an Exercise to the Reader"
-
 * [Amethyst Farm](amethyst-farm.md)
 * [An Example "Main Network](main-network.md)
 * [Automatic Ore Fortuner](ore-fortuner.md)
