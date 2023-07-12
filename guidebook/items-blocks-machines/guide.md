@@ -3,6 +3,8 @@ navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: Guide
   icon: guide
+categories:
+- tools
 item_ids:
 - ae2:guide
 ---

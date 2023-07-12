@@ -8,8 +8,6 @@ navigation:
 
 A list of stuff in the mod for other pages to link to, and a description of their function.
 
-- <ItemLink id="guide" />
-
 ## Misc. Ingredients and Blocks
 
 <CategoryIndex category="misc ingredients blocks" />
