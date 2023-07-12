@@ -207,7 +207,7 @@ allprojects {
             }
         }
         maven {
-            url "https://maven.bai.lol"
+            url "https://maven2.bai.lol"
             content {
                 includeGroup "mcp.mobius.waila"
                 includeGroup "lol.bai"
