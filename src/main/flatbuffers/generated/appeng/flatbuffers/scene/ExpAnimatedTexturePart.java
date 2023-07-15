@@ -42,17 +42,15 @@ public final class ExpAnimatedTexturePart extends Table {
   public String framesPath() { int o = __offset(14); return o != 0 ? __string(o + bb_pos) : null; }
   public ByteBuffer framesPathAsByteBuffer() { return __vector_as_bytebuffer(14, 1); }
   public ByteBuffer framesPathInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 14, 1); }
-  public boolean interpolate() { int o = __offset(16); return o != 0 ? 0!=bb.get(o + bb_pos) : false; }
-  public boolean mutateInterpolate(boolean interpolate) { int o = __offset(16); if (o != 0) { bb.put(o + bb_pos, (byte)(interpolate ? 1 : 0)); return true; } else { return false; } }
-  public long frameCount() { int o = __offset(18); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
-  public boolean mutateFrameCount(long frame_count) { int o = __offset(18); if (o != 0) { bb.putInt(o + bb_pos, (int) frame_count); return true; } else { return false; } }
-  public long framesPerRow() { int o = __offset(20); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
-  public boolean mutateFramesPerRow(long frames_per_row) { int o = __offset(20); if (o != 0) { bb.putInt(o + bb_pos, (int) frames_per_row); return true; } else { return false; } }
+  public long frameCount() { int o = __offset(16); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
+  public boolean mutateFrameCount(long frame_count) { int o = __offset(16); if (o != 0) { bb.putInt(o + bb_pos, (int) frame_count); return true; } else { return false; } }
+  public long framesPerRow() { int o = __offset(18); return o != 0 ? (long)bb.getInt(o + bb_pos) & 0xFFFFFFFFL : 0L; }
+  public boolean mutateFramesPerRow(long frames_per_row) { int o = __offset(18); if (o != 0) { bb.putInt(o + bb_pos, (int) frames_per_row); return true; } else { return false; } }
   public appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame frames(int j) { return frames(new appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame(), j); }
-  public appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame frames(appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame obj, int j) { int o = __offset(22); return o != 0 ? obj.__assign(__vector(o) + j * 4, bb) : null; }
-  public int framesLength() { int o = __offset(22); return o != 0 ? __vector_len(o) : 0; }
+  public appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame frames(appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame obj, int j) { int o = __offset(20); return o != 0 ? obj.__assign(__vector(o) + j * 4, bb) : null; }
+  public int framesLength() { int o = __offset(20); return o != 0 ? __vector_len(o) : 0; }
   public appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame.Vector framesVector() { return framesVector(new appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame.Vector()); }
-  public appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame.Vector framesVector(appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame.Vector obj) { int o = __offset(22); return o != 0 ? obj.__assign(__vector(o), 4, bb) : null; }
+  public appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame.Vector framesVector(appeng.flatbuffers.scene.ExpAnimatedTexturePartFrame.Vector obj) { int o = __offset(20); return o != 0 ? obj.__assign(__vector(o), 4, bb) : null; }
 
   public static int createExpAnimatedTexturePart(FlatBufferBuilder builder,
       int textureIdOffset,
@@ -61,11 +59,10 @@ public final class ExpAnimatedTexturePart extends Table {
       long width,
       long height,
       int framesPathOffset,
-      boolean interpolate,
       long frameCount,
       long framesPerRow,
       int framesOffset) {
-    builder.startTable(10);
+    builder.startTable(9);
     ExpAnimatedTexturePart.addFrames(builder, framesOffset);
     ExpAnimatedTexturePart.addFramesPerRow(builder, framesPerRow);
     ExpAnimatedTexturePart.addFrameCount(builder, frameCount);
@@ -75,21 +72,19 @@ public final class ExpAnimatedTexturePart extends Table {
     ExpAnimatedTexturePart.addY(builder, y);
     ExpAnimatedTexturePart.addX(builder, x);
     ExpAnimatedTexturePart.addTextureId(builder, textureIdOffset);
-    ExpAnimatedTexturePart.addInterpolate(builder, interpolate);
     return ExpAnimatedTexturePart.endExpAnimatedTexturePart(builder);
   }
 
-  public static void startExpAnimatedTexturePart(FlatBufferBuilder builder) { builder.startTable(10); }
+  public static void startExpAnimatedTexturePart(FlatBufferBuilder builder) { builder.startTable(9); }
   public static void addTextureId(FlatBufferBuilder builder, int textureIdOffset) { builder.addOffset(0, textureIdOffset, 0); }
   public static void addX(FlatBufferBuilder builder, int x) { builder.addInt(1, x, 0); }
   public static void addY(FlatBufferBuilder builder, int y) { builder.addInt(2, y, 0); }
   public static void addWidth(FlatBufferBuilder builder, long width) { builder.addInt(3, (int) width, (int) 0L); }
   public static void addHeight(FlatBufferBuilder builder, long height) { builder.addInt(4, (int) height, (int) 0L); }
   public static void addFramesPath(FlatBufferBuilder builder, int framesPathOffset) { builder.addOffset(5, framesPathOffset, 0); }
-  public static void addInterpolate(FlatBufferBuilder builder, boolean interpolate) { builder.addBoolean(6, interpolate, false); }
-  public static void addFrameCount(FlatBufferBuilder builder, long frameCount) { builder.addInt(7, (int) frameCount, (int) 0L); }
-  public static void addFramesPerRow(FlatBufferBuilder builder, long framesPerRow) { builder.addInt(8, (int) framesPerRow, (int) 0L); }
-  public static void addFrames(FlatBufferBuilder builder, int framesOffset) { builder.addOffset(9, framesOffset, 0); }
+  public static void addFrameCount(FlatBufferBuilder builder, long frameCount) { builder.addInt(6, (int) frameCount, (int) 0L); }
+  public static void addFramesPerRow(FlatBufferBuilder builder, long framesPerRow) { builder.addInt(7, (int) framesPerRow, (int) 0L); }
+  public static void addFrames(FlatBufferBuilder builder, int framesOffset) { builder.addOffset(8, framesOffset, 0); }
   public static void startFramesVector(FlatBufferBuilder builder, int numElems) { builder.startVector(4, numElems, 2); }
   public static int endExpAnimatedTexturePart(FlatBufferBuilder builder) {
     int o = builder.endTable();

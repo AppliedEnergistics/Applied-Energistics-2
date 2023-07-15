@@ -6,9 +6,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +32,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.scene.CameraSettings;
 import appeng.client.guidebook.scene.GuidebookLevelRenderer;
 import appeng.client.guidebook.scene.GuidebookScene;
@@ -55,7 +51,6 @@ import appeng.flatbuffers.scene.ExpVertexElementUsage;
 import appeng.flatbuffers.scene.ExpVertexFormat;
 import appeng.flatbuffers.scene.ExpVertexFormatElement;
 import appeng.siteexport.CacheBusting;
-import appeng.siteexport.OffScreenRenderer;
 import appeng.siteexport.ResourceExporter;
 
 /**
@@ -75,39 +70,6 @@ public class SceneExporter {
         return getSprites(scene)
                 .stream()
                 .anyMatch(sprite -> sprite.contents().animatedTexture != null);
-    }
-
-    public List<Path> exportAsImages(GuidebookScene scene, String exportName, LytSize baseSize, int... scales)
-            throws IOException {
-        if (scene == null) {
-            return List.of();
-        }
-
-        var sprites = getSprites(scene);
-
-        // Since block images are non-interactive and have no annotations, we just render them
-        // ahead of time.
-        var paths = new ArrayList<Path>();
-        for (int scale : scales) {
-            // We only scale the viewport, not scaling the view matrix means the scene will still fill it
-            var width = Math.max(1, baseSize.width() * scale);
-            var height = Math.max(1, baseSize.height() * scale);
-
-            try (var renderer = new OffScreenRenderer(width, height)) {
-                var path = resourceExporter.renderAndWrite(
-                        renderer,
-                        exportName + "@" + scale,
-                        () -> {
-                            var sceneRenderer = GuidebookLevelRenderer.getInstance();
-                            scene.getCameraSettings().setViewportSize(baseSize);
-                            sceneRenderer.render(scene.getLevel(), scene.getCameraSettings(), Collections.emptyList());
-                        },
-                        sprites,
-                        true);
-                paths.add(path);
-            }
-        }
-        return paths;
     }
 
     private static Set<TextureAtlasSprite> getSprites(GuidebookScene scene) {
@@ -181,13 +143,60 @@ public class SceneExporter {
     private int writeAnimatedTextureSprite(FlatBufferBuilder builder, TextureAtlasSprite sprite) {
         // Get the original name, export it there to reuse if possible
         var contents = sprite.contents();
+        var animatedTexture = contents.animatedTexture;
         var name = contents.name();
+
         byte[] image;
-        try {
-            image = contents.originalImage.asByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        long frameCount;
+        int framesOffset;
+        int frameRowSize;
+        if (animatedTexture.interpolateFrames) {
+            // For textures that have interpolation enabled, we pre-interpolate all frames
+            // since this is hard to do on the browser-side
+            var interpResult = InterpolatedSpriteBuilder.interpolate(
+                    contents.originalImage,
+                    contents.width(),
+                    contents.height(),
+                    animatedTexture.frameRowSize,
+                    animatedTexture.frames);
+            try (var interpFrames = interpResult.frames()) {
+                image = interpFrames.asByteArray();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            frameRowSize = interpResult.frameRowSize();
+            frameCount = interpResult.frameCount();
+
+            // We've simplified frames here. They all have frame time 1
+            ExpAnimatedTexturePart.startFramesVector(builder, animatedTexture.frames.size());
+            for (var frameIndex : interpResult.indices()) {
+                ExpAnimatedTexturePartFrame.createExpAnimatedTexturePartFrame(
+                        builder,
+                        frameIndex,
+                        1);
+            }
+            framesOffset = builder.endVector();
+        } else {
+            try {
+                image = contents.originalImage.asByteArray();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            frameCount = animatedTexture.getUniqueFrames().count();
+            frameRowSize = animatedTexture.frameRowSize;
+
+            ExpAnimatedTexturePart.startFramesVector(builder, animatedTexture.frames.size());
+            for (var frame : animatedTexture.frames) {
+                ExpAnimatedTexturePartFrame.createExpAnimatedTexturePartFrame(
+                        builder,
+                        frame.index,
+                        frame.time);
+            }
+            framesOffset = builder.endVector();
         }
+
         var path = resourceExporter.getOutputFolder()
                 .resolve("!anims")
                 .resolve(name.getNamespace())
@@ -202,18 +211,6 @@ public class SceneExporter {
         var textureIdOffset = builder.createSharedString(sprite.atlasLocation().toString());
         var spritePath = builder.createString(relativePath);
 
-        var animatedTexture = contents.animatedTexture;
-        var frameCount = animatedTexture.getUniqueFrames().count();
-
-        ExpAnimatedTexturePart.startFramesVector(builder, animatedTexture.frames.size());
-        for (var frame : animatedTexture.frames) {
-            ExpAnimatedTexturePartFrame.createExpAnimatedTexturePartFrame(
-                    builder,
-                    frame.index,
-                    frame.time);
-        }
-        var framesOffset = builder.endVector();
-
         return ExpAnimatedTexturePart.createExpAnimatedTexturePart(
                 builder,
                 textureIdOffset,
@@ -222,9 +219,8 @@ public class SceneExporter {
                 contents.width(),
                 contents.height(),
                 spritePath,
-                animatedTexture.interpolateFrames,
                 frameCount,
-                animatedTexture.frameRowSize,
+                frameRowSize,
                 framesOffset);
     }
 

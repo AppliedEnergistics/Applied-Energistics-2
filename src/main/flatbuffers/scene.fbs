@@ -50,7 +50,6 @@ table ExpAnimatedTexturePart {
     width: uint;
     height: uint;
     frames_path: string;
-    interpolate: bool;
     frame_count: uint;
     frames_per_row: uint;
     frames: [ExpAnimatedTexturePartFrame];
