@@ -169,7 +169,7 @@ public class SceneExporter {
             frameCount = interpResult.frameCount();
 
             // We've simplified frames here. They all have frame time 1
-            ExpAnimatedTexturePart.startFramesVector(builder, animatedTexture.frames.size());
+            ExpAnimatedTexturePart.startFramesVector(builder, interpResult.indices().length);
             for (var frameIndex : interpResult.indices()) {
                 ExpAnimatedTexturePartFrame.createExpAnimatedTexturePartFrame(
                         builder,
