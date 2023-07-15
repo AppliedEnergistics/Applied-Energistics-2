@@ -47,10 +47,10 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
 
     private final WirelessTerminalItem terminal;
     private final BiConsumer<Player, ISubMenu> returnToMainMenu;
-    private IGrid targetGrid;
+    private final IGrid targetGrid;
     private IStorageService sg;
+    @Nullable
     private IWirelessAccessPoint myWap;
-    private double sqRange = Double.MAX_VALUE;
     /**
      * The distance to the currently connected access point in blocks.
      */
@@ -105,39 +105,37 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     }
 
     public boolean rangeCheck() {
-        this.sqRange = this.currentDistanceFromGrid = Double.MAX_VALUE;
+        this.currentDistanceFromGrid = Double.MAX_VALUE;
 
         if (this.targetGrid != null) {
-            if (this.myWap != null) {
-                // If the grid changed, give up
-                if (this.myWap.getGrid() != this.targetGrid) {
-                    return false;
-                }
+            @Nullable
+            IWirelessAccessPoint bestWap = null;
+            double bestSqDistance = Double.MAX_VALUE;
 
-                if (this.testWap(this.myWap)) {
-                    // Still in range of current AP
-                    return true;
-                }
-            }
-
-            // else: Did not have an AP yet, or no longer in range of current AP. Try to find one we are in range of.
-
+            // Find closest WAP
             for (var wap : this.targetGrid.getMachines(WirelessAccessPointBlockEntity.class)) {
-                // `this.myWap` either already returned false for `this.testWap(this.myWap)`, or is null. no need to
-                // check it again
-                if (wap != this.myWap && this.testWap(wap)) {
-                    this.myWap = wap;
-                    // break now, if multiple APs are in range we just take the first one we find
-                    break;
+                double sqDistance = getWapSqDistance(wap);
+
+                // If the WAP is not suitable then MAX_VALUE will be returned and the check will fail
+                if (sqDistance < bestSqDistance) {
+                    bestSqDistance = sqDistance;
+                    bestWap = wap;
                 }
             }
 
+            // If no WAP is found this will work too
+            this.myWap = bestWap;
+            this.currentDistanceFromGrid = Math.sqrt(bestSqDistance);
             return this.myWap != null;
         }
+
         return false;
     }
 
-    protected boolean testWap(IWirelessAccessPoint wap) {
+    /**
+     * @return square distance to WAP if the WAP can be used, or {@link Double#MAX_VALUE} if it cannot be used.
+     */
+    protected double getWapSqDistance(IWirelessAccessPoint wap) {
         double rangeLimit = wap.getRange();
         rangeLimit *= rangeLimit;
 
@@ -148,14 +146,13 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
             var offY = dc.getPos().getY() - this.getPlayer().getY();
             var offZ = dc.getPos().getZ() - this.getPlayer().getZ();
 
-            final double r = offX * offX + offY * offY + offZ * offZ;
-            if (r < rangeLimit && this.sqRange > r && wap.isActive()) {
-                this.sqRange = r;
-                this.currentDistanceFromGrid = Math.sqrt(r);
-                return true;
+            double r = offX * offX + offY * offY + offZ * offZ;
+            if (r < rangeLimit && wap.isActive()) {
+                return r;
             }
         }
-        return false;
+
+        return Double.MAX_VALUE;
     }
 
     @Override
