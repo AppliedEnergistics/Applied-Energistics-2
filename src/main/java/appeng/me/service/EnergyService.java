@@ -133,7 +133,11 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     private final GridPowerStorage localStorage = new GridPowerStorage();
 
-    PowerGraphCache powerGraph = null;
+    /**
+     * The overlay grid containing all the energy services of grids that may be connected by parts like
+     * {@linkplain appeng.parts.networking.QuartzFiberPart quartz fibers}.
+     */
+    EnergyOverlayGrid overlayGrid = null;
 
     public EnergyService(IGrid g, IPathingService pgc) {
         this.grid = (Grid) g;
@@ -544,17 +548,17 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
     }
 
     public void invalidatePowerGraph() {
-        if (this.powerGraph != null) {
-            this.powerGraph.invalidate();
+        if (this.overlayGrid != null) {
+            this.overlayGrid.invalidate();
         }
     }
 
     private List<EnergyService> getConnectedServices() {
-        if (this.powerGraph == null) {
-            PowerGraphCache.buildCache(this);
+        if (this.overlayGrid == null) {
+            EnergyOverlayGrid.buildCache(this);
         }
 
-        return this.powerGraph.energyServices;
+        return this.overlayGrid.energyServices;
     }
 
     private class GridPowerStorage implements IAEPowerStorage {

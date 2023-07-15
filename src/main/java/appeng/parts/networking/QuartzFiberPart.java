@@ -45,6 +45,14 @@ import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
 
+/**
+ * A quartz fiber consists of two grid nodes which are not connected directly.
+ * <p/>
+ * Both grid nodes expose the energy services of both by providing an {@link IEnergyGridProvider} service.
+ * <p/>
+ * Since the quart fiber is part of both grids, removing it will also invalidate the overlay energy grid of both sides
+ * when it is added or removed from a grid.
+ */
 public class QuartzFiberPart extends AEBasePart {
 
     @PartModels
