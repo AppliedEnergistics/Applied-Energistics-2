@@ -29,7 +29,6 @@
     "unlitquad.BlockPartFaceDeserializerMixin",
     "AbstractContainerScreenMixin",
     "BlockBreakParticleMixin",
-    "ModelsReloadMixin",
     "MouseWheelMixin",
     "GuiGraphicsMixin",
     "WrappedGenericStackTooltipModIdMixin",
