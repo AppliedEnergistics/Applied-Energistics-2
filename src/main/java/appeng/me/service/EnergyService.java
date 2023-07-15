@@ -21,12 +21,9 @@ package appeng.me.service;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NavigableSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
 import java.util.SortedSet;
 
 import com.google.common.base.Preconditions;
@@ -46,7 +43,6 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridServiceProvider;
 import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
-import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergyWatcher;
 import appeng.api.networking.energy.IEnergyWatcherNode;
@@ -59,8 +55,9 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
+import appeng.me.energy.IEnergyGridProvider;
 
-public class EnergyService implements IEnergyService, IEnergyGridProvider, IGridServiceProvider {
+public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     static {
         GridHelper.addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyService.class,
@@ -76,16 +73,6 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     }
 
     private static final double MAX_BUFFER_STORAGE = 800;
-
-    private static final Comparator<IEnergyGridProvider> COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST = (o1, o2) -> Double
-            .compare(o2.getProviderStoredEnergy(), o1.getProviderStoredEnergy());
-
-    private static final Comparator<IEnergyGridProvider> COMPARATOR_LOWEST_PERCENTAGE_FIRST = (o1, o2) -> {
-        final double percent1 = (o1.getProviderStoredEnergy() + 1) / (o1.getProviderMaxEnergy() + 1);
-        final double percent2 = (o2.getProviderStoredEnergy() + 1) / (o2.getProviderMaxEnergy() + 1);
-
-        return Double.compare(percent1, percent2);
-    };
 
     private static final Comparator<IAEPowerStorage> COMPARATOR_HIGHEST_PRIORITY_FIRST = (o1, o2) -> {
         final int cmp = Integer.compare(o2.getPriority(), o1.getPriority());
@@ -115,7 +102,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private boolean ongoingInjectOperation = false;
 
     private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
-    private final Grid grid;
+    final Grid grid;
     private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
 
     /**
@@ -145,6 +132,8 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     private double lastStoredPower = -1;
 
     private final GridPowerStorage localStorage = new GridPowerStorage();
+
+    PowerGraphCache powerGraph = null;
 
     public EnergyService(IGrid g, IPathingService pgc) {
         this.grid = (Grid) g;
@@ -243,22 +232,13 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
         final double toExtract = pm.multiply(amt);
-        final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>(COMPARATOR_HIGHEST_AMOUNT_STORED_FIRST);
-        final Set<IEnergyGridProvider> visited = new HashSet<>();
-
         double extracted = 0;
-        toVisit.add(this);
 
-        while (!toVisit.isEmpty() && extracted < toExtract) {
-            final IEnergyGridProvider next = toVisit.poll();
-            visited.add(next);
+        for (EnergyService service : getConnectedServices()) {
+            extracted += service.extractProviderPower(toExtract - extracted, mode);
 
-            extracted += next.extractProviderPower(toExtract - extracted, mode);
-
-            for (IEnergyGridProvider iEnergyGridProvider : next.providers()) {
-                if (!visited.contains(iEnergyGridProvider)) {
-                    toVisit.add(iEnergyGridProvider);
-                }
+            if (extracted >= toExtract) {
+                break;
             }
         }
 
@@ -298,12 +278,10 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         }
     }
 
-    @Override
     public Collection<IEnergyGridProvider> providers() {
         return this.energyGridProviders;
     }
 
-    @Override
     public double extractProviderPower(double amt, Actionable mode) {
         double extractedPower = 0;
 
@@ -340,7 +318,6 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         return result;
     }
 
-    @Override
     public double injectProviderPower(double amt, Actionable mode) {
         final double originalAmount = amt;
 
@@ -369,7 +346,6 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         return overflow;
     }
 
-    @Override
     public double getProviderEnergyDemand(double maxRequired) {
         double required = 0;
 
@@ -401,22 +377,13 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     @Override
     public double injectPower(double amt, Actionable mode) {
-        final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>(COMPARATOR_LOWEST_PERCENTAGE_FIRST);
-        final Set<IEnergyGridProvider> visited = new HashSet<>();
-        toVisit.add(this);
-
         double leftover = amt;
 
-        while (!toVisit.isEmpty() && leftover > 0) {
-            final IEnergyGridProvider next = toVisit.poll();
-            visited.add(next);
+        for (EnergyService service : getConnectedServices()) {
+            leftover = service.injectProviderPower(leftover, mode);
 
-            leftover = next.injectProviderPower(leftover, mode);
-
-            for (IEnergyGridProvider iEnergyGridProvider : next.providers()) {
-                if (!visited.contains(iEnergyGridProvider)) {
-                    toVisit.add(iEnergyGridProvider);
-                }
+            if (leftover <= 0) {
+                break;
             }
         }
 
@@ -439,22 +406,13 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     @Override
     public double getEnergyDemand(double maxRequired) {
-        final Queue<IEnergyGridProvider> toVisit = new PriorityQueue<>(COMPARATOR_LOWEST_PERCENTAGE_FIRST);
-        final Set<IEnergyGridProvider> visited = new HashSet<>();
-        toVisit.add(this);
-
         double required = 0;
 
-        while (!toVisit.isEmpty() && required < maxRequired) {
-            final IEnergyGridProvider next = toVisit.poll();
-            visited.add(next);
+        for (EnergyService service : getConnectedServices()) {
+            required += service.getProviderEnergyDemand(maxRequired - required);
 
-            required += next.getProviderEnergyDemand(maxRequired - required);
-
-            for (IEnergyGridProvider iEnergyGridProvider : next.providers()) {
-                if (!visited.contains(iEnergyGridProvider)) {
-                    toVisit.add(iEnergyGridProvider);
-                }
+            if (required >= maxRequired) {
+                break;
             }
         }
 
@@ -462,20 +420,11 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
     }
 
     @Override
-    public double getProviderStoredEnergy() {
-        return this.getStoredPower();
-    }
-
-    @Override
-    public double getProviderMaxEnergy() {
-        return this.getMaxStoredPower();
-    }
-
-    @Override
     public void removeNode(IGridNode node) {
         var gridProvider = node.getService(IEnergyGridProvider.class);
         if (gridProvider != null) {
             this.energyGridProviders.remove(gridProvider);
+            invalidatePowerGraph();
         }
 
         // idle draw.
@@ -531,6 +480,7 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
         var gridProvider = node.getService(IEnergyGridProvider.class);
         if (gridProvider != null) {
             this.energyGridProviders.add(gridProvider);
+            invalidatePowerGraph();
         }
 
         // idle draw...
@@ -591,6 +541,20 @@ public class EnergyService implements IEnergyService, IEnergyGridProvider, IGrid
 
     public boolean unregisterEnergyInterest(EnergyThreshold threshold) {
         return this.interests.remove(threshold);
+    }
+
+    public void invalidatePowerGraph() {
+        if (this.powerGraph != null) {
+            this.powerGraph.invalidate();
+        }
+    }
+
+    private List<EnergyService> getConnectedServices() {
+        if (this.powerGraph == null) {
+            PowerGraphCache.buildCache(this);
+        }
+
+        return this.powerGraph.energyServices;
     }
 
     private class GridPowerStorage implements IAEPowerStorage {

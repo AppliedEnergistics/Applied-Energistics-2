@@ -18,9 +18,10 @@
 
 package appeng.parts.networking;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,12 +29,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
-import appeng.api.networking.energy.IEnergyGridProvider;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -41,6 +40,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
+import appeng.me.energy.IEnergyGridProvider;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
@@ -130,45 +130,11 @@ public class QuartzFiberPart extends AEBasePart {
     private class GridBridgeProvider implements IEnergyGridProvider {
 
         @Override
-        public Collection<IEnergyGridProvider> providers() {
-            var providers = new ArrayList<IEnergyGridProvider>(2);
-
-            getMainNode().ifPresent(grid -> {
-                var eg = (EnergyService) grid.getEnergyService();
-                providers.add(eg);
-            });
-
-            outerNode.ifPresent(grid -> {
-                var eg = (EnergyService) grid.getEnergyService();
-                providers.add(eg);
-            });
-
-            return providers;
-        }
-
-        @Override
-        public double extractProviderPower(double amt, Actionable mode) {
-            return 0;
-        }
-
-        @Override
-        public double injectProviderPower(double amt, Actionable mode) {
-            return amt;
-        }
-
-        @Override
-        public double getProviderEnergyDemand(double amt) {
-            return 0;
-        }
-
-        @Override
-        public double getProviderStoredEnergy() {
-            return 0;
-        }
-
-        @Override
-        public double getProviderMaxEnergy() {
-            return 0;
+        public Collection<EnergyService> providers() {
+            // The grids always exist because they are created and destroyed at the same time.
+            return List.of(
+                    (EnergyService) Objects.requireNonNull(getMainNode().getGrid()).getEnergyService(),
+                    (EnergyService) Objects.requireNonNull(outerNode.getGrid()).getEnergyService());
         }
 
     }
