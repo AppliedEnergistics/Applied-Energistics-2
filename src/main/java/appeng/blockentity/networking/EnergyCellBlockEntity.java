@@ -18,6 +18,7 @@
 
 package appeng.blockentity.networking;
 
+import appeng.me.energy.StoredEnergyAmount;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -42,11 +43,8 @@ import appeng.util.SettingsFrom;
 
 public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
 
-    private double internalCurrentPower = 0.0;
-    private final double internalMaxPower;
-
-    private byte currentMeta = -1;
-
+    private final StoredEnergyAmount stored;
+    private byte currentDisplayLevel;
     private boolean neighborChangePending;
 
     public EnergyCellBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -56,7 +54,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
                 .addService(IAEPowerStorage.class, this);
 
         var cellBlock = (EnergyCellBlock) getBlockState().getBlock();
-        this.internalMaxPower = cellBlock.getMaxPower();
+        this.stored = new StoredEnergyAmount(0, cellBlock.getMaxPower(), this::emitPowerEvent);
     }
 
     @Override
@@ -68,7 +66,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     public void onReady() {
         super.onReady();
         final int value = this.level.getBlockState(this.worldPosition).getValue(EnergyCellBlock.ENERGY_STORAGE);
-        this.currentMeta = (byte) value;
+        this.currentDisplayLevel = (byte) value;
         this.updateStateForPowerLevel();
     }
 
@@ -88,10 +86,10 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
             return;
         }
 
-        int storageLevel = getStorageLevelFromFillFactor(this.internalCurrentPower / this.internalMaxPower);
+        int storageLevel = getStorageLevelFromFillFactor(this.stored.getAmount() / this.stored.getMaximum());
 
-        if (this.currentMeta != storageLevel) {
-            this.currentMeta = (byte) storageLevel;
+        if (this.currentDisplayLevel != storageLevel) {
+            this.currentDisplayLevel = (byte) storageLevel;
             this.level.setBlockAndUpdate(this.worldPosition,
                     this.level.getBlockState(this.worldPosition).setValue(EnergyCellBlock.ENERGY_STORAGE,
                             storageLevel));
@@ -116,13 +114,13 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     @Override
     public void saveAdditional(CompoundTag data) {
         super.saveAdditional(data);
-        data.putDouble("internalCurrentPower", this.internalCurrentPower);
+        data.putDouble("internalCurrentPower", this.stored.getAmount());
     }
 
     @Override
     public void loadTag(CompoundTag data) {
         super.loadTag(data);
-        this.internalCurrentPower = data.getDouble("internalCurrentPower");
+        this.stored.setStored(data.getDouble("internalCurrentPower"));
     }
 
     @Override
@@ -130,7 +128,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
         super.importSettings(mode, input, player);
 
         if (mode == SettingsFrom.DISMANTLE_ITEM) {
-            this.internalCurrentPower = input.getDouble("internalCurrentPower");
+            this.stored.setStored(input.getDouble("internalCurrentPower"));
         }
     }
 
@@ -138,49 +136,42 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     public void exportSettings(SettingsFrom from, CompoundTag data, @Nullable Player player) {
         super.exportSettings(from, data, player);
 
-        if (from == SettingsFrom.DISMANTLE_ITEM && this.internalCurrentPower > 0.0001) {
-            data.putDouble("internalCurrentPower", this.internalCurrentPower);
-            data.putDouble("internalMaxPower", this.internalMaxPower); // used for tool tip.
+        if (from == SettingsFrom.DISMANTLE_ITEM && this.stored.getAmount() > 0) {
+            data.putDouble("internalCurrentPower", this.stored.getAmount());
+            data.putDouble("internalMaxPower", this.stored.getMaximum()); // used for tool tip.
         }
     }
 
     @Override
     public final double injectAEPower(double amt, Actionable mode) {
-        if (mode == Actionable.SIMULATE) {
-            final double fakeBattery = this.internalCurrentPower + amt;
-            if (fakeBattery > this.internalMaxPower) {
-                return fakeBattery - this.internalMaxPower;
-            }
-
-            return 0;
-        }
-
-        if (this.internalCurrentPower < 0.01 && amt > 0.01) {
-            this.getMainNode().getNode().getGrid()
-                    .postEvent(new GridPowerStorageStateChanged(this, PowerEventType.PROVIDE_POWER));
-        }
-
-        this.internalCurrentPower += amt;
-        if (this.internalCurrentPower > this.internalMaxPower) {
-            amt = this.internalCurrentPower - this.internalMaxPower;
-            this.internalCurrentPower = this.internalMaxPower;
-
+        var inserted = this.stored.insert(amt, mode == Actionable.MODULATE);
+        if (inserted > 0) {
             this.onAmountChanged();
-            return amt;
         }
+        return amt - inserted;
+    }
 
-        this.onAmountChanged();
-        return 0;
+    @Override
+    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
+        return pm.divide(this.extractAEPower(pm.multiply(amt), mode));
+    }
+
+    private double extractAEPower(double amt, Actionable mode) {
+        var extracted = this.stored.extract(amt, mode == Actionable.MODULATE);
+        if (extracted > 0) {
+            this.onAmountChanged();
+        }
+        return extracted;
     }
 
     @Override
     public double getAEMaxPower() {
-        return this.internalMaxPower;
+        return this.stored.getMaximum();
     }
 
     @Override
     public double getAECurrentPower() {
-        return this.internalCurrentPower;
+        return this.stored.getAmount();
     }
 
     @Override
@@ -194,42 +185,12 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     }
 
     @Override
-    public final double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
-        return pm.divide(this.extractAEPower(pm.multiply(amt), mode));
-    }
-
-    @Override
     public int getPriority() {
         return ((EnergyCellBlock) getBlockState().getBlock()).getPriority();
     }
 
-    private double extractAEPower(double amt, Actionable mode) {
-        if (mode == Actionable.SIMULATE) {
-            if (this.internalCurrentPower > amt) {
-                return amt;
-            }
-            return this.internalCurrentPower;
-        }
-
-        final boolean wasFull = this.internalCurrentPower >= this.internalMaxPower - 0.001;
-
-        if (wasFull && amt > 0.001) {
-            getMainNode().ifPresent(
-                    grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER)));
-        }
-
-        if (this.internalCurrentPower > amt) {
-            this.internalCurrentPower -= amt;
-
-            this.onAmountChanged();
-            return amt;
-        }
-
-        amt = this.internalCurrentPower;
-        this.internalCurrentPower = 0;
-
-        this.onAmountChanged();
-        return amt;
+    private void emitPowerEvent(PowerEventType type) {
+        getMainNode().ifPresent(
+                grid -> grid.postEvent(new GridPowerStorageStateChanged(this, type)));
     }
-
 }

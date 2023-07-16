@@ -21,6 +21,7 @@ package appeng.blockentity.powersink;
 import java.util.EnumSet;
 import java.util.Set;
 
+import appeng.me.energy.StoredEnergyAmount;
 import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.Nullable;
@@ -44,14 +45,10 @@ import appeng.helpers.ForgeEnergyAdapter;
 
 public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         implements IAEPowerStorage, IExternalPowerSink {
-
-    // values that determine general function, are set by inheriting classes if
-    // needed. These should generally remain static.
-    private double internalMaxPower = 10000;
     private boolean internalPublicPowerStorage = false;
     private AccessRestriction internalPowerFlow = AccessRestriction.READ_WRITE;
     // the current power buffer.
-    private double internalCurrentPower = 0;
+    private final StoredEnergyAmount stored = new StoredEnergyAmount(0, 10000, this::emitPowerStateEvent);
     private static final Set<Direction> ALL_SIDES = ImmutableSet.copyOf(EnumSet.allOf(Direction.class));
     private Set<Direction> internalPowerSides = ALL_SIDES;
     private final EnergyStorage forgeEnergyAdapter;
@@ -103,25 +100,10 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
 
     @Override
     public final double injectAEPower(double amt, Actionable mode) {
-        if (amt < 0.000001) {
-            return 0;
-        }
-
-        final double required = this.getAEMaxPower() - this.getAECurrentPower();
-        final double insertable = Math.min(required, amt);
-
-        if (mode == Actionable.MODULATE) {
-            if (this.getInternalCurrentPower() < 0.01 && insertable > 0.01) {
-                this.PowerEvent(PowerEventType.PROVIDE_POWER);
-            }
-
-            this.setInternalCurrentPower(this.getInternalCurrentPower() + insertable);
-        }
-
-        return amt - insertable;
+        return amt - stored.insert(amt, mode == Actionable.MODULATE);
     }
 
-    protected void PowerEvent(PowerEventType x) {
+    protected void emitPowerStateEvent(PowerEventType x) {
         // nothing.
     }
 
@@ -151,42 +133,23 @@ public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
     }
 
     protected double extractAEPower(double amt, Actionable mode) {
-        if (mode == Actionable.SIMULATE) {
-            if (this.getInternalCurrentPower() > amt) {
-                return amt;
-            }
-            return this.getInternalCurrentPower();
-        }
-
-        final boolean wasFull = this.getInternalCurrentPower() >= this.getInternalMaxPower() - 0.001;
-        if (wasFull && amt > 0.001) {
-            this.PowerEvent(PowerEventType.REQUEST_POWER);
-        }
-
-        if (this.getInternalCurrentPower() > amt) {
-            this.setInternalCurrentPower(this.getInternalCurrentPower() - amt);
-            return amt;
-        }
-
-        amt = this.getInternalCurrentPower();
-        this.setInternalCurrentPower(0);
-        return amt;
+        return this.stored.extract(amt, mode == Actionable.MODULATE);
     }
 
     public double getInternalCurrentPower() {
-        return this.internalCurrentPower;
+        return this.stored.getAmount();
     }
 
     public void setInternalCurrentPower(double internalCurrentPower) {
-        this.internalCurrentPower = internalCurrentPower;
+        this.stored.setStored(internalCurrentPower);
     }
 
     public double getInternalMaxPower() {
-        return this.internalMaxPower;
+        return stored.getMaximum();
     }
 
     public void setInternalMaxPower(double internalMaxPower) {
-        this.internalMaxPower = internalMaxPower;
+        this.stored.setMaximum(internalMaxPower);
     }
 
     private boolean isInternalPublicPowerStorage() {
