@@ -16,12 +16,16 @@ import net.minecraft.world.level.block.state.properties.Property;
 class FacingStrategy implements IOrientationStrategy {
     private final DirectionProperty property;
     private final List<Property<?>> properties;
-    private final boolean attached;
+    private final boolean allowsPlayerRotation;
 
-    public FacingStrategy(DirectionProperty property, boolean attached) {
+    public FacingStrategy(DirectionProperty property) {
+        this(property, true);
+    }
+
+    public FacingStrategy(DirectionProperty property, boolean allowsPlayerRotation) {
         this.property = property;
         this.properties = Collections.singletonList(property);
-        this.attached = attached;
+        this.allowsPlayerRotation = allowsPlayerRotation;
     }
 
     @Override
@@ -40,6 +44,11 @@ class FacingStrategy implements IOrientationStrategy {
     @Override
     public BlockState getStateForPlacement(BlockState state, BlockPlaceContext context) {
         return setFacing(state, context.getClickedFace());
+    }
+
+    @Override
+    public boolean allowsPlayerRotation() {
+        return allowsPlayerRotation;
     }
 
     @Override
