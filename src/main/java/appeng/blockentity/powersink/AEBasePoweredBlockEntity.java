@@ -21,7 +21,6 @@ package appeng.blockentity.powersink;
 import java.util.EnumSet;
 import java.util.Set;
 
-import appeng.me.energy.StoredEnergyAmount;
 import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +41,7 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.helpers.ForgeEnergyAdapter;
+import appeng.me.energy.StoredEnergyAmount;
 
 public abstract class AEBasePoweredBlockEntity extends AEBaseInvBlockEntity
         implements IAEPowerStorage, IExternalPowerSink {

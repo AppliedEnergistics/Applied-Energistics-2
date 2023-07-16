@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.NavigableSet;
 import java.util.SortedSet;
 
-import appeng.me.energy.GridEnergyStorage;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -57,6 +56,7 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
+import appeng.me.energy.GridEnergyStorage;
 import appeng.me.energy.IEnergyOverlayGridConnection;
 
 public class EnergyService implements IEnergyService, IGridServiceProvider {
@@ -132,7 +132,6 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     private final PathingService pgc;
     private double lastStoredPower = -1;
-
 
     /**
      * The overlay grid containing all the energy services of grids that may be connected by parts like

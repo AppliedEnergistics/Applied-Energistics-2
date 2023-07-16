@@ -1,7 +1,8 @@
 package appeng.me.energy;
 
-import appeng.api.networking.events.GridPowerStorageStateChanged;
 import net.minecraft.util.Mth;
+
+import appeng.api.networking.events.GridPowerStorageStateChanged;
 
 /**
  * Wraps a stored energy amount with callbacks when it passes a low / high threshold.
@@ -17,14 +18,14 @@ public final class StoredEnergyAmount {
     public static final double MAX_MAXIMUM = (double) (Long.MAX_VALUE / 10000);
 
     /**
-     * If we store more energy than this, we are capable of providing energy to the grid.
-     * If we change from being below to being above the threshold, we emit a
+     * If we store more energy than this, we are capable of providing energy to the grid. If we change from being below
+     * to being above the threshold, we emit a
      * {@link appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType#PROVIDE_POWER} event.
      */
     private final double provideThreshold;
     /**
-     * If we have more unfilled storage than this, we are capable of receiving energy.
-     * If we change from being below to being above this threshold, we emit a
+     * If we have more unfilled storage than this, we are capable of receiving energy. If we change from being below to
+     * being above this threshold, we emit a
      * {@link appeng.api.networking.events.GridPowerStorageStateChanged.PowerEventType#RECEIVE_POWER} event.
      */
     private final double receiveThreshold;
@@ -40,7 +41,8 @@ public final class StoredEnergyAmount {
         this(stored, 0.1, 0.1, maximum, eventEmitter);
     }
 
-    public StoredEnergyAmount(double stored, double provideThreshold, double receiveThreshold, double maximum, EventEmitter eventEmitter) {
+    public StoredEnergyAmount(double stored, double provideThreshold, double receiveThreshold, double maximum,
+            EventEmitter eventEmitter) {
         this.provideThreshold = provideThreshold;
         this.receiveThreshold = receiveThreshold;
         this.maximum = maximum;

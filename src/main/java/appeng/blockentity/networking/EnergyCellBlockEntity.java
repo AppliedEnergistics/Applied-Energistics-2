@@ -18,7 +18,6 @@
 
 package appeng.blockentity.networking;
 
-import appeng.me.energy.StoredEnergyAmount;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -39,6 +38,7 @@ import appeng.api.util.AECableType;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.blockentity.grid.AENetworkBlockEntity;
 import appeng.hooks.ticking.TickHandler;
+import appeng.me.energy.StoredEnergyAmount;
 import appeng.util.SettingsFrom;
 
 public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPowerStorage {
