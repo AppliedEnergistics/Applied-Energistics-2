@@ -190,7 +190,7 @@ public class WirelessAccessPointBlock extends AEBaseEntityBlock<WirelessAccessPo
 
     @Override
     public IOrientationStrategy getOrientationStrategy() {
-        return OrientationStrategies.facingAttached();
+        return OrientationStrategies.facing();
     }
 
     @Override

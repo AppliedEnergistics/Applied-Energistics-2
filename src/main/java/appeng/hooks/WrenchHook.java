@@ -53,20 +53,21 @@ public final class WrenchHook {
             var pos = hitResult.getBlockPos();
             var state = level.getBlockState(pos);
             var strategy = IOrientationStrategy.get(state);
+            if (strategy.allowsPlayerRotation()) {
+                var clickedFace = hitResult.getDirection();
+                var orientation = BlockOrientation.get(strategy, state);
+                orientation = orientation.rotateClockwiseAround(clickedFace);
+                var newState = strategy.setOrientation(state, orientation.getSide(RelativeSide.FRONT),
+                        orientation.getSpin());
 
-            var clickedFace = hitResult.getDirection();
-            var orientation = BlockOrientation.get(strategy, state);
-            orientation = orientation.rotateClockwiseAround(clickedFace);
-            var newState = strategy.setOrientation(state, orientation.getSide(RelativeSide.FRONT),
-                    orientation.getSpin());
+                if (newState != state && newState.canSurvive(level, pos)) {
+                    if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitResult.getBlockPos()), player)) {
+                        return InteractionResult.FAIL;
+                    }
 
-            if (newState != state && newState.canSurvive(level, pos)) {
-                if (!Platform.hasPermissions(new DimensionalBlockPos(level, hitResult.getBlockPos()), player)) {
-                    return InteractionResult.FAIL;
+                    level.setBlockAndUpdate(pos, newState);
+                    return InteractionResult.sidedSuccess(level.isClientSide);
                 }
-
-                level.setBlockAndUpdate(pos, newState);
-                return InteractionResult.sidedSuccess(level.isClientSide);
             }
         }
 

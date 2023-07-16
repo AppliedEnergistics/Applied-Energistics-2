@@ -68,7 +68,7 @@ public class PaintSplotchesBlock extends AEBaseEntityBlock<PaintSplotchesBlockEn
 
     @Override
     public IOrientationStrategy getOrientationStrategy() {
-        return OrientationStrategies.facingAttached(false);
+        return OrientationStrategies.facingNoPlayerRotation();
     }
 
     @Override
