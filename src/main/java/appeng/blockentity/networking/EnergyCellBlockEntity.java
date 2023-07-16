@@ -145,7 +145,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
     @Override
     public final double injectAEPower(double amt, Actionable mode) {
         var inserted = this.stored.insert(amt, mode == Actionable.MODULATE);
-        if (inserted > 0) {
+        if (mode == Actionable.MODULATE && inserted > 0) {
             this.onAmountChanged();
         }
         return amt - inserted;
@@ -158,7 +158,7 @@ public class EnergyCellBlockEntity extends AENetworkBlockEntity implements IAEPo
 
     private double extractAEPower(double amt, Actionable mode) {
         var extracted = this.stored.extract(amt, mode == Actionable.MODULATE);
-        if (extracted > 0) {
+        if (mode == Actionable.MODULATE && extracted > 0) {
             this.onAmountChanged();
         }
         return extracted;
