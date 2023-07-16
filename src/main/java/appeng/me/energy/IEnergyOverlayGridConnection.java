@@ -25,26 +25,33 @@ package appeng.me.energy;
 
 import java.util.Collection;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import appeng.api.networking.IGridNodeService;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.me.service.EnergyService;
 
 /**
  * internal use only.
+ * <p/>
+ * This interface is implemented by nodes that provides connections to {@link EnergyService} that are connected via the
+ * {@link appeng.me.service.EnergyOverlayGrid}.
  */
-public interface IEnergyGridProvider extends IGridNodeService {
+@FunctionalInterface
+@ApiStatus.Internal
+public interface IEnergyOverlayGridConnection extends IGridNodeService {
     /**
      * internal use only
-     *
+     * <p>
      * Can return a list of providers behind the current.
-     *
+     * <p>
      * An example would be something acting as proxy between different {@link IEnergyService}s.
-     *
+     * <p>
      * This can contain duplicate entries, AE will ensure that each provider is only visited once.
-     *
-     * Call {@link EnergyService#invalidatePowerGraph()} if this changes.
-     *
+     * <p>
+     * Call {@link EnergyService#invalidateOverlayEnergyGrid()} if this changes.
+     * <p>
      * internal use only
      */
-    Collection<EnergyService> providers();
+    Collection<EnergyService> connectedEnergyServices();
 }

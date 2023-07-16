@@ -31,6 +31,8 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 
+import org.jetbrains.annotations.VisibleForTesting;
+
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
 import appeng.api.config.AccessRestriction;
@@ -55,7 +57,7 @@ import appeng.me.Grid;
 import appeng.me.GridNode;
 import appeng.me.energy.EnergyThreshold;
 import appeng.me.energy.EnergyWatcher;
-import appeng.me.energy.IEnergyGridProvider;
+import appeng.me.energy.IEnergyOverlayGridConnection;
 
 public class EnergyService implements IEnergyService, IGridServiceProvider {
 
@@ -101,7 +103,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
     // modifies the energy grid.
     private boolean ongoingInjectOperation = false;
 
-    private final Multiset<IEnergyGridProvider> energyGridProviders = HashMultiset.create();
+    private final Multiset<IEnergyOverlayGridConnection> overlayGridConnections = HashMultiset.create();
     final Grid grid;
     private final HashMap<IGridNode, IEnergyWatcher> watchers = new HashMap<>();
 
@@ -274,7 +276,8 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
     /**
      * refresh current stored power.
      */
-    private void refreshPower() {
+    @VisibleForTesting
+    public void refreshPower() {
         this.availableTicksSinceUpdate = 0;
         this.globalAvailablePower = 0;
         for (IAEPowerStorage p : this.providers) {
@@ -282,8 +285,8 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         }
     }
 
-    public Collection<IEnergyGridProvider> providers() {
-        return this.energyGridProviders;
+    public Collection<IEnergyOverlayGridConnection> getOverlayGridConnections() {
+        return this.overlayGridConnections;
     }
 
     public double extractProviderPower(double amt, Actionable mode) {
@@ -329,7 +332,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
         final double originalAmount = amt;
 
-        final Iterator<IAEPowerStorage> it = this.requesters.iterator();
+        var it = this.requesters.iterator();
 
         ongoingInjectOperation = true;
         try {
@@ -431,10 +434,10 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     @Override
     public void removeNode(IGridNode node) {
-        var gridProvider = node.getService(IEnergyGridProvider.class);
+        var gridProvider = node.getService(IEnergyOverlayGridConnection.class);
         if (gridProvider != null) {
-            this.energyGridProviders.remove(gridProvider);
-            invalidatePowerGraph();
+            this.overlayGridConnections.remove(gridProvider);
+            invalidateOverlayEnergyGrid();
         }
 
         // idle draw.
@@ -487,10 +490,10 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     @Override
     public void addNode(IGridNode node) {
-        var gridProvider = node.getService(IEnergyGridProvider.class);
+        var gridProvider = node.getService(IEnergyOverlayGridConnection.class);
         if (gridProvider != null) {
-            this.energyGridProviders.add(gridProvider);
-            invalidatePowerGraph();
+            this.overlayGridConnections.add(gridProvider);
+            invalidateOverlayEnergyGrid();
         }
 
         // idle draw...
@@ -553,7 +556,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         return this.interests.remove(threshold);
     }
 
-    public void invalidatePowerGraph() {
+    public void invalidateOverlayEnergyGrid() {
         if (this.overlayGrid != null) {
             this.overlayGrid.invalidate();
         }
