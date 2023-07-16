@@ -51,14 +51,8 @@ class EnergyOverlayGrid {
             // If the service was not already processed, add it and also discover other services
             // reachable via its grid.
             if (connectedServices.add(service)) {
-                for (var provider : service.providers()) {
-                    for (var connectedService : provider.providers()) {
-                        // Usually the provider will also provide the service we're just now visiting.
-                        // Don't add it again to the open set.
-                        if (connectedService != service) {
-                            services.add(connectedService);
-                        }
-                    }
+                for (var provider : service.getOverlayGridConnections()) {
+                    services.addAll(provider.connectedEnergyServices());
                 }
             }
         }

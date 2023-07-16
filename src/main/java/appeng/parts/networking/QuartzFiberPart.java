@@ -18,7 +18,7 @@
 
 package appeng.parts.networking;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +33,7 @@ import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IManagedGridNode;
+import appeng.api.networking.energy.IEnergyService;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
@@ -40,7 +41,7 @@ import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.core.AppEng;
 import appeng.items.parts.PartModels;
-import appeng.me.energy.IEnergyGridProvider;
+import appeng.me.energy.IEnergyOverlayGridConnection;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
 import appeng.parts.PartModel;
@@ -48,7 +49,7 @@ import appeng.parts.PartModel;
 /**
  * A quartz fiber consists of two grid nodes which are not connected directly.
  * <p/>
- * Both grid nodes expose the energy services of both by providing an {@link IEnergyGridProvider} service.
+ * Both grid nodes expose the energy services of both by providing an {@link IEnergyOverlayGridConnection} service.
  * <p/>
  * Since the quart fiber is part of both grids, removing it will also invalidate the overlay energy grid of both sides
  * when it is added or removed from a grid.
@@ -62,18 +63,29 @@ public class QuartzFiberPart extends AEBasePart {
 
     public QuartzFiberPart(IPartItem<?> partItem) {
         super(partItem);
-        var energyBridge = new GridBridgeProvider();
         this.getMainNode()
                 .setIdlePowerUsage(0)
                 .setFlags(GridFlags.CANNOT_CARRY)
-                .addService(IEnergyGridProvider.class, energyBridge);
+                // Expose the energy service of the outer-node on the main-node
+                .addService(IEnergyOverlayGridConnection.class, this::getTheirEnergyServices);
         this.outerNode = GridHelper.createManagedNode(this, NodeListener.INSTANCE)
                 .setTagName("outer")
                 .setIdlePowerUsage(0)
                 .setVisualRepresentation(partItem)
                 .setFlags(GridFlags.CANNOT_CARRY)
                 .setInWorldNode(true)
-                .addService(IEnergyGridProvider.class, energyBridge);
+                // Expose the energy service of the main-node on the outer-node
+                .addService(IEnergyOverlayGridConnection.class, this::getOurEnergyServices);
+    }
+
+    private List<EnergyService> getOurEnergyServices() {
+        var grid = Objects.requireNonNull(getMainNode().getGrid());
+        return Collections.singletonList((EnergyService) grid.getService(IEnergyService.class));
+    }
+
+    private List<EnergyService> getTheirEnergyServices() {
+        var grid = Objects.requireNonNull(outerNode.getGrid());
+        return Collections.singletonList((EnergyService) grid.getService(IEnergyService.class));
     }
 
     @Override
@@ -130,21 +142,6 @@ public class QuartzFiberPart extends AEBasePart {
     @Override
     public IPartModel getStaticModels() {
         return MODELS;
-    }
-
-    /**
-     * A provider of energy grids that makes both connected energy grids accessible to each other.
-     */
-    private class GridBridgeProvider implements IEnergyGridProvider {
-
-        @Override
-        public Collection<EnergyService> providers() {
-            // The grids always exist because they are created and destroyed at the same time.
-            return List.of(
-                    (EnergyService) Objects.requireNonNull(getMainNode().getGrid()).getEnergyService(),
-                    (EnergyService) Objects.requireNonNull(outerNode.getGrid()).getEnergyService());
-        }
-
     }
 
 }
