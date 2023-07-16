@@ -149,10 +149,10 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     }
 
     @Override
-    protected void PowerEvent(PowerEventType x) {
-        if (x == PowerEventType.REQUEST_POWER) {
+    protected void emitPowerStateEvent(PowerEventType x) {
+        if (x == PowerEventType.RECEIVE_POWER) {
             this.getMainNode().ifPresent(
-                    grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.REQUEST_POWER)));
+                    grid -> grid.postEvent(new GridPowerStorageStateChanged(this, PowerEventType.RECEIVE_POWER)));
         } else {
             this.recalculateDisplay();
         }

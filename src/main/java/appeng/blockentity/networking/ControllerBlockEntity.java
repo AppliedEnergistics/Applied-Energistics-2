@@ -123,8 +123,8 @@ public class ControllerBlockEntity extends AENetworkPowerBlockEntity {
     }
 
     @Override
-    protected void PowerEvent(PowerEventType x) {
-        getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this, x)));
+    protected void emitPowerStateEvent(PowerEventType type) {
+        getMainNode().ifPresent(grid -> grid.postEvent(new GridPowerStorageStateChanged(this, type)));
     }
 
     @Override

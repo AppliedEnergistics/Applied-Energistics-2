@@ -39,16 +39,16 @@ public class GridPowerStorageStateChanged extends GridEvent {
     public final IAEPowerStorage storage;
     public final PowerEventType type;
 
-    public GridPowerStorageStateChanged(IAEPowerStorage t, PowerEventType y) {
-        this.storage = t;
-        this.type = y;
+    public GridPowerStorageStateChanged(IAEPowerStorage storage, PowerEventType type) {
+        this.storage = storage;
+        this.type = type;
     }
 
     public enum PowerEventType {
         /**
          * informs the network this block entity is ready to receive power again.
          */
-        REQUEST_POWER,
+        RECEIVE_POWER,
 
         /**
          * informs the network this block entity is ready to provide power again.
