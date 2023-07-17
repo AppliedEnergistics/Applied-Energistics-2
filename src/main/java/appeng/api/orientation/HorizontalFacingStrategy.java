@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
  * Implements a strategy that allows blocks to be oriented using a single directional property. It doesn't allow up and
  * down, and uses the player facing instead in those cases.
  */
-class HorizontalFacingStrategy extends FacingStrategy {
-    public HorizontalFacingStrategy() {
+public class HorizontalFacingStrategy extends FacingStrategy {
+    protected HorizontalFacingStrategy() {
         super(BlockStateProperties.HORIZONTAL_FACING);
     }
 
