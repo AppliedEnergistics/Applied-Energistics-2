@@ -41,7 +41,7 @@ from your network's [autocrafting](../ae2-mechanics/autocrafting.md). This setup
 * The <ItemLink id="export_bus" /> (1) is filtered to the desired item. It has a <ItemLink id="redstone_card" /> and <ItemLink id="crafting_card" />.
   The "Redstone Mode" is set to "Active with signal", The "Crafting Behavior" is set to "Do not use stocked items".
 * The <ItemLink id="level_emitter" /> (2) is configured with the desired item and quantity, and set to "Emit when levels are below limit".
-* The <ItemLink id="interface" /> is in its default configuration.
+* The <ItemLink id="interface" /> (3) is in its default configuration.
 
 ## How It Works
 
