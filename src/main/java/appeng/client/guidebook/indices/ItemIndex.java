@@ -24,7 +24,11 @@ public class ItemIndex extends UniqueIndex<ResourceLocation, PageAnchor> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemIndex.class);
 
     public ItemIndex() {
-        super("Item Index", ItemIndex::getItemAnchors);
+        super(
+                "Item Index",
+                ItemIndex::getItemAnchors,
+                (writer, value) -> writer.value(value.toString()),
+                (writer, value) -> writer.value(value.toString()));
     }
 
     private static List<Pair<ResourceLocation, PageAnchor>> getItemAnchors(ParsedGuidePage page) {

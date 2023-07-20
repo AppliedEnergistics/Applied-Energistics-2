@@ -19,7 +19,6 @@
 package appeng.client.render.tesr;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Vector3f;
 
@@ -56,7 +55,7 @@ public class DriveLedBlockEntityRenderer implements BlockEntityRenderer<DriveBlo
         ms.mulPose(blockOrientation.getQuaternion());
         ms.translate(-0.5, -0.5, -0.5);
 
-        VertexConsumer buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
+        var buffer = buffers.getBuffer(CellLedRenderer.RENDER_LAYER);
 
         Vector3f slotTranslation = new Vector3f();
         for (int row = 0; row < 5; row++) {

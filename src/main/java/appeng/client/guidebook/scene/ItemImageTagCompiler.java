@@ -9,9 +9,12 @@ import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 
 public class ItemImageTagCompiler extends BlockTagCompiler {
+
+    public static final String TAG_NAME = "ItemImage";
+
     @Override
     public Set<String> getTagNames() {
-        return Set.of("ItemImage");
+        return Set.of(TAG_NAME);
     }
 
     @Override

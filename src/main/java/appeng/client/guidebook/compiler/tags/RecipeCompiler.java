@@ -22,6 +22,7 @@ import appeng.client.guidebook.document.block.recipes.LytSmeltingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytSmithingRecipe;
 import appeng.client.guidebook.document.block.recipes.LytTransformRecipe;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import appeng.libs.mdast.model.MdAstNode;
 import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
 import appeng.recipes.transform.TransformRecipe;
@@ -65,6 +66,7 @@ public class RecipeCompiler extends BlockTagCompiler {
             for (var mapping : mappings) {
                 var block = mapping.tryCreate(recipeManager, item);
                 if (block != null) {
+                    block.setSourceNode((MdAstNode) el);
                     parent.append(block);
                     return;
                 }
@@ -87,6 +89,7 @@ public class RecipeCompiler extends BlockTagCompiler {
             for (var mapping : mappings) {
                 var block = mapping.tryCreate(recipe);
                 if (block != null) {
+                    block.setSourceNode((MdAstNode) el);
                     parent.append(block);
                     return;
                 }

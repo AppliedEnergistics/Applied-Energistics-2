@@ -1,6 +1,9 @@
 package appeng.client.guidebook.indices;
 
+import java.io.IOException;
 import java.util.List;
+
+import com.google.gson.stream.JsonWriter;
 
 import appeng.client.guidebook.GuidePageChange;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
@@ -27,4 +30,14 @@ public interface PageIndex {
      */
     void update(List<ParsedGuidePage> allPages,
             List<GuidePageChange> changes);
+
+    /**
+     * Serialize the index to JSON for export to the website.
+     */
+    void export(JsonWriter writer) throws IOException;
+
+    @FunctionalInterface
+    interface JsonSerializer<T> {
+        void write(JsonWriter writer, T value) throws IOException;
+    }
 }

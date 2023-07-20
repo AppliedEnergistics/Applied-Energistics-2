@@ -1,9 +1,12 @@
 package appeng.client.guidebook.indices;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.gson.stream.JsonWriter;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -25,13 +28,18 @@ public class UniqueIndex<K, V> implements PageIndex {
 
     private final String name;
     private final EntryFunction<K, V> entryFunction;
+    private final JsonSerializer<K> keySerializer;
+    private final JsonSerializer<V> valueSerializer;
 
     // We need to track this to fully rebuild on incremental changes if we had duplicates
     private boolean hadDuplicates;
 
-    public UniqueIndex(String name, EntryFunction<K, V> entryFunction) {
+    public UniqueIndex(String name, EntryFunction<K, V> entryFunction, JsonSerializer<K> keySerializer,
+            JsonSerializer<V> valueSerializer) {
         this.name = name;
         this.entryFunction = entryFunction;
+        this.keySerializer = keySerializer;
+        this.valueSerializer = valueSerializer;
     }
 
     @Override
@@ -96,6 +104,16 @@ public class UniqueIndex<K, V> implements PageIndex {
                 hadDuplicates = true;
             }
         }
+    }
+
+    @Override
+    public void export(JsonWriter writer) throws IOException {
+        writer.beginArray();
+        for (var entry : index.entrySet()) {
+            keySerializer.write(writer, entry.getKey());
+            valueSerializer.write(writer, entry.getValue().value());
+        }
+        writer.endArray();
     }
 
     @FunctionalInterface

@@ -15,13 +15,16 @@ import appeng.client.guidebook.extensions.ExtensionCollection;
 import appeng.client.guidebook.scene.element.SceneElementTagCompiler;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import appeng.libs.mdast.model.MdAstNode;
 
 public class SceneTagCompiler extends BlockTagCompiler implements Extension {
+    public static final String TAG_NAME = "GameScene";
+
     private final Map<String, SceneElementTagCompiler> elementTagCompilers = new HashMap<>();
 
     @Override
     public Set<String> getTagNames() {
-        return Set.of("GameScene");
+        return Set.of(TAG_NAME);
     }
 
     @Override
@@ -61,6 +64,8 @@ public class SceneTagCompiler extends BlockTagCompiler implements Extension {
         if (MdxAttrs.getBoolean(compiler, parent, el, "fullWidth", false)) {
             lytScene.setFullWidth(true);
         }
+        lytScene.setSourceNode((MdAstNode) el);
+
         parent.append(lytScene);
     }
 

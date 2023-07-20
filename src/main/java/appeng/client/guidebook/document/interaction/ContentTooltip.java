@@ -16,6 +16,8 @@ import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.layout.LayoutContext;
 import appeng.client.guidebook.layout.MinecraftFontMetrics;
 import appeng.client.guidebook.render.SimpleRenderContext;
+import appeng.siteexport.ExportableResourceProvider;
+import appeng.siteexport.ResourceExporter;
 
 /**
  * A {@link GuideTooltip} that renders a {@link LytBlock} as the tooltip content.
@@ -79,6 +81,10 @@ public class ContentTooltip implements GuideTooltip {
         return components;
     }
 
+    public LytBlock getContent() {
+        return content;
+    }
+
     private LytRect getLayoutBox() {
         var window = Minecraft.getInstance().getWindow();
         var currentViewport = new LytRect(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight());
@@ -88,5 +94,10 @@ public class ContentTooltip implements GuideTooltip {
             layoutBox = content.layout(layoutContext, 0, 0, window.getGuiScaledWidth() / 2);
         }
         return layoutBox;
+    }
+
+    @Override
+    public void exportResources(ResourceExporter exporter) {
+        ExportableResourceProvider.visit(content, exporter);
     }
 }

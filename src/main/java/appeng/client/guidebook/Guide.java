@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -89,6 +90,10 @@ public final class Guide implements PageCollection {
         this.developmentSourceNamespace = developmentSourceNamespace;
         this.indices = indices;
         this.extensions = extensions;
+    }
+
+    public String getDefaultNamespace() {
+        return defaultNamespace;
     }
 
     @Override
@@ -182,6 +187,16 @@ public final class Guide implements PageCollection {
         var page = getParsedPage(id);
 
         return page != null ? PageCompiler.compile(this, extensions, page) : null;
+    }
+
+    public Collection<ParsedGuidePage> getPages() {
+        if (pages == null) {
+            throw new IllegalStateException("Pages are not loaded yet.");
+        }
+
+        var pages = new HashMap<>(this.pages);
+        pages.putAll(developmentPages);
+        return pages.values();
     }
 
     @Override

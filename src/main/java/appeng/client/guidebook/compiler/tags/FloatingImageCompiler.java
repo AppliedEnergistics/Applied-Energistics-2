@@ -17,11 +17,12 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
 import appeng.libs.mdast.model.MdAstNode;
 
 public class FloatingImageCompiler extends FlowTagCompiler {
+    public static final String TAG_NAME = "FloatingImage";
     private static final Logger LOGGER = LoggerFactory.getLogger(FloatingImageCompiler.class);
 
     @Override
     public Set<String> getTagNames() {
-        return Set.of("FloatingImage");
+        return Set.of(TAG_NAME);
     }
 
     @Override

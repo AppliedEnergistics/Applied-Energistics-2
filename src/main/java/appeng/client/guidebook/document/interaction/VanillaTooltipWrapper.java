@@ -7,6 +7,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 
+import appeng.siteexport.ResourceExporter;
+
 public class VanillaTooltipWrapper implements GuideTooltip {
     private final Tooltip tooltip;
 
@@ -20,5 +22,9 @@ public class VanillaTooltipWrapper implements GuideTooltip {
                 .stream()
                 .<ClientTooltipComponent>map(ClientTextTooltip::new)
                 .toList();
+    }
+
+    @Override
+    public void exportResources(ResourceExporter exporter) {
     }
 }

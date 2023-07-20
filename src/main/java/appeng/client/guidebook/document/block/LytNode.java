@@ -9,6 +9,7 @@ import appeng.client.guidebook.document.LytRect;
 import appeng.client.guidebook.document.flow.LytFlowContent;
 import appeng.client.guidebook.style.Styleable;
 import appeng.client.guidebook.style.TextStyle;
+import appeng.libs.mdast.model.MdAstNode;
 
 public abstract class LytNode implements Styleable {
     @Nullable
@@ -17,11 +18,32 @@ public abstract class LytNode implements Styleable {
     private TextStyle style = TextStyle.EMPTY;
     private TextStyle hoverStyle = TextStyle.EMPTY;
 
+    /**
+     * An optional association of this layout node with the node in the source document.
+     */
+    @Nullable
+    private MdAstNode sourceNode;
+
     public void removeChild(LytNode node) {
     }
 
     public List<? extends LytNode> getChildren() {
         return Collections.emptyList();
+    }
+
+    /**
+     * Get the document we're a part of, if any.
+     */
+    @Nullable
+    public LytDocument getDocument() {
+        var current = this;
+        do {
+            if (current instanceof LytDocument document) {
+                return document;
+            }
+            current = current.parent;
+        } while (current != null);
+        return null;
     }
 
     @Nullable
@@ -70,21 +92,29 @@ public abstract class LytNode implements Styleable {
     }
 
     public final LytVisitor.Result visit(LytVisitor visitor) {
+        return visit(visitor, false);
+    }
+
+    /**
+     * @param includeOutOfTreeContent If true, the visitor will also be passed content that is not part of the document
+     *                                tree, such as tooltips, popups, etc.
+     */
+    public final LytVisitor.Result visit(LytVisitor visitor, boolean includeOutOfTreeContent) {
         var result = visitor.beforeNode(this);
         if (result == LytVisitor.Result.STOP) {
             return result;
         }
         if (result != LytVisitor.Result.SKIP_CHILDREN) {
-            if (visitChildren(visitor) == LytVisitor.Result.STOP) {
+            if (visitChildren(visitor, includeOutOfTreeContent) == LytVisitor.Result.STOP) {
                 return LytVisitor.Result.STOP;
             }
         }
         return visitor.afterNode(this);
     }
 
-    protected LytVisitor.Result visitChildren(LytVisitor visitor) {
+    protected LytVisitor.Result visitChildren(LytVisitor visitor, boolean includeOutOfTreeContent) {
         for (var child : getChildren()) {
-            if (child.visit(visitor) == LytVisitor.Result.STOP) {
+            if (child.visit(visitor, includeOutOfTreeContent) == LytVisitor.Result.STOP) {
                 return LytVisitor.Result.STOP;
             }
         }
@@ -114,5 +144,13 @@ public abstract class LytNode implements Styleable {
     @Override
     public @Nullable Styleable getStylingParent() {
         return parent;
+    }
+
+    public @Nullable MdAstNode getSourceNode() {
+        return sourceNode;
+    }
+
+    public void setSourceNode(@Nullable MdAstNode sourceNode) {
+        this.sourceNode = sourceNode;
     }
 }

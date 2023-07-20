@@ -3,11 +3,13 @@ package appeng.libs.mdast.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import com.google.gson.stream.JsonWriter;
 
 import org.jetbrains.annotations.Nullable;
 
+import appeng.libs.mdast.MdAstVisitor;
 import appeng.libs.unist.UnistParent;
 
 /**
@@ -35,6 +37,10 @@ public abstract class MdAstParent<T extends MdAstAnyContent> extends MdAstNode i
             throw new IllegalArgumentException("Cannot add a node of type " + node.getClass() + " to " + this);
         }
         children.add(childClass().cast(node));
+    }
+
+    public void removeChild(MdAstNode node) {
+        children.remove(childClass().cast(node));
     }
 
     @Override
@@ -71,5 +77,32 @@ public abstract class MdAstParent<T extends MdAstAnyContent> extends MdAstNode i
         }
 
         throw new IllegalStateException("Child " + child + " not found");
+    }
+
+    @Override
+    protected MdAstVisitor.Result visitChildren(MdAstVisitor visitor) {
+        for (var child : children()) {
+            if (child instanceof MdAstNode childNode && childNode.visit(visitor) == MdAstVisitor.Result.STOP) {
+                return MdAstVisitor.Result.STOP;
+            }
+        }
+        return MdAstVisitor.Result.CONTINUE;
+    }
+
+    /**
+     * Remove children matching the given predicate.
+     */
+    @Override
+    public void removeChildren(Predicate<MdAstNode> predicate, boolean recursive) {
+        for (var it = children.iterator(); it.hasNext();) {
+            var child = it.next();
+            if (child instanceof MdAstNode astNode) {
+                if (predicate.test(astNode)) {
+                    it.remove();
+                } else {
+                    astNode.removeChildren(predicate, recursive);
+                }
+            }
+        }
     }
 }

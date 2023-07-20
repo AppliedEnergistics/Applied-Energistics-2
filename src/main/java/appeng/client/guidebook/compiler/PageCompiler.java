@@ -6,9 +6,12 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.swing.plaf.nimbus.State;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -67,6 +70,7 @@ import appeng.libs.mdast.model.MdAstInlineCode;
 import appeng.libs.mdast.model.MdAstLink;
 import appeng.libs.mdast.model.MdAstList;
 import appeng.libs.mdast.model.MdAstListItem;
+import appeng.libs.mdast.model.MdAstNode;
 import appeng.libs.mdast.model.MdAstParagraph;
 import appeng.libs.mdast.model.MdAstParent;
 import appeng.libs.mdast.model.MdAstPhrasingContent;
@@ -97,11 +101,11 @@ public final class PageCompiler {
 
     private final Map<String, TagCompiler> tagCompilers = new HashMap<>();
 
-    public PageCompiler(
-            PageCollection pages,
-            ExtensionCollection extensions,
-            String sourcePack,
-            ResourceLocation id,
+    // Data associated with the current page being compiled, this is used by
+    // compilers to communicate with each other within the current page.
+    private final Map<State<?>, Object> compilerState = new IdentityHashMap<>();
+
+    public PageCompiler(PageCollection pages, ExtensionCollection extensions, String sourcePack, ResourceLocation id,
             String pageContent) {
         this.pages = pages;
         this.extensions = extensions;
@@ -160,6 +164,7 @@ public final class PageCompiler {
 
     private LytDocument compile(MdAstRoot root) {
         var document = new LytDocument();
+        document.setSourceNode(root);
         compileBlockContext(root, document);
         return document;
     }
@@ -242,6 +247,9 @@ public final class PageCompiler {
             }
 
             if (layoutChild != null) {
+                if (child instanceof MdAstNode astNode) {
+                    layoutChild.setSourceNode(astNode);
+                }
                 layoutParent.append(layoutChild);
             }
             previousLayoutChild = layoutChild;
@@ -415,31 +423,35 @@ public final class PageCompiler {
     public LytFlowContent createErrorFlowContent(String text, UnistNode child) {
         LytFlowSpan span = new LytFlowSpan();
         span.modifyStyle(style -> {
-            style.color(SymbolicColor.ERROR_TEXT)
-                    .whiteSpace(WhiteSpaceMode.PRE);
+            style.color(SymbolicColor.ERROR_TEXT).whiteSpace(WhiteSpaceMode.PRE);
         });
 
         // Find the position in the source
-        var pos = child.position().start();
-        var startOfLine = pageContent.lastIndexOf('\n', pos.offset()) + 1;
-        var endOfLine = pageContent.indexOf('\n', pos.offset() + 1);
-        if (endOfLine == -1) {
-            endOfLine = pageContent.length();
+        var position = child.position();
+        if (position != null) {
+            var pos = position.start();
+            var startOfLine = pageContent.lastIndexOf('\n', pos.offset()) + 1;
+            var endOfLine = pageContent.indexOf('\n', pos.offset() + 1);
+            if (endOfLine == -1) {
+                endOfLine = pageContent.length();
+            }
+            var line = pageContent.substring(startOfLine, endOfLine);
+
+            text += " " + child.type() + " (" + MdAstPosition.stringify(pos) + ")";
+
+            span.appendText(text);
+            span.appendBreak();
+
+            span.appendText(line);
+            span.appendBreak();
+
+            span.appendText("~".repeat(pos.column() - 1) + "^");
+            span.appendBreak();
+
+            LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
+        } else {
+            LOGGER.warn("{}\n", text);
         }
-        var line = pageContent.substring(startOfLine, endOfLine);
-
-        text += " " + child.type() + " (" + MdAstPosition.stringify(pos) + ")";
-
-        span.appendText(text);
-        span.appendBreak();
-
-        span.appendText(line);
-        span.appendBreak();
-
-        span.appendText("~".repeat(pos.column() - 1) + "^");
-        span.appendBreak();
-
-        LOGGER.warn("{}\n{}\n{}\n", text, line, "~".repeat(pos.column() - 1) + "^");
 
         return span;
     }
@@ -462,5 +474,21 @@ public final class PageCompiler {
 
     public <T extends PageIndex> T getIndex(Class<T> clazz) {
         return pages.getIndex(clazz);
+    }
+
+    public <T> T getCompilerState(State<T> state) {
+        var current = compilerState.getOrDefault(state, state.defaultValue);
+        return state.dataClass.cast(current);
+    }
+
+    public <T> void setCompilerState(State<T> state, T value) {
+        compilerState.put(state, value);
+    }
+
+    public <T> void clearCompilerState(State<T> state) {
+        compilerState.remove(state);
+    }
+
+    public record State<T> (String name, Class<T> dataClass, T defaultValue) {
     }
 }

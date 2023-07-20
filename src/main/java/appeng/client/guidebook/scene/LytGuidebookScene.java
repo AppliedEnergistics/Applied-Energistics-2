@@ -24,6 +24,8 @@ import appeng.client.guidebook.document.LytSize;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.document.block.LytBox;
 import appeng.client.guidebook.document.block.LytVBox;
+import appeng.client.guidebook.document.block.LytVisitor;
+import appeng.client.guidebook.document.interaction.ContentTooltip;
 import appeng.client.guidebook.document.interaction.GuideTooltip;
 import appeng.client.guidebook.document.interaction.InteractiveElement;
 import appeng.client.guidebook.document.interaction.LytWidget;
@@ -36,6 +38,7 @@ import appeng.client.guidebook.scene.annotation.SceneAnnotation;
 import appeng.client.guidebook.screen.GuideIconButton;
 import appeng.client.guidebook.screen.GuideScreen;
 import appeng.core.AEConfig;
+import appeng.siteexport.OffScreenRenderer;
 
 /**
  * Shows a pseudo-in-world scene within the guidebook.
@@ -186,6 +189,70 @@ public class LytGuidebookScene extends LytBox {
 
     public void setFullWidth(boolean fullWidth) {
         this.fullWidth = fullWidth;
+    }
+
+    public LytSize getPreferredSize() {
+        return viewport.getPreferredSize();
+    }
+
+    public byte[] exportAsPng(float scale, boolean hideAnnotations) {
+        if (scene == null) {
+            return null;
+        }
+
+        var prefSize = viewport.getPreferredSize();
+        if (prefSize.width() <= 0 || prefSize.height() <= 0) {
+            return null;
+        }
+
+        // We only scale the viewport, not scaling the view matrix means the scene will still fill it
+        var width = (int) Math.max(1, prefSize.width() * scale);
+        var height = (int) Math.max(1, prefSize.height() * scale);
+
+        try (var osr = new OffScreenRenderer(width, height)) {
+            return osr.captureAsPng(() -> {
+                var renderer = GuidebookLevelRenderer.getInstance();
+                scene.getCameraSettings().setViewportSize(prefSize);
+                var annotations = hideAnnotations ? Collections.<InWorldAnnotation>emptyList()
+                        : scene.getInWorldAnnotations();
+                renderer.render(scene.getLevel(), scene.getCameraSettings(), annotations);
+            });
+        }
+    }
+
+    @Override
+    protected LytVisitor.Result visitChildren(LytVisitor visitor, boolean includeOutOfTreeContent) {
+        var result = super.visitChildren(visitor, includeOutOfTreeContent);
+        if (result == LytVisitor.Result.STOP) {
+            return result;
+        }
+
+        // Visit content hidden in tooltips, if requested
+        if (includeOutOfTreeContent && scene != null) {
+            if (visitAnnotations(scene.getInWorldAnnotations(), visitor) == LytVisitor.Result.STOP) {
+                return LytVisitor.Result.STOP;
+            }
+            if (visitAnnotations(scene.getOverlayAnnotations(), visitor) == LytVisitor.Result.STOP) {
+                return LytVisitor.Result.STOP;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Visits the out-of-tree content within the given annotations.
+     */
+    private LytVisitor.Result visitAnnotations(Collection<? extends SceneAnnotation> annotations, LytVisitor visitor) {
+        for (var annotation : annotations) {
+            if (annotation.getTooltip() instanceof ContentTooltip contentTooltip) {
+                if (contentTooltip.getContent().visit(visitor, true) == LytVisitor.Result.STOP) {
+                    return LytVisitor.Result.STOP;
+                }
+            }
+        }
+
+        return LytVisitor.Result.CONTINUE;
     }
 
     class Viewport extends LytBlock implements InteractiveElement {

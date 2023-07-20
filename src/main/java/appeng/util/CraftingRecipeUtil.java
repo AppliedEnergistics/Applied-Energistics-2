@@ -51,9 +51,8 @@ public final class CraftingRecipeUtil {
         return expandedIngredients;
     }
 
-    private static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
+    public static NonNullList<Ingredient> getIngredients(Recipe<?> recipe) {
         // Special handling for upgrade recipes since those do not override getIngredients
-        // TODO: is this used anywhere?
         if (recipe instanceof SmithingTrimRecipe trimRecipe) {
             var ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
             ingredients.set(0, trimRecipe.template);

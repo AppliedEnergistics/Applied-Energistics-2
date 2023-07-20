@@ -17,6 +17,12 @@ public class MdxJsxAttribute extends MdAstNode implements MdxJsxAttributeNode {
         super("mdxJsxAttribute");
     }
 
+    public MdxJsxAttribute(String name, @Nullable Object value) {
+        this();
+        this.name = name;
+        this.value = value;
+    }
+
     @Override
     public void toText(StringBuilder buffer) {
     }

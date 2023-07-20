@@ -112,8 +112,8 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     }
 
     @Override
-    protected LytVisitor.Result visitChildren(LytVisitor visitor) {
-        if (super.visitChildren(visitor) == LytVisitor.Result.STOP) {
+    protected LytVisitor.Result visitChildren(LytVisitor visitor, boolean includeOutOfTreeContent) {
+        if (super.visitChildren(visitor, includeOutOfTreeContent) == LytVisitor.Result.STOP) {
             return LytVisitor.Result.STOP;
         }
 

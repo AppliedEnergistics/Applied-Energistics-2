@@ -49,9 +49,17 @@ public class GuidebookLevelRenderer {
     public void render(GuidebookLevel level,
             CameraSettings cameraSettings,
             Collection<InWorldAnnotation> annotations) {
-        lightmap.update(level);
-
         RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        var buffers = Minecraft.getInstance().renderBuffers().bufferSource();
+        render(level, cameraSettings, buffers, annotations);
+        RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+    }
+
+    public void render(GuidebookLevel level,
+            CameraSettings cameraSettings,
+            MultiBufferSource.BufferSource buffers,
+            Collection<InWorldAnnotation> annotations) {
+        lightmap.update(level);
 
         var lightEngine = level.getLightEngine();
         while (lightEngine.hasLightWork()) {
@@ -83,10 +91,21 @@ public class GuidebookLevelRenderer {
         var transformedLightDirection = new Vector3f(lightDirection.x, lightDirection.y, lightDirection.z);
         RenderSystem.setShaderLights(transformedLightDirection, transformedLightDirection);
 
-        var renderBuffers = Minecraft.getInstance().renderBuffers();
+        renderContent(level, buffers);
 
-        var buffers = renderBuffers.bufferSource();
+        InWorldAnnotationRenderer.render(buffers, annotations);
 
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.restoreProjectionMatrix();
+
+        Lighting.setupFor3DItems(); // Reset to GUI lighting
+    }
+
+    /**
+     * Render without any setup.
+     */
+    public void renderContent(GuidebookLevel level, MultiBufferSource.BufferSource buffers) {
         renderBlocks(level, buffers, false);
         renderBlocks(level, buffers, true);
         renderBlockEntities(level, buffers);
@@ -115,16 +134,6 @@ public class GuidebookLevelRenderer {
         buffers.endBatch(Sheets.hangingSignSheet());
         buffers.endBatch(Sheets.chestSheet());
         buffers.endBatch();
-
-        InWorldAnnotationRenderer.render(buffers, annotations);
-
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.restoreProjectionMatrix();
-
-        RenderSystem.clear(GlConst.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
-
-        Lighting.setupFor3DItems(); // Reset to GUI lighting
     }
 
     private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers, boolean translucent) {

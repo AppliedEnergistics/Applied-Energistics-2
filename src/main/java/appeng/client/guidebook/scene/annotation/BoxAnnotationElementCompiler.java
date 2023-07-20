@@ -15,9 +15,12 @@ import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
  * Compiles a <code>&lt;AnnotationBox</code> tag into {@link InWorldBoxAnnotation}.
  */
 public class BoxAnnotationElementCompiler extends AnnotationTagCompiler {
+
+    public static final String TAG_NAME = "BoxAnnotation";
+
     @Override
     public Set<String> getTagNames() {
-        return Set.of("BoxAnnotation");
+        return Set.of(TAG_NAME);
     }
 
     @Override

@@ -1,33 +1,49 @@
 package appeng.siteexport;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
+import com.mojang.blaze3d.platform.NativeImage;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.ChatFormatting;
+import net.minecraft.DetectedVersion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.LoadingOverlay;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -35,124 +51,336 @@ import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.features.P2PTunnelAttunementInternal;
 import appeng.api.util.AEColor;
-import appeng.core.AppEng;
+import appeng.client.guidebook.Guide;
+import appeng.client.guidebook.GuidePage;
+import appeng.client.guidebook.compiler.PageCompiler;
+import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.navigation.NavigationNode;
+import appeng.core.AppEngClient;
+import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ColoredItemDefinition;
+import appeng.recipes.entropy.EntropyRecipe;
+import appeng.recipes.handlers.ChargerRecipe;
 import appeng.recipes.handlers.InscriberRecipe;
+import appeng.recipes.mattercannon.MatterCannonAmmo;
+import appeng.recipes.transform.TransformRecipe;
+import appeng.siteexport.mdastpostprocess.PageExportPostProcessor;
 import appeng.siteexport.model.P2PTypeInfo;
+import appeng.util.CraftingRecipeUtil;
+import appeng.util.Platform;
 
 /**
  * Exports a data package for use by the website.
  */
 @Environment(EnvType.CLIENT)
-public final class SiteExporter {
+public final class SiteExporter implements ResourceExporter {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final int ICON_DIMENSION = 128;
 
-    private static volatile SceneExportJob job;
+    private final Minecraft client;
+    private final Map<ResourceLocation, String> exportedTextures = new HashMap<>();
+
+    private final Path outputFolder;
+
+    private final Guide guide;
+
+    private ParsedGuidePage currentPage;
+
+    private final Set<Recipe<?>> recipes = new HashSet<>();
+
+    private final Set<Item> items = new HashSet<>();
+
+    private final Set<Fluid> fluids = new HashSet<>();
+
+    public SiteExporter(Minecraft client, Path outputFolder, Guide guide) {
+        this.client = client;
+        this.outputFolder = outputFolder;
+        this.guide = guide;
+
+        // Ref items used as icons
+        referenceItem(Items.FURNACE);
+        referenceItem(AEBlocks.INSCRIBER);
+        referenceFluid(Fluids.WATER);
+        referenceFluid(Fluids.LAVA);
+        referenceItem(Items.TNT);
+        referenceItem(Blocks.SMITHING_TABLE);
+    }
 
     public static void initialize() {
-        WorldRenderEvents.AFTER_SETUP.register(context -> {
-            continueJob(SceneExportJob::render);
-        });
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            continueJob(SceneExportJob::tick);
-        });
+        // Automatically run the export once the client has started and then exit
+        if (Boolean.getBoolean("appeng.runGuideExportAndExit")) {
+            Path outputFolder = Paths.get(System.getProperty("appeng.guideExportFolder"));
+
+            ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                if (client.getOverlay() instanceof LoadingOverlay) {
+                    return; // Do nothing while it's loading
+                }
+
+                var guide = AppEngClient.instance().getGuide();
+                try {
+                    export(client, outputFolder, guide);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.exit(0);
+            });
+        }
     }
 
     public static void export(FabricClientCommandSource source) {
-        source.sendFeedback(Component.literal("AE2 Site-Export started"));
-        job = null;
+        var guide = AppEngClient.instance().getGuide();
         try {
-            startExport(Minecraft.getInstance(), source);
+            Path outputFolder = Paths.get("guide-export").toAbsolutePath();
+            export(Minecraft.getInstance(), outputFolder, guide);
+
+            source.sendFeedback(Component.literal("Guide data exported to ")
+                    .append(Component.literal("[" + outputFolder.getFileName().toString() + "]")
+                            .withStyle(style -> style
+                                    .withClickEvent(
+                                            new ClickEvent(ClickEvent.Action.OPEN_FILE, outputFolder.toString()))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                            Component.literal("Click to open export folder")))
+                                    .applyFormats(ChatFormatting.UNDERLINE, ChatFormatting.GREEN))));
         } catch (Exception e) {
-            LOGGER.error("AE2 site export failed.", e);
+            e.printStackTrace();
             source.sendError(Component.literal(e.toString()));
         }
     }
 
-    @FunctionalInterface
-    interface JobFunction {
-        void accept(SceneExportJob job) throws Exception;
+    private static void export(Minecraft client, Path outputFolder, Guide guide) throws Exception {
+        new SiteExporter(client, outputFolder, guide).export();
     }
 
-    private static void continueJob(JobFunction event) {
-        if (job != null) {
-            try {
-                event.accept(job);
-                if (job.isAtEnd()) {
-                    job.sendFeedback(Component.literal("AE2 game data exported to ")
-                            .append(Component.literal("[site-export]")
-                                    .withStyle(style -> style
-                                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, "site-export"))
-                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    Component.literal("Click to open export folder")))
-                                            .applyFormats(ChatFormatting.UNDERLINE, ChatFormatting.GREEN))));
-                    job = null;
-                }
-            } catch (Exception e) {
-                LOGGER.error("AE2 site export failed.", e);
-                job.sendError(Component.literal(e.toString()));
-                job = null;
+    @Override
+    public void referenceItem(ItemStack stack) {
+        if (!stack.isEmpty()) {
+            items.add(stack.getItem());
+            if (stack.hasTag()) {
+                LOGGER.error("Couldn't handle stack with NBT tag: {}", stack);
             }
         }
     }
 
-    private static void startExport(Minecraft client, FabricClientCommandSource source) throws Exception {
-        if (!client.hasSingleplayerServer()) {
-            throw new IllegalStateException("Only run this command from single-player.");
+    @Override
+    public void referenceFluid(Fluid fluid) {
+        fluids.add(fluid);
+    }
+
+    private void referenceIngredient(Ingredient ingredient) {
+        for (var item : ingredient.getItems()) {
+            referenceItem(item);
+        }
+    }
+
+    @Override
+    public void referenceRecipe(Recipe<?> recipe) {
+        if (!recipes.add(recipe)) {
+            return; // Already added
         }
 
-        Path outputFolder = Paths.get("site-export").toAbsolutePath();
+        var registryAccess = Platform.getClientRegistryAccess();
+        var resultItem = recipe.getResultItem(registryAccess);
+        if (!resultItem.isEmpty()) {
+            referenceItem(resultItem);
+        }
+        for (var ingredient : CraftingRecipeUtil.getIngredients(recipe)) {
+            referenceIngredient(ingredient);
+        }
+    }
+
+    private void dumpRecipes(SiteExportWriter writer) {
+        for (var recipe : recipes) {
+            if (recipe instanceof CraftingRecipe craftingRecipe) {
+                if (craftingRecipe.isSpecial()) {
+                    continue;
+                }
+                writer.addRecipe(craftingRecipe);
+            } else if (recipe instanceof AbstractCookingRecipe cookingRecipe) {
+                writer.addRecipe(cookingRecipe);
+            } else if (recipe instanceof InscriberRecipe inscriberRecipe) {
+                writer.addRecipe(inscriberRecipe);
+            } else if (recipe instanceof TransformRecipe transformRecipe) {
+                writer.addRecipe(transformRecipe);
+            } else if (recipe instanceof SmithingTransformRecipe smithingTransformRecipe) {
+                writer.addRecipe(smithingTransformRecipe);
+            } else if (recipe instanceof SmithingTrimRecipe smithingTrimRecipe) {
+                writer.addRecipe(smithingTrimRecipe);
+            } else if (recipe instanceof StonecutterRecipe stonecutterRecipe) {
+                writer.addRecipe(stonecutterRecipe);
+            } else if (recipe instanceof EntropyRecipe entropyRecipe) {
+                writer.addRecipe(entropyRecipe);
+            } else if (recipe instanceof MatterCannonAmmo ammoRecipe) {
+                writer.addRecipe(ammoRecipe);
+            } else if (recipe instanceof ChargerRecipe chargerRecipe) {
+                writer.addRecipe(chargerRecipe);
+            } else {
+                LOGGER.warn("Unable to handle recipe {} of type {}", recipe.getId(), recipe.getType());
+            }
+        }
+    }
+
+    @Override
+    public Path copyResource(ResourceLocation id) {
+        try {
+            var pagePath = getPathForWriting(id);
+            byte[] bytes = guide.loadAsset(id);
+            if (bytes == null) {
+                throw new IllegalArgumentException("Couldn't find asset " + id);
+            }
+            return CacheBusting.writeAsset(pagePath, bytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to copy resource " + id, e);
+        }
+    }
+
+    @Override
+    public Path getPathForWriting(ResourceLocation assetId) {
+        try {
+            var path = resolvePath(assetId);
+            Files.createDirectories(path.getParent());
+            return path;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Path getOutputFolder() {
+        return outputFolder;
+    }
+
+    @Override
+    public ResourceLocation getPageSpecificResourceLocation(String suffix) {
+        var path = currentPage.getId().getPath();
+        var idx = path.lastIndexOf('.');
+        if (idx != -1) {
+            path = path.substring(0, idx);
+        }
+        return new ResourceLocation(currentPage.getId().getNamespace(), path + "_" + suffix);
+    }
+
+    @Override
+    public Path getPageSpecificPathForWriting(String suffix) {
+        // Build filename
+        var pageFilename = currentPage.getId().getPath();
+        var filename = FilenameUtils.getBaseName(pageFilename) + "_" + suffix;
+
+        var pagePath = resolvePath(currentPage.getId());
+        var path = pagePath.resolveSibling(filename);
+
+        try {
+            Files.createDirectories(path.getParent());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return path;
+    }
+
+    @Override
+    public @Nullable ResourceLocation getCurrentPageId() {
+        return currentPage != null ? currentPage.getId() : null;
+    }
+
+    private void export() throws Exception {
         if (Files.isDirectory(outputFolder)) {
             MoreFiles.deleteDirectoryContents(outputFolder, RecursiveDeleteOption.ALLOW_INSECURE);
         } else {
             Files.createDirectories(outputFolder);
         }
 
-        var siteExport = new SiteExportWriter();
-
-        var usedVanillaItems = new HashSet<Item>();
-
-        dumpRecipes(client.level.getRecipeManager(), usedVanillaItems, siteExport);
-
-        dumpP2PTypes(usedVanillaItems, siteExport);
-
-        // Used by compass in charger recipe
-        usedVanillaItems.add(Items.COMPASS);
-
-        dumpColoredItems(siteExport);
-
-        // Iterate over all Applied Energistics items
-        var stacks = new ArrayList<ItemStack>();
-        for (Item item : BuiltInRegistries.ITEM) {
-            if (getItemId(item).getNamespace().equals(AppEng.MOD_ID)) {
-                stacks.add(new ItemStack(item));
-            }
+        // Load data packs if needed
+        if (client.level == null) {
+            LOGGER.info("Reloading datapacks to get recipes");
+            Guide.runDatapackReload();
+            LOGGER.info("Completed datapack reload");
         }
 
-        // Also add Vanilla items
-        for (Item usedVanillaItem : usedVanillaItems) {
-            stacks.add(new ItemStack(usedVanillaItem));
+        // Reference all navigation node icons
+        guide.getNavigationTree().getRootNodes().forEach(this::visitNavigationNodeIcons);
+
+        var indexWriter = new SiteExportWriter(guide);
+
+        for (var page : guide.getPages()) {
+            currentPage = page;
+
+            LOGGER.debug("Compiling {}", page);
+            var compiledPage = PageCompiler.compile(guide, guide.getExtensions(), page);
+
+            processPage(indexWriter, page, compiledPage);
+
+            // Post-Process the parsed Markdown AST and export it as JSON into the index directly
+            ExportableResourceProvider.visit(compiledPage.document(), SiteExporter.this);
         }
 
-        // All files in this folder will be directly served from the root of the web-site
-        Path assetFolder = outputFolder.resolve("public");
+        dumpRecipes(indexWriter);
 
-        processItems(client, siteExport, stacks, assetFolder);
+        processItems(client, indexWriter, outputFolder);
+        processFluids(client, indexWriter, outputFolder);
 
-        Path dataFolder = outputFolder.resolve("data");
-        Files.createDirectories(dataFolder);
-        siteExport.write(dataFolder.resolve("game-data.json"));
+        indexWriter.addIndex(guide, ItemIndex.class);
 
-        job = new SceneExportJob(SiteExportScenes.createScenes(), source, assetFolder);
+        var guideContent = outputFolder.resolve("guide.json.gz");
+        byte[] content = indexWriter.toByteArray();
+
+        guideContent = CacheBusting.writeAsset(guideContent, content);
+
+        // Write an uncompressed summary
+        writeSummary(guideContent.getFileName().toString());
+    }
+
+    private void visitNavigationNodeIcons(NavigationNode navigationNode) {
+        referenceItem(navigationNode.icon());
+        navigationNode.children().forEach(this::visitNavigationNodeIcons);
+    }
+
+    private void processPage(SiteExportWriter exportWriter,
+            ParsedGuidePage page,
+            GuidePage compiledPage) {
+
+        // Run post-processors on the AST
+        PageExportPostProcessor.postprocess(this, page, compiledPage);
+
+        exportWriter.addPage(page);
+    }
+
+    private void writeSummary(String guideDataFilename) throws IOException {
+        var modVersion = ModVersion.get();
+        var generated = Instant.now().toEpochMilli();
+        var gameVersion = DetectedVersion.tryDetectVersion().getName();
+
+        // This file is not accessed via the CDN and thus doesn't need a cache-busting name
+        try (var writer = Files.newBufferedWriter(outputFolder.resolve("index.json"), StandardCharsets.UTF_8)) {
+            var jsonWriter = SiteExportWriter.GSON.newJsonWriter(writer);
+            jsonWriter.beginObject();
+            jsonWriter.name("format").value(1);
+            jsonWriter.name("generated").value(generated);
+            jsonWriter.name("gameVersion").value(gameVersion);
+            jsonWriter.name("modVersion").value(modVersion);
+            jsonWriter.name("guideDataPath").value(guideDataFilename);
+            jsonWriter.endObject();
+        }
+    }
+
+    private Path resolvePath(ResourceLocation id) {
+        return outputFolder.resolve(id.getNamespace() + "/" + id.getPath());
     }
 
     /**
@@ -218,80 +446,182 @@ public final class SiteExporter {
         }
     }
 
-    private static void processItems(Minecraft client,
+    private void processItems(Minecraft client,
             SiteExportWriter siteExport,
-            List<ItemStack> items,
-            Path assetFolder) throws IOException {
-        Path iconsFolder = assetFolder.resolve("icons");
+            Path outputFolder) throws IOException {
+        var iconsFolder = outputFolder.resolve("!items");
         if (Files.exists(iconsFolder)) {
             MoreFiles.deleteRecursively(iconsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
         }
 
-        try (var itemRenderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
+        try (var renderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
             var guiGraphics = new GuiGraphics(client, client.renderBuffers().bufferSource());
 
-            itemRenderer.setupItemRendering();
+            renderer.setupItemRendering();
 
-            for (ItemStack stack : items) {
-                String itemId = getItemId(stack.getItem()).toString();
-                var iconPath = iconsFolder.resolve(itemId.replace(':', '/') + ".png");
-                Files.createDirectories(iconPath.getParent());
+            LOGGER.info("Exporting items...");
+            for (var item : items) {
+                var stack = new ItemStack(item);
 
-                itemRenderer.captureAsPng(() -> {
+                var itemId = getItemId(stack.getItem()).toString();
+                var baseName = "!items/" + itemId.replace(':', '/');
+
+                // Guess used sprites from item model
+                var itemModel = client.getItemRenderer().getModel(stack, null, null, 0);
+                var sprites = guessSprites(Set.of(itemModel));
+
+                var iconPath = renderAndWrite(renderer, baseName, () -> {
                     guiGraphics.renderItem(stack, 0, 0);
                     guiGraphics.renderItemDecorations(client.font, stack, 0, 0, "");
-                }, iconPath);
+                }, sprites, true);
 
-                String absIconUrl = "/" + assetFolder.relativize(iconPath).toString().replace('\\', '/');
+                String absIconUrl = "/" + outputFolder.relativize(iconPath).toString().replace('\\', '/');
                 siteExport.addItem(itemId, stack, absIconUrl);
             }
         }
+    }
+
+    private Set<TextureAtlasSprite> guessSprites(Collection<BakedModel> models) {
+        var result = Collections.newSetFromMap(new IdentityHashMap<TextureAtlasSprite, Boolean>());
+        var randomSource = new SingleThreadedRandomSource(0);
+
+        for (var model : models) {
+            for (var quad : model.getQuads(null, null, randomSource)) {
+                result.add(quad.getSprite());
+            }
+        }
+
+        return result;
+    }
+
+    private void processFluids(Minecraft client,
+            SiteExportWriter siteExport,
+            Path outputFolder) throws IOException {
+        var fluidsFolder = outputFolder.resolve("!fluids");
+        if (Files.exists(fluidsFolder)) {
+            MoreFiles.deleteRecursively(fluidsFolder, RecursiveDeleteOption.ALLOW_INSECURE);
+        }
+
+        try (var renderer = new OffScreenRenderer(ICON_DIMENSION, ICON_DIMENSION)) {
+            var guiGraphics = new GuiGraphics(client, client.renderBuffers().bufferSource());
+
+            renderer.setupItemRendering();
+
+            LOGGER.info("Exporting fluids...");
+            for (var fluid : fluids) {
+                var fluidVariant = FluidVariant.of(fluid);
+                String fluidId = BuiltInRegistries.FLUID.getKey(fluid).toString();
+
+                var sprites = FluidVariantRendering.getSprites(fluidVariant);
+                var sprite = sprites != null ? sprites[0] : null;
+                var color = FluidVariantRendering.getColor(fluidVariant);
+
+                var baseName = "!fluids/" + fluidId.replace(':', '/');
+                var iconPath = renderAndWrite(
+                        renderer,
+                        baseName,
+                        () -> {
+                            if (sprite != null) {
+                                var r = FastColor.ARGB32.red(color) / 255.f;
+                                var g = FastColor.ARGB32.green(color) / 255.f;
+                                var b = FastColor.ARGB32.blue(color) / 255.f;
+                                var a = FastColor.ARGB32.alpha(color) / 255.f;
+                                guiGraphics.blit(0, 0, 0, 16, 16, sprite, r, g, b, a);
+                            }
+                        },
+                        sprite != null ? Set.of(sprite) : Set.of(),
+                        false /*
+                               * no alpha for fluids since water is translucent but there's nothing behind it in our
+                               * icons
+                               */
+                );
+
+                String absIconUrl = "/" + outputFolder.relativize(iconPath).toString().replace('\\', '/');
+                siteExport.addFluid(fluidId, fluidVariant, absIconUrl);
+            }
+        }
+
+    }
+
+    @Override
+    public Path renderAndWrite(OffScreenRenderer renderer,
+            String baseName,
+            Runnable renderRunnable,
+            Collection<TextureAtlasSprite> sprites,
+            boolean withAlpha) throws IOException {
+        String extension;
+        byte[] content;
+        if (renderer.isAnimated(sprites)) {
+            extension = ".webp";
+            content = renderer.captureAsWebp(
+                    renderRunnable,
+                    sprites,
+                    withAlpha ? WebPExporter.Format.LOSSLESS_ALPHA : WebPExporter.Format.LOSSLESS);
+        } else {
+            extension = ".png";
+            content = renderer.captureAsPng(renderRunnable);
+        }
+
+        var iconPath = outputFolder.resolve(baseName + extension);
+        Files.createDirectories(iconPath.getParent());
+        return CacheBusting.writeAsset(iconPath, content);
+    }
+
+    @Override
+    public String exportTexture(ResourceLocation textureId) {
+        var exportedPath = exportedTextures.get(textureId);
+        if (exportedPath != null) {
+            return exportedPath;
+        }
+
+        ResourceLocation id = textureId;
+        if (!id.getPath().endsWith(".png")) {
+            id = new ResourceLocation(id.getNamespace(), id.getPath() + ".png");
+        }
+
+        var outputPath = getPathForWriting(id);
+
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(textureId);
+
+        if (texture instanceof TextureAtlas textureAtlas) {
+            for (var sprite : textureAtlas.sprites) {
+                if (sprite.animatedTexture != null) {
+                }
+            }
+        }
+
+        texture.bind();
+        int w, h;
+        int[] intResult = new int[1];
+        GL11.glGetTexLevelParameteriv(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH, intResult);
+        w = intResult[0];
+        GL11.glGetTexLevelParameteriv(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT, intResult);
+        h = intResult[0];
+
+        byte[] imageContent;
+        try (var nativeImage = new NativeImage(w, h, false)) {
+            nativeImage.downloadTexture(0, false);
+            imageContent = nativeImage.asByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            outputPath = CacheBusting.writeAsset(outputPath, imageContent);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to export texture " + textureId, e);
+        }
+        exportedPath = getPathRelativeFromOutputFolder(outputPath);
+        exportedTextures.put(textureId, exportedPath);
+        return exportedPath;
     }
 
     private static ResourceLocation getItemId(Item item) {
         return BuiltInRegistries.ITEM.getKey(item);
     }
 
-    private static void addVanillaItem(Set<Item> items, ItemStack stack) {
-        if (stack == null || stack.isEmpty()) {
-            return;
-        }
-
-        var item = stack.getItem();
-        if ("minecraft".equals(BuiltInRegistries.ITEM.getKey(item).getNamespace())) {
-            items.add(item);
-        }
-    }
-
-    private static void dumpRecipes(RecipeManager recipeManager, Set<Item> vanillaItems, SiteExportWriter siteExport) {
-
-        for (Recipe<?> recipe : recipeManager.getRecipes()) {
-            // Only consider our recipes
-            if (!recipe.getId().getNamespace().equals(AppEng.MOD_ID)) {
-                continue;
-            }
-
-            if (!recipe.getResultItem(null).isEmpty()) {
-                addVanillaItem(vanillaItems, recipe.getResultItem(null));
-            }
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                for (ItemStack item : ingredient.getItems()) {
-                    addVanillaItem(vanillaItems, item);
-                }
-            }
-
-            if (recipe instanceof CraftingRecipe craftingRecipe) {
-                if (craftingRecipe.isSpecial()) {
-                    continue;
-                }
-                siteExport.addRecipe(craftingRecipe);
-            } else if (recipe instanceof AbstractCookingRecipe cookingRecipe) {
-                siteExport.addRecipe(cookingRecipe);
-            } else if (recipe instanceof InscriberRecipe inscriberRecipe) {
-                siteExport.addRecipe(inscriberRecipe);
-            }
-        }
-
+    private static ResourceLocation getFluidId(Fluid fluid) {
+        return BuiltInRegistries.FLUID.getKey(fluid);
     }
 
 }

@@ -345,7 +345,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 if (pos instanceof EntityHitResult entityResult) {
                     Entity entityHit = entityResult.getEntity();
 
-                    final int dmg = (int) Math.ceil(penetration / 20.0f);
+                    final int dmg = getDamageFromPenetration(penetration);
                     if (entityHit instanceof LivingEntity el) {
                         penetration -= dmg;
                         el.knockback(0, -direction.x, -direction.z);
@@ -381,6 +381,10 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 }
             }
         }
+    }
+
+    public static int getDamageFromPenetration(float penetration) {
+        return (int) Math.ceil(penetration / 20.0f);
     }
 
     @Override

@@ -10,14 +10,18 @@ import appeng.client.guidebook.compiler.tags.MdxAttrs;
 import appeng.client.guidebook.document.block.LytBlockContainer;
 import appeng.client.guidebook.scene.level.GuidebookLevel;
 import appeng.libs.mdast.mdx.model.MdxJsxElementFields;
+import appeng.libs.mdast.model.MdAstNode;
 
 /**
  * Handles tags like <code>&lt;BlockImage id="mod:blockid" /&gt;</code> and renders a 3D block image in its place.
  */
 public class BlockImageTagCompiler extends BlockTagCompiler {
+
+    public static final String TAG_NAME = "BlockImage";
+
     @Override
     public Set<String> getTagNames() {
-        return Set.of("BlockImage");
+        return Set.of(TAG_NAME);
     }
 
     @Override
@@ -48,8 +52,8 @@ public class BlockImageTagCompiler extends BlockTagCompiler {
         var lytScene = new LytGuidebookScene(compiler.getExtensions());
         lytScene.setScene(scene);
         lytScene.setInteractive(false);
+        lytScene.setSourceNode((MdAstNode) el);
         parent.append(lytScene);
-
     }
 
 }
