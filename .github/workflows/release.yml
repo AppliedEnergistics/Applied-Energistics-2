@@ -17,7 +17,7 @@ jobs:
       API_NAME: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Validate no assets
         run: test ! -d ./src/generated
@@ -93,7 +93,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
@@ -113,7 +113,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
@@ -134,7 +134,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
@@ -155,7 +155,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
