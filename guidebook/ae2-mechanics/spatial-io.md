@@ -70,6 +70,7 @@ The rules are:
 - Minimum size of 3x3x3 (which defines a 1x1x1 volume)
 - All spatial pylons must be in the outside bounding box
 - All spatial pylons must be on the same network
+- All pylons must be at least 2 blocks long
 
 For example, say you want to define a 3x3x3 volume. Following rule 2, all of the pylons must be within a 5x5x5 shell around
 the volume you want to define. They can be in almost any configuration, as long as they're contained within that 1-block-thick
