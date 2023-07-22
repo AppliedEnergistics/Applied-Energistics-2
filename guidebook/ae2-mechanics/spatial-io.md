@@ -89,6 +89,21 @@ the volume you want to define. They can be in almost any configuration, as long 
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
+A more reasonable setup is this:
+
+<GameScene zoom="4" interactive={true}>
+<ImportStructure src="../assets/assemblies/better_spatial_storage_3x3x3.snbt" />
+
+<BoxAnnotation color="#33dd33" min="1 1 1" max="4 4 4">
+        The volume to be moved
+  </BoxAnnotation>
+
+<BoxAnnotation color="#3333ff" min="5 5 0" max="0 0 5">
+  </BoxAnnotation>
+
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
 ## Efficiency
 
 The efficiency of the pylon array depends on the amount of the shell that you fill. Minimal setups around large volumes
