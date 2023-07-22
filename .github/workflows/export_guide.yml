@@ -1,8 +1,14 @@
 name: 'Export Guide'
 
 on:
-  push:
-  workflow_dispatch:
+  # This will run the workflow every day at 01:00 UTC
+  # This will run against master and publish the development version of the guide
+  schedule:
+    - cron: '0 1 * * *'
+  # Allow running it manually against any ref
+  workflow_dispatch: { }
+  # Run on all push events
+  push: {}
 
 jobs:
   build:
@@ -37,11 +43,36 @@ jobs:
           name: guide
           path: build/guide/
 
-  publish:
+  # Attach the guide as a release artifact if we're building a tag which might be a release
+  attach-release-artifact:
+    if: ${{ startsWith(github.ref, 'refs/tags/fabric/v') || startsWith(github.ref, 'refs/tags/forge/v') }}
     needs: build
-    name: Publish
+    name: Attach Release Artifact
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: guide
+          path: build/guide/
+      - name: Create ZIP
+        working-directory: build/guide
+        run: zip -r ../../guide-assets.zip .
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: guide-assets.zip
+
+  # This job publishes the release version of guides to S3
+  # Our general approach is that the latest release for any given
+  # Minecraft version will be used to upload the guide data for it.
+  # Since we build for both fabric/forge, we only upload tags
+  # starting with fabric/v[...]
+  publish-web-release:
+    needs: build
+    name: Publish Release to Web
     runs-on: ubuntu-latest
     environment: Production
+    if: ${{ startsWith(github.ref, 'refs/tags/fabric/v') }}
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -52,17 +83,14 @@ jobs:
         run: |
           GAME_VERSION=$(jq -r .gameVersion 'build/guide/index.json')
           echo "Game-Version: $GAME_VERSION"
-          MOD_VERSION=$(jq -r .modVersion 'build/guide/index.json')
-          echo "Mod-Version: MOD_VERSION"
           
           echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_OUTPUT"
-          echo "MOD_VERSION=$MOD_VERSION" >> "$GITHUB_OUTPUT"
           
           if [ -z "$GAME_VERSION" ]
           then
             exit 1
           fi
-      - uses: jakejarvis/s3-sync-action@master
+      - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
@@ -73,3 +101,31 @@ jobs:
           AWS_REGION: 'auto'
           SOURCE_DIR: 'build/guide/'
           DEST_DIR: "minecraft-${{ steps.versions.outputs.GAME_VERSION }}"
+
+  # This job publishes to a development folder on the S3 bucket and only runs for
+  # the master branch. To avoid the cost of publishing the assets for every
+  # push to master, it'll only run for manually triggered workflows (workflow_dispatch)
+  # or once per night.
+  publish-web-snapshot:
+    needs: build
+    name: Publish Snapshot to Web
+    runs-on: ubuntu-latest
+    environment: Production
+    if: ${{ github.ref == 'refs/heads/master' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') }}
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: guide
+          path: build/guide/
+      # Finally, upload to S3
+      - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: 'guide-assets'
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
+          AWS_REGION: 'auto'
+          SOURCE_DIR: 'build/guide/'
+          DEST_DIR: "development"
