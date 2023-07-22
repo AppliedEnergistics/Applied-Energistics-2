@@ -6,8 +6,15 @@ on:
     branches:
       - '*'
 
+# Cancel outdated builds for the same branch
+concurrency:
+  group: ci-build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
+    if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+
     runs-on: ubuntu-latest
 
     steps:
