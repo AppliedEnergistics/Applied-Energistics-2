@@ -17,7 +17,7 @@ jobs:
       API_NAME: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Validate no assets
         run: test ! -d ./src/generated
@@ -32,12 +32,12 @@ jobs:
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
-          echo ::set-output name=ARTIFACT_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}.jar
-          echo ::set-output name=ARTIFACT_NAME::appliedenergistics2-fabric-${VERSION}.jar
-          echo ::set-output name=JAVADOC_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}-javadoc.jar
-          echo ::set-output name=JAVADOC_NAME::appliedenergistics2-fabric-${VERSION}-javadoc.jar
-          echo ::set-output name=API_PATH::./build/libs/appliedenergistics2-fabric-${VERSION}-api.jar
-          echo ::set-output name=API_NAME::appliedenergistics2-fabric-${VERSION}-api.jar
+          echo ARTIFACT_PATH=./build/libs/appliedenergistics2-fabric-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo ARTIFACT_NAME=appliedenergistics2-fabric-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_PATH=./build/libs/appliedenergistics2-fabric-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_NAME=appliedenergistics2-fabric-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo API_PATH=./build/libs/appliedenergistics2-fabric-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo API_NAME=appliedenergistics2-fabric-${VERSION}-api.jar >> $GITHUB_OUTPUT
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
         run: tar -I zstd -cf build.tar.zst .gradle build src/generated
@@ -93,7 +93,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
@@ -113,7 +113,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
@@ -134,7 +134,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
@@ -155,7 +155,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
