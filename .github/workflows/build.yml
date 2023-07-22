@@ -13,8 +13,9 @@ concurrency:
 
 jobs:
   build:
-    if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
-
+    # Only run the pull-request build if the pull-request was opened from another repository,
+    # since we already run this workflow for the branch the pull request was made from.
+    if: github.event_name != "pull_request" || github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
 
     steps:
