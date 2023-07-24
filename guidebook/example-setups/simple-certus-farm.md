@@ -52,7 +52,7 @@ automatically.
 ## How It Works
 
 1. The <ItemLink id="annihilation_plane" /> attempts to break what is in front of it, but can only break <ItemLink id="quartz_cluster" />
-   because the only storage on the subnet is the <ItemLink id="formation_plane" />, filtered to <ItemLink id="certus_quartz_crystal" />.
+   because the only storage on the subnet is the <ItemLink id="storage_bus" />, filtered to <ItemLink id="certus_quartz_crystal" />.
 4. The first <ItemLink id="storage_bus" /> stores the certus quartz crystals in the barrel.
 5. The second <ItemLink id="storage_bus" /> gives the main network access to all of the certus quartz crystals in the barrel. It is set to
    high [priority](../ae2-mechanics/import-export-storage.md#storage-priority) so that certus quartz crystals are preferentially
