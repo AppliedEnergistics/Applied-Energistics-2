@@ -28,6 +28,25 @@ Terminals will inherit the color of the [cable](cables.md) they are mounted on.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
+## Terminal Placement
+
+As a terminal is often the first [subpart](../ae2-mechanics/cable-subparts.md) someone might place,
+it is common to get it wrong and place the terminal backwards. Here is an example of what to do and what not to do:
+
+<GameScene zoom="6" background="transparent">
+  <ImportStructure src="../assets/assemblies/terminal_placement.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+
+  <LineAnnotation color="#ff3333" from="2.5 .5 .5" to="4.5 2.5 .5" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#ff3333" from="2.5 2.5 .5" to="4.5 .5 .5" alwaysOnTop={true} thickness="0.05"/>
+
+  <LineAnnotation color="#33ff33" from="-.5 2.5 .5" to="1 .5 .5" alwaysOnTop={true} thickness="0.05"/>
+  <LineAnnotation color="#33ff33" from="1 .5 .5" to="1.5 1 .5" alwaysOnTop={true} thickness="0.05"/>
+</GameScene>
+
+You still have a terminal and an energy acceptor, except now the terminal is the right way around and actually
+connected to the network, and it all fits in a smaller space too.
+
 <a name="terminal-ui"></a>
 
 # Terminal
@@ -40,7 +59,7 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 Your basic terminal, allowing you to view and access the contents of your [network's storage](../ae2-mechanics/import-export-storage.md)
 and request things from your [autocrafting](../ae2-mechanics/autocrafting.md) setup.
 
-### The UI
+## The UI
 
 There are several sections of a basic terminal's UI
 
@@ -68,7 +87,7 @@ On the right there are slots for <ItemLink id="view_cell" />s
 The top-right of the center section (hammer button) brings up the [autocrafting](../ae2-mechanics/autocrafting.md) status
 UI, allowing you to see the progress of your autocrafts and what each [crafting CPU](crafting_cpu_multiblock.md) is doing.
 
-### Recipe
+## Recipe
 
 <RecipeFor id="terminal" />
 
@@ -86,13 +105,13 @@ refilled from [network storage](../ae2-mechanics/import-export-storage.md). Be c
 
 You should upgrade your terminal into a crafting terminal ASAP.
 
-### The UI
+## The UI
 
 The crafting terminal has the same UI as the regular terminal, but with an added crafting grid in the middle.
 
 There are 2 additional buttons, to empty the crafting grid into network storage or your inventory.
 
-### Recipe
+## Recipe
 
 <RecipeFor id="crafting_terminal" />
 
@@ -111,7 +130,7 @@ perform crafts.
 
 You should have one of these in addition to a crafting terminal.
 
-### The UI
+## The UI
 
 The crafting terminal has the same UI as the regular terminal, added [pattern](patterns.md) encoding interface.
 
@@ -150,7 +169,7 @@ The central UI changes depending on the type of pattern to be encoded:
 
 *   The smithing and stonecutting mode UIs work similarly to a smithing table and stonecutter respectively.
 
-### Recipe
+## Recipe
 
 <RecipeFor id="pattern_encoding_terminal" />
 
@@ -168,7 +187,7 @@ and <ItemLink id="molecular_assembler" />s, you can't physically access the prov
 perhaps you're lazy and don't want to walk across your base to insert a [pattern](patterns.md). The pattern access terminal
 allows access to all pattern providers on the network.
 
-### The UI
+## The UI
 
 This terminal has a different UI to all the other terminals.
 
@@ -177,6 +196,6 @@ It has settings for terminal height and which pattern providers to show.
 Pattern providers in the terminal are sorted by what blocks they are connected to, or what name you have given them (in an anvil or
 with a <ItemLink id="name_press" />).
 
-### Recipe
+## Recipe
 
 <RecipeFor id="pattern_access_terminal" />
