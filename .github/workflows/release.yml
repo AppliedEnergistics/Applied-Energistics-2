@@ -15,6 +15,7 @@ jobs:
       JAVADOC_NAME: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_NAME }}
       API_PATH: ${{ steps.prepare_artifact_metadata.outputs.API_PATH }}
       API_NAME: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
+      VERSION: ${{ steps.prepare_artifact_metadata.outputs.VERSION }}
 
     steps:
       - uses: actions/checkout@v3
@@ -38,6 +39,7 @@ jobs:
           echo JAVADOC_NAME=appliedenergistics2-fabric-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
           echo API_PATH=./build/libs/appliedenergistics2-fabric-${VERSION}-api.jar >> $GITHUB_OUTPUT
           echo API_NAME=appliedenergistics2-fabric-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo VERSION=${VERSION} >> $GITHUB_OUTPUT
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
         run: tar -I zstd -cf build.tar.zst .gradle build src/generated
@@ -113,8 +115,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
         with:
@@ -122,12 +122,15 @@ jobs:
       - name: Unpack build artifact
         run: tar axf build.tar.zst
       - name: Validate artifacts exist
-        run: test -d ./build && test -d ./.gradle
+        run: test -d ./build
       - name: Upload to Curseforge
-        env:
-          CHANGELOG: ${{ github.event.release.body }}
-          CURSEFORGE: ${{ secrets.CURSEFORGE }}
-        run: ./gradlew curseforge --no-daemon --max-workers 1
+        uses: Kir-Antipov/mc-publish@69d94c54c333ce6df545827ddfdd3ecb7f1ac8b8
+        with:
+          name: AE2 ${{ needs.build.outputs.VERSION }} [FABRIC]
+          version: ${{ needs.build.outputs.VERSION }}
+          files: ${{ needs.build.outputs.ARTIFACT_PATH }}
+          curseforge-id: 223794
+          curseforge-token: ${{ secrets.CURSEFORGE }}
 
   deploy-modmaven:
     name: Deploy to Modmaven
@@ -155,8 +158,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/gradle-setup
       - name: Download build artifact
         uses: actions/download-artifact@v3
         with:
@@ -164,9 +165,12 @@ jobs:
       - name: Unpack build artifact
         run: tar axf build.tar.zst
       - name: Validate artifacts exist
-        run: test -d ./build && test -d ./.gradle
+        run: test -d ./build
       - name: Upload to Modrinth
-        env:
-          CHANGELOG: ${{ github.event.release.body }}
-          MODRINTH: ${{ secrets.MODRINTH }}
-        run: ./gradlew modrinth --no-daemon --max-workers 1
+        uses: Kir-Antipov/mc-publish@69d94c54c333ce6df545827ddfdd3ecb7f1ac8b8
+        with:
+          name: AE2 ${{ needs.build.outputs.VERSION }} [FABRIC]
+          version: ${{ needs.build.outputs.VERSION }}
+          files: ${{ needs.build.outputs.ARTIFACT_PATH }}
+          modrinth-id: XxWD5pD3
+          modrinth-token: ${{ secrets.MODRINTH }}
