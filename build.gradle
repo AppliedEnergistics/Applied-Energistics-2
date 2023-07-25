@@ -17,12 +17,10 @@
  */
 
 plugins {
-    id 'fabric-loom'
-    id 'maven-publish'
+    id "fabric-loom"
+    id "maven-publish"
     id "com.diffplug.spotless"
-    id "com.matthewprenger.cursegradle"
-    id "com.modrinth.minotaur"
-    id 'io.github.juuxel.loom-quiltflower'
+    id "io.github.juuxel.loom-quiltflower"
     id "com.github.johnrengelman.shadow"
     id "de.undercouch.download"
 }
@@ -536,62 +534,6 @@ task downloadFromCrowdin(type: JavaExec) {
     mainClass = 'Crowdin'
     args 'update_translations'
     workingDir "."
-}
-
-////////////////
-// Curse Forge
-if (System.getenv("CURSEFORGE") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
-    def cfReleaseType = "release"
-    if (ext.isAlpha) {
-        cfReleaseType = "alpha"
-    } else if (ext.isBeta) {
-        cfReleaseType = "beta"
-    }
-
-    curseforge {
-        apiKey = System.getenv("CURSEFORGE")
-        project {
-            id = project.curseforge_project
-            changelogType = "markdown"
-            changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
-            releaseType = cfReleaseType
-            addGameVersion project.minecraft_version
-            addGameVersion "Fabric"
-            mainArtifact(remapJar.archiveFile) {
-                displayName = "AE2 ${project.version} [FABRIC]"
-            }
-        }
-        options {
-            forgeGradleIntegration = false
-        }
-        afterEvaluate {
-            tasks.getByName("curseforge${project.curseforge_project}").dependsOn remapJar
-        }
-    }
-}
-
-////////////////
-// Modrinth
-
-if (System.getenv("MODRINTH") && !version.endsWith("-SNAPSHOT") && project.version != "0.0.0") {
-    def mrVersionType = "release"
-    if (ext.isAlpha) {
-        mrVersionType = "alpha"
-    } else if (ext.isBeta) {
-        mrVersionType = "beta"
-    }
-
-    modrinth {
-        token = System.getenv("MODRINTH")
-        changelog = System.getenv("CHANGELOG") ?: "Please visit our [releases](https://github.com/AppliedEnergistics/Applied-Energistics-2/releases) for a changelog"
-        projectId = 'XxWD5pD3'
-        versionName = project.version + " [FABRIC]"
-        versionNumber = "fabric-" + project.version
-        versionType = mrVersionType
-        uploadFile = remapJar
-        gameVersions = [project.minecraft_version]
-        loaders = ["fabric"]
-    }
 }
 
 ////////////////
