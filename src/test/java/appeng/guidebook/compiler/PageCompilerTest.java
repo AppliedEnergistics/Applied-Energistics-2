@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import appeng.client.guidebook.Guide;
@@ -26,7 +25,6 @@ class PageCompilerTest {
     }
 
     @Test
-    @Disabled("disabled until https://github.com/AppliedEnergistics/Applied-Energistics-2/pull/7078/files is merged")
     void testCompileIndexPage() throws Exception {
         compilePage("index");
     }
