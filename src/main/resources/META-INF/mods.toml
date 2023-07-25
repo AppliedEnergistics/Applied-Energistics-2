@@ -17,7 +17,7 @@ description="A Mod about Matter, Energy and using them to conquer the world.."
 [[dependencies.ae2]]
     modId="forge"
     mandatory=true
-    versionRange="${forge_version}"
+    versionRange="${neoforge_version}"
     ordering="NONE"
     side="BOTH"
 

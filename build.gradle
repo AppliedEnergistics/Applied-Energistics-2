@@ -17,13 +17,7 @@
  */
 
 buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://repo.spongepowered.org/maven' }
-        mavenCentral()
-    }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '6.0.+', changing: true
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
@@ -35,11 +29,10 @@ plugins {
     id "com.modrinth.minotaur"
     id "com.github.johnrengelman.shadow"
     id "idea"
+    id "net.neoforged.gradle"
 }
 
-apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
-apply plugin: "eclipse"
 
 // All jar files from this folder will be added automatically as runtime mod dependencies
 def extraModsDir = "extra-mods-${minecraft_version}"
@@ -117,7 +110,7 @@ dependencies {
         transitive = false
     }
 
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.neoforged:forge:${minecraft_version}-${neoforge_version}"
 
     // compile against provided APIs
     compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}")
@@ -383,7 +376,7 @@ processResources {
     exclude '.cache'
 
     filesMatching("META-INF/mods.toml") {
-        expand 'minecraft_version': project.minecraft_version_range, 'forge_version': project.forge_version_range,
+        expand 'minecraft_version': project.minecraft_version_range, 'neoforge_version': project.neoforge_version_range,
                 'jei_version': project.jei_version_range, 'top_version': project.top_version_range,
                 'jade_version': project.jade_version_range
         filter { line ->
