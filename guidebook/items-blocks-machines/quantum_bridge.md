@@ -15,7 +15,7 @@ item_ids:
 
 ![A formed Quantum Network Bridge](../assets/diagrams/quantum_bridge_demonstration.png)
 
-Quantum Network Bridges can extend a network over infinite distances and even between dimensions.
+Quantum Network Bridges can extend a [network](../ae2-mechanics/me-network-connections.md) over infinite distances and even between dimensions.
 They can carry 32 channels in total (regardless of how cables are connected to each face), essentially
 acting like a wireless [dense cable](cables.md#dense-cable).
 
