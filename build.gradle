@@ -299,8 +299,6 @@ sourceSets {
 
 test {
     useJUnitPlatform()
-    systemProperty "fabric.debug.logLibClassification", "true"
-    systemProperty "fabric.debug.logClassLoad", "true"
 }
 
 dependencies {
