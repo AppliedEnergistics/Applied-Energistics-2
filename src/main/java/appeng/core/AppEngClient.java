@@ -53,6 +53,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import appeng.api.parts.CableRenderMode;
 import appeng.api.parts.PartHelper;
@@ -93,6 +94,7 @@ import appeng.init.client.InitRenderTypes;
 import appeng.init.client.InitScreens;
 import appeng.init.client.InitStackRenderHandlers;
 import appeng.items.storage.StorageCellTooltipComponent;
+import appeng.siteexport.SiteExporter;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 
@@ -258,6 +260,12 @@ public class AppEngClient extends AppEngBase {
         InitScreens.init();
         InitStackRenderHandlers.init();
         InitRenderTypes.init();
+
+        // Only activate the site exporter when we're not running a release version, since it'll
+        // replace blocks around spawn.
+        if (!FMLLoader.isProduction()) {
+            SiteExporter.initialize();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

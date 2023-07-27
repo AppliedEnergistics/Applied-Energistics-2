@@ -140,9 +140,11 @@ public final class Guide implements PageCollection {
         try {
             var layeredAccess = RegistryLayer.createRegistryAccess();
 
-            PackRepository packRepository = new PackRepository(
-                    new ServerPacksSource());
+            PackRepository packRepository = new PackRepository(new ServerPacksSource());
+            net.minecraftforge.resource.ResourcePackLoader.loadResourcePacks(packRepository,
+                    net.minecraftforge.server.ServerLifecycleHooks::buildPackFinder);
             packRepository.reload();
+            packRepository.setSelected(packRepository.getAvailableIds());
 
             var resourceManager = new MultiPackResourceManager(PackType.SERVER_DATA,
                     packRepository.openAllSelected());
@@ -160,7 +162,14 @@ public final class Guide implements PageCollection {
                     Commands.CommandSelection.ALL,
                     0,
                     Util.backgroundExecutor(),
-                    Runnable::run).get();
+                    command -> {
+                        try {
+                            command.run();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            throw e;
+                        }
+                    }).get();
             stuff.updateRegistryTags(layeredAccess.compositeAccess());
             Platform.fallbackClientRecipeManager = stuff.getRecipeManager();
             Platform.fallbackClientRegistryAccess = layeredAccess.compositeAccess();
