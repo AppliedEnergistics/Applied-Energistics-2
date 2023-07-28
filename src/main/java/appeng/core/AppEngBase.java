@@ -167,8 +167,6 @@ public abstract class AppEngBase implements AppEng {
         AEConfig.instance().save();
         InitUpgrades.init();
         initNetworkHandler();
-
-        ChunkLoadingService.register();
     }
 
     protected void initNetworkHandler() {
