@@ -136,7 +136,9 @@ jobs:
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
-          loader: neoforge
+          loaders: |
+            neoforge
+            forge
 
   deploy-modmaven:
     name: Deploy to Modmaven
@@ -185,4 +187,6 @@ jobs:
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
-          loader: neoforge
+          loaders: |
+            neoforge
+            forge
