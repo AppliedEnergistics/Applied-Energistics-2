@@ -134,6 +134,8 @@ jobs:
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
+            optifine(incompatible)
+            theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
           loaders: |
@@ -185,8 +187,12 @@ jobs:
             wthit(optional){modrinth:6AQIaxuO}{curseforge:440979}
             rei(optional){modrinth:nfn13YXA}{curseforge:310111}
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
+            optifine(incompatible)
+            theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
           loaders: |
             neoforge
             forge
+          modrinth-id: XxWD5pD3
+          modrinth-token: ${{ secrets.MODRINTH }}
