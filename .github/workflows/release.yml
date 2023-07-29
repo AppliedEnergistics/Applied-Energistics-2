@@ -131,7 +131,9 @@ jobs:
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
-          loader: neoforge
+          loaders: |
+            neoforge
+            forge
 
   deploy-modmaven:
     name: Deploy to Modmaven
@@ -175,4 +177,6 @@ jobs:
           files: ${{ needs.build.outputs.ARTIFACT_PATH }}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
-          loader: neoforge
+          loaders: |
+            neoforge
+            forge
