@@ -505,6 +505,10 @@ public final class AEConfig {
         CLIENT.clearGridOnClose.set(enabled);
     }
 
+    public boolean isResortingWhileShiftIsHeldEnabled() {
+        return CLIENT.resortingWhileShiftIsHeld.get();
+    }
+
     public double getVibrationChamberEnergyPerFuelTick() {
         return COMMON.vibrationChamberEnergyPerFuelTick.get();
     }
@@ -541,6 +545,7 @@ public final class AEConfig {
         public final EnumOption<TerminalStyle> terminalStyle;
         public final BooleanOption pinAutoCraftedItems;
         public final BooleanOption clearGridOnClose;
+        public final BooleanOption resortingWhileShiftIsHeld;
         public final IntegerOption terminalMargin;
 
         // Search Settings
@@ -580,6 +585,8 @@ public final class AEConfig {
                     "Pin items that the player auto-crafts to the top of the terminal");
             this.clearGridOnClose = client.addBoolean("clearGridOnClose", false,
                     "Automatically clear the crafting/encoding grid when closing the terminal");
+            this.resortingWhileShiftIsHeld = terminals.addBoolean("resortingWhileShiftIsHeld", false,
+                    "Setting this to TRUE will disable the feature where you hold SHIFT inside the terminal to freeze items in the grid");
             this.terminalMargin = client.addInt("terminalMargin", 25,
                     "The vertical margin to apply when sizing terminals. Used to make room for centered item mod search bars");
 

@@ -343,7 +343,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        repo.setPaused(hasShiftDown());
+        if (!config.isResortingWhileShiftIsHeldEnabled()) {
+            repo.setPaused(hasShiftDown());
+        }
+
         updateSearch();
 
         // Override the dialog title found in the screen JSON with the user-supplied name
