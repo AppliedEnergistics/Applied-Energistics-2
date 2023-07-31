@@ -137,7 +137,7 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
                 if (p != null) {
                     var dist = p.getCableConnectionLength(this.getCableConnectionType());
 
-                    if (dist > 8) {
+                    if (dist <= 0 || dist > 8) {
                         continue;
                     }
 
