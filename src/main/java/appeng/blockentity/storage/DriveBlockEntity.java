@@ -49,6 +49,7 @@ import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
@@ -224,6 +225,17 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         }
 
         return handler.getStatus();
+    }
+
+    @Nullable
+    @Override
+    public StorageCell getCellInventory(int slot) {
+        var handler = this.invBySlot[slot];
+        if (handler == null) {
+            return null;
+        }
+
+        return handler.getCell();
     }
 
     @Override

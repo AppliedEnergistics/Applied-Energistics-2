@@ -246,6 +246,16 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         return cell.isEmpty() ? null : cell.getItem();
     }
 
+    @Nullable
+    @Override
+    public StorageCell getCellInventory(int slot) {
+        if (slot != 0 || this.cellHandler == null) {
+            return null;
+        }
+
+        return this.cellHandler.cellInventory;
+    }
+
     @Override
     public boolean isPowered() {
         if (isClientSide()) {
