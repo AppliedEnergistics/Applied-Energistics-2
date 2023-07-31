@@ -248,7 +248,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
 
     @Nullable
     @Override
-    public StorageCell getCellInventory(int slot) {
+    public StorageCell getInternalCellInventory(int slot) {
         if (slot != 0 || this.cellHandler == null) {
             return null;
         }

@@ -229,7 +229,7 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
 
     @Nullable
     @Override
-    public StorageCell getCellInventory(int slot) {
+    public StorageCell getInternalCellInventory(int slot) {
         var handler = this.invBySlot[slot];
         if (handler == null) {
             return null;

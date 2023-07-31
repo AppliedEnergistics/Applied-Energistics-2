@@ -64,8 +64,10 @@ public interface IChestOrDrive extends IActionHost {
     Item getCellItem(int slot);
 
     /**
-     * Returns the inventory of the storage cell in the given slot or null.
+     * Returns the inventory of the storage cell in the given slot or null. <br>
+     * NOTE: Interacting with this inventory directly will bypass any monitoring done by chests or drives and thus may
+     * not properly update things like LED colours.
      */
     @Nullable
-    StorageCell getCellInventory(int slot);
+    StorageCell getInternalCellInventory(int slot);
 }
