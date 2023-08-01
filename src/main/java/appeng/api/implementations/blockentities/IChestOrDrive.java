@@ -23,12 +23,12 @@
 
 package appeng.api.implementations.blockentities;
 
-import appeng.api.storage.MEStorage;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.Item;
 
 import appeng.api.networking.security.IActionHost;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 
@@ -65,11 +65,11 @@ public interface IChestOrDrive extends IActionHost {
     Item getCellItem(int slot);
 
     /**
-     * Returns the storage for the given slot that has been attached to the ME Grid.
-     * Interacting with this inventory (rather than {@link #getOriginalCellInventory(int)}) will update
-     * the visual state of the cell in this inventory.
+     * Returns the storage for the given slot that has been attached to the ME Grid. Interacting with this inventory
+     * (rather than {@link #getOriginalCellInventory(int)}) will update the visual state of the cell in this inventory.
      * <p/>
-     * The storage returned from this method may or may not be the same object as {@link #getOriginalCellInventory(int)}.
+     * The storage returned from this method may or may not be the same object as
+     * {@link #getOriginalCellInventory(int)}.
      */
     @Nullable
     MEStorage getCellInventory(int slot);
