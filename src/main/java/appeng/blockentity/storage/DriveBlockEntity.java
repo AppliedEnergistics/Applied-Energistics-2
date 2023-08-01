@@ -47,8 +47,10 @@ import appeng.api.orientation.BlockOrientation;
 import appeng.api.orientation.RelativeSide;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
+import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
@@ -224,6 +226,21 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         }
 
         return handler.getStatus();
+    }
+
+    @Override
+    public @Nullable MEStorage getCellInventory(int slot) {
+        return this.invBySlot[slot];
+    }
+
+    @Nullable
+    @Override
+    public StorageCell getOriginalCellInventory(int slot) {
+        var handler = this.invBySlot[slot];
+        if (handler != null) {
+            return handler.getCell();
+        }
+        return null;
     }
 
     @Override

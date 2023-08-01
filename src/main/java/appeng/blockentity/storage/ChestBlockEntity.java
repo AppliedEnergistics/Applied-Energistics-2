@@ -211,7 +211,7 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
             return null;
         }
 
-        return new ChestMonitorHandler(cellInventory, cellInventory);
+        return new ChestMonitorHandler(cellInventory);
     }
 
     @Override
@@ -244,6 +244,23 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
         }
         ItemStack cell = getCell();
         return cell.isEmpty() ? null : cell.getItem();
+    }
+
+    @Override
+    public @Nullable MEStorage getCellInventory(int slot) {
+        if (slot == 0 && this.cellHandler != null) {
+            return this.cellHandler;
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public StorageCell getOriginalCellInventory(int slot) {
+        if (slot == 0 && this.cellHandler != null) {
+            return this.cellHandler.cellInventory;
+        }
+        return null;
     }
 
     @Override
@@ -548,8 +565,8 @@ public class ChestBlockEntity extends AENetworkPowerBlockEntity
     private class ChestMonitorHandler extends DelegatingMEInventory {
         private final StorageCell cellInventory;
 
-        public ChestMonitorHandler(MEStorage inventory, StorageCell cellInventory) {
-            super(inventory);
+        public ChestMonitorHandler(StorageCell cellInventory) {
+            super(cellInventory);
             this.cellInventory = cellInventory;
         }
 
