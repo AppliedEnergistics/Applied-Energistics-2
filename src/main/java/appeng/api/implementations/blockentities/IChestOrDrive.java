@@ -23,6 +23,7 @@
 
 package appeng.api.implementations.blockentities;
 
+import appeng.api.storage.MEStorage;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.Item;
@@ -64,10 +65,20 @@ public interface IChestOrDrive extends IActionHost {
     Item getCellItem(int slot);
 
     /**
+     * Returns the storage for the given slot that has been attached to the ME Grid.
+     * Interacting with this inventory (rather than {@link #getOriginalCellInventory(int)}) will update
+     * the visual state of the cell in this inventory.
+     * <p/>
+     * The storage returned from this method may or may not be the same object as {@link #getOriginalCellInventory(int)}.
+     */
+    @Nullable
+    MEStorage getCellInventory(int slot);
+
+    /**
      * Returns the inventory of the storage cell in the given slot or null. <br>
      * NOTE: Interacting with this inventory directly will bypass any monitoring done by chests or drives and thus may
      * not properly update things like LED colours.
      */
     @Nullable
-    StorageCell getInternalCellInventory(int slot);
+    StorageCell getOriginalCellInventory(int slot);
 }

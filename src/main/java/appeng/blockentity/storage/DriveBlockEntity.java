@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Set;
 
+import appeng.api.storage.MEStorage;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -227,15 +228,19 @@ public class DriveBlockEntity extends AENetworkInvBlockEntity
         return handler.getStatus();
     }
 
+    @Override
+    public @Nullable MEStorage getCellInventory(int slot) {
+        return this.invBySlot[slot];
+    }
+
     @Nullable
     @Override
-    public StorageCell getInternalCellInventory(int slot) {
+    public StorageCell getOriginalCellInventory(int slot) {
         var handler = this.invBySlot[slot];
-        if (handler == null) {
-            return null;
+        if (handler != null) {
+            return handler.getCell();
         }
-
-        return handler.getCell();
+        return null;
     }
 
     @Override
