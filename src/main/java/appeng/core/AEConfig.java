@@ -242,6 +242,14 @@ public final class AEConfig {
         CLIENT.useExternalSearch.set(enable);
     }
 
+    public boolean isUseExternalSearchEngine() {
+        return CLIENT.useExternalSearchEngine.get();
+    }
+
+    public void setUseExternalSearchEngine(boolean enable) {
+        CLIENT.useExternalSearchEngine.set(enable);
+    }
+
     public boolean isClearExternalSearchOnOpen() {
         return CLIENT.clearExternalSearchOnOpen.get();
     }
@@ -544,6 +552,7 @@ public final class AEConfig {
         public final BooleanOption searchTooltips;
         public final BooleanOption searchModNameInTooltips;
         public final BooleanOption useExternalSearch;
+        public final BooleanOption useExternalSearchEngine;
         public final BooleanOption clearExternalSearchOnOpen;
         public final BooleanOption syncWithExternalSearch;
         public final BooleanOption rememberLastSearch;
@@ -589,6 +598,8 @@ public final class AEConfig {
                     "Should the mod name be included when searching in tooltips.");
             this.useExternalSearch = search.addBoolean("useExternalSearch", false,
                     "Replaces AEs own search with the search of REI or JEI");
+            this.useExternalSearchEngine = search.addBoolean("useExternalSearchEngine", true,
+                    "Uses the search engine from REI or JEI");
             this.clearExternalSearchOnOpen = search.addBoolean("clearExternalSearchOnOpen", true,
                     "When using useExternalSearch, clears the search when the terminal opens");
             this.syncWithExternalSearch = search.addBoolean("syncWithExternalSearch", true,

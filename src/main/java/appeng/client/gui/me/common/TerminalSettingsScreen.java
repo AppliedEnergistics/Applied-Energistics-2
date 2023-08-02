@@ -22,6 +22,8 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
     private final AECheckbox useInternalSearchRadio;
     private final AECheckbox useExternalSearchRadio;
 
+    private final AECheckbox useExternalSearchEngineCheckbox;
+
     private final AECheckbox rememberCheckbox;
     private final AECheckbox autoFocusCheckbox;
     private final AECheckbox syncWithExternalCheckbox;
@@ -74,6 +76,9 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         clearExternalCheckbox = widgets.addCheckbox("clearExternalCheckbox",
                 GuiText.SearchSettingsClearExternal.text(externalSearchMod), this::save);
 
+        useExternalSearchEngineCheckbox = widgets.addCheckbox("useExternalSearchEngineCheckbox",
+                GuiText.SearchSettingsUseExternalSearchEngine.text(externalSearchMod), this::save);
+
         updateState();
     }
 
@@ -117,6 +122,7 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         syncWithExternalCheckbox.setSelected(config.isSyncWithExternalSearch());
         clearExternalCheckbox.setSelected(config.isClearExternalSearchOnOpen());
         searchTooltipsCheckbox.setSelected(config.isSearchTooltips());
+        useExternalSearchEngineCheckbox.setSelected(config.isUseExternalSearchEngine());
 
         rememberCheckbox.visible = useInternalSearchRadio.isSelected();
         autoFocusCheckbox.visible = useInternalSearchRadio.isSelected();
@@ -135,6 +141,7 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         config.setPinAutoCraftedItems(pinAutoCraftedItemsCheckbox.isSelected());
         config.setNotifyForFinishedCraftingJobs(notifyForFinishedCraftingJobsCheckbox.isSelected());
         config.setClearGridOnClose(clearGridOnCloseCheckbox.isSelected());
+        config.setUseExternalSearchEngine(useExternalSearchEngineCheckbox.isSelected());
 
         updateState();
     }

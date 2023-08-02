@@ -3,7 +3,7 @@
   "includes": ["../common/common.json"],
   "generatedBackground": {
     "width": 200,
-    "height": 216
+    "height": 232
   },
   "text": {
     "dialog_title": {
@@ -62,20 +62,25 @@
     },
     "rememberCheckbox": {
       "left": 10,
-      "top": 160,
+      "top": 176,
       "width": 150
     },
     "autoFocusCheckbox": {
       "left": 10,
-      "top": 176,
+      "top": 192,
       "width": 150
     },
     "syncWithExternalCheckbox": {
       "left": 10,
-      "top": 192,
+      "top": 208,
       "width": 150
     },
     "clearExternalCheckbox": {
+      "left": 10,
+      "top": 176,
+      "width": 150
+    },
+    "useExternalSearchEngineCheckbox": {
       "left": 10,
       "top": 160,
       "width": 150

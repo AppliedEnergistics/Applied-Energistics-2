@@ -213,6 +213,7 @@ public enum GuiText implements LocalizationEnum {
     SearchSettingsTitle("Search Settings"),
     SearchSettingsUseInternalSearch("Use AE"),
     SearchSettingsUseExternalSearch("Use %s"),
+    SearchSettingsUseExternalSearchEngine("Use %s for Searching"),
     SearchSettingsSearchTooltips("Search in tooltips"),
     SearchSettingsRememberSearch("Remember last search"),
     SearchSettingsAutoFocus("Auto-Focus on open"),
