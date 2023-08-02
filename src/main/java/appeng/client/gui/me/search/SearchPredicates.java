@@ -1,44 +1,31 @@
 package appeng.client.gui.me.search;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import net.minecraft.world.item.ItemStack;
+
+import dev.architectury.fluid.FluidStack;
+import me.shedaniel.rei.impl.client.gui.widget.entrylist.EntryListSearchManager;
+import me.shedaniel.rei.impl.common.util.HashedEntryStackWrapper;
+import mezz.jei.api.ingredients.IIngredientTypeWithSubtypes;
+import mezz.jei.api.runtime.IJeiRuntime;
+
 import appeng.core.AEConfig;
-import appeng.core.FacadeCreativeTab;
 import appeng.integration.abstraction.IJEI;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jei.JeiRuntimeAdapter;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.util.Platform;
-import dev.architectury.fluid.FluidStack;
-import me.shedaniel.rei.api.client.REIRuntime;
-import me.shedaniel.rei.api.common.entry.EntryIngredient;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.entry.type.EntryDefinition;
-import me.shedaniel.rei.impl.Internals;
-import me.shedaniel.rei.impl.client.gui.widget.entrylist.EntryListSearchManager;
-import me.shedaniel.rei.impl.common.util.HashedEntryStackWrapper;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.fabric.constants.FabricTypes;
-import mezz.jei.api.fabric.ingredients.fluids.IJeiFluidIngredient;
-import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.IIngredientTypeWithSubtypes;
-import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 final class SearchPredicates {
 
     static Predicate<GridInventoryEntry> fromStringUsingJEI(String searchString, IJEI jei) {
-        IJeiRuntime runtime = ((JeiRuntimeAdapter)jei).getRuntime();
+        IJeiRuntime runtime = ((JeiRuntimeAdapter) jei).getRuntime();
 
         var filter = runtime.getIngredientFilter();
 
@@ -80,7 +67,8 @@ final class SearchPredicates {
                         return (Object) item.getItem();
                     } else if (e.getValue() instanceof FluidStack fluid) {
                         return (Object) fluid.getFluid();
-                    } else return null;
+                    } else
+                        return null;
                 })
                 .filter(Objects::nonNull)
                 .toList();
