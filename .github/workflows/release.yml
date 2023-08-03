@@ -194,5 +194,3 @@ jobs:
           loaders: |
             neoforge
             forge
-          modrinth-id: XxWD5pD3
-          modrinth-token: ${{ secrets.MODRINTH }}
