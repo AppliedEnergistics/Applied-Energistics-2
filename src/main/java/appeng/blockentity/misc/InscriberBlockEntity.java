@@ -243,10 +243,9 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     @Override
     public void onChangeInventory(InternalInventory inv, int slot) {
         if (slot == 0) {
-            boolean isEmpty = inv.getStackInSlot(0).isEmpty();
-            boolean wasEmpty = lastStacks.get(inv).isEmpty();
+            boolean sameItemSameTags = ItemStack.isSameItemSameTags(inv.getStackInSlot(0), lastStacks.get(inv));
             lastStacks.put(inv, inv.getStackInSlot(0).copy());
-            if (isEmpty == wasEmpty) {
+            if (sameItemSameTags) {
                 return; // Don't care if it's just a count change
             }
 
@@ -276,8 +275,10 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
     }
 
     private boolean hasCraftWork() {
-        if (this.getTask() != null) {
-            return true;
+        var task = this.getTask();
+        if (task != null) {
+            // Only process if the result would fit.
+            return sideItemHandler.insertItem(1, task.getResultItem().copy(), true).isEmpty();
         }
 
         this.setProcessingTime(0);
@@ -323,7 +324,7 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
                 this.setSmash(false);
                 this.markForUpdate();
             }
-        } else {
+        } else if (this.hasCraftWork()) {
             getMainNode().ifPresent(grid -> {
                 IEnergyService eg = grid.getEnergyService();
                 IEnergySource src = this;
