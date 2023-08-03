@@ -75,13 +75,14 @@ public class ExportBusPart extends IOBusPart implements ICraftingRequester {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/export_bus_has_channel"));
 
-    private final MultiCraftingTracker craftingTracker = new MultiCraftingTracker(this, 9);
+    private final MultiCraftingTracker craftingTracker;
     private int nextSlot = 0;
     @Nullable
     private StackExportStrategy exportStrategy;
 
     public ExportBusPart(IPartItem<?> partItem) {
         super(TickRates.ExportBus, StackWorldBehaviors.hasExportStrategyFilter(), partItem);
+        this.craftingTracker = new MultiCraftingTracker(this, getConfig().size());
         getMainNode().addService(ICraftingRequester.class, this);
 
         this.getConfigManager().registerSetting(Settings.CRAFT_ONLY, YesNo.NO);
