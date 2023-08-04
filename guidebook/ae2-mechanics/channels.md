@@ -245,6 +245,8 @@ Ultimately the error is in bottlenecking the channels and not thinking through h
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
+---
+
 Here is an example of a good structure:
 
 <GameScene zoom="2.5" interactive={true}>
