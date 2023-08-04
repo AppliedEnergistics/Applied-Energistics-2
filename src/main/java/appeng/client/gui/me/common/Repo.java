@@ -19,7 +19,14 @@
 package appeng.client.gui.me.common;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -283,7 +290,7 @@ public class Repo implements IClientRepo {
     }
 
     private static boolean takeOverSlotOccupiedByRemovedItem(GridInventoryEntry serverEntry,
-                                                             Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
+            Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
         IntList freeSlotIndices = freeSlots.get(serverEntry.getWhat());
         if (freeSlotIndices == null) {
             return false;
