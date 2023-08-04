@@ -283,7 +283,7 @@ public class Repo implements IClientRepo {
     }
 
     private static boolean takeOverSlotOccupiedByRemovedItem(GridInventoryEntry serverEntry,
-                                                             Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
+            Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
         IntList freeSlotIndices = freeSlots.get(serverEntry.getWhat());
         if (freeSlotIndices == null) {
             return false;
