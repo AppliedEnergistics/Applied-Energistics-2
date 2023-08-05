@@ -285,6 +285,7 @@ public class QuantumBridgeBlockEntity extends AENetworkInvBlockEntity
             // because that would undo the removal.
             this.remove = true;
             this.cluster.destroy();
+            this.remove = false;
         }
     }
 
