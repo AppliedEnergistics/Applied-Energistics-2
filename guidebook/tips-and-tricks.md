@@ -8,6 +8,7 @@ navigation:
 
 A load of random little recommendations
 
+* Remove Optifine
 * You can rotate and zoom into guidebook scenes that have the zoom and annotation hide/show buttons
 * Keep your network treelike and avoid loops
 * Full-block [devices](ae2-mechanics/devices.md) in groups of 8 or less unless you deeply understand how [channels](ae2-mechanics/channels.md)
