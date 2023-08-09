@@ -74,4 +74,10 @@ public class LytFlowInlineBlock extends LytFlowContent implements InteractiveEle
             block.visit(visitor);
         }
     }
+
+    public static LytFlowInlineBlock of(LytBlock block) {
+        var inlineBlock = new LytFlowInlineBlock();
+        inlineBlock.setBlock(block);
+        return inlineBlock;
+    }
 }

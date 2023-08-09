@@ -1,6 +1,7 @@
 package appeng.client.guidebook.document;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 public record LytRect(int x, int y, int width, int height) {
@@ -112,5 +113,9 @@ public record LytRect(int x, int y, int width, int height) {
 
     public LytSize size() {
         return new LytSize(width, height);
+    }
+
+    public Vector2i point() {
+        return new Vector2i(x, y);
     }
 }

@@ -149,6 +149,17 @@ To automatically show a table of contents for a category, use the `<CategoryInde
 and specify the name of the category. It will then display a list of all pages that declare to be part of that
 category.
 
+#### Sub Pages
+
+This tag will show a list of links to pages. The list will be sourced from the child-pages of
+the current page in the navigation-tree. If a specific page-id is given in the `id` attribute, the child-pages of that
+page will be shown instead.
+
+The list can be sorted alphabetically (by title) by adding `alphabetical={true}`.
+
+To show the icons associated with each navigation-node, supply `icons={true}`. This does not look very appealing if
+some child-pages have icons and others don't.
+
 #### Item Images
 
 To show an item, use:

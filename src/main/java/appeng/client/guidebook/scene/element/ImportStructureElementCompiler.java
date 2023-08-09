@@ -45,7 +45,7 @@ public class ImportStructureElementCompiler implements SceneElementTagCompiler {
 
         ResourceLocation absStructureSrc;
         try {
-            absStructureSrc = IdUtils.resolveLink(structureSrc, compiler.getId());
+            absStructureSrc = IdUtils.resolveLink(structureSrc, compiler.getPageId());
         } catch (ResourceLocationException e) {
             errorSink.appendError(compiler, "Invalid structure path: " + structureSrc, el);
             return;

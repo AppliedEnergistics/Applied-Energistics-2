@@ -38,6 +38,10 @@ public class LytItemImage extends LytBlock implements ExportableResourceProvider
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
     }
 

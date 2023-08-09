@@ -58,6 +58,11 @@ public class LytParagraph extends LytBlock implements LytFlowContainer {
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+        content.move(deltaX, deltaY);
+    }
+
+    @Override
     public void onMouseEnter(@Nullable LytFlowContent hoveredContent) {
         super.onMouseEnter(hoveredContent);
         this.hoveredContent = hoveredContent;
