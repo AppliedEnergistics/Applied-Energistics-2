@@ -96,7 +96,8 @@ public class LytDocument extends LytNode implements LytBlockContainer {
                 5,
                 5,
                 5,
-                0);
+                0,
+                AlignItems.START);
 
         return new Layout(availableWidth, bounds.height());
     }

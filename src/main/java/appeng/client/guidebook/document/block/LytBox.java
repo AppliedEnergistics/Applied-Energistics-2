@@ -55,6 +55,13 @@ public abstract class LytBox extends LytBlock implements LytBlockContainer {
         return innerLayout.expand(paddingLeft, paddingTop, paddingRight, paddingBottom);
     }
 
+    @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+        for (var child : children) {
+            child.setLayoutPos(child.bounds.point().add(deltaX, deltaY));
+        }
+    }
+
     public final void setPadding(int padding) {
         paddingLeft = padding;
         paddingTop = padding;

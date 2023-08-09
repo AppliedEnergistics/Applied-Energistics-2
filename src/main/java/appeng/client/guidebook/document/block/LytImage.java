@@ -76,6 +76,10 @@ public class LytImage extends LytBlock implements InteractiveElement {
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
     }
 

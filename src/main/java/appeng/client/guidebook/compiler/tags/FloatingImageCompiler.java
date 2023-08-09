@@ -36,7 +36,7 @@ public class FloatingImageCompiler extends FlowTagCompiler {
             image.setTitle(title);
         }
         try {
-            var imageId = IdUtils.resolveLink(src, compiler.getId());
+            var imageId = IdUtils.resolveLink(src, compiler.getPageId());
             var imageContent = compiler.loadAsset(imageId);
             if (imageContent == null) {
                 LOGGER.error("Couldn't find image {}", src);

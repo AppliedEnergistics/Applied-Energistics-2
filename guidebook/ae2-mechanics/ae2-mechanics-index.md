@@ -6,6 +6,8 @@ navigation:
 
 # AE2 Mechanics
 
+<SubPages />
+
 * [Autocrafting](autocrafting.md)
 * [Bytes and Types](bytes-and-types.md)
 * [Cable Subparts](cable-subparts.md)

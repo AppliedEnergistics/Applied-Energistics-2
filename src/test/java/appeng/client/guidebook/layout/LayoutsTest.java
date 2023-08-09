@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 import appeng.client.guidebook.document.LytRect;
+import appeng.client.guidebook.document.block.AlignItems;
 import appeng.client.guidebook.document.block.LytBlock;
 import appeng.client.guidebook.render.RenderContext;
 
@@ -57,6 +58,10 @@ public class LayoutsTest {
         @Override
         protected LytRect computeLayout(LayoutContext context, int x, int y, int availableWidth) {
             return new LytRect(x, y, layoutWidth, layoutHeight);
+        }
+
+        @Override
+        protected void onLayoutMoved(int deltaX, int deltaY) {
         }
 
         @Override
@@ -145,7 +150,8 @@ public class LayoutsTest {
                 testCase.children,
                 testCase.x, testCase.y, testCase.availableWidth,
                 testCase.paddingLeft, testCase.paddingTop, testCase.paddingRight, testCase.paddingBottom,
-                testCase.gap);
+                testCase.gap,
+                AlignItems.START);
         assertEquals(testCase.expectedOutput, result, "outer bounds are not as expected");
 
         for (int i = 0; i < testCase.children.size(); i++) {
@@ -233,7 +239,8 @@ public class LayoutsTest {
                 testCase.children,
                 testCase.x, testCase.y, testCase.availableWidth,
                 testCase.paddingLeft, testCase.paddingTop, testCase.paddingRight, testCase.paddingBottom,
-                testCase.gap);
+                testCase.gap,
+                AlignItems.START);
         assertEquals(testCase.expectedOutput, result, "outer bounds are not as expected");
 
         for (int i = 0; i < testCase.children.size(); i++) {

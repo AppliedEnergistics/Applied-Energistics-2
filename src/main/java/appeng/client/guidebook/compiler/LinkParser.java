@@ -33,7 +33,7 @@ public final class LinkParser {
         // Determine the page id, account for relative paths
         ResourceLocation pageId;
         try {
-            pageId = IdUtils.resolveLink(uri.getPath(), compiler.getId());
+            pageId = IdUtils.resolveLink(uri.getPath(), compiler.getPageId());
         } catch (ResourceLocationException ignored) {
             visitor.handleError("Invalid link");
             return;

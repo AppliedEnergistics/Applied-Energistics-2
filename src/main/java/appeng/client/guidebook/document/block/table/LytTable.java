@@ -60,6 +60,19 @@ public class LytTable extends LytBlock {
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+        for (var col : columns) {
+            col.x += deltaX;
+        }
+        for (var row : rows) {
+            row.bounds = row.bounds.move(deltaX, deltaY);
+            for (var cell : row.getChildren()) {
+                cell.setLayoutPos(cell.getBounds().point().add(deltaX, deltaY));
+            }
+        }
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
         for (var row : getChildren()) {
             for (var cell : row.getChildren()) {
