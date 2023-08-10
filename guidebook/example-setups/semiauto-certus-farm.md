@@ -1,30 +1,36 @@
 ---
 navigation:
   parent: example-setups/example-setups-index.md
-  title: Advanced Certus Farm
+  title: Semi-Auto Certus Farm
   icon: certus_quartz_crystal
-  position: 120
+  position: 115
 ---
 
-# Advanced Certus Farm
+# Semi-Auto Certus Farm
 
-This is basically just the [Semi-Auto Certus Farm](semiauto-certus-farm.md), except it has been fully integrated into your
-ME system.
+Unfortunately, the [simple certus farm](simple-certus-farm.md) requires a <ItemLink id="flawless_budding_quartz" /> to work fully
+automatically. This requires either [Spatial IO](../ae2-mechanics/spatial-io.md) or building the farm at the [meteorite](../ae2-mechanics/meteorites.md).
 
-Instead of having a big stockpile of budding blocks and manually refreshing them every once in a while,
-this setup uses [Charger Automation](charger-automation.md) and [Throwing-In-Water Automation](throw-in-water-automation.md)
-to do it automatically.
+However, AE2 can place and break blocks, so it might just
+be possible to make your farm *replace the budding certus for you*. (You will have to periodically insert some
+<ItemLink id="flawed_budding_quartz" /> into the input barrel and extract <ItemLink id="quartz_block" /> from the spent
+buddng certus barrel)
+
+To do this fully automatically, see [Advanced Certus Farm](advanced-certus-farm.md).
+
+This farm is a bit more complex than the [simple certus farm](simple-certus-farm.md), because it is actually
+3 separate setups crammmed together.
 
 **THIS IS A COMPLEX BUILD WITH STUFF HIDDEN BEHIND OTHER STUFF, PAN AROUND TO VIEW IT FROM ALL ANGLES**
 
 <GameScene zoom="6" interactive={true}>
-  <ImportStructure src="../assets/assemblies/advanced_certus_farm.snbt" />
+  <ImportStructure src="../assets/assemblies/semiauto_certus_farm.snbt" />
 
   <BoxAnnotation color="#ddaaaa" min="3.7 2 1" max="4 3 2">
         (1) Annihilation Plane #1: No GUI to configure, but can be enchanted with Fortune.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#ddaaaa" min="2 2 1.7" max="3 3 2">
+  <BoxAnnotation color="#ddaaaa" min="2 2 1" max="2.3 3 2">
         (2) Storage Bus #1: Filtered to Certus Quartz Crystal.
         <ItemImage id="certus_quartz_crystal" scale="2" />
   </BoxAnnotation>
@@ -37,7 +43,7 @@ to do it automatically.
         (3) Annihilation Plane #2: No GUI to configure, but enchanted with Silk Touch.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#aaddaa" min="2 1 1.7" max="3 2 2">
+  <BoxAnnotation color="#aaddaa" min="2 1 1" max="2.3 2 2">
         (4) Storage Bus #2: Filtered to Certus Quartz Block.
         <BlockImage id="quartz_block" scale="2" />
   </BoxAnnotation>
@@ -50,37 +56,31 @@ to do it automatically.
         (5) Formation Plane: In its default configuration.
   </BoxAnnotation>
 
-  <BoxAnnotation color="#ffddaa" min="2 0.7 2" max="3 1 3">
-        (6) Import Bus: Filtered to Flawed Budding Certus Quartz.
-        <BlockImage id="flawed_budding_quartz" scale="2" />
+  <BoxAnnotation color="#ffddaa" min="2 0 1" max="2.3 1 2">
+        (6) Import Bus: In its default configuration.
   </BoxAnnotation>
 
   <DiamondAnnotation pos="3 0.5 1.5" color="#ddcc00">
     Budding Block Placer Subnet
   </DiamondAnnotation>
 
-  <BoxAnnotation color="#aaaadd" min="1.7 2 2" max="2 3 3">
+  <BoxAnnotation color="#aaaadd" min="0.7 2 1" max="1 3 2">
         (7) Storage Bus #3: Filtered to Certus Quartz Crystal. Has priority set higher than your main storage.
         <ItemImage id="certus_quartz_crystal" scale="2" />
   </BoxAnnotation>
 
-  <BoxAnnotation color="#aaaadd" min="2 1 2" max="3 2 3">
-        (8) Interface: Set to keep 1 Flawed Budding Certus Quartz in itself, has a Crafting Card.
-        <Row><BlockImage id="flawed_budding_quartz" scale="2" /> <ItemImage id="crafting_card" scale="2" /></Row>
-  </BoxAnnotation>
+    <DiamondAnnotation pos="1.5 0.5 1.5" color="#00ff00">
+        Manually insert Flawed Budding Certus Quartz.
+        <BlockImage id="flawed_budding_quartz" scale="2" />
+    </DiamondAnnotation>
 
-<DiamondAnnotation pos="1.5 0.5 0" color="#00ff00">
-        To Main Network, Charger Automation, and Throwing-In-Water Automation
-        <Row>
-        <GameScene zoom="3" background="transparent">
-          <ImportStructure src="../assets/assemblies/charger_automation.snbt" />
-          <IsometricCamera yaw="195" pitch="30" />
-        </GameScene>
-        <GameScene zoom="3" background="transparent">
-          <ImportStructure src="../assets/assemblies/throw_in_water.snbt" />
-          <IsometricCamera yaw="195" pitch="30" />
-        </GameScene>
-        </Row>
+    <DiamondAnnotation pos="1.5 1.5 1.5" color="#00ff00">
+        Manually extract Certus Quartz Block.
+        <BlockImage id="quartz_block" scale="2" />
+    </DiamondAnnotation>
+
+<DiamondAnnotation pos="0.5 0.5 0" color="#00ff00">
+        To Main Network
     </DiamondAnnotation>
 
   <IsometricCamera yaw="165" pitch="5" />
@@ -101,13 +101,12 @@ to do it automatically.
 ### Budding Block Placer:
 
 * The <ItemLink id="formation_plane" /> (5) is in its default configuration.
-* The <ItemLink id="import_bus" /> (6) is filtered to <ItemLink id="flawed_budding_quartz" />.
+* The <ItemLink id="import_bus" /> (6) is in its default configuration.
 
 ### On Main Network:
 
 * The third <ItemLink id="storage_bus" /> (7) is filtered to <ItemLink id="certus_quartz_crystal" />, and has its
   [priority](../ae2-mechanics/import-export-storage.md#storage-priority) set higher than your main storage.
-* The <ItemLink id="interface" /> (8) is set to keep 1 Flawed Budding Certus Quartz in itself, and has a <ItemLink id="crafting_card" />.
 
 ## How It Works
 
@@ -125,16 +124,16 @@ The certus block breaker subnet serves to break the depleted budding block once 
 It works similarly to the cluster breaker.
 
 1. The <ItemLink id="annihilation_plane" /> attempts to break what is in front of it, but can only break <ItemLink id="quartz_block" />
-   because the only storage on the subnet is the <ItemLink id="formation_plane" />, filtered to <ItemLink id="quartz_block" />. 
+   because the only storage on the subnet is the <ItemLink id="formation_plane" />, filtered to <ItemLink id="quartz_block" />.
    The plane needs to have silk touch, so the budding block won't degrade upon being broken, and thus the plane won't break it prematurely.
-2. The <ItemLink id="storage_bus" /> stores the certus quartz block in the <ItemLink id="interface" />, allowing the
-   [Throwing-In-Water Automation](throw-in-water-automation.md) to use it to make a new <ItemLink id="flawed_budding_quartz" />.
+2. The <ItemLink id="storage_bus" /> stores the certus quartz block in the spent
+   buddng certus barrel, you will have to manually throw it in water with <ItemLink id="charged_certus_quartz_crystal" /> to refresh it.
 
 ### Budding Block Placer
 
 The budding block placer subnet serves to place a new <ItemLink id="flawed_budding_quartz" /> when the breaker subnet breaks the old depleted one.
 
-1. The <ItemLink id="import_bus" /> Imports a budding block from the <ItemLink id="interface" /> into [network storage](../ae2-mechanics/import-export-storage.md)
+1. The <ItemLink id="import_bus" /> Imports a budding block from the input barrel.
 2. The only storage on the subnet is the <ItemLink id="formation_plane" />, which places the budding block.
 
 ### On the Main Network
@@ -142,6 +141,3 @@ The budding block placer subnet serves to place a new <ItemLink id="flawed_buddi
 * The <ItemLink id="storage_bus" /> gives the main network (and also the [Charger Automation](charger-automation.md)) access to all of the certus quartz crystals in the barrel. It is set to
   high [priority](../ae2-mechanics/import-export-storage.md#storage-priority) so that certus quartz crystals are preferentially
   put back in the barrel instead of in your main storage.
-* The <ItemLink id="interface" /> gives the budding block placer subnet access to a <ItemLink id="flawed_budding_quartz" />, and
-    gives the certus block breaker subnet a way to get the depleted blocks back into the main network. The
-    <ItemLink id="crafting_card" /> allows the interface to request new budding blocks from the main network's [autocrafting](../ae2-mechanics/autocrafting.md).

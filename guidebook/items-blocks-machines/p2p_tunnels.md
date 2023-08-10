@@ -91,6 +91,11 @@ against a controller, a [dense smart cable](../items-blocks-machines/cables.md#s
   <IsometricCamera yaw="225" pitch="30" />
 </GameScene>
 
+For another example (including its use with [Quantum Bridges](quantum_bridge.md)) see this MS Paint diagram I can't be bothered
+to touch up:
+
+![P2P and quantum bridges](../assets/diagrams/p2p_quantum_network.png)
+
 ## Nesting
 
 However, you cannot use this to send infinite channels through a single cable. The channel for a ME P2P tunnel will not

@@ -15,8 +15,8 @@ break the fully grown <ItemLink id="quartz_cluster" />. They are filtered by tak
 certus buds drop <ItemLink id="certus_quartz_dust" /> instead of dropping nothing.
 
 This farm works fully automatically with <ItemLink id="flawless_budding_quartz" />, but with flawed, chipped, and damaged
-budding certus quartz you will have to replace the budding block manually. Or, as described in [Advanced Certus Farm](advanced-certus-farm.md),
-automatically.
+budding certus quartz you will have to replace the budding block manually. Or, as described in [Semi-Auto Certus Farm](semiauto-certus-farm.md)
+and [Advanced Certus Farm](advanced-certus-farm.md), automatically.
 
 <GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/simple_certus_farm.snbt" />
@@ -52,7 +52,7 @@ automatically.
 ## How It Works
 
 1. The <ItemLink id="annihilation_plane" /> attempts to break what is in front of it, but can only break <ItemLink id="quartz_cluster" />
-   because the only storage on the subnet is the <ItemLink id="formation_plane" />, filtered to <ItemLink id="certus_quartz_crystal" />.
+   because the only storage on the subnet is the <ItemLink id="storage_bus" />, filtered to <ItemLink id="certus_quartz_crystal" />.
 4. The first <ItemLink id="storage_bus" /> stores the certus quartz crystals in the barrel.
 5. The second <ItemLink id="storage_bus" /> gives the main network access to all of the certus quartz crystals in the barrel. It is set to
    high [priority](../ae2-mechanics/import-export-storage.md#storage-priority) so that certus quartz crystals are preferentially

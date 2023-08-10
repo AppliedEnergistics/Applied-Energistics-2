@@ -1,0 +1,37 @@
+{
+    DataVersion: 3465,
+    size: [8, 3, 2],
+    data: [
+        {pos: [0, 0, 0], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 1189540L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [0, 0, 1], state: "ae2:molecular_assembler{powered:true}", nbt: {id: "ae2:molecular_assembler", inv: {item0: {}, item1: {}, item10: {}, item2: {}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, proxy: {g: 1189540L, p: 0}, visual: {}}},
+        {pos: [1, 0, 0], state: "ae2:molecular_assembler{powered:true}", nbt: {id: "ae2:molecular_assembler", inv: {item0: {}, item1: {}, item10: {}, item2: {}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, proxy: {g: 1189540L, p: 0}, visual: {}}},
+        {pos: [1, 0, 1], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 1189540L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [2, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 1189540L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 2, channelsWest: 2, connections: ["west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [3, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 1189540L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsEast: 3, channelsUp: 1, channelsWest: 2, connections: ["up", "west", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 0, 1], state: "ae2:interface", nbt: {fuzzy_mode: "IGNORE_ALL", id: "ae2:interface", priority: 0, proxy: {g: 1189540L, p: 0}, visual: {}}},
+        {pos: [5, 0, 1], state: "ae2:drive{facing:north,spin:0}", nbt: {id: "ae2:drive", inv: {item0: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {amts: [L; 1L, 1L, 36L, 1L, 1L, 1L, 2L, 38L, 2L], ic: 83L, keys: [{"#c": "ae2:i", id: "ae2:pattern_provider"}, {"#c": "ae2:i", id: "ae2:spatial_io_port"}, {"#c": "ae2:i", id: "minecraft:bamboo"}, {"#c": "ae2:i", id: "ae2:energy_cell", tag: {internalCurrentPower: 200000.0d, internalMaxPower: 200000.0d}}, {"#c": "ae2:i", id: "ae2:white_smart_cable"}, {"#c": "ae2:i", id: "ae2:fluix_smart_cable"}, {"#c": "ae2:i", id: "ae2:quartz_fiber"}, {"#c": "ae2:i", id: "ae2:certus_quartz_crystal"}, {"#c": "ae2:i", id: "ae2:flawed_budding_quartz"}]}}, item1: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item2: {Count: 1b, id: "ae2:item_storage_cell_4k", tag: {}}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, priority: 0, proxy: {g: 1189540L, p: 0}, visual: {cell0: {id: "ae2:item_storage_cell_4k", state: "not_empty"}, cell1: {id: "ae2:item_storage_cell_4k", state: "empty"}, cell2: {id: "ae2:item_storage_cell_4k", state: "empty"}, online: 1b}}},
+        {pos: [6, 0, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 1189540L, p: 0}, visual: {}}},
+        {pos: [7, 0, 1], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 0.0d, proxy: {g: 1189540L, p: 0}, visual: {}}},
+        {pos: [0, 1, 0], state: "ae2:molecular_assembler{powered:true}", nbt: {id: "ae2:molecular_assembler", inv: {item0: {}, item1: {}, item10: {}, item2: {}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, proxy: {g: 1189540L, p: 0}, visual: {}}},
+        {pos: [0, 1, 1], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 1189540L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [1, 1, 0], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 1189540L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [1, 1, 1], state: "ae2:molecular_assembler{powered:true}", nbt: {id: "ae2:molecular_assembler", inv: {item0: {}, item1: {}, item10: {}, item2: {}, item3: {}, item4: {}, item5: {}, item6: {}, item7: {}, item8: {}, item9: {}}, proxy: {g: 1189540L, p: 0}, visual: {}}},
+        {pos: [3, 1, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 1189540L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 1, channelsEast: 0, channelsUp: 1, connections: ["down", "up", "east"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 1, 1], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {g: 1189540L, p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [5, 1, 1], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 1189540L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 2, channelsUp: 1, channelsWest: 0, connections: ["down", "up", "west"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {filter_type: "ALL", gn: {g: 1189540L, p: 0}, id: "ae2:pattern_encoding_terminal", mode: "CRAFTING", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, substitute: 0b, substituteFluids: 1b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}},
+        {pos: [3, 2, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {g: 1189540L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 1, connections: ["down"], missingChannel: 0b, powered: 1b}}, east: {fuzzy_mode: "IGNORE_ALL", gn: {g: 1189540L, p: 0}, id: "ae2:import_bus", redstone_controlled: "IGNORE", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 1, id: "ae2:cable_bus", visual: {}}},
+        {pos: [4, 2, 1], state: "minecraft:blast_furnace{facing:north,lit:false}", nbt: {BurnTime: 0s, CookTime: 0s, CookTimeTotal: 0s, Items: [], RecipesUsed: {}, id: "minecraft:blast_furnace"}},
+        {pos: [5, 2, 1], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {g: 1189540L, p: 0}, id: "ae2:blue_smart_cable", visual: {channelsDown: 1, connections: ["down"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", north: {filter_type: "ALL", gn: {g: 1189540L, p: 0}, id: "ae2:crafting_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:pattern_provider{push_direction:all}",
+        "ae2:molecular_assembler{powered:true}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:interface",
+        "ae2:drive{facing:north,spin:0}",
+        "ae2:controller{state:online,type:block}",
+        "ae2:cable_bus{light_level:9,waterlogged:false}",
+        "minecraft:blast_furnace{facing:north,lit:false}"
+    ]
+}

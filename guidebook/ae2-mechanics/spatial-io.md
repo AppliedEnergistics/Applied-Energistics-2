@@ -70,6 +70,7 @@ The rules are:
 - Minimum size of 3x3x3 (which defines a 1x1x1 volume)
 - All spatial pylons must be in the outside bounding box
 - All spatial pylons must be on the same network
+- All pylons must be at least 2 blocks long
 
 For example, say you want to define a 3x3x3 volume. Following rule 2, all of the pylons must be within a 5x5x5 shell around
 the volume you want to define. They can be in almost any configuration, as long as they're contained within that 1-block-thick
@@ -77,6 +78,21 @@ the volume you want to define. They can be in almost any configuration, as long 
 
 <GameScene zoom="4" interactive={true}>
 <ImportStructure src="../assets/assemblies/spatial_storage_3x3x3_pylon_demonstration.snbt" />
+
+<BoxAnnotation color="#33dd33" min="1 1 1" max="4 4 4">
+        The volume to be moved
+  </BoxAnnotation>
+
+<BoxAnnotation color="#3333ff" min="5 5 0" max="0 0 5">
+  </BoxAnnotation>
+
+<IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
+A more reasonable setup is this:
+
+<GameScene zoom="4" interactive={true}>
+<ImportStructure src="../assets/assemblies/better_spatial_storage_3x3x3.snbt" />
 
 <BoxAnnotation color="#33dd33" min="1 1 1" max="4 4 4">
         The volume to be moved

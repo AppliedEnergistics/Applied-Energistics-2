@@ -19,6 +19,8 @@ to be affected.
 
 Each continuous line of pylons uses 1 [channel](../ae2-mechanics/channels.md)
 
+Lines of pylons must be at least 2 blocks long to function.
+
 ## Recipe
 
 <RecipeFor id="spatial_pylon" />

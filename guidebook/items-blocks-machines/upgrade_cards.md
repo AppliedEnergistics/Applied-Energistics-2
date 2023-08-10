@@ -143,12 +143,12 @@ Inverter cards swap filters in devices and tools from whitelist to blacklist.
 
 ## Crafting Card
 
-<ItemImage id="inverter_card" scale="2" />
+<ItemImage id="crafting_card" scale="2" />
 
 Crafting cards let the device send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)
 system to get the items it desires.
 
-<RecipeFor id="inverter_card" />
+<RecipeFor id="crafting_card" />
 
 ## Equal Distribution Card
 
