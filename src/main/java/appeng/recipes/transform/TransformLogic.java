@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
@@ -48,7 +49,7 @@ public final class TransformLogic {
             if (!circumstancePredicate.test(recipe.circumstance))
                 continue;
 
-            if (recipe.ingredients.size() == 0)
+            if (recipe.ingredients.isEmpty())
                 continue;
 
             List<Ingredient> missingIngredients = Lists.newArrayList(recipe.ingredients);
@@ -129,7 +130,11 @@ public final class TransformLogic {
                     for (var stack : ingredient.getItems()) {
                         ret.add(stack.getItem());
                     }
-                    break; // only process first ingredient (they're all required anyway)
+
+                    // process all ingredients if transforming in lava to prevent them from burning up
+                    if (!recipe.circumstance.isFluidTag(FluidTags.LAVA)) {
+                        break; // only process first ingredient (they're all required anyway)
+                    }
                 }
             }
             return ret;

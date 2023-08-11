@@ -2,6 +2,7 @@ package appeng.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -9,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -36,7 +38,9 @@ public abstract class ItemEntityMixin extends Entity {
     @Shadow
     public abstract ItemStack getItem();
 
+    @Unique
     private int ae2_transformTime = 0;
+    @Unique
     private int ae2_delay = 0;
 
     @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
@@ -64,11 +68,7 @@ public abstract class ItemEntityMixin extends Entity {
             return;
         }
 
-        final int j = Mth.floor(this.getX());
-        final int i = Mth.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
-        final int k = Mth.floor(this.getZ());
-
-        FluidState state = this.level().getFluidState(new BlockPos(j, i, k));
+        FluidState state = ae2_getNearbyFluidState();
         boolean isValidFluid = !state.isEmpty() && TransformLogic.canTransformInFluid(self, state);
 
         if (level().isClientSide()) {
@@ -88,5 +88,24 @@ public abstract class ItemEntityMixin extends Entity {
                 this.ae2_transformTime = 0;
             }
         }
+    }
+
+    @Inject(at = @At("HEAD"), method = "fireImmune", cancellable = true)
+    void handleLavaTransform(CallbackInfoReturnable<Boolean> ci) {
+        var self = (ItemEntity) (Object) this;
+        var state = ae2_getNearbyFluidState();
+
+        if (state.is(FluidTags.LAVA) && TransformLogic.canTransformInFluid(self, state)) {
+            ci.setReturnValue(true);
+        }
+    }
+
+    @Unique
+    private FluidState ae2_getNearbyFluidState() {
+        var x = Mth.floor(getX());
+        var y = Mth.floor((getBoundingBox().minY + getBoundingBox().maxY) / 2D);
+        var z = Mth.floor(getZ());
+
+        return level().getFluidState(new BlockPos(x, y, z));
     }
 }
