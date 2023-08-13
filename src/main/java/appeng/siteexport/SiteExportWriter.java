@@ -47,7 +47,7 @@ import net.minecraft.world.level.material.Fluids;
 import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.compiler.MdAstNodeAdapter;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
-import appeng.client.guidebook.indices.ItemIndex;
+import appeng.client.guidebook.indices.PageIndex;
 import appeng.items.tools.powered.MatterCannonItem;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.recipes.entropy.EntropyRecipe;
@@ -327,7 +327,7 @@ public class SiteExportWriter {
         return itemId + "-" + HexFormat.of().formatHex(digest.digest());
     }
 
-    public void addIndex(Guide guide, Class<ItemIndex> indexClass) {
+    public void addIndex(Guide guide, Class<? extends PageIndex> indexClass) {
         try (var jsonWriter = new JsonTreeWriter()) {
             var index = guide.getIndex(indexClass);
             index.export(jsonWriter);

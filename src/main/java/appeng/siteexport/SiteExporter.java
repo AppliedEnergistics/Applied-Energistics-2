@@ -67,6 +67,7 @@ import appeng.client.guidebook.Guide;
 import appeng.client.guidebook.GuidePage;
 import appeng.client.guidebook.compiler.PageCompiler;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
+import appeng.client.guidebook.indices.CategoryIndex;
 import appeng.client.guidebook.indices.ItemIndex;
 import appeng.client.guidebook.navigation.NavigationNode;
 import appeng.core.AppEngClient;
@@ -336,6 +337,7 @@ public final class SiteExporter implements ResourceExporter {
         processFluids(client, indexWriter, outputFolder);
 
         indexWriter.addIndex(guide, ItemIndex.class);
+        indexWriter.addIndex(guide, CategoryIndex.class);
 
         var guideContent = outputFolder.resolve("guide.json.gz");
         byte[] content = indexWriter.toByteArray();
