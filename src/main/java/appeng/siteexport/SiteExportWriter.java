@@ -24,6 +24,9 @@ import com.google.gson.internal.bind.JsonTreeWriter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -49,6 +52,8 @@ import appeng.client.guidebook.compiler.MdAstNodeAdapter;
 import appeng.client.guidebook.compiler.ParsedGuidePage;
 import appeng.client.guidebook.indices.PageIndex;
 import appeng.items.tools.powered.MatterCannonItem;
+import appeng.libs.mdast.MdAstVisitor;
+import appeng.libs.mdast.model.MdAstHeading;
 import appeng.libs.mdast.model.MdAstNode;
 import appeng.recipes.entropy.EntropyRecipe;
 import appeng.recipes.handlers.ChargerRecipe;
@@ -64,6 +69,7 @@ import appeng.siteexport.model.P2PTypeInfo;
 import appeng.siteexport.model.SiteExportJson;
 
 public class SiteExportWriter {
+    private static final Logger LOG = LoggerFactory.getLogger(SiteExportWriter.class);
 
     private abstract static class WriteOnlyTypeAdapter<T> extends TypeAdapter<T> {
         @Override
@@ -299,11 +305,37 @@ public class SiteExportWriter {
 
     public void addPage(ParsedGuidePage page) {
         var exportedPage = new ExportedPageJson();
-        exportedPage.title = "";
+        // Default to the title found in navigation when linking to this page,
+        // but use the extracted h1-page title instead, otherwise
+        if (page.getFrontmatter().navigationEntry() != null) {
+            exportedPage.title = page.getFrontmatter().navigationEntry().title();
+        } else {
+            exportedPage.title = extractPageTitle(page);
+            if (exportedPage.title.isEmpty()) {
+                LOG.warn("Unable to determine page title for {}: {}", page.getId(), exportedPage.title);
+            }
+        }
         exportedPage.astRoot = page.getAstRoot();
         exportedPage.frontmatter.putAll(page.getFrontmatter().additionalProperties());
 
         siteExport.pages.put(page.getId(), exportedPage);
+    }
+
+    private String extractPageTitle(ParsedGuidePage page) {
+        var pageTitle = new StringBuilder();
+        page.getAstRoot().visit(new MdAstVisitor() {
+            @Override
+            public Result beforeNode(MdAstNode node) {
+                if (node instanceof MdAstHeading heading) {
+                    if (heading.depth == 1) {
+                        pageTitle.append(heading.toText());
+                    }
+                    return Result.STOP;
+                }
+                return Result.CONTINUE;
+            }
+        });
+        return pageTitle.toString();
     }
 
     public String addItem(ItemStack stack) {
