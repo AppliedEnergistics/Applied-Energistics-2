@@ -30,6 +30,12 @@ public class LytWidget extends LytBlock implements InteractiveElement {
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+        widget.setX(widget.getX() + deltaX);
+        widget.setY(widget.getY() + deltaY);
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
     }
 

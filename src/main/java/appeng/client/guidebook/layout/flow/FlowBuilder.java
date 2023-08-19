@@ -142,4 +142,21 @@ public class FlowBuilder {
         this.rootContent.clear();
         this.floats.clear();
     }
+
+    public void move(int deltaX, int deltaY) {
+        for (int i = 0; i < this.lines.size(); i++) {
+            var line = this.lines.get(i);
+            this.lines.set(i, new Line(
+                    line.bounds().move(deltaX, deltaY),
+                    line.firstElement()));
+
+            for (var el = line.firstElement(); el != null; el = el.next) {
+                el.bounds = el.bounds.move(deltaX, deltaY);
+                if (el instanceof LineBlock lineBlock) {
+                    lineBlock.getBlock().setLayoutPos(
+                            lineBlock.getBlock().getBounds().point().add(deltaX, deltaY));
+                }
+            }
+        }
+    }
 }

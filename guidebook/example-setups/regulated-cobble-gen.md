@@ -23,7 +23,7 @@ We can have a self-contained <ItemLink id="annihilation_plane" /> and <ItemLink 
 push into an <ItemLink id="interface" /> on the main network. The toggle bus will connect and disconnect the subnet from a
 <ItemLink id="quartz_fiber" />, cutting power to the planes.
 
-<GameScene zoom="6" interactive={true}>
+<GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/regulated_cobble_gen.snbt" />
 
 <BoxAnnotation color="#dddddd" min="3 2 2" max="7 2.3 3">

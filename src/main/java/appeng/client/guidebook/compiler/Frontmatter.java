@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 public record Frontmatter(
-        FrontmatterNavigation navigationEntry,
+        @Nullable FrontmatterNavigation navigationEntry,
         Map<String, Object> additionalProperties) {
     public static Frontmatter parse(ResourceLocation pageId, String yamlText) {
         var yaml = new Yaml(new SafeConstructor(new LoaderOptions()));

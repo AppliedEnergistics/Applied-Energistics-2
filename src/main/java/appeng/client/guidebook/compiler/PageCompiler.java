@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.swing.plaf.nimbus.State;
-
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,7 +94,7 @@ public final class PageCompiler {
     private final PageCollection pages;
     private final ExtensionCollection extensions;
     private final String sourcePack;
-    private final ResourceLocation id;
+    private final ResourceLocation pageId;
     private final String pageContent;
 
     private final Map<String, TagCompiler> tagCompilers = new HashMap<>();
@@ -105,12 +103,13 @@ public final class PageCompiler {
     // compilers to communicate with each other within the current page.
     private final Map<State<?>, Object> compilerState = new IdentityHashMap<>();
 
-    public PageCompiler(PageCollection pages, ExtensionCollection extensions, String sourcePack, ResourceLocation id,
+    public PageCompiler(PageCollection pages, ExtensionCollection extensions, String sourcePack,
+            ResourceLocation pageId,
             String pageContent) {
         this.pages = pages;
         this.extensions = extensions;
         this.sourcePack = sourcePack;
-        this.id = id;
+        this.pageId = pageId;
         this.pageContent = pageContent;
 
         // Index available tag-compilers
@@ -400,7 +399,7 @@ public final class PageCompiler {
         image.setTitle(astImage.title);
         image.setAlt(astImage.alt);
         try {
-            var imageId = IdUtils.resolveLink(astImage.url, id);
+            var imageId = IdUtils.resolveLink(astImage.url, pageId);
             var imageContent = pages.loadAsset(imageId);
             if (imageContent == null) {
                 LOGGER.error("Couldn't find image {}", astImage.url);
@@ -457,11 +456,14 @@ public final class PageCompiler {
     }
 
     public ResourceLocation resolveId(String idText) {
-        return IdUtils.resolveId(idText, id.getNamespace());
+        return IdUtils.resolveId(idText, pageId.getNamespace());
     }
 
-    public ResourceLocation getId() {
-        return id;
+    /**
+     * Get the current page id.
+     */
+    public ResourceLocation getPageId() {
+        return pageId;
     }
 
     public PageCollection getPageCollection() {

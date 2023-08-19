@@ -16,6 +16,7 @@ import appeng.client.guidebook.compiler.tags.FloatingImageCompiler;
 import appeng.client.guidebook.compiler.tags.ItemGridCompiler;
 import appeng.client.guidebook.compiler.tags.ItemLinkCompiler;
 import appeng.client.guidebook.compiler.tags.RecipeCompiler;
+import appeng.client.guidebook.compiler.tags.SubPagesCompiler;
 import appeng.client.guidebook.scene.BlockImageTagCompiler;
 import appeng.client.guidebook.scene.ItemImageTagCompiler;
 import appeng.client.guidebook.scene.SceneTagCompiler;
@@ -67,7 +68,8 @@ public final class DefaultExtensions {
                 new ItemImageTagCompiler(),
                 new BoxTagCompiler(BoxFlowDirection.ROW),
                 new BoxTagCompiler(BoxFlowDirection.COLUMN),
-                new SceneTagCompiler());
+                new SceneTagCompiler(),
+                new SubPagesCompiler());
     }
 
     private static List<SceneElementTagCompiler> sceneElementTagCompilers() {

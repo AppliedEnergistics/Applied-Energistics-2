@@ -47,3 +47,7 @@ The Molecular Assembler supports the following [upgrades](upgrade_cards.md):
 ## Recipe
 
 <RecipeFor id="molecular_assembler" />
+
+## Note
+
+Optifine breaks the "push to adjacent inventories" function so most crafting setups with assemblers won't work.

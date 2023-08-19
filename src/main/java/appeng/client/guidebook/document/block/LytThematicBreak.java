@@ -14,6 +14,10 @@ public class LytThematicBreak extends LytBlock {
     }
 
     @Override
+    protected void onLayoutMoved(int deltaX, int deltaY) {
+    }
+
+    @Override
     public void renderBatch(RenderContext context, MultiBufferSource buffers) {
     }
 

@@ -17,6 +17,11 @@ item_ids:
 While the primary intended method of providing [energy](../ae2-mechanics/energy.md) to your network is an
 <ItemLink id="energy_acceptor" />, the vibration chamber can directly generate small to middling amounts of AE.
 
+By default (no [upgrades](upgrade_cards.md) and default configs) it makes 40 AE/t.
+
+When the network's [energy](../ae2-mechanics/energy.md) storage is full, the vibration chamber throttles down to conserve
+fuel, but cannot fully shut off.
+
 ## Settings
 
 *   The vibration chamber provides access to the global setting to view energy in AE or E/FE.
