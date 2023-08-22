@@ -18,7 +18,7 @@ Technically a single cable is a network, actually.
 
 For [devices](../ae2-mechanics/devices.md) which have some specific network function (like an <ItemLink id="interface" />
 pushing to and pulling from [network storage](../ae2-mechanics/import-export-storage.md), a <ItemLink id="level_emitter" />
-reading the contents of network storage, a <ItemLink id="pattern_provider" /> receiving ingredients and returning results, etc.)
+reading the contents of network storage, an <ItemLink id="drive" /> being network storage, etc.)
 the physical position of the device does not matter.
 
 Again, **the physical position of the device does not matter**. All that matters is that the device is connected to the network
