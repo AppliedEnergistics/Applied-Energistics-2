@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -31,6 +33,8 @@ import javax.annotation.Nullable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
@@ -142,6 +146,9 @@ public class Repo implements IClientRepo {
             updateEntriesWhilePaused(pinnedRow, visibleSerials);
             updateEntriesWhilePaused(view, visibleSerials);
 
+            var pinnedRowFreeSlots = getFreeSlots(pinnedRow);
+            var viewFreeSlots = getFreeSlots(view);
+
             var entriesToAdd = new ArrayList<GridInventoryEntry>();
 
             // Determine what to do with server entries that are not currently being shown
@@ -152,8 +159,8 @@ public class Repo implements IClientRepo {
 
                 // First, try to find an empty/meaningless slot in the view that is visually indistinguishable
                 // and fill it
-                if (takeOverSlotOccupiedByRemovedItem(serverEntry, pinnedRow)
-                        || takeOverSlotOccupiedByRemovedItem(serverEntry, view)) {
+                if (takeOverSlotOccupiedByRemovedItem(serverEntry, pinnedRowFreeSlots, pinnedRow)
+                        || takeOverSlotOccupiedByRemovedItem(serverEntry, viewFreeSlots, view)) {
                     continue;
                 }
 
@@ -261,15 +268,41 @@ public class Repo implements IClientRepo {
         }
     }
 
-    private boolean takeOverSlotOccupiedByRemovedItem(GridInventoryEntry serverEntry, List<GridInventoryEntry> slots) {
-        for (int i = 0; i < slots.size(); i++) {
+    /**
+     * Computes free slot indices by AEKey. Used to replace removed items by items that are visually indistinguishable.
+     */
+    private Map<AEKey, IntList> getFreeSlots(List<GridInventoryEntry> slots) {
+        Map<AEKey, IntList> freeSlots = new HashMap<>();
+
+        for (int i = 0; i < slots.size(); ++i) {
             var entry = slots.get(i);
-            if (!entries.containsKey(entry.getSerial()) && entry.getWhat().equals(serverEntry.getWhat())) {
-                slots.set(i, serverEntry);
-                return true;
+            if (!entries.containsKey(entry.getSerial())) {
+                freeSlots.computeIfAbsent(entry.getWhat(), k -> new IntArrayList()).add(i);
             }
         }
-        return false;
+
+        // Reverse list, so we can pop from the end of the list
+        for (var list : freeSlots.values()) {
+            Collections.reverse(list);
+        }
+
+        return freeSlots;
+    }
+
+    private static boolean takeOverSlotOccupiedByRemovedItem(GridInventoryEntry serverEntry,
+            Map<AEKey, IntList> freeSlots, List<GridInventoryEntry> slots) {
+        IntList freeSlotIndices = freeSlots.get(serverEntry.getWhat());
+        if (freeSlotIndices == null) {
+            return false;
+        }
+
+        int i = freeSlotIndices.removeInt(freeSlotIndices.size() - 1);
+        if (freeSlotIndices.size() == 0) {
+            freeSlots.remove(serverEntry.getWhat());
+        }
+
+        slots.set(i, serverEntry);
+        return true;
     }
 
     private Comparator<? super GridInventoryEntry> getComparator(SortOrder sortOrder, SortDir sortDir) {
