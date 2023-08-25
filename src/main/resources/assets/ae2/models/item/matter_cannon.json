@@ -1,14 +1,28 @@
 {
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "ae2:item/matter_cannon"
-  },
-  "display": {
-    "thirdperson_righthand": {
-      "rotation": [0, -90, 0]
-    },
-    "thirdperson_lefthand": {
-      "rotation": [0, 90, 0]
-    }
-  }
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "ae2:item/matter_cannon"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, -90, 0],
+			"translation": [0, 0.75, -3.5],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, 90, 0],
+			"translation": [0, 0.75, -3.5],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"firstperson_righthand": {
+			"rotation": [-131.9, -89.03, -130.91],
+			"translation": [-2.75, 2.5, 1.13],
+			"scale": [0.68, 0.68, 0.68]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-45, 89, 46],
+			"translation": [-2.75, 2.5, 1.13],
+			"scale": [0.68, 0.68, 0.68]
+		}
+	}
 }
