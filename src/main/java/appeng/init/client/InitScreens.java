@@ -117,22 +117,20 @@ public final class InitScreens {
     }
 
     public static void init() {
+        // spotless:off
         register(QNBMenu.TYPE, QNBScreen::new, "/screens/qnb.json");
         register(SkyChestMenu.TYPE, SkyChestScreen::new, "/screens/sky_chest.json");
         register(ChestMenu.TYPE, ChestScreen::new, "/screens/chest.json");
         register(WirelessAccessPointMenu.TYPE, WirelessAccessPointScreen::new, "/screens/wireless_access_point.json");
         register(NetworkStatusMenu.NETWORK_TOOL_TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
         register(NetworkStatusMenu.CONTROLLER_TYPE, NetworkStatusScreen::new, "/screens/network_status.json");
-        InitScreens.<CraftingCPUMenu, CraftingCPUScreen<CraftingCPUMenu>>register(
-                CraftingCPUMenu.TYPE,
-                CraftingCPUScreen::new,
-                "/screens/crafting_cpu.json");
+        register(CraftingCPUMenu.TYPE, CraftingCPUScreen<CraftingCPUMenu>::new, "/screens/crafting_cpu.json");
         register(NetworkToolMenu.TYPE, NetworkToolScreen::new, "/screens/network_tool.json");
         register(QuartzKnifeMenu.TYPE, QuartzKnifeScreen::new, "/screens/quartz_knife.json");
         register(DriveMenu.TYPE, DriveScreen::new, "/screens/drive.json");
         register(VibrationChamberMenu.TYPE, VibrationChamberScreen::new, "/screens/vibration_chamber.json");
         register(CondenserMenu.TYPE, CondenserScreen::new, "/screens/condenser.json");
-        register(InterfaceMenu.TYPE, InterfaceScreen::new, "/screens/interface.json");
+        register(InterfaceMenu.TYPE, InterfaceScreen<InterfaceMenu>::new, "/screens/interface.json");
         register(IOBusMenu.EXPORT_TYPE, IOBusScreen::new, "/screens/export_bus.json");
         register(IOBusMenu.IMPORT_TYPE, IOBusScreen::new, "/screens/import_bus.json");
         register(IOPortMenu.TYPE, IOPortScreen::new, "/screens/io_port.json");
@@ -145,10 +143,7 @@ public final class InitScreens {
         register(SpatialIOPortMenu.TYPE, SpatialIOPortScreen::new, "/screens/spatial_io_port.json");
         register(InscriberMenu.TYPE, InscriberScreen::new, "/screens/inscriber.json");
         register(CellWorkbenchMenu.TYPE, CellWorkbenchScreen::new, "/screens/cell_workbench.json");
-        InitScreens.<PatternProviderMenu, PatternProviderScreen<PatternProviderMenu>>register(
-                PatternProviderMenu.TYPE,
-                PatternProviderScreen::new,
-                "/screens/pattern_provider.json");
+        register(PatternProviderMenu.TYPE, PatternProviderScreen<PatternProviderMenu>::new, "/screens/pattern_provider.json");
         register(MolecularAssemblerMenu.TYPE, MolecularAssemblerScreen::new, "/screens/molecular_assembler.json");
         register(CraftAmountMenu.TYPE, CraftAmountScreen::new, "/screens/craft_amount.json");
         register(CraftConfirmMenu.TYPE, CraftConfirmScreen::new, "/screens/craft_confirm.json");
@@ -187,6 +182,7 @@ public final class InitScreens {
         InitScreens.<PatternAccessTermMenu, PatternAccessTermScreen<PatternAccessTermMenu>>register(
                 PatternAccessTermMenu.TYPE, PatternAccessTermScreen::new,
                 "/screens/terminals/pattern_access_terminal.json");
+        // spotless:on
     }
 
     /**
