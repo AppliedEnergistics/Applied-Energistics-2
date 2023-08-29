@@ -276,7 +276,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     }
 
                     var text = Language.getInstance().getVisualOrder(
-                            this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 28));
+                            this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 18));
 
                     guiGraphics.drawString(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor, false);
@@ -506,6 +506,9 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             if (!found && this.searchMode.getCurrentValue() != PatternAccessTerminalSearchMode.PATTERN_PROVIDER_NAME) {
                 for (ItemStack itemStack : entry.getInventory()) {
                     found = this.itemStackMatchesSearchTerm(itemStack, searchFilterLowerCase);
+                    if (found) {
+                        break;
+                    }
                 }
             }
             // Now search by pattern provider name
