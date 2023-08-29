@@ -77,6 +77,8 @@ public final class Settings {
             TerminalStyle.MEDIUM, TerminalStyle.TALL, TerminalStyle.FULL);
     public static final Setting<ShowPatternProviders> TERMINAL_SHOW_PATTERN_PROVIDERS = register(
             "show_pattern_providers", ShowPatternProviders.class);
+    public static final Setting<PatternAccessTerminalSearchMode> TERMINAL_SEARCH_MODE_SETTING = register(
+            "pattern_search_mode_setting", PatternAccessTerminalSearchMode.class);
 
     public static final Setting<CopyMode> COPY_MODE = register("copy_mode", CopyMode.class);
     public static final Setting<YesNo> PATTERN_ACCESS_TERMINAL = register("pattern_access_terminal", YesNo.YES,

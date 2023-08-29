@@ -80,6 +80,7 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
 import appeng.hooks.ICustomPickBlock;
 import appeng.hooks.MouseWheelScrolled;
+import appeng.hooks.RenderBlockHighlightHook;
 import appeng.hooks.RenderBlockOutlineHook;
 import appeng.hotkeys.HotkeyActions;
 import appeng.init.client.InitAdditionalModels;
@@ -131,6 +132,7 @@ public class AppEngClient extends AppEngBase {
 
         BlockAttackHook.install();
         RenderBlockOutlineHook.install();
+        RenderBlockHighlightHook.install();
         guide = createGuide();
         OpenGuideHotkey.init();
 

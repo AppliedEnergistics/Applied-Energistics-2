@@ -42,6 +42,7 @@ import appeng.api.config.FullnessMode;
 import appeng.api.config.FuzzyMode;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.OperationMode;
+import appeng.api.config.PatternAccessTerminalSearchMode;
 import appeng.api.config.PowerUnits;
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.RelativeDirection;
@@ -273,6 +274,13 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ShowPatternProviders.NOT_FULL,
                     ButtonToolTips.InterfaceTerminalDisplayMode,
                     ButtonToolTips.ShowNonFullProviders);
+
+            registerApp(Icon.SEARCH_PATTERN_PROVIDER, Settings.TERMINAL_SEARCH_MODE_SETTING,
+                    PatternAccessTerminalSearchMode.PATTERN_PROVIDER_NAME, ButtonToolTips.SearchByPatternProviderName);
+            registerApp(Icon.SEARCH_INPUT, Settings.TERMINAL_SEARCH_MODE_SETTING,
+                    PatternAccessTerminalSearchMode.PATTERN_INPUTS, ButtonToolTips.SearchByPatternInputs);
+            registerApp(Icon.SEARCH_OUTPUT, Settings.TERMINAL_SEARCH_MODE_SETTING,
+                    PatternAccessTerminalSearchMode.PATTERN_OUTPUTS, ButtonToolTips.SearchByPatternOutputs);
 
             registerApp(Icon.UNLOCKED, Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE,
                     ButtonToolTips.LockCraftingMode,
