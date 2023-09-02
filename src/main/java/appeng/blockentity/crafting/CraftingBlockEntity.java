@@ -249,6 +249,8 @@ public class CraftingBlockEntity extends AENetworkBlockEntity
                 Platform.spawnDrops(this.level, position, stacks);
             }
 
+            inv.clear(); // Ensure items only ever get dropped once
+
             this.cluster.destroy();
         }
     }
