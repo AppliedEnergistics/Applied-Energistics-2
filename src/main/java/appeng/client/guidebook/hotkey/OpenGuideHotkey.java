@@ -164,6 +164,10 @@ public final class OpenGuideHotkey {
                     } else {
                         AppEngClient.instance().openGuideAtAnchor(guidebookPage);
                     }
+                    // Reset the ticks held immediately to avoid reopening another page if
+                    // our cursors lands on an item
+                    ticksKeyHeld = 0;
+                    holding = false;
                 }
             } else if (ticksKeyHeld > TICKS_TO_OPEN) {
                 ticksKeyHeld = TICKS_TO_OPEN;
