@@ -1,6 +1,7 @@
 package appeng.server.testplots;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -10,6 +11,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
+import appeng.items.materials.NamePressItem;
 
 public final class InscriberTestPlots {
     private InscriberTestPlots() {
@@ -19,7 +21,7 @@ public final class InscriberTestPlots {
     public static void generateInscriberRecipePlots(TestPlotCollection tests) {
 
         var namePlate = AEItems.NAME_PRESS.stack();
-        namePlate.setHoverName(Component.literal("HELLO WORLD"));
+        namePlate.addTagElement(NamePressItem.TAG_INSCRIBE_NAME, StringTag.valueOf("HELLO WORLD"));
         var ironIngots = new ItemStack(Items.IRON_INGOT, 2);
         var namedIngots = ironIngots.copy();
         namedIngots.setHoverName(Component.literal("HELLO WORLD"));
