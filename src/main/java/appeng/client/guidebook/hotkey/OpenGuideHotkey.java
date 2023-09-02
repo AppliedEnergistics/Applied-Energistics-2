@@ -58,7 +58,7 @@ public final class OpenGuideHotkey {
 
     public static void init() {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            AppEng.instance().registerHotkey("guide", GLFW.GLFW_KEY_W);
+            AppEng.instance().registerHotkey("guide", GLFW.GLFW_KEY_G);
             ItemTooltipCallback.EVENT.register(TOOLTIP_PHASE, OpenGuideHotkey::handleTooltip);
             ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, TOOLTIP_PHASE);
             ClientTickEvents.START_CLIENT_TICK.register(client -> newTick = true);
