@@ -24,7 +24,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
-import appeng.client.Hotkeys;
 import appeng.client.guidebook.GuidebookText;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.indices.ItemIndex;
@@ -37,6 +36,9 @@ import appeng.core.AppEngClient;
  * Adds a "Hold X to show guide" tooltip
  */
 public final class OpenGuideHotkey {
+    private static final KeyMapping OPEN_GUIDE_MAPPING = new KeyMapping(
+            "key.ae2.guide", GLFW.GLFW_KEY_G, "key.ae2.category");
+
     private static final Logger LOG = LoggerFactory.getLogger(OpenGuideHotkey.class);
 
     private static final int TICKS_TO_OPEN = 10;
@@ -58,7 +60,7 @@ public final class OpenGuideHotkey {
 
     public static void init() {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
-            AppEng.instance().registerHotkey("guide", GLFW.GLFW_KEY_G);
+            KeyBindingHelper.registerKeyBinding(OPEN_GUIDE_MAPPING);
             ItemTooltipCallback.EVENT.register(TOOLTIP_PHASE, OpenGuideHotkey::handleTooltip);
             ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, TOOLTIP_PHASE);
             ClientTickEvents.START_CLIENT_TICK.register(client -> newTick = true);
@@ -68,6 +70,13 @@ public final class OpenGuideHotkey {
     }
 
     private static void handleTooltip(ItemStack itemStack, TooltipFlag tooltipFlag, List<Component> lines) {
+        // Player didn't bind the key
+        if (!isKeyBound()) {
+            holding = false;
+            ticksKeyHeld = 0;
+            return;
+        }
+
         // This should only update once per client-tick
         if (newTick) {
             newTick = false;
@@ -175,7 +184,12 @@ public final class OpenGuideHotkey {
         return InputConstants.isKeyDown(window, keyCode);
     }
 
-    private static KeyMapping getHotkey() {
-        return Hotkeys.getHotkey("guide").mapping();
+    private static boolean isKeyBound() {
+        var boundKey = KeyBindingHelper.getBoundKeyOf(getHotkey());
+        return boundKey.getValue() != -1;
+    }
+
+    public static KeyMapping getHotkey() {
+        return OPEN_GUIDE_MAPPING;
     }
 }
