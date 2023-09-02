@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
+import appeng.client.Hotkeys;
 import appeng.client.guidebook.GuidebookText;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.indices.ItemIndex;
@@ -56,6 +58,7 @@ public final class OpenGuideHotkey {
 
     public static void init() {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
+            AppEng.instance().registerHotkey("guide", GLFW.GLFW_KEY_G);
             ItemTooltipCallback.EVENT.register(TOOLTIP_PHASE, OpenGuideHotkey::handleTooltip);
             ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, TOOLTIP_PHASE);
             ClientTickEvents.START_CLIENT_TICK.register(client -> newTick = true);
@@ -173,6 +176,6 @@ public final class OpenGuideHotkey {
     }
 
     private static KeyMapping getHotkey() {
-        return Minecraft.getInstance().options.keyUp;
+        return Hotkeys.getHotkey("guide").mapping();
     }
 }
