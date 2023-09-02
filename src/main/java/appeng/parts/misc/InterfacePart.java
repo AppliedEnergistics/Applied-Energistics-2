@@ -71,11 +71,14 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
             new ResourceLocation(AppEng.MOD_ID, "part/interface_has_channel"));
 
-    private final InterfaceLogic logic;
+    private final InterfaceLogic logic = createLogic();
 
     public InterfacePart(IPartItem<?> partItem) {
         super(partItem);
-        this.logic = new InterfaceLogic(this.getMainNode(), this, partItem.asItem());
+    }
+
+    protected InterfaceLogic createLogic() {
+        return new InterfaceLogic(getMainNode(), this, getPartItem().asItem());
     }
 
     @Override

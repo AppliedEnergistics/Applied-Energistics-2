@@ -28,7 +28,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -57,11 +56,14 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
         }
     };
 
-    private final InterfaceLogic logic = new InterfaceLogic(this.getMainNode(), this,
-            getItemFromBlockEntity().asItem());
+    private final InterfaceLogic logic = createLogic();
 
     public InterfaceBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
+    }
+
+    protected InterfaceLogic createLogic() {
+        return new InterfaceLogic(getMainNode(), this, getItemFromBlockEntity().asItem());
     }
 
     @Override
@@ -108,11 +110,6 @@ public class InterfaceBlockEntity extends AENetworkBlockEntity
     @Override
     public InterfaceLogic getInterfaceLogic() {
         return this.logic;
-    }
-
-    @Override
-    public BlockEntity getBlockEntity() {
-        return this;
     }
 
     @Override
