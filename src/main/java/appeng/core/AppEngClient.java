@@ -194,8 +194,8 @@ public class AppEngClient extends AppEngBase {
     }
 
     @Override
-    public void registerHotkey(String id) {
-        Hotkeys.registerHotkey(id);
+    public void registerHotkey(String id, int defaultKey) {
+        Hotkeys.registerHotkey(id, defaultKey);
     }
 
     public static AppEngClient instance() {

@@ -70,8 +70,6 @@ import appeng.util.Platform;
  * Contains behavior for interface blocks and parts, which is independent of the storage channel.
  */
 public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, IConfigurableObject {
-
-    public static final int NUMBER_OF_SLOTS = 9;
     @Nullable
     private InterfaceInventory localInvHandler;
     @Nullable
@@ -88,7 +86,7 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
      * Work planned by {@link #updatePlan()} to be performed by {@link #usePlan}. Positive amounts mean restocking from
      * the network is required while negative amounts mean moving to the network is required.
      */
-    private final GenericStack[] plannedWork = new GenericStack[NUMBER_OF_SLOTS];
+    private final GenericStack[] plannedWork;
     private int priority;
     /**
      * Configures what and how much to stock in this inventory.
@@ -101,9 +99,13 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
     private final ConfigInventory storage;
 
     public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is) {
+        this(gridNode, host, is, 9);
+    }
+
+    public InterfaceLogic(IManagedGridNode gridNode, InterfaceLogicHost host, Item is, int slots) {
         this.host = host;
-        this.config = ConfigInventory.configStacks(null, NUMBER_OF_SLOTS, this::onConfigRowChanged, false);
-        this.storage = ConfigInventory.storage(NUMBER_OF_SLOTS, this::onStorageChanged);
+        this.config = ConfigInventory.configStacks(null, slots, this::onConfigRowChanged, false);
+        this.storage = ConfigInventory.storage(slots, this::onStorageChanged);
         this.mainNode = gridNode
                 .setFlags(GridFlags.REQUIRE_CHANNEL)
                 .addService(IGridTickable.class, new Ticker());
@@ -113,8 +115,9 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
 
         gridNode.addService(ICraftingRequester.class, this);
         this.upgrades = UpgradeInventories.forMachine(is, 1, this::onUpgradesChanged);
-        this.craftingTracker = new MultiCraftingTracker(this, 9);
+        this.craftingTracker = new MultiCraftingTracker(this, slots);
         this.cm.registerSetting(Settings.FUZZY_MODE, FuzzyMode.IGNORE_ALL);
+        this.plannedWork = new GenericStack[slots];
 
         getConfig().useRegisteredCapacities();
         getStorage().useRegisteredCapacities();

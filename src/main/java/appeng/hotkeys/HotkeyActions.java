@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.lwjgl.glfw.GLFW;
+
 import appeng.api.features.HotkeyAction;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
@@ -20,7 +22,7 @@ import appeng.items.tools.powered.AbstractPortableCell;
 public class HotkeyActions {
     public static final HashMap<String, List<HotkeyAction>> REGISTRY = new HashMap<>();
 
-    static {
+    public static void init() {
         register(
                 new InventoryHotkeyAction(AEItems.WIRELESS_TERMINAL.asItem(),
                         (player, i) -> AEItems.WIRELESS_TERMINAL.asItem().openFromInventory(player, i)),
@@ -43,10 +45,6 @@ public class HotkeyActions {
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL256K, PORTABLE_FLUID_CELL);
     }
 
-    public static void init() {
-        // init static
-    }
-
     /**
      * a convenience helper for registering hotkeys for portable cells
      */
@@ -62,7 +60,7 @@ public class HotkeyActions {
             REGISTRY.get(id).add(0, hotkeyAction);
         } else {
             REGISTRY.put(id, new ArrayList<>(List.of(hotkeyAction)));
-            AppEng.instance().registerHotkey(id);
+            AppEng.instance().registerHotkey(id, GLFW.GLFW_KEY_UNKNOWN);
         }
     }
 }

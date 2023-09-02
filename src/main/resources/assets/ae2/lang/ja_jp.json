@@ -63,6 +63,7 @@
   "ae2.guidebook.ZoomOut": "縮小",
   "ae2.permission_denied": "アクセスする権限がありません。",
   "ae2.rei_jei_integration.budding_quartz_creation_and_worldgen": "芽生えたクォーツは隕石で見つけられるか、水中でチャージ済みクォーツを使用して再生成できます。",
+  "ae2.rei_jei_integration.budding_quartz_decays_when_broken": "芽生えたクォーツは破壊すると朽ち果てます。",
   "ae2.rei_jei_integration.buds_drop_dust_when_not_fully_grown": "クォーツの芽は完全に成長していない場合、ダストを落とします。",
   "ae2.rei_jei_integration.certus_quartz_growth": "ケルタスクォーツの成長度",
   "ae2.rei_jei_integration.charger_required_power": "%d回転または%dAE",
