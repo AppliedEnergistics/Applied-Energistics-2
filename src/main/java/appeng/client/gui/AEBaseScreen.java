@@ -41,6 +41,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
@@ -502,6 +503,16 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return new Point((int) Math.round(x - leftPos), (int) Math.round(y - topPos));
     }
 
+    private boolean focusChangedToSomething = false;
+
+    @Override
+    public void setFocused(@Nullable GuiEventListener listener) {
+        if (listener != null) {
+            this.focusChangedToSomething = true;
+        }
+        super.setFocused(listener);
+    }
+
     @Override
     public boolean mouseScrolled(double x, double y, double wheelDelta) {
         if (wheelDelta != 0 && widgets.onMouseWheel(getMousePoint(x, y), wheelDelta)) {
@@ -532,7 +543,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return true;
         }
 
-        return super.mouseClicked(xCoord, yCoord, btn);
+        // super.mouseClicked will always return true, so we try to capture if
+        // anything received focus due to the mouse click (see setFocused override)
+        focusChangedToSomething = false;
+        var result = super.mouseClicked(xCoord, yCoord, btn);
+        if (!focusChangedToSomething) {
+            var currentFocus = getCurrentFocusPath();
+            if (currentFocus != null) {
+                currentFocus.applyFocus(false);
+            }
+        }
+        return result;
     }
 
     @Override
