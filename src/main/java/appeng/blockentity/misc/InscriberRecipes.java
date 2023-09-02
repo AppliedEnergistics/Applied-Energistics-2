@@ -92,7 +92,7 @@ public final class InscriberRecipes {
         }
 
         final Ingredient startingItem = Ingredient.of(input.copy());
-        final ItemStack renamedItem = input.copy();
+        final ItemStack renamedItem = input.copyWithCount(1);
 
         if (!name.isEmpty()) {
             renamedItem.setHoverName(Component.literal(name));
