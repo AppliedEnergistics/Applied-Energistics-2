@@ -185,8 +185,7 @@ public final class OpenGuideHotkey {
     }
 
     private static boolean isKeyBound() {
-        var boundKey = KeyBindingHelper.getBoundKeyOf(getHotkey());
-        return boundKey.getValue() != -1;
+        return OPEN_GUIDE_MAPPING.isUnbound();
     }
 
     public static KeyMapping getHotkey() {
