@@ -6,7 +6,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import appeng.api.features.HotkeyAction;
 import appeng.client.Hotkey;
 import appeng.core.AELog;
 import appeng.core.localization.PlayerMessages;
@@ -14,7 +13,6 @@ import appeng.core.sync.BasePacket;
 import appeng.hotkeys.HotkeyActions;
 
 public class HotkeyPacket extends BasePacket {
-
     private final String hotkey;
 
     public HotkeyPacket(FriendlyByteBuf stream) {
@@ -33,16 +31,18 @@ public class HotkeyPacket extends BasePacket {
     }
 
     public void serverPacketData(ServerPlayer player) {
-        var locatingServices = HotkeyActions.REGISTRY.get(hotkey);
-        if (locatingServices == null) {
+        var actions = HotkeyActions.REGISTRY.get(hotkey);
+        if (actions == null) {
             player.sendSystemMessage(
                     PlayerMessages.UnknownHotkey.text().copy().append(Component.translatable("key.ae2." + hotkey)));
             AELog.warn("Player %s tried using unknown hotkey \"%s\"", player, hotkey);
             return;
         }
-        for (HotkeyAction hotkeyAction : locatingServices) {
-            if (hotkeyAction.run(player))
+
+        for (var action : actions) {
+            if (action.run(player)) {
                 break;
+            }
         }
     }
 }

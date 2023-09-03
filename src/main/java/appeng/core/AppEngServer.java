@@ -38,7 +38,7 @@ public class AppEngServer extends AppEngBase {
     }
 
     @Override
-    public void registerHotkey(String id, int defaultKey) {
+    public void registerHotkey(String id) {
         // don't register any Hotkeys
     }
 
