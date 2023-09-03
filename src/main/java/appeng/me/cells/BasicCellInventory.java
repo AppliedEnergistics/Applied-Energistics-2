@@ -38,6 +38,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.KeyCounter;
+import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.storage.cells.ISaveProvider;
@@ -57,8 +58,8 @@ public class BasicCellInventory implements StorageCell {
 
     private final ISaveProvider container;
     private final AEKeyType keyType;
-    private IPartitionList partitionList;
-    private IncludeExclude partitionListMode;
+    private final IPartitionList partitionList;
+    private final IncludeExclude partitionListMode;
     private int maxItemTypes;
     private short storedItems;
     private long storedItemCount;
@@ -162,11 +163,6 @@ public class BasicCellInventory implements StorageCell {
         return getStorageCell(input) != null;
     }
 
-    private boolean isStorageCell(AEItemKey key) {
-        var type = getStorageCell(key);
-        return type != null && !type.storableInStorageCell();
-    }
-
     private static IBasicCellItem getStorageCell(ItemStack input) {
         if (input != null && input.getItem() instanceof IBasicCellItem basicCellItem) {
             return basicCellItem;
@@ -175,19 +171,9 @@ public class BasicCellInventory implements StorageCell {
         return null;
     }
 
-    private static IBasicCellItem getStorageCell(AEItemKey itemKey) {
-        if (itemKey.getItem() instanceof IBasicCellItem basicCellItem) {
-            return basicCellItem;
-        }
-
-        return null;
-    }
-
-    private static boolean isCellEmpty(BasicCellInventory inv) {
-        if (inv != null) {
-            return inv.getAvailableStacks().isEmpty();
-        }
-        return true;
+    @Override
+    public boolean isEmpty() {
+        return !cellType.storableInStorageCell() && getAvailableStacks().isEmpty();
     }
 
     protected Object2LongMap<AEKey> getCellItems() {
@@ -394,21 +380,22 @@ public class BasicCellInventory implements StorageCell {
         }
 
         // Run regular insert logic and then apply void upgrade to the returned value.
-        long inserted = innerInsert(what, amount, mode, source);
+        long inserted = innerInsert(what, amount, mode);
         return this.hasVoidUpgrade ? amount : inserted;
     }
 
     // Inner insert for items that pass the filter.
-    private long innerInsert(AEKey what, long amount, Actionable mode, IActionSource source) {
-        // This is slightly hacky as it expects a read-only access, but fine for now.
-        // TODO: Guarantee a read-only access. E.g. provide an isEmpty() method and
-        // ensure CellInventory does not write
-        // any NBT data for empty cells instead of relying on an empty IAEStackList
-        if (what instanceof AEItemKey itemKey && this.isStorageCell(itemKey)) {
-            // TODO: make it work for any cell, and not just BasicCellInventory!
-            var meInventory = createInventory(itemKey.toStack(), null);
-            if (!isCellEmpty(meInventory)) {
-                return 0;
+    private long innerInsert(AEKey what, long amount, Actionable mode) {
+        // Prevent non-empty storage cells from being recursively stored inside this cell
+        if (what instanceof AEItemKey itemKey) {
+            var stack = itemKey.toStack();
+
+            if (StorageCells.isCellHandled(stack)) {
+                var cellInv = StorageCells.getCellInventory(stack, null);
+
+                if (cellInv != null && !cellInv.isEmpty()) {
+                    return 0;
+                }
             }
         }
 

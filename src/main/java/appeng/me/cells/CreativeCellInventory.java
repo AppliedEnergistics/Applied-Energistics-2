@@ -77,6 +77,11 @@ class CreativeCellInventory implements StorageCell {
     }
 
     @Override
+    public boolean isEmpty() {
+        return configured.isEmpty();
+    }
+
+    @Override
     public Component getDescription() {
         return stack.getHoverName();
     }

@@ -40,6 +40,12 @@ public interface StorageCell extends MEStorage {
     double getIdleDrain();
 
     /**
+     * Return whether the cell does not currently contain anything. Use this to determine when your cell should be
+     * storable in or able to store other kinds of cells without recurring.
+     */
+    boolean isEmpty();
+
+    /**
      * Tells the cell to persist to NBT.
      */
     void persist();
