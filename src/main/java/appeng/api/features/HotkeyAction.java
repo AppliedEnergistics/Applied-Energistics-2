@@ -5,12 +5,15 @@ import net.minecraft.world.entity.player.Player;
 import appeng.hotkeys.HotkeyActions;
 
 /**
- * locates and opens Inventories from items
+ * Hotkey actions are server-side actions, that are triggered by customizable hotkeys on the client.
+ * <p/>
+ * Actions are transferred via {@link appeng.core.sync.packets.HotkeyPacket} to the server.
  */
 public interface HotkeyAction {
 
     /**
-     * locates and opens an Inventory and returns if it has found anything
+     * Handles the hotkey action on the server-side. Return true to indicate the action was triggered, false to allow
+     * other handlers for the hotkey to process the event.
      */
     boolean run(Player player);
 

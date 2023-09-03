@@ -7,8 +7,7 @@ import static appeng.api.features.HotkeyAction.WIRELESS_TERMINAL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.lwjgl.glfw.GLFW;
+import java.util.Map;
 
 import appeng.api.features.HotkeyAction;
 import appeng.core.AppEng;
@@ -17,10 +16,10 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.tools.powered.AbstractPortableCell;
 
 /**
- * registers {@link HotkeyAction}
+ * Registry of {@link HotkeyAction}
  */
 public class HotkeyActions {
-    public static final HashMap<String, List<HotkeyAction>> REGISTRY = new HashMap<>();
+    public static final Map<String, List<HotkeyAction>> REGISTRY = new HashMap<>();
 
     public static void init() {
         register(
@@ -60,7 +59,7 @@ public class HotkeyActions {
             REGISTRY.get(id).add(0, hotkeyAction);
         } else {
             REGISTRY.put(id, new ArrayList<>(List.of(hotkeyAction)));
-            AppEng.instance().registerHotkey(id, GLFW.GLFW_KEY_UNKNOWN);
+            AppEng.instance().registerHotkey(id);
         }
     }
 }

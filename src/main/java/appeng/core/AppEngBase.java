@@ -61,6 +61,7 @@ import appeng.core.sync.network.ServerNetworkHandler;
 import appeng.hooks.ToolItemHook;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
+import appeng.hotkeys.HotkeyActions;
 import appeng.init.InitApiLookup;
 import appeng.init.InitBlockEntities;
 import appeng.init.InitBlocks;
@@ -152,6 +153,8 @@ public abstract class AppEngBase implements AppEng {
 
         UseBlockCallback.EVENT.register(WrenchHook::onPlayerUseBlock);
         UseBlockCallback.EVENT.register(ToolItemHook::onPlayerUseBlock);
+
+        HotkeyActions.init();
     }
 
     /**
