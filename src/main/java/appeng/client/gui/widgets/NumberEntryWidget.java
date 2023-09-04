@@ -235,6 +235,15 @@ public class NumberEntryWidget implements ICompositeWidget {
     }
 
     /**
+     * Returns whether the text field begins with an equals sign. This is used by crafting request screens in order to
+     * request just enough of an item to bring the total stored amount to the input amount, rather than requesting the
+     * input amount itself.
+     */
+    public boolean startsWithEquals() {
+        return textField.getValue().startsWith("=");
+    }
+
+    /**
      * Returns the integer value currently in the text-field, if it is a valid number and is within the allowed min/max
      * value.
      */

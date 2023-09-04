@@ -77,10 +77,11 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
 
     private void confirm() {
         int amount = this.amountToCraft.getIntValue().orElse(0);
+        boolean equals = this.amountToCraft.startsWithEquals();
         if (amount <= 0) {
             return;
         }
-        menu.confirm(amount, hasShiftDown());
+        menu.confirm(amount, equals, hasShiftDown());
     }
 
 }

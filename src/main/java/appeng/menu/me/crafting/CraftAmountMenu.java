@@ -106,9 +106,9 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      * @param amount    The number of items to craft.
      * @param autoStart Start crafting immediately when the planning is done.
      */
-    public void confirm(int amount, boolean autoStart) {
+    public void confirm(int amount, boolean equals, boolean autoStart) {
         if (!isServerSide()) {
-            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, autoStart));
+            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, equals, autoStart));
             return;
         }
 
@@ -116,18 +116,31 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             return;
         }
 
-        var locator = getLocator();
-        if (locator != null) {
-            Player player = this.getPlayerInventory().player;
-            MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
+        var host = getActionHost();
+        if (host != null) {
+            var node = host.getActionableNode();
+            if (node != null) {
+                if (equals) {
+                    var storage = node.getGrid().getStorageService();
+                    var existingAmount = (int) Math.min(storage.getCachedInventory().get(whatToCraft),
+                            Integer.MAX_VALUE);
+                    amount -= existingAmount;
+                }
 
-            if (player.containerMenu instanceof CraftConfirmMenu ccc) {
-                ccc.setAutoStart(autoStart);
-                ccc.planJob(
-                        whatToCraft,
-                        amount,
-                        CalculationStrategy.REPORT_MISSING_ITEMS);
-                broadcastChanges();
+                var locator = getLocator();
+                if (locator != null && amount > 0) {
+                    Player player = this.getPlayerInventory().player;
+                    MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
+
+                    if (player.containerMenu instanceof CraftConfirmMenu ccc) {
+                        ccc.setAutoStart(autoStart);
+                        ccc.planJob(
+                                whatToCraft,
+                                amount,
+                                CalculationStrategy.REPORT_MISSING_ITEMS);
+                        broadcastChanges();
+                    }
+                }
             }
         }
     }

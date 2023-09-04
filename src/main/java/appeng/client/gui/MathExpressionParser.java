@@ -43,6 +43,11 @@ public class MathExpressionParser {
             wasNumberOrRightBracket = false;
 
             switch (currentOperator) {
+                case '=' -> {
+                    if (i != 0) {
+                        return Optional.empty();
+                    }
+                }
                 case '(', 'u' -> {
                     operatorStack.push(currentOperator);
                 }
