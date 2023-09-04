@@ -42,7 +42,9 @@ public interface StorageCell extends MEStorage {
     /**
      * Return whether the cell should be storable in other kinds of cells.
      */
-    boolean canFitInsideCell();
+    default boolean canFitInsideCell() {
+        return true;
+    }
 
     /**
      * Tells the cell to persist to NBT.
