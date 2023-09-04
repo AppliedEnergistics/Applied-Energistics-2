@@ -13,9 +13,11 @@ public enum FluixToolType {
     FLUIX("fluix", () -> Ingredient.of(ConventionTags.FLUIX_CRYSTAL)),
     ;
 
+    private final String name;
     private final Tier toolTier;
 
     FluixToolType(String name, Supplier<Ingredient> repairIngredient) {
+        this.name = name;
         this.toolTier = new Tier() {
             @Override
             public int getUses() {
@@ -53,6 +55,10 @@ public enum FluixToolType {
                 return AppEng.MOD_ID + ":" + name;
             }
         };
+    }
+
+    public final String getName() {
+        return name;
     }
 
     public final Tier getToolTier() {

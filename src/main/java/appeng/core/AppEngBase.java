@@ -79,6 +79,7 @@ import appeng.init.InitItems;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitRecipeSerializers;
 import appeng.init.InitRecipeTypes;
+import appeng.init.InitTiers;
 import appeng.init.InitVillager;
 import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitGridLinkables;
@@ -142,6 +143,7 @@ public abstract class AppEngBase implements AppEng {
             }
             // Register everything in the block registration event ;)
 
+            InitTiers.init();
             InitBlocks.init(ForgeRegistries.BLOCKS);
             InitItems.init(ForgeRegistries.ITEMS);
             InitEntityTypes.init(ForgeRegistries.ENTITY_TYPES);
