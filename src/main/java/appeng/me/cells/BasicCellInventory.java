@@ -172,8 +172,8 @@ public class BasicCellInventory implements StorageCell {
     }
 
     @Override
-    public boolean isEmpty() {
-        return !cellType.storableInStorageCell() && getAvailableStacks().isEmpty();
+    public boolean canFitInsideCell() {
+        return cellType.storableInStorageCell() || getAvailableStacks().isEmpty();
     }
 
     protected Object2LongMap<AEKey> getCellItems() {
@@ -393,7 +393,7 @@ public class BasicCellInventory implements StorageCell {
             if (StorageCells.isCellHandled(stack)) {
                 var cellInv = StorageCells.getCellInventory(stack, null);
 
-                if (cellInv != null && !cellInv.isEmpty()) {
+                if (cellInv != null && !cellInv.canFitInsideCell()) {
                     return 0;
                 }
             }

@@ -77,7 +77,7 @@ class CreativeCellInventory implements StorageCell {
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean canFitInsideCell() {
         return configured.isEmpty();
     }
 
