@@ -205,24 +205,6 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .unlockedBy("has_gunpowder", has(Items.GUNPOWDER))
                 .unlockedBy("has_dusts/quartz", has(ConventionTags.ALL_QUARTZ_DUST))
                 .save(consumer, AppEng.makeId("misc/tiny_tnt"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.COMPARATOR)
-                .pattern(" a ")
-                .pattern("aba")
-                .pattern("ccc")
-                .define('a', Items.REDSTONE_TORCH)
-                .define('b', ConventionTags.ALL_NETHER_QUARTZ)
-                .define('c', ConventionTags.STONE)
-                .unlockedBy("has_quartz", has(ConventionTags.ALL_NETHER_QUARTZ))
-                .save(consumer, AppEng.makeId("misc/vanilla_comparator"));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.DAYLIGHT_DETECTOR)
-                .pattern("aaa")
-                .pattern("bbb")
-                .pattern("ccc")
-                .define('a', ConventionTags.GLASS)
-                .define('b', ConventionTags.ALL_NETHER_QUARTZ)
-                .define('c', ItemTags.WOODEN_SLABS)
-                .unlockedBy("has_quartz", has(ConventionTags.ALL_NETHER_QUARTZ))
-                .save(consumer, AppEng.makeId("misc/vanilla_daylight_detector"));
 
         // ====================================================
         // recipes/network
