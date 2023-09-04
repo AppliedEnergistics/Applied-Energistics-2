@@ -198,15 +198,29 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     @Override
     @Nullable
     public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side,
-            @org.jetbrains.annotations.Nullable Player player) {
-        return cb.addPart(partItem, side, player);
+            @org.jetbrains.annotations.Nullable Player player, CompoundTag initTag) {
+        return cb.addPart(partItem, side, player, initTag);
     }
 
-    @org.jetbrains.annotations.Nullable
     @Override
+    @Nullable
+    public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side,
+            @org.jetbrains.annotations.Nullable Player player) {
+        return cb.addPart(partItem, side, player, null);
+    }
+
+    @Override
+    @Nullable
     public <T extends IPart> T replacePart(IPartItem<T> partItem, @org.jetbrains.annotations.Nullable Direction side,
             Player owner, InteractionHand hand) {
-        return cb.replacePart(partItem, side, owner, hand);
+        return cb.replacePart(partItem, side, owner, hand, null);
+    }
+
+    @Override
+    @Nullable
+    public <T extends IPart> T replacePart(IPartItem<T> partItem, @org.jetbrains.annotations.Nullable Direction side,
+            Player owner, InteractionHand hand, CompoundTag initTag) {
+        return cb.replacePart(partItem, side, owner, hand, initTag);
     }
 
     @Override

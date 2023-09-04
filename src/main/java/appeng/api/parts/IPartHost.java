@@ -26,6 +26,7 @@ package appeng.api.parts;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -80,6 +81,12 @@ public interface IPartHost extends ICustomCableConnection {
     @Nullable
     <T extends IPart> T addPart(IPartItem<T> partItem, @Nullable Direction side, @Nullable Player owner);
 
+    @Nullable
+    default <T extends IPart> T addPart(IPartItem<T> partItem, @Nullable Direction side, @Nullable Player owner,
+            @Nullable CompoundTag initTag) {
+        return this.addPart(partItem, side, owner);
+    }
+
     /**
      * Replace an existing part on the specific side with a new one. Returns null if it failed to be replaced.
      *
@@ -91,6 +98,12 @@ public interface IPartHost extends ICustomCableConnection {
     @Nullable
     <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side, @Nullable Player owner,
             @Nullable InteractionHand hand);
+
+    @Nullable
+    default <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side, @Nullable Player owner,
+            @Nullable InteractionHand hand, @Nullable CompoundTag initTag) {
+        return this.replacePart(partItem, side, owner, hand);
+    }
 
     /**
      * Removes the part on the side, this doesn't drop it or anything, if you don't do something with it, its just

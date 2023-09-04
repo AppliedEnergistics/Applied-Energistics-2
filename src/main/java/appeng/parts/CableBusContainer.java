@@ -162,7 +162,14 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
 
     @Override
     @Nullable
-    public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side, @Nullable Player player) {
+    public <T extends IPart> T addPart(IPartItem<T> partItem, @Nullable Direction side, @Nullable Player owner) {
+        return this.addPart(partItem, side, owner, null);
+    }
+
+    @Override
+    @Nullable
+    public <T extends IPart> T addPart(IPartItem<T> partItem, Direction side, @Nullable Player player,
+            @Nullable CompoundTag initTag) {
         // This code-path does not allow adding facades, while canAddPart allows facades.
 
         var part = partItem.createPart();
@@ -174,6 +181,10 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
         if (part instanceof ICablePart cablePart) {
             if (getCable() != null || !arePartsCompatibleWithCable(cablePart)) {
                 return null;
+            }
+
+            if (initTag != null) {
+                part.readFromNBT(initTag);
             }
 
             this.storage.setCenter(cablePart);
@@ -253,8 +264,14 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     @Override
     public <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side, Player owner,
             InteractionHand hand) {
+        return this.replacePart(partItem, side, owner, hand, null);
+    }
+
+    @Override
+    public <T extends IPart> T replacePart(IPartItem<T> partItem, @Nullable Direction side, Player owner,
+            InteractionHand hand, CompoundTag initTag) {
         this.removePartWithoutUpdates(side);
-        return this.addPart(partItem, side, owner);
+        return this.addPart(partItem, side, owner, initTag);
     }
 
     @Override
