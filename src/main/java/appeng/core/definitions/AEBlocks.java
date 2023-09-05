@@ -31,10 +31,15 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -48,6 +53,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredica
 import net.minecraft.world.level.material.MapColor;
 
 import appeng.api.ids.AEBlockIds;
+import appeng.api.ids.AECreativeTabIds;
 import appeng.block.AEBaseBlock;
 import appeng.block.AEBaseBlockItem;
 import appeng.block.crafting.CraftingBlockItem;
@@ -244,11 +250,11 @@ public final class AEBlocks {
     ///
     /// DEBUG BLOCKS
     ///
-    public static final BlockDefinition<ItemGenBlock> DEBUG_ITEM_GEN = block("Dev.ItemGen", AppEng.makeId("debug_item_gen"), ItemGenBlock::new);
-    public static final BlockDefinition<ChunkLoaderBlock> DEBUG_CHUNK_LOADER = block("Dev.ChunkLoader", AppEng.makeId("debug_chunk_loader"), ChunkLoaderBlock::new);
-    public static final BlockDefinition<PhantomNodeBlock> DEBUG_PHANTOM_NODE = block("Dev.PhantomNode", AppEng.makeId("debug_phantom_node"), PhantomNodeBlock::new);
-    public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block("Dev.CubeGen", AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new);
-    public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block("Dev.EnergyGen", AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new);
+    public static final BlockDefinition<ItemGenBlock> DEBUG_ITEM_GEN = block("Dev.ItemGen", AppEng.makeId("debug_item_gen"), ItemGenBlock::new, CreativeModeTabs.OP_BLOCKS);
+    public static final BlockDefinition<ChunkLoaderBlock> DEBUG_CHUNK_LOADER = block("Dev.ChunkLoader", AppEng.makeId("debug_chunk_loader"), ChunkLoaderBlock::new, CreativeModeTabs.OP_BLOCKS);
+    public static final BlockDefinition<PhantomNodeBlock> DEBUG_PHANTOM_NODE = block("Dev.PhantomNode", AppEng.makeId("debug_phantom_node"), PhantomNodeBlock::new, CreativeModeTabs.OP_BLOCKS);
+    public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block("Dev.CubeGen", AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new, CreativeModeTabs.OP_BLOCKS);
+    public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block("Dev.EnergyGen", AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new, CreativeModeTabs.OP_BLOCKS);
 
     public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, () -> new CrankBlock(defaultProps(MapColor.WOOD, SoundType.WOOD).isViewBlocking(Blocks::never).noCollission()));
 
@@ -260,7 +266,12 @@ public final class AEBlocks {
 
     private static <T extends Block> BlockDefinition<T> block(String englishName, ResourceLocation id,
             Supplier<T> blockSupplier) {
-        return block(englishName, id, blockSupplier, null);
+        return block(englishName, id, blockSupplier, AECreativeTabIds.MAIN);
+    }
+
+    private static <T extends Block> BlockDefinition<T> block(String englishName, ResourceLocation id,
+            Supplier<T> blockSupplier, ResourceKey<CreativeModeTab> group) {
+        return block(englishName, id, blockSupplier, null, group);
     }
 
     private static <T extends Block> BlockDefinition<T> block(
@@ -268,6 +279,15 @@ public final class AEBlocks {
             ResourceLocation id,
             Supplier<T> blockSupplier,
             @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory) {
+        return block(englishName, id, blockSupplier, itemFactory, AECreativeTabIds.MAIN);
+    }
+
+    private static <T extends Block> BlockDefinition<T> block(
+            String englishName,
+            ResourceLocation id,
+            Supplier<T> blockSupplier,
+            @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory,
+            ResourceKey<CreativeModeTab> group) {
 
         // Create block and matching item, and set factory name of both
         T block = blockSupplier.get();
@@ -287,7 +307,12 @@ public final class AEBlocks {
         }
 
         BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, item);
-        MainCreativeTab.add(definition);
+
+        if (group.equals(AECreativeTabIds.MAIN)) {
+            MainCreativeTab.add(definition);
+        } else {
+            ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.addAfter(ItemStack.EMPTY, item));
+        }
 
         BLOCKS.add(definition);
 
