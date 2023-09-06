@@ -311,7 +311,15 @@ public final class AEBlocks {
         if (group.equals(AECreativeTabIds.MAIN)) {
             MainCreativeTab.add(definition);
         } else {
-            ItemGroupEvents.modifyEntriesEvent(group).register(entries -> entries.addAfter(ItemStack.EMPTY, item));
+            ItemGroupEvents.modifyEntriesEvent(group).register((entries) -> {
+                if (group.equals(CreativeModeTabs.OP_BLOCKS)) {
+                    if (entries.shouldShowOpRestrictedItems()) {
+                        entries.addAfter(ItemStack.EMPTY, item);
+                    }
+                } else {
+                    entries.addAfter(ItemStack.EMPTY, item);
+                }
+            });
         }
 
         BLOCKS.add(definition);
