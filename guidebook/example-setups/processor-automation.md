@@ -16,6 +16,9 @@ long as you can filter it.
 
 Here is detailed how to do it with just AE2, using ["pipe" subnets](pipe-subnet.md).
 
+Note that since this uses a <ItemLink id="pattern_provider" />, it is meant to integrate into your [autocrafting](../ae2-mechanics/autocrafting.md)
+setup. If you just want to automate a processors standalone, replace the pattern provider with another barrel, and directly put the ingredients in the upper barrel.
+
 This happens to be backwards-compatible
 with previous AE2 versions, because even if the <ItemLink id="inscriber" />s are sided, the pipe subnets still insert to and
 extract from the correct faces.

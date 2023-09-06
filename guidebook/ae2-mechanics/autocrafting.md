@@ -21,14 +21,19 @@ certain addons for extra mod material types, like Mekanism gasses, those materia
 
 It is quite a complex topic, so strap in and let's go.
 
-An autocrafting setup consists of 3 things: the thing sending the crafting request, the crafting CPU, and the <ItemLink id="pattern_provider" />.
+An autocrafting setup consists of 3 things:
+- The thing sending the crafting request
+- The crafting CPU
+- The <ItemLink id="pattern_provider" />.
+
+Here is what happens:
 
 1.  Something creates a crafting request. This can be you in the terminal clicking on something autocraftable,
     or an export bus or interface with a crafting card requesting one of the item they're set to export/stock.
 
 *   (**IMPORTANT:** use whatever you have bound to "pick block" (usually middle-mouse) to request crafts of something you already have in stock, this can conflict with inventory sorting mods),
 
-2.  The ME system calculates the required ingredients and prerequisite crafting steps to fulfill the request, and stores them in a crafting CPU
+2.  The ME system calculates the required ingredients and prerequisite crafting steps to fulfill the request, and stores them in the selected crafting CPU
 
 3.  The <ItemLink id="pattern_provider" /> with the relevant [pattern](../items-blocks-machines/patterns.md) pushes the ingredients specified in the pattern to any adjacent inventory.
     In the case of a crafting table recipe (a "crafting pattern") this will be a <ItemLink id="molecular_assembler" />.

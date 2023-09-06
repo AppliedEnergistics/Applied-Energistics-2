@@ -7,6 +7,9 @@ navigation:
 
 # Charger Automation
 
+Note that since this uses a <ItemLink id="pattern_provider" />, it is meant to integrate into your [autocrafting](../ae2-mechanics/autocrafting.md)
+setup. If you just want to automate a <ItemLink id="charger" /> standalone, use hoppers and chests and stuff.
+
 Automation of a <ItemLink id="charger" /> is fairly simple. A <ItemLink id="pattern_provider" /> pushes the ingredient into the charger, then a [pipe subnet](pipe-subnet.md)
 or other item pipe pushes the result back into the provider.
 
