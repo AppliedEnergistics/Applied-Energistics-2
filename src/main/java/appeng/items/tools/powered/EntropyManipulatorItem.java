@@ -31,6 +31,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -304,8 +305,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        if (!recipe.getDrops().isEmpty()) {
-            Platform.spawnDrops(level, pos, recipe.getDrops());
+        if (!level.isClientSide) {
+            for (var drop : recipe.getDrops()) {
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), drop.copy());
+            }
         }
 
         if (recipe.getMode() == EntropyMode.HEAT && !level.isClientSide()) {
