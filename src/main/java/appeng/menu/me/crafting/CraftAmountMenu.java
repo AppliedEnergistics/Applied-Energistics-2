@@ -116,31 +116,31 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             return;
         }
 
-        var host = getActionHost();
-        if (host != null) {
-            var node = host.getActionableNode();
-            if (node != null) {
-                if (equals) {
+        if (equals) {
+            var host = getActionHost();
+            if (host != null) {
+                var node = host.getActionableNode();
+                if (node != null) {
                     var storage = node.getGrid().getStorageService();
                     var existingAmount = (int) Math.min(storage.getCachedInventory().get(whatToCraft),
                             Integer.MAX_VALUE);
                     amount -= existingAmount;
                 }
+            }
+        }
 
-                var locator = getLocator();
-                if (locator != null && amount > 0) {
-                    Player player = this.getPlayerInventory().player;
-                    MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
+        var locator = getLocator();
+        if (locator != null && amount > 0) {
+            Player player = this.getPlayerInventory().player;
+            MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
-                    if (player.containerMenu instanceof CraftConfirmMenu ccc) {
-                        ccc.setAutoStart(autoStart);
-                        ccc.planJob(
-                                whatToCraft,
-                                amount,
-                                CalculationStrategy.REPORT_MISSING_ITEMS);
-                        broadcastChanges();
-                    }
-                }
+            if (player.containerMenu instanceof CraftConfirmMenu ccc) {
+                ccc.setAutoStart(autoStart);
+                ccc.planJob(
+                        whatToCraft,
+                        amount,
+                        CalculationStrategy.REPORT_MISSING_ITEMS);
+                broadcastChanges();
             }
         }
     }
