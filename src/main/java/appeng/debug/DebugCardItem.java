@@ -284,5 +284,4 @@ public class DebugCardItem extends AEBaseItem implements AEToolItem {
                 .append(Component.literal(label + ": ").withStyle(chatFormattings))
                 .append(value));
     }
-
 }
