@@ -3,6 +3,7 @@ package appeng.menu.slot;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
+import appeng.api.storage.StorageCells;
 import appeng.client.Point;
 
 public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
@@ -32,6 +33,19 @@ public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
         }
 
         return this.host.isPartitionSlotEnabled(this.slot);
+    }
+
+    @Override
+    public void set(ItemStack is) {
+        if (StorageCells.isCellHandled(is)) {
+            var cellInv = StorageCells.getCellInventory(is, null);
+
+            if (cellInv != null && !cellInv.canFitInsideCell()) {
+                return;
+            }
+        }
+
+        super.set(is);
     }
 
     @Override
