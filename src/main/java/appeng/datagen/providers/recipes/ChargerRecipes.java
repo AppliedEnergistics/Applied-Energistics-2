@@ -23,6 +23,9 @@ public class ChargerRecipes extends AE2RecipeProvider {
         ChargerRecipeBuilder.charge(consumer,
                 AppEng.makeId("charger/meteorite_compass"),
                 Items.COMPASS, AEItems.METEORITE_COMPASS);
+        ChargerRecipeBuilder.charge(consumer,
+                AppEng.makeId("charger/guide"),
+                Items.BOOK, AEItems.TABLET);
     }
 
     @Override
