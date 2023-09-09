@@ -7,6 +7,7 @@ import static appeng.api.features.HotkeyAction.WIRELESS_TERMINAL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appeng.api.features.HotkeyAction;
 import appeng.core.AppEng;
@@ -15,12 +16,12 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.tools.powered.AbstractPortableCell;
 
 /**
- * registers {@link HotkeyAction}
+ * Registry of {@link HotkeyAction}
  */
 public class HotkeyActions {
-    public static final HashMap<String, List<HotkeyAction>> REGISTRY = new HashMap<>();
+    public static final Map<String, List<HotkeyAction>> REGISTRY = new HashMap<>();
 
-    static {
+    public static void init() {
         register(
                 new InventoryHotkeyAction(AEItems.WIRELESS_TERMINAL.asItem(),
                         (player, i) -> AEItems.WIRELESS_TERMINAL.asItem().openFromInventory(player, i)),
@@ -41,10 +42,6 @@ public class HotkeyActions {
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL16K, PORTABLE_FLUID_CELL);
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL64K, PORTABLE_FLUID_CELL);
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL256K, PORTABLE_FLUID_CELL);
-    }
-
-    public static void init() {
-        // init static
     }
 
     /**

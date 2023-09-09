@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,9 @@ import appeng.core.AppEngClient;
  * Adds a "Hold X to show guide" tooltip
  */
 public final class OpenGuideHotkey {
+    private static final KeyMapping OPEN_GUIDE_MAPPING = new KeyMapping(
+            "key.ae2.guide", GLFW.GLFW_KEY_G, "key.ae2.category");
+
     private static final Logger LOG = LoggerFactory.getLogger(OpenGuideHotkey.class);
 
     private static final int TICKS_TO_OPEN = 10;
@@ -56,6 +60,7 @@ public final class OpenGuideHotkey {
 
     public static void init() {
         if (AEConfig.instance().isGuideHotkeyEnabled()) {
+            KeyBindingHelper.registerKeyBinding(OPEN_GUIDE_MAPPING);
             ItemTooltipCallback.EVENT.register(TOOLTIP_PHASE, OpenGuideHotkey::handleTooltip);
             ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, TOOLTIP_PHASE);
             ClientTickEvents.START_CLIENT_TICK.register(client -> newTick = true);
@@ -65,6 +70,13 @@ public final class OpenGuideHotkey {
     }
 
     private static void handleTooltip(ItemStack itemStack, TooltipFlag tooltipFlag, List<Component> lines) {
+        // Player didn't bind the key
+        if (!isKeyBound()) {
+            holding = false;
+            ticksKeyHeld = 0;
+            return;
+        }
+
         // This should only update once per client-tick
         if (newTick) {
             newTick = false;
@@ -152,6 +164,10 @@ public final class OpenGuideHotkey {
                     } else {
                         AppEngClient.instance().openGuideAtAnchor(guidebookPage);
                     }
+                    // Reset the ticks held immediately to avoid reopening another page if
+                    // our cursors lands on an item
+                    ticksKeyHeld = 0;
+                    holding = false;
                 }
             } else if (ticksKeyHeld > TICKS_TO_OPEN) {
                 ticksKeyHeld = TICKS_TO_OPEN;
@@ -172,7 +188,11 @@ public final class OpenGuideHotkey {
         return InputConstants.isKeyDown(window, keyCode);
     }
 
-    private static KeyMapping getHotkey() {
-        return Minecraft.getInstance().options.keyUp;
+    private static boolean isKeyBound() {
+        return !OPEN_GUIDE_MAPPING.isUnbound();
+    }
+
+    public static KeyMapping getHotkey() {
+        return OPEN_GUIDE_MAPPING;
     }
 }

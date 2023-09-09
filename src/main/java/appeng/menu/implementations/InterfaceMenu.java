@@ -41,7 +41,7 @@ public class InterfaceMenu extends UpgradeableMenu<InterfaceLogicHost> {
             .create(InterfaceMenu::new, InterfaceLogicHost.class)
             .build("interface");
 
-    public InterfaceMenu(MenuType<InterfaceMenu> menuType, int id, Inventory ip, InterfaceLogicHost host) {
+    public InterfaceMenu(MenuType<? extends InterfaceMenu> menuType, int id, Inventory ip, InterfaceLogicHost host) {
         super(menuType, id, ip, host);
 
         registerClientAction(ACTION_OPEN_SET_AMOUNT, Integer.class, this::openSetAmountMenu);

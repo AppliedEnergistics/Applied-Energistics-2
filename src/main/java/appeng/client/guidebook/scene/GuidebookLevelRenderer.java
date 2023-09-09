@@ -106,34 +106,38 @@ public class GuidebookLevelRenderer {
      * Render without any setup.
      */
     public void renderContent(GuidebookLevel level, MultiBufferSource.BufferSource buffers) {
-        renderBlocks(level, buffers, false);
-        renderBlocks(level, buffers, true);
-        renderBlockEntities(level, buffers);
+        RenderSystem.runAsFancy(() -> {
+            renderBlocks(level, buffers, false);
+            renderBlockEntities(level, buffers);
 
-        buffers.endLastBatch();
+            // The order comes from LevelRenderer#renderLevel
+            buffers.endBatch(RenderType.entitySolid(TextureAtlas.LOCATION_BLOCKS));
+            buffers.endBatch(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS));
+            buffers.endBatch(RenderType.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS));
+            buffers.endBatch(RenderType.entitySmoothCutout(TextureAtlas.LOCATION_BLOCKS));
 
-        // The order comes from LevelRenderer#renderLevel
-        buffers.endBatch(RenderType.entitySolid(TextureAtlas.LOCATION_BLOCKS));
-        buffers.endBatch(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS));
-        buffers.endBatch(RenderType.entityCutoutNoCull(TextureAtlas.LOCATION_BLOCKS));
-        buffers.endBatch(RenderType.entitySmoothCutout(TextureAtlas.LOCATION_BLOCKS));
+            // These would normally be pre-baked, but they are not for us
+            for (var layer : RenderType.chunkBufferLayers()) {
+                if (layer != RenderType.translucent()) {
+                    buffers.endBatch(layer);
+                }
+            }
 
-        // These would normally be pre-baked, but they are not for us
-        for (var layer : RenderType.chunkBufferLayers()) {
-            buffers.endBatch(layer);
-        }
+            buffers.endBatch(RenderType.solid());
+            buffers.endBatch(RenderType.endPortal());
+            buffers.endBatch(RenderType.endGateway());
+            buffers.endBatch(Sheets.solidBlockSheet());
+            buffers.endBatch(Sheets.cutoutBlockSheet());
+            buffers.endBatch(Sheets.bedSheet());
+            buffers.endBatch(Sheets.shulkerBoxSheet());
+            buffers.endBatch(Sheets.signSheet());
+            buffers.endBatch(Sheets.hangingSignSheet());
+            buffers.endBatch(Sheets.chestSheet());
+            buffers.endBatch();
 
-        buffers.endBatch(RenderType.solid());
-        buffers.endBatch(RenderType.endPortal());
-        buffers.endBatch(RenderType.endGateway());
-        buffers.endBatch(Sheets.solidBlockSheet());
-        buffers.endBatch(Sheets.cutoutBlockSheet());
-        buffers.endBatch(Sheets.bedSheet());
-        buffers.endBatch(Sheets.shulkerBoxSheet());
-        buffers.endBatch(Sheets.signSheet());
-        buffers.endBatch(Sheets.hangingSignSheet());
-        buffers.endBatch(Sheets.chestSheet());
-        buffers.endBatch();
+            renderBlocks(level, buffers, true);
+            buffers.endBatch(RenderType.translucent());
+        });
     }
 
     private void renderBlocks(GuidebookLevel level, MultiBufferSource buffers, boolean translucent) {

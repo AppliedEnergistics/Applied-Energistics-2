@@ -37,12 +37,12 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.InterfaceMenu;
 
-public class InterfaceScreen extends UpgradeableScreen<InterfaceMenu> {
+public class InterfaceScreen<C extends InterfaceMenu> extends UpgradeableScreen<C> {
 
     private final SettingToggleButton<FuzzyMode> fuzzyMode;
     private final List<Button> amountButtons = new ArrayList<>();
 
-    public InterfaceScreen(InterfaceMenu menu, Inventory playerInventory, Component title,
+    public InterfaceScreen(C menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 

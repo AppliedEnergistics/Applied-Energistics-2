@@ -61,6 +61,7 @@ import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AELog;
+import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
@@ -86,6 +87,7 @@ public final class TestPlots {
         PLOT_CLASSES.addAll(List.of(
                 TestPlots.class,
                 AutoCraftingTestPlots.class,
+                InscriberTestPlots.class,
                 P2PTestPlots.class,
                 MemoryCardTestPlots.class,
                 PatternProviderLockModePlots.class,
@@ -114,13 +116,13 @@ public final class TestPlots {
 
                 for (var method : clazz.getMethods()) {
                     var annotation = method.getAnnotation(TestPlot.class);
-                    if (annotation == null) {
+                    var generatorAnnotation = method.getAnnotation(TestPlotGenerator.class);
+                    if (annotation == null && generatorAnnotation == null) {
                         continue;
                     }
-
-                    var id = new ResourceLocation(annotation.value());
-                    if (plots.containsKey(id)) {
-                        throw new IllegalArgumentException("Duplicate plot ID " + id);
+                    if (annotation != null && generatorAnnotation != null) {
+                        throw new IllegalStateException("Cannot annotate method " + method + " with both "
+                                + "@TestPlot and @TestPlotGenerator");
                     }
 
                     if (!Modifier.isPublic(method.getModifiers())) {
@@ -132,18 +134,39 @@ public final class TestPlots {
                     if (!void.class.equals(method.getReturnType())) {
                         throw new IllegalStateException("Method " + method + " must return void");
                     }
-                    if (!Arrays.asList(method.getParameterTypes()).equals(List.of(PlotBuilder.class))) {
-                        throw new IllegalStateException(
-                                "Method " + method + " must take a single PlotBuilder argument");
-                    }
 
-                    plots.put(id, builder -> {
-                        try {
-                            method.invoke(null, builder);
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
+                    if (annotation != null) {
+                        if (!Arrays.asList(method.getParameterTypes()).equals(List.of(PlotBuilder.class))) {
+                            throw new IllegalStateException(
+                                    "Method " + method + " must take a single PlotBuilder argument");
                         }
-                    });
+
+                        var id = AppEng.makeId(annotation.value());
+                        plots.put(id, builder -> {
+                            try {
+                                method.invoke(null, builder);
+                            } catch (InvocationTargetException e) {
+                                throw new RuntimeException("Failed building " + id, e.getCause());
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException("Failed to access " + method, e);
+                            }
+                        });
+                    } else if (generatorAnnotation != null) {
+                        if (!Arrays.asList(method.getParameterTypes()).equals(List.of(TestPlotCollection.class))) {
+                            throw new IllegalStateException(
+                                    "Method " + method + " must take a single TestPlotCollection argument");
+                        }
+
+                        var tpc = new TestPlotCollection(plots);
+
+                        try {
+                            method.invoke(null, tpc);
+                        } catch (InvocationTargetException e) {
+                            throw new RuntimeException("Failed building " + method, e.getCause());
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException("Failed to access " + method, e);
+                        }
+                    }
                 }
             }
         } catch (Exception e) {

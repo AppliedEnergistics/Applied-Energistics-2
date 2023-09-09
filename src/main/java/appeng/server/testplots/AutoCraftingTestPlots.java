@@ -384,4 +384,48 @@ public final class AutoCraftingTestPlots {
                     .thenSucceed();
         });
     }
+
+    /**
+     * The crafting CPU inventory drops from every block of the multiblock when the multiblock is broken, as long as the
+     * multiblock is currently offline. https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/7288
+     */
+    @TestPlot("regression_7288")
+    public static void testCraftingCpuDupe(PlotBuilder plot) {
+        craftingCube(plot);
+
+        plot.cable("0 0 -2");
+        plot.blockEntity("0 0 -3", AEBlocks.PATTERN_PROVIDER, provider -> {
+            var pattern = PatternDetailsHelper.encodeProcessingPattern(
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))
+                    },
+                    new GenericStack[] {
+                            GenericStack.fromItemStack(new ItemStack(Items.STICK))
+                    });
+            provider.getLogic().getPatternInv().addItems(pattern);
+        });
+        plot.cable("0 0 -4");
+        {
+            var db = plot.drive(new BlockPos(0, 0, -5));
+            db.addItemCell64k().add(Items.DIAMOND, 1);
+        }
+        plot.cable("0 1 -5").part(Direction.NORTH, AEParts.CRAFTING_TERMINAL);
+        plot.creativeEnergyCell("0 -1 -5");
+
+        plot.test(helper -> {
+            var craftingJob = new TestCraftingJob(helper, BlockPos.ZERO, AEItemKey.of(Items.STICK), 1);
+            helper.startSequence()
+                    .thenWaitUntil(craftingJob::tickUntilStarted)
+                    .thenIdle(1) // give time to push out job
+                    .thenExecute(() -> {
+                        // break cable
+                        helper.destroyBlock(new BlockPos(0, 0, -2));
+                        // break part of the crafting CPU
+                        helper.destroyBlock(new BlockPos(0, 0, -1));
+                        // Fail if not exactly 1 diamond was spawned as item entities
+                        helper.assertItemEntityCountIs(Items.DIAMOND, new BlockPos(0, 0, 0), 3, 1);
+                    })
+                    .thenSucceed();
+        });
+    }
 }
