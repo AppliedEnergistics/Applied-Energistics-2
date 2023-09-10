@@ -586,43 +586,43 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .define('c', AEParts.GLASS_CABLE.item(AEColor.TRANSPARENT))
                 .define('d', AEItems.LOGIC_PROCESSOR)
                 .unlockedBy("has_calculation_processor", has(AEItems.CALCULATION_PROCESSOR))
-                .save(consumer, AppEng.makeId("network/crafting/cpu_crafting_unit"));
+                .save(consumer, AppEng.makeId("network/crafting/crafting_unit"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEBlocks.CRAFTING_STORAGE_1K)
                 .requires(AEBlocks.CRAFTING_UNIT)
                 .requires(AEItems.CELL_COMPONENT_1K)
                 .unlockedBy("has_crafting_unit", has(AEBlocks.CRAFTING_UNIT))
-                .save(consumer, AppEng.makeId("network/crafting/1k_cpu_crafting_storage"));
+                .save(consumer, AppEng.makeId("network/crafting/1k_crafting_storage"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEBlocks.CRAFTING_STORAGE_4K)
                 .requires(AEItems.CELL_COMPONENT_4K)
                 .requires(AEBlocks.CRAFTING_UNIT)
                 .unlockedBy("has_crafting_unit", has(AEBlocks.CRAFTING_UNIT))
-                .save(consumer, AppEng.makeId("network/crafting/4k_cpu_crafting_storage"));
+                .save(consumer, AppEng.makeId("network/crafting/4k_crafting_storage"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEBlocks.CRAFTING_STORAGE_16K)
                 .requires(AEItems.CELL_COMPONENT_16K)
                 .requires(AEBlocks.CRAFTING_UNIT)
                 .unlockedBy("has_crafting_unit", has(AEBlocks.CRAFTING_UNIT))
-                .save(consumer, AppEng.makeId("network/crafting/16k_cpu_crafting_storage"));
+                .save(consumer, AppEng.makeId("network/crafting/16k_crafting_storage"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEBlocks.CRAFTING_STORAGE_64K)
                 .requires(AEBlocks.CRAFTING_UNIT)
                 .requires(AEItems.CELL_COMPONENT_64K)
                 .unlockedBy("has_crafting_unit", has(AEBlocks.CRAFTING_UNIT))
-                .save(consumer, AppEng.makeId("network/crafting/64k_cpu_crafting_storage"));
+                .save(consumer, AppEng.makeId("network/crafting/64k_crafting_storage"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEBlocks.CRAFTING_STORAGE_256K)
                 .requires(AEItems.CELL_COMPONENT_256K)
                 .requires(AEBlocks.CRAFTING_UNIT)
                 .unlockedBy("has_crafting_unit", has(AEBlocks.CRAFTING_UNIT))
-                .save(consumer, AppEng.makeId("network/crafting/256k_cpu_crafting_storage"));
+                .save(consumer, AppEng.makeId("network/crafting/256k_crafting_storage"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEBlocks.CRAFTING_ACCELERATOR)
                 .requires(AEItems.ENGINEERING_PROCESSOR)
                 .requires(AEBlocks.CRAFTING_UNIT)
                 .unlockedBy("has_crafting_unit", has(AEBlocks.CRAFTING_UNIT))
-                .save(consumer, AppEng.makeId("network/crafting/cpu_crafting_accelerator"));
+                .save(consumer, AppEng.makeId("network/crafting/crafting_accelerator"));
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, AEBlocks.CRAFTING_MONITOR)
                 .requires(AEParts.STORAGE_MONITOR)
                 .requires(AEBlocks.CRAFTING_UNIT)
                 .unlockedBy("has_crafting_unit", has(AEBlocks.CRAFTING_UNIT))
-                .save(consumer, AppEng.makeId("network/crafting/cpu_crafting_monitor"));
+                .save(consumer, AppEng.makeId("network/crafting/crafting_monitor"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, AEBlocks.MOLECULAR_ASSEMBLER)
                 .pattern("aba")
