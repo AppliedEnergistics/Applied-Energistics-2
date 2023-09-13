@@ -1,17 +1,23 @@
 package appeng.me;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+import java.io.File;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.datafix.DataFixers;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -21,8 +27,6 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.worlddata.GridStorageSaveData;
-import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.service.EnergyService;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.Platform;
@@ -30,6 +34,9 @@ import appeng.util.Platform;
 @MockitoSettings(strictness = Strictness.LENIENT)
 @BootstrapMinecraft
 abstract class AbstractGridNodeTest {
+    @Mock
+    MinecraftServer server;
+
     @Mock
     ServerLevel level;
 
@@ -41,13 +48,17 @@ abstract class AbstractGridNodeTest {
     @Mock
     MockedStatic<Platform> platform;
 
-    @Mock
-    MockedStatic<IGridStorageSaveData> gridStorageSaveData;
+    @TempDir
+    File storageDir;
 
     @BeforeEach
-    public void setupStaticMocks() {
+    public void setupMocks() {
+        when(level.getServer()).thenReturn(server);
+        when(server.getLevel(Level.OVERWORLD)).thenReturn(level);
+
+        when(level.getDataStorage()).thenReturn(new DimensionDataStorage(storageDir, DataFixers.getDataFixer()));
+
         platform.when(Platform::isServer).thenReturn(true);
-        gridStorageSaveData.when(() -> IGridStorageSaveData.get(any())).thenReturn(new GridStorageSaveData());
     }
 
     protected GridNode makeNode(GridFlags... flags) {

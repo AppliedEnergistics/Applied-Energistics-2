@@ -25,16 +25,9 @@ package appeng.api.networking;
 
 import net.minecraft.nbt.CompoundTag;
 
+@Deprecated(forRemoval = true)
 public interface IGridStorage {
-
-    /**
-     * @return an CompoundNBT that can be read, and written too.
-     */
-
     CompoundTag dataObject();
 
-    /**
-     * @return the id for this grid storage object, used internally
-     */
     long getID();
 }

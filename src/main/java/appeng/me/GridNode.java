@@ -60,7 +60,6 @@ import appeng.api.parts.IPart;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AEColor;
 import appeng.core.AELog;
-import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.pathfinding.IPathItem;
 
 public class GridNode implements IGridNode, IPathItem {
@@ -88,7 +87,6 @@ public class GridNode implements IGridNode, IPathItem {
 
     private AEColor gridColor = AEColor.TRANSPARENT;
     private int owningPlayerId = -1;
-    private GridStorage myStorage = null;
     private Grid myGrid;
     private Object visitorIterationNumber = null;
     // connection criteria
@@ -96,6 +94,12 @@ public class GridNode implements IGridNode, IPathItem {
     private int lastUsedChannels = 0;
     private final EnumSet<GridFlags> flags;
     private ClassToInstanceMap<IGridNodeService> services;
+
+    /**
+     * Loaded from NBT and used when the node joins the grid.
+     */
+    @Nullable
+    private CompoundTag savedData;
 
     public <T> GridNode(ServerLevel level,
             T owner,
@@ -281,21 +285,17 @@ public class GridNode implements IGridNode, IPathItem {
             return;
         }
 
-        boolean wasPowered = isPowered();
+        // Save any data from the old grid to move it over to the new grid
         if (this.myGrid != null) {
+            this.savedData = new CompoundTag();
+            this.myGrid.saveNodeData(this, savedData);
             this.myGrid.remove(this);
-
-            if (this.myGrid.isEmpty()) {
-                this.myGrid.saveState();
-
-                for (var c : grid.getProviders()) {
-                    c.onJoin(this.myGrid.getMyStorage());
-                }
-            }
         }
 
+        boolean wasPowered = isPowered();
         this.myGrid = grid;
-        this.myGrid.add(this);
+        this.myGrid.add(this, savedData);
+
         callListener(IGridNodeListener::onGridChanged);
         if (wasPowered != isPowered()) {
             notifyStatusChange(IGridNodeListener.State.POWER);
@@ -349,7 +349,6 @@ public class GridNode implements IGridNode, IPathItem {
 
         connections.clear();
 
-        this.setGridStorage(null);
         AELog.grid("Destroyed node %s in grid %s", this, this.myGrid);
         if (this.myGrid != null) {
             this.myGrid.remove(this);
@@ -410,31 +409,55 @@ public class GridNode implements IGridNode, IPathItem {
         return myGrid.getEnergyService().isNetworkPowered();
     }
 
-    public void loadFromNBT(String name, CompoundTag nodeData) {
-        Preconditions.checkState(!ready, "Cannot load NBT when the node was marked as ready.");
-        if (this.myGrid != null) {
-            throw new IllegalStateException("Loading data after part of a grid, this is invalid.");
+    public void loadFromNBT(String name, CompoundTag nodeDataContainer) {
+        this.owningPlayerId = -1;
+
+        var oldNodeData = this.savedData;
+        if (nodeDataContainer.get(name) instanceof CompoundTag newNodeData) {
+            this.savedData = newNodeData;
+            if (newNodeData.contains("p", Tag.TAG_INT)) {
+                this.owningPlayerId = newNodeData.getInt("p");
+            }
+        } else {
+            this.savedData = null;
         }
 
-        if (nodeData.contains(name, Tag.TAG_COMPOUND)) {
-            final CompoundTag node = nodeData.getCompound(name);
-            this.owningPlayerId = node.getInt("p");
-
-            final long storageID = node.getLong("g");
-            final GridStorage gridStorage = IGridStorageSaveData.get(getLevel()).getGridStorage(storageID);
-            this.setGridStorage(gridStorage);
-        } else {
-            this.owningPlayerId = -1; // Unknown owner
-            setGridStorage(null);
+        // When we're already part of the grid, we kinda need to leave and rejoin if the data changed...
+        if (ready && this.myGrid != null && !areTagsEqualIgnoringPlayerId(this.savedData, oldNodeData)) {
+            AELog.debug("Resetting grid node %s to reload NBT", this);
+            this.destroy();
+            markReady();
         }
     }
 
-    public void saveToNBT(String name, CompoundTag nodeData) {
-        if (this.myStorage != null) {
-            final CompoundTag node = new CompoundTag();
+    private boolean areTagsEqualIgnoringPlayerId(CompoundTag newData, CompoundTag oldData) {
+        Set<String> newKeys = newData != null ? newData.getAllKeys() : Set.of();
+        Set<String> oldKeys = oldData != null ? oldData.getAllKeys() : Set.of();
+        for (var newKey : newKeys) {
+            if ("p".equals(newKey)) {
+                continue; // Ignore player ID
+            }
+            var newTag = newData.get(newKey);
+            var oldTag = oldData != null ? oldData.get(newKey) : null;
+            if (!Objects.equals(newTag, oldTag)) {
+                return false;
+            }
+        }
+        // Check for missing keys
+        for (var oldKey : oldKeys) {
+            if (!"p".equals(oldKey) && !newKeys.contains(oldKey)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
+    public void saveToNBT(String name, CompoundTag nodeData) {
+        if (this.myGrid != null) {
+
+            var node = new CompoundTag();
             node.putInt("p", this.owningPlayerId);
-            node.putLong("g", this.myStorage.getID());
+            this.myGrid.saveNodeData(this, node);
 
             nodeData.put(name, node);
         } else {
@@ -522,16 +545,6 @@ public class GridNode implements IGridNode, IPathItem {
                 nextRun.add(gn);
             }
         }
-    }
-
-    GridStorage getGridStorage() {
-        return this.myStorage;
-    }
-
-    void setGridStorage(GridStorage s) {
-        this.myStorage = s;
-        // Don't reset the channels, since we want the node to remain active until repathing is done to immediately
-        // re-add services (such as storage) for active nodes when they join the grid.
     }
 
     @Override

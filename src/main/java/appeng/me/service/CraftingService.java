@@ -39,6 +39,7 @@ import com.google.common.collect.Sets;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.config.Actionable;
@@ -203,7 +204,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(IGridNode gridNode) {
+    public void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
 
         // The provider can already be added because it gets callback from the storage service,
         // in which it might already register itself before coming to this point.
