@@ -1,23 +1,16 @@
 package appeng.me;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.datafix.DataFixers;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -33,31 +26,20 @@ import appeng.util.Platform;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @BootstrapMinecraft
-abstract class AbstractGridNodeTest {
+public abstract class AbstractGridNodeTest {
     @Mock
-    MinecraftServer server;
+    protected ServerLevel level;
 
-    @Mock
-    ServerLevel level;
-
-    Object owner = new Object();
+    protected Object owner = new Object();
 
     @Mock
-    IGridNodeListener<Object> listener;
+    protected IGridNodeListener<Object> listener;
 
     @Mock
-    MockedStatic<Platform> platform;
-
-    @TempDir
-    File storageDir;
+    protected MockedStatic<Platform> platform;
 
     @BeforeEach
     public void setupMocks() {
-        when(level.getServer()).thenReturn(server);
-        when(server.getLevel(Level.OVERWORLD)).thenReturn(level);
-
-        when(level.getDataStorage()).thenReturn(new DimensionDataStorage(storageDir, DataFixers.getDataFixer()));
-
         platform.when(Platform::isServer).thenReturn(true);
     }
 

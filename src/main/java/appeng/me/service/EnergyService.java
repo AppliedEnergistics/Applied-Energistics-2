@@ -116,7 +116,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
      */
     private int availableTicksSinceUpdate = 0;
     private double globalAvailablePower = 0;
-    private double globalMaxPower;
+    private double providerPowerSum;
 
     /**
      * idle draw.
@@ -147,7 +147,6 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         this.grid = (Grid) g;
         this.pgc = (PathingService) pgc;
         this.localStorage = new GridEnergyStorage(grid);
-        this.globalMaxPower = this.localStorage.getAEMaxPower();
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
     }
@@ -411,7 +410,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     @Override
     public double getMaxStoredPower() {
-        return this.globalMaxPower;
+        return this.providerPowerSum + this.localStorage.getAEMaxPower();
     }
 
     @Override
@@ -448,7 +447,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         if (ps != null) {
             if (ps.isAEPublicPowerStorage()) {
                 if (ps.getPowerFlow() != AccessRestriction.WRITE) {
-                    this.globalMaxPower -= ps.getAEMaxPower();
+                    this.providerPowerSum -= ps.getAEMaxPower();
                     this.globalAvailablePower -= ps.getAECurrentPower();
                 }
 
@@ -513,7 +512,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
                 var powerFlow = ps.getPowerFlow();
                 if (powerFlow.isAllowExtraction()) {
                     this.globalAvailablePower += ps.getAECurrentPower();
-                    this.globalMaxPower += ps.getAEMaxPower();
+                    this.providerPowerSum += ps.getAEMaxPower();
                 }
 
                 addProvider(ps);

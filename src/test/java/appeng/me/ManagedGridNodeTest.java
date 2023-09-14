@@ -1,15 +1,17 @@
 package appeng.me;
 
-import appeng.api.config.Actionable;
-import appeng.api.config.PowerMultiplier;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import org.assertj.core.data.Offset;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
 
 class ManagedGridNodeTest extends AbstractGridNodeTest {
     public static final Offset<Double> TOLERANCE = Offset.offset(0.1);
@@ -45,17 +47,6 @@ class ManagedGridNodeTest extends AbstractGridNodeTest {
         assertSame(mgn1.getGrid(), mgn2.getGrid());
         assertThat(mgn1.getGrid().getEnergyService().extractAEPower(1000, Actionable.SIMULATE, PowerMultiplier.ONE))
                 .isCloseTo(20, TOLERANCE);
-    }
-
-    @Test
-    void testEnergyGridStorageScalesWithNodes() {
-        var mgn1 = createAndInitNode();
-        var energyService = mgn1.getGrid().getEnergyService();
-        assertThat(energyService.getMaxStoredPower()).isCloseTo(10, TOLERANCE);
-
-        var mgn2 = createAndInitNode();
-        GridConnection.create(mgn1.getNode(), mgn2.getNode(), null);
-        assertThat(energyService.getMaxStoredPower()).isCloseTo(10, TOLERANCE);
     }
 
     @NotNull

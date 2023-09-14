@@ -352,6 +352,7 @@ public class GridNode implements IGridNode, IPathItem {
         AELog.grid("Destroyed node %s in grid %s", this, this.myGrid);
         if (this.myGrid != null) {
             this.myGrid.remove(this);
+            this.myGrid = null;
         }
     }
 
