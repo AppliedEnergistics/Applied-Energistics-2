@@ -431,6 +431,9 @@ task apiJar(type: Jar, group: "build") {
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
+    manifest {
+        attributes("Fabric-Loom-Remap": true)
+    }
 }
 apiJar publicApiIncludePatterns
 
