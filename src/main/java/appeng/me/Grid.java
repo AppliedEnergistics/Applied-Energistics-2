@@ -30,7 +30,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.CrashReportCategory;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.GridServicesInternal;
@@ -39,10 +42,8 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridService;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.events.GridEvent;
 import appeng.core.AELog;
-import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.hooks.ticking.TickHandler;
 
 public class Grid implements IGrid {
@@ -56,7 +57,6 @@ public class Grid implements IGrid {
     private final Map<Class<?>, IGridServiceProvider> services;
     private GridNode pivot;
     private int priority; // how import is this network?
-    private GridStorage myStorage;
     private final int serialNumber = nextSerial++; // useful to keep track of grids in toString() for debugging purposes
 
     /**
@@ -84,10 +84,6 @@ public class Grid implements IGrid {
         return this.priority;
     }
 
-    IGridStorage getMyStorage() {
-        return this.myStorage;
-    }
-
     Collection<IGridServiceProvider> getProviders() {
         return this.services.values();
     }
@@ -105,8 +101,6 @@ public class Grid implements IGrid {
         var machineClass = gridNode.getOwner().getClass();
         this.machines.remove(machineClass, gridNode);
 
-        gridNode.setGridStorage(null);
-
         if (this.pivot == gridNode) {
             var nodesIt = machines.values().iterator();
             if (nodesIt.hasNext()) {
@@ -114,58 +108,24 @@ public class Grid implements IGrid {
             } else {
                 this.pivot = null;
                 TickHandler.instance().removeNetwork(this);
-                this.myStorage.remove(gridNode.getLevel());
 
                 AELog.grid("Removed grid %s", this);
             }
         }
     }
 
-    void add(GridNode gridNode) {
-        // handle loading grid storages.
-        if (gridNode.getGridStorage() != null) {
-            final GridStorage gs = gridNode.getGridStorage();
-            final IGrid grid = gs.getGrid();
-
-            if (grid == null) {
-                this.myStorage = gs;
-                this.myStorage.setGrid(this);
-
-                for (var gc : this.services.values()) {
-                    gc.onJoin(this.myStorage);
-                }
-            } else if (grid != this) {
-                if (this.myStorage == null) {
-                    this.myStorage = IGridStorageSaveData.get(getPivot().getLevel()).getNewGridStorage();
-                    this.myStorage.setGrid(this);
-                }
-
-                final IGridStorage tmp = new GridStorage();
-                if (!gs.hasDivided(this.myStorage)) {
-                    gs.addDivided(this.myStorage);
-
-                    for (var gc : ((Grid) grid).services.values()) {
-                        gc.onSplit(tmp);
-                    }
-
-                    for (var gc : this.services.values()) {
-                        gc.onJoin(tmp);
-                    }
-                }
-            }
-        } else if (this.myStorage == null) {
-            this.myStorage = IGridStorageSaveData.get(getPivot().getLevel()).getNewGridStorage();
-            this.myStorage.setGrid(this);
-        }
-
-        // update grid node...
-        gridNode.setGridStorage(this.myStorage);
-
+    void add(GridNode gridNode, @Nullable CompoundTag savedData) {
         // track node.
         this.machines.put(gridNode.getOwner().getClass(), gridNode);
 
         for (var service : this.services.values()) {
-            service.addNode(gridNode);
+            service.addNode(gridNode, savedData);
+        }
+    }
+
+    void saveNodeData(GridNode gridNode, CompoundTag savedData) {
+        for (var service : this.services.values()) {
+            service.saveNodeData(gridNode, savedData);
         }
     }
 
@@ -269,12 +229,6 @@ public class Grid implements IGrid {
             if (this.pivot != null) {
                 gc.onServerEndTick();
             }
-        }
-    }
-
-    void saveState() {
-        for (var c : this.services.values()) {
-            c.populateGridStorage(this.myStorage);
         }
     }
 

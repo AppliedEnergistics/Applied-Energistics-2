@@ -2,6 +2,7 @@ package appeng.util;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 import com.google.common.io.MoreFiles;
 import com.google.common.io.RecursiveDeleteOption;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.loader.impl.entrypoint.EntrypointUtils;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 
@@ -42,12 +43,25 @@ public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback
         if (!modInitialized) {
             modInitialized = true;
 
-            EntrypointUtils.invoke("preLaunch", PreLaunchEntrypoint.class, PreLaunchEntrypoint::onPreLaunch);
-            EntrypointUtils.invoke("main", ModInitializer.class, ModInitializer::onInitialize);
-            EntrypointUtils.invoke("server", DedicatedServerModInitializer.class,
+            invokeEntrypoints("preLaunch", PreLaunchEntrypoint.class, PreLaunchEntrypoint::onPreLaunch);
+            invokeEntrypoints("main", ModInitializer.class, ModInitializer::onInitialize);
+            invokeEntrypoints("server", DedicatedServerModInitializer.class,
                     DedicatedServerModInitializer::onInitializeServer);
 
             Guide.runDatapackReload();
+        }
+    }
+
+    private <T> void invokeEntrypoints(String name, Class<T> type, Consumer<? super T> invoker) {
+        var entrypoints = FabricLoaderImpl.INSTANCE.getEntrypointContainers(name, type);
+
+        for (var container : entrypoints) {
+            var modId = container.getProvider().getMetadata().getId();
+            // Fix WTHIT API runtime protection messing our tests up
+            if (modId.equals("wthit_api")) {
+                continue;
+            }
+            invoker.accept(container.getEntrypoint());
         }
     }
 

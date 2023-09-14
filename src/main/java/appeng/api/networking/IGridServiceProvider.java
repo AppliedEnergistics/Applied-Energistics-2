@@ -23,6 +23,9 @@
 
 package appeng.api.networking;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 /**
@@ -74,40 +77,40 @@ public interface IGridServiceProvider {
     default void removeNode(IGridNode gridNode) {
     }
 
+    @Deprecated(forRemoval = true, since = "1.20.1")
+    default void addNode(IGridNode gridNode) {
+    }
+
     /**
      * Informs the grid service about a node that was added to the grid.
      * <p>
      * Important: Do not trust the grids state in this method, interact only with the node you are passed, if you need
      * to manage other grid information, do it on the next updateTick.
      *
-     * @param gridNode added to grid node
+     * @param gridNode  added to grid node
+     * @param savedData The grid-related saved data for the node joining the grid. May be null. Contains data written by
+     *                  {@link #saveNodeData}.
      */
-    default void addNode(IGridNode gridNode) {
+    default void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
+        addNode(gridNode);
     }
 
     /**
-     * Called when a grid splits into two grids, AE will call a split as it iteratively processes changes. The
-     * destination should receive half, and the current service should retain half.
-     *
-     * @param destinationStorage storage which receives half of old grid
+     * Save provider-specific data for the given node to the given tag. Note that the tag is shared between all
+     * providers, so take care to use unique names for your properties!
      */
+    default void saveNodeData(IGridNode gridNode, CompoundTag savedData) {
+    }
+
+    @Deprecated(forRemoval = true, since = "1.20.1")
     default void onSplit(IGridStorage destinationStorage) {
     }
 
-    /**
-     * Called when two grids merge into one, AE will call a join as it Iteratively processes changes. Use this method to
-     * incorporate all the data from the source into your service.
-     *
-     * @param sourceStorage old storage
-     */
+    @Deprecated(forRemoval = true, since = "1.20.1")
     default void onJoin(IGridStorage sourceStorage) {
     }
 
-    /**
-     * Called when saving changes,
-     *
-     * @param destinationStorage storage
-     */
+    @Deprecated(forRemoval = true, since = "1.20.1")
     default void populateGridStorage(IGridStorage destinationStorage) {
     }
 }

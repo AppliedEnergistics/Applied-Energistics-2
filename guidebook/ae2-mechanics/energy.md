@@ -63,7 +63,7 @@ runs out of energy, and thus reboots.
 
 **This can be solved by the addition of energy cells.**
 
-Networks come with a free 800 AE of energy buffer.
+Networks have a built-in energy buffer of 25 AE per cable, machine or part.
 
 <ItemLink id="controller" />s have a small amount of internal energy storage, 8,000 AE
 

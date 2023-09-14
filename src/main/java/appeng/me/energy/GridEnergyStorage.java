@@ -6,13 +6,15 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.events.GridPowerStorageStateChanged;
+import appeng.core.AEConfig;
 
 /**
  * The inherent energy storage provided by a grid.
  */
 public class GridEnergyStorage implements IAEPowerStorage {
     private final IGrid grid;
-    private final StoredEnergyAmount stored = new StoredEnergyAmount(0, 800, this::emitPowerEvent);
+    private final StoredEnergyAmount stored = new StoredEnergyAmount(0, 0, this::emitPowerEvent);
+    private int nodeCount;
 
     public GridEnergyStorage(IGrid grid) {
         this.grid = grid;
@@ -56,5 +58,37 @@ public class GridEnergyStorage implements IAEPowerStorage {
 
     private void emitPowerEvent(GridPowerStorageStateChanged.PowerEventType type) {
         grid.postEvent(new GridPowerStorageStateChanged(this, type));
+    }
+
+    public void addNode() {
+        this.nodeCount++;
+        updateMaximum();
+    }
+
+    public double getNodeEnergyShare() {
+        if (this.nodeCount == 0) {
+            return 0;
+        }
+        return this.stored.getAmount() / this.nodeCount;
+    }
+
+    public void removeNode() {
+        if (this.nodeCount < 1) {
+            throw new IllegalStateException("Removing a node from energy storage while it has no nodes");
+        }
+
+        // Deduct the storage of the node proportionally
+        var deduction = getNodeEnergyShare();
+        if (deduction > 0) {
+            this.stored.extract(deduction, true);
+        }
+
+        this.nodeCount--;
+        updateMaximum();
+    }
+
+    private void updateMaximum() {
+        // Update maximum power
+        this.stored.setMaximum(AEConfig.instance().getGridEnergyStoragePerNode() * nodeCount);
     }
 }

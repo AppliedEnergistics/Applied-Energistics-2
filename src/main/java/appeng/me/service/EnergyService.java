@@ -31,7 +31,11 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
 
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.ObjectRBTreeSet;
 
@@ -43,7 +47,6 @@ import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IGridServiceProvider;
-import appeng.api.networking.IGridStorage;
 import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.energy.IEnergyService;
 import appeng.api.networking.energy.IEnergyWatcher;
@@ -60,6 +63,7 @@ import appeng.me.energy.GridEnergyStorage;
 import appeng.me.energy.IEnergyOverlayGridConnection;
 
 public class EnergyService implements IEnergyService, IGridServiceProvider {
+    private static final String TAG_STORED_ENERGY = "e";
 
     static {
         GridHelper.addGridServiceEventHandler(GridPowerIdleChange.class, IEnergyService.class,
@@ -112,7 +116,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
      */
     private int availableTicksSinceUpdate = 0;
     private double globalAvailablePower = 0;
-    private double globalMaxPower;
+    private double providerPowerSum;
 
     /**
      * idle draw.
@@ -143,7 +147,6 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         this.grid = (Grid) g;
         this.pgc = (PathingService) pgc;
         this.localStorage = new GridEnergyStorage(grid);
-        this.globalMaxPower = this.localStorage.getAEMaxPower();
         this.requesters.add(this.localStorage);
         this.providers.add(this.localStorage);
     }
@@ -407,7 +410,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     @Override
     public double getMaxStoredPower() {
-        return this.globalMaxPower;
+        return this.providerPowerSum + this.localStorage.getAEMaxPower();
     }
 
     @Override
@@ -427,6 +430,8 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
 
     @Override
     public void removeNode(IGridNode node) {
+        localStorage.removeNode();
+
         var gridProvider = node.getService(IEnergyOverlayGridConnection.class);
         if (gridProvider != null) {
             this.overlayGridConnections.remove(gridProvider);
@@ -442,7 +447,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
         if (ps != null) {
             if (ps.isAEPublicPowerStorage()) {
                 if (ps.getPowerFlow() != AccessRestriction.WRITE) {
-                    this.globalMaxPower -= ps.getAEMaxPower();
+                    this.providerPowerSum -= ps.getAEMaxPower();
                     this.globalAvailablePower -= ps.getAECurrentPower();
                 }
 
@@ -486,7 +491,9 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(IGridNode node) {
+    public void addNode(IGridNode node, @Nullable CompoundTag storedData) {
+        localStorage.addNode();
+
         var gridProvider = node.getService(IEnergyOverlayGridConnection.class);
         if (gridProvider != null) {
             this.overlayGridConnections.add(gridProvider);
@@ -505,7 +512,7 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
                 var powerFlow = ps.getPowerFlow();
                 if (powerFlow.isAllowExtraction()) {
                     this.globalAvailablePower += ps.getAECurrentPower();
-                    this.globalMaxPower += ps.getAEMaxPower();
+                    this.providerPowerSum += ps.getAEMaxPower();
                 }
 
                 addProvider(ps);
@@ -519,23 +526,23 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
             this.watchers.put(node, iw);
             ews.updateWatcher(iw);
         }
+
+        // If the node came with buffered energy, add it to our internal storage
+        if (storedData != null && storedData.contains(TAG_STORED_ENERGY, Tag.TAG_DOUBLE)) {
+            double buffer = storedData.getDouble(TAG_STORED_ENERGY);
+            if (buffer > 0) {
+                localStorage.injectAEPower(buffer, Actionable.MODULATE);
+            }
+        }
     }
 
     @Override
-    public void onSplit(IGridStorage storageB) {
-        final double newBuffer = this.localStorage.getAECurrentPower() / 2;
-        this.localStorage.extractAEPower(newBuffer, Actionable.MODULATE, PowerMultiplier.ONE);
-        storageB.dataObject().putDouble("buffer", newBuffer);
-    }
-
-    @Override
-    public void onJoin(IGridStorage storageB) {
-        this.localStorage.injectAEPower(storageB.dataObject().getDouble("buffer"), Actionable.MODULATE);
-    }
-
-    @Override
-    public void populateGridStorage(IGridStorage storage) {
-        storage.dataObject().putDouble("buffer", this.localStorage.getAECurrentPower());
+    public void saveNodeData(IGridNode gridNode, CompoundTag savedData) {
+        // When node-data is saved, we allocate it 1/N of our stored local energy
+        var perNodeStorage = localStorage.getNodeEnergyShare();
+        if (perNodeStorage > 0) {
+            savedData.putDouble(TAG_STORED_ENERGY, perNodeStorage);
+        }
     }
 
     public boolean registerEnergyInterest(EnergyThreshold threshold) {
