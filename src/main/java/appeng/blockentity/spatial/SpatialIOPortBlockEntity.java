@@ -167,8 +167,6 @@ public class SpatialIOPortBlockEntity extends AENetworkInvBlockEntity {
             if (Math.abs(pr - req) < req * 0.001) {
                 var evt = grid.postEvent(new GridSpatialEvent(getLevel(), getBlockPos(), req));
                 if (!evt.isTransitionPrevented()) {
-                    // Prefer player id from security system, but if unavailable, use the
-                    // player who placed the grid node (if any)
                     int playerId = node.getOwningPlayerId();
 
                     boolean success = sc.doSpatialTransition(cell, serverLevel, spc.getMin(), spc.getMax(),

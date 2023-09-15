@@ -157,3 +157,7 @@ accessible method net/minecraft/client/renderer/texture/TextureAtlas getWidth ()
 accessible method net/minecraft/client/renderer/texture/TextureAtlas getHeight ()I
 accessible method net/minecraft/client/renderer/texture/SpriteContents$AnimatedTexture uploadFrame (III)V
 
+
+accessible field net/minecraft/server/level/ServerLevel entityManager Lnet/minecraft/world/level/entity/PersistentEntitySectionManager;
+accessible field net/minecraft/world/level/entity/PersistentEntitySectionManager permanentStorage Lnet/minecraft/world/level/entity/EntityPersistentStorage;
+accessible field net/minecraft/world/level/entity/PersistentEntitySectionManager chunkVisibility Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;
