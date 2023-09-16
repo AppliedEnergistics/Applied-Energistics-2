@@ -146,7 +146,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
         var te = this.getBlockEntity(level, pos);
         if (te instanceof AEBaseInvBlockEntity invBlockEntity) {
-            if (invBlockEntity.getInternalInventory().size() > 0) {
+            if (!invBlockEntity.getInternalInventory().isEmpty()) {
                 return invBlockEntity.getInternalInventory().getRedstoneSignal();
             }
         }
