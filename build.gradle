@@ -313,6 +313,12 @@ loom {
             property "appeng.tests", "true"
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
+        gametestWorld {
+            client()
+            programArgs "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+            property "appeng.tests", "true"
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+        }
         guide {
             client()
             programArgs "--username", "AE2Dev"

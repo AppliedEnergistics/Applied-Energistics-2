@@ -1,6 +1,7 @@
 package appeng.server.testplots;
 
-import java.util.Objects;
+import static appeng.server.testplots.P2PPlotHelper.linkTunnels;
+import static appeng.server.testplots.P2PPlotHelper.placeTunnel;
 
 import org.apache.commons.lang3.mutable.MutableDouble;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -10,28 +11,20 @@ import org.apache.commons.lang3.mutable.MutableShort;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
-import appeng.api.networking.IGrid;
 import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ItemDefinition;
-import appeng.items.parts.PartItem;
-import appeng.me.service.P2PService;
-import appeng.parts.AEBasePart;
 import appeng.parts.p2p.MEP2PTunnelPart;
-import appeng.parts.p2p.P2PTunnelPart;
 import appeng.parts.reporting.AbstractPanelPart;
 import appeng.parts.reporting.PanelPart;
 import appeng.server.testworld.PlotBuilder;
-import appeng.util.SettingsFrom;
 
 public class P2PTestPlots {
     @TestPlot("p2p_me")
@@ -68,24 +61,6 @@ public class P2PTestPlots {
             helper.succeedWhen(() -> {
                 helper.assertContainerEmpty(origin.west().west().west());
                 helper.assertContainerContains(origin.east().east().east(), Items.BEDROCK);
-            });
-        });
-    }
-
-    @TestPlot("p2p_items")
-    public static void item(PlotBuilder plot) {
-        var origin = BlockPos.ZERO;
-        placeTunnel(plot, AEParts.ITEM_P2P_TUNNEL);
-
-        // Hopper pointing into the input P2P
-        plot.hopper(origin.west().west(), Direction.EAST, new ItemStack(Items.BEDROCK));
-        // Chest adjacent to output
-        var chestPos = origin.east().east();
-        plot.chest(chestPos);
-
-        plot.test(helper -> {
-            helper.succeedWhen(() -> {
-                helper.assertContainerContains(chestPos, Items.BEDROCK);
             });
         });
     }
@@ -286,43 +261,4 @@ public class P2PTestPlots {
         });
     }
 
-    private static <T extends P2PTunnelPart<?>> void placeTunnel(PlotBuilder plot, ItemDefinition<PartItem<T>> tunnel) {
-        var origin = BlockPos.ZERO;
-        plot.creativeEnergyCell(origin.below());
-        plot.cable(origin);
-        plot.cable(origin.west()).part(Direction.WEST, tunnel);
-        plot.cable(origin.east()).part(Direction.EAST, tunnel);
-        plot.afterGridInitAt(origin, (grid, gridNode) -> {
-            BlockPos absOrigin = ((AEBasePart) gridNode.getOwner()).getBlockEntity().getBlockPos();
-
-            linkTunnels(grid, tunnel.asItem().getPartClass(), absOrigin.west(), absOrigin.east());
-        });
-    }
-
-    private static <T extends P2PTunnelPart<?>> short linkTunnels(IGrid grid, Class<T> tunnelType, BlockPos inputPos,
-            BlockPos outputPos) {
-        var p2p = P2PService.get(grid);
-        T inputTunnel = null;
-        T outputTunnel = null;
-        for (T p2pPart : grid.getMachines(tunnelType)) {
-            if (p2pPart.getBlockEntity().getBlockPos().equals(inputPos)) {
-                inputTunnel = p2pPart;
-            } else if (p2pPart.getBlockEntity().getBlockPos().equals(outputPos)) {
-                outputTunnel = p2pPart;
-            }
-        }
-
-        Objects.requireNonNull(inputTunnel, "inputTunnel");
-        Objects.requireNonNull(outputTunnel, "outputTunnel");
-
-        inputTunnel.setFrequency(p2p.newFrequency());
-        p2p.updateFreq(inputTunnel, inputTunnel.getFrequency());
-
-        // Link to output
-        var settings = new CompoundTag();
-        inputTunnel.exportSettings(SettingsFrom.MEMORY_CARD, settings);
-        outputTunnel.importSettings(SettingsFrom.MEMORY_CARD, settings, null);
-
-        return inputTunnel.getFrequency();
-    }
 }
