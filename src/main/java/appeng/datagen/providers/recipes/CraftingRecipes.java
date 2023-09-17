@@ -876,7 +876,7 @@ public class CraftingRecipes extends AE2RecipeProvider {
                 .pattern("  d")
                 .define('a', AEItems.FORMATION_CORE)
                 .define('b', ConventionTags.IRON_INGOT)
-                .define('c', AEItems.CELL_COMPONENT_4K)
+                .define('c', AEItems.CELL_COMPONENT_1K)
                 .define('d', AEBlocks.ENERGY_CELL)
                 .unlockedBy("has_formation_core", has(AEItems.FORMATION_CORE))
                 .unlockedBy("has_energy_cell", has(AEBlocks.ENERGY_CELL))

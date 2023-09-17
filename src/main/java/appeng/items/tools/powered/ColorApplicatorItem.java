@@ -469,7 +469,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public int getBytes(ItemStack cellItem) {
-        return 512;
+        return 1024;
     }
 
     @Override
