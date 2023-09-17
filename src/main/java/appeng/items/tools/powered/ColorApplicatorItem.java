@@ -85,6 +85,7 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
 import appeng.items.contents.CellConfig;
 import appeng.items.misc.PaintBallItem;
+import appeng.items.storage.StorageTier;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 import appeng.me.cells.BasicCellHandler;
 import appeng.me.helpers.BaseActionSource;
@@ -469,12 +470,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     @Override
     public int getBytes(ItemStack cellItem) {
-        return 1024;
+        return StorageTier.SIZE_4K.bytes() / 2;
     }
 
     @Override
     public int getBytesPerType(ItemStack cellItem) {
-        return 8;
+        return StorageTier.SIZE_4K.bytes() / 128;
     }
 
     @Override
