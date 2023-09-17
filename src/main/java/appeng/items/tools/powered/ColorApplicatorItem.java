@@ -167,34 +167,34 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                 return InteractionResult.FAIL;
             }
 
-            if (!paintBall.isEmpty() && paintBall.getItem() instanceof SnowballItem) {
-                var be = level.getBlockEntity(pos);
-                // clean cables.
-                if (p != null
-                        && be instanceof IColorableBlockEntity colorableBlockEntity
-                        && this.getAECurrentPower(is) > POWER_PER_USE
-                        && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
-                    if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
+            if (!paintBall.isEmpty()) {
+                if (paintBall.getItem() instanceof SnowballItem) {
+                    // clean cables.
+                    if (p != null
+                            && level.getBlockEntity(pos) instanceof IColorableBlockEntity colorableBlockEntity
+                            && this.getAECurrentPower(is) > POWER_PER_USE
+                            && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
+                        if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
+                            consumeItem(is, paintBallKey, false);
+                            return InteractionResult.sidedSuccess(level.isClientSide());
+                        }
+                    }
+
+                    // clean paint balls..
+                    final Block testBlk = level.getBlockState(pos.relative(side)).getBlock();
+                    final BlockEntity painted = level.getBlockEntity(pos.relative(side));
+                    if (this.getAECurrentPower(is) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
+                            && painted instanceof PaintSplotchesBlockEntity) {
                         consumeItem(is, paintBallKey, false);
+                        ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
                         return InteractionResult.sidedSuccess(level.isClientSide());
                     }
                 }
 
-                // clean paint balls..
-                final Block testBlk = level.getBlockState(pos.relative(side)).getBlock();
-                final BlockEntity painted = level.getBlockEntity(pos.relative(side));
-                if (this.getAECurrentPower(is) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
-                        && painted instanceof PaintSplotchesBlockEntity) {
-                    consumeItem(is, paintBallKey, false);
-                    ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
-                    return InteractionResult.sidedSuccess(level.isClientSide());
-                }
-            } else if (!paintBall.isEmpty()) {
                 final AEColor color = this.getColorFromItem(paintBall);
 
                 if (color != null
                         && this.getAECurrentPower(is) > POWER_PER_USE
-                        && color != AEColor.TRANSPARENT
                         && this.recolourBlock(blk, side, level, pos, color, p)) {
                     consumeItem(is, paintBallKey, false);
                     return InteractionResult.sidedSuccess(level.isClientSide());
