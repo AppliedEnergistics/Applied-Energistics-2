@@ -20,6 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 
 import appeng.core.AELog;
@@ -99,7 +100,7 @@ public class SetupTestWorldCommand implements ISubCommand {
     private void removeAllEntitiesButPlayer(MinecraftServer srv) {
         for (var level : srv.getAllLevels()) {
             var entities = new ArrayList<Entity>();
-            level.getEntities().getAll().forEach(entities::add);
+            level.getEntities(EntityTypeTest.forClass(Entity.class), e -> true, entities);
             for (var entity : entities) {
                 if (entity instanceof Player) {
                     continue;
