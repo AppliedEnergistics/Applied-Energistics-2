@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Blocks;
 
 import appeng.api.parts.IPartItem;
 import appeng.hooks.ticking.TickHandler;
@@ -143,8 +142,7 @@ public abstract class CapabilityP2PTunnelPart<P extends CapabilityP2PTunnelPart<
             try {
                 // getHost().notifyNeighbors() would queue a callback, but we want to do an update synchronously!
                 // (otherwise we can't detect infinite recursion, it would just queue updates endlessly)
-                var self = getBlockEntity();
-                self.getLevel().updateNeighborsAt(self.getBlockPos(), Blocks.AIR);
+                getHost().notifyNeighborNow(getSide());
             } finally {
                 inBlockUpdate = false;
             }

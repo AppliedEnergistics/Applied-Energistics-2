@@ -198,6 +198,12 @@ public interface IPartHost extends ICustomCableConnection {
     void notifyNeighbors();
 
     /**
+     * notify neighbors uf updated status on the given side of the host. issue the notification immediately and
+     * synchronously.
+     */
+    void notifyNeighborNow(Direction side);
+
+    /**
      * true if the block entity is in the world, other wise false.
      *
      * @return true if block entity is in world
