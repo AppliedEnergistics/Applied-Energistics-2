@@ -1,0 +1,18 @@
+{
+    DataVersion: 3465,
+    size: [2, 1, 4],
+    data: [
+        {pos: [0, 0, 3], state: "minecraft:oak_wall_sign{facing:west,waterlogged:false}", nbt: {back_text: {color: "black", has_glowing_text: 0b, messages: ['{"text":""}', '{"text":""}', '{"text":""}', '{"text":""}']}, front_text: {color: "black", has_glowing_text: 1b, messages: ['{"text":"Some Kind"}', '{"text":"Of Machine"}', '{"text":""}', '{"text":""}']}, id: "minecraft:sign", is_waxed: 0b}},
+        {pos: [1, 0, 0], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 1, channelsSouth: 1, connections: ["north", "south"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 1], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:blue_smart_cable", visual: {channelsNorth: 1, channelsSouth: 1, connections: ["north", "south"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [1, 0, 2], state: "ae2:pattern_provider{push_direction:all}", nbt: {blocking_mode: "NO", id: "ae2:pattern_provider", lock_crafting_mode: "NONE", pattern_access_terminal: "YES", priority: 0, proxy: {p: 0}, returnInv: [], sendList: [], visual: {}}},
+        {pos: [1, 0, 3], state: "minecraft:blast_furnace{facing:west,lit:false}", nbt: {BurnTime: 0s, CookTime: 0s, CookTimeTotal: 0s, Items: [], RecipesUsed: {}, id: "minecraft:blast_furnace"}}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:oak_wall_sign{facing:west,waterlogged:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}",
+        "ae2:pattern_provider{push_direction:all}",
+        "minecraft:blast_furnace{facing:west,lit:false}"
+    ]
+}

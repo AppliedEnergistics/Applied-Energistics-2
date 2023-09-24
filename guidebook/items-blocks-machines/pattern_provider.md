@@ -35,7 +35,17 @@ to exploit.
 
 Pattern providers have a special interaction with interfaces on [subnets](../ae2-mechanics/subnetworks.md): if the interface is unmodified (nothing in the request slots)
 the provider will skip the interface entirely and push directly to that subnet's [storage](../ae2-mechanics/import-export-storage.md),
-skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
+skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in the machine.
+This works correctly with blocking mode, the provider will monitor the slots in the machine for ingredients, instead of the slots in the interface.
+
+For example, this setup will push both the thing to be smelted and the fuel directly into the corresponding slots in the furnace.
+You can use this to pattern provide into multiple sides of a machine, or multiple machines.
+
+<GameScene zoom="6" background="transparent">
+  <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
+
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
 
 Multiple pattern providers with identical patterns are supported and work in parallel.
 
@@ -74,6 +84,57 @@ Pattern providers have a variety of modes:
 Priorities can be set by clicking the wrench in the top-right of the GUI. In the case of several [patterns](patterns.md)
 for the same item, patterns in providers with higher priority will be used over patterns in providers with lower priority,
 unless the network does not have the ingredients for the higher priority pattern.
+
+## A Common Misconception
+
+For some reason people keep doing this, I don't understand why, but I'm putting this here to hopefully help. (Perhaps
+people are mistaken, thinking an <ItemLink id="export_bus" /> is the only way for things to exit the network, not knowing
+that pattern providers also export things)
+
+This will not do what you want it to do. As mentioned in [cables](cables.md), cables are not item pipes, they have no internal
+inventory, providers will not push into them.
+
+<GameScene zoom="8" background="transparent">
+  <ImportStructure src="../assets/assemblies/provider_misconception_1.snbt" />
+
+  <BoxAnnotation color="#dddddd" min="1 0 3" max="2 1 4">
+        Not A Blast Furnace
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="95" pitch="5" />
+</GameScene>
+
+Since the provider doesn't have anything to push to, it will
+not be able to function. All it's doing here is acting like a cable, connecting the <ItemLink id="export_bus" /> to the
+network.
+
+The provider will also not somehow tell the <ItemLink id="export_bus" /> what to export, the export bus will just export
+everything you put in its filter.
+
+What we've essentially done here is this:
+
+<GameScene zoom="8" background="transparent">
+  <ImportStructure src="../assets/assemblies/provider_misconception_2.snbt" />
+
+  <BoxAnnotation color="#dddddd" min="1 0 3" max="2 1 4">
+        Not A Blast Furnace
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="95" pitch="5" />
+</GameScene>
+
+Likely what you would actually want to make is this, where the pattern provider can export the contents of its patterns to
+the adjacent machine:
+
+<GameScene zoom="8" background="transparent">
+  <ImportStructure src="../assets/assemblies/provider_misconception_3.snbt" />
+
+  <BoxAnnotation color="#dddddd" min="1 0 3" max="2 1 4">
+        Not A Blast Furnace
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="95" pitch="5" />
+</GameScene>
 
 ## Recipes
 
