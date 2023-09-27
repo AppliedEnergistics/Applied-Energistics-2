@@ -35,7 +35,7 @@
       "pattern": "^#([0-9a-fA-F]{2}){3,4}$"
     },
     "text": {
-      "$comment": "JSON schema definition of Minecraft text https://minecraft.fandom.com/wiki/Raw_JSON_text_format",
+      "$comment": "JSON schema definition of Minecraft text https://minecraft.wiki/w/Raw_JSON_text_format",
       "type": "object",
       "properties": {
         "extra": {
@@ -131,7 +131,7 @@
                     },
                     "tag": {
                       "type": "string",
-                      "description": "NBT of the item, serialized as string. See https://minecraft.fandom.com/wiki/Player.dat_format#Item_structure"
+                      "description": "NBT of the item, serialized as string. See https://minecraft.wiki/w/Player.dat_format#Item_structure"
                     }
                   },
                   "required": ["id"]
