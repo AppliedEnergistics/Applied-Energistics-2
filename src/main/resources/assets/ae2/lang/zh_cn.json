@@ -250,7 +250,6 @@
   "chat.ae2.SourceLink": "%s - %s 到 %s",
   "chat.ae2.SpecialThanks": "特别鸣谢：%s",
   "chat.ae2.TestWorldNotInCreativeMode": "指令仅能在创造模式下使用",
-  "chat.ae2.TestWorldNotInSuperflatVoid": "测试世界只能创建在使用虚空预设的超平坦世界中！",
   "chat.ae2.TestWorldSetupComplete": "测试世界创建完成，用时：%s",
   "chat.ae2.TestWorldSetupFailed": "创建测试世界失败：%s",
   "chat.ae2.Unknown": "未知",

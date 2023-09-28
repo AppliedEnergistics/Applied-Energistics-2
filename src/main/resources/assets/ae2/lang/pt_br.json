@@ -250,7 +250,6 @@
   "chat.ae2.SourceLink": "%s - %s para %s",
   "chat.ae2.SpecialThanks": "Agradecimentos especiais a %s",
   "chat.ae2.TestWorldNotInCreativeMode": "O comando só pode ser usado no modo criativo.",
-  "chat.ae2.TestWorldNotInSuperflatVoid": "Um mundo de teste só pode ser configurado em um mundo Superplano com a predefinição de Void!",
   "chat.ae2.TestWorldSetupComplete": "Configuração do mundo de teste concluída em %s",
   "chat.ae2.TestWorldSetupFailed": "Falha ao configurar o mundo de teste: %s",
   "chat.ae2.Unknown": "Desconhecido",
