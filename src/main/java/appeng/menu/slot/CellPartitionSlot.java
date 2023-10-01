@@ -40,11 +40,9 @@ public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
 
     @Override
     public void set(ItemStack is) {
-        if (isNonEmptyStorageCell(is)) {
-            return;
+        if (canFitInsideCell(is)) {
+            super.set(is);
         }
-
-        super.set(is);
     }
 
     @Override
@@ -59,16 +57,16 @@ public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
 
     @Override
     public @Nullable List<Component> getCustomTooltip(ItemStack carriedItem) {
-        if (isNonEmptyStorageCell(carriedItem)) {
-            return List.of(Tooltips.of(GuiText.CannotStoreNonEmptyStorageCells, Tooltips.RED));
+        if (!canFitInsideCell(carriedItem)) {
+            return List.of(Tooltips.of(GuiText.CantFitIncideStorageCell, Tooltips.RED));
         }
 
         return super.getCustomTooltip(carriedItem);
     }
 
-    private boolean isNonEmptyStorageCell(ItemStack stack) {
+    private boolean canFitInsideCell(ItemStack stack) {
         // Prevent adding items to the partition that cannot be stored in the cell in the first place
         var cellInv = StorageCells.getCellInventory(stack, null);
-        return cellInv != null && !cellInv.canFitInsideCell();
+        return cellInv == null || cellInv.canFitInsideCell();
     }
 }
