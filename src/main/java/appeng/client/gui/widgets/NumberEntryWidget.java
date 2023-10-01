@@ -305,7 +305,11 @@ public class NumberEntryWidget implements ICompositeWidget {
      * Retrieves the numeric representation of the value entered by the user, if it is convertible.
      */
     private Optional<BigDecimal> getValueInternal() {
-        return MathExpressionParser.parse(textField.getValue(), decimalFormat);
+        var textValue = textField.getValue();
+        if (textValue.startsWith("=")) {
+            textValue = textValue.substring(1);
+        }
+        return MathExpressionParser.parse(textValue, decimalFormat);
     }
 
     /*

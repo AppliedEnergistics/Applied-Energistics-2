@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 
@@ -103,12 +102,13 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      * Confirms the craft request. If called client-side, automatically sends a packet to the server to perform the
      * action there instead.
      *
-     * @param amount    The number of items to craft.
-     * @param autoStart Start crafting immediately when the planning is done.
+     * @param amount             The number of items to craft.
+     * @param craftMissingAmount Craft only as much as needed to have <code>amount</code>
+     * @param autoStart          Start crafting immediately when the planning is done.
      */
-    public void confirm(int amount, boolean equals, boolean autoStart) {
+    public void confirm(int amount, boolean craftMissingAmount, boolean autoStart) {
         if (!isServerSide()) {
-            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, equals, autoStart));
+            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart));
             return;
         }
 
@@ -116,7 +116,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
             return;
         }
 
-        if (equals) {
+        if (craftMissingAmount) {
             var host = getActionHost();
             if (host != null) {
                 var node = host.getActionableNode();
@@ -124,23 +124,32 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
                     var storage = node.getGrid().getStorageService();
                     var existingAmount = (int) Math.min(storage.getCachedInventory().get(whatToCraft),
                             Integer.MAX_VALUE);
-                    amount -= existingAmount;
+                    if (existingAmount > amount) {
+                        amount = 0;
+                    } else {
+                        amount -= existingAmount;
+                    }
                 }
             }
         }
 
         var locator = getLocator();
-        if (locator != null && amount > 0) {
-            Player player = this.getPlayerInventory().player;
-            MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
+        if (locator != null) {
+            var player = getPlayer();
+            if (amount > 0) {
+                MenuOpener.open(CraftConfirmMenu.TYPE, player, locator);
 
-            if (player.containerMenu instanceof CraftConfirmMenu ccc) {
-                ccc.setAutoStart(autoStart);
-                ccc.planJob(
-                        whatToCraft,
-                        amount,
-                        CalculationStrategy.REPORT_MISSING_ITEMS);
-                broadcastChanges();
+                if (player.containerMenu instanceof CraftConfirmMenu ccc) {
+                    ccc.setAutoStart(autoStart);
+                    ccc.planJob(
+                            whatToCraft,
+                            amount,
+                            CalculationStrategy.REPORT_MISSING_ITEMS);
+                    broadcastChanges();
+                }
+            } else {
+                // When the amount to craft is 0, return to the previous menu without crafting
+                this.host.returnToMainMenu(player, this);
             }
         }
     }

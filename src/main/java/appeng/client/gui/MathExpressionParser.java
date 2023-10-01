@@ -43,11 +43,6 @@ public class MathExpressionParser {
             wasNumberOrRightBracket = false;
 
             switch (currentOperator) {
-                case '=' -> {
-                    if (i != 0) {
-                        return Optional.empty();
-                    }
-                }
                 case '(', 'u' -> {
                     operatorStack.push(currentOperator);
                 }
@@ -129,7 +124,7 @@ public class MathExpressionParser {
                         }
                     }
                 } else {
-                    if (number.size() < 1) {
+                    if (number.isEmpty()) {
                         return Optional.empty();
                     } else {
                         number.push(number.pop().negate());
