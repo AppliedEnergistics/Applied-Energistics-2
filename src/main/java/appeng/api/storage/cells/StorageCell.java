@@ -40,6 +40,13 @@ public interface StorageCell extends MEStorage {
     double getIdleDrain();
 
     /**
+     * Return whether the cell should be storable in other kinds of cells.
+     */
+    default boolean canFitInsideCell() {
+        return true;
+    }
+
+    /**
      * Tells the cell to persist to NBT.
      */
     void persist();
