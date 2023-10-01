@@ -49,6 +49,7 @@
   "achievement.ae2.StorageCell": "상자보다 그뤠잇",
   "achievement.ae2.StorageCell.desc": "저장 셀 조합",
   "ae2.permission_denied": "여기 접근할 권한이 없습니다.",
+  "ae2.rei_jei_integration.decay_chance": "%d%%의 확률",
   "ae2.rei_jei_integration.missing_id": "조합법을 찾을 수 없음",
   "ae2.rei_jei_integration.missing_items": "없는 아이템은 건너뜁니다",
   "ae2.rei_jei_integration.no_output": "조합법의 결과물이 없음",
