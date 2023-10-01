@@ -691,7 +691,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return true;
         }
 
-        if (!this.searchField.isFocused() && checkHotkeyForClose(keyCode, scanCode)) {
+        if (!this.searchField.isFocused() && isCloseHotkey(keyCode, scanCode)) {
             this.getPlayer().closeContainer();
             return true;
         }
@@ -785,8 +785,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.init();
     }
 
-    private boolean checkHotkeyForClose(int keyCode, int scanCode) {
+    private boolean isCloseHotkey(int keyCode, int scanCode) {
         var hotkey = Hotkeys.getHotkeyMapping(getMenu().getHost().getHotkey());
+        if (hotkey == null)
+            return false;
         return hotkey.mapping().matches(keyCode, scanCode);
     }
 
