@@ -390,12 +390,9 @@ public class BasicCellInventory implements StorageCell {
         if (what instanceof AEItemKey itemKey) {
             var stack = itemKey.toStack();
 
-            if (StorageCells.isCellHandled(stack)) {
-                var cellInv = StorageCells.getCellInventory(stack, null);
-
-                if (cellInv != null && !cellInv.canFitInsideCell()) {
-                    return 0;
-                }
+            var cellInv = StorageCells.getCellInventory(stack, null);
+            if (cellInv != null && !cellInv.canFitInsideCell()) {
+                return 0;
             }
         }
 
