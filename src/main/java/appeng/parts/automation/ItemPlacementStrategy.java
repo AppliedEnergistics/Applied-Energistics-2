@@ -76,11 +76,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
 
                     if (type == Actionable.MODULATE) {
                         is.setCount(maxStorage);
-                        if (!spawnItemEntity(level, host, side, is)) {
-                            // revert in case something prevents spawning.
-                            worked = false;
-                        }
-
+                        spawnItemEntity(level, host, side, is);
                     }
                 }
             } else {
@@ -123,7 +119,7 @@ public class ItemPlacementStrategy implements PlacementStrategy {
         return 0;
     }
 
-    private static boolean spawnItemEntity(Level level, BlockEntity te, Direction side, ItemStack is) {
+    private static void spawnItemEntity(Level level, BlockEntity te, Direction side, ItemStack is) {
         // The center of the block the plane is located in
         final var centerX = te.getBlockPos().getX() + .5;
         final double centerY = te.getBlockPos().getY();
@@ -166,12 +162,11 @@ public class ItemPlacementStrategy implements PlacementStrategy {
         entity.setPos(absoluteX, absoluteY, absoluteZ);
         entity.setDeltaMovement(side.getStepX() * .1, side.getStepY() * 0.1, side.getStepZ() * 0.1);
 
-        // Try to spawn it and destroy it in case it's not possible
-        if (!level.addFreshEntity(entity)) {
-            entity.discard();
-            return false;
-        }
-        return true;
+        // NOTE: Vanilla generally ignores the return-value of this method when spawning items into the world
+        // Forge will return false when the embedded event is canceled, but the event canceller is responsible
+        // for cleaning up the entity in that case, so we should always assume our spawning was successful,
+        // and consume items...
+        level.addFreshEntity(entity);
     }
 
     private int countEntitesAround(Level level, BlockPos pos) {
