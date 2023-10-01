@@ -320,7 +320,9 @@ public final class AEItems {
         if (group.equals(AECreativeTabIds.MAIN)) {
             MainCreativeTab.add(definition);
         } else {
-            ItemGroupEvents.modifyEntriesEvent(group).register((entries) -> entries.addAfter(ItemStack.EMPTY, item));
+            ItemGroupEvents.modifyEntriesEvent(group).register((entries) -> {
+                entries.addAfter(ItemStack.EMPTY, item);
+            });
         }
 
         ITEMS.add(definition);
