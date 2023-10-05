@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,6 +34,7 @@ public class GuideNavBar extends AbstractWidget {
     private static final int WIDTH_OPEN = 150;
     private static final int CHILD_ROW_INDENT = 10;
     private static final int PARENT_ROW_INDENT = 7;
+    private static boolean neverInteracted = true;
 
     private NavigationTree navTree;
 
@@ -118,6 +120,18 @@ public class GuideNavBar extends AbstractWidget {
             case CLOSED -> {
                 if (containsMouse) {
                     state = State.OPENING;
+                    neverInteracted = false;
+                } else if (neverInteracted) {
+                    // Show animation on 6 second interval
+                    var ot = Math.abs((GLFW.glfwGetTime() % 6) / 3 - 1);
+                    // only play the animation for 6/10*2=1.2 seconds of it
+                    if (ot >= 0.9) {
+                        var t = (ot - 0.9) * 10;
+                        var f = easeOutBounce(t);
+                        width = (int) Math.round(WIDTH_CLOSED + f * (WIDTH_OPEN - WIDTH_CLOSED) * 0.075);
+                    } else {
+                        width = WIDTH_CLOSED;
+                    }
                 }
             }
             case OPENING -> {
@@ -153,9 +167,9 @@ public class GuideNavBar extends AbstractWidget {
             renderContext.fillGradientHorizontal(getX(), getY(), width, height, SymbolicColor.NAVBAR_BG_TOP,
                     SymbolicColor.NAVBAR_BG_BOTTOM);
 
-            var p1 = new Vec2(width - 4, height / 2f);
-            var p2 = new Vec2(4, height / 2f - 5);
-            var p3 = new Vec2(4, height / 2f + 5);
+            var p1 = new Vec2(width - WIDTH_CLOSED + WIDTH_CLOSED - 4, height / 2f);
+            var p2 = new Vec2(width - WIDTH_CLOSED + 4, height / 2f - 5);
+            var p3 = new Vec2(width - WIDTH_CLOSED + 4, height / 2f + 5);
 
             renderContext.fillTriangle(p1, p2, p3, SymbolicColor.NAVBAR_EXPAND_ARROW);
         } else {
@@ -225,6 +239,10 @@ public class GuideNavBar extends AbstractWidget {
 
             graphics.disableScissor();
         }
+    }
+
+    public static double easeOutBounce(double x) {
+        return Math.sqrt(1 - Math.pow(x - 1, 2));
     }
 
     @Nullable
