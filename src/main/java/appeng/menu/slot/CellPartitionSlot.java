@@ -58,7 +58,7 @@ public class CellPartitionSlot extends FakeSlot implements IOptionalSlot {
     @Override
     public @Nullable List<Component> getCustomTooltip(ItemStack carriedItem) {
         if (!canFitInsideCell(carriedItem)) {
-            return List.of(Tooltips.of(GuiText.CantFitIncideStorageCell, Tooltips.RED));
+            return List.of(Tooltips.of(GuiText.CantFitInsideStorageCell, Tooltips.RED));
         }
 
         return super.getCustomTooltip(carriedItem);

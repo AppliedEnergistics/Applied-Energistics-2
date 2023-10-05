@@ -40,7 +40,7 @@ public enum GuiText implements LocalizationEnum {
     CanBeEnchanted("Can be enchanted"),
     Cancel("Cancel"),
     CantStoreItems("Can't Store Contents!"),
-    CantFitIncideStorageCell("This item does not fit in other storage cells"),
+    CantFitInsideStorageCell("This item does not fit in other storage cells"),
     CellWorkbench("Cell Workbench"),
     CertusQuartzObtain(
             "Certus Quartz is grown by the various Budding Certus Quartz blocks, which can be found in meteors, or crafted from regular Certus Quartz blocks."),
