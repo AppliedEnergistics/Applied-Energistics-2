@@ -110,13 +110,15 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
         return getItemStack();
     }
 
-    public String getHotkey() {
-        if (((IBasicCellItem) item).getKeyType().equals(AEKeyType.items())) {
-            return HotkeyAction.PORTABLE_ITEM_CELL;
-        } else if (((IBasicCellItem) item).getKeyType().equals(AEKeyType.fluids())) {
-            return HotkeyAction.PORTABLE_FLUID_CELL;
-        } else {
-            return "";// We don't know
+    public String getCloseHotkey() {
+        if (item instanceof IBasicCellItem cellItem) {
+            if (cellItem.getKeyType().equals(AEKeyType.items())) {
+                return HotkeyAction.PORTABLE_ITEM_CELL;
+            } else if (cellItem.getKeyType().equals(AEKeyType.fluids())) {
+                return HotkeyAction.PORTABLE_FLUID_CELL;
+            }
         }
+
+        return null; // We don't know
     }
 }

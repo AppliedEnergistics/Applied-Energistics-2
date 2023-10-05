@@ -34,11 +34,12 @@ public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, 
     MEStorage getInventory();
 
     /**
+     * An optional hotkey used to close the terminal while its open.
      *
      * @return Hotkey id as it would be registered by {@link Hotkeys}, or null if there isn't one
      */
     @Nullable
-    default String getHotkey() {
+    default String getCloseHotkey() {
         return null;
     }
 }

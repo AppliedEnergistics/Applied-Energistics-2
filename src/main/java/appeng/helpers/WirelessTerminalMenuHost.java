@@ -188,7 +188,7 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
         return getItemStack();
     }
 
-    public String getHotkey() {
+    public String getCloseHotkey() {
         return HotkeyAction.WIRELESS_TERMINAL;
     }
 }

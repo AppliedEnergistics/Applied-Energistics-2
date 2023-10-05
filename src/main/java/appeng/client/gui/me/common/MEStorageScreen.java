@@ -27,6 +27,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -90,6 +92,8 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class MEStorageScreen<C extends MEStorageMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MEStorageScreen.class);
 
     private static final String TEXT_ID_ENTRIES_SHOWN = "entriesShown";
 
@@ -786,10 +790,16 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private boolean isCloseHotkey(int keyCode, int scanCode) {
-        var hotkey = Hotkeys.getHotkeyMapping(getMenu().getHost().getHotkey());
-        if (hotkey == null)
-            return false;
-        return hotkey.mapping().matches(keyCode, scanCode);
+        var hotkeyId = getMenu().getHost().getCloseHotkey();
+        if (hotkeyId != null) {
+            var hotkey = Hotkeys.getHotkeyMapping(hotkeyId);
+            if (hotkey != null) {
+                return hotkey.mapping().matches(keyCode, scanCode);
+            } else {
+                LOG.warn("Terminal host returned unknown hotkey id: {}", hotkeyId);
+            }
+        }
+        return false;
     }
 
     /**
