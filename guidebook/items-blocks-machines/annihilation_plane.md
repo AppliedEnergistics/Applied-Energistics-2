@@ -26,6 +26,8 @@ you'd expect it to, efficiency reduces the energy cost of breaking a block, and 
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
+**REMEMBER TO ENABLE FAKE PLAYERS IN YOUR CHUNK CLAIM**
+
 ## Filtering
 
 The annihilation plane will only break a block or pick up an item if it can store the resulting drops/items

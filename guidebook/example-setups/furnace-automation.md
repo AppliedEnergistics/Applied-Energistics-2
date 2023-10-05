@@ -7,6 +7,9 @@ navigation:
 
 # Furnace Automation
 
+Note that since this uses a <ItemLink id="pattern_provider" />, it is meant to integrate into your [autocrafting](../ae2-mechanics/autocrafting.md)
+setup. If you just want to automate a furnace standalone, use hoppers and chests and stuff.
+
 Automation of a <ItemLink id="minecraft:furnace" /> is a bit more complex than automation of simpler machines like a [charger](../example-setups/charger-automation.md).
 A furnace requires input from two separate sides, and extraction from a third. The item to be smelted must be pushed in the top face,
 the fuel must be pushed in a side face, and the result must be pulled out the bottom. 

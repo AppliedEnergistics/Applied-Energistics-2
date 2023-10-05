@@ -13,12 +13,13 @@ item_ids:
 
 <ItemImage id="guide" scale="8" />
 
-This guide that you are reading now, for all your AE2 guiding needs.
+### This guide that you are reading now, for all your AE2 guiding needs.
 
-guide.
+* Access the sidebar on the left to find a table of contents
+* Many pages have interactive scenes. If a scene has ![Plus](../assets/diagrams/plus.png)
+  and ![Minus](../assets/diagrams/minus.png) (zoom) buttons next to it, you can rotate and move the camera.
+  Left click and drag to rotate, right click and drag to translate.
 
 ## Recipe
 
-How are you even seeing this if you don't know how to craft the guidebook?
-
-to be determined later
+<RecipeFor id="guide" />

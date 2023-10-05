@@ -3,6 +3,14 @@ navigation:
   title: Index/Table of Contents
   position: 0
 ---
+# What is Applied Energistics 2?
+
+# How To Use This Guide
+
+* Access the sidebar on the left to find a table of contents
+* Many pages have interactive scenes. If a scene has ![Plus](assets/diagrams/plus.png)
+and ![Minus](assets/diagrams/minus.png) (zoom) buttons next to it, you can rotate and move the camera.
+Left click and drag to rotate, right click and drag to translate.
 
 # What is Applied Energistics 2?
 
@@ -17,3 +25,8 @@ quantities of items in stock, crafting more as needed, or simply transfer items 
 * [AE2 Mechanics](ae2-mechanics/ae2-mechanics-index.md)
 * [Example Setups](example-setups/example-setups-index.md)
 * [Items, Blocks, and Machines](items-blocks-machines/items-blocks-machines-index.md)
+
+<GameScene zoom="4" interactive={true}>
+  <ImportStructure src="assets/assemblies/autocraft_setup_greebles.snbt" />
+  <IsometricCamera yaw="195" pitch="30" />
+</GameScene>

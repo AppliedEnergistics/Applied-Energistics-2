@@ -5,7 +5,7 @@ navigation:
   icon: fluix_glass_cable
 ---
 
-# NEtwork Connections
+# Network Connections
 
 ## What Does "Network" Mean?
 
@@ -13,6 +13,18 @@ A "Network" is a group of [devices](../ae2-mechanics/devices.md) linked by block
 like [cables](../items-blocks-machines/cables.md) or fullblock machines and [devices](../ae2-mechanics/devices.md). 
 (<ItemLink id="charger" />, <ItemLink id="interface" />, <ItemLink id="drive" />, etc.)
 Technically a single cable is a network, actually.
+
+## An Aside On Device Positioning
+
+For [devices](../ae2-mechanics/devices.md) which have some specific network function (like an <ItemLink id="interface" />
+pushing to and pulling from [network storage](../ae2-mechanics/import-export-storage.md), a <ItemLink id="level_emitter" />
+reading the contents of network storage, an <ItemLink id="drive" /> being network storage, etc.)
+the physical position of the device does not matter.
+
+Again, **the physical position of the device does not matter**. All that matters is that the device is connected to the network
+(and of course which network it's connected to).
+
+## Network Connections
 
 An easy way of determining what's connected in a network is using a <ItemLink id="network_tool" />. It will show every
 component on the network, so if you see stuff you shouldn't or don't see stuff you should, you have a problem.

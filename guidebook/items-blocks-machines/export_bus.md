@@ -20,7 +20,7 @@ The export bus pulls items and fluids (and whatever else, given addons) from [ne
 and pushes them into  the inventory it's touching.
 
 For purposes of lag reduction, if the export bus has not exported something recently, it goes into a sort of
-"sleep mode" where it operates slowly, and wakes up and accelerates to full speed when it successfully exports something.
+"sleep mode" where it operates slowly, and wakes up and accelerates to full speed (4 operations per second) when it successfully exports something.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
@@ -42,6 +42,16 @@ The import bus supports the following [upgrades](upgrade_cards.md):
     system to get the items it desires. Can be set to pull the items from storage if possible, or to always make a request
     for a new item to be crafted.
 *   <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
+
+## Speeds
+
+| Acceleration Cards | Items Moved per Operation |
+|:-------------------|:--------------------------|
+| 0                  | 1                         |
+| 1                  | 8                         |
+| 2                  | 32                        |
+| 3                  | 64                        |
+| 4                  | 96                        |
 
 ## Recipe
 
