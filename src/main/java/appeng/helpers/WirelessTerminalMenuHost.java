@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.features.HotkeyAction;
 import appeng.api.implementations.blockentities.IWirelessAccessPoint;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -185,5 +186,9 @@ public class WirelessTerminalMenuHost extends ItemMenuHost implements IPortableT
     @Override
     public ItemStack getMainMenuIcon() {
         return getItemStack();
+    }
+
+    public String getCloseHotkey() {
+        return HotkeyAction.WIRELESS_TERMINAL;
     }
 }
