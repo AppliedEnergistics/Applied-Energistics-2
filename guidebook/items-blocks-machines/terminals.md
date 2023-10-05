@@ -194,6 +194,8 @@ This terminal has a different UI to all the other terminals.
 
 It has settings for terminal height and which pattern providers to show.
 
+Each row in the terminal corresponds to a specific pattern provider.
+
 Pattern providers in the terminal are sorted by what blocks they are connected to, or what name you have given them (in an anvil or
 with a <ItemLink id="name_press" />).
 
