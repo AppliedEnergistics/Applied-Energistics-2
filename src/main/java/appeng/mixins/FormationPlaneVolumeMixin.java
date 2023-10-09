@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BlockItem.class)
-public abstract class PlaneVolumeMixin {
+public abstract class FormationPlaneVolumeMixin {
 
     @Redirect(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/SoundType;getVolume()F"))
     private float modifyVolume(SoundType instance, BlockPlaceContext context){
@@ -20,3 +20,4 @@ public abstract class PlaneVolumeMixin {
         }
     }
 }
+
