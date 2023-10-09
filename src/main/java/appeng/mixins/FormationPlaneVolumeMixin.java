@@ -1,5 +1,6 @@
 package appeng.mixins;
 
+import appeng.core.AEConfig;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -14,7 +15,7 @@ public abstract class FormationPlaneVolumeMixin {
     @Redirect(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/SoundType;getVolume()F"))
     private float modifyVolume(SoundType instance, BlockPlaceContext context){
         if (context.getPlayer() instanceof FakePlayer && context.getPlayer().getGameProfile().getName().equals("[AE2]")) {
-            return -1.0F;
+            return ((float) AEConfig.instance().getPlaneVolumeLevel()) - 1;
         } else {
             return instance.getVolume();
         }
