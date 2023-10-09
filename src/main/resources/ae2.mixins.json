@@ -34,6 +34,7 @@
     "WrappedGenericStackTooltipModIdMixin",
     "ResizableSlotHighlightMixin",
     "PickColorMixin",
+    "PlaneVolumeMixin",
     "PonderWorldMixin",
     "VariantDeserializerMixin"
   ],
