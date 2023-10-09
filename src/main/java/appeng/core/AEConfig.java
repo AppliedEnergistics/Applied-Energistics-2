@@ -327,7 +327,9 @@ public final class AEConfig {
         return this.formationPlaneEntityLimit;
     }
 
-    public double getPlaneVolumeLevel() { return this.planeVolumeLevel; }
+    public double getPlaneVolumeLevel() {
+        return this.planeVolumeLevel;
+    }
 
     public boolean isEnableEffects() {
         return this.enableEffects;
