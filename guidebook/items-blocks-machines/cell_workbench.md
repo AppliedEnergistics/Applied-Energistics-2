@@ -16,7 +16,7 @@ item_ids:
 
 The Cell Workbench allows you to configure [storage cells](storage_cells.md) and <ItemLink id="view_cell" />s.
 
-You can add upgrade cards and configure "partitions" to filter what the cell will store.
+You can add [upgrade cards](upgrade_cards.md) and configure "partitions" to filter what the cell will store.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
 
