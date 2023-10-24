@@ -120,7 +120,7 @@ public class ChestBlockEntityRenderer implements BlockEntityRenderer<ChestBlockE
      * The actual vertex data will be transformed using the matrix stack, but the faces will not be correctly rotated so
      * the incorrect lighting data would be used to apply diffuse lighting and the lightmap texture.
      */
-    private static class FaceRotatingModel extends ForwardingBakedModel {
+    public static class FaceRotatingModel extends ForwardingBakedModel {
         private final BlockOrientation r;
 
         protected FaceRotatingModel(BakedModel base, BlockOrientation r) {
