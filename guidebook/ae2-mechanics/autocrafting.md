@@ -21,14 +21,19 @@ certain addons for extra mod material types, like Mekanism gasses, those materia
 
 It is quite a complex topic, so strap in and let's go.
 
-An autocrafting setup consists of 3 things: the thing sending the crafting request, the crafting CPU, and the <ItemLink id="pattern_provider" />.
+An autocrafting setup consists of 3 things:
+- The thing sending the crafting request
+- The crafting CPU
+- The <ItemLink id="pattern_provider" />.
+
+Here is what happens:
 
 1.  Something creates a crafting request. This can be you in the terminal clicking on something autocraftable,
     or an export bus or interface with a crafting card requesting one of the item they're set to export/stock.
 
 *   (**IMPORTANT:** use whatever you have bound to "pick block" (usually middle-mouse) to request crafts of something you already have in stock, this can conflict with inventory sorting mods),
 
-2.  The ME system calculates the required ingredients and prerequisite crafting steps to fulfill the request, and stores them in a crafting CPU
+2.  The ME system calculates the required ingredients and prerequisite crafting steps to fulfill the request, and stores them in the selected crafting CPU
 
 3.  The <ItemLink id="pattern_provider" /> with the relevant [pattern](../items-blocks-machines/patterns.md) pushes the ingredients specified in the pattern to any adjacent inventory.
     In the case of a crafting table recipe (a "crafting pattern") this will be a <ItemLink id="molecular_assembler" />.
@@ -97,17 +102,17 @@ if you have a machine that duplicates cobblestone.
 
 Crafting CPUs manage crafting requests/jobs. They store the intermediate ingredients while crafting jobs with multiple steps are
 being carried out, and affect how big jobs can be, and to some degree how fast they are completed. They are multiblocks, and
-must be rectangular prisms.
+must be rectangular prisms with at least 1 crafting storage.
 
 Crafting CPUs are made out of:
 
-*   [Crafting storages](../items-blocks-machines/crafting_cpu_multiblock.md), available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k). They store the ingredients and
+*   (Required) [Crafting storages](../items-blocks-machines/crafting_cpu_multiblock.md), available in all the standard cell sizes (1k, 4k, 16k, 64k, 256k). They store the ingredients and
     intermediate ingredients involved in a craft, so larger or more storages are required for the CPU to handle crafting jobs
     with more ingredients.
-*   <ItemLink id="crafting_accelerator" />s, they make the system send out more ingredient batches from pattern providers.
+*   (Optional) <ItemLink id="crafting_accelerator" />s, they make the system send out more ingredient batches from pattern providers.
     This allows, say, a pattern provider surrounded by 6 molecular assemblers to send ingredients to (and thus use) all 6 at once instead of just one.
-*   <ItemLink id="crafting_monitor" />s, they display the job the CPU is handling at the moment. They can be colored via a <ItemLink id="color_applicator" />
-*   <ItemLink id="crafting_unit" />s, they simply fill space in order to make the CPU a rectangular prism.
+*   (Optional) <ItemLink id="crafting_monitor" />s, they display the job the CPU is handling at the moment. They can be colored via a <ItemLink id="color_applicator" />
+*   (Optional) <ItemLink id="crafting_unit" />s, they simply fill space in order to make the CPU a rectangular prism.
 
 Each crafting CPU handles 1 request or job, so if you want to request both a calculation processor and 256 smooth stone at once, you need 2 CPU multiblocks.
 

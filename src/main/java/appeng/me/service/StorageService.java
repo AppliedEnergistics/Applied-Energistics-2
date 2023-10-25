@@ -29,6 +29,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 
@@ -141,7 +145,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * {@link IStorageWatcherNode}.
      */
     @Override
-    public void addNode(IGridNode node) {
+    public void addNode(IGridNode node, @Nullable CompoundTag savedData) {
         var storageProvider = node.getService(IStorageProvider.class);
         if (storageProvider != null) {
             ProviderState state = new ProviderState(storageProvider);

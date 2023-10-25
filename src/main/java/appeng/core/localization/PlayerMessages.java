@@ -63,7 +63,7 @@ public enum PlayerMessages implements LocalizationEnum {
     UnknownAE2Player("Unknown AE2 Player (%s)"),
     When("When"),
     TestWorldNotInCreativeMode("Command can only be used in creative mode."),
-    TestWorldNotInSuperflatVoid("A test world can only be set up in a Superflat world with the Void preset!"),
+    TestWorldNotInSuperflat("A test world can only be set up in a Superflat world!"),
     TestWorldSetupComplete("Test world setup completed in %s"),
     TestWorldSetupFailed("Setting up the test world failed: %s"),
     CompassTestSection("Section [y=%d-%d] %d: %b"),

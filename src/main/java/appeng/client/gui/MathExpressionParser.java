@@ -124,7 +124,7 @@ public class MathExpressionParser {
                         }
                     }
                 } else {
-                    if (number.size() < 1) {
+                    if (number.isEmpty()) {
                         return Optional.empty();
                     } else {
                         number.push(number.pop().negate());

@@ -35,10 +35,13 @@ import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
+import appeng.api.features.HotkeyAction;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageCells;
+import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.menu.ISubMenu;
@@ -105,5 +108,17 @@ public class PortableCellMenuHost extends ItemMenuHost implements IPortableTermi
     @Override
     public ItemStack getMainMenuIcon() {
         return getItemStack();
+    }
+
+    public String getCloseHotkey() {
+        if (item instanceof IBasicCellItem cellItem) {
+            if (cellItem.getKeyType().equals(AEKeyType.items())) {
+                return HotkeyAction.PORTABLE_ITEM_CELL;
+            } else if (cellItem.getKeyType().equals(AEKeyType.fluids())) {
+                return HotkeyAction.PORTABLE_FLUID_CELL;
+            }
+        }
+
+        return null; // We don't know
     }
 }

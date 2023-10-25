@@ -36,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.NeighborUpdater;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -274,6 +275,18 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     public void notifyNeighbors() {
         if (this.level != null && this.level.hasChunkAt(this.worldPosition) && !CableBusContainer.isLoading()) {
             Platform.notifyBlocksOfNeighbors(this.level, this.worldPosition);
+        }
+    }
+
+    @Override
+    public void notifyNeighborNow(Direction side) {
+        var targetPos = getBlockPos().relative(side);
+        if (this.level != null && this.level.hasChunkAt(targetPos) && !CableBusContainer.isLoading()) {
+            var targetState = this.level.getBlockState(targetPos);
+            if (!targetState.isAir()) {
+                NeighborUpdater.executeUpdate(level, targetState, targetPos,
+                        getBlockState().getBlock(), getBlockPos(), false);
+            }
         }
     }
 

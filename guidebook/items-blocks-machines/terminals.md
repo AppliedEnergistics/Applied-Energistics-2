@@ -68,7 +68,8 @@ mouse/key shortcuts:
 
 *   Left-click grabs a stack, right-click grabs half a stack.
 *   If an item or fluid or etc. is able to be [autocrafted](../ae2-mechanics/autocrafting.md),
-    whatever you have bound to "pick block" (usually middle-click) brings up a UI to specify the amount to be crafted.
+    whatever you have bound to "pick block" (usually middle-click) brings up a UI to specify the amount to be crafted. You can also input formulas like `3*64/2`,
+    or type `=32` to only craft the number of items needed to reach 32 in your storage.
 *   Holding shift will freeze the displayed items in-place, stopping them from re-organizing themselves when quantities change or new items enter the system.
 *   Right-clicking with a bucket or other fluid container will deposit the fluid, left-clicking a fluid in the terminal with
     an empty fluid container will withdraw the fluid.
@@ -192,6 +193,8 @@ allows access to all pattern providers on the network.
 This terminal has a different UI to all the other terminals.
 
 It has settings for terminal height and which pattern providers to show.
+
+Each row in the terminal corresponds to a specific pattern provider.
 
 Pattern providers in the terminal are sorted by what blocks they are connected to, or what name you have given them (in an anvil or
 with a <ItemLink id="name_press" />).

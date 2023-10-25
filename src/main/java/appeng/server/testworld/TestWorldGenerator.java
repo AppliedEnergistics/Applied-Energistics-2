@@ -158,14 +158,26 @@ public class TestWorldGenerator {
     }
 
     private void buildPlatform() {
+        var from = new ChunkPos(
+                new BlockPos(overallBounds.minX() - OUTER_PADDING, 0, overallBounds.minZ() - OUTER_PADDING));
+        var to = new ChunkPos(
+                new BlockPos(overallBounds.maxX() + OUTER_PADDING, 0, overallBounds.maxZ() + OUTER_PADDING));
+
         var state = AEBlocks.SKY_STONE_BRICK.block().defaultBlockState();
-        var from = new BlockPos(overallBounds.minX() - OUTER_PADDING, origin.getY() - 3,
-                overallBounds.minZ() - OUTER_PADDING);
-        var to = new BlockPos(overallBounds.maxX() + OUTER_PADDING, origin.getY() - 1,
-                overallBounds.maxZ() + OUTER_PADDING);
-        for (var pos : BlockPos.betweenClosed(from, to)) {
-            level.setBlock(pos, state, Block.UPDATE_ALL);
-        }
+        var pos = new BlockPos.MutableBlockPos();
+        ChunkPos.rangeClosed(from, to).forEach(chunkPos -> {
+            var chunk = level.getChunk(chunkPos.x, chunkPos.z);
+            for (var x = 0; x < 16; x++) {
+                pos.setX(chunkPos.getMinBlockX() + x);
+                for (var z = 0; z < 16; z++) {
+                    pos.setZ(chunkPos.getMinBlockZ() + z);
+                    for (var y = -3; y <= -1; y++) {
+                        pos.setY(origin.getY() + y);
+                        chunk.setBlockState(pos, state, false);
+                    }
+                }
+            }
+        });
     }
 
     private void clearLevel() {

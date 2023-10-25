@@ -1,7 +1,6 @@
 package appeng.me;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Set;
 
@@ -21,33 +20,27 @@ import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
-import appeng.core.worlddata.GridStorageSaveData;
-import appeng.core.worlddata.IGridStorageSaveData;
 import appeng.me.service.EnergyService;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.Platform;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
 @BootstrapMinecraft
-abstract class AbstractGridNodeTest {
+public abstract class AbstractGridNodeTest {
     @Mock
-    ServerLevel level;
+    protected ServerLevel level;
 
-    Object owner = new Object();
-
-    @Mock
-    IGridNodeListener<Object> listener;
+    protected Object owner = new Object();
 
     @Mock
-    MockedStatic<Platform> platform;
+    protected IGridNodeListener<Object> listener;
 
     @Mock
-    MockedStatic<IGridStorageSaveData> gridStorageSaveData;
+    protected MockedStatic<Platform> platform;
 
     @BeforeEach
-    public void setupStaticMocks() {
+    public void setupMocks() {
         platform.when(Platform::isServer).thenReturn(true);
-        gridStorageSaveData.when(() -> IGridStorageSaveData.get(any())).thenReturn(new GridStorageSaveData());
     }
 
     protected GridNode makeNode(GridFlags... flags) {

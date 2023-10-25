@@ -7,6 +7,9 @@ navigation:
 
 # Automation of Throwing In Water recipes
 
+Note that since this uses a <ItemLink id="pattern_provider" />, it is meant to integrate into your [autocrafting](../ae2-mechanics/autocrafting.md)
+setup.
+
 Some recipes require items to be thrown into water (though a similar setup can be used to throw items other places).
 This can be automated with a <ItemLink id="formation_plane" />, <ItemLink id="annihilation_plane" />, and some supporting
 infrastructure (this is essentially 2 modified [pipe subnets](pipe-subnet.md)).

@@ -15,7 +15,7 @@ item_ids:
 <ItemImage id="color_applicator" scale="4" />
 
 The color applicator is used to paint colorable blocks like [cables](cables.md), wool, terracotta, glass, and concrete. It uses
-[paintballs](paintballs.md) or dyes, and snowballs can eb used in order to clean color off of cables and paintball splotches off of blocks.
+[paintballs](paintballs.md) or dyes, and snowballs can be used in order to clean color off of cables and paintball splotches off of blocks.
 
 Its energy can be recharged in a <ItemLink id="charger" />.
 

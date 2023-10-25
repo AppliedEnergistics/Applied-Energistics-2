@@ -27,6 +27,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -52,6 +54,7 @@ import appeng.api.stacks.AmountFormat;
 import appeng.api.storage.AEKeyFilter;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
+import appeng.client.Hotkeys;
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.AESubScreen;
@@ -89,6 +92,8 @@ import appeng.util.prioritylist.IPartitionList;
 
 public class MEStorageScreen<C extends MEStorageMenu>
         extends AEBaseScreen<C> implements ISortSource, IConfigManagerListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MEStorageScreen.class);
 
     private static final String TEXT_ID_ENTRIES_SHOWN = "entriesShown";
 
@@ -690,6 +695,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return true;
         }
 
+        if (!this.searchField.isFocused() && isCloseHotkey(keyCode, scanCode)) {
+            this.getPlayer().closeContainer();
+            return true;
+        }
+
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
     }
 
@@ -777,6 +787,19 @@ public class MEStorageScreen<C extends MEStorageMenu>
         storeState();
         new ArrayList<>(this.children()).forEach(this::removeWidget);
         this.init();
+    }
+
+    private boolean isCloseHotkey(int keyCode, int scanCode) {
+        var hotkeyId = getMenu().getHost().getCloseHotkey();
+        if (hotkeyId != null) {
+            var hotkey = Hotkeys.getHotkeyMapping(hotkeyId);
+            if (hotkey != null) {
+                return hotkey.mapping().matches(keyCode, scanCode);
+            } else {
+                LOG.warn("Terminal host returned unknown hotkey id: {}", hotkeyId);
+            }
+        }
+        return false;
     }
 
     /**

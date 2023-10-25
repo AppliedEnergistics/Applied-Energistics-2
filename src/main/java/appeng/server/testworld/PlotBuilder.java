@@ -205,6 +205,10 @@ public interface PlotBuilder {
         });
     }
 
+    default void hopper(BlockPos pos, Direction direction) {
+        hopper(posToBb(pos), direction);
+    }
+
     default void hopper(BlockPos pos, Direction direction, ItemStack... stacks) {
         hopper(posToBb(pos), direction, stacks);
     }

@@ -25,6 +25,10 @@ import java.util.stream.Stream;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
+
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
@@ -92,7 +96,7 @@ public class P2PService implements IGridService, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(IGridNode node) {
+    public void addNode(IGridNode node, @Nullable CompoundTag savedData) {
         if (node.getOwner() instanceof P2PTunnelPart<?>tunnel) {
             if (tunnel instanceof MEP2PTunnelPart && !node.hasFlag(GridFlags.REQUIRE_CHANNEL)) {
                 return;

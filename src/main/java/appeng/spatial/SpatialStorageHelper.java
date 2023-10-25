@@ -27,14 +27,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.entity.Visibility;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.stats.AdvancementTriggers;
@@ -162,17 +167,25 @@ public class SpatialStorageHelper {
         // do nearly all the work... swaps blocks, block entities, and block ticks
         cSrc.swap(cDst);
 
-        final List<Entity> srcE = srcLevel.getEntitiesOfClass(Entity.class, srcBox);
-        final List<Entity> dstE = dstLevel.getEntitiesOfClass(Entity.class, dstBox);
+        // Synchronously load entities
+        var loadedSrcChunks = loadEntityChunksSynchronously(srcLevel, srcBox);
+        var loadedDestChunks = loadEntityChunksSynchronously(dstLevel, dstBox);
+        try {
+            var srcE = srcLevel.getEntitiesOfClass(Entity.class, srcBox);
+            var dstE = dstLevel.getEntitiesOfClass(Entity.class, dstBox);
 
-        for (Entity e : dstE) {
-            this.teleportEntity(e, new TelDestination(srcLevel, srcBox, e.getX(), e.getY(), e.getZ(),
-                    -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
-        }
+            for (Entity e : dstE) {
+                this.teleportEntity(e, new TelDestination(srcLevel, srcBox, e.getX(), e.getY(), e.getZ(),
+                        -dstX + srcX, -dstY + srcY, -dstZ + srcZ));
+            }
 
-        for (Entity e : srcE) {
-            this.teleportEntity(e, new TelDestination(dstLevel, dstBox, e.getX(), e.getY(), e.getZ(),
-                    -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
+            for (Entity e : srcE) {
+                this.teleportEntity(e, new TelDestination(dstLevel, dstBox, e.getX(), e.getY(), e.getZ(),
+                        -srcX + dstX, -srcY + dstY, -srcZ + dstZ));
+            }
+        } finally {
+            unloadEntityChunks(srcLevel, loadedSrcChunks);
+            unloadEntityChunks(dstLevel, loadedDestChunks);
         }
 
         for (BlockPos pos : cDst.getUpdates()) {
@@ -192,6 +205,35 @@ public class SpatialStorageHelper {
                 new TriggerUpdates(srcLevel));
         this.transverseEdges(dstX, dstY, dstZ, dstX + scaleX, dstY + scaleY, dstZ + scaleZ,
                 new TriggerUpdates(dstLevel));
+    }
+
+    // Force-loads entity-chunks that are not currently loaded and returns the chunks
+    // that we loaded explicitly (to allow unloading them)
+    private LongSet loadEntityChunksSynchronously(ServerLevel level, AABB box) {
+        var minChunk = new ChunkPos(new BlockPos((int) box.minX, 0, (int) box.minZ));
+        var maxChunk = new ChunkPos(new BlockPos((int) Math.ceil(box.maxX), 0, (int) Math.ceil(box.maxZ)));
+
+        var chunksLoaded = new LongOpenHashSet();
+        var entityManager = level.entityManager;
+        ChunkPos.rangeClosed(minChunk, maxChunk).forEach(chunkPos -> {
+            var status = entityManager.chunkVisibility.get(chunkPos.toLong());
+            if (!status.isAccessible()) {
+                chunksLoaded.add(chunkPos.toLong());
+                entityManager.updateChunkStatus(chunkPos, Visibility.TRACKED);
+            }
+        });
+        if (!chunksLoaded.isEmpty()) {
+            entityManager.permanentStorage.flush(false);
+            entityManager.tick();
+        }
+        return chunksLoaded;
+    }
+
+    // Marks chunks previously loaded by loadEntityChunksSynchronously as unloadable
+    private static void unloadEntityChunks(ServerLevel srcLevel, LongSet loadedSrcChunks) {
+        loadedSrcChunks.forEach(chunkPos -> {
+            srcLevel.entityManager.updateChunkStatus(new ChunkPos(chunkPos), Visibility.HIDDEN);
+        });
     }
 
     private static class TriggerUpdates implements ISpatialVisitor {

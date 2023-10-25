@@ -313,6 +313,12 @@ loom {
             property "appeng.tests", "true"
             property "guideDev.ae2guide.sources", file("guidebook").absolutePath
         }
+        gametestWorld {
+            client()
+            programArgs "--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"
+            property "appeng.tests", "true"
+            property "guideDev.ae2guide.sources", file("guidebook").absolutePath
+        }
         guide {
             client()
             programArgs "--username", "AE2Dev"
@@ -431,6 +437,9 @@ task apiJar(type: Jar, group: "build") {
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
+    manifest {
+        attributes("Fabric-Loom-Remap": true)
+    }
 }
 apiJar publicApiIncludePatterns
 

@@ -29,6 +29,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -36,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.hooks.AEToolItem;
 import appeng.items.AEBaseItem;
@@ -152,5 +154,12 @@ public class EraserItem extends AEBaseItem implements AEToolItem {
         }
 
         return COMMON_BLOCKS;
+    }
+
+    @Override
+    public void addToMainCreativeTab(CreativeModeTab.Output output) {
+        if (AEConfig.instance().isDebugToolsEnabled()) {
+            output.accept(this);
+        }
     }
 }

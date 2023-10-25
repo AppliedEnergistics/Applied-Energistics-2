@@ -61,6 +61,19 @@ See [Bytes and Types](../ae2-mechanics/bytes-and-types.md) for an explanation of
 
 Storage components can be removed from the housing if the cell is empty by shift-right clicking with the cell in your hand.
 
+## Storage Capacity with Varying Type Count
+
+The [upfront cost of types](../ae2-mechanics/bytes-and-types.md) is such that a cell holding 1 type can hold 2x as much as a cell with all 63 types in use.
+
+| Cell                                     | Total Capacity of Cell With 1 Type In Use | Total Capacity of Cell With 63 Types In Use |
+| ---------------------------------------- | ----------------------------------------: | ------------------------------------------: |
+| <ItemLink id="item_storage_cell_1k" />   |                                     8,128 |                                       4,160 |
+| <ItemLink id="item_storage_cell_4k" />   |                                    32,512 |                                      16,640 |
+| <ItemLink id="item_storage_cell_16k" />  |                                   130,048 |                                      66,560 |
+| <ItemLink id="item_storage_cell_64k" />  |                                   520,192 |                                     266,240 |
+| <ItemLink id="item_storage_cell_256k" /> |                                 2,080,768 |                                   1,064,960 |
+
+
 ## Partitioning
 
 Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />ses can be filtered. This is

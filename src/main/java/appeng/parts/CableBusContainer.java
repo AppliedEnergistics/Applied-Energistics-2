@@ -462,6 +462,11 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     @Override
+    public void notifyNeighborNow(Direction side) {
+        this.tcb.notifyNeighborNow(side);
+    }
+
+    @Override
     public boolean isInWorld() {
         return this.inWorld;
     }

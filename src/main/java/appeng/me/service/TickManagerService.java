@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import appeng.api.networking.IGridNode;
@@ -162,7 +163,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     }
 
     @Override
-    public void addNode(IGridNode gridNode) {
+    public void addNode(IGridNode gridNode, @Nullable CompoundTag savedData) {
         var tickable = gridNode.getService(IGridTickable.class);
         if (tickable != null) {
             var tr = tickable.getTickingRequest(gridNode);

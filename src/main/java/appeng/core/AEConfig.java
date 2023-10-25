@@ -294,6 +294,10 @@ public final class AEConfig {
         return CLIENT.enableGuideHotkey.get();
     }
 
+    public double getGridEnergyStoragePerNode() {
+        return COMMON.gridEnergyStoragePerNode.get();
+    }
+
     public void save() {
     }
 
@@ -678,6 +682,7 @@ public final class AEConfig {
         // Power Ratios
         public final DoubleOption powerRatioTechReborn;
         public final DoubleOption powerUsageMultiplier;
+        public final DoubleOption gridEnergyStoragePerNode;
 
         // Vibration Chamber
         public final DoubleOption vibrationChamberBaseEnergyPerFuelTick;
@@ -769,6 +774,8 @@ public final class AEConfig {
             ConfigSection PowerRatios = root.subsection("PowerRatios");
             powerRatioTechReborn = PowerRatios.addDouble("TechReborn", DEFAULT_TR_EXCHANGE);
             powerUsageMultiplier = PowerRatios.addDouble("UsageMultiplier", 1.0, 0.01, Double.MAX_VALUE);
+            gridEnergyStoragePerNode = PowerRatios.addDouble("GridEnergyStoragePerNode", 25, 1, 1000000,
+                    "How much energy can the internal grid buffer storage per node attached to the grid.");
 
             ConfigSection Condenser = root.subsection("Condenser");
             condenserMatterBallsPower = Condenser.addInt("MatterBalls", 256);

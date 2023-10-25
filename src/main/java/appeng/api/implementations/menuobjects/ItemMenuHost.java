@@ -129,6 +129,11 @@ public class ItemMenuHost implements IUpgradeableObject {
      * Can only be used with a host that implements {@link IEnergySource} only call once per broadcastChanges()
      */
     public boolean drainPower() {
+        // Do not drain power for creative players
+        if (player.isCreative()) {
+            return true;
+        }
+
         if (this instanceof IEnergySource energySource) {
             this.powerTicks++;
             if (this.powerTicks > 10) {
