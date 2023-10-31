@@ -5,9 +5,13 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -29,6 +33,8 @@ public class PatternAccessTerminalPacket extends BasePacket {
     private long sortBy; // Only valid if fullUpdate
     private PatternContainerGroup group; // Only valid if fullUpdate
     private Int2ObjectMap<ItemStack> slots;
+    private BlockPos pos;
+    private ResourceKey<Level> dim;
 
     public PatternAccessTerminalPacket(FriendlyByteBuf stream) {
         inventoryId = stream.readVarLong();
@@ -37,6 +43,12 @@ public class PatternAccessTerminalPacket extends BasePacket {
             inventorySize = stream.readVarInt();
             sortBy = stream.readVarLong();
             group = PatternContainerGroup.readFromPacket(stream);
+            if (stream.readBoolean()) {
+                pos = BlockPos.of(stream.readVarLong());
+            }
+            if (stream.readBoolean()) {
+                dim = stream.readResourceKey(Registries.DIMENSION);
+            }
         }
 
         var slotsCount = stream.readVarInt();
@@ -54,7 +66,9 @@ public class PatternAccessTerminalPacket extends BasePacket {
             int inventorySize,
             long sortBy,
             PatternContainerGroup group,
-            Int2ObjectMap<ItemStack> slots) {
+            Int2ObjectMap<ItemStack> slots,
+            BlockPos pos,
+            ResourceKey<Level> dim) {
         FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer(2048));
         data.writeInt(this.getPacketID());
         data.writeVarLong(inventoryId);
@@ -63,6 +77,18 @@ public class PatternAccessTerminalPacket extends BasePacket {
             data.writeVarInt(inventorySize);
             data.writeVarLong(sortBy);
             group.writeToPacket(data);
+            if (pos != null) {
+                data.writeBoolean(true);
+                data.writeVarLong(pos.asLong());
+            } else {
+                data.writeBoolean(false);
+            }
+            if (dim != null) {
+                data.writeBoolean(true);
+                data.writeResourceKey(dim);
+            } else {
+                data.writeBoolean(false);
+            }
         }
         data.writeVarInt(slots.size());
         for (var entry : slots.int2ObjectEntrySet()) {
@@ -76,14 +102,18 @@ public class PatternAccessTerminalPacket extends BasePacket {
             int inventorySize,
             long sortBy,
             PatternContainerGroup group,
-            Int2ObjectMap<ItemStack> slots) {
+            Int2ObjectMap<ItemStack> slots,
+            BlockPos pos,
+            ResourceKey<Level> dim) {
         return new PatternAccessTerminalPacket(
                 true,
                 inventoryId,
                 inventorySize,
                 sortBy,
                 group,
-                slots);
+                slots,
+                pos,
+                dim);
     }
 
     public static PatternAccessTerminalPacket incrementalUpdate(long inventoryId,
@@ -94,7 +124,9 @@ public class PatternAccessTerminalPacket extends BasePacket {
                 0,
                 0,
                 null,
-                slots);
+                slots,
+                null,
+                null);
     }
 
     @Override
@@ -102,7 +134,7 @@ public class PatternAccessTerminalPacket extends BasePacket {
     public void clientPacketData(Player player) {
         if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?>patternAccessTerminal) {
             if (fullUpdate) {
-                patternAccessTerminal.postFullUpdate(this.inventoryId, sortBy, group, inventorySize, slots);
+                patternAccessTerminal.postFullUpdate(this.inventoryId, sortBy, group, inventorySize, slots, pos, dim);
             } else {
                 patternAccessTerminal.postIncrementalUpdate(this.inventoryId, slots);
             }

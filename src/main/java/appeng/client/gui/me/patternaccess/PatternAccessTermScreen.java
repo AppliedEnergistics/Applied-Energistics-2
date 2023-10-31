@@ -19,6 +19,7 @@
 package appeng.client.gui.me.patternaccess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.HashMultimap;
 
@@ -35,29 +37,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 
+import appeng.api.config.PatternAccessTerminalSearchMode;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
-import appeng.api.stacks.AEItemKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.HighlightButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -68,6 +76,7 @@ import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
+import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.helpers.InventoryAction;
 import appeng.menu.implementations.PatternAccessTermMenu;
 
@@ -126,6 +135,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             .comparing(group -> group.name().getString().toLowerCase(Locale.ROOT));
 
     private final HashMap<Long, PatternContainerRecord> byId = new HashMap<>();
+    private final HashMap<Integer, HighlightButton> highlightBtns = new HashMap<>();
     // Used to show multiple pattern providers with the same name under a single header
     private final HashMultimap<PatternContainerGroup, PatternContainerRecord> byGroup = HashMultimap.create();
     private final ArrayList<PatternContainerGroup> groups = new ArrayList<>();
@@ -136,8 +146,23 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private final AETextField searchField;
 
     private int visibleRows = 0;
+    private final Set<ItemStack> matchedStack = new ObjectOpenCustomHashSet<>(new Hash.Strategy<>() {
+        @Override
+        public int hashCode(ItemStack o) {
+            return o.getItem().hashCode()
+                    ^ o.getDamageValue()
+                    ^ (o.hasTag() ? o.getTag().hashCode() : 0xFFFFFFFF);
+        }
+
+        @Override
+        public boolean equals(ItemStack a, ItemStack b) {
+            return a == b || (a != null && b != null && ItemStack.isSameItemSameTags(a, b));
+        }
+    });
+    private final Set<PatternContainerRecord> matchedProvider = new HashSet<>();
 
     private final ServerSettingToggleButton<ShowPatternProviders> showPatternProviders;
+    private final SettingToggleButton<PatternAccessTerminalSearchMode> searchMode;
 
     public PatternAccessTermScreen(C menu, Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -150,10 +175,18 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         this.addToLeftToolbar(
                 new SettingToggleButton<>(Settings.TERMINAL_STYLE, terminalStyle, this::toggleTerminalStyle));
 
-        showPatternProviders = new ServerSettingToggleButton(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
+        showPatternProviders = new ServerSettingToggleButton<>(Settings.TERMINAL_SHOW_PATTERN_PROVIDERS,
                 ShowPatternProviders.VISIBLE);
+        searchMode = new SettingToggleButton<>(Settings.TERMINAL_SEARCH_MODE_SETTING,
+                PatternAccessTerminalSearchMode.PATTERN_PROVIDER_NAME,
+                (btn, backwards) -> {
+                    var next = btn.getNextValue(backwards);
+                    btn.set(next);
+                    this.refreshList();
+                });
 
         this.addToLeftToolbar(showPatternProviders);
+        this.addToLeftToolbar(searchMode);
 
         this.searchField = widgets.addTextField("search");
         this.searchField.setResponder(str -> this.refreshList());
@@ -171,6 +204,11 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
         // Auto focus search field
         this.setInitialFocus(this.searchField);
+        // init highlight buttons
+        this.highlightBtns.forEach((k, v) -> {
+            v.setVisibility(false);
+            addRenderableWidget(v);
+        });
 
         // numLines may have changed, recalculate scroll bar.
         this.resetScrollbar();
@@ -181,6 +219,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
+        this.highlightBtns.forEach((key, value) -> value.setVisibility(false));
 
         int textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
 
@@ -189,6 +228,11 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         for (; i < this.visibleRows; ++i) {
             if (scrollLevel + i < this.rows.size()) {
                 var row = this.rows.get(scrollLevel + i);
+                if (highlightBtns.containsKey(scrollLevel + i)) {
+                    var btn = highlightBtns.get(scrollLevel + i);
+                    btn.setPosition(this.leftPos, this.topPos + GUI_HEADER_HEIGHT + i * ROW_HEIGHT + 5);
+                    btn.setVisibility(true);
+                }
                 if (row instanceof SlotsRow slotsRow) {
                     // Note: We have to shift everything after the header up by 1 to avoid black line duplication.
                     var container = slotsRow.container;
@@ -199,6 +243,14 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                                 col * SLOT_SIZE + GUI_PADDING_X,
                                 (i + 1) * SLOT_SIZE);
                         this.menu.slots.add(slot);
+                        // highlight the matched pattern and darken the unmatched ones
+                        if (!this.searchField.getValue().isEmpty()) {
+                            if (this.matchedStack.contains(slot.getItem())) {
+                                fillRect(guiGraphics, new Rect2i(slot.x, slot.y, 16, 16), 0x8A00FF00);
+                            } else if (!this.matchedProvider.contains(container)) {
+                                fillRect(guiGraphics, new Rect2i(slot.x, slot.y, 16, 16), 0x6A000000);
+                            }
+                        }
                     }
                 } else if (row instanceof GroupHeaderRow headerRow) {
                     var group = headerRow.group;
@@ -224,7 +276,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     }
 
                     var text = Language.getInstance().getVisualOrder(
-                            this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 10));
+                            this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 18));
 
                     guiGraphics.drawString(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor, false);
@@ -387,8 +439,10 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             long sortBy,
             PatternContainerGroup group,
             int inventorySize,
-            Int2ObjectMap<ItemStack> slots) {
-        var record = new PatternContainerRecord(inventoryId, inventorySize, sortBy, group);
+            Int2ObjectMap<ItemStack> slots,
+            BlockPos pos,
+            ResourceKey<Level> dim) {
+        var record = new PatternContainerRecord(inventoryId, inventorySize, sortBy, group, pos, dim);
         this.byId.put(inventoryId, record);
 
         var inventory = record.getInventory();
@@ -427,10 +481,15 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
      */
     private void refreshList() {
         this.byGroup.clear();
+        this.highlightBtns.forEach((k, v) -> this.removeWidget(v));
+        this.highlightBtns.clear();
+        this.matchedStack.clear();
+        this.matchedProvider.clear();
 
         final String searchFilterLowerCase = this.searchField.getValue().toLowerCase();
 
-        final Set<Object> cachedSearch = this.getCacheForSearchTerm(searchFilterLowerCase);
+        final Set<Object> cachedSearch = this
+                .getCacheForSearchTerm(this.searchMode.getCurrentValue() + searchFilterLowerCase);
         final boolean rebuild = cachedSearch.isEmpty();
 
         for (PatternContainerRecord entry : this.byId.values()) {
@@ -443,7 +502,8 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             boolean found = searchFilterLowerCase.isEmpty();
 
             // Search if the current inventory holds a pattern containing the search term.
-            if (!found) {
+            // Skip if it is searching by pattern provider name
+            if (!found && this.searchMode.getCurrentValue() != PatternAccessTerminalSearchMode.PATTERN_PROVIDER_NAME) {
                 for (ItemStack itemStack : entry.getInventory()) {
                     found = this.itemStackMatchesSearchTerm(itemStack, searchFilterLowerCase);
                     if (found) {
@@ -451,9 +511,16 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     }
                 }
             }
+            // Now search by pattern provider name
+            if (!found && this.searchMode.getCurrentValue() == PatternAccessTerminalSearchMode.PATTERN_PROVIDER_NAME) {
+                found = entry.getSearchName().contains(searchFilterLowerCase);
+                if (found) {
+                    this.matchedProvider.add(entry);
+                }
+            }
 
             // if found, filter skipped or machine name matching the search term, add it
-            if (found || entry.getSearchName().contains(searchFilterLowerCase)) {
+            if (found) {
                 this.byGroup.put(entry.getGroup(), entry);
                 cachedSearch.add(entry);
             } else {
@@ -477,6 +544,25 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             for (var container : containers) {
                 // Wrap the container inventory slots
                 var inventory = container.getInventory();
+                if (inventory.size() > 0) {
+                    var info = this.byId.get(container.getServerId());
+                    var btn = new HighlightButton();
+                    btn.setHalfSize(true);
+                    btn.setMultiplier(this.playerToBlockDis(info.getPos()));
+                    btn.setTarget(info.getPos(), info.getDim());
+                    btn.setSuccessJob(() -> {
+                        if (this.getPlayer() != null && info.getPos() != null && info.getDim() != null) {
+                            this.getPlayer()
+                                    .displayClientMessage(
+                                            Component.translatable("commands.ae2.PatternAccessTerminal.pos",
+                                                    info.getPos().toShortString(), info.getDim().location().getPath()),
+                                            false);
+                        }
+                    });
+                    btn.setTooltip(Tooltip.create(Component.translatable("gui.ae2.PatternAccessTerminal.highlight")));
+                    btn.setVisibility(false);
+                    this.highlightBtns.put(this.rows.size(), this.addRenderableWidget(btn));
+                }
                 for (var offset = 0; offset < inventory.size(); offset += COLUMNS) {
                     var slots = Math.min(inventory.size() - offset, COLUMNS);
                     var containerRow = new SlotsRow(container, offset, slots);
@@ -487,6 +573,14 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
         // lines may have changed - recalculate scroll bar.
         this.resetScrollbar();
+    }
+
+    private double playerToBlockDis(BlockPos pos) {
+        if (pos == null) {
+            return 0;
+        }
+        var ps = this.getPlayer().getOnPos();
+        return pos.distSqr(ps);
     }
 
     /**
@@ -503,23 +597,25 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             return false;
         }
 
-        final CompoundTag encodedValue = itemStack.getTag();
-
-        if (encodedValue == null) {
+        // Read pattern contents from pattern details
+        IPatternDetails result = null;
+        if (itemStack.getItem() instanceof EncodedPatternItem pattern) {
+            result = pattern.decode(itemStack, this.menu.getPlayer().level(), false);
+        }
+        if (result == null) {
             return false;
         }
 
-        // Potential later use to filter by input
-        // ListNBT inTag = encodedValue.getTagList( "in", 10 );
-        final ListTag outTag = encodedValue.getList("out", 10);
+        // Get the indigents list
+        var list = this.searchMode.getCurrentValue() == PatternAccessTerminalSearchMode.PATTERN_OUTPUTS
+                ? Arrays.asList(result.getOutputs())
+                : Arrays.stream(result.getInputs()).map(i -> i.getPossibleInputs()[0]).collect(Collectors.toList());
 
-        for (int i = 0; i < outTag.size(); i++) {
-
-            var parsedItemStack = ItemStack.of(outTag.getCompound(i));
-            var itemKey = AEItemKey.of(parsedItemStack);
-            if (itemKey != null) {
-                var displayName = itemKey.getDisplayName().getString().toLowerCase();
+        for (var item : list) {
+            if (item != null) {
+                var displayName = item.what().getDisplayName().getString().toLowerCase();
                 if (displayName.contains(searchTerm)) {
+                    this.matchedStack.add(itemStack);
                     return true;
                 }
             }

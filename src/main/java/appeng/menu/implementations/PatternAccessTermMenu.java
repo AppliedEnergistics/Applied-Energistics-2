@@ -25,10 +25,14 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -52,6 +56,7 @@ import appeng.helpers.InventoryAction;
 import appeng.helpers.patternprovider.PatternContainer;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
+import appeng.parts.AEBasePart;
 import appeng.parts.reporting.PatternAccessTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -332,6 +337,8 @@ public class PatternAccessTermMenu extends AEBaseMenu {
         private final InternalInventory client;
         // This is a reference to the real inventory used by this machine
         private final InternalInventory server;
+        private final BlockPos pos;
+        private final ResourceKey<Level> dim;
 
         public ContainerTracker(PatternContainer container, InternalInventory patterns, PatternContainerGroup group) {
             this.container = container;
@@ -339,6 +346,16 @@ public class PatternAccessTermMenu extends AEBaseMenu {
             this.client = new AppEngInternalInventory(this.server.size());
             this.group = group;
             this.sortBy = container.getTerminalSortOrder();
+            if (container instanceof BlockEntity te) {
+                this.pos = te.getBlockPos();
+                this.dim = te.getLevel() == null ? null : te.getLevel().dimension();
+            } else if (container instanceof AEBasePart part) {
+                this.pos = part.getBlockEntity().getBlockPos();
+                this.dim = part.getLevel() == null ? null : part.getLevel().dimension();
+            } else {
+                this.pos = null;
+                this.dim = null;
+            }
         }
 
         public PatternAccessTerminalPacket createFullPacket() {
@@ -355,7 +372,9 @@ public class PatternAccessTermMenu extends AEBaseMenu {
                     server.size(),
                     sortBy,
                     group,
-                    slots);
+                    slots,
+                    pos,
+                    dim);
         }
 
         @Nullable

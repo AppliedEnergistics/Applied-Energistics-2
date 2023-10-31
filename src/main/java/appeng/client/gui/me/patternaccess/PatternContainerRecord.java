@@ -18,6 +18,10 @@
 
 package appeng.client.gui.me.patternaccess;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.menu.implementations.PatternAccessTermMenu;
@@ -45,13 +49,18 @@ public class PatternContainerRecord implements Comparable<PatternContainerRecord
      * {@link PatternProviderLogic#getSortValue()}
      */
     private final long order;
+    private final BlockPos pos;
+    private final ResourceKey<Level> dim;
 
-    public PatternContainerRecord(long serverId, int slots, long order, PatternContainerGroup group) {
+    public PatternContainerRecord(long serverId, int slots, long order, PatternContainerGroup group, BlockPos pos,
+            ResourceKey<Level> dim) {
         this.inventory = new AppEngInternalInventory(slots);
         this.group = group;
         this.searchName = group.name().getString().toLowerCase();
         this.serverId = serverId;
         this.order = order;
+        this.pos = pos;
+        this.dim = dim;
     }
 
     public PatternContainerGroup getGroup() {
@@ -60,6 +69,14 @@ public class PatternContainerRecord implements Comparable<PatternContainerRecord
 
     public String getSearchName() {
         return searchName;
+    }
+
+    public BlockPos getPos() {
+        return pos;
+    }
+
+    public ResourceKey<Level> getDim() {
+        return dim;
     }
 
     @Override
