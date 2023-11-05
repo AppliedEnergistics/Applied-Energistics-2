@@ -90,8 +90,21 @@ the provider will skip the interface entirely and push directly to that subnet's
 skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
 
 <GameScene zoom="6" background="transparent">
-<ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
-<IsometricCamera yaw="195" pitch="30" />
+<ImportStructure src="../assets/assemblies/provider_interface_storage.snbt" />
+
+<BoxAnnotation color="#dddddd" min="2.7 0 1" max="3 1 2">
+        Interface (must be flat, not fullblock)
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 4">
+        Storage Busses
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="0 0 0" max="1 1 4">
+        Places you want to pattern-provide to (multiple machines, or multiple faces of 1 machine)
+  </BoxAnnotation>
+
+<IsometricCamera yaw="185" pitch="30" />
 </GameScene>
 
 ## Variants
