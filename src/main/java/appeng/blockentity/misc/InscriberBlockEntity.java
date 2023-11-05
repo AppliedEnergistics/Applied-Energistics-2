@@ -459,17 +459,15 @@ public class InscriberBlockEntity extends AENetworkPowerBlockEntity
             markForUpdate();
         }
 
-        if (setting == Settings.INSCRIBER_BUFFER_SIZE)
-        {
+        if (setting == Settings.INSCRIBER_BUFFER_SIZE) {
             if (configManager.getSetting(Settings.INSCRIBER_BUFFER_SIZE) == YesNo.YES) {
                 topItemHandler.setMaxStackSize(0, 64);
                 sideItemHandler.setMaxStackSize(0, 64);
                 bottomItemHandler.setMaxStackSize(0, 64);
-            }
-            else {
+            } else {
                 topItemHandler.setMaxStackSize(0, 4);
-                sideItemHandler.setMaxStackSize(0,4);
-                bottomItemHandler.setMaxStackSize(0,4);
+                sideItemHandler.setMaxStackSize(0, 4);
+                bottomItemHandler.setMaxStackSize(0, 4);
             }
         }
 
