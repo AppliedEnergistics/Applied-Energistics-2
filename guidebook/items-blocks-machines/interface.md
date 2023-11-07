@@ -125,6 +125,8 @@ Interfaces can be swapped between normal and flat in a crafting grid.
 The upper slots in the interface determine what the interface is set to stock inside itself. When something is placed in
 them or dragged from JEI/REI, a wrench appears that lets you set the quantity.
 
+Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
+
 ## Upgrades
 
 The interface supports the following [upgrades](upgrade_cards.md):

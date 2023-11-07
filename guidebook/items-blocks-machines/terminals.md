@@ -153,20 +153,21 @@ A slot for encoded patterns. Place a pattern that has already been encoded in th
 The central UI changes depending on the type of pattern to be encoded:
 
 *   In crafting mode:
-    *   left-click in or drag from JEI/REI the ingredients to form the recipe. Right-click to remove the ingredient.
+    *   Left-click in or drag from JEI/REI the ingredients to form the recipe. Right-click to remove the ingredient.
     *   Enabling substitiutions allows things like crafting sticks from any plank type. This should only be used
         when absolutely necessary.
     *   Fluid substitutions allows using stored fluids in place of buckets of fluids.
     *   You can also directly encode a pattern from the JEI/REI recipe screen.
 
 *   In processing mode:
-    *   left-click or right-click in or drag from JEI/REI the ingredients to specify the inputs and outputs of the recipe.
-    *   When holding a stack, left-click places the whole stack, right-click places one item. Left-click on an existing ingredient stack to
+    * Left-click or right-click in or drag from JEI/REI the ingredients to specify the inputs and outputs of the recipe.
+    * Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as an ingredient instead of the bucket or tank item.
+    * When holding a stack, left-click places the whole stack, right-click places one item. Left-click on an existing ingredient stack to
         remove the whole stack and right-click to decrement the stack by 1. Whatever you have bound to "pick block" (usually middle-click)
         lets you specify a precise amount of the item or fluid.
-    *   The output slots have a primary output and space for any secondary outputs you might want the autocrafting algorithm to know about.
-    *   Both input and output slots scroll, so you can have 81 different ingredients and 26 secondary outputs
-    *   You can also directly encode a pattern from the JEI/REI recipe screen.
+    * The output slots have a primary output and space for any secondary outputs you might want the autocrafting algorithm to know about.
+    * Both input and output slots scroll, so you can have 81 different ingredients and 26 secondary outputs
+    * You can also directly encode a pattern from the JEI/REI recipe screen.
 
 *   The smithing and stonecutting mode UIs work similarly to a smithing table and stonecutter respectively.
 
