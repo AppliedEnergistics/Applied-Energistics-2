@@ -19,6 +19,10 @@ It can accept either AE2's power (AE) or Fabric/Forge Energy (E/FE). It can be s
 inserts them into different slots in its inventory. To facilitate this, it can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 It can also be set to push the results of crafts to adjacent inventories.
 
+The size of the input buffer can be adjusted. For example, if you want to feed from one inventory into a big array of inscribers,
+you want a small buffer so that the materials are distributed between the inscribers more optimally (instead of the first
+inscriber filling up to 64 and the rest being empty).
+
 The 4 circuit presses are used to craft [processors](processors.md)
 
 <Row>
@@ -37,9 +41,11 @@ While the name press can be used to name blocks similar to an anvil, useful for 
 
 ## Settings
 
-*   The inscriber can be set to be sided (as explained below) or allow inputs to any slot from any side, with an internal filter deciding
+* The inscriber can be set to be sided (as explained below) or allow inputs to any slot from any side, with an internal filter deciding
     what goes where. While in non-sided mode, items cannot be extracted from the top and bottom slots.
-*   The inscriber can be set to push items into adjacent inventories.
+* The inscriber can be set to push items into adjacent inventories.
+* The size of the input buffer can be adjusted, the large option is for a standalone inscriber you feed manually, the
+small option is to make large parallelized setups more viable.
 
 ## The GUI And Sidedness
 

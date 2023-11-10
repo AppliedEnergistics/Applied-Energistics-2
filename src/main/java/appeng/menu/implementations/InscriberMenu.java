@@ -62,6 +62,8 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     public YesNo separateSides = YesNo.NO;
     @GuiSync(8)
     public YesNo autoExport = YesNo.NO;
+    @GuiSync(9)
+    public YesNo bufferSize = YesNo.YES;
 
     public InscriberMenu(int id, Inventory ip, InscriberBlockEntity host) {
         super(TYPE, id, ip, host);
@@ -98,6 +100,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
     protected void loadSettingsFromHost(IConfigManager cm) {
         this.separateSides = getHost().getConfigManager().getSetting(Settings.INSCRIBER_SEPARATE_SIDES);
         this.autoExport = getHost().getConfigManager().getSetting(Settings.AUTO_EXPORT);
+        this.bufferSize = getHost().getConfigManager().getSetting(Settings.INSCRIBER_BUFFER_SIZE);
     }
 
     @Override
@@ -158,5 +161,9 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
     public YesNo getAutoExport() {
         return autoExport;
+    }
+
+    public YesNo getBufferSize() {
+        return bufferSize;
     }
 }

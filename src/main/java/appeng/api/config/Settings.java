@@ -93,6 +93,8 @@ public final class Settings {
             YesNo.YES);
     public static final Setting<YesNo> AUTO_EXPORT = register("auto_export", YesNo.NO, YesNo.YES);
 
+    public static final Setting<YesNo> INSCRIBER_BUFFER_SIZE = register("inscriber_buffer_size", YesNo.NO, YesNo.YES);
+
     public static Setting<?> getOrThrow(String name) {
         var setting = SETTINGS.get(name);
         if (setting == null) {
