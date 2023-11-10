@@ -32,10 +32,11 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 ## Filtering
 
 By default the bus will store everything. Items inserted into its filter slots will act as a whitelist, only
-allowing those specific items to be stored. It has a LOT of slots, so it can be used as a large filter if you're using it for
-item transfer.
+allowing those specific items to be stored.
 
-Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
+Items and fluids can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
+
+Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
 
 ## Priority
 

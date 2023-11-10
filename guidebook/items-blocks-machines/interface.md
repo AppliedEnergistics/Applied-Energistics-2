@@ -29,6 +29,49 @@ They're essentially just chests/multi-fluid tanks with some extra functionality,
 them disconnected from any networks.
 Thus, they are useful in some niche cases where you want to store a small amount of a bunch of different stuff.
 
+## How An Interface Works Internally
+
+As previously stated, an interface is essentially a chest/tank with some super duper <ItemLink id="import_bus" />ses and
+<ItemLink id="export_bus" />ses attached, with a bunch of <ItemLink id="level_emitter" />s.
+
+<GameScene zoom="3" interactive={true}>
+  <ImportStructure src="../assets/assemblies/interface_internals.snbt" />
+
+  <BoxAnnotation color="#dddddd" min="1.3 0.3 1.3" max="9.7 1 1.7">
+        A bunch of level emitters to control the requested stocking quantity
+        <GameScene zoom="4" background="transparent">
+        <ImportStructure src="../assets/blocks/level_emitter.snbt" />
+        </GameScene>
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="1.3 4 1.3" max="9.7 4.7 1.7">
+        A bunch of level emitters to control the requested stocking quantity
+        <GameScene zoom="4" background="transparent">
+        <ImportStructure src="../assets/blocks/level_emitter.snbt" />
+        </GameScene>
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="1.3 1.3 1.3" max="9.7 2 1.7">
+        A bunch of super duper import busses that can transfer 1 stack per gametick
+        <GameScene zoom="4" background="transparent">
+        <ImportStructure src="../assets/blocks/import_bus.snbt" />
+        </GameScene>
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="1.3 3 1.3" max="9.7 3.7 1.7">
+        A bunch of super duper export busses that can transfer 1 stack per gametick
+        <GameScene zoom="4" background="transparent">
+        <ImportStructure src="../assets/blocks/export_bus.snbt" />
+        </GameScene>
+  </BoxAnnotation>
+
+  <BoxAnnotation color="#dddddd" min="1 2 1" max="10 3 2">
+        9 separate internal slots
+  </BoxAnnotation>
+
+  <IsometricCamera yaw="195" pitch="15" />
+</GameScene>
+
 ## Special Interactions
 
 Interfaces also have a few special functionalities with other AE2 [devices](../ae2-mechanics/devices.md):
@@ -47,8 +90,21 @@ the provider will skip the interface entirely and push directly to that subnet's
 skipping the interface and not filling it with recipe batches, and more importantly, not inserting the next batch until there's space in storage.
 
 <GameScene zoom="6" background="transparent">
-<ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
-<IsometricCamera yaw="195" pitch="30" />
+<ImportStructure src="../assets/assemblies/provider_interface_storage.snbt" />
+
+<BoxAnnotation color="#dddddd" min="2.7 0 1" max="3 1 2">
+        Interface (must be flat, not fullblock)
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 4">
+        Storage Busses
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="0 0 0" max="1 1 4">
+        Places you want to pattern-provide to (multiple machines, or multiple faces of 1 machine)
+  </BoxAnnotation>
+
+<IsometricCamera yaw="185" pitch="30" />
 </GameScene>
 
 ## Variants
@@ -68,6 +124,8 @@ Interfaces can be swapped between normal and flat in a crafting grid.
 
 The upper slots in the interface determine what the interface is set to stock inside itself. When something is placed in
 them or dragged from JEI/REI, a wrench appears that lets you set the quantity.
+
+Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
 
 ## Upgrades
 

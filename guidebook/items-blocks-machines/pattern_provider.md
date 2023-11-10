@@ -44,7 +44,51 @@ You can use this to pattern provide into multiple sides of a machine, or multipl
 <GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/furnace_automation.snbt" />
 
+<BoxAnnotation color="#dddddd" min="1 0 0" max="2 1 1">
+        (1) Pattern Provider: The directional variant, via use of a certus quartz wrench, with the relevant processing patterns.
+
+        ![Iron Pattern](../assets/diagrams/furnace_pattern_small.png)
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="1 1 0" max="2 1.3 1">
+        (2) Interface: In its default configuration.
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="1 1 0" max="1.3 2 1">
+        (3) Storage Bus #1: Filtered to coal.
+        <ItemImage id="minecraft:coal" scale="2" />
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="0 2 0" max="1 2.3 1">
+        (4) Storage Bus #2: IFiltered to blacklist coal, using an inverter card.
+        <Row><ItemImage id="minecraft:coal" scale="2" /><ItemImage id="inverter_card" scale="2" /></Row>
+  </BoxAnnotation>
+
+<DiamondAnnotation pos="4 0.5 0.5" color="#00ff00">
+        To Main Network
+    </DiamondAnnotation>
+
   <IsometricCamera yaw="195" pitch="30" />
+</GameScene>
+
+This is a general illustration of providing to multiple machines
+
+<GameScene zoom="6" background="transparent">
+<ImportStructure src="../assets/assemblies/provider_interface_storage.snbt" />
+
+<BoxAnnotation color="#dddddd" min="2.7 0 1" max="3 1 2">
+        Interface (must be flat, not fullblock)
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 4">
+        Storage Busses
+  </BoxAnnotation>
+
+<BoxAnnotation color="#dddddd" min="0 0 0" max="1 1 4">
+        Places you want to pattern-provide to
+  </BoxAnnotation>
+
+<IsometricCamera yaw="185" pitch="30" />
 </GameScene>
 
 Multiple pattern providers with identical patterns are supported and work in parallel.
