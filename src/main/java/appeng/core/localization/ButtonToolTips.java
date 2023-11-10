@@ -87,7 +87,7 @@ public enum ButtonToolTips implements LocalizationEnum {
             "Try to use fluids instead of items.\nSubstitutable ingredients are marked in green."),
     FuzzyMode("Fuzzy Comparison"),
     IOMode("Input/Output Mode"),
-    InscriberBufferSize("Buffer Size"),
+    InscriberBufferSize("Input Slot Stack Size"),
     InscriberBufferLow("Stack to 4"),
     InscriberBufferHigh("Stack to 64"),
     InscriberSideness("Automation Access Mode"),
