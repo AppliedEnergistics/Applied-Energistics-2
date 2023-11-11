@@ -289,6 +289,7 @@
   "gui.ae2.CalculatingWait": "正在计算...",
   "gui.ae2.CanBeEnchanted": "可被附魔",
   "gui.ae2.Cancel": "取消",
+  "gui.ae2.CantFitInsideStorageCell": "此项目不适合其他存储单元格",
   "gui.ae2.CantStoreItems": "无法存储物品！",
   "gui.ae2.CellWorkbench": "元件工作台",
   "gui.ae2.CertusQuartzObtain": "赛特斯石英由各种石英母岩培育而来，石英母岩可从陨石中找来，或由普通赛特斯石英块合成而来。",
