@@ -33,12 +33,12 @@ jobs:
       - name: Prepare artifact metadata. Note that VERSION is set by the gradle script.
         id: prepare_artifact_metadata
         run: |
-          echo ARTIFACT_PATH=./build/libs/appliedenergistics2-forge-${VERSION}.jar >> $GITHUB_OUTPUT
-          echo ARTIFACT_NAME=appliedenergistics2-forge-${VERSION}.jar >> $GITHUB_OUTPUT
-          echo JAVADOC_PATH=./build/libs/appliedenergistics2-forge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
-          echo JAVADOC_NAME=appliedenergistics2-forge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
-          echo API_PATH=./build/libs/appliedenergistics2-forge-${VERSION}-api.jar >> $GITHUB_OUTPUT
-          echo API_NAME=appliedenergistics2-forge-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo ARTIFACT_PATH=./build/libs/appliedenergistics2-neoforge-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo ARTIFACT_NAME=appliedenergistics2-neoforge-${VERSION}.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_PATH=./build/libs/appliedenergistics2-neoforge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo JAVADOC_NAME=appliedenergistics2-neoforge-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
+          echo API_PATH=./build/libs/appliedenergistics2-neoforge-${VERSION}-api.jar >> $GITHUB_OUTPUT
+          echo API_NAME=appliedenergistics2-neoforge-${VERSION}-api.jar >> $GITHUB_OUTPUT
           echo VERSION=${VERSION} >> $GITHUB_OUTPUT
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
@@ -138,9 +138,7 @@ jobs:
             theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
-          loaders: |
-            neoforge
-            forge
+          loaders: neoforge
 
   deploy-modmaven:
     name: Deploy to Modmaven
@@ -191,6 +189,4 @@ jobs:
             theoneprobe(optional){modrinth:Eyw0UxEx}{curseforge:245211}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
-          loaders: |
-            neoforge
-            forge
+          loaders: neoforge
