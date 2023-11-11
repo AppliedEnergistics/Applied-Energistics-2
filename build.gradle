@@ -257,11 +257,11 @@ if (ext.branch) {
 
 ext.tag = System.getenv('TAG') ?: ""
 if (ext.tag) {
-    if (!ext.tag.startsWith("forge/v")) {
-        throw new GradleException("Tags for the forge version should start with forge/: ${ext.tag}")
+    if (!ext.tag.startsWith("neoforge/v")) {
+        throw new GradleException("Tags for the neoforge version should start with neoforge/: ${ext.tag}")
     }
 
-    version = ext.tag.substring("forge/v".length())
+    version = ext.tag.substring("neoforge/v".length())
     // Validate that the rest is a semver version
     if (version ==~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/) {
         if (System.getenv("GITHUB_ENV")) {
