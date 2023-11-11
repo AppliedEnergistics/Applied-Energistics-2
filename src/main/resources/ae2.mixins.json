@@ -29,6 +29,7 @@
     "unlitquad.BlockPartFaceDeserializerMixin",
     "AbstractContainerScreenMixin",
     "BlockBreakParticleMixin",
+    "FormationPlaneVolumeMixin",
     "MouseWheelMixin",
     "GuiGraphicsMixin",
     "WrappedGenericStackTooltipModIdMixin",

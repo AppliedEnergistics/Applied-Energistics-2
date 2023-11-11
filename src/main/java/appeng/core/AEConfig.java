@@ -125,6 +125,7 @@ public final class AEConfig {
     private int craftingCalculationTimePerTick;
     private boolean craftingSimulatedExtraction;
     private boolean spatialAnchorEnablesRandomTicks;
+    private double planeVolumeLevel;
 
     // Spatial IO/Dimension
     private double spatialPowerExponent;
@@ -198,6 +199,8 @@ public final class AEConfig {
         AELog.setCraftingLogEnabled(COMMON.craftingLog.get());
         AELog.setDebugLogEnabled(COMMON.debugLog.get());
         AELog.setGridLogEnabled(COMMON.gridLog.get());
+
+        this.planeVolumeLevel = COMMON.planeVolumeLevel.get();
     }
 
     public static AEConfig instance() {
@@ -322,6 +325,10 @@ public final class AEConfig {
 
     public int getFormationPlaneEntityLimit() {
         return this.formationPlaneEntityLimit;
+    }
+
+    public double getPlaneVolumeLevel() {
+        return this.planeVolumeLevel;
     }
 
     public boolean isEnableEffects() {
@@ -619,6 +626,7 @@ public final class AEConfig {
 
         // Misc
         public final IntegerOption formationPlaneEntityLimit;
+        public final DoubleOption planeVolumeLevel;
         public final IntegerOption craftingCalculationTimePerTick;
         public final BooleanOption craftingSimulatedExtraction;
         public final BooleanOption allowBlockEntityFacades;
@@ -703,6 +711,7 @@ public final class AEConfig {
 
             ConfigSection automation = root.subsection("automation");
             formationPlaneEntityLimit = automation.addInt("formationPlaneEntityLimit", 128);
+            planeVolumeLevel = automation.addDouble("planeVolumeLevel", 0);
 
             ConfigSection facades = root.subsection("facades");
             allowBlockEntityFacades = facades.addBoolean("allowBlockEntities", false,
