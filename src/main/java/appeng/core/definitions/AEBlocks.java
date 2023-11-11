@@ -35,7 +35,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -182,17 +181,13 @@ public final class AEBlocks {
     public static final BlockDefinition<CreativeEnergyCellBlock> CREATIVE_ENERGY_CELL = block("Creative Energy Cell", AEBlockIds.CREATIVE_ENERGY_CELL, CreativeEnergyCellBlock::new);
 
     public static final BlockDefinition<CraftingUnitBlock> CRAFTING_UNIT = block("Crafting Unit", AEBlockIds.CRAFTING_UNIT, () -> new CraftingUnitBlock(CraftingUnitType.UNIT));
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = craftingBlock("Crafting Co-Processing Unit", AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(CraftingUnitType.ACCELERATOR), () -> AEItems.ENGINEERING_PROCESSOR);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_1K = craftingBlock("1k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_1K), () -> AEItems.CELL_COMPONENT_1K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_4K = craftingBlock("4k Crafting Storage",AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_4K), () -> AEItems.CELL_COMPONENT_4K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_16K = craftingBlock("16k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_16K), () -> AEItems.CELL_COMPONENT_16K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_64K = craftingBlock("64k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_64K), () -> AEItems.CELL_COMPONENT_64K);
-    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_256K = craftingBlock("256k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_256K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_256K), () -> AEItems.CELL_COMPONENT_256K);
-    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock("Crafting Monitor",AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(CraftingUnitType.MONITOR), () -> AEParts.STORAGE_MONITOR);
-
-    private static <T extends Block> BlockDefinition<T> craftingBlock(String englishName, ResourceLocation id, Supplier<T> blockSupplier, Supplier<ItemLike> disassemblyExtra) {
-        return block(englishName, id, blockSupplier, (block, props) -> new CraftingBlockItem(block, props, disassemblyExtra));
-    }
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_ACCELERATOR = block("Crafting Co-Processing Unit", AEBlockIds.CRAFTING_ACCELERATOR, () -> new CraftingUnitBlock(CraftingUnitType.ACCELERATOR), CraftingBlockItem::new);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_1K = block("1k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_1K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_1K), CraftingBlockItem::new);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_4K = block("4k Crafting Storage",AEBlockIds.CRAFTING_STORAGE_4K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_4K), CraftingBlockItem::new);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_16K = block("16k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_16K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_16K), CraftingBlockItem::new);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_64K = block("64k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_64K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_64K), CraftingBlockItem::new);
+    public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_256K = block("256k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_256K, () -> new CraftingUnitBlock(CraftingUnitType.STORAGE_256K), CraftingBlockItem::new);
+    public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = block("Crafting Monitor",AEBlockIds.CRAFTING_MONITOR, () -> new CraftingMonitorBlock(CraftingUnitType.MONITOR), CraftingBlockItem::new);
 
     public static final BlockDefinition<PatternProviderBlock> PATTERN_PROVIDER = block("ME Pattern Provider", AEBlockIds.PATTERN_PROVIDER, PatternProviderBlock::new);
     public static final BlockDefinition<MolecularAssemblerBlock> MOLECULAR_ASSEMBLER = block("Molecular Assembler", AEBlockIds.MOLECULAR_ASSEMBLER, () -> new MolecularAssemblerBlock(metalProps().noOcclusion()));
