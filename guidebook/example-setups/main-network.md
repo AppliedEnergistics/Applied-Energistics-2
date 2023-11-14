@@ -11,38 +11,36 @@ Many other setups reference a "Main Network". You might also ask how all these [
 together into a functional system. Here is an example:
 
 <GameScene zoom="2.5" interactive={true}>
-  <ImportStructure src="../assets/assemblies/treelike_network_structure.snbt" />
+  <ImportStructure src="../assets/assemblies/small_base_network.snbt" />
 
-    <BoxAnnotation color="#dddddd" min="3.9 0 1.9" max="9.1 5 7.1" thickness="0.05">
+    <BoxAnnotation color="#dddddd" min="5 1 10" max="9 7 14" thickness="0.05">
         A big cluster of pattern providers and assemblers give a lot of space for crafting, stonecutting, and smithing patterns.
         The checkerboard pattern allows providers to utilize multiple assemblers in parallel while keeping it compact.
         Groups of 8 make it impossible for channels to route incorrectly.
     </BoxAnnotation>
 
-    <BoxAnnotation color="#dddddd" min="3.9 0 9.9" max="5.1 3 12.1" thickness="0.05">
-        Some machines, with a pipe subnet to push their outputs into the providers.
+    <BoxAnnotation color="#dddddd" min="13 10 12" max="14 11 14" thickness="0.05">
+        You don't actually need that big of a controller, all those huge rings and cubes designs you see in people's bases
+        are mainly just to look cool.
     </BoxAnnotation>
 
-    <BoxAnnotation color="#dddddd" min="-0.1 0 8.9" max="1.1 3 13.1" thickness="0.05">
-      Some terminals and assorted utility doodads. (you probably want just a crafting terminal, not a regular terminal _and_ crafting terminal)
+    <BoxAnnotation color="#dddddd" min="13 12 13" max="14 13 14" thickness="0.05">
+        Every good network has an energy cell, to allow higher energy input per gametick and 
+        smooth out power fluctuations.
+    </BoxAnnotation>
+    
+    <BoxAnnotation color="#dddddd" min="2 1 10" max="4 4 13" thickness="0.05">
+        You probably want to use some other mod's power source, a reactor or solar panel or generator or
+        whatever. Vibration Chambers are ok-ish but AE2 is designed to be used in a modpack and use your 
+        base's main power generator.
     </BoxAnnotation>
 
-    <BoxAnnotation color="#dddddd" min="-0.1 0 -0.1" max="2.1 3 8.1" thickness="0.05">
-      An array of crafting CPUs. A few with larger amounts of storage and a bit more with lower amounts of storage.
-      You probably want to have more co-processors in an actual setup but that would be a bit large for this scene.
+    <BoxAnnotation color="#dddddd" min="15 1 9" max="16 3 14" thickness="0.05">
+        Facades can be used to hide stuff behind walls
+    </BoxAnnotation>
+    <BoxAnnotation color="#dddddd" min="15 3 12" max="16 10 14" thickness="0.05">
+        Facades can be used to hide stuff behind walls
     </BoxAnnotation>
 
-    <BoxAnnotation color="#dddddd" min="5.9 0 13.9" max="7.1 1 15.1" thickness="0.05">
-      Your controller should be in the middle of your base, and probably a bit larger than this. A stick-shape is pretty good.
-    </BoxAnnotation>
-
-    <BoxAnnotation color="#dddddd" min="11.9 0 7.9" max="13.1 4 13.1" thickness="0.05">
-        Various methods of doing storage, with drives or storage busses. Notice all in groups of 8.
-    </BoxAnnotation>
-
-    <BoxAnnotation color="#dddddd" min="10.9 0 0.9" max="13.1 2 7.1" thickness="0.05">
-        Various methods of doing storage, with drives or storage busses. Notice all in groups of 8.
-    </BoxAnnotation>
-
-  <IsometricCamera yaw="315" pitch="30" />
+  <IsometricCamera yaw="135" pitch="15" />
 </GameScene>

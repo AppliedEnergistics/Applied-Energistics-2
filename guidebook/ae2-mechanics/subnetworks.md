@@ -37,13 +37,17 @@ network can access
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-"Subnetwork" is a rather loosely-defined term, but one might say that a subnetwork is any network that supports your
+"Subnetwork" is a rather loosely-defined term, but one might say that a subnetwork is any [network](../ae2-mechanics/me-network-connections.md) that supports your
 main network or does some small task. They are typically small enough to not require controllers. Their main 2 uses tend to be:
 
 *   To restrict what [devices](../ae2-mechanics/devices.md) have access to what storage (you don't want the import bus on a "pipe" subnet to have access to your main net
     storage, or it will put the items in your storage cells instead of in the destination inventory).
 *   To save channels on your main network, like having a pattern provider output to an interface connected to several storage
     busses on several machines, using 1 channel, instead of putting a pattern provider on each machine, using several channels.
+
+Very important in making a subnet is keeping track of the [network connections](../ae2-mechanics/me-network-connections.md).
+Often, people put together some jumble of interfaces and busses and stuff and expect it to be a subnet when
+all the devices are still connected to the main network through various fullblock devices.
 
 Cables with different colors have nothing to do with making a subnetwork other than that they won't connect to each other.
 
