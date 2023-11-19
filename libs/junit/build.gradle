@@ -3,7 +3,7 @@ plugins {
     id "java-library"
 }
 
-archivesBaseName = "fml-junit"
+archivesBaseName = "fmljunit"
 
 dependencies {
     implementation(platform("org.junit:junit-bom:${project.junit_version}"))

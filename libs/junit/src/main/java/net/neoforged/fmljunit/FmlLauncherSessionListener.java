@@ -1,50 +1,26 @@
 package net.neoforged.fmljunit;
 
 import cpw.mods.bootstraplauncher.BootstrapLauncher;
-import org.junit.platform.launcher.LauncherInterceptor;
+import org.junit.platform.launcher.LauncherSession;
+import org.junit.platform.launcher.LauncherSessionListener;
 
-public class FmlLauncherSessionListener implements LauncherInterceptor {
+public class FmlLauncherSessionListener implements LauncherSessionListener {
 
-    private ClassLoader transformingClassLoader;
+    private ClassLoader originalClassLoader;
 
     public FmlLauncherSessionListener() {
     }
 
     @Override
-    public <T> T intercept(Invocation<T> invocation) {
+    public void launcherSessionOpened(LauncherSession session) {
         Thread currentThread = Thread.currentThread();
-        ClassLoader originalClassLoader = currentThread.getContextClassLoader();
-
-        if (transformingClassLoader == null) {
-            // This *should* find the service exposed by ModLauncher's BootstrapLaunchConsumer {This doc is here to help find that class next time we go looking}
-            BootstrapLauncher.main("-launchTarget", "JUnit", "--assetIndex",
-                    "asset-index",
-                    "--assetsDir",
-                    "C:\\Users\\Sebastian\\.gradle\\caches\\minecraft\\assets\\1.20.2",
-                    "--gameDir",
-                    ".",
-                    "--fml.neoForgeVersion",
-                    "20.2.43-beta",
-                    "--fml.fmlVersion",
-                    "1.0.9",
-                    "--fml.mcVersion",
-                    "1.20.2",
-                    "--fml.neoFormVersion",
-                    "20231019.002635");
-            transformingClassLoader = Thread.currentThread().getContextClassLoader();
-        }
-
-        currentThread.setContextClassLoader(transformingClassLoader);
-        try {
-            return invocation.proceed();
-        } finally {
-            currentThread.setContextClassLoader(originalClassLoader);
-        }
+        originalClassLoader = currentThread.getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(LauncherHolder.getTransformingClassLoader());
     }
 
     @Override
-    public void close() {
-
+    public void launcherSessionClosed(LauncherSession session) {
+        Thread.currentThread().setContextClassLoader(originalClassLoader);
     }
 }
 
