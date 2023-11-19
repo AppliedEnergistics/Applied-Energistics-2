@@ -1,0 +1,23 @@
+
+plugins {
+    id "java-library"
+}
+
+archivesBaseName = "fml-junit"
+
+dependencies {
+    implementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    implementation("org.junit.jupiter:junit-jupiter-api")
+    compileOnly("org.junit.platform:junit-platform-launcher")
+
+    compileOnly "net.neoforged.fancymodloader:core:1.0.10"
+    compileOnly "net.neoforged.fancymodloader:loader:1.0.10"
+    compileOnly "cpw.mods:bootstraplauncher:1.1.2"
+}
+
+repositories {
+    maven {
+        name = 'NeoForged'
+        url = 'https://maven.neoforged.net/releases'
+    }
+}

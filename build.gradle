@@ -98,17 +98,17 @@ dependencies {
         runtimeOnly "mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}"
 
         compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
-        compileOnly ("dev.architectury:architectury-forge:${project.architectury_version}")
-        compileOnly ("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        compileOnly("dev.architectury:architectury-forge:${project.architectury_version}")
+        compileOnly("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     } else if (project.runtime_itemlist_mod == "rei") {
         implementation "me.shedaniel.cloth:basic-math:0.6.1"
-        implementation ("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
-        implementation ("dev.architectury:architectury-forge:${project.architectury_version}")
-        implementation ("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        implementation("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
+        implementation("dev.architectury:architectury-forge:${project.architectury_version}")
+        implementation("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     } else {
-        compileOnly ("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
-        compileOnly ("dev.architectury:architectury-forge:${project.architectury_version}")
-        compileOnly ("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
+        compileOnly("me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}")
+        compileOnly("dev.architectury:architectury-forge:${project.architectury_version}")
+        compileOnly("me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}")
     }
 
     // Locally sourced extra mods for runtime (i.e. testing)
@@ -118,31 +118,32 @@ dependencies {
         assert versionSep != -1
         def artifactId = basename.substring(0, versionSep)
         def version = basename.substring(versionSep + 1)
-        runtimeOnly ("extra-mods:$artifactId:$version")
+        runtimeOnly("extra-mods:$artifactId:$version")
     }
 
     if (project.runtime_tooltip_mod == "wthit") {
-        runtimeOnly ("mcp.mobius.waila:wthit:forge-${project.wthit_version}")
-        runtimeOnly ("lol.bai:badpackets:forge-0.1.2")
+        runtimeOnly("mcp.mobius.waila:wthit:forge-${project.wthit_version}")
+        runtimeOnly("lol.bai:badpackets:forge-0.1.2")
     } else {
         compileOnly "mcp.mobius.waila:wthit-api:forge-${project.wthit_version}"
     }
 
     if (project.runtime_tooltip_mod == "jade") {
-        implementation ("curse.maven:jade-324717:${project.jade_file_id}")
+        implementation("curse.maven:jade-324717:${project.jade_file_id}")
     } else {
-        compileOnly ("curse.maven:jade-324717:${project.jade_file_id}")
+        compileOnly("curse.maven:jade-324717:${project.jade_file_id}")
     }
 
     def topDependency = "curse.maven:the-one-probe-245211:4159743"
     if (project.runtime_tooltip_mod == "top") {
-        implementation (topDependency)
+        implementation(topDependency)
     } else {
         compileOnly topDependency
     }
 
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    testRuntimeOnly(project(":libs:junit"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -150,6 +151,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
+    testImplementation("cpw.mods:securejarhandler:2.1.10")
 
     compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
 }
@@ -278,6 +280,48 @@ ext.isBeta = project.version.contains("beta")
 
 test {
     useJUnitPlatform()
+
+    systemProperty "junit.platform.launcher.interceptors.enabled", "true"
+
+    environment = [
+        MOD_CLASSES:
+                "Forge%%C:\\AE2\\Forge\\build\\resources\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\test"
+    ]
+
+    jvmArgumentProviders.add(new CommandLineArgumentProvider() {
+        @Override
+        Iterable<String> asArguments() {
+            return [
+                    "--module-path",
+                    test.classpath
+                            .filter {
+                                it.name.contains("bootstraplauncher")
+                                || it.name.contains("securejarhandler")
+                                || it.name.contains("asm")
+                                || it.name.contains("JarJarFileSystems")
+                                || it.name.startsWith("junit")
+                                || it.name.startsWith("opentest4j")
+                                || it.name.startsWith("fmljunit")
+                            }
+                            .join(File.pathSeparator)
+            ]
+        }
+    })
+
+    jvmArgs = [
+            "-DignoreList=securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-1.0.9.jar,core-1.0.9.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-",
+            "--add-modules",
+            "ALL-MODULE-PATH",
+            "--add-opens","java.base/java.util.jar=cpw.mods.securejarhandler",
+            "--add-opens","java.base/java.lang.invoke=cpw.mods.securejarhandler",
+            "--add-exports","java.base/sun.security.util=cpw.mods.securejarhandler",
+            "--add-exports","jdk.naming.dns/com.sun.jndi.dns=java.naming",
+            "-DlegacyClassPath.file=C:\\AE2\\Forge\\build\\neoForm\\neoFormJoined1.20.2-20231019.002635\\steps\\writeMinecraftClasspath\\classpath.txt",
+            "-Dfml.gameLayerLibraries=events-1.0.9.jar",
+            "-DmergeModules=jna-5.10.0.jar,jna-platform-5.10.0.jar",
+            "-Djava.net.preferIPv6Addresses=system",
+            "-Dfml.pluginLayerLibraries=core-1.0.9.jar,language-java-1.0.9.jar,language-lowcode-1.0.9.jar,language-minecraft-1.0.9.jar",
+    ]
 }
 
 dependencies {
@@ -289,9 +333,9 @@ dependencies {
  * Configures properties common to all run configurations
  */
 def commonSystemProperties = [
-    'forge.logging.console.level': 'debug',
-    'fml.earlyprogresswindow': 'false',
-    'appeng.tests': 'true',
+        'forge.logging.console.level': 'debug',
+        'fml.earlyprogresswindow'    : 'false',
+        'appeng.tests'               : 'true',
 ]
 
 // NG hacks to add our deps to the legacy classpath
@@ -347,25 +391,25 @@ runs {
     client {
         with commonRunProperties
         systemProperties = [
-          *:commonSystemProperties,
-          "appeng.tests": "true",
-          "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+                *                          : commonSystemProperties,
+                "appeng.tests"             : "true",
+                "guideDev.ae2guide.sources": file("guidebook").absolutePath,
         ]
     }
     gametestWorld {
         configure("client")
         programArguments = ["--username", "AE2Dev", "--quickPlaySingleplayer", "GametestWorld"]
         systemProperties = [
-          "appeng.tests": "true",
-          "guideDev.ae2guide.sources": file("guidebook").absolutePath,
+                "appeng.tests"             : "true",
+                "guideDev.ae2guide.sources": file("guidebook").absolutePath,
         ]
     }
     guide {
         configure("client")
         with commonRunProperties
         systemProperties = [
-          "guideDev.ae2guide.sources": file("guidebook").absolutePath,
-          "guideDev.ae2guide.startupPage": "ae2:index.md"
+                "guideDev.ae2guide.sources"    : file("guidebook").absolutePath,
+                "guideDev.ae2guide.startupPage": "ae2:index.md"
         ]
     }
     server {
@@ -384,9 +428,9 @@ runs {
         configure("client")
         with commonRunProperties
         systemProperties = [
-          "appeng.runGuideExportAndExit": "true",
-          "appeng.guideExportFolder": file("$buildDir/guide").absolutePath,
-          "guideDev.ae2guide.sources": file("guidebook").absolutePath
+                "appeng.runGuideExportAndExit": "true",
+                "appeng.guideExportFolder"    : file("$buildDir/guide").absolutePath,
+                "guideDev.ae2guide.sources"   : file("guidebook").absolutePath
         ]
     }
     // Use to run the tests

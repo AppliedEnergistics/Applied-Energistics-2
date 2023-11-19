@@ -9,11 +9,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.mojang.serialization.JsonOps;
+
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeProvider;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -23,13 +33,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.neoforged.neoforge.common.crafting.VanillaIngredientSerializer;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
@@ -39,26 +49,35 @@ import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 class CraftingPatternItemTest {
-
-    static {
-        CraftingHelper.register(new ResourceLocation("minecraft", "item"), VanillaIngredientSerializer.INSTANCE);
-    }
-
     private static final ResourceLocation TEST_RECIPE_ID = AppEng.makeId("test_recipe");
 
-    private final ShapedRecipe TEST_RECIPE = buildRecipe(ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK)
-            .pattern("xy")
-            .define('x', Items.TORCH)
-            .define('y', Items.DIAMOND));
+    private final RecipeHolder<CraftingRecipe> TEST_RECIPE = buildRecipe(
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK)
+                    .pattern("xy")
+                    .define('x', Items.TORCH)
+                    .define('y', Items.DIAMOND));
 
-    private ShapedRecipe buildRecipe(ShapedRecipeBuilder builder) {
+    private RecipeHolder<CraftingRecipe> buildRecipe(ShapedRecipeBuilder builder) {
         var result = new AtomicReference<ShapedRecipe>();
-        builder.unlockedBy("xxx", RecipeProvider.has(builder.getResult()));
-        builder.save(finishedRecipe -> {
-            var recipe = RecipeSerializer.SHAPED_RECIPE.fromJson(TEST_RECIPE_ID, finishedRecipe.serializeRecipe());
-            result.set(recipe);
+        builder.unlockedBy("xxx", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()));
+        builder.save(new RecipeOutput() {
+            @Override
+            public Advancement.Builder advancement() {
+                return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
+            }
+
+            @Override
+            public void accept(FinishedRecipe finishedRecipe, ICondition... conditions) {
+                // Serialize & Deserialize
+                var serializedRecipe = finishedRecipe.serializeRecipe();
+
+                var recipe = (ShapedRecipe) RecipeSerializer.SHAPED_RECIPE.codec().parse(
+                        JsonOps.INSTANCE,
+                        serializedRecipe).result().get();
+                result.set(recipe);
+            }
         }, TEST_RECIPE_ID);
-        return Objects.requireNonNull(result.get());
+        return new RecipeHolder<>(TEST_RECIPE_ID, Objects.requireNonNull(result.get()));
     }
 
     @Test
@@ -149,11 +168,6 @@ class CraftingPatternItemTest {
         @Override
         public ItemStack getResultItem(RegistryAccess registryAccess) {
             return new ItemStack(Items.STICK);
-        }
-
-        @Override
-        public ResourceLocation getId() {
-            return TEST_RECIPE_ID;
         }
 
         @Override

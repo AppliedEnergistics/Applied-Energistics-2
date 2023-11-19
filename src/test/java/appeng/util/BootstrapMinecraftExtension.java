@@ -84,7 +84,7 @@ public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback
         var mocked = Mockito.mockStatic(CommonHooks.class, Mockito.CALLS_REAL_METHODS);
         var props = FluidType.Properties.create();
         props.descriptionId("fluid");
-        mocked.when(() -> ForgeHooks.getVanillaFluidType(any()))
+        mocked.when(() -> CommonHooks.getVanillaFluidType(any()))
                 .thenReturn(new FluidType(props));
     }
 }
