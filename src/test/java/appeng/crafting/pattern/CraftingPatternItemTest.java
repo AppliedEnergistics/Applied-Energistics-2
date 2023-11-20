@@ -11,17 +11,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
-import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeProvider;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;

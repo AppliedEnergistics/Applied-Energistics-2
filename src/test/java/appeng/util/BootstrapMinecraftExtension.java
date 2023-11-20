@@ -2,12 +2,6 @@ package appeng.util;
 
 import static org.mockito.ArgumentMatchers.any;
 
-import java.nio.file.Files;
-
-import com.google.common.io.MoreFiles;
-import com.google.common.io.RecursiveDeleteOption;
-import com.google.common.reflect.Reflection;
-
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -15,21 +9,6 @@ import org.mockito.Mockito;
 
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegistryBuilder;
-
-import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.AEKeyTypes;
-import appeng.api.stacks.AEKeyTypesInternal;
-import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.core.AppEngBootstrap;
-import appeng.core.definitions.AEBlockEntities;
-import appeng.core.definitions.AEBlocks;
-import appeng.core.definitions.AEItems;
-import appeng.init.InitBlocks;
-import appeng.init.InitItems;
 
 public class BootstrapMinecraftExtension implements Extension, BeforeAllCallback {
 
