@@ -286,7 +286,7 @@ test {
     systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
 
     def aeDir = project.rootDir.absolutePath
-    environment("MOD_CLASSES", "Forge%%$aeDir\\build\\resources\\main;Forge%%$aeDir\\build\\classes\\java\\main;Forge%%$aeDir\\build\\classes\\java\\test")
+    environment("MOD_CLASSES", "Forge%%$aeDir/build/resources/main;Forge%%$aeDir/build/classes/java/main;Forge%%$aeDir/build/classes/java/test")
     environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/1.20.2/").absolutePath)
 
     jvmArgumentProviders.add(new CommandLineArgumentProvider() {
@@ -313,10 +313,10 @@ test {
     })
 
     doFirst {
-        var classPathLines = new File("$aeDir\\build\\neoForm\\neoFormJoined1.20.2-20231019.002635\\steps\\writeMinecraftClasspath\\classpath.txt").readLines()
+        var classPathLines = new File("$aeDir/build/neoForm/neoFormJoined1.20.2-20231019.002635/steps/writeMinecraftClasspath/classpath.txt").readLines()
         classPathLines.addAll(test.classpath
                 .filter { it.name.startsWith("fmljunit") })
-        new File("$aeDir\\build\\test_classpath.txt").text = classPathLines.join("\n")
+        new File("$aeDir/build/test_classpath.txt").text = classPathLines.join("\n")
     }
 
     jvmArgs = [
@@ -327,7 +327,7 @@ test {
             "--add-opens","java.base/java.lang.invoke=cpw.mods.securejarhandler",
             "--add-exports","java.base/sun.security.util=cpw.mods.securejarhandler",
             "--add-exports","jdk.naming.dns/com.sun.jndi.dns=java.naming",
-            "-DlegacyClassPath.file=$aeDir\\build\\test_classpath.txt",
+            "-DlegacyClassPath.file=$aeDir/build/test_classpath.txt",
             "-Dfml.gameLayerLibraries=events-1.0.9.jar",
             "-DmergeModules=jna-5.10.0.jar,jna-platform-5.10.0.jar",
             "-Djava.net.preferIPv6Addresses=system",
@@ -335,9 +335,9 @@ test {
     ]
 }
 
-tasks.named('test').configure {
-    it.dependsOn tasks.named('writeMinecraftClasspath')
-}
+//tasks.named('test').configure {
+//    it.inputs.file(tasks.named('writeMinecraftClasspath').map { it.outputs.files.singleFile })
+//}
 
 dependencies {
     buildtoolsImplementation 'de.siegmar:fastcsv:2.1.0'
