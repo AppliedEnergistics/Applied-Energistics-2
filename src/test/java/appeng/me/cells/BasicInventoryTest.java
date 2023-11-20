@@ -31,13 +31,6 @@ import appeng.util.BootstrapMinecraft;
 public class BasicInventoryTest {
     private static final IActionSource SRC = new BaseActionSource();
 
-    @BeforeAll
-    static void initCells() {
-        InitItems.init(ForgeRegistries.ITEMS);
-        InitStorageCells.init();
-        InitUpgrades.init();
-    }
-
     /**
      * Check that we can extract more than MAX_INT fluid at once from a cell. Regression test for
      * https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6794

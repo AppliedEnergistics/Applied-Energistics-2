@@ -1,10 +1,15 @@
 package net.neoforged.fmljunit;
 
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.targets.ForgeUserdevLaunchHandler;
+import org.mockito.Mockito;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Consumer;
 
 public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
     @Override
@@ -37,6 +42,7 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
             var parallelExecutor = fmlCoreLoader.loadClass("net.neoforged.fml.ModWorkManager")
                     .getMethod("parallelExecutor").invoke(null);
 
+
             var modLoader = modLoaderClass.getMethod("get").invoke(null);
 
             Runnable periodicTasks = () -> {
@@ -44,6 +50,18 @@ public class JunitLaunchHandlerService extends ForgeUserdevLaunchHandler {
             callMethod(modLoaderClass, "gatherAndInitializeMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
             callMethod(modLoaderClass, "loadMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
             callMethod(modLoaderClass, "finishMods", modLoader, syncExecutor, parallelExecutor, periodicTasks);
+
+            Consumer<Dist> extension = Launcher.INSTANCE.environment().findLaunchPlugin("runtimedistcleaner")
+                    .get()
+                    .getExtension();
+            extension.accept(Dist.CLIENT);
+//
+//            var clientClass = mcLoader.loadClass("net.minecraft.client.Minecraft");
+//            var clientMock = Mockito.mock(clientClass);
+//            var mocked = Mockito.mockStatic(clientClass, Mockito.CALLS_REAL_METHODS);
+//            mocked.when(() -> clientClass.getDeclaredMethod("getInstance").invoke(null))
+//                    .thenReturn(clientMock);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -283,12 +283,11 @@ ext.isBeta = project.version.contains("beta")
 test {
     useJUnitPlatform()
 
+    // Might not need this anymore...
     systemProperty "junit.platform.launcher.interceptors.enabled", "true"
+    systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
 
-    environment = [
-        MOD_CLASSES:
-                "Forge%%C:\\AE2\\Forge\\build\\resources\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\test"
-    ]
+    environment("MOD_CLASSES", "Forge%%C:\\AE2\\Forge\\build\\resources\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\test")
 
     jvmArgumentProviders.add(new CommandLineArgumentProvider() {
         @Override
@@ -301,6 +300,12 @@ test {
                                 || it.name.contains("securejarhandler")
                                 || it.name.contains("asm")
                                 || it.name.contains("JarJarFileSystems")
+                                || it.name.startsWith("mockito")
+                                || it.name.startsWith("junit-jupiter")
+                                || it.name.startsWith("junit-platform")
+                                || it.name.startsWith("opentest4j")
+                                || it.name.startsWith("assertj-")
+                                || it.name.startsWith("guava-testlib-")
                             }
                             .join(File.pathSeparator)
             ]
@@ -310,10 +315,8 @@ test {
     doFirst {
         var classPathLines = new File("C:\\AE2\\Forge\\build\\neoForm\\neoFormJoined1.20.2-20231019.002635\\steps\\writeMinecraftClasspath\\classpath.txt").readLines()
         classPathLines.addAll(test.classpath
-                .filter {
-                    it.name.startsWith("junit-jupiter") || it.name.startsWith("junit-platform") || it.name.startsWith("opentest4j") || it.name.startsWith("fmljunit")
-                })
-            new File("C:\\AE2\\Forge\\build\\test_classpath.txt").text = classPathLines.join("\n")
+                .filter { it.name.startsWith("fmljunit") })
+        new File("C:\\AE2\\Forge\\build\\test_classpath.txt").text = classPathLines.join("\n")
     }
 
     jvmArgs = [

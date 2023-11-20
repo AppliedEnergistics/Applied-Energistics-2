@@ -1,6 +1,5 @@
 package net.neoforged.fmljunit;
 
-import cpw.mods.bootstraplauncher.BootstrapLauncher;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 
