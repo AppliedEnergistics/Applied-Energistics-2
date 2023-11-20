@@ -147,8 +147,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-//    testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation files("junit-platform-launcher-1.11.0-SNAPSHOT.jar")
+    testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation files("securejarhandler-2.1.20.jar")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
@@ -284,7 +283,6 @@ test {
     useJUnitPlatform()
 
     // Might not need this anymore...
-    systemProperty "junit.platform.launcher.interceptors.enabled", "true"
     systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
 
     def aeDir = project.rootDir.absolutePath
@@ -335,6 +333,10 @@ test {
             "-Djava.net.preferIPv6Addresses=system",
             "-Dfml.pluginLayerLibraries=core-1.0.9.jar,language-java-1.0.9.jar,language-lowcode-1.0.9.jar,language-minecraft-1.0.9.jar",
     ]
+}
+
+tasks.named('test').configure {
+    it.dependsOn tasks.named('writeMinecraftClasspath')
 }
 
 dependencies {
