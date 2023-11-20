@@ -286,7 +286,18 @@ test {
     systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
 
     def aeDir = project.rootDir.absolutePath
-    environment("MOD_CLASSES", "Forge%%$aeDir/build/resources/main;Forge%%$aeDir/build/classes/java/main;Forge%%$aeDir/build/classes/java/test")
+    environment(
+            "MOD_CLASSES",
+            // In Gradle 9, replace with a provider
+            List.of(
+                    "${project.buildDir}/classes/java/main",
+                    "${project.buildDir}/classes/java/test",
+                    "${project.buildDir}/resources/main",
+                    "${project.buildDir}/resources/test",
+            ).stream().map {
+                "ae2%%" + it
+            }.collect(Collectors.joining(File.pathSeparator))
+    )
     environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/1.20.2/").absolutePath)
 
     jvmArgumentProviders.add(new CommandLineArgumentProvider() {
@@ -297,15 +308,15 @@ test {
                     test.classpath
                             .filter {
                                 it.name.contains("bootstraplauncher")
-                                || it.name.contains("securejarhandler")
-                                || it.name.contains("asm")
-                                || it.name.contains("JarJarFileSystems")
-                                || it.name.startsWith("mockito")
-                                || it.name.startsWith("junit-jupiter")
-                                || it.name.startsWith("junit-platform")
-                                || it.name.startsWith("opentest4j")
-                                || it.name.startsWith("assertj-")
-                                || it.name.startsWith("guava-testlib-")
+                                        || it.name.contains("securejarhandler")
+                                        || it.name.contains("asm")
+                                        || it.name.contains("JarJarFileSystems")
+                                        || it.name.startsWith("mockito")
+                                        || it.name.startsWith("junit-jupiter")
+                                        || it.name.startsWith("junit-platform")
+                                        || it.name.startsWith("opentest4j")
+                                        || it.name.startsWith("assertj-")
+                                        || it.name.startsWith("guava-testlib-")
                             }
                             .join(File.pathSeparator)
             ]
@@ -323,10 +334,10 @@ test {
             "-DignoreList=junit,securejarhandler,asm,asm-commons,asm-tree,asm-util,asm-analysis,bootstraplauncher,JarJarFileSystems,events-1.0.9.jar,core-1.0.9.jar,language-java,language-lowcode,language-minecraft,client-extra,neoforge-",
             "--add-modules",
             "ALL-MODULE-PATH",
-            "--add-opens","java.base/java.util.jar=cpw.mods.securejarhandler",
-            "--add-opens","java.base/java.lang.invoke=cpw.mods.securejarhandler",
-            "--add-exports","java.base/sun.security.util=cpw.mods.securejarhandler",
-            "--add-exports","jdk.naming.dns/com.sun.jndi.dns=java.naming",
+            "--add-opens", "java.base/java.util.jar=cpw.mods.securejarhandler",
+            "--add-opens", "java.base/java.lang.invoke=cpw.mods.securejarhandler",
+            "--add-exports", "java.base/sun.security.util=cpw.mods.securejarhandler",
+            "--add-exports", "jdk.naming.dns/com.sun.jndi.dns=java.naming",
             "-DlegacyClassPath.file=$aeDir/build/test_classpath.txt",
             "-Dfml.gameLayerLibraries=events-1.0.9.jar",
             "-DmergeModules=jna-5.10.0.jar,jna-platform-5.10.0.jar",
@@ -356,6 +367,8 @@ def commonSystemProperties = [
 // NG hacks to add our deps to the legacy classpath
 // If anything changes here you have to delete the build folder for the neoforge:...:writeMinecraftClasspath task
 import net.neoforged.gradle.userdev.runtime.tasks.ClasspathSerializer
+
+import java.util.stream.Collectors
 
 def libSrcSets = [
         project(":libs:markdown").sourceSets.main
