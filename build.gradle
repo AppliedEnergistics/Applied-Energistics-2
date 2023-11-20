@@ -148,8 +148,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 //    testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation files("junit-platform-launcher-1.11.0-20231119.133029-1.jar")
-    testImplementation files("C:\\AE2\\securejarhandler\\build\\libs\\securejarhandler-2.1.12.jar")
+    testImplementation files("junit-platform-launcher-1.11.0-SNAPSHOT.jar")
+    testImplementation files("securejarhandler-2.1.20.jar")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
@@ -287,7 +287,9 @@ test {
     systemProperty "junit.platform.launcher.interceptors.enabled", "true"
     systemProperty "guideDev.ae2guide.sources", file("guidebook").absolutePath
 
-    environment("MOD_CLASSES", "Forge%%C:\\AE2\\Forge\\build\\resources\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\main;Forge%%C:\\AE2\\Forge\\build\\classes\\java\\test")
+    def aeDir = project.rootDir.absolutePath
+    environment("MOD_CLASSES", "Forge%%$aeDir\\build\\resources\\main;Forge%%$aeDir\\build\\classes\\java\\main;Forge%%$aeDir\\build\\classes\\java\\test")
+    environment("fmljunit.assetsDir", new File(gradle.gradleUserHomeDir, "caches/minecraft/assets/1.20.2/").absolutePath)
 
     jvmArgumentProviders.add(new CommandLineArgumentProvider() {
         @Override
@@ -313,10 +315,10 @@ test {
     })
 
     doFirst {
-        var classPathLines = new File("C:\\AE2\\Forge\\build\\neoForm\\neoFormJoined1.20.2-20231019.002635\\steps\\writeMinecraftClasspath\\classpath.txt").readLines()
+        var classPathLines = new File("$aeDir\\build\\neoForm\\neoFormJoined1.20.2-20231019.002635\\steps\\writeMinecraftClasspath\\classpath.txt").readLines()
         classPathLines.addAll(test.classpath
                 .filter { it.name.startsWith("fmljunit") })
-        new File("C:\\AE2\\Forge\\build\\test_classpath.txt").text = classPathLines.join("\n")
+        new File("$aeDir\\build\\test_classpath.txt").text = classPathLines.join("\n")
     }
 
     jvmArgs = [
@@ -327,7 +329,7 @@ test {
             "--add-opens","java.base/java.lang.invoke=cpw.mods.securejarhandler",
             "--add-exports","java.base/sun.security.util=cpw.mods.securejarhandler",
             "--add-exports","jdk.naming.dns/com.sun.jndi.dns=java.naming",
-            "-DlegacyClassPath.file=C:\\AE2\\Forge\\build\\test_classpath.txt",
+            "-DlegacyClassPath.file=$aeDir\\build\\test_classpath.txt",
             "-Dfml.gameLayerLibraries=events-1.0.9.jar",
             "-DmergeModules=jna-5.10.0.jar,jna-platform-5.10.0.jar",
             "-Djava.net.preferIPv6Addresses=system",

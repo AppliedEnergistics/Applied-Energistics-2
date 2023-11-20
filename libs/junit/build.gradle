@@ -13,8 +13,7 @@ dependencies {
     compileOnly "net.neoforged.fancymodloader:core:1.0.10"
     compileOnly "net.neoforged.fancymodloader:loader:1.0.10"
     compileOnly "org.mockito:mockito-junit-jupiter:5.3.1"
-//    compileOnly "cpw.mods:bootstraplauncher:1.1.2"
-    compileOnly files("C:\\AE2\\securejarhandler\\build\\libs\\securejarhandler-2.1.12.jar")
+    compileOnly "cpw.mods:bootstraplauncher:1.1.2"
 }
 
 repositories {
