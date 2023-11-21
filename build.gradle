@@ -148,11 +148,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation files("securejarhandler-2.1.20.jar")
     testImplementation("org.assertj:assertj-core:3.19.0")
     testImplementation("com.google.guava:guava-testlib:21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
-    testImplementation("cpw.mods:securejarhandler:2.1.10")
+    testImplementation("cpw.mods:securejarhandler:2.1.20")
 
     compileOnly 'org.apache.commons:commons-configuration2:2.9.0'
 }
